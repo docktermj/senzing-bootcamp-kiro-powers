@@ -82,11 +82,17 @@ enterprise-customer-mdm/
 │   └── performance/
 │       ├── test_load_performance.py
 │       └── test_query_performance.py
+├── docker/
+│   ├── Dockerfile                     # Main Dockerfile
+│   ├── Dockerfile.dev                 # Development Dockerfile
+│   ├── Dockerfile.prod                # Production Dockerfile
+│   ├── docker-compose.yml             # Development compose
+│   ├── docker-compose.prod.yml        # Production compose
+│   ├── .dockerignore                  # Docker ignore rules
+│   └── scripts/
+│       ├── entrypoint.sh
+│       └── healthcheck.sh
 ├── deployment/
-│   ├── docker/
-│   │   ├── Dockerfile
-│   │   ├── docker-compose.yml
-│   │   └── docker-compose.prod.yml
 │   ├── kubernetes/
 │   │   ├── deployment.yaml
 │   │   ├── service.yaml

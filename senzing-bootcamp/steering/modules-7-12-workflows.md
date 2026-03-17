@@ -722,6 +722,7 @@ This document provides detailed agent workflows for Modules 7-12 (advanced modul
 
 4. **Create Dockerfile** (if using containers):
    
+   Create `docker/Dockerfile`:
    ```dockerfile
    FROM python:3.11-slim
    
@@ -733,6 +734,20 @@ This document provides detailed agent workflows for Modules 7-12 (advanced modul
    COPY . .
    
    CMD ["python", "src/load/orchestrator.py"]
+   ```
+   
+   Create `docker/docker-compose.yml`:
+   ```yaml
+   version: '3.8'
+   services:
+     senzing-api:
+       build:
+         context: ..
+         dockerfile: docker/Dockerfile
+       ports:
+         - "8080:8080"
+       environment:
+         - CONFIG_FILE=/app/config/prod/senzing_config.json
    ```
 
 5. **Create deployment scripts**:

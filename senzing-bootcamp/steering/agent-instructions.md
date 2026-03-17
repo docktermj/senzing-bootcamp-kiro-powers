@@ -18,6 +18,7 @@ This document consolidates all agent behavior instructions from across the boot 
    - Data files → `data/`
    - SQLite databases → `database/`
    - Configuration → `config/`
+   - Docker files → `docker/` (NEVER in project root)
 
 ## Module-Specific Behaviors
 

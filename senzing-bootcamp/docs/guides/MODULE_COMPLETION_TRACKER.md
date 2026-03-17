@@ -394,6 +394,7 @@ Track your progress through the Senzing Boot Camp with completion criteria and c
 - [ ] Package structure organized
 - [ ] File: `setup.py`
 - [ ] Configs in `config/dev/`, `config/staging/`, `config/prod/`
+- [ ] Docker files in `docker/` (if using containers)
 - [ ] Deployment scripts in `deployment/scripts/`
 - [ ] CI/CD pipeline in `.github/workflows/` or similar
 - [ ] Document: `docs/operations/deployment_guide.md`

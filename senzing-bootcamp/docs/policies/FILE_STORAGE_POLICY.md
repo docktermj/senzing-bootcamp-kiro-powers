@@ -8,6 +8,13 @@ This document defines where different types of files should be stored in the Sen
 
 **All project files must be stored in appropriate project directories, never in system temporary directories.**
 
+## Core Rules
+
+1. **Never use `/tmp`** for project files
+2. **Docker files go in `docker/`** - never in project root
+3. **Source code goes in `src/`** - never in project root
+4. **Use project-specific directories** for all file types
+
 ## File Storage Rules
 
 ### Source Code Files
@@ -184,6 +191,42 @@ config/database_config.yaml
 senzing_config.json     # (in project root, should be in config/)
 ```
 
+### Docker Files
+
+**Rule**: All Docker-related files must be stored in the `docker/` directory.
+
+**Structure**:
+```
+docker/
+├── Dockerfile           # Main Dockerfile
+├── Dockerfile.dev       # Development Dockerfile
+├── Dockerfile.prod      # Production Dockerfile
+├── docker-compose.yml   # Docker Compose configuration
+├── docker-compose.dev.yml
+├── docker-compose.prod.yml
+├── .dockerignore        # Docker ignore rules
+└── scripts/             # Docker-specific scripts
+    ├── entrypoint.sh
+    └── healthcheck.sh
+```
+
+**Examples**:
+```bash
+# ✅ CORRECT
+docker/Dockerfile
+docker/docker-compose.yml
+docker/.dockerignore
+docker/scripts/entrypoint.sh
+
+# ❌ WRONG
+Dockerfile              # (in project root)
+docker-compose.yml      # (in project root)
+/tmp/Dockerfile
+deployment/Dockerfile   # (wrong directory)
+```
+
+**Note**: Docker-related files should NEVER be in the project root or other directories.
+
 ### Downloaded Files
 
 **Rule**: Downloaded installation files should be stored in the user's home directory, not `/tmp`.
@@ -303,12 +346,14 @@ mkdir -p database
 mkdir -p src/{transform,load,query,utils}
 mkdir -p scripts
 mkdir -p config
+mkdir -p docker/scripts
 mkdir -p docs/{guides,modules,policies,development}
 
 # Create .gitkeep files to preserve empty directories in git
 touch data/raw/.gitkeep
 touch data/transformed/.gitkeep
 touch database/.gitkeep
+touch docker/.gitkeep
 ```
 
 ## Exceptions
@@ -326,6 +371,8 @@ The only files that should be in the project root are:
 9. **pom.xml** / **build.gradle** - Java dependencies (if applicable)
 10. **Cargo.toml** - Rust dependencies (if applicable)
 
+**Note**: Docker files (Dockerfile, docker-compose.yml) should NEVER be in the project root - they belong in `docker/`.
+
 ## Verification
 
 To verify compliance with this policy:
@@ -334,7 +381,10 @@ To verify compliance with this policy:
 # Check for /tmp references in documentation
 grep -r "/tmp" senzing-bootcamp/**/*.md
 
-# Should return no results (or only this policy file)
+# Check for Docker files in wrong locations
+find . -maxdepth 1 -name "Dockerfile*" -o -name "docker-compose*.yml"
+
+# Should return no results - all Docker files should be in docker/
 ```
 
 ## Related Policies
@@ -365,6 +415,8 @@ If you're unsure where to place a file:
 3. **Documentation?** → `docs/`
 4. **Data file?** → `data/`
 5. **Configuration?** → `config/` or root (for .env)
-6. **Temporary?** → `data/temp/` (not `/tmp`)
+6. **Docker file?** → `docker/`
+7. **Database file?** → `database/`
+8. **Temporary?** → `data/temp/` (not `/tmp`)
 
 When in doubt, ask: "Does this file belong to the project?" If yes, it goes in a project directory. Never use `/tmp`.

@@ -1,270 +1,640 @@
 # Troubleshooting Index
 
-Quick reference for common issues organized by module and symptom.
+Quick reference for common issues and solutions across all boot camp modules.
 
-## By Module
+## Quick Links
 
-### Module 0: Quick Demo
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Demo script fails | Check Python version (3.8+) | [Installation Verification](INSTALLATION_VERIFICATION.md) |
-| Sample data not loading | Verify file path in `src/quickstart_demo/` | [Module 0 Code Location](../policies/MODULE_0_CODE_LOCATION.md) |
-| Import errors | Install Senzing SDK | [SDK Setup](../../steering/steering.md#module-5) |
+- [Installation Issues](#installation-issues)
+- [Data Quality Issues](#data-quality-issues)
+- [Transformation Errors](#transformation-errors)
+- [Loading Errors](#loading-errors)
+- [Query Issues](#query-issues)
+- [Performance Problems](#performance-problems)
+- [Configuration Issues](#configuration-issues)
+- [Database Issues](#database-issues)
+- [Error Codes](#error-codes)
 
-### Module 1: Business Problem
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Unclear requirements | Use design pattern gallery | [Design Patterns](DESIGN_PATTERNS.md) |
-| Cost estimation unclear | Use cost calculator | [Cost Calculator](../../steering/cost-calculator.md) |
-| Too many data sources | Prioritize by business value | [Complexity Estimator](../../steering/complexity-estimator.md) |
+## Installation Issues
 
-### Module 2: Data Collection
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Large files won't upload | Create sample subset | [Data Collection](../modules/MODULE_2_DATA_COLLECTION.md) |
-| Database connection fails | Check credentials and network | [Common Pitfalls](../../steering/common-pitfalls.md) |
-| Sensitive data concerns | Review privacy guidelines | [Security & Privacy](../../steering/security-privacy.md) |
+### Senzing Not Found
 
-### Module 3: Data Quality
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Low quality scores (<50%) | Review recommendations in report | [Data Quality Scoring](../modules/MODULE_3_DATA_QUALITY_SCORING.md) |
-| Missing attributes | Check source data completeness | [Data Quality Scoring](../modules/MODULE_3_DATA_QUALITY_SCORING.md) |
-| Inconsistent formats | Add data cleaning step | [Common Pitfalls](../../steering/common-pitfalls.md) |
+**Symptom**: `ModuleNotFoundError: No module named 'senzing'`
 
-### Module 4: Data Mapping
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Wrong attribute names | Use `mapping_workflow` tool | [Agent Instructions](../../steering/agent-instructions.md) |
-| Transformation fails | Check Python syntax | [Common Pitfalls](../../steering/common-pitfalls.md) |
-| Quality score still low | Iterate on mapping | [Data Quality Scoring](../modules/MODULE_3_DATA_QUALITY_SCORING.md) |
-| Complex transformations | Break into smaller steps | [Common Pitfalls](../../steering/common-pitfalls.md) |
+**Solutions**:
+1. Check if Senzing is installed:
+   ```bash
+   pip list | grep senzing
+   ```
 
-### Module 5: SDK Setup
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Installation fails | Check platform compatibility | [Installation Verification](INSTALLATION_VERIFICATION.md) |
-| Database connection error | Verify database running | [Recovery Procedures](../../steering/recovery-procedures.md) |
-| Version mismatch | Check Senzing version | [Installation Verification](INSTALLATION_VERIFICATION.md) |
-| Permission denied | Check file permissions | [Common Pitfalls](../../steering/common-pitfalls.md) |
+2. Install Senzing:
+   ```bash
+   pip install senzing
+   ```
 
-### Module 6: Single Source Loading
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Loading very slow | Check database type (SQLite vs PostgreSQL) | [Performance Monitoring](../../steering/performance-monitoring.md) |
-| Out of memory | Reduce batch size | [Common Pitfalls](../../steering/common-pitfalls.md) |
-| Records rejected | Check JSON format with `lint_record` | [Agent Instructions](../../steering/agent-instructions.md) |
-| Duplicate key errors | Check RECORD_ID uniqueness | [Common Pitfalls](../../steering/common-pitfalls.md) |
+3. Verify Python version (3.8+ required):
+   ```bash
+   python --version
+   ```
 
-### Module 7: Multi-Source Orchestration
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Dependency errors | Review load order | [Multi-Source Orchestration](../modules/MODULE_7_MULTI_SOURCE_ORCHESTRATION.md) |
-| One source fails | Check error handling | [Recovery Procedures](../../steering/recovery-procedures.md) |
-| Parallel loading conflicts | Use sequential loading | [Multi-Source Orchestration](../modules/MODULE_7_MULTI_SOURCE_ORCHESTRATION.md) |
-
-### Module 8: Query and Validation
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| No results returned | Check entity IDs exist | [Query Validation](../modules/MODULE_8_QUERY_VALIDATION.md) |
-| Wrong SDK method | Use `generate_scaffold` tool | [Agent Instructions](../../steering/agent-instructions.md) |
-| UAT tests failing | Review test expectations | [UAT Framework](../../steering/uat-framework.md) |
-
-### Module 9: Performance Testing
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Slow performance | Profile bottlenecks | [Performance Testing](../modules/MODULE_9_PERFORMANCE_TESTING.md) |
-| Memory issues | Increase heap size | [Performance Monitoring](../../steering/performance-monitoring.md) |
-| Benchmarks inconsistent | Run multiple iterations | [Performance Testing](../modules/MODULE_9_PERFORMANCE_TESTING.md) |
-
-### Module 10: Security Hardening
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Secrets exposed | Use secrets manager | [Security Hardening](../modules/MODULE_10_SECURITY_HARDENING.md) |
-| Authentication failing | Check API keys/JWT | [Security Hardening](../modules/MODULE_10_SECURITY_HARDENING.md) |
-| Security scan failures | Update dependencies | [Security Hardening](../modules/MODULE_10_SECURITY_HARDENING.md) |
-
-### Module 11: Monitoring
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Metrics not collecting | Check Prometheus config | [Monitoring & Observability](../modules/MODULE_11_MONITORING_OBSERVABILITY.md) |
-| Alerts not firing | Verify alerting rules | [Monitoring & Observability](../modules/MODULE_11_MONITORING_OBSERVABILITY.md) |
-| Dashboard not loading | Check Grafana connection | [Monitoring & Observability](../modules/MODULE_11_MONITORING_OBSERVABILITY.md) |
-
-### Module 12: Deployment
-| Issue | Solution | Reference |
-|-------|----------|-----------|
-| Docker build fails | Check Dockerfile syntax | [Deployment Packaging](../modules/MODULE_12_DEPLOYMENT_PACKAGING.md) |
-| Tests failing | Run diagnostics | [Testing Strategy](../../steering/testing-strategy.md) |
-| Deployment errors | Check environment config | [Multi-Environment Strategy](../../steering/multi-environment-strategy.md) |
+**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
 
 ---
 
-## By Symptom
+### Permission Denied During Installation
 
-### Performance Issues
-| Symptom | Likely Cause | Solution |
-|---------|--------------|----------|
-| Slow loading | SQLite database | Switch to PostgreSQL |
-| High memory usage | Large batch size | Reduce batch size |
-| Slow queries | Missing indexes | Add database indexes |
-| CPU at 100% | Too many parallel workers | Reduce parallelism |
+**Symptom**: `Permission denied` when installing Senzing
 
-### Data Quality Issues
-| Symptom | Likely Cause | Solution |
-|---------|--------------|----------|
-| No matches found | Poor data quality | Improve source data |
-| Too many matches | Loose matching rules | Adjust thresholds |
-| Wrong matches | Incorrect mapping | Review transformation |
-| Missing attributes | Incomplete source data | Add data enrichment |
+**Solutions**:
+1. Use `sudo` for system installation:
+   ```bash
+   sudo apt install senzingapi-runtime
+   ```
 
-### Error Messages
-| Error | Meaning | Solution |
-|-------|---------|----------|
-| SENZ0005 | Configuration error | Check engine config |
-| SENZ0037 | Database connection | Verify database running |
-| SENZ0025 | Invalid JSON | Validate with `lint_record` |
-| Import Error | Missing dependency | Install required package |
-| Permission Denied | File permissions | Check file ownership |
+2. Or use virtual environment (no sudo needed):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   pip install senzing
+   ```
 
-### Installation Issues
-| Symptom | Likely Cause | Solution |
-|---------|--------------|----------|
-| Command not found | PATH not set | Set environment variables |
-| Library not found | Missing dependency | Install system libraries |
-| Version mismatch | Wrong Senzing version | Check compatibility |
-| Database error | Database not configured | Run database setup |
+**Related**: [environment-setup.md](../../steering/environment-setup.md)
 
 ---
 
-## Quick Diagnostic Steps
+### Wrong Senzing Version
 
-### 1. Check Basics
-```bash
-# Python version
-python --version  # Should be 3.8+
+**Symptom**: Boot camp expects V4.0 but different version installed
 
-# Senzing installed
-python -c "import senzing; print(senzing.__version__)"
+**Solutions**:
+1. Check installed version:
+   ```bash
+   python -c "import senzing; print(senzing.__version__)"
+   ```
 
-# Database connection
-# (varies by database type)
-```
+2. Upgrade to V4.0:
+   ```bash
+   pip install --upgrade senzing
+   ```
 
-### 2. Check Files
-```bash
-# Data files exist
-ls -lh data/raw/
-ls -lh data/transformed/
-
-# Programs exist
-ls -lh src/transform/
-ls -lh src/load/
-ls -lh src/query/
-```
-
-### 3. Check Logs
-```bash
-# Application logs
-tail -f logs/application.log
-
-# Error logs
-grep ERROR logs/application.log
-```
-
-### 4. Run Diagnostics
-```python
-# In Kiro, ask:
-"Run diagnostics on my Senzing setup"
-"Check my data quality"
-"Validate my transformation output"
-```
+**Related**: [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md)
 
 ---
 
-## Decision Tree
+## Data Quality Issues
 
-```
-Problem?
-├─ Installation Issue?
-│  ├─ Platform compatibility → Check Installation Verification
-│  ├─ Missing dependencies → Install required packages
-│  └─ Permission errors → Check file permissions
-│
-├─ Data Quality Issue?
-│  ├─ Low scores → Review quality report
-│  ├─ Missing data → Check source completeness
-│  └─ Wrong format → Fix transformation
-│
-├─ Performance Issue?
-│  ├─ Slow loading → Check database type
-│  ├─ High memory → Reduce batch size
-│  └─ Slow queries → Add indexes
-│
-├─ Error Message?
-│  ├─ SENZ error → Use explain_error_code tool
-│  ├─ Python error → Check syntax and imports
-│  └─ Database error → Check connection
-│
-└─ Unexpected Results?
-   ├─ No matches → Check data quality
-   ├─ Wrong matches → Review mapping
-   └─ Missing data → Check transformation
-```
+### Low Completeness Score
+
+**Symptom**: Data quality score < 60%, many missing fields
+
+**Solutions**:
+1. Identify missing fields:
+   ```python
+   df.isnull().sum()
+   ```
+
+2. Options:
+   - Fill missing values from other sources
+   - Use default values where appropriate
+   - Document limitations
+   - Proceed with caution
+
+**Related**: [MODULE_3_DATA_QUALITY_SCORING.md](../modules/MODULE_3_DATA_QUALITY_SCORING.md)
 
 ---
 
-## Getting Help
+### High Duplicate Rate
 
-### In Kiro
-```
-"I'm getting error [error message]"
-"Why aren't my records matching?"
-"How do I fix [specific issue]?"
-"Explain error code SENZ0005"
-```
+**Symptom**: Many duplicate records in source data
 
-### Documentation
-- **Common Pitfalls**: [../../steering/common-pitfalls.md](../../steering/common-pitfalls.md)
-- **Troubleshooting Tree**: [../../steering/troubleshooting-decision-tree.md](../../steering/troubleshooting-decision-tree.md)
-- **Recovery Procedures**: [../../steering/recovery-procedures.md](../../steering/recovery-procedures.md)
+**Solutions**:
+1. Deduplicate before transformation:
+   ```python
+   df.drop_duplicates(subset=['id'], keep='first')
+   ```
 
-### Senzing Support
-- Documentation: https://docs.senzing.com
-- GitHub Issues: https://github.com/senzing
-- Support Portal: https://senzing.com/support
+2. Or let Senzing resolve duplicates (recommended)
+
+3. Document duplicate handling strategy
+
+**Related**: [common-pitfalls.md](../../steering/common-pitfalls.md)
 
 ---
 
-## Prevention Tips
+### Inconsistent Data Formats
 
-### Before Starting
-- ✅ Check prerequisites
-- ✅ Verify platform compatibility
-- ✅ Review design patterns
-- ✅ Understand your data
+**Symptom**: Dates, phones, addresses in multiple formats
 
-### During Development
-- ✅ Test with small samples first
-- ✅ Validate at each step
-- ✅ Check quality scores
-- ✅ Review error logs
+**Solutions**:
+1. Standardize in transformation:
+   ```python
+   # Standardize phone numbers
+   phone = re.sub(r'[^0-9]', '', phone)
+   
+   # Standardize dates
+   date = pd.to_datetime(date).strftime('%Y-%m-%d')
+   ```
 
-### Before Production
-- ✅ Run full test suite
-- ✅ Performance benchmarks
-- ✅ Security audit
-- ✅ Backup procedures
+2. Use data cleaning libraries (phonenumbers, usaddress)
+
+**Related**: [MODULE_4_DATA_MAPPING.md](../modules/MODULE_4_DATA_MAPPING.md)
 
 ---
 
-## Related Documentation
+## Transformation Errors
 
-- **Main Guide**: [../../POWER.md](../../POWER.md)
-- **Quick Start**: [QUICK_START.md](QUICK_START.md)
-- **Common Pitfalls**: [../../steering/common-pitfalls.md](../../steering/common-pitfalls.md)
-- **Recovery Procedures**: [../../steering/recovery-procedures.md](../../steering/recovery-procedures.md)
+### JSON Decode Error
+
+**Symptom**: `JSONDecodeError: Expecting value`
+
+**Solutions**:
+1. Check for empty lines:
+   ```python
+   if line.strip():  # Skip empty lines
+       record = json.loads(line)
+   ```
+
+2. Check for invalid JSON:
+   ```python
+   try:
+       record = json.loads(line)
+   except json.JSONDecodeError as e:
+       print(f"Invalid JSON on line {line_num}: {e}")
+   ```
+
+3. Validate JSON format
+
+**Related**: [transform_csv_template.py](../../templates/transform_csv_template.py)
 
 ---
 
-**Still stuck?** Ask Kiro: *"I need help troubleshooting [your issue]"*
+### Missing Required Fields
+
+**Symptom**: Records missing DATA_SOURCE or RECORD_ID
+
+**Solutions**:
+1. Ensure all records have required fields:
+   ```python
+   if not record.get('DATA_SOURCE'):
+       record['DATA_SOURCE'] = 'YOUR_SOURCE'
+   
+   if not record.get('RECORD_ID'):
+       record['RECORD_ID'] = generate_id()
+   ```
+
+2. Validate before writing:
+   ```python
+   def validate_record(record):
+       required = ['DATA_SOURCE', 'RECORD_ID']
+       for field in required:
+           if not record.get(field):
+               return f"Missing {field}"
+       return None
+   ```
+
+**Related**: [MODULE_4_DATA_MAPPING.md](../modules/MODULE_4_DATA_MAPPING.md)
+
+---
+
+### Wrong Attribute Names
+
+**Symptom**: Senzing doesn't recognize attribute names
+
+**Solutions**:
+1. Use correct Senzing attribute names:
+   - ✅ `PRIMARY_NAME_FIRST` not `FIRST_NAME`
+   - ✅ `EMAIL_ADDRESS` not `EMAIL`
+   - ✅ `PHONE_NUMBER` not `PHONE`
+
+2. Use MCP tool `mapping_workflow` for correct names
+
+3. Check [Senzing attribute reference](https://senzing.zendesk.com/hc/en-us/articles/231925448-Generic-Entity-Specification)
+
+**Related**: [steering.md](../../steering/steering.md#module-4-data-mapping)
+
+---
+
+## Loading Errors
+
+### Database Connection Failed
+
+**Symptom**: `Unable to connect to database`
+
+**Solutions**:
+
+**For SQLite**:
+1. Check database directory exists:
+   ```bash
+   mkdir -p database
+   ```
+
+2. Check file permissions:
+   ```bash
+   ls -la database/
+   ```
+
+3. Verify connection string:
+   ```json
+   "CONNECTION": "sqlite3://na:na@database/G2C.db"
+   ```
+
+**For PostgreSQL**:
+1. Check PostgreSQL is running:
+   ```bash
+   systemctl status postgresql
+   ```
+
+2. Test connection:
+   ```bash
+   psql -h localhost -U senzing -d senzing
+   ```
+
+3. Verify credentials in connection string
+
+**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+
+---
+
+### Slow Loading Performance
+
+**Symptom**: Loading < 100 records/second
+
+**Solutions**:
+1. Switch from SQLite to PostgreSQL
+2. Increase batch size:
+   ```python
+   BATCH_SIZE = 5000  # Increase from 1000
+   ```
+
+3. Use multiprocessing:
+   ```python
+   from multiprocessing import Pool
+   with Pool(4) as pool:
+       pool.map(load_batch, batches)
+   ```
+
+4. Optimize transformation code
+
+**Related**: [MODULE_9_PERFORMANCE_TESTING.md](../modules/MODULE_9_PERFORMANCE_TESTING.md)
+
+---
+
+### Memory Errors
+
+**Symptom**: `MemoryError` or system runs out of memory
+
+**Solutions**:
+1. Reduce batch size:
+   ```python
+   BATCH_SIZE = 100  # Reduce from 1000
+   ```
+
+2. Process in chunks:
+   ```python
+   for chunk in pd.read_csv(file, chunksize=1000):
+       process_chunk(chunk)
+   ```
+
+3. Use streaming instead of loading all into memory
+
+4. Increase system memory
+
+**Related**: [performance-monitoring.md](../../steering/performance-monitoring.md)
+
+---
+
+### Data Source Not Registered
+
+**Symptom**: `Data source 'XXX' not found`
+
+**Solutions**:
+1. Register data source:
+   ```python
+   from senzing import G2Config
+   
+   config = G2Config()
+   config.init("RegisterDS", "{}", False)
+   handle = config.create()
+   
+   config.addDataSource(handle, json.dumps({
+       "DSRC_CODE": "YOUR_SOURCE"
+   }))
+   
+   config_str = config.save(handle)
+   # Apply config...
+   ```
+
+2. Or use MCP tool `sdk_guide` with topic='configure'
+
+**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+
+---
+
+## Query Issues
+
+### No Results Found
+
+**Symptom**: Queries return empty results
+
+**Solutions**:
+1. Verify data was loaded:
+   ```python
+   stats = engine.stats()
+   print(stats)  # Check record count
+   ```
+
+2. Check search criteria:
+   ```python
+   # Too specific?
+   search = {"NAME_FULL": "John Smith", "EMAIL": "john@email.com"}
+   
+   # Try broader search
+   search = {"NAME_FULL": "John Smith"}
+   ```
+
+3. Verify data source and record ID
+
+**Related**: [MODULE_8_QUERY_VALIDATION.md](../modules/MODULE_8_QUERY_VALIDATION.md)
+
+---
+
+### Slow Query Performance
+
+**Symptom**: Queries take > 1 second
+
+**Solutions**:
+1. Check database indexes (PostgreSQL)
+2. Optimize search criteria (fewer fields)
+3. Use entity ID instead of searching
+4. Consider caching frequent queries
+5. Check database resources (CPU, memory)
+
+**Related**: [MODULE_9_PERFORMANCE_TESTING.md](../modules/MODULE_9_PERFORMANCE_TESTING.md)
+
+---
+
+### Unexpected Matches
+
+**Symptom**: Records matched that shouldn't be
+
+**Solutions**:
+1. Review match keys and thresholds
+2. Check data quality (garbage in = garbage out)
+3. Use `explain_error_code` MCP tool
+4. Review entity details:
+   ```python
+   entity = engine.getEntityByEntityID(entity_id)
+   # Review why records matched
+   ```
+
+5. Consider adjusting matching rules (advanced)
+
+**Related**: [MODULE_8_QUERY_VALIDATION.md](../modules/MODULE_8_QUERY_VALIDATION.md)
+
+---
+
+## Performance Problems
+
+### High CPU Usage
+
+**Symptom**: CPU at 100% during loading
+
+**Solutions**:
+1. This is normal during loading
+2. Reduce parallel loaders if too high
+3. Check for infinite loops in transformation code
+4. Monitor with `top` or `htop`
+
+**Related**: [performance-monitoring.md](../../steering/performance-monitoring.md)
+
+---
+
+### High Memory Usage
+
+**Symptom**: Memory usage growing continuously
+
+**Solutions**:
+1. Check for memory leaks in transformation code
+2. Reduce batch sizes
+3. Use streaming instead of loading all data
+4. Monitor with `free -h` or `htop`
+5. Restart process periodically for long-running jobs
+
+**Related**: [MODULE_9_PERFORMANCE_TESTING.md](../modules/MODULE_9_PERFORMANCE_TESTING.md)
+
+---
+
+### Disk Space Full
+
+**Symptom**: `No space left on device`
+
+**Solutions**:
+1. Check disk usage:
+   ```bash
+   df -h
+   ```
+
+2. Clean up:
+   ```bash
+   # Remove old backups
+   rm data/backups/*.db.old
+   
+   # Remove logs
+   rm logs/*.log.old
+   
+   # Clean transformed files after loading
+   rm data/transformed/*.jsonl
+   ```
+
+3. Increase disk space
+
+**Related**: [recovery-procedures.md](../../steering/recovery-procedures.md)
+
+---
+
+## Configuration Issues
+
+### Config File Not Found
+
+**Symptom**: `FileNotFoundError: config/senzing_config.json`
+
+**Solutions**:
+1. Create config directory:
+   ```bash
+   mkdir -p config
+   ```
+
+2. Create config file (see MODULE_5_SDK_SETUP.md)
+
+3. Check file path in code
+
+**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+
+---
+
+### Invalid Configuration
+
+**Symptom**: `Invalid configuration JSON`
+
+**Solutions**:
+1. Validate JSON syntax:
+   ```bash
+   python -m json.tool config/senzing_config.json
+   ```
+
+2. Check required fields:
+   - PIPELINE.CONFIGPATH
+   - PIPELINE.RESOURCEPATH
+   - PIPELINE.SUPPORTPATH
+   - SQL.CONNECTION
+
+3. Use template from documentation
+
+**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+
+---
+
+### Environment Variables Not Set
+
+**Symptom**: Variables like `$DB_PASSWORD` not resolved
+
+**Solutions**:
+1. Create .env file:
+   ```bash
+   cp .env.example .env
+   # Edit .env with actual values
+   ```
+
+2. Load environment variables:
+   ```python
+   from dotenv import load_dotenv
+   load_dotenv()
+   
+   import os
+   password = os.getenv('DB_PASSWORD')
+   ```
+
+3. Or export in shell:
+   ```bash
+   export DB_PASSWORD=your_password
+   ```
+
+**Related**: [environment-setup.md](../../steering/environment-setup.md)
+
+---
+
+## Database Issues
+
+### SQLite Database Locked
+
+**Symptom**: `database is locked`
+
+**Solutions**:
+1. Only one writer at a time for SQLite
+2. Close other connections
+3. Use PostgreSQL for concurrent access
+4. Check for zombie processes:
+   ```bash
+   ps aux | grep python
+   ```
+
+**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+
+---
+
+### PostgreSQL Connection Refused
+
+**Symptom**: `Connection refused` to PostgreSQL
+
+**Solutions**:
+1. Check PostgreSQL is running:
+   ```bash
+   systemctl status postgresql
+   ```
+
+2. Check port is correct (default 5432)
+
+3. Check pg_hba.conf allows connections
+
+4. Verify firewall rules
+
+**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+
+---
+
+### Database Corruption
+
+**Symptom**: Database errors, crashes, inconsistent results
+
+**Solutions**:
+1. Stop all operations
+2. Restore from backup:
+   ```bash
+   ./scripts/rollback.sh data/backups/G2C_20260317.db
+   ```
+
+3. If no backup, rebuild from source data
+
+4. Implement regular backups going forward
+
+**Related**: [disaster-recovery.md](../../steering/disaster-recovery.md)
+
+---
+
+## Error Codes
+
+### Common Senzing Error Codes
+
+Use MCP tool `explain_error_code` for detailed explanations.
+
+**SENZ0001**: Generic error
+- Check logs for details
+- Verify configuration
+
+**SENZ0002**: Database error
+- Check database connection
+- Verify database permissions
+
+**SENZ0003**: Configuration error
+- Validate configuration JSON
+- Check required fields
+
+**SENZ0004**: Data source error
+- Verify data source is registered
+- Check data source code
+
+**SENZ0005**: Record error
+- Check record format
+- Validate required fields
+
+**Related**: Use `explain_error_code` MCP tool for any error code
+
+---
+
+## Getting More Help
+
+### Use MCP Tools
+
+- `explain_error_code` - Diagnose Senzing errors
+- `search_docs` - Search Senzing documentation
+- `find_examples` - Find code examples
+
+### Check Documentation
+
+- [troubleshooting-decision-tree.md](../../steering/troubleshooting-decision-tree.md) - Systematic troubleshooting
+- [common-pitfalls.md](../../steering/common-pitfalls.md) - Common mistakes
+- Module documentation in `docs/modules/`
+
+### Ask the Agent
+
+The agent can help troubleshoot issues:
+- Describe the problem
+- Share error messages
+- Provide relevant code snippets
+
+## Contributing
+
+Found a solution to a common problem? Add it to this index!
+
+## Version History
+
+- **v1.0.0** (2026-03-17): Troubleshooting index created

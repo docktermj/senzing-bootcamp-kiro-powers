@@ -21,6 +21,38 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 **Senzing Compatibility**: V4.0 (primary), V3.x (limited support)  
 **Last Updated**: 2026-03-17
 
+## Getting Started
+
+### New to Senzing?
+
+1. **Read the Quick Start**: See `QUICK_START.md` for three fast paths (10 min, 30 min, or 2 hours)
+2. **Check the Onboarding Checklist**: Complete `ONBOARDING_CHECKLIST.md` before starting
+3. **Review Compatibility**: Check `COMPATIBILITY_MATRIX.md` for version support
+4. **Choose Your Path**:
+   - **Demo** (10 min): Module 0 with sample data
+   - **Fast Track** (30 min): Modules 5-6 with SGES data
+   - **Complete** (2-3 hrs): Modules 1-6, 8
+   - **Production** (10-18 hrs): All modules 0-12
+
+### Track Your Progress
+
+Use `PROGRESS_TRACKER.md` to track completion of each module and overall progress.
+
+### Example Projects
+
+See `examples/` directory for three complete reference projects:
+- **Simple Single Source**: Basic customer deduplication (2-3 hours)
+- **Multi-Source Project**: Customer 360 with three sources (6-8 hours)
+- **Production Deployment**: Complete production-ready system (12-15 hours)
+
+### Templates
+
+Use ready-made templates from `templates/` directory:
+- CSV/JSON transformation templates
+- Batch/streaming loader templates
+- Query and export templates
+- Utility templates for common tasks
+
 ## Available MCP Servers
 
 ### senzing-mcp-server
@@ -318,7 +350,7 @@ The boot camp includes detailed steering files for specific topics. Load these o
 
 ## Recommended Hooks
 
-Install pre-configured hooks to automate quality checks and reminders. See `senzing-bootcamp/hooks/` directory and `HOOKS_INSTALLATION_GUIDE.md` for details.
+Install pre-configured hooks to automate quality checks and reminders. See `hooks/README.md` and `docs/guides/HOOKS_INSTALLATION_GUIDE.md` for details.
 
 Available hooks:
 - **data-quality-check** — Validates quality when transformations change
@@ -339,6 +371,8 @@ cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
 **Agent behavior**:
 - When installing hooks, always verify the `.kiro/hooks/` directory exists first
 - Create it if needed with `mkdir -p .kiro/hooks` before copying hook files
+- **Proactively suggest hooks** at the start of Module 3 (data mapping)
+- Remind users about backup hook before Module 6 (loading)
 
 ## Entity Resolution Design Pattern Gallery
 

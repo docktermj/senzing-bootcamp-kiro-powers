@@ -235,29 +235,34 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
 
 5. **Set expectations**: "Let's start by understanding your business problem. This will help us tailor the boot camp to your specific needs. We'll identify your data sources, define success criteria, and create a plan."
 
-6. **Ask guided discovery questions**: Work through these questions systematically. Present common scenarios to help them identify their use case.
+6. **Ask guided discovery questions**: Work through these questions systematically, ONE AT A TIME. Wait for the user's response to each question before asking the next one. This prevents overwhelming the user with multiple questions at once.
 
    **Note**: If user selected a design pattern, use it to guide these questions and pre-fill answers where applicable.
 
    **Question 1: What problem are you trying to solve?**
-   - Deduplication, data matching, identity verification, fraud detection, relationship discovery, or master data management?
+   - Ask: "What problem are you trying to solve? For example: deduplication, data matching, identity verification, fraud detection, relationship discovery, or master data management?"
    - If they selected a pattern: "You mentioned [pattern name]. Let's refine that for your specific situation..."
+   - WAIT for their response before proceeding to Question 2
    
    **Question 2: What data sources are involved?**
-   - For each source: name, type, record count, update frequency, access method
+   - Ask: "What data sources are involved? For each source, I'll need to know: name, type (database/CSV/API/etc.), approximate record count, update frequency, and how to access it."
    - If they selected a pattern: "The [pattern name] pattern typically involves [list sources]. Do you have similar data sources?"
+   - WAIT for their response before proceeding to Question 3
    
    **Question 3: What types of entities?**
-   - People, organizations, both, or other?
+   - Ask: "What types of entities are we working with? People, organizations, both, or something else?"
    - If they selected a pattern: "For [pattern name], we typically work with [entity types]. Is that correct for you?"
+   - WAIT for their response before proceeding to Question 4
    
    **Question 4: What matching criteria matter most?**
-   - Names, addresses, contact info, identifiers, dates, other attributes?
+   - Ask: "What matching criteria matter most for your use case? For example: names, addresses, contact info, identifiers, dates, or other attributes?"
    - If they selected a pattern: "The [pattern name] pattern usually focuses on [matching criteria]. Are these the right attributes for your case?"
+   - WAIT for their response before proceeding to Question 5
    
    **Question 5: What's the desired outcome?**
-   - Output format, use case, integration needs, success metrics
+   - Ask: "What's the desired outcome? What format do you need (master list, API, reports, database export)? Is this one-time or ongoing? Any integration needs?"
    - If they selected a pattern: "The typical goal for [pattern name] is [goal]. What specific outcomes are you looking for?"
+   - WAIT for their response before proceeding to step 7
 
 7. **Encourage visual explanations**: Ask for diagrams showing data architecture, data flows, or example records. If images contain placeholders like [variable], ask them to specify what each represents.
 
@@ -326,7 +331,23 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
 
 12. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
 
-13. **Transition to Module 2**: "Now let's collect the actual data from your data sources. We'll need to get the data files into the project so we can work with them."
+13. **Transition to Module 2**: 
+    
+    "Great! Module 1 is complete. You now have a clear problem statement and project structure.
+    
+    **Module 1 Complete ✅**
+    - ✅ Business problem defined
+    - ✅ Data sources identified  
+    - ✅ Success criteria set
+    - ✅ Cost estimate created
+    - ✅ Project structure ready
+    
+    **Common Issues to Watch For**:
+    - If data sources are hard to access, document access requirements now
+    - If stakeholder approval needed, use cost estimate document
+    - If timeline is tight, consider starting with one data source
+    
+    Ready to move to Module 2 and collect your data sources?"
 
 **Success indicator**: ✅ Clear problem statement + identified data sources + defined success metrics + user confirmation + `docs/business_problem.md` created
 
@@ -341,6 +362,10 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
 1. **Review identified data sources**: Recap the data sources identified in Module 1. Review `docs/business_problem.md` for the complete list.
 
 2. **For each data source, collect the data**:
+
+   First, ask: "How would you like to provide the data for [datasource_name]? You can upload a file, provide a URL/file path, connect to a database, or use an API endpoint."
+   
+   WAIT for their response, then proceed with the appropriate option:
 
    **Option A: User uploads files**
    - Ask user to provide data files (CSV, JSON, Excel, etc.)
@@ -827,10 +852,10 @@ This workflow is now split into two parts:
    - If version is incompatible or installation is broken, proceed with reinstallation
 
 2. **Determine the user's platform** (if not already installed):
-   - Linux distro (apt-based or yum-based)
-   - macOS (Intel or ARM)
-   - Windows
-   - Docker (recommended for quick start)
+   
+   Ask: "What platform are you using? Linux, macOS, Windows, or would you prefer to use Docker?"
+   
+   WAIT for their response before proceeding to installation.
 
 3. **Install Senzing** (if not already installed):
    - Call `sdk_guide` with `topic='install'` and the detected platform for installation commands
@@ -856,7 +881,8 @@ This workflow is now split into two parts:
 
 5. **Configure the engine**:
    - Call `sdk_guide` with `topic='configure'` for engine configuration
-   - Choose database: SQLite for evaluation, PostgreSQL for production
+   - Ask: "Which database would you like to use? SQLite is good for evaluation, PostgreSQL is recommended for production."
+   - WAIT for their response
    - Register data sources identified in Module 1
    - Create engine configuration JSON
 

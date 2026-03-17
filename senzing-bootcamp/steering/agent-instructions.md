@@ -10,6 +10,7 @@ This document consolidates all agent behavior instructions from across the boot 
 4. **Track progress** through modules and remind users periodically
 5. **Validate before proceeding** - each module has success criteria
 6. **Save all code in `src/`** - never place source code in project root
+7. **Ask questions one at a time** - when multiple questions are needed, ask them sequentially and wait for each response before asking the next. This prevents overwhelming users with long lists of questions.
 
 ## Module-Specific Behaviors
 
@@ -25,7 +26,8 @@ This document consolidates all agent behavior instructions from across the boot 
 ### Module 1: Business Problem
 - **Offer design pattern gallery** at the start
 - If pattern selected, use it to guide problem definition
-- Ask targeted discovery questions
+- **Ask discovery questions ONE AT A TIME** - wait for user response before asking next question
+- Never ask multiple questions in a single message
 - Encourage visual explanations (diagrams)
 - Create `docs/business_problem.md`
 - Update README.md with overview
@@ -57,11 +59,13 @@ This document consolidates all agent behavior instructions from across the boot 
 - Document quality in `docs/data_quality_report.md`
 - Track quality scores for comparison after mapping
 - Categorize: SGES-compliant, needs mapping, needs enrichment
+- **At end of module**: Suggest installing hooks for quality checks
 
 ### Module 4: Data Mapping
 - **Use `mapping_workflow`** - never hand-code attribute names
 - **Always pass exact `state` object** between workflow calls
 - Create separate transformation program for each data source
+- **Offer to use templates** from `templates/` directory
 - Save programs in `src/transform/`
 - Test on small sample (10-100 records) first
 - Use `lint_record` to validate output
@@ -69,6 +73,7 @@ This document consolidates all agent behavior instructions from across the boot 
 - Iterate if quality score < 70%
 - Document mappings in `docs/mapping_[datasource].md`
 - Track which sources are mapped vs pending
+- **At end of module**: Present module transition with completion checklist
 
 ### Module 5: SDK Setup
 - Use `sdk_guide` with correct platform parameter
@@ -85,6 +90,7 @@ This document consolidates all agent behavior instructions from across the boot 
 ### Module 6: Loading
 - **Verify `.kiro/hooks/` exists** before installing hooks
 - **Remind to backup** before loading (or use backup hook)
+- **Offer to use loader templates** from `templates/` directory
 - Create separate loading program for each data source
 - Save programs in `src/load/`
 - Test with small sample first (10-100 records)
@@ -93,6 +99,7 @@ This document consolidates all agent behavior instructions from across the boot 
 - Track loading statistics
 - Generate dashboard showing results
 - Track which sources are loaded vs pending
+- **At end of module**: Present module transition with troubleshooting tips
 
 ### Module 7: Querying
 - Review business problem from Module 1
@@ -246,6 +253,9 @@ When user encounters errors:
 - Use examples to illustrate concepts
 - Admit when you need to use MCP tools
 - Don't pretend to know - use tools to verify
+- **Ask questions one at a time** - never present multiple questions in a single message
+- **Wait for user response** before asking the next question
+- When presenting options, ask which option they prefer rather than listing all details at once
 
 ## Quality Assurance
 

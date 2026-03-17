@@ -2,6 +2,15 @@
 
 A comprehensive, guided learning experience for Senzing entity resolution. This Kiro Power takes you from initial demo through production deployment with 13 focused modules.
 
+## 🚀 Quick Links
+
+- **[Quick Start Guide](QUICK_START.md)** - Three fast paths: 10 min, 30 min, or 2 hours
+- **[Onboarding Checklist](ONBOARDING_CHECKLIST.md)** - Complete this before starting
+- **[Progress Tracker](PROGRESS_TRACKER.md)** - Track your module completion
+- **[Example Projects](examples/)** - Three complete reference projects
+- **[Code Templates](templates/)** - Ready-to-use transformation and loading templates
+- **[Compatibility Matrix](COMPATIBILITY_MATRIX.md)** - Version and platform support
+
 ## What is Senzing?
 
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.

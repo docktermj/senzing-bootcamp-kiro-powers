@@ -37,7 +37,7 @@ Installation failing?
 │
 ├─→ Database connection fails?
 │   ├─→ SQLite: Check path exists
-│   │   └─→ /var/opt/senzing/sqlite/G2C.db
+│   │   └─→ database/G2C.db
 │   └─→ PostgreSQL: Check connection string
 │       └─→ Verify host, port, credentials
 │
@@ -229,7 +229,7 @@ Poor matching results?
 python -c "import senzing; print(senzing.__version__)"
 
 # Check database connection (SQLite)
-ls -lh /var/opt/senzing/sqlite/G2C.db
+ls -lh database/G2C.db
 
 # Check database connection (PostgreSQL)
 psql -h localhost -U senzing -d senzing -c "SELECT 1"

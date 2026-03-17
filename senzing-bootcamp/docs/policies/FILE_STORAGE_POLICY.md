@@ -121,6 +121,39 @@ data/backups/senzing_backup_20260317.sql
 customers.csv           # (in project root)
 ```
 
+### Database Files
+
+**Rule**: SQLite database files (`.db`, `.sqlite`, `.sqlite3`) must be stored in the `database/` directory.
+
+**Structure**:
+```
+database/
+├── G2C.db               # Main Senzing database
+├── G2C.db-journal       # SQLite journal file (auto-generated)
+└── .gitkeep             # Keep directory in git
+```
+
+**Examples**:
+```bash
+# ✅ CORRECT
+database/G2C.db
+database/test.db
+
+# ❌ WRONG
+/var/opt/senzing/sqlite/G2C.db
+/tmp/G2C.db
+G2C.db                  # (in project root)
+data/G2C.db             # (data/ is for data files, not databases)
+```
+
+**Note**: Add `database/*.db` to `.gitignore` to exclude database files from version control:
+```gitignore
+# Database files
+database/*.db
+database/*.db-journal
+!database/.gitkeep
+```
+
 ### Configuration Files
 
 **Rule**: Configuration files (`.json`, `.yaml`, `.yml`, `.env`, `.ini`) should be stored in the `config/` directory or project root (for `.env` files).
@@ -266,10 +299,16 @@ Always create directories before using them:
 ```bash
 # Create project directories
 mkdir -p data/{raw,transformed,samples,backups,temp}
+mkdir -p database
 mkdir -p src/{transform,load,query,utils}
 mkdir -p scripts
 mkdir -p config
 mkdir -p docs/{guides,modules,policies,development}
+
+# Create .gitkeep files to preserve empty directories in git
+touch data/raw/.gitkeep
+touch data/transformed/.gitkeep
+touch database/.gitkeep
 ```
 
 ## Exceptions

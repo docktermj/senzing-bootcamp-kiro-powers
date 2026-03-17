@@ -151,11 +151,13 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
    !data/raw/.gitkeep
    !data/transformed/.gitkeep
    
-   # Logs and databases
+   # Database files
+   database/*.db
+   database/*.db-journal
+   !database/.gitkeep
+   
+   # Logs
    logs/*.log
-   *.db
-   *.sqlite
-   *.sqlite3
    
    # Python
    __pycache__/
@@ -179,7 +181,7 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
    ```bash
    # Senzing Configuration
    SENZING_ENGINE_CONFIG_JSON={"PIPELINE":{"CONFIGPATH":"/etc/opt/senzing"}}
-   SENZING_DATABASE_URL=sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db
+   SENZING_DATABASE_URL=sqlite3://na:na@database/G2C.db
    
    # Data Source Credentials
    CRM_API_KEY=your_api_key_here
@@ -899,7 +901,7 @@ This workflow is now split into two parts:
            "SUPPORTPATH": "/opt/senzing/data"
        },
        "SQL": {
-           "CONNECTION": "sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db"
+           "CONNECTION": "sqlite3://na:na@database/G2C.db"
        }
    }
    
@@ -982,7 +984,7 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
                "SUPPORTPATH": "/opt/senzing/data"
            },
            "SQL": {
-               "CONNECTION": "sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db"
+               "CONNECTION": "sqlite3://na:na@database/G2C.db"
            }
        }
        engine.init("LoaderApp", json.dumps(config), False)
@@ -1419,7 +1421,7 @@ Use this workflow after all data sources have been loaded (Module 6). The goal i
                "SUPPORTPATH": "/opt/senzing/data"
            },
            "SQL": {
-               "CONNECTION": "sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db"
+               "CONNECTION": "sqlite3://na:na@database/G2C.db"
            }
        }
        engine.init("QueryApp", json.dumps(config), False)

@@ -216,6 +216,12 @@ python -c "import senzing; print(senzing.__version__)"
 - Not suitable for production
 - No concurrent writes
 
+**Setup**:
+```bash
+# Create database directory
+mkdir -p database
+```
+
 **Configuration**:
 ```json
 {
@@ -225,7 +231,7 @@ python -c "import senzing; print(senzing.__version__)"
     "SUPPORTPATH": "/opt/senzing/data"
   },
   "SQL": {
-    "CONNECTION": "sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db"
+    "CONNECTION": "sqlite3://na:na@database/G2C.db"
   }
 }
 ```
@@ -362,7 +368,7 @@ def verify_installation():
             "SUPPORTPATH": "/opt/senzing/data"
         },
         "SQL": {
-            "CONNECTION": "sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db"
+            "CONNECTION": "sqlite3://na:na@database/G2C.db"
         }
     }
     
@@ -490,6 +496,7 @@ DATABASE_PORT=5432
 DATABASE_NAME=senzing
 DATABASE_USER=senzing
 DATABASE_PASSWORD=your_password
+SQLITE_DATABASE_PATH=database/G2C.db
 
 # Paths
 SENZING_CONFIG_PATH=/etc/opt/senzing

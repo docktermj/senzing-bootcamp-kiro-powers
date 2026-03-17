@@ -30,6 +30,11 @@ data/transformed/*
 !data/raw/.gitkeep
 !data/transformed/.gitkeep
 
+# Database files
+database/*.db
+database/*.db-journal
+!database/.gitkeep
+
 # Logs
 logs/*.log
 *.log
@@ -83,7 +88,7 @@ Create `.env.example` as a template:
 ```bash
 # Senzing Configuration
 SENZING_ENGINE_CONFIG_JSON={"PIPELINE":{"CONFIGPATH":"/etc/opt/senzing"}}
-SENZING_DATABASE_URL=sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db
+SENZING_DATABASE_URL=sqlite3://na:na@database/G2C.db
 
 # Data Source Credentials (examples - replace with actual)
 CRM_API_KEY=your_api_key_here

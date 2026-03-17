@@ -190,9 +190,9 @@ echo "✅ Incremental backup complete: $DATE"
 #!/bin/bash
 # SQLite backup script
 
-BACKUP_DIR="/backup/sqlite"
+BACKUP_DIR="data/backups"
 DATE=$(date +%Y%m%d_%H%M%S)
-DB_FILE="/var/opt/senzing/sqlite/G2C.db"
+DB_FILE="database/G2C.db"
 
 mkdir -p "$BACKUP_DIR"
 
@@ -211,7 +211,7 @@ find "$BACKUP_DIR" -name "*.db.gz" -mtime +30 -delete
 **Online Backup** (no downtime):
 ```bash
 # Use SQLite backup API
-sqlite3 /var/opt/senzing/sqlite/G2C.db ".backup /backup/sqlite/G2C_backup.db"
+sqlite3 database/G2C.db ".backup data/backups/G2C_backup.db"
 ```
 
 ## Source Data Backup
@@ -267,8 +267,10 @@ cat > .gitignore << EOF
 # Exclude data files
 data/
 logs/
-*.db
-*.db-journal
+
+# Exclude database files
+database/*.db
+database/*.db-journal
 
 # Exclude secrets
 .env
@@ -393,13 +395,14 @@ echo "✅ Database restored to $TARGET_TIME"
 #!/bin/bash
 # Restore SQLite database
 
-BACKUP_FILE="/backup/sqlite/G2C_20260317_020000.db.gz"
-DB_FILE="/var/opt/senzing/sqlite/G2C.db"
+BACKUP_FILE="data/backups/G2C_20260317_020000.db.gz"
+DB_FILE="database/G2C.db"
 
 # Stop application
 systemctl stop senzing-app
 
 # Backup current database (just in case)
+mkdir -p database
 cp "$DB_FILE" "$DB_FILE.before_restore"
 
 # Restore from backup

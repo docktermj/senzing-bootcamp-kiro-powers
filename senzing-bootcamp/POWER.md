@@ -275,6 +275,9 @@ my-senzing-project/
 │   ├── transformed/               # Senzing-formatted JSON output
 │   ├── samples/                   # Sample data for testing
 │   └── backups/                   # Database backups
+├── database/                      # SQLite database files
+│   ├── G2C.db                     # Main Senzing database (SQLite)
+│   └── .gitkeep                   # Keep directory in git
 ├── src/                           # Generated program source
 │   ├── quickstart_demo/           # Module 0 demo code (optional)
 │   ├── transform/                 # Transformation programs (Module 3)

@@ -15,8 +15,8 @@ BACKUP_DIR="data/backups"
 mkdir -p $BACKUP_DIR
 
 # SQLite backup
-if [ -f "/var/opt/senzing/sqlite/G2C.db" ]; then
-    cp /var/opt/senzing/sqlite/G2C.db "$BACKUP_DIR/G2C_$DATE.db"
+if [ -f "database/G2C.db" ]; then
+    cp database/G2C.db "$BACKUP_DIR/G2C_$DATE.db"
     echo "SQLite backup created: $BACKUP_DIR/G2C_$DATE.db"
 fi
 
@@ -53,7 +53,8 @@ read -p "Continue? (yes/no): " confirm
 if [ "$confirm" = "yes" ]; then
     if [[ $BACKUP_FILE == *.db ]]; then
         # SQLite restore
-        cp "$BACKUP_FILE" /var/opt/senzing/sqlite/G2C.db
+        mkdir -p database
+        cp "$BACKUP_FILE" database/G2C.db
         echo "SQLite database restored"
     elif [[ $BACKUP_FILE == *.sql ]]; then
         # PostgreSQL restore

@@ -283,7 +283,7 @@ pip install senzing
 
 **Issue: Database file not found**
 ```bash
-mkdir -p /var/opt/senzing/sqlite
+mkdir -p database
 ```
 
 **Issue: No duplicates found**

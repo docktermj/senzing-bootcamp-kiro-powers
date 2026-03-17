@@ -11,6 +11,13 @@ This document consolidates all agent behavior instructions from across the boot 
 5. **Validate before proceeding** - each module has success criteria
 6. **Save all code in `src/`** - never place source code in project root
 7. **Ask questions one at a time** - when multiple questions are needed, ask them sequentially and wait for each response before asking the next. This prevents overwhelming users with long lists of questions.
+8. **Use project directories for all files** - never use `/tmp` or system directories:
+   - Source code → `src/`
+   - Shell scripts → `scripts/`
+   - Documentation → `docs/`
+   - Data files → `data/`
+   - SQLite databases → `database/`
+   - Configuration → `config/`
 
 ## Module-Specific Behaviors
 
@@ -82,6 +89,8 @@ This document consolidates all agent behavior instructions from across the boot 
 - Skip installation if compatible version exists
 - Check `anti_patterns` before recommending approaches
 - Recommend SQLite for evaluation, PostgreSQL for production
+- **For SQLite: Create `database/` directory and use `database/G2C.db` path**
+- **Never use system paths like `/var/opt/senzing/sqlite/` for SQLite databases**
 - Verify installation with test script
 - Register all data sources from Module 1
 - Create engine configuration

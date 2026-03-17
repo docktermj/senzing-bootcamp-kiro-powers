@@ -19,6 +19,16 @@ This document consolidates all agent behavior instructions from across the boot 
    - SQLite databases → `database/`
    - Configuration → `config/`
    - Docker files → `docker/` (NEVER in project root)
+9. **All Python code must be PEP-8 compliant**:
+   - Maximum line length: 100 characters (for readability)
+   - No trailing whitespace
+   - Two blank lines between top-level functions/classes
+   - One blank line between methods
+   - Imports at top of file (standard library, third-party, local)
+   - Use 4 spaces for indentation (never tabs)
+   - Use snake_case for functions and variables
+   - Use PascalCase for classes
+   - Add docstrings to all functions, classes, and modules
 
 ## Module-Specific Behaviors
 
@@ -389,3 +399,133 @@ Remember:
 - Create release notes and tag version
 - Document lessons learned
 - Prepare handoff to operations team
+
+## Code Quality Standards
+
+### Python Code Standards (PEP-8 Compliance)
+
+All Python code generated during the boot camp must follow PEP-8 standards:
+
+**Line Length**:
+- Maximum 100 characters per line (more readable than strict 79)
+- Break long lines using parentheses, not backslashes
+- Break long function calls across multiple lines
+
+**Whitespace**:
+- No trailing whitespace on any line
+- Two blank lines between top-level functions and classes
+- One blank line between methods in a class
+- One space after commas in lists, tuples, and function arguments
+- No spaces around = in keyword arguments
+
+**Naming Conventions**:
+- `snake_case` for functions, variables, and module names
+- `PascalCase` for class names
+- `UPPER_CASE` for constants
+- Descriptive names (avoid single letters except in loops)
+
+**Imports**:
+- All imports at top of file
+- Group imports: standard library, third-party, local
+- One import per line (except `from x import a, b`)
+- Alphabetical order within groups
+
+**Documentation**:
+- Module docstring at top of file
+- Docstring for every function and class
+- Use triple quotes for docstrings
+- Include purpose, parameters, and return values
+
+**Example of PEP-8 Compliant Code**:
+```python
+#!/usr/bin/env python3
+"""
+Module for transforming customer data to Senzing format.
+
+This module provides functions to read CSV files and transform
+them into Senzing JSON format.
+"""
+
+import json
+import sys
+from pathlib import Path
+
+# Constants
+DATA_SOURCE = "CUSTOMERS"
+MAX_RECORDS = 10000
+
+
+def transform_record(source_record):
+    """
+    Transform a source record to Senzing JSON format.
+
+    Args:
+        source_record (dict): Source data record
+
+    Returns:
+        dict: Senzing-formatted record
+    """
+    return {
+        "DATA_SOURCE": DATA_SOURCE,
+        "RECORD_ID": source_record.get("id"),
+        "NAME_FULL": source_record.get("name"),
+        "EMAIL_ADDRESS": source_record.get("email")
+    }
+
+
+def main():
+    """Main entry point."""
+    # Implementation here
+    pass
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+**When Generating Code**:
+1. Always generate PEP-8 compliant code from the start
+2. Use proper indentation (4 spaces)
+3. Add docstrings to all functions
+4. Keep lines under 100 characters
+5. Remove trailing whitespace
+6. Use proper naming conventions
+
+**When User Provides Code**:
+1. Check for PEP-8 compliance
+2. Suggest fixes if non-compliant
+3. Explain why compliance matters (readability, maintainability)
+4. Offer to fix issues automatically
+
+### Code Quality Checks
+
+Before completing any module that generates code:
+1. Verify PEP-8 compliance
+2. Check for proper error handling
+3. Verify logging is present
+4. Ensure docstrings are complete
+5. Check for security issues (no hardcoded credentials)
+6. Verify file paths use Path objects, not strings
+7. Check that all imports are used
+8. Verify proper exception handling
+
+### Tools for Validation
+
+Recommend these tools to users:
+- `pycodestyle` or `flake8` for PEP-8 checking
+- `pylint` for code quality
+- `black` for automatic formatting
+- `mypy` for type checking
+- `bandit` for security scanning
+
+Example validation command:
+```bash
+# Check PEP-8 compliance
+pycodestyle --max-line-length=100 src/
+
+# Auto-format code
+black --line-length=100 src/
+
+# Check code quality
+pylint src/
+```

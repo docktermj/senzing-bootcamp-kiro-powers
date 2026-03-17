@@ -5,7 +5,8 @@ Performance Baseline Test
 Quick performance test to establish baseline metrics.
 
 Usage:
-    python performance_baseline.py --config-json '{"SQL":{"CONNECTION":"sqlite3://na:na@database/G2C.db"}}'
+    python performance_baseline.py \
+        --config-json '{"SQL":{"CONNECTION":"sqlite3://na:na@database/G2C.db"}}'
 """
 
 import argparse
@@ -33,19 +34,19 @@ def generate_test_records(count: int) -> list:
 def test_loading(engine, records: list) -> dict:
     """Test loading performance"""
     print("\nTesting loading performance...")
-    
+
     start_time = time.time()
-    
+
     for record in records:
         engine.addRecord(
             record["DATA_SOURCE"],
             record["RECORD_ID"],
             json.dumps(record)
         )
-    
+
     elapsed = time.time() - start_time
     rate = len(records) / elapsed if elapsed > 0 else 0
-    
+
     return {
         'records': len(records),
         'elapsed': elapsed,
@@ -56,23 +57,23 @@ def test_loading(engine, records: list) -> dict:
 def test_queries(engine, record_count: int) -> dict:
     """Test query performance"""
     print("\nTesting query performance...")
-    
+
     queries = []
-    
+
     # Test getRecord
     start = time.time()
     for i in range(min(100, record_count)):
         engine.getRecord("TEST", f"TEST-{i:06d}")
     elapsed = time.time() - start
     queries.append(('getRecord', elapsed, 100))
-    
+
     # Test searchByAttributes
     start = time.time()
     for i in range(10):
         engine.searchByAttributes(json.dumps({"NAME_FULL": f"Test Person {i}"}))
     elapsed = time.time() - start
     queries.append(('searchByAttributes', elapsed, 10))
-    
+
     return {
         'queries': queries,
         'avg_latency': sum(q[1] for q in queries) / len(queries)
@@ -91,46 +92,46 @@ def cleanup(engine, record_count: int):
 
 def run_baseline(engine_config: str):
     """Run complete baseline test"""
-    
+
     print("="*60)
     print("SENZING PERFORMANCE BASELINE TEST")
     print("="*60)
-    
+
     # Initialize engine
     engine = G2Engine()
     engine.init("BaselineTest", engine_config, False)
-    
+
     try:
         # Generate test data
         print("\nGenerating test data...")
         records = generate_test_records(1000)
         print(f"  Generated {len(records)} test records")
-        
+
         # Test loading
         load_results = test_loading(engine, records)
-        
+
         # Test queries
         query_results = test_queries(engine, len(records))
-        
+
         # Print results
         print("\n" + "="*60)
         print("BASELINE RESULTS")
         print("="*60)
-        
+
         print("\nLoading Performance:")
         print(f"  Records loaded: {load_results['records']:,}")
         print(f"  Time elapsed: {load_results['elapsed']:.2f} seconds")
         print(f"  Loading rate: {load_results['rate']:.1f} records/sec")
-        
+
         print("\nQuery Performance:")
         for query_name, elapsed, count in query_results['queries']:
             avg_ms = (elapsed / count) * 1000
             print(f"  {query_name}: {avg_ms:.2f} ms average")
-        
+
         print("\n" + "="*60)
         print("INTERPRETATION")
         print("="*60)
-        
+
         # Provide interpretation
         if load_results['rate'] < 50:
             print("⚠️  Loading rate is low. Consider:")
@@ -141,7 +142,7 @@ def run_baseline(engine_config: str):
             print("✅ Loading rate is acceptable for development")
         else:
             print("✅ Loading rate is good")
-        
+
         avg_query_ms = (query_results['avg_latency'] / 10) * 1000
         if avg_query_ms > 100:
             print("⚠️  Query latency is high. Consider:")
@@ -150,12 +151,12 @@ def run_baseline(engine_config: str):
             print("   - Optimizing queries")
         else:
             print("✅ Query latency is acceptable")
-        
+
         print("\n💡 Tip: Run this test periodically to track performance changes")
-        
+
         # Cleanup
         cleanup(engine, len(records))
-        
+
     finally:
         engine.destroy()
 
@@ -163,9 +164,9 @@ def run_baseline(engine_config: str):
 def main():
     parser = argparse.ArgumentParser(description='Performance baseline test')
     parser.add_argument('--config-json', required=True, help='Engine configuration JSON')
-    
+
     args = parser.parse_args()
-    
+
     try:
         run_baseline(args.config_json)
     except Exception as e:

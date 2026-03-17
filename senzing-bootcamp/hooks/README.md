@@ -4,27 +4,33 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 
 ## Available Hooks
 
-### 1. Data Quality Check (`data-quality-check.kiro.hook`)
+### 1. PEP-8 Compliance Check (`pep8-check.hook`) ⭐ NEW
+**Trigger**: When Python files are edited
+**Action**: Checks for PEP-8 compliance and suggests fixes
+**Use case**: Ensures all Python code follows PEP-8 standards
+**Recommended**: Install for all modules that generate Python code
+
+### 2. Data Quality Check (`data-quality-check.kiro.hook`)
 **Trigger**: When transformation programs are saved
 **Action**: Reminds to validate data quality
 **Use case**: Ensures transformation changes don't degrade data quality
 
-### 2. Backup Before Load (`backup-before-load.kiro.hook`)
+### 3. Backup Before Load (`backup-before-load.kiro.hook`)
 **Trigger**: When loading programs are modified
 **Action**: Reminds to backup database before running
 **Use case**: Prevents data loss from failed loads
 
-### 3. Test Before Commit (`test-before-commit.kiro.hook`)
+### 4. Test Before Commit (`test-before-commit.kiro.hook`)
 **Trigger**: When source files are saved
 **Action**: Runs pytest test suite
 **Use case**: Catches bugs early in development
 
-### 4. Validate Senzing JSON (`validate-senzing-json.kiro.hook`)
+### 5. Validate Senzing JSON (`validate-senzing-json.kiro.hook`)
 **Trigger**: When Senzing JSON output files are modified
 **Action**: Suggests validating with lint_record
 **Use case**: Ensures output conforms to SGES
 
-### 5. Update Documentation (`update-documentation.kiro.hook`)
+### 6. Update Documentation (`update-documentation.kiro.hook`)
 **Trigger**: When programs are modified
 **Action**: Reminds to update documentation
 **Use case**: Keeps documentation in sync with code
@@ -83,16 +89,22 @@ Example customization:
 
 ## Recommended Hooks by Module
 
+### All Modules (Python Code)
+- ✅ **PEP-8 Compliance Check** (ensures code quality)
+
 ### Module 3 (Data Mapping)
+- ✅ PEP-8 Compliance Check
 - ✅ Data Quality Check
 - ✅ Validate Senzing JSON
 - ✅ Test Before Commit
 
 ### Module 5 (Data Loading)
+- ✅ PEP-8 Compliance Check
 - ✅ Backup Before Load
 - ✅ Test Before Commit
 
 ### Module 6 (Query Programs)
+- ✅ PEP-8 Compliance Check
 - ✅ Test Before Commit
 - ✅ Update Documentation
 

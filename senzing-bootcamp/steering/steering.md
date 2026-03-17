@@ -2,6 +2,25 @@
 
 This document provides detailed workflows for the Senzing Boot Camp power. The agent loads this on-demand when users engage with specific boot camp activities.
 
+## Code Quality Standards
+
+**IMPORTANT**: All Python code generated or modified during the boot camp must follow PEP-8 standards:
+
+- **Maximum line length**: 100 characters
+- **No trailing whitespace**
+- **4 spaces for indentation** (no tabs)
+- **Proper docstrings** for all functions, classes, and modules
+- **Organized imports** (standard library, third-party, local)
+- **Consistent naming**: `snake_case` for functions/variables, `PascalCase` for classes, `UPPER_CASE` for constants
+
+**Agent Responsibilities**:
+1. Generate PEP-8 compliant code by default
+2. Check user-provided code for PEP-8 compliance
+3. Suggest specific fixes for violations
+4. Explain benefits of compliance when relevant
+
+See `docs/development/PEP8_COMPLIANCE.md` for complete details.
+
 ## Progress Tracking
 
 Maintain awareness of the user's progress through the boot camp:
@@ -693,6 +712,8 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 6. **Step 5 — Build the Transformation Program**: Help the user create a complete, runnable program for this data source. The program should:
 
+   **IMPORTANT**: All generated Python code must be PEP-8 compliant (max 100 chars/line, no trailing whitespace, proper docstrings, 4-space indentation).
+
    **Input handling**:
    - Read from the original data source format (CSV file, JSON file, database query, API endpoint, etc.)
    - Handle file paths, connection strings, or API credentials
@@ -961,6 +982,8 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 
 2. **Create the loading program**: Help the user build a complete program that loads this specific data source. The program should:
 
+   **IMPORTANT**: All generated Python code must be PEP-8 compliant (max 100 chars/line, no trailing whitespace, proper docstrings, 4-space indentation).
+
    **Connection handling**:
    - Initialize the Senzing engine
    - Connect to the configured database (SQLite or PostgreSQL)
@@ -1131,13 +1154,15 @@ This workflow replaces the old "Module 7: Query Results" workflow. Use this afte
 ### Quick Summary
 
 1. **Review business requirements** - Go back to Module 1 and review the problem statement
-2. **Create query programs** - Build programs for each business question
+2. **Create query programs** - Build programs for each business question (PEP-8 compliant)
 3. **Test query programs** - Verify results with test data
 4. **Create UAT test cases** - Define acceptance criteria and test cases
 5. **Execute UAT tests** - Run tests and document results
 6. **Resolve issues** - Fix any failed tests
 7. **Get stakeholder sign-off** - Obtain formal approval
 8. **Document query specifications** - Create query documentation
+
+**IMPORTANT**: All query programs must be PEP-8 compliant (max 100 chars/line, no trailing whitespace, proper docstrings, 4-space indentation).
 
 ### Key Features
 - Query program examples (Customer 360, Find Duplicates)

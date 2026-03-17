@@ -15,23 +15,23 @@ from pathlib import Path
 
 class TroubleshootingWizard:
     """Interactive troubleshooting wizard"""
-    
+
     def __init__(self):
         self.issue_category = None
         self.module = None
-        
+
     def print_header(self, title):
         """Print formatted header"""
         print("\n" + "="*60)
         print(title)
         print("="*60)
-    
+
     def ask_question(self, question, options):
         """Ask multiple choice question"""
         print(f"\n{question}")
         for i, option in enumerate(options, 1):
             print(f"  {i}. {option}")
-        
+
         while True:
             try:
                 choice = input("\nYour choice (number): ").strip()
@@ -41,7 +41,7 @@ class TroubleshootingWizard:
                 print(f"Please enter a number between 1 and {len(options)}")
             except ValueError:
                 print("Please enter a valid number")
-    
+
     def ask_yes_no(self, question):
         """Ask yes/no question"""
         while True:
@@ -51,7 +51,7 @@ class TroubleshootingWizard:
             elif response in ['no', 'n']:
                 return False
             print("Please answer 'yes' or 'no'")
-    
+
     def run_diagnostic(self, command, description):
         """Run diagnostic command"""
         print(f"\n🔍 Running diagnostic: {description}")
@@ -66,13 +66,13 @@ class TroubleshootingWizard:
             return result.returncode == 0, result.stdout, result.stderr
         except Exception as e:
             return False, "", str(e)
-    
+
     def start(self):
         """Start troubleshooting wizard"""
         self.print_header("SENZING BOOT CAMP TROUBLESHOOTING WIZARD")
         print("This wizard will help diagnose and fix common issues.")
         print("Answer a few questions to get specific solutions.")
-        
+
         # Ask about issue category
         category_idx = self.ask_question(
             "What type of issue are you experiencing?",
@@ -87,7 +87,7 @@ class TroubleshootingWizard:
                 "Other or not sure"
             ]
         )
-        
+
         # Route to specific troubleshooting
         if category_idx == 0:
             self.troubleshoot_installation()
@@ -105,17 +105,17 @@ class TroubleshootingWizard:
             self.troubleshoot_database()
         else:
             self.troubleshoot_general()
-    
+
     def troubleshoot_installation(self):
         """Troubleshoot installation issues"""
         self.print_header("INSTALLATION TROUBLESHOOTING")
-        
+
         # Check Python
         success, stdout, stderr = self.run_diagnostic(
             "python3 --version",
             "Checking Python version"
         )
-        
+
         if not success:
             print("\n❌ Python not found or not working")
             print("\n💡 Solution:")
@@ -123,15 +123,15 @@ class TroubleshootingWizard:
             print("  Ubuntu/Debian: sudo apt install python3 python3-pip")
             print("  macOS: brew install python3")
             return
-        
+
         print(f"✅ Python found: {stdout.strip()}")
-        
+
         # Check Senzing
         success, stdout, stderr = self.run_diagnostic(
             "python3 -c 'import senzing; print(senzing.__version__)'",
             "Checking Senzing SDK"
         )
-        
+
         if not success:
             print("\n❌ Senzing SDK not installed")
             print("\n💡 Solution:")
@@ -140,27 +140,27 @@ class TroubleshootingWizard:
             print("\nOr follow Module 5 installation guide:")
             print("  docs/modules/MODULE_5_SDK_SETUP.md")
             return
-        
+
         print(f"✅ Senzing SDK found: {stdout.strip()}")
-        
+
         # Check disk space
         success, stdout, stderr = self.run_diagnostic(
             "df -h . | tail -1 | awk '{print $4}'",
             "Checking disk space"
         )
-        
+
         if success:
             print(f"✅ Available disk space: {stdout.strip()}")
-        
+
         print("\n✅ Installation looks good!")
         print("If you're still having issues, check:")
         print("  - docs/guides/PREFLIGHT_CHECKLIST.md")
         print("  - docs/guides/TROUBLESHOOTING_INDEX.md")
-    
+
     def troubleshoot_transformation(self):
         """Troubleshoot transformation issues"""
         self.print_header("TRANSFORMATION TROUBLESHOOTING")
-        
+
         issue_idx = self.ask_question(
             "What transformation issue are you seeing?",
             [
@@ -171,7 +171,7 @@ class TroubleshootingWizard:
                 "File encoding problems"
             ]
         )
-        
+
         if issue_idx == 0:
             print("\n❌ JSON Decode Errors")
             print("\n💡 Solutions:")
@@ -181,7 +181,7 @@ class TroubleshootingWizard:
             print("\n2. Validate JSON format:")
             print("   python -m json.tool < your_file.json")
             print("\n3. Check for special characters or encoding issues")
-            
+
         elif issue_idx == 1:
             print("\n❌ Missing Required Fields")
             print("\n💡 Solutions:")
@@ -193,7 +193,7 @@ class TroubleshootingWizard:
             print("   for field in required:")
             print("       if not record.get(field):")
             print("           print(f'Missing {field}')")
-            
+
         elif issue_idx == 2:
             print("\n❌ Wrong Attribute Names")
             print("\n💡 Solutions:")
@@ -204,7 +204,7 @@ class TroubleshootingWizard:
             print("   - ADDR_FULL (not ADDRESS)")
             print("   - PHONE_NUMBER (not PHONE)")
             print("\n3. See docs/modules/MODULE_4_DATA_MAPPING.md")
-            
+
         elif issue_idx == 3:
             print("\n❌ Data Quality Issues")
             print("\n💡 Solutions:")
@@ -214,7 +214,7 @@ class TroubleshootingWizard:
             print("   - Are required fields populated?")
             print("   - Are values in correct format?")
             print("\n3. Use lint_record to validate output")
-            
+
         else:
             print("\n❌ File Encoding Problems")
             print("\n💡 Solutions:")
@@ -224,11 +224,11 @@ class TroubleshootingWizard:
             print("   iconv -f ISO-8859-1 -t UTF-8 input.csv > output.csv")
             print("\n3. Specify encoding in Python:")
             print("   open('file.csv', encoding='utf-8')")
-    
+
     def troubleshoot_loading(self):
         """Troubleshoot loading issues"""
         self.print_header("LOADING TROUBLESHOOTING")
-        
+
         issue_idx = self.ask_question(
             "What loading issue are you seeing?",
             [
@@ -239,7 +239,7 @@ class TroubleshootingWizard:
                 "SENZ error codes"
             ]
         )
-        
+
         if issue_idx == 0:
             print("\n❌ Database Connection Failed")
             print("\n💡 Solutions:")
@@ -250,7 +250,7 @@ class TroubleshootingWizard:
             print("   ls -la database/G2C.db")
             print("\n2. Verify connection string")
             print("\n3. Check permissions")
-            
+
         elif issue_idx == 1:
             print("\n❌ Slow Loading Performance")
             print("\n💡 Solutions:")
@@ -259,14 +259,14 @@ class TroubleshootingWizard:
             print("3. Add more CPU/memory")
             print("4. Run performance baseline:")
             print("   python templates/performance_baseline.py")
-            
+
         elif issue_idx == 2:
             print("\n❌ Memory Errors")
             print("\n💡 Solutions:")
             print("1. Process in smaller batches")
             print("2. Increase available memory")
             print("3. Use streaming instead of loading all at once")
-            
+
         elif issue_idx == 3:
             print("\n❌ Data Source Not Registered")
             print("\n💡 Solutions:")
@@ -275,18 +275,18 @@ class TroubleshootingWizard:
             print("2. Check registered sources:")
             print("   # Query sys_codes_used table")
             print("\n3. See MODULE_5_SDK_SETUP.md")
-            
+
         else:
             error_code = input("\nEnter SENZ error code (e.g., 1001): ").strip()
             print(f"\n💡 Solution:")
             print(f"Use explain_error_code tool:")
             print(f"  explain_error_code('{error_code}')")
             print(f"\nOr check TROUBLESHOOTING_INDEX.md")
-    
+
     def troubleshoot_queries(self):
         """Troubleshoot query issues"""
         self.print_header("QUERY TROUBLESHOOTING")
-        
+
         issue_idx = self.ask_question(
             "What query issue are you seeing?",
             [
@@ -296,7 +296,7 @@ class TroubleshootingWizard:
                 "Unexpected matches"
             ]
         )
-        
+
         if issue_idx == 0:
             print("\n❌ No Results Found")
             print("\n💡 Solutions:")
@@ -304,14 +304,14 @@ class TroubleshootingWizard:
             print("   engine.stats()")
             print("\n2. Check search criteria")
             print("\n3. Try broader search")
-            
+
         elif issue_idx == 1:
             print("\n❌ Too Many Results")
             print("\n💡 Solutions:")
             print("1. Add more specific search criteria")
             print("2. Use result limits")
             print("3. Filter by data source")
-            
+
         elif issue_idx == 2:
             print("\n❌ Slow Queries")
             print("\n💡 Solutions:")
@@ -319,7 +319,7 @@ class TroubleshootingWizard:
             print("2. Use more specific searches")
             print("3. Limit result size")
             print("4. Check database performance")
-            
+
         else:
             print("\n❌ Unexpected Matches")
             print("\n💡 Solutions:")
@@ -327,13 +327,13 @@ class TroubleshootingWizard:
             print("   engine.whyEntities(entity1, entity2)")
             print("\n2. Review matching rules")
             print("\n3. Check data quality")
-    
+
     def troubleshoot_performance(self):
         """Troubleshoot performance issues"""
         self.print_header("PERFORMANCE TROUBLESHOOTING")
-        
+
         print("\n🔍 Running performance diagnostics...")
-        
+
         # Check CPU
         success, stdout, stderr = self.run_diagnostic(
             "nproc",
@@ -345,7 +345,7 @@ class TroubleshootingWizard:
                 print(f"⚠️  Only {cores} CPU core available (2+ recommended)")
             else:
                 print(f"✅ {cores} CPU cores available")
-        
+
         # Check memory
         success, stdout, stderr = self.run_diagnostic(
             "free -g | grep Mem | awk '{print $2}'",
@@ -357,7 +357,7 @@ class TroubleshootingWizard:
                 print(f"⚠️  Only {mem_gb}GB RAM (4GB+ recommended)")
             else:
                 print(f"✅ {mem_gb}GB RAM available")
-        
+
         print("\n💡 Performance Recommendations:")
         print("1. Run performance baseline:")
         print("   python templates/performance_baseline.py")
@@ -365,17 +365,17 @@ class TroubleshootingWizard:
         print("\n3. Increase batch sizes")
         print("\n4. Add more CPU/memory if possible")
         print("\n5. See docs/guides/TROUBLESHOOTING_INDEX.md")
-    
+
     def troubleshoot_docker(self):
         """Troubleshoot Docker issues"""
         self.print_header("DOCKER TROUBLESHOOTING")
-        
+
         # Check Docker
         success, stdout, stderr = self.run_diagnostic(
             "docker --version",
             "Checking Docker"
         )
-        
+
         if not success:
             print("\n❌ Docker not found")
             print("\n💡 Solution:")
@@ -383,15 +383,15 @@ class TroubleshootingWizard:
             print("  curl -fsSL https://get.docker.com -o get-docker.sh")
             print("  sudo sh get-docker.sh")
             return
-        
+
         print(f"✅ Docker found: {stdout.strip()}")
-        
+
         # Check Docker running
         success, stdout, stderr = self.run_diagnostic(
             "docker ps",
             "Checking Docker daemon"
         )
-        
+
         if not success:
             print("\n❌ Docker daemon not running or no permissions")
             print("\n💡 Solutions:")
@@ -401,9 +401,9 @@ class TroubleshootingWizard:
             print("   sudo usermod -aG docker $USER")
             print("   # Log out and back in")
             return
-        
+
         print("✅ Docker daemon running")
-        
+
         # Check for schema issues
         if self.ask_yes_no("Are you seeing schema-related errors?"):
             print("\n💡 Common Docker Schema Issues:")
@@ -415,38 +415,38 @@ class TroubleshootingWizard:
             print("   python templates/validate_schema.py --database postgresql \\")
             print("     --connection 'postgresql://senzing:pass@localhost:5432/senzing'")
             print("\n4. See docs/guides/DOCKER_QUICK_START.md")
-        
+
         print("\n✅ Docker setup looks good!")
         print("For more help, see:")
         print("  - docs/guides/DOCKER_QUICK_START.md")
         print("  - steering/docker-deployment.md")
-    
+
     def troubleshoot_database(self):
         """Troubleshoot database issues"""
         self.print_header("DATABASE TROUBLESHOOTING")
-        
+
         db_type_idx = self.ask_question(
             "Which database are you using?",
             ["SQLite", "PostgreSQL", "Other"]
         )
-        
+
         if db_type_idx == 0:
             print("\n🔍 SQLite Troubleshooting")
-            
+
             # Check if database exists
             db_path = input("\nDatabase path (default: database/G2C.db): ").strip()
             if not db_path:
                 db_path = "database/G2C.db"
-            
+
             if Path(db_path).exists():
                 print(f"✅ Database file exists: {db_path}")
-                
+
                 # Check if locked
                 success, stdout, stderr = self.run_diagnostic(
                     f"lsof {db_path}",
                     "Checking if database is locked"
                 )
-                
+
                 if success and stdout:
                     print("⚠️  Database may be locked by another process")
                     print("\n💡 Solution:")
@@ -459,16 +459,16 @@ class TroubleshootingWizard:
                 print("Create database directory:")
                 print("  mkdir -p database")
                 print("\nThen run Module 5 setup")
-        
+
         elif db_type_idx == 1:
             print("\n🔍 PostgreSQL Troubleshooting")
-            
+
             # Check PostgreSQL
             success, stdout, stderr = self.run_diagnostic(
                 "psql --version",
                 "Checking PostgreSQL client"
             )
-            
+
             if not success:
                 print("\n❌ PostgreSQL client not found")
                 print("\n💡 Solution:")
@@ -476,9 +476,9 @@ class TroubleshootingWizard:
                 print("  Ubuntu/Debian: sudo apt install postgresql")
                 print("  macOS: brew install postgresql")
                 return
-            
+
             print(f"✅ PostgreSQL client: {stdout.strip()}")
-            
+
             # Test connection
             if self.ask_yes_no("Test database connection?"):
                 conn_string = input("Connection string: ").strip()
@@ -486,10 +486,10 @@ class TroubleshootingWizard:
                     f"psql '{conn_string}' -c 'SELECT 1'",
                     "Testing connection"
                 )
-                
+
                 if success:
                     print("✅ Connection successful")
-                    
+
                     # Validate schema
                     if self.ask_yes_no("Validate database schema?"):
                         print("\n💡 Run schema validator:")
@@ -502,11 +502,11 @@ class TroubleshootingWizard:
                     print("  - PostgreSQL is running")
                     print("  - Connection string is correct")
                     print("  - User has permissions")
-    
+
     def troubleshoot_general(self):
         """General troubleshooting"""
         self.print_header("GENERAL TROUBLESHOOTING")
-        
+
         print("\n📚 Troubleshooting Resources:")
         print("\n1. Troubleshooting Index:")
         print("   docs/guides/TROUBLESHOOTING_INDEX.md")
@@ -518,7 +518,7 @@ class TroubleshootingWizard:
         print("   bash scripts/preflight_check.sh")
         print("\n5. Schema validation:")
         print("   python templates/validate_schema.py")
-        
+
         print("\n💡 Common Solutions:")
         print("  - Check Python version (3.8+)")
         print("  - Verify Senzing is installed")
@@ -530,10 +530,10 @@ class TroubleshootingWizard:
 def main():
     """Run troubleshooting wizard"""
     wizard = TroubleshootingWizard()
-    
+
     try:
         wizard.start()
-        
+
         print("\n" + "="*60)
         print("TROUBLESHOOTING COMPLETE")
         print("="*60)
@@ -541,7 +541,7 @@ def main():
         print("  - Review docs/guides/TROUBLESHOOTING_INDEX.md")
         print("  - Ask the agent for help")
         print("  - Check Senzing documentation")
-        
+
     except KeyboardInterrupt:
         print("\n\nTroubleshooting cancelled")
         sys.exit(0)

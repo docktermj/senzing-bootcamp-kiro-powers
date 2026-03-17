@@ -563,3 +563,94 @@ All improvements are production-ready and can be used immediately by boot camp u
 **Last Updated**: 2026-03-17  
 **Status**: Final  
 **Author**: Kiro AI Assistant
+
+
+---
+
+## Addendum: PEP-8 Compliance (2026-03-17)
+
+All 14 Python scripts have been verified and updated to be fully PEP-8 compliant.
+
+### Compliance Standards Applied
+
+- **Maximum line length**: 100 characters (for readability)
+- **No trailing whitespace** on any line
+- **4 spaces for indentation** (no tabs)
+- **Proper docstrings** for all functions, classes, and modules
+- **Organized imports** (standard library, third-party, local)
+- **Consistent naming conventions**:
+  - `snake_case` for functions and variables
+  - `PascalCase` for classes
+  - `UPPER_CASE` for constants
+
+### Verified Scripts (14 total)
+
+**Demo Scripts (3)**:
+- ✓ `src/quickstart_demo/demo_customer_360.py`
+- ✓ `src/quickstart_demo/demo_fraud_detection.py`
+- ✓ `src/quickstart_demo/demo_vendor_mdm.py`
+
+**Template Scripts (11)**:
+- ✓ `templates/validate_schema.py`
+- ✓ `templates/collect_from_csv.py`
+- ✓ `templates/collect_from_json.py`
+- ✓ `templates/collect_from_api.py`
+- ✓ `templates/collect_from_database.py`
+- ✓ `templates/backup_database.py`
+- ✓ `templates/restore_database.py`
+- ✓ `templates/rollback_load.py`
+- ✓ `templates/cost_calculator.py`
+- ✓ `templates/performance_baseline.py`
+- ✓ `templates/troubleshoot.py`
+
+### Documentation Added
+
+1. **`docs/development/PEP8_COMPLIANCE.md`** - Comprehensive PEP-8 guide including:
+   - Compliance status for all scripts
+   - PEP-8 standards explained
+   - Example compliant code
+   - Validation tools and commands
+   - Common issues and fixes
+   - CI/CD integration examples
+   - IDE configuration
+
+2. **`steering/agent-instructions.md`** - Updated with PEP-8 requirements:
+   - Added Core Principle #9 for PEP-8 compliance
+   - Added "Code Quality Standards" section
+   - Detailed PEP-8 rules for agent to follow
+   - Examples of compliant code
+   - Validation tool recommendations
+
+### Agent Behavior Updates
+
+The agent will now:
+1. **Generate PEP-8 compliant code** by default
+2. **Check user-provided code** for PEP-8 compliance
+3. **Suggest fixes** for non-compliant code
+4. **Explain benefits** of PEP-8 standards
+5. **Use proper formatting** in all generated Python code
+
+### Benefits
+
+- **Consistency**: All code follows same style
+- **Readability**: Easier to understand and maintain
+- **Professionalism**: Industry-standard code quality
+- **Tool Support**: Better IDE and linting tool support
+- **Collaboration**: Team members can easily read each other's code
+
+### Validation
+
+All scripts validated using custom PEP-8 checker:
+```bash
+✅ SUCCESS: All Python scripts are PEP-8 compliant!
+📋 Verified 14 files
+✨ All scripts follow PEP-8 standards
+```
+
+See `docs/development/PEP8_COMPLIANCE.md` for complete details and validation tools.
+
+---
+
+**Document Version**: 1.1 (Updated for PEP-8 compliance)
+**Last Updated**: 2026-03-17
+**Status**: Final - All scripts PEP-8 compliant

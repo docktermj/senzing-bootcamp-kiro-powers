@@ -21,6 +21,19 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 **Senzing Compatibility**: V4.0  
 **Last Updated**: 2026-03-17
 
+## Code Quality Standards
+
+All Python code generated during the boot camp follows **PEP-8** standards for consistency, readability, and maintainability:
+
+- **Maximum line length**: 100 characters
+- **No trailing whitespace**
+- **4 spaces for indentation** (no tabs)
+- **Proper docstrings** for all functions and classes
+- **Organized imports** (standard library, third-party, local)
+- **Consistent naming**: `snake_case` for functions, `PascalCase` for classes
+
+The agent will automatically generate PEP-8 compliant code and check user-provided code for compliance. See `docs/development/PEP8_COMPLIANCE.md` for complete details.
+
 ## Getting Started
 
 ### New to Senzing?
@@ -423,6 +436,7 @@ When starting Module 1, offer users a gallery of common entity resolution patter
 - For SDK code, use `generate_scaffold` or `sdk_guide` — these return version-correct method signatures
 - Start with SQLite for evaluation; recommend PostgreSQL for production
 - Use CORD sample data for learning before working with real data
+- **All Python code must be PEP-8 compliant** — the agent will generate compliant code and check user code for compliance (see `docs/development/PEP8_COMPLIANCE.md`)
 
 ## Common Workflows
 

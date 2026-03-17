@@ -14,50 +14,19 @@ This power provides a guided boot camp experience for learning Senzing entity re
 
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
-## Recommended Hooks
+## Hooks
 
-This power includes pre-configured hooks to support your boot camp workflow. Hooks automate common tasks and reminders.
+### Auto Architecture Diagram Generator
 
-### Available Hooks
+Please create a Kiro agent hook that will automatically generate and update architecture diagrams in the architecture/diagrams folder whenever I make changes to my chatbot application. The hook should:
 
-The `senzing-bootcamp/hooks/` directory contains:
+1. Trigger when I save files in the src folder
+2. Analyze the current application structure
+3. Generate an updated architecture diagram using the AWS Diagram MCP server
+4. Save the diagram in the architecture/diagrams folder
+5. Update any related documentation
 
-1. **Data Quality Check** - Validates data quality when transformation programs change
-2. **Backup Before Load** - Reminds to backup database before loading
-3. **Test Before Commit** - Runs tests when source files are saved
-4. **Validate Senzing JSON** - Checks output format compliance
-5. **Update Documentation** - Reminds to keep docs in sync with code
-
-### Installing Hooks
-
-**Option 1: Ask the Agent**
-```
-"Please install the Senzing Boot Camp hooks"
-```
-
-**Option 2: Manual Installation**
-```bash
-# Copy all hooks to your project
-cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
-
-# Or copy individual hooks
-cp senzing-bootcamp/hooks/data-quality-check.kiro.hook .kiro/hooks/
-```
-
-**Option 3: Use Kiro UI**
-1. Open Command Palette (Cmd/Ctrl + Shift + P)
-2. Search for "Open Kiro Hook UI"
-3. Import hooks from `senzing-bootcamp/hooks/`
-
-### Recommended Hooks by Module
-
-- **Module 3** (Data Mapping): Data Quality Check, Validate Senzing JSON, Test Before Commit
-- **Module 5** (Data Loading): Backup Before Load, Test Before Commit
-- **Module 6** (Query Programs): Test Before Commit, Update Documentation
-
-See `senzing-bootcamp/hooks/README.md` for detailed documentation and customization options.
-
-**Agent behavior**: Offer to install hooks at the start of Module 3. Explain what each hook does and how it helps maintain quality throughout the boot camp.
+Make sure the hook is well-documented and easy to modify. Make sure the hook is enabled.
 
 ## Available MCP Servers
 
@@ -108,20 +77,55 @@ my-senzing-project/
 │   │   └── vendor_api.json
 │   ├── transformed/               # Senzing-formatted JSON output
 │   │   ├── customer_crm_senzing.jsonl
-│   │   └── vendor_api_senzing.jsonl
-│   ├── samples/                   # Sample data for testing
-│   │   └── customer_sample.csv
-│   └── backups/                   # Database backups
-│       └── backup_YYYYMMDD.sql
-├── src/                           # Generated program source code
-│   ├── transform/                 # Transformation programs (Module 3)
-│   │   ├── transform_customer_crm.py
-│   │   └── transform_vendor_api.py
-│   ├── load/                      # Loading programs (Module 5)
-│   │   ├── load_customer_crm.py
-│   │   └── load_vendor_api.py
-│   ├── query/                     # Query programs (Module 6)
-│   │   ├── find_duplicates.py
+## Boot Camp Learning Path
+
+The boot camp follows a progressive learning path. Each module builds on the previous one.
+
+**Modules**:
+
+- **Module 0: Quick Demo (Optional)**
+  - Experience entity resolution with sample data
+  - See how Senzing resolves duplicate records automatically
+  - 10-15 minutes
+
+- **Module 1: Understand Business Problem**
+  - Define your problem and identify data sources
+  - View design pattern gallery (optional)
+  - Create problem statement document
+  - 15-30 minutes
+
+- **Module 2: Verify Data Sources**
+  - Evaluate if data needs mapping or is SGES-compliant
+  - Create data source evaluation report
+  - 10 minutes per data source
+
+- **Module 3: Map Your Data**
+  - Create transformation programs for non-compliant sources
+  - Validate data quality
+  - Generate test files
+  - 1-2 hours per data source
+
+- **Module 4: Set Up SDK**
+  - Install and configure Senzing
+  - Set up database (SQLite or PostgreSQL)
+  - Verify installation
+  - 30 minutes - 1 hour
+
+- **Module 5: Load Records**
+  - Create loading programs for each data source
+  - Observe entity resolution in real time
+  - Generate loading statistics dashboard
+  - 30 minutes per data source
+
+- **Module 6: Query Results**
+  - Create query programs that answer your business problem
+  - Validate results
+  - Complete lessons learned
+  - 1-2 hours
+
+**Total Time**: 3-6 hours for a typical single data source project
+
+**Note**: While the modules are presented in order, you can move back and forth between steps as needed. Discovery is iterative — you might need to revisit earlier steps as you learn more about your data or refine your approach.
 │   │   └── search_person.py
 │   └── utils/                     # Shared utilities
 │       ├── senzing_client.py
@@ -1199,17 +1203,105 @@ Document insights for future projects and continuous improvement.
    - Other (products, locations)?
 
 4. **What matching criteria matter most?**
-   - Names and addresses?
-   - Phone numbers and emails?
-   - Government IDs (SSN, passport, driver's license)?
-   - Account numbers or other identifiers?
+### Module 1: Understand the User's Business Problem
 
-5. **What's the desired outcome?**
-   - Clean master list of unique entities?
-   - Real-time matching API?
-   - Batch deduplication reports?
-   - Relationship network visualization?
-   - Integration with downstream systems?
+**Prerequisites**: None (or completed Module 0 if you did the quick demo)
+
+**Time**: 15-30 minutes
+
+**Purpose**: Clearly define the business problem that entity resolution will solve.
+
+**Start here**: Ask the user to describe their business problem in their own words. Let them know they can use diagrams, flowcharts, or images to help explain their data sources, workflows, or the challenges they're facing.
+
+**First, offer design pattern gallery**: Before diving into their specific problem, ask:
+
+"Would you like to see examples of common business problems that entity resolution can solve? I can show you a gallery of entity resolution design patterns with real-world use cases."
+
+**If user says yes**:
+- Present the Entity Resolution Design Pattern Gallery (see below)
+- Let them browse patterns and identify which ones match their situation
+- Use the selected pattern as a starting point for their problem definition
+
+**If user says no or after viewing patterns**:
+- Proceed with guided discovery questions
+
+**Entity Resolution Design Pattern Gallery**:
+
+*Note: Full gallery implementation coming soon. For now, present these common patterns:*
+
+1. **Customer 360 / Single Customer View**
+   - **Problem**: Customer data scattered across CRM, billing, support, marketing systems
+   - **Goal**: Unified view of each customer across all touchpoints
+   - **Key Matching**: Names, emails, phone numbers, addresses, customer IDs
+   - **Typical Data Sources**: CRM, billing system, support tickets, marketing database
+   - **Business Value**: Better customer service, targeted marketing, reduced duplicate contacts
+
+2. **Fraud Detection & Prevention**
+   - **Problem**: Need to identify networks of related accounts indicating fraud
+   - **Goal**: Detect fraud rings, synthetic identities, account takeovers
+   - **Key Matching**: Names, addresses, phone numbers, device IDs, IP addresses
+   - **Typical Data Sources**: Transaction logs, account data, device fingerprints, watchlists
+   - **Business Value**: Reduced fraud losses, faster detection, compliance
+
+3. **Data Migration & Consolidation**
+   - **Problem**: Merging multiple legacy systems with duplicate records
+   - **Goal**: Clean, deduplicated master dataset
+   - **Key Matching**: All available identifiers and attributes
+   - **Typical Data Sources**: Legacy databases, spreadsheets, archived systems
+   - **Business Value**: Reduced storage costs, improved data quality, simplified operations
+
+4. **Compliance & Watchlist Screening**
+   - **Problem**: Must screen customers/transactions against sanctions lists
+   - **Goal**: Identify matches to watchlists, PEPs, sanctioned entities
+   - **Key Matching**: Names, dates of birth, nationalities, passport numbers
+   - **Typical Data Sources**: Customer database, OFAC lists, PEP lists, sanctions databases
+   - **Business Value**: Regulatory compliance, risk mitigation, audit trail
+
+5. **Marketing Database Deduplication**
+   - **Problem**: Sending multiple emails/mailings to same person
+   - **Goal**: Deduplicated contact list, household grouping
+   - **Key Matching**: Names, addresses, emails, phone numbers
+   - **Typical Data Sources**: Email lists, purchased lists, event registrations, web forms
+   - **Business Value**: Reduced mailing costs, better customer experience, improved metrics
+
+6. **Healthcare Patient Matching**
+   - **Problem**: Same patient has multiple medical records across facilities
+   - **Goal**: Unified patient record, accurate medical history
+   - **Key Matching**: Names, DOB, SSN, medical record numbers, addresses
+   - **Typical Data Sources**: EHR systems, lab systems, billing systems, insurance records
+   - **Business Value**: Patient safety, care coordination, reduced duplicate tests
+
+7. **Vendor/Supplier Master Data Management**
+   - **Problem**: Same vendor registered multiple times with variations
+   - **Goal**: Clean vendor master, consolidated spend analysis
+   - **Key Matching**: Company names, tax IDs, addresses, DUNS numbers
+   - **Typical Data Sources**: AP systems, procurement systems, contract databases
+   - **Business Value**: Better pricing, consolidated spend, compliance
+
+8. **Insurance Claims Fraud Detection**
+   - **Problem**: Detecting staged accidents, provider fraud, claimant fraud
+   - **Goal**: Identify suspicious patterns and relationships
+   - **Key Matching**: Names, addresses, vehicles, providers, claim details
+   - **Typical Data Sources**: Claims data, policy data, provider networks, DMV records
+   - **Business Value**: Reduced fraudulent payouts, faster investigation
+
+9. **Know Your Customer (KYC) / Customer Onboarding**
+   - **Problem**: Verify customer identity, check for existing accounts
+   - **Goal**: Prevent duplicate accounts, verify identity, assess risk
+   - **Key Matching**: Names, DOB, SSN, addresses, government IDs
+   - **Typical Data Sources**: Application data, credit bureaus, government databases, existing customers
+   - **Business Value**: Reduced fraud, regulatory compliance, better customer experience
+
+10. **Supply Chain Entity Resolution**
+    - **Problem**: Same supplier/manufacturer appears with different names
+    - **Goal**: Unified view of supply chain entities
+    - **Key Matching**: Company names, addresses, DUNS, GLNs, tax IDs
+    - **Typical Data Sources**: ERP systems, supplier portals, logistics systems
+    - **Business Value**: Supply chain visibility, risk management, optimization
+
+**Agent behavior**: Present this gallery when user requests it. Help them identify which pattern(s) match their situation. Use the selected pattern to guide the problem definition. If the pattern gallery is enhanced in the future with more details, diagrams, or interactive elements, present those as well.
+
+**Guided discovery questions**:m systems?
 
 **Common scenarios** (examples to help users identify their use case):
 - **Customer 360**: "I have customer data in CRM, billing, and support systems. I need a single view of each customer."

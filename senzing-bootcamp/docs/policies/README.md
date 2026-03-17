@@ -65,6 +65,25 @@ This directory contains policy documents that define coding standards and organi
 
 ---
 
+### File Storage Policy
+**File**: [FILE_STORAGE_POLICY.md](FILE_STORAGE_POLICY.md)
+
+**Purpose**: Define where all file types should be stored (never use /tmp)
+
+**Key Rules**:
+- **Source code** → `src/` directory
+- **Shell scripts** → `scripts/` directory
+- **Documentation** → `docs/` directory
+- **Data files** → `data/` directory
+- **Configuration** → `config/` directory or root (for .env)
+- **Never use `/tmp`** for project files
+
+**Why It Matters**: Ensures files persist, are organized, and are easy to find
+
+**Applies To**: All modules and all file types
+
+---
+
 ## Policy Summary
 
 | Policy | Directory | File Types | Applies To |
@@ -72,6 +91,7 @@ This directory contains policy documents that define coding standards and organi
 | Module 0 Code | `src/quickstart_demo/` | Python/Java/C#/Rust | Module 0 |
 | Python Requirements | Project root | `requirements*.txt` | All Python projects |
 | Shell Scripts | `scripts/` | `*.sh` | Modules 10, 11, 12 |
+| File Storage | Various | All files | All modules |
 
 ## File Organization Overview
 
@@ -87,10 +107,24 @@ project-root/
 │   ├── deploy.sh
 │   ├── backup.sh
 │   └── ...
+├── data/                     # All data files
+│   ├── raw/                  # Original source data
+│   ├── transformed/          # Senzing-formatted JSON
+│   ├── samples/              # Sample data
+│   ├── backups/              # Database backups
+│   └── temp/                 # Temporary working files (gitignored)
+├── docs/                     # All documentation
+│   ├── guides/               # User guides
+│   ├── modules/              # Module docs
+│   ├── policies/             # Policy docs
+│   └── development/          # Internal docs
+├── config/                   # Configuration files
 ├── requirements.txt          # Python production dependencies
 ├── requirements-dev.txt      # Python development dependencies
 └── ...
 ```
+
+**Important**: Never use `/tmp` for project files. Use appropriate project directories.
 
 ## Why These Policies Matter
 
@@ -143,6 +177,8 @@ When organizing your project:
 
 ## Version History
 
+- **v1.1.0** (2026-03-17): Added file storage policy
+  - FILE_STORAGE_POLICY.md
 - **v1.0.0** (2026-03-17): Initial policies created
   - MODULE_0_CODE_LOCATION.md
   - PYTHON_REQUIREMENTS_POLICY.md

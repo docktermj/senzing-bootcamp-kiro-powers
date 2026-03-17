@@ -155,8 +155,8 @@ docker volume create senzing-data
 ```bash
 # Add Senzing repository
 wget -qO - https://senzing-production-apt.s3.amazonaws.com/senzingrepo_1.0.0-1_amd64.deb \
-  -O /tmp/senzingrepo_1.0.0-1_amd64.deb
-sudo apt install /tmp/senzingrepo_1.0.0-1_amd64.deb
+  -O ~/senzingrepo_1.0.0-1_amd64.deb
+sudo apt install ~/senzingrepo_1.0.0-1_amd64.deb
 
 # Update package list
 sudo apt update

@@ -12,7 +12,6 @@ Module-specific documentation files. Each module has detailed documentation abou
 - `MODULE_3_DATA_QUALITY_SCORING.md` - Automated data quality assessment
 - `MODULE_6_SINGLE_SOURCE_LOADING.md` - Single source loading patterns
 - `MODULE_7_MULTI_SOURCE_ORCHESTRATION.md` - Multi-source orchestration
-- `MODULE_8_ADDITION_SUMMARY.md` - Module 8 addition summary
 - `MODULE_8_QUERY_VALIDATION.md` - Query and validation with UAT
 - `MODULE_9_PERFORMANCE_TESTING.md` - Performance testing and benchmarking
 - `MODULE_10_SECURITY_HARDENING.md` - Security hardening for production

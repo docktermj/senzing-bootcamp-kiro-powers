@@ -86,8 +86,6 @@ This directory contains detailed documentation for each boot camp module.
 
 **When to Use**: After Module 7 (all sources loaded)
 
-**Also See**: [MODULE_8_ADDITION_SUMMARY.md](MODULE_8_ADDITION_SUMMARY.md) - Historical context
-
 ---
 
 ### Module 9: Performance Testing

@@ -131,7 +131,16 @@ All shell scripts must be in `scripts/`:
 - `scripts/health_check.sh` - Health checks
 - `scripts/setup_env.sh` - Environment setup
 
+All data files must be in `data/`:
+- `data/raw/` - Original source data
+- `data/transformed/` - Senzing-formatted JSON
+- `data/samples/` - Sample data for testing
+- `data/backups/` - Database backups
+- `data/temp/` - Temporary working files (gitignored)
+
 **IMPORTANT**: Never place shell scripts (*.sh) in `src/` directory. Shell scripts are for automation and deployment, not application logic.
+
+**CRITICAL**: Never use `/tmp` or other system temporary directories for project files. Always use appropriate project directories (`data/temp/` for temporary files, `~` for downloads).
 
 ### Documentation
 Create and maintain:

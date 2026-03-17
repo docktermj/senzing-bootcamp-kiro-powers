@@ -85,7 +85,10 @@ Create `docs/cost_estimation.md` with your specific estimates based on:
 
 Load this steering file when:
 - Starting Module 1 (during problem definition)
-- Starting Module 4 (choosing deployment option)
+- Starting Module 5 (choosing deployment option)
+- Starting Module 12 (deployment planning)
 - User asks about costs or pricing
 - Planning production deployment
+
+**Note**: See also `steering/cost-calculator.md` for detailed ROI calculator and DSR pricing.
 - Preparing business case or ROI analysis

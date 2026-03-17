@@ -1,10 +1,10 @@
-# Integration Patterns for Module 6
+# Integration Patterns for Module 8
 
 Common patterns for integrating Senzing query results into your applications and workflows.
 
 ## Overview
 
-After loading data (Module 5), you need to integrate entity resolution into your business processes. This guide covers common integration patterns for Module 6.
+After loading data (Modules 6-7), you need to integrate entity resolution into your business processes. This guide covers common integration patterns for Module 8.
 
 ## Pattern 1: Batch Export
 
@@ -444,8 +444,9 @@ if __name__ == "__main__":
 ## When to Load This Guide
 
 Load this steering file when:
-- Starting Module 6
+- Starting Module 8
 - User asks about integration
 - User asks "how do I use the results?"
+- Planning application integration
 - Planning production deployment
 - Designing application architecture

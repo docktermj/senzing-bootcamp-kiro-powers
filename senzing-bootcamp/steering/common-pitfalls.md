@@ -23,24 +23,46 @@ Learn from common mistakes to save time and frustration.
 **Problem**: Entity resolution is powerful but not magic
 **Solution**: Set clear expectations about what ER can and cannot do
 
-## Module 2: Data Source Evaluation
+## Module 2: Identify and Collect Data Sources
+
+### Pitfall: Not Documenting Data Locations
+**Symptom**: "Where did we get this file?"
+**Problem**: Can't trace data lineage or refresh data
+**Solution**: Document all data source locations in `docs/data_source_locations.md`
+
+### Pitfall: Mixing Raw and Transformed Data
+**Symptom**: Files scattered across directories
+**Problem**: Hard to track what's been processed
+**Solution**: Keep raw data in `data/raw/`, transformed in `data/transformed/`
+
+### Pitfall: Loading Entire Large Datasets
+**Symptom**: Uploading 10GB files
+**Problem**: Slow, unnecessary for evaluation
+**Solution**: Create representative samples (1000-10000 records)
+
+## Module 3: Evaluate Data Quality
 
 ### Pitfall: Insufficient Sample Data
 **Symptom**: User provides 2-3 sample records
 **Problem**: Can't assess data quality or patterns
 **Solution**: Request 100-1000 sample records minimum
 
-### Pitfall: Assuming SGES Compliance
-**Symptom**: "Our data is already in the right format"
-**Problem**: Often incorrect, leads to loading errors
-**Solution**: Always verify field names match SGES exactly
+### Pitfall: Skipping Quality Scoring
+**Symptom**: "The data looks fine to me"
+**Problem**: Subjective assessment, missing quality issues
+**Solution**: Always run automated quality scoring to get objective metrics
 
 ### Pitfall: Ignoring Data Quality Issues
 **Symptom**: "We'll fix the data later"
 **Problem**: Poor quality = poor matching results
-**Solution**: Address quality issues during mapping (Module 3)
+**Solution**: Address quality issues during mapping (Module 4)
 
-## Module 3: Data Mapping
+### Pitfall: Accepting Low Quality Scores
+**Symptom**: Quality score < 70% but proceeding anyway
+**Problem**: Poor matching results, wasted effort
+**Solution**: Improve data quality before mapping or adjust expectations
+
+## Module 4: Map Your Data
 
 ### Pitfall: Hand-Coding Attribute Names
 **Symptom**: Using `BUSINESS_NAME_ORG` instead of `NAME_ORG`
@@ -76,7 +98,23 @@ Learn from common mistakes to save time and frustration.
 **Problem**: Not passing the `state` object between calls
 **Solution**: Always pass the EXACT `state` JSON from previous response
 
-## Module 4: SDK Setup
+## Module 5: Set Up SDK
+
+### Pitfall: Installing Over Existing Installation
+**Symptom**: Installation conflicts, version mismatches, broken configuration
+**Problem**: Not checking if Senzing is already installed
+**Solution**: Always check first:
+```bash
+# Check Python package
+python -c "import senzing; print(senzing.__version__)" 2>/dev/null
+
+# Check installation directory
+ls -la /opt/senzing 2>/dev/null
+
+# Check pip
+pip list | grep senzing
+```
+If already installed, verify version and use existing installation.
 
 ### Pitfall: Using SQLite for Production
 **Symptom**: "SQLite is working fine for 10K records"
@@ -98,7 +136,7 @@ Learn from common mistakes to save time and frustration.
 **Problem**: `SENZING_ENGINE_CONFIGURATION_JSON` not set
 **Solution**: Follow `sdk_guide` configuration exactly
 
-## Module 5: Loading
+## Module 6: Load Single Data Source
 
 ### Pitfall: No Database Backup
 **Symptom**: Loading fails halfway, database corrupted
@@ -118,14 +156,36 @@ Learn from common mistakes to save time and frustration.
 ### Pitfall: Wrong DATA_SOURCE Name
 **Symptom**: Records load but queries don't work
 **Problem**: DATA_SOURCE doesn't match registered name
-**Solution**: Verify DATA_SOURCE matches Module 4 configuration
+**Solution**: Verify DATA_SOURCE matches Module 5 configuration
 
 ### Pitfall: Not Monitoring Progress
 **Symptom**: "Is it still running?"
 **Problem**: No visibility into loading status
 **Solution**: Add progress logging to loading programs
 
-## Module 6: Querying
+### Pitfall: Loading Multiple Sources Without Orchestration
+**Symptom**: Loading sources one by one manually
+**Problem**: No dependency management, inefficient
+**Solution**: Use Module 7 for multi-source orchestration
+
+## Module 7: Multi-Source Orchestration
+
+### Pitfall: Loading Sources in Wrong Order
+**Symptom**: Reference data loaded after dependent data
+**Problem**: Missing relationships, poor resolution
+**Solution**: Define load order based on dependencies
+
+### Pitfall: No Error Handling Across Sources
+**Symptom**: One source fails, entire load stops
+**Problem**: All-or-nothing approach
+**Solution**: Implement per-source error handling and continue
+
+### Pitfall: Not Tracking Multi-Source Progress
+**Symptom**: "Which sources have loaded?"
+**Problem**: No visibility into overall progress
+**Solution**: Use orchestration dashboard or logging
+
+## Module 8: Query and Validate Results
 
 ### Pitfall: Guessing SDK Method Names
 **Symptom**: Using `close_export` instead of `closeExport`
@@ -151,6 +211,33 @@ Learn from common mistakes to save time and frustration.
 **Symptom**: "The results aren't perfect"
 **Problem**: First iteration rarely perfect
 **Solution**: Iterate - adjust mappings, confidence scores, add attributes
+
+### Pitfall: Skipping UAT
+**Symptom**: "It looks good to me, let's deploy"
+**Problem**: No stakeholder validation, surprises in production
+**Solution**: Always conduct UAT with business users before production
+
+## Modules 9-12: Production Readiness
+
+### Pitfall: Skipping Performance Testing
+**Symptom**: "It works on my laptop"
+**Problem**: Production performance unknown
+**Solution**: Complete Module 9 performance testing before production
+
+### Pitfall: No Security Hardening
+**Symptom**: Using default passwords, no encryption
+**Problem**: Security vulnerabilities
+**Solution**: Complete Module 10 security hardening checklist
+
+### Pitfall: No Monitoring Setup
+**Symptom**: "Is the system running?"
+**Problem**: No visibility into production health
+**Solution**: Complete Module 11 monitoring setup before deployment
+
+### Pitfall: No Disaster Recovery Plan
+**Symptom**: Data loss with no backup
+**Problem**: Cannot recover from failures
+**Solution**: Complete Module 12 DR planning and test backups
 
 ## General Pitfalls
 

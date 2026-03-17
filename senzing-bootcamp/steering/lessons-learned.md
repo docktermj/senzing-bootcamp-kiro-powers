@@ -8,7 +8,7 @@ After completing the boot camp, capture what you learned to improve future entit
 
 ## Template
 
-Create `docs/lessons_learned.md` and fill it out after Module 6:
+Create `docs/lessons_learned.md` and fill it out after Module 8 (or Module 12 for full deployment):
 
 ```markdown
 # Lessons Learned
@@ -22,19 +22,20 @@ Create `docs/lessons_learned.md` and fill it out after Module 6:
 
 ## What Worked Well
 
-### Data Mapping (Module 3)
+### Data Mapping (Module 4)
 - **Success**: [What went smoothly]
 - **Why**: [Reasons for success]
 - **Recommendation**: [How to replicate]
 
-### Loading Performance (Module 5)
+### Loading Performance (Module 6-7)
 - **Success**: [What worked]
 - **Metrics**: [Performance numbers]
 - **Recommendation**: [Best practices identified]
 
-### Query Results (Module 6)
-- **Success**: [Accurate results, good performance, etc.]
+### Query Results (Module 8)
+- **Success**: [Accurate results, good performance, UAT passed]
 - **Impact**: [Business value delivered]
+- **Recommendation**: [Query patterns that worked well]
 
 ## Challenges Encountered
 
@@ -144,9 +145,11 @@ Create `docs/lessons_learned.md` and fill it out after Module 6:
 
 ## When to Use This Template
 
-- After completing Module 6
+- After completing Module 8 (query and validation)
+- After completing Module 12 (full deployment)
 - Before closing out the project
 - During project retrospectives
+- When documenting for future projects
 - When preparing for similar projects
 - For knowledge transfer to other teams
 
@@ -162,7 +165,8 @@ Create `docs/lessons_learned.md` and fill it out after Module 6:
 ## When to Load This Guide
 
 Load this steering file when:
-- Completing Module 6
+- Completing Module 8 (query and validation)
+- Completing Module 12 (deployment)
 - User asks about lessons learned or retrospectives
 - Preparing final project documentation
 - Planning future entity resolution projects

@@ -4,7 +4,7 @@ Implement testing at each module to ensure quality and reliability.
 
 ## Test Types
 
-### 1. Unit Tests (Module 3 - Transformation)
+### 1. Unit Tests (Module 4 - Transformation)
 
 Test individual transformation functions:
 
@@ -31,7 +31,7 @@ class TestCustomerTransform(unittest.TestCase):
         self.assertEqual(result["PHONE_NUMBER"], "555-123-4567")
 ```
 
-### 2. Integration Tests (Module 5 - Loading)
+### 2. Integration Tests (Module 6-7 - Loading)
 
 Test the complete loading process:
 
@@ -57,7 +57,7 @@ class TestCustomerLoad(unittest.TestCase):
         # Verify only one entity created
 ```
 
-### 3. Data Quality Tests (Module 3)
+### 3. Data Quality Tests (Module 4)
 
 Validate data quality metrics:
 
@@ -79,7 +79,7 @@ class TestDataQuality(unittest.TestCase):
         self.assertGreater(quality["overall_score"], 70)
 ```
 
-### 4. Query Validation Tests (Module 6)
+### 4. Query Validation Tests (Module 8)
 
 Verify query results:
 
@@ -125,7 +125,7 @@ python -m pytest --cov=src tests/
 ## When to Load This Guide
 
 Load this steering file when:
-- Starting Module 3 (before creating transformation programs)
+- Starting Module 4 (before creating transformation programs)
 - User asks about testing or quality assurance
 - Generating transformation or loading programs
 - User wants to implement CI/CD

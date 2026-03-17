@@ -235,8 +235,9 @@ monitoring:
 ## When to Load This Guide
 
 Load this steering file when:
-- Starting Module 5 (before loading data)
+- Starting Module 6 (before loading data)
+- Starting Module 9 (performance testing)
 - User asks about performance optimization
-- Setting up production monitoring
+- Setting up production monitoring (Module 11)
 - Troubleshooting performance issues
 - Planning for scale (large datasets)

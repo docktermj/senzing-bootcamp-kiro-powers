@@ -41,7 +41,7 @@ Answer these questions for each data source to estimate complexity:
 Add up the points:
 
 ### 6-9 Points: Low Complexity ✅
-**Estimated Time**: 1-2 hours for Module 3
+**Estimated Time**: 1-2 hours for Module 4
 **Characteristics**:
 - Simple CSV or JSON file
 - Clean, well-structured data
@@ -57,7 +57,7 @@ Add up the points:
 - Should complete in one session
 
 ### 10-14 Points: Medium Complexity ⚠️
-**Estimated Time**: 2-4 hours for Module 3
+**Estimated Time**: 2-4 hours for Module 4
 **Characteristics**:
 - Multiple tables or moderate API
 - Some data quality issues
@@ -74,7 +74,7 @@ Add up the points:
 - Consider data quality improvements
 
 ### 15-18 Points: High Complexity 🔴
-**Estimated Time**: 4-8 hours for Module 3
+**Estimated Time**: 4-8 hours for Module 4
 **Characteristics**:
 - Complex nested data or difficult API
 - Poor data quality
@@ -93,7 +93,7 @@ Add up the points:
 
 ## Detailed Estimator
 
-### Module 3: Data Mapping Time Estimate
+### Module 4: Data Mapping Time Estimate
 
 ```
 Base Time: 1 hour
@@ -126,7 +126,7 @@ Base Time: 1 hour
 Total: Sum all components
 ```
 
-### Module 5: Loading Time Estimate
+### Module 6: Loading Time Estimate
 
 ```
 Base Time: 30 minutes

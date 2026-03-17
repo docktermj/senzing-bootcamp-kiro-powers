@@ -16,6 +16,9 @@ This document consolidates all agent behavior instructions from across the boot 
 ### Module 0: Quick Demo
 - Use `get_sample_data` to retrieve CORD datasets
 - Use `generate_scaffold` with `full_pipeline` for demo scripts
+- **Create `src/quickstart_demo/` directory for all demo code**
+- Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
+- Save sample data to `src/quickstart_demo/sample_data_[dataset_name].jsonl`
 - Show entity resolution in action with real examples
 - Connect demo results to user's potential use case
 
@@ -29,17 +32,30 @@ This document consolidates all agent behavior instructions from across the boot 
 - Help create project directory structure
 - Initialize git and create .gitignore
 
-### Module 2: Data Source Evaluation
-- **Remind about data privacy** before requesting sample data
-- Request 100-1000 sample records minimum
-- Use `search_docs` to understand SGES format
-- Compare each source against SGES attributes
+### Module 2: Identify and Collect Data Sources
+- Review data sources identified in Module 1
+- Help user upload or link to data files
+- Save all data to `data/raw/[datasource_name].[extension]`
+- Document data source locations in `docs/data_source_locations.md`
+- Handle different source types: files, databases, APIs, URLs
+- Remind about data privacy and security
+- Create sample files if full datasets are too large
+- Verify files are accessible before proceeding
+- Track data collection status
+
+### Module 3: Evaluate Data Quality
+- **Run automated quality scoring** on each data source
+- Use data quality scorer script from MODULE_3_DATA_QUALITY_SCORING.md
+- Generate quality report with scores (0-100)
+- Calculate completeness, consistency, validity, uniqueness metrics
+- Create HTML dashboard for visualization
+- Review scores with user
+- Provide recommendations for improvement
+- Document quality in `docs/data_quality_report.md`
+- Track quality scores for comparison after mapping
 - Categorize: SGES-compliant, needs mapping, needs enrichment
-- Create `docs/data_source_evaluation.md`
-- Track which sources need mapping
 
-### Module 3: Data Mapping
-
+### Module 4: Data Mapping
 - **Use `mapping_workflow`** - never hand-code attribute names
 - **Always pass exact `state` object** between workflow calls
 - Create separate transformation program for each data source
@@ -51,15 +67,19 @@ This document consolidates all agent behavior instructions from across the boot 
 - Document mappings in `docs/mapping_[datasource].md`
 - Track which sources are mapped vs pending
 
-### Module 4: SDK Setup
+### Module 5: SDK Setup
 - Use `sdk_guide` with correct platform parameter
+- **Check if Senzing is already installed before installing**
+- Verify existing installation version and compatibility
+- Skip installation if compatible version exists
 - Check `anti_patterns` before recommending approaches
 - Recommend SQLite for evaluation, PostgreSQL for production
 - Verify installation with test script
 - Register all data sources from Module 1
 - Create engine configuration
+- Test database connection before proceeding
 
-### Module 5: Loading
+### Module 6: Loading
 - **Verify `.kiro/hooks/` exists** before installing hooks
 - **Remind to backup** before loading (or use backup hook)
 - Create separate loading program for each data source
@@ -71,7 +91,7 @@ This document consolidates all agent behavior instructions from across the boot 
 - Generate dashboard showing results
 - Track which sources are loaded vs pending
 
-### Module 6: Querying
+### Module 7: Querying
 - Review business problem from Module 1
 - Design queries that answer specific business questions
 - Use `generate_scaffold` for query code
@@ -87,10 +107,21 @@ This document consolidates all agent behavior instructions from across the boot 
 
 ### Directory Structure
 All source code must be in `src/`:
-- `src/transform/` - Transformation programs
-- `src/load/` - Loading programs
-- `src/query/` - Query programs
-- `src/utils/` - Utility scripts (backup, rollback, monitoring)
+- `src/transform/` - Transformation programs (Python/Java/C#)
+- `src/load/` - Loading programs (Python/Java/C#)
+- `src/query/` - Query programs (Python/Java/C#)
+- `src/utils/` - Utility modules (Python/Java/C#)
+- `src/api/` - API endpoints (if applicable)
+
+All shell scripts must be in `scripts/`:
+- `scripts/deploy.sh` - Deployment automation
+- `scripts/backup.sh` - Database backup
+- `scripts/migrate_db.sh` - Database migration
+- `scripts/run_pipeline.sh` - Pipeline execution
+- `scripts/health_check.sh` - Health checks
+- `scripts/setup_env.sh` - Environment setup
+
+**IMPORTANT**: Never place shell scripts (*.sh) in `src/` directory. Shell scripts are for automation and deployment, not application logic.
 
 ### Documentation
 Create and maintain:
@@ -131,26 +162,31 @@ Before proceeding to next module, verify:
 - ✅ Success criteria defined
 
 **Module 2 → Module 3**:
+- ✅ All data sources collected
+- ✅ Files in `data/raw/` or locations documented
+- ✅ Data source locations documented
+
+**Module 3 → Module 4**:
 - ✅ All sources evaluated
 - ✅ SGES compliance determined
 - ✅ Sample data available
 
-**Module 3 → Module 4**:
+**Module 4 → Module 5**:
 - ✅ All non-compliant sources mapped
 - ✅ Transformation programs tested
 - ✅ Quality validation passed (>70%)
 
-**Module 4 → Module 5**:
+**Module 5 → Module 6**:
 - ✅ SDK installed
 - ✅ Database configured
 - ✅ Test script runs successfully
 
-**Module 5 → Module 6**:
+**Module 6 → Module 7**:
 - ✅ All sources loaded
 - ✅ No critical errors
 - ✅ Loading statistics captured
 
-**Module 6 → Complete**:
+**Module 7 → Complete**:
 - ✅ Query programs answer business problem
 - ✅ Results validated with user
 - ✅ Documentation complete
@@ -240,11 +276,12 @@ For `mapping_workflow`:
 
 Recognize when modules are complete:
 - Module 1: Problem statement + data sources + success metrics
-- Module 2: All sources categorized
-- Module 3: Working transformation programs + quality >70%
-- Module 4: SDK installed + test passes
-- Module 5: All sources loaded + statistics captured
-- Module 6: Query programs answer business problem
+- Module 2: All data sources collected + files in data/raw/ + locations documented
+- Module 3: All sources categorized
+- Module 4: Working transformation programs + quality >70%
+- Module 5: SDK installed + test passes
+- Module 6: All sources loaded + statistics captured
+- Module 7: Query programs answer business problem
 
 ## When User is Stuck
 
@@ -263,3 +300,43 @@ Remember:
 - It's OK to go back and refine
 - Discovery is non-linear
 - Support flexibility while maintaining quality
+
+
+### Module 8: Deployment Packaging
+- Review all code from Modules 4, 6, and 7
+- Guide user through deployment decisions:
+  - Target database (PostgreSQL recommended)
+  - Programming language (stick with boot camp language)
+  - Deployment environment (Docker recommended)
+  - Integration pattern (from Module 7)
+- Refactor code into proper package structure
+- Extract common functionality into utilities
+- Add configuration management (YAML + environment variables)
+- Implement comprehensive logging
+- Create test suite with >80% coverage
+- Apply language-specific packaging:
+  - Python: setup.py + pyproject.toml + requirements.txt
+  - Java: pom.xml or build.gradle
+  - C#: .csproj with NuGet packages
+  - Rust: Cargo.toml
+- Generate deployment documentation:
+  - docs/deployment.md
+  - docs/configuration.md
+  - docs/api.md (if REST API)
+  - docs/monitoring.md
+  - docs/troubleshooting.md
+- Create deployment artifacts:
+  - Dockerfile
+  - docker-compose.yml
+  - Deployment scripts
+  - CI/CD pipeline configuration
+  - Kubernetes manifests (if applicable)
+- Validate package:
+  - Run all tests
+  - Check code quality (linting, type checking)
+  - Test Docker build
+  - Test deployment in staging
+  - Verify documentation completeness
+- Create release notes and tag version
+- Document lessons learned
+- Prepare handoff to operations team

@@ -6,9 +6,11 @@ For team projects, establish collaboration workflows.
 
 ### Code Review Checkpoints
 
-- **Module 3**: Review transformation logic before committing
-- **Module 5**: Review loading programs before production
-- **Module 6**: Review query logic and results
+- **Module 4**: Review transformation logic before committing
+- **Module 6**: Review single-source loading programs before testing
+- **Module 7**: Review multi-source orchestration before production
+- **Module 8**: Review query logic and UAT results before deployment
+- **Module 12**: Review deployment configuration before production
 
 ### Git Branching Strategy
 

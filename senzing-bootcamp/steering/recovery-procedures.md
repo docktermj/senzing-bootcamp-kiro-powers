@@ -41,7 +41,7 @@ Create `src/utils/rollback.sh`:
 BACKUP_FILE=$1
 
 if [ -z "$BACKUP_FILE" ]; then
-    echo "Usage: ./rollback.sh <backup_file>"
+    echo "Usage: ./src/utils/rollback.sh <backup_file>"
     echo "Available backups:"
     ls -lh data/backups/
     exit 1
@@ -99,8 +99,9 @@ Create `docs/recovery_procedures.md`:
 **Recovery**:
 1. Don't load more data - stop and analyze
 2. Review data quality reports from Module 3
-3. Check mapping specifications
+3. Check mapping specifications from Module 4
 4. Test with small sample (100 records)
+5. Reload corrected data
 5. Adjust confidence scores or mappings
 6. Rollback and reload with improved mappings
 
@@ -133,7 +134,7 @@ git reset --soft HEAD~1
 
 ## Backup Best Practices
 
-1. **Backup before Module 5**: Always backup before loading data
+1. **Backup before Module 6**: Always backup before loading data
 2. **Backup before major changes**: Before modifying configurations or schemas
 3. **Test backups regularly**: Verify backups can be restored
 4. **Keep multiple versions**: Retain at least 7 days of backups
@@ -142,7 +143,7 @@ git reset --soft HEAD~1
 ## When to Load This Guide
 
 Load this steering file when:
-- Starting Module 5 (before loading data)
+- Starting Module 6 (before loading data)
 - User encounters errors during loading
 - User asks about backup or recovery
 - Setting up production systems

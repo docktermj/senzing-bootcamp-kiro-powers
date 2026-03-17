@@ -19,19 +19,38 @@ get_sample_data(dataset="las-vegas", limit=100)
 generate_scaffold(language="python", workflow="full_pipeline", version="current")
 ```
 
+**IMPORTANT**: 
+- Create `src/quickstart_demo/` directory for all Module 0 demo code
+- Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
+- Save sample data to `src/quickstart_demo/sample_data_[dataset_name].jsonl`
+- Keep demo code separate from main boot camp project code
+
 ## Module 1: Business Problem
 
 No MCP calls required - focus on discovery questions and documentation.
 
-## Module 2: Data Source Evaluation
+## Module 2: Identify and Collect Data Sources
+
+No MCP calls required - focus on collecting data files.
+
+**Actions**:
+- Help user upload files to `data/raw/`
+- Document data source locations in `docs/data_source_locations.md`
+- Handle different source types: files, databases, APIs
+- Create sample files if datasets are too large
+- Verify files are accessible
+
+## Module 3: Evaluate Data Quality
 
 ```
-# Understand SGES format
-search_docs(query="generic entity specification", version="current")
-search_docs(query="SGES attributes", version="current")
+# Analyze data quality
+analyze_record(file_paths=["data/transformed/customers.jsonl"], version="current")
+
+# Get quality scoring guidance
+search_docs(query="data quality", category="data_analysis", version="current")
 ```
 
-## Module 3: Data Mapping
+## Module 4: Map Your Data
 
 ```
 # Start mapping workflow
@@ -49,10 +68,13 @@ analyze_record(file_paths=["data/transformed/customers.jsonl"], version="current
 
 **CRITICAL**: Always pass the exact `state` object from the previous response back in the next call.
 
-## Module 4: SDK Setup
+## Module 5: Set Up SDK
 
 ```
-# Get installation commands
+# FIRST: Check if already installed
+python -c "import senzing; print('Senzing version:', senzing.__version__)" 2>/dev/null
+
+# If not installed, get installation commands
 sdk_guide(topic="install", platform="linux_apt", version="current")
 sdk_guide(topic="install", platform="macos_arm", version="current")
 sdk_guide(topic="install", platform="docker", version="current")
@@ -64,7 +86,9 @@ sdk_guide(topic="configure", data_sources=["CUSTOMER_DB", "VENDOR_API"], version
 search_docs(query="installation best practices", category="anti_patterns", version="current")
 ```
 
-## Module 5: Loading
+**IMPORTANT**: Always verify Senzing is not already installed before running installation commands.
+
+## Module 6: Load Single Data Source
 
 ```
 # Generate loading code
@@ -77,7 +101,16 @@ sdk_guide(topic="load", input_file="data/transformed/customers.jsonl", version="
 sdk_guide(topic="full_pipeline", language="python", platform="docker", version="current")
 ```
 
-## Module 6: Querying
+## Module 7: Multi-Source Orchestration
+
+No specific MCP calls - focus on orchestration logic.
+
+**Actions**:
+- Define load order based on dependencies
+- Create orchestration scripts
+- Implement error handling across sources
+
+## Module 8: Query and Validate Results
 
 ```
 # Generate query code
@@ -88,6 +121,28 @@ generate_scaffold(language="python", workflow="search", version="current")
 get_sdk_reference(topic="functions", filter="searchByAttributes", version="current")
 get_sdk_reference(topic="flags", version="current")
 ```
+
+## Modules 9-12: Production Readiness
+
+**Module 9: Performance Testing**
+- Benchmark transformation and loading
+- Test query response times
+- Profile resource utilization
+
+**Module 10: Security Hardening**
+- Implement secrets management
+- Set up authentication/authorization
+- Enable encryption
+
+**Module 11: Monitoring**
+- Set up logging and metrics
+- Configure alerting
+- Create dashboards
+
+**Module 12: Deployment**
+- Package application
+- Set up multi-environment strategy
+- Implement disaster recovery
 
 ## Troubleshooting
 

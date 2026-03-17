@@ -1,12 +1,12 @@
 ---
 name: "senzing-bootcamp"
 displayName: "Senzing Boot Camp"
-version: "2.0.0"
-description: "Guided discovery of Senzing entity resolution. Walk through data mapping, SDK setup, record loading, and result exploration using the Senzing MCP server."
-keywords: ["Entity Resolution", "Senzing", "Data Mapping", "SDK", "Identity Resolution", "Data Matching", "ER"]
+version: "3.0.0"
+description: "Comprehensive guided boot camp for Senzing entity resolution. Covers data mapping, SDK setup, loading, performance testing, security hardening, monitoring, and production deployment."
+keywords: ["Entity Resolution", "Senzing", "Data Mapping", "SDK", "Identity Resolution", "Data Matching", "ER", "Performance", "Security", "Monitoring", "Deployment"]
 author: "Senzing"
 senzing_compatibility: ["4.0", "3.x"]
-last_updated: "2025-01-17"
+last_updated: "2026-03-17"
 ---
 
 # Power: Senzing Boot Camp
@@ -17,9 +17,9 @@ This power provides a guided boot camp experience for learning Senzing entity re
 
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
-**Power Version**: 2.0.0  
+**Power Version**: 3.0.0  
 **Senzing Compatibility**: V4.0 (primary), V3.x (limited support)  
-**Last Updated**: 2025-01-17
+**Last Updated**: 2026-03-17
 
 ## Available MCP Servers
 
@@ -41,7 +41,7 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 ## Boot Camp Learning Path
 
-The boot camp follows a progressive learning path. Each module builds on the previous one.
+The boot camp follows a progressive learning path with 13 focused modules (0-12). Each module has a single, clear purpose.
 
 **Modules**:
 
@@ -52,40 +52,98 @@ The boot camp follows a progressive learning path. Each module builds on the pre
 
 - **Module 1: Understand Business Problem**
   - Define your problem and identify data sources
-  - View design pattern gallery (optional)
+  - View design pattern gallery
+  - **NEW**: Calculate costs and ROI
   - Create problem statement document
-  - 15-30 minutes
+  - 20-30 minutes
 
-- **Module 2: Verify Data Sources**
-  - Evaluate if data needs mapping or is SGES-compliant
-  - Create data source evaluation report
-  - 10 minutes per data source
+- **Module 2: Identify and Collect Data Sources**
+  - Upload or link to data source files
+  - Store data in data/raw/ directory
+  - **NEW**: Track data lineage
+  - Document data source locations
+  - 10-15 minutes per data source
 
-- **Module 3: Map Your Data**
-  - Create transformation programs for non-compliant sources
+- **Module 3: Evaluate Data Quality**
+  - **NEW**: Automated quality scoring (0-100)
+  - **NEW**: Attribute completeness metrics
+  - **NEW**: Data consistency analysis
+  - **NEW**: Visual quality dashboard
+  - Create data quality report
+  - 15-20 minutes per data source
+
+- **Module 4: Map Your Data**
+  - Create transformation programs
+  - **NEW**: Track transformation lineage
   - Validate data quality
   - Generate test files
   - 1-2 hours per data source
 
-- **Module 4: Set Up SDK**
-  - Install and configure Senzing
+- **Module 5: Set Up SDK**
+  - Check if Senzing is already installed
+  - Install and configure Senzing (if needed)
   - Set up database (SQLite or PostgreSQL)
   - Verify installation
   - 30 minutes - 1 hour
 
-- **Module 5: Load Records**
-  - Create loading programs for each data source
-  - Observe entity resolution in real time
-  - Generate loading statistics dashboard
-  - 30 minutes per data source
+- **Module 6: Load Single Data Source**
+  - Load ONE data source and verify
+  - **NEW**: Incremental loading strategies
+  - **NEW**: Delta/CDC patterns
+  - Generate loading statistics
+  - 30 minutes per source
 
-- **Module 6: Query Results**
-  - Create query programs that answer your business problem
-  - Validate results
-  - Complete lessons learned
+- **Module 7: Multi-Source Orchestration (NEW)**
+  - Manage dependencies between sources
+  - Optimize load order
+  - Parallel loading strategies
+  - Error handling across sources
+  - Multi-source progress tracking
   - 1-2 hours
 
-**Total Time**: 3-6 hours for a typical single data source project
+- **Module 8: Query and Validate Results**
+  - Create query programs
+  - **NEW**: User Acceptance Testing (UAT) framework
+  - **NEW**: Results validation criteria
+  - Business user testing
+  - 1-2 hours
+
+- **Module 9: Performance Testing and Benchmarking (NEW)**
+  - Benchmark transformation speed
+  - Benchmark loading performance
+  - Query response time testing
+  - Resource utilization profiling
+  - Scalability testing (10K, 100K, 1M records)
+  - 1-2 hours
+
+- **Module 10: Security Hardening (NEW)**
+  - Secrets management
+  - API authentication/authorization
+  - Data encryption
+  - PII handling compliance
+  - Security scanning
+  - Vulnerability assessment
+  - 1-2 hours
+
+- **Module 11: Monitoring and Observability (NEW)**
+  - Distributed tracing setup
+  - Structured logging
+  - Metrics collection
+  - APM integration
+  - Alerting rules
+  - Health checks
+  - 1-2 hours
+
+- **Module 12: Package and Deploy**
+  - Refactor code into deployable package
+  - **NEW**: Multi-environment strategy
+  - **NEW**: Automated code quality gates
+  - **NEW**: Disaster recovery playbook
+  - **NEW**: API gateway integration
+  - Create deployment artifacts
+  - 2-3 hours
+
+**Total Time**: 10-18 hours for a comprehensive production-ready project
 
 **Note**: While the modules are presented in order, you can move back and forth between steps as needed. Discovery is iterative — you might need to revisit earlier steps as you learn more about your data or refine your approach.
 
@@ -93,11 +151,17 @@ The boot camp follows a progressive learning path. Each module builds on the pre
 
 Experienced users can skip modules based on their situation:
 
-- **Have SGES-compliant data?** → Skip Module 3, go directly to Module 4
-- **Senzing already installed?** → Skip Module 4, go directly to Module 5
+- **Have SGES-compliant data?** → Skip Module 4, go directly to Module 5
+- **Senzing already installed?** → Skip Module 5, go directly to Module 6
 - **Just want to explore?** → Start with Module 0 (Quick Demo)
-- **Already loaded data?** → Jump directly to Module 6
-- **Know your problem well?** → Skim Module 1, focus on Modules 2-6
+- **Single data source only?** → Skip Module 7 (Multi-Source Orchestration)
+- **Already loaded data?** → Jump directly to Module 8
+- **Know your problem well?** → Skim Module 1, focus on Modules 2-12
+- **Data already collected?** → Skip Module 2, go to Module 3
+- **Not deploying to production?** → Skip Modules 9-12
+- **Performance not critical?** → Skip Module 9
+- **Internal use only?** → Simplify Module 10 (Security)
+- **Basic monitoring sufficient?** → Simplify Module 11
 
 ### Module Prerequisites
 
@@ -112,28 +176,57 @@ Before starting each module, ensure prerequisites are met:
 
 **Module 2**:
 - ✅ Module 1 complete (business problem defined)
-- ✅ Data sources identified
-- ✅ Sample data available
+- ✅ Data sources identified in Module 1
 
 **Module 3**:
-- ✅ Module 2 complete (sources evaluated)
-- ✅ Non-compliant sources identified
-- ✅ Sample data files in `data/raw/`
+- ✅ Module 2 complete (data sources collected)
+- ✅ Data files in `data/raw/` directory
+- ✅ Sample data available for evaluation
 
 **Module 4**:
-- ✅ Module 3 complete (all sources mapped) OR
+- ✅ Module 3 complete (sources evaluated)
+- ✅ Non-compliant sources identified
+- ✅ Quality scores reviewed
+
+**Module 5**:
+- ✅ Module 4 complete (all sources mapped) OR
 - ✅ All sources are SGES-compliant
 - ✅ Platform/environment ready
 
-**Module 5**:
-- ✅ Module 4 complete (SDK installed)
-- ✅ Database configured
-- ✅ Transformed data ready in `data/transformed/`
-
 **Module 6**:
-- ✅ Module 5 complete (all sources loaded)
-- ✅ Loading statistics reviewed
-- ✅ No critical errors
+- ✅ Module 5 complete (SDK installed)
+- ✅ Database configured
+- ✅ At least one transformed data source ready
+
+**Module 7**:
+- ✅ Module 6 complete (first source loaded successfully)
+- ✅ Multiple data sources to orchestrate
+- ✅ Loading statistics reviewed for first source
+
+**Module 8**:
+- ✅ Module 7 complete (all sources loaded) OR
+- ✅ Module 6 complete (single source loaded)
+- ✅ No critical loading errors
+
+**Module 9**:
+- ✅ Module 8 complete (queries working)
+- ✅ Representative data loaded
+- ✅ Test environment available
+
+**Module 10**:
+- ✅ Module 9 complete (performance validated)
+- ✅ Security requirements identified
+- ✅ Compliance needs documented
+
+**Module 11**:
+- ✅ Module 10 complete (security hardened)
+- ✅ Monitoring tools selected
+- ✅ Production environment identified
+
+**Module 12**:
+- ✅ Module 11 complete (monitoring configured)
+- ✅ All tests passing
+- ✅ Deployment target confirmed
 
 ## Project Directory Structure
 
@@ -151,6 +244,7 @@ my-senzing-project/
 │   ├── samples/                   # Sample data for testing
 │   └── backups/                   # Database backups
 ├── src/                           # Generated program source
+│   ├── quickstart_demo/           # Module 0 demo code (optional)
 │   ├── transform/                 # Transformation programs (Module 3)
 │   ├── load/                      # Loading programs (Module 5)
 │   ├── query/                     # Query programs (Module 6)
@@ -170,7 +264,9 @@ my-senzing-project/
 **Important**: All generated source code (transformation programs, loading programs, query programs, utilities, and scripts) should be placed in the `src/` directory structure, not in the project root.
 ```
 
-**Agent behavior**: At the start of Module 1, help the user create this directory structure. As you generate programs throughout the boot camp, save them in the appropriate folders.
+**Agent behavior**:
+- At the start of Module 1, help the user create this directory structure
+- As you generate programs throughout the boot camp, save them in the appropriate folders
 
 ## When to Load Steering Files
 
@@ -238,7 +334,9 @@ mkdir -p .kiro/hooks
 cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
 ```
 
-**Agent behavior**: When installing hooks, always verify the `.kiro/hooks/` directory exists first. Create it if needed with `mkdir -p .kiro/hooks` before copying hook files.
+**Agent behavior**:
+- When installing hooks, always verify the `.kiro/hooks/` directory exists first
+- Create it if needed with `mkdir -p .kiro/hooks` before copying hook files
 
 ## Entity Resolution Design Pattern Gallery
 
@@ -269,7 +367,10 @@ When starting Module 1, offer users a gallery of common entity resolution patter
 - **KYC**: Banking, fintech, account opening
 - **Supply Chain**: Manufacturing, logistics, procurement
 
-**Agent behavior**: Present this gallery when user requests it in Module 1. Help them identify which pattern(s) match their situation. Use the selected pattern to guide problem definition and set realistic expectations.
+**Agent behavior**:
+- Present this gallery when user requests it in Module 1
+- Help them identify which pattern(s) match their situation
+- Use the selected pattern to guide problem definition and set realistic expectations
 
 ## Best Practices
 
@@ -285,12 +386,18 @@ When starting Module 1, offer users a gallery of common entity resolution patter
 See [steering/steering.md](steering/steering.md) for detailed step-by-step workflows covering:
 
 - Module 0: Quick Demo (Optional)
-- Module 1: Discover the Business Problem
-- Module 2: Verify Data Sources Against SGES
-- Module 3: Data Mapping End-to-End
-- Module 4: Install Senzing SDK (Part A)
-- Module 5: Create Loading Programs (Part B)
-- Module 6: Create Query Programs to Answer Business Problem
+- Module 1: Discover the Business Problem (with Cost Calculator)
+- Module 2: Identify and Collect Data Sources (with Lineage Tracking)
+- Module 3: Evaluate Data Quality (with Automated Scoring)
+- Module 4: Data Mapping End-to-End (with Lineage Tracking)
+- Module 5: Install Senzing SDK
+- Module 6: Load Single Data Source (with Incremental Loading)
+- Module 7: Multi-Source Orchestration
+- Module 8: Query and Validate Results (with UAT Framework)
+- Module 9: Performance Testing and Benchmarking
+- Module 10: Security Hardening
+- Module 11: Monitoring and Observability
+- Module 12: Package and Deploy
 - Troubleshooting and Error Resolution
 - Explore Code Examples
 
@@ -305,21 +412,27 @@ See [steering/steering.md](steering/steering.md) for detailed step-by-step workf
 
 After completing all modules, you'll have:
 
-- ✅ Clear business problem statement
-- ✅ Evaluated data sources
+- ✅ Clear business problem statement with cost estimates
+- ✅ Collected data sources with lineage tracking
+- ✅ Data quality scores and metrics
 - ✅ Transformation programs for each source
 - ✅ Installed and configured Senzing SDK
-- ✅ Loading programs for each source
-- ✅ Query programs answering your business questions
+- ✅ Single and multi-source loading orchestration
+- ✅ Query programs with UAT validation
+- ✅ Performance benchmarks and optimization
+- ✅ Security-hardened configuration
+- ✅ Monitoring and observability setup
+- ✅ Production-ready deployment package
 
 ### Next Steps
 
-1. **Production deployment**: Move from SQLite to PostgreSQL
-2. **Automation**: Schedule transformation and loading programs
-3. **Integration**: Connect query programs to your applications
-4. **Monitoring**: Set up monitoring for data quality and performance
-5. **Expansion**: Add more data sources using the same process
-6. **Documentation**: Complete lessons learned template
+1. **Deploy to production**: Use the packaged deployment artifacts from Module 12
+2. **Monitor performance**: Use dashboards from Module 11
+3. **Respond to alerts**: Follow runbooks from Module 11
+4. **Iterate and improve**: Use performance data from Module 9
+5. **Expand**: Add more data sources using Modules 2-7
+6. **Maintain security**: Regular audits using Module 10 checklist
+7. **Scale**: Use benchmarks from Module 9 to plan capacity
 
 ### Getting Help
 

@@ -7,11 +7,17 @@ This document provides detailed workflows for the Senzing Boot Camp power. The a
 Maintain awareness of the user's progress through the boot camp:
 - Module 0: Quick Demo (Optional) - ⬜ Not started / ✅ Complete
 - Module 1: Business Problem - ⬜ Not started / 🔄 In progress / ✅ Complete
-- Module 2: Data Source Evaluation - ⬜ Not started / 🔄 In progress / ✅ Complete
-- Module 3: Data Mapping - ⬜ Not started / 🔄 In progress / ✅ Complete
-- Module 4: SDK Setup - ⬜ Not started / 🔄 In progress / ✅ Complete
-- Module 5: Data Loading - ⬜ Not started / 🔄 In progress / ✅ Complete
-- Module 6: Query Programs - ⬜ Not started / 🔄 In progress / ✅ Complete
+- Module 2: Identify and Collect Data Sources - ⬜ Not started / 🔄 In progress / ✅ Complete
+- Module 3: Evaluate Data Quality - ⬜ Not started / 🔄 In progress / ✅ Complete
+- Module 4: Data Mapping - ⬜ Not started / 🔄 In progress / ✅ Complete
+- Module 5: SDK Setup - ⬜ Not started / 🔄 In progress / ✅ Complete
+- Module 6: Load Single Data Source - ⬜ Not started / 🔄 In progress / ✅ Complete
+- Module 7: Multi-Source Orchestration - ⬜ Not started / 🔄 In progress / ✅ Complete
+- Module 8: Query and Validate Results - ⬜ Not started / 🔄 In progress / ✅ Complete
+- Module 9: Performance Testing - ⬜ Not started / 🔄 In progress / ✅ Complete
+- Module 10: Security Hardening - ⬜ Not started / 🔄 In progress / ✅ Complete
+- Module 11: Monitoring and Observability - ⬜ Not started / 🔄 In progress / ✅ Complete
+- Module 12: Package and Deploy - ⬜ Not started / 🔄 In progress / ✅ Complete
 
 Periodically remind users of their progress and what's next.
 
@@ -36,27 +42,43 @@ Use this workflow when a user wants to see entity resolution in action before wo
    - Different data quality levels
    - How a human would recognize these as duplicates
 
-4. **Generate demo script**: Call `generate_scaffold` with workflow `full_pipeline` to create a complete demo script that:
+4. **Create quickstart demo directory**:
+   ```bash
+   mkdir -p src/quickstart_demo
+   ```
+   
+   All Module 0 demo code must be saved in `src/quickstart_demo/` to keep it separate from the main boot camp project code.
+
+5. **Generate demo script**: Call `generate_scaffold` with workflow `full_pipeline` to create a complete demo script that:
    - Initializes Senzing with SQLite (no installation required if using Docker)
    - Loads the sample records
    - Queries the results
    - Shows resolved entities
+   
+   **Save the generated script to**: `src/quickstart_demo/demo_[dataset_name].py`
+   
+   Example: `src/quickstart_demo/demo_las_vegas.py`
 
-5. **Run the demo**: Execute the script and show:
+6. **Save sample data**: Save the sample data retrieved from `get_sample_data` to:
+   - `src/quickstart_demo/sample_data_[dataset_name].jsonl`
+   
+   Example: `src/quickstart_demo/sample_data_las_vegas.jsonl`
+
+7. **Run the demo**: Execute the script and show:
    - Records being loaded
    - Entity resolution happening in real time
    - How many entities were created from the records
    - Example of a resolved entity showing all matching records
 
-6. **Explain the results**: Walk through one resolved entity:
+8. **Explain the results**: Walk through one resolved entity:
    - "These 3 records all matched because..."
    - Show the features that drove the match (name, address, phone)
    - Explain confidence scores
    - Show how Senzing combined the information
 
-7. **Connect to their use case**: "Now imagine this with your data. Instead of [sample data], you'd have [their data sources]. The same process would find duplicates, match records across systems, and give you a unified view."
+9. **Connect to their use case**: "Now imagine this with your data. Instead of [sample data], you'd have [their data sources]. The same process would find duplicates, match records across systems, and give you a unified view."
 
-8. **Transition**: Ask if they want to:
+10. **Transition**: Ask if they want to:
    - Start Module 1 with their own data
    - Try another sample dataset
    - Learn more about how entity resolution works
@@ -83,6 +105,7 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
    - `data/transformed/` - Senzing-formatted JSON output
    - `data/samples/` - Sample data for testing
    - `data/backups/` - Database backups
+   - `src/quickstart_demo/` - Module 0 demo code (optional)
    - `src/transform/` - Transformation programs (Module 3)
    - `src/load/` - Loading programs (Module 5)
    - `src/query/` - Query programs (Module 6)
@@ -290,15 +313,141 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
 
 12. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
 
-13. **Transition to Module 2**: "Now let's look at your data sources to see if they need mapping. Please place sample data files in the `data/raw/` folder."
+13. **Transition to Module 2**: "Now let's collect the actual data from your data sources. We'll need to get the data files into the project so we can work with them."
 
 **Success indicator**: ✅ Clear problem statement + identified data sources + defined success metrics + user confirmation + `docs/business_problem.md` created
 
-## Workflow: Verify Data Sources Against SGES (Module 2)
+## Workflow: Identify and Collect Data Sources (Module 2)
+
+**Time**: 10-15 minutes per data source
+
+**Prerequisites**: ✅ Module 1 complete (business problem defined, data sources identified)
+
+**Purpose**: Collect the actual data files from each identified data source and store them in the project for analysis and mapping.
+
+1. **Review identified data sources**: Recap the data sources identified in Module 1. Review `docs/business_problem.md` for the complete list.
+
+2. **For each data source, collect the data**:
+
+   **Option A: User uploads files**
+   - Ask user to provide data files (CSV, JSON, Excel, etc.)
+   - User can drag and drop files into the chat or use file upload
+   - Save uploaded files to `data/raw/[datasource_name].[extension]`
+   - Example: `data/raw/customer_crm.csv`, `data/raw/vendor_api.json`
+
+   **Option B: User provides URL/location**
+   - Ask user for the URL or file path where data resides
+   - Document the location in `docs/data_source_locations.md`
+   - If accessible, download/copy data to `data/raw/`
+   - If not accessible (requires credentials, VPN, etc.), document access method
+
+   **Option C: Database connection**
+   - Ask user for database connection details
+   - Document connection string (without passwords) in `docs/data_source_locations.md`
+   - Store sample query results in `data/raw/[datasource_name]_sample.csv`
+   - Document the query used to extract data
+
+   **Option D: API endpoint**
+   - Ask user for API endpoint URL and authentication method
+   - Document API details in `docs/data_source_locations.md`
+   - Store sample API response in `data/raw/[datasource_name]_sample.json`
+   - Document the API call used
+
+3. **Verify data was received**:
+   ```bash
+   # Check that files are in data/raw/
+   ls -lh data/raw/
+   
+   # Show first few lines of each file
+   head -5 data/raw/customer_crm.csv
+   head -5 data/raw/vendor_api.json
+   ```
+
+4. **Document data source locations**: Create or update `docs/data_source_locations.md`:
+   ```markdown
+   # Data Source Locations
+   
+   ## Data Source 1: Customer CRM
+   - **Type**: CSV file
+   - **Location**: `data/raw/customer_crm.csv`
+   - **Original Source**: Uploaded by user from local system
+   - **Last Updated**: 2025-01-17
+   - **Record Count**: ~50,000 records
+   - **Access Method**: One-time upload
+   
+   ## Data Source 2: Vendor API
+   - **Type**: JSON API
+   - **Location**: Sample data in `data/raw/vendor_api_sample.json`
+   - **Original Source**: https://api.vendor.com/v1/suppliers
+   - **Last Updated**: 2025-01-17
+   - **Record Count**: ~5,000 records
+   - **Access Method**: API call with Bearer token authentication
+   - **API Documentation**: https://api.vendor.com/docs
+   - **Sample API Call**:
+     ```bash
+     curl -H "Authorization: Bearer $API_TOKEN" \
+          https://api.vendor.com/v1/suppliers?limit=100
+     ```
+   
+   ## Data Source 3: Legacy Database
+   - **Type**: PostgreSQL database
+   - **Location**: Sample data in `data/raw/legacy_db_sample.csv`
+   - **Original Source**: postgresql://dbserver.company.com:5432/legacy_db
+   - **Last Updated**: 2025-01-17
+   - **Record Count**: ~200,000 records
+   - **Access Method**: Database query (requires VPN)
+   - **Sample Query**:
+     ```sql
+     SELECT customer_id, name, address, phone, email
+     FROM customers
+     WHERE active = true
+     LIMIT 1000;
+     ```
+   ```
+
+5. **Handle sensitive data appropriately**:
+   - Remind user about data privacy (see `steering/security-privacy.md`)
+   - If data contains PII, suggest anonymizing for testing
+   - Ensure `.gitignore` excludes `data/raw/*` to prevent committing sensitive data
+   - Document any data handling requirements in `docs/security_compliance.md`
+
+6. **Create sample files if needed**:
+   - If full dataset is very large (>1GB), create smaller sample files
+   - Save samples to `data/samples/[datasource_name]_sample.[extension]`
+   - Document sampling method (first N records, random sample, etc.)
+   - Ensure sample is representative of full dataset
+
+7. **Verify data quality at a glance**:
+   - Check file sizes are reasonable
+   - Verify files are not empty
+   - Check file formats are as expected
+   - Look for obvious issues (corrupted files, wrong format, etc.)
+
+8. **Update data source tracking**:
+   ```markdown
+   Data Source Collection Status:
+   - ✅ Customer CRM - Collected (data/raw/customer_crm.csv)
+   - ✅ Vendor API - Sample collected (data/raw/vendor_api_sample.json)
+   - ⬜ Legacy Database - Pending (requires VPN access)
+   ```
+
+9. **Transition to Module 3**: "Great! Now that we have the data files, let's evaluate each one to see if it needs mapping or if it's already in the right format for Senzing."
+
+**Success indicator**: ✅ All data sources have files in `data/raw/` OR documented locations + `docs/data_source_locations.md` created + data collection status tracked
+
+**Agent behavior**:
+- Be patient with file uploads - they may take time
+- Provide clear instructions for each data source type
+- Help user create sample files if full datasets are too large
+- Remind about data privacy and security
+- Verify files are accessible before proceeding
+- Document everything in `docs/data_source_locations.md`
+
+## Workflow: Verify Data Sources Against SGES (Module 3)
 
 **Time**: 10 minutes per data source
 
-**Prerequisites**: ✅ Module 1 complete (business problem defined, data sources identified)
+**Prerequisites**: ✅ Module 2 complete (data sources collected, files in `data/raw/`)
 
 1. **List the agreed-upon data sources**: Recap the data sources identified during the business problem discussion. Review `docs/business_problem.md` for the list.
 
@@ -364,11 +513,11 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
    2. [Data source] - [Reason for priority]
    ```
 
-7. **Proceed to mapping**: For each data source that needs mapping, transition to the "Data Mapping End-to-End" workflow.
+7. **Proceed to mapping**: For each data source that needs mapping, transition to the "Data Mapping End-to-End" workflow (Module 4).
 
 **Success indicator**: ✅ All data sources categorized + `docs/data_source_evaluation.md` created
 
-## Workflow: Install Senzing Boot Camp Hooks (Before Module 3)
+## Workflow: Install Senzing Boot Camp Hooks (Before Module 4)
 
 Use this workflow to set up automated quality checks and reminders before starting data mapping.
 
@@ -441,9 +590,9 @@ Use this workflow when a user is new to Senzing and wants a general introduction
 4. Explain how Senzing resolves these records into entities — features are extracted, scored, and compared. Entity-centric learning means the engine improves resolution as more data arrives.
 5. Ask the user what they'd like to explore next: mapping their own data, setting up the SDK, or diving deeper into concepts.
 
-## Workflow: Data Mapping End-to-End
+## Workflow: Data Mapping End-to-End (Module 4)
 
-Use this workflow for each data source that needs mapping (identified in the "Verify Data Sources Against SGES" workflow). Complete the entire mapping process for one data source before moving to the next.
+Use this workflow for each data source that needs mapping (identified in Module 3). Complete the entire mapping process for one data source before moving to the next.
 
 **Important**: While these steps are numbered sequentially, mapping is an iterative and exploratory process. Users can:
 - Jump back to earlier steps when they discover new information
@@ -457,6 +606,8 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 - Data Source 1: Customer Database → In Progress / Complete
 - Data Source 2: Transaction Logs → Pending
 - Data Source 3: Vendor Data → Pending
+
+**Prerequisites**: ✅ Module 3 complete (sources evaluated, non-compliant sources identified)
 
 **For the current data source**:
 
@@ -619,7 +770,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 13. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 2), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
 
-14. **Transition to Module 4**: Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 4 (SDK Setup).
+14. **Transition to Module 5**: Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 5 (SDK Setup).
 
 ### Important Rules for Data Mapping
 
@@ -632,23 +783,117 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 Use this workflow when a user wants to install Senzing and load data to see entity resolution results.
 
 This workflow is now split into two parts:
-- **Part A**: SDK installation and configuration (Module 4)
-- **Part B**: Creating loading programs for each data source (Module 5)
+- **Part A**: SDK installation and configuration (Module 5)
+- **Part B**: Creating loading programs for each data source (Module 6)
 
-### Part A: SDK Installation and Configuration (Module 4)
+### Part A: SDK Installation and Configuration (Module 5)
 
-1. Determine the user's platform (Linux distro, macOS, Windows, Docker).
-2. Call `sdk_guide` with `topic='install'` and the detected platform for installation commands.
-3. Call `sdk_guide` with `topic='configure'` for engine configuration (SQLite for evaluation).
-4. Verify the installation is working correctly.
+**IMPORTANT**: Before installing, verify Senzing is not already installed to avoid conflicts or duplicate installations.
 
-### Part B: Create Loading Programs (Module 5)
+1. **Check if Senzing is already installed**:
+   
+   **Python check**:
+   ```bash
+   python -c "import senzing; print('Senzing version:', senzing.__version__)" 2>/dev/null
+   ```
+   
+   **System check (Linux/macOS)**:
+   ```bash
+   # Check for Senzing installation directory
+   ls -la /opt/senzing 2>/dev/null
+   ls -la /etc/opt/senzing 2>/dev/null
+   
+   # Check for Senzing Python package
+   pip list | grep senzing
+   ```
+   
+   **If Senzing is already installed**:
+   - Ask user if they want to use the existing installation
+   - Verify the version is compatible (V4.0 or V3.x)
+   - Skip to step 4 (verify installation)
+   - If version is incompatible or installation is broken, proceed with reinstallation
+
+2. **Determine the user's platform** (if not already installed):
+   - Linux distro (apt-based or yum-based)
+   - macOS (Intel or ARM)
+   - Windows
+   - Docker (recommended for quick start)
+
+3. **Install Senzing** (if not already installed):
+   - Call `sdk_guide` with `topic='install'` and the detected platform for installation commands
+   - Follow platform-specific installation steps
+   - Accept EULA during installation
+
+4. **Verify the installation is working correctly**:
+   ```python
+   # Test script to verify Senzing installation
+   import senzing
+   from senzing import G2Engine
+   
+   print(f"Senzing version: {senzing.__version__}")
+   
+   # Try to initialize engine
+   try:
+       engine = G2Engine()
+       print("✅ Senzing engine initialized successfully")
+       engine.destroy()
+   except Exception as e:
+       print(f"❌ Error initializing engine: {e}")
+   ```
+
+5. **Configure the engine**:
+   - Call `sdk_guide` with `topic='configure'` for engine configuration
+   - Choose database: SQLite for evaluation, PostgreSQL for production
+   - Register data sources identified in Module 1
+   - Create engine configuration JSON
+
+6. **Test database connection**:
+   ```python
+   # Test database connectivity
+   import json
+   from senzing import G2Engine
+   
+   config = {
+       "PIPELINE": {
+           "CONFIGPATH": "/etc/opt/senzing",
+           "RESOURCEPATH": "/opt/senzing/g2/resources",
+           "SUPPORTPATH": "/opt/senzing/data"
+       },
+       "SQL": {
+           "CONNECTION": "sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db"
+       }
+   }
+   
+   engine = G2Engine()
+   engine.init("TestApp", json.dumps(config), False)
+   
+   # Try a simple operation
+   stats = engine.getStats()
+   print("✅ Database connection successful")
+   print(f"Stats: {stats}")
+   
+   engine.destroy()
+   ```
+
+**Success criteria**: 
+- ✅ Senzing installed (or existing installation verified)
+- ✅ Engine initializes without errors
+- ✅ Database connection works
+- ✅ Data sources registered
+
+**Agent behavior**:
+- Always check for existing installation first
+- Don't reinstall if compatible version exists
+- Verify installation before proceeding to Module 6
+- If installation fails, check common pitfalls guide
+
+### Part B: Create Loading Programs (Module 6)
 
 Use this workflow for each data source that needs to be loaded into Senzing. Create a separate loading program for each data source.
 
 **Before starting**: Identify which data sources are ready to load:
-- Data sources that were mapped in Module 3 (have transformation program output)
-- Data sources that were SGES-compliant from Module 2 (can load directly)
+- Data sources that were mapped in Module 4 (have transformation program output)
+- Data sources that were SGES-compliant from Module 3 (can load directly)
 
 **For each data source**:
 
@@ -775,11 +1020,11 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 
 9. **Repeat for remaining data sources**: If there are more data sources to load, repeat this entire workflow for each one. Each data source should have its own loading program.
 
-10. **Transition to Module 6**: Once all data sources have been loaded, proceed to Module 6 (Analyze Results and Troubleshoot) to explore and query the resolved entities.
+10. **Transition to Module 7**: Once all data sources have been loaded, proceed to Module 7 (Analyze Results and Troubleshoot) to explore and query the resolved entities.
 
 ## Workflow: Quick SDK Test Load (Legacy)
 
-This workflow has been superseded by the separate Part A (Module 4) and Part B (Module 5) workflows above. The legacy workflow combined installation and loading, but the new approach separates them for clarity.
+This workflow has been superseded by the separate Part A (Module 5) and Part B (Module 6) workflows above. The legacy workflow combined installation and loading, but the new approach separates them for clarity.
 
 1. Determine the user's platform (Linux distro, macOS, Windows, Docker).
 2. Call `sdk_guide` with `topic='install'` and the detected platform for installation commands.
@@ -805,9 +1050,9 @@ Before recommending any installation or deployment approach, call `search_docs` 
 - Missing database schema initialization
 - Incorrect repository configuration
 
-## Workflow: Create Query Programs to Answer the Business Problem (Module 6)
+## Workflow: Create Query Programs to Answer the Business Problem (Module 7)
 
-Use this workflow after all data sources have been loaded (Module 5). The goal is to create programs that query Senzing to answer the specific business problem identified in Module 1.
+Use this workflow after all data sources have been loaded (Module 6). The goal is to create programs that query Senzing to answer the specific business problem identified in Module 1.
 
 1. **Review the business problem**: Go back to Module 1 and review:
    - What problem was the user trying to solve?
@@ -1009,11 +1254,12 @@ Use this workflow after all data sources have been loaded (Module 5). The goal i
 
 12. **Complete the boot camp**: Once the user has query programs that successfully answer their business problem, the boot camp is complete! The user now has:
    - Understanding of their business problem (Module 1)
-   - Evaluated data sources (Module 2)
-   - Transformation programs for each data source (Module 3)
-   - Configured Senzing SDK (Module 4)
-   - Loading programs for each data source (Module 5)
-   - Query programs that answer their business questions (Module 6)
+   - Collected data sources (Module 2)
+   - Evaluated data sources (Module 3)
+   - Transformation programs for each data source (Module 4)
+   - Configured Senzing SDK (Module 5)
+   - Loading programs for each data source (Module 6)
+   - Query programs that answer their business questions (Module 7)
 
 ## Workflow: Troubleshooting and Error Resolution
 
@@ -1045,3 +1291,654 @@ This power should activate when the user mentions or is working on:
 - Record loading, entity export, redo processing
 - Senzing error codes (SENZ prefix)
 - V3 to V4 migration
+
+
+## Workflow: Refine and Package for Deployment (Module 8)
+
+Use this workflow when the user has completed Modules 0-7 and wants to prepare their code for production deployment.
+
+**Time**: 2-4 hours
+
+**Goal**: Transform prototype code into a production-ready deployment package with proper structure, tests, and documentation.
+
+### Step 1: Assess Current State
+
+1. **Review existing code**:
+   - Transformation programs in `src/transform/`
+   - Loading programs in `src/load/`
+   - Query programs in `src/query/`
+   - Utility scripts in `src/utils/`
+
+2. **Identify refactoring needs**:
+   - Code duplication
+   - Hard-coded values
+   - Missing error handling
+   - Inconsistent patterns
+   - Lack of configuration management
+
+3. **Document current functionality**:
+   - What data sources are transformed?
+   - What loading patterns are used?
+   - What queries are implemented?
+   - What dependencies exist?
+
+### Step 2: Choose Deployment Configuration
+
+Guide the user through key decisions:
+
+1. **Target Database**:
+   ```
+   Current: SQLite (evaluation only)
+   
+   Production options:
+   - PostgreSQL (recommended, best performance)
+   - MySQL (if existing infrastructure)
+   - MS SQL Server (Windows environments)
+   - Oracle (enterprise environments)
+   ```
+
+2. **Programming Language**:
+   ```
+   If multiple languages used in boot camp:
+   - Python (easiest, most common)
+   - Java (enterprise, existing Java infrastructure)
+   - C# (.NET environments)
+   - Rust (performance-critical applications)
+   
+   Recommend: Stick with the language used in Modules 4-7
+   ```
+
+3. **Deployment Environment**:
+   ```
+   - On-premises servers
+   - Cloud (AWS, Azure, GCP)
+   - Docker containers (recommended)
+   - Kubernetes (for scale)
+   - Serverless (Lambda, Azure Functions)
+   ```
+
+4. **Integration Pattern** (from Module 7):
+   ```
+   - Batch processing
+   - REST API
+   - Streaming/event-driven
+   - Database sync
+   - Microservice
+   ```
+
+### Step 3: Refactor Code Structure
+
+Transform boot camp code into proper package structure:
+
+#### For Python Projects
+
+1. **Create package structure**:
+   ```bash
+   mkdir -p my_senzing_project/{transform,load,query,utils}
+   touch my_senzing_project/__init__.py
+   touch my_senzing_project/{transform,load,query,utils}/__init__.py
+   ```
+
+2. **Refactor transformation code**:
+   - Move `src/transform/transform_*.py` into package
+   - Create base `Transformer` class
+   - Extract common logic into utilities
+   - Add configuration management
+   - Implement proper logging
+
+3. **Refactor loading code**:
+   - Move `src/load/load_*.py` into package
+   - Create base `Loader` class
+   - Add batch processing support
+   - Implement progress tracking
+   - Add error recovery
+
+4. **Refactor query code**:
+   - Move `src/query/query_*.py` into package
+   - Create `SenzingClient` wrapper
+   - Implement query methods
+   - Add result formatting
+   - Add caching (if appropriate)
+
+5. **Create configuration management**:
+   ```python
+   # my_senzing_project/config.py
+   import os
+   import yaml
+   from dataclasses import dataclass
+   
+   @dataclass
+   class Config:
+       database_url: str
+       senzing_config: str
+       data_sources: dict
+       logging_level: str
+       
+       @classmethod
+       def from_yaml(cls, path: str):
+           with open(path) as f:
+               data = yaml.safe_load(f)
+           return cls(**data)
+       
+       @classmethod
+       def from_env(cls):
+           return cls(
+               database_url=os.getenv('DATABASE_URL'),
+               senzing_config=os.getenv('SENZING_ENGINE_CONFIGURATION_JSON'),
+               data_sources={},
+               logging_level=os.getenv('LOG_LEVEL', 'INFO')
+           )
+   ```
+
+6. **Create setup.py and pyproject.toml**:
+   - Use `generate_scaffold` or create manually
+   - List all dependencies
+   - Define entry points
+   - Add package metadata
+
+7. **Update requirements.txt**:
+   - Add all production dependencies
+   - Create requirements-dev.txt for development dependencies
+   - Pin versions for production
+
+#### For Java Projects
+
+1. **Create Maven/Gradle structure**:
+   ```bash
+   mkdir -p src/main/java/com/company/senzing/{transform,load,query,util}
+   mkdir -p src/main/resources
+   mkdir -p src/test/java/com/company/senzing
+   ```
+
+2. **Create pom.xml** with dependencies
+
+3. **Refactor code into packages**
+
+4. **Add Spring Boot** (optional, for REST API)
+
+#### For C# Projects
+
+1. **Create .NET solution structure**:
+   ```bash
+   dotnet new sln -n MySenzingProject
+   dotnet new console -n MySenzingProject
+   dotnet new xunit -n MySenzingProject.Tests
+   ```
+
+2. **Create .csproj** with dependencies
+
+3. **Refactor code into namespaces**
+
+### Step 4: Create Comprehensive Test Suite
+
+1. **Set up testing framework**:
+   - Python: pytest
+   - Java: JUnit
+   - C#: xUnit
+
+2. **Create test directory structure**:
+   ```bash
+   mkdir -p tests/{test_transform,test_load,test_query}
+   touch tests/__init__.py
+   touch tests/conftest.py  # pytest configuration
+   ```
+
+3. **Write unit tests**:
+   - Test each transformer with sample data
+   - Test validation logic
+   - Test configuration loading
+   - Test utility functions
+   
+   Example:
+   ```python
+   # tests/test_transform/test_customers.py
+   import pytest
+   from my_senzing_project.transform.customers import CustomerTransformer
+   
+   def test_customer_transformer_basic():
+       transformer = CustomerTransformer()
+       input_data = {
+           "customer_id": "12345",
+           "first_name": "John",
+           "last_name": "Doe",
+           "email": "john.doe@example.com"
+       }
+       result = transformer.transform(input_data)
+       
+       assert result["DATA_SOURCE"] == "CUSTOMERS"
+       assert result["RECORD_ID"] == "12345"
+       assert result["NAME_FULL"] == "John Doe"
+       assert result["EMAIL_ADDRESS"] == "john.doe@example.com"
+   
+   def test_customer_transformer_missing_fields():
+       transformer = CustomerTransformer()
+       input_data = {"customer_id": "12345", "first_name": "John"}
+       result = transformer.transform(input_data)
+       
+       assert result["NAME_FULL"] == "John"
+   ```
+
+4. **Write integration tests**:
+   - Test end-to-end transformation pipeline
+   - Test loading to Senzing (use test database)
+   - Test query operations
+   - Test error handling
+
+5. **Write data quality tests**:
+   - Validate transformed data format
+   - Check attribute coverage
+   - Verify data completeness
+
+6. **Configure test runner**:
+   ```ini
+   # pytest.ini
+   [pytest]
+   testpaths = tests
+   python_files = test_*.py
+   python_classes = Test*
+   python_functions = test_*
+   addopts = 
+       --verbose
+       --cov=my_senzing_project
+       --cov-report=html
+       --cov-report=term
+   ```
+
+7. **Run tests and verify coverage**:
+   ```bash
+   pytest tests/ --cov=my_senzing_project --cov-report=html
+   ```
+   
+   Target: >80% code coverage
+
+### Step 5: Apply Language-Specific Packaging
+
+#### Python
+
+1. **Create setup.py**:
+   ```python
+   from setuptools import setup, find_packages
+   
+   setup(
+       name="my-senzing-project",
+       version="1.0.0",
+       packages=find_packages(),
+       install_requires=[
+           "senzing>=4.0.0",
+           "pandas>=2.0.0",
+           "orjson>=3.9.0",
+           "pyyaml>=6.0",
+           "psycopg2-binary>=2.9.0",
+       ],
+       entry_points={
+           "console_scripts": [
+               "senzing-transform=my_senzing_project.transform.cli:main",
+               "senzing-load=my_senzing_project.load.cli:main",
+               "senzing-query=my_senzing_project.query.cli:main",
+           ],
+       },
+   )
+   ```
+
+2. **Create pyproject.toml** (modern Python packaging)
+
+3. **Test installation**:
+   ```bash
+   pip install -e .
+   senzing-transform --help
+   ```
+
+#### Java
+
+1. **Complete pom.xml** with all dependencies
+
+2. **Build JAR**:
+   ```bash
+   mvn clean package
+   ```
+
+3. **Test JAR**:
+   ```bash
+   java -jar target/my-senzing-project-1.0.0.jar
+   ```
+
+#### C#
+
+1. **Complete .csproj** with all dependencies
+
+2. **Build package**:
+   ```bash
+   dotnet build
+   dotnet pack
+   ```
+
+3. **Test package**:
+   ```bash
+   dotnet run
+   ```
+
+### Step 6: Generate Deployment Documentation
+
+Create comprehensive documentation in `docs/`:
+
+1. **docs/deployment.md**:
+   - Prerequisites
+   - Installation steps
+   - Configuration guide
+   - Database setup
+   - Running the application
+   - Troubleshooting
+
+2. **docs/configuration.md**:
+   - All configuration options
+   - Environment variables
+   - Configuration file format
+   - Examples for dev/staging/prod
+
+3. **docs/api.md** (if REST API):
+   - Endpoint documentation
+   - Request/response examples
+   - Authentication
+   - Error codes
+
+4. **docs/monitoring.md**:
+   - Metrics to monitor
+   - Logging configuration
+   - Health check endpoints
+   - Alerting setup
+
+5. **docs/troubleshooting.md**:
+   - Common issues and solutions
+   - Error code reference
+   - Performance tuning
+   - Support contacts
+
+6. **Update README.md**:
+   - Project overview
+   - Quick start guide
+   - Link to detailed documentation
+   - License information
+
+### Step 7: Create Deployment Artifacts
+
+1. **Create Dockerfile**:
+   ```dockerfile
+   FROM python:3.11-slim
+   
+   WORKDIR /app
+   
+   # Install system dependencies
+   RUN apt-get update && apt-get install -y \
+       postgresql-client \
+       && rm -rf /var/lib/apt/lists/*
+   
+   # Copy and install Python dependencies
+   COPY requirements.txt .
+   RUN pip install --no-cache-dir -r requirements.txt
+   
+   # Copy application
+   COPY my_senzing_project/ ./my_senzing_project/
+   COPY config/ ./config/
+   
+   # Set environment
+   ENV PYTHONPATH=/app
+   ENV CONFIG_PATH=/app/config/config.prod.yaml
+   
+   # Run application
+   CMD ["python", "-m", "my_senzing_project.load.cli"]
+   ```
+
+2. **Create docker-compose.yml**:
+   ```yaml
+   version: '3.8'
+   
+   services:
+     postgres:
+       image: postgres:15
+       environment:
+         POSTGRES_DB: senzing
+         POSTGRES_USER: senzing
+         POSTGRES_PASSWORD: ${DB_PASSWORD}
+       volumes:
+         - postgres_data:/var/lib/postgresql/data
+       ports:
+         - "5432:5432"
+     
+     senzing-app:
+       build: .
+       depends_on:
+         - postgres
+       environment:
+         DATABASE_URL: postgresql://senzing:${DB_PASSWORD}@postgres:5432/senzing
+         SENZING_ENGINE_CONFIGURATION_JSON: ${SENZING_CONFIG}
+       volumes:
+         - ./data:/app/data
+         - ./logs:/app/logs
+   
+   volumes:
+     postgres_data:
+   ```
+
+3. **Create deployment scripts**:
+   ```bash
+   # scripts/deploy.sh
+   #!/bin/bash
+   set -e
+   
+   ENV=$1
+   
+   if [ -z "$ENV" ]; then
+       echo "Usage: ./deploy.sh [dev|staging|prod]"
+       exit 1
+   fi
+   
+   echo "Deploying to $ENV..."
+   
+   # Run tests
+   pytest tests/
+   
+   # Build Docker image
+   docker build -t my-senzing-project:$ENV .
+   
+   # Deploy
+   docker-compose -f docker-compose.$ENV.yml up -d
+   
+   echo "Deployment complete!"
+   ```
+
+4. **Create CI/CD pipeline** (GitHub Actions example):
+   ```yaml
+   # .github/workflows/deploy.yml
+   name: Deploy
+   
+   on:
+     push:
+       branches: [main]
+   
+   jobs:
+     test:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v3
+         - uses: actions/setup-python@v4
+           with:
+             python-version: '3.11'
+         - run: pip install -r requirements.txt
+         - run: pip install -r requirements-dev.txt
+         - run: pytest tests/
+     
+     deploy:
+       needs: test
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v3
+         - run: ./scripts/deploy.sh prod
+   ```
+
+5. **Create Kubernetes manifests** (if applicable):
+   ```yaml
+   # k8s/deployment.yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: senzing-app
+   spec:
+     replicas: 3
+     selector:
+       matchLabels:
+         app: senzing-app
+     template:
+       metadata:
+         labels:
+           app: senzing-app
+       spec:
+         containers:
+         - name: senzing-app
+           image: my-senzing-project:latest
+           env:
+           - name: DATABASE_URL
+             valueFrom:
+               secretKeyRef:
+                 name: senzing-secrets
+                 key: database-url
+   ```
+
+### Step 8: Validate Package
+
+1. **Run all tests**:
+   ```bash
+   pytest tests/ --cov=my_senzing_project
+   ```
+
+2. **Check code quality**:
+   ```bash
+   # Python
+   flake8 my_senzing_project/
+   black --check my_senzing_project/
+   mypy my_senzing_project/
+   
+   # Java
+   mvn checkstyle:check
+   
+   # C#
+   dotnet format --verify-no-changes
+   ```
+
+3. **Test installation**:
+   ```bash
+   # Python
+   pip install -e .
+   
+   # Java
+   mvn install
+   
+   # C#
+   dotnet build
+   ```
+
+4. **Test Docker build**:
+   ```bash
+   docker build -t my-senzing-project:test .
+   docker run my-senzing-project:test --help
+   ```
+
+5. **Test deployment in staging**:
+   ```bash
+   ./scripts/deploy.sh staging
+   ```
+
+6. **Verify documentation**:
+   - All docs complete
+   - Examples work
+   - Links valid
+   - README clear
+
+### Step 9: Finalize and Document
+
+1. **Create release notes**:
+   ```markdown
+   # Release v1.0.0
+   
+   ## Features
+   - Customer data transformation
+   - Batch loading to PostgreSQL
+   - REST API for entity queries
+   
+   ## Requirements
+   - Python 3.8+
+   - PostgreSQL 12+
+   - Senzing SDK 4.0+
+   
+   ## Installation
+   See [docs/deployment.md](docs/deployment.md)
+   ```
+
+2. **Tag release**:
+   ```bash
+   git tag -a v1.0.0 -m "Release version 1.0.0"
+   git push origin v1.0.0
+   ```
+
+3. **Create deployment checklist**:
+   ```markdown
+   ## Pre-Deployment Checklist
+   - [ ] All tests pass
+   - [ ] Code quality checks pass
+   - [ ] Documentation complete
+   - [ ] Configuration reviewed
+   - [ ] Database migrations ready
+   - [ ] Monitoring configured
+   - [ ] Backup strategy in place
+   - [ ] Rollback plan documented
+   - [ ] Stakeholders notified
+   ```
+
+4. **Document lessons learned**:
+   - Update `docs/lessons_learned.md`
+   - Note what worked well
+   - Document challenges and solutions
+   - Recommendations for future projects
+
+### Transition to Production
+
+Once Module 8 is complete:
+
+1. **Schedule deployment**:
+   - Choose low-traffic window
+   - Notify stakeholders
+   - Prepare rollback plan
+
+2. **Deploy to production**:
+   ```bash
+   ./scripts/deploy.sh prod
+   ```
+
+3. **Verify deployment**:
+   - Run health checks
+   - Test critical paths
+   - Monitor logs
+   - Check metrics
+
+4. **Monitor post-deployment**:
+   - Watch for errors
+   - Monitor performance
+   - Validate data quality
+   - Gather user feedback
+
+5. **Handoff to operations**:
+   - Provide documentation
+   - Train operations team
+   - Establish support process
+   - Document escalation path
+
+**Module 8 Complete!** 🎉
+
+The code is now production-ready with:
+- ✅ Clean package structure
+- ✅ Comprehensive test suite
+- ✅ Language-specific packaging
+- ✅ Deployment documentation
+- ✅ Docker containers
+- ✅ CI/CD pipeline
+- ✅ Monitoring and logging
+- ✅ Ready for production deployment

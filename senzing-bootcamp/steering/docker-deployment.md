@@ -37,10 +37,13 @@ For Docker deployments with PostgreSQL, use this two-stage initialization:
 **Stage 1: Minimal Schema (SQL)**
 ```sql
 -- Create just enough for SDK to work
+-- CRITICAL: Use exact column names expected by SDK
+
 CREATE TABLE sys_vars (
     var_group VARCHAR(50),
     var_code VARCHAR(50),
     var_value TEXT,
+    sys_lstupd_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (var_group, var_code)
 );
 
@@ -49,11 +52,12 @@ INSERT INTO sys_vars VALUES ('SYSTEM', 'VERSION', '4.2.1');
 INSERT INTO sys_vars VALUES ('SYSTEM', 'SCHEMA_VERSION', '4.0');
 
 -- Create config tables
+-- CRITICAL: Column must be sys_create_dt (NOT sys_create_date)
 CREATE TABLE sys_cfg (
-    config_id BIGINT PRIMARY KEY,
-    config_data_id BIGINT,
+    config_data_id BIGSERIAL PRIMARY KEY,
+    config_data TEXT NOT NULL,
     config_comments TEXT,
-    sys_create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    sys_create_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Must be sys_create_dt
 );
 
 CREATE TABLE sz_cfg_config (
@@ -63,12 +67,27 @@ CREATE TABLE sz_cfg_config (
     sys_create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- CRITICAL: Must include code_id column for SDK queries
 CREATE TABLE sys_codes_used (
     code_type VARCHAR(50),
-    code_value VARCHAR(50),
+    code VARCHAR(50),
+    code_id BIGSERIAL,  -- Required by SDK
     PRIMARY KEY (code_type, code_value)
 );
 ```
+
+**Critical Schema Requirements**:
+
+1. **sys_cfg.sys_create_dt** (NOT sys_create_date)
+   - Error if wrong: `SENZ1001|Critical Database Error '(7:42703ERROR: column "sys_create_dt" of relation "sys_cfg" does not exist`
+   - The SDK specifically looks for `sys_create_dt`
+
+2. **sys_codes_used.code_id** (must be present)
+   - Error if missing: `SENZ1001|Critical Database Error '(7:42703ERROR: column "code_id" does not exist`
+   - The SDK queries: `SELECT CODE_TYPE,CODE,CODE_ID FROM SYS_CODES_USED`
+
+3. **sys_vars structure** (var_group, var_code, var_value)
+   - Must use this exact structure for version checking to work
 
 **Stage 2: SDK Initialization (Python)**
 ```python
@@ -346,6 +365,48 @@ docker-compose -f docker/docker-compose.yml exec senzing \
 
 ## Common Docker Issues
 
+### Issue: "Column sys_create_dt does not exist" (SENZ1001)
+
+**Cause**: sys_cfg table uses wrong column name (sys_create_date instead of sys_create_dt)
+
+**Error Message**: `SENZ1001|Critical Database Error '(7:42703ERROR: column "sys_create_dt" of relation "sys_cfg" does not exist`
+
+**Solution**:
+```sql
+-- Fix the column name in sys_cfg table
+ALTER TABLE sys_cfg RENAME COLUMN sys_create_date TO sys_create_dt;
+
+-- Or recreate table with correct name
+DROP TABLE IF EXISTS sys_cfg;
+CREATE TABLE sys_cfg (
+    config_data_id BIGSERIAL PRIMARY KEY,
+    config_data TEXT NOT NULL,
+    config_comments TEXT,
+    sys_create_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Issue: "Column code_id does not exist" (SENZ1001)
+
+**Cause**: sys_codes_used table missing code_id column
+
+**Error Message**: `SENZ1001|Critical Database Error '(7:42703ERROR: column "code_id" does not exist`
+
+**Solution**:
+```sql
+-- Add missing code_id column
+ALTER TABLE sys_codes_used ADD COLUMN code_id BIGSERIAL;
+
+-- Or recreate table with correct structure
+DROP TABLE IF EXISTS sys_codes_used;
+CREATE TABLE sys_codes_used (
+    code_type VARCHAR(50),
+    code VARCHAR(50),
+    code_id BIGSERIAL,
+    PRIMARY KEY (code_type, code_value)
+);
+```
+
 ### Issue: "Schema tables not found" (SENZ1019)
 
 **Cause**: Database not properly initialized
@@ -371,6 +432,8 @@ WHERE var_group = 'SYSTEM' AND var_code = 'VERSION';
 UPDATE sys_vars SET var_value = '4.0' 
 WHERE var_group = 'SYSTEM' AND var_code = 'SCHEMA_VERSION';
 ```
+
+**Known Issue**: In some Docker/PostgreSQL configurations, the SDK may report an empty version string even when sys_vars is correctly populated. This is a known bug under investigation. Workaround: Use SQLite for development or direct PostgreSQL connection (not in Docker).
 
 ### Issue: Container restarts continuously
 

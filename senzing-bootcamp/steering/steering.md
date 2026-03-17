@@ -867,12 +867,17 @@ This workflow is now split into two parts:
    **If user chooses Docker deployment**:
    - Explain that Docker runtime images do NOT include PostgreSQL schema files
    - For PostgreSQL, must use two-stage initialization pattern:
-     1. Create minimal SQL schema with sys_vars table
-     2. Use SDK's `set_default_config()` to create remaining tables
+     1. Create minimal SQL schema with CORRECT column names:
+        - sys_cfg must use `sys_create_dt` (NOT sys_create_date)
+        - sys_codes_used must include `code_id BIGSERIAL` column
+        - sys_vars structure: (var_group, var_code, var_value)
+     2. Insert sys_vars: VERSION='4.2.1', SCHEMA_VERSION='4.0'
+     3. Use SDK's `set_default_config()` to create remaining tables
+   - **Critical**: Wrong column names cause SENZ1001 errors that block initialization
    - Container CMD should be `tail -f /dev/null` to keep running
    - Use `docker exec` to run initialization and loading commands
    - All Docker files must be created in `docker/` directory
-   - Reference `steering/docker-deployment.md` for complete examples
+   - Reference `steering/docker-deployment.md` for complete verified schema examples
 
 4. **Verify the installation is working correctly**:
    ```python

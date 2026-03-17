@@ -673,6 +673,108 @@ Quick reference for common issues and solutions across all boot camp modules.
 
 ## Docker Issues
 
+### Column "sys_create_dt" Does Not Exist (SENZ1001)
+
+**Symptom**: `SENZ1001|Critical Database Error '(7:42703ERROR: column "sys_create_dt" of relation "sys_cfg" does not exist`
+
+**Cause**: sys_cfg table uses wrong column name (sys_create_date instead of sys_create_dt)
+
+**Solutions**:
+
+1. **Fix the column name**:
+   ```sql
+   ALTER TABLE sys_cfg RENAME COLUMN sys_create_date TO sys_create_dt;
+   ```
+
+2. **Or recreate table with correct name**:
+   ```sql
+   DROP TABLE IF EXISTS sys_cfg;
+   CREATE TABLE sys_cfg (
+       config_data_id BIGSERIAL PRIMARY KEY,
+       config_data TEXT NOT NULL,
+       config_comments TEXT,
+       sys_create_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
+   ```
+
+3. **Verify the fix**:
+   ```bash
+   docker-compose exec postgres psql -U senzing -d senzing -c "\d sys_cfg"
+   ```
+
+**Related**: [docker-deployment.md](../../steering/docker-deployment.md)
+
+---
+
+### Column "code_id" Does Not Exist (SENZ1001)
+
+**Symptom**: `SENZ1001|Critical Database Error '(7:42703ERROR: column "code_id" does not exist`
+
+**Cause**: sys_codes_used table missing code_id column required by SDK
+
+**Solutions**:
+
+1. **Add missing column**:
+   ```sql
+   ALTER TABLE sys_codes_used ADD COLUMN code_id BIGSERIAL;
+   ```
+
+2. **Or recreate table with correct structure**:
+   ```sql
+   DROP TABLE IF EXISTS sys_codes_used;
+   CREATE TABLE sys_codes_used (
+       code_type VARCHAR(50),
+       code VARCHAR(50),
+       code_id BIGSERIAL,
+       PRIMARY KEY (code_type, code)
+   );
+   ```
+
+3. **Verify the fix**:
+   ```bash
+   docker-compose exec postgres psql -U senzing -d senzing -c "\d sys_codes_used"
+   ```
+
+**Related**: [docker-deployment.md](../../steering/docker-deployment.md)
+
+---
+
+### Version Reading Issue (SENZ7223) - Known Bug
+
+**Symptom**: `SENZ7223: Invalid version number for datastore schema [version '']` even though version is correctly stored in sys_vars
+
+**Cause**: SDK cannot read version from sys_vars table in Docker/PostgreSQL despite correct data
+
+**Verification**:
+```bash
+# Verify version is in database
+docker-compose exec postgres psql -U senzing -d senzing \
+  -c "SELECT * FROM sys_vars WHERE var_code = 'VERSION';"
+# Should show: SYSTEM | VERSION | 4.2.1
+
+# But SDK reports empty version when loading records
+```
+
+**What's Been Tried**:
+1. ✅ Fixed sys_cfg column name (sys_create_date → sys_create_dt)
+2. ✅ Fixed sys_codes_used missing code_id column
+3. ✅ Verified sys_vars table structure is correct
+4. ✅ Verified version values: VERSION='4.2.1', SCHEMA_VERSION='4.0'
+5. ✅ Configuration saves successfully to sys_cfg
+6. ✅ Data sources can be queried
+7. ❌ SDK still reads empty version string
+
+**Workaround**:
+- Use SQLite for local development (works 100%)
+- Use direct PostgreSQL connection (not in Docker) which may work
+- Wait for fix to this known issue
+
+**Status**: Known bug under investigation. The schema is correct, configuration saves successfully, but version reading fails in Docker/PostgreSQL environment.
+
+**Related**: [docker-deployment.md](../../steering/docker-deployment.md)
+
+---
+
 ### Container Restarts Continuously
 
 **Symptom**: Docker container keeps restarting

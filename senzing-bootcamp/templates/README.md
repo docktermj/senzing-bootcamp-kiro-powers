@@ -27,6 +27,25 @@ Ready-to-use templates for common data transformation and loading patterns.
 - `error_handler.py` - Handle errors and logging
 - `performance_monitor.py` - Monitor performance metrics
 
+### NEW: Validation & Testing Templates (v3.1.0)
+- `validate_schema.py` - Validate PostgreSQL/SQLite database schemas
+- `performance_baseline.py` - Quick performance testing and baseline metrics
+- `troubleshoot.py` - Interactive troubleshooting wizard
+
+### NEW: Data Collection Templates (v3.1.0)
+- `collect_from_csv.py` - Collect and sample CSV data sources
+- `collect_from_json.py` - Collect and sample JSON data sources
+- `collect_from_api.py` - Collect data from REST APIs with pagination
+- `collect_from_database.py` - Extract data from databases (PostgreSQL, MySQL, SQLite, SQL Server, Oracle)
+
+### NEW: Database Management Templates (v3.1.0)
+- `backup_database.py` - Backup SQLite and PostgreSQL databases
+- `restore_database.py` - Restore databases from backups
+- `rollback_load.py` - Guidance for rolling back data loads
+
+### NEW: Planning & Analysis Templates (v3.1.0)
+- `cost_calculator.py` - Interactive cost estimation for Senzing projects
+
 ## Using Templates
 
 ### Option 1: Copy and Customize
@@ -134,71 +153,246 @@ OUTPUT_FILE = "results/duplicates.json"
 
 ## Template Catalog
 
-### csv_mapping_template.py
+### Transformation Templates
+
+#### csv_mapping_template.py
 **Purpose**: Transform CSV files to Senzing JSON  
 **Use when**: Source data is in CSV format  
 **Customization**: Field mappings, data cleaning  
 **Complexity**: Beginner
 
-### json_mapping_template.py
+#### json_mapping_template.py
 **Purpose**: Transform JSON files to Senzing JSON  
 **Use when**: Source data is in JSON format  
 **Customization**: JSON path mappings, nested data  
 **Complexity**: Beginner
 
-### database_extract_template.py
+#### database_extract_template.py
 **Purpose**: Extract from database and transform  
 **Use when**: Source data is in a database  
 **Customization**: SQL queries, connection strings  
 **Complexity**: Intermediate
 
-### api_extract_template.py
+#### api_extract_template.py
 **Purpose**: Extract from REST API and transform  
 **Use when**: Source data is from an API  
 **Customization**: API endpoints, authentication  
 **Complexity**: Intermediate
 
-### batch_loader_template.py
+### Loading Templates
+
+#### batch_loader_template.py
 **Purpose**: Load data in batches for performance  
 **Use when**: Loading large datasets  
 **Customization**: Batch size, error handling  
 **Complexity**: Beginner
 
-### streaming_loader_template.py
+#### streaming_loader_template.py
 **Purpose**: Load data in real-time  
 **Use when**: Continuous data ingestion  
 **Customization**: Stream source, buffer size  
 **Complexity**: Advanced
 
-### incremental_loader_template.py
+#### incremental_loader_template.py
 **Purpose**: Load only new/changed records  
 **Use when**: Updating existing data  
 **Customization**: Change detection logic  
 **Complexity**: Intermediate
 
-### find_duplicates_template.py
+### Query Templates
+
+#### find_duplicates_template.py
 **Purpose**: Find entities with multiple records  
 **Use when**: Identifying duplicates  
 **Customization**: Duplicate criteria, output format  
 **Complexity**: Beginner
 
-### search_by_name_template.py
+#### search_by_name_template.py
 **Purpose**: Search for entities by name  
 **Use when**: Looking up specific entities  
 **Customization**: Search parameters  
 **Complexity**: Beginner
 
-### get_entity_network_template.py
+#### get_entity_network_template.py
 **Purpose**: Get entity relationships  
 **Use when**: Analyzing connections  
 **Customization**: Relationship depth, filters  
 **Complexity**: Intermediate
 
-### export_entities_template.py
+#### export_entities_template.py
 **Purpose**: Export resolved entities  
 **Use when**: Creating master data file  
 **Customization**: Export format, filters  
 **Complexity**: Beginner
+
+### NEW: Validation & Testing Templates (v3.1.0)
+
+#### validate_schema.py ⭐ HIGH PRIORITY
+**Purpose**: Validate PostgreSQL and SQLite database schemas  
+**Use when**: Before loading data, troubleshooting schema issues  
+**Features**: Checks required tables, validates column names (sys_create_dt, code_id), provides SQL fixes  
+**Complexity**: Beginner  
+**Usage**:
+```bash
+# PostgreSQL
+python templates/validate_schema.py --database postgresql \
+  --connection "postgresql://senzing:pass@localhost:5432/senzing"
+
+# SQLite
+python templates/validate_schema.py --database sqlite \
+  --connection "database/G2C.db"
+```
+
+#### performance_baseline.py
+**Purpose**: Quick performance testing and baseline metrics  
+**Use when**: After SDK setup, before production deployment  
+**Features**: Tests loading and query performance, provides interpretation  
+**Complexity**: Beginner  
+**Usage**:
+```bash
+python templates/performance_baseline.py \
+  --config-json '{"SQL":{"CONNECTION":"sqlite3://na:na@database/G2C.db"}}'
+```
+
+#### troubleshoot.py
+**Purpose**: Interactive troubleshooting wizard  
+**Use when**: Encountering errors, systematic problem diagnosis  
+**Features**: Guided questions, specific solutions, diagnostic checks  
+**Complexity**: Beginner  
+**Usage**:
+```bash
+python templates/troubleshoot.py
+```
+
+### NEW: Data Collection Templates (v3.1.0)
+
+#### collect_from_csv.py
+**Purpose**: Collect and sample CSV data sources  
+**Use when**: Module 2 (data collection), working with CSV files  
+**Features**: Auto-detects delimiter and encoding, creates samples  
+**Complexity**: Beginner  
+**Usage**:
+```bash
+python templates/collect_from_csv.py \
+  --input data/raw/customers.csv \
+  --output data/samples/customers_sample.csv \
+  --sample 1000
+```
+
+#### collect_from_json.py
+**Purpose**: Collect and sample JSON data sources  
+**Use when**: Module 2 (data collection), working with JSON files  
+**Features**: Handles JSON and JSON Lines formats, creates samples  
+**Complexity**: Beginner  
+**Usage**:
+```bash
+python templates/collect_from_json.py \
+  --input data/raw/customers.json \
+  --output data/samples/customers_sample.json \
+  --sample 1000
+```
+
+#### collect_from_api.py
+**Purpose**: Collect data from REST APIs with pagination  
+**Use when**: Module 2 (data collection), API data sources  
+**Features**: Pagination, authentication, rate limiting, retry logic  
+**Complexity**: Intermediate  
+**Usage**:
+```bash
+python templates/collect_from_api.py \
+  --url "https://api.example.com/customers" \
+  --output data/raw/customers.json \
+  --auth-token "your-token" \
+  --max-records 10000
+```
+
+#### collect_from_database.py
+**Purpose**: Extract data from databases  
+**Use when**: Module 2 (data collection), database sources  
+**Features**: Supports PostgreSQL, MySQL, SQLite, SQL Server, Oracle  
+**Complexity**: Intermediate  
+**Usage**:
+```bash
+python templates/collect_from_database.py \
+  --db-type postgresql \
+  --connection "postgresql://user:pass@host:5432/db" \
+  --query "SELECT * FROM customers" \
+  --output data/raw/customers.csv
+```
+
+### NEW: Database Management Templates (v3.1.0)
+
+#### backup_database.py ⭐ IMPORTANT
+**Purpose**: Backup SQLite and PostgreSQL databases  
+**Use when**: Before loading data, before major changes  
+**Features**: Auto-generates timestamped backups, compression  
+**Complexity**: Beginner  
+**Usage**:
+```bash
+# SQLite
+python templates/backup_database.py \
+  --db-type sqlite \
+  --database database/G2C.db \
+  --auto-name
+
+# PostgreSQL
+python templates/backup_database.py \
+  --db-type postgresql \
+  --connection "postgresql://senzing:pass@localhost:5432/senzing" \
+  --output data/backups/senzing_backup.sql
+```
+
+#### restore_database.py
+**Purpose**: Restore databases from backups  
+**Use when**: Recovering from errors, rolling back changes  
+**Features**: Confirmation prompts, safety checks  
+**Complexity**: Beginner  
+**Usage**:
+```bash
+# SQLite
+python templates/restore_database.py \
+  --db-type sqlite \
+  --backup data/backups/G2C_backup_20260317_120000.db \
+  --database database/G2C.db
+
+# PostgreSQL
+python templates/restore_database.py \
+  --db-type postgresql \
+  --backup data/backups/senzing_backup.sql \
+  --connection "postgresql://senzing:pass@localhost:5432/senzing"
+```
+
+#### rollback_load.py
+**Purpose**: Guidance for rolling back data loads  
+**Use when**: Need to undo a data load  
+**Features**: Explains rollback strategies, recommends backup/restore  
+**Complexity**: Beginner  
+**Usage**:
+```bash
+python templates/rollback_load.py \
+  --data-source CUSTOMERS \
+  --backup data/backups/G2C_backup_20260317_120000.db
+```
+
+### NEW: Planning & Analysis Templates (v3.1.0)
+
+#### cost_calculator.py
+**Purpose**: Interactive cost estimation for Senzing projects  
+**Use when**: Module 1 (planning), stakeholder presentations  
+**Features**: DSR licensing, infrastructure costs, time estimates  
+**Complexity**: Beginner  
+**Usage**:
+```bash
+# Interactive mode
+python templates/cost_calculator.py --interactive
+
+# Command line
+python templates/cost_calculator.py \
+  --records 1000000 \
+  --sources 3 \
+  --frequency daily \
+  --deployment cloud
+```
 
 ## Common Customizations
 
@@ -285,4 +479,5 @@ Have a useful template? Contribute it!
 
 ## Version History
 
-- **v3.0.0** (2026-03-17): Templates directory created with 12 templates
+- **v3.1.0** (2026-03-17): Added 10 new templates for validation, data collection, database management, and planning
+- **v3.0.0** (2026-03-17): Templates directory created with 12 original templates

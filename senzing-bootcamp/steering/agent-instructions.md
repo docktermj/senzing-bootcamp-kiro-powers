@@ -101,13 +101,18 @@ This document consolidates all agent behavior instructions from across the boot 
 When user chooses Docker deployment:
 - **Runtime images do NOT include PostgreSQL schema files** - cannot use `/opt/senzing/er/resources/schema/szcore-schema-postgresql-create.sql`
 - **Use two-stage initialization pattern**:
-  1. Create minimal SQL schema with sys_vars table (VERSION='4.2.1', SCHEMA_VERSION='4.0')
-  2. Use SDK's `set_default_config()` to create remaining tables automatically
+  1. Create minimal SQL schema with correct column names (CRITICAL: sys_cfg.sys_create_dt NOT sys_create_date, sys_codes_used must have code_id)
+  2. Insert sys_vars with VERSION='4.2.1' and SCHEMA_VERSION='4.0'
+  3. Use SDK's `set_default_config()` to create remaining tables automatically
+- **Critical schema requirements**:
+  - sys_cfg table must use `sys_create_dt` column (NOT sys_create_date) or SDK fails with SENZ1001
+  - sys_codes_used must include `code_id BIGSERIAL` column or SDK fails with SENZ1001
+  - sys_vars must have correct structure: (var_group, var_code, var_value)
 - **Container CMD should be `tail -f /dev/null`** to keep container running
 - **Use `docker exec` to run commands** instead of container CMD
 - **All Docker files must be in `docker/` directory** - never in project root
-- Reference `steering/docker-deployment.md` for complete examples
-- Check `docs/guides/TROUBLESHOOTING_INDEX.md` for Docker-specific issues (SENZ1019, SENZ7223, schema file not found, container restarts)
+- Reference `steering/docker-deployment.md` for complete examples with correct schema
+- Check `docs/guides/TROUBLESHOOTING_INDEX.md` for Docker-specific issues (SENZ1019, SENZ7223, SENZ1001 column errors)
 
 ### Module 6: Loading
 - **Verify `.kiro/hooks/` exists** before installing hooks

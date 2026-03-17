@@ -168,16 +168,46 @@ For Docker deployments with PostgreSQL, use this approach:
 
 **Stage 1: Minimal SQL Schema**
 ```sql
--- Create minimal schema with sys_vars table
+-- Create minimal schema with required tables
+-- CRITICAL: Use exact column names expected by SDK
+
+-- System variables (version tracking)
 CREATE TABLE sys_vars (
-    var_name VARCHAR(50) PRIMARY KEY,
-    var_value VARCHAR(255)
+    var_group VARCHAR(50) NOT NULL,
+    var_code VARCHAR(50) NOT NULL,
+    var_value TEXT,
+    sys_lstupd_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (var_group, var_code)
 );
 
--- Insert required version information
-INSERT INTO sys_vars (var_name, var_value) VALUES ('VERSION', '4.2.1');
-INSERT INTO sys_vars (var_name, var_value) VALUES ('SCHEMA_VERSION', '4.0');
+INSERT INTO sys_vars (var_group, var_code, var_value) 
+VALUES ('SYSTEM', 'VERSION', '4.2.1');
+INSERT INTO sys_vars (var_group, var_code, var_value) 
+VALUES ('SYSTEM', 'SCHEMA_VERSION', '4.0');
+
+-- Configuration table
+-- CRITICAL: Column must be sys_create_dt (NOT sys_create_date)
+CREATE TABLE sys_cfg (
+    config_data_id BIGSERIAL PRIMARY KEY,
+    config_data TEXT NOT NULL,
+    config_comments TEXT,
+    sys_create_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Data source tracking
+-- CRITICAL: Must include code_id column
+CREATE TABLE sys_codes_used (
+    code_type VARCHAR(50) NOT NULL,
+    code VARCHAR(50) NOT NULL,
+    code_id BIGSERIAL,
+    PRIMARY KEY (code_type, code)
+);
 ```
+
+**Common Schema Errors**:
+- Using `sys_create_date` instead of `sys_create_dt` in sys_cfg → SENZ1001 error
+- Missing `code_id` column in sys_codes_used → SENZ1001 error
+- Wrong sys_vars structure → SENZ7223 version error
 
 **Stage 2: SDK Initialization**
 ```python

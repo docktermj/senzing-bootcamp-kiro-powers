@@ -71,48 +71,237 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
 
 **Prerequisites**: None (or Module 0 complete if they did the demo)
 
-1. **Set expectations**: "Let's start by understanding your business problem. This will help us tailor the boot camp to your specific needs. We'll identify your data sources, define success criteria, and create a plan."
+1. **Set up project directory structure**: Before diving into the problem, help the user create an organized project structure:
 
-2. **Ask guided discovery questions**: Work through these questions systematically. Present common scenarios to help them identify their use case.
+   ```bash
+   mkdir -p my-senzing-project/{data/{raw,transformed,samples,backups},src/{transform,load,query,utils},tests,docs,config,logs,monitoring,scripts}
+   cd my-senzing-project
+   ```
+   
+   Explain the purpose of each folder:
+   - `data/raw/` - Original source data files
+   - `data/transformed/` - Senzing-formatted JSON output
+   - `data/samples/` - Sample data for testing
+   - `data/backups/` - Database backups
+   - `src/transform/` - Transformation programs (Module 3)
+   - `src/load/` - Loading programs (Module 5)
+   - `src/query/` - Query programs (Module 6)
+   - `src/utils/` - Shared utilities
+   - `tests/` - Test files
+   - `docs/` - Design documents and specifications
+   - `config/` - Configuration files
+   - `logs/` - Log files
+   - `monitoring/` - Dashboards and metrics
+   - `scripts/` - Utility scripts (backup, rollback, etc.)
+   
+   **Initialize version control**:
+   ```bash
+   git init
+   echo "# [Project Name] - Senzing Entity Resolution" > README.md
+   ```
+   
+   **Create .gitignore**:
+   ```gitignore
+   # Sensitive data
+   .env
+   *.key
+   *.pem
+   config/*_credentials.json
+   
+   # Data files
+   data/raw/*
+   data/transformed/*
+   !data/raw/.gitkeep
+   !data/transformed/.gitkeep
+   
+   # Logs and databases
+   logs/*.log
+   *.db
+   *.sqlite
+   *.sqlite3
+   
+   # Python
+   __pycache__/
+   *.py[cod]
+   .venv/
+   venv/
+   
+   # Backups
+   data/backups/*.sql
+   ```
+   
+   **Set up Python environment** (if using Python):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   pip install senzing pytest
+   pip freeze > requirements.txt
+   ```
+   
+   **Create environment template** (.env.example):
+   ```bash
+   # Senzing Configuration
+   SENZING_ENGINE_CONFIG_JSON={"PIPELINE":{"CONFIGPATH":"/etc/opt/senzing"}}
+   SENZING_DATABASE_URL=sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db
+   
+   # Data Source Credentials
+   CRM_API_KEY=your_api_key_here
+   DATABASE_CONNECTION_STRING=your_connection_string_here
+   
+   # Monitoring
+   ENABLE_MONITORING=true
+   LOG_LEVEL=INFO
+   ```
+   
+   **Initial git commit**:
+   ```bash
+   git add .
+   git commit -m "Initial project setup"
+   ```
+   
+   Create a basic README.md:
+   ```markdown
+   # [Project Name] - Senzing Entity Resolution
+   
+   ## Overview
+   [To be filled in after Module 1]
+   
+   ## Business Problem
+   [To be filled in after Module 1]
+   
+   ## Data Sources
+   [To be filled in after Module 2]
+   
+   ## Setup Instructions
+   [To be filled in after Module 4]
+   
+   ## Usage
+   [To be filled in after Module 6]
+   ```
+
+2. **Data privacy reminder**: "Before we proceed, a quick reminder about data privacy. We'll be working with potentially sensitive data. Please ensure you have permission to use this data, and consider anonymizing any PII for testing purposes. We'll set up proper security measures as we go."
+
+3. **Offer design pattern gallery**: "Would you like to see examples of common business problems that entity resolution can solve? I can show you a gallery of entity resolution design patterns with real-world use cases. This might help you articulate your specific problem or give you ideas."
+
+4. **If user wants to see patterns**: Present the Entity Resolution Design Pattern Gallery from POWER.md. For each pattern, explain:
+   - What problem it solves
+   - What the goal is
+   - What data sources are typically involved
+   - What business value it delivers
+   
+   Ask: "Do any of these patterns match your situation? You can use one as a starting point and customize it for your specific needs."
+   
+   If they select a pattern, use it as a template for their problem statement:
+   - Pre-fill data source types based on the pattern
+   - Suggest matching criteria from the pattern
+   - Adapt the pattern to their specific context
+
+5. **Set expectations**: "Let's start by understanding your business problem. This will help us tailor the boot camp to your specific needs. We'll identify your data sources, define success criteria, and create a plan."
+
+6. **Ask guided discovery questions**: Work through these questions systematically. Present common scenarios to help them identify their use case.
+
+   **Note**: If user selected a design pattern, use it to guide these questions and pre-fill answers where applicable.
 
    **Question 1: What problem are you trying to solve?**
    - Deduplication, data matching, identity verification, fraud detection, relationship discovery, or master data management?
+   - If they selected a pattern: "You mentioned [pattern name]. Let's refine that for your specific situation..."
    
    **Question 2: What data sources are involved?**
    - For each source: name, type, record count, update frequency, access method
+   - If they selected a pattern: "The [pattern name] pattern typically involves [list sources]. Do you have similar data sources?"
    
    **Question 3: What types of entities?**
    - People, organizations, both, or other?
+   - If they selected a pattern: "For [pattern name], we typically work with [entity types]. Is that correct for you?"
    
    **Question 4: What matching criteria matter most?**
    - Names, addresses, contact info, identifiers, dates, other attributes?
+   - If they selected a pattern: "The [pattern name] pattern usually focuses on [matching criteria]. Are these the right attributes for your case?"
    
    **Question 5: What's the desired outcome?**
    - Output format, use case, integration needs, success metrics
+   - If they selected a pattern: "The typical goal for [pattern name] is [goal]. What specific outcomes are you looking for?"
 
-3. **Encourage visual explanations**: Ask for diagrams showing data architecture, data flows, or example records. If images contain placeholders like [variable], ask them to specify what each represents.
+7. **Encourage visual explanations**: Ask for diagrams showing data architecture, data flows, or example records. If images contain placeholders like [variable], ask them to specify what each represents.
 
-4. **Identify the scenario**: Categorize as Customer 360, Fraud Detection, Data Migration, Compliance, or Marketing scenario.
+8. **Identify the scenario**: Categorize as Customer 360, Fraud Detection, Data Migration, Compliance, or Marketing scenario. If they selected a pattern, this is already identified.
 
-5. **Create problem statement document**: Summarize problem, use case, data sources, entity types, matching criteria, success criteria, and desired output.
+9. **Create problem statement document**: Save to `docs/business_problem.md`:
+   ```markdown
+   # Business Problem Statement
+   
+   **Date**: [Current date]
+   **Project**: [Project name]
+   **Design Pattern**: [Pattern name if selected, or "Custom"]
+   
+   ## Problem Description
+   [One sentence description]
+   
+   ## Use Case Category
+   [Customer 360 / Fraud Detection / Data Migration / Compliance / Marketing / Healthcare / Supply Chain / KYC / Insurance / Vendor MDM]
+   
+   ## Design Pattern Reference
+   [If a pattern was selected, include:]
+   - **Pattern**: [Pattern name]
+   - **Standard Goal**: [Pattern's typical goal]
+   - **Customizations**: [How this differs from the standard pattern]
+   
+   ## Data Sources
+   1. **[Source name]**
+      - Type: [Database/CSV/API/etc.]
+      - Records: ~[count]
+      - Entity type: [People/Organizations/Both]
+      - Update frequency: [Static/Daily/Real-time]
+      - Access: [How to access]
+   
+   2. **[Source name]**
+      - [Same structure]
+   
+   ## Entity Types
+   [People / Organizations / Both / Other]
+   
+   ## Key Matching Criteria
+   - **[Attribute 1]** (High priority) - [Why important]
+   - **[Attribute 2]** (Medium priority) - [Why important]
+   - **[Attribute 3]** (Low priority) - [Why important]
+   
+   ## Success Criteria
+   - [Measurable outcome 1]
+   - [Measurable outcome 2]
+   - [Measurable outcome 3]
+   
+   ## Desired Output
+   **Format**: [Master list / API / Reports / Database export]
+   **Use case**: [One-time / Ongoing / Real-time]
+   **Integration**: [Standalone / Integrated with [systems]]
+   
+   ## Timeline
+   **Target completion**: [Date]
+   **Key milestones**: [List]
+   
+   ## Notes
+   [Any additional context, constraints, or considerations]
+   ```
 
-6. **Propose solution approach**: Explain how Senzing can solve this and which modules will be most relevant.
+10. **Update README.md**: Fill in the Overview and Business Problem sections with the information gathered. If a design pattern was selected, mention it in the overview.
 
-7. **Get confirmation**: "Does this accurately capture your problem?"
+11. **Propose solution approach**: Explain how Senzing can solve this and which modules will be most relevant. If they selected a pattern, reference how the boot camp will implement that pattern.
 
-8. **Transition to Module 2**: "Now let's look at your data sources to see if they need mapping."
+12. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
 
-**Success indicator**: ✅ Clear problem statement + identified data sources + defined success metrics + user confirmation
+13. **Transition to Module 2**: "Now let's look at your data sources to see if they need mapping. Please place sample data files in the `data/raw/` folder."
+
+**Success indicator**: ✅ Clear problem statement + identified data sources + defined success metrics + user confirmation + `docs/business_problem.md` created
 
 ## Workflow: Verify Data Sources Against SGES (Module 2)
 
-1. **List the agreed-upon data sources**: Recap the data sources identified during the business problem discussion. For example:
-   - Customer database
-   - Transaction logs
-   - Third-party vendor data
-   - Legacy system exports
+**Time**: 10 minutes per data source
 
-2. **Request example data for each source**: For each data source, ask the user to provide sample data showing the structure. Accept various formats:
+**Prerequisites**: ✅ Module 1 complete (business problem defined, data sources identified)
+
+1. **List the agreed-upon data sources**: Recap the data sources identified during the business problem discussion. Review `docs/business_problem.md` for the list.
+
+2. **Request sample data**: For each data source, ask the user to place sample files in `data/raw/` or `data/samples/`:
    - CSV files (first 10-20 rows)
    - JSON samples
    - Database schema with sample values
@@ -137,20 +326,109 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
    - **Needs mapping**: Data uses different field names or structures. Proceed to Module 3 (data mapping).
    - **Needs enrichment**: Data is missing critical attributes. Discuss with user whether additional data sources can provide missing information.
 
-6. **Summarize findings**: Present a clear summary for each data source:
-   ```
-   Data Source: Customer Database
-   Status: Needs mapping
-   Reason: Uses "customer_name" instead of NAME_FULL, "address" instead of ADDR_FULL
-   Next step: Module 3 - Map Your Data
+6. **Summarize findings and save evaluation report**: Create `docs/data_source_evaluation.md`:
+   ```markdown
+   # Data Source Evaluation Report
    
-   Data Source: Vendor API
-   Status: SGES-compliant
-   Reason: Already uses NAME_ORG, ADDR_FULL, PHONE_NUMBER
-   Next step: Module 4 - Set Up SDK (can load directly)
+   **Date**: [Current date]
+   **Project**: [Project name]
+   
+   ## Summary
+   - Total data sources: [count]
+   - SGES-compliant: [count]
+   - Needs mapping: [count]
+   - Needs enrichment: [count]
+   
+   ## Data Source Details
+   
+   ### Data Source 1: [Name]
+   **Status**: [SGES-compliant / Needs mapping / Needs enrichment]
+   **Location**: `data/raw/[filename]`
+   **Records**: ~[count]
+   **Fields**: [count] columns
+   
+   **Evaluation**:
+   - [Field analysis]
+   - [SGES compliance notes]
+   
+   **Reason**: [Why it needs mapping or is compliant]
+   
+   **Next step**: [Module 3 / Module 4]
+   
+   ### Data Source 2: [Name]
+   [Same structure]
+   
+   ## Mapping Priority
+   1. [Data source] - [Reason for priority]
+   2. [Data source] - [Reason for priority]
    ```
 
 7. **Proceed to mapping**: For each data source that needs mapping, transition to the "Data Mapping End-to-End" workflow.
+
+**Success indicator**: ✅ All data sources categorized + `docs/data_source_evaluation.md` created
+
+## Workflow: Install Senzing Boot Camp Hooks (Before Module 3)
+
+Use this workflow to set up automated quality checks and reminders before starting data mapping.
+
+**Time**: 5 minutes
+
+**Purpose**: Install hooks that automate quality checks, backups, and documentation reminders throughout the boot camp.
+
+1. **Explain hooks**: "Kiro hooks can automate common tasks and provide helpful reminders. I recommend installing a few hooks that will help maintain quality as we work through the boot camp."
+
+2. **Recommend hooks for the boot camp**:
+   - **Data Quality Check**: Reminds you to validate data quality when transformation programs change
+   - **Backup Before Load**: Reminds you to backup the database before loading data
+   - **Test Before Commit**: Automatically runs tests when you save source files
+   - **Validate Senzing JSON**: Checks that output conforms to SGES format
+   - **Update Documentation**: Reminds you to keep documentation in sync with code
+
+3. **Install hooks**: Copy the pre-configured hooks from the power directory:
+   ```bash
+   # Create hooks directory if it doesn't exist
+   mkdir -p .kiro/hooks
+   
+   # Copy all Senzing Boot Camp hooks
+   cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
+   
+   # Or copy individual hooks
+   cp senzing-bootcamp/hooks/data-quality-check.kiro.hook .kiro/hooks/
+   cp senzing-bootcamp/hooks/backup-before-load.kiro.hook .kiro/hooks/
+   cp senzing-bootcamp/hooks/test-before-commit.kiro.hook .kiro/hooks/
+   ```
+
+4. **Verify installation**: Check that hooks are installed:
+   ```bash
+   ls -la .kiro/hooks/
+   ```
+   
+   You should see the `.kiro.hook` files.
+
+5. **Explain hook behavior**:
+   - **Data Quality Check**: Triggers when you save files in `src/transform/`. The agent will remind you to run quality validation.
+   - **Backup Before Load**: Triggers when you save files in `src/load/`. The agent will remind you to backup the database.
+   - **Test Before Commit**: Triggers when you save any source file. Automatically runs `pytest tests/`.
+   - **Validate Senzing JSON**: Triggers when you modify files in `data/transformed/`. The agent will suggest using `lint_record`.
+   - **Update Documentation**: Triggers when you save source files. The agent will remind you to update docs.
+
+6. **Customize if needed**: Users can customize hooks by editing the JSON files:
+   - Change file patterns to match their project structure
+   - Modify prompts to fit their workflow
+   - Adjust timeouts for commands
+   - Enable/disable specific hooks
+
+7. **Test a hook**: Save a file in `src/transform/` to test the Data Quality Check hook. The agent should provide a reminder about data quality validation.
+
+8. **Commit hooks to version control**:
+   ```bash
+   git add .kiro/hooks/
+   git commit -m "Add Senzing Boot Camp hooks"
+   ```
+
+**Success indicator**: ✅ Hooks installed in `.kiro/hooks/` + hooks verified working
+
+**Note**: Hooks are optional but highly recommended. They help catch issues early and maintain quality throughout the boot camp.
 
 ## Workflow: First-Time Guided Tour
 
@@ -181,7 +459,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 **For the current data source**:
 
-1. **Start the mapping workflow**: Call `mapping_workflow` with `action='start'` and the user's source file path for this specific data source. The workflow will return a unique session ID for tracking this mapping.
+1. **Start the mapping workflow**: Call `mapping_workflow` with `action='start'` and the user's source file path from `data/raw/` or `data/samples/` for this specific data source. The workflow will return a unique session ID for tracking this mapping.
 
 2. **Step 1 — Profile**: Run the profiler script returned by the workflow, or read the data directly. Summarize:
    - Column names and their meanings
@@ -288,11 +566,13 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
    - Data source type (file, database, API)
    - Data volume (single file vs. batch processing)
    - Environment (local script, cloud function, ETL pipeline)
+   
+   **Save the program**: Save to `src/transform/transform_[datasource_name].py` (or appropriate extension for the language).
 
-7. **Step 6 — Test the Program**: Run the transformation program on sample data:
+7. **Step 6 — Test the Program**: Run the transformation program on sample data from `data/samples/`:
    - Start with a small subset (10-100 records) for initial testing
    - Verify the program runs without errors
-   - Check that output files are created
+   - Check that output files are created in `data/transformed/`
    - Inspect a few output records manually
    
    Call `lint_record` with sample output records to validate they're syntactically correct Senzing JSON.
@@ -324,15 +604,19 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
    
    Retest the program after changes. You may cycle through steps multiple times before achieving the desired quality.
 
-11. **Step 10 — Save the Program**: Ensure the transformation program is saved and documented:
-   - Save the program file with a clear name (e.g., `transform_customer_db.py`)
-   - Document how to run it (command line arguments, configuration files)
-   - Note any dependencies or prerequisites
-   - Save sample input and output for reference
+11. **Step 10 — Save and Document**: Ensure the transformation program is properly saved and documented:
+   - Program saved in `src/transform/transform_[datasource_name].py`
+   - Create `docs/mapping_[datasource_name].md` with:
+     - Field mappings
+     - Transformation logic
+     - Data quality results
+     - How to run the program
+     - Dependencies and prerequisites
+   - Save sample output in `data/transformed/[datasource_name]_sample.jsonl`
 
 12. **Mark data source as complete**: Once the user is satisfied with the transformation program for this data source, mark it as complete and move to the next data source that needs mapping.
 
-13. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 2), repeat this entire workflow for each one. Each data source should have its own transformation program.
+13. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 2), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
 
 14. **Transition to Module 4**: Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 4 (SDK Setup).
 

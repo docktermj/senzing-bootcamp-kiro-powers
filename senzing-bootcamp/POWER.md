@@ -14,6 +14,51 @@ This power provides a guided boot camp experience for learning Senzing entity re
 
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
+## Recommended Hooks
+
+This power includes pre-configured hooks to support your boot camp workflow. Hooks automate common tasks and reminders.
+
+### Available Hooks
+
+The `senzing-bootcamp/hooks/` directory contains:
+
+1. **Data Quality Check** - Validates data quality when transformation programs change
+2. **Backup Before Load** - Reminds to backup database before loading
+3. **Test Before Commit** - Runs tests when source files are saved
+4. **Validate Senzing JSON** - Checks output format compliance
+5. **Update Documentation** - Reminds to keep docs in sync with code
+
+### Installing Hooks
+
+**Option 1: Ask the Agent**
+```
+"Please install the Senzing Boot Camp hooks"
+```
+
+**Option 2: Manual Installation**
+```bash
+# Copy all hooks to your project
+cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
+
+# Or copy individual hooks
+cp senzing-bootcamp/hooks/data-quality-check.kiro.hook .kiro/hooks/
+```
+
+**Option 3: Use Kiro UI**
+1. Open Command Palette (Cmd/Ctrl + Shift + P)
+2. Search for "Open Kiro Hook UI"
+3. Import hooks from `senzing-bootcamp/hooks/`
+
+### Recommended Hooks by Module
+
+- **Module 3** (Data Mapping): Data Quality Check, Validate Senzing JSON, Test Before Commit
+- **Module 5** (Data Loading): Backup Before Load, Test Before Commit
+- **Module 6** (Query Programs): Test Before Commit, Update Documentation
+
+See `senzing-bootcamp/hooks/README.md` for detailed documentation and customization options.
+
+**Agent behavior**: Offer to install hooks at the start of Module 3. Explain what each hook does and how it helps maintain quality throughout the boot camp.
+
 ## Available MCP Servers
 
 ### senzing-mcp-server
@@ -36,7 +81,86 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 The boot camp follows a progressive learning path. Each module builds on the previous one.
 
+**Modules**:
+- **Module 0**: Quick Demo (Optional) - Experience entity resolution with sample data
+- **Module 1**: Understand Business Problem - Define your problem and identify data sources
+- **Module 2**: Verify Data Sources - Evaluate if data needs mapping or is SGES-compliant
+- **Module 3**: Map Your Data - Create transformation programs for non-compliant sources
+- **Module 4**: Set Up SDK - Install and configure Senzing
+- **Module 5**: Load Records - Create loading programs and observe entity resolution
+- **Module 6**: Query Results - Create query programs that answer your business problem
+
 **Note**: While the modules are presented in order, you can move back and forth between steps as needed. Discovery is iterative — you might need to revisit earlier steps as you learn more about your data or refine your approach.
+
+### Project Directory Structure
+
+Before starting, set up a project directory to organize all your boot camp artifacts:
+
+```
+my-senzing-project/
+├── .git/                          # Version control (initialize with git init)
+├── .gitignore                     # Exclude sensitive data and large files
+├── .env.example                   # Template for environment variables
+├── .env                           # Actual environment variables (not in git)
+├── data/                          # User's data files
+│   ├── raw/                       # Original source data
+│   │   ├── customer_crm.csv
+│   │   └── vendor_api.json
+│   ├── transformed/               # Senzing-formatted JSON output
+│   │   ├── customer_crm_senzing.jsonl
+│   │   └── vendor_api_senzing.jsonl
+│   ├── samples/                   # Sample data for testing
+│   │   └── customer_sample.csv
+│   └── backups/                   # Database backups
+│       └── backup_YYYYMMDD.sql
+├── src/                           # Generated program source code
+│   ├── transform/                 # Transformation programs (Module 3)
+│   │   ├── transform_customer_crm.py
+│   │   └── transform_vendor_api.py
+│   ├── load/                      # Loading programs (Module 5)
+│   │   ├── load_customer_crm.py
+│   │   └── load_vendor_api.py
+│   ├── query/                     # Query programs (Module 6)
+│   │   ├── find_duplicates.py
+│   │   └── search_person.py
+│   └── utils/                     # Shared utilities
+│       ├── senzing_client.py
+│       └── data_quality.py
+├── tests/                         # Test files for the project
+│   ├── test_transform_customer.py
+│   ├── test_load_customer.py
+│   ├── test_query_duplicates.py
+│   └── test_data_quality.py
+├── docs/                          # Design documents
+│   ├── business_problem.md        # Module 1 output
+│   ├── data_source_evaluation.md  # Module 2 output
+│   ├── mapping_specifications.md  # Module 3 mappings
+│   ├── query_specifications.md    # Module 6 queries
+│   ├── lessons_learned.md         # Post-project retrospective
+│   ├── security_compliance.md     # Privacy and security notes
+│   └── performance_benchmarks.md  # Performance metrics
+├── config/                        # Configuration files
+│   ├── senzing_config.json
+│   ├── data_sources.json
+│   └── monitoring_config.yaml
+├── logs/                          # Log files
+│   ├── transform.log
+│   ├── load.log
+│   └── monitoring.log
+├── monitoring/                    # Monitoring and dashboards
+│   ├── dashboard.html
+│   └── metrics.json
+├── scripts/                       # Utility scripts
+│   ├── setup_environment.sh
+│   ├── backup_database.sh
+│   └── rollback.sh
+├── docker-compose.yml             # Docker environment (optional)
+├── requirements.txt               # Python dependencies
+├── package.json                   # Node.js dependencies (if applicable)
+└── README.md                      # Project description and instructions
+```
+
+**Agent behavior**: At the start of Module 1, help the user create this directory structure. As you generate programs throughout the boot camp, save them in the appropriate folders. Keep the project organized so users can easily find and maintain their artifacts.
 
 ### Progress Tracking
 
@@ -70,6 +194,961 @@ Experienced users can skip modules:
 - **Senzing already installed?** → Skip Module 4, go to Module 5
 - **Just want to explore?** → Start with Module 0 (Quick Demo)
 - **Already loaded data?** → Jump to Module 6
+
+### Environment Setup
+
+Before starting the boot camp, set up your development environment:
+
+**Version Control**:
+```bash
+cd my-senzing-project
+git init
+git add .
+git commit -m "Initial project setup"
+```
+
+**Create .gitignore**:
+```gitignore
+# Sensitive data
+.env
+*.key
+*.pem
+config/*_credentials.json
+
+# Data files (too large for git)
+data/raw/*
+data/transformed/*
+!data/raw/.gitkeep
+!data/transformed/.gitkeep
+
+# Logs
+logs/*.log
+*.log
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups
+data/backups/*.sql
+```
+
+**Python Environment** (if using Python):
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install senzing
+pip freeze > requirements.txt
+```
+
+**Environment Variables** (create .env.example):
+```bash
+# Senzing Configuration
+SENZING_ENGINE_CONFIG_JSON={"PIPELINE":{"CONFIGPATH":"/etc/opt/senzing"}}
+SENZING_DATABASE_URL=sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db
+
+# Data Source Credentials (examples - replace with actual)
+CRM_API_KEY=your_api_key_here
+DATABASE_CONNECTION_STRING=postgresql://user:pass@localhost:5432/dbname
+
+# Monitoring
+ENABLE_MONITORING=true
+LOG_LEVEL=INFO
+```
+
+**Docker Environment** (optional, create docker-compose.yml):
+```yaml
+version: '3.8'
+services:
+  senzing:
+    image: senzing/senzing-tools:latest
+    volumes:
+      - ./data:/data
+      - ./config:/config
+    environment:
+      - SENZING_ENGINE_CONFIGURATION_JSON=${SENZING_ENGINE_CONFIG_JSON}
+  
+  postgres:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=senzing
+      - POSTGRES_USER=senzing
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
+```
+
+**Agent behavior**: Help users set up their environment at the start of Module 1. Ensure version control is initialized and sensitive data is excluded from git.
+
+### Data Privacy and Security
+
+**CRITICAL**: Handle data responsibly throughout the boot camp.
+
+**Data Privacy Considerations**:
+- **PII Protection**: Customer data contains Personally Identifiable Information (names, addresses, SSNs, etc.)
+- **Sample Data**: Use anonymized or synthetic data for testing when possible
+- **Access Control**: Limit who can access raw data files
+- **Compliance**: Consider GDPR, CCPA, HIPAA, or other regulations applicable to your data
+
+**Security Best Practices**:
+1. **Never commit sensitive data to git**:
+   - Use .gitignore for data files
+   - Store credentials in .env (not in git)
+   - Use .env.example as a template
+
+2. **Anonymize test data**:
+   - Replace real names with fake names
+   - Use fake addresses and phone numbers
+   - Mask or remove SSNs and other identifiers
+   - Keep data structure but change values
+
+3. **Secure credentials**:
+   - Use environment variables for API keys
+   - Use secrets management (AWS Secrets Manager, HashiCorp Vault)
+   - Rotate credentials regularly
+   - Never hardcode passwords in source code
+
+4. **Database security**:
+   - Use strong passwords
+   - Enable encryption at rest
+   - Use SSL/TLS for connections
+   - Regular backups with encryption
+
+5. **Access logging**:
+   - Log who accesses data and when
+   - Monitor for unusual access patterns
+   - Audit trail for compliance
+
+**Create docs/security_compliance.md**:
+```markdown
+# Security and Compliance Notes
+
+## Data Classification
+- **Data Source 1**: Contains PII (names, addresses, SSNs)
+- **Data Source 2**: Contains business data (no PII)
+
+## Compliance Requirements
+- GDPR: Right to be forgotten, data portability
+- CCPA: Consumer privacy rights
+- [Add your specific requirements]
+
+## Data Handling Procedures
+1. All PII must be encrypted at rest
+2. Access requires authentication
+3. Audit logs retained for 90 days
+4. Data retention: [specify period]
+
+## Anonymization Strategy
+- Test data: Use faker library to generate synthetic data
+- Sample data: Mask last 4 digits of SSN, use fake addresses
+
+## Incident Response
+- Contact: [security team email]
+- Procedure: [link to incident response plan]
+```
+
+**Agent behavior**: Remind users about data privacy at the start of Module 2 when requesting sample data. Suggest anonymization techniques for sensitive data.
+
+### Testing Strategy
+
+Implement testing at each module to ensure quality and reliability.
+
+**Test Types**:
+
+1. **Unit Tests** (Module 3 - Transformation):
+```python
+# tests/test_transform_customer.py
+import unittest
+from src.transform.transform_customer_crm import transform_record
+
+class TestCustomerTransform(unittest.TestCase):
+    def test_name_mapping(self):
+        source_record = {"customer_name": "John Doe"}
+        result = transform_record(source_record)
+        self.assertEqual(result["NAME_FULL"], "John Doe")
+    
+    def test_missing_fields(self):
+        source_record = {"customer_id": "123"}
+        result = transform_record(source_record)
+        self.assertIn("RECORD_ID", result)
+        self.assertEqual(result["RECORD_ID"], "123")
+    
+    def test_data_cleansing(self):
+        source_record = {"phone": "  (555) 123-4567  "}
+        result = transform_record(source_record)
+        self.assertEqual(result["PHONE_NUMBER"], "555-123-4567")
+```
+
+2. **Integration Tests** (Module 5 - Loading):
+```python
+# tests/test_load_customer.py
+import unittest
+from src.load.load_customer_crm import load_records
+from senzing import G2Engine
+
+class TestCustomerLoad(unittest.TestCase):
+    def setUp(self):
+        self.engine = G2Engine()
+        # Initialize with test database
+    
+    def test_load_sample_records(self):
+        result = load_records("data/samples/customer_sample.jsonl", "TEST_CRM")
+        self.assertEqual(result["success_count"], 10)
+        self.assertEqual(result["error_count"], 0)
+    
+    def test_duplicate_record_handling(self):
+        # Load same record twice
+        load_records("data/samples/duplicate_test.jsonl", "TEST_CRM")
+        # Verify only one entity created
+```
+
+3. **Data Quality Tests** (Module 3):
+```python
+# tests/test_data_quality.py
+import unittest
+from src.utils.data_quality import analyze_quality
+
+class TestDataQuality(unittest.TestCase):
+    def test_attribute_coverage(self):
+        records = load_transformed_records("data/transformed/customer_crm_senzing.jsonl")
+        quality = analyze_quality(records)
+        self.assertGreater(quality["name_coverage"], 0.95)
+        self.assertGreater(quality["address_coverage"], 0.80)
+    
+    def test_data_completeness(self):
+        records = load_transformed_records("data/transformed/customer_crm_senzing.jsonl")
+        quality = analyze_quality(records)
+        self.assertGreater(quality["overall_score"], 70)
+```
+
+4. **Query Validation Tests** (Module 6):
+```python
+# tests/test_query_duplicates.py
+import unittest
+from src.query.find_duplicates import find_duplicates_for_datasource
+
+class TestDuplicateQuery(unittest.TestCase):
+    def test_finds_known_duplicates(self):
+        # Load test data with known duplicates
+        duplicates = find_duplicates_for_datasource("TEST_CRM")
+        self.assertGreater(len(duplicates), 0)
+    
+    def test_no_false_positives(self):
+        # Load test data with no duplicates
+        duplicates = find_duplicates_for_datasource("TEST_UNIQUE")
+        self.assertEqual(len(duplicates), 0)
+```
+
+**Running Tests**:
+```bash
+# Run all tests
+python -m pytest tests/
+
+# Run specific test file
+python -m pytest tests/test_transform_customer.py
+
+# Run with coverage
+python -m pytest --cov=src tests/
+```
+
+**Agent behavior**: Generate test files alongside transformation, loading, and query programs. Encourage users to run tests before proceeding to the next module.
+
+### Performance Benchmarking
+
+Track performance metrics to optimize and scale your entity resolution system.
+
+**Key Metrics to Track**:
+
+1. **Transformation Performance**:
+   - Records processed per second
+   - Memory usage
+   - Error rate
+   - Data quality score
+
+2. **Loading Performance**:
+   - Records loaded per second
+   - Entity resolution time
+   - Database write throughput
+   - Match rate (entities created vs records loaded)
+
+3. **Query Performance**:
+   - Query response time
+   - Result accuracy
+   - Cache hit rate
+
+**Create docs/performance_benchmarks.md**:
+```markdown
+# Performance Benchmarks
+
+## Baseline Metrics (Date: YYYY-MM-DD)
+
+### Transformation Performance
+- **Data Source**: Customer CRM
+- **Record Count**: 50,000
+- **Processing Time**: 5 minutes
+- **Throughput**: 166 records/second
+- **Memory Usage**: 512 MB
+- **Error Rate**: 0.1%
+- **Quality Score**: 85%
+
+### Loading Performance
+- **Data Source**: Customer CRM
+- **Record Count**: 50,000
+- **Loading Time**: 15 minutes
+- **Throughput**: 55 records/second
+- **Entities Created**: 42,000
+- **Match Rate**: 16% (8,000 duplicates found)
+- **Database Size**: 2.5 GB
+
+### Query Performance
+- **Query Type**: Find duplicates
+- **Response Time**: 2.3 seconds
+- **Results**: 4,200 duplicate entities
+- **Accuracy**: 98% (manual validation of sample)
+
+## Optimization Notes
+- Batch size of 1000 records optimal for loading
+- Index on DATA_SOURCE improves query performance by 40%
+- PostgreSQL performs 3x faster than SQLite for >100K records
+
+## Scaling Projections
+- 1M records: ~2 hours transformation, ~6 hours loading
+- 10M records: ~20 hours transformation, ~60 hours loading
+- Recommend: Parallel processing for >1M records
+```
+
+**Monitoring Script** (create src/utils/performance_monitor.py):
+```python
+import time
+import psutil
+import json
+
+class PerformanceMonitor:
+    def __init__(self):
+        self.start_time = None
+        self.metrics = {}
+    
+    def start(self, operation_name):
+        self.start_time = time.time()
+        self.metrics[operation_name] = {
+            "start_time": self.start_time,
+            "start_memory": psutil.Process().memory_info().rss / 1024 / 1024  # MB
+        }
+    
+    def end(self, operation_name, record_count=0):
+        end_time = time.time()
+        end_memory = psutil.Process().memory_info().rss / 1024 / 1024
+        
+        duration = end_time - self.metrics[operation_name]["start_time"]
+        throughput = record_count / duration if duration > 0 else 0
+        
+        self.metrics[operation_name].update({
+            "end_time": end_time,
+            "duration_seconds": duration,
+            "record_count": record_count,
+            "throughput_per_second": throughput,
+            "memory_used_mb": end_memory - self.metrics[operation_name]["start_memory"]
+        })
+        
+        return self.metrics[operation_name]
+    
+    def save_metrics(self, filepath="monitoring/metrics.json"):
+        with open(filepath, "w") as f:
+            json.dump(self.metrics, f, indent=2)
+```
+
+**Agent behavior**: Add performance monitoring to generated programs. Track metrics and save to monitoring/metrics.json. Compare against baselines to identify performance issues.
+
+### Rollback and Recovery Procedures
+
+Prepare for failures and enable quick recovery.
+
+**Database Backup Strategy**:
+
+1. **Before major operations**:
+```bash
+# scripts/backup_database.sh
+#!/bin/bash
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR="data/backups"
+mkdir -p $BACKUP_DIR
+
+# SQLite backup
+if [ -f "/var/opt/senzing/sqlite/G2C.db" ]; then
+    cp /var/opt/senzing/sqlite/G2C.db "$BACKUP_DIR/G2C_$DATE.db"
+    echo "SQLite backup created: $BACKUP_DIR/G2C_$DATE.db"
+fi
+
+# PostgreSQL backup
+if [ ! -z "$POSTGRES_DB" ]; then
+    pg_dump -h localhost -U senzing -d senzing > "$BACKUP_DIR/senzing_$DATE.sql"
+    echo "PostgreSQL backup created: $BACKUP_DIR/senzing_$DATE.sql"
+fi
+
+# Keep only last 7 backups
+ls -t $BACKUP_DIR/*.db 2>/dev/null | tail -n +8 | xargs rm -f
+ls -t $BACKUP_DIR/*.sql 2>/dev/null | tail -n +8 | xargs rm -f
+```
+
+2. **Rollback procedure** (create scripts/rollback.sh):
+```bash
+#!/bin/bash
+# scripts/rollback.sh
+BACKUP_FILE=$1
+
+if [ -z "$BACKUP_FILE" ]; then
+    echo "Usage: ./rollback.sh <backup_file>"
+    echo "Available backups:"
+    ls -lh data/backups/
+    exit 1
+fi
+
+echo "WARNING: This will restore database to $BACKUP_FILE"
+read -p "Continue? (yes/no): " confirm
+
+if [ "$confirm" = "yes" ]; then
+    if [[ $BACKUP_FILE == *.db ]]; then
+        # SQLite restore
+        cp "$BACKUP_FILE" /var/opt/senzing/sqlite/G2C.db
+        echo "SQLite database restored"
+    elif [[ $BACKUP_FILE == *.sql ]]; then
+        # PostgreSQL restore
+        psql -h localhost -U senzing -d senzing < "$BACKUP_FILE"
+        echo "PostgreSQL database restored"
+    fi
+fi
+```
+
+**Recovery Procedures**:
+
+Create docs/recovery_procedures.md:
+```markdown
+# Recovery Procedures
+
+## Failed Transformation
+**Symptom**: Transformation program crashes or produces invalid output
+
+**Recovery**:
+1. Check logs/transform.log for errors
+2. Fix transformation logic in src/transform/
+3. Delete invalid output: `rm data/transformed/[source]_senzing.jsonl`
+4. Re-run transformation on sample data first
+5. Validate with lint_record before full run
+
+## Failed Loading
+**Symptom**: Loading program fails partway through
+
+**Recovery**:
+1. Check logs/load.log for error codes
+2. Use explain_error_code to diagnose
+3. Restore database from backup:
+   ```bash
+   ./scripts/rollback.sh data/backups/G2C_YYYYMMDD_HHMMSS.db
+   ```
+4. Fix data quality issues
+5. Resume loading from last successful record
+
+## Data Quality Issues
+**Symptom**: Poor match rates or unexpected results
+
+**Recovery**:
+1. Don't load more data - stop and analyze
+2. Review data quality reports from Module 3
+3. Check mapping specifications
+4. Test with small sample (100 records)
+5. Adjust confidence scores or mappings
+6. Rollback and reload with improved mappings
+
+## Database Corruption
+**Symptom**: Database errors, crashes, or inconsistent results
+
+**Recovery**:
+1. Stop all loading/query operations
+2. Restore from most recent backup
+3. Verify backup integrity
+4. Resume operations
+5. If backups are corrupted, rebuild from scratch
+
+## Version Control Recovery
+**Symptom**: Accidentally deleted or modified critical files
+
+**Recovery**:
+```bash
+# Restore specific file
+git checkout HEAD -- src/transform/transform_customer.py
+
+# Restore to previous commit
+git log  # Find commit hash
+git checkout <commit-hash> -- src/
+
+# Undo last commit (keep changes)
+git reset --soft HEAD~1
+```
+```
+
+**Agent behavior**: Create backup before Module 5 (loading). Remind users to backup before major operations. Provide rollback instructions if errors occur.
+
+### Collaboration Features
+
+For team projects, establish collaboration workflows:
+
+**Multi-User Workflow**:
+
+1. **Code Review Checkpoints**:
+   - Module 3: Review transformation logic before committing
+   - Module 5: Review loading programs before production
+   - Module 6: Review query logic and results
+
+2. **Git Branching Strategy**:
+```bash
+# Feature branches for each data source
+git checkout -b feature/customer-crm-mapping
+# Work on transformation
+git add src/transform/transform_customer_crm.py
+git commit -m "Add customer CRM transformation"
+git push origin feature/customer-crm-mapping
+# Create pull request for review
+```
+
+3. **Documentation Standards**:
+   - All programs must have docstrings
+   - README updated with setup instructions
+   - Mapping decisions documented in docs/
+   - Code comments for complex logic
+
+4. **Handoff Procedures** (create docs/handoff_checklist.md):
+```markdown
+# Project Handoff Checklist
+
+## Knowledge Transfer
+- [ ] Business problem explained
+- [ ] Data sources documented
+- [ ] Transformation logic reviewed
+- [ ] Loading procedures demonstrated
+- [ ] Query programs explained
+
+## Access and Credentials
+- [ ] Repository access granted
+- [ ] Database credentials shared (securely)
+- [ ] API keys transferred
+- [ ] Environment setup documented
+
+## Documentation Review
+- [ ] README.md complete
+- [ ] All docs/ files up to date
+- [ ] Code comments adequate
+- [ ] Known issues documented
+
+## Testing and Validation
+- [ ] All tests passing
+- [ ] Sample queries demonstrated
+- [ ] Performance benchmarks shared
+- [ ] Data quality validated
+
+## Ongoing Support
+- [ ] Contact information provided
+- [ ] Support schedule defined
+- [ ] Escalation procedures documented
+```
+
+**Agent behavior**: For team projects, remind about code review checkpoints. Generate documentation that facilitates handoffs.
+
+### Cost Estimation
+
+Understand the costs involved in your entity resolution project.
+
+**Infrastructure Costs**:
+
+Create docs/cost_estimation.md:
+```markdown
+# Cost Estimation
+
+## Development Phase (Modules 1-6)
+- **Time**: 3-6 hours for single data source
+- **Personnel**: 1 developer
+- **Infrastructure**: Minimal (local development)
+  - SQLite: Free
+  - Docker: Free
+  - Development tools: Free
+
+## Production Deployment
+
+### Option 1: On-Premise
+**One-time costs**:
+- Senzing license: [Contact Senzing for pricing]
+- Server hardware: $5,000 - $20,000
+- Setup and configuration: 40-80 hours
+
+**Ongoing costs**:
+- Maintenance: 10-20 hours/month
+- Hardware refresh: $2,000/year
+- Power and cooling: $500/month
+
+### Option 2: Cloud (AWS example)
+**Monthly costs** (estimated for 1M records):
+- EC2 instance (m5.2xlarge): $280/month
+- RDS PostgreSQL (db.m5.large): $200/month
+- EBS storage (500 GB): $50/month
+- Data transfer: $50/month
+- **Total**: ~$580/month
+
+**Scaling costs** (10M records):
+- EC2 instance (m5.4xlarge): $560/month
+- RDS PostgreSQL (db.m5.2xlarge): $400/month
+- EBS storage (2 TB): $200/month
+- Data transfer: $100/month
+- **Total**: ~$1,260/month
+
+### Senzing Licensing
+- Contact Senzing for pricing based on:
+  - Number of records
+  - Number of data sources
+  - Deployment type (on-premise vs cloud)
+  - Support level
+
+## Cost Optimization Tips
+1. Start with SQLite for evaluation (free)
+2. Use spot instances for batch processing (70% savings)
+3. Implement data retention policies (reduce storage)
+4. Optimize queries to reduce compute time
+5. Use reserved instances for production (40% savings)
+
+## ROI Considerations
+**Benefits**:
+- Reduced duplicate records → Cost savings
+- Improved data quality → Better decisions
+- Faster customer lookup → Improved service
+- Fraud detection → Loss prevention
+
+**Example ROI**:
+- Duplicate mailings eliminated: $50,000/year saved
+- Fraud prevented: $200,000/year saved
+- Customer service efficiency: 20% improvement
+- **Total benefit**: $250,000+/year
+- **Cost**: $20,000/year
+- **ROI**: 1,150%
+```
+
+**Agent behavior**: Discuss costs during Module 1 (problem definition) and Module 4 (SDK setup). Help users choose appropriate deployment options based on scale and budget.
+
+### Monitoring and Alerting
+
+Set up monitoring to ensure ongoing system health.
+
+**Monitoring Dashboard** (create monitoring/dashboard.html):
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Senzing Monitoring Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Entity Resolution Monitoring</h1>
+    
+    <div class="metrics">
+        <div class="metric-card">
+            <h3>Records Loaded</h3>
+            <p id="total-records">Loading...</p>
+        </div>
+        <div class="metric-card">
+            <h3>Entities Created</h3>
+            <p id="total-entities">Loading...</p>
+        </div>
+        <div class="metric-card">
+            <h3>Match Rate</h3>
+            <p id="match-rate">Loading...</p>
+        </div>
+        <div class="metric-card">
+            <h3>Error Rate</h3>
+            <p id="error-rate">Loading...</p>
+        </div>
+    </div>
+    
+    <canvas id="loadingChart"></canvas>
+    <canvas id="qualityChart"></canvas>
+    
+    <script src="dashboard.js"></script>
+</body>
+</html>
+```
+
+**Monitoring Configuration** (create config/monitoring_config.yaml):
+```yaml
+monitoring:
+  enabled: true
+  interval_seconds: 300  # Check every 5 minutes
+  
+  metrics:
+    - name: records_loaded
+      query: "SELECT COUNT(*) FROM records"
+      threshold: 1000000
+      alert_on: exceeds
+      
+    - name: error_rate
+      query: "SELECT COUNT(*) FROM errors / COUNT(*) FROM records"
+      threshold: 0.05  # 5%
+      alert_on: exceeds
+      
+    - name: loading_throughput
+      query: "SELECT COUNT(*) FROM records WHERE loaded_at > NOW() - INTERVAL '1 hour'"
+      threshold: 1000
+      alert_on: below
+      
+    - name: data_quality_score
+      query: "SELECT AVG(quality_score) FROM data_quality_metrics"
+      threshold: 70
+      alert_on: below
+
+  alerts:
+    email:
+      enabled: true
+      recipients:
+        - admin@example.com
+      smtp_server: smtp.example.com
+      
+    slack:
+      enabled: false
+      webhook_url: https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+      
+    log:
+      enabled: true
+      log_file: logs/monitoring.log
+
+  health_checks:
+    - name: database_connection
+      type: database
+      connection_string: ${DATABASE_URL}
+      
+    - name: senzing_engine
+      type: senzing
+      config: ${SENZING_CONFIG}
+      
+    - name: disk_space
+      type: system
+      path: /var/opt/senzing
+      threshold_gb: 10
+```
+
+**Automated Health Checks** (create src/utils/health_check.py):
+```python
+import psutil
+import json
+from datetime import datetime
+
+def check_system_health():
+    health = {
+        "timestamp": datetime.now().isoformat(),
+        "status": "healthy",
+        "checks": {}
+    }
+    
+    # Disk space
+    disk = psutil.disk_usage('/')
+    health["checks"]["disk_space"] = {
+        "free_gb": disk.free / (1024**3),
+        "percent_used": disk.percent,
+        "status": "ok" if disk.percent < 90 else "warning"
+    }
+    
+    # Memory
+    memory = psutil.virtual_memory()
+    health["checks"]["memory"] = {
+        "available_gb": memory.available / (1024**3),
+        "percent_used": memory.percent,
+        "status": "ok" if memory.percent < 90 else "warning"
+    }
+    
+    # CPU
+    cpu_percent = psutil.cpu_percent(interval=1)
+    health["checks"]["cpu"] = {
+        "percent_used": cpu_percent,
+        "status": "ok" if cpu_percent < 80 else "warning"
+    }
+    
+    # Overall status
+    if any(check["status"] == "warning" for check in health["checks"].values()):
+        health["status"] = "warning"
+    
+    return health
+
+if __name__ == "__main__":
+    health = check_system_health()
+    print(json.dumps(health, indent=2))
+    
+    # Save to monitoring directory
+    with open("monitoring/health_status.json", "w") as f:
+        json.dump(health, f, indent=2)
+```
+
+**Agent behavior**: Set up monitoring during Module 5 (loading). Create dashboard showing loading progress, entity counts, match rates, and error rates. Alert on anomalies.
+
+### Lessons Learned Template
+
+Document insights for future projects and continuous improvement.
+
+**Create docs/lessons_learned.md** (to be filled out after Module 6):
+```markdown
+# Lessons Learned
+
+**Project**: [Project Name]
+**Date Completed**: [Date]
+**Team Members**: [Names]
+
+## Executive Summary
+[2-3 sentence summary of the project and outcomes]
+
+## What Worked Well
+
+### Data Mapping (Module 3)
+- **Success**: [What went smoothly]
+- **Why**: [Reasons for success]
+- **Recommendation**: [How to replicate]
+
+### Loading Performance (Module 5)
+- **Success**: [What worked]
+- **Metrics**: [Performance numbers]
+- **Recommendation**: [Best practices identified]
+
+### Query Results (Module 6)
+- **Success**: [Accurate results, good performance, etc.]
+- **Impact**: [Business value delivered]
+
+## Challenges Encountered
+
+### Challenge 1: [Description]
+- **Impact**: [How it affected the project]
+- **Root Cause**: [Why it happened]
+- **Resolution**: [How we solved it]
+- **Prevention**: [How to avoid in future]
+- **Time Lost**: [Estimate]
+
+### Challenge 2: [Description]
+[Same structure]
+
+## Key Decisions
+
+### Decision 1: [e.g., "Used PostgreSQL instead of SQLite"]
+- **Context**: [Why this decision was needed]
+- **Options Considered**: [Alternatives]
+- **Decision**: [What we chose]
+- **Rationale**: [Why we chose it]
+- **Outcome**: [How it worked out]
+
+### Decision 2: [e.g., "Prioritized name matching over address matching"]
+[Same structure]
+
+## Metrics and Outcomes
+
+### Data Quality
+- **Before**: [Baseline metrics]
+- **After**: [Final metrics]
+- **Improvement**: [Percentage or absolute]
+
+### Performance
+- **Transformation**: [Records/second]
+- **Loading**: [Records/second]
+- **Query**: [Response time]
+
+### Business Impact
+- **Duplicates Found**: [Number]
+- **Data Quality Improvement**: [Percentage]
+- **Time Saved**: [Hours/week]
+- **Cost Savings**: [Dollar amount]
+- **ROI**: [Percentage]
+
+## Technical Insights
+
+### Data Quality Patterns
+- [Pattern 1]: [Description and frequency]
+- [Pattern 2]: [Description and frequency]
+
+### Matching Behavior
+- [Observation 1]: [What we learned about how Senzing matches]
+- [Observation 2]: [Unexpected matching behavior]
+
+### Performance Optimization
+- [Optimization 1]: [What we did and impact]
+- [Optimization 2]: [What we did and impact]
+
+## Recommendations for Future Projects
+
+### Do More Of
+1. [Practice or approach that worked well]
+2. [Another successful practice]
+
+### Do Less Of
+1. [Practice or approach that didn't work]
+2. [Another unsuccessful practice]
+
+### Start Doing
+1. [New practice to adopt]
+2. [Another new practice]
+
+### Stop Doing
+1. [Practice to eliminate]
+2. [Another practice to eliminate]
+
+## Knowledge Gaps Identified
+- [Gap 1]: [What we didn't know that we needed]
+- [Gap 2]: [Another knowledge gap]
+
+## Training Needs
+- [Skill 1]: [Who needs training and why]
+- [Skill 2]: [Another training need]
+
+## Tools and Resources
+- **Helpful**: [Tools that worked well]
+- **Missing**: [Tools we wish we had]
+- **Recommended**: [Tools to use in future]
+
+## Timeline Retrospective
+- **Estimated**: [Original estimate]
+- **Actual**: [Actual time taken]
+- **Variance**: [Difference and reasons]
+
+## Team Feedback
+- [Team member 1]: [Their perspective]
+- [Team member 2]: [Their perspective]
+
+## Action Items for Next Project
+1. [ ] [Specific action based on lessons learned]
+2. [ ] [Another action item]
+3. [ ] [Another action item]
+
+## Conclusion
+[Final thoughts and overall assessment]
+```
+
+**Agent behavior**: Remind users to fill out lessons learned template after Module 6. Use insights to improve future boot camp experiences.
 
 ### Module 0: Quick Demo (Optional)
 
@@ -356,8 +1435,139 @@ Next step: Module 4 (can load directly)
 - Loading program (e.g., `load_customer_crm.py`)
 - Loading statistics report (records loaded, errors, time)
 - Documentation on how to run the program
+- Loading statistics dashboard (monitoring/dashboard.html)
 
-**Agent behavior**: Use `generate_scaffold` with workflows like `add_records` or `full_pipeline` to create the loading program. Use `sdk_guide` with topic `load` for platform-specific guidance. Use `find_examples` for real-world loading patterns from GitHub repositories. Create a separate loading program for each data source to maintain clarity and control.
+**Loading Statistics Dashboard**:
+
+After loading, generate a dashboard showing:
+- Total records loaded per data source
+- Total entities created
+- Match rate (percentage of records that matched existing entities)
+- Error rate and error details
+- Loading performance over time
+- Data quality metrics
+
+**Create monitoring/generate_dashboard.py**:
+```python
+import json
+from datetime import datetime
+
+def generate_loading_dashboard(stats):
+    """Generate HTML dashboard from loading statistics"""
+    
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Loading Statistics Dashboard</title>
+        <style>
+            body {{ font-family: Arial, sans-serif; margin: 20px; }}
+            .metric-card {{ 
+                display: inline-block; 
+                padding: 20px; 
+                margin: 10px; 
+                border: 1px solid #ddd; 
+                border-radius: 5px;
+                min-width: 200px;
+            }}
+            .metric-value {{ font-size: 2em; font-weight: bold; color: #2196F3; }}
+            .metric-label {{ color: #666; }}
+            table {{ border-collapse: collapse; width: 100%; margin-top: 20px; }}
+            th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
+            th {{ background-color: #2196F3; color: white; }}
+            .success {{ color: green; }}
+            .error {{ color: red; }}
+        </style>
+    </head>
+    <body>
+        <h1>Entity Resolution Loading Statistics</h1>
+        <p>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+        
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-label">Total Records Loaded</div>
+                <div class="metric-value">{stats['total_records']:,}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Total Entities Created</div>
+                <div class="metric-value">{stats['total_entities']:,}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Match Rate</div>
+                <div class="metric-value">{stats['match_rate']:.1f}%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Error Rate</div>
+                <div class="metric-value">{stats['error_rate']:.2f}%</div>
+            </div>
+        </div>
+        
+        <h2>Data Source Details</h2>
+        <table>
+            <tr>
+                <th>Data Source</th>
+                <th>Records Loaded</th>
+                <th>Errors</th>
+                <th>Duration</th>
+                <th>Throughput</th>
+                <th>Status</th>
+            </tr>
+    """
+    
+    for source in stats['data_sources']:
+        status_class = 'success' if source['errors'] == 0 else 'error'
+        html += f"""
+            <tr>
+                <td>{source['name']}</td>
+                <td>{source['records']:,}</td>
+                <td class="{status_class}">{source['errors']}</td>
+                <td>{source['duration']}</td>
+                <td>{source['throughput']:.1f} rec/sec</td>
+                <td class="{status_class}">{source['status']}</td>
+            </tr>
+        """
+    
+    html += """
+        </table>
+    </body>
+    </html>
+    """
+    
+    with open("monitoring/dashboard.html", "w") as f:
+        f.write(html)
+    
+    print("Dashboard generated: monitoring/dashboard.html")
+
+# Example usage
+if __name__ == "__main__":
+    stats = {
+        "total_records": 55000,
+        "total_entities": 47000,
+        "match_rate": 14.5,
+        "error_rate": 0.1,
+        "data_sources": [
+            {
+                "name": "Customer CRM",
+                "records": 50000,
+                "errors": 0,
+                "duration": "15m 23s",
+                "throughput": 54.2,
+                "status": "Complete"
+            },
+            {
+                "name": "Vendor API",
+                "records": 5000,
+                "errors": 3,
+                "duration": "2m 15s",
+                "throughput": 37.0,
+                "status": "Complete with errors"
+            }
+        ]
+    }
+    generate_loading_dashboard(stats)
+```
+
+**Agent behavior**: Use `generate_scaffold` with workflows like `add_records` or `full_pipeline` to create the loading program. Use `sdk_guide` with topic `load` for platform-specific guidance. Use `find_examples` for real-world loading patterns from GitHub repositories. Create a separate loading program for each data source to maintain clarity and control. After loading completes, generate the dashboard showing statistics.
 
 **Success criteria**: ✅ All data sources loaded successfully + loading statistics captured + no critical errors
 
@@ -509,6 +1719,38 @@ Now that you have a working entity resolution system:
 4. **Monitoring**: Set up monitoring for data quality and resolution performance
 5. **Expansion**: Add more data sources using the same process
 6. **Optimization**: Fine-tune mappings and confidence scores based on results
+7. **Documentation**: Complete the lessons learned template (docs/lessons_learned.md)
+8. **Knowledge sharing**: Share insights with your team
+
+### Post-Project Activities
+
+**Complete Lessons Learned**:
+- Fill out docs/lessons_learned.md
+- Document what worked well and what didn't
+- Capture key decisions and their rationale
+- Record metrics and business impact
+- Identify recommendations for future projects
+
+**Version Control**:
+```bash
+# Commit final state
+git add .
+git commit -m "Boot camp complete - production ready"
+git tag -a v1.0 -m "Initial production release"
+git push origin main --tags
+```
+
+**Knowledge Transfer**:
+- If handing off to another team, use docs/handoff_checklist.md
+- Schedule knowledge transfer sessions
+- Document tribal knowledge
+- Create runbooks for operations
+
+**Continuous Improvement**:
+- Review performance benchmarks monthly
+- Monitor data quality trends
+- Adjust mappings based on new data patterns
+- Update documentation as system evolves
 
 ### Getting Help
 

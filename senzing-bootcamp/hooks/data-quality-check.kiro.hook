@@ -1,0 +1,13 @@
+{
+  "name": "Senzing Data Quality Check",
+  "version": "1.0.0",
+  "description": "Automatically check data quality when transformation programs are saved",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["src/transform/*.py", "src/transform/*.js"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "The transformation program was just updated. Please review the changes and suggest running data quality validation tests to ensure the output still meets quality standards (>70% attribute coverage)."
+  }
+}

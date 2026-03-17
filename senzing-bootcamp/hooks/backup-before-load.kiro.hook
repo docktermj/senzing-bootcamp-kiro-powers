@@ -1,0 +1,13 @@
+{
+  "name": "Backup Database Before Loading",
+  "version": "1.0.0",
+  "description": "Remind to backup database before running loading programs",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["src/load/*.py", "src/load/*.js"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A loading program was modified. Before running this in production, remind the user to backup the database using: ./scripts/backup_database.sh"
+  }
+}

@@ -1,324 +1,296 @@
-# Senzing Boot Camp - Quick Start Guide
+# Senzing Boot Camp Quick Start
 
-Get started with Senzing entity resolution in under 30 minutes.
+Get started with Senzing entity resolution in 30 minutes or less.
 
-## What You'll Do
+## Three Quick Start Paths
 
-1. ✅ Run a quick demo (10 minutes)
-2. ✅ Understand your business problem (10 minutes)
-3. ✅ Map your first data source (30-60 minutes)
-4. ✅ Load and query results (30 minutes)
+### Path 1: 10-Minute Demo (Module 0)
+**Best for**: First-time users, seeing entity resolution in action
 
-**Total Time**: 1-2 hours to see entity resolution in action
+```bash
+# 1. Ask the agent
+"Let's run the quick demo with the Las Vegas dataset"
 
-## Prerequisites
+# 2. Watch entity resolution happen
+# - Sample data loads
+# - Duplicates are automatically resolved
+# - Results show matched entities
 
-- Kiro IDE installed
-- Python 3.8+ (or Java 11+, .NET 6+, Rust)
-- Sample data file (CSV, JSON, or database export)
-
-## Step 1: Run Quick Demo (10 minutes)
-
-See entity resolution in action with sample data.
-
-### In Kiro, say:
-```
-"Let's start the Senzing boot camp with Module 0"
+# 3. Understand the results
+# - See why records matched
+# - Review confidence scores
+# - Connect to your use case
 ```
 
-### What Happens:
-1. Kiro loads sample data (Las Vegas, London, or Moscow dataset)
-2. Generates a demo script
-3. Runs entity resolution
-4. Shows you duplicate records that were matched
-
-### What You'll See:
-- Records with slight variations (typos, abbreviations) matched together
-- Entities created from multiple records
-- Confidence scores for matches
-
-**Skip this if**: You want to jump straight to your own data
+**Time**: 10-15 minutes  
+**Output**: Understanding of entity resolution
 
 ---
 
-## Step 2: Define Your Problem (10 minutes)
+### Path 2: 30-Minute Fast Track
+**Best for**: Experienced users with SGES-compliant data
 
-Clarify what you're trying to solve.
+```bash
+# 1. Define problem (5 min)
+"I want to deduplicate customers from my CRM"
 
-### In Kiro, say:
+# 2. Upload data (5 min)
+# Drag and drop your SGES-formatted JSON file
+
+# 3. Install SDK (10 min)
+"Install Senzing with SQLite"
+
+# 4. Load and query (10 min)
+"Load my data and find duplicates"
 ```
-"Let's start Module 1 - I want to solve [your problem]"
-```
 
-### Examples:
-- "I want to find duplicate customers across 3 CRM systems"
-- "I need to detect fraud rings in insurance claims"
-- "I'm merging two companies and need to consolidate vendor data"
-
-### What Happens:
-1. Kiro asks about your data sources
-2. Helps you define success criteria
-3. Estimates costs based on data volume
-4. Creates `docs/business_problem.md`
-
-### What You'll Have:
-- Clear problem statement
-- List of data sources
-- Success metrics
-- Cost estimate
+**Time**: 30 minutes  
+**Output**: Working entity resolution on your data  
+**Requirement**: Data already in SGES format
 
 ---
 
-## Step 3: Map Your First Data Source (30-60 minutes)
+### Path 3: 2-Hour Complete Beginner
+**Best for**: New users with raw data (CSV, database, etc.)
 
-Transform your data into Senzing format.
+```bash
+# 1. Define problem (20 min)
+# - Answer discovery questions
+# - Identify data sources
+# - Set success criteria
 
-### Prerequisites:
-- One data file (CSV, JSON, Excel, or database export)
-- Sample of 10-100 records
+# 2. Collect data (15 min)
+# - Upload or link to data files
+# - Document locations
 
-### In Kiro, say:
+# 3. Evaluate quality (15 min)
+# - Run automated quality scoring
+# - Review metrics
+
+# 4. Map data (45 min)
+# - Use mapping_workflow tool
+# - Create transformation program
+# - Validate quality
+
+# 5. Install SDK (15 min)
+# - Install Senzing
+# - Configure database
+
+# 6. Load and query (30 min)
+# - Load data
+# - Find duplicates
+# - Examine results
 ```
-"Let's map my customer data file"
-```
 
-### What Happens:
-1. **Upload your file** to `data/raw/customers.csv`
-2. **Kiro analyzes** your data structure
-3. **Interactive mapping** - Kiro asks about each field:
-   - "Is 'cust_name' a person or organization name?"
-   - "Is 'email' an email address?"
-   - "Is 'addr1' a street address?"
-4. **Generate transformation program** in `src/transform/`
-5. **Validate output** with quality scoring
-6. **Test with sample** - verify 10 records look correct
-
-### What You'll Have:
-- Transformation program: `src/transform/transform_customers.py`
-- Transformed data: `data/transformed/customers.jsonl`
-- Quality report: `docs/data_quality_report.md`
-
-### Common Mappings:
-```
-Your Field          → Senzing Attribute
------------           ------------------
-customer_id         → RECORD_ID
-first_name          → NAME_FIRST
-last_name           → NAME_LAST
-email               → EMAIL_ADDRESS
-phone               → PHONE_NUMBER
-address             → ADDR_FULL
-city                → ADDR_CITY
-state               → ADDR_STATE
-zip                 → ADDR_POSTAL_CODE
-```
+**Time**: 2-3 hours  
+**Output**: Complete working project  
+**Modules**: 1-6, 8
 
 ---
 
-## Step 4: Install Senzing SDK (30 minutes)
+## Choose Your Path
 
-Set up the Senzing engine.
+### I want to...
 
-### In Kiro, say:
-```
-"Let's install the Senzing SDK"
-```
+**"See a demo first"** → Path 1 (10-Minute Demo)
+- Start with Module 0
+- No installation required (Docker)
+- Sample data provided
 
-### What Happens:
-1. Kiro detects your platform (Linux, macOS, Windows)
-2. Provides installation commands
-3. Sets up SQLite database (for evaluation)
-4. Configures engine
-5. Runs test script
+**"Get results fast"** → Path 2 (30-Minute Fast Track)
+- Skip to Module 5 (SDK Setup)
+- Requires SGES-compliant data
+- SQLite for quick start
 
-### What You'll Have:
-- Senzing SDK installed
-- Database configured
-- Engine ready to load data
+**"Learn properly"** → Path 3 (2-Hour Complete)
+- Start with Module 1
+- Work with your raw data
+- Complete understanding
 
-**Note**: Uses SQLite for quick start. For production, use PostgreSQL.
-
----
-
-## Step 5: Load Your Data (15 minutes)
-
-Load transformed data into Senzing.
-
-### In Kiro, say:
-```
-"Let's load the customer data"
-```
-
-### What Happens:
-1. Kiro generates loading program: `src/load/load_customers.py`
-2. Loads records into Senzing
-3. Shows progress (records/second)
-4. Generates statistics
-
-### What You'll See:
-```
-Loading customers...
-✓ 1,000 records loaded (125 records/second)
-✓ 850 entities created
-✓ 150 duplicates found (15% match rate)
-✓ Loading complete in 8 seconds
-```
-
-### What You'll Have:
-- Data loaded into Senzing
-- Entity resolution complete
-- Statistics dashboard
+**"Build for production"** → Full Boot Camp (10-18 hours)
+- Complete all modules 0-12
+- Production-ready deployment
+- Security, monitoring, optimization
 
 ---
 
-## Step 6: Query Results (15 minutes)
+## Quick Commands
 
-Explore the resolved entities.
-
-### In Kiro, say:
+### Start the Demo
 ```
-"Let's create a query to find duplicates"
+"Let's run the Senzing quick demo"
 ```
 
-### What Happens:
-1. Kiro generates query program: `src/query/find_duplicates.py`
-2. Runs query
-3. Shows duplicate entities
-
-### Example Results:
+### Define Your Problem
 ```
-Entity ID: 12345
-  Records: 3
-  - CUSTOMERS:CUST001 (John Smith, john@email.com)
-  - CUSTOMERS:CUST042 (J. Smith, jsmith@email.com)
-  - CUSTOMERS:CUST089 (John R Smith, john.smith@email.com)
-  Confidence: 95%
+"I want to start the Senzing boot camp"
 ```
 
-### What You'll Have:
-- Query programs in `src/query/`
-- List of duplicate entities
-- Confidence scores
-
----
-
-## What's Next?
-
-### For Evaluation/PoC
-You're done! You have:
-- ✅ Working transformation
-- ✅ Data loaded
-- ✅ Query results
-- ✅ Proof of concept
-
-### For Production Deployment
-Continue with:
-- **Module 7**: Load additional data sources
-- **Module 8**: User acceptance testing
-- **Module 9**: Performance testing
-- **Module 10**: Security hardening
-- **Module 11**: Monitoring setup
-- **Module 12**: Production deployment
-
----
-
-## Common Issues
-
-### "My data doesn't match"
-- Check transformation output: `data/transformed/customers.jsonl`
-- Verify attribute names are correct
-- Run quality scoring: scores should be >70%
-
-### "Installation failed"
-- Check platform compatibility
-- Verify Python/Java version
-- See `docs/guides/INSTALLATION_VERIFICATION.md`
-
-### "Loading is slow"
-- Normal for first time (building indexes)
-- SQLite is slower than PostgreSQL
-- Expect 50-200 records/second
-
-### "No duplicates found"
-- Check if data actually has duplicates
-- Review match confidence thresholds
-- Verify name/address quality
-
----
-
-## Tips for Success
-
-### Start Small
-- Use 100-1,000 records for first test
-- Verify results before loading full dataset
-- Iterate on mapping if needed
-
-### Check Quality
-- Quality scores >70% are good
-- Quality scores <50% need improvement
-- Review quality report recommendations
-
-### Test Thoroughly
-- Load sample data first
-- Verify a few entities manually
-- Check match confidence scores
-
-### Ask for Help
-- Kiro can explain any step
-- Use: "Explain why these records matched"
-- Use: "How do I improve data quality?"
-
----
-
-## Next Steps
-
-### Continue Boot Camp
+### Skip to Loading
 ```
-"Let's continue to Module 7"
-```
-
-### Add More Data Sources
-```
-"I want to add another data source"
-```
-
-### Deploy to Production
-```
-"Let's prepare for production deployment"
+"I have SGES data ready, let's install Senzing and load it"
 ```
 
 ### Get Help
 ```
-"I'm stuck on [specific issue]"
+"What is entity resolution?"
+"How do I map my data?"
+"Show me the boot camp modules"
 ```
 
 ---
 
-## Resources
+## What You'll Need
 
-- **Full Boot Camp**: See `../../POWER.md`
-- **Module Details**: See `../modules/`
-- **Troubleshooting**: See `../../steering/common-pitfalls.md`
-- **Design Patterns**: See `DESIGN_PATTERNS.md`
+### For Demo (Path 1)
+- ✅ Nothing! Just ask the agent
 
----
+### For Fast Track (Path 2)
+- ✅ SGES-formatted data file
+- ✅ Python 3.8+ or Docker
+- ✅ 30 minutes
 
-## Success Checklist
+### For Complete Beginner (Path 3)
+- ✅ Raw data file (CSV, JSON, Excel, etc.)
+- ✅ Python 3.8+ or Docker
+- ✅ 2-3 hours
+- ✅ Basic understanding of your data
 
-After this quick start, you should have:
-
-- [ ] Seen entity resolution demo (Module 0)
-- [ ] Defined business problem (Module 1)
-- [ ] Collected data file (Module 2)
-- [ ] Mapped data to Senzing format (Module 4)
-- [ ] Installed Senzing SDK (Module 5)
-- [ ] Loaded data successfully (Module 6)
-- [ ] Queried and viewed results (Module 8)
-- [ ] Understood how entity resolution works
-
-**Time Invested**: 1-2 hours  
-**Value Gained**: Working entity resolution proof of concept
+### For Production (Full Boot Camp)
+- ✅ All data sources identified
+- ✅ PostgreSQL database (or plan to set up)
+- ✅ 10-18 hours over 1-2 weeks
+- ✅ Production environment access
 
 ---
 
-**Ready to start?** Open Kiro and say: *"Let's start the Senzing boot camp"*
+## Quick Reference
+
+### Module Overview
+- **Module 0**: Quick Demo (10 min) - Optional
+- **Module 1**: Business Problem (20 min)
+- **Module 2**: Collect Data (15 min per source)
+- **Module 3**: Evaluate Quality (15 min per source)
+- **Module 4**: Map Data (1-2 hrs per source)
+- **Module 5**: Install SDK (30-60 min)
+- **Module 6**: Load Data (30 min per source)
+- **Module 7**: Multi-Source Orchestration (1-2 hrs)
+- **Module 8**: Query & Validate (1-2 hrs)
+- **Module 9**: Performance Testing (1-2 hrs)
+- **Module 10**: Security Hardening (1-2 hrs)
+- **Module 11**: Monitoring (1-2 hrs)
+- **Module 12**: Package & Deploy (2-3 hrs)
+
+### Skip Ahead Options
+- Have SGES data? → Skip Module 4
+- Senzing installed? → Skip Module 5
+- Single source? → Skip Module 7
+- Not production? → Skip Modules 9-12
+
+---
+
+## After Quick Start
+
+### Next Steps
+
+**After Demo (Path 1)**:
+1. Decide if entity resolution fits your use case
+2. Choose Path 2 or 3 to work with your data
+3. Or explore more sample datasets
+
+**After Fast Track (Path 2)**:
+1. Review results and validate accuracy
+2. Add more data sources (Module 2-4, 6-7)
+3. Consider production deployment (Modules 9-12)
+
+**After Complete Beginner (Path 3)**:
+1. Validate results with stakeholders
+2. Add more data sources if needed
+3. Plan production deployment
+
+---
+
+## Getting Help
+
+### Ask the Agent
+```
+"How do I start the boot camp?"
+"What's the fastest way to see results?"
+"I'm stuck on Module 4, help!"
+"Show me examples"
+```
+
+### Use MCP Tools
+- `get_capabilities` - See all available tools
+- `mapping_workflow` - Map your data
+- `search_docs` - Find documentation
+- `explain_error_code` - Diagnose errors
+
+### Review Documentation
+- `../../POWER.md` - Complete boot camp overview
+- `PROGRESS_TRACKER.md` - Track your progress
+- `../modules/` - Detailed module guides
+- `../../examples/` - Complete example projects
+
+---
+
+## Success Indicators
+
+### You're Ready to Move On When...
+
+**After Demo**:
+- ✅ You understand what entity resolution does
+- ✅ You've seen duplicates automatically matched
+- ✅ You can explain why records matched
+
+**After Fast Track**:
+- ✅ Your data is loaded into Senzing
+- ✅ You can query for duplicates
+- ✅ Results make sense for your use case
+
+**After Complete Beginner**:
+- ✅ All modules 1-6 and 8 complete
+- ✅ Transformation and query programs work
+- ✅ Results validated and documented
+
+---
+
+## Common Questions
+
+**Q: Which path should I choose?**  
+A: Demo if exploring, Fast Track if experienced, Complete if learning.
+
+**Q: Can I switch paths?**  
+A: Yes! Start with demo, then do Fast Track or Complete.
+
+**Q: Do I need to install anything?**  
+A: Demo needs nothing. Others need Python or Docker.
+
+**Q: How long does each path take?**  
+A: Demo: 10 min, Fast Track: 30 min, Complete: 2-3 hrs.
+
+**Q: Can I use my own data?**  
+A: Yes for Fast Track and Complete. Demo uses sample data.
+
+**Q: What if I get stuck?**  
+A: Ask the agent! That's what it's here for.
+
+---
+
+## Ready to Start?
+
+Choose your path and tell the agent:
+
+```
+"Let's run the quick demo"
+"I want to do the 30-minute fast track"
+"I'm ready for the complete beginner path"
+"Show me the full boot camp"
+```
+
+The agent will guide you through every step!
+
+---
+
+**Version**: 3.0.0  
+**Last updated**: 2026-03-17

@@ -171,9 +171,6 @@ get_sdk_reference(topic="functions", filter="addRecord", version="current")
 # Get flag definitions
 get_sdk_reference(topic="flags", filter="G2_EXPORT", version="current")
 
-# V3 to V4 migration
-get_sdk_reference(topic="migration", version="current")
-
 # Response schemas
 get_sdk_reference(topic="response_schemas", version="current")
 ```
@@ -202,7 +199,6 @@ search_docs(query="[your approach]", category="anti_patterns", version="current"
 All MCP tools accept a `version` parameter:
 - `"current"` - Latest Senzing version (default, recommended)
 - `"4.0"` - Senzing V4 specific
-- `"3.x"` - Senzing V3 (limited support)
 
 ## When to Load This Reference
 

@@ -847,9 +847,9 @@ This workflow is now split into two parts:
    
    **If Senzing is already installed**:
    - Ask user if they want to use the existing installation
-   - Verify the version is compatible (V4.0 or V3.x)
+   - Verify the version is V4.0
    - Skip to step 4 (verify installation)
-   - If version is incompatible or installation is broken, proceed with reinstallation
+   - If version is not V4.0 or installation is broken, proceed with reinstallation
 
 2. **Determine the user's platform** (if not already installed):
    
@@ -1551,8 +1551,7 @@ Use this workflow when a user encounters errors or unexpected behavior.
 1. If the user provides an error code (e.g., `SENZ0005`), call `explain_error_code` immediately. This covers 456 error codes with causes and resolution steps.
 2. If the error is behavioral (unexpected matches, missing entities), use `search_docs` to find relevant documentation about scoring, resolution principles, or configuration.
 3. If the error involves SDK method calls, use `get_sdk_reference` with `topic='functions'` and a `filter` for the method name to verify correct signatures and parameters.
-4. If the user is migrating from V3 to V4, use `get_sdk_reference` with `topic='migration'` to identify breaking changes (renamed methods, removed functions, flag changes).
-5. For database-related issues, use `search_docs` with `category='database'` for tuning and setup guidance.
+4. For database-related issues, use `search_docs` with `category='database'` for tuning and setup guidance.
 
 ## Workflow: Explore Code Examples
 
@@ -1573,7 +1572,6 @@ This power should activate when the user mentions or is working on:
 - CORD datasets, sample entity data
 - Record loading, entity export, redo processing
 - Senzing error codes (SENZ prefix)
-- V3 to V4 migration
 
 
 ## Workflow: Refine and Package for Deployment (Module 8) - LEGACY
@@ -2050,7 +2048,7 @@ Create comprehensive documentation in `docs/`:
      test:
        runs-on: ubuntu-latest
        steps:
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - uses: actions/setup-python@v4
            with:
              python-version: '3.11'
@@ -2062,7 +2060,7 @@ Create comprehensive documentation in `docs/`:
        needs: test
        runs-on: ubuntu-latest
        steps:
-         - uses: actions/checkout@v3
+         - uses: actions/checkout@v4
          - run: ./scripts/deploy.sh prod
    ```
 

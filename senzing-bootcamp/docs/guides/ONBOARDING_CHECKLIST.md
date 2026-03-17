@@ -196,7 +196,7 @@ You're ready to start the boot camp! Tell the agent:
 
 **Need help?**
 - Ask the agent: "Help me prepare for the boot camp"
-- Review `QUICK_START.md` for path options
+- Review `docs/guides/QUICK_START.md` for path options
 
 ## Troubleshooting
 
@@ -249,7 +249,7 @@ After completing this checklist:
 1. **Choose your path**: Demo, Fast Track, or Complete
 2. **Start Module 0 or 1**: Tell the agent you're ready
 3. **Follow the guide**: Agent will walk you through each step
-4. **Track progress**: Use `PROGRESS_TRACKER.md`
+4. **Track progress**: Use `docs/guides/PROGRESS_TRACKER.md`
 
 ## Support
 

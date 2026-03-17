@@ -205,9 +205,9 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 
 ## Related Documentation
 
-- `POWER.md` - Boot camp overview
-- `steering/steering.md` - Module 0 workflow
-- `docs/guides/QUICK_START.md` - Quick start guide
+- `../../POWER.md` - Boot camp overview
+- `../../steering/steering.md` - Module 0 workflow
+- `QUICK_START.md` - Quick start guide
 
 ## Version History
 

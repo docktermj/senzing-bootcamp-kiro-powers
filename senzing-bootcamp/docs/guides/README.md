@@ -4,6 +4,71 @@ This directory contains user-facing guides and tutorials for the Senzing Boot Ca
 
 ## Available Guides
 
+### Quick Start Guide
+**File**: [QUICK_START.md](QUICK_START.md)
+
+**Purpose**: Get started with Senzing in 10 minutes, 30 minutes, or 2 hours
+
+**Content**:
+- Three quick start paths (Demo, Fast Track, Complete)
+- Prerequisites for each path
+- Step-by-step instructions
+- Quick commands and examples
+- Success indicators
+
+**When to Use**: Before starting the boot camp - choose your learning path
+
+---
+
+### Onboarding Checklist
+**File**: [ONBOARDING_CHECKLIST.md](ONBOARDING_CHECKLIST.md)
+
+**Purpose**: Pre-flight checklist before starting the boot camp
+
+**Content**:
+- System requirements
+- Data preparation checklist
+- Database setup requirements
+- Development environment setup
+- Time and resource planning
+- Quick validation commands
+
+**When to Use**: Before Module 1 - ensure you're ready to start
+
+---
+
+### Progress Tracker
+**File**: [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md)
+
+**Purpose**: Track your progress through all 13 modules
+
+**Content**:
+- Checklist for each module
+- Time estimates
+- Skip ahead options
+- Overall progress summary
+- Notes section
+
+**When to Use**: Throughout the boot camp - track completion
+
+---
+
+### Compatibility Matrix
+**File**: [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md)
+
+**Purpose**: Understand version and platform compatibility
+
+**Content**:
+- Senzing V4.0 feature support
+- Platform support (Linux, macOS, Windows)
+- Database version requirements
+- Python package versions
+- Module compatibility
+
+**When to Use**: Before Module 5 (SDK Setup) - verify compatibility
+
+---
+
 ### Design Patterns Gallery
 **File**: [DESIGN_PATTERNS.md](DESIGN_PATTERNS.md)
 
@@ -84,7 +149,15 @@ This directory contains user-facing guides and tutorials for the Senzing Boot Ca
 ## Guide Categories
 
 ### Getting Started
+- **Quick Start** - Three fast paths to get started
+- **Onboarding Checklist** - Pre-flight requirements
 - **Design Patterns** - Choose your use case
+- **Compatibility Matrix** - Version and platform support
+
+### Progress Tracking
+- **Progress Tracker** - Track module completion
+
+### Setup and Installation
 - **Installation Verification** - Verify SDK setup
 
 ### Automation
@@ -98,6 +171,10 @@ This directory contains user-facing guides and tutorials for the Senzing Boot Ca
 
 | Guide | Module | Time | Purpose |
 |-------|--------|------|---------|
+| Quick Start | Before 1 | 10-120 min | Choose path |
+| Onboarding Checklist | Before 1 | 15 min | Verify readiness |
+| Progress Tracker | All | Ongoing | Track completion |
+| Compatibility Matrix | Before 5 | 5 min | Check compatibility |
 | Design Patterns | 1 | 10 min | Choose pattern |
 | Hooks Installation | Before 4 | 15 min | Automate checks |
 | Installation Verification | 5 | 10 min | Verify SDK |
@@ -125,10 +202,13 @@ This directory contains user-facing guides and tutorials for the Senzing Boot Ca
 ## How to Use These Guides
 
 ### For New Users
-1. Start with **Design Patterns** to understand use cases
-2. Follow main boot camp (POWER.md)
-3. Use **Installation Verification** after SDK setup
-4. Install **Hooks** before data mapping
+1. Start with **Quick Start** to choose your path
+2. Complete **Onboarding Checklist** before starting
+3. Use **Progress Tracker** throughout the boot camp
+4. Reference **Design Patterns** in Module 1
+5. Check **Compatibility Matrix** before Module 5
+6. Use **Installation Verification** after SDK setup
+7. Install **Hooks** before data mapping
 
 ### For Experienced Users
 - Jump directly to relevant guide
@@ -159,17 +239,23 @@ Coding standards:
 ## For Agents
 
 When users need guidance:
-1. **Module 1** → Suggest Design Patterns guide
-2. **Before Module 4** → Suggest Hooks Installation
-3. **After Module 5** → Suggest Installation Verification
-4. **Troubleshooting** → Point to relevant guides
+1. **Before starting** → Suggest Quick Start and Onboarding Checklist
+2. **Module 1** → Suggest Design Patterns guide
+3. **Before Module 4** → Suggest Hooks Installation
+4. **Before Module 5** → Suggest Compatibility Matrix
+5. **After Module 5** → Suggest Installation Verification
+6. **Throughout** → Remind about Progress Tracker
+7. **Troubleshooting** → Point to relevant guides
 
 ## For Users
 
 ### When to Read
-- **Before starting** → Design Patterns
+- **Before starting** → Quick Start, Onboarding Checklist
+- **Module 1** → Design Patterns
+- **Before Module 5** → Compatibility Matrix
 - **During setup** → Installation Verification
 - **Before mapping** → Hooks Installation
+- **Throughout** → Progress Tracker
 - **When stuck** → Troubleshooting guides
 
 ### How to Read
@@ -180,6 +266,11 @@ When users need guidance:
 
 ## Version History
 
+- **v3.0.0** (2026-03-17): Added new guides
+  - QUICK_START.md
+  - ONBOARDING_CHECKLIST.md
+  - PROGRESS_TRACKER.md
+  - COMPATIBILITY_MATRIX.md
 - **v1.0.0** (2026-03-17): Initial guides
   - DESIGN_PATTERNS.md
   - HOOKS_INSTALLATION_GUIDE.md

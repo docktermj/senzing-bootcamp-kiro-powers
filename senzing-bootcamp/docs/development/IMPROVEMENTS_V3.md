@@ -1,6 +1,8 @@
-# Senzing Boot Camp v3.0 Improvements
+# Senzing Boot Camp Version 3.0.0 Improvements
 
-This document summarizes all improvements implemented in version 3.0.0.
+This document summarizes all improvements implemented in boot camp version 3.0.0.
+
+**Note**: This refers to version 3.0.0 of the boot camp power, not Senzing software version. The boot camp uses Senzing V4.0 exclusively.
 
 ## Summary
 
@@ -128,11 +130,10 @@ All 12 recommended improvements have been successfully implemented to enhance th
 
 **What was done**:
 - Created `COMPATIBILITY_MATRIX.md` with comprehensive tables:
-  - Senzing version support (3.x vs 4.0)
+  - Senzing V4.0 feature support
   - Platform support
   - Database versions
   - Python package versions
-  - Migration guide
   - Boot camp module compatibility
 
 **Files created**:

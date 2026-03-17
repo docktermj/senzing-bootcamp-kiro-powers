@@ -4,12 +4,12 @@ A comprehensive, guided learning experience for Senzing entity resolution. This 
 
 ## 🚀 Quick Links
 
-- **[Quick Start Guide](QUICK_START.md)** - Three fast paths: 10 min, 30 min, or 2 hours
-- **[Onboarding Checklist](ONBOARDING_CHECKLIST.md)** - Complete this before starting
-- **[Progress Tracker](PROGRESS_TRACKER.md)** - Track your module completion
+- **[Quick Start Guide](docs/guides/QUICK_START.md)** - Three fast paths: 10 min, 30 min, or 2 hours
+- **[Onboarding Checklist](docs/guides/ONBOARDING_CHECKLIST.md)** - Complete this before starting
+- **[Progress Tracker](docs/guides/PROGRESS_TRACKER.md)** - Track your module completion
 - **[Example Projects](examples/)** - Three complete reference projects
 - **[Code Templates](templates/)** - Ready-to-use transformation and loading templates
-- **[Compatibility Matrix](COMPATIBILITY_MATRIX.md)** - Version and platform support
+- **[Compatibility Matrix](docs/guides/COMPATIBILITY_MATRIX.md)** - Version and platform support
 
 ## What is Senzing?
 
@@ -215,7 +215,7 @@ See [docs/policies/](docs/policies/) for complete policies.
 ## Version
 
 **Current Version**: 3.0.0  
-**Senzing Compatibility**: V4.0 (primary), V3.x (limited)  
+**Senzing Compatibility**: V4.0  
 **Last Updated**: March 17, 2026
 
 ## License

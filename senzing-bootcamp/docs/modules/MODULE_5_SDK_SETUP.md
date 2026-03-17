@@ -77,9 +77,9 @@ docker images | grep senzing
 ```
 
 If Senzing is found:
-- Verify version compatibility (V4.0 or V3.x)
+- Verify version is V4.0
 - Skip to "Configure Database" section
-- If version incompatible, proceed with installation
+- If version is not V4.0, proceed with installation
 
 ## Platform Selection
 

@@ -5,7 +5,7 @@ version: "3.0.0"
 description: "Comprehensive guided boot camp for Senzing entity resolution. Covers data mapping, SDK setup, loading, performance testing, security hardening, monitoring, and production deployment."
 keywords: ["Entity Resolution", "Senzing", "Data Mapping", "SDK", "Identity Resolution", "Data Matching", "ER", "Performance", "Security", "Monitoring", "Deployment"]
 author: "Senzing"
-senzing_compatibility: ["4.0", "3.x"]
+senzing_compatibility: ["4.0"]
 last_updated: "2026-03-17"
 ---
 
@@ -18,16 +18,16 @@ This power provides a guided boot camp experience for learning Senzing entity re
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
 **Power Version**: 3.0.0  
-**Senzing Compatibility**: V4.0 (primary), V3.x (limited support)  
+**Senzing Compatibility**: V4.0  
 **Last Updated**: 2026-03-17
 
 ## Getting Started
 
 ### New to Senzing?
 
-1. **Read the Quick Start**: See `QUICK_START.md` for three fast paths (10 min, 30 min, or 2 hours)
-2. **Check the Onboarding Checklist**: Complete `ONBOARDING_CHECKLIST.md` before starting
-3. **Review Compatibility**: Check `COMPATIBILITY_MATRIX.md` for version support
+1. **Read the Quick Start**: See `docs/guides/QUICK_START.md` for three fast paths (10 min, 30 min, or 2 hours)
+2. **Check the Onboarding Checklist**: Complete `docs/guides/ONBOARDING_CHECKLIST.md` before starting
+3. **Review Compatibility**: Check `docs/guides/COMPATIBILITY_MATRIX.md` for version support
 4. **Choose Your Path**:
    - **Demo** (10 min): Module 0 with sample data
    - **Fast Track** (30 min): Modules 5-6 with SGES data
@@ -36,7 +36,7 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 ### Track Your Progress
 
-Use `PROGRESS_TRACKER.md` to track completion of each module and overall progress.
+Use `docs/guides/PROGRESS_TRACKER.md` to track completion of each module and overall progress.
 
 ### Example Projects
 
@@ -69,7 +69,7 @@ Use ready-made templates from `templates/` directory:
   - `find_examples` — Working code examples from 27 Senzing GitHub repositories
   - `search_docs` — Search indexed Senzing documentation
   - `explain_error_code` — Diagnose Senzing errors (456 error codes)
-  - `get_sdk_reference` — SDK method signatures, flags, and V3-to-V4 migration
+  - `get_sdk_reference` — SDK method signatures and flags
 
 ## Boot Camp Learning Path
 

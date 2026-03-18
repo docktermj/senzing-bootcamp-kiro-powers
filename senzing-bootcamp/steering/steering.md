@@ -112,14 +112,14 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
 
 **Prerequisites**: None (or Module 0 complete if they did the demo)
 
-1. **Set up project directory structure**: Before diving into the problem, help the user create an organized project structure:
+1. **Set up project directory structure**: The agent will create an organized project structure for the user. Execute the following command to create the directory structure:
 
    ```bash
    mkdir -p my-senzing-project/{data/{raw,transformed,samples,backups},src/{transform,load,query,utils},tests,docs,config,logs,monitoring,scripts}
    cd my-senzing-project
    ```
    
-   Explain the purpose of each folder:
+   After creating the structure, explain the purpose of each folder:
    - `data/raw/` - Original source data files
    - `data/transformed/` - Senzing-formatted JSON output
    - `data/samples/` - Sample data for testing

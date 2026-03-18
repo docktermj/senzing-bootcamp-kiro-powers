@@ -91,7 +91,7 @@ Consider:
 
 ## Project Directory Structure
 
-The agent will help create this structure:
+The Senzing Boot Camp agent will automatically create this organized directory structure for you:
 
 ```
 my-senzing-project/

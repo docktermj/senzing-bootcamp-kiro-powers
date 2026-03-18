@@ -49,7 +49,7 @@ This document consolidates all agent behavior instructions from across the boot 
 - Encourage visual explanations (diagrams)
 - Create `docs/business_problem.md`
 - Update README.md with overview
-- Help create project directory structure
+- **Create project directory structure** - Execute the mkdir command to set up the organized directory structure
 - **Check if directory is already a git repository** before initializing
 - If not a git repository, ask user if they want to initialize git
 - If yes, initialize git and create .gitignore

@@ -275,7 +275,7 @@ Before starting each module, ensure prerequisites are met:
 
 ## Project Directory Structure
 
-Before starting, set up a project directory to organize all your boot camp artifacts:
+The Senzing Boot Camp agent will create this organized directory structure for you at the start of Module 1:
 
 ```
 my-senzing-project/

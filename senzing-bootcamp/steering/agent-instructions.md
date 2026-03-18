@@ -157,6 +157,117 @@ Create the directory structure:
 - ❌ Do NOT ask the user if they want the structure created - just create it
 - ❌ Do NOT proceed with Module 0 or Module 1 without creating the structure first
 
+## Special Workflows
+
+### Handling User Path Selection
+
+**When presenting path options to users**, use clear, unambiguous labels:
+
+**WRONG** (causes confusion):
+```
+1. Quick Demo (10 min) - Start with Module 0
+2. Fast Track (30 min) - Start with Module 5
+3. Complete Path (2-3 hrs) - Start with Module 1
+```
+Problem: User entering "1" is ambiguous - do they mean option 1 or Module 1?
+
+**CORRECT** (clear and unambiguous):
+```
+Which path would you like to take?
+
+A) Quick Demo (10 min) - Module 0
+   See entity resolution in action with sample data
+   
+B) Fast Track (30 min) - Modules 5-6
+   For users with SGES-compliant data
+   
+C) Complete Beginner (2-3 hrs) - Modules 1-6, 8
+   Work with your raw data from start to finish
+   
+D) Full Production (10-18 hrs) - All Modules 0-12
+   Complete production-ready deployment
+
+Please respond with A, B, C, or D (or describe what you want to do)
+```
+
+**Interpreting User Responses**:
+- "A", "a", "demo", "quick demo", "Module 0" → Start Module 0
+- "B", "b", "fast", "fast track" → Start Module 5
+- "C", "c", "complete", "beginner" → Start Module 1
+- "D", "d", "full", "production" → Start Module 1 (full path)
+- "1" → Ask for clarification: "Did you mean option A (Quick Demo) or Module 1 (Business Problem)?"
+- "0" → Assume Module 0 (Quick Demo)
+
+**CRITICAL**: If user enters a number (1, 2, 3) when you've presented lettered options (A, B, C), ALWAYS clarify which they meant before proceeding.
+
+### Power Feedback Workflow
+
+**Trigger phrases**: When user says "power feedback", "submit feedback", "provide feedback", "I have feedback", or "report an issue"
+
+**Immediate actions**:
+
+1. **Check for feedback file**:
+   ```bash
+   if [ ! -f "docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md" ]; then
+       # Create from template
+       cp docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS_TEMPLATE.md \
+          docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md
+       
+       # Update header with current date
+       sed -i "s/\[Date when you started using the power\]/$(date +%Y-%m-%d)/" \
+          docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md
+   fi
+   ```
+
+2. **Gather feedback information** (ask one question at a time):
+   - "What would you like to provide feedback about?" (present categories)
+   - "Which module is this related to?" (0-12, or general)
+   - "What happened or what issue did you encounter?"
+   - "Why is this a problem? What was the impact?"
+   - "Do you have a suggested fix or improvement?"
+   - "What priority would you assign?" (High/Medium/Low)
+
+3. **Format feedback entry**:
+   ```markdown
+   ## Improvement: [Brief title based on user's description]
+   
+   **Date**: YYYY-MM-DD
+   **Module**: [Module number or "General"]
+   **Priority**: [High/Medium/Low]
+   **Category**: [Documentation/Workflow/Tools/UX/Bug/Performance/Security]
+   
+   ### What Happened
+   [User's description of the issue]
+   
+   ### Why It's a Problem
+   [User's explanation of impact]
+   
+   ### Suggested Fix
+   [User's suggestion, or "None provided"]
+   
+   ### Workaround Used
+   [If user found a workaround, or "None"]
+   ```
+
+4. **Append to feedback file**:
+   - Add the formatted entry to the "Your Feedback" section
+   - Preserve any existing feedback entries
+
+5. **Confirm and guide**:
+   - "✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md`"
+   - "You can review or edit it anytime"
+   - "Would you like to add more feedback, or continue with the boot camp?"
+
+6. **Remind about submission**:
+   - "When you complete the boot camp, please share this file with the power author to help improve the experience for future users"
+
+**Important**:
+- Always create feedback file from template if it doesn't exist
+- Ask questions one at a time (don't overwhelm user)
+- Be supportive and encouraging about feedback
+- Make it easy to add multiple feedback entries
+- Remind about submission at end of Module 12
+
 ## Module-Specific Behaviors
 
 ### Module 0: Quick Demo
@@ -184,7 +295,7 @@ Create the directory structure:
 - If not a git repository, ask user if they want to initialize git
 - If yes, initialize git (structure and .gitignore already created)
 - If already a git repository, acknowledge and proceed
-- **Inform user about feedback mechanism**: Explain that they can document issues and suggestions in `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md` using the template at `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS_TEMPLATE.md`
+- **Inform user about feedback mechanism**: "If you encounter any issues or have suggestions during the boot camp, just say 'power feedback' and I'll help you document them for the power author."
 
 ### Module 2: Identify and Collect Data Sources
 - Review data sources identified in Module 1
@@ -537,7 +648,11 @@ Remember:
 - Prepare handoff to operations team
 
 ### Module 12 Completion
-- **Remind user to share feedback**: At the end of Module 12, remind users to share their completed `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md` file with the power author
+- **Remind user to share feedback**: At the end of Module 12, say:
+  - "🎉 Congratulations on completing the Senzing Boot Camp!"
+  - "If you have any feedback about your experience, say 'power feedback' and I'll help you document it"
+  - "If you've already documented feedback in `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md`, please share that file with the power author"
+  - "Your feedback helps improve the boot camp for future users!"
 - Encourage them to include any final thoughts about the overall boot camp experience
 
 ## Code Quality Standards

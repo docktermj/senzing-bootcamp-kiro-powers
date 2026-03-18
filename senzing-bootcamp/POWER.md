@@ -455,6 +455,35 @@ When starting Module 1, offer users a gallery of common entity resolution patter
 
 ## Best Practices
 
+### Presenting Path Options to Users
+
+When offering users a choice of paths, use letter labels (A, B, C, D) instead of numbers (1, 2, 3, 4) to avoid confusion with module numbers.
+
+**Example**:
+```
+Which path would you like to take?
+
+A) Quick Demo (10 min) - Module 0
+   See entity resolution in action with sample data
+   
+B) Fast Track (30 min) - Modules 5-6
+   For users with SGES-compliant data
+   
+C) Complete Beginner (2-3 hrs) - Modules 1-6, 8
+   Work with your raw data from start to finish
+   
+D) Full Production (10-18 hrs) - All Modules 0-12
+   Complete production-ready deployment
+
+Please respond with A, B, C, or D
+```
+
+**Why letters?** If you use numbers (1, 2, 3) and the user responds "1", it's ambiguous whether they mean "option 1" or "Module 1". Letters eliminate this confusion.
+
+**Handling ambiguous responses**: If user enters a number when you presented letters, clarify: "Did you mean option A (Quick Demo) or Module 1 (Business Problem)?"
+
+### General Best Practices
+
 - Always call `get_capabilities` first when starting a Senzing session
 - Never hand-code Senzing JSON mappings or SDK method calls from memory — use `mapping_workflow` and `generate_scaffold` for validated output
 - Use `search_docs` with category `anti_patterns` before recommending installation, architecture, or deployment approaches
@@ -494,7 +523,60 @@ See [steering/steering.md](steering/steering.md) for detailed step-by-step workf
 
 Your feedback helps improve the Senzing Boot Camp for future users!
 
-### How to Provide Feedback
+### Triggering Feedback Workflow
+
+When a user says any of these phrases:
+- "power feedback"
+- "submit feedback"
+- "provide feedback"
+- "I have feedback"
+- "report an issue"
+
+The agent should immediately follow the feedback workflow below.
+
+### Feedback Workflow (Agent Instructions)
+
+When user requests to provide feedback:
+
+1. **Check if feedback file exists**:
+   ```bash
+   if [ -f "docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md" ]; then
+       echo "Feedback file exists"
+   else
+       echo "Creating feedback file from template"
+   fi
+   ```
+
+2. **Create feedback file if needed**:
+   - Copy template from `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS_TEMPLATE.md`
+   - Save as `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md`
+   - Fill in the header with current date and user information (if available)
+
+3. **Ask user what type of feedback**:
+   - "What would you like to provide feedback about?"
+   - Present categories: Documentation, Workflow, Tools, UX, Bug, Performance, Security
+
+4. **Gather feedback details**:
+   - Which module? (0-12)
+   - What happened? (the issue)
+   - Why is it a problem? (impact)
+   - Suggested fix? (if they have one)
+   - Priority? (High/Medium/Low)
+
+5. **Add feedback to file**:
+   - Use the improvement template from the file
+   - Fill in all sections with user's responses
+   - Add to the "Your Feedback" section
+
+6. **Confirm and offer next steps**:
+   - "I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md`"
+   - "Would you like to add more feedback, or continue with the boot camp?"
+
+7. **Remind about submission**:
+   - "When you complete the boot camp, please share this file with the power author"
+   - "You can add more feedback anytime by saying 'power feedback'"
+
+### Manual Feedback Process (For Reference)
 
 As you work through the boot camp, document any issues, confusion points, or improvement suggestions:
 
@@ -525,9 +607,9 @@ As you work through the boot camp, document any issues, confusion points, or imp
 - **Security**: Security concerns, compliance issues
 
 **Agent behavior**:
-- At the start of Module 1, inform users about the feedback mechanism
-- Remind users to document issues in the feedback file as they occur
-- At the end of Module 12, remind users to share their completed feedback file
+- At the start of Module 1, inform users: "If you encounter any issues or have suggestions during the boot camp, just say 'power feedback' and I'll help you document them"
+- When user says "power feedback", "submit feedback", "provide feedback", "I have feedback", or "report an issue", immediately trigger the feedback workflow (see Feedback Workflow section above)
+- Remind users at the end of Module 12 to share their completed feedback file with the power author
 
 ---
 

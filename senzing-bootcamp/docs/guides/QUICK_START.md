@@ -4,7 +4,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ## Three Quick Start Paths
 
-### Path 1: 10-Minute Demo (Module 0)
+### Path A: 10-Minute Demo (Module 0)
 **Best for**: First-time users, seeing entity resolution in action
 
 ```bash
@@ -27,7 +27,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ---
 
-### Path 2: 30-Minute Fast Track
+### Path B: 30-Minute Fast Track
 **Best for**: Experienced users with SGES-compliant data
 
 ```bash
@@ -50,7 +50,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ---
 
-### Path 3: 2-Hour Complete Beginner
+### Path C: 2-Hour Complete Beginner
 **Best for**: New users with raw data (CSV, database, etc.)
 
 ```bash
@@ -92,22 +92,22 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ### I want to...
 
-**"See a demo first"** → Path 1 (10-Minute Demo)
+**"See a demo first"** → Path A (10-Minute Demo)
 - Start with Module 0
 - No installation required (Docker)
 - Sample data provided
 
-**"Get results fast"** → Path 2 (30-Minute Fast Track)
+**"Get results fast"** → Path B (30-Minute Fast Track)
 - Skip to Module 5 (SDK Setup)
 - Requires SGES-compliant data
 - SQLite for quick start
 
-**"Learn properly"** → Path 3 (2-Hour Complete)
+**"Learn properly"** → Path C (2-Hour Complete)
 - Start with Module 1
 - Work with your raw data
 - Complete understanding
 
-**"Build for production"** → Full Boot Camp (10-18 hours)
+**"Build for production"** → Path D: Full Boot Camp (10-18 hours)
 - Complete all modules 0-12
 - Production-ready deployment
 - Security, monitoring, optimization
@@ -142,21 +142,21 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ## What You'll Need
 
-### For Demo (Path 1)
+### For Demo (Path A)
 - ✅ Nothing! Just ask the agent
 
-### For Fast Track (Path 2)
+### For Fast Track (Path B)
 - ✅ SGES-formatted data file
 - ✅ Python 3.8+ or Docker
 - ✅ 30 minutes
 
-### For Complete Beginner (Path 3)
+### For Complete Beginner (Path C)
 - ✅ Raw data file (CSV, JSON, Excel, etc.)
 - ✅ Python 3.8+ or Docker
 - ✅ 2-3 hours
 - ✅ Basic understanding of your data
 
-### For Production (Full Boot Camp)
+### For Production (Path D - Full Boot Camp)
 - ✅ All data sources identified
 - ✅ PostgreSQL database (or plan to set up)
 - ✅ 10-18 hours over 1-2 weeks
@@ -193,17 +193,17 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ### Next Steps
 
-**After Demo (Path 1)**:
+**After Demo (Path A)**:
 1. Decide if entity resolution fits your use case
-2. Choose Path 2 or 3 to work with your data
+2. Choose Path B or C to work with your data
 3. Or explore more sample datasets
 
-**After Fast Track (Path 2)**:
+**After Fast Track (Path B)**:
 1. Review results and validate accuracy
 2. Add more data sources (Module 2-4, 6-7)
 3. Consider production deployment (Modules 9-12)
 
-**After Complete Beginner (Path 3)**:
+**After Complete Beginner (Path C)**:
 1. Validate results with stakeholders
 2. Add more data sources if needed
 3. Plan production deployment

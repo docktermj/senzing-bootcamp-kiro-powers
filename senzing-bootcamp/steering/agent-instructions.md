@@ -245,14 +245,14 @@ Please respond with A, B, C, or D (or describe what you want to do)
 
 1. **Check for feedback file**:
    ```bash
-   if [ ! -f "docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md" ]; then
+   if [ ! -f "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md" ]; then
        # Create from template
-       cp docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS_TEMPLATE.md \
-          docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md
+       cp docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md \
+          docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
        
        # Update header with current date
        sed -i "s/\[Date when you started using the power\]/$(date +%Y-%m-%d)/" \
-          docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md
+          docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
    fi
    ```
 
@@ -291,7 +291,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
    - Preserve any existing feedback entries
 
 5. **Confirm and guide**:
-   - "✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md`"
+   - "✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`"
    - "You can review or edit it anytime"
    - "Would you like to add more feedback, or continue with the boot camp?"
 
@@ -455,8 +455,8 @@ All data files must be in `data/`:
 - `data/temp/` - Temporary working files (gitignored)
 
 All feedback files must be in `docs/feedback/`:
-- `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md` - User's improvement suggestions (created from template)
-- `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS_TEMPLATE.md` - Template for feedback (provided by power)
+- `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` - User's improvement suggestions (created from template)
+- `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md` - Template for feedback (provided by power)
 
 **IMPORTANT**: Never place shell scripts (*.sh) in `src/` directory. Shell scripts are for automation and deployment, not application logic.
 
@@ -469,7 +469,7 @@ Create and maintain:
 - `docs/mapping_[datasource].md` - Module 3 (per source)
 - `docs/query_specifications.md` - Module 6
 - `docs/lessons_learned.md` - After Module 6
-- `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md` - Throughout (user creates from template)
+- `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` - Throughout (user creates from template)
 - `README.md` - Keep updated throughout
 
 ### Version Control
@@ -688,7 +688,7 @@ Remember:
 - **Remind user to share feedback**: At the end of Module 12, say:
   - "🎉 Congratulations on completing the Senzing Boot Camp!"
   - "If you have any feedback about your experience, say 'power feedback' and I'll help you document it"
-  - "If you've already documented feedback in `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md`, please share that file with the power author"
+  - "If you've already documented feedback in `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`, please share that file with the power author"
   - "Your feedback helps improve the boot camp for future users!"
 - Encourage them to include any final thoughts about the overall boot camp experience
 

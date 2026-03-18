@@ -37,14 +37,14 @@ The agent should activate the feedback workflow when user says:
 
 ```bash
 # Check if feedback file exists
-if [ ! -f "docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md" ]; then
+if [ ! -f "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md" ]; then
     # Create from template
-    cp docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS_TEMPLATE.md \
-       docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md
+    cp docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md \
+       docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
     
     # Update header with current date
     sed -i "s/\[Date when you started using the power\]/$(date +%Y-%m-%d)/" \
-       docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md
+       docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
     
     echo "Created feedback file from template"
 fi
@@ -103,7 +103,7 @@ fi
 
 Agent says:
 ```
-✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md`
+✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 
 You can review or edit it anytime. Would you like to:
 - Add more feedback
@@ -158,7 +158,7 @@ You can add more feedback anytime by saying "power feedback".
 
 **User**: "Medium"
 
-**Agent**: "✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md`
+**Agent**: "✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 
 You can review or edit it anytime. Would you like to:
 - Add more feedback
@@ -262,7 +262,7 @@ Agent says: "If you encounter any issues or have suggestions during the boot cam
 User can say "power feedback" at any time to document issues as they occur.
 
 ### Module 12 Completion
-Agent says: "🎉 Congratulations on completing the Senzing Boot Camp! If you have any feedback about your experience, say 'power feedback' and I'll help you document it. If you've already documented feedback, please share `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md` with the power author."
+Agent says: "🎉 Congratulations on completing the Senzing Boot Camp! If you have any feedback about your experience, say 'power feedback' and I'll help you document it. If you've already documented feedback, please share `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` with the power author."
 
 ---
 

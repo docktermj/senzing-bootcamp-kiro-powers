@@ -554,7 +554,7 @@ When user requests to provide feedback:
 
 1. **Check if feedback file exists**:
    ```bash
-   if [ -f "docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md" ]; then
+   if [ -f "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md" ]; then
        echo "Feedback file exists"
    else
        echo "Creating feedback file from template"
@@ -562,8 +562,8 @@ When user requests to provide feedback:
    ```
 
 2. **Create feedback file if needed**:
-   - Copy template from `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS_TEMPLATE.md`
-   - Save as `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md`
+   - Copy template from `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md`
+   - Save as `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
    - Fill in the header with current date and user information (if available)
 
 3. **Ask user what type of feedback**:
@@ -583,7 +583,7 @@ When user requests to provide feedback:
    - Add to the "Your Feedback" section
 
 6. **Confirm and offer next steps**:
-   - "I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md`"
+   - "I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`"
    - "Would you like to add more feedback, or continue with the boot camp?"
 
 7. **Remind about submission**:
@@ -594,8 +594,8 @@ When user requests to provide feedback:
 
 As you work through the boot camp, document any issues, confusion points, or improvement suggestions:
 
-1. **Create feedback file**: Copy the template from `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS_TEMPLATE.md`
-2. **Save as**: `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md` in your project
+1. **Create feedback file**: Copy the template from `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md`
+2. **Save as**: `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` in your project
 3. **Document issues**: Add entries as you encounter problems or have suggestions
 4. **Send to author**: Share the completed file with the power author after finishing
 
@@ -652,7 +652,7 @@ After completing all modules, you'll have:
 5. **Expand**: Add more data sources using Modules 2-7
 6. **Maintain security**: Regular audits using Module 10 checklist
 7. **Scale**: Use benchmarks from Module 9 to plan capacity
-8. **Share feedback**: Send your `docs/feedback/SENZING_BOOTCAMP_POWER_IMPROVEMENTS.md` file to the power author
+8. **Share feedback**: Send your `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` file to the power author
 
 ### Getting Help
 

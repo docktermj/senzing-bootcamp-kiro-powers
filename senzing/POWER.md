@@ -13,7 +13,7 @@ last_updated: "2026-03-17"
 
 ## License and support
 
-This power integrates with Senzing MCP Server (Apache-2.0).
+This power integrates with senzing-mcp-server (Apache-2.0).
 
 - [Privacy Policy](https://mcp.senzing.com/privacy)
 - [Support](https://senzing.zendesk.com/hc/en-us/requests/new)

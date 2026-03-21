@@ -12,6 +12,14 @@ Start with [getting-started.md](getting-started.md) for:
 - Data flow diagrams
 - Entity resolution design patterns
 
+### For Quick Commands
+See [quick-reference.md](quick-reference.md) for:
+- Copy-paste ready commands
+- Common parameter combinations
+- One-liners for frequent tasks
+- Bash shortcuts
+- Quick workflows
+
 ### For Best Practices
 See [best-practices.md](best-practices.md) for:
 - What to always do and never do
@@ -45,6 +53,70 @@ See [examples.md](examples.md) for:
 - Integration patterns (Kafka, REST API)
 - Testing examples
 
+### For Real-World Use Cases
+See [use-cases.md](use-cases.md) for:
+- Customer 360 implementation
+- Fraud detection network
+- KYC/compliance screening
+- Data migration and deduplication
+- Vendor master data management
+
+### For Security and Compliance
+See [security-compliance.md](security-compliance.md) for:
+- PII handling best practices
+- GDPR and CCPA compliance
+- Access control and RBAC
+- Audit logging
+- Data encryption
+
+### For Advanced Topics
+See [advanced-topics.md](advanced-topics.md) for:
+- Custom configuration tuning
+- Advanced matching rules
+- Network analysis techniques
+- Graph traversal patterns
+- Advanced export patterns
+
+### For Monitoring
+See [monitoring.md](monitoring.md) for:
+- Key metrics to track
+- Prometheus integration
+- Grafana dashboards
+- Alerting rules
+- Health checks
+
+### For Data Source Integration
+See [data-sources.md](data-sources.md) for:
+- CRM systems (Salesforce, HubSpot)
+- ERP systems (SAP, Oracle)
+- E-commerce platforms (Shopify, WooCommerce)
+- Marketing platforms (Mailchimp, Marketo)
+- Public records and watchlists
+
+### For CI/CD Integration
+See [cicd.md](cicd.md) for:
+- GitHub Actions workflows
+- GitLab CI pipelines
+- Jenkins configuration
+- Automated testing
+- Deployment automation
+
+### For FAQ
+See [faq.md](faq.md) for:
+- General questions
+- Licensing and pricing
+- Technical questions
+- Performance questions
+- Troubleshooting questions
+
+### For Community Resources
+See [community.md](community.md) for:
+- Official resources
+- Learning materials
+- Support channels
+- Community projects
+- Contributing guidelines
+
 ### For Reference
 See [reference.md](reference.md) for:
 - MCP tool parameter quick reference
@@ -72,35 +144,60 @@ See [reference.md](reference.md) for:
 
 | Task | Primary Guide | Supporting Guides |
 | --- | --- | --- |
-| First-time setup | [getting-started.md](getting-started.md) | [reference.md](reference.md) (checklists) |
-| Map new data source | [getting-started.md](getting-started.md) | [best-practices.md](best-practices.md), [reference.md](reference.md) |
-| Write loader code | [examples.md](examples.md) | [best-practices.md](best-practices.md) |
-| Optimize performance | [performance.md](performance.md) | [reference.md](reference.md) (checklists) |
-| Debug issues | [troubleshooting.md](troubleshooting.md) | [examples.md](examples.md) (error handling) |
-| Production deployment | [reference.md](reference.md) (checklists) | [performance.md](performance.md), [best-practices.md](best-practices.md) |
-| Understand concepts | [reference.md](reference.md) (glossary) | [getting-started.md](getting-started.md) |
+| First-time setup | [getting-started.md](getting-started.md) | [quick-reference.md](quick-reference.md), [reference.md](reference.md) |
+| Quick commands | [quick-reference.md](quick-reference.md) | [getting-started.md](getting-started.md) |
+| Map new data source | [getting-started.md](getting-started.md) | [best-practices.md](best-practices.md), [data-sources.md](data-sources.md) |
+| Write loader code | [examples.md](examples.md) | [best-practices.md](best-practices.md), [quick-reference.md](quick-reference.md) |
+| Optimize performance | [performance.md](performance.md) | [monitoring.md](monitoring.md), [reference.md](reference.md) |
+| Debug issues | [troubleshooting.md](troubleshooting.md) | [examples.md](examples.md), [faq.md](faq.md) |
+| Production deployment | [reference.md](reference.md) | [performance.md](performance.md), [security-compliance.md](security-compliance.md), [cicd.md](cicd.md) |
+| Security/compliance | [security-compliance.md](security-compliance.md) | [reference.md](reference.md) |
+| Real-world examples | [use-cases.md](use-cases.md) | [examples.md](examples.md), [data-sources.md](data-sources.md) |
+| Advanced techniques | [advanced-topics.md](advanced-topics.md) | [performance.md](performance.md) |
+| Set up monitoring | [monitoring.md](monitoring.md) | [performance.md](performance.md) |
+| Integrate data source | [data-sources.md](data-sources.md) | [getting-started.md](getting-started.md) |
+| CI/CD setup | [cicd.md](cicd.md) | [reference.md](reference.md) |
+| Find answers | [faq.md](faq.md) | [troubleshooting.md](troubleshooting.md) |
+| Get help | [community.md](community.md) | [faq.md](faq.md) |
+| Understand concepts | [reference.md](reference.md) | [getting-started.md](getting-started.md) |
 
 ## Document Structure
 
 ```
 steering/
 ├── steering.md (this file) - Navigation hub
-├── getting-started.md - Quick start, workflows, decision trees
+├── getting-started.md - Quick start, workflows, decision trees, diagrams
+├── quick-reference.md - Command cheat sheet, one-liners, copy-paste commands
 ├── best-practices.md - Do's, don'ts, common pitfalls
 ├── performance.md - Optimization, tuning, scaling
-├── troubleshooting.md - Error handling, debugging
-├── examples.md - Code examples and patterns
-└── reference.md - Parameters, checklists, glossary
+├── troubleshooting.md - Error handling, debugging, typical sessions
+├── examples.md - Code examples and patterns (Python, Java, C#)
+├── use-cases.md - Real-world implementation walkthroughs
+├── security-compliance.md - Security, GDPR, CCPA, access control
+├── advanced-topics.md - Custom config, network analysis, graph traversal
+├── monitoring.md - Metrics, alerting, dashboards, health checks
+├── data-sources.md - CRM, ERP, e-commerce, public records integration
+├── cicd.md - GitHub Actions, GitLab CI, Jenkins, deployment automation
+├── faq.md - Comprehensive frequently asked questions
+├── community.md - Resources, support, learning materials
+└── reference.md - Tool parameters, checklists, glossary
 ```
 
 ## How to Use These Guides
 
 1. **New to Senzing?** Start with [getting-started.md](getting-started.md)
-2. **Building something?** Check [examples.md](examples.md) for code patterns
-3. **Hitting issues?** Go to [troubleshooting.md](troubleshooting.md)
-4. **Optimizing?** See [performance.md](performance.md)
-5. **Need a checklist?** Use [reference.md](reference.md)
-6. **Want best practices?** Read [best-practices.md](best-practices.md)
+2. **Need quick commands?** Check [quick-reference.md](quick-reference.md)
+3. **Building something?** Check [examples.md](examples.md) for code patterns
+4. **Hitting issues?** Go to [troubleshooting.md](troubleshooting.md) or [faq.md](faq.md)
+5. **Optimizing?** See [performance.md](performance.md) and [monitoring.md](monitoring.md)
+6. **Need a checklist?** Use [reference.md](reference.md)
+7. **Want best practices?** Read [best-practices.md](best-practices.md)
+8. **Real-world examples?** See [use-cases.md](use-cases.md)
+9. **Security/compliance?** Check [security-compliance.md](security-compliance.md)
+10. **Advanced techniques?** Explore [advanced-topics.md](advanced-topics.md)
+11. **Integrating data?** See [data-sources.md](data-sources.md)
+12. **Setting up CI/CD?** Check [cicd.md](cicd.md)
+13. **Need help?** Visit [community.md](community.md)
 
 ## Getting Help
 

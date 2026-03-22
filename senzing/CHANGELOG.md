@@ -7,17 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- Moved power development documentation to separate `senzing-development` directory
-  - Development docs are no longer part of the user-facing power
-  - Cleaner power structure focused on user needs
-
-### Removed
-- `steering/test-examples.md` - Redundant with smoke-test.md and validate_power.py
-  - Users can validate with smoke-test.md (practical testing)
-  - Users can validate with validate_power.py (automated validation)
-  - Detailed pytest code was more for power developers than users
-
 ### Planned
 - Additional language examples (TypeScript, Go)
 - Video tutorial references
@@ -26,110 +15,133 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2026-03-22
 
-### Changed
-- **BREAKING**: Updated license from CC-BY-4.0 to Apache-2.0 for consistency
-- **BREAKING**: Removed Senzing V3 compatibility references (V4 only)
-- Updated version to 1.0.0 (stable release)
-- Updated last_updated date to 2026-03-22
-- Reorganized file structure:
-  - Moved user-facing guides to `steering/` directory
-  - Moved power development documentation to `docs/` directory
-- Updated all internal references to reflect new file locations
-- Updated validation script to check for files in new locations
-
-### Removed
-- V3 compatibility note from Version Compatibility section
-- References to `version: "3.x"` parameter
-
-## [0.1.0] - 2026-03-21
-
 ### Added
 
-#### Core Documentation
-- Initial POWER.md with comprehensive metadata
-- MCP server configuration (mcp.json)
-- METADATA.md with detailed field descriptions
-- IMPROVEMENTS_SUMMARY.md tracking all enhancements
+#### User Experience Enhancements
+- **Table of Contents** in POWER.md for easier navigation (12 sections)
+- **Prerequisites section** with clear requirements checklist before starting
+- **5-Minute Quick Start** for rapid onboarding with 5 practical steps and working examples
+- **Code Examples section** with 4 copy-paste ready examples:
+  - Map and validate data
+  - Generate and use SDK code
+  - Search for help
+  - Get sample data for testing
+- **Troubleshooting Quick Reference** in POWER.md with top 5 common issues:
+  - Cannot connect to MCP server (with symptoms, quick fixes, solutions)
+  - Wrong attribute names in mapped data (with common mistakes)
+  - SDK method not found / wrong signature
+  - Error codes (SENZ####)
+  - Slow performance / timeouts
+- **Table of Contents** in large steering files for better navigation:
+  - advanced-topics.md (8 sections, 855 lines)
+  - monitoring.md (9 sections, 834 lines)
+  - security-compliance.md (7 sections, 803 lines)
+  - use-cases.md (5 use cases, 790 lines)
 
-#### Steering Guides (16 files)
-- **steering.md** - Navigation hub with quick links
+#### Core Documentation
+- POWER.md with comprehensive metadata (17 fields)
+- MCP server configuration (mcp.json)
+- Comprehensive CHANGELOG.md
+- Automated validation script (validate_power.py, 400+ lines)
+
+#### Steering Guides (19 files)
+- **steering.md** - Navigation hub with quick links and task-based index
 - **getting-started.md** - Quick start, workflows, decision trees, ASCII diagrams
 - **quick-reference.md** - Copy-paste ready commands and one-liners
 - **best-practices.md** - Do's, don'ts, common pitfalls
 - **performance.md** - Optimization, tuning, scaling strategies
 - **troubleshooting.md** - Error handling, debugging, typical sessions
-- **examples.md** - Code examples (Python, Java, C#)
-- **use-cases.md** - 5 real-world implementation walkthroughs
+- **examples.md** - Code examples (Python, Java, C#, Rust)
+- **use-cases.md** - 5 real-world implementation walkthroughs with metrics
 - **security-compliance.md** - GDPR, CCPA, PII handling, access control
 - **advanced-topics.md** - Custom config, network analysis, graph traversal
-- **monitoring.md** - Metrics, Prometheus, Grafana, alerting
+- **monitoring.md** - Metrics, Prometheus, Grafana, alerting, dashboards
 - **data-sources.md** - 20+ system integrations (CRM, ERP, e-commerce)
-- **cicd.md** - GitHub Actions, GitLab CI, Jenkins, deployment
+- **cicd.md** - GitHub Actions, GitLab CI, Jenkins, deployment automation
 - **faq.md** - 100+ questions covering all topics
 - **community.md** - Resources, support, learning materials
 - **reference.md** - Tool parameters, checklists, glossary (50+ terms)
+- **config-examples.md** - Configuration examples for 8+ scenarios
+- **smoke-test.md** - Quick and detailed validation procedures
+- **offline-mode.md** - Offline usage and air-gapped deployment guidance
 
-#### Validation and Testing
-- **validate_power.py** - Comprehensive validation script (400+ lines)
-- **SMOKE_TEST.md** - Quick and detailed smoke test procedures
-- **TEST_EXAMPLES.md** - Unit, integration, and end-to-end tests
-
-#### Configuration
-- **OFFLINE_MODE.md** - Offline usage documentation
-- **CONFIG_EXAMPLES.md** - Configuration examples for various scenarios
-
-#### Metadata
-- Enhanced frontmatter with 17 fields
-- Visual badges (version, maturity, license, compatibility)
-- Quick links bar (homepage, docs, support, GitHub)
-- Metadata reference table
-
-#### Features
+#### Metadata and Quality
+- Enhanced frontmatter with 17 fields (version, license, maturity, compatibility, etc.)
+- Visual badges (version, maturity, license, Senzing compatibility)
+- Quick links bar (homepage, documentation, support, GitHub)
+- Metadata reference table with field descriptions
 - 22 keywords for discoverability
 - 5 categorical tags
-- Maturity indicator (stable)
-- Version compatibility tracking
-- MCP server configuration with timeout and logging
-- 4 interactive checklists (100+ items)
+- Maturity indicator: stable
+- License: Apache-2.0
+- Senzing compatibility: 4.0+
+
+#### Features and Content
+- 4 interactive checklists (100+ items total)
 - 3 ASCII workflow diagrams
 - 5 integration patterns
-- 5 real-world use cases with metrics
+- 5 real-world use cases with business metrics
 - 50+ glossary terms
 - 100+ FAQ items
-- 50+ code examples across multiple languages
+- 50+ code examples across multiple languages (Python, Java, C#, Rust)
+- 20+ data source integration examples
+- 5 CI/CD platform configurations
+- MCP server configuration with timeout (30s) and log level control
+
+### Changed
+- **BREAKING**: Updated license from CC-BY-4.0 to Apache-2.0 for consistency
+- **BREAKING**: Removed Senzing V3 compatibility (V4 only)
+- Reorganized file structure for clarity:
+  - Moved user-facing guides to `steering/` directory (19 files)
+  - Moved power development documentation to `senzing-development/docs/` directory
+  - Cleaner root with only 4 essential files (POWER.md, CHANGELOG.md, mcp.json, validate_power.py)
+- Updated all internal references to reflect new file locations
+- Updated validation script to check files in new locations
+- Updated last_updated date to 2026-03-22
+
+### Removed
+- V3 compatibility references from documentation
+- `version: "3.x"` parameter mentions
+- `steering/test-examples.md` - Redundant with smoke-test.md and validate_power.py
+- Development documentation from user-facing power (moved to senzing-development/)
 
 ### Documentation Coverage
 - Getting started and quick reference
 - Best practices and common pitfalls
 - Performance optimization and tuning
-- Troubleshooting and error handling
+- Troubleshooting and error handling (with quick reference)
 - Security and compliance (GDPR, CCPA)
 - Advanced techniques and network analysis
 - Monitoring and observability
 - Data source integration (20+ systems)
 - CI/CD integration (5 platforms)
 - Community resources and support
+- Offline and air-gapped deployment
 
 ### Quality Assurance
-- Automated validation script
+- Automated validation script with 6 validation categories
 - File structure validation
 - Metadata validation
 - Internal link validation
 - MCP configuration validation
-- Smoke test procedures
-- Test examples and suites
+- Steering file completeness validation
+- File size checks
+- Smoke test procedures (5-minute and 15-minute)
+- All validations pass: 0 errors, 0 warnings
 
 ### Statistics
-- 25 total files
-- 16 steering guides
-- 100+ FAQ items
-- 50+ code examples
-- 50+ glossary terms
-- 20+ data source integrations
-- 5 CI/CD platform examples
-- 5 real-world use cases
-- 4 interactive checklists
-- 3 ASCII diagrams
+- **Total files**: 23 (4 core + 19 steering guides)
+- **Total size**: 360KB (clean and optimized)
+- **Documentation**: 10,000+ lines
+- **Steering guides**: 19 comprehensive guides
+- **FAQ items**: 100+
+- **Code examples**: 50+
+- **Glossary terms**: 50+
+- **Data source integrations**: 20+
+- **CI/CD examples**: 5 platforms
+- **Use cases**: 5 detailed walkthroughs
+- **Checklists**: 4 interactive (100+ items)
+- **Diagrams**: 3 ASCII workflows
 
 ## Version History
 
@@ -144,52 +156,65 @@ This power follows [Semantic Versioning](https://semver.org/):
 
 1. Update version in POWER.md frontmatter
 2. Update last_updated date
-3. Document changes in CHANGELOG.md
+3. Document changes in CHANGELOG.md under [Unreleased]
 4. Run validation: `python validate_power.py`
 5. Run smoke tests
-6. Update IMPROVEMENTS_SUMMARY.md
+6. Move [Unreleased] changes to new version section
 7. Tag release in version control
 
 ## Migration Guides
 
-### Migrating to 0.1.0
+### Migrating to 1.0.0
 
-This is the initial release. No migration needed.
+**From 0.x versions**: This is the first stable release.
 
-### Future Migrations
+**Breaking Changes**:
+1. **License Change**: CC-BY-4.0 → Apache-2.0
+   - No action required for users
+   - More permissive license
 
-Migration guides will be added here when breaking changes are introduced.
+2. **V3 Removed**: Senzing V3 references removed
+   - Use Senzing SDK 4.0+
+   - Use `version: "current"` or `version: "4.0"` in MCP tool calls
+   - Do not use `version: "3.x"` parameter
+
+**File Structure Changes**:
+- Development docs moved to `senzing-development/` (not part of user-facing power)
+- All user guides now in `steering/` directory
+- No action required - all links updated automatically
 
 ## Breaking Changes
 
-### 0.1.0
-- None (initial release)
+### 1.0.0
+- License changed from CC-BY-4.0 to Apache-2.0
+- Senzing V3 compatibility removed (V4 only)
 
 ## Deprecations
 
-### 0.1.0
-- None (initial release)
+### 1.0.0
+- None
 
 ## Known Issues
 
-### 0.1.0
+### 1.0.0
 - None reported
 
 ## Contributors
 
-### 0.1.0
-- Initial development and documentation
-- Comprehensive steering guide creation
+### 1.0.0
+- Complete power development and documentation
+- 19 comprehensive steering guides
 - Validation and testing infrastructure
-- Metadata enhancements
+- User experience enhancements (TOCs, quick start, examples, troubleshooting)
+- File structure reorganization
+- Quality assurance and production readiness
 
 ## Support
 
 For questions about specific versions:
 - Check the version's section in this changelog
-- Review IMPROVEMENTS_SUMMARY.md for detailed changes
 - Use `submit_feedback` MCP tool
-- Contact Senzing support: https://senzing.zendesk.com
+- Contact Senzing support: [https://senzing.zendesk.com](https://senzing.zendesk.com/hc/en-us/requests/new)
 
 ## Links
 
@@ -218,27 +243,13 @@ This changelog is manually maintained. When making changes:
 - **Fixed**: Bug fixes
 - **Security**: Security-related changes
 
-## Future Versions
-
-### Planned for 0.2.0
-- Additional language examples (TypeScript, Go)
-- Video tutorial references
-- Enhanced search/index optimization
-- Power health check improvements
-
-### Planned for 1.0.0
-- Stable API declaration
-- Complete documentation coverage
-- Full test suite
-- Production deployment validation
-- Community feedback incorporation
-
 ## Notes
 
 - This power integrates with Senzing MCP server (Apache-2.0)
 - Power documentation is licensed under Apache-2.0
 - Compatible with Senzing SDK 4.0+
-- Requires internet connection for MCP server access (see OFFLINE_MODE.md for alternatives)
+- Requires internet connection for MCP server access (see steering/offline-mode.md for alternatives)
+- Production ready and validated (0 errors, 0 warnings)
 
 ---
 

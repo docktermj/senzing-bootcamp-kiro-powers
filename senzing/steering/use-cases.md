@@ -2,6 +2,16 @@
 
 This guide provides detailed walkthroughs of common Senzing implementations with real-world scenarios.
 
+## Table of Contents
+
+- [Use Case 1: Customer 360 Implementation](#use-case-1-customer-360-implementation)
+- [Use Case 2: Fraud Detection Network](#use-case-2-fraud-detection-network)
+- [Use Case 3: KYC/Compliance Screening](#use-case-3-kyccompliance-screening)
+- [Use Case 4: Data Migration and Deduplication](#use-case-4-data-migration-and-deduplication)
+- [Use Case 5: Vendor Master Data Management](#use-case-5-vendor-master-data-management)
+
+---
+
 ## Use Case 1: Customer 360 Implementation
 
 ### Business Problem

@@ -2,6 +2,18 @@
 
 This guide covers security best practices, compliance considerations, and data protection strategies for Senzing deployments.
 
+## Table of Contents
+
+- [PII Handling Best Practices](#pii-handling-best-practices)
+- [GDPR Compliance](#gdpr-compliance)
+- [CCPA Compliance](#ccpa-compliance)
+- [Audit Logging](#audit-logging)
+- [Access Control](#access-control)
+- [Data Encryption](#data-encryption)
+- [Security Checklist](#security-checklist)
+
+---
+
 ## PII Handling Best Practices
 
 ### Data Classification

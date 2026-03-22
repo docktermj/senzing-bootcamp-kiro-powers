@@ -2,6 +2,20 @@
 
 This guide covers monitoring strategies, metrics, alerting, and observability for Senzing deployments.
 
+## Table of Contents
+
+- [Key Metrics to Track](#key-metrics-to-track)
+- [Metrics Collection Implementation](#metrics-collection-implementation)
+- [Prometheus Integration](#prometheus-integration)
+- [Grafana Dashboards](#grafana-dashboards)
+- [Alert Rules](#alert-rules)
+- [Alert Notifications](#alert-notifications)
+- [Health Checks](#health-checks)
+- [Log Analysis](#log-analysis)
+- [Dashboard Examples](#dashboard-examples)
+
+---
+
 ## Key Metrics to Track
 
 ### Loading Metrics

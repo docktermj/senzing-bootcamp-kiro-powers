@@ -2,6 +2,19 @@
 
 This guide covers advanced Senzing concepts and techniques for experienced users.
 
+## Table of Contents
+
+- [Custom Configuration Tuning](#custom-configuration-tuning)
+- [Advanced Matching Rules](#advanced-matching-rules)
+- [Custom Entity Types](#custom-entity-types)
+- [Network Analysis Techniques](#network-analysis-techniques)
+- [Graph Traversal Patterns](#graph-traversal-patterns)
+- [Advanced Export Patterns](#advanced-export-patterns)
+- [Performance Optimization](#performance-optimization)
+- [Advanced Troubleshooting](#advanced-troubleshooting)
+
+---
+
 ## Custom Configuration Tuning
 
 ### Understanding Configuration Layers

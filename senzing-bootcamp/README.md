@@ -81,36 +81,35 @@ This boot camp teaches you how to:
 senzing-bootcamp/
 ├── POWER.md                    # Main power definition (START HERE)
 ├── README.md                   # This file
+├── mcp.json                    # MCP server configuration
 ├── docs/
 │   ├── README.md               # Documentation index
-│   ├── modules/                # Module-specific documentation
-│   ├── policies/               # Coding standards and conventions
-│   ├── guides/                 # User guides and tutorials
-│   └── development/            # Development progress tracking
-├── steering/                   # Agent workflows and guidance
-└── hooks/                      # Automation hooks
+│   ├── modules/                # Module-specific documentation (14 files)
+│   ├── policies/               # Coding standards and conventions (6 files)
+│   ├── guides/                 # User guides and tutorials (8 files)
+│   └── feedback/               # Feedback template
+├── steering/                   # Agent workflows and guidance (16 files)
+├── hooks/                      # Automation hooks (4 files)
+├── examples/                   # Complete reference projects (3 examples)
+├── templates/                  # Code templates (12 templates)
+└── scripts/                    # Utility scripts
 ```
 
 ## Key Features
 
-### New in v3.0.0
-- ✨ **Automated Data Quality Scoring** - Get quality metrics before mapping
-- ✨ **Multi-Source Orchestration** - Manage dependencies between data sources
-- ✨ **Performance Testing** - Benchmark and optimize for production
-- ✨ **Security Hardening** - Production-grade security measures
-- ✨ **Monitoring & Observability** - Full monitoring stack setup
-- ✨ **UAT Framework** - Structured user acceptance testing
-- ✨ **Cost Calculator** - Estimate costs based on data volume
-- ✨ **Data Lineage Tracking** - Track data transformations
-- ✨ **Incremental Loading** - Efficient update patterns
-
 ### Core Capabilities
-- 🎯 **Interactive Data Mapping** - 7-step guided workflow
-- 🔧 **SDK Code Generation** - Python, Java, C#, Rust support
-- 📚 **Documentation Search** - Indexed Senzing documentation
-- 🐛 **Error Diagnosis** - 456 error codes explained
-- 💡 **Code Examples** - 27 GitHub repositories indexed
-- 🎲 **Sample Data** - CORD datasets for learning
+
+- 🎯 **Interactive Data Mapping** - 8-step guided workflow via MCP server
+- 🔧 **SDK Code Generation** - Python, Java, C#, Rust support via MCP server
+- 📚 **Documentation Search** - Live Senzing documentation via MCP server
+- 🐛 **Error Diagnosis** - 456+ error codes explained via MCP server
+- 💡 **Code Examples** - 27 GitHub repositories indexed via MCP server
+- 🎲 **Sample Data** - CORD datasets for learning via MCP server
+- 🎣 **Kiro Hooks** - 4 automation hooks for quality and validation
+- 📋 **Code Templates** - 12 ready-to-use templates for common tasks
+- 📊 **13 Focused Modules** - From quick demo to production deployment
+- 🎯 **Design Patterns** - 10 common entity resolution use cases
+- 📈 **Progress Tracking** - Module completion and onboarding checklists
 
 ## Skip Ahead Options
 
@@ -172,10 +171,11 @@ my-senzing-project/
 ## Policies and Standards
 
 The boot camp follows these conventions:
-- **Python code** → `src/` directory
+
+- **Python code** → `src/` directory (created dynamically)
 - **Shell scripts** → `scripts/` directory
-- **Module 0 demos** → `src/quickstart_demo/` directory
 - **Documentation** → `docs/` directory
+- **Data files** → `data/` directory (created dynamically)
 
 See [docs/policies/](docs/policies/) for complete policies.
 
@@ -187,10 +187,25 @@ See [docs/policies/](docs/policies/) for complete policies.
 - Ask Kiro: "Explain error code SENZ0005"
 
 ### Documentation
+
 - **Main Guide**: [POWER.md](POWER.md)
 - **Module Docs**: [docs/modules/](docs/modules/)
+- **User Guides**: [docs/guides/](docs/guides/)
+- **Policies**: [docs/policies/](docs/policies/)
 - **Steering Files**: [steering/](steering/)
-- **Troubleshooting**: [docs/guides/](docs/guides/)
+
+### Senzing MCP Server
+
+The boot camp leverages the Senzing MCP Server for:
+
+- Live Senzing documentation (always current)
+- SDK code generation and scaffolding
+- Data mapping workflow guidance
+- Sample data access (CORD datasets)
+- Error code explanations
+- Working code examples from GitHub
+
+Ask Kiro to use any MCP server tool for up-to-date information.
 
 ### Senzing Resources
 - [Senzing Documentation](https://docs.senzing.com)
@@ -213,9 +228,46 @@ See [docs/policies/](docs/policies/) for complete policies.
 
 ## Version
 
-**Current Version**: 3.0.0  
+**Current Version**: 1.0.0  
 **Senzing Compatibility**: V4.0  
-**Last Updated**: March 17, 2026
+**Last Updated**: March 23, 2026
+
+## What's New
+
+### v1.0.0 (March 2026) - Initial Release
+
+**Complete Learning Path:**
+- 13 focused modules from quick demo to production deployment
+- Automated data quality scoring
+- Multi-source orchestration
+- Performance testing and optimization
+- Security hardening
+- Monitoring and observability
+- UAT framework
+- Cost calculator
+- Data lineage tracking
+
+**Senzing MCP Server Integration:**
+- Live, always-current Senzing documentation
+- SDK code generation and scaffolding
+- Interactive data mapping workflow (8 steps)
+- Sample data access (CORD datasets)
+- Error code explanations (456+ codes)
+- Working code examples (27 GitHub repositories)
+
+**Kiro Features:**
+- 4 automation hooks for quality and validation
+- 12 ready-to-use code templates
+- 16 steering files for guided workflows
+- 8 user guides
+- 14 module documentation files
+- 3 complete example projects
+
+**Streamlined Distribution:**
+- 50% smaller than initial development version
+- Focused exclusively on boot camp-specific content
+- MCP server provides all Senzing documentation
+- No static content that can become outdated
 
 ## License
 

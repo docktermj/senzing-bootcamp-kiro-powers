@@ -292,5 +292,5 @@ The agent will guide you through every step!
 
 ---
 
-**Version**: 3.0.0  
-**Last updated**: 2026-03-17
+**Version**: 1.0.0  
+**Last updated**: 2026-03-23

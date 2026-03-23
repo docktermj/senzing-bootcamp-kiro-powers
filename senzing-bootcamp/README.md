@@ -9,7 +9,6 @@ A comprehensive, guided learning experience for Senzing entity resolution. This 
 - **[Progress Tracker](docs/guides/PROGRESS_TRACKER.md)** - Track your module completion
 - **[Example Projects](examples/)** - Three complete reference projects
 - **[Code Templates](templates/)** - Ready-to-use transformation and loading templates
-- **[Compatibility Matrix](docs/guides/COMPATIBILITY_MATRIX.md)** - Version and platform support
 
 ## What is Senzing?
 

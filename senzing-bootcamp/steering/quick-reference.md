@@ -1,3 +1,7 @@
+---
+inclusion: always
+---
+
 # Quick Reference Card
 
 Fast reference for common Senzing MCP tool calls and workflows.

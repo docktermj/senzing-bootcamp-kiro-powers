@@ -1,3 +1,7 @@
+---
+inclusion: always
+---
+
 # Troubleshooting Decision Tree
 
 Visual flowchart for diagnosing common issues.

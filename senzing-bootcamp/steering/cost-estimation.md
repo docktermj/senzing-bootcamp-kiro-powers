@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Cost Estimation and ROI Calculator
 
 ## Overview

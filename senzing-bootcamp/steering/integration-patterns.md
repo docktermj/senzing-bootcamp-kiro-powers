@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Integration Patterns for Module 8
 
 Common patterns for integrating Senzing query results into your applications and workflows.

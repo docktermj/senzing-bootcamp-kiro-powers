@@ -9,12 +9,7 @@ All Python scripts in the Senzing Boot Camp power follow PEP-8 coding standards 
 
 ## Compliance Status
 
-✅ **All 14 Python scripts are PEP-8 compliant**
-
-### Demo Scripts (3)
-- ✓ `src/quickstart_demo/demo_customer_360.py`
-- ✓ `src/quickstart_demo/demo_fraud_detection.py`
-- ✓ `src/quickstart_demo/demo_vendor_mdm.py`
+✅ **All 11 Python template scripts are PEP-8 compliant**
 
 ### Template Scripts (11)
 - ✓ `templates/validate_schema.py`

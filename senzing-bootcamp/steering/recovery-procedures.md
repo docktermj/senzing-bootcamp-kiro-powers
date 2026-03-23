@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Rollback and Recovery Procedures
 
 Prepare for failures and enable quick recovery.

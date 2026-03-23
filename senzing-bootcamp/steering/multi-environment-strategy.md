@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Multi-Environment Strategy
 
 ## Overview

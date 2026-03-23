@@ -429,9 +429,14 @@ Contact Senzing for details.
 
 **...load data from a CSV file?**
 ```bash
+# Collect and sample data
 python templates/collect_from_csv.py --input data.csv --output sample.csv
-python templates/transform_csv_template.py
-python templates/batch_loader_template.py
+
+# Transform data - use MCP server's mapping_workflow tool
+# Agent will call: mapping_workflow(action="start", file_paths=["data.csv"])
+
+# Load data - use MCP server's generate_scaffold tool
+# Agent will call: generate_scaffold(language="python", workflow="add_records")
 ```
 
 **...search for a person by name?**

@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Incremental Loading Strategies
 
 ## Overview

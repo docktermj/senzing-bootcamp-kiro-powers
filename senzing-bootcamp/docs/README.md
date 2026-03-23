@@ -32,7 +32,6 @@ User guides and installation instructions.
 **Files:**
 - `DESIGN_PATTERNS.md` - Entity resolution design patterns
 - `HOOKS_INSTALLATION_GUIDE.md` - Guide for installing Kiro hooks
-- `INSTALLATION_VERIFICATION.md` - Senzing installation verification
 
 ### `/development/`
 Development progress tracking and implementation documentation.
@@ -87,7 +86,7 @@ The following files remain in the root `senzing-bootcamp/` directory:
 2. **docs/modules/** - Module-specific documentation
 3. **docs/policies/** - Standards and conventions
 4. **docs/guides/** - User-facing guides
-5. **docs/development/** - Development tracking and progress
+5. **docs/feedback/** - Feedback template for users
 6. **steering/** - Agent steering files and workflows
 7. **hooks/** - Kiro hook definitions
 

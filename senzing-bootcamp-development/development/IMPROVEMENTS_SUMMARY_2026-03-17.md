@@ -66,24 +66,13 @@ Created ready-to-use templates for common tasks:
 
 **Templates Created**:
 
-1. **transform_csv_template.py**
-   - CSV to Senzing JSON transformation
-   - Field mapping examples
-   - Validation and error handling
-   - Progress tracking
+Note: Transformation, loading, and query templates were later removed (v4.0.0) in favor of MCP server generation via `mapping_workflow` and `generate_scaffold` tools.
 
-2. **batch_loader_template.py**
-   - Batch loading with statistics
-   - Error handling and recovery
-   - Configurable batch sizes
-   - Progress indicators
-
-3. **query_template.py**
-   - Common query patterns
-   - Search by attributes
-   - Find duplicates
-   - Cross-source matching
-   - Entity 360 views
+**Utility Templates** (retained):
+- Database management (backup, restore, rollback)
+- Data collection (CSV, JSON, API, database)
+- Validation and testing (schema validation, performance baseline, troubleshooting)
+- Planning and analysis (cost calculator)
 
 **Enhanced Templates README**:
 - Detailed usage instructions

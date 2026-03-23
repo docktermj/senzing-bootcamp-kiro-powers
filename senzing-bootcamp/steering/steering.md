@@ -1,3 +1,7 @@
+---
+inclusion: always
+---
+
 # Senzing Boot Camp — Steering Guide
 
 This document provides detailed workflows for the Senzing Boot Camp power. The agent loads this on-demand when users engage with specific boot camp activities.
@@ -19,7 +23,7 @@ This document provides detailed workflows for the Senzing Boot Camp power. The a
 3. Suggest specific fixes for violations
 4. Explain benefits of compliance when relevant
 
-See `docs/development/PEP8_COMPLIANCE.md` for complete details.
+See `docs/policies/PEP8_COMPLIANCE.md` for complete details.
 
 ## Progress Tracking
 
@@ -1178,7 +1182,7 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 
 ## Workflow: Multi-Source Orchestration (Module 7)
 
-**Note**: For the comprehensive, detailed workflow for Module 7, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 7 section, 2,100+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 7, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 7 section, 2,100+ lines).
 
 Use this workflow after loading at least one data source successfully (Module 6). The goal is to orchestrate loading of multiple data sources with proper dependency management, error handling, and progress tracking.
 
@@ -1210,13 +1214,13 @@ Use this workflow after loading at least one data source successfully (Module 6)
 
 **Success indicator**: ✅ All data sources loaded + orchestration script created + progress tracked + results documented
 
-**For detailed step-by-step instructions**, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 7 section).
+**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 7 section).
 
 **Transition to Module 8**: Once all sources are loaded successfully, proceed to Module 8 (Query and Validate Results).
 
 ## Workflow: Query and Validate Results with UAT (Module 8)
 
-**Note**: For the comprehensive, detailed workflow for Module 8, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 8 section, 1,000+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 8, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 8 section, 1,000+ lines).
 
 This workflow replaces the old "Module 7: Query Results" workflow. Use this after all data sources are loaded (Modules 6-7).
 
@@ -1249,13 +1253,13 @@ This workflow replaces the old "Module 7: Query Results" workflow. Use this afte
 
 **Success indicator**: ✅ Query programs created + UAT tests passed + Stakeholder sign-off obtained
 
-**For detailed step-by-step instructions**, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 8 section).
+**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 8 section).
 
 **Transition to Module 9**: If deploying to production, proceed to Module 9 (Performance Testing). If not deploying to production, boot camp complete!
 
 ## Workflow: Performance Testing and Benchmarking (Module 9)
 
-**Note**: For the comprehensive, detailed workflow for Module 9, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 9 section, 1,500+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 9, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 9 section, 1,500+ lines).
 
 Use this workflow after query validation (Module 8) and before production deployment. The goal is to test performance and scalability to ensure the solution meets production requirements.
 
@@ -1286,13 +1290,13 @@ Use this workflow after query validation (Module 8) and before production deploy
 
 **Success indicator**: ✅ Performance targets met + Benchmarks documented + Bottlenecks identified + Production readiness confirmed
 
-**For detailed step-by-step instructions**, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 9 section).
+**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 9 section).
 
 **Transition to Module 10**: Once performance testing is complete, proceed to Module 10 (Security Hardening).
 
 ## Workflow: Security Hardening (Module 10)
 
-**Note**: For the comprehensive, detailed workflow for Module 10, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 10 section, 1,500+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 10, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 10 section, 1,500+ lines).
 
 Use this workflow after performance testing (Module 9) and before production deployment. The goal is to secure the application and data for production use.
 
@@ -1324,13 +1328,13 @@ Use this workflow after performance testing (Module 9) and before production dep
 
 **Success indicator**: ✅ Secrets managed + Authentication implemented + Encryption enabled + PII protected + Vulnerabilities fixed + Security audit complete
 
-**For detailed step-by-step instructions**, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 10 section).
+**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 10 section).
 
 **Transition to Module 11**: Once security hardening is complete, proceed to Module 11 (Monitoring and Observability).
 
 ## Workflow: Monitoring and Observability (Module 11)
 
-**Note**: For the comprehensive, detailed workflow for Module 11, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 11 section, 1,500+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 11, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 11 section, 1,500+ lines).
 
 Use this workflow after security hardening (Module 10) and before final deployment. The goal is to set up comprehensive monitoring, logging, and alerting for production operations.
 
@@ -1366,13 +1370,13 @@ Use this workflow after security hardening (Module 10) and before final deployme
 
 **Success indicator**: ✅ Monitoring stack deployed + Metrics collected + Logs structured + Alerts configured + Dashboards created + Runbooks documented + Team trained
 
-**For detailed step-by-step instructions**, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 11 section).
+**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 11 section).
 
 **Transition to Module 12**: Once monitoring is fully operational, proceed to Module 12 (Package and Deploy).
 
 ## Workflow: Package and Deploy (Module 12)
 
-**Note**: For the comprehensive, detailed workflow for Module 12, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 12 section, 1,000+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 12, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 12 section, 1,000+ lines).
 
 This workflow has been updated to reference Modules 9, 10, and 11. Use this workflow after monitoring setup (Module 11) to package and deploy your production-ready solution.
 
@@ -1410,7 +1414,7 @@ This workflow has been updated to reference Modules 9, 10, and 11. Use this work
 
 **Success indicator**: ✅ Code packaged + Tests passing + Deployment artifacts created + Documentation complete + Validation passed + Production deployed
 
-**For detailed step-by-step instructions**, see `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 12 section).
+**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 12 section).
 
 **Boot Camp Complete!** 🎉
 
@@ -1446,7 +1450,7 @@ Before recommending any installation or deployment approach, call `search_docs` 
 
 **Note**: This workflow has been superseded by the new Module 8 workflow above. This section is kept for reference only.
 
-**For current workflow**, see "Workflow: Query and Validate Results with UAT (Module 8)" above, or see the detailed workflow in `docs/development/NEW_WORKFLOWS_PHASE5.md`.
+**For current workflow**, see "Workflow: Query and Validate Results with UAT (Module 8)" above, or see the detailed workflow in `steering/NEW_WORKFLOWS_PHASE5.md`.
 
 ---
 
@@ -1695,7 +1699,7 @@ This power should activate when the user mentions or is working on:
 
 **Note**: This workflow has been superseded by the new Module 12 workflow above. This section is kept for reference only.
 
-**For current workflow**, see "Workflow: Package and Deploy (Module 12)" above, or see the detailed workflow in `docs/development/NEW_WORKFLOWS_PHASE5.md`.
+**For current workflow**, see "Workflow: Package and Deploy (Module 12)" above, or see the detailed workflow in `steering/NEW_WORKFLOWS_PHASE5.md`.
 
 ---
 

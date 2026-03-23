@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Docker Deployment Guide
 
 This guide covers deploying Senzing in Docker containers, based on real-world deployment experience.
@@ -574,7 +578,7 @@ Load this guide when:
 
 ## Related Documentation
 
-- [DOCKER_FOLDER_POLICY.md](../docs/development/DOCKER_FOLDER_POLICY.md) - File organization
+- [DOCKER_FOLDER_POLICY.md](../docs/policies/DOCKER_FOLDER_POLICY.md) - File organization
 - [MODULE_5_SDK_SETUP.md](../docs/modules/MODULE_5_SDK_SETUP.md) - SDK installation
 - [MODULE_12_DEPLOYMENT_PACKAGING.md](../docs/modules/MODULE_12_DEPLOYMENT_PACKAGING.md) - Deployment
 

@@ -1,3 +1,7 @@
+---
+inclusion: always
+---
+
 # Logging Standards
 
 **Version**: 1.0  

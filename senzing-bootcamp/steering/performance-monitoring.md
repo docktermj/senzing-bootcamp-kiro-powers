@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Performance Benchmarking and Monitoring
 
 Track performance metrics to optimize and scale your entity resolution system.

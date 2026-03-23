@@ -1,3 +1,7 @@
+---
+inclusion: always
+---
+
 # Common Pitfalls and How to Avoid Them
 
 Learn from common mistakes to save time and frustration.

@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # User Acceptance Testing (UAT) Framework
 
 ## Overview

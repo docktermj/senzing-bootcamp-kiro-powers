@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Collaboration Features
 
 For team projects, establish collaboration workflows.

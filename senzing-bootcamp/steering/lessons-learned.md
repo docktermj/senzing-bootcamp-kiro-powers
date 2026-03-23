@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Lessons Learned Template
 
 Document insights for future projects and continuous improvement.

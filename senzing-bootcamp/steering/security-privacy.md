@@ -1,3 +1,7 @@
+---
+inclusion: always
+---
+
 # Data Privacy and Security
 
 **CRITICAL**: Handle data responsibly throughout the boot camp.

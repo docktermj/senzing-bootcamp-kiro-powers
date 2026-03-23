@@ -1,3 +1,7 @@
+---
+inclusion: always
+---
+
 # Agent Instructions - Consolidated Behavior Guide
 
 ⚠️ **CRITICAL: READ THIS FIRST** ⚠️

@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # API Gateway Integration Patterns
 
 ## Overview

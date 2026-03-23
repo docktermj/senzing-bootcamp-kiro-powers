@@ -76,7 +76,7 @@ Quick reference for common issues and solutions across all boot camp modules.
    pip install --upgrade senzing
    ```
 
-**Related**: [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md)
+**Related**: Use MCP tool `get_capabilities` for version compatibility information
 
 ---
 
@@ -163,7 +163,7 @@ Quick reference for common issues and solutions across all boot camp modules.
 
 3. Validate JSON format
 
-**Related**: [transform_csv_template.py](../../templates/transform_csv_template.py)
+**Related**: Use `mapping_workflow` MCP tool to generate transformation code with validated JSON format
 
 ---
 

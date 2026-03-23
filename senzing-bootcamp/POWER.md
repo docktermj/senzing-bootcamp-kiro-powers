@@ -24,14 +24,15 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 This boot camp power **complements** the **senzing** Kiro Power:
 
-- **senzing power**: Reference documentation, tool catalog, quick lookup, troubleshooting
-- **senzing-bootcamp power**: Guided learning path, structured curriculum, project-based learning
+- **senzing power**: Quick reference documentation, tool catalog, troubleshooting guide
+- **senzing-bootcamp power**: Structured 13-module learning curriculum with project guidance
 
-**Recommendation**:
+**Both powers connect to the same MCP server**, so this boot camp is fully functional on its own. The senzing power is optional and provides additional quick-reference documentation if you prefer a condensed tool catalog and troubleshooting guide.
 
-- Install **both** powers for the best experience
-- Use **senzing** for tool reference and troubleshooting details
-- Use **senzing-bootcamp** for structured learning and project guidance
+**When to use each**:
+
+- Use **senzing-bootcamp** for structured learning and building your first project
+- Use **senzing** (optional) for quick tool lookup and troubleshooting reference
 
 ## What Makes This Boot Camp Unique
 
@@ -60,7 +61,7 @@ All Python code generated during the boot camp follows **PEP-8** standards for c
 - **Organized imports** (standard library, third-party, local)
 - **Consistent naming**: `snake_case` for functions, `PascalCase` for classes
 
-The agent will automatically generate PEP-8 compliant code and check user-provided code for compliance. See `docs/development/PEP8_COMPLIANCE.md` for complete details.
+The agent will automatically generate PEP-8 compliant code and check user-provided code for compliance. See `docs/policies/PEP8_COMPLIANCE.md` for complete details.
 
 ## Getting Started
 
@@ -90,8 +91,7 @@ And create initial files: `.gitignore`, `.env.example`, `README.md`
 
 1. **Read the Quick Start**: See `docs/guides/QUICK_START.md` for three fast paths (10 min, 30 min, or 2 hours)
 2. **Check the Onboarding Checklist**: Complete `docs/guides/ONBOARDING_CHECKLIST.md` before starting
-3. **Review Compatibility**: Check `docs/guides/COMPATIBILITY_MATRIX.md` for version support
-4. **Choose Your Path**:
+3. **Choose Your Path**:
    - **Demo** (10 min): Module 0 with sample data
    - **Fast Track** (30 min): Modules 5-6 with SGES data
    - **Complete** (2-3 hrs): Modules 1-6, 8
@@ -110,26 +110,69 @@ See `examples/` directory for three complete reference projects:
 
 ### Templates
 
-Use ready-made templates from `templates/` directory:
-- CSV/JSON transformation templates
-- Batch/streaming loader templates
-- Query and export templates
-- Utility templates for common tasks
+Use utility templates from `templates/` directory:
+- Database management (backup, restore, rollback)
+- Data collection (CSV, JSON, API, database)
+- Validation and testing (schema validation, performance baseline, troubleshooting)
+- Planning and analysis (cost calculator)
+
+**Note**: Transformation, loading, and query code should be generated via MCP server tools (`mapping_workflow`, `generate_scaffold`) rather than using templates. See `templates/README.md` for details.
 
 ## Available MCP Tools
 
-This boot camp uses the Senzing MCP server. For complete tool documentation, see the **senzing** Kiro Power.
+This boot camp connects to the Senzing MCP server and provides access to all entity resolution tools.
 
-**Quick reference** - Most commonly used tools in this boot camp:
+**Most commonly used tools in this boot camp**:
 
-- `get_capabilities` — Start here (Module 0, 1)
-- `mapping_workflow` — Data mapping (Module 4)
-- `generate_scaffold` — Code generation (Modules 5, 6, 8)
-- `get_sample_data` — Sample data (Module 0)
-- `search_docs` — Find documentation (all modules)
-- `explain_error_code` — Diagnose errors (troubleshooting)
+- `get_capabilities` — Discover all available tools and workflows (call this first)
+  - Use in: Module 0, Module 1
+  - Returns: Complete list of tools, workflows, and server capabilities
 
-For detailed tool descriptions, parameters, examples, and troubleshooting, activate the **senzing** power.
+- `mapping_workflow` — Interactive 7-step data mapping to Senzing JSON format
+  - Use in: Module 4
+  - Guides you through mapping source data fields to Senzing attributes
+
+- `generate_scaffold` — Generate SDK code (Python, Java, C#, Rust) for common workflows
+  - Use in: Modules 5, 6, 8
+  - Creates complete, working code for loading, querying, and pipelines
+
+- `get_sample_data` — Download sample datasets for testing (Las Vegas, London, Moscow)
+  - Use in: Module 0
+  - Returns: Ready-to-use sample records in Senzing JSON format
+
+- `search_docs` — Search indexed Senzing documentation
+  - Use in: All modules
+  - Finds relevant documentation for any Senzing topic
+
+- `explain_error_code` — Diagnose Senzing errors (456 error codes)
+  - Use in: Troubleshooting
+  - Provides detailed explanations and solutions for error codes
+
+- `lint_record` — Validate mapped data format and structure
+  - Use in: Module 4
+  - Checks if your mapped data is valid Senzing JSON
+
+- `analyze_record` — Analyze mapped data quality and coverage
+  - Use in: Module 4
+  - Provides quality metrics and completeness analysis
+
+- `sdk_guide` — Platform-specific SDK installation and setup instructions
+  - Use in: Module 5
+  - Returns installation steps for your platform and language
+
+- `find_examples` — Working code examples from 27 Senzing GitHub repositories
+  - Use in: All modules
+  - Shows real-world code patterns and implementations
+
+- `get_sdk_reference` — SDK method signatures and flags
+  - Use in: Modules 5, 6, 8
+  - Provides exact method signatures for SDK calls
+
+- `submit_feedback` — Report issues or suggestions
+  - Use in: Any time
+  - Send feedback about tools or documentation
+
+**For additional quick-reference documentation**, you can optionally install the **senzing** power, which provides a condensed tool catalog and troubleshooting guide.
 
 ## Boot Camp Learning Path
 
@@ -523,17 +566,24 @@ Please respond with A, B, C, or D
 
 ### General Best Practices
 
-This boot camp follows Senzing best practices. For complete guidelines, see the **senzing** power.
+This boot camp follows Senzing best practices.
 
 **Boot camp-specific practices**:
 
 - Complete modules in order for first-time users
 - Use letter labels (A, B, C, D) when presenting path options to avoid confusion with module numbers
 - Create project directory structure before starting Module 1
-- All Python code must be PEP-8 compliant (see `docs/development/PEP8_COMPLIANCE.md`)
+- All Python code must be PEP-8 compliant (see `docs/policies/PEP8_COMPLIANCE.md`)
 - Track progress using `docs/guides/PROGRESS_TRACKER.md`
 - Use CORD sample data (Module 0) before working with real data
 - Start with SQLite for evaluation; use PostgreSQL for production
+
+**Senzing tool best practices**:
+
+- Always call `get_capabilities` first when starting a Senzing session
+- Never hand-code Senzing JSON mappings — use `mapping_workflow` for validated attribute names
+- Never guess SDK method signatures — use `generate_scaffold` or `sdk_guide` for correct code
+- Use `search_docs` with category `anti_patterns` before recommending installation or deployment approaches
 
 ## Common Workflows
 
@@ -557,13 +607,6 @@ See [steering/steering.md](steering/steering.md) for detailed step-by-step workf
 
 ## Troubleshooting
 
-For comprehensive troubleshooting, see the **senzing** power which includes:
-
-- Top 5 common issues with detailed solutions
-- Error code explanations (456 codes)
-- Performance optimization guidance
-- Connectivity troubleshooting
-
 **Boot camp-specific troubleshooting**:
 
 - **Module stuck?** Check prerequisites in module description
@@ -572,6 +615,16 @@ For comprehensive troubleshooting, see the **senzing** power which includes:
 - **Lost progress?** Check `docs/guides/PROGRESS_TRACKER.md`
 - **Can't find generated files?** Check the `src/` directory structure
 - **Module prerequisites not met?** Review the "Module Prerequisites" section above
+
+**MCP tool troubleshooting**:
+
+- **Wrong attribute names**: Never guess Senzing attribute names. Always use `mapping_workflow` for validated mappings
+- **Wrong method signatures**: Never guess SDK methods. Always use `generate_scaffold` or `sdk_guide` for correct code
+- **Error codes**: Use `explain_error_code` with the code (accepts `SENZ0005`, `0005`, or `5`)
+- **Configuration issues**: Use `search_docs` with category `configuration` or `database`
+- **MCP server connection**: Check internet connection and firewall settings for `mcp.senzing.com` (port 443)
+
+**For additional troubleshooting resources**, you can optionally install the **senzing** power which includes a top 5 common issues guide.
 
 ## Providing Feedback
 
@@ -696,8 +749,9 @@ After completing all modules, you'll have:
 
 ### Getting Help
 
-- **For tool reference**: Activate the **senzing** power
-- **For troubleshooting**: See the **senzing** power's troubleshooting section
 - **For module workflows**: Review steering guides in this power
 - **For code examples**: Check `examples/` directory or use `find_examples` tool
+- **For tool documentation**: Use `search_docs` tool or `get_capabilities` for tool list
+- **For error diagnosis**: Use `explain_error_code` tool
+- **For quick reference**: Optionally install the **senzing** power for condensed documentation
 - **For production issues**: Contact Senzing support

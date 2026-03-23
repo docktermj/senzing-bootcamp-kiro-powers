@@ -1,284 +1,133 @@
-# Guides and Tutorials Index
+# User Guides
 
-This directory contains user-facing guides and tutorials for the Senzing Boot Camp.
+This directory contains essential user-facing guides for the Senzing Boot Camp.
 
-## Available Guides
-
-### Quick Start Guide
-**File**: [QUICK_START.md](QUICK_START.md)
-
-**Purpose**: Get started with Senzing in 10 minutes, 30 minutes, or 2 hours
-
-**Content**:
-- Three quick start paths (Demo, Fast Track, Complete)
-- Prerequisites for each path
-- Step-by-step instructions
-- Quick commands and examples
-- Success indicators
-
-**When to Use**: Before starting the boot camp - choose your learning path
-
----
-
-### Onboarding Checklist
-**File**: [ONBOARDING_CHECKLIST.md](ONBOARDING_CHECKLIST.md)
-
-**Purpose**: Pre-flight checklist before starting the boot camp
-
-**Content**:
-- System requirements
-- Data preparation checklist
-- Database setup requirements
-- Development environment setup
-- Time and resource planning
-- Quick validation commands
-
-**When to Use**: Before Module 1 - ensure you're ready to start
-
----
-
-### Progress Tracker
-**File**: [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md)
-
-**Purpose**: Track your progress through all 13 modules
-
-**Content**:
-- Checklist for each module
-- Time estimates
-- Skip ahead options
-- Overall progress summary
-- Notes section
-
-**When to Use**: Throughout the boot camp - track completion
-
----
-
-### Compatibility Matrix
-**File**: [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md)
-
-**Purpose**: Understand version and platform compatibility
-
-**Content**:
-- Senzing V4.0 feature support
-- Platform support (Linux, macOS, Windows)
-- Database version requirements
-- Python package versions
-- Module compatibility
-
-**When to Use**: Before Module 5 (SDK Setup) - verify compatibility
-
----
-
-### Design Patterns Gallery
-**File**: [DESIGN_PATTERNS.md](DESIGN_PATTERNS.md)
-
-**Purpose**: Explore common entity resolution design patterns
-
-**Content**:
-- 10 common entity resolution patterns
-- Use case descriptions
-- Key matching attributes
-- Typical ROI for each pattern
-- When to use each pattern
-- Pattern selection guidance
-
-**Patterns Covered**:
-- Customer 360 - Unified customer view
-- Fraud Detection - Identify fraud rings
-- Data Migration - Merge legacy systems
-- Compliance Screening - Watchlist matching
-- Marketing Dedup - Eliminate duplicates
-- Patient Matching - Unified medical records
-- Vendor MDM - Clean vendor master
-- Claims Fraud - Detect staged accidents
-- KYC/Onboarding - Verify identity
-- Supply Chain - Unified supplier view
-
-**When to Use**: Module 1 (Business Problem) - helps identify which pattern fits your use case
-
----
-
-### Hooks Installation Guide
-**File**: [HOOKS_INSTALLATION_GUIDE.md](HOOKS_INSTALLATION_GUIDE.md)
-
-**Purpose**: Install and configure Kiro automation hooks
-
-**Content**:
-- What are hooks and why use them
-- Available hooks for Senzing Boot Camp
-- Installation instructions
-- Hook configuration
-- Testing hooks
-- Troubleshooting
-
-**Available Hooks**:
-- `data-quality-check.kiro.hook` - Validates quality when transformations change
-- `backup-before-load.kiro.hook` - Reminds to backup before loading
-- `test-before-commit.kiro.hook` - Runs tests automatically
-- `validate-senzing-json.kiro.hook` - Validates output format
-- `update-documentation.kiro.hook` - Reminds to update docs
-
-**When to Use**: Before Module 4 (Data Mapping) - automates quality checks
-
----
-
-### Installation Verification Guide
-**File**: [INSTALLATION_VERIFICATION.md](INSTALLATION_VERIFICATION.md)
-
-**Purpose**: Verify Senzing SDK installation is working correctly
-
-**Content**:
-- Pre-installation checklist
-- Installation verification steps
-- Test script examples
-- Common installation issues
-- Platform-specific notes
-- Troubleshooting guide
-
-**Verification Steps**:
-1. Check Senzing version
-2. Verify environment variables
-3. Test database connection
-4. Run simple test script
-5. Verify all components working
-
-**When to Use**: After Module 5 (SDK Setup) - ensures installation is correct
-
----
-
-## Guide Categories
+## Available Guides (8 Essential Files)
 
 ### Getting Started
-- **Quick Start** - Three fast paths to get started
-- **Onboarding Checklist** - Pre-flight requirements
-- **Design Patterns** - Choose your use case
-- **Compatibility Matrix** - Version and platform support
+
+- **[QUICK_START.md](QUICK_START.md)** - Three fast paths to get started (10 min, 30 min, or 2 hours)
+- **[ONBOARDING_CHECKLIST.md](ONBOARDING_CHECKLIST.md)** - Pre-flight checklist before starting the boot camp
 
 ### Progress Tracking
-- **Progress Tracker** - Track module completion
 
-### Setup and Installation
-- **Installation Verification** - Verify SDK setup
+- **[PROGRESS_TRACKER.md](PROGRESS_TRACKER.md)** - Track your completion through all 13 modules
 
-### Automation
-- **Hooks Installation** - Automate quality checks
+### Reference Guides
 
-### Troubleshooting
-- See `../../steering/common-pitfalls.md`
-- See `../../steering/troubleshooting-decision-tree.md`
+- **[DESIGN_PATTERNS.md](DESIGN_PATTERNS.md)** - Gallery of 10 common entity resolution patterns
+- **[TROUBLESHOOTING_INDEX.md](TROUBLESHOOTING_INDEX.md)** - Quick reference for common issues and solutions
+
+### Boot Camp Features
+
+- **[HOOKS_INSTALLATION_GUIDE.md](HOOKS_INSTALLATION_GUIDE.md)** - Install pre-configured Kiro hooks for automation
+- **[FEEDBACK_WORKFLOW.md](FEEDBACK_WORKFLOW.md)** - How to provide feedback about the boot camp
+
+## Why So Few Guides?
+
+The Senzing Boot Camp leverages the **Senzing MCP Server** to provide most documentation dynamically through tools like:
+
+- `get_capabilities` - Discover available tools and workflows
+- `search_docs` - Search comprehensive Senzing documentation
+- `sdk_guide` - Platform-specific SDK installation and setup
+- `explain_error_code` - Diagnose errors with detailed explanations
+- `find_examples` - Working code examples from GitHub repositories
+
+This approach:
+- ✅ Keeps documentation always up-to-date
+- ✅ Provides context-aware guidance
+- ✅ Reduces duplication
+- ✅ Focuses guides on boot camp-specific workflows
+
+## Removed Guides (Moved to Development Repository)
+
+The following 15 guides were moved because they either duplicate MCP server functionality or are internal documentation:
+
+**Duplicates MCP Server:**
+- COMPATIBILITY_MATRIX.md → Use `get_capabilities`
+- PREREQUISITES.md → Use `sdk_guide`
+- FAQ.md → Use `search_docs`
+- PERFORMANCE_TUNING.md → Use `search_docs` with category="performance"
+- DOCKER_QUICK_START.md → Use `sdk_guide` with platform="docker"
+- DEPLOYMENT_CHECKLIST.md → Generic checklist
+
+**Internal/Development:**
+- PATH_SELECTION_FIX.md - Bug fix documentation
+- MODULE_COMPLETION_TRACKER.md - Duplicate of PROGRESS_TRACKER.md
+- INSTALLATION_VERIFICATION.md - Internal policy
+- EXECUTIVE_SUMMARY.md + .pdf - Marketing material
+- PREFLIGHT_CHECKLIST.md - Duplicate of ONBOARDING_CHECKLIST.md
+- QUICK_REFERENCE_CARD.md - Duplicate of steering/quick-reference.md
+- VISUAL_GUIDE.md - Optional diagrams
 
 ## Quick Reference
 
-| Guide | Module | Time | Purpose |
-|-------|--------|------|---------|
-| Quick Start | Before 1 | 10-120 min | Choose path |
-| Onboarding Checklist | Before 1 | 15 min | Verify readiness |
-| Progress Tracker | All | Ongoing | Track completion |
-| Compatibility Matrix | Before 5 | 5 min | Check compatibility |
-| Design Patterns | 1 | 10 min | Choose pattern |
-| Hooks Installation | Before 4 | 15 min | Automate checks |
-| Installation Verification | 5 | 10 min | Verify SDK |
+| Guide | When to Use | Time | Purpose |
+|-------|-------------|------|---------|
+| QUICK_START | Before Module 1 | 5 min | Choose your path |
+| ONBOARDING_CHECKLIST | Before Module 1 | 15 min | Verify readiness |
+| PROGRESS_TRACKER | Throughout | Ongoing | Track completion |
+| DESIGN_PATTERNS | Module 1 | 10 min | Choose pattern |
+| TROUBLESHOOTING_INDEX | When stuck | As needed | Find solutions |
+| HOOKS_INSTALLATION_GUIDE | Before Module 4 | 15 min | Automate checks |
+| FEEDBACK_WORKFLOW | Anytime | 5 min | Submit feedback |
 
 ## Related Documentation
 
 ### For Planning
 - **Design Patterns** → Helps with Module 1 (Business Problem)
-- **Cost Calculator** → See `../../steering/cost-calculator.md`
+- **Cost Estimation** → See `../../steering/cost-estimation.md`
 - **Complexity Estimator** → See `../../steering/complexity-estimator.md`
 
 ### For Setup
-- **Installation Verification** → Helps with Module 5 (SDK Setup)
 - **Environment Setup** → See `../../steering/environment-setup.md`
+- **SDK Guide** → Use MCP tool `sdk_guide`
 
 ### For Automation
 - **Hooks Installation** → Automates quality checks
 - **Testing Strategy** → See `../../steering/testing-strategy.md`
 
 ### For Troubleshooting
+- **Troubleshooting Index** → This directory
 - **Common Pitfalls** → See `../../steering/common-pitfalls.md`
 - **Troubleshooting Decision Tree** → See `../../steering/troubleshooting-decision-tree.md`
 - **Recovery Procedures** → See `../../steering/recovery-procedures.md`
 
-## How to Use These Guides
-
-### For New Users
-1. Start with **Quick Start** to choose your path
-2. Complete **Onboarding Checklist** before starting
-3. Use **Progress Tracker** throughout the boot camp
-4. Reference **Design Patterns** in Module 1
-5. Check **Compatibility Matrix** before Module 5
-6. Use **Installation Verification** after SDK setup
-7. Install **Hooks** before data mapping
-
-### For Experienced Users
-- Jump directly to relevant guide
-- Use as reference during boot camp
-- Customize hooks for your workflow
-
-### For Troubleshooting
-1. Check **Installation Verification** if SDK issues
-2. Review **Common Pitfalls** for known issues
-3. Use **Troubleshooting Decision Tree** for systematic diagnosis
-
-## Additional Resources
-
-### Steering Files
-Detailed workflows and guidance:
-- `../../steering/steering.md` - Main workflows
-- `../../steering/agent-instructions.md` - Agent behavior
-- `../../steering/quick-reference.md` - MCP tool reference
-
-### Module Documentation
-Detailed module information:
-- `../modules/` - Module-specific docs
-
-### Policies
-Coding standards:
-- `../policies/` - Policy documents
-
 ## For Agents
 
 When users need guidance:
-1. **Before starting** → Suggest Quick Start and Onboarding Checklist
-2. **Module 1** → Suggest Design Patterns guide
-3. **Before Module 4** → Suggest Hooks Installation
-4. **Before Module 5** → Suggest Compatibility Matrix
-5. **After Module 5** → Suggest Installation Verification
-6. **Throughout** → Remind about Progress Tracker
-7. **Troubleshooting** → Point to relevant guides
+1. **Before starting** → Suggest QUICK_START and ONBOARDING_CHECKLIST
+2. **Module 1** → Suggest DESIGN_PATTERNS
+3. **Before Module 4** → Suggest HOOKS_INSTALLATION_GUIDE
+4. **Throughout** → Remind about PROGRESS_TRACKER
+5. **Troubleshooting** → Point to TROUBLESHOOTING_INDEX
+6. **Feedback** → Explain FEEDBACK_WORKFLOW
 
-## For Users
+For Senzing-specific questions, use MCP tools:
+- Version compatibility → `get_capabilities`
+- Prerequisites → `sdk_guide`
+- FAQ → `search_docs`
+- Performance → `search_docs` with category="performance"
+- Docker setup → `sdk_guide` with platform="docker"
 
-### When to Read
-- **Before starting** → Quick Start, Onboarding Checklist
-- **Module 1** → Design Patterns
-- **Before Module 5** → Compatibility Matrix
-- **During setup** → Installation Verification
-- **Before mapping** → Hooks Installation
-- **Throughout** → Progress Tracker
-- **When stuck** → Troubleshooting guides
+## For Maintainers
 
-### How to Read
-- Skim for overview
-- Deep dive when needed
-- Use as reference
-- Follow step-by-step instructions
+When adding new guides:
+- ✅ **DO** add boot camp-specific workflows and processes
+- ✅ **DO** add guides that reference multiple modules
+- ✅ **DO** add guides for Kiro-specific features (hooks, steering, etc.)
+- ❌ **DON'T** duplicate Senzing documentation (use MCP server instead)
+- ❌ **DON'T** add generic checklists or reference cards
+- ❌ **DON'T** add internal development notes (use development repository)
 
 ## Version History
 
-- **v3.0.0** (2026-03-17): Added new guides
-  - QUICK_START.md
-  - ONBOARDING_CHECKLIST.md
-  - PROGRESS_TRACKER.md
-  - COMPATIBILITY_MATRIX.md
-- **v1.0.0** (2026-03-17): Initial guides
-  - DESIGN_PATTERNS.md
-  - HOOKS_INSTALLATION_GUIDE.md
-  - INSTALLATION_VERIFICATION.md
+- **2026-03-23**: Reduced from 23 guides to 8 essential guides, leveraging MCP server for Senzing documentation
+- **2026-03-17**: Initial guide collection created with 23 guides
 
 ## Navigation
 
 - [← Back to docs/](../)
 - [→ Modules](../modules/)
 - [→ Policies](../policies/)
-- [→ Development](../development/)
+- [→ Steering](../../steering/)

@@ -243,12 +243,13 @@ Your Docker environment is now configured and ready for:
    ```
 
 2. **Create a loader**:
-   - Copy `templates/batch_loader_template.py` to `src/load/`
-   - Customize for your data
+   - Use MCP server: `generate_scaffold(language="python", workflow="add_records")`
+   - Agent generates loading code in `src/load/`
    - Run: `docker-compose exec senzing python /app/src/load/loader.py`
 
 3. **Query results**:
-   - Copy `templates/query_template.py` to `src/query/`
+   - Use MCP server: `generate_scaffold(language="python", workflow="full_pipeline")`
+   - Agent generates query code in `src/query/`
    - Run: `docker-compose exec senzing python /app/src/query/queries.py`
 
 ## Common Issues

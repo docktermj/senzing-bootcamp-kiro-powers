@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Testing Strategy
 
 Implement testing at each module to ensure quality and reliability.

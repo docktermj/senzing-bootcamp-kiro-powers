@@ -1,3 +1,7 @@
+---
+inclusion: always
+---
+
 # Modules 7-12 Detailed Workflows
 
 This document provides detailed agent workflows for Modules 7-12 (advanced modules).

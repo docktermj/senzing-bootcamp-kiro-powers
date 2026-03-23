@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Data Lineage Tracking
 
 ## Overview

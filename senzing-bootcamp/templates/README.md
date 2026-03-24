@@ -21,6 +21,30 @@ Utility templates for database management, data collection, validation, and plan
 
 ## Available Templates
 
+### Quick Demo Template
+
+#### demo_quick_start.py ⭐ NEW - Module 0
+**Purpose**: Live demonstration of Senzing entity resolution with sample data
+**Use when**: Module 0 (Quick Demo), first-time users, demonstrations
+**Features**: Actually runs Senzing SDK, shows before/after, displays match explanations
+**Complexity**: Beginner
+**Usage**:
+```bash
+# Run the demo
+python templates/demo_quick_start.py
+
+# Or with Docker (no installation required)
+docker run -v $(pwd):/data senzing/senzing-tools python /data/templates/demo_quick_start.py
+```
+
+**What it does**:
+- Displays 5 sample records with obvious duplicates
+- Initializes Senzing with in-memory database
+- Loads records and resolves entities
+- Shows which records matched and WHY
+- Displays confidence scores and match explanations
+- Creates the "aha moment" for new users
+
 ### Database Management Templates
 
 #### backup_database.py ⭐ IMPORTANT

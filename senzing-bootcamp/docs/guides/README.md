@@ -2,7 +2,7 @@
 
 This directory contains essential user-facing guides for the Senzing Boot Camp.
 
-## Available Guides (8 Essential Files)
+## Available Guides (6 Essential Files)
 
 ### Getting Started
 
@@ -21,7 +21,6 @@ This directory contains essential user-facing guides for the Senzing Boot Camp.
 ### Boot Camp Features
 
 - **[HOOKS_INSTALLATION_GUIDE.md](HOOKS_INSTALLATION_GUIDE.md)** - Install pre-configured Kiro hooks for automation
-- **[FEEDBACK_WORKFLOW.md](FEEDBACK_WORKFLOW.md)** - How to provide feedback about the boot camp
 
 ## Why So Few Guides?
 
@@ -39,26 +38,18 @@ This approach:
 - ✅ Reduces duplication
 - ✅ Focuses guides on boot camp-specific workflows
 
-## Removed Guides (Moved to Development Repository)
+## Guides Moved to Development Repository
 
-The following 15 guides were moved because they either duplicate MCP server functionality or are internal documentation:
+The following guides were moved to `senzing-bootcamp-power-development/` because they are for power developers, not bootcamp users:
 
-**Duplicates MCP Server:**
-- COMPATIBILITY_MATRIX.md → Use `get_capabilities`
-- PREREQUISITES.md → Use `sdk_guide`
-- FAQ.md → Use `search_docs`
-- PERFORMANCE_TUNING.md → Use `search_docs` with category="performance"
-- DOCKER_QUICK_START.md → Use `sdk_guide` with platform="docker"
-- DEPLOYMENT_CHECKLIST.md → Generic checklist
+**Agent Implementation Guides:**
+- MODULE_0_AGENT_GUIDE.md → Agent instructions for running Module 0
+- FEEDBACK_WORKFLOW.md → Power development workflow
 
-**Internal/Development:**
-- PATH_SELECTION_FIX.md - Bug fix documentation
-- MODULE_COMPLETION_TRACKER.md - Duplicate of PROGRESS_TRACKER.md
-- INSTALLATION_VERIFICATION.md - Internal policy
-- EXECUTIVE_SUMMARY.md + .pdf - Marketing material
-- PREFLIGHT_CHECKLIST.md - Duplicate of ONBOARDING_CHECKLIST.md
-- QUICK_REFERENCE_CARD.md - Duplicate of steering/quick-reference.md
-- VISUAL_GUIDE.md - Optional diagrams
+**Development Documentation:**
+- IMPROVEMENT_MODULE_0_LIVE_DEMO.md → Development notes on improvements
+
+These guides are still available for power developers and maintainers in the development repository.
 
 ## Quick Reference
 
@@ -70,7 +61,6 @@ The following 15 guides were moved because they either duplicate MCP server func
 | DESIGN_PATTERNS | Module 1 | 10 min | Choose pattern |
 | TROUBLESHOOTING_INDEX | When stuck | As needed | Find solutions |
 | HOOKS_INSTALLATION_GUIDE | Before Module 4 | 15 min | Automate checks |
-| FEEDBACK_WORKFLOW | Anytime | 5 min | Submit feedback |
 
 ## Related Documentation
 
@@ -101,7 +91,7 @@ When users need guidance:
 3. **Before Module 4** → Suggest HOOKS_INSTALLATION_GUIDE
 4. **Throughout** → Remind about PROGRESS_TRACKER
 5. **Troubleshooting** → Point to TROUBLESHOOTING_INDEX
-6. **Feedback** → Explain FEEDBACK_WORKFLOW
+6. **Feedback** → Users can add to `../feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md`
 
 For Senzing-specific questions, use MCP tools:
 - Version compatibility → `get_capabilities`
@@ -109,6 +99,8 @@ For Senzing-specific questions, use MCP tools:
 - FAQ → `search_docs`
 - Performance → `search_docs` with category="performance"
 - Docker setup → `sdk_guide` with platform="docker"
+
+For agent implementation details, see `senzing-bootcamp-power-development/guides/`
 
 ## For Maintainers
 
@@ -122,6 +114,7 @@ When adding new guides:
 
 ## Version History
 
+- **2026-03-24**: Moved agent/developer guides to development repository (MODULE_0_AGENT_GUIDE, FEEDBACK_WORKFLOW, IMPROVEMENT_MODULE_0_LIVE_DEMO)
 - **2026-03-23**: Reduced from 23 guides to 8 essential guides, leveraging MCP server for Senzing documentation
 - **2026-03-17**: Initial guide collection created with 23 guides
 

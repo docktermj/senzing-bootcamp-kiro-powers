@@ -2,27 +2,33 @@
 
 ## Overview
 
-Module 0 provides a quick demonstration of Senzing entity resolution using sample data. This optional module is perfect for first-time users who want to see entity resolution in action before working with their own data.
+Module 0 provides a live demonstration of Senzing entity resolution using sample data. This optional module is perfect for first-time users who want to see entity resolution in action before working with their own data.
+
+Unlike a static demo, this module actually runs the Senzing SDK to demonstrate real entity resolution, showing you the "aha moment" of watching duplicate records automatically resolve into unique entities.
 
 **Time**: 10-15 minutes  
-**Prerequisites**: None  
-**Output**: Working demo script with sample data
+**Prerequisites**: None (Senzing SDK will be set up automatically)  
+**Output**: Working demo with actual entity resolution results
 
 ## Learning Objectives
 
 By the end of this module, you will:
-- Understand what entity resolution does
-- See how Senzing automatically matches duplicate records
-- Observe entity resolution in real-time
+- See Senzing entity resolution working in real-time
+- Watch duplicate records automatically match and merge
+- Understand WHY records matched (match explanations)
+- Observe the before/after transformation (5 records → X entities)
 - Connect the demo to your own use case
 
 ## What You'll Do
 
 1. Choose a sample dataset (Las Vegas, London, or Moscow)
 2. Review sample records showing duplicates
-3. Run a demo script that loads and resolves the data
-4. Examine the resolved entities
-5. Understand why records matched
+3. Set up Senzing SDK (automatic - uses Docker or local installation)
+4. Initialize an in-memory SQLite database
+5. Load sample records into Senzing
+6. Query the resolved entities
+7. See match explanations showing WHY records matched
+8. Compare before/after (5 records → X entities)
 
 ## Sample Datasets
 
@@ -48,36 +54,92 @@ By the end of this module, you will:
 
 The generated demo script will:
 
-1. **Initialize Senzing** with SQLite (no installation required if using Docker)
-2. **Load sample records** from the chosen dataset
-3. **Show progress** as records are processed
-4. **Query results** to show resolved entities
-5. **Display statistics** (records loaded, entities created, match rate)
-6. **Show example entity** with all matching records
+1. **Check for Senzing SDK** - Detects if SDK is installed, offers Docker alternative
+2. **Initialize Senzing** with in-memory SQLite database
+3. **Load sample records** from the chosen dataset (with progress bar)
+4. **Query resolved entities** to show which records matched
+5. **Display match explanations** showing WHY records matched (name similarity, address match, etc.)
+6. **Show statistics** (records loaded, entities created, match rate)
+7. **Display example entities** with all matching records side-by-side
+8. **Provide before/after comparison** (e.g., "5 records → 3 entities")
+
+This is a real, working demonstration - not a simulation!
 
 ## Example Output
 
 ```
-Loading records...
-[====================] 100% (1000/1000 records)
+Checking Senzing SDK installation...
+✓ Senzing SDK found (version 3.8.0)
+
+Initializing Senzing engine with in-memory database...
+✓ Engine initialized
+
+Loading sample records...
+[====================] 100% (5/5 records loaded)
+
+Resolving entities...
+✓ Entity resolution complete
 
 Results:
-- Records loaded: 1,000
-- Entities created: 750
-- Match rate: 25%
-- Average records per entity: 1.33
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Records loaded:              5
+Entities created:            3
+Duplicates found:            2 (40% match rate)
+Average records per entity:  1.67
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Example resolved entity:
+Example Resolved Entity:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Entity ID: 1
 Records matched: 3
-  - Record 1 (CRM): John Smith, 123 Main St, (555) 123-4567
-  - Record 2 (Support): J. Smith, 123 Main Street, (555) 123-4567
-  - Record 3 (Sales): John R Smith, 123 Main St Apt 1, 555-123-4567
 
-Match reasons:
-  - Name similarity: 95%
-  - Address match: 100%
-  - Phone match: 100%
+Record 1 (CRM_SYSTEM):
+  Name:    John Smith
+  Address: 123 Main St, Las Vegas, NV 89101
+  Phone:   (555) 123-4567
+  Email:   john.smith@email.com
+
+Record 2 (SUPPORT_SYSTEM):
+  Name:    J. Smith
+  Address: 123 Main Street, Las Vegas, NV 89101
+  Phone:   555-123-4567
+  Email:   jsmith@email.com
+
+Record 3 (SALES_SYSTEM):
+  Name:    John R Smith
+  Address: 123 Main St Apt 1, Las Vegas, NV 89101
+  Phone:   (555) 123-4567
+  Email:   john.smith@email.com
+
+Match Explanation:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Why these records matched:
+
+Record 1 ↔ Record 2:
+  ✓ Name similarity:    92% (John Smith ≈ J. Smith)
+  ✓ Address match:      100% (same address, different format)
+  ✓ Phone match:        100% (same number, different format)
+  ✓ Overall confidence: 98% - STRONG MATCH
+
+Record 1 ↔ Record 3:
+  ✓ Name similarity:    95% (John Smith ≈ John R Smith)
+  ✓ Address match:      95% (123 Main St ≈ 123 Main St Apt 1)
+  ✓ Phone match:        100%
+  ✓ Email match:        100%
+  ✓ Overall confidence: 99% - STRONG MATCH
+
+Record 2 ↔ Record 3:
+  ✓ Name similarity:    90% (J. Smith ≈ John R Smith)
+  ✓ Address match:      95%
+  ✓ Phone match:        100%
+  ✓ Overall confidence: 96% - STRONG MATCH
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Key Insights:
+• Senzing automatically recognized these as the same person
+• No manual rules were required
+• Different data formats were handled automatically
+• Confidence scores show match strength
 ```
 
 ## Key Concepts Demonstrated
@@ -113,7 +175,18 @@ src/quickstart_demo/
 
 ## Running the Demo
 
-### Using Python
+The demo runs automatically when you start Module 0. The agent will:
+
+1. Check if Senzing SDK is installed
+2. If not installed, offer to:
+   - Use Docker (recommended for quick demo)
+   - Guide you through SDK installation
+3. Generate and run the demo script
+4. Display results in real-time
+
+### Manual Execution
+
+If you want to run the demo again later:
 
 ```bash
 # Navigate to demo directory
@@ -123,7 +196,7 @@ cd src/quickstart_demo
 python demo_las_vegas.py
 ```
 
-### Using Docker
+### Using Docker (No Installation Required)
 
 ```bash
 # Run demo in Docker container
@@ -167,41 +240,51 @@ After completing the demo:
 ## Common Questions
 
 **Q: Do I need to install Senzing to run the demo?**  
-A: No, if using Docker. The demo can run in a container with no installation.
+A: No! The demo can run in Docker with no installation. If you want to install the SDK, the agent will guide you through it.
+
+**Q: Does this actually run Senzing, or is it a simulation?**  
+A: This runs the real Senzing SDK! You'll see actual entity resolution happening, not a simulation or mock-up.
 
 **Q: Can I use my own data for the demo?**  
-A: The demo uses sample data. You'll work with your data starting in Module 2.
+A: The demo uses sample data to ensure a quick, successful experience. You'll work with your data starting in Module 2.
 
 **Q: How accurate is entity resolution?**  
-A: Accuracy depends on data quality. Typical match rates: 90-99% precision, 85-95% recall.
+A: Accuracy depends on data quality. Typical match rates: 90-99% precision, 85-95% recall. The demo shows real match confidence scores.
 
 **Q: Can I skip this module?**  
-A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
+A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data. But we recommend the demo - it only takes 10 minutes and shows the value immediately.
 
 ## Success Criteria
 
-✅ Demo script runs successfully  
+✅ Senzing SDK is running (Docker or local installation)  
+✅ Demo script executes successfully  
 ✅ Sample data loads without errors  
-✅ Entities are resolved and displayed  
-✅ You understand what entity resolution does  
-✅ You can explain why records matched
+✅ Entities are resolved and displayed with match explanations  
+✅ You understand what entity resolution does and WHY records matched  
+✅ You can see the before/after transformation  
+✅ You're excited to try it with your own data!
 
 ## Troubleshooting
 
+**Senzing SDK not found**:
+- Use Docker option (no installation required)
+- Or follow SDK installation guide provided by agent
+- Check PATH if SDK is installed but not detected
+
 **Demo script fails to run**:
 - Check Python version (3.8+)
-- Verify Senzing is installed or Docker is available
+- Verify dependencies: `pip install senzing`
 - Check file paths are correct
 
 **No matches found**:
+- This shouldn't happen with sample data - contact support
 - Verify sample data loaded correctly
-- Check data format (should be JSONL)
-- Ensure records have matching attributes
+- Check Senzing engine initialized properly
 
 **Unexpected matches**:
 - This is normal - entity resolution is probabilistic
-- Review match reasons to understand why
-- Adjust thresholds if needed (advanced topic)
+- Review match explanations to understand why
+- Different confidence thresholds can be adjusted (advanced topic)
 
 ## Related Documentation
 

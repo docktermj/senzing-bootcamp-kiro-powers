@@ -538,7 +538,7 @@ When offering users a choice of paths, use letter labels (A, B, C, D) instead of
 Which path would you like to take?
 
 A) Quick Demo (10 min) - Module 0
-   See entity resolution in action with sample data
+   See REAL entity resolution in action - actually runs Senzing SDK with sample data
    
 B) Fast Track (30 min) - Modules 5-6
    For users with SGES-compliant data

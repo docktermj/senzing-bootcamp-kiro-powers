@@ -1,8 +1,38 @@
-# Removed Guide Files
+# Power Development Guides
+
+This directory contains guides for power developers and maintainers, not for bootcamp users.
+
+## Agent Implementation Guides
+
+### MODULE_0_AGENT_GUIDE.md
+**Purpose**: Step-by-step instructions for agents running Module 0 (Quick Demo)  
+**Audience**: AI agents implementing the boot camp  
+**Contents**:
+- Critical requirements for Module 0
+- Quick start checklist
+- Step-by-step workflow
+- Common issues and solutions
+- Agent behavior guidelines
+- Success indicators
+
+**Why here**: This is implementation documentation for agents, not user-facing guidance.
+
+### FEEDBACK_WORKFLOW.md
+**Purpose**: Guide for agents to collect structured feedback from users  
+**Audience**: AI agents implementing feedback collection  
+**Contents**:
+- Feedback workflow steps
+- Question templates
+- Formatting guidelines
+- Submission process
+
+**Why here**: This is agent workflow documentation, not user instructions.
+
+## Removed Guide Files (Historical)
 
 These guide files were removed from the Senzing Boot Camp Power distribution because they either duplicate MCP server functionality or are internal documentation.
 
-## Files in This Directory (15 files)
+### Files in This Directory (15+ files)
 
 ### Duplicates MCP Server Functionality (6 files)
 
@@ -56,9 +86,9 @@ These are internal development notes, not user-facing guides:
 13. **VISUAL_GUIDE.md** - Diagrams and flowcharts
     - **Why Removed**: Optional visual aids, not essential
 
-## What Remains in the Power
+## What Remains in the Power (User-Facing)
 
-Only 8 essential boot camp-specific guides remain:
+Only 6 essential boot camp-specific guides remain in `senzing-bootcamp/docs/guides/`:
 
 1. **QUICK_START.md** - Boot camp-specific quick start paths
 2. **ONBOARDING_CHECKLIST.md** - Boot camp-specific pre-flight checklist
@@ -66,8 +96,14 @@ Only 8 essential boot camp-specific guides remain:
 4. **DESIGN_PATTERNS.md** - Boot camp-specific pattern gallery
 5. **TROUBLESHOOTING_INDEX.md** - Boot camp-specific troubleshooting
 6. **HOOKS_INSTALLATION_GUIDE.md** - Kiro hooks for boot camp
-7. **FEEDBACK_WORKFLOW.md** - Boot camp feedback process
-8. **README.md** - Guide index
+
+## What's in Development Repository (Agent/Developer)
+
+Agent and developer guides are in `senzing-bootcamp-power-development/guides/`:
+
+1. **MODULE_0_AGENT_GUIDE.md** - Agent implementation for Module 0
+2. **FEEDBACK_WORKFLOW.md** - Agent feedback collection workflow
+3. **[Historical removed guides]** - 15 files moved from original distribution
 
 ## Benefits of Removal
 
@@ -99,4 +135,5 @@ Instead of static guides, use these MCP tools:
 
 ## Version History
 
+- **2026-03-24**: Added agent implementation guides (MODULE_0_AGENT_GUIDE, FEEDBACK_WORKFLOW)
 - **2026-03-23**: Moved 15 guide files from Power distribution to development repository

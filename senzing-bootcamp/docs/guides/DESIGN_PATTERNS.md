@@ -12,16 +12,16 @@ The design pattern gallery is presented in Module 1 when users are asked:
 
 ### Available Patterns
 
-1. **Customer 360 / Single Customer View**
-2. **Fraud Detection & Prevention**
-3. **Data Migration & Consolidation**
-4. **Compliance & Watchlist Screening**
-5. **Marketing Database Deduplication**
-6. **Healthcare Patient Matching**
-7. **Vendor/Supplier Master Data Management**
-8. **Insurance Claims Fraud Detection**
-9. **Know Your Customer (KYC) / Customer Onboarding**
-10. **Supply Chain Entity Resolution**
+1. Customer 360 / Single Customer View
+2. Fraud Detection & Prevention
+3. Data Migration & Consolidation
+4. Compliance & Watchlist Screening
+5. Marketing Database Deduplication
+6. Healthcare Patient Matching
+7. Vendor/Supplier Master Data Management
+8. Insurance Claims Fraud Detection
+9. Know Your Customer (KYC) / Customer Onboarding
+10. Supply Chain Entity Resolution
 
 Each pattern includes:
 - Problem description
@@ -32,14 +32,14 @@ Each pattern includes:
 
 ## How It Works
 
-1. **User is offered the gallery** at the start of Module 1
-2. **If they view it**, they can browse patterns and identify matches
-3. **If they select a pattern**, it becomes a template for their problem definition:
+1. User is offered the gallery at the start of Module 1
+2. If they view it, they can browse patterns and identify matches
+3. If they select a pattern, it becomes a template for their problem definition:
    - Pre-fills data source types
    - Suggests matching criteria
    - Provides success metrics
    - Guides the rest of Module 1
-4. **Problem statement** includes reference to the selected pattern
+4. Problem statement includes reference to the selected pattern
 
 ## Future Enhancements (Planned)
 
@@ -80,26 +80,27 @@ The design pattern gallery will be enhanced with:
 
 To add a new pattern to the gallery:
 
-1. **Define the pattern** in `senzing-bootcamp/POWER.md` under Module 1
-2. **Include all required fields**:
+1. Define the pattern in `senzing-bootcamp/POWER.md` under Module 1
+2. Include all required fields:
    - Pattern name
    - Problem description
    - Goal
    - Key matching criteria
    - Typical data sources
    - Business value
-3. **Update the steering guide** in `senzing-bootcamp/steering/steering.md`
-4. **Add to this document** for tracking
+3. Update the steering guide in `senzing-bootcamp/steering/steering.md`
+4. Add to this document for tracking
 
 ### Pattern Template
 
 ```markdown
-### [Pattern Number]. **[Pattern Name]**
-   - **Problem**: [What business problem does this solve?]
-   - **Goal**: [What is the desired outcome?]
-   - **Key Matching**: [What attributes are used for matching?]
-   - **Typical Data Sources**: [What data sources are commonly involved?]
-   - **Business Value**: [What value does this deliver?]
+### [Pattern Number]. [Pattern Name]
+
+- **Problem:** [What business problem does this solve?]
+- **Goal:** [What is the desired outcome?]
+- **Key Matching:** [What attributes are used for matching?]
+- **Typical Data Sources:** [What data sources are commonly involved?]
+- **Business Value:** [What value does this deliver?]
 ```
 
 ## Pattern Selection Impact

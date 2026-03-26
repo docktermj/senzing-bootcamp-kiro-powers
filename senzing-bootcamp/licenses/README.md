@@ -23,7 +23,6 @@ This directory is for storing your Senzing license file(s).
 1. **Contact Senzing**:
    - **Email**: [support@senzing.com](mailto:support@senzing.com)
    - **Website**: [https://senzing.com/contact/](https://senzing.com/contact/)
-   - **Phone**: +1 (702) 425-7756
 
 2. **Request Information**:
    - Mention you're completing the Senzing Boot Camp
@@ -47,7 +46,6 @@ This directory is for storing your Senzing license file(s).
 1. **Contact Senzing Sales**:
    - **Email**: [sales@senzing.com](mailto:sales@senzing.com)
    - **Website**: [https://senzing.com/contact/](https://senzing.com/contact/)
-   - **Phone**: +1 (702) 425-7756
 
 2. **Discuss Requirements**:
    - Number of data source records (DSRs)
@@ -298,12 +296,10 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 ### Senzing Support
 - **Email**: [support@senzing.com](mailto:support@senzing.com)
 - **Website**: [https://senzing.com/support/](https://senzing.com/support/)
-- **Phone**: +1 (702) 425-7756
 
 ### Senzing Sales
 - **Email**: [sales@senzing.com](mailto:sales@senzing.com)
 - **Website**: [https://senzing.com/contact/](https://senzing.com/contact/)
-- **Phone**: +1 (702) 425-7756
 
 ### General Inquiries
 - **Website**: [https://senzing.com](https://senzing.com)

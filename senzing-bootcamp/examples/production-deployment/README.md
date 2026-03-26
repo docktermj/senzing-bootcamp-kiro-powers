@@ -4,13 +4,13 @@
 
 This example demonstrates a complete production-ready deployment of Senzing for enterprise Customer Master Data Management (MDM). It covers all 13 modules (0-12) with production-grade implementations.
 
-**Time to Complete**: 12-15 hours  
-**Difficulty**: Advanced  
-**Modules Covered**: 0-12 (complete boot camp)
+**Time to Complete:** 12-15 hours  
+**Difficulty:** Advanced  
+**Modules Covered:** 0-12 (complete boot camp)
 
 ## Business Problem
 
-**Scenario**: A large enterprise with 5 million customer records across 6 systems needs a production-grade MDM solution with:
+**Scenario:** A large enterprise with 5 million customer records across 6 systems needs a production-grade MDM solution with:
 - High availability (99.9% uptime)
 - Performance (1000+ records/sec)
 - Security (SOC 2 compliant)
@@ -18,7 +18,7 @@ This example demonstrates a complete production-ready deployment of Senzing for 
 - Disaster recovery
 - Multi-environment deployment (dev, staging, prod)
 
-**Expected Outcomes**:
+**Expected Outcomes:**
 - Process 5M records in < 2 hours
 - Query response time < 100ms
 - Zero data loss
@@ -235,7 +235,7 @@ Implement transformers for each source with comprehensive error handling and log
 
 ### Module 5: SDK Setup (1 hour)
 
-**Production Configuration**:
+**Production Configuration:**
 ```json
 {
   "PIPELINE": {
@@ -756,11 +756,11 @@ echo "✅ Deployment complete!"
 
 ## Key Learnings
 
-1. **Scalability**: Horizontal scaling with load balancers
-2. **Reliability**: Multi-AZ deployment, automated failover
-3. **Security**: Secrets management, encryption, authentication
-4. **Observability**: Comprehensive monitoring and alerting
-5. **Automation**: CI/CD pipeline, automated testing
+1. **Scalability:** Horizontal scaling with load balancers
+2. **Reliability:** Multi-AZ deployment, automated failover
+3. **Security:** Secrets management, encryption, authentication
+4. **Observability:** Comprehensive monitoring and alerting
+5. **Automation:** CI/CD pipeline, automated testing
 
 ## Production Checklist
 

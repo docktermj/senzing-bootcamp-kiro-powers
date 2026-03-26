@@ -4,9 +4,9 @@
 
 Module 1 helps you define your entity resolution problem, identify data sources, and create a clear project plan. This foundation ensures the rest of the boot camp is tailored to your specific needs.
 
-**Time**: 20-30 minutes  
-**Prerequisites**: None (or Module 0 complete if you did the demo)  
-**Output**: Business problem statement document, project directory structure, cost estimate
+**Time:** 20-30 minutes  
+**Prerequisites:** None (or Module 0 complete if you did the demo)  
+**Output:** Business problem statement document, project directory structure, cost estimate
 
 ## Learning Objectives
 
@@ -147,9 +147,9 @@ The agent will create `docs/business_problem.md`:
 ```markdown
 # Business Problem Statement
 
-**Date**: [Current date]
-**Project**: [Project name]
-**Design Pattern**: [Pattern name if selected, or "Custom"]
+**Date:** [Current date]  
+**Project:** [Project name]  
+**Design Pattern:** [Pattern name if selected, or "Custom"]
 
 ## Problem Description
 [One sentence description]
@@ -180,13 +180,13 @@ The agent will create `docs/business_problem.md`:
 - [Measurable outcome 2]
 
 ## Desired Output
-**Format**: [Master list / API / Reports / Database export]
-**Use case**: [One-time / Ongoing / Real-time]
-**Integration**: [Standalone / Integrated with [systems]]
+**Format:** [Master list / API / Reports / Database export]  
+**Use case:** [One-time / Ongoing / Real-time]  
+**Integration:** [Standalone / Integrated with [systems]]
 
 ## Timeline
-**Target completion**: [Date]
-**Key milestones**: [List]
+**Target completion:** [Date]  
+**Key milestones:** [List]
 
 ## Notes
 [Any additional context, constraints, or considerations]
@@ -255,18 +255,19 @@ The agent will update your project README with:
 
 ## Tips for Success
 
-1. **Be specific**: Vague problems lead to vague solutions
-2. **Think end-to-end**: Consider the entire workflow, not just matching
-3. **Start small**: Begin with 1-2 data sources, expand later
-4. **Define metrics**: How will you know if it's working?
-5. **Consider stakeholders**: Who needs to approve this?
+1. **Be specific:** Vague problems lead to vague solutions
+2. **Think end-to-end:** Consider the entire workflow, not just matching
+3. **Start small:** Begin with 1-2 data sources, expand later
+4. **Define metrics:** How will you know if it's working?
+5. **Consider stakeholders:** Who needs to approve this?
 
 ## Next Steps
 
 After completing Module 1:
-- **Proceed to Module 2**: Collect actual data from identified sources
-- **Review with stakeholders**: Get buy-in on problem statement and costs
-- **Adjust timeline**: Based on complexity estimate
+
+- **Proceed to Module 2:** Collect actual data from identified sources
+- **Review with stakeholders:** Get buy-in on problem statement and costs
+- **Adjust timeline:** Based on complexity estimate
 
 ## Related Documentation
 

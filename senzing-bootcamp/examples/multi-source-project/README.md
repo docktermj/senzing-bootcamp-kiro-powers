@@ -7,19 +7,19 @@ This example demonstrates a complete Customer 360 implementation using three dat
 - E-commerce platform (orders/accounts)
 - Support ticketing system (support contacts)
 
-**Time to Complete**: 6-8 hours  
-**Difficulty**: Intermediate  
-**Modules Covered**: 1-8
+**Time to Complete:** 6-8 hours  
+**Difficulty:** Intermediate  
+**Modules Covered:** 1-8
 
 ## Business Problem
 
-**Scenario**: A retail company has customer data scattered across three systems. They need a unified view to:
+**Scenario:** A retail company has customer data scattered across three systems. They need a unified view to:
 - Identify duplicate customers across systems
 - Link customer interactions (purchases, support tickets)
 - Enable personalized marketing
 - Improve customer service
 
-**Expected Outcomes**:
+**Expected Outcomes:**
 - Reduce duplicate customer records by 80%
 - Link 95%+ of customer interactions to correct entities
 - Enable single customer view for service reps
@@ -568,28 +568,28 @@ if __name__ == '__main__':
 
 After completing this example, you should see:
 
-1. **Data Loading**:
+1. **Data Loading:**
    - CRM: 50,000 records loaded
    - E-commerce: 35,000 records loaded
    - Support: 20,000 records loaded
    - Total: 105,000 records
 
-2. **Entity Resolution**:
+2. **Entity Resolution:**
    - Approximately 75,000-80,000 unique entities (25-30% reduction)
    - 15,000-20,000 entities with records from multiple sources
    - High-confidence matches based on name, email, phone, address
 
-3. **Customer 360 Views**:
+3. **Customer 360 Views:**
    - Complete customer history across all touchpoints
    - Linked interactions (purchases, support tickets)
    - Unified contact information
 
 ## Key Learnings
 
-1. **Multi-Source Complexity**: Managing dependencies and load order
-2. **Data Quality Impact**: Better quality = better matching
-3. **Orchestration**: Coordinating multiple data sources
-4. **Validation**: Verifying results across sources
+1. **Multi-Source Complexity:** Managing dependencies and load order
+2. **Data Quality Impact:** Better quality = better matching
+3. **Orchestration:** Coordinating multiple data sources
+4. **Validation:** Verifying results across sources
 
 ## Next Steps
 

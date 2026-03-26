@@ -44,7 +44,8 @@ Four pre-configured hooks that support the boot camp workflow:
 
 ## When to Install
 
-**Recommended**: Install hooks at the start of Module 3 (Data Mapping)
+**Recommended:**
+Install hooks at the start of Module 3 (Data Mapping)
 
 This gives you automated quality checks as you develop transformation programs.
 
@@ -109,11 +110,11 @@ Increase timeout in hook file:
 
 ## Best Practices
 
-1. **Install early**: Set up hooks before Module 3
-2. **Commit to git**: Include hooks in version control
-3. **Team alignment**: Ensure team agrees on hook behavior
-4. **Test hooks**: Verify they work as expected
-5. **Document changes**: Note any customizations in README
+1. **Install early:** Set up hooks before Module 3
+2. **Commit to git:** Include hooks in version control
+3. **Team alignment:** Ensure team agrees on hook behavior
+4. **Test hooks:** Verify they work as expected
+5. **Document changes:** Note any customizations in README
 
 ## Support
 

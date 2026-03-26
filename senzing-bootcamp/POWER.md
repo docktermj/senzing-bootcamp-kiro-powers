@@ -10,7 +10,7 @@ author: "Senzing"
 
 ## 🚨 CRITICAL: Agent Must Read This First 🚨
 
-**TO THE AGENT**: Before you do ANYTHING else - before greeting the user, before asking questions, before presenting options - you MUST create the project directory structure. This is MANDATORY. See the "Agent Behavior" section under "Project Directory Structure" below for exact commands. DO NOT SKIP THIS.
+**TO THE AGENT:** Before you do ANYTHING else - before greeting the user, before asking questions, before presenting options - you MUST create the project directory structure. This is MANDATORY. See the "Agent Behavior" section under "Project Directory Structure" below for exact commands. DO NOT SKIP THIS.
 
 ---
 
@@ -24,12 +24,12 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 This boot camp power **complements** the **senzing** Kiro Power:
 
-- **senzing power**: Quick reference documentation, tool catalog, troubleshooting guide
-- **senzing-bootcamp power**: Structured 13-module learning curriculum with project guidance
+- **senzing power:** Quick reference documentation, tool catalog, troubleshooting guide
+- **senzing-bootcamp power:** Structured 13-module learning curriculum with project guidance
 
 **Both powers connect to the same MCP server**, so this boot camp is fully functional on its own. The senzing power is optional and provides additional quick-reference documentation if you prefer a condensed tool catalog and troubleshooting guide.
 
-**When to use each**:
+**When to use each:**
 
 - Use **senzing-bootcamp** for structured learning and building your first project
 - Use **senzing** (optional) for quick tool lookup and troubleshooting reference
@@ -47,19 +47,19 @@ Unlike the senzing reference power, this boot camp provides:
 ✅ **Quality Standards**: PEP-8 compliance checking  
 ✅ **Feedback Loop**: Structured feedback collection  
 
-**Use this power when**: You're learning Senzing or building your first project  
-**Use senzing power when**: You need quick reference or troubleshooting
+**Use this power when:** You're learning Senzing or building your first project  
+**Use senzing power when:** You need quick reference or troubleshooting
 
 ## Code Quality Standards
 
 All Python code generated during the boot camp follows **PEP-8** standards for consistency, readability, and maintainability:
 
-- **Maximum line length**: 100 characters
+- **Maximum line length:** 100 characters
 - **No trailing whitespace**
 - **4 spaces for indentation** (no tabs)
 - **Proper docstrings** for all functions and classes
 - **Organized imports** (standard library, third-party, local)
-- **Consistent naming**: `snake_case` for functions, `PascalCase` for classes
+- **Consistent naming:** `snake_case` for functions, `PascalCase` for classes
 
 The agent will automatically generate PEP-8 compliant code and check user-provided code for compliance. See `docs/policies/PEP8_COMPLIANCE.md` for complete details.
 
@@ -89,12 +89,12 @@ And create initial files: `.gitignore`, `.env.example`, `README.md`
 
 ### New to Senzing?
 
-1. **Check Prerequisites**: Run `./scripts/check_prerequisites.sh` to validate your environment
-2. **Read the Quick Start**: See `docs/guides/QUICK_START.md` for three fast paths (10 min, 30 min, or 2 hours)
-3. **Check the Onboarding Checklist**: Complete `docs/guides/ONBOARDING_CHECKLIST.md` before starting
-4. **Review FAQ**: See `docs/guides/FAQ.md` for 100+ common questions and answers
-5. **Learn Terminology**: Check `docs/guides/GLOSSARY.md` for Senzing-specific terms
-6. **Choose Your Path**:
+1. **Check Prerequisites:** Run `./scripts/check_prerequisites.sh` to validate your environment
+2. **Read the Quick Start:** See `docs/guides/QUICK_START.md` for three fast paths (10 min, 30 min, or 2 hours)
+3. **Check the Onboarding Checklist:** Complete `docs/guides/ONBOARDING_CHECKLIST.md` before starting
+4. **Review FAQ:** See `docs/guides/FAQ.md` for 100+ common questions and answers
+5. **Learn Terminology:** Check `docs/guides/GLOSSARY.md` for Senzing-specific terms
+6. **Choose Your Path:**
    - **Demo** (10 min): Module 0 with sample data
    - **Fast Track** (30 min): Modules 5-6 with SGES data
    - **Complete** (2-3 hrs): Modules 1-6, 8
@@ -107,9 +107,9 @@ Use `docs/guides/PROGRESS_TRACKER.md` to track completion manually, or run `./sc
 ### Example Projects
 
 See `examples/` directory for three complete reference projects:
-- **Simple Single Source**: Basic customer deduplication (2-3 hours)
-- **Multi-Source Project**: Customer 360 with three sources (6-8 hours)
-- **Production Deployment**: Complete production-ready system (12-15 hours)
+- **Simple Single Source:** Basic customer deduplication (2-3 hours)
+- **Multi-Source Project:** Customer 360 with three sources (6-8 hours)
+- **Production Deployment:** Complete production-ready system (12-15 hours)
 
 Clone examples to your workspace: `./scripts/clone_example.sh`
 
@@ -121,15 +121,15 @@ Use utility templates from `templates/` directory:
 - Validation and testing (schema validation, performance baseline, troubleshooting)
 - Planning and analysis (cost calculator)
 
-**Note**: Transformation, loading, and query code should be generated via MCP server tools (`mapping_workflow`, `generate_scaffold`) rather than using templates. See `templates/README.md` for details.
+**Note:** Transformation, loading, and query code should be generated via MCP server tools (`mapping_workflow`, `generate_scaffold`) rather than using templates. See `templates/README.md` for details.
 
 ## Available MCP Tools
 
 This boot camp connects to the Senzing MCP server and provides access to all entity resolution tools.
 
-**MCP Server Configuration**: This power uses a public Senzing MCP server at `https://mcp.senzing.com/mcp`. No API keys, tokens, or configuration placeholders are needed - the server is ready to use immediately after installing the power.
+**MCP Server Configuration:** This power uses a public Senzing MCP server at `https://mcp.senzing.com/mcp`. No API keys, tokens, or configuration placeholders are needed - the server is ready to use immediately after installing the power.
 
-**Most commonly used tools in this boot camp**:
+**Most commonly used tools in this boot camp:**
 
 - `get_capabilities` — Discover all available tools and workflows (call this first)
   - Use in: Module 0, Module 1
@@ -185,40 +185,40 @@ This boot camp connects to the Senzing MCP server and provides access to all ent
 
 The boot camp follows a progressive learning path with 13 focused modules (0-12). Each module has a single, clear purpose.
 
-**Modules**:
+**Modules:**
 
 - **Module 0: Quick Demo (Optional)**
-  - **FIRST**: Agent creates project directory structure automatically
+  - **FIRST:** Agent creates project directory structure automatically
   - Experience entity resolution with sample data
   - See how Senzing resolves duplicate records automatically
   - 10-15 minutes
 
 - **Module 1: Understand Business Problem**
-  - **FIRST**: Agent creates project directory structure automatically (if not already created in Module 0)
+  - **FIRST:** Agent creates project directory structure automatically (if not already created in Module 0)
   - Define your problem and identify data sources
   - View design pattern gallery
-  - **NEW**: Calculate costs and ROI
+  - **NEW:** Calculate costs and ROI
   - Create problem statement document
   - 20-30 minutes
 
 - **Module 2: Identify and Collect Data Sources**
   - Upload or link to data source files
   - Store data in data/raw/ directory
-  - **NEW**: Track data lineage
+  - **NEW:** Track data lineage
   - Document data source locations
   - 10-15 minutes per data source
 
 - **Module 3: Evaluate Data Quality**
-  - **NEW**: Automated quality scoring (0-100)
-  - **NEW**: Attribute completeness metrics
-  - **NEW**: Data consistency analysis
-  - **NEW**: Visual quality dashboard
+  - **NEW:** Automated quality scoring (0-100)
+  - **NEW:** Attribute completeness metrics
+  - **NEW:** Data consistency analysis
+  - **NEW:** Visual quality dashboard
   - Create data quality report
   - 15-20 minutes per data source
 
 - **Module 4: Map Your Data**
   - Create transformation programs
-  - **NEW**: Track transformation lineage
+  - **NEW:** Track transformation lineage
   - Validate data quality
   - Generate test files
   - 1-2 hours per data source
@@ -232,8 +232,8 @@ The boot camp follows a progressive learning path with 13 focused modules (0-12)
 
 - **Module 6: Load Single Data Source**
   - Load ONE data source and verify
-  - **NEW**: Incremental loading strategies
-  - **NEW**: Delta/CDC patterns
+  - **NEW:** Incremental loading strategies
+  - **NEW:** Delta/CDC patterns
   - Generate loading statistics
   - 30 minutes per source
 
@@ -247,8 +247,8 @@ The boot camp follows a progressive learning path with 13 focused modules (0-12)
 
 - **Module 8: Query and Validate Results**
   - Create query programs
-  - **NEW**: User Acceptance Testing (UAT) framework
-  - **NEW**: Results validation criteria
+  - **NEW:** User Acceptance Testing (UAT) framework
+  - **NEW:** Results validation criteria
   - Business user testing
   - 1-2 hours
 
@@ -280,16 +280,16 @@ The boot camp follows a progressive learning path with 13 focused modules (0-12)
 
 - **Module 12: Package and Deploy**
   - Refactor code into deployable package
-  - **NEW**: Multi-environment strategy
-  - **NEW**: Automated code quality gates
-  - **NEW**: Disaster recovery playbook
-  - **NEW**: API gateway integration
+  - **NEW:** Multi-environment strategy
+  - **NEW:** Automated code quality gates
+  - **NEW:** Disaster recovery playbook
+  - **NEW:** API gateway integration
   - Create deployment artifacts
   - 2-3 hours
 
-**Total Time**: 10-18 hours for a comprehensive production-ready project
+**Total Time:** 10-18 hours for a comprehensive production-ready project
 
-**Note**: While the modules are presented in order, you can move back and forth between steps as needed. Discovery is iterative — you might need to revisit earlier steps as you learn more about your data or refine your approach.
+**Note:** While the modules are presented in order, you can move back and forth between steps as needed. Discovery is iterative — you might need to revisit earlier steps as you learn more about your data or refine your approach.
 
 ### Skip Ahead Options
 
@@ -821,12 +821,10 @@ After completing all modules, you'll have:
 
 **Support** (Technical assistance, evaluation licenses):
 - Email: [support@senzing.com](mailto:support@senzing.com)
-- Phone: +1 (702) 425-7756
 - Website: [https://senzing.com/support/](https://senzing.com/support/)
 
 **Sales** (Production licenses, pricing):
 - Email: [sales@senzing.com](mailto:sales@senzing.com)
-- Phone: +1 (702) 425-7756
 - Website: [https://senzing.com/contact/](https://senzing.com/contact/)
 
 **General**:

@@ -24,7 +24,7 @@ Module 12 takes this production-ready code and:
 
 ### Step 1: Choose Deployment Configuration
 
-**Decisions to make**:
+**Decisions to make:**
 
 1. **Target Database**
    - SQLite (evaluation only, not for production)
@@ -687,10 +687,10 @@ Module 8 is complete when:
 ## Common Issues
 
 ### Issue: Test Coverage Too Low
-**Solution**: Add tests for untested code paths, focus on critical business logic first
+**Solution:** Add tests for untested code paths, focus on critical business logic first
 
 ### Issue: Package Installation Fails
-**Solution**: Verify all dependencies are listed, check version constraints
+**Solution:** Verify all dependencies are listed, check version constraints
 
 ### Issue: Docker Build Fails
 **Solution**: Check Dockerfile syntax, verify base image, ensure all files are copied

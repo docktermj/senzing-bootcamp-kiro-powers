@@ -22,7 +22,7 @@ After successfully loading a single data source in Module 6, Module 7 helps you:
 - You want to optimize loading performance
 - You need coordinated error handling
 
-**Skip this module if**: You only have one data source
+**Skip this module if:** You only have one data source
 
 ## Key Concepts
 
@@ -70,10 +70,10 @@ with ThreadPoolExecutor() as executor:
 
 ### Error Handling Strategies
 
-1. **Fail Fast**: Stop all loading on first error
-2. **Continue on Error**: Log errors, continue with other sources
-3. **Retry with Backoff**: Retry failed sources with exponential backoff
-4. **Partial Success**: Mark successful sources, retry only failed ones
+1. **Fail Fast:** Stop all loading on first error
+2. **Continue on Error:** Log errors, continue with other sources
+3. **Retry with Backoff:** Retry failed sources with exponential backoff
+4. **Partial Success:** Mark successful sources, retry only failed ones
 
 ## Orchestration Patterns
 

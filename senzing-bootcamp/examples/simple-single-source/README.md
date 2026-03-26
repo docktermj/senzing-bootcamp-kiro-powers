@@ -4,11 +4,11 @@ A minimal Senzing project demonstrating customer deduplication with a single dat
 
 ## Overview
 
-**Use case**: Deduplicate customer records from a CRM system  
-**Data source**: Single CSV file with 10,000 customer records  
-**Database**: SQLite (no setup required)  
-**Time to complete**: 2-3 hours  
-**Modules covered**: 1-6, 8
+**Use case:** Deduplicate customer records from a CRM system  
+**Data source:** Single CSV file with 10,000 customer records  
+**Database:** SQLite (no setup required)  
+**Time to complete:** 2-3 hours  
+**Modules covered:** 1-6, 8
 
 ## What You'll Learn
 
@@ -116,10 +116,11 @@ Notice records 1, 2, and 3 are the same person with variations.
 ## Expected Results
 
 After loading 10,000 records:
-- **Entities created**: ~7,500
-- **Match rate**: ~25%
-- **Average records per entity**: 1.33
-- **Largest entity**: 5-8 records
+
+- **Entities created:** ~7,500
+- **Match rate:** ~25%
+- **Average records per entity:** 1.33
+- **Largest entity:** 5-8 records
 
 This means about 2,500 records are duplicates.
 
@@ -300,10 +301,10 @@ mkdir -p database
 
 After completing this example:
 
-1. **Understand the results**: Review entities and match reasons
-2. **Try the multi-source example**: Learn orchestration
-3. **Build your own project**: Apply to your data
-4. **Explore advanced features**: Performance, security, monitoring
+1. **Understand the results:** Review entities and match reasons
+2. **Try the multi-source example:** Learn orchestration
+3. **Build your own project:** Apply to your data
+4. **Explore advanced features:** Performance, security, monitoring
 
 ## Related Documentation
 

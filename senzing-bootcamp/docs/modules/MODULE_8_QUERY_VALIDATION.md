@@ -4,9 +4,9 @@
 
 Module 8 focuses on creating query programs to explore entity resolution results and validating that the solution meets business requirements through User Acceptance Testing (UAT).
 
-**Focus**: Query resolved entities and validate results against business requirements.
+**Focus:** Query resolved entities and validate results against business requirements.
 
-**Time**: 1-2 hours
+**Time:** 1-2 hours
 
 ## Prerequisites
 
@@ -77,17 +77,20 @@ Use when: You want to see the resolution steps
 
 Based on Module 1 business problem, identify what queries you need:
 
-**Customer 360 Example**:
+**Customer 360 Example:**
+
 - Find all records for a customer by name and email
 - Get complete customer profile by customer ID
 - Find potential duplicates for a new customer
 
-**Fraud Detection Example**:
+**Fraud Detection Example:**
+
 - Find all entities sharing an address
 - Find entities with similar names but different SSNs
 - Get relationship network for suspicious entity
 
-**Data Migration Example**:
+**Data Migration Example:**
+
 - Find which legacy records merged together
 - Identify records that didn't match anything
 - Get mapping from old IDs to new entity IDs
@@ -220,7 +223,7 @@ Verify:
 
 Create User Acceptance Test cases based on business requirements. See `steering/uat-framework.md` for detailed guidance.
 
-**Quick UAT Template**:
+**Quick UAT Template:**
 
 ```yaml
 # docs/uat_test_cases.yaml
@@ -318,10 +321,10 @@ def generate_uat_report(results):
     report = []
     report.append("# UAT Results Report\n\n")
     report.append("## Summary\n\n")
-    report.append(f"- **Total Tests**: {total}\n")
-    report.append(f"- **Passed**: {passed} ({passed/total*100:.1f}%)\n")
-    report.append(f"- **Failed**: {failed} ({failed/total*100:.1f}%)\n")
-    report.append(f"- **Pending**: {pending} ({pending/total*100:.1f}%)\n\n")
+    report.append(f"- **Total Tests:** {total}\n")
+    report.append(f"- **Passed:** {passed} ({passed/total*100:.1f}%)\n")
+    report.append(f"- **Failed:** {failed} ({failed/total*100:.1f}%)\n")
+    report.append(f"- **Pending:** {pending} ({pending/total*100:.1f}%)\n\n")
     
     if failed == 0 and pending == 0:
         report.append("✅ **All tests passed! Ready for production.**\n\n")
@@ -344,11 +347,11 @@ if __name__ == '__main__':
 
 For any failed tests:
 
-1. **Analyze failure**: Why didn't it meet expectations?
-2. **Identify root cause**: Data quality? Configuration? Logic?
-3. **Implement fix**: Adjust transformation, configuration, or expectations
-4. **Retest**: Run test again to verify fix
-5. **Document resolution**: Record what was changed
+1. **Analyze failure:** Why didn't it meet expectations?
+2. **Identify root cause:** Data quality? Configuration? Logic?
+3. **Implement fix:** Adjust transformation, configuration, or expectations
+4. **Retest:** Run test again to verify fix
+5. **Document resolution:** Record what was changed
 
 Track issues in `docs/uat_issues.yaml`:
 
@@ -375,10 +378,10 @@ Once all tests pass, get formal sign-off from stakeholders:
 Senzing Entity Resolution - Customer 360
 
 ## UAT Summary
-- **Test Period**: March 17-20, 2026
-- **Total Test Cases**: 25
-- **Passed**: 25 (100%)
-- **Failed**: 0 (0%)
+- **Test Period:** March 17-20, 2026
+- **Total Test Cases:** 25
+- **Passed:** 25 (100%)
+- **Failed:** 0 (0%)
 
 ## Acceptance Criteria Met
 ✅ All duplicate customers correctly identified
@@ -388,11 +391,11 @@ Senzing Entity Resolution - Customer 360
 
 ## Sign-Off
 
-**Business Owner**: _________________ Date: _______
+**Business Owner:** _________________ Date: _______
 
-**Technical Lead**: _________________ Date: _______
+**Technical Lead:** _________________ Date: _______
 
-**Approval for Production**: ☐ Approved ☐ Conditional ☐ Rejected
+**Approval for Production:** ☐ Approved ☐ Conditional ☐ Rejected
 ```
 
 ## User Acceptance Testing (UAT)
@@ -401,11 +404,11 @@ UAT validates that the solution meets business requirements. See `steering/uat-f
 
 ### UAT Process Overview
 
-1. **Planning**: Define acceptance criteria from Module 1
-2. **Test Case Creation**: Create test cases for each scenario
-3. **Test Execution**: Run tests and document results
-4. **Issue Resolution**: Fix any failures
-5. **Sign-Off**: Get stakeholder approval
+1. **Planning:** Define acceptance criteria from Module 1
+2. **Test Case Creation:** Create test cases for each scenario
+3. **Test Execution:** Run tests and document results
+4. **Issue Resolution:** Fix any failures
+5. **Sign-Off:** Get stakeholder approval
 
 ### When to Load UAT Framework
 
@@ -415,7 +418,7 @@ Load `steering/uat-framework.md` when:
 - Preparing for production deployment
 - Need stakeholder sign-off
 
-**Agent behavior**: Mention UAT framework in Module 8. Load full guide if user wants detailed UAT process.
+**Agent behavior:** Mention UAT framework in Module 8. Load full guide if user wants detailed UAT process.
 
 ## Query Examples
 
@@ -499,31 +502,31 @@ Module 8 is complete when:
 ## Common Issues
 
 ### Issue: Query Returns No Results
-**Symptoms**: Search returns empty results
-**Solutions**:
+**Symptoms:** Search returns empty results  
+**Solutions:**
 - Verify data was loaded successfully
 - Check search attributes match loaded data
 - Try broader search criteria
 - Verify data source names are correct
 
 ### Issue: Too Many Results
-**Symptoms**: Search returns hundreds of matches
-**Solutions**:
+**Symptoms:** Search returns hundreds of matches  
+**Solutions:**
 - Add more specific search criteria
 - Increase match threshold
 - Use more distinguishing features
 
 ### Issue: Unexpected Matches
-**Symptoms**: Records match that shouldn't
-**Solutions**:
+**Symptoms:** Records match that shouldn't  
+**Solutions:**
 - Use `whyEntities` to understand matching logic
 - Review data quality from Module 3
 - Check for missing or incorrect data
 - Adjust matching configuration if needed
 
 ### Issue: UAT Tests Fail
-**Symptoms**: Results don't meet expectations
-**Solutions**:
+**Symptoms:** Results don't meet expectations  
+**Solutions:**
 - Analyze root cause (data quality, configuration, expectations)
 - Review transformation logic from Module 4
 - Check data quality scores from Module 3
@@ -531,11 +534,11 @@ Module 8 is complete when:
 
 ## Integration with Other Modules
 
-- **From Module 7**: Queries loaded data from all sources
-- **From Module 6**: Queries loaded data from single source
-- **From Module 1**: Validates against business requirements
-- **To Module 9**: Performance testing uses query programs
-- **To Module 12**: Query programs included in deployment package
+- **From Module 7:** Queries loaded data from all sources
+- **From Module 6:** Queries loaded data from single source
+- **From Module 1:** Validates against business requirements
+- **To Module 9:** Performance testing uses query programs
+- **To Module 12:** Query programs included in deployment package
 
 ## File Locations
 
@@ -561,22 +564,22 @@ project/
 
 When a user is in Module 8:
 
-1. **Review business requirements**: Load Module 1 business problem
-2. **Define query requirements**: What queries are needed?
-3. **Generate query programs**: Use `generate_scaffold` with `query` workflow
-4. **Customize programs**: Add specific query logic
-5. **Save programs**: Save to `src/query/`
-6. **Test queries**: Help user run and verify queries
-7. **Create UAT test cases**: Generate `docs/uat_test_cases.yaml`
-8. **Execute UAT tests**: Run tests and document results
-9. **Track issues**: Log any failures in `docs/uat_issues.yaml`
-10. **Generate reports**: Create UAT results report
-11. **Get sign-off**: Create sign-off document if needed
-12. **Validate gates**: Verify all gates before proceeding
+1. **Review business requirements:** Load Module 1 business problem
+2. **Define query requirements:** What queries are needed?
+3. **Generate query programs:** Use `generate_scaffold` with `query` workflow
+4. **Customize programs:** Add specific query logic
+5. **Save programs:** Save to `src/query/`
+6. **Test queries:** Help user run and verify queries
+7. **Create UAT test cases:** Generate `docs/uat_test_cases.yaml`
+8. **Execute UAT tests:** Run tests and document results
+9. **Track issues:** Log any failures in `docs/uat_issues.yaml`
+10. **Generate reports:** Create UAT results report
+11. **Get sign-off:** Create sign-off document if needed
+12. **Validate gates:** Verify all gates before proceeding
 
-**If user asks about UAT**: Load `steering/uat-framework.md` for detailed guidance.
+**If user asks about UAT:** Load `steering/uat-framework.md` for detailed guidance.
 
-**If user wants to skip UAT**: Explain importance but allow skipping for non-production projects.
+**If user wants to skip UAT:** Explain importance but allow skipping for non-production projects.
 
 ## Related Documentation
 

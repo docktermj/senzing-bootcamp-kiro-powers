@@ -17,11 +17,11 @@ After validating results in Module 8, Module 9 helps you:
 
 ## Why Performance Testing Matters
 
-- **Prevent production surprises**: Find bottlenecks before deployment
-- **Capacity planning**: Understand resource requirements
-- **Set expectations**: Know realistic throughput
-- **Optimize**: Identify and fix performance issues
-- **Validate**: Ensure solution meets SLAs
+- **Prevent production surprises:** Find bottlenecks before deployment
+- **Capacity planning:** Understand resource requirements
+- **Set expectations:** Know realistic throughput
+- **Optimize:** Identify and fix performance issues
+- **Validate:** Ensure solution meets SLAs
 
 ## Performance Benchmarks
 
@@ -46,7 +46,8 @@ throughput = records_transformed / duration
 print(f"Transformation: {throughput:.0f} records/second")
 ```
 
-**Typical Performance**:
+**Typical Performance:**
+
 - Simple transformations: 1,000-10,000 records/second
 - Complex transformations: 100-1,000 records/second
 - With validation: 50-500 records/second
@@ -70,7 +71,8 @@ throughput = records_loaded / duration
 print(f"Loading: {throughput:.0f} records/second")
 ```
 
-**Typical Performance**:
+**Typical Performance:**
+
 - SQLite: 20-50 records/second
 - PostgreSQL (local): 100-500 records/second
 - PostgreSQL (tuned): 500-2,000 records/second
@@ -99,7 +101,8 @@ print(f"  P95: {statistics.quantiles(response_times, n=20)[18]:.1f} ms")
 print(f"  P99: {statistics.quantiles(response_times, n=100)[98]:.1f} ms")
 ```
 
-**Typical Performance**:
+**Typical Performance:**
+
 - Simple queries: 10-50 ms
 - Complex queries: 50-200 ms
 - Large result sets: 200-1000 ms

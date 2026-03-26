@@ -31,11 +31,11 @@ Quality Score = (
 
 ### Score Interpretation
 
-- **90-100**: Excellent - Ready for entity resolution
-- **75-89**: Good - Minor improvements recommended
-- **60-74**: Fair - Moderate data quality issues
-- **40-59**: Poor - Significant quality problems
-- **0-39**: Critical - Major data quality work needed
+- **90-100:** Excellent - Ready for entity resolution
+- **75-89:** Good - Minor improvements recommended
+- **60-74:** Fair - Moderate data quality issues
+- **40-59:** Poor - Significant quality problems
+- **0-39:** Critical - Major data quality work needed
 
 ## Quality Metrics
 
@@ -58,7 +58,8 @@ completeness_score = (
 )
 ```
 
-**Metrics**:
+**Metrics:**
+
 - Percentage of non-null values per field
 - Critical field coverage
 - Optional field coverage
@@ -80,7 +81,8 @@ format_consistency = {
 consistency_score = average(format_consistency.values())
 ```
 
-**Metrics**:
+**Metrics:**
+
 - Phone number format consistency
 - Email format consistency
 - Date format consistency
@@ -106,7 +108,8 @@ validity_score = (
 ) * 100
 ```
 
-**Metrics**:
+**Metrics:**
+
 - Email format validity
 - Phone number validity
 - Date range validity
@@ -132,7 +135,8 @@ uniqueness_score = (
 ) * 100
 ```
 
-**Metrics**:
+**Metrics:**
+
 - Exact duplicate percentage
 - Fuzzy duplicate percentage
 - ID uniqueness

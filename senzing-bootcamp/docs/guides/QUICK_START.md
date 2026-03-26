@@ -5,7 +5,8 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ## Three Quick Start Paths
 
 ### Path A: 10-Minute Demo (Module 0)
-**Best for**: First-time users, seeing entity resolution in action
+
+**Best for:** First-time users, seeing entity resolution in action
 
 ```bash
 # 1. Ask the agent
@@ -22,13 +23,15 @@ Get started with Senzing entity resolution in 30 minutes or less.
 # - Connect to your use case
 ```
 
-**Time**: 10-15 minutes  
-**Output**: Understanding of entity resolution
+**Time:** 10-15 minutes
+
+**Output:** Understanding of entity resolution
 
 ---
 
 ### Path B: 30-Minute Fast Track
-**Best for**: Experienced users with SGES-compliant data
+
+**Best for:** Experienced users with SGES-compliant data
 
 ```bash
 # 1. Define problem (5 min)
@@ -44,14 +47,17 @@ Get started with Senzing entity resolution in 30 minutes or less.
 "Load my data and find duplicates"
 ```
 
-**Time**: 30 minutes  
-**Output**: Working entity resolution on your data  
-**Requirement**: Data already in SGES format
+**Time:** 30 minutes
+
+**Output:** Working entity resolution on your data
+
+**Requirement:** Data already in SGES format
 
 ---
 
 ### Path C: 2-Hour Complete Beginner
-**Best for**: New users with raw data (CSV, database, etc.)
+
+**Best for:** New users with raw data (CSV, database, etc.)
 
 ```bash
 # 1. Define problem (20 min)
@@ -82,9 +88,11 @@ Get started with Senzing entity resolution in 30 minutes or less.
 # - Examine results
 ```
 
-**Time**: 2-3 hours  
-**Output**: Complete working project  
-**Modules**: 1-6, 8
+**Time:** 2-3 hours
+
+**Output:** Complete working project
+
+**Modules:** 1-6, 8
 
 ---
 

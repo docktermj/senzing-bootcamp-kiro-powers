@@ -41,7 +41,6 @@ Implemented all 4 recommendations to provide comprehensive license information:
 **Key Information Provided**:
 - **Evaluation License**: Free, contact support@senzing.com, 1-2 business days
 - **Production License**: Contact sales@senzing.com, pricing based on DSRs
-- **Contact**: +1 (702) 425-7756
 - **Placement**: `licenses/g2.lic` in project directory
 
 ---
@@ -76,7 +75,6 @@ For Modules 5+, you'll need a Senzing license. Place it in `licenses/g2.lic`.
 **Contact Senzing**:
 - Support: support@senzing.com
 - Sales: sales@senzing.com
-- Phone: +1 (702) 425-7756
 ```
 
 ---
@@ -143,12 +141,10 @@ Yes - required for SDK installation
 
 **Support** (Technical assistance, evaluation licenses):
 - Email: support@senzing.com
-- Phone: +1 (702) 425-7756
 - Website: https://senzing.com/support/
 
 **Sales** (Production licenses, pricing):
 - Email: sales@senzing.com
-- Phone: +1 (702) 425-7756
 - Website: https://senzing.com/contact/
 
 **General**:
@@ -178,7 +174,7 @@ Yes - required for SDK installation
   - For production: Contact sales@senzing.com for pricing
   
 - [ ] Support Channels
-  - Senzing support: support@senzing.com or +1 (702) 425-7756
+  - Senzing support: support@senzing.com
   - Senzing sales: sales@senzing.com
 ```
 
@@ -191,13 +187,11 @@ All documentation now includes:
 ### Senzing Support
 - **Purpose**: Technical assistance, evaluation licenses, troubleshooting
 - **Email**: support@senzing.com
-- **Phone**: +1 (702) 425-7756
 - **Website**: https://senzing.com/support/
 
 ### Senzing Sales
 - **Purpose**: Production licenses, pricing, enterprise inquiries
 - **Email**: sales@senzing.com
-- **Phone**: +1 (702) 425-7756
 - **Website**: https://senzing.com/contact/
 
 ### General Resources

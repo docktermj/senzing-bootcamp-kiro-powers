@@ -4,9 +4,9 @@
 
 Module 6 focuses on loading ONE data source into Senzing and verifying the results. This module teaches the fundamentals of loading before tackling multi-source orchestration in Module 7.
 
-**Focus**: Load a single data source successfully and understand the loading process.
+**Focus:** Load a single data source successfully and understand the loading process.
 
-**Time**: 30 minutes per data source
+**Time:** 30 minutes per data source
 
 ## Prerequisites
 
@@ -35,7 +35,7 @@ A **data source** is a named collection of records from a single system or file.
 - `VENDORS_ERP` - Vendor records from ERP system
 - `EMPLOYEES_HR` - Employee records from HR system
 
-**Important**: Each data source must be registered with Senzing before loading.
+**Important:** Each data source must be registered with Senzing before loading.
 
 ### Record ID
 
@@ -70,7 +70,7 @@ if data_source_code not in [ds['DSRC_CODE'] for ds in config.get('G2_CONFIG', {}
     engine.addDataSource(config_handle, data_source_code)
 ```
 
-**Agent behavior**: Generate this registration code automatically.
+**Agent behavior:** Generate this registration code automatically.
 
 ### Step 3: Generate Loading Program
 
@@ -96,11 +96,11 @@ The scaffold will include:
 
 Customize the generated scaffold:
 
-1. **Set input file path**: Point to your transformed data file
-2. **Set data source name**: Use your data source code
-3. **Add progress reporting**: Show progress every N records
-4. **Add error logging**: Log failed records for review
-5. **Add statistics**: Track loaded, failed, duration
+1. **Set input file path:** Point to your transformed data file
+2. **Set data source name:** Use your data source code
+3. **Add progress reporting:** Show progress every N records
+4. **Add error logging:** Log failed records for review
+5. **Add statistics:** Track loaded, failed, duration
 
 Example customization:
 
@@ -300,23 +300,23 @@ Track and document loading statistics:
 ```markdown
 # Loading Statistics - CUSTOMERS_CRM
 
-**Date**: 2026-03-17
-**File**: data/transformed/customers_crm.jsonl
-**Data Source**: CUSTOMERS_CRM
+**Date:** 2026-03-17  
+**File:** data/transformed/customers_crm.jsonl  
+**Data Source:** CUSTOMERS_CRM
 
 ## Results
 
-- **Records Attempted**: 10,000
-- **Records Loaded**: 9,995
-- **Records Failed**: 5
-- **Duration**: 50.2 seconds
-- **Throughput**: 199 records/second
+- **Records Attempted:** 10,000
+- **Records Loaded:** 9,995
+- **Records Failed:** 5
+- **Duration:** 50.2 seconds
+- **Throughput:** 199 records/second
 
 ## Entity Resolution
 
-- **Entities Created**: 9,850
-- **Duplicates Found**: 145
-- **Deduplication Rate**: 1.5%
+- **Entities Created:** 9,850
+- **Duplicates Found:** 145
+- **Deduplication Rate:** 1.5%
 
 ## Errors
 
@@ -353,41 +353,41 @@ Module 6 is complete when:
 ## Common Issues
 
 ### Issue: Slow Loading Performance
-**Symptoms**: < 50 records/second
-**Solutions**:
+**Symptoms:** < 50 records/second  
+**Solutions:**
 - Use batch loading (load multiple records per call)
 - Optimize database (indexes, memory)
 - Use PostgreSQL instead of SQLite
 - Use MCP: `search_docs(query="performance optimization", category="performance")`
 
 ### Issue: High Error Rate
-**Symptoms**: > 5% of records fail to load
-**Solutions**:
+**Symptoms:** > 5% of records fail to load  
+**Solutions:**
 - Review error messages
 - Re-run linter on transformed data
 - Check for data quality issues
 - Validate transformation logic
 
 ### Issue: All Records Become One Entity
-**Symptoms**: Entity count = 1
-**Solutions**:
+**Symptoms:** Entity count = 1  
+**Solutions:**
 - Check RECORD_ID is unique per record
 - Verify records have distinguishing features
 - Review entity resolution configuration
 
 ### Issue: No Duplicates Found
-**Symptoms**: Entity count = record count
-**Solutions**:
+**Symptoms:** Entity count = record count  
+**Solutions:**
 - Verify data actually has duplicates
 - Check matching features are present (names, addresses, etc.)
 - Review data quality scores from Module 3
 
 ## Integration with Other Modules
 
-- **From Module 5**: Uses installed SDK and configured database
-- **From Module 4**: Loads transformed data files
-- **To Module 7**: Single-source loading is foundation for multi-source orchestration
-- **To Module 8**: Loaded data is queried and validated
+- **From Module 5:** Uses installed SDK and configured database
+- **From Module 4:** Loads transformed data files
+- **To Module 7:** Single-source loading is foundation for multi-source orchestration
+- **To Module 8:** Loaded data is queried and validated
 
 ## File Locations
 
@@ -414,20 +414,20 @@ project/
 
 When a user is in Module 6:
 
-1. **Verify prerequisites**: Check Module 5 complete, transformed data exists
-2. **Choose data source**: Help user select which source to load first
-3. **Generate loading program**: Use `generate_scaffold` with `add_records` workflow
-4. **Customize program**: Add file path, data source name, progress reporting
-5. **Save program**: Save to `src/load/load_[data_source].py`
-6. **Guide execution**: Help user run the program
-7. **Review statistics**: Analyze loading results
-8. **Handle errors**: Help diagnose and fix any errors
-9. **Document results**: Create loading statistics document
-10. **Validate success**: Verify loading gates before proceeding
+1. **Verify prerequisites:** Check Module 5 complete, transformed data exists
+2. **Choose data source:** Help user select which source to load first
+3. **Generate loading program:** Use `generate_scaffold` with `add_records` workflow
+4. **Customize program:** Add file path, data source name, progress reporting
+5. **Save program:** Save to `src/load/load_[data_source].py`
+6. **Guide execution:** Help user run the program
+7. **Review statistics:** Analyze loading results
+8. **Handle errors:** Help diagnose and fix any errors
+9. **Document results:** Create loading statistics document
+10. **Validate success:** Verify loading gates before proceeding
 
-**If user asks about incremental loading**: Load `steering/incremental-loading.md` and explain strategies.
+**If user asks about incremental loading:** Load `steering/incremental-loading.md` and explain strategies.
 
-**If user has multiple sources**: After first source succeeds, offer to continue with Module 6 for additional sources, or proceed to Module 7 for orchestration.
+**If user has multiple sources:** After first source succeeds, offer to continue with Module 6 for additional sources, or proceed to Module 7 for orchestration.
 
 ## Related Documentation
 

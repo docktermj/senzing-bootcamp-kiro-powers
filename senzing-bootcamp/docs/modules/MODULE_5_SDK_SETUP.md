@@ -95,7 +95,6 @@ If Senzing is found:
 
 1. **Contact Senzing Support**:
    - **Email**: [support@senzing.com](mailto:support@senzing.com)
-   - **Phone**: +1 (702) 425-7756
    - **Website**: [https://senzing.com/contact/](https://senzing.com/contact/)
 
 2. **Request Details**:
@@ -125,7 +124,6 @@ If Senzing is found:
 **For production deployments**, contact Senzing sales:
 
 - **Email**: [sales@senzing.com](mailto:sales@senzing.com)
-- **Phone**: +1 (702) 425-7756
 - **Pricing**: Based on data source records (DSRs)
 - **Includes**: Production support and SLAs
 

@@ -197,7 +197,7 @@ my-senzing-project/
 
 - [ ] **Support Channels**
   - Kiro agent available for guidance
-  - Senzing support contact: [support@senzing.com](mailto:support@senzing.com) or +1 (702) 425-7756
+  - Senzing support contact: [support@senzing.com](mailto:support@senzing.com)
   - Senzing sales contact (for licensing): [sales@senzing.com](mailto:sales@senzing.com)
   - Internal team support identified
 

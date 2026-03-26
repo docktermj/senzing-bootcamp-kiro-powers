@@ -348,13 +348,14 @@ Shows current progress and next steps.
 
 ## Need More Information?
 
-- **Complete documentation**: `docs/guides/COMPLETE_GUIDE.md`
-- **FAQ**: `docs/guides/FAQ.md`
-- **Troubleshooting**: `docs/guides/TROUBLESHOOTING_INDEX.md`
-- **MCP tools**: Use `get_capabilities` to see all available tools
-- **Ask the agent**: It has access to all boot camp documentation
+- **Complete documentation:** `docs/guides/COMPLETE_GUIDE.md`
+- **FAQ:** `docs/guides/FAQ.md`
+- **Troubleshooting:** `docs/guides/TROUBLESHOOTING_INDEX.md`
+- **MCP tools:** Use `get_capabilities` to see all available tools
+- **Ask the agent:** It has access to all boot camp documentation
 
 ---
 
-**Last Updated**: 2026-03-26
-**Version**: 1.0.0
+**Last Updated:** 2026-03-26
+
+**Version:** 1.0.0

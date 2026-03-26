@@ -26,10 +26,10 @@ Help the user identify which data sources they need:
 ### Step 2: Collect Data
 
 The user can provide data in several ways:
-- **Upload files**: User uploads CSV, JSON, or other data files
-- **Provide URLs**: User provides links to data sources
-- **Database connection**: User provides database connection details
-- **API access**: User provides API endpoints and credentials
+- **Upload files:** User uploads CSV, JSON, or other data files
+- **Provide URLs:** User provides links to data sources
+- **Database connection:** User provides database connection details
+- **API access:** User provides API endpoints and credentials
 
 ### Step 3: Store in `data/raw/`
 
@@ -102,22 +102,22 @@ Module 2 is complete when:
 ## Common Issues
 
 ### Issue: Dataset Too Large
-**Solution**: Create a representative sample of 1000-10000 records instead of loading the entire dataset
+**Solution:** Create a representative sample of 1000-10000 records instead of loading the entire dataset
 
 ### Issue: Data Not Accessible
-**Solution**: Work with user to get access, or use alternative data sources
+**Solution:** Work with user to get access, or use alternative data sources
 
 ### Issue: Multiple File Formats
-**Solution**: Document each format, handle them separately in later modules
+**Solution:** Document each format, handle them separately in later modules
 
 ### Issue: Sensitive Data
-**Solution**: Use anonymized or synthetic data for evaluation, document security requirements
+**Solution:** Use anonymized or synthetic data for evaluation, document security requirements
 
 ## Integration with Other Modules
 
-- **From Module 1**: Uses business problem definition to identify which data sources are needed
-- **To Module 3**: Provides raw data files for quality evaluation
-- **To Module 4**: Raw data will be transformed into Senzing JSON format
+- **From Module 1:** Uses business problem definition to identify which data sources are needed
+- **To Module 3:** Provides raw data files for quality evaluation
+- **To Module 4:** Raw data will be transformed into Senzing JSON format
 
 ## File Naming Conventions
 
@@ -140,11 +140,11 @@ Example `docs/data_source_locations.md`:
 # Data Source Locations
 
 ## Customer Data
-- **Source**: CRM System (Salesforce)
-- **Original Location**: https://company.salesforce.com/customers
-- **File Location**: `data/raw/customers.csv`
-- **Date Collected**: 2024-03-15
-- **Sample Size**: 5,000 records (full dataset: 50,000)
+- **Source:** CRM System (Salesforce)
+- **Original Location:** https://company.salesforce.com/customers
+- **File Location:** `data/raw/customers.csv`
+- **Date Collected:** 2024-03-15
+- **Sample Size:** 5,000 records (full dataset: 50,000)
 - **Contact**: John Smith (john.smith@company.com)
 - **Notes**: Exported via Salesforce API, includes all active customers
 

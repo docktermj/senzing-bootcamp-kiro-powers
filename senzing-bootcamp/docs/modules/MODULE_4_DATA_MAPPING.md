@@ -4,9 +4,9 @@
 
 Module 4 transforms your source data into Senzing's Generic Entity Specification (SGES) format. This is where you map your data fields to Senzing attributes, creating transformation programs for each data source.
 
-**Time**: 1-2 hours per data source  
-**Prerequisites**: ✅ Module 3 complete (data quality evaluated)  
-**Output**: Transformation programs, mapped data files, quality validation
+**Time:** 1-2 hours per data source  
+**Prerequisites:** ✅ Module 3 complete (data quality evaluated)  
+**Output:** Transformation programs, mapped data files, quality validation
 
 ## Learning Objectives
 
@@ -46,7 +46,8 @@ SGES is Senzing's JSON format for entity data:
 
 ### Key Attributes
 
-**Names**:
+**Names:**
+
 - `NAME_FULL` - Full name
 - `NAME_FIRST` - First name
 - `NAME_LAST` - Last name
@@ -55,7 +56,8 @@ SGES is Senzing's JSON format for entity data:
 - `NAME_SUFFIX` - Suffix (Jr., III)
 - `NAME_ORG` - Organization name
 
-**Addresses**:
+**Addresses:**
+
 - `ADDR_FULL` - Complete address
 - `ADDR_LINE1` - Street address
 - `ADDR_CITY` - City
@@ -63,24 +65,28 @@ SGES is Senzing's JSON format for entity data:
 - `ADDR_POSTAL_CODE` - ZIP/postal code
 - `ADDR_COUNTRY` - Country
 
-**Contact**:
+**Contact:**
+
 - `PHONE_NUMBER` - Phone
 - `EMAIL_ADDRESS` - Email
 - `WEBSITE_ADDRESS` - Website
 
-**Identifiers**:
+**Identifiers:**
+
 - `SSN_NUMBER` - Social Security Number
 - `DRIVERS_LICENSE_NUMBER` - Driver's license
 - `PASSPORT_NUMBER` - Passport
 - `NATIONAL_ID_NUMBER` - National ID
 - `TAX_ID_NUMBER` - Tax ID (EIN, VAT)
 
-**Dates**:
+**Dates:**
+
 - `DATE_OF_BIRTH` - Birth date
 - `DATE_OF_DEATH` - Death date
 - `REGISTRATION_DATE` - Registration date
 
-**Required Fields**:
+**Required Fields:**
+
 - `DATA_SOURCE` - Source system identifier
 - `RECORD_ID` - Unique ID within source
 
@@ -220,10 +226,10 @@ Create `docs/mapping_customers.md`:
 ```markdown
 # Data Mapping: CUSTOMERS
 
-**Date**: 2026-03-17
-**Source**: data/raw/customers.csv
-**Output**: data/transformed/customers.jsonl
-**Program**: src/transform/transform_customers.py
+**Date:** 2026-03-17  
+**Source:** data/raw/customers.csv  
+**Output:** data/transformed/customers.jsonl  
+**Program:** src/transform/transform_customers.py
 
 ## Field Mappings
 
@@ -237,10 +243,11 @@ Create `docs/mapping_customers.md`:
 
 ## Data Quality
 
-**Before Mapping**: 65/100
-**After Mapping**: 82/100
+**Before Mapping:** 65/100  
+**After Mapping:** 82/100
 
-**Improvements**:
+**Improvements:**
+
 - Standardized name format
 - Cleaned phone numbers
 - Validated email addresses
@@ -254,7 +261,8 @@ Create `docs/mapping_customers.md`:
 
 ## Sample Records
 
-**Before**:
+**Before:**
+
 ```json
 {
   "customer_id": "12345",
@@ -264,7 +272,8 @@ Create `docs/mapping_customers.md`:
 }
 ```
 
-**After**:
+**After:**
+
 ```json
 {
   "DATA_SOURCE": "CUSTOMERS",
@@ -429,17 +438,18 @@ Track how data flows through transformations:
 ```markdown
 # Transformation Lineage: CUSTOMERS
 
-**Source**: data/raw/customers.csv (downloaded 2026-03-15)
-**Transformation**: src/transform/transform_customers.py (v1.0)
-**Output**: data/transformed/customers.jsonl (generated 2026-03-17)
+**Source:** data/raw/customers.csv (downloaded 2026-03-15)  
+**Transformation:** src/transform/transform_customers.py (v1.0)  
+**Output:** data/transformed/customers.jsonl (generated 2026-03-17)
 
-**Transformations Applied**:
+**Transformations Applied:**
+
 1. Name cleaning (whitespace, title case)
 2. Phone standardization (digits only)
 3. Email validation and lowercasing
 4. Date format conversion (MM/DD/YYYY → YYYY-MM-DD)
 
-**Quality Improvement**: 65 → 82 (+17 points)
+**Quality Improvement:** 65 → 82 (+17 points)
 ```
 
 ## Success Criteria
@@ -474,18 +484,18 @@ Track how data flows through transformations:
 
 ## Tips for Success
 
-1. **Use mapping_workflow**: Don't hand-code attribute names
-2. **Test small first**: 10-100 records before full dataset
-3. **Validate quality**: Use `lint_record` and `analyze_record`
-4. **Document everything**: Future you will thank you
-5. **Track lineage**: Know where data came from and how it changed
-6. **Iterate**: Mapping is exploratory, refine as needed
+1. **Use mapping_workflow:** Don't hand-code attribute names
+2. **Test small first:** 10-100 records before full dataset
+3. **Validate quality:** Use `lint_record` and `analyze_record`
+4. **Document everything:** Future you will thank you
+5. **Track lineage:** Know where data came from and how it changed
+6. **Iterate:** Mapping is exploratory, refine as needed
 
 ## Next Steps
 
 After completing Module 4:
-- **Proceed to Module 5**: Install Senzing SDK
-- **Or skip to Module 6**: If SDK already installed
+- **Proceed to Module 5:** Install Senzing SDK
+- **Or skip to Module 6:** If SDK already installed
 
 ## Related Documentation
 

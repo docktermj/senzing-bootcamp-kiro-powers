@@ -16,6 +16,7 @@ This module offers multiple demo options to ensure everyone can see entity resol
 ## Prerequisites
 
 ### For Docker Demo (Recommended - Real SDK)
+
 - ✅ Docker installed and running (version 20.0+)
 - ✅ 2GB free disk space for Senzing SDK image
 - ✅ Network access to pull Docker images
@@ -24,6 +25,7 @@ This module offers multiple demo options to ensure everyone can see entity resol
 **First-time setup**: 2-5 minutes to download 1.6GB Docker image
 
 ### For Simulation Demo (No Installation - Shows Concepts)
+
 - ✅ Python 3.8+ installed
 - ✅ No other requirements!
 
@@ -32,6 +34,7 @@ This module offers multiple demo options to ensure everyone can see entity resol
 **Note**: Simulation demo shows what Senzing would do using pre-computed results. It's perfect for quick preview or when Docker isn't available.
 
 ### For Native SDK Demo (Advanced - Real SDK)
+
 - ✅ Senzing SDK installed locally
 - ✅ Python 3.8+ with senzing package
 - ✅ SQLite or PostgreSQL
@@ -82,19 +85,22 @@ By the end of this module, you will:
 ## Sample Datasets
 
 ### Las Vegas Dataset
-- **Type**: Customer records
+
+- **Type:** Customer records
 - **Records**: ~1,000
 - **Use case**: Retail/hospitality customer deduplication
 - **Duplicates**: Same customers with variations in names, addresses, phones
 
 ### London Dataset
-- **Type**: Person records
+
+- **Type:** Person records
 - **Records**: ~1,000
 - **Use case**: Identity management
 - **Duplicates**: Same people with name variations and different contact info
 
 ### Moscow Dataset
-- **Type**: Organization records
+
+- **Type:** Organization records
 - **Records**: ~1,000
 - **Use case**: B2B vendor/supplier matching
 - **Duplicates**: Same companies with different names and addresses
@@ -116,7 +122,7 @@ This is a real, working demonstration - not a simulation!
 
 ## Example Output
 
-```
+```text
 Checking Senzing SDK installation...
 ✓ Senzing SDK found (version 3.8.0)
 
@@ -194,16 +200,19 @@ Key Insights:
 ## Key Concepts Demonstrated
 
 ### Entity Resolution
+
 - Multiple records about the same real-world entity are identified and linked
 - No manual rules required - Senzing learns from the data
 - Confidence scores show match strength
 
 ### Feature Extraction
+
 - Names, addresses, phones are parsed into features
 - Features are standardized (e.g., "St" → "Street")
 - Features are scored and compared
 
 ### Entity-Centric Learning
+
 - As more records are added, resolution improves
 - The engine learns patterns from your data
 - No training data required
@@ -212,7 +221,7 @@ Key Insights:
 
 All Module 0 demo code is saved in `src/quickstart_demo/`:
 
-```
+```text
 src/quickstart_demo/
 ├── demo_las_vegas.py          # Demo script for Las Vegas dataset
 ├── demo_london.py              # Demo script for London dataset
@@ -257,16 +266,19 @@ docker run -v $(pwd)/src/quickstart_demo:/data \
 ## What to Look For
 
 ### Good Matches
+
 - Same person/organization with minor variations
 - Different data quality levels matched correctly
 - Nicknames and abbreviations handled properly
 
 ### Interesting Cases
+
 - Records that almost match but don't (different people with similar names)
 - Records that match despite significant differences (poor data quality)
 - Multiple records from same source matched together
 
 ### Statistics
+
 - Match rate: What percentage of records are duplicates?
 - Entity distribution: How many records per entity on average?
 - Data quality: How consistent is the data?

@@ -135,7 +135,8 @@ Yes - required for SDK installation
 - Provided support, sales, and general contacts
 - Included email, phone, and website for each
 
-**Added Section**:
+**Added Section:**
+
 ```markdown
 ### Senzing Contact Information
 

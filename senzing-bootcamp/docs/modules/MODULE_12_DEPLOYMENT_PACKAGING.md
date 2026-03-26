@@ -196,18 +196,21 @@ MySenzingProject/
 Add tests for all components:
 
 #### Unit Tests
+
 - Test individual transformation functions
 - Test data validation logic
 - Test configuration loading
 - Test utility functions
 
 #### Integration Tests
+
 - Test end-to-end transformation pipeline
 - Test loading to Senzing
 - Test query operations
 - Test database connectivity
 
 #### Data Quality Tests
+
 - Validate transformed data format
 - Check attribute coverage
 - Verify data completeness
@@ -708,19 +711,22 @@ Module 8 is complete when:
 ## Tools and Resources
 
 ### Python
-- **Packaging**: setuptools, poetry, flit
+
+- **Packaging:** setuptools, poetry, flit
 - **Testing**: pytest, unittest, coverage.py
 - **Linting**: flake8, pylint, black
 - **Type checking**: mypy
 
 ### Java
-- **Packaging**: Maven, Gradle
+
+- **Packaging:** Maven, Gradle
 - **Testing**: JUnit, TestNG, Mockito
 - **Build**: Maven Surefire, Gradle Test
 - **Quality**: SonarQube, Checkstyle
 
 ### C#
-- **Packaging**: NuGet
+
+- **Packaging:** NuGet
 - **Testing**: xUnit, NUnit, MSTest
 - **Build**: MSBuild, dotnet CLI
 - **Quality**: SonarQube, StyleCop

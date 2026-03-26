@@ -1,0 +1,14 @@
+{
+  "name": "Validate CommonMark on Markdown Save",
+  "version": "1.0.0",
+  "description": "Validates CommonMark compliance when markdown files are saved during power development",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["**/*.md"]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "./scripts/validate_commonmark.sh",
+    "timeout": 30
+  }
+}

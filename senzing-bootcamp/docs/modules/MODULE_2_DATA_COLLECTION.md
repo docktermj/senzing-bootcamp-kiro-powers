@@ -52,7 +52,7 @@ Create or update `docs/data_source_locations.md` with:
 
 ## Directory Structure
 
-```
+```text
 project/
 ├── data/
 │   ├── raw/                    # Raw data sources (Module 2)

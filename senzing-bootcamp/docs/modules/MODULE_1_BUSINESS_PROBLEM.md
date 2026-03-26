@@ -68,6 +68,7 @@ For each source, identify:
 - Access method (how to get the data)
 
 ### Question 3: What types of entities?
+
 - People (customers, employees, patients)
 - Organizations (vendors, suppliers, companies)
 - Both
@@ -93,7 +94,7 @@ Consider:
 
 The Senzing Boot Camp agent will automatically create this organized directory structure for you:
 
-```
+```text
 my-senzing-project/
 ├── .git/                          # Version control (optional)
 ├── .gitignore                     # Exclude sensitive data
@@ -197,11 +198,13 @@ The agent will create `docs/business_problem.md`:
 The agent will help estimate:
 
 ### Data Source Records (DSRs)
+
 - Count total records across all data sources
 - Determine Senzing license tier
 - Estimate annual license cost
 
 ### Infrastructure Costs
+
 - Database (SQLite free, PostgreSQL $200-5000/month)
 - Application servers ($100-800/month)
 - Storage ($50-300/month)

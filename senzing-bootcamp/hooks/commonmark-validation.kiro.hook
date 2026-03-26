@@ -1,0 +1,13 @@
+{
+  "name": "CommonMark Validation",
+  "version": "1.0.0",
+  "description": "Validates that all Markdown files conform to CommonMark standards when edited",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["**/*.md"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "The markdown file that was just edited should be validated for CommonMark compliance. Please check for:\n\n1. MD022: Headings should be surrounded by blank lines\n2. MD040: Fenced code blocks should have a language specified\n3. Bold text followed by colons should use format: **Label:** (with space before colon)\n4. MD031: Fenced code blocks should be surrounded by blank lines\n5. MD032: Lists should be surrounded by blank lines\n\nIf any issues are found, fix them automatically to maintain CommonMark compliance across all documentation."
+  }
+}

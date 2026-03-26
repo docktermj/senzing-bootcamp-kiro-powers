@@ -20,7 +20,7 @@ A minimal Senzing project demonstrating customer deduplication with a single dat
 
 ## Project Structure
 
-```
+```text
 simple-single-source/
 ├── README.md                          # This file
 ├── data/

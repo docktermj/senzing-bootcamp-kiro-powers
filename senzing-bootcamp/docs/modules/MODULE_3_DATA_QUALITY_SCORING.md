@@ -20,7 +20,7 @@ After collecting data sources in Module 2, you need to assess their quality befo
 
 The quality score is calculated from multiple factors:
 
-```
+```text
 Quality Score = (
     Completeness Score × 0.40 +
     Consistency Score × 0.30 +

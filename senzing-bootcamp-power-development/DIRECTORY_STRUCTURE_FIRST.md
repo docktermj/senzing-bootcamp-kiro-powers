@@ -78,7 +78,8 @@ the project directory structure.
 ### 3. Onboarding Checklist (`docs/guides/ONBOARDING_CHECKLIST.md`)
 
 **Step 1** (first item):
-```
+
+```markdown
 ### ✅ Step 1: Create Project Directory Structure
 
 **This should be your first step!**

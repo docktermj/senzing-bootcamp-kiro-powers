@@ -96,8 +96,8 @@ def search():
 
 ### Option 1: Prometheus + Grafana (Open Source)
 
-**Prometheus**: Metrics collection and storage
-**Grafana**: Visualization and dashboards
+**Prometheus:** Metrics collection and storage  
+**Grafana:** Visualization and dashboards
 
 ```yaml
 # docker-compose.yml
@@ -120,21 +120,21 @@ services:
 
 ### Option 2: ELK Stack (Elasticsearch, Logstash, Kibana)
 
-**Elasticsearch**: Log storage and search
-**Logstash**: Log processing
-**Kibana**: Log visualization
+**Elasticsearch:** Log storage and search  
+**Logstash:** Log processing  
+**Kibana:** Log visualization
 
 ### Option 3: Cloud-Native
 
-**AWS**: CloudWatch, X-Ray
-**Azure**: Application Insights, Monitor
-**GCP**: Cloud Monitoring, Cloud Trace
+**AWS:** CloudWatch, X-Ray  
+**Azure:** Application Insights, Monitor  
+**GCP:** Cloud Monitoring, Cloud Trace
 
 ### Option 4: Commercial APM
 
-**DataDog**: Full-stack monitoring
-**New Relic**: Application performance
-**Dynatrace**: AI-powered monitoring
+**DataDog:** Full-stack monitoring  
+**New Relic:** Application performance  
+**Dynatrace:** AI-powered monitoring
 
 ## Key Metrics to Monitor
 

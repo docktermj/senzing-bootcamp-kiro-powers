@@ -134,7 +134,7 @@ def monitor_resources(duration=60):
 
 Test with increasing data volumes:
 
-```
+```text
 Test 1: 10,000 records
   - Transformation: 5,000 records/sec
   - Loading: 200 records/sec
@@ -353,6 +353,7 @@ if __name__ == '__main__':
 ## Performance Optimization Tips
 
 ### Transformation Optimization
+
 - Use batch processing
 - Minimize I/O operations
 - Cache lookups
@@ -360,6 +361,7 @@ if __name__ == '__main__':
 - Parallelize independent transformations
 
 ### Loading Optimization
+
 - Use batch loading (1000 records/batch)
 - Tune database parameters
 - Use connection pooling
@@ -367,6 +369,7 @@ if __name__ == '__main__':
 - Use PostgreSQL instead of SQLite
 
 ### Query Optimization
+
 - Add database indexes
 - Use specific queries (not export all)
 - Cache frequent queries

@@ -40,7 +40,8 @@ The Senzing Boot Camp power **GUARANTEES** that the project directory structure 
 ### 2. Main Power Documentation (`POWER.md`)
 
 **"Getting Started" Section** - Added prominent notice:
-```
+
+```markdown
 ### CRITICAL FIRST STEP: Create Directory Structure
 
 Before doing anything else, the agent will automatically create 
@@ -62,7 +63,8 @@ of Module 0 or Module 1, whichever you start with.
 ### 3. Onboarding Checklist (`docs/guides/ONBOARDING_CHECKLIST.md`)
 
 **Step 1** (first item in checklist):
-```
+
+```markdown
 ### ✅ Step 1: Create Project Directory Structure
 
 **This should be your first step!** Create the organized directory 

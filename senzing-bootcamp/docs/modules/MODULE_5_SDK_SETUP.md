@@ -4,9 +4,9 @@
 
 Module 5 installs and configures the Senzing SDK, setting up the foundation for loading data and performing entity resolution. You'll choose a database, configure the engine, and verify everything works.
 
-**Time**: 30 minutes - 1 hour  
-**Prerequisites**: ✅ Module 4 complete (data mapped) OR all sources are SGES-compliant  
-**Output**: Installed SDK, configured database, verified installation
+**Time:** 30 minutes - 1 hour  
+**Prerequisites:** ✅ Module 4 complete (data mapped) OR all sources are SGES-compliant  
+**Output:** Installed SDK, configured database, verified installation
 
 ## Learning Objectives
 
@@ -31,23 +31,27 @@ By the end of this module, you will:
 
 ### Core Components
 
-**G2Engine**: Main entity resolution engine
+**G2Engine:** Main entity resolution engine
+
 - Load records
 - Resolve entities
 - Query results
 - Export data
 
-**G2Config**: Configuration management
+**G2Config:** Configuration management
+
 - Register data sources
 - Configure matching rules
 - Manage entity types
 
-**G2Product**: Product information
+**G2Product:** Product information
+
 - Version info
 - License details
 - Capabilities
 
-**G2Diagnostic**: System diagnostics
+**G2Diagnostic:** System diagnostics
+
 - Check database
 - Verify configuration
 - Performance metrics
@@ -93,7 +97,7 @@ If Senzing is found:
 
 **For learning and evaluation**, request a free evaluation license:
 
-1. **Contact Senzing Support**:
+1. **Contact Senzing Support:**
    - **Email**: [support@senzing.com](mailto:support@senzing.com)
    - **Website**: [https://senzing.com/contact/](https://senzing.com/contact/)
 

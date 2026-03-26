@@ -38,7 +38,7 @@ This keeps user-facing feedback separate from internal development documentation
 
 ## Directory Structure
 
-```
+```text
 feedback/
 ├── README.md (this file)
 └── SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md (user template)

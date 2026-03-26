@@ -136,6 +136,7 @@ Module docs serve as:
 ### Example: Module 3 Data Quality
 
 **Steering file** (`steering.md`):
+
 ```markdown
 ### Module 3: Evaluate Data Quality
 - Run automated quality scoring on each data source

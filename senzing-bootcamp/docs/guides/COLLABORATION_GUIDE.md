@@ -7,30 +7,35 @@ This guide helps teams collaborate effectively on Senzing Boot Camp projects usi
 ## Team Roles
 
 ### Project Lead
+
 - Defines business problem and requirements
 - Manages project timeline and milestones
 - Reviews and approves major changes
 - Coordinates with stakeholders
 
 ### Data Engineer
+
 - Collects and evaluates data sources
 - Creates transformation programs
 - Optimizes data quality
 - Manages data lineage
 
 ### Integration Developer
+
 - Sets up Senzing SDK
 - Creates loading programs
 - Develops query programs
 - Handles API integrations
 
 ### QA/Testing
+
 - Validates data quality
 - Performs UAT testing
 - Tests performance
 - Documents test results
 
 ### DevOps Engineer
+
 - Sets up CI/CD pipelines
 - Manages deployments
 - Configures monitoring
@@ -105,6 +110,7 @@ git push origin feature/module-4-customer-mapping
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation
@@ -114,7 +120,8 @@ Types:
 - `chore`: Maintenance
 
 Examples:
-```
+
+```text
 feat: Add customer transformation for Module 4
 
 - Map customer fields to Senzing attributes
@@ -128,7 +135,8 @@ Closes #123
 
 ### Before Submitting PR
 
-1. **Run checks**:
+1. **Run checks:**
+
    ```bash
    # Check PEP-8 compliance
    flake8 src/
@@ -140,21 +148,23 @@ Closes #123
    ./scripts/scan_pii.sh
    ```
 
-2. **Update documentation**:
+2. **Update documentation:**
+
    - Update README if needed
    - Document new functions/classes
    - Update progress tracker
 
-3. **Test locally**:
+3. **Test locally:**
+
    - Run transformation programs
    - Verify output format
    - Check data quality
 
 ### Creating Pull Request
 
-1. **Title**: Clear, descriptive summary
-2. **Description**: What, why, and how
-3. **Checklist**:
+1. **Title:** Clear, descriptive summary
+2. **Description:** What, why, and how
+3. **Checklist:**
    - [ ] Code follows PEP-8
    - [ ] Tests pass
    - [ ] Documentation updated
@@ -163,7 +173,8 @@ Closes #123
 
 ### Reviewing Pull Requests
 
-**What to check**:
+**What to check:**
+
 - Code quality and PEP-8 compliance
 - Logic correctness
 - Error handling
@@ -171,7 +182,8 @@ Closes #123
 - Security issues
 - Documentation completeness
 
-**Review comments**:
+**Review comments:**
+
 - Be constructive and specific
 - Suggest improvements
 - Ask questions for clarity
@@ -203,6 +215,7 @@ Track who's working on what:
 ### Daily Standup
 
 Share progress daily:
+
 - What did you complete yesterday?
 - What are you working on today?
 - Any blockers?
@@ -210,6 +223,7 @@ Share progress daily:
 ### Weekly Review
 
 Review progress weekly:
+
 - Modules completed
 - Issues encountered
 - Lessons learned
@@ -220,23 +234,27 @@ Review progress weekly:
 ### Sample Data
 
 **DO share** (commit to git):
+
 - Small sample files (<1MB)
 - Anonymized test data
 - Synthetic data
 
 **DON'T share** (add to .gitignore):
+
 - Large data files (>1MB)
 - Real customer data
 - PII data
 
 ### Data Sharing Options
 
-**For large files**:
+**For large files:**
+
 1. Cloud storage (S3, Google Drive, Dropbox)
 2. Shared network drive
 3. Data transfer service
 
-**Document data location**:
+**Document data location:**
+
 ```markdown
 # Data Sources
 
@@ -267,6 +285,7 @@ LOG_LEVEL=INFO
 ```
 
 Share template:
+
 ```bash
 # .env.example (in git)
 SENZING_LICENSE_PATH=licenses/g2.lic
@@ -299,14 +318,16 @@ Configuration that's the same for everyone:
 ### Channels
 
 Set up communication channels:
-- **General**: Project updates, announcements
-- **Technical**: Code discussions, architecture
-- **Data**: Data quality, mapping questions
-- **Deployment**: Release planning, production issues
+
+- **General:** Project updates, announcements
+- **Technical:** Code discussions, architecture
+- **Data:** Data quality, mapping questions
+- **Deployment:** Release planning, production issues
 
 ### Documentation
 
 Keep team documentation updated:
+
 - `docs/TEAM.md` - Team members and roles
 - `docs/DECISIONS.md` - Architecture decisions
 - `docs/RUNBOOK.md` - Operational procedures
@@ -318,17 +339,20 @@ Keep team documentation updated:
 
 When conflicts occur:
 
-1. **Pull latest changes**:
+1. **Pull latest changes:**
+
    ```bash
    git pull origin main
    ```
 
-2. **Resolve conflicts**:
+2. **Resolve conflicts:**
+
    - Open conflicted files
    - Choose correct version or merge manually
    - Test changes
 
-3. **Commit resolution**:
+3. **Commit resolution:**
+
    ```bash
    git add <resolved-files>
    git commit -m "Resolve merge conflict in transformation code"
@@ -337,6 +361,7 @@ When conflicts occur:
 ### Code Conflicts
 
 When team members disagree:
+
 1. Discuss pros/cons
 2. Consider alternatives
 3. Test both approaches if needed
@@ -375,24 +400,29 @@ When team members disagree:
 
 ### Recommended Tools
 
-**Version Control**:
+**Version Control:**
+
 - Git
 - GitHub/GitLab/Bitbucket
 
-**Communication**:
+**Communication:**
+
 - Slack/Teams/Discord
 - Email for formal communication
 
-**Project Management**:
+**Project Management:**
+
 - Jira/Trello/Asana
 - GitHub Issues/Projects
 
-**Code Review**:
+**Code Review:**
+
 - GitHub Pull Requests
 - GitLab Merge Requests
 - Bitbucket Pull Requests
 
-**Documentation**:
+**Documentation:**
+
 - Markdown files in repo
 - Wiki (GitHub/GitLab)
 - Confluence
@@ -412,17 +442,20 @@ When team members disagree:
 
 ### First Week
 
-**Day 1**:
+**Day 1:**
+
 - Repository setup
 - Run `./scripts/check_prerequisites.sh`
 - Complete Module 0
 
-**Day 2-3**:
+**Day 2-3:**
+
 - Review existing code
 - Understand data sources
 - Read documentation
 
-**Day 4-5**:
+**Day 4-5:**
+
 - Pair with team member
 - Complete small task
 - Submit first PR
@@ -462,10 +495,10 @@ git push origin <branch-name>
 
 ## Resources
 
-- **Git Documentation**: https://git-scm.com/doc
-- **GitHub Guides**: https://guides.github.com/
-- **Atlassian Git Tutorials**: https://www.atlassian.com/git/tutorials
-- **Pro Git Book**: https://git-scm.com/book/en/v2
+- **Git Documentation:** <https://git-scm.com/doc>
+- **GitHub Guides:** <https://guides.github.com/>
+- **Atlassian Git Tutorials:** <https://www.atlassian.com/git/tutorials>
+- **Pro Git Book:** <https://git-scm.com/book/en/v2>
 
 ## Questions?
 
@@ -476,5 +509,5 @@ git push origin <branch-name>
 
 ---
 
-**Last Updated**: 2026-03-26
-**Version**: 1.0.0
+**Last Updated:** 2026-03-26  
+**Version:** 1.0.0

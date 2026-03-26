@@ -76,12 +76,14 @@ Create `docs/handoff_checklist.md`:
 ## Team Communication
 
 ### Daily Standup Topics
+
 - Which data sources are being worked on
 - Any blockers or data quality issues
 - Transformation or loading progress
 - Query results and insights
 
 ### Weekly Review Topics
+
 - Overall project progress
 - Data quality trends
 - Performance metrics
@@ -90,6 +92,7 @@ Create `docs/handoff_checklist.md`:
 ## Pair Programming
 
 For complex transformations or queries:
+
 - One person writes code, other reviews
 - Switch roles regularly
 - Document decisions made during pairing
@@ -98,12 +101,14 @@ For complex transformations or queries:
 ## Knowledge Sharing
 
 ### Documentation
+
 - Maintain up-to-date README
 - Document all design decisions
 - Create runbooks for common operations
 - Share lessons learned
 
 ### Code Reviews
+
 - Review all transformation logic
 - Verify data quality checks
 - Ensure error handling is robust
@@ -112,6 +117,7 @@ For complex transformations or queries:
 ## When to Load This Guide
 
 Load this steering file when:
+
 - Working on team projects
 - User asks about collaboration or handoffs
 - Setting up code review processes

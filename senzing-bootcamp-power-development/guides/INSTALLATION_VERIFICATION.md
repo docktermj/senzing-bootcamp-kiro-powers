@@ -7,6 +7,7 @@ Before performing any software installation (especially Senzing), always verify 
 ## Why This Matters
 
 Users may:
+
 - Try the boot camp multiple times
 - Have Senzing already installed from previous attempts
 - Be working in a shared environment
@@ -14,6 +15,7 @@ Users may:
 - Be testing different configurations
 
 Installing over an existing installation can cause:
+
 - Version conflicts
 - Configuration corruption
 - Database connection issues
@@ -36,12 +38,14 @@ pip show senzing
 ```
 
 **Expected output if installed**:
-```
+
+```text
 Senzing version: 4.0.0
 ```
 
 **Expected output if NOT installed**:
-```
+
+```text
 ModuleNotFoundError: No module named 'senzing'
 ```
 
@@ -59,14 +63,16 @@ ls -la /var/opt/senzing 2>/dev/null
 ```
 
 **Expected output if installed**:
-```
+
+```text
 drwxr-xr-x  5 root root 4096 Jan 17 10:00 /opt/senzing
 drwxr-xr-x  3 root root 4096 Jan 17 10:00 /etc/opt/senzing
 drwxr-xr-x  4 root root 4096 Jan 17 10:00 /var/opt/senzing
 ```
 
 **Expected output if NOT installed**:
-```
+
+```text
 ls: cannot access '/opt/senzing': No such file or directory
 ```
 
@@ -79,23 +85,23 @@ import sys
 try:
     import senzing
     from senzing import G2Engine
-    
+
     print(f"✅ Senzing package found")
     print(f"   Version: {senzing.__version__}")
-    
+
     # Try to initialize engine
     engine = G2Engine()
     print(f"✅ Senzing engine initialized successfully")
     engine.destroy()
-    
+
     print("\n✅ Senzing is installed and working")
     sys.exit(0)
-    
+
 except ImportError:
     print("❌ Senzing package not found")
     print("   Senzing is NOT installed")
     sys.exit(1)
-    
+
 except Exception as e:
     print(f"⚠️  Senzing package found but engine initialization failed")
     print(f"   Error: {e}")
@@ -104,13 +110,14 @@ except Exception as e:
 ```
 
 Run with:
+
 ```bash
 python test_senzing_installation.py
 ```
 
 ## Decision Tree
 
-```
+```text
 Is Senzing installed?
 │
 ├─→ YES → Check version
@@ -136,6 +143,7 @@ Is Senzing installed?
 ### Before Module 4 (SDK Setup)
 
 1. **Always check first**:
+
    ```python
    # Run verification check
    python -c "import senzing; print(senzing.__version__)" 2>/dev/null
@@ -176,6 +184,7 @@ Is Senzing installed?
 ## Verification Commands by Platform
 
 ### Linux (apt-based)
+
 ```bash
 # Check package
 dpkg -l | grep senzing
@@ -188,6 +197,7 @@ ls -la /opt/senzing /etc/opt/senzing /var/opt/senzing
 ```
 
 ### Linux (yum-based)
+
 ```bash
 # Check package
 rpm -qa | grep senzing
@@ -200,6 +210,7 @@ ls -la /opt/senzing /etc/opt/senzing /var/opt/senzing
 ```
 
 ### macOS
+
 ```bash
 # Check Python package
 python3 -c "import senzing; print(senzing.__version__)"
@@ -212,6 +223,7 @@ brew list | grep senzing
 ```
 
 ### Windows
+
 ```powershell
 # Check Python package
 python -c "import senzing; print(senzing.__version__)"
@@ -224,6 +236,7 @@ dir "C:\Program Files\Senzing"
 ```
 
 ### Docker
+
 ```bash
 # Check if Senzing container exists
 docker ps -a | grep senzing
@@ -238,11 +251,13 @@ docker ps | grep senzing
 ## Uninstall Instructions (if needed)
 
 ### Python Package Only
+
 ```bash
 pip uninstall senzing
 ```
 
 ### Full Installation (Linux apt)
+
 ```bash
 sudo apt-get remove senzing-api
 sudo apt-get purge senzing-api
@@ -250,19 +265,22 @@ sudo rm -rf /opt/senzing /etc/opt/senzing /var/opt/senzing
 ```
 
 ### Full Installation (Linux yum)
+
 ```bash
 sudo yum remove senzing-api
 sudo rm -rf /opt/senzing /etc/opt/senzing /var/opt/senzing
 ```
 
 ### Full Installation (macOS)
+
 ```bash
 pip3 uninstall senzing
 # If installed via Homebrew
 brew uninstall senzing
 ```
 
-### Docker
+### Uninstall Docker
+
 ```bash
 # Stop and remove container
 docker stop senzing-container
@@ -277,6 +295,7 @@ docker rmi senzing/senzing-tools
 All documentation has been updated to include verification:
 
 ### steering/steering.md - Module 4
+
 - ✅ Added "Check if Senzing is already installed" as first step
 - ✅ Verification commands for Python, system, and pip
 - ✅ Decision tree for existing installations
@@ -284,20 +303,24 @@ All documentation has been updated to include verification:
 - ✅ Test scripts for verification
 
 ### steering/agent-instructions.md
+
 - ✅ Added "Check if Senzing is already installed before installing"
 - ✅ Verify existing installation version and compatibility
 - ✅ Skip installation if compatible version exists
 
 ### steering/common-pitfalls.md
+
 - ✅ New pitfall: "Installing Over Existing Installation"
 - ✅ Verification commands
 - ✅ Solution: Always check first
 
 ### steering/quick-reference.md
+
 - ✅ Added verification check as FIRST step in Module 4
 - ✅ Important note: "Always verify Senzing is not already installed"
 
 ### POWER.md
+
 - ✅ Module 4 description updated: "Check if Senzing is already installed"
 
 ## Testing the Verification
@@ -345,11 +368,11 @@ python test_senzing_installation.py
 
 ## Summary
 
-✅ Always verify before installing  
-✅ Check Python package, directories, and engine  
-✅ Use existing installation if compatible  
-✅ Ask user before reinstalling  
-✅ Provide clear communication  
-✅ All documentation updated  
-✅ Agent instructions include verification  
+✅ Always verify before installing
+✅ Check Python package, directories, and engine
+✅ Use existing installation if compatible
+✅ Ask user before reinstalling
+✅ Provide clear communication
+✅ All documentation updated
+✅ Agent instructions include verification
 ✅ Common pitfalls guide includes this issue

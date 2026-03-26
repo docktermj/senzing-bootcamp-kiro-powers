@@ -1,7 +1,7 @@
 # Hooks Cleanup - Phase 7
 
-**Date**: 2026-03-23  
-**Phase**: 7 of 7  
+**Date**: 2026-03-23
+**Phase**: 7 of 7
 **Purpose**: Remove generic hooks that conflict with agent instructions or aren't boot camp-specific
 
 ## Summary
@@ -55,15 +55,18 @@ All remaining hooks are boot camp-specific and provide value:
 ## References Updated
 
 ### senzing-bootcamp/hooks/README.md
+
 - ✅ Removed references to test-before-commit.kiro.hook
 - ✅ Removed references to update-documentation.kiro.hook
 - ✅ Updated hook count from 6 to 4
 
 ### senzing-bootcamp/POWER.md
+
 - ✅ Updated hook count from 6 to 4
 - ✅ Listed only remaining hooks
 
 ### senzing-bootcamp/docs/guides/HOOKS_INSTALLATION_GUIDE.md
+
 - ✅ Updated table to show only 4 remaining hooks
 - ✅ Removed test-before-commit and update-documentation from table
 - ✅ Added pep8-check to table (was missing)
@@ -77,12 +80,14 @@ This cleanup follows the Power's design philosophy:
 ### What Makes a Hook Boot Camp-Specific?
 
 ✅ **Include:**
+
 - Enforces boot camp policies (PEP-8 compliance)
 - Supports specific module workflows (data quality, backup, validation)
 - Uses boot camp tools (lint_record, MCP server)
 - Referenced in boot camp documentation
 
 ❌ **Exclude:**
+
 - Generic software engineering practices (testing, documentation)
 - Assumes tools not guaranteed in boot camp (pytest)
 - Conflicts with agent instructions
@@ -91,11 +96,13 @@ This cleanup follows the Power's design philosophy:
 ## Impact
 
 ### Before
+
 - 6 hooks total
 - 2 generic hooks that could conflict with workflows
 - Potential confusion about which hooks are essential
 
 ### After
+
 - 4 hooks total (33% reduction)
 - All hooks are boot camp-specific
 - Clear purpose for each hook
@@ -104,6 +111,7 @@ This cleanup follows the Power's design philosophy:
 ## Verification
 
 ### No Broken References
+
 ```bash
 # Verified no broken references to removed hooks
 grep -r "test-before-commit\|update-documentation" senzing-bootcamp/**/*.md
@@ -111,6 +119,7 @@ grep -r "test-before-commit\|update-documentation" senzing-bootcamp/**/*.md
 ```
 
 ### Hook Files Verified
+
 ```bash
 # Verified only 4 hooks remain in Power
 ls senzing-bootcamp/hooks/*.hook

@@ -4,7 +4,7 @@
 
 Updated all SQLite database references to use the project-local `database/` directory instead of system paths like `/var/opt/senzing/sqlite/`.
 
-**Date**: 2026-03-17  
+**Date**: 2026-03-17
 **Change Type**: File Storage Policy Enhancement
 
 ## Rationale
@@ -50,11 +50,13 @@ database/G2C.db
 ### 1. Updated Connection Strings
 
 Changed all SQLite connection strings from:
+
 ```json
 "CONNECTION": "sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db"
 ```
 
 To:
+
 ```json
 "CONNECTION": "sqlite3://na:na@database/G2C.db"
 ```
@@ -62,6 +64,7 @@ To:
 ### 2. Updated Backup Scripts
 
 Changed backup scripts to use project paths:
+
 ```bash
 # Old
 cp /var/opt/senzing/sqlite/G2C.db "$BACKUP_DIR/G2C_$DATE.db"
@@ -77,7 +80,8 @@ Updated all documentation to reference `database/G2C.db` instead of system paths
 ### 4. Added Database Directory to Project Structure
 
 Updated project structure in POWER.md:
-```
+
+```text
 my-senzing-project/
 ├── database/                      # SQLite database files
 │   ├── G2C.db                     # Main Senzing database
@@ -87,6 +91,7 @@ my-senzing-project/
 ### 5. Updated .gitignore
 
 Added database-specific gitignore rules:
+
 ```gitignore
 # Database files
 database/*.db
@@ -97,6 +102,7 @@ database/*.db-journal
 ### 6. Updated File Storage Policy
 
 Added new section for database files:
+
 - Rule: SQLite databases must be stored in `database/` directory
 - Examples of correct and incorrect usage
 - Gitignore guidance
@@ -104,16 +110,19 @@ Added new section for database files:
 ### 7. Updated Agent Instructions
 
 Added to Core Principles:
+
 - SQLite databases → `database/`
 - Never use system paths for SQLite databases
 
 Added to Module 5 instructions:
+
 - Create `database/` directory for SQLite
 - Use `database/G2C.db` path in connection strings
 
 ## Files Modified
 
 ### Documentation Files
+
 1. `senzing-bootcamp/docs/modules/MODULE_5_SDK_SETUP.md`
    - Updated SQLite configuration section
    - Updated verification script
@@ -129,34 +138,36 @@ Added to Module 5 instructions:
    - Added database/ directory
 
 ### Steering Files
-4. `senzing-bootcamp/steering/steering.md`
+
+1. `senzing-bootcamp/steering/steering.md`
    - Updated all SQLite connection strings (3 occurrences)
    - Updated .env.example
    - Updated .gitignore template
 
-5. `senzing-bootcamp/steering/agent-instructions.md`
+2. `senzing-bootcamp/steering/agent-instructions.md`
    - Added database/ to Core Principles
    - Added Module 5 guidance for SQLite paths
 
-6. `senzing-bootcamp/steering/environment-setup.md`
+3. `senzing-bootcamp/steering/environment-setup.md`
    - Updated .env.example
    - Updated .gitignore template
 
-7. `senzing-bootcamp/steering/recovery-procedures.md`
+4. `senzing-bootcamp/steering/recovery-procedures.md`
    - Updated backup script
    - Updated rollback script
 
-8. `senzing-bootcamp/steering/disaster-recovery.md`
+5. `senzing-bootcamp/steering/disaster-recovery.md`
    - Updated SQLite backup procedures
    - Updated restore procedures
    - Updated .gitignore example
 
-9. `senzing-bootcamp/steering/troubleshooting-decision-tree.md`
+6. `senzing-bootcamp/steering/troubleshooting-decision-tree.md`
    - Updated database path checks
    - Updated troubleshooting commands
 
 ### Example Files
-10. `senzing-bootcamp/examples/simple-single-source/README.md`
+
+1. `senzing-bootcamp/examples/simple-single-source/README.md`
     - Updated troubleshooting section
 
 ## Migration Guide
@@ -166,25 +177,29 @@ Added to Module 5 instructions:
 If you have an existing project using the old system path:
 
 1. **Create database directory**:
+
    ```bash
    mkdir -p database
    ```
 
 2. **Copy existing database** (if it exists):
+
    ```bash
    cp /var/opt/senzing/sqlite/G2C.db database/G2C.db
    ```
 
 3. **Update connection strings** in your code:
+
    ```python
    # Old
    "CONNECTION": "sqlite3://na:na@/var/opt/senzing/sqlite/G2C.db"
-   
+
    # New
    "CONNECTION": "sqlite3://na:na@database/G2C.db"
    ```
 
 4. **Update .gitignore**:
+
    ```gitignore
    # Database files
    database/*.db
@@ -193,6 +208,7 @@ If you have an existing project using the old system path:
    ```
 
 5. **Create .gitkeep**:
+
    ```bash
    touch database/.gitkeep
    ```
@@ -211,15 +227,17 @@ New projects will automatically use the `database/` directory:
 To verify the changes work correctly:
 
 1. **Create database directory**:
+
    ```bash
    mkdir -p database
    ```
 
 2. **Test connection**:
+
    ```python
    import json
    from senzing import G2Engine
-   
+
    config = {
        "PIPELINE": {
            "CONFIGPATH": "/etc/opt/senzing",
@@ -230,7 +248,7 @@ To verify the changes work correctly:
            "CONNECTION": "sqlite3://na:na@database/G2C.db"
        }
    }
-   
+
    engine = G2Engine()
    engine.init("TestApp", json.dumps(config), False)
    print("✅ Database connection successful")
@@ -238,6 +256,7 @@ To verify the changes work correctly:
    ```
 
 3. **Verify database file created**:
+
    ```bash
    ls -lh database/G2C.db
    ```
@@ -269,4 +288,3 @@ To verify the changes work correctly:
 ## Version History
 
 - **v1.0.0** (2026-03-17): Initial documentation of SQLite database location update
-

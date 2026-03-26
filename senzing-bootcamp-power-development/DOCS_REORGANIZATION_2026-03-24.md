@@ -1,12 +1,13 @@
 # Documentation Reorganization - March 24, 2026
 
-**Date**: 2026-03-24  
-**Purpose**: Separate user-facing documentation from agent/developer documentation  
+**Date**: 2026-03-24
+**Purpose**: Separate user-facing documentation from agent/developer documentation
 **Impact**: Cleaner structure, clearer purpose for each document
 
 ## Problem Statement
 
 The `senzing-bootcamp/docs/` directory contained a mix of:
+
 - User-facing guides (for bootcamp participants)
 - Agent implementation guides (for AI agents running the bootcamp)
 - Development documentation (for power developers)
@@ -18,13 +19,15 @@ This created confusion about the audience and purpose of each document.
 Reorganized documentation into two clear categories:
 
 ### User-Facing Documentation
-**Location**: `senzing-bootcamp/docs/`  
-**Audience**: Bootcamp users  
+
+**Location**: `senzing-bootcamp/docs/`
+**Audience**: Bootcamp users
 **Purpose**: Help users complete the bootcamp successfully
 
 ### Developer Documentation
-**Location**: `senzing-bootcamp-power-development/`  
-**Audience**: Power developers and AI agents  
+
+**Location**: `senzing-bootcamp-power-development/`
+**Audience**: Power developers and AI agents
 **Purpose**: Implementation details and development notes
 
 ## Files Moved
@@ -43,7 +46,7 @@ Reorganized documentation into two clear categories:
 
 ### From `senzing-bootcamp/docs/feedback/` to `senzing-bootcamp-power-development/feedback/`
 
-3. **IMPROVEMENT_MODULE_0_LIVE_DEMO.md**
+1. **IMPROVEMENT_MODULE_0_LIVE_DEMO.md**
    - **Why moved**: Development documentation, not user feedback
    - **Audience**: Power developers
    - **Contents**: Implementation details, technical decisions, impact analysis
@@ -86,7 +89,8 @@ All policy documents - agents need these during bootcamp execution.
 ## Directory Structure
 
 ### Before
-```
+
+```text
 senzing-bootcamp/docs/
 ├── guides/
 │   ├── MODULE_0_AGENT_GUIDE.md (agent guide)
@@ -100,7 +104,8 @@ senzing-bootcamp/docs/
 ```
 
 ### After
-```
+
+```text
 senzing-bootcamp/docs/
 ├── guides/ (6 user guides only)
 │   ├── QUICK_START.md
@@ -122,21 +127,24 @@ senzing-bootcamp-power-development/
 ## Benefits
 
 ### For Users
-✅ Clear separation: only user-facing docs in bootcamp directory  
-✅ Less confusion about document purpose  
-✅ Easier to find relevant guides  
-✅ Cleaner documentation structure  
+
+✅ Clear separation: only user-facing docs in bootcamp directory
+✅ Less confusion about document purpose
+✅ Easier to find relevant guides
+✅ Cleaner documentation structure
 
 ### For Developers
-✅ Agent implementation guides in one place  
-✅ Development documentation separate from user docs  
-✅ Easier to maintain and update  
-✅ Clear distinction between audiences  
+
+✅ Agent implementation guides in one place
+✅ Development documentation separate from user docs
+✅ Easier to maintain and update
+✅ Clear distinction between audiences
 
 ### For Maintainers
-✅ Obvious where new docs should go  
-✅ Reduced risk of mixing audiences  
-✅ Better organization for future additions  
+
+✅ Obvious where new docs should go
+✅ Reduced risk of mixing audiences
+✅ Better organization for future additions
 
 ## Updated README Files
 
@@ -163,6 +171,7 @@ senzing-bootcamp-power-development/
 When deciding where a document belongs:
 
 ### User-Facing (`senzing-bootcamp/docs/`)
+
 - Helps users complete bootcamp modules
 - Explains bootcamp features and workflows
 - Provides troubleshooting for users
@@ -170,6 +179,7 @@ When deciding where a document belongs:
 - Collects user feedback
 
 ### Developer (`senzing-bootcamp-power-development/`)
+
 - Agent implementation details
 - Development notes and decisions
 - Improvement documentation
@@ -181,10 +191,12 @@ When deciding where a document belongs:
 When adding new documentation:
 
 **Ask**: Who is the primary audience?
+
 - **Users** → `senzing-bootcamp/docs/`
 - **Agents/Developers** → `senzing-bootcamp-power-development/`
 
 **Ask**: What is the purpose?
+
 - **Help users complete bootcamp** → User docs
 - **Help agents implement bootcamp** → Developer docs
 - **Document development decisions** → Developer docs
@@ -192,15 +204,18 @@ When adding new documentation:
 ## Files Changed
 
 ### Moved
+
 - `senzing-bootcamp/docs/guides/MODULE_0_AGENT_GUIDE.md` → `senzing-bootcamp-power-development/guides/`
 - `senzing-bootcamp/docs/guides/FEEDBACK_WORKFLOW.md` → `senzing-bootcamp-power-development/guides/`
 - `senzing-bootcamp/docs/feedback/IMPROVEMENT_MODULE_0_LIVE_DEMO.md` → `senzing-bootcamp-power-development/feedback/`
 
 ### Updated
+
 - `senzing-bootcamp/docs/guides/README.md`
 - `senzing-bootcamp-power-development/guides/README.md`
 
 ### Created
+
 - `senzing-bootcamp/docs/feedback/README.md`
 - `senzing-bootcamp-power-development/feedback/README.md`
 - `senzing-bootcamp-power-development/DOCS_REORGANIZATION_2026-03-24.md` (this file)
@@ -208,17 +223,20 @@ When adding new documentation:
 ## Impact Assessment
 
 ### Breaking Changes
+
 ❌ None - all files still exist, just in different locations
 
 ### Agent Impact
-✅ Agents can still access implementation guides  
-✅ Location is more logical for agent documentation  
-✅ Clearer separation of concerns  
+
+✅ Agents can still access implementation guides
+✅ Location is more logical for agent documentation
+✅ Clearer separation of concerns
 
 ### User Impact
-✅ Users see only relevant documentation  
-✅ Less confusion about document purpose  
-✅ Cleaner docs directory  
+
+✅ Users see only relevant documentation
+✅ Less confusion about document purpose
+✅ Cleaner docs directory
 
 ## Testing Recommendations
 
@@ -236,6 +254,7 @@ When adding new documentation:
 ## Related Changes
 
 This reorganization complements:
+
 - Module 0 live demo implementation (v0.26.0)
 - Previous guide cleanup (2026-03-23)
 - MCP server integration
@@ -243,6 +262,7 @@ This reorganization complements:
 ## Conclusion
 
 Documentation is now clearly organized by audience:
+
 - **Users** → `senzing-bootcamp/docs/`
 - **Developers/Agents** → `senzing-bootcamp-power-development/`
 

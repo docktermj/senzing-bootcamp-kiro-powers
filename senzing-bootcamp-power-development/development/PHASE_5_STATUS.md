@@ -15,6 +15,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 **Location**: `NEW_WORKFLOWS_PHASE5.md`
 
 **Content** (2,100+ lines):
+
 - Step 1: Assess Multi-Source Requirements
 - Step 2: Define Load Order
 - Step 3: Create Orchestration Script (complete Python implementation)
@@ -26,6 +27,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 - Step 9: Document Orchestration
 
 **Key Features**:
+
 - Dependency management between sources
 - Parallel and sequential loading strategies
 - Complete Python orchestration script (LoadOrchestrator class)
@@ -40,6 +42,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 **Location**: `NEW_WORKFLOWS_PHASE5.md`
 
 **Content** (1,000+ lines):
+
 - Step 1: Review Business Requirements
 - Step 2: Create Query Programs
 - Step 3: Test Query Programs
@@ -50,6 +53,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 - Step 8: Document Query Specifications
 
 **Key Features**:
+
 - Query program examples (Customer 360, Find Duplicates)
 - UAT test case format (YAML)
 - UAT executor guidance
@@ -62,6 +66,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 **Location**: `NEW_WORKFLOWS_PHASE5.md`
 
 **Content** (1,500+ lines):
+
 - Step 1: Define Performance Requirements
 - Step 2: Benchmark Transformation Performance
 - Step 3: Benchmark Loading Performance
@@ -72,6 +77,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 - Step 8: Optimize if Needed
 
 **Key Features**:
+
 - Complete benchmark scripts (transformation, loading, queries)
 - Concurrent query testing
 - Resource monitoring
@@ -84,6 +90,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 **Location**: `NEW_WORKFLOWS_PHASE5.md`
 
 **Content** (1,500+ lines):
+
 - Step 1: Assess Security Requirements
 - Step 2: Implement Secrets Management
 - Step 3: Implement Authentication and Authorization
@@ -94,6 +101,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 - Step 8: Document Security Procedures
 
 **Key Features**:
+
 - Secrets management (AWS, Azure, environment variables)
 - API authentication (API keys, JWT)
 - Role-based access control (RBAC)
@@ -107,6 +115,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 **Location**: `NEW_WORKFLOWS_PHASE5.md`
 
 **Content** (1,500+ lines):
+
 - Step 1: Choose Monitoring Stack
 - Step 2: Implement Metrics Collection
 - Step 3: Configure Structured Logging
@@ -120,6 +129,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 - Step 11: Document Monitoring Setup
 
 **Key Features**:
+
 - Monitoring stack options (Prometheus/Grafana, ELK, Cloud, APM)
 - Complete metrics implementation (Prometheus client)
 - Structured logging (JSON formatter)
@@ -134,6 +144,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 **Location**: `NEW_WORKFLOWS_PHASE5.md`
 
 **Content** (1,000+ lines, updated):
+
 - Step 1: Review Production Readiness
 - Step 2: Refactor Code Structure
 - Step 3: Integrate Security, Performance, and Monitoring
@@ -144,6 +155,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 - Step 8: Final Validation
 
 **Key Updates**:
+
 - References Modules 9, 10, 11 as prerequisites
 - Integrates security measures from Module 10
 - Integrates performance optimizations from Module 9
@@ -162,6 +174,7 @@ All workflows have been created in `NEW_WORKFLOWS_PHASE5.md` (~10,000+ lines tot
 All workflows are complete and ready to be integrated into `steering/steering.md`.
 
 **Integration Plan**:
+
 1. Insert Module 7 workflow after existing Module 6 workflow (around line 1023)
 2. Replace old "Module 7: Query Results" with new "Module 8: Query and Validate Results" (around line 1053)
 3. Insert Module 9 workflow after Module 8
@@ -170,6 +183,7 @@ All workflows are complete and ready to be integrated into `steering/steering.md
 6. Replace old "Module 8: Refine and Package" with updated "Module 12: Package and Deploy" (around line 1296)
 
 **File Sizes**:
+
 - Current `steering/steering.md`: 1,945 lines
 - New workflows in `NEW_WORKFLOWS_PHASE5.md`: ~10,000+ lines
 - Final `steering/steering.md`: ~12,000+ lines (estimated)
@@ -196,17 +210,20 @@ All workflows are complete and ready to be integrated into `steering/steering.md
 The workflows are complete and ready for integration. The user or a future session can integrate them into `steering/steering.md` using one of these approaches:
 
 ### Option 1: Manual Integration (Recommended)
+
 1. Open `steering/steering.md` in editor
 2. Copy workflows from `NEW_WORKFLOWS_PHASE5.md`
 3. Insert at appropriate locations
 4. Verify all references are correct
 
 ### Option 2: Automated Integration
+
 1. Use strReplace to insert workflows at specific line numbers
 2. Requires multiple strReplace operations
 3. More error-prone due to file size
 
 ### Option 3: Keep Separate
+
 1. Keep workflows in `NEW_WORKFLOWS_PHASE5.md`
 2. Reference from `steering/steering.md`
 3. Load on-demand when needed

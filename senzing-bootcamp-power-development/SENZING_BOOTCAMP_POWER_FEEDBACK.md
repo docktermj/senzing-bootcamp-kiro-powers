@@ -1,7 +1,7 @@
 # Senzing Boot Camp Power - Improvement Feedback
 
-**Date:** 2026-03-17  
-**Power Version:** 3.0.0  
+**Date:** 2026-03-17
+**Power Version:** 3.0.0
 **Submitted By:** Boot Camp User
 
 ---

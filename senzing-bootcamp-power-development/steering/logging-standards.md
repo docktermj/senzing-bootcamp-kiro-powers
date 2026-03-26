@@ -4,7 +4,7 @@ inclusion: always
 
 # Logging Standards
 
-**Version**: 1.0  
+**Version**: 1.0
 **Last Updated**: 2026-03-17
 
 This document defines logging standards for all Senzing Boot Camp code.
@@ -14,6 +14,7 @@ This document defines logging standards for all Senzing Boot Camp code.
 ## Overview
 
 Consistent logging enables:
+
 - Easier debugging
 - Better monitoring
 - Audit trails
@@ -25,8 +26,10 @@ Consistent logging enables:
 ## Log Levels
 
 ### DEBUG
-**When**: Detailed diagnostic information  
+
+**When**: Detailed diagnostic information
 **Examples**:
+
 - Variable values
 - Function entry/exit
 - Detailed state information
@@ -37,8 +40,10 @@ logger.debug(f"Batch size: {batch_size}, Current batch: {batch_num}")
 ```
 
 ### INFO
-**When**: General informational messages  
+
+**When**: General informational messages
 **Examples**:
+
 - Application start/stop
 - Major milestones
 - Progress updates
@@ -50,8 +55,10 @@ logger.info("Application initialized")
 ```
 
 ### WARNING
-**When**: Unexpected but recoverable situations  
+
+**When**: Unexpected but recoverable situations
 **Examples**:
+
 - Missing optional data
 - Deprecated features
 - Performance degradation
@@ -63,8 +70,10 @@ logger.warning("Database connection slow (>1s)")
 ```
 
 ### ERROR
-**When**: Error conditions that don't stop execution  
+
+**When**: Error conditions that don't stop execution
 **Examples**:
+
 - Failed record processing
 - Recoverable errors
 - Invalid data
@@ -75,8 +84,10 @@ logger.error(f"Database query failed, retrying: {error}")
 ```
 
 ### CRITICAL
-**When**: Severe errors that may stop execution  
+
+**When**: Severe errors that may stop execution
 **Examples**:
+
 - Database connection lost
 - Configuration errors
 - System failures
@@ -127,6 +138,7 @@ Include these fields in all structured logs:
 - `function` - Function name
 
 Optional fields:
+
 - `data_source` - Senzing data source
 - `record_id` - Record identifier
 - `entity_id` - Entity identifier
@@ -166,14 +178,14 @@ from pathlib import Path
 
 def setup_logging(log_dir='logs', log_level=logging.INFO):
     """Configure application logging"""
-    
+
     # Create log directory
     Path(log_dir).mkdir(parents=True, exist_ok=True)
-    
+
     # Create logger
     logger = logging.getLogger('senzing_bootcamp')
     logger.setLevel(log_level)
-    
+
     # Console handler
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
@@ -181,7 +193,7 @@ def setup_logging(log_dir='logs', log_level=logging.INFO):
         '%(asctime)s - %(levelname)s - %(message)s'
     )
     console_handler.setFormatter(console_formatter)
-    
+
     # File handler (rotating)
     file_handler = logging.handlers.RotatingFileHandler(
         f'{log_dir}/application.log',
@@ -194,11 +206,11 @@ def setup_logging(log_dir='logs', log_level=logging.INFO):
         '%(funcName)s:%(lineno)d - %(message)s'
     )
     file_handler.setFormatter(file_formatter)
-    
+
     # Add handlers
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
-    
+
     return logger
 ```
 
@@ -229,11 +241,11 @@ for i, record in enumerate(records, 1):
     try:
         # Load record
         logger.debug(f"Loading record {i}/{total_records}")
-        
+
         if i % 1000 == 0:
             logger.info(f"Progress: {i:,}/{total_records:,} "
                        f"({i/total_records*100:.1f}%)")
-    
+
     except Exception as e:
         logger.error(f"Failed to load record {record_id}: {e}")
         error_count += 1
@@ -248,13 +260,13 @@ logger.info(f"Load complete: {success_count:,} success, "
 try:
     result = risky_operation()
     logger.info("Operation succeeded")
-    
+
 except ValueError as e:
     logger.error(f"Invalid value: {e}")
-    
+
 except ConnectionError as e:
     logger.error(f"Connection failed: {e}", exc_info=True)
-    
+
 except Exception as e:
     logger.critical(f"Unexpected error: {e}", exc_info=True)
     raise
@@ -288,12 +300,12 @@ def log_context(operation, **kwargs):
     """Log operation with context"""
     logger.info(f"Starting: {operation}", extra=kwargs)
     start = time.time()
-    
+
     try:
         yield
         elapsed = time.time() - start
         logger.info(f"Completed: {operation} ({elapsed:.2f}s)", extra=kwargs)
-    
+
     except Exception as e:
         elapsed = time.time() - start
         logger.error(f"Failed: {operation} ({elapsed:.2f}s): {e}",
@@ -311,23 +323,23 @@ with log_context('load_data', data_source='CUSTOMERS', file='data.csv'):
 
 ### DO Log
 
-✅ Application start/stop  
-✅ Configuration loaded  
-✅ Database connections  
-✅ Major operations (load, query, export)  
-✅ Progress milestones (every 1000 records)  
-✅ Errors and exceptions  
-✅ Performance metrics  
-✅ Security events (authentication, authorization)  
-✅ Data quality issues  
+✅ Application start/stop
+✅ Configuration loaded
+✅ Database connections
+✅ Major operations (load, query, export)
+✅ Progress milestones (every 1000 records)
+✅ Errors and exceptions
+✅ Performance metrics
+✅ Security events (authentication, authorization)
+✅ Data quality issues
 
 ### DON'T Log
 
-❌ Sensitive data (passwords, SSN, credit cards)  
-❌ Full record contents (use record IDs)  
-❌ Every single record (use sampling)  
-❌ Redundant information  
-❌ Debug logs in production (unless needed)  
+❌ Sensitive data (passwords, SSN, credit cards)
+❌ Full record contents (use record IDs)
+❌ Every single record (use sampling)
+❌ Redundant information
+❌ Debug logs in production (unless needed)
 
 ### Sanitize Sensitive Data
 
@@ -335,15 +347,15 @@ with log_context('load_data', data_source='CUSTOMERS', file='data.csv'):
 def sanitize_record(record):
     """Remove sensitive data from record for logging"""
     safe_record = record.copy()
-    
+
     # Mask sensitive fields
     if 'SSN_NUMBER' in safe_record:
         safe_record['SSN_NUMBER'] = 'XXX-XX-' + safe_record['SSN_NUMBER'][-4:]
-    
+
     if 'CREDIT_CARD' in safe_record:
         safe_record['CREDIT_CARD'] = 'XXXX-XXXX-XXXX-' + \
                                      safe_record['CREDIT_CARD'][-4:]
-    
+
     return safe_record
 
 # Usage
@@ -383,7 +395,7 @@ handler = TimedRotatingFileHandler(
 
 ## Production Logging
 
-### Configuration
+### Production Logging Configuration
 
 ```python
 # Production settings
@@ -452,10 +464,10 @@ logger.addHandler(syslog_handler)
 ```python
 class MetricsLogger:
     """Log metrics for monitoring"""
-    
+
     def __init__(self, logger):
         self.logger = logger
-    
+
     def log_metric(self, metric_name, value, unit='count', **tags):
         """Log metric in structured format"""
         metric_data = {
@@ -489,7 +501,7 @@ def test_logging(caplog):
     """Test that logging works correctly"""
     with caplog.at_level(logging.INFO):
         logger.info("Test message")
-    
+
     assert "Test message" in caplog.text
     assert len(caplog.records) == 1
     assert caplog.records[0].levelname == "INFO"
@@ -530,17 +542,17 @@ from datetime import datetime
 def setup_logging(log_dir='logs', log_level=logging.INFO):
     """Configure application logging"""
     Path(log_dir).mkdir(parents=True, exist_ok=True)
-    
+
     logger = logging.getLogger('my_app')
     logger.setLevel(log_level)
-    
+
     # Console handler
     console = logging.StreamHandler(sys.stdout)
     console.setLevel(logging.INFO)
     console.setFormatter(logging.Formatter(
         '%(asctime)s - %(levelname)s - %(message)s'
     ))
-    
+
     # File handler
     file_handler = logging.handlers.RotatingFileHandler(
         f'{log_dir}/app.log',
@@ -552,26 +564,26 @@ def setup_logging(log_dir='logs', log_level=logging.INFO):
         '%(asctime)s - %(name)s - %(levelname)s - '
         '%(funcName)s:%(lineno)d - %(message)s'
     ))
-    
+
     logger.addHandler(console)
     logger.addHandler(file_handler)
-    
+
     return logger
 
 def main():
     """Main application"""
     logger = setup_logging()
-    
+
     logger.info("Application starting")
-    
+
     try:
         # Application logic
         logger.info("Processing data")
-        
+
         # Success
         logger.info("Application completed successfully")
         return 0
-        
+
     except Exception as e:
         logger.critical(f"Application failed: {e}", exc_info=True)
         return 1
@@ -582,6 +594,6 @@ if __name__ == "__main__":
 
 ---
 
-**Document Owner**: Boot Camp Team  
-**Last Updated**: 2026-03-17  
+**Document Owner**: Boot Camp Team
+**Last Updated**: 2026-03-17
 **Next Review**: 2026-06-17

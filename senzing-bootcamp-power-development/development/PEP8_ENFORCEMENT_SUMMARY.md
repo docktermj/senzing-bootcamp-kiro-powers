@@ -1,6 +1,6 @@
 # PEP-8 Enforcement Summary
 
-**Date**: 2026-03-17  
+**Date**: 2026-03-17
 **Status**: Fully Implemented
 
 ## Overview
@@ -12,10 +12,12 @@ All Python code in the Senzing Boot Camp power now adheres to PEP-8 standards, a
 ### 1. All Existing Scripts Made Compliant ✅
 
 **14 Python scripts verified and fixed**:
+
 - 3 demo scripts (Module 0)
 - 11 template scripts (validation, collection, backup, analysis, troubleshooting)
 
 **Compliance verified**:
+
 - Maximum line length: 100 characters
 - No trailing whitespace
 - 4 spaces for indentation (no tabs)
@@ -25,6 +27,7 @@ All Python code in the Senzing Boot Camp power now adheres to PEP-8 standards, a
 ### 2. Documentation Created ✅
 
 **New Documentation**:
+
 1. `docs/development/PEP8_COMPLIANCE.md` - Comprehensive guide with:
    - Compliance status for all scripts
    - PEP-8 standards explained
@@ -37,6 +40,7 @@ All Python code in the Senzing Boot Camp power now adheres to PEP-8 standards, a
 2. `docs/development/PEP8_ENFORCEMENT_SUMMARY.md` - This document
 
 **Updated Documentation**:
+
 1. `POWER.md` - Added Code Quality Standards section
 2. `steering/agent-instructions.md` - Added Core Principle #9 and Code Quality Standards section
 3. `steering/steering.md` - Added Code Quality Standards at top and notes in Modules 4, 6, 8
@@ -46,7 +50,8 @@ All Python code in the Senzing Boot Camp power now adheres to PEP-8 standards, a
 ### 3. Agent Behavior Updated ✅
 
 **Core Principle #9 Added** (in `steering/agent-instructions.md`):
-```
+
+```text
 All Python code must be PEP-8 compliant:
 - Maximum line length: 100 characters
 - No trailing whitespace
@@ -60,6 +65,7 @@ All Python code must be PEP-8 compliant:
 ```
 
 **Agent Responsibilities**:
+
 1. Generate PEP-8 compliant code by default
 2. Check user-provided code for PEP-8 compliance
 3. Suggest specific fixes for violations
@@ -68,12 +74,14 @@ All Python code must be PEP-8 compliant:
 ### 4. Automated Enforcement ✅
 
 **Hook Created**: `hooks/pep8-check.hook`
+
 - Triggers when Python files are edited
 - Checks for PEP-8 compliance
 - Suggests fixes for violations
 - Acknowledges compliant code
 
 **Installation**:
+
 ```bash
 cp senzing-bootcamp/hooks/pep8-check.hook .kiro/hooks/
 ```
@@ -81,14 +89,17 @@ cp senzing-bootcamp/hooks/pep8-check.hook .kiro/hooks/
 ### 5. Module-Specific Enforcement ✅
 
 **Module 4 (Data Mapping)**:
+
 - Transformation programs must be PEP-8 compliant
 - Note added to Step 5 of workflow
 
 **Module 6 (Loading)**:
+
 - Loading programs must be PEP-8 compliant
 - Note added to Step 2 of workflow
 
 **Module 8 (Query Programs)**:
+
 - Query programs must be PEP-8 compliant
 - Note added to Quick Summary
 
@@ -97,6 +108,7 @@ cp senzing-bootcamp/hooks/pep8-check.hook .kiro/hooks/
 ### When User Generates Code
 
 The agent will:
+
 1. Generate PEP-8 compliant code automatically
 2. Include proper docstrings
 3. Use correct naming conventions
@@ -106,6 +118,7 @@ The agent will:
 ### When User Provides Code
 
 The agent will:
+
 1. Check for PEP-8 compliance
 2. Identify specific violations
 3. Suggest fixes with examples
@@ -115,6 +128,7 @@ The agent will:
 ### When User Edits Python Files
 
 If PEP-8 check hook is installed:
+
 1. Hook triggers automatically
 2. Agent checks compliance
 3. Violations are reported
@@ -153,7 +167,7 @@ def check_pep8(filepath):
     issues = []
     with open(filepath, 'r') as f:
         lines = f.readlines()
-    
+
     for i, line in enumerate(lines, 1):
         if len(line.rstrip()) > 100:
             issues.append(f'Line {i}: Too long')
@@ -161,7 +175,7 @@ def check_pep8(filepath):
             issues.append(f'Line {i}: Trailing whitespace')
         if '\t' in line:
             issues.append(f'Line {i}: Contains tabs')
-    
+
     return issues
 ```
 
@@ -256,7 +270,7 @@ from pathlib import Path
 DATA_SOURCE="CUSTOMERS"  # No spaces around =
 
 def transform_record(source_record):  # No docstring
-	return {"DATA_SOURCE": DATA_SOURCE, "RECORD_ID": source_record.get("id"), "NAME_FULL": source_record.get("name")}  # Tabs, line too long
+ return {"DATA_SOURCE": DATA_SOURCE, "RECORD_ID": source_record.get("id"), "NAME_FULL": source_record.get("name")}  # Tabs, line too long
 
 def main():  # Only one blank line before function
     pass
@@ -267,6 +281,7 @@ def main():  # Only one blank line before function
 ### Pre-commit Hook
 
 Add to `.git/hooks/pre-commit`:
+
 ```bash
 #!/bin/bash
 pycodestyle --max-line-length=100 src/ templates/
@@ -279,6 +294,7 @@ fi
 ### CI/CD Integration
 
 Add to `.github/workflows/lint.yml`:
+
 ```yaml
 name: Lint
 on: [push, pull_request]
@@ -298,6 +314,7 @@ jobs:
 ### IDE Configuration
 
 **VS Code** (`.vscode/settings.json`):
+
 ```json
 {
     "python.linting.pycodestyleEnabled": true,
@@ -343,19 +360,19 @@ jobs:
 
 PEP-8 compliance is now fully enforced throughout the Senzing Boot Camp power:
 
-✅ All existing scripts compliant  
-✅ Agent configured to generate compliant code  
-✅ Agent configured to check user code  
-✅ Documentation created and updated  
-✅ Automated hook available  
-✅ Module workflows updated  
-✅ Validation tools documented  
+✅ All existing scripts compliant
+✅ Agent configured to generate compliant code
+✅ Agent configured to check user code
+✅ Documentation created and updated
+✅ Automated hook available
+✅ Module workflows updated
+✅ Validation tools documented
 
 Users will receive high-quality, professional Python code that follows industry standards throughout their boot camp experience.
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2026-03-17  
-**Status**: Complete  
+**Document Version**: 1.0
+**Last Updated**: 2026-03-17
+**Status**: Complete
 **Maintained by**: Senzing Boot Camp Team

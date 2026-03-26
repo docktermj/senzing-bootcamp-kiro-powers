@@ -22,34 +22,34 @@ Moved 9 generic steering files from the Power distribution to the development re
 
 ### Generic Patterns (3 files)
 
-4. **api-gateway-patterns.md**
+1. **api-gateway-patterns.md**
 
    - API integration patterns
    - Replacement: `find_examples(query="API gateway")`
 
-5. **integration-patterns.md**
+2. **integration-patterns.md**
 
    - REST API, batch export, streaming, database sync
    - Replacement: `find_examples(query="integration patterns")`
 
-6. **multi-environment-strategy.md**
+3. **multi-environment-strategy.md**
 
    - Dev/staging/prod strategy
    - Replacement: `search_docs(query="multi-environment deployment")`
 
 ### Advanced Operations (3 files)
 
-7. **disaster-recovery.md**
+1. **disaster-recovery.md**
 
    - Backup, rollback, disaster recovery
    - Replacement: `search_docs(query="disaster recovery")`
 
-8. **recovery-procedures.md**
+2. **recovery-procedures.md**
 
    - Error recovery procedures
    - Replacement: `search_docs(query="backup and recovery")`
 
-9. **collaboration.md**
+3. **collaboration.md**
 
    - Team workflows, code review, handoff procedures
    - Replacement: Standard software engineering practices
@@ -85,17 +85,17 @@ Content is considered generic if:
 
 ### Boot Camp Support (11 files)
 
-6. common-pitfalls.md - Boot camp-specific troubleshooting
-7. troubleshooting-decision-tree.md - Diagnostic tree for learners
-8. complexity-estimator.md - Project estimation for Module 1
-9. cost-estimation.md - Cost calculation for Module 1
-10. lessons-learned.md - Post-boot camp reflection
-11. docker-deployment.md - Critical Docker patterns and schema fixes
-12. security-privacy.md - Data privacy reminders for learners
-13. incremental-loading.md - Senzing-specific loading patterns
-14. data-lineage.md - Data source tracking for Module 2
-15. environment-setup.md - Environment configuration
-16. uat-framework.md - UAT framework for Module 8
+1. common-pitfalls.md - Boot camp-specific troubleshooting
+2. troubleshooting-decision-tree.md - Diagnostic tree for learners
+3. complexity-estimator.md - Project estimation for Module 1
+4. cost-estimation.md - Cost calculation for Module 1
+5. lessons-learned.md - Post-boot camp reflection
+6. docker-deployment.md - Critical Docker patterns and schema fixes
+7. security-privacy.md - Data privacy reminders for learners
+8. incremental-loading.md - Senzing-specific loading patterns
+9. data-lineage.md - Data source tracking for Module 2
+10. environment-setup.md - Environment configuration
+11. uat-framework.md - UAT framework for Module 8
 
 ## References Updated
 
@@ -145,17 +145,17 @@ Updated all references in:
 
 ### MCP Tool Replacements
 
-| Removed File | MCP Tool Replacement |
-|--------------|---------------------|
-| logging-standards.md | `search_docs(query="logging best practices")` |
-| testing-strategy.md | `search_docs(query="testing best practices")` |
-| performance-monitoring.md | `search_docs(query="performance monitoring", category="performance")` |
-| api-gateway-patterns.md | `find_examples(query="API gateway")` |
-| integration-patterns.md | `find_examples(query="integration patterns")` |
-| multi-environment-strategy.md | `search_docs(query="multi-environment deployment")` |
-| disaster-recovery.md | `search_docs(query="disaster recovery")` |
-| recovery-procedures.md | `search_docs(query="backup and recovery")` |
-| collaboration.md | Standard software engineering practices |
+| Removed File                  | MCP Tool Replacement                                                  |
+|-------------------------------|-----------------------------------------------------------------------|
+| logging-standards.md          | `search_docs(query="logging best practices")`                         |
+| testing-strategy.md           | `search_docs(query="testing best practices")`                         |
+| performance-monitoring.md     | `search_docs(query="performance monitoring", category="performance")` |
+| api-gateway-patterns.md       | `find_examples(query="API gateway")`                                  |
+| integration-patterns.md       | `find_examples(query="integration patterns")`                         |
+| multi-environment-strategy.md | `search_docs(query="multi-environment deployment")`                   |
+| disaster-recovery.md          | `search_docs(query="disaster recovery")`                              |
+| recovery-procedures.md        | `search_docs(query="backup and recovery")`                            |
+| collaboration.md              | Standard software engineering practices                               |
 
 ## Verification
 

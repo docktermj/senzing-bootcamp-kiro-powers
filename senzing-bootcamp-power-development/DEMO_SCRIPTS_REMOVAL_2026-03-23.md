@@ -1,6 +1,6 @@
 # Demo Scripts Removal Summary
 
-**Date**: 2026-03-23  
+**Date**: 2026-03-23
 **Purpose**: Remove static demo scripts, leverage MCP server for dynamic code generation
 
 ## Executive Summary
@@ -33,12 +33,13 @@ The Senzing MCP Server provides two tools that replace static demos:
 
 ```python
 get_sample_data(
-    dataset="las-vegas",  # or "london", "moscow"  
+    dataset="las-vegas",  # or "london", "moscow"
     limit=100
 )
 ```
 
 **Provides:**
+
 - Las Vegas, London, Moscow datasets
 - Always current data format
 - Configurable sample size
@@ -55,6 +56,7 @@ generate_scaffold(
 ```
 
 **Provides:**
+
 - Complete demo script with initialization, loading, querying
 - Always current SDK version
 - 5 language options
@@ -63,17 +65,20 @@ generate_scaffold(
 ## How Module 0 Works Now
 
 ### Old Approach (Static Scripts)
+
 1. User starts Module 0
 2. Agent points to pre-existing demo script
 3. User runs `python src/quickstart_demo/demo_customer_360.py`
 4. Demo uses hardcoded sample data
 
 **Problems:**
+
 - Demo script may be outdated
 - Only Python available
 - Can't customize easily
 
 ### New Approach (MCP-Generated)
+
 1. User starts Module 0
 2. Agent creates `src/quickstart_demo/` directory
 3. Agent calls `get_sample_data(dataset="las-vegas", limit=100)`
@@ -82,6 +87,7 @@ generate_scaffold(
 6. User runs freshly-generated demo
 
 **Benefits:**
+
 - Always current SDK version
 - Can generate in Python, Java, C#, Rust, TypeScript
 - User learns how to generate code
@@ -115,40 +121,45 @@ These files correctly reference the directory (which agent creates) but not the 
 ## Benefits
 
 ### 1. Always Current
+
 - Demo code uses latest SDK version automatically
 - No risk of outdated examples
 - Follows current best practices
 
 ### 2. Multi-Language Support
+
 - Can generate demos in 5 languages
 - Users can try their preferred language
 - Better learning experience
 
 ### 3. Reduced Maintenance
+
 - No static demo scripts to update
 - MCP server handles SDK changes
 - Fewer files to maintain
 
 ### 4. Better Learning
+
 - Users see how to generate code
 - Teaches MCP tool usage
 - More practical for real projects
 
 ### 5. Smaller Distribution
+
 - 3 fewer files in Power package
 - Cleaner, more focused distribution
 - Faster downloads
 
 ## Comparison
 
-| Aspect | Old (Static Scripts) | New (MCP-Generated) |
-|--------|---------------------|---------------------|
-| **Languages** | Python only | Python, Java, C#, Rust, TypeScript |
-| **SDK Version** | Fixed at creation time | Always current |
-| **Maintenance** | Manual updates needed | Automatic via MCP |
-| **Customization** | Edit static file | Generate with parameters |
-| **Learning Value** | Run pre-made script | Learn to generate code |
-| **Distribution Size** | +3 files | 0 files |
+| Aspect                | Old (Static Scripts)   | New (MCP-Generated)                |
+|-----------------------|------------------------|------------------------------------|
+| **Languages**         | Python only            | Python, Java, C#, Rust, TypeScript |
+| **SDK Version**       | Fixed at creation time | Always current                     |
+| **Maintenance**       | Manual updates needed  | Automatic via MCP                  |
+| **Customization**     | Edit static file       | Generate with parameters           |
+| **Learning Value**    | Run pre-made script    | Learn to generate code             |
+| **Distribution Size** | +3 files               | 0 files                            |
 
 ## Agent Behavior
 
@@ -157,11 +168,13 @@ These files correctly reference the directory (which agent creates) but not the 
 When user starts Module 0:
 
 1. **Create directory**:
+
    ```bash
    mkdir -p src/quickstart_demo
    ```
 
 2. **Get sample data**:
+
    ```python
    # Agent calls MCP tool
    get_sample_data(dataset="las-vegas", limit=100)
@@ -169,17 +182,19 @@ When user starts Module 0:
    ```
 
 3. **Generate demo code**:
+
    ```python
    # Agent calls MCP tool
    generate_scaffold(
        language="python",
-       workflow="full_pipeline", 
+       workflow="full_pipeline",
        version="current"
    )
    # Save to src/quickstart_demo/demo_las_vegas.py
    ```
 
 4. **User runs demo**:
+
    ```bash
    cd src/quickstart_demo
    python demo_las_vegas.py
@@ -200,6 +215,7 @@ If users need demo scripts, the agent generates them on-demand using MCP tools.
 ## Verification
 
 ### Files Removed
+
 ```bash
 # Verified demo scripts moved to development
 ls senzing-bootcamp-development/quickstart_demo/
@@ -210,9 +226,11 @@ ls senzing-bootcamp-development/quickstart_demo/
 ```
 
 ### Directory Still Created
+
 The `src/quickstart_demo/` directory is still created by the agent during Module 0, but it's populated with MCP-generated code rather than pre-existing files.
 
-### References Updated
+### References Updated (2)
+
 - ✅ PEP8_COMPLIANCE.md updated (removed demo scripts from list)
 - ✅ All other references correctly point to directory, not specific files
 - ✅ No broken links

@@ -7,6 +7,7 @@ Removed the empty `src/` directory from the Power distribution. This directory i
 ## Directory Removed
 
 **src/** - User workspace directory
+
 - **Status**: Removed from Power distribution
 - **Reason**: Created dynamically by agent
 - **Created by**: Agent instructions in `steering/agent-instructions.md`
@@ -17,6 +18,7 @@ Removed the empty `src/` directory from the Power distribution. This directory i
 ### Why Remove?
 
 1. **Created Dynamically**: The agent automatically creates the directory structure:
+
    ```bash
    mkdir -p src/{transform,load,query,utils}
    ```
@@ -41,6 +43,7 @@ Removed the empty `src/` directory from the Power distribution. This directory i
 ### What Directories Remain?
 
 Only directories that contain actual Power content:
+
 - `docs/` - Documentation (guides, modules, policies, feedback)
 - `examples/` - Example projects (3 complete projects)
 - `hooks/` - Hook definitions (6 hook files)
@@ -56,7 +59,7 @@ The agent creates the `src/` directory automatically in `steering/agent-instruct
 # Check if structure exists
 if [ ! -d "src" ] || [ ! -d "data" ] || [ ! -d "docs" ]; then
     echo "Creating project directory structure..."
-    
+
     # Create all directories
     mkdir -p data/{raw,transformed,samples,backups}
     mkdir -p database
@@ -68,12 +71,13 @@ if [ ! -d "src" ] || [ ! -d "data" ] || [ ! -d "docs" ]; then
     mkdir -p logs
     mkdir -p monitoring
     mkdir -p scripts
-    
+
     # ... (creates .gitignore, .env.example, README.md, etc.)
 fi
 ```
 
 This happens automatically when:
+
 - User starts Module 0 (Quick Demo)
 - User starts Module 1 (Business Problem)
 - User starts any module (if structure doesn't exist)
@@ -81,17 +85,20 @@ This happens automatically when:
 ## Impact
 
 ### Distribution Size
+
 - **Before**: 8 directories (including empty `src/`)
 - **After**: 7 directories (only content directories)
 - **Reduction**: 1 empty directory removed
 
 ### Benefits
+
 1. **Cleaner Distribution**: No empty placeholder directories
 2. **Consistent Approach**: All user workspace directories created dynamically
 3. **No Confusion**: Users won't wonder why `src/` is empty
 4. **Smaller Package**: Slightly smaller distribution
 
 ### No Functionality Lost
+
 - Agent still creates `src/` directory automatically
 - All workflows function identically
 - No changes to user experience
@@ -100,7 +107,8 @@ This happens automatically when:
 ## Verification
 
 ### Directory Structure Before
-```
+
+```text
 senzing-bootcamp/
 ├── docs/
 ├── examples/
@@ -118,7 +126,8 @@ senzing-bootcamp/
 ```
 
 ### Directory Structure After
-```
+
+```text
 senzing-bootcamp/
 ├── docs/
 ├── examples/
@@ -150,11 +159,13 @@ This is Phase 6 of the ongoing cleanup effort:
 ### When to Include Directories in Power Distribution
 
 **Include directories that**:
+
 - Contain Power content (documentation, examples, templates, etc.)
 - Are required for Power functionality
 - Provide value to users immediately
 
 **Don't include directories that**:
+
 - Are empty placeholders
 - Are created dynamically by the agent
 - Are user workspaces
@@ -163,6 +174,7 @@ This is Phase 6 of the ongoing cleanup effort:
 ### User Workspace Directories (Created Dynamically)
 
 These directories are created by the agent, not included in distribution:
+
 - `data/` - User data files
 - `database/` - User databases
 - `src/` - User source code
@@ -178,4 +190,3 @@ These directories are created by the agent, not included in distribution:
 - **Phase**: 6 (Empty Directories Cleanup)
 - **Directories Removed**: 1
 - **Status**: ✅ Complete
-

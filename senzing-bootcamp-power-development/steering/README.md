@@ -29,29 +29,29 @@ These files were moved to the development repository on March 23, 2026 because:
 
 ### Generic Patterns (3 files)
 
-4. **api-gateway-patterns.md** - API integration patterns
+1. **api-gateway-patterns.md** - API integration patterns
    - **Replacement**: Use `find_examples(query="API gateway")` or `search_docs(query="API integration")`
    - **Reason**: Generic API patterns, not boot camp-specific
 
-5. **integration-patterns.md** - REST API, batch export, streaming, database sync
+2. **integration-patterns.md** - REST API, batch export, streaming, database sync
    - **Replacement**: Use `find_examples(query="integration patterns")`
    - **Reason**: Generic integration patterns
 
-6. **multi-environment-strategy.md** - Dev/staging/prod strategy
+3. **multi-environment-strategy.md** - Dev/staging/prod strategy
    - **Replacement**: Use `search_docs(query="multi-environment deployment")`
    - **Reason**: Generic DevOps practice
 
 ### Advanced Operations (3 files)
 
-7. **disaster-recovery.md** - Backup, rollback, disaster recovery
+1. **disaster-recovery.md** - Backup, rollback, disaster recovery
    - **Replacement**: Use `search_docs(query="disaster recovery")`
    - **Reason**: Generic DR best practices, too advanced for boot camp
 
-8. **recovery-procedures.md** - Error recovery procedures
+2. **recovery-procedures.md** - Error recovery procedures
    - **Replacement**: Use `search_docs(query="backup and recovery")` or `explain_error_code`
    - **Reason**: MCP server handles error diagnosis
 
-9. **collaboration.md** - Team workflows, code review, handoff procedures
+3. **collaboration.md** - Team workflows, code review, handoff procedures
    - **Replacement**: Standard software engineering practices
    - **Reason**: Generic team practices, not Senzing-specific
 
@@ -60,6 +60,7 @@ These files were moved to the development repository on March 23, 2026 because:
 The Power distribution now contains only boot camp-specific steering files:
 
 **Core Workflows (5 files)**:
+
 - steering.md - Main workflow guide
 - agent-instructions.md - Agent behavior
 - quick-reference.md - MCP tool reference
@@ -67,6 +68,7 @@ The Power distribution now contains only boot camp-specific steering files:
 - NEW_WORKFLOWS_PHASE5.md - Module 7 orchestration (to be merged)
 
 **Boot Camp Support (11 files)**:
+
 - common-pitfalls.md - Boot camp troubleshooting
 - troubleshooting-decision-tree.md - Diagnostic tree
 - complexity-estimator.md - Project estimation
@@ -81,8 +83,8 @@ The Power distribution now contains only boot camp-specific steering files:
 
 ## Impact
 
-**Before**: 25 steering files  
-**After**: 16 steering files  
+**Before**: 25 steering files
+**After**: 16 steering files
 **Reduction**: 36% fewer files
 
 ## For Future Maintainers
@@ -97,6 +99,7 @@ When considering adding new steering files, ask:
 ## References Updated
 
 All references to these files have been updated in:
+
 - POWER.md
 - agent-instructions.md
 - Module documentation (MODULE_6, MODULE_8, MODULE_9, MODULE_11, MODULE_12)
@@ -108,7 +111,6 @@ All references to these files have been updated in:
 
 ## Date
 
-**Moved**: March 23, 2026  
-**Phase**: 5 (Steering Files Cleanup)  
+**Moved**: March 23, 2026
+**Phase**: 5 (Steering Files Cleanup)
 **Files Moved**: 9 files
-

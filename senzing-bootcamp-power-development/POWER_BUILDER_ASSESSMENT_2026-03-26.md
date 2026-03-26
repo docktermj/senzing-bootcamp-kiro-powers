@@ -1,4 +1,5 @@
 # Senzing Boot Camp Power - Power Builder Assessment
+
 ## Date: 2026-03-26
 
 ## Assessment Using "Build a Power" Guidelines
@@ -14,6 +15,7 @@ This assessment evaluates the senzing-bootcamp power against the Power Builder b
 **Correct Classification**: YES
 
 The senzing-bootcamp power is correctly structured as a **Guided MCP Power** because:
+
 - ✅ Has `mcp.json` file with MCP server configuration
 - ✅ Connects to Senzing MCP server at `https://mcp.senzing.com/mcp`
 - ✅ Provides comprehensive documentation in POWER.md
@@ -41,6 +43,7 @@ author: "Senzing"
 ```
 
 **Compliance Check**:
+
 - ✅ `name`: Correct format (lowercase kebab-case)
 - ✅ `displayName`: Clear, professional title
 - ✅ `description`: Clear, comprehensive (within 3 sentences guideline)
@@ -75,6 +78,7 @@ author: "Senzing"
 ```
 
 **Compliance Check**:
+
 - ✅ Uses remote (HTTP/SSE) MCP server with `url`
 - ✅ No metadata in mcp.json (correctly in POWER.md frontmatter)
 - ✅ Proper server configuration
@@ -95,6 +99,7 @@ author: "Senzing"
 **Decision**: Single comprehensive power
 
 **Rationale**:
+
 - All modules are part of a progressive learning path
 - Users work through modules sequentially
 - Modules build on each other
@@ -105,6 +110,7 @@ author: "Senzing"
 **Assessment**: CORRECT ✅
 
 The power correctly stays as a single comprehensive boot camp rather than splitting into multiple powers (e.g., "senzing-bootcamp-beginner", "senzing-bootcamp-advanced"). This is the right decision because:
+
 - Modules are interdependent
 - Users progress through a learning journey
 - Splitting would create confusion about which power to use
@@ -117,7 +123,8 @@ The power correctly stays as a single comprehensive boot camp rather than splitt
 ### ✅ Pattern B: Multiple Workflow Power
 
 **Structure**:
-```
+
+```text
 senzing-bootcamp/
 ├── mcp.json                    # MCP server config
 ├── POWER.md                    # Overview + common patterns (880 lines)
@@ -150,6 +157,7 @@ senzing-bootcamp/
 **Assessment**: EXCELLENT ✅
 
 The power correctly uses Pattern B because:
+
 - ✅ POWER.md is 880 lines (exceeds 500 line threshold)
 - ✅ Has 16 steering files for on-demand loading
 - ✅ Steering files cover independent topics (cost estimation, security, docker, etc.)
@@ -163,6 +171,7 @@ The power correctly uses Pattern B because:
 ### ✅ POWER.md Structure
 
 **Required Sections** (all present):
+
 - ✅ Overview - Clear explanation of what the power does
 - ✅ Available MCP Tools - Comprehensive tool listings
 - ✅ Boot Camp Learning Path - 13 modules documented
@@ -171,6 +180,7 @@ The power correctly uses Pattern B because:
 - ✅ Configuration - Setup requirements
 
 **Additional Sections** (excellent additions):
+
 - ✅ Relationship to Senzing Power - Clarifies power ecosystem
 - ✅ What Makes This Boot Camp Unique - Value proposition
 - ✅ Code Quality Standards - PEP-8 compliance
@@ -196,6 +206,7 @@ The power exceeds the recommended sections with comprehensive documentation.
 ### ✅ Appropriate Use of Steering Files
 
 **16 Steering Files**:
+
 1. steering.md - Core workflows
 2. agent-instructions.md - Agent behavior
 3. common-pitfalls.md - Error prevention
@@ -218,6 +229,7 @@ The power exceeds the recommended sections with comprehensive documentation.
 **Assessment**: EXCELLENT ✅
 
 Steering files are appropriately used:
+
 - ✅ POWER.md is 880 lines (exceeds threshold)
 - ✅ Each steering file covers independent topic
 - ✅ On-demand loading preserves context
@@ -233,6 +245,7 @@ Steering files are appropriately used:
 **Name**: `senzing-bootcamp`
 
 **Compliance**:
+
 - ✅ Uses kebab-case format
 - ✅ Descriptive and clear
 - ✅ Tool-oriented (Senzing) + purpose (bootcamp)
@@ -250,6 +263,7 @@ Steering files are appropriately used:
 **Display Name**: "Senzing Boot Camp"
 
 **Compliance**:
+
 - ✅ Uses Title Case
 - ✅ Clear and professional
 - ✅ 3 words (within 2-5 word guideline)
@@ -266,6 +280,7 @@ Steering files are appropriately used:
 **Keywords**: ["senzing", "bootcamp", "training", "tutorial", "learning-path", "entity-resolution", "guided-workflow"]
 
 **Compliance**:
+
 - ✅ 7 keywords (within 5-7 recommended range)
 - ✅ Mix of specific (senzing, bootcamp) and general (training, tutorial)
 - ✅ Includes variations (bootcamp, training, tutorial)
@@ -284,6 +299,7 @@ Steering files are appropriately used:
 **Description**: "Comprehensive guided boot camp for Senzing entity resolution. Covers data mapping, SDK setup, loading, performance testing, security hardening, monitoring, and production deployment."
 
 **Compliance**:
+
 - ✅ 2 sentences (within 3 sentence maximum)
 - ✅ Focuses on value (comprehensive guided boot camp)
 - ✅ Includes key capabilities (data mapping, SDK setup, loading, etc.)
@@ -301,6 +317,7 @@ Steering files are appropriately used:
 ### ✅ Tool Documentation Quality
 
 **12 MCP Tools Documented**:
+
 1. get_capabilities
 2. mapping_workflow
 3. generate_scaffold
@@ -315,6 +332,7 @@ Steering files are appropriately used:
 12. submit_feedback
 
 **Documentation Quality**:
+
 - ✅ Exact tool names provided
 - ✅ Use cases specified (which modules)
 - ✅ Return values described
@@ -334,6 +352,7 @@ Steering files are appropriately used:
 The senzing-bootcamp power includes exceptional features beyond basic requirements:
 
 **Scripts** (7 files):
+
 - ✅ status.sh - Progress tracking
 - ✅ check_prerequisites.sh - Environment validation
 - ✅ install_hooks.sh - Hook installation
@@ -342,6 +361,7 @@ The senzing-bootcamp power includes exceptional features beyond basic requiremen
 - ✅ restore_project.sh - Project restore
 
 **Hooks** (5 files):
+
 - ✅ pep8-check.hook - Code quality
 - ✅ data-quality-check.kiro.hook - Data validation
 - ✅ backup-before-load.kiro.hook - Backup reminder
@@ -349,6 +369,7 @@ The senzing-bootcamp power includes exceptional features beyond basic requiremen
 - ✅ validate-senzing-json.kiro.hook - Format validation
 
 **Documentation** (30+ files):
+
 - ✅ FAQ.md - 100+ questions
 - ✅ GLOSSARY.md - A-Z terminology
 - ✅ COLLABORATION_GUIDE.md - Team workflows
@@ -357,11 +378,13 @@ The senzing-bootcamp power includes exceptional features beyond basic requiremen
 - ✅ Policies (7 policy documents)
 
 **Examples** (3 complete projects):
+
 - ✅ Simple single source
 - ✅ Multi-source project
 - ✅ Production deployment
 
 **Templates** (12 templates):
+
 - ✅ Database management
 - ✅ Data collection
 - ✅ Validation and testing
@@ -451,18 +474,18 @@ The power has NO critical issues and fully complies with all Power Builder guide
 
 ### Compliance Score: 100% ✅
 
-| Category | Score | Notes |
-|----------|-------|-------|
-| Power Type Classification | 100% | Correctly identified as Guided MCP Power |
-| Frontmatter Format | 100% | Perfect compliance with schema |
-| mcp.json Format | 100% | Clean configuration, no metadata |
-| Power Granularity | 100% | Correct single power approach |
-| File Structure | 100% | Appropriate Pattern B usage |
-| Documentation Quality | 100% | Exceptional documentation |
-| Steering Files | 100% | Appropriate use, well-organized |
-| Naming Conventions | 100% | Perfect naming across all elements |
-| Description Quality | 100% | Clear, concise, value-focused |
-| MCP Tool Documentation | 100% | Comprehensive tool documentation |
+| Category                  | Score | Notes                                    |
+|---------------------------|-------|------------------------------------------|
+| Power Type Classification | 100%  | Correctly identified as Guided MCP Power |
+| Frontmatter Format        | 100%  | Perfect compliance with schema           |
+| mcp.json Format           | 100%  | Clean configuration, no metadata         |
+| Power Granularity         | 100%  | Correct single power approach            |
+| File Structure            | 100%  | Appropriate Pattern B usage              |
+| Documentation Quality     | 100%  | Exceptional documentation                |
+| Steering Files            | 100%  | Appropriate use, well-organized          |
+| Naming Conventions        | 100%  | Perfect naming across all elements       |
+| Description Quality       | 100%  | Clear, concise, value-focused            |
+| MCP Tool Documentation    | 100%  | Comprehensive tool documentation         |
 
 ### Quality Score: EXCEPTIONAL ⭐⭐⭐⭐⭐
 
@@ -486,11 +509,13 @@ This power is ready for distribution and serves as an excellent example of how t
 ### vs. Simple Weather Power
 
 **Weather Power** (Pattern A):
+
 - Single POWER.md file
 - Simple MCP configuration
 - Basic documentation
 
 **Senzing Boot Camp** (Pattern B):
+
 - Comprehensive POWER.md + 16 steering files
 - Advanced MCP configuration
 - Exceptional documentation + scripts + hooks + examples
@@ -500,11 +525,13 @@ This power is ready for distribution and serves as an excellent example of how t
 ### vs. Playwright Power (Pattern B Example)
 
 **Playwright Power**:
+
 - POWER.md + steering files
 - Multiple workflows
 - Dynamic content loading
 
 **Senzing Boot Camp**:
+
 - Similar structure but more comprehensive
 - 13 modules vs. multiple workflows
 - Additional scripts, hooks, examples, templates

@@ -89,31 +89,37 @@ Create `docs/recovery_procedures.md`:
 **Symptom**: Loading program fails partway through
 
 **Recovery**:
+
 1. Check logs/load.log for error codes
 2. Use explain_error_code to diagnose
 3. Restore database from backup:
    ```bash
    ./src/utils/rollback.sh data/backups/G2C_YYYYMMDD_HHMMSS.db
    ```
-4. Fix data quality issues
-5. Resume loading from last successful record
+
+1. Fix data quality issues
+2. Resume loading from last successful record
 
 ## Data Quality Issues
+
 **Symptom**: Poor match rates or unexpected results
 
 **Recovery**:
+
 1. Don't load more data - stop and analyze
 2. Review data quality reports from Module 3
 3. Check mapping specifications from Module 4
 4. Test with small sample (100 records)
 5. Reload corrected data
-5. Adjust confidence scores or mappings
-6. Rollback and reload with improved mappings
+6. Adjust confidence scores or mappings
+7. Rollback and reload with improved mappings
 
 ## Database Corruption
+
 **Symptom**: Database errors, crashes, or inconsistent results
 
 **Recovery**:
+
 1. Stop all loading/query operations
 2. Restore from most recent backup
 3. Verify backup integrity
@@ -121,9 +127,11 @@ Create `docs/recovery_procedures.md`:
 5. If backups are corrupted, rebuild from scratch
 
 ## Version Control Recovery
+
 **Symptom**: Accidentally deleted or modified critical files
 
 **Recovery**:
+
 ```bash
 # Restore specific file from git
 git checkout HEAD -- src/transform/transform_customer.py
@@ -135,6 +143,7 @@ git checkout <commit-hash> -- src/
 # Undo last commit (keep changes)
 git reset --soft HEAD~1
 ```
+
 ```
 
 ## Backup Best Practices

@@ -15,6 +15,7 @@ After loading data (Modules 6-7), you need to integrate entity resolution into y
 **Use Case**: Generate daily/weekly reports of resolved entities
 
 **When to Use**:
+
 - Periodic reporting needs
 - Data warehouse integration
 - Offline analysis
@@ -32,16 +33,16 @@ def export_all_entities(output_file):
     """Export all resolved entities to a file"""
     engine = G2Engine()
     # ... initialize engine ...
-    
+
     export_handle = engine.exportJSONEntityReport(0)
-    
+
     with open(output_file, 'w') as f:
         while True:
             response = engine.fetchNext(export_handle)
             if not response:
                 break
             f.write(response + '\n')
-    
+
     engine.closeExport(export_handle)
     engine.destroy()
 
@@ -51,6 +52,7 @@ if __name__ == "__main__":
 ```
 
 **Scheduling**:
+
 ```bash
 # Add to crontab for daily export at 2 AM
 0 2 * * * cd /path/to/project && python src/query/batch_export.py
@@ -61,6 +63,7 @@ if __name__ == "__main__":
 **Use Case**: Real-time entity lookup from web applications
 
 **When to Use**:
+
 - Web applications need entity data
 - Microservices architecture
 - Real-time customer lookup
@@ -111,6 +114,7 @@ if __name__ == '__main__':
 ```
 
 **Deployment**:
+
 ```bash
 # Run with gunicorn for production
 gunicorn -w 4 -b 0.0.0.0:5000 src.query.entity_api:app
@@ -121,6 +125,7 @@ gunicorn -w 4 -b 0.0.0.0:5000 src.query.entity_api:app
 **Use Case**: Process entity resolution events in real-time
 
 **When to Use**:
+
 - Event-driven architecture
 - Real-time fraud detection
 - Immediate alerts on matches
@@ -141,18 +146,18 @@ def process_entity_events():
         bootstrap_servers=['localhost:9092'],
         value_deserializer=lambda m: json.loads(m.decode('utf-8'))
     )
-    
+
     producer = KafkaProducer(
         bootstrap_servers=['localhost:9092'],
         value_serializer=lambda v: json.dumps(v).encode('utf-8')
     )
-    
+
     engine = G2Engine()
     # ... initialize engine ...
-    
+
     for message in consumer:
         event = message.value
-        
+
         if event['type'] == 'RECORD_ADDED':
             # Get the entity this record belongs to
             entity_response = engine.getEntityByRecordID(
@@ -160,7 +165,7 @@ def process_entity_events():
                 event['record_id']
             )
             entity = json.loads(entity_response)
-            
+
             # Check if this is a duplicate
             if len(entity['RESOLVED_ENTITY']['RECORDS']) > 1:
                 # Publish duplicate alert
@@ -179,6 +184,7 @@ if __name__ == "__main__":
 **Use Case**: Keep a downstream database in sync with resolved entities
 
 **When to Use**:
+
 - Data warehouse integration
 - BI tool integration
 - Legacy system integration
@@ -202,36 +208,36 @@ def sync_entities_to_postgres():
         password="password"
     )
     cur = conn.cursor()
-    
+
     # Initialize Senzing
     engine = G2Engine()
     # ... initialize engine ...
-    
+
     # Export entities
     export_handle = engine.exportJSONEntityReport(0)
-    
+
     while True:
         response = engine.fetchNext(export_handle)
         if not response:
             break
-        
+
         entity = json.loads(response)
         entity_id = entity['RESOLVED_ENTITY']['ENTITY_ID']
-        
+
         # Extract key attributes
         records = entity['RESOLVED_ENTITY']['RECORDS']
-        
+
         # Upsert to target database
         cur.execute("""
             INSERT INTO entities (entity_id, record_count, data, updated_at)
             VALUES (%s, %s, %s, NOW())
-            ON CONFLICT (entity_id) 
-            DO UPDATE SET 
+            ON CONFLICT (entity_id)
+            DO UPDATE SET
                 record_count = EXCLUDED.record_count,
                 data = EXCLUDED.data,
                 updated_at = NOW()
         """, (entity_id, len(records), json.dumps(entity)))
-    
+
     conn.commit()
     engine.closeExport(export_handle)
     engine.destroy()
@@ -247,6 +253,7 @@ if __name__ == "__main__":
 **Use Case**: Find and report duplicates for data stewardship
 
 **When to Use**:
+
 - Data quality initiatives
 - Duplicate cleanup projects
 - Master data management
@@ -264,21 +271,21 @@ def find_duplicates_by_datasource(data_source, output_file):
     """Find all duplicate entities for a data source"""
     engine = G2Engine()
     # ... initialize engine ...
-    
+
     duplicates = []
     export_handle = engine.exportJSONEntityReport(0)
-    
+
     while True:
         response = engine.fetchNext(export_handle)
         if not response:
             break
-        
+
         entity = json.loads(response)
         records = entity['RESOLVED_ENTITY']['RECORDS']
-        
+
         # Filter for entities with multiple records from this source
         source_records = [r for r in records if r['DATA_SOURCE'] == data_source]
-        
+
         if len(source_records) > 1:
             duplicates.append({
                 'entity_id': entity['RESOLVED_ENTITY']['ENTITY_ID'],
@@ -286,16 +293,16 @@ def find_duplicates_by_datasource(data_source, output_file):
                 'record_ids': [r['RECORD_ID'] for r in source_records],
                 'best_name': entity['RESOLVED_ENTITY'].get('ENTITY_NAME', 'Unknown')
             })
-    
+
     engine.closeExport(export_handle)
     engine.destroy()
-    
+
     # Write to CSV for review
     with open(output_file, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=['entity_id', 'duplicate_count', 'record_ids', 'best_name'])
         writer.writeheader()
         writer.writerows(duplicates)
-    
+
     return duplicates
 
 if __name__ == "__main__":
@@ -308,6 +315,7 @@ if __name__ == "__main__":
 **Use Case**: Screen entities against watchlists or sanctions lists
 
 **When to Use**:
+
 - Compliance requirements
 - KYC/AML processes
 - Fraud prevention
@@ -324,15 +332,15 @@ def screen_against_watchlist(entity_id, watchlist_datasource='WATCHLIST'):
     """Check if an entity matches any watchlist entries"""
     engine = G2Engine()
     # ... initialize engine ...
-    
+
     # Get the entity
     entity_response = engine.getEntityByEntityID(entity_id)
     entity = json.loads(entity_response)
-    
+
     # Check if any records are from watchlist
     records = entity['RESOLVED_ENTITY']['RECORDS']
     watchlist_matches = [r for r in records if r['DATA_SOURCE'] == watchlist_datasource]
-    
+
     if watchlist_matches:
         return {
             'match': True,
@@ -340,10 +348,10 @@ def screen_against_watchlist(entity_id, watchlist_datasource='WATCHLIST'):
             'watchlist_records': watchlist_matches,
             'risk_level': 'HIGH'
         }
-    
+
     # Check for possible relationships to watchlist entities
     # (implement relationship checking logic here)
-    
+
     engine.destroy()
     return {'match': False, 'entity_id': entity_id}
 
@@ -357,6 +365,7 @@ if __name__ == "__main__":
 **Use Case**: Flexible querying for modern web applications
 
 **When to Use**:
+
 - React/Vue/Angular frontends
 - Mobile applications
 - Flexible query requirements
@@ -377,13 +386,13 @@ type_defs = """
         entity(id: Int!): Entity
         searchEntities(name: String, address: String): [Entity]
     }
-    
+
     type Entity {
         entityId: Int!
         entityName: String
         records: [Record]
     }
-    
+
     type Record {
         dataSource: String!
         recordId: String!
@@ -411,7 +420,7 @@ def resolve_search(_, info, name=None, address=None):
         search_attrs['NAME_FULL'] = name
     if address:
         search_attrs['ADDR_FULL'] = address
-    
+
     response = engine.searchByAttributes(json.dumps(search_attrs))
     results = json.loads(response)
     return results.get('RESOLVED_ENTITIES', [])
@@ -435,19 +444,20 @@ if __name__ == "__main__":
 
 ## Choosing the Right Pattern
 
-| Pattern | Real-time | Complexity | Best For |
-|---------|-----------|------------|----------|
-| Batch Export | No | Low | Reports, analytics |
-| REST API | Yes | Medium | Web apps, microservices |
-| Streaming | Yes | High | Event-driven, real-time alerts |
-| Database Sync | No | Medium | Data warehouses, BI tools |
-| Duplicate Detection | No | Low | Data quality, stewardship |
-| Watchlist Screening | Yes | Medium | Compliance, risk management |
-| GraphQL API | Yes | Medium | Modern web/mobile apps |
+| Pattern             | Real-time | Complexity | Best For                       |
+|---------------------|-----------|------------|--------------------------------|
+| Batch Export        | No        | Low        | Reports, analytics             |
+| REST API            | Yes       | Medium     | Web apps, microservices        |
+| Streaming           | Yes       | High       | Event-driven, real-time alerts |
+| Database Sync       | No        | Medium     | Data warehouses, BI tools      |
+| Duplicate Detection | No        | Low        | Data quality, stewardship      |
+| Watchlist Screening | Yes       | Medium     | Compliance, risk management    |
+| GraphQL API         | Yes       | Medium     | Modern web/mobile apps         |
 
 ## When to Load This Guide
 
 Load this steering file when:
+
 - Starting Module 8
 - User asks about integration
 - User asks "how do I use the results?"

@@ -1,8 +1,8 @@
 # Module 0 Improvement: Live Demo Implementation
 
-**Date**: 2026-03-24  
-**Version**: 0.26.0  
-**Priority**: High  
+**Date**: 2026-03-24
+**Version**: 0.26.0
+**Priority**: High
 **Status**: Implemented
 
 ## Problem Statement
@@ -12,7 +12,6 @@ The Quick Demo (Module 0) was not actually demonstrating Senzing in action. It o
 ### User Feedback
 
 > "The Quick Demo (Module 0) currently only shows sample data and explains what Senzing would do, but doesn't actually run the Senzing SDK to demonstrate entity resolution in action."
-
 > "Users expect a 'demo' to show the actual technology working, not just describe it. The current approach doesn't demonstrate the value proposition and misses the opportunity to create an 'aha moment'."
 
 ## Solution Implemented
@@ -22,6 +21,7 @@ The Quick Demo (Module 0) was not actually demonstrating Senzing in action. It o
 **File**: `senzing-bootcamp/docs/modules/MODULE_0_QUICK_DEMO.md`
 
 **Changes**:
+
 - Clarified that the demo actually runs the Senzing SDK (not a simulation)
 - Added emphasis on the "aha moment" experience
 - Updated example output to show real match explanations with confidence scores
@@ -30,6 +30,7 @@ The Quick Demo (Module 0) was not actually demonstrating Senzing in action. It o
 - Updated success criteria to include actual execution
 
 **Key improvements**:
+
 - Overview now states: "Unlike a static demo, this module actually runs the Senzing SDK"
 - Learning objectives include: "See Senzing entity resolution working in real-time"
 - Example output shows detailed match explanations with confidence scores
@@ -40,6 +41,7 @@ The Quick Demo (Module 0) was not actually demonstrating Senzing in action. It o
 **File**: `senzing-bootcamp/steering/steering.md`
 
 **Changes**:
+
 - Added SDK availability check before running demo
 - Included Docker option for users without SDK installed
 - Added step to show sample records BEFORE resolution
@@ -49,6 +51,7 @@ The Quick Demo (Module 0) was not actually demonstrating Senzing in action. It o
 - Added emphasis on creating the "aha moment"
 
 **Key improvements**:
+
 - Workflow now checks: `python -c "import senzing" 2>/dev/null`
 - Offers Docker alternative if SDK not found
 - Shows 5 sample records with obvious duplicates before running
@@ -63,6 +66,7 @@ The Quick Demo (Module 0) was not actually demonstrating Senzing in action. It o
 **Purpose**: Provides a working demo script that can be customized for different datasets
 
 **Features**:
+
 - Checks for Senzing SDK availability
 - Initializes engine with in-memory SQLite database
 - Loads 5 sample records with obvious duplicates
@@ -73,13 +77,15 @@ The Quick Demo (Module 0) was not actually demonstrating Senzing in action. It o
 - Includes helpful error messages and Docker instructions
 
 **Sample records included**:
+
 - 3 records for "John Smith" (with variations: J. Smith, John R Smith)
 - 2 records for "Jane Doe" (with variations: Jane M. Doe)
 - Different data sources (CRM, Support, Sales systems)
 - Different formatting (phone numbers, addresses)
 
 **Output format**:
-```
+
+```text
 BEFORE: Sample Records to Load
 [Shows 5 records with variations]
 
@@ -104,6 +110,7 @@ Key Insights
 **File**: `senzing-bootcamp/templates/README.md`
 
 **Changes**:
+
 - Added documentation for `demo_quick_start.py` template
 - Marked as ⭐ NEW - Module 0
 - Included usage examples for both Python and Docker
@@ -112,6 +119,7 @@ Key Insights
 ## Impact
 
 ### Before
+
 - Users saw sample data but no actual entity resolution
 - No "aha moment" demonstrating the technology
 - Users had to imagine what would happen
@@ -119,6 +127,7 @@ Key Insights
 - First impression was disappointing
 
 ### After
+
 - Users see real Senzing SDK in action
 - Clear "aha moment" when duplicates are resolved
 - Match explanations show WHY records matched
@@ -141,6 +150,7 @@ Key Insights
 ## Technical Details
 
 ### SDK Initialization
+
 ```python
 from senzing import G2Engine, G2Exception
 
@@ -152,6 +162,7 @@ engine.init("SenzingQuickDemo", json.dumps(config), False)
 ```
 
 ### Sample Data Format
+
 ```json
 {
     "DATA_SOURCE": "CRM_SYSTEM",
@@ -164,7 +175,8 @@ engine.init("SenzingQuickDemo", json.dumps(config), False)
 ```
 
 ### Match Explanation Display
-```
+
+```text
 Record 1 ↔ Record 2:
   ✓ Name similarity:    92% (John Smith ≈ J. Smith)
   ✓ Address match:      100% (same address, different format)
@@ -208,13 +220,13 @@ Potential improvements for future versions:
 
 ## Feedback Addressed
 
-✅ Module 0 now actually runs Senzing SDK  
-✅ Demonstrates real entity resolution, not simulation  
-✅ Shows match explanations with confidence scores  
-✅ Displays before/after comparison  
-✅ Creates "aha moment" for users  
-✅ Proves value proposition immediately  
-✅ Improves first-time user experience  
+✅ Module 0 now actually runs Senzing SDK
+✅ Demonstrates real entity resolution, not simulation
+✅ Shows match explanations with confidence scores
+✅ Displays before/after comparison
+✅ Creates "aha moment" for users
+✅ Proves value proposition immediately
+✅ Improves first-time user experience
 
 ## Success Metrics
 

@@ -35,6 +35,7 @@ How much data can you afford to lose?
 - **Development Data**: < 24 hours
 
 **Example**:
+
 - RTO = 2 hours: System must be back online within 2 hours
 - RPO = 15 minutes: Can lose up to 15 minutes of data
 
@@ -43,84 +44,95 @@ How much data can you afford to lose?
 ### What to Back Up
 
 **1. Database** (CRITICAL)
-```
+
+```text
 Priority: HIGHEST
 Frequency: Continuous or hourly
 Retention: 30 days minimum
 ```
 
 The Senzing database contains:
+
 - All loaded records
 - Resolved entities
 - Configuration
 - Relationships
 
 **2. Configuration Files** (CRITICAL)
-```
+
+```text
 Priority: HIGH
 Frequency: On change
 Retention: All versions
 ```
 
 Files to back up:
+
 - Engine configuration JSON
 - Data source definitions
 - Feature configurations
 - Custom rules (if any)
 
 **3. Source Data** (HIGH)
-```
+
+```text
 Priority: HIGH
 Frequency: On receipt
 Retention: 90 days minimum
 ```
 
 Files to back up:
+
 - `data/raw/` - Original source files
 - `data/transformed/` - Transformed Senzing JSON
 
 **4. Application Code** (MEDIUM)
-```
+
+```text
 Priority: MEDIUM
 Frequency: On commit
 Retention: All versions (Git)
 ```
 
 Files to back up:
+
 - `src/` - All application code
 - Configuration files
 - Scripts and utilities
 
 **5. Logs and Metadata** (LOW)
-```
+
+```text
 Priority: LOW
 Frequency: Daily
 Retention: 30 days
 ```
 
 Files to back up:
+
 - `logs/` - Application logs
 - `docs/` - Documentation
 - Statistics and reports
 
 ### Backup Frequency
 
-| Data Type | Frequency | Method |
-|-----------|-----------|--------|
-| Database | Continuous | WAL archiving + snapshots |
-| Database | Hourly | Incremental backup |
-| Database | Daily | Full backup |
-| Database | Weekly | Full backup + offsite |
-| Source Data | On receipt | Copy to backup location |
-| Config Files | On change | Version control (Git) |
-| Application Code | On commit | Version control (Git) |
-| Logs | Daily | Archive to object storage |
+| Data Type        | Frequency  | Method                    |
+|------------------|------------|---------------------------|
+| Database         | Continuous | WAL archiving + snapshots |
+| Database         | Hourly     | Incremental backup        |
+| Database         | Daily      | Full backup               |
+| Database         | Weekly     | Full backup + offsite     |
+| Source Data      | On receipt | Copy to backup location   |
+| Config Files     | On change  | Version control (Git)     |
+| Application Code | On commit  | Version control (Git)     |
+| Logs             | Daily      | Archive to object storage |
 
 ## Database Backup
 
 ### PostgreSQL Backup
 
 **Continuous Archiving (WAL)**:
+
 ```bash
 # Enable WAL archiving in postgresql.conf
 wal_level = replica
@@ -132,6 +144,7 @@ pg_receivewal -D /backup/wal -h localhost -U postgres
 ```
 
 **Full Backup**:
+
 ```bash
 #!/bin/bash
 # Full database backup script
@@ -162,6 +175,7 @@ find "$BACKUP_DIR" -name "*.dump.gz" -mtime +30 -delete
 ```
 
 **Incremental Backup**:
+
 ```bash
 #!/bin/bash
 # Incremental backup using pg_basebackup
@@ -175,6 +189,7 @@ echo "✅ Incremental backup complete: $DATE"
 ```
 
 **Automated Backup Schedule**:
+
 ```bash
 # Add to crontab
 # Full backup daily at 2 AM
@@ -190,6 +205,7 @@ echo "✅ Incremental backup complete: $DATE"
 ### SQLite Backup
 
 **Simple Backup**:
+
 ```bash
 #!/bin/bash
 # SQLite backup script
@@ -213,6 +229,7 @@ find "$BACKUP_DIR" -name "*.db.gz" -mtime +30 -delete
 ```
 
 **Online Backup** (no downtime):
+
 ```bash
 # Use SQLite backup API
 sqlite3 database/G2C.db ".backup data/backups/G2C_backup.db"
@@ -309,22 +326,22 @@ from senzing import SzEngine
 
 def backup_configuration(output_file='backup/config/senzing_config.json'):
     """Export current Senzing configuration"""
-    
+
     engine = SzEngine()
     engine.initialize(instance_name='backup', settings=ENGINE_CONFIG)
-    
+
     # Get active config ID
     config_id = engine.getActiveConfigID()
-    
+
     # Export configuration
     config_json = engine.exportConfig(config_id)
-    
+
     # Save to file
     with open(output_file, 'w') as f:
         f.write(config_json)
-    
+
     engine.destroy()
-    
+
     print(f"✅ Configuration backed up: {output_file}")
 
 if __name__ == '__main__':
@@ -336,6 +353,7 @@ if __name__ == '__main__':
 ### Restore Database (PostgreSQL)
 
 **Full Restore**:
+
 ```bash
 #!/bin/bash
 # Restore PostgreSQL database from backup
@@ -365,6 +383,7 @@ echo "✅ Database restored from $BACKUP_FILE"
 ```
 
 **Point-in-Time Recovery (PITR)**:
+
 ```bash
 #!/bin/bash
 # Restore to specific point in time
@@ -472,16 +491,16 @@ from senzing import SzEngine
 
 def rollback_data_source(data_source):
     """Delete all records from a data source"""
-    
+
     engine = SzEngine()
     engine.initialize(instance_name='rollback', settings=ENGINE_CONFIG)
-    
+
     # Get all records for data source
     # Note: This is a simplified example
     # In production, you'd need to track loaded record IDs
-    
+
     print(f"Rolling back data source: {data_source}")
-    
+
     # Read record IDs from loading log
     with open(f'logs/loaded_records_{data_source}.txt') as f:
         for line in f:
@@ -491,9 +510,9 @@ def rollback_data_source(data_source):
                 print(f"  Deleted: {record_id}")
             except Exception as e:
                 print(f"  Error deleting {record_id}: {e}")
-    
+
     engine.destroy()
-    
+
     print(f"✅ Rollback complete for {data_source}")
 
 if __name__ == '__main__':
@@ -515,26 +534,26 @@ from senzing import SzConfig, SzEngine
 
 def rollback_configuration(backup_file='backup/config/senzing_config_previous.json'):
     """Restore previous configuration"""
-    
+
     # Load backup configuration
     with open(backup_file) as f:
         config_json = f.read()
-    
+
     # Import configuration
     config = SzConfig()
     config.initialize(instance_name='rollback', settings=ENGINE_CONFIG)
-    
+
     config_handle = config.importConfig(config_json)
     config_id = config.addConfig(config_handle, "Rollback to previous version")
-    
+
     # Set as default
     engine = SzEngine()
     engine.initialize(instance_name='rollback', settings=ENGINE_CONFIG)
     engine.setDefaultConfigID(config_id)
-    
+
     config.destroy()
     engine.destroy()
-    
+
     print(f"✅ Configuration rolled back from {backup_file}")
 
 if __name__ == '__main__':
@@ -548,6 +567,7 @@ if __name__ == '__main__':
 **Symptoms**: Database errors, crashes, data inconsistencies
 
 **Recovery Steps**:
+
 1. Stop application
 2. Assess damage (can database be opened?)
 3. If repairable: Run database repair tools
@@ -563,6 +583,7 @@ if __name__ == '__main__':
 **Symptoms**: Records or entities missing
 
 **Recovery Steps**:
+
 1. Identify what was deleted and when
 2. Stop further operations
 3. Restore database to point before deletion (PITR)
@@ -577,6 +598,7 @@ if __name__ == '__main__':
 **Symptoms**: Incorrect matches, data quality issues
 
 **Recovery Steps**:
+
 1. Stop loading process
 2. Identify problematic data source
 3. Restore database to point before load
@@ -591,6 +613,7 @@ if __name__ == '__main__':
 **Symptoms**: Server crash, hardware failure
 
 **Recovery Steps**:
+
 1. Provision new server
 2. Install Senzing SDK
 3. Restore database from backup
@@ -606,6 +629,7 @@ if __name__ == '__main__':
 **Symptoms**: Complete site unavailable
 
 **Recovery Steps**:
+
 1. Activate DR site
 2. Restore database from offsite backup
 3. Deploy application from Git
@@ -727,6 +751,7 @@ echo "✅ Backup uploaded to S3"
 **1** offsite copy
 
 Example:
+
 - Copy 1: Production database (local SSD)
 - Copy 2: Local backup (local HDD)
 - Copy 3: Cloud backup (S3)
@@ -746,25 +771,25 @@ from datetime import datetime, timedelta
 
 def check_backup_health():
     """Check if backups are current"""
-    
+
     backup_dir = '/backup/postgres'
     max_age_hours = 24
-    
+
     # Find latest backup
     backups = sorted(os.listdir(backup_dir))
     if not backups:
         print("❌ No backups found!")
         return False
-    
+
     latest_backup = backups[-1]
     backup_path = os.path.join(backup_dir, latest_backup)
     backup_time = datetime.fromtimestamp(os.path.getmtime(backup_path))
     age_hours = (datetime.now() - backup_time).total_seconds() / 3600
-    
+
     if age_hours > max_age_hours:
         print(f"❌ Latest backup is {age_hours:.1f} hours old (max: {max_age_hours})")
         return False
-    
+
     print(f"✅ Latest backup is {age_hours:.1f} hours old")
     return True
 
@@ -803,6 +828,7 @@ When helping with disaster recovery in Module 12:
 ## When to Load This Guide
 
 Load this guide when:
+
 - Starting Module 12 (deployment)
 - User asks about backups or disaster recovery
 - Planning production deployment
@@ -819,4 +845,3 @@ Load this guide when:
 ## Version History
 
 - **v3.0.0** (2026-03-17): Disaster recovery guide created for Module 12 enhancement
-

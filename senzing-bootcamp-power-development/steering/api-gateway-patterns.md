@@ -26,26 +26,30 @@ An API gateway provides:
 
 **Description**: Application directly uses Senzing SDK
 
-```
+```text
 [Application] → [Senzing SDK] → [Database]
 ```
 
 **Pros**:
+
 - Lowest latency
 - Simplest architecture
 - No network overhead
 
 **Cons**:
+
 - Tight coupling
 - SDK must be in same language
 - Harder to scale horizontally
 
 **Use when**:
+
 - Single application
 - Performance critical
 - Simple deployment
 
 **Example** (Python):
+
 ```python
 from senzing import SzEngine
 
@@ -53,7 +57,7 @@ class CustomerService:
     def __init__(self):
         self.engine = SzEngine()
         self.engine.initialize(instance_name='app', settings=ENGINE_CONFIG)
-    
+
     def find_customer(self, name, email):
         """Find customer by name and email"""
         search_attrs = {
@@ -68,26 +72,30 @@ class CustomerService:
 
 **Description**: Wrap Senzing SDK in REST API
 
-```
+```text
 [Client] → [REST API] → [Senzing SDK] → [Database]
 ```
 
 **Pros**:
+
 - Language agnostic
 - Easy to consume
 - Can add caching layer
 - Horizontal scaling
 
 **Cons**:
+
 - Network latency
 - Additional component to maintain
 
 **Use when**:
+
 - Multiple applications
 - Different languages
 - Microservices architecture
 
 **Example** (Flask):
+
 ```python
 from flask import Flask, request, jsonify
 from senzing import SzEngine
@@ -100,7 +108,7 @@ engine.initialize(instance_name='api', settings=ENGINE_CONFIG)
 def search_entities():
     """Search for entities by attributes"""
     search_attrs = request.json
-    
+
     try:
         results = engine.searchByAttributes(json.dumps(search_attrs))
         return jsonify(json.loads(results))
@@ -124,11 +132,12 @@ if __name__ == '__main__':
 
 **Description**: API gateway routes to Senzing microservice
 
-```
+```text
 [Client] → [API Gateway] → [Senzing Service] → [Senzing SDK] → [Database]
 ```
 
 **Pros**:
+
 - Centralized security
 - Rate limiting
 - Monitoring
@@ -136,17 +145,20 @@ if __name__ == '__main__':
 - Service mesh integration
 
 **Cons**:
+
 - More complex
 - Additional latency
 - More components
 
 **Use when**:
+
 - Enterprise architecture
 - Multiple services
 - Need centralized control
 - Service mesh (Istio, Linkerd)
 
 **Example** (Kong Gateway):
+
 ```yaml
 # Kong service definition
 services:
@@ -176,26 +188,30 @@ services:
 
 **Description**: GraphQL API for flexible queries
 
-```
+```text
 [Client] → [GraphQL Gateway] → [Senzing SDK] → [Database]
 ```
 
 **Pros**:
+
 - Flexible queries
 - Single request for multiple operations
 - Strong typing
 - Client-driven queries
 
 **Cons**:
+
 - More complex
 - Query complexity management needed
 
 **Use when**:
+
 - Complex data requirements
 - Multiple related queries
 - Modern frontend (React, Vue)
 
 **Example** (GraphQL):
+
 ```python
 import graphene
 from senzing import SzEngine
@@ -209,7 +225,7 @@ class Entity(graphene.ObjectType):
 class Query(graphene.ObjectType):
     entity = graphene.Field(Entity, entity_id=graphene.Int(required=True))
     search = graphene.List(Entity, name=graphene.String(), email=graphene.String())
-    
+
     def resolve_entity(self, info, entity_id):
         engine = SzEngine()
         engine.initialize(instance_name='graphql', settings=ENGINE_CONFIG)
@@ -230,30 +246,34 @@ schema = graphene.Schema(query=Query)
 
 **Description**: Async processing via message queue
 
-```
+```text
 [Client] → [API Gateway] → [Queue] → [Worker] → [Senzing SDK] → [Database]
                               ↓
                           [Response Queue]
 ```
 
 **Pros**:
+
 - Decoupled
 - Handles load spikes
 - Async processing
 - Retry logic
 
 **Cons**:
+
 - More complex
 - Eventual consistency
 - Requires message queue
 
 **Use when**:
+
 - Batch processing
 - High volume
 - Async acceptable
 - Need retry logic
 
 **Example** (RabbitMQ):
+
 ```python
 import pika
 import json
@@ -262,27 +282,27 @@ from senzing import SzEngine
 # Worker process
 def process_entity_request(ch, method, properties, body):
     """Process entity resolution request from queue"""
-    
+
     request = json.loads(body)
-    
+
     engine = SzEngine()
     engine.initialize(instance_name='worker', settings=ENGINE_CONFIG)
-    
+
     try:
         if request['operation'] == 'search':
             result = engine.searchByAttributes(json.dumps(request['attributes']))
         elif request['operation'] == 'get_entity':
             result = engine.getEntityByEntityID(request['entity_id'])
-        
+
         # Send result to response queue
         ch.basic_publish(
             exchange='',
             routing_key=properties.reply_to,
             body=result
         )
-        
+
         ch.basic_ack(delivery_tag=method.delivery_tag)
-    
+
     except Exception as e:
         # Send error to response queue
         error_response = json.dumps({'error': str(e)})
@@ -292,7 +312,7 @@ def process_entity_request(ch, method, properties, body):
             body=error_response
         )
         ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
-    
+
     finally:
         engine.destroy()
 
@@ -308,7 +328,7 @@ channel.start_consuming()
 
 ### Endpoint Structure
 
-```
+```text
 GET    /api/v1/entities/{entity_id}           # Get entity by ID
 GET    /api/v1/entities/{entity_id}/records   # Get entity records
 POST   /api/v1/search                         # Search entities
@@ -323,6 +343,7 @@ GET    /api/v1/stats                          # Statistics
 ### Request/Response Examples
 
 **Search Entities**:
+
 ```http
 POST /api/v1/search
 Content-Type: application/json
@@ -334,6 +355,7 @@ Content-Type: application/json
 ```
 
 Response:
+
 ```json
 {
   "RESOLVED_ENTITIES": [
@@ -359,11 +381,13 @@ Response:
 ```
 
 **Get Entity**:
+
 ```http
 GET /api/v1/entities/12345
 ```
 
 Response:
+
 ```json
 {
   "RESOLVED_ENTITY": {
@@ -414,13 +438,13 @@ def require_api_key(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         api_key = request.headers.get('X-API-Key')
-        
+
         if not api_key or api_key not in API_KEYS:
             return jsonify({'error': 'Invalid API key'}), 401
-        
+
         # Add client info to request
         request.client_info = API_KEYS[api_key]
-        
+
         return f(*args, **kwargs)
     return decorated_function
 
@@ -465,10 +489,10 @@ def require_jwt(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         token = request.headers.get('Authorization', '').replace('Bearer ', '')
-        
+
         if not token:
             return jsonify({'error': 'Missing token'}), 401
-        
+
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
             request.user_id = payload['user_id']
@@ -477,7 +501,7 @@ def require_jwt(f):
             return jsonify({'error': 'Token expired'}), 401
         except jwt.InvalidTokenError:
             return jsonify({'error': 'Invalid token'}), 401
-        
+
         return f(*args, **kwargs)
     return decorated_function
 
@@ -526,26 +550,26 @@ def rate_limit(max_requests=100, window_seconds=3600):
         def decorated_function(*args, **kwargs):
             # Get client identifier (API key or IP)
             client_id = request.headers.get('X-API-Key') or request.remote_addr
-            
+
             now = datetime.now()
             window_start = now - timedelta(seconds=window_seconds)
-            
+
             # Clean old requests
             rate_limits[client_id] = [
                 req_time for req_time in rate_limits[client_id]
                 if req_time > window_start
             ]
-            
+
             # Check limit
             if len(rate_limits[client_id]) >= max_requests:
                 return jsonify({
                     'error': 'Rate limit exceeded',
                     'retry_after': window_seconds
                 }), 429
-            
+
             # Add current request
             rate_limits[client_id].append(now)
-            
+
             return f(*args, **kwargs)
         return decorated_function
     return decorator
@@ -573,14 +597,14 @@ def rate_limit_redis(max_requests=100, window_seconds=3600):
         def decorated_function(*args, **kwargs):
             client_id = request.headers.get('X-API-Key') or request.remote_addr
             key = f'rate_limit:{client_id}'
-            
+
             # Increment counter
             current = redis_client.incr(key)
-            
+
             # Set expiry on first request
             if current == 1:
                 redis_client.expire(key, window_seconds)
-            
+
             # Check limit
             if current > max_requests:
                 ttl = redis_client.ttl(key)
@@ -588,7 +612,7 @@ def rate_limit_redis(max_requests=100, window_seconds=3600):
                     'error': 'Rate limit exceeded',
                     'retry_after': ttl
                 }), 429
-            
+
             return f(*args, **kwargs)
         return decorated_function
     return decorator
@@ -618,19 +642,19 @@ def cache_response(ttl_seconds=300):
             cache_key = hashlib.md5(
                 f"{request.path}{request.get_data()}".encode()
             ).hexdigest()
-            
+
             # Check cache
             if cache_key in cache:
                 cached_data, cached_time = cache[cache_key]
                 if (datetime.now() - cached_time).seconds < ttl_seconds:
                     return jsonify(cached_data)
-            
+
             # Execute function
             response = f(*args, **kwargs)
-            
+
             # Cache response
             cache[cache_key] = (response.get_json(), datetime.now())
-            
+
             return response
         return decorated_function
     return decorator
@@ -649,7 +673,7 @@ def get_entity(entity_id):
 ```nginx
 upstream senzing_backend {
     least_conn;  # Load balancing method
-    
+
     server senzing-api-1:8080 weight=1 max_fails=3 fail_timeout=30s;
     server senzing-api-2:8080 weight=1 max_fails=3 fail_timeout=30s;
     server senzing-api-3:8080 weight=1 max_fails=3 fail_timeout=30s;
@@ -658,18 +682,18 @@ upstream senzing_backend {
 server {
     listen 80;
     server_name api.company.com;
-    
+
     location /api/ {
         proxy_pass http://senzing_backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        
+
         # Timeouts
         proxy_connect_timeout 5s;
         proxy_send_timeout 60s;
         proxy_read_timeout 60s;
-        
+
         # Health check
         proxy_next_upstream error timeout http_500 http_502 http_503;
     }
@@ -684,13 +708,13 @@ server {
 @app.route('/api/v1/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
-    
+
     health = {
         'status': 'healthy',
         'timestamp': datetime.now().isoformat(),
         'checks': {}
     }
-    
+
     # Check database connection
     try:
         engine = SzEngine()
@@ -701,7 +725,7 @@ def health_check():
     except Exception as e:
         health['status'] = 'unhealthy'
         health['checks']['database'] = f'unhealthy: {str(e)}'
-    
+
     # Check disk space
     import shutil
     disk = shutil.disk_usage('/')
@@ -710,7 +734,7 @@ def health_check():
         health['checks']['disk'] = 'low space'
     else:
         health['checks']['disk'] = 'healthy'
-    
+
     status_code = 200 if health['status'] == 'healthy' else 503
     return jsonify(health), status_code
 ```
@@ -751,7 +775,7 @@ paths:
             application/json:
               schema:
                 type: object
-  
+
   /entities/{entity_id}:
     get:
       summary: Get entity by ID
@@ -796,6 +820,7 @@ When implementing API gateway integration in Module 12:
 ## When to Load This Guide
 
 Load this guide when:
+
 - Starting Module 12 (deployment)
 - User asks about API integration
 - Building microservices architecture
@@ -813,4 +838,3 @@ Load this guide when:
 ## Version History
 
 - **v3.0.0** (2026-03-17): API gateway patterns guide created for Module 12 enhancement
-

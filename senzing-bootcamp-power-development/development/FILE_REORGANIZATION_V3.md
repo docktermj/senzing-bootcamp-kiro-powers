@@ -26,11 +26,11 @@ Markdown files have been moved from the root of senzing-bootcamp into the approp
 
 ### From Root to docs/development/ (2 files)
 
-5. **IMPROVEMENTS_V3.md** → `docs/development/IMPROVEMENTS_V3.md`
+1. **IMPROVEMENTS_V3.md** → `docs/development/IMPROVEMENTS_V3.md`
    - Boot camp version 3.0.0 improvements summary
    - Moved to development as it's internal documentation
 
-6. **V3_REMOVAL_SUMMARY.md** → `docs/development/V3_REMOVAL_SUMMARY.md`
+2. **V3_REMOVAL_SUMMARY.md** → `docs/development/V3_REMOVAL_SUMMARY.md`
    - Summary of Senzing V3 reference removal
    - Moved to development as it's internal documentation
 
@@ -67,7 +67,7 @@ All references to moved files were updated in:
 
 ## New Directory Structure
 
-```
+```text
 senzing-bootcamp/
 ├── POWER.md                           # Kiro Power definition (MUST stay in root)
 ├── README.md                          # GitHub entry point (MUST stay in root)
@@ -113,18 +113,21 @@ senzing-bootcamp/
 ## Benefits
 
 ### For Users
+
 - Clearer navigation through documentation
 - Related guides grouped together
 - Easier to find what they need
 - Better documentation index
 
 ### For Maintainers
+
 - Cleaner root directory
 - Logical file organization
 - Easier to maintain documentation
 - Clear separation of user vs internal docs
 
 ### For Agents
+
 - Clear documentation structure
 - Easy to reference guides
 - Consistent file paths
@@ -136,7 +139,7 @@ If you have bookmarks or scripts referencing old paths:
 
 ### Old Path → New Path
 
-```
+```text
 QUICK_START.md → docs/guides/QUICK_START.md
 ONBOARDING_CHECKLIST.md → docs/guides/ONBOARDING_CHECKLIST.md
 PROGRESS_TRACKER.md → docs/guides/PROGRESS_TRACKER.md
@@ -148,18 +151,21 @@ V3_REMOVAL_SUMMARY.md → docs/development/V3_REMOVAL_SUMMARY.md
 ### Relative Path Examples
 
 From root:
+
 ```markdown
 [Quick Start](docs/guides/QUICK_START.md)
 [Progress Tracker](docs/guides/PROGRESS_TRACKER.md)
 ```
 
 From docs/modules/:
+
 ```markdown
 [Quick Start](../guides/QUICK_START.md)
 [Progress Tracker](../guides/PROGRESS_TRACKER.md)
 ```
 
 From docs/guides/:
+
 ```markdown
 [Quick Start](QUICK_START.md)
 [Progress Tracker](PROGRESS_TRACKER.md)
@@ -188,10 +194,12 @@ ls -l senzing-bootcamp/docs/development/V3_REMOVAL_SUMMARY.md
 ## Impact
 
 ### Breaking Changes
+
 - None for users (all references updated)
 - Bookmarks to old paths will break (update needed)
 
 ### Non-Breaking Changes
+
 - All internal references updated
 - Documentation index updated
 - Navigation improved

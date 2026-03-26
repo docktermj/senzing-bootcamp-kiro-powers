@@ -26,6 +26,7 @@ Multiple environments provide:
 **Purpose**: Active development and experimentation
 
 **Characteristics**:
+
 - Frequent changes
 - Sample data (small datasets)
 - SQLite or small PostgreSQL
@@ -34,11 +35,13 @@ Multiple environments provide:
 - Single instance
 
 **Data**:
+
 - Sample data (1K-10K records)
 - Synthetic or anonymized data
 - Refreshed as needed
 
 **Access**:
+
 - Developers have full access
 - No authentication required
 - Local or shared dev server
@@ -48,6 +51,7 @@ Multiple environments provide:
 **Purpose**: Automated and manual testing
 
 **Characteristics**:
+
 - Stable for testing cycles
 - Representative data
 - PostgreSQL database
@@ -56,11 +60,13 @@ Multiple environments provide:
 - May have multiple instances
 
 **Data**:
+
 - Representative sample (10K-100K records)
 - Anonymized production data
 - Refreshed weekly/monthly
 
 **Access**:
+
 - Developers and QA have access
 - Basic authentication
 - Shared test environment
@@ -70,6 +76,7 @@ Multiple environments provide:
 **Purpose**: Final validation before production
 
 **Characteristics**:
+
 - Production-like environment
 - Full-scale data
 - PostgreSQL (production-sized)
@@ -78,11 +85,13 @@ Multiple environments provide:
 - Load balanced
 
 **Data**:
+
 - Full production data copy
 - Or large representative sample (100K-1M records)
 - Refreshed regularly from production
 
 **Access**:
+
 - Limited access (ops, senior devs)
 - Production-like authentication
 - Requires approval for changes
@@ -92,6 +101,7 @@ Multiple environments provide:
 **Purpose**: Live system serving real users
 
 **Characteristics**:
+
 - Highly stable
 - Full data
 - PostgreSQL (optimized)
@@ -101,11 +111,13 @@ Multiple environments provide:
 - Disaster recovery
 
 **Data**:
+
 - Real production data
 - Backed up continuously
 - Strict access controls
 
 **Access**:
+
 - Minimal access (ops only)
 - Full authentication/authorization
 - All changes require approval
@@ -113,16 +125,16 @@ Multiple environments provide:
 
 ## Environment Comparison
 
-| Aspect | Dev | Test | Staging | Production |
-|--------|-----|------|---------|------------|
-| Data Size | 1K-10K | 10K-100K | 100K-1M | Full |
-| Database | SQLite | PostgreSQL | PostgreSQL | PostgreSQL |
-| Instances | 1 | 1-2 | 2-4 | 4+ |
-| Monitoring | Minimal | Basic | Full | Comprehensive |
-| Backups | None | Daily | Hourly | Continuous |
-| SLA | None | None | 99% | 99.9% |
-| Changes | Frequent | Weekly | Monthly | Controlled |
-| Access | Open | Developers | Limited | Restricted |
+| Aspect     | Dev      | Test       | Staging    | Production    |
+|------------|----------|------------|------------|---------------|
+| Data Size  | 1K-10K   | 10K-100K   | 100K-1M    | Full          |
+| Database   | SQLite   | PostgreSQL | PostgreSQL | PostgreSQL    |
+| Instances  | 1        | 1-2        | 2-4        | 4+            |
+| Monitoring | Minimal  | Basic      | Full       | Comprehensive |
+| Backups    | None     | Daily      | Hourly     | Continuous    |
+| SLA        | None     | None       | 99%        | 99.9%         |
+| Changes    | Frequent | Weekly     | Monthly    | Controlled    |
+| Access     | Open     | Developers | Limited    | Restricted    |
 
 ## Configuration Management
 
@@ -189,12 +201,12 @@ from dotenv import load_dotenv
 
 class Config:
     """Base configuration"""
-    
+
     def __init__(self):
         # Load environment-specific .env file
         env = os.getenv('ENVIRONMENT', 'development')
         load_dotenv(f'.env.{env}')
-        
+
         self.environment = env
         self.database_host = os.getenv('DATABASE_HOST')
         self.database_port = int(os.getenv('DATABASE_PORT', 5432))
@@ -204,15 +216,15 @@ class Config:
         self.log_level = os.getenv('LOG_LEVEL', 'INFO')
         self.senzing_data_dir = os.getenv('SENZING_DATA_DIR')
         self.backup_enabled = os.getenv('BACKUP_ENABLED', 'false').lower() == 'true'
-    
+
     def get_database_url(self):
         """Get database connection URL"""
         return f"postgresql://{self.database_user}:{self.database_password}@{self.database_host}:{self.database_port}/{self.database_name}"
-    
+
     def is_production(self):
         """Check if running in production"""
         return self.environment == 'production'
-    
+
     def is_development(self):
         """Check if running in development"""
         return self.environment == 'development'
@@ -267,11 +279,12 @@ if config.is_production():
 
 ### Code Promotion
 
-```
+```text
 Dev → Test → Staging → Production
 ```
 
-**Step 1: Development**
+#### Step 1: Development
+
 ```bash
 # Develop feature
 git checkout -b feature/customer-search
@@ -280,7 +293,8 @@ git commit -m "Add customer search feature"
 git push origin feature/customer-search
 ```
 
-**Step 2: Code Review**
+#### Step 2: Code Review
+
 ```bash
 # Create pull request
 # Review by peers
@@ -288,7 +302,8 @@ git push origin feature/customer-search
 # Merge to main branch
 ```
 
-**Step 3: Deploy to Test**
+#### Step 3: Deploy to Test
+
 ```bash
 # Automated deployment to test environment
 git checkout main
@@ -296,7 +311,8 @@ git pull
 ./deploy.sh test
 ```
 
-**Step 4: QA Testing**
+#### Step 4: QA Testing
+
 ```bash
 # QA team tests in test environment
 # Run automated test suite
@@ -304,7 +320,8 @@ git pull
 # Sign off
 ```
 
-**Step 5: Deploy to Staging**
+#### Step 5: Deploy to Staging
+
 ```bash
 # Deploy to staging for final validation
 ./deploy.sh staging
@@ -313,7 +330,8 @@ git pull
 ./run_smoke_tests.sh staging
 ```
 
-**Step 6: Deploy to Production**
+#### Step 6: Deploy to Production
+
 ```bash
 # Create release tag
 git tag -a v1.2.3 -m "Release v1.2.3"
@@ -346,63 +364,63 @@ from senzing import SzConfig, SzEngine
 
 def export_config(env_name, output_file):
     """Export configuration from environment"""
-    
+
     # Load environment config
     config = Config()
     os.environ['ENVIRONMENT'] = env_name
-    
+
     engine = SzEngine()
     engine.initialize(instance_name='export', settings=ENGINE_CONFIG)
-    
+
     # Get active config
     config_id = engine.getActiveConfigID()
     config_json = engine.exportConfig(config_id)
-    
+
     # Save to file
     with open(output_file, 'w') as f:
         f.write(config_json)
-    
+
     engine.destroy()
-    
+
     print(f"✅ Configuration exported from {env_name} to {output_file}")
 
 def import_config(env_name, input_file):
     """Import configuration to environment"""
-    
+
     # Load environment config
     config = Config()
     os.environ['ENVIRONMENT'] = env_name
-    
+
     # Read configuration
     with open(input_file) as f:
         config_json = f.read()
-    
+
     # Import configuration
     sz_config = SzConfig()
     sz_config.initialize(instance_name='import', settings=ENGINE_CONFIG)
-    
+
     config_handle = sz_config.importConfig(config_json)
     config_id = sz_config.addConfig(config_handle, f"Promoted from {input_file}")
-    
+
     # Set as default
     engine = SzEngine()
     engine.initialize(instance_name='import', settings=ENGINE_CONFIG)
     engine.setDefaultConfigID(config_id)
-    
+
     sz_config.destroy()
     engine.destroy()
-    
+
     print(f"✅ Configuration imported to {env_name} from {input_file}")
 
 # Usage
 if __name__ == '__main__':
     # Export from staging
     export_config('staging', 'config_staging.json')
-    
+
     # Review changes
     print("Review config_staging.json before importing to production")
     input("Press Enter to continue...")
-    
+
     # Import to production
     import_config('production', 'config_staging.json')
 ```
@@ -412,6 +430,7 @@ if __name__ == '__main__':
 **DO NOT** promote data from lower to higher environments.
 
 **Instead**:
+
 - **Test/Staging**: Copy data from production (anonymized)
 - **Production**: Load from source systems only
 
@@ -435,7 +454,7 @@ echo "✅ Test environment refreshed with anonymized production data"
 
 Maintain two identical production environments:
 
-```
+```text
 Blue (Current Production) ← Users
 Green (New Version) ← Testing
 
@@ -445,11 +464,13 @@ Green (New Production) ← Users
 ```
 
 **Advantages**:
+
 - Zero downtime
 - Instant rollback
 - Full testing in production-like environment
 
 **Implementation**:
+
 ```bash
 #!/bin/bash
 # Blue-green deployment
@@ -466,13 +487,13 @@ echo "Deploying to: $NEW_ENV"
 # Run smoke tests
 if ./smoke_tests.sh $NEW_ENV; then
     echo "✅ Smoke tests passed"
-    
+
     # Switch traffic to new environment
     ./switch_traffic.sh $NEW_ENV
-    
+
     # Update current environment marker
     echo $NEW_ENV > /etc/senzing/current_env
-    
+
     echo "✅ Deployment complete. Now serving from $NEW_ENV"
 else
     echo "❌ Smoke tests failed. Keeping $CURRENT_ENV active"
@@ -484,7 +505,7 @@ fi
 
 Gradually roll out to subset of users:
 
-```
+```text
 Production (v1.0) ← 90% of users
 Canary (v1.1) ← 10% of users
 
@@ -493,11 +514,13 @@ Production (v1.1) ← 100% of users
 ```
 
 **Advantages**:
+
 - Reduced risk
 - Real user feedback
 - Gradual rollout
 
 **Implementation** (Nginx):
+
 ```nginx
 upstream senzing_stable {
     server senzing-v1:8080;
@@ -523,7 +546,7 @@ server {
 
 Update instances one at a time:
 
-```
+```text
 Instance 1 (v1.0) ← Update to v1.1
 Instance 2 (v1.0) ← Wait
 Instance 3 (v1.0) ← Wait
@@ -540,11 +563,13 @@ Instance 3 (v1.1) ← Running
 ```
 
 **Advantages**:
+
 - No additional infrastructure
 - Gradual rollout
 - Can pause/rollback
 
 **Implementation**:
+
 ```bash
 #!/bin/bash
 # Rolling deployment
@@ -553,20 +578,20 @@ INSTANCES=("senzing-1" "senzing-2" "senzing-3")
 
 for instance in "${INSTANCES[@]}"; do
     echo "Deploying to $instance..."
-    
+
     # Remove from load balancer
     ./lb_remove.sh $instance
-    
+
     # Deploy new version
     ssh $instance "./deploy_local.sh"
-    
+
     # Health check
     if ./health_check.sh $instance; then
         echo "✅ $instance healthy"
-        
+
         # Add back to load balancer
         ./lb_add.sh $instance
-        
+
         # Wait before next instance
         sleep 60
     else
@@ -585,18 +610,21 @@ echo "✅ Rolling deployment complete"
 ### Keep Environments Similar
 
 **Configuration Parity**:
+
 - Same Senzing version
 - Same database schema
 - Same data sources defined
 - Same feature configuration
 
 **Infrastructure Parity**:
+
 - Similar hardware specs (scaled down for lower envs)
 - Same OS and dependencies
 - Same network topology
 - Same monitoring tools
 
 **Code Parity**:
+
 - Same codebase (different branches/tags)
 - Same deployment process
 - Same directory structure
@@ -604,18 +632,21 @@ echo "✅ Rolling deployment complete"
 ### Differences to Maintain
 
 **Data Volume**:
+
 - Dev: 1K-10K records
 - Test: 10K-100K records
 - Staging: 100K-1M records
 - Production: Full dataset
 
 **Monitoring**:
+
 - Dev: Minimal
 - Test: Basic
 - Staging: Full
 - Production: Comprehensive + alerting
 
 **Backups**:
+
 - Dev: None
 - Test: Daily
 - Staging: Hourly
@@ -624,6 +655,7 @@ echo "✅ Rolling deployment complete"
 ## Environment Checklist
 
 ### Development Environment
+
 - [ ] SQLite or small PostgreSQL database
 - [ ] Sample data loaded (1K-10K records)
 - [ ] Local or shared dev server
@@ -632,6 +664,7 @@ echo "✅ Rolling deployment complete"
 - [ ] No backups needed
 
 ### Test Environment
+
 - [ ] PostgreSQL database
 - [ ] Representative data (10K-100K records)
 - [ ] Matches production configuration
@@ -641,6 +674,7 @@ echo "✅ Rolling deployment complete"
 - [ ] Automated tests configured
 
 ### Staging Environment
+
 - [ ] Production-sized PostgreSQL
 - [ ] Large dataset (100K-1M records)
 - [ ] Exact production configuration
@@ -651,6 +685,7 @@ echo "✅ Rolling deployment complete"
 - [ ] Smoke tests automated
 
 ### Production Environment
+
 - [ ] Optimized PostgreSQL cluster
 - [ ] Full production data
 - [ ] High availability setup
@@ -679,6 +714,7 @@ When implementing multi-environment strategy in Module 12:
 ## When to Load This Guide
 
 Load this guide when:
+
 - Starting Module 12 (deployment)
 - User asks about environments or deployment
 - Planning production deployment
@@ -696,4 +732,3 @@ Load this guide when:
 ## Version History
 
 - **v3.0.0** (2026-03-17): Multi-environment strategy guide created for Module 12 enhancement
-

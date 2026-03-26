@@ -1,15 +1,15 @@
 # Module 0 Agent Guide: Running the Live Demo
 
-**Quick Reference for Agents**
+## Quick Reference for Agents
 
 This guide provides step-by-step instructions for agents running Module 0 (Quick Demo) with the new live demonstration feature.
 
 ## Critical Requirements
 
-🚨 **MUST DO**: Actually run the Senzing SDK - don't just describe what would happen  
-🚨 **MUST SHOW**: Match explanations with confidence scores  
-🚨 **MUST DISPLAY**: Before/after comparison (5 records → X entities)  
-🚨 **GOAL**: Create the "aha moment" that proves the technology works  
+🚨 **MUST DO**: Actually run the Senzing SDK - don't just describe what would happen
+🚨 **MUST SHOW**: Match explanations with confidence scores
+🚨 **MUST DISPLAY**: Before/after comparison (5 records → X entities)
+🚨 **GOAL**: Create the "aha moment" that proves the technology works
 
 ## Quick Start Checklist
 
@@ -24,7 +24,7 @@ This guide provides step-by-step instructions for agents running Module 0 (Quick
 
 ## Demo Type Decision Tree
 
-```
+```text
 START: Module 0 Quick Demo
 │
 ├─ Check: Is Senzing SDK installed?
@@ -81,15 +81,18 @@ python -c "import senzing" 2>/dev/null && echo "SDK found" || echo "SDK not foun
 
 1. **If SDK found** → Use `demo_quick_start.py` (preferred path)
 2. **If SDK not found** → Check Docker availability:
+
    ```bash
    docker --version 2>/dev/null && echo "Docker found" || echo "Docker not found"
    ```
+
    - **If Docker found** → Offer Docker option: "I can run a live demo using Docker (no installation required). Would you like to do that?"
      - If YES → Use `demo_quick_start.py` with Docker
      - If NO → Use `demo_simulation.py` (fallback)
    - **If Docker not found** → Use `demo_simulation.py` (fallback)
 
 **When using simulation fallback**:
+
 - Acknowledge: "I don't see Senzing SDK or Docker available. Let me show you a simulation instead."
 - Set expectations: "This simulation demonstrates entity resolution concepts. For a live demo with real Senzing SDK, we can set that up later."
 - After simulation: Offer to help install SDK or Docker for a live demo
@@ -97,6 +100,7 @@ python -c "import senzing" 2>/dev/null && echo "SDK found" || echo "SDK not foun
 ### 2. Choose Sample Dataset
 
 Ask user which scenario interests them:
+
 - **Las Vegas**: Customer records (retail/hospitality)
 - **London**: Person records (identity management)
 - **Moscow**: Organization records (B2B)
@@ -107,7 +111,7 @@ Default to Las Vegas if user doesn't have a preference.
 
 Display 5 sample records with obvious duplicates:
 
-```
+```text
 Here are 5 sample records we'll load into Senzing:
 
 Record 1 (CRM_SYSTEM):
@@ -156,6 +160,7 @@ generate_scaffold(
 Save to: `src/quickstart_demo/demo_las_vegas.py`
 
 **IMPORTANT**: Customize the generated script to:
+
 - Use in-memory SQLite database
 - Load the 5 sample records
 - Query resolved entities
@@ -178,6 +183,7 @@ python demo_las_vegas.py
 ```
 
 Or with Docker:
+
 ```bash
 docker run -v $(pwd)/src/quickstart_demo:/data \
   senzing/senzing-tools \
@@ -189,7 +195,8 @@ docker run -v $(pwd)/src/quickstart_demo:/data \
 Show the output in this order:
 
 #### a) Summary Statistics
-```
+
+```text
 Results:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Records loaded:              5
@@ -200,7 +207,8 @@ Average records per entity:  1.67
 ```
 
 #### b) Resolved Entities
-```
+
+```text
 Entity 1: John Smith
 Records matched: 3
 
@@ -221,7 +229,8 @@ Record 3 (SALES_SYSTEM):
 ```
 
 #### c) Match Explanations
-```
+
+```text
 Match Explanation:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Why these records matched:
@@ -245,6 +254,7 @@ Record 1 ↔ Record 3:
 Walk through the resolved entity:
 
 "These 3 records all matched because they share:
+
 - The same name (with variations: John Smith, J. Smith, John R Smith)
 - The same address (with formatting differences: Main St vs Main Street)
 - The same phone number (with formatting differences)
@@ -253,7 +263,7 @@ The 98-99% confidence scores mean Senzing is very certain these are the same per
 
 ### 9. Highlight Key Insights
 
-```
+```text
 Key Insights:
 ✓ Senzing automatically recognized duplicates - no manual rules required
 ✓ Different data formats handled automatically:
@@ -271,6 +281,7 @@ Key Insights:
 ### 11. Transition
 
 Ask what they'd like to do next:
+
 - Start Module 1 with their own data
 - Try another sample dataset
 - Learn more about entity resolution
@@ -279,20 +290,26 @@ Ask what they'd like to do next:
 ## Common Issues
 
 ### SDK Not Found
+
 **Solution**: Offer Docker option
+
 ```bash
 docker run -v $(pwd):/data senzing/senzing-tools python /data/demo.py
 ```
 
 ### Demo Script Fails
+
 **Check**:
+
 - Python version (3.8+)
 - File paths are correct
 - Sample data is in JSONL format
 
 ### No Matches Found
+
 **This shouldn't happen** with sample data - the records are designed to match.
 If it does happen, check:
+
 - Sample data loaded correctly
 - Senzing engine initialized properly
 - Records have required fields (DATA_SOURCE, RECORD_ID)
@@ -300,40 +317,44 @@ If it does happen, check:
 ## Agent Behavior Guidelines
 
 ### DO
-✅ Actually run the Senzing SDK  
-✅ Show match explanations with confidence scores  
-✅ Display before/after comparison  
-✅ Be enthusiastic about the results  
-✅ Connect demo to user's use case  
-✅ Create the "aha moment"  
+
+✅ Actually run the Senzing SDK
+✅ Show match explanations with confidence scores
+✅ Display before/after comparison
+✅ Be enthusiastic about the results
+✅ Connect demo to user's use case
+✅ Create the "aha moment"
 
 ### DON'T
-❌ Just describe what would happen  
-❌ Skip the match explanations  
-❌ Forget the before/after comparison  
-❌ Be dry or technical  
-❌ Rush through the results  
-❌ Miss the opportunity to excite the user  
+
+❌ Just describe what would happen
+❌ Skip the match explanations
+❌ Forget the before/after comparison
+❌ Be dry or technical
+❌ Rush through the results
+❌ Miss the opportunity to excite the user
 
 ## Success Indicators
 
-✅ Senzing SDK ran successfully  
-✅ Sample data loaded without errors  
-✅ Entities resolved correctly  
-✅ Match explanations displayed with confidence scores  
-✅ User understands what entity resolution does  
-✅ User understands WHY records matched  
-✅ User can see the before/after transformation  
-✅ User is excited to try with their own data  
+✅ Senzing SDK ran successfully
+✅ Sample data loaded without errors
+✅ Entities resolved correctly
+✅ Match explanations displayed with confidence scores
+✅ User understands what entity resolution does
+✅ User understands WHY records matched
+✅ User can see the before/after transformation
+✅ User is excited to try with their own data
 
 ## Quick Reference: MCP Tools
 
 ### Get Sample Data
+
 ```python
 get_sample_data(dataset="las_vegas")
 ```
 
 ### Generate Demo Script
+
 ```python
 generate_scaffold(
     language="python",
@@ -343,6 +364,7 @@ generate_scaffold(
 ```
 
 ### Validate Output
+
 ```python
 lint_record(record_json)
 ```
@@ -352,6 +374,7 @@ lint_record(record_json)
 Pre-built demo template: `senzing-bootcamp/templates/demo_quick_start.py`
 
 This template includes:
+
 - SDK availability check
 - In-memory database initialization
 - Sample data loading

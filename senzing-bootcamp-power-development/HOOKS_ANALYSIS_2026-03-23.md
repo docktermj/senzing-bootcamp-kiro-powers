@@ -6,7 +6,7 @@ Are all files in `senzing-bootcamp/hooks/` needed by the Power?
 
 ## Current Structure
 
-```
+```text
 hooks/
 ├── README.md
 ├── pep8-check.hook
@@ -22,6 +22,7 @@ hooks/
 ## What Are Hooks?
 
 Kiro hooks are automation triggers that:
+
 - Execute actions when specific events occur (file edits, saves, etc.)
 - Remind users to perform quality checks
 - Run automated tests or validations
@@ -31,11 +32,12 @@ Kiro hooks are automation triggers that:
 
 ### 1. pep8-check.hook ✅ KEEP
 
-**Purpose**: Check Python files for PEP-8 compliance  
-**Trigger**: When any `.py` file is edited  
+**Purpose**: Check Python files for PEP-8 compliance
+**Trigger**: When any `.py` file is edited
 **Action**: Agent checks for PEP-8 violations and suggests fixes
 
 **Boot camp-specific?**: Yes
+
 - Boot camp requires PEP-8 compliance (max line length 100)
 - Referenced in POWER.md and PEP8_COMPLIANCE.md
 - Essential for maintaining code quality standards
@@ -44,11 +46,12 @@ Kiro hooks are automation triggers that:
 
 ### 2. data-quality-check.kiro.hook ✅ KEEP
 
-**Purpose**: Remind to validate data quality after transformation changes  
-**Trigger**: When transformation programs are saved (`src/transform/*.py`)  
+**Purpose**: Remind to validate data quality after transformation changes
+**Trigger**: When transformation programs are saved (`src/transform/*.py`)
 **Action**: Agent reminds to run quality validation (>70% coverage)
 
 **Boot camp-specific?**: Yes
+
 - Module 3 focuses on data quality scoring
 - Boot camp has specific quality thresholds (>70%)
 - Prevents quality degradation during mapping iterations
@@ -57,11 +60,12 @@ Kiro hooks are automation triggers that:
 
 ### 3. backup-before-load.kiro.hook ✅ KEEP
 
-**Purpose**: Remind to backup database before loading  
-**Trigger**: When loading programs are modified (`src/load/*.py`)  
+**Purpose**: Remind to backup database before loading
+**Trigger**: When loading programs are modified (`src/load/*.py`)
 **Action**: Agent reminds to backup using `./scripts/backup_database.sh`
 
 **Boot camp-specific?**: Yes
+
 - References boot camp script location (`./scripts/`)
 - Critical for Module 6 (loading)
 - Prevents data loss during boot camp
@@ -70,16 +74,18 @@ Kiro hooks are automation triggers that:
 
 ### 4. test-before-commit.kiro.hook ⚠️ QUESTION
 
-**Purpose**: Run pytest tests when source files are saved  
-**Trigger**: When any source file is edited (`src/**/*.py`)  
+**Purpose**: Run pytest tests when source files are saved
+**Trigger**: When any source file is edited (`src/**/*.py`)
 **Action**: Runs `python -m pytest tests/ -v`
 
 **Boot camp-specific?**: Partially
+
 - Generic testing practice (not boot camp-specific)
 - Boot camp doesn't require tests (agent instructions say "DO NOT automatically add tests")
 - May annoy users who don't have tests
 
 **Concerns**:
+
 - Runs on every file save (could be disruptive)
 - Assumes pytest is installed
 - Assumes tests exist in `tests/` directory
@@ -89,16 +95,18 @@ Kiro hooks are automation triggers that:
 
 ### 5. update-documentation.kiro.hook ⚠️ QUESTION
 
-**Purpose**: Remind to update documentation when code changes  
-**Trigger**: When any source file is edited (`src/**/*.py`)  
+**Purpose**: Remind to update documentation when code changes
+**Trigger**: When any source file is edited (`src/**/*.py`)
 **Action**: Agent reminds to update docs and add comments
 
 **Boot camp-specific?**: No
+
 - Generic software engineering practice
 - Not specific to boot camp workflow
 - May be annoying if triggered on every save
 
 **Concerns**:
+
 - Triggers on every file save (could be disruptive)
 - Generic reminder, not boot camp-specific
 - Users may find it repetitive
@@ -107,11 +115,12 @@ Kiro hooks are automation triggers that:
 
 ### 6. validate-senzing-json.kiro.hook ✅ KEEP
 
-**Purpose**: Validate Senzing JSON output format  
-**Trigger**: When transformed data files are modified (`data/transformed/*.jsonl`)  
+**Purpose**: Validate Senzing JSON output format
+**Trigger**: When transformed data files are modified (`data/transformed/*.jsonl`)
 **Action**: Agent suggests using `lint_record` MCP tool
 
 **Boot camp-specific?**: Yes
+
 - Validates against Senzing Generic Entity Specification (SGES)
 - Uses boot camp MCP tool (`lint_record`)
 - Critical for Module 4 (data mapping)
@@ -121,8 +130,9 @@ Kiro hooks are automation triggers that:
 
 ### 7. README.md ✅ KEEP
 
-**Purpose**: Documentation for hooks  
+**Purpose**: Documentation for hooks
 **Content**:
+
 - Description of each hook
 - Installation instructions
 - Customization guide
@@ -138,7 +148,7 @@ Kiro hooks are automation triggers that:
 ```markdown
 ## Recommended Hooks
 
-Install pre-configured hooks to automate quality checks and reminders. 
+Install pre-configured hooks to automate quality checks and reminders.
 See `hooks/README.md` and `docs/guides/HOOKS_INSTALLATION_GUIDE.md` for details.
 
 Available hooks:
@@ -180,11 +190,11 @@ Complete guide for installing and customizing hooks.
 
 ## Hook Usage by Module
 
-| Module | Recommended Hooks |
-|--------|-------------------|
+| Module       | Recommended Hooks                        |
+|--------------|------------------------------------------|
 | **Module 3** | PEP-8, Data Quality, Validate JSON, Test |
-| **Module 5** | PEP-8, Backup Before Load, Test |
-| **Module 6** | PEP-8, Test, Update Docs |
+| **Module 5** | PEP-8, Backup Before Load, Test          |
+| **Module 6** | PEP-8, Test, Update Docs                 |
 
 ## Analysis: Generic vs Boot Camp-Specific
 
@@ -197,14 +207,15 @@ Complete guide for installing and customizing hooks.
 
 ### Generic Hooks (2) ⚠️
 
-5. **test-before-commit.kiro.hook** - Generic testing practice
-6. **update-documentation.kiro.hook** - Generic documentation reminder
+1. **test-before-commit.kiro.hook** - Generic testing practice
+2. **update-documentation.kiro.hook** - Generic documentation reminder
 
 ## Concerns with Generic Hooks
 
 ### test-before-commit.kiro.hook
 
 **Issues**:
+
 1. **Conflicts with agent instructions**: Agent instructions say "DO NOT automatically add tests unless explicitly requested"
 2. **Assumes tests exist**: Boot camp doesn't require tests until later modules
 3. **May fail**: If pytest not installed or no tests exist
@@ -216,6 +227,7 @@ Complete guide for installing and customizing hooks.
 ### update-documentation.kiro.hook
 
 **Issues**:
+
 1. **Generic reminder**: Not specific to boot camp workflow
 2. **Repetitive**: Triggers on every file save
 3. **Not actionable**: Vague reminder without specific guidance
@@ -235,14 +247,15 @@ Complete guide for installing and customizing hooks.
 
 ### REMOVE (2 files) ⚠️
 
-6. **test-before-commit.kiro.hook** - Generic, conflicts with boot camp workflow
-7. **update-documentation.kiro.hook** - Generic, not boot camp-specific
+1. **test-before-commit.kiro.hook** - Generic, conflicts with boot camp workflow
+2. **update-documentation.kiro.hook** - Generic, not boot camp-specific
 
 ## Rationale for Removal
 
-### test-before-commit.kiro.hook
+### test-before-commit.kiro.hook (2)
 
 **Why remove**:
+
 - Conflicts with agent instructions (no automatic tests)
 - Boot camp doesn't require tests in early modules
 - May fail if pytest not installed
@@ -250,14 +263,16 @@ Complete guide for installing and customizing hooks.
 - Users can create their own if needed
 
 **Impact of removal**:
+
 - ✅ Aligns with agent instructions
 - ✅ Reduces potential errors (missing pytest)
 - ✅ Less disruptive to users
 - ✅ Users who want testing can add their own hook
 
-### update-documentation.kiro.hook
+### update-documentation.kiro.hook (3)
 
 **Why remove**:
+
 - Generic software engineering practice
 - Not specific to boot camp workflow
 - May be annoying (triggers on every save)
@@ -265,6 +280,7 @@ Complete guide for installing and customizing hooks.
 - Vague reminder without specific guidance
 
 **Impact of removal**:
+
 - ✅ Less disruptive to users
 - ✅ Removes generic content
 - ✅ Boot camp workflows already cover documentation
@@ -274,7 +290,7 @@ Complete guide for installing and customizing hooks.
 
 After removal:
 
-```
+```text
 hooks/
 ├── README.md
 ├── pep8-check.hook
@@ -288,6 +304,7 @@ hooks/
 ## Update README.md
 
 The README.md should be updated to:
+
 1. Remove references to removed hooks
 2. Update "Available Hooks" section
 3. Update "Recommended Hooks by Module" section
@@ -296,6 +313,7 @@ The README.md should be updated to:
 ## Update References
 
 Files that reference the removed hooks:
+
 - **POWER.md** - Update "Available hooks" list
 - **hooks/README.md** - Remove from "Available Hooks" section
 - **steering/steering.md** - Update hook installation workflow (if specific hooks mentioned)
@@ -311,6 +329,7 @@ Files that reference the removed hooks:
 ### Why These Hooks Are Similar
 
 The two hooks to remove are:
+
 - **Generic practices** (testing, documentation)
 - **Not boot camp-specific**
 - **May conflict with boot camp workflow** (test-before-commit)
@@ -319,12 +338,14 @@ The two hooks to remove are:
 ## Alternative: Keep But Mark as Optional
 
 Instead of removing, we could:
+
 1. Keep the hooks but mark them as "optional"
 2. Update README to indicate they're generic
 3. Don't recommend them in POWER.md
 4. Let users decide if they want them
 
 **Decision**: Remove is better because:
+
 - Cleaner distribution
 - Avoids confusion about what's recommended
 - Aligns with boot camp workflow
@@ -332,17 +353,19 @@ Instead of removing, we could:
 
 ## File Count Impact
 
-**Before**: 7 files (1 README + 6 hooks)  
-**After**: 5 files (1 README + 4 hooks)  
+**Before**: 7 files (1 README + 6 hooks)
+**After**: 5 files (1 README + 4 hooks)
 **Reduction**: 2 files (29% reduction)
 
 ## Conclusion
 
 **REMOVE 2 FILES** from `senzing-bootcamp/hooks/`:
+
 - test-before-commit.kiro.hook (generic, conflicts with workflow)
 - update-documentation.kiro.hook (generic, not boot camp-specific)
 
 **KEEP 5 FILES**:
+
 - README.md (documentation)
 - pep8-check.hook (boot camp code standards)
 - data-quality-check.kiro.hook (boot camp quality thresholds)
@@ -357,4 +380,3 @@ All remaining hooks are boot camp-specific and provide value aligned with the bo
 - **Analysis**: Complete
 - **Recommendation**: Remove 2 generic hooks, keep 5 boot camp-specific hooks
 - **Status**: ⚠️ Action needed
-

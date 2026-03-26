@@ -5,6 +5,7 @@ This repository contains internal development documentation for the Senzing Boot
 ## Purpose
 
 This documentation tracks:
+
 - Development history and implementation phases
 - Design decisions and rationale
 - File reorganization history
@@ -16,6 +17,7 @@ This documentation tracks:
 ### Development History (`development/`)
 
 Complete history of the boot camp development including:
+
 - Phase completion summaries (PHASE_1 through PHASE_5)
 - Implementation plans and status
 - File reorganization documentation
@@ -27,6 +29,7 @@ Complete history of the boot camp development including:
 ### Removed Guides (`guides/`)
 
 Guide files removed from Power distribution (Phase 2):
+
 - Files duplicating MCP server functionality
 - Internal/development documentation
 - See `GUIDES_REORGANIZATION_2026-03-23.md` for details
@@ -34,12 +37,14 @@ Guide files removed from Power distribution (Phase 2):
 ### Removed Demo Scripts (`quickstart_demo/`)
 
 Static demo scripts removed from Power distribution (Phase 3):
+
 - Replaced by MCP-generated code
 - See `DEMO_SCRIPTS_REMOVAL_2026-03-23.md` for details
 
 ### Removed Steering Files (`steering/`)
 
 Steering files removed from Power distribution (Phase 5):
+
 - Generic best practices files
 - Generic pattern files
 - Advanced operations files
@@ -48,12 +53,14 @@ Steering files removed from Power distribution (Phase 5):
 ### Removed Hooks (`hooks/`)
 
 Hook files removed from Power distribution (Phase 7):
+
 - Generic hooks that conflict with agent instructions or aren't boot camp-specific
 - See `HOOKS_ANALYSIS_2026-03-23.md` for details
 
 ### Build Artifacts
 
 Build artifacts removed from Power distribution (Phase 4):
+
 - `mdpdf.log` - PDF generation tool log
 - See `BUILD_ARTIFACTS_CLEANUP_2026-03-23.md` for details
 

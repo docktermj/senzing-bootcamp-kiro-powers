@@ -1,15 +1,18 @@
 # File Reorganization Summary
 
 ## Date
+
 March 17, 2026
 
 ## Purpose
+
 Reorganize documentation files from the root `senzing-bootcamp/` directory into logical subdirectories for better organization and maintainability.
 
 ## Changes Made
 
 ### Before (Flat Structure)
-```
+
+```text
 senzing-bootcamp/
 ├── DESIGN_PATTERNS.md
 ├── HOOKS_INSTALLATION_GUIDE.md
@@ -47,7 +50,8 @@ senzing-bootcamp/
 ```
 
 ### After (Organized Structure)
-```
+
+```text
 senzing-bootcamp/
 ├── POWER.md                    # Required by Kiro
 ├── icon.png                    # Required by Kiro
@@ -94,7 +98,9 @@ senzing-bootcamp/
 ## File Movements
 
 ### To `docs/modules/` (10 files)
+
 Module-specific documentation:
+
 - MODULE_2_DATA_COLLECTION.md
 - MODULE_3_DATA_QUALITY_SCORING.md
 - MODULE_6_SINGLE_SOURCE_LOADING.md
@@ -107,19 +113,25 @@ Module-specific documentation:
 - MODULE_12_DEPLOYMENT_PACKAGING.md
 
 ### To `docs/policies/` (3 files)
+
 Policy and convention documents:
+
 - MODULE_0_CODE_LOCATION.md
 - PYTHON_REQUIREMENTS_POLICY.md
 - SHELL_SCRIPT_LOCATIONS.md
 
 ### To `docs/guides/` (3 files)
+
 User-facing guides:
+
 - DESIGN_PATTERNS.md
 - HOOKS_INSTALLATION_GUIDE.md
 - INSTALLATION_VERIFICATION.md
 
 ### To `docs/development/` (12 files)
+
 Development progress and tracking:
+
 - IMPROVEMENTS.md
 - NEW_MODULE_STRUCTURE.md
 - NEW_WORKFLOWS_PHASE5.md
@@ -134,7 +146,9 @@ Development progress and tracking:
 - V3_IMPLEMENTATION_STATUS.md
 
 ### Kept in Root (3 files)
+
 Required by Kiro:
+
 - POWER.md
 - icon.png
 - mcp.json
@@ -150,11 +164,13 @@ Required by Kiro:
 ## Impact on References
 
 ### No Impact
+
 - All file movements are within the `senzing-bootcamp/` directory
 - Relative paths from steering files remain valid
 - Kiro power structure unchanged (POWER.md, icon.png, mcp.json in root)
 
 ### Potential Updates Needed
+
 If any files reference these documents by absolute path, they may need updates. However, most references use relative paths from the steering directory, which remain valid.
 
 ## Commands Used
@@ -186,6 +202,7 @@ mv DESIGN_PATTERNS.md HOOKS_INSTALLATION_GUIDE.md \
 ## Verification
 
 After reorganization:
+
 - ✅ Root directory contains only essential files
 - ✅ All MODULE_* files in `docs/modules/` (except MODULE_0_CODE_LOCATION.md in policies)
 - ✅ All PHASE_* files in `docs/development/`

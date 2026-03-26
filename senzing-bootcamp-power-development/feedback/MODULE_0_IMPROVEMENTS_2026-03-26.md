@@ -1,8 +1,8 @@
 # Module 0 Improvements Based on User Feedback
 
-**Date**: 2026-03-26  
-**Feedback Source**: User feedback on Docker demo database initialization failure  
-**Priority**: High  
+**Date**: 2026-03-26
+**Feedback Source**: User feedback on Docker demo database initialization failure
+**Priority**: High
 **Status**: Improvement Plan Created
 
 ---
@@ -12,6 +12,7 @@
 User encountered critical Docker database initialization issues in Module 0 that prevented completion of the "Quick Demo." This document outlines comprehensive improvements to make Module 0 more robust, provide better fallback options, and set accurate expectations.
 
 **Key Issues**:
+
 1. Docker demo failed with SQLite database permission errors
 2. Prerequisites not clearly stated (Docker, disk space, network)
 3. No fallback option when Docker demo fails
@@ -29,7 +30,7 @@ User encountered critical Docker database initialization issues in Module 0 that
 
 **Solution**: Create a lightweight, pure-Python simulation demo that doesn't require Senzing SDK.
 
-#### Implementation
+#### 1. Implementation
 
 **File**: `senzing-bootcamp/templates/demo_simulation.py`
 
@@ -45,7 +46,7 @@ def simulate_entity_resolution():
     Simulates entity resolution with pre-computed results.
     Shows what Senzing would do without actually running the SDK.
     """
-    
+
     # Sample records (before resolution)
     records = [
         {
@@ -89,7 +90,7 @@ def simulate_entity_resolution():
             "EMAIL_ADDRESS": "jane.doe@email.com"
         }
     ]
-    
+
     # Pre-computed resolution results (what Senzing would produce)
     entities = [
         {
@@ -142,7 +143,7 @@ def simulate_entity_resolution():
             ]
         }
     ]
-    
+
     # Display results (same format as real demo)
     print_demo_results(records, entities)
 
@@ -150,6 +151,7 @@ def simulate_entity_resolution():
 ```
 
 **Benefits**:
+
 - No Docker required
 - No Senzing SDK required
 - Runs in pure Python
@@ -157,6 +159,7 @@ def simulate_entity_resolution():
 - Instant execution (no setup time)
 
 **Limitations** (clearly communicated):
+
 - Simulation, not real Senzing SDK
 - Pre-computed results
 - Can't try with custom data
@@ -175,11 +178,13 @@ def simulate_entity_resolution():
 **Approach**: Ship Docker image with pre-initialized SQLite database.
 
 **Implementation**:
+
 1. Create Dockerfile with pre-initialized database
 2. Publish to Docker Hub: `senzing/bootcamp-demo:latest`
 3. Update demo to use pre-built image
 
 **Benefits**:
+
 - No database initialization needed
 - Eliminates permission issues
 - Faster startup
@@ -190,6 +195,7 @@ def simulate_entity_resolution():
 **Approach**: Use SQLite `:memory:` database instead of file-based.
 
 **Implementation**:
+
 ```python
 # Instead of:
 db_path = "/tmp/G2C.db"
@@ -199,12 +205,14 @@ db_path = ":memory:"
 ```
 
 **Benefits**:
+
 - No file system permissions needed
 - No volume mounts required
 - Faster
 - Cleaner (no cleanup needed)
 
 **Trade-offs**:
+
 - Database lost when container stops (acceptable for demo)
 
 #### 2c. Better Error Detection and Guidance
@@ -218,7 +226,7 @@ def check_docker_environment():
     Returns (success, error_message, suggestions)
     """
     checks = []
-    
+
     # Check 1: Can we write to /tmp?
     try:
         test_file = "/tmp/senzing_test.txt"
@@ -228,11 +236,11 @@ def check_docker_environment():
         checks.append(("Write to /tmp", True, None))
     except Exception as e:
         checks.append(("Write to /tmp", False, str(e)))
-    
+
     # Check 2: SELinux/AppArmor status
     # Check 3: Volume mount permissions
     # ... etc
-    
+
     return checks
 ```
 
@@ -300,7 +308,7 @@ def check_docker_environment():
 
 **Solution**: Create validation script that checks environment before starting.
 
-#### Implementation
+#### 4. Implementation
 
 **File**: `senzing-bootcamp/scripts/check_module0_prerequisites.sh`
 
@@ -316,7 +324,7 @@ echo ""
 if command -v docker &> /dev/null; then
     DOCKER_VERSION=$(docker --version | cut -d' ' -f3 | cut -d',' -f1)
     echo "✓ Docker found (version $DOCKER_VERSION)"
-    
+
     # Check if Docker is running
     if docker ps &> /dev/null; then
         echo "✓ Docker is running"
@@ -423,8 +431,10 @@ fi
 
 1. **Use Simulation Demo instead** (Recommended)
    ```
+
    Ask agent: "Use simulation demo instead"
-   ```
+
+   ```text
    - No Docker required
    - Shows same concepts
    - Instant results
@@ -441,28 +451,31 @@ fi
    # Then log out and back in
    ```
 
-4. **Disable SELinux temporarily** (Linux only)
+1. **Disable SELinux temporarily** (Linux only)
+
    ```bash
    # Check if SELinux is the issue
    getenforce
-   
+
    # If "Enforcing", try:
    sudo setenforce 0
    # Run demo, then re-enable:
    sudo setenforce 1
    ```
 
-5. **Try different Docker volume mount**
+2. **Try different Docker volume mount**
    - Agent will try /tmp, /var/tmp, /app
    - If all fail, use Simulation Demo
 
 ### Issue: Docker Image Download is Slow
 
 **Symptoms**:
+
 - Download taking >5 minutes
 - Progress appears stuck
 
 **Solutions**:
+
 - Be patient - 1.6GB image takes time
 - Check network speed
 - Try again later if network is slow
@@ -471,10 +484,12 @@ fi
 ### Issue: Docker Not Installed
 
 **Symptoms**:
+
 - "docker: command not found"
 - "Docker is not running"
 
 **Solutions**:
+
 1. **Use Simulation Demo** (Recommended)
    - No Docker required
    - Shows same concepts
@@ -493,6 +508,7 @@ fi
 **This shouldn't happen** with sample data.
 
 **If it does**:
+
 1. Check that sample data loaded correctly
 2. Verify Senzing engine initialized
 3. Contact support - this indicates a bug
@@ -509,10 +525,12 @@ fi
 ### Getting Help
 
 If none of these solutions work:
+
 - Share error messages with agent
 - Try Simulation Demo to continue learning
 - Skip to Module 1 and return to Module 0 later
 - Contact Senzing support with error details
+
 ```
 
 ---
@@ -555,11 +573,13 @@ Run pre-flight check:
 ### Step 3: Execute Demo
 
 **Docker Demo**:
+
 1. Try in-memory database first (`:memory:`)
 2. If that fails, try file-based with /tmp
 3. If that fails, offer Simulation Demo
 
 **Simulation Demo**:
+
 1. Run simulation script
 2. Clearly label as "Simulation"
 3. Explain what real SDK would do differently
@@ -568,12 +588,14 @@ Run pre-flight check:
 ### Step 4: Handle Failures
 
 **If Docker demo fails**:
+
 1. Show error message
 2. Explain likely cause
 3. Offer Simulation Demo immediately
 4. Don't make user troubleshoot unless they want to
 
 **If Simulation demo fails**:
+
 1. This shouldn't happen (pure Python)
 2. Check Python version
 3. Check file permissions
@@ -582,15 +604,18 @@ Run pre-flight check:
 ## Fallback Strategy
 
 **Priority order**:
+
 1. Docker Demo with in-memory database (best)
 2. Docker Demo with file-based database (good)
 3. Simulation Demo (acceptable, clearly labeled)
 4. Skip to Module 1, return later (last resort)
 
 **Never**:
+
 - Leave user stuck with no option
 - Spend >5 minutes troubleshooting Docker
 - Make user feel like they failed
+
 ```
 
 ---
@@ -716,6 +741,7 @@ Run pre-flight check:
 
 **Message**:
 ```
+
 Thank you for your detailed feedback on Module 0! We've made significant improvements:
 
 ✅ Added Simulation Demo (no Docker required)
@@ -726,11 +752,13 @@ Thank you for your detailed feedback on Module 0! We've made significant improve
 ✅ Updated time estimates
 
 You can now:
+
 1. Try the new Simulation Demo (instant, no setup)
 2. Retry Docker demo with improved reliability
 3. Skip to Module 1 and return to Module 0 later
 
 We appreciate your patience and detailed feedback!
+
 ```
 
 ---
@@ -769,13 +797,13 @@ We appreciate your patience and detailed feedback!
 
 ## Approval and Sign-off
 
-**Created by**: Kiro AI Assistant  
-**Date**: 2026-03-26  
-**Status**: Awaiting approval  
-**Priority**: High  
-**Estimated effort**: 2-3 days  
+**Created by**: Kiro AI Assistant
+**Date**: 2026-03-26
+**Status**: Awaiting approval
+**Priority**: High
+**Estimated effort**: 2-3 days
 
-**Approver**: _______________  
+**Approver**: _______________
 **Date**: _______________
 
 ---
@@ -790,8 +818,8 @@ We appreciate your patience and detailed feedback!
 - Time estimate didn't account for setup
 - Could not complete Module 0 (first impression)
 
-**User rating**: 2/5  
-**User sentiment**: Frustrated but willing to continue  
+**User rating**: 2/5
+**User sentiment**: Frustrated but willing to continue
 **User suggestion**: "A working Docker demo or a clearer alternative path"
 
 **Our response**: Comprehensive improvements addressing all issues raised.

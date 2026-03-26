@@ -23,6 +23,7 @@ Or manually verify each item below.
 - [ ] **Windows** (WSL2 required)
 
 **Check**:
+
 ```bash
 uname -a
 ```
@@ -35,6 +36,7 @@ uname -a
 - [ ] **pip** package manager available
 
 **Check**:
+
 ```bash
 python --version  # Should be 3.8+
 python3 --version
@@ -42,6 +44,7 @@ pip --version
 ```
 
 **Fix if needed**:
+
 ```bash
 # Ubuntu/Debian
 sudo apt update
@@ -63,11 +66,13 @@ sudo apt install python3 python3-pip
 - [ ] **50GB+ free** for production with large datasets
 
 **Check**:
+
 ```bash
 df -h .
 ```
 
 **Recommended**:
+
 - Development: 20GB
 - Production: 100GB+
 
@@ -79,6 +84,7 @@ df -h .
 - [ ] **8GB+** for production
 
 **Check**:
+
 ```bash
 # Linux
 free -h
@@ -88,6 +94,7 @@ sysctl hw.memsize
 ```
 
 **Recommended**:
+
 - Development: 8GB
 - Production: 16GB+
 
@@ -99,6 +106,7 @@ sysctl hw.memsize
 - [ ] **4+ cores** recommended
 
 **Check**:
+
 ```bash
 # Linux
 nproc
@@ -116,11 +124,13 @@ sysctl -n hw.ncpu
 - [ ] **Git** installed for version control
 
 **Check**:
+
 ```bash
 git --version
 ```
 
 **Install if needed**:
+
 ```bash
 # Ubuntu/Debian
 sudo apt install git
@@ -141,6 +151,7 @@ sudo apt install git
 - [ ] **User has Docker permissions**
 
 **Check**:
+
 ```bash
 docker --version
 docker-compose --version
@@ -148,6 +159,7 @@ docker ps  # Should not require sudo
 ```
 
 **Install if needed**:
+
 ```bash
 # Ubuntu/Debian
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -171,12 +183,14 @@ sudo chmod +x /usr/local/bin/docker-compose
 - [ ] **psycopg2** Python library available
 
 **Check**:
+
 ```bash
 psql --version
 python -c "import psycopg2; print('psycopg2 available')"
 ```
 
 **Install if needed**:
+
 ```bash
 # Ubuntu/Debian
 sudo apt install postgresql postgresql-contrib
@@ -197,6 +211,7 @@ pip install psycopg2-binary
 - [ ] **No restrictive firewall** blocking package repositories
 
 **Check**:
+
 ```bash
 ping -c 3 google.com
 curl -I https://pypi.org
@@ -210,6 +225,7 @@ curl -I https://pypi.org
 - [ ] **Port 8080** available (if running API)
 
 **Check**:
+
 ```bash
 # Check if ports are in use
 sudo lsof -i :5432
@@ -230,6 +246,7 @@ netstat -tuln | grep 8080
 - [ ] **Create directories** permission
 
 **Check**:
+
 ```bash
 mkdir test_dir && rmdir test_dir && echo "✅ Permissions OK"
 ```
@@ -242,6 +259,7 @@ mkdir test_dir && rmdir test_dir && echo "✅ Permissions OK"
 - [ ] **Can run Docker** (if using containers)
 
 **Check**:
+
 ```bash
 # Test sudo (if needed)
 sudo echo "✅ Sudo access OK"
@@ -259,6 +277,7 @@ docker run hello-world
 - [ ] **Can create virtual environments**
 
 **Check**:
+
 ```bash
 python -m venv test_venv
 source test_venv/bin/activate
@@ -274,6 +293,7 @@ echo "✅ Virtual environment OK"
 - [ ] **Can install Python packages**
 
 **Check**:
+
 ```bash
 pip install --dry-run senzing
 ```
@@ -386,7 +406,7 @@ echo "Checking Python..."
 if command -v python3 &> /dev/null; then
     PYTHON_VERSION=$(python3 --version | cut -d' ' -f2)
     echo "✅ Python $PYTHON_VERSION installed"
-    
+
     # Check version is 3.8+
     MAJOR=$(echo $PYTHON_VERSION | cut -d'.' -f1)
     MINOR=$(echo $PYTHON_VERSION | cut -d'.' -f2)
@@ -500,6 +520,7 @@ fi
 ```
 
 Make it executable:
+
 ```bash
 chmod +x scripts/preflight_check.sh
 ```
@@ -513,6 +534,7 @@ chmod +x scripts/preflight_check.sh
 **Problem**: Python not found or wrong version
 
 **Solution**:
+
 ```bash
 # Ubuntu/Debian
 sudo apt update
@@ -532,6 +554,7 @@ python3 --version
 **Problem**: Not enough disk space
 
 **Solution**:
+
 1. Clean up unnecessary files
 2. Use external drive
 3. Use cloud storage for data
@@ -544,6 +567,7 @@ python3 --version
 **Problem**: Not enough RAM
 
 **Solution**:
+
 1. Close unnecessary applications
 2. Use smaller sample datasets
 3. Upgrade RAM (if possible)
@@ -556,6 +580,7 @@ python3 --version
 **Problem**: Cannot write files or install packages
 
 **Solution**:
+
 ```bash
 # Use virtual environment (no sudo needed)
 python3 -m venv venv
@@ -573,6 +598,7 @@ sudo chown -R $USER:$USER .
 **Problem**: Docker not running or permission denied
 
 **Solution**:
+
 ```bash
 # Start Docker
 sudo systemctl start docker
@@ -587,7 +613,7 @@ docker run hello-world
 
 ---
 
-## Ready to Start!
+## Ready to Start
 
 Once all critical checks pass:
 

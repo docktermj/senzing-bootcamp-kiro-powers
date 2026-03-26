@@ -22,13 +22,13 @@ class TestCustomerTransform(unittest.TestCase):
         source_record = {"customer_name": "John Doe"}
         result = transform_record(source_record)
         self.assertEqual(result["NAME_FULL"], "John Doe")
-    
+
     def test_missing_fields(self):
         source_record = {"customer_id": "123"}
         result = transform_record(source_record)
         self.assertIn("RECORD_ID", result)
         self.assertEqual(result["RECORD_ID"], "123")
-    
+
     def test_data_cleansing(self):
         source_record = {"phone": "  (555) 123-4567  "}
         result = transform_record(source_record)
@@ -49,12 +49,12 @@ class TestCustomerLoad(unittest.TestCase):
     def setUp(self):
         self.engine = G2Engine()
         # Initialize with test database
-    
+
     def test_load_sample_records(self):
         result = load_records("data/samples/customer_sample.jsonl", "TEST_CRM")
         self.assertEqual(result["success_count"], 10)
         self.assertEqual(result["error_count"], 0)
-    
+
     def test_duplicate_record_handling(self):
         # Load same record twice
         load_records("data/samples/duplicate_test.jsonl", "TEST_CRM")
@@ -76,7 +76,7 @@ class TestDataQuality(unittest.TestCase):
         quality = analyze_quality(records)
         self.assertGreater(quality["name_coverage"], 0.95)
         self.assertGreater(quality["address_coverage"], 0.80)
-    
+
     def test_data_completeness(self):
         records = load_transformed_records("data/transformed/customer_crm_senzing.jsonl")
         quality = analyze_quality(records)
@@ -97,7 +97,7 @@ class TestDuplicateQuery(unittest.TestCase):
         # Load test data with known duplicates
         duplicates = find_duplicates_for_datasource("TEST_CRM")
         self.assertGreater(len(duplicates), 0)
-    
+
     def test_no_false_positives(self):
         # Load test data with no duplicates
         duplicates = find_duplicates_for_datasource("TEST_UNIQUE")
@@ -129,6 +129,7 @@ python -m pytest --cov=src tests/
 ## When to Load This Guide
 
 Load this steering file when:
+
 - Starting Module 4 (before creating transformation programs)
 - User asks about testing or quality assurance
 - Generating transformation or loading programs

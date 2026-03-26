@@ -9,6 +9,7 @@ Are all 25 steering files in `senzing-bootcamp/steering/` necessary for the boot
 ### Files by Inclusion Type
 
 **Always Included (9 files)** - Loaded automatically:
+
 1. agent-instructions.md - Core agent behavior and workflows
 2. common-pitfalls.md - Troubleshooting guidance
 3. complexity-estimator.md - Project complexity assessment
@@ -42,6 +43,7 @@ Are all 25 steering files in `senzing-bootcamp/steering/` necessary for the boot
 ## Evaluation Criteria
 
 For each file, assess:
+
 1. **Boot camp-specific?** - Is this unique to the boot camp learning experience?
 2. **MCP server duplicate?** - Does the MCP server provide this information?
 3. **Generic best practice?** - Is this general software engineering guidance?
@@ -51,31 +53,36 @@ For each file, assess:
 
 ### KEEP - Boot Camp-Specific (Core Workflows)
 
-**1. steering.md** (2355 lines)
+#### 1. steering.md (2355 lines)
+
 - **Status**: KEEP
 - **Reason**: Core boot camp workflows for all 13 modules
 - **Boot camp-specific**: Yes - guides users through structured learning path
 - **Usage**: Referenced constantly throughout boot camp
 
-**2. agent-instructions.md**
+#### 2. agent-instructions.md
+
 - **Status**: KEEP
 - **Reason**: Agent behavior specific to boot camp workflows
 - **Boot camp-specific**: Yes - directory structure creation, module transitions, progress tracking
 - **Usage**: Core agent behavior guide
 
-**3. quick-reference.md**
+#### 3. quick-reference.md
+
 - **Status**: KEEP
 - **Reason**: Quick reference for MCP tools in boot camp context
 - **Boot camp-specific**: Yes - organized by boot camp modules
 - **Usage**: Frequently referenced during modules
 
-**4. modules-7-12-workflows.md**
+#### 4. modules-7-12-workflows.md
+
 - **Status**: KEEP
 - **Reason**: Advanced module workflows (performance, security, monitoring, deployment)
 - **Boot camp-specific**: Yes - structured learning for production readiness
 - **Usage**: Modules 7-12
 
-**5. NEW_WORKFLOWS_PHASE5.md**
+#### 5. NEW_WORKFLOWS_PHASE5.md
+
 - **Status**: KEEP (but should be merged into steering.md or modules-7-12-workflows.md)
 - **Reason**: Contains Module 7 orchestration workflow
 - **Boot camp-specific**: Yes
@@ -83,31 +90,36 @@ For each file, assess:
 
 ### KEEP - Boot Camp-Specific (Support Files)
 
-**6. common-pitfalls.md**
+#### 6. common-pitfalls.md
+
 - **Status**: KEEP
 - **Reason**: Boot camp-specific troubleshooting (common mistakes during learning)
 - **Boot camp-specific**: Yes - addresses issues learners encounter
 - **Usage**: Referenced when users get stuck
 
-**7. troubleshooting-decision-tree.md**
+#### 7. troubleshooting-decision-tree.md
+
 - **Status**: KEEP
 - **Reason**: Diagnostic tree for boot camp issues
 - **Boot camp-specific**: Yes - guides learners through problem-solving
 - **Usage**: Referenced during troubleshooting
 
-**8. complexity-estimator.md**
+#### 8. complexity-estimator.md
+
 - **Status**: KEEP
 - **Reason**: Helps users estimate project scope during Module 1
 - **Boot camp-specific**: Yes - part of business problem workflow
 - **Usage**: Module 1
 
-**9. cost-estimation.md**
+#### 9. cost-estimation.md
+
 - **Status**: KEEP
 - **Reason**: Helps users estimate costs during Module 1
 - **Boot camp-specific**: Yes - part of business problem workflow
 - **Usage**: Module 1
 
-**10. lessons-learned.md**
+#### 10. lessons-learned.md
+
 - **Status**: KEEP
 - **Reason**: Post-boot camp reflection template
 - **Boot camp-specific**: Yes - captures learning experience
@@ -115,7 +127,8 @@ For each file, assess:
 
 ### QUESTIONABLE - Generic Best Practices
 
-**11. logging-standards.md**
+#### 11. logging-standards.md
+
 - **Status**: CONSIDER MOVING
 - **Reason**: Generic logging best practices, not boot camp-specific
 - **MCP duplicate**: Partially - `search_docs` covers logging
@@ -123,7 +136,8 @@ For each file, assess:
 - **Usage**: Referenced in code generation
 - **Recommendation**: Could be replaced by MCP search_docs queries
 
-**12. security-privacy.md**
+#### 12. security-privacy.md
+
 - **Status**: KEEP (but could be simplified)
 - **Reason**: Important reminders for learners handling sensitive data
 - **MCP duplicate**: Partially - `search_docs` covers security
@@ -131,7 +145,8 @@ For each file, assess:
 - **Usage**: Module 2 (data collection)
 - **Recommendation**: Keep but simplify to boot camp-specific reminders
 
-**13. testing-strategy.md**
+#### 13. testing-strategy.md
+
 - **Status**: CONSIDER MOVING
 - **Reason**: Generic testing best practices
 - **MCP duplicate**: No
@@ -139,7 +154,8 @@ For each file, assess:
 - **Usage**: Modules 9-12
 - **Recommendation**: Could be replaced by general testing resources
 
-**14. performance-monitoring.md**
+#### 14. performance-monitoring.md
+
 - **Status**: CONSIDER MOVING
 - **Reason**: Generic monitoring best practices
 - **MCP duplicate**: Partially - `search_docs` covers performance
@@ -149,7 +165,8 @@ For each file, assess:
 
 ### QUESTIONABLE - Deployment Patterns
 
-**15. docker-deployment.md**
+#### 15. docker-deployment.md
+
 - **Status**: KEEP (critical for boot camp)
 - **Reason**: Contains boot camp-specific Docker patterns and critical schema fixes
 - **MCP duplicate**: Partially - `sdk_guide` covers Docker, but not schema issues
@@ -157,7 +174,8 @@ For each file, assess:
 - **Usage**: Module 5 (SDK setup with Docker)
 - **Recommendation**: KEEP - contains critical troubleshooting for Docker deployments
 
-**16. api-gateway-patterns.md**
+#### 16. api-gateway-patterns.md
+
 - **Status**: CONSIDER MOVING
 - **Reason**: Generic API integration patterns
 - **MCP duplicate**: Partially - `find_examples` provides code examples
@@ -165,7 +183,8 @@ For each file, assess:
 - **Usage**: Module 12 (optional)
 - **Recommendation**: Move to development - too generic
 
-**17. integration-patterns.md**
+#### 17. integration-patterns.md
+
 - **Status**: CONSIDER MOVING
 - **Reason**: Generic system integration patterns
 - **MCP duplicate**: Partially - `find_examples` provides examples
@@ -173,7 +192,8 @@ For each file, assess:
 - **Usage**: Module 12 (optional)
 - **Recommendation**: Move to development - too generic
 
-**18. multi-environment-strategy.md**
+#### 18. multi-environment-strategy.md
+
 - **Status**: CONSIDER MOVING
 - **Reason**: Generic dev/staging/prod strategy
 - **MCP duplicate**: No
@@ -183,7 +203,8 @@ For each file, assess:
 
 ### QUESTIONABLE - Advanced Topics
 
-**19. disaster-recovery.md**
+#### 19. disaster-recovery.md
+
 - **Status**: CONSIDER MOVING
 - **Reason**: Generic DR best practices
 - **MCP duplicate**: No
@@ -191,7 +212,8 @@ For each file, assess:
 - **Usage**: Module 11 (optional)
 - **Recommendation**: Move to development - too generic for boot camp
 
-**20. recovery-procedures.md**
+#### 20. recovery-procedures.md
+
 - **Status**: CONSIDER MOVING
 - **Reason**: Generic error recovery procedures
 - **MCP duplicate**: Partially - `explain_error_code` handles errors
@@ -199,7 +221,8 @@ For each file, assess:
 - **Usage**: Throughout (optional)
 - **Recommendation**: Move to development - MCP tools handle this
 
-**21. incremental-loading.md**
+#### 21. incremental-loading.md
+
 - **Status**: KEEP (but could be simplified)
 - **Reason**: Important pattern for production deployments
 - **MCP duplicate**: Partially - `search_docs` covers incremental loading
@@ -207,7 +230,8 @@ For each file, assess:
 - **Usage**: Module 7
 - **Recommendation**: Keep but verify it's not duplicating MCP content
 
-**22. data-lineage.md**
+#### 22. data-lineage.md
+
 - **Status**: KEEP
 - **Reason**: Important for Module 2 (data collection)
 - **MCP duplicate**: No
@@ -217,7 +241,8 @@ For each file, assess:
 
 ### QUESTIONABLE - Team/Process
 
-**23. collaboration.md**
+#### 23. collaboration.md
+
 - **Status**: CONSIDER MOVING
 - **Reason**: Generic team collaboration guidance
 - **MCP duplicate**: No
@@ -225,7 +250,8 @@ For each file, assess:
 - **Usage**: Rarely (team projects)
 - **Recommendation**: Move to development - too generic
 
-**24. environment-setup.md**
+#### 24. environment-setup.md
+
 - **Status**: KEEP (but verify not duplicate)
 - **Reason**: Environment configuration guidance
 - **MCP duplicate**: Yes - `sdk_guide` covers this
@@ -233,7 +259,8 @@ For each file, assess:
 - **Usage**: Module 5
 - **Recommendation**: Verify not duplicating sdk_guide, simplify if needed
 
-**25. uat-framework.md**
+#### 25. uat-framework.md
+
 - **Status**: KEEP
 - **Reason**: User acceptance testing framework for Module 8
 - **MCP duplicate**: No
@@ -246,6 +273,7 @@ For each file, assess:
 ### Files to KEEP (17 files)
 
 **Core Workflows (5)**:
+
 1. steering.md
 2. agent-instructions.md
 3. quick-reference.md
@@ -268,6 +296,7 @@ For each file, assess:
 ### Files to MOVE to Development (8 files)
 
 **Generic Best Practices**:
+
 1. logging-standards.md - Generic logging (use MCP search_docs instead)
 2. testing-strategy.md - Generic testing (use general resources)
 3. performance-monitoring.md - Generic monitoring (use MCP search_docs)
@@ -286,17 +315,19 @@ For each file, assess:
 
 ### If We Move 8 Files
 
-**Before**: 25 steering files  
-**After**: 17 steering files  
+**Before**: 25 steering files
+**After**: 17 steering files
 **Reduction**: 32% fewer files
 
 **Benefits**:
+
 - Clearer focus on boot camp-specific content
 - Less duplication with MCP server
 - Easier maintenance
 - Faster loading times
 
 **Risks**:
+
 - Users might miss generic best practices
 - Need to ensure MCP server covers removed topics
 - May need to add references to external resources
@@ -331,6 +362,7 @@ Before moving files, verify:
 **Recommendation**: Move 8-9 generic files to development repository, keeping 16-17 boot camp-specific files.
 
 The steering directory should focus on:
+
 - Boot camp-specific workflows and guidance
 - Learning path structure
 - Progress tracking
@@ -338,7 +370,7 @@ The steering directory should focus on:
 - Critical deployment patterns (Docker)
 
 Generic best practices should be:
+
 - Provided by MCP server (`search_docs`, `find_examples`)
 - Referenced from external resources
 - Documented in development repository for reference
-

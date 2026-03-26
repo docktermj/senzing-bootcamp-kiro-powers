@@ -6,7 +6,7 @@ Are all files in `senzing-bootcamp/examples/` needed by the Power?
 
 ## Current Structure
 
-```
+```text
 examples/
 ├── README.md (264 lines)
 ├── simple-single-source/
@@ -35,6 +35,7 @@ The examples directory contains **ONLY README files** - no actual code files, da
 ### Content Type
 
 The READMEs are **comprehensive reference documentation** with:
+
 - Complete code examples (embedded in markdown)
 - Project structure diagrams
 - Step-by-step workflows
@@ -45,11 +46,12 @@ The READMEs are **comprehensive reference documentation** with:
 
 ### 1. Simple Single Source (322 lines)
 
-**Purpose**: Beginner example for single data source  
-**Modules**: 1-6, 8  
+**Purpose**: Beginner example for single data source
+**Modules**: 1-6, 8
 **Time**: 2-3 hours
 
 **Content**:
+
 - Basic project structure
 - Simple CSV → Senzing JSON transformation
 - SQLite database setup
@@ -57,6 +59,7 @@ The READMEs are **comprehensive reference documentation** with:
 - Expected results (7,500 entities from 10,000 records)
 
 **Code Examples**:
+
 - `transform_customers.py` - CSV transformation
 - `load_customers.py` - Data loading
 - `find_duplicates.py` - Query for duplicates
@@ -66,11 +69,12 @@ The READMEs are **comprehensive reference documentation** with:
 
 ### 2. Multi-Source Project (627 lines)
 
-**Purpose**: Intermediate example with three data sources  
-**Modules**: 1-8  
+**Purpose**: Intermediate example with three data sources
+**Modules**: 1-8
 **Time**: 6-8 hours
 
 **Content**:
+
 - Three data sources (CRM, e-commerce, support)
 - Data quality evaluation
 - Complex mappings
@@ -79,6 +83,7 @@ The READMEs are **comprehensive reference documentation** with:
 - UAT framework
 
 **Code Examples**:
+
 - `data_quality.py` - Quality assessment
 - `transform_crm.py` - CRM transformation
 - `transform_ecommerce.py` - E-commerce transformation
@@ -91,11 +96,12 @@ The READMEs are **comprehensive reference documentation** with:
 
 ### 3. Production Deployment (790 lines)
 
-**Purpose**: Advanced production-ready example  
-**Modules**: All (0-12)  
+**Purpose**: Advanced production-ready example
+**Modules**: All (0-12)
 **Time**: 12-15 hours
 
 **Content**:
+
 - Production-grade code patterns
 - PostgreSQL with replication
 - Performance testing
@@ -106,6 +112,7 @@ The READMEs are **comprehensive reference documentation** with:
 - API gateway integration
 
 **Code Examples**:
+
 - `orchestrator.py` - Production orchestrator with monitoring
 - `api_server.py` - REST API with authentication
 - `test_load_performance.py` - Performance benchmarking
@@ -154,6 +161,7 @@ References example project structures as illustrations of Docker file organizati
 ### 1. Learning Reference
 
 Examples show users:
+
 - What a complete project looks like
 - How to organize code and files
 - What code patterns to use
@@ -162,6 +170,7 @@ Examples show users:
 ### 2. Copy-and-Adapt
 
 Users can:
+
 - Copy code snippets from examples
 - Adapt patterns to their use case
 - Use as templates for their projects
@@ -169,6 +178,7 @@ Users can:
 ### 3. Validation
 
 Users can:
+
 - Compare their project to examples
 - Verify they're on the right track
 - Check if they've missed steps
@@ -176,6 +186,7 @@ Users can:
 ### 4. Progression Path
 
 Three examples show progression:
+
 1. **Simple** → Learn basics
 2. **Multi-source** → Real-world complexity
 3. **Production** → Enterprise deployment
@@ -184,16 +195,17 @@ Three examples show progression:
 
 ### Comparison with Other Power Content
 
-| Content Type | Location | Purpose | Overlap? |
-|--------------|----------|---------|----------|
-| **Workflows** | steering/ | Agent guidance | No - different format |
-| **Module docs** | docs/modules/ | Module reference | No - different scope |
-| **Templates** | templates/ | Utility scripts | No - different purpose |
-| **Examples** | examples/ | Complete projects | Unique |
+| Content Type    | Location      | Purpose           | Overlap?               |
+|-----------------|---------------|-------------------|------------------------|
+| **Workflows**   | steering/     | Agent guidance    | No - different format  |
+| **Module docs** | docs/modules/ | Module reference  | No - different scope   |
+| **Templates**   | templates/    | Utility scripts   | No - different purpose |
+| **Examples**    | examples/     | Complete projects | Unique                 |
 
 ### What Makes Examples Unique?
 
 Examples provide:
+
 - **Complete project view** - All pieces together
 - **Realistic scope** - Full projects, not isolated code
 - **Expected results** - What success looks like
@@ -203,6 +215,7 @@ Examples provide:
 ### Could MCP Server Replace Examples?
 
 **No**, because:
+
 - MCP `find_examples` returns code snippets, not complete projects
 - MCP examples are from GitHub repos, not boot camp-specific
 - Examples show boot camp project structure and organization
@@ -222,6 +235,7 @@ Examples provide:
 ### What If We Removed Examples?
 
 Users would:
+
 - Have no complete project reference
 - Not know what "done" looks like
 - Miss realistic expectations (entity counts, match rates)
@@ -242,6 +256,7 @@ Users would:
 ### Why Examples Are Different
 
 Examples are:
+
 - **Complete projects** (not isolated scripts)
 - **Boot camp-specific** (not generic)
 - **Educational progression** (beginner → advanced)
@@ -259,6 +274,7 @@ Examples are:
 ### Size Justification
 
 Each example is comprehensive because it shows:
+
 - Complete project structure
 - Multiple code files (embedded)
 - Step-by-step instructions
@@ -273,7 +289,8 @@ This is appropriate for reference documentation.
 
 Keep structure descriptions but remove embedded code.
 
-**Impact**: 
+**Impact**:
+
 - ❌ Users lose copy-paste ready code
 - ❌ No concrete patterns to follow
 - ❌ Abstract descriptions less helpful
@@ -283,6 +300,7 @@ Keep structure descriptions but remove embedded code.
 Remove intermediate and advanced examples.
 
 **Impact**:
+
 - ❌ No progression path
 - ❌ Users with complex needs have no reference
 - ❌ Production users have no guidance
@@ -292,6 +310,7 @@ Remove intermediate and advanced examples.
 Put examples in separate GitHub repo.
 
 **Impact**:
+
 - ❌ Users need to find external resource
 - ❌ Breaks self-contained Power
 - ❌ Examples may get out of sync
@@ -316,6 +335,7 @@ Put examples in separate GitHub repo.
 ### Why Not Remove?
 
 Examples are NOT:
+
 - ❌ Executable code (just documentation)
 - ❌ Duplicate of other content
 - ❌ Replaceable by MCP server
@@ -323,6 +343,7 @@ Examples are NOT:
 - ❌ Internal development notes
 
 Examples ARE:
+
 - ✅ Essential learning reference
 - ✅ Complete project demonstrations
 - ✅ Boot camp-specific progression
@@ -333,19 +354,20 @@ Examples ARE:
 
 Both module docs and examples are essential but serve different purposes:
 
-| Aspect | Module Docs | Examples |
-|--------|-------------|----------|
-| **Scope** | Single module | Complete project |
-| **Format** | Reference guide | Working example |
-| **Code** | Snippets | Complete files |
-| **Purpose** | Explain concepts | Show implementation |
-| **Audience** | Learning | Reference/validation |
+| Aspect       | Module Docs      | Examples             |
+|--------------|------------------|----------------------|
+| **Scope**    | Single module    | Complete project     |
+| **Format**   | Reference guide  | Working example      |
+| **Code**     | Snippets         | Complete files       |
+| **Purpose**  | Explain concepts | Show implementation  |
+| **Audience** | Learning         | Reference/validation |
 
 **Conclusion**: Both are needed, they complement each other.
 
 ## File Count Impact
 
 Current Power structure:
+
 - **docs/**: 31 files (reference documentation)
 - **examples/**: 4 files (project examples)
 - **steering/**: 16 files (agent workflows)
@@ -361,6 +383,7 @@ Examples represent only 6% of total files but provide significant value.
 **KEEP ALL 4 FILES** in `senzing-bootcamp/examples/`
 
 All files serve essential purposes:
+
 - **README.md** - Examples overview and navigation
 - **simple-single-source/README.md** - Beginner reference
 - **multi-source-project/README.md** - Intermediate reference
@@ -374,4 +397,3 @@ No files should be removed. The examples provide essential educational content s
 - **Analysis**: Complete
 - **Recommendation**: Keep all 4 files
 - **Status**: ✅ No changes needed
-

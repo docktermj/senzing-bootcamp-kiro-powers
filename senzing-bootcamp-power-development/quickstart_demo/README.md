@@ -5,7 +5,7 @@ These demo scripts were removed from the Senzing Boot Camp Power distribution be
 ## Files in This Directory (3 files)
 
 1. **demo_customer_360.py** - Customer 360 / deduplication demo
-2. **demo_fraud_detection.py** - Fraud detection demo  
+2. **demo_fraud_detection.py** - Fraud detection demo
 3. **demo_vendor_mdm.py** - Vendor MDM demo
 
 ## Why Removed
@@ -23,6 +23,7 @@ get_sample_data(
 ```
 
 **Benefits:**
+
 - Always current data format
 - Multiple datasets available
 - Configurable sample size
@@ -40,6 +41,7 @@ generate_scaffold(
 ```
 
 **Benefits:**
+
 - Always current SDK version
 - Supports 5 languages
 - Follows latest best practices

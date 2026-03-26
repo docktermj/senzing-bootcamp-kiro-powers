@@ -43,6 +43,7 @@ sudo apt install ~/senzingrepo_1.0.0-1_amd64.deb
 **File**: `docs/policies/README.md`
 
 **Changes**:
+
 - Added File Storage Policy to the list of available policies
 - Updated policy summary table
 - Enhanced file organization overview with all directories
@@ -54,6 +55,7 @@ sudo apt install ~/senzingrepo_1.0.0-1_amd64.deb
 **File**: `steering/agent-instructions.md`
 
 **Changes**:
+
 - Added data file directory structure to File Management section
 - Added critical note about never using `/tmp`
 - Added note about using `data/temp/` for temporary files
@@ -62,19 +64,20 @@ sudo apt install ~/senzingrepo_1.0.0-1_amd64.deb
 ## Policy Rules Summary
 
 ### Core Principle
+
 **Never use system temporary directories like `/tmp` for project files.**
 
 ### File Type Rules
 
-| File Type | Directory | Examples |
-|-----------|-----------|----------|
-| Source code | `src/` | `.py`, `.java`, `.cs`, `.rs` |
-| Shell scripts | `scripts/` | `.sh` |
-| Documentation | `docs/` | `.md` |
-| Data files | `data/` | `.json`, `.jsonl`, `.csv` |
-| Configuration | `config/` or root | `.json`, `.yaml`, `.env` |
-| Temporary files | `data/temp/` | Any temporary working files |
-| Downloads | `~` | Installation packages |
+| File Type       | Directory         | Examples                     |
+|-----------------|-------------------|------------------------------|
+| Source code     | `src/`            | `.py`, `.java`, `.cs`, `.rs` |
+| Shell scripts   | `scripts/`        | `.sh`                        |
+| Documentation   | `docs/`           | `.md`                        |
+| Data files      | `data/`           | `.json`, `.jsonl`, `.csv`    |
+| Configuration   | `config/` or root | `.json`, `.yaml`, `.env`     |
+| Temporary files | `data/temp/`      | Any temporary working files  |
+| Downloads       | `~`               | Installation packages        |
 
 ### Why Not /tmp?
 
@@ -105,18 +108,21 @@ grep -r "tempfile\|mktemp\|NamedTemporaryFile" senzing-bootcamp/**/*.md
 ## Impact
 
 ### For Users
+
 - Clear guidance on where to store files
 - No risk of losing files due to `/tmp` cleanup
 - Consistent project organization
 - Better debugging experience
 
 ### For Agents
+
 - Clear rules for file placement
 - No ambiguity about temporary files
 - Consistent recommendations
 - Policy-compliant code generation
 
 ### For Maintainers
+
 - Easier to find and manage files
 - Consistent project structure
 - Clear cleanup procedures
@@ -125,6 +131,7 @@ grep -r "tempfile\|mktemp\|NamedTemporaryFile" senzing-bootcamp/**/*.md
 ## Examples
 
 ### Before (Wrong)
+
 ```bash
 # ❌ Using /tmp
 wget https://example.com/package.deb -O /tmp/package.deb
@@ -133,6 +140,7 @@ echo "data" > /tmp/output.json
 ```
 
 ### After (Correct)
+
 ```bash
 # ✅ Using project directories
 wget https://example.com/package.deb -O ~/package.deb
@@ -186,7 +194,7 @@ grep -r "tempfile\|mktemp" senzing-bootcamp/**/*.md
 
 ## Version
 
-**Boot Camp Version**: 3.0.0  
+**Boot Camp Version**: 3.0.0
 **Policy Version**: 1.0.0
 
 ## Files Created

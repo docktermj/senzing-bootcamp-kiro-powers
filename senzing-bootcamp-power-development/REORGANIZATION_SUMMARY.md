@@ -1,6 +1,6 @@
 # Documentation Reorganization Summary
 
-**Date**: 2026-03-23  
+**Date**: 2026-03-23
 **Purpose**: Separate user-facing Power documentation from internal development documentation
 
 ## What Was Done
@@ -10,11 +10,14 @@ Moved internal development documentation out of the `senzing-bootcamp` Power dis
 ## Files Moved to Development Repository
 
 ### From `senzing-bootcamp/docs/`
+
 - `DIRECTORY_STRUCTURE_GUARANTEE.md` - Internal guarantee documentation
 - `SENZING_BOOTCAMP_POWER_FEEDBACK.md` - Example feedback file (not the template)
 
 ### From `senzing-bootcamp/docs/development/` (entire folder)
+
 All 31 development history files including:
+
 - Phase completion summaries (PHASE_1 through PHASE_5)
 - Implementation plans and status
 - File reorganization documentation (FILE_REORGANIZATION.md, FILE_REORGANIZATION_V3.md)
@@ -26,6 +29,7 @@ All 31 development history files including:
 - And 20+ other development tracking files
 
 ### From `senzing-bootcamp/` (root)
+
 - `DIRECTORY_STRUCTURE_FIRST.md` - Original directory-first documentation
 
 ## Files Moved Back to Power (User-Facing)
@@ -33,10 +37,12 @@ All 31 development history files including:
 These files were initially moved but are actually user-facing:
 
 ### To `senzing-bootcamp/docs/policies/`
+
 - `PEP8_COMPLIANCE.md` - Code quality standards (referenced by POWER.md and steering files)
 - `DOCKER_FOLDER_POLICY.md` - Docker file organization policy (referenced by steering files)
 
 ### To `senzing-bootcamp/steering/`
+
 - `NEW_WORKFLOWS_PHASE5.md` - Detailed workflows for Modules 7-12 (3,108 lines, actively referenced by steering.md)
 
 ## References Updated
@@ -44,20 +50,23 @@ These files were initially moved but are actually user-facing:
 Updated all references in the Power to point to new locations:
 
 ### PEP8_COMPLIANCE.md
+
 - `senzing-bootcamp/POWER.md` (2 references)
 - `senzing-bootcamp/steering/steering.md` (1 reference)
 
 ### DOCKER_FOLDER_POLICY.md
+
 - `senzing-bootcamp/steering/docker-deployment.md` (1 reference)
 
 ### NEW_WORKFLOWS_PHASE5.md
+
 - `senzing-bootcamp/steering/steering.md` (16 references across Modules 7-12)
 
 ## What Remains in the Power
 
 ### User-Facing Documentation Structure
 
-```
+```text
 senzing-bootcamp/
 ├── docs/
 │   ├── feedback/
@@ -86,7 +95,7 @@ senzing-bootcamp/
 
 ## What's in Development Repository
 
-```
+```text
 senzing-bootcamp-development/
 ├── development/ (31 files)
 │   ├── PHASE_*.md (5 phase summaries)
@@ -114,12 +123,14 @@ senzing-bootcamp-development/
 ### What Makes Documentation "User-Facing"?
 
 Documentation is user-facing if:
+
 - Referenced by POWER.md, steering files, or other user docs
 - Explains how to use features or follow standards
 - Provides policies users must follow (PEP-8, file storage, etc.)
 - Contains workflows the agent uses to guide users
 
 Documentation is internal if:
+
 - Tracks development phases and implementation
 - Documents design decisions for maintainers
 - Provides historical context about changes
@@ -128,6 +139,7 @@ Documentation is internal if:
 ## Verification
 
 All references verified with no broken links:
+
 ```bash
 # Verified no remaining docs/development references
 grep -r "docs/development" senzing-bootcamp/**/*.md
@@ -161,7 +173,6 @@ When adding new documentation:
   - Created development repository README
   - Verified no broken links
 
-
 ---
 
 ## Guide Files Reorganization (2026-03-23)
@@ -171,6 +182,7 @@ When adding new documentation:
 Moved 15 guide files that either duplicate MCP server functionality or are internal documentation:
 
 **Duplicates MCP Server (6 files):**
+
 1. COMPATIBILITY_MATRIX.md → Use `get_capabilities`
 2. PREREQUISITES.md + .pdf → Use `sdk_guide`
 3. FAQ.md → Use `search_docs`
@@ -198,12 +210,12 @@ Moved 15 guide files that either duplicate MCP server functionality or are inter
 7. ✅ FEEDBACK_WORKFLOW.md - Feedback process
 8. ✅ README.md - Guide index
 
-### References Updated
+### References Updated (2)
 
 - Updated POWER.md to remove reference to COMPATIBILITY_MATRIX.md
 - Updated docs/guides/README.md with new structure and MCP tool alternatives
 
-### Benefits
+### Benefits (2)
 
 1. **Reduced from 23 to 8 guides** - 65% reduction
 2. **Eliminated duplication** - MCP server is single source of truth
@@ -213,12 +225,12 @@ Moved 15 guide files that either duplicate MCP server functionality or are inter
 
 ### MCP Server Replaces Static Guides
 
-| Removed Guide | MCP Tool Alternative |
-|---------------|---------------------|
-| COMPATIBILITY_MATRIX | `get_capabilities` |
-| PREREQUISITES | `sdk_guide` |
-| FAQ | `search_docs` |
-| PERFORMANCE_TUNING | `search_docs` (category="performance") |
-| DOCKER_QUICK_START | `sdk_guide` (platform="docker") |
+| Removed Guide        | MCP Tool Alternative                   |
+|----------------------|----------------------------------------|
+| COMPATIBILITY_MATRIX | `get_capabilities`                     |
+| PREREQUISITES        | `sdk_guide`                            |
+| FAQ                  | `search_docs`                          |
+| PERFORMANCE_TUNING   | `search_docs` (category="performance") |
+| DOCKER_QUICK_START   | `sdk_guide` (platform="docker")        |
 
 This reorganization aligns with the Power's design philosophy: leverage the MCP server for Senzing documentation, keep only boot camp-specific guides in the Power distribution.

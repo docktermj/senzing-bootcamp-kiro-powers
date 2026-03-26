@@ -17,27 +17,32 @@ Removed redundant transformation, loading, and query templates from the boot cam
 Utility templates that MCP server cannot generate:
 
 **Database Management**:
+
 - backup_database.py
 - restore_database.py
 - rollback_load.py
 
 **Data Collection**:
+
 - collect_from_csv.py
 - collect_from_json.py
 - collect_from_api.py
 - collect_from_database.py
 
 **Validation & Testing**:
+
 - validate_schema.py
 - performance_baseline.py
 - troubleshoot.py
 
 **Planning & Analysis**:
+
 - cost_calculator.py
 
 ### Documentation Updates
 
 Updated references in:
+
 - `templates/README.md` - Complete rewrite explaining MCP server generation
 - `POWER.md` - Updated templates section
 - `docs/guides/TROUBLESHOOTING_INDEX.md` - Removed template reference
@@ -59,6 +64,7 @@ Updated references in:
 ### Why Keep Utility Templates?
 
 These templates provide functionality that the MCP server cannot generate:
+
 - Database backup/restore operations
 - Data collection from various sources
 - Schema validation
@@ -84,7 +90,7 @@ python src/load/loader.py
 
 ### After (Using MCP Server)
 
-```
+```text
 User: "Transform my CSV file at data/raw/customers.csv"
 Agent: Calls mapping_workflow(action="start", file_paths=["data/raw/customers.csv"])
 → Interactive 7-step workflow

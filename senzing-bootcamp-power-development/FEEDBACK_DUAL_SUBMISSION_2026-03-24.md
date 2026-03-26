@@ -1,12 +1,13 @@
 # Feedback Dual Submission Implementation
 
-**Date**: 2026-03-24  
-**Purpose**: Implement dual submission of feedback to both local file and Senzing MCP server  
+**Date**: 2026-03-24
+**Purpose**: Implement dual submission of feedback to both local file and Senzing MCP server
 **Status**: Implemented
 
 ## Requirement
 
 When senzing-bootcamp feedback is generated, it should go to TWO places:
+
 1. The Senzing MCP server (for centralized tracking)
 2. The user's `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` (local copy)
 
@@ -17,6 +18,7 @@ When senzing-bootcamp feedback is generated, it should go to TWO places:
 **File**: `senzing-bootcamp-power-development/guides/FEEDBACK_WORKFLOW.md`
 
 **Changes**:
+
 - Added Step 5: Submit to Senzing MCP Server
 - Updated Quick Reference to include MCP submission
 - Added MCP Server Integration section
@@ -25,6 +27,7 @@ When senzing-bootcamp feedback is generated, it should go to TWO places:
 - Updated Module 12 completion message
 
 **Key additions**:
+
 - Check for MCP feedback tool availability
 - Submit feedback with structured parameters
 - Handle failures gracefully (still save locally)
@@ -35,6 +38,7 @@ When senzing-bootcamp feedback is generated, it should go to TWO places:
 **File**: `senzing-bootcamp/docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md`
 
 **Changes**:
+
 - Added note about automatic dual submission
 - Clarified that agent handles both submissions
 - Updated "How to Use This File" section
@@ -43,6 +47,7 @@ When senzing-bootcamp feedback is generated, it should go to TWO places:
 ## Workflow Steps
 
 ### Step 1-4: Gather and Format Feedback
+
 (Unchanged - same as before)
 
 ### Step 5: Submit to Senzing MCP Server (NEW)
@@ -50,11 +55,13 @@ When senzing-bootcamp feedback is generated, it should go to TWO places:
 After saving to local file, submit to MCP server:
 
 **Check for MCP tool**:
+
 ```bash
 # Look for: submit_feedback, report_issue, send_feedback, or similar
 ```
 
 **Submit with parameters**:
+
 ```json
 {
   "tool": "submit_feedback",
@@ -75,12 +82,14 @@ After saving to local file, submit to MCP server:
 ### Step 6: Confirm Dual Submission
 
 **Success message**:
+
 ```text
 ✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 ✅ Submitted to Senzing MCP server for tracking
 ```
 
 **Failure message** (if MCP unavailable):
+
 ```text
 ✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 ⚠️  Could not submit to Senzing MCP server (will be submitted when you share the file)
@@ -89,17 +98,20 @@ After saving to local file, submit to MCP server:
 ## Error Handling
 
 ### MCP Server Not Available
+
 - ✅ Still save to local file
 - ⚠️  Note that MCP submission failed
 - 📝 Add note in feedback file
 - 💡 Remind user to share file at completion
 
 ### MCP Tool Not Found
+
 - ✅ Save to local file as normal
 - 📝 Note in file header to share with power author
 - 💡 Remind at Module 12 completion
 
 ### Network/Connection Issues
+
 - ✅ Save to local file
 - 🔄 Offer to retry MCP submission
 - 📝 Note which submissions failed
@@ -107,18 +119,21 @@ After saving to local file, submit to MCP server:
 ## Benefits
 
 ### For Users
+
 - ✅ Feedback automatically submitted (no manual step)
 - ✅ Local copy for their records
 - ✅ Confirmation of both submissions
 - ✅ Graceful handling if MCP unavailable
 
 ### For Power Developers
+
 - ✅ Centralized feedback tracking via MCP
 - ✅ Real-time feedback collection
 - ✅ Structured feedback data
 - ✅ Easier to aggregate and analyze
 
 ### For Senzing Team
+
 - ✅ All bootcamp feedback in one place
 - ✅ Can track trends across users
 - ✅ Faster response to issues
@@ -131,6 +146,7 @@ The Senzing MCP server should provide a feedback submission tool with these capa
 **Tool name**: `submit_feedback` (or similar)
 
 **Required parameters**:
+
 - `source`: String - "senzing-bootcamp"
 - `module`: String - Module number or "General"
 - `category`: String - Feedback category
@@ -140,12 +156,14 @@ The Senzing MCP server should provide a feedback submission tool with these capa
 - `date`: String - YYYY-MM-DD
 
 **Optional parameters**:
+
 - `impact`: String - Why it's a problem
 - `suggestion`: String - Suggested fix
 - `workaround`: String - Workaround used
 - `user_context`: String - Additional context
 
 **Return value**:
+
 - Success: `{"status": "submitted", "id": "feedback-123"}`
 - Failure: `{"status": "failed", "error": "reason"}`
 
@@ -163,7 +181,7 @@ The Senzing MCP server should provide a feedback submission tool with these capa
 
 ### Successful Dual Submission
 
-```
+```text
 User: "power feedback"
 Agent: [Guides through feedback questions]
 Agent: "✅ I've added your feedback to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
@@ -172,24 +190,24 @@ Agent: "✅ I've added your feedback to docs/feedback/SENZING_BOOTCAMP_POWER_FEE
 
 ### MCP Submission Failed
 
-```
+```text
 User: "power feedback"
 Agent: [Guides through feedback questions]
 Agent: "✅ I've added your feedback to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
        ⚠️  Could not submit to Senzing MCP server (connection issue)
-       
+
        Your feedback is saved locally and will be submitted when you share the file."
 ```
 
 ### Module 12 Completion
 
-```
+```text
 Agent: "🎉 Congratulations on completing the Senzing Boot Camp!
 
        Your feedback has been:
        ✅ Saved locally: docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
        ✅ Submitted to Senzing MCP server throughout the boot camp
-       
+
        If you have any additional feedback, say 'power feedback' and I'll help you document it."
 ```
 
@@ -231,6 +249,7 @@ Potential improvements:
 ## Conclusion
 
 Feedback now automatically goes to both the local file (for user records) and the Senzing MCP server (for centralized tracking). This ensures:
+
 - Users don't need to manually submit feedback
 - Power developers get real-time feedback
 - Senzing team can track bootcamp improvements

@@ -19,6 +19,7 @@ The comprehensive workflows for Modules 7-12 (~10,000+ lines) have been created 
 **Approach**: Manually copy workflows from NEW_WORKFLOWS_PHASE5.md into steering.md
 
 **Steps**:
+
 1. Open both files side-by-side in editor
 2. Locate insertion points in steering.md:
    - After Module 6 workflow (line ~1023) → Insert Module 7
@@ -32,12 +33,14 @@ The comprehensive workflows for Modules 7-12 (~10,000+ lines) have been created 
 5. Test that all links work
 
 **Pros**:
+
 - Most reliable
 - Full control over formatting
 - Can verify each section
 - No risk of automation errors
 
 **Cons**:
+
 - Time-consuming (30-60 minutes)
 - Manual process
 
@@ -48,12 +51,14 @@ The comprehensive workflows for Modules 7-12 (~10,000+ lines) have been created 
 **Approach**: Keep workflows in NEW_WORKFLOWS_PHASE5.md and reference from steering.md
 
 **Implementation**:
+
 1. Add references in steering.md:
+
    ```markdown
    ## Module 7: Multi-Source Orchestration
-   
+
    See detailed workflow in `docs/development/NEW_WORKFLOWS_PHASE5.md` (Module 7 section)
-   
+
    **Quick Summary**:
    - Assess multi-source requirements
    - Define load order
@@ -64,12 +69,14 @@ The comprehensive workflows for Modules 7-12 (~10,000+ lines) have been created 
 2. Update agent-instructions.md to load NEW_WORKFLOWS_PHASE5.md when needed
 
 **Pros**:
+
 - No integration work needed
 - Easier to maintain separate files
 - Can update workflows independently
 - Smaller steering.md file
 
 **Cons**:
+
 - Workflows not in main steering file
 - Requires loading additional file
 - Less discoverable
@@ -81,7 +88,8 @@ The comprehensive workflows for Modules 7-12 (~10,000+ lines) have been created 
 **Approach**: Create separate workflow files for each module
 
 **Structure**:
-```
+
+```text
 steering/
 ├── steering.md                 # Main file with references
 ├── workflows/
@@ -94,12 +102,14 @@ steering/
 ```
 
 **Pros**:
+
 - Modular and maintainable
 - Easy to update individual modules
 - Smaller file sizes
 - Better organization
 
 **Cons**:
+
 - Requires restructuring
 - More files to manage
 - Need to update references
@@ -111,6 +121,7 @@ steering/
 **Approach**: Use strReplace operations to insert workflows
 
 **Why Not Recommended**:
+
 - File too large for reliable automation
 - Multiple insertion points
 - Risk of errors
@@ -141,7 +152,7 @@ For now, we're using **Option B** - keeping workflows in NEW_WORKFLOWS_PHASE5.md
 
 When a user reaches Module 7-12:
 
-```
+```text
 User: "Let's start Module 7"
 
 Agent:
@@ -163,15 +174,18 @@ If we decide to integrate later:
 ## File Locations
 
 ### Current Files
+
 - **Main workflows**: `steering/steering.md` (Modules 0-6, old 7-8)
 - **New workflows**: `docs/development/NEW_WORKFLOWS_PHASE5.md` (Modules 7-12)
 - **Agent instructions**: `steering/agent-instructions.md`
 
 ### After Integration (Option A)
+
 - **All workflows**: `steering/steering.md` (Modules 0-12)
 - **Archive**: `docs/development/NEW_WORKFLOWS_PHASE5.md` (archived)
 
 ### With Separate Files (Option B - Current)
+
 - **Main workflows**: `steering/steering.md` (Modules 0-6)
 - **Extended workflows**: `docs/development/NEW_WORKFLOWS_PHASE5.md` (Modules 7-12)
 - **Agent instructions**: `steering/agent-instructions.md` (references both)
@@ -179,15 +193,18 @@ If we decide to integrate later:
 ## Recommendations
 
 ### For Users
+
 - No action needed - workflows are accessible through Kiro
 - Agent will load appropriate workflows automatically
 
 ### For Developers
+
 - Use Option B (current approach) for now
 - Consider Option A (manual integration) in future release
 - Consider Option C (split files) for v4.0.0
 
 ### For Agents
+
 - Load steering.md for Modules 0-6
 - Load NEW_WORKFLOWS_PHASE5.md for Modules 7-12
 - Follow workflows step-by-step

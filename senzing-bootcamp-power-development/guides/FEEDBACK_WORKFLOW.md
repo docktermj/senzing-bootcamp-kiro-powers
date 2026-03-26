@@ -1,10 +1,11 @@
 # Power Feedback Workflow
 
-**Purpose**: Guide users through providing structured feedback about the Senzing Boot Camp power.  
-**Trigger**: User says "power feedback", "bootcamp feedback", "submit feedback", "provide feedback", "I have feedback", or "report an issue"  
+**Purpose**: Guide users through providing structured feedback about the Senzing Boot Camp power.
+**Trigger**: User says "power feedback", "bootcamp feedback", "submit feedback", "provide feedback", "I have feedback", or "report an issue"
 **Last Updated**: 2026-03-24
 
 **CRITICAL**: Feedback must be submitted to TWO locations:
+
 1. **Local file**: `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` (user's copy)
 2. **Senzing MCP server**: For centralized tracking and power improvement
 
@@ -13,6 +14,7 @@
 ## Quick Reference
 
 When user requests feedback:
+
 1. ✅ Check/create feedback file from template
 2. ✅ Ask what type of feedback (one question at a time)
 3. ✅ Gather details (module, issue, impact, suggestion, priority)
@@ -22,6 +24,7 @@ When user requests feedback:
 7. ✅ Remind about dual submission at end
 
 **IMPORTANT**: Feedback must go to TWO places:
+
 1. User's `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` (local copy)
 2. Senzing MCP server (for power improvement tracking)
 
@@ -30,6 +33,7 @@ When user requests feedback:
 ## Trigger Phrases
 
 The agent should activate the feedback workflow when user says:
+
 - "power feedback"
 - "bootcamp feedback"
 - "submit feedback"
@@ -51,11 +55,11 @@ if [ ! -f "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md" ]; then
     # Create from template
     cp docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md \
        docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
-    
+
     # Update header with current date
     sed -i "s/\[Date when you started using the power\]/$(date +%Y-%m-%d)/" \
        docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
-    
+
     echo "Created feedback file from template"
 fi
 ```
@@ -63,21 +67,27 @@ fi
 ### Step 2: Gather Feedback (One Question at a Time)
 
 **Question 1**: "What would you like to provide feedback about?"
+
 - Present categories: Documentation, Workflow, Tools, UX, Bug, Performance, Security
 
 **Question 2**: "Which module is this related to?"
+
 - Options: 0-12, or "General" if not module-specific
 
 **Question 3**: "What happened or what issue did you encounter?"
+
 - Let user describe in their own words
 
 **Question 4**: "Why is this a problem? What was the impact?"
+
 - Understanding the impact helps prioritize
 
 **Question 5**: "Do you have a suggested fix or improvement?"
+
 - Optional - user may not have a solution
 
 **Question 6**: "What priority would you assign to this?"
+
 - Options: High, Medium, Low
 
 ### Step 3: Format Feedback Entry
@@ -177,7 +187,7 @@ Your feedback has been saved in two places:
 1. ✅ Local file: `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 2. ✅ Senzing MCP server: Submitted for tracking
 
-When you complete the boot camp, please also share your local feedback 
+When you complete the boot camp, please also share your local feedback
 file with the power author for additional context.
 
 You can add more feedback anytime by saying "power feedback".
@@ -190,6 +200,7 @@ You can add more feedback anytime by saying "power feedback".
 **User**: "power feedback"
 
 **Agent**: "I'll help you document your feedback. What would you like to provide feedback about?
+
 - Documentation (clarity, accuracy, completeness)
 - Workflow (step ordering, prerequisites, transitions)
 - Tools (missing utilities, template improvements)
@@ -224,6 +235,7 @@ You can add more feedback anytime by saying "power feedback".
 ✅ Submitted to Senzing MCP server for tracking
 
 You can review or edit it anytime. Would you like to:
+
 - Add more feedback
 - Continue with the boot camp
 - Review the feedback file"
@@ -233,6 +245,7 @@ You can review or edit it anytime. Would you like to:
 ## Feedback Categories
 
 ### Documentation
+
 - Unclear instructions
 - Missing information
 - Incorrect information
@@ -240,6 +253,7 @@ You can review or edit it anytime. Would you like to:
 - Poor examples
 
 ### Workflow
+
 - Step ordering issues
 - Missing prerequisites
 - Unclear transitions
@@ -247,12 +261,14 @@ You can review or edit it anytime. Would you like to:
 - Confusing flow
 
 ### Tools
+
 - Missing utilities
 - Template improvements
 - Tool usability issues
 - Integration problems
 
 ### UX
+
 - Confusion points
 - Navigation problems
 - Repeated questions
@@ -260,6 +276,7 @@ You can review or edit it anytime. Would you like to:
 - Unclear error messages
 
 ### Bug
+
 - Incorrect behavior
 - Errors
 - Edge cases
@@ -267,12 +284,14 @@ You can review or edit it anytime. Would you like to:
 - Compatibility problems
 
 ### Performance
+
 - Slow operations
 - Resource usage
 - Optimization opportunities
 - Scalability issues
 
 ### Security
+
 - Security concerns
 - PII handling
 - Access control
@@ -284,6 +303,7 @@ You can review or edit it anytime. Would you like to:
 ## Priority Guidelines
 
 ### High Priority
+
 - Blocks user progress
 - Causes data loss or corruption
 - Security vulnerabilities
@@ -291,12 +311,14 @@ You can review or edit it anytime. Would you like to:
 - Quick fix with high impact
 
 ### Medium Priority
+
 - Causes confusion but has workaround
 - Affects some users
 - Moderate effort to fix
 - Improves efficiency
 
 ### Low Priority
+
 - Minor inconvenience
 - Affects few users
 - Nice-to-have feature
@@ -334,6 +356,7 @@ Before submitting feedback, check if the Senzing MCP server has a feedback submi
 If a feedback tool is available, submit with these parameters:
 
 **Required fields**:
+
 - `source`: "senzing-bootcamp"
 - `module`: Module number (0-12) or "General"
 - `category`: Documentation/Workflow/Tools/UX/Bug/Performance/Security
@@ -343,6 +366,7 @@ If a feedback tool is available, submit with these parameters:
 - `date`: YYYY-MM-DD
 
 **Optional fields**:
+
 - `impact`: Why it's a problem
 - `suggestion`: Suggested fix
 - `workaround`: Workaround used
@@ -351,12 +375,14 @@ If a feedback tool is available, submit with these parameters:
 ### Handling MCP Submission Failures
 
 If MCP submission fails:
+
 1. ✅ Still save to local file
 2. ⚠️  Note the failure in agent response
 3. 📝 Add a note in the feedback file that it needs manual submission
 4. 🔄 Offer to retry later
 
 **Example failure message**:
+
 ```text
 ✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 ⚠️  Could not submit to Senzing MCP server (connection issue)
@@ -367,6 +393,7 @@ Your feedback is saved locally and will be submitted when you share the file.
 ### MCP Server Not Available
 
 If the MCP server doesn't have a feedback tool:
+
 1. ✅ Save to local file as normal
 2. 📝 Note in the feedback file header that it should be shared with power author
 3. 💡 Remind user at Module 12 completion to share the file
@@ -376,13 +403,16 @@ If the MCP server doesn't have a feedback tool:
 ## Integration Points
 
 ### Module 1 Start
+
 Agent says: "If you encounter any issues or have suggestions during the boot camp, just say 'power feedback' or 'bootcamp feedback' and I'll help you document them."
 
 ### During Any Module
+
 User can say "power feedback" or "bootcamp feedback" at any time to document issues as they occur.
 
 ### Module 12 Completion
-Agent says: "🎉 Congratulations on completing the Senzing Boot Camp! 
+
+Agent says: "🎉 Congratulations on completing the Senzing Boot Camp!
 
 Your feedback has been:
 ✅ Saved locally: `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
@@ -395,23 +425,25 @@ If you have any additional feedback, say 'power feedback' or 'bootcamp feedback'
 ## Troubleshooting
 
 ### Feedback File Not Created
+
 - Check if `docs/feedback/` directory exists
 - Create directory if needed: `mkdir -p docs/feedback`
 - Copy template manually if automated copy fails
 
 ### User Doesn't Know What to Say
+
 - Prompt with specific questions
 - Give examples of common feedback
 - Suggest reviewing recent modules for issues
 
 ### Multiple Feedback Entries
+
 - Each entry should be separate
 - Use clear numbering or titles
 - Maintain chronological order
 
 ---
 
-**Document Owner**: Senzing Boot Camp Team  
-**Maintained By**: Agent during power usage  
-**Review Frequency**: After each feedback submission  
-
+**Document Owner**: Senzing Boot Camp Team
+**Maintained By**: Agent during power usage
+**Review Frequency**: After each feedback submission

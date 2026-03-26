@@ -1,6 +1,6 @@
 # Deployment Checklist
 
-**Version**: 1.0  
+**Version**: 1.0
 **Last Updated**: 2026-03-17
 
 Use this checklist to ensure your Senzing deployment is production-ready.
@@ -179,6 +179,7 @@ Use this checklist to ensure your Senzing deployment is production-ready.
 ### Triggers for Rollback
 
 Rollback if any of these occur:
+
 - Critical functionality broken
 - Data corruption detected
 - Performance degradation >50%
@@ -211,6 +212,7 @@ Rollback if any of these occur:
 ### First 24 Hours
 
 Monitor closely:
+
 - [ ] Error rates
 - [ ] Response times
 - [ ] Resource utilization
@@ -269,26 +271,26 @@ Monitor closely:
 
 Deployment is successful when:
 
-✅ All pre-deployment checks passed  
-✅ Deployment completed without errors  
-✅ All post-deployment validations passed  
-✅ No critical issues in first 24 hours  
-✅ Performance meets SLAs  
-✅ Monitoring and alerting working  
-✅ Stakeholders satisfied  
-✅ Operations team trained  
+✅ All pre-deployment checks passed
+✅ Deployment completed without errors
+✅ All post-deployment validations passed
+✅ No critical issues in first 24 hours
+✅ Performance meets SLAs
+✅ Monitoring and alerting working
+✅ Stakeholders satisfied
+✅ Operations team trained
 
 ---
 
 ## Emergency Contacts
 
-| Role | Name | Contact | Availability |
-|------|------|---------|--------------|
-| Deployment Lead | [Name] | [Contact] | [Hours] |
-| Database Admin | [Name] | [Contact] | [Hours] |
-| Security Lead | [Name] | [Contact] | [Hours] |
-| Operations Manager | [Name] | [Contact] | [Hours] |
-| Senzing Support | Support | support@senzing.com | 24/7 |
+| Role               | Name    | Contact               | Availability |
+|--------------------|---------|-----------------------|--------------|
+| Deployment Lead    | [Name]  | [Contact]             | [Hours]      |
+| Database Admin     | [Name]  | [Contact]             | [Hours]      |
+| Security Lead      | [Name]  | [Contact]             | [Hours]      |
+| Operations Manager | [Name]  | [Contact]             | [Hours]      |
+| Senzing Support    | Support | <support@senzing.com> | 24/7         |
 
 ---
 
@@ -296,7 +298,7 @@ Deployment is successful when:
 
 | Date | Version | Deployed By | Status | Notes |
 |------|---------|-------------|--------|-------|
-| | | | | |
+|      |         |             |        |       |
 
 ---
 
@@ -306,6 +308,6 @@ Use this section for deployment-specific notes, issues encountered, or lessons l
 
 ---
 
-**Document Owner**: [Name]  
-**Last Review**: 2026-03-17  
+**Document Owner**: [Name]
+**Last Review**: 2026-03-17
 **Next Review**: [Date]

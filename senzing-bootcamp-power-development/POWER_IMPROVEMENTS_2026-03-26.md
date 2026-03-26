@@ -1,7 +1,7 @@
 # Senzing Boot Camp Power - Improvements Applied
 
-**Date**: March 26, 2026  
-**Assessment Tool**: power-builder (Kiro Power)  
+**Date**: March 26, 2026
+**Assessment Tool**: power-builder (Kiro Power)
 **Overall Grade**: A (Excellent) → A+ (Outstanding)
 
 ## Summary
@@ -17,6 +17,7 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 **Issue**: MCP configuration didn't explicitly state that no placeholders are needed for the public server.
 
 **Fix Applied**:
+
 - Added clear documentation in POWER.md under "Available MCP Tools" section
 - Explicitly states: "No API keys, tokens, or configuration placeholders are needed - the server is ready to use immediately"
 - Clarifies the public server URL: `https://mcp.senzing.com/mcp`
@@ -32,6 +33,7 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 **Issue**: README.md duplicated much of POWER.md content, creating redundancy and potential inconsistency.
 
 **Fix Applied**:
+
 - Removed `senzing-bootcamp/README.md` entirely
 - Moved unique content to POWER.md:
   - Version information (v1.0.0, compatibility, last updated)
@@ -39,13 +41,15 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
   - Complete changelog summary
 - POWER.md is now the single source of truth
 
-**Impact**: 
+**Impact**:
+
 - Eliminates redundancy
 - Reduces maintenance burden
 - Follows power-builder best practice (README.md is optional)
 - Users have one clear place to look for all documentation
 
-**Location**: 
+**Location**:
+
 - Deleted: `senzing-bootcamp/README.md`
 - Enhanced: `senzing-bootcamp/POWER.md` (added version section at end)
 
@@ -56,6 +60,7 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 **Issue**: `requirements.txt` and `requirements-dev.txt` in power root were ambiguous - unclear if for power or user projects.
 
 **Fix Applied**:
+
 - Moved files to examples directory as reference templates:
   - `requirements.txt` → `examples/requirements.txt.example`
   - `requirements-dev.txt` → `examples/requirements-dev.txt.example`
@@ -64,11 +69,13 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 - Updated POWER.md project structure to show `requirements.txt` in user project root
 
 **Impact**:
+
 - Clear separation: power distribution vs. user project files
 - Users understand these are templates for their projects
 - Follows power-builder principle: powers are documentation, not installable code
 
 **Locations**:
+
 - Moved: `senzing-bootcamp/requirements*.txt` → `senzing-bootcamp/examples/requirements*.txt.example`
 - Updated: `senzing-bootcamp/examples/README.md` (new section)
 - Updated: `senzing-bootcamp/POWER.md` (project structure diagram)
@@ -80,6 +87,7 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 **Issue**: `backups/` directory in power root was confusing - it's for user projects, not the power itself.
 
 **Fix Applied**:
+
 - Removed `senzing-bootcamp/backups/` directory entirely
 - Updated POWER.md project structure diagram:
   - Added comment: `data/backups/ # Database backups (created by user)`
@@ -87,11 +95,13 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
   - Added note: "Users should create a `requirements.txt` file in their project root to manage Python dependencies."
 
 **Impact**:
+
 - Eliminates confusion about what belongs in power vs. user project
 - Clear documentation that backups are user-created
 - Cleaner power distribution
 
 **Locations**:
+
 - Deleted: `senzing-bootcamp/backups/`
 - Updated: `senzing-bootcamp/POWER.md` (project structure section with clarifying notes)
 
@@ -100,6 +110,7 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 ## Files Modified
 
 ### Modified Files
+
 1. `senzing-bootcamp/POWER.md`
    - Added MCP configuration clarification
    - Added version information section
@@ -113,10 +124,12 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
    - Updated version history
 
 ### Deleted Files
+
 1. `senzing-bootcamp/README.md` (redundant with POWER.md)
 2. `senzing-bootcamp/backups/` (user project directory, not power distribution)
 
 ### Moved Files
+
 1. `senzing-bootcamp/requirements.txt` → `senzing-bootcamp/examples/requirements.txt.example`
 2. `senzing-bootcamp/requirements-dev.txt` → `senzing-bootcamp/examples/requirements-dev.txt.example`
 
@@ -125,20 +138,22 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 ## Validation Against Power-Builder Standards
 
 ### Before Improvements
-| Criterion | Status | Notes |
-|-----------|--------|-------|
+
+| Criterion          | Status   | Notes                                          |
+|--------------------|----------|------------------------------------------------|
 | MCP config clarity | ⚠️ Minor | Didn't explicitly state no placeholders needed |
-| README.md purpose | ⚠️ Minor | Duplicated POWER.md content |
-| Requirements files | ⚠️ Minor | Ambiguous location and purpose |
-| Backups directory | ⚠️ Minor | Confused power vs. user project |
+| README.md purpose  | ⚠️ Minor | Duplicated POWER.md content                    |
+| Requirements files | ⚠️ Minor | Ambiguous location and purpose                 |
+| Backups directory  | ⚠️ Minor | Confused power vs. user project                |
 
 ### After Improvements
-| Criterion | Status | Notes |
-|-----------|--------|-------|
+
+| Criterion          | Status       | Notes                                |
+|--------------------|--------------|--------------------------------------|
 | MCP config clarity | ✅ Excellent | Explicitly documented - ready to use |
-| README.md purpose | ✅ Excellent | Removed - POWER.md is single source |
-| Requirements files | ✅ Excellent | Moved to examples as templates |
-| Backups directory | ✅ Excellent | Removed with clear documentation |
+| README.md purpose  | ✅ Excellent | Removed - POWER.md is single source  |
+| Requirements files | ✅ Excellent | Moved to examples as templates       |
+| Backups directory  | ✅ Excellent | Removed with clear documentation     |
 
 ---
 
@@ -147,6 +162,7 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 ### ✅ All Requirements Met
 
 **Power Type**: Guided MCP Power ✅
+
 - Has POWER.md with valid frontmatter ✅
 - Has mcp.json with valid schema ✅
 - Has steering/ for multiple workflows ✅
@@ -154,6 +170,7 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 - No metadata in mcp.json ✅
 
 **Documentation Quality**: Outstanding ✅
+
 - Clear, comprehensive POWER.md ✅
 - Well-organized docs/ directory ✅
 - Appropriate steering files ✅
@@ -161,11 +178,13 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 - No redundant files ✅
 
 **Power Granularity**: Correct ✅
+
 - Single power is appropriate ✅
 - Modules are sequential and related ✅
 - No unnecessary splitting ✅
 
 **File Organization**: Excellent ✅
+
 - Clear separation of power vs. user files ✅
 - Examples properly documented ✅
 - No ambiguous directories ✅
@@ -175,17 +194,20 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 ## Impact Assessment
 
 ### User Experience
+
 - **Improved**: Clear understanding that MCP server is ready to use
 - **Improved**: Single source of documentation (POWER.md)
 - **Improved**: Clear guidance on requirements files
 - **Improved**: No confusion about backups directory
 
 ### Maintainability
+
 - **Improved**: No duplicate content to keep in sync
 - **Improved**: Clear separation of concerns
 - **Improved**: Easier to update and maintain
 
 ### Power Distribution
+
 - **Improved**: Cleaner distribution (removed unnecessary files)
 - **Improved**: Smaller footprint
 - **Improved**: More focused on boot camp content
@@ -195,12 +217,14 @@ Applied four improvements to align the senzing-bootcamp power with power-builder
 ## Recommendations for Future
 
 ### Completed ✅
+
 1. ✅ MCP configuration clarity
 2. ✅ README.md consolidation
 3. ✅ Requirements files relocation
 4. ✅ Backups directory removal
 
 ### Optional Future Enhancements
+
 1. Consider adding icon.png description to POWER.md
 2. Consider documenting CHANGELOG.md format in POWER.md
 3. Consider adding "Contributing" section if accepting community contributions
@@ -214,6 +238,7 @@ All four identified improvements have been successfully applied. The senzing-boo
 **Final Grade**: A+ (Outstanding)
 
 The power demonstrates:
+
 - ✅ Perfect frontmatter metadata
 - ✅ Valid MCP configuration with clear documentation
 - ✅ Excellent documentation organization

@@ -1,8 +1,8 @@
 # License Documentation Improvements
 
-**Date**: 2026-03-26  
-**Issue**: Bootcamp lacked clear guidance on obtaining Senzing licenses  
-**Priority**: High  
+**Date**: 2026-03-26
+**Issue**: Bootcamp lacked clear guidance on obtaining Senzing licenses
+**Priority**: High
 **Status**: Completed
 
 ---
@@ -10,6 +10,7 @@
 ## Problem Statement
 
 The senzing-bootcamp power did not provide adequate information about:
+
 - How to obtain a Senzing license
 - Contact information for Senzing support/sales
 - Difference between evaluation and production licenses
@@ -29,6 +30,7 @@ Implemented all 4 recommendations to provide comprehensive license information:
 **File**: `senzing-bootcamp/licenses/README.md`
 
 **Contents**:
+
 - Complete guide to obtaining Senzing licenses
 - Step-by-step instructions for evaluation licenses
 - Contact information (email, phone, website)
@@ -39,8 +41,9 @@ Implemented all 4 recommendations to provide comprehensive license information:
 - Security best practices (git ignore)
 
 **Key Information Provided**:
-- **Evaluation License**: Free, contact support@senzing.com, 1-2 business days
-- **Production License**: Contact sales@senzing.com, pricing based on DSRs
+
+- **Evaluation License**: Free, contact <support@senzing.com>, 1-2 business days
+- **Production License**: Contact <sales@senzing.com>, pricing based on DSRs
 - **Placement**: `licenses/g2.lic` in project directory
 
 ---
@@ -50,6 +53,7 @@ Implemented all 4 recommendations to provide comprehensive license information:
 **File**: `senzing-bootcamp/docs/guides/FAQ.md`
 
 **Changes**:
+
 - Expanded "Do I need a Senzing license?" section
 - Added clear distinction: Module 0 (no license) vs. Modules 5+ (license required)
 - Provided step-by-step instructions for obtaining evaluation license
@@ -57,12 +61,14 @@ Implemented all 4 recommendations to provide comprehensive license information:
 - Referenced `licenses/README.md` for complete guide
 
 **Before**:
+
 ```markdown
 For Module 0 (Quick Demo), no license is needed.
 For Modules 5+, you'll need a Senzing license. Place it in `licenses/g2.lic`.
 ```
 
 **After**:
+
 ```markdown
 **Module 0**: No license required
 **Modules 5+**: Yes, license required
@@ -84,6 +90,7 @@ For Modules 5+, you'll need a Senzing license. Place it in `licenses/g2.lic`.
 **File**: `senzing-bootcamp/docs/modules/MODULE_5_SDK_SETUP.md`
 
 **Changes**:
+
 - Added comprehensive "Senzing License Requirements" section
 - Placed BEFORE installation instructions (logical flow)
 - Provided three options: Evaluation, Production, Existing
@@ -92,6 +99,7 @@ For Modules 5+, you'll need a Senzing license. Place it in `licenses/g2.lic`.
 - Updated success criteria to include license acquisition
 
 **New Section Structure**:
+
 ```markdown
 ## Senzing License Requirements
 
@@ -122,6 +130,7 @@ Yes - required for SDK installation
 ```
 
 **Success Criteria Updated**:
+
 - Added: "✅ Senzing license obtained and installed in `licenses/g2.lic`"
 
 ---
@@ -131,6 +140,7 @@ Yes - required for SDK installation
 **Files Updated**:
 
 #### A. POWER.md
+
 - Added "Senzing Contact Information" section
 - Provided support, sales, and general contacts
 - Included email, phone, and website for each
@@ -154,26 +164,29 @@ Yes - required for SDK installation
 ```
 
 #### B. ONBOARDING_CHECKLIST.md
+
 - Updated "Budget" section with license acquisition steps
 - Updated "Support Channels" with specific contact information
 - Added direct links to support and sales emails
 
 **Before**:
+
 ```markdown
 - [ ] Budget
   - Senzing license budget approved
-  
+
 - [ ] Support Channels
   - Senzing support contact (if licensed)
 ```
 
 **After**:
+
 ```markdown
 - [ ] Budget
   - Senzing license obtained or requested (see licenses/README.md)
   - For boot camp: Request free evaluation license from support@senzing.com
   - For production: Contact sales@senzing.com for pricing
-  
+
 - [ ] Support Channels
   - Senzing support: support@senzing.com
   - Senzing sales: sales@senzing.com
@@ -186,29 +199,34 @@ Yes - required for SDK installation
 All documentation now includes:
 
 ### Senzing Support
+
 - **Purpose**: Technical assistance, evaluation licenses, troubleshooting
-- **Email**: support@senzing.com
-- **Website**: https://senzing.com/support/
+- **Email**: <support@senzing.com>
+- **Website**: <https://senzing.com/support/>
 
 ### Senzing Sales
+
 - **Purpose**: Production licenses, pricing, enterprise inquiries
-- **Email**: sales@senzing.com
-- **Website**: https://senzing.com/contact/
+- **Email**: <sales@senzing.com>
+- **Website**: <https://senzing.com/contact/>
 
 ### General Resources
-- **Website**: https://senzing.com
-- **Documentation**: https://docs.senzing.com
+
+- **Website**: <https://senzing.com>
+- **Documentation**: <https://docs.senzing.com>
 
 ---
 
 ## Files Created/Modified
 
 ### Created
+
 1. `senzing-bootcamp/licenses/README.md` (NEW)
    - Comprehensive license guide
    - 400+ lines of documentation
 
 ### Modified
+
 1. `senzing-bootcamp/docs/guides/FAQ.md`
    - Expanded license FAQ entry
    - Added contact information
@@ -234,6 +252,7 @@ All documentation now includes:
 ### Before Improvements
 
 **User reaches Module 5**:
+
 1. Sees "you'll need a Senzing license"
 2. No information on how to get one
 3. No contact information
@@ -241,6 +260,7 @@ All documentation now includes:
 5. Must search externally for help
 
 **Pain Points**:
+
 - ❌ No clear path forward
 - ❌ No contact information
 - ❌ No timeline expectations
@@ -249,6 +269,7 @@ All documentation now includes:
 ### After Improvements
 
 **User reaches Module 5**:
+
 1. Sees clear "Senzing License Requirements" section
 2. Three options clearly explained
 3. Step-by-step instructions for evaluation license
@@ -257,6 +278,7 @@ All documentation now includes:
 6. Can request license and continue learning
 
 **Benefits**:
+
 - ✅ Clear path forward
 - ✅ Multiple contact methods
 - ✅ Realistic expectations
@@ -270,6 +292,7 @@ All documentation now includes:
 ### Early Warning (Module 1)
 
 Users are now informed early in the onboarding checklist:
+
 - License will be needed for Module 5+
 - Can request evaluation license now
 - 1-2 business day turnaround
@@ -278,6 +301,7 @@ Users are now informed early in the onboarding checklist:
 ### Just-in-Time (Module 5)
 
 Detailed instructions exactly when needed:
+
 - Comprehensive license section
 - Step-by-step instructions
 - Verification procedures
@@ -286,6 +310,7 @@ Detailed instructions exactly when needed:
 ### Always Available (licenses/README.md)
 
 Reference documentation available anytime:
+
 - Complete licensing guide
 - FAQ section
 - Troubleshooting
@@ -299,7 +324,7 @@ Reference documentation available anytime:
 
 1. **Free evaluation license available**
    - No cost for learning
-   - Contact support@senzing.com
+   - Contact <support@senzing.com>
    - Mention "Senzing Boot Camp"
    - Receive in 1-2 business days
 
@@ -316,7 +341,7 @@ Reference documentation available anytime:
 ### For Production Users
 
 1. **Contact sales for production license**
-   - Email: sales@senzing.com
+   - Email: <sales@senzing.com>
    - Pricing based on DSRs
    - Includes support
 
@@ -332,11 +357,13 @@ Reference documentation available anytime:
 ### Measurable Improvements
 
 **Before**:
+
 - ❌ 0% of users knew how to get a license
 - ❌ 0% had contact information
 - ❌ Users blocked at Module 5
 
 **After**:
+
 - ✅ 100% of users have clear instructions
 - ✅ 100% have contact information
 - ✅ Users can plan ahead and request early
@@ -345,12 +372,14 @@ Reference documentation available anytime:
 ### User Experience
 
 **Before**:
+
 - Frustration at Module 5
 - External searching required
 - Unclear process
 - Unknown timeline
 
 **After**:
+
 - Proactive guidance
 - Clear instructions
 - Multiple contact methods
@@ -362,17 +391,18 @@ Reference documentation available anytime:
 
 ### Comprehensive Coverage
 
-✅ **What**: Senzing license required  
-✅ **Why**: SDK installation and usage  
-✅ **When**: Module 5+ (but can request earlier)  
-✅ **Where**: licenses/g2.lic  
-✅ **How**: Contact support@senzing.com  
-✅ **Who**: Senzing support and sales contacts  
-✅ **Timeline**: 1-2 business days  
+✅ **What**: Senzing license required
+✅ **Why**: SDK installation and usage
+✅ **When**: Module 5+ (but can request earlier)
+✅ **Where**: licenses/g2.lic
+✅ **How**: Contact <support@senzing.com>
+✅ **Who**: Senzing support and sales contacts
+✅ **Timeline**: 1-2 business days
 
 ### Multiple Access Points
 
 Users can find license information in:
+
 1. `licenses/README.md` - Comprehensive guide
 2. `docs/guides/FAQ.md` - Quick reference
 3. `docs/modules/MODULE_5_SDK_SETUP.md` - Just-in-time
@@ -384,6 +414,7 @@ Users can find license information in:
 ## Related Improvements
 
 This license documentation improvement complements:
+
 - Module 0 improvements (simulation demo for no-license option)
 - SQLite database location policy (project-local databases)
 - File storage policy (where to place license files)
@@ -454,14 +485,14 @@ This license documentation improvement complements:
 
 ## Approval and Sign-off
 
-**Created by**: Kiro AI Assistant  
-**Date**: 2026-03-26  
-**Status**: Completed  
-**Priority**: High  
+**Created by**: Kiro AI Assistant
+**Date**: 2026-03-26
+**Status**: Completed
+**Priority**: High
 
-**Files Created**: 1  
-**Files Modified**: 4  
-**Total Changes**: 5 files  
+**Files Created**: 1
+**Files Modified**: 4
+**Total Changes**: 5 files
 
 ---
 

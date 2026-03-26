@@ -82,6 +82,7 @@ Track your progress through the Senzing Boot Camp with completion criteria and c
 - [ ] Document: `docs/data_source_locations.md`
 
 **Data Sources Collected**:
+
 1. [ ] _________________ (source name)
 2. [ ] _________________ (source name)
 3. [ ] _________________ (source name)
@@ -110,6 +111,7 @@ Track your progress through the Senzing Boot Camp with completion criteria and c
 - [ ] Quality scores for each source
 
 **Quality Scores**:
+
 1. _________________ : _____ / 100
 2. _________________ : _____ / 100
 3. _________________ : _____ / 100
@@ -140,6 +142,7 @@ Track your progress through the Senzing Boot Camp with completion criteria and c
 - [ ] Document: `docs/mapping_specifications.md`
 
 **Transformations Created**:
+
 1. [ ] `src/transform/transform___________.py`
 2. [ ] `src/transform/transform___________.py`
 3. [ ] `src/transform/transform___________.py`
@@ -198,6 +201,7 @@ Track your progress through the Senzing Boot Camp with completion criteria and c
 - [ ] Loading statistics documented
 
 **Loading Statistics**:
+
 - Records loaded: _____________
 - Success rate: _____________%
 - Duration: _____________
@@ -231,6 +235,7 @@ Track your progress through the Senzing Boot Camp with completion criteria and c
 - [ ] Document: `docs/loading_strategy.md`
 
 **Sources Loaded**:
+
 1. [ ] _________________ (_____ records)
 2. [ ] _________________ (_____ records)
 3. [ ] _________________ (_____ records)
@@ -262,6 +267,7 @@ Track your progress through the Senzing Boot Camp with completion criteria and c
 - [ ] Document: `docs/results_validation.md`
 
 **Match Quality**:
+
 - True positives: _____________%
 - False positives: _____________%
 - False negatives: _____________%
@@ -295,6 +301,7 @@ Track your progress through the Senzing Boot Camp with completion criteria and c
 - [ ] Document: `docs/performance_report.md`
 
 **Performance Metrics**:
+
 - Transformation: _____________ records/sec
 - Loading: _____________ records/sec
 - Query latency: _____________ ms (p95)
@@ -401,6 +408,7 @@ Track your progress through the Senzing Boot Camp with completion criteria and c
 - [ ] Document: `docs/operations/disaster_recovery.md`
 
 **Deployment Environments**:
+
 - [ ] Development
 - [ ] Staging
 - [ ] Production
@@ -429,10 +437,10 @@ Track your progress through the Senzing Boot Camp with completion criteria and c
 
 ### Completion Statistics
 
-**Total Modules**: _____  
-**Completed**: _____  
-**In Progress**: _____  
-**Not Started**: _____  
+**Total Modules**: _____
+**Completed**: _____
+**In Progress**: _____
+**Not Started**: _____
 **Completion Percentage**: _____%
 
 ### Path Completed

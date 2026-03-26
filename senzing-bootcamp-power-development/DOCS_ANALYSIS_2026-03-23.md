@@ -6,7 +6,7 @@ Are all files in `senzing-bootcamp/docs/` needed by the Power?
 
 ## Current Structure
 
-```
+```text
 docs/
 ├── feedback/ (1 file)
 │   └── SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md
@@ -51,7 +51,8 @@ docs/
 
 ### 1. Feedback (1 file) - KEEP
 
-**SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md**
+`SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md`
+
 - **Purpose**: Template for users to provide feedback
 - **Used by**: Agent creates user's feedback file from this template
 - **Referenced**: POWER.md, agent-instructions.md, FEEDBACK_WORKFLOW.md
@@ -91,6 +92,7 @@ All policy files define boot camp-specific standards:
 Module documentation files provide detailed reference for each module:
 
 **Content Type**:
+
 - Learning objectives
 - Detailed workflows
 - Code examples
@@ -101,11 +103,13 @@ Module documentation files provide detailed reference for each module:
 **Size**: 6,186 total lines (average 442 lines per module)
 
 **Comparison with Steering Files**:
+
 - `steering/steering.md`: 2,354 lines - Contains workflows for Modules 0-6
 - `steering/modules-7-12-workflows.md`: Contains workflows for Modules 7-12
 - Module docs: 6,186 lines - Detailed reference documentation
 
 **Key Difference**:
+
 - **Steering files**: Agent workflows (how agent guides users)
 - **Module docs**: Reference documentation (what users need to know)
 
@@ -114,6 +118,7 @@ Module documentation files provide detailed reference for each module:
 ### Purpose of Module Documentation
 
 Module docs serve as:
+
 1. **Reference material** for users
 2. **Detailed explanations** beyond workflow steps
 3. **Code examples** and templates
@@ -124,14 +129,14 @@ Module docs serve as:
 
 **No, they serve different purposes:**
 
-| Aspect | Steering Files | Module Docs |
-|--------|---------------|-------------|
-| **Audience** | Agent | Users |
-| **Purpose** | Guide agent behavior | Educate users |
-| **Content** | Workflow steps | Detailed explanations |
-| **Format** | Imperative (do this) | Descriptive (here's how) |
-| **Length** | Concise workflows | Comprehensive reference |
-| **Examples** | Minimal | Extensive |
+| Aspect       | Steering Files       | Module Docs              |
+|--------------|----------------------|--------------------------|
+| **Audience** | Agent                | Users                    |
+| **Purpose**  | Guide agent behavior | Educate users            |
+| **Content**  | Workflow steps       | Detailed explanations    |
+| **Format**   | Imperative (do this) | Descriptive (here's how) |
+| **Length**   | Concise workflows    | Comprehensive reference  |
+| **Examples** | Minimal              | Extensive                |
 
 ### Example: Module 3 Data Quality
 
@@ -146,6 +151,7 @@ Module docs serve as:
 ```
 
 **Module doc** (`MODULE_3_DATA_QUALITY_SCORING.md`):
+
 - Detailed scoring algorithm (40% completeness, 30% consistency, etc.)
 - Score interpretation guide (90-100 excellent, 75-89 good, etc.)
 - Complete Python code examples for quality scoring
@@ -160,17 +166,20 @@ Module docs serve as:
 ### From Steering Files
 
 **agent-instructions.md**:
+
 ```markdown
 - Use data quality scorer script from docs/modules/MODULE_3_DATA_QUALITY_SCORING.md
 ```
 
 **docker-deployment.md**:
+
 ```markdown
 - [MODULE_5_SDK_SETUP.md](../docs/modules/MODULE_5_SDK_SETUP.md) - SDK installation
 - [MODULE_12_DEPLOYMENT_PACKAGING.md](../docs/modules/MODULE_12_DEPLOYMENT_PACKAGING.md) - Deployment
 ```
 
 **incremental-loading.md**:
+
 ```markdown
 - `docs/modules/MODULE_6_SINGLE_SOURCE_LOADING.md` - Single source loading
 ```
@@ -192,6 +201,7 @@ Not directly referenced, but POWER.md describes the 13-module structure and user
 ### Alternative: Remove Module Docs?
 
 If we removed module docs, users would need to:
+
 - Rely solely on agent guidance (no independent reference)
 - Ask agent to repeat information (inefficient)
 - Search MCP server for generic info (not boot camp-specific)
@@ -217,12 +227,14 @@ If we removed module docs, users would need to:
 ### Why Not Remove?
 
 **Module docs are NOT**:
+
 - ❌ Duplicates of steering files (different audience/purpose)
 - ❌ Generic Senzing documentation (boot camp-specific)
 - ❌ Replaceable by MCP server (boot camp learning path)
 - ❌ Internal development notes (user-facing reference)
 
 **Module docs ARE**:
+
 - ✅ Essential reference material for users
 - ✅ Boot camp-specific educational content
 - ✅ Complementary to steering files (not duplicate)
@@ -242,6 +254,7 @@ If we removed module docs, users would need to:
 ### Why Module Docs Are Different
 
 Module docs are:
+
 - **User-facing** (not internal)
 - **Boot camp-specific** (not generic)
 - **Reference material** (not workflows)
@@ -251,11 +264,13 @@ Module docs are:
 ## File Count Impact
 
 If we kept all docs files:
+
 - **Current**: 31 files in docs/
 - **Total Power**: ~50 files
 - **Docs percentage**: 62% of Power files
 
 This is appropriate because:
+
 - Documentation is the primary content of a learning power
 - Boot camp is educational, not just tooling
 - Users need reference material for 13 modules
@@ -265,6 +280,7 @@ This is appropriate because:
 **KEEP ALL 31 FILES** in `senzing-bootcamp/docs/`
 
 All files serve essential purposes:
+
 - **feedback/** - Feedback workflow
 - **guides/** - Boot camp-specific guides
 - **modules/** - Essential reference for 13 modules
@@ -278,4 +294,3 @@ No files should be removed. The documentation provides essential educational con
 - **Analysis**: Complete
 - **Recommendation**: Keep all 31 files
 - **Status**: ✅ No changes needed
-

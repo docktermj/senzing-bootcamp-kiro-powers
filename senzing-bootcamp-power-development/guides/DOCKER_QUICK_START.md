@@ -37,10 +37,10 @@ CREATE TABLE IF NOT EXISTS sys_vars (
 );
 
 -- Insert required version information
-INSERT INTO sys_vars (var_group, var_code, var_value) 
+INSERT INTO sys_vars (var_group, var_code, var_value)
 VALUES ('SYSTEM', 'VERSION', '4.2.1');
 
-INSERT INTO sys_vars (var_group, var_code, var_value) 
+INSERT INTO sys_vars (var_group, var_code, var_value)
 VALUES ('SYSTEM', 'SCHEMA_VERSION', '4.0');
 
 -- Configuration table
@@ -134,7 +134,8 @@ docker-compose logs -f
 ```
 
 You should see:
-```
+
+```text
 senzing-postgres  | database system is ready to accept connections
 senzing-app       | (running tail -f /dev/null)
 ```
@@ -156,39 +157,39 @@ ENGINE_CONFIG = os.getenv('SENZING_ENGINE_CONFIGURATION_JSON')
 
 def initialize_database():
     """Initialize Senzing database schema and configuration"""
-    
+
     print("Initializing Senzing database...")
-    
+
     # Initialize config manager
     config_mgr = SzConfigManager()
     config_mgr.initialize(instance_name="InitDB", settings=ENGINE_CONFIG)
-    
+
     try:
         # Create configuration from template
         config = SzConfig()
         config.initialize(instance_name="InitConfig", settings=ENGINE_CONFIG)
-        
+
         config_handle = config.create_config()
         config_json = config.export_config(config_handle)
-        
+
         # Set as default configuration
         config_id = config_mgr.add_config(
             config_definition=config_json,
             config_comment="Initial Docker setup"
         )
         config_mgr.set_default_config_id(config_id=config_id)
-        
+
         print(f"✅ Database initialized with config ID: {config_id}")
-        
+
         config.close_config(config_handle)
         config.destroy()
-        
+
         return True
-        
+
     except Exception as e:
         print(f"❌ Initialization failed: {e}")
         return False
-        
+
     finally:
         config_mgr.destroy()
 
@@ -219,13 +220,15 @@ docker-compose exec senzing python /app/src/validate_schema.py \
 ```
 
 You should see:
-```
+
+```text
 ✅ SCHEMA VALIDATION PASSED!
 ```
 
 ## You're Ready! 🎉
 
 Your Docker environment is now configured and ready for:
+
 - Loading data (Module 6)
 - Running queries (Module 8)
 - Performance testing (Module 9)
@@ -233,6 +236,7 @@ Your Docker environment is now configured and ready for:
 ## Next Steps
 
 1. **Load sample data**:
+
    ```bash
    # Get sample data
    docker-compose exec senzing python -c "
@@ -259,6 +263,7 @@ Your Docker environment is now configured and ready for:
 **Cause**: Schema has wrong column name (sys_create_date instead of sys_create_dt)
 
 **Fix**:
+
 ```bash
 docker-compose exec postgres psql -U senzing -d senzing -c \
   "ALTER TABLE sys_cfg RENAME COLUMN sys_create_date TO sys_create_dt;"
@@ -269,6 +274,7 @@ docker-compose exec postgres psql -U senzing -d senzing -c \
 **Cause**: sys_codes_used table missing code_id column
 
 **Fix**:
+
 ```bash
 docker-compose exec postgres psql -U senzing -d senzing -c \
   "ALTER TABLE sys_codes_used ADD COLUMN code_id BIGSERIAL;"
@@ -285,6 +291,7 @@ docker-compose exec postgres psql -U senzing -d senzing -c \
 **Cause**: Network or timing issues
 
 **Fix**:
+
 ```bash
 # Check network
 docker network inspect docker_senzing-network
@@ -301,13 +308,14 @@ docker-compose restart
 **Cause**: sys_vars missing version data
 
 **Fix**:
+
 ```bash
 docker-compose exec postgres psql -U senzing -d senzing -c "
-INSERT INTO sys_vars (var_group, var_code, var_value) 
+INSERT INTO sys_vars (var_group, var_code, var_value)
 VALUES ('SYSTEM', 'VERSION', '4.2.1')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO sys_vars (var_group, var_code, var_value) 
+INSERT INTO sys_vars (var_group, var_code, var_value)
 VALUES ('SYSTEM', 'SCHEMA_VERSION', '4.0')
 ON CONFLICT DO NOTHING;
 "
@@ -355,7 +363,7 @@ See `steering/docker-deployment.md` for production patterns.
 
 After this quick start, you'll have:
 
-```
+```text
 my-senzing-docker/
 ├── docker/
 │   └── docker-compose.yml
@@ -377,7 +385,7 @@ my-senzing-docker/
 - Step 5: Initialize database (2 min)
 - Step 6: Verify (1 min)
 
-**Total: 10 minutes**
+### Total: 10 minutes
 
 ## Related Documentation
 

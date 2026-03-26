@@ -33,7 +33,20 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 
 ## Installation
 
-### Option 1: Copy to Workspace Hooks Directory
+### Option 1: Use Install Script (Recommended)
+```bash
+# Interactive installation with guided options
+./scripts/install_hooks.sh
+```
+
+This script provides:
+- Install all hooks at once
+- Install essential hooks only
+- Select hooks individually
+- Prevents duplicate installations
+- Shows descriptions of each hook
+
+### Option 2: Copy to Workspace Hooks Directory
 ```bash
 # Copy all hooks to your project
 cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
@@ -42,13 +55,13 @@ cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
 cp senzing-bootcamp/hooks/data-quality-check.kiro.hook .kiro/hooks/
 ```
 
-### Option 2: Use Kiro Command Palette
+### Option 3: Use Kiro Command Palette
 1. Open Command Palette (Cmd/Ctrl + Shift + P)
 2. Search for "Open Kiro Hook UI"
 3. Click "Import Hook"
 4. Select hook file from `senzing-bootcamp/hooks/`
 
-### Option 3: Ask the Agent
+### Option 4: Ask the Agent
 Simply ask: "Please install the Senzing Boot Camp hooks from the power directory"
 
 ## Enabling/Disabling Hooks

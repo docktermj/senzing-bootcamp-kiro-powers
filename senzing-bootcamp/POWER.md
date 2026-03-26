@@ -89,9 +89,12 @@ And create initial files: `.gitignore`, `.env.example`, `README.md`
 
 ### New to Senzing?
 
-1. **Read the Quick Start**: See `docs/guides/QUICK_START.md` for three fast paths (10 min, 30 min, or 2 hours)
-2. **Check the Onboarding Checklist**: Complete `docs/guides/ONBOARDING_CHECKLIST.md` before starting
-3. **Choose Your Path**:
+1. **Check Prerequisites**: Run `./scripts/check_prerequisites.sh` to validate your environment
+2. **Read the Quick Start**: See `docs/guides/QUICK_START.md` for three fast paths (10 min, 30 min, or 2 hours)
+3. **Check the Onboarding Checklist**: Complete `docs/guides/ONBOARDING_CHECKLIST.md` before starting
+4. **Review FAQ**: See `docs/guides/FAQ.md` for 100+ common questions and answers
+5. **Learn Terminology**: Check `docs/guides/GLOSSARY.md` for Senzing-specific terms
+6. **Choose Your Path**:
    - **Demo** (10 min): Module 0 with sample data
    - **Fast Track** (30 min): Modules 5-6 with SGES data
    - **Complete** (2-3 hrs): Modules 1-6, 8
@@ -99,7 +102,7 @@ And create initial files: `.gitignore`, `.env.example`, `README.md`
 
 ### Track Your Progress
 
-Use `docs/guides/PROGRESS_TRACKER.md` to track completion of each module and overall progress.
+Use `docs/guides/PROGRESS_TRACKER.md` to track completion manually, or run `./scripts/status.sh` for automated progress checking with visual progress bar and next steps.
 
 ### Example Projects
 
@@ -107,6 +110,8 @@ See `examples/` directory for three complete reference projects:
 - **Simple Single Source**: Basic customer deduplication (2-3 hours)
 - **Multi-Source Project**: Customer 360 with three sources (6-8 hours)
 - **Production Deployment**: Complete production-ready system (12-15 hours)
+
+Clone examples to your workspace: `./scripts/clone_example.sh`
 
 ### Templates
 
@@ -470,15 +475,17 @@ Available hooks:
 - **pep8-check** — Ensures Python code follows PEP-8 standards (100 char limit)
 - **data-quality-check** — Validates quality when transformations change
 - **backup-before-load** — Reminds to backup before loading
+- **backup-project-on-request** — Auto-backup when you say "backup my project"
 - **validate-senzing-json** — Validates output format against SGES
 
-Installation:
+Quick Installation:
 
 ```bash
-# Create .kiro directory structure if it doesn't exist
-mkdir -p .kiro/hooks
+# Interactive installation (recommended)
+./scripts/install_hooks.sh
 
-# Copy hooks
+# Or manual installation
+mkdir -p .kiro/hooks
 cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
 ```
 
@@ -604,9 +611,10 @@ See [steering/steering.md](steering/steering.md) for detailed step-by-step workf
 - **Module stuck?** Check prerequisites in module description
 - **Directory structure missing?** Agent should create it automatically at start of Module 0 or 1
 - **Code not PEP-8 compliant?** Use the agent's validation feature
-- **Lost progress?** Check `docs/guides/PROGRESS_TRACKER.md`
+- **Lost progress?** Run `./scripts/status.sh` or check `docs/guides/PROGRESS_TRACKER.md`
 - **Can't find generated files?** Check the `src/` directory structure
 - **Module prerequisites not met?** Review the "Module Prerequisites" section above
+- **Environment issues?** Run `./scripts/check_prerequisites.sh` to validate setup
 
 **MCP tool troubleshooting**:
 
@@ -616,7 +624,13 @@ See [steering/steering.md](steering/steering.md) for detailed step-by-step workf
 - **Configuration issues**: Use `search_docs` with category `configuration` or `database`
 - **MCP server connection**: Check internet connection and firewall settings for `mcp.senzing.com` (port 443)
 
-**For additional troubleshooting resources**, you can optionally install the **senzing** power which includes a top 5 common issues guide.
+**Additional resources**:
+
+- **FAQ**: See `docs/guides/FAQ.md` for 100+ common questions
+- **Glossary**: Check `docs/guides/GLOSSARY.md` for terminology
+- **Visual guides**: Review `docs/diagrams/module-flow.md` and `docs/diagrams/data-flow.md`
+- **Troubleshooting index**: See `docs/guides/TROUBLESHOOTING_INDEX.md`
+- **Senzing power**: Optionally install for quick reference and top 5 common issues
 
 ## Providing Feedback
 
@@ -712,6 +726,50 @@ As you work through the boot camp, document any issues, confusion points, or imp
 - Remind users at the end of Module 12 to share their completed feedback file with the power author
 
 ---
+
+## Useful Commands
+
+Quick reference for common tasks:
+
+```bash
+# Check project status and progress
+./scripts/status.sh
+
+# Validate prerequisites
+./scripts/check_prerequisites.sh
+
+# Install hooks
+./scripts/install_hooks.sh
+
+# Clone example project
+./scripts/clone_example.sh
+
+# Backup project
+./scripts/backup_project.sh
+
+# Restore project
+./scripts/restore_project.sh <backup-file>
+```
+
+## Additional Resources
+
+### Documentation
+- **FAQ**: `docs/guides/FAQ.md` - 100+ questions and answers
+- **Glossary**: `docs/guides/GLOSSARY.md` - A-Z Senzing terminology
+- **Collaboration Guide**: `docs/guides/COLLABORATION_GUIDE.md` - Team workflows
+- **Quick Start**: `docs/guides/QUICK_START.md` - Fast paths to get started
+- **Troubleshooting**: `docs/guides/TROUBLESHOOTING_INDEX.md` - Common issues
+
+### Visual Guides
+- **Module Flow**: `docs/diagrams/module-flow.md` - Visual module progression
+- **Data Flow**: `docs/diagrams/data-flow.md` - Data pipeline visualization
+
+### For Teams
+- **Collaboration Guide**: `docs/guides/COLLABORATION_GUIDE.md`
+  - Git workflows and branch strategies
+  - Code review processes
+  - Team roles and responsibilities
+  - Communication guidelines
 
 ## Boot Camp Complete! 🎉
 

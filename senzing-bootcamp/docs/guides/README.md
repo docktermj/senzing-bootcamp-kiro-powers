@@ -1,126 +1,269 @@
-# User Guides
+# Senzing Boot Camp - Guides Directory
 
-This directory contains essential user-facing guides for the Senzing Boot Camp.
+## Overview
 
-## Available Guides (6 Essential Files)
+This directory contains comprehensive guides to help you succeed with the Senzing Boot Camp.
+
+## Available Guides
 
 ### Getting Started
 
-- **[QUICK_START.md](QUICK_START.md)** - Three fast paths to get started (10 min, 30 min, or 2 hours)
-- **[ONBOARDING_CHECKLIST.md](ONBOARDING_CHECKLIST.md)** - Pre-flight checklist before starting the boot camp
+**[QUICK_START.md](QUICK_START.md)**
+- Three fast paths (10 min, 30 min, 2 hours)
+- Choose your learning path
+- Get started quickly
 
-### Progress Tracking
+**[ONBOARDING_CHECKLIST.md](ONBOARDING_CHECKLIST.md)**
+- Pre-bootcamp checklist
+- Environment setup
+- Prerequisites verification
 
-- **[PROGRESS_TRACKER.md](PROGRESS_TRACKER.md)** - Track your completion through all 13 modules
+### Reference Documentation
 
-### Reference Guides
+**[FAQ.md](FAQ.md)** ⭐ NEW!
+- 100+ frequently asked questions
+- Organized by category
+- Quick answers to common questions
+- Covers all modules
 
-- **[DESIGN_PATTERNS.md](DESIGN_PATTERNS.md)** - Gallery of 10 common entity resolution patterns
-- **[TROUBLESHOOTING_INDEX.md](TROUBLESHOOTING_INDEX.md)** - Quick reference for common issues and solutions
+**[GLOSSARY.md](GLOSSARY.md)** ⭐ NEW!
+- A-Z terminology
+- Senzing-specific terms
+- Common attributes
+- MCP tools reference
+- Acronyms
 
-### Boot Camp Features
+**[DESIGN_PATTERNS.md](DESIGN_PATTERNS.md)**
+- 10 common entity resolution patterns
+- Use cases and examples
+- When to use each pattern
 
-- **[HOOKS_INSTALLATION_GUIDE.md](HOOKS_INSTALLATION_GUIDE.md)** - Install pre-configured Kiro hooks for automation
+### Progress and Tracking
 
-## Why So Few Guides?
+**[PROGRESS_TRACKER.md](PROGRESS_TRACKER.md)**
+- Track module completion
+- Monitor overall progress
+- Document milestones
 
-The Senzing Boot Camp leverages the **Senzing MCP Server** to provide most documentation dynamically through tools like:
+**Status Command** ⭐ NEW!
+```bash
+./scripts/status.sh
+```
+- Shows current module
+- Progress percentage
+- Next steps
+- Project health
 
-- `get_capabilities` - Discover available tools and workflows
-- `search_docs` - Search comprehensive Senzing documentation
-- `sdk_guide` - Platform-specific SDK installation and setup
-- `explain_error_code` - Diagnose errors with detailed explanations
-- `find_examples` - Working code examples from GitHub repositories
+### Team Collaboration
 
-This approach:
-- ✅ Keeps documentation always up-to-date
-- ✅ Provides context-aware guidance
-- ✅ Reduces duplication
-- ✅ Focuses guides on boot camp-specific workflows
+**[COLLABORATION_GUIDE.md](COLLABORATION_GUIDE.md)** ⭐ NEW!
+- Git workflows
+- Branch strategies
+- Code review process
+- Team roles
+- Communication guidelines
 
-## Guides Moved to Development Repository
+### Troubleshooting
 
-The following guides were moved to `senzing-bootcamp-power-development/` because they are for power developers, not bootcamp users:
+**[TROUBLESHOOTING_INDEX.md](TROUBLESHOOTING_INDEX.md)**
+- Common issues and solutions
+- Error code explanations
+- Debugging strategies
 
-**Agent Implementation Guides:**
-- MODULE_0_AGENT_GUIDE.md → Agent instructions for running Module 0
-- FEEDBACK_WORKFLOW.md → Power development workflow
+### Installation and Setup
 
-**Development Documentation:**
-- IMPROVEMENT_MODULE_0_LIVE_DEMO.md → Development notes on improvements
+**[HOOKS_INSTALLATION_GUIDE.md](HOOKS_INSTALLATION_GUIDE.md)**
+- How to install hooks
+- Available hooks
+- Hook configuration
 
-These guides are still available for power developers and maintainers in the development repository.
+**Hook Installer** ⭐ NEW!
+```bash
+./scripts/install_hooks.sh
+```
+- Interactive installation
+- Install all or select hooks
+- Prevents duplicates
+
+### Visual Documentation
+
+**[../diagrams/module-flow.md](../diagrams/module-flow.md)** ⭐ NEW!
+- Module flow diagrams
+- Learning paths
+- Dependencies
+- Time estimates
+
+**[../diagrams/data-flow.md](../diagrams/data-flow.md)** ⭐ NEW!
+- Data transformation pipeline
+- Multi-source integration
+- Query flow
+- Backup flow
+- Monitoring flow
 
 ## Quick Reference
 
-| Guide | When to Use | Time | Purpose |
-|-------|-------------|------|---------|
-| QUICK_START | Before Module 1 | 5 min | Choose your path |
-| ONBOARDING_CHECKLIST | Before Module 1 | 15 min | Verify readiness |
-| PROGRESS_TRACKER | Throughout | Ongoing | Track completion |
-| DESIGN_PATTERNS | Module 1 | 10 min | Choose pattern |
-| TROUBLESHOOTING_INDEX | When stuck | As needed | Find solutions |
-| HOOKS_INSTALLATION_GUIDE | Before Module 4 | 15 min | Automate checks |
+### New to Senzing?
+1. Read [QUICK_START.md](QUICK_START.md)
+2. Complete [ONBOARDING_CHECKLIST.md](ONBOARDING_CHECKLIST.md)
+3. Check [FAQ.md](FAQ.md) for common questions
+4. Review [GLOSSARY.md](GLOSSARY.md) for terminology
+
+### Need Help?
+1. Check [FAQ.md](FAQ.md) first
+2. Review [TROUBLESHOOTING_INDEX.md](TROUBLESHOOTING_INDEX.md)
+3. Look up terms in [GLOSSARY.md](GLOSSARY.md)
+4. Ask the agent for guidance
+
+### Working with a Team?
+1. Read [COLLABORATION_GUIDE.md](COLLABORATION_GUIDE.md)
+2. Set up git workflows
+3. Define team roles
+4. Establish code review process
+
+### Track Progress
+1. Use [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md) manually
+2. Or run `./scripts/status.sh` for automated status
+
+### Visual Learner?
+1. Review [module-flow.md](../diagrams/module-flow.md)
+2. Study [data-flow.md](../diagrams/data-flow.md)
+3. Follow the ASCII diagrams
+
+## Useful Scripts
+
+### Check Prerequisites
+```bash
+./scripts/check_prerequisites.sh
+```
+Validates your environment before starting.
+
+### Check Status
+```bash
+./scripts/status.sh
+```
+Shows current module, progress, and next steps.
+
+### Install Hooks
+```bash
+./scripts/install_hooks.sh
+```
+Interactive hook installation.
+
+### Clone Example
+```bash
+./scripts/clone_example.sh
+```
+Clone example projects to your workspace.
+
+### Backup Project
+```bash
+./scripts/backup_project.sh
+```
+Or say: "backup my project"
+
+### Restore Project
+```bash
+./scripts/restore_project.sh <backup-file>
+```
+
+## Documentation Structure
+
+```
+docs/
+├── guides/                    # This directory
+│   ├── README.md             # This file
+│   ├── QUICK_START.md        # Getting started
+│   ├── ONBOARDING_CHECKLIST.md
+│   ├── FAQ.md                # ⭐ NEW! 100+ Q&A
+│   ├── GLOSSARY.md           # ⭐ NEW! A-Z terms
+│   ├── COLLABORATION_GUIDE.md # ⭐ NEW! Team workflows
+│   ├── DESIGN_PATTERNS.md
+│   ├── PROGRESS_TRACKER.md
+│   ├── TROUBLESHOOTING_INDEX.md
+│   └── HOOKS_INSTALLATION_GUIDE.md
+├── diagrams/                  # ⭐ NEW! Visual docs
+│   ├── module-flow.md        # Module diagrams
+│   └── data-flow.md          # Data pipeline diagrams
+├── modules/                   # Module documentation
+│   ├── MODULE_0_QUICK_DEMO.md
+│   ├── MODULE_1_BUSINESS_PROBLEM.md
+│   └── ... (Modules 2-12)
+├── policies/                  # Policy documents
+│   ├── FILE_STORAGE_POLICY.md
+│   ├── PEP8_COMPLIANCE.md
+│   └── ... (other policies)
+└── feedback/                  # Feedback templates
+    └── SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md
+```
+
+## What's New (2026-03-26)
+
+### New Guides
+- ✅ **FAQ.md**: 100+ questions and answers
+- ✅ **GLOSSARY.md**: Complete A-Z terminology
+- ✅ **COLLABORATION_GUIDE.md**: Team workflows
+
+### New Scripts
+- ✅ **status.sh**: Automated progress checking
+- ✅ **check_prerequisites.sh**: Environment validation
+- ✅ **install_hooks.sh**: Interactive hook installation
+- ✅ **clone_example.sh**: Example project cloning
+
+### New Diagrams
+- ✅ **module-flow.md**: Visual module flow
+- ✅ **data-flow.md**: Data pipeline visualization
+
+### Enhanced Features
+- ✅ Automated status checking
+- ✅ One-command prerequisite validation
+- ✅ Easy hook installation
+- ✅ Example cloning
+- ✅ Visual learning aids
+
+## Getting Help
+
+### Self-Service
+1. **FAQ**: Check [FAQ.md](FAQ.md) for quick answers
+2. **Glossary**: Look up terms in [GLOSSARY.md](GLOSSARY.md)
+3. **Troubleshooting**: Review [TROUBLESHOOTING_INDEX.md](TROUBLESHOOTING_INDEX.md)
+4. **Diagrams**: Study visual flows in [diagrams/](../diagrams/)
+
+### Agent Assistance
+- Ask the agent any question
+- Say "bootcamp help" for guidance
+- Say "power feedback" to report issues
+
+### Community
+- Senzing community forums
+- Senzing support (for licensed users)
+- Team collaboration channels
+
+## Contributing
+
+Found an issue or have a suggestion?
+1. Say "power feedback" to the agent
+2. Document in `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
+3. Share with the power author
 
 ## Related Documentation
 
-### For Planning
-- **Design Patterns** → Helps with Module 1 (Business Problem)
-- **Cost Estimation** → See `../../steering/cost-estimation.md`
-- **Complexity Estimator** → See `../../steering/complexity-estimator.md`
+- **Power Documentation**: `senzing-bootcamp/POWER.md`
+- **Module Documentation**: `docs/modules/`
+- **Policy Documentation**: `docs/policies/`
+- **Steering Files**: `senzing-bootcamp/steering/`
+- **Examples**: `senzing-bootcamp/examples/`
+- **Templates**: `senzing-bootcamp/templates/`
+- **Hooks**: `senzing-bootcamp/hooks/`
 
-### For Setup
-- **Environment Setup** → See `../../steering/environment-setup.md`
-- **SDK Guide** → Use MCP tool `sdk_guide`
+## Quick Links
 
-### For Automation
-- **Hooks Installation** → Automates quality checks
-- **Testing Strategy** → Use MCP: `search_docs(query="testing best practices")`
+- [Boot Camp Overview](../../POWER.md)
+- [Module 0: Quick Demo](../modules/MODULE_0_QUICK_DEMO.md)
+- [Module 1: Business Problem](../modules/MODULE_1_BUSINESS_PROBLEM.md)
+- [File Storage Policy](../policies/FILE_STORAGE_POLICY.md)
+- [PEP-8 Compliance](../policies/PEP8_COMPLIANCE.md)
 
-### For Troubleshooting
-- **Troubleshooting Index** → This directory
-- **Common Pitfalls** → See `../../steering/common-pitfalls.md`
-- **Troubleshooting Decision Tree** → See `../../steering/troubleshooting-decision-tree.md`
-- **Recovery Procedures** → Use MCP: `search_docs(query="backup and recovery")`
+---
 
-## For Agents
-
-When users need guidance:
-1. **Before starting** → Suggest QUICK_START and ONBOARDING_CHECKLIST
-2. **Module 1** → Suggest DESIGN_PATTERNS
-3. **Before Module 4** → Suggest HOOKS_INSTALLATION_GUIDE
-4. **Throughout** → Remind about PROGRESS_TRACKER
-5. **Troubleshooting** → Point to TROUBLESHOOTING_INDEX
-6. **Feedback** → Users can add to `../feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md`
-
-For Senzing-specific questions, use MCP tools:
-- Version compatibility → `get_capabilities`
-- Prerequisites → `sdk_guide`
-- FAQ → `search_docs`
-- Performance → `search_docs` with category="performance"
-- Docker setup → `sdk_guide` with platform="docker"
-
-For agent implementation details, see `senzing-bootcamp-power-development/guides/`
-
-## For Maintainers
-
-When adding new guides:
-- ✅ **DO** add boot camp-specific workflows and processes
-- ✅ **DO** add guides that reference multiple modules
-- ✅ **DO** add guides for Kiro-specific features (hooks, steering, etc.)
-- ❌ **DON'T** duplicate Senzing documentation (use MCP server instead)
-- ❌ **DON'T** add generic checklists or reference cards
-- ❌ **DON'T** add internal development notes (use development repository)
-
-## Version History
-
-- **2026-03-24**: Moved agent/developer guides to development repository (MODULE_0_AGENT_GUIDE, FEEDBACK_WORKFLOW, IMPROVEMENT_MODULE_0_LIVE_DEMO)
-- **2026-03-23**: Reduced from 23 guides to 8 essential guides, leveraging MCP server for Senzing documentation
-- **2026-03-17**: Initial guide collection created with 23 guides
-
-## Navigation
-
-- [← Back to docs/](../)
-- [→ Modules](../modules/)
-- [→ Policies](../policies/)
-- [→ Steering](../../steering/)
+**Last Updated**: 2026-03-26
+**Version**: 2.0.0 (Major update with FAQ, Glossary, Collaboration Guide, and Scripts)

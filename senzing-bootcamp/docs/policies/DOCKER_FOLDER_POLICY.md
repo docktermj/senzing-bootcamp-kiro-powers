@@ -1,6 +1,6 @@
 # Docker Folder Policy
 
-**Date**: 2026-03-17  
+**Date**: 2026-03-17
 **Policy**: All Docker-related files must be in `docker/` directory
 
 ## Overview
@@ -32,7 +32,7 @@ This policy ensures consistent organization of Docker-related files across all S
 
 ## Directory Structure
 
-```
+```text
 project-root/
 ├── docker/
 │   ├── Dockerfile                 # Main/production Dockerfile
@@ -126,7 +126,8 @@ docker/.dockerignore
 ```
 
 **Content example**:
-```
+
+```text
 # Exclude from Docker build context
 .git
 .github
@@ -148,6 +149,7 @@ __pycache__/
 ### Development
 
 `docker/Dockerfile.dev`:
+
 ```dockerfile
 FROM python:3.11-slim
 
@@ -164,6 +166,7 @@ CMD ["python", "src/api_server.py"]
 ```
 
 `docker/docker-compose.dev.yml`:
+
 ```yaml
 version: '3.8'
 services:
@@ -180,6 +183,7 @@ services:
 ### Production
 
 `docker/Dockerfile.prod`:
+
 ```dockerfile
 FROM python:3.11-slim
 
@@ -201,6 +205,7 @@ CMD ["gunicorn", "src.api_server:app"]
 ```
 
 `docker/docker-compose.prod.yml`:
+
 ```yaml
 version: '3.8'
 services:
@@ -218,6 +223,7 @@ services:
 ### GitHub Actions
 
 `.github/workflows/docker-build.yml`:
+
 ```yaml
 name: Docker Build
 
@@ -228,11 +234,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Build Docker image
         run: |
           docker build -f docker/Dockerfile -t myapp:${{ github.sha }} .
-      
+
       - name: Test Docker image
         run: |
           docker run myapp:${{ github.sha }} pytest tests/
@@ -241,6 +247,7 @@ jobs:
 ### Deployment Scripts
 
 `deployment/scripts/deploy.sh`:
+
 ```bash
 #!/bin/bash
 set -e
@@ -264,11 +271,13 @@ kubectl set image deployment/app app=company/app:$VERSION
 If you have Docker files in the project root:
 
 1. **Create docker directory**:
+
    ```bash
    mkdir -p docker/scripts
    ```
 
 2. **Move Docker files**:
+
    ```bash
    mv Dockerfile docker/
    mv Dockerfile.* docker/
@@ -283,6 +292,7 @@ If you have Docker files in the project root:
    - Documentation
 
 4. **Update docker-compose.yml** build context:
+
    ```yaml
    build:
      context: ..
@@ -290,12 +300,14 @@ If you have Docker files in the project root:
    ```
 
 5. **Test builds**:
+
    ```bash
    docker build -f docker/Dockerfile -t test .
    docker-compose -f docker/docker-compose.yml up
    ```
 
 6. **Commit changes**:
+
    ```bash
    git add docker/
    git commit -m "Move Docker files to docker/ directory"
@@ -338,7 +350,7 @@ fi
 
 ### Simple Single Source Example
 
-```
+```text
 examples/simple-single-source/
 ├── docker/
 │   ├── Dockerfile
@@ -350,7 +362,7 @@ examples/simple-single-source/
 
 ### Production Deployment Example
 
-```
+```text
 examples/production-deployment/
 ├── docker/
 │   ├── Dockerfile
@@ -370,19 +382,18 @@ examples/production-deployment/
 
 ## Questions?
 
-**Q: Why not keep Dockerfile in root for simplicity?**  
+**Q: Why not keep Dockerfile in root for simplicity?**
 A: Consistency and scalability. As projects grow, having Docker files in `docker/` keeps things organized.
 
-**Q: What about .dockerignore?**  
+**Q: What about .dockerignore?**
 A: It goes in `docker/.dockerignore`, not the project root.
 
-**Q: Do I need docker/scripts/?**  
+**Q: Do I need docker/scripts/?**
 A: Only if you have Docker-specific scripts like entrypoint.sh or healthcheck.sh.
 
-**Q: Can I have Dockerfile in root for simple projects?**  
+**Q: Can I have Dockerfile in root for simple projects?**
 A: No. Use `docker/Dockerfile` even for simple projects to maintain consistency.
 
 ## Version History
 
 - **v1.0.0** (2026-03-17): Docker folder policy created
-

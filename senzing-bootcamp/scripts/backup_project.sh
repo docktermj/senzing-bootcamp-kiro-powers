@@ -100,7 +100,7 @@ echo "Compressing files..."
 if zip -r "$BACKUP_FILE" "${ITEMS_TO_BACKUP[@]}" "${EXCLUDE_ARGS[@]}" -q; then
     # Get backup file size
     BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
-    
+
     echo ""
     echo -e "${GREEN}✓ Backup created successfully!${NC}"
     echo ""

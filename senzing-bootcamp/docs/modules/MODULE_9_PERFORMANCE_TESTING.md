@@ -118,7 +118,7 @@ import time
 def monitor_resources(duration=60):
     """Monitor CPU, memory, disk for specified duration"""
     samples = []
-    
+
     for i in range(duration):
         sample = {
             'cpu_percent': psutil.cpu_percent(interval=1),
@@ -126,7 +126,7 @@ def monitor_resources(duration=60):
             'disk_io': psutil.disk_io_counters(),
         }
         samples.append(sample)
-    
+
     return samples
 ```
 
@@ -175,39 +175,39 @@ class PerformanceMetrics:
     throughput_per_second: float
     cpu_avg_percent: float
     memory_avg_percent: float
-    
+
     def to_dict(self):
         return asdict(self)
 
 class PerformanceTester:
     def __init__(self):
         self.results = []
-    
+
     def benchmark_transformation(self, input_file: str, sample_size: int = 10000):
         """Benchmark transformation performance"""
         print(f"\n{'='*60}")
         print(f"TRANSFORMATION BENCHMARK ({sample_size:,} records)")
         print(f"{'='*60}")
-        
+
         # Monitor resources
         cpu_samples = []
         memory_samples = []
-        
+
         start_time = time.time()
         records_processed = 0
-        
+
         # TODO: Implement actual transformation
         # for record in read_source(input_file, limit=sample_size):
         #     transformed = transform(record)
         #     records_processed += 1
-        
+
         # Simulate for now
         time.sleep(2)
         records_processed = sample_size
-        
+
         duration = time.time() - start_time
         throughput = records_processed / duration
-        
+
         metrics = PerformanceMetrics(
             test_name='transformation',
             record_count=records_processed,
@@ -216,38 +216,38 @@ class PerformanceTester:
             cpu_avg_percent=psutil.cpu_percent(),
             memory_avg_percent=psutil.virtual_memory().percent
         )
-        
+
         self.results.append(metrics)
-        
+
         print(f"Records processed: {records_processed:,}")
         print(f"Duration: {duration:.2f} seconds")
         print(f"Throughput: {throughput:.0f} records/second")
         print(f"CPU: {metrics.cpu_avg_percent:.1f}%")
         print(f"Memory: {metrics.memory_avg_percent:.1f}%")
-        
+
         return metrics
-    
+
     def benchmark_loading(self, input_file: str, sample_size: int = 1000):
         """Benchmark loading performance"""
         print(f"\n{'='*60}")
         print(f"LOADING BENCHMARK ({sample_size:,} records)")
         print(f"{'='*60}")
-        
+
         start_time = time.time()
         records_loaded = 0
-        
+
         # TODO: Implement actual loading
         # for record in read_transformed(input_file, limit=sample_size):
         #     engine.addRecord(DATA_SOURCE, record['RECORD_ID'], record)
         #     records_loaded += 1
-        
+
         # Simulate for now
         time.sleep(5)
         records_loaded = sample_size
-        
+
         duration = time.time() - start_time
         throughput = records_loaded / duration
-        
+
         metrics = PerformanceMetrics(
             test_name='loading',
             record_count=records_loaded,
@@ -256,48 +256,48 @@ class PerformanceTester:
             cpu_avg_percent=psutil.cpu_percent(),
             memory_avg_percent=psutil.virtual_memory().percent
         )
-        
+
         self.results.append(metrics)
-        
+
         print(f"Records loaded: {records_loaded:,}")
         print(f"Duration: {duration:.2f} seconds")
         print(f"Throughput: {throughput:.0f} records/second")
         print(f"CPU: {metrics.cpu_avg_percent:.1f}%")
         print(f"Memory: {metrics.memory_avg_percent:.1f}%")
-        
+
         return metrics
-    
+
     def benchmark_queries(self, num_queries: int = 100):
         """Benchmark query performance"""
         print(f"\n{'='*60}")
         print(f"QUERY BENCHMARK ({num_queries} queries)")
         print(f"{'='*60}")
-        
+
         response_times = []
-        
+
         for i in range(num_queries):
             start = time.time()
-            
+
             # TODO: Implement actual query
             # result = engine.searchByAttributes(search_criteria)
-            
+
             # Simulate for now
             time.sleep(0.025)  # 25ms
-            
+
             duration = (time.time() - start) * 1000  # Convert to ms
             response_times.append(duration)
-        
+
         avg_time = statistics.mean(response_times)
         median_time = statistics.median(response_times)
         p95_time = statistics.quantiles(response_times, n=20)[18] if len(response_times) >= 20 else max(response_times)
         p99_time = statistics.quantiles(response_times, n=100)[98] if len(response_times) >= 100 else max(response_times)
-        
+
         print(f"Queries executed: {num_queries}")
         print(f"Average response time: {avg_time:.1f} ms")
         print(f"Median response time: {median_time:.1f} ms")
         print(f"P95 response time: {p95_time:.1f} ms")
         print(f"P99 response time: {p99_time:.1f} ms")
-        
+
         return {
             'num_queries': num_queries,
             'avg_ms': avg_time,
@@ -305,18 +305,18 @@ class PerformanceTester:
             'p95_ms': p95_time,
             'p99_ms': p99_time
         }
-    
+
     def scalability_test(self, sizes: List[int] = [1000, 10000, 100000]):
         """Test scalability with increasing data volumes"""
         print(f"\n{'='*60}")
         print(f"SCALABILITY TEST")
         print(f"{'='*60}")
-        
+
         for size in sizes:
             print(f"\nTesting with {size:,} records...")
             self.benchmark_transformation('data/raw/test.csv', size)
             self.benchmark_loading('data/transformed/test.jsonl', min(size, 10000))
-    
+
     def generate_report(self, output_file: str = 'docs/performance_report.json'):
         """Generate performance report"""
         report = {
@@ -328,24 +328,24 @@ class PerformanceTester:
             },
             'results': [r.to_dict() for r in self.results]
         }
-        
+
         with open(output_file, 'w') as f:
             json.dump(report, f, indent=2)
-        
+
         print(f"\nPerformance report saved to: {output_file}")
         return report
 
 if __name__ == '__main__':
     tester = PerformanceTester()
-    
+
     # Run benchmarks
     tester.benchmark_transformation('data/raw/customers.csv', 10000)
     tester.benchmark_loading('data/transformed/customers.jsonl', 1000)
     tester.benchmark_queries(100)
-    
+
     # Scalability test
     # tester.scalability_test([1000, 10000, 100000])
-    
+
     # Generate report
     tester.generate_report()
 ```

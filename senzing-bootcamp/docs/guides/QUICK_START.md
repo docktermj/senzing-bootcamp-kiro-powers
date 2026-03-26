@@ -98,24 +98,28 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ## Choose Your Path
 
-### I want to...
+### I want to
 
 **"See a demo first"** → Path A (10-Minute Demo)
+
 - Start with Module 0
 - No installation required (Docker)
 - Sample data provided
 
 **"Get results fast"** → Path B (30-Minute Fast Track)
+
 - Skip to Module 5 (SDK Setup)
 - Requires SGES-compliant data
 - SQLite for quick start
 
 **"Learn properly"** → Path C (2-Hour Complete)
+
 - Start with Module 1
 - Work with your raw data
 - Complete understanding
 
 **"Build for production"** → Path D: Full Boot Camp (10-18 hours)
+
 - Complete all modules 0-12
 - Production-ready deployment
 - Security, monitoring, optimization
@@ -125,22 +129,26 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ## Quick Commands
 
 ### Start the Demo
-```
+
+```text
 "Let's run the Senzing quick demo"
 ```
 
 ### Define Your Problem
-```
+
+```text
 "I want to start the Senzing boot camp"
 ```
 
 ### Skip to Loading
-```
+
+```text
 "I have SGES data ready, let's install Senzing and load it"
 ```
 
 ### Get Help
-```
+
+```text
 "What is entity resolution?"
 "How do I map my data?"
 "Show me the boot camp modules"
@@ -151,20 +159,24 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ## What You'll Need
 
 ### For Demo (Path A)
+
 - ✅ Nothing! Just ask the agent
 
 ### For Fast Track (Path B)
+
 - ✅ SGES-formatted data file
 - ✅ Python 3.8+ or Docker
 - ✅ 30 minutes
 
 ### For Complete Beginner (Path C)
+
 - ✅ Raw data file (CSV, JSON, Excel, etc.)
 - ✅ Python 3.8+ or Docker
 - ✅ 2-3 hours
 - ✅ Basic understanding of your data
 
 ### For Production (Path D - Full Boot Camp)
+
 - ✅ All data sources identified
 - ✅ PostgreSQL database (or plan to set up)
 - ✅ 10-18 hours over 1-2 weeks
@@ -175,6 +187,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ## Quick Reference
 
 ### Module Overview
+
 - **Module 0**: Quick Demo (10 min) - Optional
 - **Module 1**: Business Problem (20 min)
 - **Module 2**: Collect Data (15 min per source)
@@ -190,6 +203,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 - **Module 12**: Package & Deploy (2-3 hrs)
 
 ### Skip Ahead Options
+
 - Have SGES data? → Skip Module 4
 - Senzing installed? → Skip Module 5
 - Single source? → Skip Module 7
@@ -202,16 +216,19 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ### Next Steps
 
 **After Demo (Path A)**:
+
 1. Decide if entity resolution fits your use case
 2. Choose Path B or C to work with your data
 3. Or explore more sample datasets
 
 **After Fast Track (Path B)**:
+
 1. Review results and validate accuracy
 2. Add more data sources (Module 2-4, 6-7)
 3. Consider production deployment (Modules 9-12)
 
 **After Complete Beginner (Path C)**:
+
 1. Validate results with stakeholders
 2. Add more data sources if needed
 3. Plan production deployment
@@ -221,7 +238,8 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ## Getting Help
 
 ### Ask the Agent
-```
+
+```text
 "How do I start the boot camp?"
 "What's the fastest way to see results?"
 "I'm stuck on Module 4, help!"
@@ -229,12 +247,14 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ```
 
 ### Use MCP Tools
+
 - `get_capabilities` - See all available tools
 - `mapping_workflow` - Map your data
 - `search_docs` - Find documentation
 - `explain_error_code` - Diagnose errors
 
 ### Review Documentation
+
 - `../../POWER.md` - Complete boot camp overview
 - `PROGRESS_TRACKER.md` - Track your progress
 - `../modules/` - Detailed module guides
@@ -244,19 +264,22 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ## Success Indicators
 
-### You're Ready to Move On When...
+### You're Ready to Move On When
 
 **After Demo**:
+
 - ✅ You understand what entity resolution does
 - ✅ You've seen duplicates automatically matched
 - ✅ You can explain why records matched
 
 **After Fast Track**:
+
 - ✅ Your data is loaded into Senzing
 - ✅ You can query for duplicates
 - ✅ Results make sense for your use case
 
 **After Complete Beginner**:
+
 - ✅ All modules 1-6 and 8 complete
 - ✅ Transformation and query programs work
 - ✅ Results validated and documented
@@ -265,22 +288,22 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ## Common Questions
 
-**Q: Which path should I choose?**  
+**Q: Which path should I choose?**
 A: Demo if exploring, Fast Track if experienced, Complete if learning.
 
-**Q: Can I switch paths?**  
+**Q: Can I switch paths?**
 A: Yes! Start with demo, then do Fast Track or Complete.
 
-**Q: Do I need to install anything?**  
+**Q: Do I need to install anything?**
 A: Demo needs nothing. Others need Python or Docker.
 
-**Q: How long does each path take?**  
+**Q: How long does each path take?**
 A: Demo: 10 min, Fast Track: 30 min, Complete: 2-3 hrs.
 
-**Q: Can I use my own data?**  
+**Q: Can I use my own data?**
 A: Yes for Fast Track and Complete. Demo uses sample data.
 
-**Q: What if I get stuck?**  
+**Q: What if I get stuck?**
 A: Ask the agent! That's what it's here for.
 
 ---
@@ -289,7 +312,7 @@ A: Ask the agent! That's what it's here for.
 
 Choose your path and tell the agent:
 
-```
+```text
 "Let's run the quick demo"
 "I want to do the 30-minute fast track"
 "I'm ready for the complete beginner path"
@@ -300,5 +323,5 @@ The agent will guide you through every step!
 
 ---
 
-**Version**: 1.0.0  
+**Version**: 1.0.0
 **Last updated**: 2026-03-23

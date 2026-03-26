@@ -1,11 +1,12 @@
 # Senzing Boot Camp Power - Improvements Feedback
 
-**Purpose**: Collect feedback and improvement suggestions during boot camp usage to enhance the power.  
-**Audience**: Power author and Senzing team (for continuous improvement)  
-**Created**: [Date when you started using the power]  
+**Purpose**: Collect feedback and improvement suggestions during boot camp usage to enhance the power.
+**Audience**: Power author and Senzing team (for continuous improvement)
+**Created**: [Date when you started using the power]
 **Your Name/Team**: [Optional - helps author understand user context]
 
 **Submission**: Your feedback is automatically submitted to:
+
 1. ✅ This local file (for your records)
 2. ✅ Senzing MCP server (for centralized tracking)
 
@@ -13,14 +14,16 @@
 
 ## How to Use This File
 
-As you work through the Senzing Boot Camp, document any issues, confusion points, or improvement ideas here. 
+As you work through the Senzing Boot Camp, document any issues, confusion points, or improvement ideas here.
 
 **To provide feedback**: Simply say "power feedback" or "bootcamp feedback" to the agent, and it will:
+
 1. Guide you through documenting the feedback
 2. Save it to this file
 3. Submit it to the Senzing MCP server automatically
 
 **When to add feedback**:
+
 - Instructions are unclear or confusing
 - Steps don't work as documented
 - Missing information or prerequisites
@@ -31,6 +34,7 @@ As you work through the Senzing Boot Camp, document any issues, confusion points
 - Tools or templates are missing
 
 **What NOT to include**:
+
 - Issues specific to your data (not general problems)
 - Senzing SDK bugs (report those to Senzing directly)
 - Feature requests outside boot camp scope
@@ -45,9 +49,9 @@ Copy this template for each improvement suggestion:
 ```markdown
 ## Improvement: [Brief descriptive title]
 
-**Date**: YYYY-MM-DD  
-**Module**: [Which module: 0-12]  
-**Priority**: High / Medium / Low  
+**Date**: YYYY-MM-DD
+**Module**: [Which module: 0-12]
+**Priority**: High / Medium / Low
 **Category**: Documentation / Workflow / Tools / UX / Bug / Performance / Security
 
 ### What Happened

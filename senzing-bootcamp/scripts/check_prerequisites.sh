@@ -26,7 +26,7 @@ check_command() {
     local name=$2
     local required=$3
     local install_hint=$4
-    
+
     if command -v "$cmd" &> /dev/null; then
         local version=$($cmd --version 2>&1 | head -n1 || echo "unknown")
         echo -e "${GREEN}✓${NC} $name: ${GREEN}installed${NC} ($version)"
@@ -51,7 +51,7 @@ check_python_package() {
     local package=$1
     local name=$2
     local required=$3
-    
+
     if python3 -c "import $package" 2>/dev/null; then
         echo -e "${GREEN}✓${NC} Python package '$name': ${GREEN}installed${NC}"
         ((PASSED++))

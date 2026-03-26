@@ -169,6 +169,7 @@ Create `docs/lessons_learned.md` and fill it out after Module 8 (or Module 12 fo
 ## When to Load This Guide
 
 Load this steering file when:
+
 - Completing Module 8 (query and validation)
 - Completing Module 12 (deployment)
 - User asks about lessons learned or retrospectives

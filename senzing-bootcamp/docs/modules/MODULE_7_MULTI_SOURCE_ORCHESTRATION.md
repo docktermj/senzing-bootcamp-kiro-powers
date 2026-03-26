@@ -30,7 +30,7 @@ After successfully loading a single data source in Module 6, Module 7 helps you:
 
 Determine the optimal order to load sources:
 
-```
+```text
 Priority 1: Reference data (countries, states, products)
 Priority 2: Master data (customers, vendors, employees)
 Priority 3: Transactional data (orders, claims, transactions)
@@ -108,7 +108,7 @@ def load_with_dependencies(source, dependencies, loaded):
     for dep in dependencies.get(source, []):
         if dep not in loaded:
             load_with_dependencies(dep, dependencies, loaded)
-    
+
     # Load this source
     load_source(source)
     loaded.add(source)
@@ -141,7 +141,7 @@ def consumer():
 
 Track progress across all sources:
 
-```
+```text
 ╔══════════════════════════════════════════════════════════╗
 ║           MULTI-SOURCE LOADING DASHBOARD                 ║
 ╠══════════════════════════════════════════════════════════╣
@@ -187,7 +187,7 @@ class MultiSourceOrchestrator:
         self.loaded = set()
         self.failed = set()
         self.stats = {}
-    
+
     def load_all(self, strategy='dependency-aware'):
         """Load all sources using specified strategy"""
         if strategy == 'sequential':
@@ -198,12 +198,12 @@ class MultiSourceOrchestrator:
             self._load_dependency_aware()
         else:
             raise ValueError(f"Unknown strategy: {strategy}")
-    
+
     def _load_sequential(self):
         """Load sources sequentially"""
         for source in self.sources:
             self._load_source(source)
-    
+
     def _load_parallel(self):
         """Load sources in parallel"""
         with ThreadPoolExecutor(max_workers=4) as executor:
@@ -211,7 +211,7 @@ class MultiSourceOrchestrator:
                 executor.submit(self._load_source, source): source
                 for source in self.sources
             }
-            
+
             for future in as_completed(futures):
                 source = futures[future]
                 try:
@@ -219,39 +219,39 @@ class MultiSourceOrchestrator:
                 except Exception as e:
                     logger.error(f"Failed to load {source}: {e}")
                     self.failed.add(source)
-    
+
     def _load_dependency_aware(self):
         """Load sources respecting dependencies"""
         for source in self.sources:
             self._load_with_dependencies(source)
-    
+
     def _load_with_dependencies(self, source: str):
         """Load source after its dependencies"""
         if source in self.loaded or source in self.failed:
             return
-        
+
         # Load dependencies first
         deps = self.dependencies.get(source, [])
         for dep in deps:
             if dep not in self.loaded:
                 logger.info(f"{source} waiting for dependency: {dep}")
                 self._load_with_dependencies(dep)
-        
+
         # Load this source
         self._load_source(source)
-    
+
     def _load_source(self, source: str):
         """Load a single source"""
         logger.info(f"Loading source: {source}")
         start_time = time.time()
-        
+
         try:
             # TODO: Implement actual loading logic
             # load_records_from_source(source)
-            
+
             # Simulate loading
             time.sleep(2)
-            
+
             duration = time.time() - start_time
             self.stats[source] = {
                 'status': 'success',
@@ -260,7 +260,7 @@ class MultiSourceOrchestrator:
             }
             self.loaded.add(source)
             logger.info(f"✅ Loaded {source} in {duration:.1f}s")
-            
+
         except Exception as e:
             logger.error(f"❌ Failed to load {source}: {e}")
             self.failed.add(source)
@@ -268,7 +268,7 @@ class MultiSourceOrchestrator:
                 'status': 'failed',
                 'error': str(e)
             }
-    
+
     def print_summary(self):
         """Print loading summary"""
         print("\n" + "="*60)
@@ -277,18 +277,18 @@ class MultiSourceOrchestrator:
         print(f"Total sources: {len(self.sources)}")
         print(f"Loaded: {len(self.loaded)}")
         print(f"Failed: {len(self.failed)}")
-        
+
         if self.loaded:
             print("\n✅ Successfully loaded:")
             for source in self.loaded:
                 stats = self.stats[source]
                 print(f"  - {source}: {stats['records']:,} records in {stats['duration']:.1f}s")
-        
+
         if self.failed:
             print("\n❌ Failed to load:")
             for source in self.failed:
                 print(f"  - {source}: {self.stats[source]['error']}")
-        
+
         print("="*60)
 
 # Example configuration

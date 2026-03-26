@@ -5,10 +5,13 @@ This directory is for storing your Senzing license file(s).
 ## Do I Need a License?
 
 ### Module 0 (Quick Demo)
+
 **No license required** - Module 0 uses sample data and doesn't require a license.
 
 ### Modules 5+ (SDK Installation and Beyond)
+
 **License required** - You'll need a valid Senzing license to:
+
 - Install and use the Senzing SDK
 - Load your own data
 - Perform entity resolution on production data
@@ -80,7 +83,7 @@ This directory is for storing your Senzing license file(s).
 
 ### Correct Location ✅
 
-```
+```text
 licenses/
 ├── g2.lic                 # Your Senzing license file
 ├── .gitkeep               # Keeps directory in git
@@ -88,6 +91,7 @@ licenses/
 ```
 
 **Command**:
+
 ```bash
 # Place your license file here
 cp /path/to/your/g2.lic licenses/g2.lic
@@ -98,7 +102,7 @@ chmod 644 licenses/g2.lic
 
 ### Incorrect Locations ❌
 
-```
+```text
 ❌ /tmp/g2.lic              # Temporary, will be deleted
 ❌ g2.lic                   # Project root (wrong location)
 ❌ config/g2.lic            # Config is for configuration, not licenses
@@ -143,7 +147,8 @@ product.destroy()
 ```
 
 Expected output:
-```
+
+```text
 License valid!
 Version: 4.0.0
 ```
@@ -180,12 +185,14 @@ echo "licenses/*.lic" >> .gitignore
 ### Evaluation License
 
 **Typical Limitations**:
+
 - Time-limited (30-90 days)
 - May have record count limits
 - For evaluation and development only
 - Not for production use
 
 **Best for**:
+
 - Completing the boot camp
 - Proof of concept projects
 - Learning and training
@@ -194,12 +201,14 @@ echo "licenses/*.lic" >> .gitignore
 ### Production License
 
 **Features**:
+
 - No time limits
 - Based on DSR volume tiers
 - Production support included
 - Suitable for production deployments
 
 **Pricing Tiers** (approximate - contact Senzing for current pricing):
+
 - **Tier 1**: Up to 1M DSRs
 - **Tier 2**: 1M - 10M DSRs
 - **Tier 3**: 10M - 100M DSRs
@@ -210,10 +219,12 @@ echo "licenses/*.lic" >> .gitignore
 ### Issue: License File Not Found
 
 **Symptoms**:
+
 - Error: "License file not found"
 - SDK initialization fails
 
 **Solutions**:
+
 1. Verify file exists: `ls -la licenses/g2.lic`
 2. Check file permissions: `chmod 644 licenses/g2.lic`
 3. Verify file path in configuration
@@ -222,10 +233,12 @@ echo "licenses/*.lic" >> .gitignore
 ### Issue: License Expired
 
 **Symptoms**:
+
 - Error: "License expired"
 - SDK refuses to initialize
 
 **Solutions**:
+
 1. Check license expiration date
 2. Contact Senzing for license renewal
 3. Request new evaluation license if needed
@@ -234,10 +247,12 @@ echo "licenses/*.lic" >> .gitignore
 ### Issue: License Invalid
 
 **Symptoms**:
+
 - Error: "Invalid license"
 - License validation fails
 
 **Solutions**:
+
 1. Verify license file is not corrupted
 2. Re-download license from Senzing
 3. Check file encoding (should be plain text)
@@ -246,10 +261,12 @@ echo "licenses/*.lic" >> .gitignore
 ### Issue: Wrong License Type
 
 **Symptoms**:
+
 - License works but features are limited
 - Record count limits exceeded
 
 **Solutions**:
+
 1. Verify license type (evaluation vs. production)
 2. Check license limitations
 3. Contact Senzing to upgrade license
@@ -283,6 +300,7 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 ### Do I need different licenses for development and production?
 
 **Best practice**: Yes
+
 - Use evaluation license for development and testing
 - Use production license for production deployments
 - Keep licenses separate by using project-specific license files
@@ -294,14 +312,17 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 ## Contact Information
 
 ### Senzing Support
+
 - **Email**: [support@senzing.com](mailto:support@senzing.com)
 - **Website**: [https://senzing.com/support/](https://senzing.com/support/)
 
 ### Senzing Sales
+
 - **Email**: [sales@senzing.com](mailto:sales@senzing.com)
 - **Website**: [https://senzing.com/contact/](https://senzing.com/contact/)
 
 ### General Inquiries
+
 - **Website**: [https://senzing.com](https://senzing.com)
 - **Documentation**: [https://docs.senzing.com](https://docs.senzing.com)
 

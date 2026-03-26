@@ -82,6 +82,7 @@ Create `docs/security_compliance.md`:
 ## When to Load This Guide
 
 Load this steering file when:
+
 - Starting Module 2 (before collecting data)
 - Starting Module 3 (before evaluating data quality)
 - User asks about data privacy or security

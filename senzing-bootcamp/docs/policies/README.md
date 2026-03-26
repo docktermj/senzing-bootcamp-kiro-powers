@@ -11,6 +11,7 @@ This directory contains policy documents that define coding standards and organi
 **Purpose**: Define where SQLite databases must be created during the bootcamp
 
 **Key Rules**:
+
 - All SQLite databases MUST be placed in `database/G2C.db` (project-relative path)
 - Never use `/tmp/sqlite` or system-wide locations
 - Create `database/` directory if it doesn't exist
@@ -25,11 +26,13 @@ This directory contains policy documents that define coding standards and organi
 ---
 
 ### Module 0 Code Location Policy
+
 **File**: [MODULE_0_CODE_LOCATION.md](MODULE_0_CODE_LOCATION.md)
 
 **Purpose**: Define where Module 0 demo code should be stored
 
 **Key Rules**:
+
 - All Module 0 demo code goes in `src/quickstart_demo/`
 - Demo scripts: `src/quickstart_demo/demo_[dataset_name].py`
 - Sample data: `src/quickstart_demo/sample_data_[dataset_name].jsonl`
@@ -42,11 +45,13 @@ This directory contains policy documents that define coding standards and organi
 ---
 
 ### Python Requirements Policy
+
 **File**: [PYTHON_REQUIREMENTS_POLICY.md](PYTHON_REQUIREMENTS_POLICY.md)
 
 **Purpose**: Define how Python dependencies should be managed
 
 **Key Rules**:
+
 - Use `requirements.txt` for production dependencies
 - Use `requirements-dev.txt` for development dependencies
 - Pin versions for production (`package==1.2.3`)
@@ -61,11 +66,13 @@ This directory contains policy documents that define coding standards and organi
 ---
 
 ### Shell Script Locations Policy
+
 **File**: [SHELL_SCRIPT_LOCATIONS.md](SHELL_SCRIPT_LOCATIONS.md)
 
 **Purpose**: Define where shell scripts should be stored
 
 **Key Rules**:
+
 - **All shell scripts (*.sh) go in `scripts/` directory**
 - Python/Java/C# code goes in `src/` directory
 - Use descriptive names: `deploy.sh`, not `d.sh`
@@ -73,6 +80,7 @@ This directory contains policy documents that define coding standards and organi
 - Add comments explaining what script does
 
 **Common Scripts**:
+
 - `scripts/deploy.sh` - Deployment automation
 - `scripts/backup.sh` - Database backup
 - `scripts/migrate_db.sh` - Database migration
@@ -86,11 +94,13 @@ This directory contains policy documents that define coding standards and organi
 ---
 
 ### File Storage Policy
+
 **File**: [FILE_STORAGE_POLICY.md](FILE_STORAGE_POLICY.md)
 
 **Purpose**: Define where all file types should be stored (never use /tmp)
 
 **Key Rules**:
+
 - **Source code** → `src/` directory
 - **Shell scripts** → `scripts/` directory
 - **Documentation** → `docs/` directory
@@ -106,17 +116,17 @@ This directory contains policy documents that define coding standards and organi
 
 ## Policy Summary
 
-| Policy | Directory | File Types | Applies To |
-|--------|-----------|------------|------------|
-| SQLite Database | `database/` | `*.db` | Modules 0, 5, 6, 7, 8 |
-| Module 0 Code | `src/quickstart_demo/` | Python/Java/C#/Rust | Module 0 |
-| Python Requirements | Project root | `requirements*.txt` | All Python projects |
-| Shell Scripts | `scripts/` | `*.sh` | Modules 10, 11, 12 |
-| File Storage | Various | All files | All modules |
+| Policy              | Directory              | File Types          | Applies To            |
+|---------------------|------------------------|---------------------|-----------------------|
+| SQLite Database     | `database/`            | `*.db`              | Modules 0, 5, 6, 7, 8 |
+| Module 0 Code       | `src/quickstart_demo/` | Python/Java/C#/Rust | Module 0              |
+| Python Requirements | Project root           | `requirements*.txt` | All Python projects   |
+| Shell Scripts       | `scripts/`             | `*.sh`              | Modules 10, 11, 12    |
+| File Storage        | Various                | All files           | All modules           |
 
 ## File Organization Overview
 
-```
+```text
 project-root/
 ├── database/                 # SQLite database files (REQUIRED LOCATION)
 │   ├── G2C.db                # Main Senzing database
@@ -148,7 +158,8 @@ project-root/
 └── ...
 ```
 
-**Important**: 
+**Important**:
+
 - SQLite databases MUST go in `database/G2C.db` (never `/tmp`)
 - Never use `/tmp` for any project files
 - Use appropriate project directories for all files
@@ -156,16 +167,19 @@ project-root/
 ## Why These Policies Matter
 
 ### Consistency
+
 - Everyone knows where to find files
 - Easier onboarding for new team members
 - Reduces confusion and errors
 
 ### Maintainability
+
 - Clear separation of concerns
 - Easy to update and refactor
 - Predictable project structure
 
 ### Best Practices
+
 - Follows industry standards
 - Aligns with language conventions
 - Supports CI/CD automation
@@ -173,6 +187,7 @@ project-root/
 ## Enforcement
 
 These policies are:
+
 - ✅ Documented in policy files
 - ✅ Referenced in agent instructions
 - ✅ Enforced by agent behavior
@@ -188,6 +203,7 @@ These policies are:
 ## For Agents
 
 When generating code:
+
 1. **Always check policies** before creating files
 2. **Place files in correct directories** according to policies
 3. **Follow naming conventions** defined in policies
@@ -197,6 +213,7 @@ When generating code:
 ## For Users
 
 When organizing your project:
+
 1. **Follow these policies** for consistency
 2. **Ask agent for clarification** if unsure
 3. **Document deviations** if you must deviate

@@ -8,7 +8,7 @@ Visual flowchart for diagnosing common issues.
 
 ## Start Here: What's the Problem?
 
-```
+```text
 ┌─────────────────────────────────────┐
 │   What type of issue are you       │
 │   experiencing?                     │
@@ -24,7 +24,7 @@ Visual flowchart for diagnosing common issues.
 
 ## Section A: Installation/Setup Issues
 
-```
+```text
 Installation failing?
 │
 ├─→ Platform mismatch?
@@ -52,7 +52,7 @@ Installation failing?
 
 ## Section B: Transformation Issues
 
-```
+```text
 Transformation not working?
 │
 ├─→ Program crashes?
@@ -86,7 +86,7 @@ Transformation not working?
 
 ## Section C: Loading Issues
 
-```
+```text
 Loading failing?
 │
 ├─→ Connection errors?
@@ -123,7 +123,7 @@ Loading failing?
 
 ## Section D: Query Issues
 
-```
+```text
 Queries not working?
 │
 ├─→ Method not found?
@@ -164,7 +164,7 @@ Queries not working?
 
 ## Section E: Performance Issues
 
-```
+```text
 System too slow?
 │
 ├─→ Transformation slow?
@@ -198,7 +198,7 @@ System too slow?
 
 ## Section F: Data Quality Issues
 
-```
+```text
 Poor matching results?
 │
 ├─→ Review data quality from Module 4
@@ -254,21 +254,21 @@ top  # CPU and processes
 
 1. **Read the error message carefully**
    - Error messages usually explain the problem
-   
+
 2. **Use explain_error_code**
    - For any SENZ error codes
-   
+
 3. **Search documentation**
    - Use search_docs with relevant query
-   
+
 4. **Check common pitfalls**
    - Load steering/common-pitfalls.md
-   
+
 5. **Start fresh**
    - Restore from backup
    - Go back to last working state
    - Proceed more carefully
-   
+
 6. **Ask for help**
    - Senzing support
    - Community forums
@@ -287,6 +287,7 @@ top  # CPU and processes
 ## When to Load This Guide
 
 Load this steering file when:
+
 - User says "it's not working"
 - User encounters any error
 - User is stuck or frustrated

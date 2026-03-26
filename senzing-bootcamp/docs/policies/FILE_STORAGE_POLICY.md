@@ -22,7 +22,8 @@ This document defines where different types of files should be stored in the Sen
 **Rule**: All source code files (`.py`, `.java`, `.cs`, `.rs`, etc.) must be stored in the `src/` directory.
 
 **Structure**:
-```
+
+```text
 src/
 ├── quickstart_demo/     # Module 0 demo code
 ├── transform/           # Transformation programs (Module 4)
@@ -32,6 +33,7 @@ src/
 ```
 
 **Examples**:
+
 ```bash
 # ✅ CORRECT
 src/transform/transform_customers.py
@@ -50,7 +52,8 @@ transform_customers.py  # (in project root)
 **Rule**: All shell scripts (`.sh`) must be stored in the `scripts/` directory.
 
 **Structure**:
-```
+
+```text
 scripts/
 ├── deploy.sh            # Deployment automation
 ├── backup.sh            # Database backup
@@ -61,6 +64,7 @@ scripts/
 ```
 
 **Examples**:
+
 ```bash
 # ✅ CORRECT
 scripts/deploy.sh
@@ -78,7 +82,8 @@ deploy.sh               # (in project root)
 **Rule**: All markdown files (`.md`) must be stored in the `docs/` directory or project root (for POWER.md and README.md only).
 
 **Structure**:
-```
+
+```text
 docs/
 ├── guides/              # User-facing guides
 ├── modules/             # Module documentation
@@ -87,6 +92,7 @@ docs/
 ```
 
 **Examples**:
+
 ```bash
 # ✅ CORRECT
 docs/guides/QUICK_START.md
@@ -106,7 +112,8 @@ my_notes.md             # (in project root)
 **Rule**: All data files (`.json`, `.jsonl`, `.csv`, etc.) must be stored in the `data/` directory.
 
 **Structure**:
-```
+
+```text
 data/
 ├── raw/                 # Original source data
 ├── transformed/         # Senzing-formatted JSON
@@ -115,6 +122,7 @@ data/
 ```
 
 **Examples**:
+
 ```bash
 # ✅ CORRECT
 data/raw/customers.csv
@@ -133,7 +141,8 @@ customers.csv           # (in project root)
 **Rule**: SQLite database files (`.db`, `.sqlite`, `.sqlite3`) must be stored in the `database/` directory.
 
 **Structure**:
-```
+
+```text
 database/
 ├── G2C.db               # Main Senzing database
 ├── G2C.db-journal       # SQLite journal file (auto-generated)
@@ -141,6 +150,7 @@ database/
 ```
 
 **Examples**:
+
 ```bash
 # ✅ CORRECT
 database/G2C.db
@@ -154,6 +164,7 @@ data/G2C.db             # (data/ is for data files, not databases)
 ```
 
 **Note**: Add `database/*.db` to `.gitignore` to exclude database files from version control:
+
 ```gitignore
 # Database files
 database/*.db
@@ -166,7 +177,8 @@ database/*.db-journal
 **Rule**: Configuration files (`.json`, `.yaml`, `.yml`, `.env`, `.ini`) should be stored in the `config/` directory or project root (for `.env` files).
 
 **Structure**:
-```
+
+```text
 config/
 ├── senzing_config.json
 ├── database_config.yaml
@@ -178,6 +190,7 @@ config/
 ```
 
 **Examples**:
+
 ```bash
 # ✅ CORRECT
 config/senzing_config.json
@@ -196,7 +209,8 @@ senzing_config.json     # (in project root, should be in config/)
 **Rule**: Senzing license files must be stored in the `licenses/` directory.
 
 **Structure**:
-```
+
+```text
 licenses/
 ├── g2.lic               # Senzing license file
 ├── .gitkeep             # Keep directory in git
@@ -204,6 +218,7 @@ licenses/
 ```
 
 **Examples**:
+
 ```bash
 # ✅ CORRECT
 licenses/g2.lic
@@ -218,6 +233,7 @@ config/g2.lic           # (config/ is for configuration, not licenses)
 ```
 
 **Note**: Add `licenses/*.lic` to `.gitignore` to exclude license files from version control:
+
 ```gitignore
 # License files
 licenses/*.lic
@@ -226,6 +242,7 @@ licenses/*.lic
 ```
 
 **License Priority**: Senzing SDK checks for licenses in this order:
+
 1. Project-specific license: `licenses/g2.lic`
 2. System-wide license: `/etc/opt/senzing/g2.lic` or `SENZING_LICENSE_PATH` environment variable
 
@@ -236,7 +253,8 @@ If users already have a system-wide Senzing license, they don't need to place on
 **Rule**: All Docker-related files must be stored in the `docker/` directory.
 
 **Structure**:
-```
+
+```text
 docker/
 ├── Dockerfile           # Main Dockerfile
 ├── Dockerfile.dev       # Development Dockerfile
@@ -251,6 +269,7 @@ docker/
 ```
 
 **Examples**:
+
 ```bash
 # ✅ CORRECT
 docker/Dockerfile
@@ -272,6 +291,7 @@ deployment/Dockerfile   # (wrong directory)
 **Rule**: Downloaded installation files should be stored in the user's home directory, not `/tmp`.
 
 **Examples**:
+
 ```bash
 # ✅ CORRECT - Download to home directory
 wget -qO - https://example.com/package.deb -O ~/package.deb
@@ -287,12 +307,14 @@ sudo apt install /tmp/package.deb
 **Rule**: If you need temporary working files during processing, use a project-specific temporary directory.
 
 **Structure**:
-```
+
+```text
 data/
 └── temp/                # Project temporary files (gitignored)
 ```
 
 **Examples**:
+
 ```bash
 # ✅ CORRECT
 mkdir -p data/temp
@@ -303,6 +325,7 @@ python process.py --temp-dir /tmp
 ```
 
 **Note**: Add `data/temp/` to `.gitignore`:
+
 ```gitignore
 # Temporary working files
 data/temp/*
@@ -314,7 +337,8 @@ data/temp/*
 **Rule**: Project backup archives must be stored in the `backups/` directory at the project root.
 
 **Structure**:
-```
+
+```text
 backups/
 ├── senzing-bootcamp-backup_20260326_143022.zip
 ├── senzing-bootcamp-backup_20260325_091500.zip
@@ -322,6 +346,7 @@ backups/
 ```
 
 **Examples**:
+
 ```bash
 # ✅ CORRECT
 backups/senzing-bootcamp-backup_20260326_143022.zip
@@ -335,6 +360,7 @@ data/backups/           # (data/backups/ is for database exports, not project ba
 ```
 
 **Backup Contents**: Backups include all user data and project files:
+
 - ✅ `database/` - SQLite database files
 - ✅ `data/` - All data files (raw, transformed, samples)
 - ✅ `licenses/` - Senzing license files
@@ -344,6 +370,7 @@ data/backups/           # (data/backups/ is for database exports, not project ba
 - ✅ `docs/` - Documentation
 
 **Backup Exclusions**: Backups automatically exclude:
+
 - ❌ `backups/` - Backup files themselves (prevents recursion)
 - ❌ `.git/` - Git repository (use git for version control)
 - ❌ `.env` - Environment secrets (use .env.example as template)
@@ -352,6 +379,7 @@ data/backups/           # (data/backups/ is for database exports, not project ba
 - ❌ `node_modules/`, `venv/` - Dependencies
 
 **Creating Backups**:
+
 ```bash
 # Use the backup script
 ./scripts/backup_project.sh
@@ -360,6 +388,7 @@ data/backups/           # (data/backups/ is for database exports, not project ba
 ```
 
 **Restoring Backups**:
+
 ```bash
 # Restore to current location
 ./scripts/restore_project.sh backups/senzing-bootcamp-backup_20260326_143022.zip
@@ -369,6 +398,7 @@ data/backups/           # (data/backups/ is for database exports, not project ba
 ```
 
 **Note**: Add `backups/*.zip` to `.gitignore` to exclude backup files from version control:
+
 ```gitignore
 # Backup files
 backups/*.zip

@@ -12,6 +12,7 @@ All Python scripts in the Senzing Boot Camp power follow PEP-8 coding standards 
 ✅ **All 11 Python template scripts are PEP-8 compliant**
 
 ### Template Scripts (11)
+
 - ✓ `templates/validate_schema.py`
 - ✓ `templates/collect_from_csv.py`
 - ✓ `templates/collect_from_json.py`
@@ -27,11 +28,13 @@ All Python scripts in the Senzing Boot Camp power follow PEP-8 coding standards 
 ## PEP-8 Standards Applied
 
 ### Line Length
+
 - **Maximum**: 100 characters per line
 - **Rationale**: More readable than strict 79, accommodates modern displays
 - **Breaking long lines**: Use parentheses, not backslashes
 
 ### Whitespace
+
 - **No trailing whitespace** on any line
 - **Two blank lines** between top-level functions and classes
 - **One blank line** between methods in a class
@@ -39,22 +42,26 @@ All Python scripts in the Senzing Boot Camp power follow PEP-8 coding standards 
 - **No spaces** around = in keyword arguments
 
 ### Indentation
+
 - **4 spaces** for indentation (never tabs)
 - Consistent indentation throughout
 
 ### Naming Conventions
+
 - `snake_case` for functions, variables, and module names
 - `PascalCase` for class names
 - `UPPER_CASE` for constants
 - Descriptive names (avoid single letters except in loops)
 
 ### Imports
+
 - All imports at top of file
 - Grouped: standard library, third-party, local
 - One import per line (except `from x import a, b`)
 - Alphabetical order within groups
 
 ### Documentation
+
 - Module docstring at top of file
 - Docstring for every function and class
 - Triple quotes for docstrings
@@ -113,30 +120,35 @@ if __name__ == "__main__":
 ### Recommended Tools
 
 1. **pycodestyle** (formerly pep8)
+
    ```bash
    pip install pycodestyle
    pycodestyle --max-line-length=100 src/
    ```
 
 2. **flake8** (combines pycodestyle, pyflakes, mccabe)
+
    ```bash
    pip install flake8
    flake8 --max-line-length=100 src/
    ```
 
 3. **black** (automatic formatter)
+
    ```bash
    pip install black
    black --line-length=100 src/
    ```
 
 4. **pylint** (comprehensive code quality)
+
    ```bash
    pip install pylint
    pylint src/
    ```
 
 5. **mypy** (type checking)
+
    ```bash
    pip install mypy
    mypy src/
@@ -171,11 +183,13 @@ fi
 ### Issue 1: Line Too Long
 
 **Problem**:
+
 ```python
 result = some_function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
 ```
 
 **Fix**:
+
 ```python
 result = some_function(
     arg1, arg2, arg3, arg4,
@@ -186,12 +200,14 @@ result = some_function(
 ### Issue 2: Trailing Whitespace
 
 **Problem**:
+
 ```python
-def my_function():  
-    return True  
+def my_function():
+    return True
 ```
 
 **Fix**:
+
 ```python
 def my_function():
     return True
@@ -200,12 +216,14 @@ def my_function():
 ### Issue 3: Inconsistent Indentation
 
 **Problem**:
+
 ```python
 def my_function():
   return True  # 2 spaces
 ```
 
 **Fix**:
+
 ```python
 def my_function():
     return True  # 4 spaces
@@ -214,12 +232,14 @@ def my_function():
 ### Issue 4: Missing Docstrings
 
 **Problem**:
+
 ```python
 def transform_record(record):
     return {"DATA_SOURCE": "TEST"}
 ```
 
 **Fix**:
+
 ```python
 def transform_record(record):
     """Transform a record to Senzing format."""
@@ -229,6 +249,7 @@ def transform_record(record):
 ### Issue 5: Import Organization
 
 **Problem**:
+
 ```python
 from pathlib import Path
 import sys
@@ -238,6 +259,7 @@ from senzing import G2Engine
 ```
 
 **Fix**:
+
 ```python
 # Standard library
 import json
@@ -273,21 +295,25 @@ When users provide code, the agent will:
 ## Benefits of PEP-8 Compliance
 
 ### Readability
+
 - Consistent style across all code
 - Easier to understand and maintain
 - Faster code reviews
 
 ### Maintainability
+
 - Easier to modify and extend
 - Reduces cognitive load
 - Fewer bugs from formatting issues
 
 ### Collaboration
+
 - Team members can read each other's code
 - Consistent expectations
 - Professional appearance
 
 ### Tool Support
+
 - Better IDE support
 - Automatic formatting
 - Static analysis tools work better
@@ -297,6 +323,7 @@ When users provide code, the agent will:
 ### Pre-commit Hooks
 
 Add to `.git/hooks/pre-commit`:
+
 ```bash
 #!/bin/bash
 pycodestyle --max-line-length=100 src/ templates/
@@ -309,6 +336,7 @@ fi
 ### CI/CD Integration
 
 Add to CI/CD pipeline:
+
 ```yaml
 # .github/workflows/lint.yml
 name: Lint
@@ -331,6 +359,7 @@ jobs:
 ### IDE Configuration
 
 **VS Code** (`.vscode/settings.json`):
+
 ```json
 {
     "python.linting.enabled": true,
@@ -343,6 +372,7 @@ jobs:
 ```
 
 **PyCharm**:
+
 - Settings → Editor → Code Style → Python
 - Set "Hard wrap at" to 100
 - Enable "Reformat code" on save

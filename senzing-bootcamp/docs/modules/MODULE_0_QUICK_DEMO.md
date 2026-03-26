@@ -6,7 +6,8 @@ Module 0 provides a demonstration of Senzing entity resolution using sample data
 
 This module offers multiple demo options to ensure everyone can see entity resolution working, regardless of their environment.
 
-**Time**: 
+**Time**:
+
 - First time (Docker): 15-20 minutes (includes 2-5 min Docker image download)
 - Subsequent runs (Docker): 10-15 minutes
 - Simulation Demo: 5-10 minutes (no setup required)
@@ -44,12 +45,14 @@ This module offers multiple demo options to ensure everyone can see entity resol
 ## Choosing Your Demo Path
 
 **Recommended for most users**: Docker Demo
+
 - ✓ Real Senzing SDK
 - ✓ No permanent installation
 - ✓ Clean and isolated
 - ⏱ 15-20 minutes first time
 
 **Best for quick preview**: Simulation Demo
+
 - ✓ No Docker needed
 - ✓ Instant results
 - ✓ Shows concepts clearly
@@ -57,6 +60,7 @@ This module offers multiple demo options to ensure everyone can see entity resol
 - ⏱ 5-10 minutes
 
 **Best for developers**: Native SDK Demo
+
 - ✓ Full SDK capabilities
 - ✓ Better performance
 - ✓ Reusable for later modules
@@ -65,6 +69,7 @@ This module offers multiple demo options to ensure everyone can see entity resol
 ## Learning Objectives
 
 By the end of this module, you will:
+
 - See Senzing entity resolution working in real-time
 - Watch duplicate records automatically match and merge
 - Understand WHY records matched (match explanations)
@@ -286,6 +291,7 @@ docker run -v $(pwd)/src/quickstart_demo:/data \
 ## Connecting to Your Use Case
 
 After the demo, consider:
+
 - How does this compare to your data?
 - What matching criteria matter most for you?
 - What data quality issues might you have?
@@ -294,25 +300,26 @@ After the demo, consider:
 ## Next Steps
 
 After completing the demo:
+
 - **Ready to start?** → Proceed to Module 1 (Business Problem)
 - **Want to try another dataset?** → Run another demo
 - **Have questions?** → Ask about specific entity resolution concepts
 
 ## Common Questions
 
-**Q: Do I need to install Senzing to run the demo?**  
+**Q: Do I need to install Senzing to run the demo?**
 A: No! The demo can run in Docker with no installation. If you want to install the SDK, the agent will guide you through it.
 
-**Q: Does this actually run Senzing, or is it a simulation?**  
+**Q: Does this actually run Senzing, or is it a simulation?**
 A: This runs the real Senzing SDK! You'll see actual entity resolution happening, not a simulation or mock-up.
 
-**Q: Can I use my own data for the demo?**  
+**Q: Can I use my own data for the demo?**
 A: The demo uses sample data to ensure a quick, successful experience. You'll work with your data starting in Module 2.
 
-**Q: How accurate is entity resolution?**  
+**Q: How accurate is entity resolution?**
 A: Accuracy depends on data quality. Typical match rates: 90-99% precision, 85-95% recall. The demo shows real match confidence scores.
 
-**Q: Can I skip this module?**  
+**Q: Can I skip this module?**
 A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data. But we recommend the demo - it only takes 10 minutes and shows the value immediately.
 
 ## Troubleshooting Module 0
@@ -320,12 +327,14 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 ### Issue: Docker Database Initialization Failed
 
 **Symptoms**:
+
 - Error: "unable to open database file"
 - Error: "SQLITE3: ERROR (14) cannot open file"
 - Error: "SzDatabaseError - SENZ1001"
 - Database creation fails in Docker container
 
 **Causes**:
+
 - Docker volume mount permission issues
 - SELinux/AppArmor restrictions
 - Insufficient permissions in container
@@ -334,9 +343,11 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 **Solutions** (try in order):
 
 1. **Use Simulation Demo instead** (Recommended - Instant Solution)
-   ```
+
+   ```text
    Ask agent: "Use simulation demo instead"
    ```
+
    - ✓ No Docker required
    - ✓ Shows same concepts
    - ✓ Instant results
@@ -350,22 +361,24 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
    - Works around permission issues
 
 3. **Check Docker permissions** (Linux)
+
    ```bash
    # Add user to docker group
    sudo usermod -aG docker $USER
-   
+
    # Log out and back in, then verify
    docker ps
    ```
 
 4. **Disable SELinux temporarily** (Linux only - if applicable)
+
    ```bash
    # Check if SELinux is the issue
    getenforce
-   
+
    # If "Enforcing", temporarily disable
    sudo setenforce 0
-   
+
    # Run demo, then re-enable
    sudo setenforce 1
    ```
@@ -381,6 +394,7 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 ### Issue: Docker Not Installed or Not Running
 
 **Symptoms**:
+
 - "docker: command not found"
 - "Cannot connect to the Docker daemon"
 - "Docker is not running"
@@ -398,9 +412,10 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
    - **Windows**: [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
 3. **Start Docker** (if installed but not running)
+
    ```bash
    # macOS/Windows: Start Docker Desktop application
-   
+
    # Linux:
    sudo systemctl start docker
    ```
@@ -415,11 +430,13 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 ### Issue: Docker Image Download is Slow or Stuck
 
 **Symptoms**:
+
 - Download taking >5 minutes
 - Progress appears stuck
 - "Pulling from..." message for long time
 
 **Causes**:
+
 - Slow network connection
 - Large image size (1.6GB)
 - Network congestion
@@ -431,6 +448,7 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
    - May take 10-15 minutes on slow connection
 
 2. **Check network speed**
+
    ```bash
    # Test connection
    ping docker.io
@@ -498,6 +516,7 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 ### Issue: Python Not Installed (For Simulation Demo)
 
 **Symptoms**:
+
 - "python: command not found"
 - "python3: command not found"
 
@@ -509,6 +528,7 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
    - **Windows**: Download from [python.org](https://www.python.org)
 
 2. **Verify installation**
+
    ```bash
    python3 --version
    # Should show: Python 3.8.x or higher
@@ -523,6 +543,7 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 ### Issue: Module 0 Taking Longer Than Expected
 
 **Expected times**:
+
 - **First time (Docker)**: 15-20 minutes (includes download)
 - **Subsequent runs (Docker)**: 10-15 minutes
 - **Simulation Demo**: 5-10 minutes
@@ -548,21 +569,25 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 ### Issue: Permission Denied Errors
 
 **Symptoms**:
+
 - "Permission denied" when creating files
 - "Cannot write to directory"
 
 **Causes**:
+
 - Insufficient permissions in project directory
 - Running in protected directory
 
 **Solutions**:
 
 1. **Check project directory permissions**
+
    ```bash
    ls -la
    ```
 
 2. **Move to user directory**
+
    ```bash
    # Create project in home directory
    cd ~
@@ -571,6 +596,7 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
    ```
 
 3. **Fix permissions** (if needed)
+
    ```bash
    chmod 755 .
    ```
@@ -608,11 +634,13 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 **Before starting Module 0, verify your environment**:
 
 Run the pre-flight check script:
+
 ```bash
 ./scripts/check_module0_prerequisites.sh
 ```
 
 This will check:
+
 - ✓ Docker availability
 - ✓ Disk space
 - ✓ Network connectivity
@@ -625,21 +653,21 @@ And provide recommendations based on your environment.
 ## Success Criteria
 
 **For Docker Demo**:
-✅ Senzing SDK is running (Docker or local installation)  
-✅ Demo script executes successfully  
-✅ Sample data loads without errors  
-✅ Entities are resolved and displayed with match explanations  
-✅ You understand what entity resolution does and WHY records matched  
-✅ You can see the before/after transformation  
+✅ Senzing SDK is running (Docker or local installation)
+✅ Demo script executes successfully
+✅ Sample data loads without errors
+✅ Entities are resolved and displayed with match explanations
+✅ You understand what entity resolution does and WHY records matched
+✅ You can see the before/after transformation
 ✅ You're excited to try it with your own data!
 
 **For Simulation Demo**:
-✅ Simulation script runs successfully  
-✅ Sample records displayed (before resolution)  
-✅ Resolved entities displayed (after resolution)  
-✅ Match explanations shown with confidence scores  
-✅ You understand entity resolution concepts  
-✅ You understand this is a simulation (not real SDK)  
+✅ Simulation script runs successfully
+✅ Sample records displayed (before resolution)
+✅ Resolved entities displayed (after resolution)
+✅ Match explanations shown with confidence scores
+✅ You understand entity resolution concepts
+✅ You understand this is a simulation (not real SDK)
 ✅ You're ready to see the real SDK in Module 6!
 
 **Either demo achieves the goal**: Understanding how entity resolution works!

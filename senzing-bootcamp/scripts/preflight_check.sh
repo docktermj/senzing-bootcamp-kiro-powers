@@ -14,7 +14,7 @@ echo "Checking Python..."
 if command -v python3 &> /dev/null; then
     PYTHON_VERSION=$(python3 --version | cut -d' ' -f2)
     echo "✅ Python $PYTHON_VERSION installed"
-    
+
     # Check version is 3.8+
     MAJOR=$(echo $PYTHON_VERSION | cut -d'.' -f1)
     MINOR=$(echo $PYTHON_VERSION | cut -d'.' -f2)

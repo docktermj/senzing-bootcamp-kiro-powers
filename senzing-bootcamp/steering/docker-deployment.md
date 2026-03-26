@@ -8,14 +8,16 @@ This guide covers deploying Senzing in Docker containers, based on real-world de
 
 ## When to Use Docker
 
-### Use Docker When:
+### Use Docker When
+
 - Deploying to cloud platforms (AWS ECS, Azure Container Instances, GCP Cloud Run)
 - Need consistent environments across dev/staging/prod
 - Want easy scaling and orchestration (Kubernetes)
 - Prefer containerized microservices architecture
 - Need isolation from host system
 
-### Use Local Installation When:
+### Use Local Installation When
+
 - Maximum performance is critical
 - Simple single-server deployment
 - Direct system access required
@@ -28,6 +30,7 @@ This guide covers deploying Senzing in Docker containers, based on real-world de
 **IMPORTANT**: The Senzing runtime Docker image (`senzing/senzingsdk-runtime:4.2.1`) does NOT include PostgreSQL schema files.
 
 **What This Means**:
+
 - You cannot use `/opt/senzing/er/resources/schema/szcore-schema-postgresql-create.sql` (it doesn't exist in the image)
 - You must use SDK-based initialization instead
 - Schema files are only in full SDK installations, not runtime images
@@ -38,7 +41,8 @@ This guide covers deploying Senzing in Docker containers, based on real-world de
 
 For Docker deployments with PostgreSQL, use this two-stage initialization:
 
-**Stage 1: Minimal Schema (SQL)**
+#### Stage 1: Minimal Schema (SQL)
+
 ```sql
 -- Create just enough for SDK to work
 -- CRITICAL: Use exact column names expected by SDK
@@ -93,7 +97,8 @@ CREATE TABLE sys_codes_used (
 3. **sys_vars structure** (var_group, var_code, var_value)
    - Must use this exact structure for version checking to work
 
-**Stage 2: SDK Initialization (Python)**
+#### Stage 2: SDK Initialization (Python)
+
 ```python
 #!/usr/bin/env python3
 """Initialize Senzing database via SDK"""
@@ -103,20 +108,20 @@ from senzing import SzConfigManager, SzConfig
 
 def initialize_database():
     """Initialize Senzing database schema and configuration"""
-    
+
     # Initialize config manager
     config_mgr = SzConfigManager()
     config_mgr.initialize(instance_name="InitDB", settings=ENGINE_CONFIG)
-    
+
     try:
         # Create configuration from template
         # This creates all remaining tables automatically
         config = SzConfig()
         config.initialize(instance_name="InitConfig", settings=ENGINE_CONFIG)
-        
+
         config_handle = config.create_config()
         config_json = config.export_config(config_handle)
-        
+
         # Set as default configuration
         # This populates the database with initial config
         config_id = config_mgr.add_config(
@@ -124,12 +129,12 @@ def initialize_database():
             config_comment="Initial Docker setup"
         )
         config_mgr.set_default_config_id(config_id=config_id)
-        
+
         print(f"✅ Database initialized with config ID: {config_id}")
-        
+
         config.close_config(config_handle)
         config.destroy()
-    
+
     finally:
         config_mgr.destroy()
 
@@ -140,12 +145,14 @@ if __name__ == '__main__':
 ### 3. Container CMD Best Practices
 
 **DON'T**: Set CMD to run a script that exits
+
 ```dockerfile
 # ❌ BAD - Container will restart continuously if script fails
 CMD ["python", "src/query/run_queries.py"]
 ```
 
 **DO**: Keep container running for exec-based workflows
+
 ```dockerfile
 # ✅ GOOD - Container stays running
 CMD ["tail", "-f", "/dev/null"]
@@ -155,6 +162,7 @@ CMD ["tail", "-f", "/dev/null"]
 ```
 
 **OR**: Use proper entrypoint with error handling
+
 ```dockerfile
 # ✅ GOOD - Entrypoint handles initialization
 COPY docker/scripts/entrypoint.sh /entrypoint.sh
@@ -166,7 +174,7 @@ CMD ["tail", "-f", "/dev/null"]
 
 ### Directory Structure
 
-```
+```text
 project/
 ├── docker/
 │   ├── Dockerfile
@@ -285,7 +293,7 @@ try:
     cur.execute(\"SELECT COUNT(*) FROM information_schema.tables WHERE table_name='sz_cfg_config'\")
     count = cur.fetchone()[0]
     conn.close()
-    
+
     if count == 0:
         print('Database needs initialization')
         sys.exit(1)
@@ -300,7 +308,7 @@ except Exception as e:
 if [ $? -eq 1 ]; then
     echo "Initializing Senzing database..."
     python3 /app/src/setup/init_database.py
-    
+
     echo "Registering data sources..."
     python3 /app/src/setup/register_sources.py
 fi
@@ -376,6 +384,7 @@ docker-compose -f docker/docker-compose.yml exec senzing \
 **Error Message**: `SENZ1001|Critical Database Error '(7:42703ERROR: column "sys_create_dt" of relation "sys_cfg" does not exist`
 
 **Solution**:
+
 ```sql
 -- Fix the column name in sys_cfg table
 ALTER TABLE sys_cfg RENAME COLUMN sys_create_date TO sys_create_dt;
@@ -397,6 +406,7 @@ CREATE TABLE sys_cfg (
 **Error Message**: `SENZ1001|Critical Database Error '(7:42703ERROR: column "code_id" does not exist`
 
 **Solution**:
+
 ```sql
 -- Add missing code_id column
 ALTER TABLE sys_codes_used ADD COLUMN code_id BIGSERIAL;
@@ -416,6 +426,7 @@ CREATE TABLE sys_codes_used (
 **Cause**: Database not properly initialized
 
 **Solution**:
+
 1. Check `sys_vars` table exists and has version info
 2. Run SDK initialization: `python src/setup/init_database.py`
 3. Verify `sz_cfg_config` table was created
@@ -425,15 +436,16 @@ CREATE TABLE sys_codes_used (
 **Cause**: Version mismatch in `sys_vars` table
 
 **Solution**:
+
 ```sql
 -- Check current version
 SELECT * FROM sys_vars WHERE var_group = 'SYSTEM';
 
 -- Update if needed (for Senzing 4.2.1)
-UPDATE sys_vars SET var_value = '4.2.1' 
+UPDATE sys_vars SET var_value = '4.2.1'
 WHERE var_group = 'SYSTEM' AND var_code = 'VERSION';
 
-UPDATE sys_vars SET var_value = '4.0' 
+UPDATE sys_vars SET var_value = '4.0'
 WHERE var_group = 'SYSTEM' AND var_code = 'SCHEMA_VERSION';
 ```
 
@@ -444,6 +456,7 @@ WHERE var_group = 'SYSTEM' AND var_code = 'SCHEMA_VERSION';
 **Cause**: CMD exits immediately or fails
 
 **Solution**:
+
 - Change CMD to `tail -f /dev/null`
 - Use docker exec for running commands
 - Or implement proper entrypoint with error handling
@@ -453,6 +466,7 @@ WHERE var_group = 'SYSTEM' AND var_code = 'SCHEMA_VERSION';
 **Cause**: Network or timing issues
 
 **Solution**:
+
 1. Use `depends_on` with health checks in docker-compose
 2. Implement wait-for-postgres script
 3. Check network: `docker network inspect <network_name>`
@@ -463,6 +477,7 @@ WHERE var_group = 'SYSTEM' AND var_code = 'SCHEMA_VERSION';
 **Cause**: Trying to use schema file from runtime image
 
 **Solution**:
+
 - Don't rely on schema files in runtime images
 - Use SDK initialization approach instead
 - Or download schema separately and mount as volume
@@ -476,7 +491,7 @@ volumes:
   # Persistent data
   - ./data:/app/data:ro          # Read-only source data
   - postgres_data:/var/lib/postgresql/data  # Database persistence
-  
+
   # Logs
   - ./logs:/app/logs             # Application logs
 ```
@@ -544,7 +559,7 @@ spec:
         env:
         - name: DATABASE_HOST
           value: postgres-service
-      
+
       containers:
       - name: senzing
         image: senzing/senzingsdk-runtime:4.2.1
@@ -570,6 +585,7 @@ docker-compose -f docker/docker-compose.yml exec postgres \
 ## When to Load This Guide
 
 Load this guide when:
+
 - User mentions Docker or containers
 - User asks about deployment
 - User encounters Docker-specific errors

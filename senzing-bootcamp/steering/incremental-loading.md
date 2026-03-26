@@ -42,7 +42,7 @@ def incremental_by_timestamp(source_file, last_load_time):
     for record in read_source(source_file):
         if record['modified_date'] > last_load_time:
             engine.addRecord(DATA_SOURCE, record['RECORD_ID'], record)
-    
+
     # Save new timestamp
     save_last_load_time(datetime.now())
 ```
@@ -70,6 +70,7 @@ def load_from_cdc(cdc_stream):
 **Use when**: Real-time updates needed, database supports CDC
 
 **CDC Tools**:
+
 - Debezium (open source)
 - AWS DMS
 - Oracle GoldenGate
@@ -84,7 +85,7 @@ def load_delta_file(delta_file):
     """Load delta file with operation indicators"""
     for record in read_source(delta_file):
         operation = record.get('_operation', 'UPSERT')
-        
+
         if operation in ['INSERT', 'UPDATE', 'UPSERT']:
             engine.addRecord(DATA_SOURCE, record['RECORD_ID'], record)
         elif operation == 'DELETE':
@@ -113,7 +114,7 @@ def incremental_by_checksum(source_file, checksum_db):
         record_id = record['RECORD_ID']
         current_checksum = calculate_checksum(record)
         previous_checksum = checksum_db.get(record_id)
-        
+
         if current_checksum != previous_checksum:
             engine.addRecord(DATA_SOURCE, record_id, record)
             checksum_db[record_id] = current_checksum
@@ -131,11 +132,11 @@ Use high-water mark (e.g., max ID):
 def incremental_by_watermark(source, last_id):
     """Load records with ID > last_id"""
     query = f"SELECT * FROM {source} WHERE id > {last_id} ORDER BY id"
-    
+
     for record in execute_query(query):
         engine.addRecord(DATA_SOURCE, record['RECORD_ID'], record)
         last_id = record['id']
-    
+
     save_watermark(last_id)
 ```
 
@@ -165,7 +166,7 @@ class IncrementalLoader:
         self.strategy = strategy
         self.state_file = f'data/.state/{data_source}_state.json'
         self.state = self.load_state()
-    
+
     def load_state(self):
         """Load previous loading state"""
         if Path(self.state_file).exists():
@@ -176,13 +177,13 @@ class IncrementalLoader:
             'last_watermark': 0,
             'checksums': {}
         }
-    
+
     def save_state(self):
         """Save loading state"""
         Path(self.state_file).parent.mkdir(parents=True, exist_ok=True)
         with open(self.state_file, 'w') as f:
             json.dump(self.state, f, indent=2)
-    
+
     def should_load_record(self, record):
         """Determine if record should be loaded"""
         if self.strategy == 'timestamp':
@@ -193,29 +194,29 @@ class IncrementalLoader:
             return self._check_watermark(record)
         else:
             return True  # Full reload
-    
+
     def _check_timestamp(self, record):
         """Check if record modified since last load"""
         if not self.state['last_load_time']:
             return True
-        
+
         modified_date = record.get('modified_date')
         if not modified_date:
             return True  # Load if no timestamp
-        
+
         return modified_date > self.state['last_load_time']
-    
+
     def _check_checksum(self, record):
         """Check if record checksum changed"""
         record_id = record['RECORD_ID']
         current_checksum = self._calculate_checksum(record)
         previous_checksum = self.state['checksums'].get(record_id)
-        
+
         if current_checksum != previous_checksum:
             self.state['checksums'][record_id] = current_checksum
             return True
         return False
-    
+
     def _check_watermark(self, record):
         """Check if record ID > watermark"""
         record_id = int(record.get('id', 0))
@@ -223,21 +224,21 @@ class IncrementalLoader:
             self.state['last_watermark'] = record_id
             return True
         return False
-    
+
     def _calculate_checksum(self, record):
         """Calculate record checksum"""
         # Remove metadata fields
         data = {k: v for k, v in record.items() if not k.startswith('_')}
         record_str = json.dumps(data, sort_keys=True)
         return hashlib.md5(record_str.encode()).hexdigest()
-    
+
     def load(self, source_file):
         """Load records incrementally"""
         records_loaded = 0
         records_skipped = 0
-        
+
         print(f"Loading {self.data_source} using {self.strategy} strategy...")
-        
+
         for record in self.read_source(source_file):
             if self.should_load_record(record):
                 # TODO: Load to Senzing
@@ -245,21 +246,21 @@ class IncrementalLoader:
                 records_loaded += 1
             else:
                 records_skipped += 1
-        
+
         # Update state
         if self.strategy == 'timestamp':
             self.state['last_load_time'] = datetime.now().isoformat()
-        
+
         self.save_state()
-        
+
         print(f"✅ Loaded: {records_loaded:,} records")
         print(f"⏭️  Skipped: {records_skipped:,} records")
-        
+
         return {
             'loaded': records_loaded,
             'skipped': records_skipped
         }
-    
+
     def read_source(self, source_file):
         """Read source file"""
         # TODO: Implement actual file reading
@@ -271,11 +272,11 @@ if __name__ == '__main__':
     # Timestamp-based
     loader = IncrementalLoader('CUSTOMERS', strategy='timestamp')
     loader.load('data/raw/customers.csv')
-    
+
     # Checksum-based
     loader = IncrementalLoader('VENDORS', strategy='checksum')
     loader.load('data/raw/vendors.csv')
-    
+
     # Watermark-based
     loader = IncrementalLoader('TRANSACTIONS', strategy='watermark')
     loader.load('data/raw/transactions.csv')
@@ -305,7 +306,7 @@ Compare current vs previous to find deletes:
 def detect_hard_deletes(current_ids, previous_ids):
     """Detect deleted records"""
     deleted_ids = previous_ids - current_ids
-    
+
     for record_id in deleted_ids:
         engine.deleteRecord(DATA_SOURCE, record_id)
 ```
@@ -393,6 +394,7 @@ When implementing incremental loading in Module 6:
 ## When to Load This Guide
 
 Load this guide when:
+
 - Starting Module 6 (loading)
 - User has frequently updated data
 - User asks about incremental loading

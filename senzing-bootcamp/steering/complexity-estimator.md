@@ -11,31 +11,37 @@ Estimate time and effort based on data characteristics.
 Answer these questions for each data source to estimate complexity:
 
 ### 1. Data Format
+
 - ✅ **Simple** (1 point): CSV, JSON, single table
 - ⚠️ **Medium** (2 points): Multiple tables, XML, API
 - 🔴 **Complex** (3 points): Nested JSON, multiple APIs, real-time streams
 
 ### 2. Data Volume
+
 - ✅ **Small** (1 point): < 10,000 records
 - ⚠️ **Medium** (2 points): 10,000 - 100,000 records
 - 🔴 **Large** (3 points): > 100,000 records
 
 ### 3. Data Quality
+
 - ✅ **Good** (1 point): Clean, consistent, few nulls
 - ⚠️ **Fair** (2 points): Some inconsistencies, moderate nulls
 - 🔴 **Poor** (3 points): Messy, inconsistent formats, many nulls
 
 ### 4. Field Mapping
+
 - ✅ **Direct** (1 point): Fields map 1:1 to SGES
 - ⚠️ **Moderate** (2 points): Some field combinations needed
 - 🔴 **Complex** (3 points): Extensive transformation, parsing, lookups
 
 ### 5. Entity Structure
+
 - ✅ **Simple** (1 point): Flat records, one entity type
 - ⚠️ **Moderate** (2 points): Some nested data, 2 entity types
 - 🔴 **Complex** (3 points): Hierarchical, relationships, multiple types
 
 ### 6. Data Access
+
 - ✅ **Easy** (1 point): Local file, direct database access
 - ⚠️ **Moderate** (2 points): API with good docs, VPN required
 - 🔴 **Difficult** (3 points): Complex API, authentication issues, rate limits
@@ -45,8 +51,10 @@ Answer these questions for each data source to estimate complexity:
 Add up the points:
 
 ### 6-9 Points: Low Complexity ✅
+
 **Estimated Time**: 1-2 hours for Module 4
 **Characteristics**:
+
 - Simple CSV or JSON file
 - Clean, well-structured data
 - Direct field mappings
@@ -55,14 +63,17 @@ Add up the points:
 **Example**: Customer CSV with columns that map directly to NAME_FULL, ADDR_FULL, PHONE_NUMBER
 
 **Approach**:
+
 - Use mapping_workflow for quick mapping
 - Minimal data cleansing needed
 - Test with 100 records
 - Should complete in one session
 
 ### 10-14 Points: Medium Complexity ⚠️
+
 **Estimated Time**: 2-4 hours for Module 4
 **Characteristics**:
+
 - Multiple tables or moderate API
 - Some data quality issues
 - Field combinations needed
@@ -71,6 +82,7 @@ Add up the points:
 **Example**: Database with separate name, address, phone tables that need joining
 
 **Approach**:
+
 - Plan entity structure carefully
 - Add data cleansing logic
 - Test incrementally (100, 1000, 10000 records)
@@ -78,8 +90,10 @@ Add up the points:
 - Consider data quality improvements
 
 ### 15-18 Points: High Complexity 🔴
+
 **Estimated Time**: 4-8 hours for Module 4
 **Characteristics**:
+
 - Complex nested data or difficult API
 - Poor data quality
 - Extensive transformation needed
@@ -88,6 +102,7 @@ Add up the points:
 **Example**: Nested JSON from API with inconsistent formats, missing data, and complex relationships
 
 **Approach**:
+
 - Break into smaller sub-tasks
 - Focus on data quality first
 - Consider data enrichment
@@ -99,7 +114,7 @@ Add up the points:
 
 ### Module 4: Data Mapping Time Estimate
 
-```
+```text
 Base Time: 1 hour
 
 + Data Format Complexity:
@@ -132,7 +147,7 @@ Total: Sum all components
 
 ### Module 6: Loading Time Estimate
 
-```
+```text
 Base Time: 30 minutes
 
 + Data Volume:
@@ -158,18 +173,21 @@ Total: Sum all components
 ### Data Format Complexity
 
 **Simple (1 point)**:
+
 - Single CSV file
 - Flat JSON (one object per record)
 - Single database table
 - Well-documented structure
 
 **Medium (2 points)**:
+
 - Multiple related tables
 - XML with moderate nesting
 - REST API with pagination
 - Some documentation gaps
 
 **Complex (3 points)**:
+
 - Deeply nested JSON/XML
 - Multiple APIs to combine
 - Real-time streaming data
@@ -179,18 +197,21 @@ Total: Sum all components
 ### Data Quality Issues
 
 **Good (1 point)**:
+
 - < 5% null values in key fields
 - Consistent formats
 - Valid data types
 - Few duplicates within source
 
 **Fair (2 points)**:
+
 - 5-20% null values
 - Some format inconsistencies
 - Occasional invalid data
 - Moderate duplicates
 
 **Poor (3 points)**:
+>
 - > 20% null values
 - Highly inconsistent formats
 - Many invalid values
@@ -200,18 +221,21 @@ Total: Sum all components
 ### Field Mapping Complexity
 
 **Direct (1 point)**:
+
 - Fields already named like SGES
 - One source field → one SGES attribute
 - No parsing or transformation needed
 - Example: "full_name" → NAME_FULL
 
 **Moderate (2 points)**:
+
 - Combine multiple fields
 - Some parsing needed
 - Conditional logic
 - Example: "first_name" + "last_name" → NAME_FULL
 
 **Complex (3 points)**:
+
 - Extensive parsing (addresses, names)
 - Lookups or enrichment needed
 - Complex conditional logic
@@ -223,6 +247,7 @@ Total: Sum all components
 Add extra time for these risk factors:
 
 ### High Risk (+1-2 hours each)
+
 - 🔴 No sample data available
 - 🔴 Data owner unavailable for questions
 - 🔴 Tight deadline pressure
@@ -231,6 +256,7 @@ Add extra time for these risk factors:
 - 🔴 First time using Senzing
 
 ### Medium Risk (+0.5-1 hour each)
+
 - ⚠️ Limited sample data (< 100 records)
 - ⚠️ Unclear business requirements
 - ⚠️ Multiple stakeholders
@@ -282,6 +308,7 @@ Add extra time for these risk factors:
 ## Example Assessments
 
 ### Example 1: Simple Customer CSV
+
 - Format: CSV (1 point)
 - Volume: 5,000 records (1 point)
 - Quality: Clean (1 point)
@@ -292,6 +319,7 @@ Add extra time for these risk factors:
 **Estimate: 1-2 hours**
 
 ### Example 2: CRM Database
+
 - Format: Multiple tables (2 points)
 - Volume: 50,000 records (2 points)
 - Quality: Fair (2 points)
@@ -302,6 +330,7 @@ Add extra time for these risk factors:
 **Estimate: 2-4 hours**
 
 ### Example 3: Legacy System API
+
 - Format: Complex API (3 points)
 - Volume: 200,000 records (3 points)
 - Quality: Poor (3 points)
@@ -314,6 +343,7 @@ Add extra time for these risk factors:
 ## When to Load This Guide
 
 Load this steering file when:
+
 - Starting Module 1 (planning)
 - User asks "how long will this take?"
 - Evaluating multiple data sources

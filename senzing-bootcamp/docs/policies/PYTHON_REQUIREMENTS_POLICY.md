@@ -7,6 +7,7 @@ When generating Python source code for the Senzing Boot Camp, a `requirements.tx
 ## Purpose
 
 The `requirements.txt` file:
+
 - Documents all Python package dependencies
 - Enables reproducible environments
 - Simplifies installation for other users
@@ -25,7 +26,7 @@ Create or update `requirements.txt` when generating Python code in:
 
 ## File Location
 
-```
+```text
 project/
 ├── requirements.txt        # ← Always in project root
 ├── src/
@@ -45,7 +46,7 @@ project/
 
 Typical dependencies for Senzing projects:
 
-```txt
+```text
 # Senzing SDK
 senzing>=4.0.0
 
@@ -61,7 +62,7 @@ psycopg2-binary>=2.9.0  # PostgreSQL
 
 Additional dependencies for data transformation:
 
-```txt
+```text
 # CSV/JSON processing
 pandas>=2.0.0
 orjson>=3.9.0
@@ -77,7 +78,7 @@ python-dateutil>=2.8.0
 
 If integrating with APIs:
 
-```txt
+```text
 # HTTP requests
 requests>=2.31.0
 
@@ -118,7 +119,7 @@ When generating Python code, the agent should:
 
 ### Minimal Senzing Project
 
-```txt
+```text
 # Senzing SDK
 senzing>=4.0.0
 
@@ -129,7 +130,7 @@ orjson>=3.9.0
 
 ### Full Boot Camp Project
 
-```txt
+```text
 # Senzing SDK
 senzing>=4.0.0
 
@@ -152,7 +153,7 @@ pytest-cov>=4.1.0
 
 ### Module 0 Quick Demo
 
-```txt
+```text
 # Senzing SDK
 senzing>=4.0.0
 
@@ -204,8 +205,10 @@ When adding new Python code that uses additional packages:
 ## Version Pinning Strategy
 
 ### Development/Evaluation
+
 Use minimum version constraints:
-```txt
+
+```text
 senzing>=4.0.0
 pandas>=2.0.0
 ```
@@ -213,8 +216,10 @@ pandas>=2.0.0
 **Benefits**: Get latest compatible versions, easier updates
 
 ### Production
+
 Pin exact versions:
-```txt
+
+```text
 senzing==4.0.0
 pandas==2.0.3
 ```
@@ -224,36 +229,44 @@ pandas==2.0.3
 ## Common Issues
 
 ### Issue: Missing Dependency
+
 **Symptom**: `ModuleNotFoundError: No module named 'senzing'`
 **Solution**: Add missing package to `requirements.txt` and run `pip install -r requirements.txt`
 
 ### Issue: Version Conflict
+
 **Symptom**: `ERROR: Cannot install package-a and package-b because these package versions have conflicting dependencies`
 **Solution**: Adjust version constraints or pin specific compatible versions
 
 ### Issue: requirements.txt Not Found
+
 **Symptom**: `ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirements.txt'`
 **Solution**: Ensure you're in the project root directory where `requirements.txt` is located
 
 ## Integration with Other Modules
 
 ### Module 0: Quick Demo
+
 - Create `requirements.txt` with minimal dependencies
 - Include Senzing SDK and JSON processing
 
 ### Module 4: Data Mapping
+
 - Update `requirements.txt` with data processing libraries
 - Add pandas, orjson, jsonschema as needed
 
 ### Module 5: SDK Setup
+
 - Verify Senzing SDK version in `requirements.txt` matches installed version
 - Update if needed
 
 ### Module 6: Load Records
+
 - Update `requirements.txt` with database drivers if needed
 - Add psycopg2-binary for PostgreSQL
 
 ### Module 7: Query Results
+
 - Update `requirements.txt` with any additional libraries for result formatting
 - Add requests if building API integration
 
@@ -262,16 +275,19 @@ pandas==2.0.3
 When creating `requirements.txt`, also document in:
 
 1. **README.md**: Add installation instructions
+
    ```markdown
    ## Installation
-   
+
    Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
+
    ```
 
 2. **docs/environment_setup.md**: Document dependency rationale
+
    - Why each dependency is needed
    - Version constraints explained
    - Alternative packages considered
@@ -286,7 +302,8 @@ git commit -m "Add/update Python dependencies"
 ```
 
 Include in `.gitignore`:
-```
+
+```text
 # Virtual environments
 venv/
 env/

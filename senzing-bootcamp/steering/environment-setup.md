@@ -119,7 +119,7 @@ services:
       - ./config:/config
     environment:
       - SENZING_ENGINE_CONFIGURATION_JSON=${SENZING_ENGINE_CONFIG_JSON}
-  
+
   postgres:
     image: postgres:14
     environment:
@@ -138,6 +138,7 @@ volumes:
 ## When to Load This Guide
 
 Load this steering file when:
+
 - Starting Module 1 (initial project setup)
 - User asks about version control setup
 - User needs help with environment configuration
@@ -146,6 +147,7 @@ Load this steering file when:
 ## Important Note on Source Code Location
 
 All generated source code, including utility scripts like backup and rollback scripts, must be placed in the `src/` directory structure:
+
 - Transformation programs → `src/transform/`
 - Loading programs → `src/load/`
 - Query programs → `src/query/`

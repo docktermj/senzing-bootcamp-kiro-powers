@@ -32,14 +32,17 @@ By the end of this module, you will:
 
 Senzing provides several query operations:
 
-**1. Get Entity by Record ID**
+#### 1. Get Entity by Record ID
+
 ```python
 # Find the entity that contains a specific record
 entity = engine.getEntityByRecordID(DATA_SOURCE, RECORD_ID)
 ```
+
 Use when: You have a specific record and want to see its resolved entity
 
-**2. Search by Attributes**
+#### 2. Search by Attributes
+
 ```python
 # Search for entities matching attributes
 search_json = json.dumps({
@@ -48,27 +51,34 @@ search_json = json.dumps({
 })
 results = engine.searchByAttributes(search_json)
 ```
+
 Use when: You want to find entities matching certain criteria
 
-**3. Get Entity by Entity ID**
+#### 3. Get Entity by Entity ID
+
 ```python
 # Get a specific entity by its ID
 entity = engine.getEntityByEntityID(entity_id)
 ```
+
 Use when: You know the entity ID and want full details
 
-**4. Why Entities**
+#### 4. Why Entities
+
 ```python
 # Understand why two records resolved together
 why = engine.whyEntities(entity_id_1, entity_id_2)
 ```
+
 Use when: You want to understand matching logic
 
-**5. How Entity**
+#### 5. How Entity
+
 ```python
 # See how an entity was built from records
 how = engine.howEntityByEntityID(entity_id)
 ```
+
 Use when: You want to see the resolution steps
 
 ## Workflow
@@ -99,7 +109,7 @@ Based on Module 1 business problem, identify what queries you need:
 
 Generate a query program using the Senzing MCP server:
 
-```
+```text
 Use: generate_scaffold
 Parameters:
   language: python (or java, csharp, rust)
@@ -108,6 +118,7 @@ Parameters:
 ```
 
 The scaffold will include:
+
 - SDK initialization
 - Query operations
 - Result formatting
@@ -129,75 +140,75 @@ from senzing import SzEngine, SzEngineFlags
 
 def find_customer(name, email):
     """Find customer entity by name and email"""
-    
+
     # Initialize engine
     engine = SzEngine()
     engine.initialize(instance_name='senzing-bootcamp', settings=ENGINE_CONFIG)
-    
+
     # Build search attributes
     search_attrs = {
         "NAME_FULL": name,
         "EMAIL_ADDRESS": email
     }
-    
+
     # Search for matching entities
     results = engine.searchByAttributes(
         json.dumps(search_attrs),
         flags=SzEngineFlags.SZ_SEARCH_INCLUDE_RESOLVED
     )
-    
+
     results_data = json.loads(results)
-    
+
     if not results_data.get('RESOLVED_ENTITIES'):
         print(f"No customer found for {name} / {email}")
         return None
-    
+
     # Get first match (highest confidence)
     entity_id = results_data['RESOLVED_ENTITIES'][0]['ENTITY']['RESOLVED_ENTITY']['ENTITY_ID']
-    
+
     # Get full entity details
     entity = engine.getEntityByEntityID(
         entity_id,
         flags=SzEngineFlags.SZ_ENTITY_INCLUDE_ALL_FEATURES
     )
-    
+
     entity_data = json.loads(entity)
-    
+
     # Format output
     print(f"\n{'='*60}")
     print(f"CUSTOMER PROFILE - Entity ID: {entity_id}")
     print(f"{'='*60}")
-    
+
     # Names
     print(f"\nNames:")
     for name_record in entity_data['RESOLVED_ENTITY'].get('NAME', []):
         print(f"  - {name_record['NAME_FULL']}")
-    
+
     # Addresses
     print(f"\nAddresses:")
     for addr in entity_data['RESOLVED_ENTITY'].get('ADDRESS', []):
         print(f"  - {addr['ADDR_FULL']}")
-    
+
     # Phones
     print(f"\nPhones:")
     for phone in entity_data['RESOLVED_ENTITY'].get('PHONE', []):
         print(f"  - {phone['PHONE_NUMBER']}")
-    
+
     # Emails
     print(f"\nEmails:")
     for email_rec in entity_data['RESOLVED_ENTITY'].get('EMAIL', []):
         print(f"  - {email_rec['EMAIL_ADDRESS']}")
-    
+
     # Data sources
     print(f"\nData Sources:")
     for record in entity_data['RESOLVED_ENTITY'].get('RECORDS', []):
         print(f"  - {record['DATA_SOURCE']}: {record['RECORD_ID']}")
-    
+
     print(f"\n{'='*60}\n")
-    
+
     # Cleanup
     engine.destroy()
-    
+
     return entity_data
 
 if __name__ == '__main__':
@@ -214,6 +225,7 @@ python3 src/query/customer_360.py
 ```
 
 Verify:
+
 - Query returns expected results
 - Output format is useful
 - Performance is acceptable (< 100ms per query)
@@ -239,7 +251,7 @@ test_cases:
     priority: High
     tester: jane.doe@company.com
     status: PENDING
-  
+
   - id: UAT-002
     scenario: Different People Same Name
     description: Verify different people with same name stay separate
@@ -275,14 +287,14 @@ from datetime import datetime
 
 def execute_uat_test(test_case):
     """Execute a single UAT test case"""
-    
+
     print(f"\nExecuting {test_case['id']}: {test_case['scenario']}")
-    
+
     # TODO: Implement test execution logic
     # 1. Query for test data
     # 2. Verify results match expected
     # 3. Return PASS/FAIL
-    
+
     result = {
         'test_id': test_case['id'],
         'scenario': test_case['scenario'],
@@ -292,32 +304,32 @@ def execute_uat_test(test_case):
         'tester': test_case['tester'],
         'tested_date': datetime.now().isoformat()
     }
-    
+
     return result
 
 def run_all_uat_tests():
     """Run all UAT test cases"""
-    
+
     # Load test cases
     with open('docs/uat_test_cases.yaml') as f:
         data = yaml.safe_load(f)
-    
+
     results = []
     for test_case in data['test_cases']:
         result = execute_uat_test(test_case)
         results.append(result)
-    
+
     # Generate report
     generate_uat_report(results)
 
 def generate_uat_report(results):
     """Generate UAT results report"""
-    
+
     passed = sum(1 for r in results if r['status'] == 'PASS')
     failed = sum(1 for r in results if r['status'] == 'FAIL')
     pending = sum(1 for r in results if r['status'] == 'PENDING')
     total = len(results)
-    
+
     report = []
     report.append("# UAT Results Report\n\n")
     report.append("## Summary\n\n")
@@ -325,18 +337,18 @@ def generate_uat_report(results):
     report.append(f"- **Passed:** {passed} ({passed/total*100:.1f}%)\n")
     report.append(f"- **Failed:** {failed} ({failed/total*100:.1f}%)\n")
     report.append(f"- **Pending:** {pending} ({pending/total*100:.1f}%)\n\n")
-    
+
     if failed == 0 and pending == 0:
         report.append("✅ **All tests passed! Ready for production.**\n\n")
     elif failed > 0:
         report.append("❌ **Some tests failed. Issues must be resolved.**\n\n")
     else:
         report.append("⏳ **Testing in progress.**\n\n")
-    
+
     # Write report
     with open('docs/uat_results.md', 'w') as f:
         f.writelines(report)
-    
+
     print(f"\n✅ UAT report generated: docs/uat_results.md")
 
 if __name__ == '__main__':
@@ -413,6 +425,7 @@ UAT validates that the solution meets business requirements. See `steering/uat-f
 ### When to Load UAT Framework
 
 Load `steering/uat-framework.md` when:
+
 - Starting Module 8
 - User asks about UAT or testing
 - Preparing for production deployment
@@ -427,16 +440,16 @@ Load `steering/uat-framework.md` when:
 ```python
 def find_duplicates_for_record(data_source, record_id):
     """Find all records that resolved with this record"""
-    
+
     entity = engine.getEntityByRecordID(data_source, record_id)
     entity_data = json.loads(entity)
-    
+
     records = entity_data['RESOLVED_ENTITY']['RECORDS']
-    
+
     print(f"\nEntity ID: {entity_data['RESOLVED_ENTITY']['ENTITY_ID']}")
     print(f"Total Records: {len(records)}")
     print(f"\nRecords:")
-    
+
     for record in records:
         print(f"  - {record['DATA_SOURCE']}: {record['RECORD_ID']}")
 ```
@@ -446,15 +459,15 @@ def find_duplicates_for_record(data_source, record_id):
 ```python
 def search_customer(name, phone):
     """Search for customer by name and phone"""
-    
+
     search_attrs = {
         "NAME_FULL": name,
         "PHONE_NUMBER": phone
     }
-    
+
     results = engine.searchByAttributes(json.dumps(search_attrs))
     results_data = json.loads(results)
-    
+
     for entity in results_data.get('RESOLVED_ENTITIES', []):
         entity_id = entity['ENTITY']['RESOLVED_ENTITY']['ENTITY_ID']
         match_score = entity['MATCH_INFO']['MATCH_SCORE']
@@ -466,12 +479,12 @@ def search_customer(name, phone):
 ```python
 def explain_why_matched(entity_id_1, entity_id_2):
     """Explain why two entities matched"""
-    
+
     why = engine.whyEntities(entity_id_1, entity_id_2)
     why_data = json.loads(why)
-    
+
     print(f"\nWhy Entities {entity_id_1} and {entity_id_2} Matched:")
-    
+
     for match in why_data['WHY_RESULTS'][0]['MATCH_INFO']['WHY_RESULT']:
         print(f"  - {match['WHY_KEY']}: {match['WHY_RESULT']}")
 ```
@@ -502,31 +515,39 @@ Module 8 is complete when:
 ## Common Issues
 
 ### Issue: Query Returns No Results
-**Symptoms:** Search returns empty results  
+
+**Symptoms:** Search returns empty results
 **Solutions:**
+
 - Verify data was loaded successfully
 - Check search attributes match loaded data
 - Try broader search criteria
 - Verify data source names are correct
 
 ### Issue: Too Many Results
-**Symptoms:** Search returns hundreds of matches  
+
+**Symptoms:** Search returns hundreds of matches
 **Solutions:**
+
 - Add more specific search criteria
 - Increase match threshold
 - Use more distinguishing features
 
 ### Issue: Unexpected Matches
-**Symptoms:** Records match that shouldn't  
+
+**Symptoms:** Records match that shouldn't
 **Solutions:**
+
 - Use `whyEntities` to understand matching logic
 - Review data quality from Module 3
 - Check for missing or incorrect data
 - Adjust matching configuration if needed
 
 ### Issue: UAT Tests Fail
-**Symptoms:** Results don't meet expectations  
+
+**Symptoms:** Results don't meet expectations
 **Solutions:**
+
 - Analyze root cause (data quality, configuration, expectations)
 - Review transformation logic from Module 4
 - Check data quality scores from Module 3
@@ -542,7 +563,7 @@ Module 8 is complete when:
 
 ## File Locations
 
-```
+```text
 project/
 ├── src/
 │   └── query/
@@ -592,4 +613,3 @@ When a user is in Module 8:
 ## Version History
 
 - **v3.0.0** (2026-03-17): Module 8 refocused on query and validation with UAT framework enhancement
-

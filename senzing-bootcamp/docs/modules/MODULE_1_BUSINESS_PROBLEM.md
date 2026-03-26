@@ -4,13 +4,14 @@
 
 Module 1 helps you define your entity resolution problem, identify data sources, and create a clear project plan. This foundation ensures the rest of the boot camp is tailored to your specific needs.
 
-**Time:** 20-30 minutes  
-**Prerequisites:** None (or Module 0 complete if you did the demo)  
+**Time:** 20-30 minutes
+**Prerequisites:** None (or Module 0 complete if you did the demo)
 **Output:** Business problem statement document, project directory structure, cost estimate
 
 ## Learning Objectives
 
 By the end of this module, you will:
+
 - Clearly articulate your entity resolution problem
 - Identify all relevant data sources
 - Define success criteria
@@ -31,18 +32,18 @@ By the end of this module, you will:
 
 Choose a pattern that matches your use case:
 
-| Pattern | Use Case | Key Matching |
-|---------|----------|--------------|
-| **Customer 360** | Unified customer view | Names, emails, phones, addresses |
-| **Fraud Detection** | Identify fraud rings | Names, addresses, devices, IPs |
-| **Data Migration** | Merge legacy systems | All available identifiers |
-| **Compliance Screening** | Watchlist matching | Names, DOB, nationalities, IDs |
-| **Marketing Dedup** | Eliminate duplicates | Names, addresses, emails |
-| **Patient Matching** | Unified medical records | Names, DOB, SSN, MRNs |
-| **Vendor MDM** | Clean vendor master | Company names, tax IDs, addresses |
-| **Claims Fraud** | Detect staged accidents | Names, vehicles, providers |
-| **KYC/Onboarding** | Verify identity | Names, DOB, SSN, gov IDs |
-| **Supply Chain** | Unified supplier view | Company names, GLNs, tax IDs |
+| Pattern                  | Use Case                | Key Matching                      |
+|--------------------------|-------------------------|-----------------------------------|
+| **Customer 360**         | Unified customer view   | Names, emails, phones, addresses  |
+| **Fraud Detection**      | Identify fraud rings    | Names, addresses, devices, IPs    |
+| **Data Migration**       | Merge legacy systems    | All available identifiers         |
+| **Compliance Screening** | Watchlist matching      | Names, DOB, nationalities, IDs    |
+| **Marketing Dedup**      | Eliminate duplicates    | Names, addresses, emails          |
+| **Patient Matching**     | Unified medical records | Names, DOB, SSN, MRNs             |
+| **Vendor MDM**           | Clean vendor master     | Company names, tax IDs, addresses |
+| **Claims Fraud**         | Detect staged accidents | Names, vehicles, providers        |
+| **KYC/Onboarding**       | Verify identity         | Names, DOB, SSN, gov IDs          |
+| **Supply Chain**         | Unified supplier view   | Company names, GLNs, tax IDs      |
 
 Selecting a pattern helps pre-fill answers and set realistic expectations.
 
@@ -51,7 +52,9 @@ Selecting a pattern helps pre-fill answers and set realistic expectations.
 The agent will ask these questions ONE AT A TIME:
 
 ### Question 1: What problem are you trying to solve?
+
 Examples:
+
 - Deduplication (remove duplicate records)
 - Data matching (link records across systems)
 - Identity verification (confirm person/organization identity)
@@ -60,7 +63,9 @@ Examples:
 - Master data management (create golden records)
 
 ### Question 2: What data sources are involved?
+
 For each source, identify:
+
 - Name (e.g., "Customer CRM", "Vendor Database")
 - Type (database, CSV, API, Excel, etc.)
 - Approximate record count
@@ -75,7 +80,9 @@ For each source, identify:
 - Other (vehicles, products, locations)
 
 ### Question 4: What matching criteria matter most?
+
 Examples:
+
 - Names (person names, company names)
 - Addresses (physical, mailing)
 - Contact info (phone, email)
@@ -84,7 +91,9 @@ Examples:
 - Other attributes (specific to your domain)
 
 ### Question 5: What's the desired outcome?
+
 Consider:
+
 - Output format (master list, API, reports, database export)
 - Use case (one-time cleanup, ongoing sync, real-time lookup)
 - Integration needs (standalone or integrated with other systems)
@@ -136,6 +145,7 @@ git rev-parse --git-dir 2>/dev/null
 If not, you'll be asked: "Would you like to initialize this as a git repository?"
 
 Benefits of using git:
+
 - Track changes throughout the boot camp
 - Revert mistakes easily
 - Collaborate with team members
@@ -148,8 +158,8 @@ The agent will create `docs/business_problem.md`:
 ```markdown
 # Business Problem Statement
 
-**Date:** [Current date]  
-**Project:** [Project name]  
+**Date:** [Current date]
+**Project:** [Project name]
 **Design Pattern:** [Pattern name if selected, or "Custom"]
 
 ## Problem Description
@@ -181,12 +191,12 @@ The agent will create `docs/business_problem.md`:
 - [Measurable outcome 2]
 
 ## Desired Output
-**Format:** [Master list / API / Reports / Database export]  
-**Use case:** [One-time / Ongoing / Real-time]  
+**Format:** [Master list / API / Reports / Database export]
+**Use case:** [One-time / Ongoing / Real-time]
 **Integration:** [Standalone / Integrated with [systems]]
 
 ## Timeline
-**Target completion:** [Date]  
+**Target completion:** [Date]
 **Key milestones:** [List]
 
 ## Notes
@@ -211,7 +221,9 @@ The agent will help estimate:
 - Monitoring ($50-500/month)
 
 ### ROI Calculation
+
 Identify benefits:
+
 - Cost savings (reduced duplicates, improved efficiency)
 - Revenue opportunities (better targeting, faster onboarding)
 - Risk reduction (fraud prevention, compliance)
@@ -221,6 +233,7 @@ The agent will create `docs/cost_estimate.md` with detailed calculations.
 ## README Update
 
 The agent will update your project README with:
+
 - Project overview
 - Business problem summary
 - Data sources list
@@ -228,32 +241,36 @@ The agent will update your project README with:
 
 ## Success Criteria
 
-✅ Project directory structure created  
-✅ Version control initialized (if desired)  
-✅ Business problem clearly defined  
-✅ All data sources identified  
-✅ Success criteria documented  
-✅ Cost estimate completed  
-✅ `docs/business_problem.md` created  
-✅ README.md updated  
+✅ Project directory structure created
+✅ Version control initialized (if desired)
+✅ Business problem clearly defined
+✅ All data sources identified
+✅ Success criteria documented
+✅ Cost estimate completed
+✅ `docs/business_problem.md` created
+✅ README.md updated
 ✅ User confirms accuracy
 
 ## Common Pitfalls
 
 ### Too Vague
-❌ "I want to clean my data"  
+
+❌ "I want to clean my data"
 ✅ "I want to deduplicate customer records across CRM and e-commerce systems"
 
 ### Missing Data Sources
-❌ "I have customer data"  
+
+❌ "I have customer data"
 ✅ "I have CRM (500K records), e-commerce (300K), and support tickets (200K)"
 
 ### Unclear Success Criteria
-❌ "Better data quality"  
+
+❌ "Better data quality"
 ✅ "Reduce duplicate mailings by 80%, saving $50K/year"
 
 ### Unrealistic Timeline
-❌ "Complete in 2 hours"  
+
+❌ "Complete in 2 hours"
 ✅ "Complete Modules 1-6 in 8-10 hours over 2 weeks"
 
 ## Tips for Success
@@ -282,19 +299,23 @@ After completing Module 1:
 ## Troubleshooting
 
 **Not sure which pattern to choose?**
+
 - Describe your use case to the agent
 - Review the pattern gallery
 - It's OK to choose "Custom" if none fit exactly
 
 **Don't know record counts?**
+
 - Provide rough estimates (order of magnitude)
 - You can refine later in Module 2
 
 **Multiple use cases?**
+
 - Start with the most important one
 - You can expand scope later
 
 **Stakeholder approval needed?**
+
 - Use the cost estimate document
 - Show ROI calculations
 - Reference similar use cases from pattern gallery

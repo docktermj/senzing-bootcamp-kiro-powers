@@ -95,7 +95,7 @@ case $REPLY in
         echo "  Installed: $INSTALLED hooks"
         echo "  Skipped: $SKIPPED hooks (already installed)"
         ;;
-    
+
     [Bb])
         echo -e "${CYAN}Installing essential hooks...${NC}"
         echo ""
@@ -116,7 +116,7 @@ case $REPLY in
         echo -e "${GREEN}Installation complete!${NC}"
         echo "  Installed: $INSTALLED essential hooks"
         ;;
-    
+
     [Cc])
         echo -e "${CYAN}Select hooks to install:${NC}"
         echo ""
@@ -140,12 +140,12 @@ case $REPLY in
         echo ""
         echo -e "${GREEN}Installation complete!${NC}"
         ;;
-    
+
     [Qq])
         echo "Installation cancelled."
         exit 0
         ;;
-    
+
     *)
         echo "Invalid option. Installation cancelled."
         exit 1

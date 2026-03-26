@@ -5,11 +5,13 @@ This directory contains detailed documentation for each boot camp module.
 ## Available Modules
 
 ### Module 2: Data Collection
+
 **File**: [MODULE_2_DATA_COLLECTION.md](MODULE_2_DATA_COLLECTION.md)
 
 **Purpose**: Collect data from identified sources and store in project structure
 
 **Key Topics**:
+
 - Data source collection strategies
 - File organization in `data/raw/`
 - Data lineage tracking
@@ -21,11 +23,13 @@ This directory contains detailed documentation for each boot camp module.
 ---
 
 ### Module 3: Data Quality Scoring
+
 **File**: [MODULE_3_DATA_QUALITY_SCORING.md](MODULE_3_DATA_QUALITY_SCORING.md)
 
 **Purpose**: Automated quality assessment before mapping
 
 **Key Topics**:
+
 - Completeness scoring (0-100)
 - Consistency analysis
 - Validity checks
@@ -38,11 +42,13 @@ This directory contains detailed documentation for each boot camp module.
 ---
 
 ### Module 6: Single Source Loading
+
 **File**: [MODULE_6_SINGLE_SOURCE_LOADING.md](MODULE_6_SINGLE_SOURCE_LOADING.md)
 
 **Purpose**: Load one data source and verify results
 
 **Key Topics**:
+
 - Loading program creation
 - Incremental loading patterns
 - Delta/CDC strategies
@@ -55,11 +61,13 @@ This directory contains detailed documentation for each boot camp module.
 ---
 
 ### Module 7: Multi-Source Orchestration
+
 **File**: [MODULE_7_MULTI_SOURCE_ORCHESTRATION.md](MODULE_7_MULTI_SOURCE_ORCHESTRATION.md)
 
 **Purpose**: Orchestrate loading of multiple data sources with dependencies
 
 **Key Topics**:
+
 - Dependency management
 - Load order optimization
 - Parallel vs sequential loading
@@ -72,11 +80,13 @@ This directory contains detailed documentation for each boot camp module.
 ---
 
 ### Module 8: Query and Validation
+
 **File**: [MODULE_8_QUERY_VALIDATION.md](MODULE_8_QUERY_VALIDATION.md)
 
 **Purpose**: Create query programs and conduct user acceptance testing
 
 **Key Topics**:
+
 - Query program development
 - UAT framework implementation
 - Test case creation
@@ -89,11 +99,13 @@ This directory contains detailed documentation for each boot camp module.
 ---
 
 ### Module 9: Performance Testing
+
 **File**: [MODULE_9_PERFORMANCE_TESTING.md](MODULE_9_PERFORMANCE_TESTING.md)
 
 **Purpose**: Benchmark and optimize for production performance
 
 **Key Topics**:
+
 - Transformation benchmarks
 - Loading performance testing
 - Query response time testing
@@ -107,11 +119,13 @@ This directory contains detailed documentation for each boot camp module.
 ---
 
 ### Module 10: Security Hardening
+
 **File**: [MODULE_10_SECURITY_HARDENING.md](MODULE_10_SECURITY_HARDENING.md)
 
 **Purpose**: Implement production-grade security measures
 
 **Key Topics**:
+
 - Secrets management (AWS, Azure, env vars)
 - API authentication (API keys, JWT)
 - Role-based access control (RBAC)
@@ -125,11 +139,13 @@ This directory contains detailed documentation for each boot camp module.
 ---
 
 ### Module 11: Monitoring and Observability
+
 **File**: [MODULE_11_MONITORING_OBSERVABILITY.md](MODULE_11_MONITORING_OBSERVABILITY.md)
 
 **Purpose**: Set up comprehensive monitoring for production operations
 
 **Key Topics**:
+
 - Monitoring stack selection (Prometheus/Grafana, ELK, Cloud, APM)
 - Metrics collection
 - Structured logging
@@ -144,11 +160,13 @@ This directory contains detailed documentation for each boot camp module.
 ---
 
 ### Module 12: Package and Deploy
+
 **File**: [MODULE_12_DEPLOYMENT_PACKAGING.md](MODULE_12_DEPLOYMENT_PACKAGING.md)
 
 **Purpose**: Package code and deploy to production
 
 **Key Topics**:
+
 - Code refactoring into production structure
 - Comprehensive test suite
 - Language-specific packaging (pip, Maven, NuGet, Cargo)
@@ -163,7 +181,7 @@ This directory contains detailed documentation for each boot camp module.
 
 ## Module Dependencies
 
-```
+```text
 Module 2 → Module 3 → Module 4 → Module 5 → Module 6
                                               ↓
                                          Module 7 (if multiple sources)
@@ -181,17 +199,17 @@ Module 2 → Module 3 → Module 4 → Module 5 → Module 6
 
 ## Quick Reference
 
-| Module | Time | Required For |
-|--------|------|--------------|
-| 2 | 10-15 min/source | All projects |
-| 3 | 15-20 min/source | All projects |
-| 6 | 30 min/source | All projects |
-| 7 | 1-2 hours | Multi-source projects |
-| 8 | 1-2 hours | All projects |
-| 9 | 1-2 hours | Production deployments |
-| 10 | 1-2 hours | Production deployments |
-| 11 | 1-2 hours | Production deployments |
-| 12 | 2-3 hours | Production deployments |
+| Module | Time             | Required For           |
+|--------|------------------|------------------------|
+| 2      | 10-15 min/source | All projects           |
+| 3      | 15-20 min/source | All projects           |
+| 6      | 30 min/source    | All projects           |
+| 7      | 1-2 hours        | Multi-source projects  |
+| 8      | 1-2 hours        | All projects           |
+| 9      | 1-2 hours        | Production deployments |
+| 10     | 1-2 hours        | Production deployments |
+| 11     | 1-2 hours        | Production deployments |
+| 12     | 2-3 hours        | Production deployments |
 
 ## Related Documentation
 

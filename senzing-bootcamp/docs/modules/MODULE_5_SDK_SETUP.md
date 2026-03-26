@@ -4,13 +4,14 @@
 
 Module 5 installs and configures the Senzing SDK, setting up the foundation for loading data and performing entity resolution. You'll choose a database, configure the engine, and verify everything works.
 
-**Time:** 30 minutes - 1 hour  
-**Prerequisites:** ✅ Module 4 complete (data mapped) OR all sources are SGES-compliant  
+**Time:** 30 minutes - 1 hour
+**Prerequisites:** ✅ Module 4 complete (data mapped) OR all sources are SGES-compliant
 **Output:** Installed SDK, configured database, verified installation
 
 ## Learning Objectives
 
 By the end of this module, you will:
+
 - Understand Senzing SDK components
 - Install Senzing on your platform
 - Configure a database (SQLite or PostgreSQL)
@@ -61,11 +62,13 @@ By the end of this module, you will:
 Before installing, check if Senzing is already installed:
 
 ### Python Check
+
 ```bash
 python -c "import senzing; print('Senzing version:', senzing.__version__)" 2>/dev/null
 ```
 
 ### System Check (Linux/macOS)
+
 ```bash
 # Check installation directory
 ls -la /opt/senzing 2>/dev/null
@@ -76,11 +79,13 @@ pip list | grep senzing
 ```
 
 ### Docker Check
+
 ```bash
 docker images | grep senzing
 ```
 
 If Senzing is found:
+
 - Verify version is V4.0
 - Skip to "Configure Database" section
 - If version is not V4.0, proceed with installation
@@ -112,13 +117,14 @@ If Senzing is found:
    - Sufficient to complete the entire boot camp
 
 4. **Install License**:
+
    ```bash
    # Place license in project directory
    cp /path/to/downloaded/g2.lic licenses/g2.lic
-   
+
    # Set proper permissions
    chmod 644 licenses/g2.lic
-   
+
    # Verify license file
    ls -la licenses/g2.lic
    ```
@@ -143,6 +149,7 @@ If Senzing is found:
 **Correct location**: `licenses/g2.lic` (project directory)
 
 **Senzing checks licenses in this order**:
+
 1. Project-specific: `licenses/g2.lic`
 2. Environment variable: `SENZING_LICENSE_PATH`
 3. System-wide: `/etc/opt/senzing/g2.lic`
@@ -188,13 +195,16 @@ product.destroy()
 Choose your installation platform:
 
 ### Option 1: Docker (Recommended for Quick Start)
+
 **Pros**:
+
 - No system installation required
 - Isolated environment
 - Easy cleanup
 - Cross-platform
 
 **Cons**:
+
 - Requires Docker installed
 - Slightly slower than native
 - Additional layer of complexity
@@ -202,12 +212,15 @@ Choose your installation platform:
 **Best for**: Evaluation, development, testing
 
 ### Option 2: Linux (Native)
+
 **Pros**:
+
 - Best performance
 - Direct system access
 - Production-ready
 
 **Cons**:
+
 - Requires system permissions
 - Platform-specific installation
 - More complex setup
@@ -215,22 +228,28 @@ Choose your installation platform:
 **Best for**: Production deployments, high-performance needs
 
 ### Option 3: macOS (Native)
+
 **Pros**:
+
 - Native performance
 - Good for development
 
 **Cons**:
+
 - Limited to development use
 - Not recommended for production
 
 **Best for**: Development on Mac
 
 ### Option 4: Windows (WSL2)
+
 **Pros**:
+
 - Works on Windows
 - Linux compatibility
 
 **Cons**:
+
 - Requires WSL2 setup
 - Performance overhead
 
@@ -268,7 +287,8 @@ The `senzing/senzingsdk-runtime` images (e.g., `senzing/senzingsdk-runtime:4.2.1
 
 For Docker deployments with PostgreSQL, use this approach:
 
-**Stage 1: Minimal SQL Schema**
+#### Stage 1: Minimal SQL Schema
+
 ```sql
 -- Create minimal schema with required tables
 -- CRITICAL: Use exact column names expected by SDK
@@ -282,9 +302,9 @@ CREATE TABLE sys_vars (
     PRIMARY KEY (var_group, var_code)
 );
 
-INSERT INTO sys_vars (var_group, var_code, var_value) 
+INSERT INTO sys_vars (var_group, var_code, var_value)
 VALUES ('SYSTEM', 'VERSION', '4.2.1');
-INSERT INTO sys_vars (var_group, var_code, var_value) 
+INSERT INTO sys_vars (var_group, var_code, var_value)
 VALUES ('SYSTEM', 'SCHEMA_VERSION', '4.0');
 
 -- Configuration table
@@ -307,11 +327,13 @@ CREATE TABLE sys_codes_used (
 ```
 
 **Common Schema Errors**:
+
 - Using `sys_create_date` instead of `sys_create_dt` in sys_cfg → SENZ1001 error
 - Missing `code_id` column in sys_codes_used → SENZ1001 error
 - Wrong sys_vars structure → SENZ7223 version error
 
-**Stage 2: SDK Initialization**
+#### Stage 2: SDK Initialization
+
 ```python
 # Use SDK to create remaining tables automatically
 from senzing import G2ConfigMgr, G2Engine
@@ -328,11 +350,13 @@ config_mgr.destroy()
 ### Container CMD Best Practice
 
 Keep containers running with:
+
 ```dockerfile
 CMD ["tail", "-f", "/dev/null"]
 ```
 
 Then use `docker exec` to run commands:
+
 ```bash
 # Run initialization script
 docker exec my-senzing-container python /app/initialize_db.py
@@ -342,6 +366,7 @@ docker exec my-senzing-container python /app/load_data.py
 ```
 
 This approach:
+
 - Keeps container alive for debugging
 - Allows multiple commands without restart
 - Provides better control over execution
@@ -349,6 +374,7 @@ This approach:
 ### Complete Docker Setup Example
 
 See `senzing-bootcamp/steering/docker-deployment.md` for complete examples including:
+
 - Full docker-compose.yml configuration
 - Two-stage initialization scripts
 - Container health checks
@@ -359,15 +385,18 @@ See `senzing-bootcamp/steering/docker-deployment.md` for complete examples inclu
 
 Common Docker deployment issues:
 
-**SENZ1019: Schema file not found**
+#### SENZ1019: Schema file not found
+
 - Cause: Runtime image doesn't include schema files
 - Solution: Use two-stage initialization pattern
 
-**SENZ7223: Database connection failed**
+#### SENZ7223: Database connection failed
+
 - Cause: Container networking or PostgreSQL not ready
 - Solution: Add health checks and connection retry logic
 
-**Container restarts immediately**
+#### Container restarts immediately
+
 - Cause: CMD exits immediately
 - Solution: Use `tail -f /dev/null` as CMD
 
@@ -430,22 +459,26 @@ python -c "import senzing; print(senzing.__version__)"
 ### Option 1: SQLite (Evaluation)
 
 **Pros**:
+
 - No setup required
 - File-based (portable)
 - Good for < 100K records
 
 **Cons**:
+
 - Limited performance (20-50 records/sec)
 - Not suitable for production
 - No concurrent writes
 
 **Setup**:
+
 ```bash
 # Create database directory
 mkdir -p database
 ```
 
 **Configuration**:
+
 ```json
 {
   "PIPELINE": {
@@ -462,17 +495,20 @@ mkdir -p database
 ### Option 2: PostgreSQL (Production)
 
 **Pros**:
+
 - High performance (100-1000+ records/sec)
 - Concurrent access
 - Production-ready
 - Scalable
 
 **Cons**:
+
 - Requires PostgreSQL installation
 - More complex setup
 - Additional cost
 
 **Installation**:
+
 ```bash
 # Install PostgreSQL
 sudo apt install postgresql postgresql-contrib
@@ -486,6 +522,7 @@ GRANT ALL PRIVILEGES ON DATABASE senzing TO senzing;
 ```
 
 **Configuration**:
+
 ```json
 {
   "PIPELINE": {
@@ -514,38 +551,38 @@ from senzing import G2Config, G2ConfigMgr, G2Engine
 
 def register_data_sources():
     """Register all data sources"""
-    
+
     # Initialize config
     config = G2Config()
     config.init("RegisterDataSources", "{}", False)
-    
+
     # Get current config
     config_handle = config.create()
-    
+
     # Register data sources
     data_sources = [
         "CUSTOMERS",
         "VENDORS",
         "EMPLOYEES"
     ]
-    
+
     for ds in data_sources:
         config.addDataSource(config_handle, json.dumps({
             "DSRC_CODE": ds
         }))
         print(f"Registered data source: {ds}")
-    
+
     # Save config
     config_str = config.save(config_handle)
-    
+
     # Apply config
     config_mgr = G2ConfigMgr()
     config_mgr.init("ConfigMgr", "{}", False)
     config_id = config_mgr.addConfig(config_str, "Initial config")
     config_mgr.setDefaultConfigID(config_id)
-    
+
     print(f"Configuration saved with ID: {config_id}")
-    
+
     # Cleanup
     config.close(config_handle)
     config.destroy()
@@ -570,18 +607,18 @@ from senzing import G2Engine, G2Product
 
 def verify_installation():
     """Test Senzing installation"""
-    
+
     print("="*60)
     print("SENZING INSTALLATION VERIFICATION")
     print("="*60)
-    
+
     # Check version
     product = G2Product()
     product.init("VerifyInstall", "{}", False)
     version = product.version()
     print(f"\n✅ Senzing version: {version}")
     product.destroy()
-    
+
     # Test engine initialization
     engine = G2Engine()
     config = {
@@ -594,42 +631,42 @@ def verify_installation():
             "CONNECTION": "sqlite3://na:na@database/G2C.db"
         }
     }
-    
+
     try:
         engine.init("VerifyInstall", json.dumps(config), False)
         print("✅ Engine initialized successfully")
-        
+
         # Test database connection
         stats = engine.stats()
         print("✅ Database connection successful")
         print(f"   Stats: {stats}")
-        
+
         # Test adding a record
         test_record = {
             "DATA_SOURCE": "TEST",
             "RECORD_ID": "TEST-001",
             "NAME_FULL": "Test Person"
         }
-        
+
         engine.addRecord("TEST", "TEST-001", json.dumps(test_record))
         print("✅ Test record added successfully")
-        
+
         # Test querying
         result = engine.getRecord("TEST", "TEST-001")
         print("✅ Test record retrieved successfully")
-        
+
         # Cleanup test record
         engine.deleteRecord("TEST", "TEST-001")
         print("✅ Test record deleted successfully")
-        
+
         engine.destroy()
-        
+
         print("\n" + "="*60)
         print("ALL TESTS PASSED ✅")
         print("="*60)
-        
+
         return True
-        
+
     except Exception as e:
         print(f"\n❌ Error: {e}")
         print("\n" + "="*60)
@@ -642,6 +679,7 @@ if __name__ == '__main__':
 ```
 
 Run the verification:
+
 ```bash
 python src/utils/verify_installation.py
 ```
@@ -675,8 +713,10 @@ Create `docs/sdk_configuration.md`:
 
 **Connection string**:
 ```
+
 postgresql://senzing:***@localhost:5432/senzing
-```
+
+```text
 
 ## Registered Data Sources
 
@@ -699,11 +739,13 @@ export SENZING_ENGINE_CONFIG_JSON='{"PIPELINE":{"CONFIGPATH":"/etc/opt/senzing"}
 ## Verification
 
 Installation verified on 2026-03-17:
+
 - ✅ Version check passed
 - ✅ Engine initialization passed
 - ✅ Database connection passed
 - ✅ Record operations passed
-```
+
+```text
 
 ## Environment Variables
 
@@ -748,31 +790,35 @@ SENZING_SUPPORT_PATH=/opt/senzing/data
 
 ## Success Criteria
 
-✅ Senzing license obtained and installed in `licenses/g2.lic`  
-✅ Senzing SDK installed (or existing installation verified)  
-✅ Database configured and tested  
-✅ Data sources registered  
-✅ Verification script passes all tests  
-✅ Configuration documented  
+✅ Senzing license obtained and installed in `licenses/g2.lic`
+✅ Senzing SDK installed (or existing installation verified)
+✅ Database configured and tested
+✅ Data sources registered
+✅ Verification script passes all tests
+✅ Configuration documented
 ✅ Environment variables set
 
 ## Common Issues
 
-**Issue: Permission denied during installation**
+### Issue: Permission denied during installation
+
 - Use `sudo` for system installation
 - Check user permissions
 
-**Issue: Database connection fails**
+### Issue: Database connection fails
+
 - Verify PostgreSQL is running
 - Check connection string
 - Verify user permissions
 
-**Issue: Import error in Python**
+### Issue: Import error in Python
+
 - Verify Python package installed: `pip list | grep senzing`
 - Check Python version (3.8+)
 - Verify PYTHONPATH if needed
 
-**Issue: Configuration not found**
+### Issue: Configuration not found
+
 - Check CONFIGPATH in engine config
 - Verify /etc/opt/senzing exists
 - Run senzing-setup if needed
@@ -788,6 +834,7 @@ SENZING_SUPPORT_PATH=/opt/senzing/data
 ## Next Steps
 
 After completing Module 5:
+
 - **Proceed to Module 6**: Load your first data source
 - **Review configuration**: Ensure all settings are correct
 

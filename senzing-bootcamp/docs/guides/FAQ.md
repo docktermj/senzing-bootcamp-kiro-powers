@@ -9,6 +9,7 @@ The Senzing Boot Camp is a comprehensive, guided learning experience for Senzing
 ### How long does the boot camp take?
 
 It depends on your path:
+
 - **Quick Demo** (Module 0): 10-15 minutes
 - **Fast Track** (Modules 5-6): 30 minutes
 - **Complete Beginner** (Modules 1-6, 8): 2-3 hours
@@ -21,6 +22,7 @@ No! The boot camp is designed for beginners. Start with Module 0 (Quick Demo) to
 ### Can I skip modules?
 
 Yes, experienced users can skip modules:
+
 - Have SGES-compliant data? Skip Module 4
 - Senzing already installed? Skip Module 5
 - Single data source only? Skip Module 7
@@ -44,6 +46,7 @@ Both connect to the same MCP server. Use bootcamp for learning, senzing for quic
 ### What are the prerequisites?
 
 Required:
+
 - Python 3.7+
 - pip
 - Git
@@ -51,6 +54,7 @@ Required:
 - zip/unzip
 
 Optional:
+
 - Docker (for containerized deployment)
 - PostgreSQL (for production databases)
 
@@ -89,6 +93,7 @@ Yes, you'll need a valid Senzing license.
 See `licenses/README.md` for complete licensing guide
 
 **Contact Senzing:**
+
 - Support: [support@senzing.com](mailto:support@senzing.com)
 - Sales: [sales@senzing.com](mailto:sales@senzing.com)
 - Website: [https://senzing.com/contact/](https://senzing.com/contact/)
@@ -107,6 +112,7 @@ See `docs/policies/FILE_STORAGE_POLICY.md` for complete details.
 ### How do I know which module I'm on?
 
 Run `./scripts/status.sh` to see:
+
 - Current module
 - Progress percentage
 - Completed modules
@@ -151,6 +157,7 @@ SGES (Senzing Generic Entity Specification) is the JSON format Senzing uses. The
 ### How do I validate my mapped data?
 
 Use these MCP tools:
+
 - `lint_record`: Validates format and structure
 - `analyze_record`: Provides quality metrics
 - `search_docs`: Look up attribute definitions
@@ -160,6 +167,7 @@ Use these MCP tools:
 ### Do I need to install Senzing locally?
 
 Not for Module 0 (Quick Demo). For Modules 5+, you have options:
+
 - Local installation (Linux, macOS, Windows)
 - Docker container
 - Cloud deployment
@@ -182,6 +190,7 @@ Yes! The boot camp supports Docker deployment. See Module 12 for containerizatio
 ### What programming languages are supported?
 
 The boot camp primarily uses Python, but Senzing SDK supports:
+
 - Python
 - Java
 - C#
@@ -193,6 +202,7 @@ Use `generate_scaffold` to create code in your preferred language.
 ### Do I need to write code?
 
 Minimal coding required! The boot camp uses MCP tools to generate code for you:
+
 - `mapping_workflow`: Generates transformation code
 - `generate_scaffold`: Generates loading and query code
 
@@ -201,6 +211,7 @@ You customize the generated code for your needs.
 ### What are the code quality standards?
 
 All Python code follows PEP-8 standards:
+
 - 100 character line limit
 - 4 spaces for indentation
 - Proper docstrings
@@ -227,6 +238,7 @@ Hooks are automated actions triggered by IDE events. They help maintain quality 
 ### Which hooks should I install?
 
 Recommended hooks:
+
 - **pep8-check**: Ensures code quality
 - **backup-before-load**: Reminds to backup
 - **data-quality-check**: Validates transformations
@@ -243,6 +255,7 @@ Edit the hook file in `.kiro/hooks/` and set `"enabled": false`, or delete the h
 ### How do I backup my project?
 
 Three ways:
+
 1. Say "backup my project" (if backup hook is installed)
 2. Run `./scripts/backup_project.sh`
 3. Use git for version control
@@ -250,6 +263,7 @@ Three ways:
 ### What gets backed up?
 
 Included:
+
 - Database files
 - Data files (raw, transformed)
 - Source code
@@ -257,6 +271,7 @@ Included:
 - License files
 
 Excluded:
+
 - Backups themselves
 - Git repository
 - Temporary files
@@ -269,6 +284,7 @@ Excluded:
 ```
 
 Or extract manually:
+
 ```bash
 unzip backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip -d ~/restore-location
 ```
@@ -276,6 +292,7 @@ unzip backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip -d ~/restore-location
 ### How often should I backup?
 
 Create backups:
+
 - Before starting a new module
 - After completing a module
 - Before major changes
@@ -287,6 +304,7 @@ Create backups:
 ### How fast is Senzing?
 
 Typical performance:
+
 - Transformation: 10K-100K records/second
 - Loading: 1K-10K records/second (depends on hardware)
 - Queries: Milliseconds per query
@@ -304,6 +322,7 @@ Module 9 helps you benchmark and optimize.
 ### How do I monitor performance?
 
 Module 11 covers monitoring:
+
 - Structured logging
 - Metrics collection
 - APM integration
@@ -343,10 +362,11 @@ Module 10 covers encryption setup.
 3. Check MCP configuration: `senzing-bootcamp/mcp.json`
 4. Restart Kiro
 
-### I'm getting error code SENZ####
+### I'm getting error code SENZnnnn
 
 Use the MCP tool:
-```
+
+```text
 explain_error_code("SENZ0005")
 ```
 
@@ -362,6 +382,7 @@ Or check `docs/guides/TROUBLESHOOTING_INDEX.md`.
 ### The agent created files in the wrong location
 
 Review `docs/policies/FILE_STORAGE_POLICY.md` and move files to correct locations:
+
 - Code → `src/`
 - Scripts → `scripts/`
 - Data → `data/`
@@ -372,6 +393,7 @@ Review `docs/policies/FILE_STORAGE_POLICY.md` and move files to correct location
 ### Can multiple people work on the same project?
 
 Yes! Use git for collaboration:
+
 1. Initialize git: `git init`
 2. Create `.gitignore` (agent does this automatically)
 3. Commit code and configuration
@@ -392,6 +414,7 @@ Or use git for code sharing.
 ### How do I deploy to production?
 
 Module 12 covers deployment:
+
 1. Package code
 2. Set up multi-environment configuration
 3. Implement CI/CD
@@ -441,6 +464,7 @@ Say "power feedback" or "bootcamp feedback" to the agent. It will guide you thro
 ### Can I customize the boot camp?
 
 Yes! The boot camp is flexible:
+
 - Skip modules you don't need
 - Customize generated code
 - Add your own templates
@@ -459,6 +483,7 @@ Absolutely! The boot camp is designed to take you from learning to production. M
 ### What happens after I complete the boot camp?
 
 You'll have:
+
 - Production-ready entity resolution system
 - Complete documentation
 - Monitoring and alerting
@@ -466,6 +491,7 @@ You'll have:
 - Skills to maintain and expand the system
 
 Continue learning:
+
 - Explore advanced Senzing features
 - Optimize performance
 - Add more data sources

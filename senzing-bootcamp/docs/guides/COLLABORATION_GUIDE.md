@@ -101,7 +101,7 @@ git push origin feature/module-4-customer-mapping
 
 ### Commit Message Guidelines
 
-```
+```text
 <type>: <subject>
 
 <body>
@@ -509,5 +509,5 @@ git push origin <branch-name>
 
 ---
 
-**Last Updated:** 2026-03-26  
+**Last Updated:** 2026-03-26
 **Version:** 1.0.0

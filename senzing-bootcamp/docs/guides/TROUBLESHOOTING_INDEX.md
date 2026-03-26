@@ -21,17 +21,21 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: `ModuleNotFoundError: No module named 'senzing'`
 
 **Solutions**:
+
 1. Check if Senzing is installed:
+
    ```bash
    pip list | grep senzing
    ```
 
 2. Install Senzing:
+
    ```bash
    pip install senzing
    ```
 
 3. Verify Python version (3.8+ required):
+
    ```bash
    python --version
    ```
@@ -45,12 +49,15 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: `Permission denied` when installing Senzing
 
 **Solutions**:
+
 1. Use `sudo` for system installation:
+
    ```bash
    sudo apt install senzingapi-runtime
    ```
 
 2. Or use virtual environment (no sudo needed):
+
    ```bash
    python -m venv venv
    source venv/bin/activate
@@ -66,12 +73,15 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Boot camp expects V4.0 but different version installed
 
 **Solutions**:
+
 1. Check installed version:
+
    ```bash
    python -c "import senzing; print(senzing.__version__)"
    ```
 
 2. Upgrade to V4.0:
+
    ```bash
    pip install --upgrade senzing
    ```
@@ -87,7 +97,9 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Data quality score < 60%, many missing fields
 
 **Solutions**:
+
 1. Identify missing fields:
+
    ```python
    df.isnull().sum()
    ```
@@ -107,7 +119,9 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Many duplicate records in source data
 
 **Solutions**:
+
 1. Deduplicate before transformation:
+
    ```python
    df.drop_duplicates(subset=['id'], keep='first')
    ```
@@ -125,11 +139,13 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Dates, phones, addresses in multiple formats
 
 **Solutions**:
+
 1. Standardize in transformation:
+
    ```python
    # Standardize phone numbers
    phone = re.sub(r'[^0-9]', '', phone)
-   
+
    # Standardize dates
    date = pd.to_datetime(date).strftime('%Y-%m-%d')
    ```
@@ -147,13 +163,16 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: `JSONDecodeError: Expecting value`
 
 **Solutions**:
+
 1. Check for empty lines:
+
    ```python
    if line.strip():  # Skip empty lines
        record = json.loads(line)
    ```
 
 2. Check for invalid JSON:
+
    ```python
    try:
        record = json.loads(line)
@@ -172,16 +191,19 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Records missing DATA_SOURCE or RECORD_ID
 
 **Solutions**:
+
 1. Ensure all records have required fields:
+
    ```python
    if not record.get('DATA_SOURCE'):
        record['DATA_SOURCE'] = 'YOUR_SOURCE'
-   
+
    if not record.get('RECORD_ID'):
        record['RECORD_ID'] = generate_id()
    ```
 
 2. Validate before writing:
+
    ```python
    def validate_record(record):
        required = ['DATA_SOURCE', 'RECORD_ID']
@@ -200,6 +222,7 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Senzing doesn't recognize attribute names
 
 **Solutions**:
+
 1. Use correct Senzing attribute names:
    - ✅ `PRIMARY_NAME_FIRST` not `FIRST_NAME`
    - ✅ `EMAIL_ADDRESS` not `EMAIL`
@@ -222,28 +245,35 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Solutions**:
 
 **For SQLite**:
+
 1. Check database directory exists:
+
    ```bash
    mkdir -p database
    ```
 
 2. Check file permissions:
+
    ```bash
    ls -la database/
    ```
 
 3. Verify connection string:
+
    ```json
    "CONNECTION": "sqlite3://na:na@database/G2C.db"
    ```
 
 **For PostgreSQL**:
+
 1. Check PostgreSQL is running:
+
    ```bash
    systemctl status postgresql
    ```
 
 2. Test connection:
+
    ```bash
    psql -h localhost -U senzing -d senzing
    ```
@@ -259,13 +289,16 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Loading < 100 records/second
 
 **Solutions**:
+
 1. Switch from SQLite to PostgreSQL
 2. Increase batch size:
+
    ```python
    BATCH_SIZE = 5000  # Increase from 1000
    ```
 
 3. Use multiprocessing:
+
    ```python
    from multiprocessing import Pool
    with Pool(4) as pool:
@@ -283,12 +316,15 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: `MemoryError` or system runs out of memory
 
 **Solutions**:
+
 1. Reduce batch size:
+
    ```python
    BATCH_SIZE = 100  # Reduce from 1000
    ```
 
 2. Process in chunks:
+
    ```python
    for chunk in pd.read_csv(file, chunksize=1000):
        process_chunk(chunk)
@@ -307,18 +343,20 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: `Data source 'XXX' not found`
 
 **Solutions**:
+
 1. Register data source:
+
    ```python
    from senzing import G2Config
-   
+
    config = G2Config()
    config.init("RegisterDS", "{}", False)
    handle = config.create()
-   
+
    config.addDataSource(handle, json.dumps({
        "DSRC_CODE": "YOUR_SOURCE"
    }))
-   
+
    config_str = config.save(handle)
    # Apply config...
    ```
@@ -336,17 +374,20 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Queries return empty results
 
 **Solutions**:
+
 1. Verify data was loaded:
+
    ```python
    stats = engine.stats()
    print(stats)  # Check record count
    ```
 
 2. Check search criteria:
+
    ```python
    # Too specific?
    search = {"NAME_FULL": "John Smith", "EMAIL": "john@email.com"}
-   
+
    # Try broader search
    search = {"NAME_FULL": "John Smith"}
    ```
@@ -362,6 +403,7 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Queries take > 1 second
 
 **Solutions**:
+
 1. Check database indexes (PostgreSQL)
 2. Optimize search criteria (fewer fields)
 3. Use entity ID instead of searching
@@ -377,10 +419,12 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Records matched that shouldn't be
 
 **Solutions**:
+
 1. Review match keys and thresholds
 2. Check data quality (garbage in = garbage out)
 3. Use `explain_error_code` MCP tool
 4. Review entity details:
+
    ```python
    entity = engine.getEntityByEntityID(entity_id)
    # Review why records matched
@@ -399,6 +443,7 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: CPU at 100% during loading
 
 **Solutions**:
+
 1. This is normal during loading
 2. Reduce parallel loaders if too high
 3. Check for infinite loops in transformation code
@@ -413,6 +458,7 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Memory usage growing continuously
 
 **Solutions**:
+
 1. Check for memory leaks in transformation code
 2. Reduce batch sizes
 3. Use streaming instead of loading all data
@@ -428,19 +474,22 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: `No space left on device`
 
 **Solutions**:
+
 1. Check disk usage:
+
    ```bash
    df -h
    ```
 
 2. Clean up:
+
    ```bash
    # Remove old backups
    rm data/backups/*.db.old
-   
+
    # Remove logs
    rm logs/*.log.old
-   
+
    # Clean transformed files after loading
    rm data/transformed/*.jsonl
    ```
@@ -458,7 +507,9 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: `FileNotFoundError: config/senzing_config.json`
 
 **Solutions**:
+
 1. Create config directory:
+
    ```bash
    mkdir -p config
    ```
@@ -476,7 +527,9 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: `Invalid configuration JSON`
 
 **Solutions**:
+
 1. Validate JSON syntax:
+
    ```bash
    python -m json.tool config/senzing_config.json
    ```
@@ -498,22 +551,26 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Variables like `$DB_PASSWORD` not resolved
 
 **Solutions**:
+
 1. Create .env file:
+
    ```bash
    cp .env.example .env
    # Edit .env with actual values
    ```
 
 2. Load environment variables:
+
    ```python
    from dotenv import load_dotenv
    load_dotenv()
-   
+
    import os
    password = os.getenv('DB_PASSWORD')
    ```
 
 3. Or export in shell:
+
    ```bash
    export DB_PASSWORD=your_password
    ```
@@ -529,10 +586,12 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: `database is locked`
 
 **Solutions**:
+
 1. Only one writer at a time for SQLite
 2. Close other connections
 3. Use PostgreSQL for concurrent access
 4. Check for zombie processes:
+
    ```bash
    ps aux | grep python
    ```
@@ -546,7 +605,9 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: `Connection refused` to PostgreSQL
 
 **Solutions**:
+
 1. Check PostgreSQL is running:
+
    ```bash
    systemctl status postgresql
    ```
@@ -566,8 +627,10 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Symptom**: Database errors, crashes, inconsistent results
 
 **Solutions**:
+
 1. Stop all operations
 2. Restore from backup:
+
    ```bash
    ./scripts/rollback.sh data/backups/G2C_20260317.db
    ```
@@ -589,11 +652,13 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Solutions**:
 
 1. **Check if sys_vars table exists**:
+
    ```bash
    docker-compose exec postgres psql -U senzing -d senzing -c "SELECT * FROM sys_vars;"
    ```
 
 2. **If table doesn't exist, initialize minimal schema**:
+
    ```sql
    CREATE TABLE sys_vars (
        var_group VARCHAR(50),
@@ -601,17 +666,19 @@ Quick reference for common issues and solutions across all boot camp modules.
        var_value TEXT,
        PRIMARY KEY (var_group, var_code)
    );
-   
+
    INSERT INTO sys_vars VALUES ('SYSTEM', 'VERSION', '4.2.1');
    INSERT INTO sys_vars VALUES ('SYSTEM', 'SCHEMA_VERSION', '4.0');
    ```
 
 3. **Run SDK initialization**:
+
    ```bash
    docker-compose exec senzing python src/setup/init_database.py
    ```
 
 4. **Verify sz_cfg_config table was created**:
+
    ```bash
    docker-compose exec postgres psql -U senzing -d senzing -c "\dt"
    ```
@@ -629,20 +696,23 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Solutions**:
 
 1. **Check current version**:
+
    ```sql
    SELECT * FROM sys_vars WHERE var_group = 'SYSTEM';
    ```
 
 2. **Update version for Senzing 4.2.1**:
+
    ```sql
-   UPDATE sys_vars SET var_value = '4.2.1' 
+   UPDATE sys_vars SET var_value = '4.2.1'
    WHERE var_group = 'SYSTEM' AND var_code = 'VERSION';
-   
-   UPDATE sys_vars SET var_value = '4.0' 
+
+   UPDATE sys_vars SET var_value = '4.0'
    WHERE var_group = 'SYSTEM' AND var_code = 'SCHEMA_VERSION';
    ```
 
 3. **Restart container**:
+
    ```bash
    docker-compose restart senzing
    ```
@@ -682,11 +752,13 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Solutions**:
 
 1. **Fix the column name**:
+
    ```sql
    ALTER TABLE sys_cfg RENAME COLUMN sys_create_date TO sys_create_dt;
    ```
 
 2. **Or recreate table with correct name**:
+
    ```sql
    DROP TABLE IF EXISTS sys_cfg;
    CREATE TABLE sys_cfg (
@@ -698,6 +770,7 @@ Quick reference for common issues and solutions across all boot camp modules.
    ```
 
 3. **Verify the fix**:
+
    ```bash
    docker-compose exec postgres psql -U senzing -d senzing -c "\d sys_cfg"
    ```
@@ -715,11 +788,13 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Solutions**:
 
 1. **Add missing column**:
+
    ```sql
    ALTER TABLE sys_codes_used ADD COLUMN code_id BIGSERIAL;
    ```
 
 2. **Or recreate table with correct structure**:
+
    ```sql
    DROP TABLE IF EXISTS sys_codes_used;
    CREATE TABLE sys_codes_used (
@@ -731,6 +806,7 @@ Quick reference for common issues and solutions across all boot camp modules.
    ```
 
 3. **Verify the fix**:
+
    ```bash
    docker-compose exec postgres psql -U senzing -d senzing -c "\d sys_codes_used"
    ```
@@ -746,6 +822,7 @@ Quick reference for common issues and solutions across all boot camp modules.
 **Cause**: SDK cannot read version from sys_vars table in Docker/PostgreSQL despite correct data
 
 **Verification**:
+
 ```bash
 # Verify version is in database
 docker-compose exec postgres psql -U senzing -d senzing \
@@ -756,6 +833,7 @@ docker-compose exec postgres psql -U senzing -d senzing \
 ```
 
 **What's Been Tried**:
+
 1. ✅ Fixed sys_cfg column name (sys_create_date → sys_create_dt)
 2. ✅ Fixed sys_codes_used missing code_id column
 3. ✅ Verified sys_vars table structure is correct
@@ -765,6 +843,7 @@ docker-compose exec postgres psql -U senzing -d senzing \
 7. ❌ SDK still reads empty version string
 
 **Workaround**:
+
 - Use SQLite for local development (works 100%)
 - Use direct PostgreSQL connection (not in Docker) which may work
 - Wait for fix to this known issue
@@ -784,16 +863,19 @@ docker-compose exec postgres psql -U senzing -d senzing \
 **Solutions**:
 
 1. **Change CMD to keep container running**:
+
    ```dockerfile
    CMD ["tail", "-f", "/dev/null"]
    ```
 
 2. **Use docker exec for commands**:
+
    ```bash
    docker exec senzing-app python src/query/run_queries.py
    ```
 
 3. **Check container logs**:
+
    ```bash
    docker logs senzing-app
    docker logs --tail 50 senzing-app
@@ -812,15 +894,17 @@ docker-compose exec postgres psql -U senzing -d senzing \
 **Solutions**:
 
 1. **Use service name, not localhost**:
+
    ```python
    # ❌ WRONG
    "CONNECTION": "postgresql://senzing:pass@localhost:5432/senzing"
-   
+
    # ✅ CORRECT (in docker-compose)
    "CONNECTION": "postgresql://senzing:pass@postgres:5432/senzing"
    ```
 
 2. **Add depends_on with health check**:
+
    ```yaml
    services:
      senzing:
@@ -832,6 +916,7 @@ docker-compose exec postgres psql -U senzing -d senzing \
 3. **Implement wait-for-postgres script**
 
 4. **Check network**:
+
    ```bash
    docker network ls
    docker network inspect <network_name>
@@ -850,12 +935,14 @@ docker-compose exec postgres psql -U senzing -d senzing \
 **Solutions**:
 
 1. **Build with correct context**:
+
    ```bash
    # From project root
    docker build -f docker/Dockerfile -t myapp .
    ```
 
 2. **In docker-compose.yml**:
+
    ```yaml
    build:
      context: ..              # Parent directory
@@ -868,7 +955,7 @@ docker-compose exec postgres psql -U senzing -d senzing \
 
 ---
 
-## Database Issues
+## Database Errors
 
 ## Error Codes
 
@@ -877,22 +964,27 @@ docker-compose exec postgres psql -U senzing -d senzing \
 Use MCP tool `explain_error_code` for detailed explanations.
 
 **SENZ0001**: Generic error
+
 - Check logs for details
 - Verify configuration
 
 **SENZ0002**: Database error
+
 - Check database connection
 - Verify database permissions
 
 **SENZ0003**: Configuration error
+
 - Validate configuration JSON
 - Check required fields
 
 **SENZ0004**: Data source error
+
 - Verify data source is registered
 - Check data source code
 
 **SENZ0005**: Record error
+
 - Check record format
 - Validate required fields
 
@@ -917,6 +1009,7 @@ Use MCP tool `explain_error_code` for detailed explanations.
 ### Ask the Agent
 
 The agent can help troubleshoot issues:
+
 - Describe the problem
 - Share error messages
 - Provide relevant code snippets

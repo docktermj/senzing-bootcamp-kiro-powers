@@ -13,13 +13,15 @@
 Placing the database in the project directory allows multiple bootcamp instances to run concurrently on the same machine without conflicts.
 
 **Problem with /tmp/sqlite**:
-```
+
+```text
 User 1: /tmp/sqlite/G2C.db  ← Conflict!
 User 2: /tmp/sqlite/G2C.db  ← Same file!
 ```
 
 **Solution with project directory**:
-```
+
+```text
 User 1: ~/bootcamp-project-1/database/G2C.db  ✓
 User 2: ~/bootcamp-project-2/database/G2C.db  ✓
 ```
@@ -50,6 +52,7 @@ When generating code that creates or uses SQLite databases:
 ### Code Examples
 
 **Correct** ✅:
+
 ```python
 import os
 
@@ -64,6 +67,7 @@ db_path = os.path.join(db_dir, "G2C.db")
 ```
 
 **Incorrect** ❌:
+
 ```python
 # DON'T use /tmp
 db_path = "/tmp/sqlite/G2C.db"  # ❌ Conflicts with other bootcamps
@@ -75,6 +79,7 @@ db_path = "/var/lib/senzing/G2C.db"  # ❌ Requires permissions
 ### Configuration Examples
 
 **Senzing Engine Configuration**:
+
 ```json
 {
   "PIPELINE": {
@@ -89,6 +94,7 @@ db_path = "/var/lib/senzing/G2C.db"  # ❌ Requires permissions
 ```
 
 **Python Code**:
+
 ```python
 import os
 from senzing import G2Engine, G2ConfigMgr
@@ -135,7 +141,7 @@ If the Senzing MCP server recommends `/tmp/sqlite`, override this recommendation
 
 The `database/` directory is created automatically during project initialization:
 
-```
+```text
 my-senzing-project/
 ├── database/                      # SQLite database files
 │   ├── G2C.db                     # Main Senzing database
@@ -162,6 +168,7 @@ database/*.db-*
 **Cause**: Insufficient permissions in project directory
 
 **Solution**:
+
 ```bash
 # Check permissions
 ls -la database/
@@ -175,6 +182,7 @@ chmod 755 database/
 **Cause**: Another process is using the database
 
 **Solution**:
+
 1. Check for other bootcamp processes: `ps aux | grep senzing`
 2. Ensure only one bootcamp instance per project
 3. Close other applications accessing the database
@@ -184,6 +192,7 @@ chmod 755 database/
 **Cause**: Running from wrong directory
 
 **Solution**:
+
 ```bash
 # Always run from project root
 cd /path/to/my-senzing-project
@@ -204,7 +213,7 @@ When generating code or providing guidance:
 
 ### Example Agent Response
 
-```
+```text
 I'll create the SQLite database in your project's database/ directory.
 This allows multiple bootcamp projects to run concurrently without conflicts.
 

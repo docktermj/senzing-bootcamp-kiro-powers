@@ -7,6 +7,7 @@ All code generated during Module 0 (Quick Demo) must be saved in the `src/quicks
 ## Why This Matters
 
 Module 0 is optional and exploratory:
+
 - Users may try multiple demo datasets
 - Demo code is temporary/experimental
 - Should not mix with production boot camp code
@@ -15,7 +16,7 @@ Module 0 is optional and exploratory:
 
 ## Directory Structure
 
-```
+```text
 my-senzing-project/
 ├── src/
 │   ├── quickstart_demo/           # Module 0 demo code (optional)
@@ -34,30 +35,35 @@ my-senzing-project/
 ## What Goes in src/quickstart_demo/
 
 ### Demo Scripts
+
 - ✅ `demo_[dataset_name].py` - Complete demo script
 - ✅ `demo_las_vegas.py` - Las Vegas dataset demo
 - ✅ `demo_london.py` - London dataset demo
 - ✅ `demo_moscow.py` - Moscow dataset demo
 
 ### Sample Data Files
+
 - ✅ `sample_data_[dataset_name].jsonl` - Sample data from CORD
 - ✅ `sample_data_las_vegas.jsonl` - Las Vegas sample data
 - ✅ `sample_data_london.jsonl` - London sample data
 - ✅ `sample_data_moscow.jsonl` - Moscow sample data
 
 ### Demo Output (optional)
+
 - ✅ `demo_results_[dataset_name].json` - Query results from demo
 - ✅ `demo_stats_[dataset_name].txt` - Statistics from demo run
 
 ## What Does NOT Go in src/quickstart_demo/
 
 ### Real Project Code
+
 - ❌ Transformation programs for user's actual data
 - ❌ Loading programs for user's actual data
 - ❌ Query programs for user's actual data
 - ❌ Production utilities
 
 These belong in:
+
 - `src/transform/` - Real transformation programs (Module 3)
 - `src/load/` - Real loading programs (Module 5)
 - `src/query/` - Real query programs (Module 6)
@@ -66,6 +72,7 @@ These belong in:
 ## Agent Behavior for Module 0
 
 ### Step 1: Create Directory
+
 ```bash
 mkdir -p src/quickstart_demo
 ```
@@ -73,6 +80,7 @@ mkdir -p src/quickstart_demo
 Always create this directory before generating any Module 0 code.
 
 ### Step 2: Generate Demo Script
+
 ```python
 # Call generate_scaffold
 generate_scaffold(language="python", workflow="full_pipeline", version="current")
@@ -82,6 +90,7 @@ generate_scaffold(language="python", workflow="full_pipeline", version="current"
 ```
 
 ### Step 3: Save Sample Data
+
 ```python
 # Call get_sample_data
 get_sample_data(dataset="las-vegas", limit=100)
@@ -91,43 +100,53 @@ get_sample_data(dataset="las-vegas", limit=100)
 ```
 
 ### Step 4: Run Demo
+
 ```bash
 cd src/quickstart_demo
 python demo_las_vegas.py
 ```
 
 ### Step 5: Explain Results
+
 Show user the output and explain entity resolution concepts.
 
 ### Step 6: Transition
+
 Ask if user wants to:
+
 - Try another demo dataset (repeat in same directory)
 - Start Module 1 with their own data (use main project structure)
 - Learn more about entity resolution
 
 ## Naming Conventions
 
-### Demo Scripts
+### Naming Conventions Demo Scripts
+
 Format: `demo_[dataset_name].py`
 
 Examples:
+
 - `demo_las_vegas.py`
 - `demo_london.py`
 - `demo_moscow.py`
 - `demo_custom.py` (if user provides custom sample data)
 
-### Sample Data Files
+### Naming Conventions Sample Data Files
+
 Format: `sample_data_[dataset_name].jsonl`
 
 Examples:
+
 - `sample_data_las_vegas.jsonl`
 - `sample_data_london.jsonl`
 - `sample_data_moscow.jsonl`
 
 ### Output Files (optional)
+
 Format: `demo_results_[dataset_name].json` or `demo_stats_[dataset_name].txt`
 
 Examples:
+
 - `demo_results_las_vegas.json`
 - `demo_stats_las_vegas.txt`
 
@@ -149,7 +168,7 @@ rm -rf src/quickstart_demo/
 
 Users may run multiple demos:
 
-```
+```text
 src/quickstart_demo/
 ├── demo_las_vegas.py
 ├── sample_data_las_vegas.jsonl
@@ -166,11 +185,13 @@ This is fine! All demos stay in the same directory.
 When user moves from Module 0 to Module 1:
 
 **Module 0 (Demo)**:
+
 - Code in: `src/quickstart_demo/`
 - Data: Sample CORD datasets
 - Purpose: Learning and exploration
 
 **Module 1+ (Real Project)**:
+
 - Code in: `src/transform/`, `src/load/`, `src/query/`
 - Data: User's actual data sources
 - Purpose: Production entity resolution
@@ -182,25 +203,30 @@ The separation is clear and intentional.
 All documentation has been updated:
 
 ### steering/steering.md - Module 0 Workflow
+
 - ✅ Step 4: Create `src/quickstart_demo/` directory
 - ✅ Step 5: Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
 - ✅ Step 6: Save sample data to `src/quickstart_demo/sample_data_[dataset_name].jsonl`
 
 ### steering/agent-instructions.md - Module 0
+
 - ✅ Create `src/quickstart_demo/` directory for all demo code
 - ✅ Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
 - ✅ Save sample data to `src/quickstart_demo/sample_data_[dataset_name].jsonl`
 
 ### steering/quick-reference.md - Module 0
+
 - ✅ Important note about creating `src/quickstart_demo/`
 - ✅ File naming conventions
 - ✅ Keep demo code separate from main project
 
 ### POWER.md - Project Directory Structure
+
 - ✅ Added `src/quickstart_demo/` to directory tree
 - ✅ Marked as "(optional)" since Module 0 is optional
 
 ### steering/steering.md - Project Directory Structure
+
 - ✅ Added `src/quickstart_demo/` to directory listing
 - ✅ Marked as "Module 0 demo code (optional)"
 
@@ -251,11 +277,11 @@ Loading 100 sample records...
 
 ## Summary
 
-✅ All Module 0 code → `src/quickstart_demo/`  
-✅ Demo scripts → `src/quickstart_demo/demo_[dataset].py`  
-✅ Sample data → `src/quickstart_demo/sample_data_[dataset].jsonl`  
-✅ Keep separate from main project code  
-✅ Optional cleanup after demo  
-✅ All documentation updated  
-✅ Clear naming conventions  
+✅ All Module 0 code → `src/quickstart_demo/`
+✅ Demo scripts → `src/quickstart_demo/demo_[dataset].py`
+✅ Sample data → `src/quickstart_demo/sample_data_[dataset].jsonl`
+✅ Keep separate from main project code
+✅ Optional cleanup after demo
+✅ All documentation updated
+✅ Clear naming conventions
 ✅ Agent instructions include this requirement

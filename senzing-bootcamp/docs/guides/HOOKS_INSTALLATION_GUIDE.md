@@ -5,16 +5,20 @@
 The easiest way to install hooks for the Senzing Boot Camp power:
 
 ### Method 1: Ask the Agent (Recommended)
+
 Simply ask Kiro:
-```
+
+```text
 "Please install the Senzing Boot Camp hooks"
 ```
 
 The agent will:
+
 1. Verify the `.kiro/hooks/` directory exists (create if needed)
 2. Copy the pre-configured hooks to your project's `.kiro/hooks/` directory
 
 ### Method 2: Command Line
+
 ```bash
 # From your project root
 # Create .kiro directory structure if it doesn't exist
@@ -25,6 +29,7 @@ cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
 ```
 
 ### Method 3: Kiro UI
+
 1. Open Command Palette: `Cmd/Ctrl + Shift + P`
 2. Search: "Open Kiro Hook UI"
 3. Click "Import Hook"
@@ -35,12 +40,12 @@ cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
 
 Four pre-configured hooks that support the boot camp workflow:
 
-| Hook | Trigger | Action | Module |
-|------|---------|--------|--------|
-| PEP-8 Check | Save Python file | Check PEP-8 compliance | All |
-| Data Quality Check | Save transformation program | Remind to validate quality | Module 3 |
-| Backup Before Load | Save loading program | Remind to backup database | Module 5 |
-| Validate Senzing JSON | Save transformed data | Validate with lint_record | Module 3 |
+| Hook                  | Trigger                     | Action                     | Module   |
+|-----------------------|-----------------------------|----------------------------|----------|
+| PEP-8 Check           | Save Python file            | Check PEP-8 compliance     | All      |
+| Data Quality Check    | Save transformation program | Remind to validate quality | Module 3 |
+| Backup Before Load    | Save loading program        | Remind to backup database  | Module 5 |
+| Validate Senzing JSON | Save transformed data       | Validate with lint_record  | Module 3 |
 
 ## When to Install
 
@@ -72,11 +77,13 @@ All hooks can be customized by editing the JSON files in `.kiro/hooks/`:
 ### Common Customizations
 
 **Change file patterns**:
+
 ```json
 "patterns": ["my-custom-path/*.py"]
 ```
 
 **Change command**:
+
 ```json
 "then": {
   "type": "runCommand",
@@ -86,6 +93,7 @@ All hooks can be customized by editing the JSON files in `.kiro/hooks/`:
 
 **Disable a hook**:
 Delete the hook file or add:
+
 ```json
 "enabled": false
 ```
@@ -93,17 +101,21 @@ Delete the hook file or add:
 ## Troubleshooting
 
 ### Hook not triggering?
+
 1. Check file pattern matches your files
 2. Verify hook is in `.kiro/hooks/`
 3. Validate JSON syntax
 4. Check Kiro output panel for errors
 
 ### Hook triggering too often?
+
 1. Make file patterns more specific
 2. Use `userTriggered` instead of `fileEdited`
 
 ### Command timeout?
+
 Increase timeout in hook file:
+
 ```json
 "timeout": 120
 ```
@@ -119,7 +131,7 @@ Increase timeout in hook file:
 ## Support
 
 - Full documentation: `senzing-bootcamp/hooks/README.md`
-- Kiro docs: https://kiro.dev/docs/hooks/
+- Kiro docs: <https://kiro.dev/docs/hooks/>
 - Ask the agent: "How do I customize hooks?"
 
 ## Example Workflow
@@ -152,6 +164,7 @@ git commit -m "Add Senzing Boot Camp hooks"
 ## Uninstalling
 
 To remove hooks:
+
 ```bash
 rm .kiro/hooks/*.kiro.hook
 ```

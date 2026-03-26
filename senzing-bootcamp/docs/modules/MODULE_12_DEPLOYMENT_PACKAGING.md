@@ -7,12 +7,14 @@ Module 12 is the final module that packages your production-ready code and deplo
 ## Purpose
 
 After completing Modules 0-11, you have:
+
 - Working transformation, loading, and query code
 - Performance tested and optimized
 - Security hardened
 - Monitoring and observability configured
 
 Module 12 takes this production-ready code and:
+
 1. Refactors it into a clean, maintainable package structure
 2. Adds comprehensive test coverage
 3. Applies language-specific packaging standards
@@ -59,7 +61,7 @@ Transform the boot camp code into a proper package structure:
 
 #### Python Package Structure
 
-```
+```text
 my-senzing-project/
 ├── setup.py                    # Package configuration
 ├── pyproject.toml              # Modern Python packaging
@@ -125,7 +127,7 @@ my-senzing-project/
 
 #### Java Package Structure
 
-```
+```text
 my-senzing-project/
 ├── pom.xml                     # Maven configuration
 ├── README.md
@@ -161,7 +163,7 @@ my-senzing-project/
 
 #### C# Package Structure
 
-```
+```text
 MySenzingProject/
 ├── MySenzingProject.sln        # Solution file
 ├── README.md
@@ -226,16 +228,16 @@ from my_senzing_project.transform.customers import CustomerTransformer
 def test_customer_transformer_basic():
     """Test basic customer transformation"""
     transformer = CustomerTransformer()
-    
+
     input_data = {
         "customer_id": "12345",
         "first_name": "John",
         "last_name": "Doe",
         "email": "john.doe@example.com"
     }
-    
+
     result = transformer.transform(input_data)
-    
+
     assert result["DATA_SOURCE"] == "CUSTOMERS"
     assert result["RECORD_ID"] == "12345"
     assert result["NAME_FULL"] == "John Doe"
@@ -244,31 +246,31 @@ def test_customer_transformer_basic():
 def test_customer_transformer_missing_fields():
     """Test handling of missing fields"""
     transformer = CustomerTransformer()
-    
+
     input_data = {
         "customer_id": "12345",
         "first_name": "John"
         # Missing last_name
     }
-    
+
     result = transformer.transform(input_data)
-    
+
     assert result["NAME_FULL"] == "John"
     assert "last_name" not in result
 
 def test_customer_transformer_invalid_email():
     """Test handling of invalid email"""
     transformer = CustomerTransformer()
-    
+
     input_data = {
         "customer_id": "12345",
         "first_name": "John",
         "last_name": "Doe",
         "email": "invalid-email"
     }
-    
+
     result = transformer.transform(input_data)
-    
+
     # Should skip invalid email
     assert "EMAIL_ADDRESS" not in result
 ```
@@ -400,7 +402,7 @@ Create `pom.xml`:
             <artifactId>senzing-api</artifactId>
             <version>${senzing.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -690,15 +692,19 @@ Module 8 is complete when:
 ## Common Issues
 
 ### Issue: Test Coverage Too Low
+
 **Solution:** Add tests for untested code paths, focus on critical business logic first
 
 ### Issue: Package Installation Fails
+
 **Solution:** Verify all dependencies are listed, check version constraints
 
 ### Issue: Docker Build Fails
+
 **Solution**: Check Dockerfile syntax, verify base image, ensure all files are copied
 
 ### Issue: Configuration Management Complex
+
 **Solution**: Use environment variables for secrets, YAML for structure, provide examples
 
 ## Integration with Other Modules
@@ -724,7 +730,7 @@ Module 8 is complete when:
 - **Build**: Maven Surefire, Gradle Test
 - **Quality**: SonarQube, Checkstyle
 
-### C#
+### C sharp
 
 - **Packaging:** NuGet
 - **Testing**: xUnit, NUnit, MSTest

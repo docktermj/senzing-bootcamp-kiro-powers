@@ -38,16 +38,16 @@ This boot camp power **complements** the **senzing** Kiro Power:
 
 Unlike the senzing reference power, this boot camp provides:
 
-✅ **Structured Learning**: 13 progressive modules (0-12)  
-✅ **Project Scaffolding**: Automatic directory structure creation  
-✅ **Design Patterns**: Gallery of 10 common entity resolution patterns  
-✅ **Example Projects**: 3 complete reference implementations  
-✅ **Code Templates**: Ready-to-use transformation, loading, query templates  
-✅ **Progress Tracking**: Built-in progress tracker  
-✅ **Quality Standards**: PEP-8 compliance checking  
-✅ **Feedback Loop**: Structured feedback collection  
+✅ **Structured Learning**: 13 progressive modules (0-12)
+✅ **Project Scaffolding**: Automatic directory structure creation
+✅ **Design Patterns**: Gallery of 10 common entity resolution patterns
+✅ **Example Projects**: 3 complete reference implementations
+✅ **Code Templates**: Ready-to-use transformation, loading, query templates
+✅ **Progress Tracking**: Built-in progress tracker
+✅ **Quality Standards**: PEP-8 compliance checking
+✅ **Feedback Loop**: Structured feedback collection
 
-**Use this power when:** You're learning Senzing or building your first project  
+**Use this power when:** You're learning Senzing or building your first project
 **Use senzing power when:** You need quick reference or troubleshooting
 
 ## Code Quality Standards
@@ -70,6 +70,7 @@ The agent will automatically generate PEP-8 compliant code and check user-provid
 **Before doing anything else**, the agent will automatically create the project directory structure. This happens at the very beginning of Module 0 or Module 1, whichever you start with.
 
 The agent will execute:
+
 ```bash
 mkdir -p data/{raw,transformed,samples,backups}
 mkdir -p database
@@ -107,6 +108,7 @@ Use `docs/guides/PROGRESS_TRACKER.md` to track completion manually, or run `./sc
 ### Example Projects
 
 See `examples/` directory for three complete reference projects:
+
 - **Simple Single Source:** Basic customer deduplication (2-3 hours)
 - **Multi-Source Project:** Customer 360 with three sources (6-8 hours)
 - **Production Deployment:** Complete production-ready system (12-15 hours)
@@ -116,6 +118,7 @@ Clone examples to your workspace: `./scripts/clone_example.sh`
 ### Templates
 
 Use utility templates from `templates/` directory:
+
 - Database management (backup, restore, rollback)
 - Data collection (CSV, JSON, API, database)
 - Validation and testing (schema validation, performance baseline, troubleshooting)
@@ -312,62 +315,75 @@ Experienced users can skip modules based on their situation:
 Before starting each module, ensure prerequisites are met:
 
 **Module 0** (Optional):
+
 - No prerequisites
 
 **Module 1**:
+
 - No prerequisites
 - Recommended: Have business problem in mind
 
 **Module 2**:
+
 - ✅ Module 1 complete (business problem defined)
 - ✅ Data sources identified in Module 1
 
 **Module 3**:
+
 - ✅ Module 2 complete (data sources collected)
 - ✅ Data files in `data/raw/` directory
 - ✅ Sample data available for evaluation
 
 **Module 4**:
+
 - ✅ Module 3 complete (sources evaluated)
 - ✅ Non-compliant sources identified
 - ✅ Quality scores reviewed
 
 **Module 5**:
+
 - ✅ Module 4 complete (all sources mapped) OR
 - ✅ All sources are SGES-compliant
 - ✅ Platform/environment ready
 
 **Module 6**:
+
 - ✅ Module 5 complete (SDK installed)
 - ✅ Database configured
 - ✅ At least one transformed data source ready
 
 **Module 7**:
+
 - ✅ Module 6 complete (first source loaded successfully)
 - ✅ Multiple data sources to orchestrate
 - ✅ Loading statistics reviewed for first source
 
 **Module 8**:
+
 - ✅ Module 7 complete (all sources loaded) OR
 - ✅ Module 6 complete (single source loaded)
 - ✅ No critical loading errors
 
 **Module 9**:
+
 - ✅ Module 8 complete (queries working)
 - ✅ Representative data loaded
 - ✅ Test environment available
 
 **Module 10**:
+
 - ✅ Module 9 complete (performance validated)
 - ✅ Security requirements identified
 - ✅ Compliance needs documented
 
 **Module 11**:
+
 - ✅ Module 10 complete (security hardened)
 - ✅ Monitoring tools selected
 - ✅ Production environment identified
 
 **Module 12**:
+
 - ✅ Module 11 complete (monitoring configured)
 - ✅ All tests passing
 - ✅ Deployment target confirmed
@@ -376,7 +392,7 @@ Before starting each module, ensure prerequisites are met:
 
 The Senzing Boot Camp agent will create this organized directory structure for you at the start of Module 1:
 
-```
+```text
 my-senzing-project/
 ├── .git/                          # Version control (optional, but recommended)
 ├── .gitignore                     # Exclude sensitive data
@@ -423,6 +439,7 @@ my-senzing-project/
 ```
 
 **Agent behavior**:
+
 - **🚨 MANDATORY - EXECUTE FIRST 🚨**: Before ANY other action, check if project structure exists
 - **🚨 MANDATORY - EXECUTE FIRST 🚨**: If structure doesn't exist, create it immediately using commands above
 - **🚨 MANDATORY - EXECUTE FIRST 🚨**: Do not greet user, do not ask questions, do not present options until structure is created
@@ -431,6 +448,7 @@ my-senzing-project/
 - As you generate programs throughout the boot camp, save them in the appropriate folders
 
 **Trigger points for directory creation** (create structure at ANY of these):
+
 - User says "start the boot camp"
 - User mentions any module number (0-12)
 - User selects any path (A, B, C, D)
@@ -442,33 +460,36 @@ my-senzing-project/
 The boot camp includes detailed steering files for specific topics. Load these on-demand when users need detailed guidance:
 
 ### Core Workflows (Always Available)
+
 - **steering/steering.md** — Detailed workflows for all modules (Module 0-6)
 - **steering/agent-instructions.md** — Consolidated agent behavior guide (load at start)
 - **steering/quick-reference.md** — MCP tool quick reference card
 
 ### Supporting Topics (Load on Demand)
+
 - **steering/environment-setup.md** — Version control, Python venv, Docker, environment variables
   - Load when: Starting Module 1, user asks about setup
-  
+
 - **steering/security-privacy.md** — Data privacy, PII protection, compliance, anonymization
   - Load when: Starting Module 2, working with sensitive data
-  
+
 - **steering/cost-estimation.md** — Pricing, ROI, deployment costs
   - Load when: Module 1 (planning), Module 4 (deployment choice)
-  
+
 - **steering/lessons-learned.md** — Post-project retrospective template
   - Load when: After Module 6, project completion
-  
+
 - **steering/common-pitfalls.md** — Common mistakes and how to avoid them
   - Load when: Any module, troubleshooting, user is stuck
-  
+
 - **steering/troubleshooting-decision-tree.md** — Visual flowchart for diagnosing issues
   - Load when: User encounters errors, systematic troubleshooting needed
-  
+
 - **steering/complexity-estimator.md** — Estimate time based on data characteristics
   - Load when: Module 1 (planning), user asks "how long will this take?"
 
 **Note**: For testing, performance monitoring, integration patterns, disaster recovery, and collaboration guidance, use MCP server tools:
+
 - Testing strategies → Use `search_docs(query="testing best practices")`
 - Performance monitoring → Use `search_docs(query="performance monitoring", category="performance")`
 - Integration patterns → Use `find_examples(query="API integration")` or `search_docs(query="integration patterns")`
@@ -510,18 +531,18 @@ cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
 
 When starting Module 1, offer users a gallery of common entity resolution patterns:
 
-| Pattern | Use Case | Key Matching | Typical ROI |
-|---------|----------|--------------|-------------|
-| **Customer 360** | Unified customer view | Names, emails, phones, addresses | Improved service, targeted marketing |
-| **Fraud Detection** | Identify fraud rings | Names, addresses, devices, IPs | Loss prevention, faster detection |
-| **Data Migration** | Merge legacy systems | All available identifiers | Reduced storage, simplified ops |
-| **Compliance Screening** | Watchlist matching | Names, DOB, nationalities, IDs | Regulatory compliance, risk mitigation |
-| **Marketing Dedup** | Eliminate duplicates | Names, addresses, emails | Reduced mailing costs, better metrics |
-| **Patient Matching** | Unified medical records | Names, DOB, SSN, MRNs | Patient safety, care coordination |
-| **Vendor MDM** | Clean vendor master | Company names, tax IDs, addresses | Better pricing, consolidated spend |
-| **Claims Fraud** | Detect staged accidents | Names, vehicles, providers | Reduced fraudulent payouts |
-| **KYC/Onboarding** | Verify identity | Names, DOB, SSN, gov IDs | Reduced fraud, compliance |
-| **Supply Chain** | Unified supplier view | Company names, GLNs, tax IDs | Visibility, risk management |
+| Pattern                  | Use Case                | Key Matching                      | Typical ROI                            |
+|--------------------------|-------------------------|-----------------------------------|----------------------------------------|
+| **Customer 360**         | Unified customer view   | Names, emails, phones, addresses  | Improved service, targeted marketing   |
+| **Fraud Detection**      | Identify fraud rings    | Names, addresses, devices, IPs    | Loss prevention, faster detection      |
+| **Data Migration**       | Merge legacy systems    | All available identifiers         | Reduced storage, simplified ops        |
+| **Compliance Screening** | Watchlist matching      | Names, DOB, nationalities, IDs    | Regulatory compliance, risk mitigation |
+| **Marketing Dedup**      | Eliminate duplicates    | Names, addresses, emails          | Reduced mailing costs, better metrics  |
+| **Patient Matching**     | Unified medical records | Names, DOB, SSN, MRNs             | Patient safety, care coordination      |
+| **Vendor MDM**           | Clean vendor master     | Company names, tax IDs, addresses | Better pricing, consolidated spend     |
+| **Claims Fraud**         | Detect staged accidents | Names, vehicles, providers        | Reduced fraudulent payouts             |
+| **KYC/Onboarding**       | Verify identity         | Names, DOB, SSN, gov IDs          | Reduced fraud, compliance              |
+| **Supply Chain**         | Unified supplier view   | Company names, GLNs, tax IDs      | Visibility, risk management            |
 
 **When to use each pattern**:
 
@@ -555,13 +576,13 @@ Which path would you like to take?
 
 A) Quick Demo (10 min) - Module 0
    See REAL entity resolution in action - actually runs Senzing SDK with sample data
-   
+
 B) Fast Track (30 min) - Modules 5-6
    For users with SGES-compliant data
-   
+
 C) Complete Beginner (2-3 hrs) - Modules 1-6, 8
    Work with your raw data from start to finish
-   
+
 D) Full Production (10-18 hrs) - All Modules 0-12
    Complete production-ready deployment
 
@@ -648,6 +669,7 @@ Your feedback helps improve the Senzing Boot Camp for future users!
 ### Triggering Feedback Workflow
 
 When a user says any of these phrases:
+
 - "power feedback"
 - "bootcamp feedback"
 - "submit feedback"
@@ -662,6 +684,7 @@ The agent should immediately follow the feedback workflow below.
 When user requests to provide feedback:
 
 1. **Check if feedback file exists**:
+
    ```bash
    if [ -f "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md" ]; then
        echo "Feedback file exists"
@@ -730,6 +753,7 @@ As you work through the boot camp, document any issues, confusion points, or imp
 - **Security**: Security concerns, compliance issues
 
 **Agent behavior**:
+
 - At the start of Module 1, inform users: "If you encounter any issues or have suggestions during the boot camp, just say 'power feedback' or 'bootcamp feedback' and I'll help you document them"
 - When user says "power feedback", "bootcamp feedback", "submit feedback", "provide feedback", "I have feedback", or "report an issue", immediately trigger the feedback workflow (see Feedback Workflow section above)
 - Remind users at the end of Module 12 to share their completed feedback file with the power author
@@ -763,6 +787,7 @@ Quick reference for common tasks:
 ## Additional Resources
 
 ### Documentation
+
 - **FAQ**: `docs/guides/FAQ.md` - 100+ questions and answers
 - **Glossary**: `docs/guides/GLOSSARY.md` - A-Z Senzing terminology
 - **Collaboration Guide**: `docs/guides/COLLABORATION_GUIDE.md` - Team workflows
@@ -770,10 +795,12 @@ Quick reference for common tasks:
 - **Troubleshooting**: `docs/guides/TROUBLESHOOTING_INDEX.md` - Common issues
 
 ### Visual Guides
+
 - **Module Flow**: `docs/diagrams/module-flow.md` - Visual module progression
 - **Data Flow**: `docs/diagrams/data-flow.md` - Data pipeline visualization
 
 ### For Teams
+
 - **Collaboration Guide**: `docs/guides/COLLABORATION_GUIDE.md`
   - Git workflows and branch strategies
   - Code review processes
@@ -820,14 +847,17 @@ After completing all modules, you'll have:
 ### Senzing Contact Information
 
 **Support** (Technical assistance, evaluation licenses):
+
 - Email: [support@senzing.com](mailto:support@senzing.com)
 - Website: [https://senzing.com/support/](https://senzing.com/support/)
 
 **Sales** (Production licenses, pricing):
+
 - Email: [sales@senzing.com](mailto:sales@senzing.com)
 - Website: [https://senzing.com/contact/](https://senzing.com/contact/)
 
 **General**:
+
 - Website: [https://senzing.com](https://senzing.com)
 - Documentation: [https://docs.senzing.com](https://docs.senzing.com)
 
@@ -835,8 +865,8 @@ After completing all modules, you'll have:
 
 ## Version Information
 
-**Current Version**: 1.0.0  
-**Senzing Compatibility**: V4.0  
+**Current Version**: 1.0.0
+**Senzing Compatibility**: V4.0
 **Last Updated**: March 23, 2026
 
 See [CHANGELOG.md](CHANGELOG.md) for complete version history and release notes.
@@ -844,6 +874,7 @@ See [CHANGELOG.md](CHANGELOG.md) for complete version history and release notes.
 ## What's New in v1.0.0 (March 2026)
 
 **Complete Learning Path:**
+
 - 13 focused modules from quick demo to production deployment
 - Automated data quality scoring
 - Multi-source orchestration
@@ -855,6 +886,7 @@ See [CHANGELOG.md](CHANGELOG.md) for complete version history and release notes.
 - Data lineage tracking
 
 **Senzing MCP Server Integration:**
+
 - Live, always-current Senzing documentation
 - SDK code generation and scaffolding
 - Interactive data mapping workflow (8 steps)
@@ -863,6 +895,7 @@ See [CHANGELOG.md](CHANGELOG.md) for complete version history and release notes.
 - Working code examples (27 GitHub repositories)
 
 **Kiro Features:**
+
 - 4 automation hooks for quality and validation
 - 12 ready-to-use code templates
 - 16 steering files for guided workflows
@@ -871,6 +904,7 @@ See [CHANGELOG.md](CHANGELOG.md) for complete version history and release notes.
 - 3 complete example projects
 
 **Streamlined Distribution:**
+
 - 50% smaller than initial development version
 - Focused exclusively on boot camp-specific content
 - MCP server provides all Senzing documentation

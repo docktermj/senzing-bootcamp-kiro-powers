@@ -4,13 +4,14 @@
 
 This example demonstrates a complete production-ready deployment of Senzing for enterprise Customer Master Data Management (MDM). It covers all 13 modules (0-12) with production-grade implementations.
 
-**Time to Complete:** 12-15 hours  
-**Difficulty:** Advanced  
+**Time to Complete:** 12-15 hours
+**Difficulty:** Advanced
 **Modules Covered:** 0-12 (complete boot camp)
 
 ## Business Problem
 
 **Scenario:** A large enterprise with 5 million customer records across 6 systems needs a production-grade MDM solution with:
+
 - High availability (99.9% uptime)
 - Performance (1000+ records/sec)
 - Security (SOC 2 compliant)
@@ -19,6 +20,7 @@ This example demonstrates a complete production-ready deployment of Senzing for 
 - Multi-environment deployment (dev, staging, prod)
 
 **Expected Outcomes:**
+
 - Process 5M records in < 2 hours
 - Query response time < 100ms
 - Zero data loss
@@ -27,7 +29,7 @@ This example demonstrates a complete production-ready deployment of Senzing for 
 
 ## Project Structure
 
-```
+```text
 enterprise-customer-mdm/
 ├── data/
 │   ├── raw/                           # Source data
@@ -164,7 +166,7 @@ enterprise-customer-mdm/
 
 ### System Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                     Load Balancer (ALB)                      │
 └────────────────────────┬────────────────────────────────────┘
@@ -196,7 +198,7 @@ enterprise-customer-mdm/
 
 ### Data Flow
 
-```
+```text
 Source Systems → ETL/Transform → Senzing Load → PostgreSQL
                                        ↓
                                  Entity Resolution
@@ -211,6 +213,7 @@ Source Systems → ETL/Transform → Senzing Load → PostgreSQL
 ### Module 1: Business Problem (30 min)
 
 **docs/architecture/system_architecture.md**:
+
 ```markdown
 # System Architecture
 
@@ -236,6 +239,7 @@ Implement transformers for each source with comprehensive error handling and log
 ### Module 5: SDK Setup (1 hour)
 
 **Production Configuration:**
+
 ```json
 {
   "PIPELINE": {
@@ -261,6 +265,7 @@ Implement transformers for each source with comprehensive error handling and log
 ### Module 6-7: Loading with Orchestration (2-3 hours)
 
 **src/load/orchestrator.py** (Production version):
+
 ```python
 #!/usr/bin/env python3
 """Production-grade multi-source orchestrator with monitoring"""
@@ -281,36 +286,36 @@ active_loaders = Gauge('senzing_active_loaders', 'Number of active loaders')
 
 class ProductionOrchestrator:
     """Production orchestrator with monitoring, error handling, and recovery"""
-    
+
     def __init__(self, config_file: str, max_workers: int = 4):
         self.config_file = config_file
         self.max_workers = max_workers
         self.logger = logging.getLogger(__name__)
-        
+
         with open(config_file) as f:
             self.config = json.load(f)
-    
-    def load_source_parallel(self, data_source: str, input_file: str, 
+
+    def load_source_parallel(self, data_source: str, input_file: str,
                             batch_size: int = 1000) -> Dict:
         """Load source with batching and error recovery"""
-        
+
         engine = G2Engine()
         engine.init(f"Loader-{data_source}", json.dumps(self.config), False)
-        
+
         active_loaders.inc()
-        
+
         try:
             start_time = time.time()
             success_count = 0
             error_count = 0
             batch = []
-            
+
             with open(input_file, 'r') as f:
                 for line_num, line in enumerate(f, 1):
                     try:
                         record = json.loads(line)
                         batch.append(record)
-                        
+
                         if len(batch) >= batch_size:
                             # Process batch
                             for rec in batch:
@@ -329,16 +334,16 @@ class ProductionOrchestrator:
                                         error_type=type(e).__name__
                                     ).inc()
                                     self.logger.error(f"Error loading {rec['RECORD_ID']}: {e}")
-                            
+
                             batch = []
-                            
+
                             if line_num % 10000 == 0:
                                 self.logger.info(f"{data_source}: Loaded {line_num:,} records")
-                    
+
                     except json.JSONDecodeError as e:
                         error_count += 1
                         self.logger.error(f"JSON error on line {line_num}: {e}")
-                
+
                 # Process remaining batch
                 for rec in batch:
                     try:
@@ -351,10 +356,10 @@ class ProductionOrchestrator:
                             data_source=data_source,
                             error_type=type(e).__name__
                         ).inc()
-            
+
             duration = time.time() - start_time
             load_duration.labels(data_source=data_source).observe(duration)
-            
+
             return {
                 'data_source': data_source,
                 'success': success_count,
@@ -362,22 +367,22 @@ class ProductionOrchestrator:
                 'duration': duration,
                 'rate': success_count / duration if duration > 0 else 0
             }
-        
+
         finally:
             engine.destroy()
             active_loaders.dec()
-    
+
     def load_all_parallel(self, sources: List[tuple]) -> List[Dict]:
         """Load all sources in parallel"""
-        
+
         results = []
-        
+
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             futures = {
-                executor.submit(self.load_source_parallel, ds, file): ds 
+                executor.submit(self.load_source_parallel, ds, file): ds
                 for ds, file in sources
             }
-            
+
             for future in as_completed(futures):
                 data_source = futures[future]
                 try:
@@ -392,7 +397,7 @@ class ProductionOrchestrator:
                         'errors': -1,
                         'error': str(e)
                     })
-        
+
         return results
 
 if __name__ == '__main__':
@@ -401,14 +406,14 @@ if __name__ == '__main__':
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
-    
+
     # Start metrics server
     from prometheus_client import start_http_server
     start_http_server(8000)
-    
+
     # Load all sources
     orchestrator = ProductionOrchestrator('config/prod/senzing_config.json', max_workers=6)
-    
+
     sources = [
         ('CRM', 'data/transformed/crm.jsonl'),
         ('ERP', 'data/transformed/erp.jsonl'),
@@ -417,13 +422,13 @@ if __name__ == '__main__':
         ('PARTNER', 'data/transformed/partner.jsonl'),
         ('LEGACY', 'data/transformed/legacy.jsonl')
     ]
-    
+
     results = orchestrator.load_all_parallel(sources)
-    
+
     # Print summary
     total_success = sum(r['success'] for r in results)
     total_errors = sum(r['errors'] for r in results if r['errors'] > 0)
-    
+
     print(f"\n{'='*60}")
     print(f"PRODUCTION LOAD COMPLETE")
     print(f"{'='*60}")
@@ -435,6 +440,7 @@ if __name__ == '__main__':
 ### Module 8: Query with REST API (2 hours)
 
 **src/query/api_server.py**:
+
 ```python
 #!/usr/bin/env python3
 """Production REST API with authentication and monitoring"""
@@ -488,7 +494,7 @@ def health_check():
 def get_entity(entity_id: int, user=Depends(verify_token)):
     """Get entity by ID"""
     api_requests.labels(endpoint='/entity', method='GET').inc()
-    
+
     start = time.time()
     try:
         entity_json = engine.getEntityByEntityID(entity_id)
@@ -502,7 +508,7 @@ def get_entity(entity_id: int, user=Depends(verify_token)):
 def search_entities(request: SearchRequest, user=Depends(verify_token)):
     """Search for entities"""
     api_requests.labels(endpoint='/search', method='POST').inc()
-    
+
     start = time.time()
     try:
         search_json = json.dumps({
@@ -510,7 +516,7 @@ def search_entities(request: SearchRequest, user=Depends(verify_token)):
             "EMAIL_ADDRESS": request.email,
             "PHONE_NUMBER": request.phone
         })
-        
+
         result_json = engine.searchByAttributes(search_json)
         api_duration.labels(endpoint='/search').observe(time.time() - start)
         return json.loads(result_json)
@@ -526,6 +532,7 @@ if __name__ == '__main__':
 ### Module 9: Performance Testing (1-2 hours)
 
 **tests/performance/test_load_performance.py**:
+
 ```python
 #!/usr/bin/env python3
 """Performance benchmarking suite"""
@@ -536,15 +543,15 @@ from senzing import G2Engine
 
 def benchmark_loading(sample_size=10000):
     """Benchmark loading performance"""
-    
+
     with open('config/prod/senzing_config.json') as f:
         config = json.load(f)
-    
+
     engine = G2Engine()
     engine.init("Benchmark", json.dumps(config), False)
-    
+
     start = time.time()
-    
+
     for i in range(sample_size):
         record = {
             "DATA_SOURCE": "BENCHMARK",
@@ -553,20 +560,20 @@ def benchmark_loading(sample_size=10000):
             "EMAIL_ADDRESS": f"test{i}@example.com"
         }
         engine.addRecord("BENCHMARK", record['RECORD_ID'], json.dumps(record))
-    
+
     duration = time.time() - start
     rate = sample_size / duration
-    
+
     print(f"Loaded {sample_size:,} records in {duration:.1f} seconds")
     print(f"Rate: {rate:.1f} records/second")
-    
+
     engine.destroy()
-    
+
     return rate
 
 if __name__ == '__main__':
     rate = benchmark_loading(10000)
-    
+
     # Assert performance requirements
     assert rate > 1000, f"Performance below threshold: {rate:.1f} < 1000 records/sec"
     print("✅ Performance test PASSED")
@@ -575,6 +582,7 @@ if __name__ == '__main__':
 ### Module 10: Security Hardening (1-2 hours)
 
 **src/security/secrets_manager.py**:
+
 ```python
 #!/usr/bin/env python3
 """AWS Secrets Manager integration"""
@@ -585,10 +593,10 @@ from typing import Dict
 
 class SecretsManager:
     """Manage secrets from AWS Secrets Manager"""
-    
+
     def __init__(self, region='us-east-1'):
         self.client = boto3.client('secretsmanager', region_name=region)
-    
+
     def get_secret(self, secret_name: str) -> Dict:
         """Retrieve secret from AWS Secrets Manager"""
         try:
@@ -596,11 +604,11 @@ class SecretsManager:
             return json.loads(response['SecretString'])
         except Exception as e:
             raise Exception(f"Failed to retrieve secret {secret_name}: {e}")
-    
+
     def get_database_credentials(self) -> Dict:
         """Get database credentials"""
         return self.get_secret('prod/senzing/database')
-    
+
     def get_api_keys(self) -> Dict:
         """Get API keys"""
         return self.get_secret('prod/senzing/api-keys')
@@ -613,6 +621,7 @@ db_creds = secrets.get_database_credentials()
 ### Module 11: Monitoring (1-2 hours)
 
 **monitoring/grafana/dashboards/loading_dashboard.json**:
+
 ```json
 {
   "dashboard": {
@@ -650,6 +659,7 @@ db_creds = secrets.get_database_credentials()
 ### Module 12: Deployment (2-3 hours)
 
 **deployment/kubernetes/deployment.yaml**:
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -702,6 +712,7 @@ spec:
 ```
 
 **deployment/scripts/deploy.sh**:
+
 ```bash
 #!/bin/bash
 # Production deployment script
@@ -743,12 +754,14 @@ echo "✅ Deployment complete!"
 ## Expected Results
 
 ### Performance Metrics
+
 - Loading: 1200+ records/sec
 - Query latency: 50ms p95, 80ms p99
 - API throughput: 500+ requests/sec
 - Uptime: 99.95%
 
 ### Business Metrics
+
 - 5M records processed in 90 minutes
 - 3.8M unique entities (24% reduction)
 - 1.2M cross-source matches

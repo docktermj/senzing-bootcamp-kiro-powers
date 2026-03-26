@@ -4,13 +4,14 @@
 
 Module 4 transforms your source data into Senzing's Generic Entity Specification (SGES) format. This is where you map your data fields to Senzing attributes, creating transformation programs for each data source.
 
-**Time:** 1-2 hours per data source  
-**Prerequisites:** ✅ Module 3 complete (data quality evaluated)  
+**Time:** 1-2 hours per data source
+**Prerequisites:** ✅ Module 3 complete (data quality evaluated)
 **Output:** Transformation programs, mapped data files, quality validation
 
 ## Learning Objectives
 
 By the end of this module, you will:
+
 - Understand Senzing's data format (SGES)
 - Map source fields to Senzing attributes
 - Create transformation programs
@@ -108,6 +109,7 @@ mapping_workflow(
 ### Step 2: Interactive Mapping
 
 The workflow guides you through 7 steps:
+
 1. **Identify entity type** (person, organization, both)
 2. **Map name fields** (full name or components)
 3. **Map address fields** (full address or components)
@@ -132,38 +134,38 @@ import csv
 
 def transform_record(source_record):
     """Transform a single source record to SGES format"""
-    
+
     senzing_record = {
         "DATA_SOURCE": "CUSTOMERS",
         "RECORD_ID": source_record["customer_id"],
         "RECORD_TYPE": "PERSON"
     }
-    
+
     # Name mapping
     if source_record.get("full_name"):
         senzing_record["NAME_FULL"] = source_record["full_name"]
-    
+
     # Address mapping
     if source_record.get("address"):
         senzing_record["ADDR_FULL"] = source_record["address"]
-    
+
     # Contact mapping
     if source_record.get("phone"):
         senzing_record["PHONE_NUMBER"] = source_record["phone"]
-    
+
     if source_record.get("email"):
         senzing_record["EMAIL_ADDRESS"] = source_record["email"]
-    
+
     return senzing_record
 
 def transform_file(input_file, output_file):
     """Transform entire file"""
-    
+
     with open(input_file, 'r') as infile, \
          open(output_file, 'w') as outfile:
-        
+
         reader = csv.DictReader(infile)
-        
+
         for source_record in reader:
             senzing_record = transform_record(source_record)
             outfile.write(json.dumps(senzing_record) + '\n')
@@ -226,9 +228,9 @@ Create `docs/mapping_customers.md`:
 ```markdown
 # Data Mapping: CUSTOMERS
 
-**Date:** 2026-03-17  
-**Source:** data/raw/customers.csv  
-**Output:** data/transformed/customers.jsonl  
+**Date:** 2026-03-17
+**Source:** data/raw/customers.csv
+**Output:** data/transformed/customers.jsonl
 **Program:** src/transform/transform_customers.py
 
 ## Field Mappings
@@ -243,7 +245,7 @@ Create `docs/mapping_customers.md`:
 
 ## Data Quality
 
-**Before Mapping:** 65/100  
+**Before Mapping:** 65/100
 **After Mapping:** 82/100
 
 **Improvements:**
@@ -289,28 +291,33 @@ Create `docs/mapping_customers.md`:
 - Records processed: 500,000
 - Records with errors: 127 (0.025%)
 - Average quality score: 82/100
-```
+
+```text
 
 ## File Locations
 
 All transformation programs go in `src/transform/`:
 
 ```
+
 src/transform/
 ├── transform_customers.py
 ├── transform_vendors.py
 ├── transform_employees.py
 └── utils.py                    # Shared transformation utilities
-```
+
+```text
 
 All transformed data goes in `data/transformed/`:
 
 ```
+
 data/transformed/
 ├── customers.jsonl
 ├── vendors.jsonl
 └── employees.jsonl
-```
+
+```text
 
 ## Common Mapping Patterns
 
@@ -321,7 +328,8 @@ data/transformed/
 senzing_record["NAME_FULL"] = source_record["full_name"]
 ```
 
-**Option B: Name components**
+### Option B: Name components
+
 ```python
 senzing_record["NAME_FIRST"] = source_record["first_name"]
 senzing_record["NAME_LAST"] = source_record["last_name"]
@@ -330,12 +338,14 @@ senzing_record["NAME_MIDDLE"] = source_record.get("middle_name", "")
 
 ### Pattern 2: Full Address vs Components
 
-**Option A: Full address**
+#### Option A: Full address
+
 ```python
 senzing_record["ADDR_FULL"] = source_record["address"]
 ```
 
-**Option B: Address components**
+#### Option B: Address components
+
 ```python
 senzing_record["ADDR_LINE1"] = source_record["street"]
 senzing_record["ADDR_CITY"] = source_record["city"]
@@ -373,26 +383,28 @@ senzing_record["DATE_OF_BIRTH"] = date_obj.strftime("%Y-%m-%d")
 ## Data Quality Improvements
 
 ### Name Cleaning
+
 ```python
 def clean_name(name):
     """Clean and standardize name"""
     if not name:
         return ""
-    
+
     # Remove extra whitespace
     name = " ".join(name.split())
-    
+
     # Title case
     name = name.title()
-    
+
     # Handle special cases
     name = name.replace(" Mc", " Mc")  # McDonald
     name = name.replace(" O'", " O'")  # O'Brien
-    
+
     return name
 ```
 
 ### Phone Cleaning
+
 ```python
 import re
 
@@ -400,18 +412,19 @@ def clean_phone(phone):
     """Extract digits from phone number"""
     if not phone:
         return ""
-    
+
     # Keep only digits
     digits = re.sub(r'\D', '', phone)
-    
+
     # Remove leading 1 for US numbers
     if len(digits) == 11 and digits[0] == '1':
         digits = digits[1:]
-    
+
     return digits
 ```
 
 ### Email Validation
+
 ```python
 import re
 
@@ -419,15 +432,15 @@ def validate_email(email):
     """Validate and clean email"""
     if not email:
         return ""
-    
+
     # Lowercase
     email = email.lower().strip()
-    
+
     # Basic validation
     pattern = r'^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$'
     if re.match(pattern, email):
         return email
-    
+
     return ""  # Invalid email
 ```
 
@@ -438,8 +451,8 @@ Track how data flows through transformations:
 ```markdown
 # Transformation Lineage: CUSTOMERS
 
-**Source:** data/raw/customers.csv (downloaded 2026-03-15)  
-**Transformation:** src/transform/transform_customers.py (v1.0)  
+**Source:** data/raw/customers.csv (downloaded 2026-03-15)
+**Transformation:** src/transform/transform_customers.py (v1.0)
 **Output:** data/transformed/customers.jsonl (generated 2026-03-17)
 
 **Transformations Applied:**
@@ -454,30 +467,34 @@ Track how data flows through transformations:
 
 ## Success Criteria
 
-✅ All non-compliant data sources mapped  
-✅ Transformation programs created and tested  
-✅ Quality validation passed (>70%)  
-✅ Transformed data files generated  
-✅ Mapping documentation complete  
+✅ All non-compliant data sources mapped
+✅ Transformation programs created and tested
+✅ Quality validation passed (>70%)
+✅ Transformed data files generated
+✅ Mapping documentation complete
 ✅ Lineage tracked
 
 ## Common Issues
 
-**Issue: Wrong attribute names**
+### Issue: Wrong attribute names
+
 - ❌ Never guess attribute names
 - ✅ Always use `mapping_workflow` tool
 
-**Issue: Low quality scores after mapping**
+### Issue: Low quality scores after mapping
+
 - Review `analyze_record` feedback
 - Improve data cleaning logic
 - Consider data enrichment
 
-**Issue: Transformation errors**
+### Issue: Transformation errors
+
 - Test on small sample first
 - Add error handling
 - Log problematic records
 
-**Issue: Performance problems**
+### Issue: Performance problems
+
 - Process in batches
 - Use multiprocessing for large files
 - Optimize transformation logic
@@ -494,6 +511,7 @@ Track how data flows through transformations:
 ## Next Steps
 
 After completing Module 4:
+
 - **Proceed to Module 5:** Install Senzing SDK
 - **Or skip to Module 6:** If SDK already installed
 

@@ -26,7 +26,7 @@ This is **NOT OPTIONAL**. This is **NOT NEGOTIABLE**. This happens **FIRST**.
 # Check if structure exists
 if [ ! -d "src" ] || [ ! -d "data" ] || [ ! -d "docs" ]; then
     echo "Creating project directory structure..."
-    
+
     # Create all directories
     mkdir -p data/{raw,transformed,samples,backups}
     mkdir -p database
@@ -38,7 +38,7 @@ if [ ! -d "src" ] || [ ! -d "data" ] || [ ! -d "docs" ]; then
     mkdir -p logs
     mkdir -p monitoring
     mkdir -p scripts
-    
+
     # Create .gitignore
     cat > .gitignore << 'EOF'
 # Sensitive data
@@ -70,7 +70,7 @@ venv/
 data/temp/*
 !data/temp/.gitkeep
 EOF
-    
+
     # Create .env.example
     cat > .env.example << 'EOF'
 # Senzing Configuration
@@ -82,7 +82,7 @@ DATABASE_URL=sqlite3://na:na@database/G2C.db
 # Optional: PostgreSQL
 # DATABASE_URL=postgresql://user:password@localhost:5432/senzing
 EOF
-    
+
     # Create README.md
     cat > README.md << 'EOF'
 # Senzing Boot Camp Project
@@ -93,7 +93,7 @@ This project was created using the Senzing Boot Camp power.
 
 See `docs/` directory for project documentation.
 EOF
-    
+
     # Create .gitkeep files
     touch data/raw/.gitkeep
     touch data/transformed/.gitkeep
@@ -101,7 +101,7 @@ EOF
     touch data/backups/.gitkeep
     touch database/.gitkeep
     touch logs/.gitkeep
-    
+
     echo "✅ Project directory structure created successfully"
 else
     echo "✅ Project directory structure already exists"
@@ -109,7 +109,8 @@ fi
 ```
 
 **After creating the structure, inform the user:**
-```
+
+```text
 "I've set up the project directory structure for you. All files will be organized properly throughout the boot camp."
 ```
 
@@ -118,6 +119,7 @@ fi
 ### When This Happens
 
 **TRIGGER POINTS** (execute directory creation at ANY of these):
+
 - User says "start the boot camp"
 - User says "Module 0" or "quick demo"
 - User says "Module 1" or any module number
@@ -126,6 +128,7 @@ fi
 - **ANY indication they want to start using the power**
 
 **BEFORE** you:
+
 - ❌ Greet the user
 - ❌ Ask what they want to do
 - ❌ Present path options
@@ -135,6 +138,7 @@ fi
 - ❌ Do ANYTHING else
 
 **YOU MUST**:
+
 - ✅ Create the directory structure FIRST
 
 ---
@@ -142,6 +146,7 @@ fi
 ### Failure is NOT an Option
 
 If directory creation fails:
+
 1. Report the error to the user
 2. Provide the commands for manual execution
 3. **DO NOT PROCEED** until structure exists
@@ -187,7 +192,7 @@ If directory creation fails:
     - Use PascalCase for classes
     - Add docstrings to all functions, classes, and modules
 
-10. **All Python code must be PEP-8 compliant**:
+11. **All Python code must be PEP-8 compliant**:
     - Maximum line length: 100 characters (for readability)
     - No trailing whitespace
     - Two blank lines between top-level functions/classes
@@ -205,26 +210,29 @@ If directory creation fails:
 **When presenting path options to users**, use clear, unambiguous labels:
 
 **WRONG** (causes confusion):
-```
+
+```text
 1. Quick Demo (10 min) - Start with Module 0
 2. Fast Track (30 min) - Start with Module 5
 3. Complete Path (2-3 hrs) - Start with Module 1
 ```
+
 Problem: User entering "1" is ambiguous - do they mean option 1 or Module 1?
 
 **CORRECT** (clear and unambiguous):
-```
+
+```text
 Which path would you like to take?
 
 A) Quick Demo (10 min) - Module 0
    See entity resolution in action with sample data
-   
+
 B) Fast Track (30 min) - Modules 5-6
    For users with SGES-compliant data
-   
+
 C) Complete Beginner (2-3 hrs) - Modules 1-6, 8
    Work with your raw data from start to finish
-   
+
 D) Full Production (10-18 hrs) - All Modules 0-12
    Complete production-ready deployment
 
@@ -232,6 +240,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 ```
 
 **Interpreting User Responses**:
+
 - "A", "a", "demo", "quick demo", "Module 0" → Start Module 0
 - "B", "b", "fast", "fast track" → Start Module 5
 - "C", "c", "complete", "beginner" → Start Module 1
@@ -248,12 +257,13 @@ Please respond with A, B, C, or D (or describe what you want to do)
 **Immediate actions**:
 
 1. **Check for feedback file**:
+
    ```bash
    if [ ! -f "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md" ]; then
        # Create from template
        cp docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md \
           docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
-       
+
        # Update header with current date
        sed -i "s/\[Date when you started using the power\]/$(date +%Y-%m-%d)/" \
           docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
@@ -269,23 +279,24 @@ Please respond with A, B, C, or D (or describe what you want to do)
    - "What priority would you assign?" (High/Medium/Low)
 
 3. **Format feedback entry**:
+
    ```markdown
    ## Improvement: [Brief title based on user's description]
-   
+
    **Date**: YYYY-MM-DD
    **Module**: [Module number or "General"]
    **Priority**: [High/Medium/Low]
    **Category**: [Documentation/Workflow/Tools/UX/Bug/Performance/Security]
-   
+
    ### What Happened
    [User's description of the issue]
-   
+
    ### Why It's a Problem
    [User's explanation of impact]
-   
+
    ### Suggested Fix
    [User's suggestion, or "None provided"]
-   
+
    ### Workaround Used
    [If user found a workaround, or "None"]
    ```
@@ -303,6 +314,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
    - "When you complete the boot camp, please share this file with the power author to help improve the experience for future users"
 
 **Important**:
+
 - Always create feedback file from template if it doesn't exist
 - Ask questions one at a time (don't overwhelm user)
 - Be supportive and encouraging about feedback
@@ -312,6 +324,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 ## Module-Specific Behaviors
 
 ### Module 0: Quick Demo
+
 - **FIRST: CREATE DIRECTORY STRUCTURE** - See "🚨 MANDATORY FIRST ACTION" at the top of this document
 - Execute directory creation commands BEFORE doing anything else
 - Create `src/quickstart_demo/` subdirectory for demo code
@@ -336,6 +349,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - Connect demo results to user's potential use case
 
 ### Module 1: Business Problem
+
 - **FIRST: CREATE DIRECTORY STRUCTURE** - See "🚨 MANDATORY FIRST ACTION" at the top of this document
 - Execute directory creation commands BEFORE doing anything else
 - **Offer design pattern gallery** at the start
@@ -352,6 +366,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - **Inform user about feedback mechanism**: "If you encounter any issues or have suggestions during the boot camp, just say 'power feedback' or 'bootcamp feedback' and I'll help you document them for the power author."
 
 ### Module 2: Identify and Collect Data Sources
+
 - Review data sources identified in Module 1
 - Help user upload or link to data files
 - Save all data to `data/raw/[datasource_name].[extension]`
@@ -363,6 +378,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - Track data collection status
 
 ### Module 3: Evaluate Data Quality
+
 - **Run automated quality scoring** on each data source
 - Use data quality scorer script from docs/modules/MODULE_3_DATA_QUALITY_SCORING.md
 - Generate quality report with scores (0-100)
@@ -376,6 +392,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - **At end of module**: Suggest installing hooks for quality checks
 
 ### Module 4: Data Mapping
+
 - **Use `mapping_workflow`** - never hand-code attribute names
 - **Always pass exact `state` object** between workflow calls
 - Create separate transformation program for each data source
@@ -390,6 +407,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - **At end of module**: Present module transition with completion checklist
 
 ### Module 5: SDK Setup
+
 - Use `sdk_guide` with correct platform parameter
 - **Check if Senzing is already installed before installing**
 - Verify existing installation version and compatibility
@@ -404,7 +422,9 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - Test database connection before proceeding
 
 #### Docker Deployment Guidance
+
 When user chooses Docker deployment:
+
 - **Runtime images do NOT include PostgreSQL schema files** - cannot use `/opt/senzing/er/resources/schema/szcore-schema-postgresql-create.sql`
 - **Use two-stage initialization pattern**:
   1. Create minimal SQL schema with correct column names (CRITICAL: sys_cfg.sys_create_dt NOT sys_create_date, sys_codes_used must have code_id)
@@ -421,6 +441,7 @@ When user chooses Docker deployment:
 - Check `docs/guides/TROUBLESHOOTING_INDEX.md` for Docker-specific issues (SENZ1019, SENZ7223, SENZ1001 column errors)
 
 ### Module 6: Loading
+
 - **Verify `.kiro/hooks/` exists** before installing hooks
 - **Remind to backup** before loading (or use backup hook)
 - **Offer to use loader templates** from `templates/` directory
@@ -435,6 +456,7 @@ When user chooses Docker deployment:
 - **At end of module**: Present module transition with troubleshooting tips
 
 ### Module 7: Querying
+
 - Review business problem from Module 1
 - Design queries that answer specific business questions
 - Use `generate_scaffold` for query code
@@ -449,7 +471,9 @@ When user chooses Docker deployment:
 ## File Management
 
 ### Directory Structure
+
 All source code must be in `src/`:
+
 - `src/transform/` - Transformation programs (Python/Java/C#)
 - `src/load/` - Loading programs (Python/Java/C#)
 - `src/query/` - Query programs (Python/Java/C#)
@@ -457,6 +481,7 @@ All source code must be in `src/`:
 - `src/api/` - API endpoints (if applicable)
 
 All shell scripts must be in `scripts/`:
+
 - `scripts/deploy.sh` - Deployment automation
 - `scripts/backup.sh` - Database backup
 - `scripts/migrate_db.sh` - Database migration
@@ -465,6 +490,7 @@ All shell scripts must be in `scripts/`:
 - `scripts/setup_env.sh` - Environment setup
 
 All data files must be in `data/`:
+
 - `data/raw/` - Original source data
 - `data/transformed/` - Senzing-formatted JSON
 - `data/samples/` - Sample data for testing
@@ -472,6 +498,7 @@ All data files must be in `data/`:
 - `data/temp/` - Temporary working files (gitignored)
 
 All feedback files must be in `docs/feedback/`:
+
 - `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` - User's improvement suggestions (created from template)
 - `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md` - Template for feedback (provided by power)
 
@@ -480,7 +507,9 @@ All feedback files must be in `docs/feedback/`:
 **CRITICAL**: Never use `/tmp` or other system temporary directories for project files. Always use appropriate project directories (`data/temp/` for temporary files, `~` for downloads).
 
 ### Documentation
+
 Create and maintain:
+
 - `docs/business_problem.md` - Module 1
 - `docs/data_source_evaluation.md` - Module 2
 - `docs/mapping_[datasource].md` - Module 3 (per source)
@@ -490,6 +519,7 @@ Create and maintain:
 - `README.md` - Keep updated throughout
 
 ### Version Control
+
 - Initialize git at start of Module 1
 - Commit after each module completion
 - Create .gitignore to exclude sensitive data
@@ -498,6 +528,7 @@ Create and maintain:
 ## Progress Tracking
 
 Maintain awareness of:
+
 - Which module user is currently on
 - Which modules are complete
 - Which data sources need mapping
@@ -505,6 +536,7 @@ Maintain awareness of:
 - Any blockers or issues
 
 Periodically remind users:
+
 - "You've completed Module 3 for Customer CRM. Ready to move to Module 4?"
 - "You have 2 more data sources to map before Module 4"
 - "All data loaded! Let's create query programs in Module 6"
@@ -514,43 +546,51 @@ Periodically remind users:
 Before proceeding to next module, verify:
 
 **Module 1 → Module 2**:
+
 - ✅ Problem statement documented
 - ✅ Data sources identified
 - ✅ Success criteria defined
 
 **Module 2 → Module 3**:
+
 - ✅ All data sources collected
 - ✅ Files in `data/raw/` or locations documented
 - ✅ Data source locations documented
 
 **Module 3 → Module 4**:
+
 - ✅ All sources evaluated
 - ✅ SGES compliance determined
 - ✅ Sample data available
 
 **Module 4 → Module 5**:
+
 - ✅ All non-compliant sources mapped
 - ✅ Transformation programs tested
 - ✅ Quality validation passed (>70%)
 
 **Module 5 → Module 6**:
+
 - ✅ SDK installed
 - ✅ Database configured
 - ✅ Test script runs successfully
 
 **Module 6 → Module 7**:
+
 - ✅ All sources loaded
 - ✅ No critical errors
 - ✅ Loading statistics captured
 
 **Module 7 → Complete**:
+
 - ✅ Query programs answer business problem
 - ✅ Results validated with user
 - ✅ Documentation complete
 
 ## MCP Tool Usage
 
-### Always Use MCP Tools For:
+### Always Use MCP Tools For
+
 - Attribute names → `mapping_workflow`
 - SDK code → `generate_scaffold` or `sdk_guide`
 - Method signatures → `get_sdk_reference`
@@ -558,7 +598,8 @@ Before proceeding to next module, verify:
 - Documentation → `search_docs`
 - Code examples → `find_examples`
 
-### Never:
+### Never
+
 - Hand-code Senzing JSON attribute names
 - Guess SDK method names
 - Use outdated patterns from training data
@@ -568,6 +609,7 @@ Before proceeding to next module, verify:
 ## Steering File Loading
 
 Load steering files on-demand:
+
 - `steering/steering.md` - Core workflows (always available)
 - `steering/quick-reference.md` - MCP tool quick reference
 - `steering/environment-setup.md` - Module 1, setup questions
@@ -577,6 +619,7 @@ Load steering files on-demand:
 - `steering/lessons-learned.md` - After Module 6
 
 **For generic topics, use MCP tools instead**:
+
 - Testing strategies → `search_docs(query="testing best practices")`
 - Performance monitoring → `search_docs(query="performance monitoring", category="performance")`
 - Integration patterns → `find_examples(query="API integration")`
@@ -586,6 +629,7 @@ Load steering files on-demand:
 ## Error Handling
 
 When user encounters errors:
+
 1. Read error message carefully
 2. Use `explain_error_code` if Senzing error
 3. Check common pitfalls guide
@@ -609,6 +653,7 @@ When user encounters errors:
 ## Quality Assurance
 
 Before generating any code:
+
 - Use appropriate MCP tool for guidance
 - Include error handling
 - Add progress logging
@@ -619,6 +664,7 @@ Before generating any code:
 ## Hooks Management
 
 When installing hooks:
+
 1. Check if `.kiro/hooks/` exists
 2. Create with `mkdir -p .kiro/hooks` if needed
 3. Copy hook files
@@ -629,6 +675,7 @@ When installing hooks:
 ## State Management
 
 For `mapping_workflow`:
+
 - Always pass exact `state` from previous response
 - Never modify or reconstruct state
 - If state lost, start workflow over
@@ -637,6 +684,7 @@ For `mapping_workflow`:
 ## Success Indicators
 
 Recognize when modules are complete:
+
 - Module 1: Problem statement + data sources + success metrics
 - Module 2: All data sources collected + files in data/raw/ + locations documented
 - Module 3: All sources categorized
@@ -657,14 +705,15 @@ Recognize when modules are complete:
 ## Iterative Discovery
 
 Remember:
+
 - Users can move between modules
 - Mapping is exploratory and iterative
 - It's OK to go back and refine
 - Discovery is non-linear
 - Support flexibility while maintaining quality
 
-
 ### Module 8: Deployment Packaging
+
 - Review all code from Modules 4, 6, and 7
 - Guide user through deployment decisions:
   - Target database (PostgreSQL recommended)
@@ -704,6 +753,7 @@ Remember:
 - Prepare handoff to operations team
 
 ### Module 12 Completion
+
 - **Remind user to share feedback**: At the end of Module 12, say:
   - "🎉 Congratulations on completing the Senzing Boot Camp!"
   - "If you have any feedback about your experience, say 'power feedback' or 'bootcamp feedback' and I'll help you document it"
@@ -718,11 +768,13 @@ Remember:
 All Python code generated during the boot camp must follow PEP-8 standards:
 
 **Line Length**:
+
 - Maximum 100 characters per line (more readable than strict 79)
 - Break long lines using parentheses, not backslashes
 - Break long function calls across multiple lines
 
 **Whitespace**:
+
 - No trailing whitespace on any line
 - Two blank lines between top-level functions and classes
 - One blank line between methods in a class
@@ -730,24 +782,28 @@ All Python code generated during the boot camp must follow PEP-8 standards:
 - No spaces around = in keyword arguments
 
 **Naming Conventions**:
+
 - `snake_case` for functions, variables, and module names
 - `PascalCase` for class names
 - `UPPER_CASE` for constants
 - Descriptive names (avoid single letters except in loops)
 
 **Imports**:
+
 - All imports at top of file
 - Group imports: standard library, third-party, local
 - One import per line (except `from x import a, b`)
 - Alphabetical order within groups
 
 **Documentation**:
+
 - Module docstring at top of file
 - Docstring for every function and class
 - Use triple quotes for docstrings
 - Include purpose, parameters, and return values
 
 **Example of PEP-8 Compliant Code**:
+
 ```python
 #!/usr/bin/env python3
 """
@@ -795,6 +851,7 @@ if __name__ == "__main__":
 ```
 
 **When Generating Code**:
+
 1. Always generate PEP-8 compliant code from the start
 2. Use proper indentation (4 spaces)
 3. Add docstrings to all functions
@@ -803,6 +860,7 @@ if __name__ == "__main__":
 6. Use proper naming conventions
 
 **When User Provides Code**:
+
 1. Check for PEP-8 compliance
 2. Suggest fixes if non-compliant
 3. Explain why compliance matters (readability, maintainability)
@@ -811,6 +869,7 @@ if __name__ == "__main__":
 ### Code Quality Checks
 
 Before completing any module that generates code:
+
 1. Verify PEP-8 compliance
 2. Check for proper error handling
 3. Verify logging is present
@@ -823,6 +882,7 @@ Before completing any module that generates code:
 ### Tools for Validation
 
 Recommend these tools to users:
+
 - `pycodestyle` or `flake8` for PEP-8 checking
 - `pylint` for code quality
 - `black` for automatic formatting
@@ -830,6 +890,7 @@ Recommend these tools to users:
 - `bandit` for security scanning
 
 Example validation command:
+
 ```bash
 # Check PEP-8 compliance
 pycodestyle --max-line-length=100 src/

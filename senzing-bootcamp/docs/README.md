@@ -5,9 +5,11 @@ This directory contains all documentation for the Senzing Boot Camp.
 ## Directory Structure
 
 ### `/modules/`
+
 Module-specific documentation files. Each module has detailed documentation about its purpose, workflow, and implementation.
 
 **Files:**
+
 - `MODULE_2_DATA_COLLECTION.md` - Data collection and source management
 - `MODULE_3_DATA_QUALITY_SCORING.md` - Automated data quality assessment
 - `MODULE_6_SINGLE_SOURCE_LOADING.md` - Single source loading patterns
@@ -19,24 +21,30 @@ Module-specific documentation files. Each module has detailed documentation abou
 - `MODULE_12_DEPLOYMENT_PACKAGING.md` - Deployment packaging
 
 ### `/policies/`
+
 Policy documents that define standards and conventions for the boot camp.
 
 **Files:**
+
 - `MODULE_0_CODE_LOCATION.md` - Policy for Module 0 demo code location
 - `PYTHON_REQUIREMENTS_POLICY.md` - Python dependency management policy
 - `SHELL_SCRIPT_LOCATIONS.md` - Shell script organization policy
 
 ### `/guides/`
+
 User guides and installation instructions.
 
 **Files:**
+
 - `DESIGN_PATTERNS.md` - Entity resolution design patterns
 - `HOOKS_INSTALLATION_GUIDE.md` - Guide for installing Kiro hooks
 
 ### `/development/`
+
 Development progress tracking and implementation documentation.
 
 **Files:**
+
 - `IMPROVEMENTS.md` - Complete summary of all improvements
 - `NEW_MODULE_STRUCTURE.md` - Documentation of new 13-module structure
 - `NEW_WORKFLOWS_PHASE5.md` - Comprehensive workflows for Modules 7-12 (~10,000+ lines)
@@ -63,18 +71,21 @@ The following files remain in the root `senzing-bootcamp/` directory:
 ## Navigation
 
 ### For Users
+
 - Start with the main `POWER.md` in the root directory
 - Refer to `/guides/` for installation and setup help
 - Refer to `/modules/` for module-specific documentation
 - Refer to `/policies/` for coding standards and conventions
 
 ### For Developers
+
 - Review `/development/IMPROVEMENTS.md` for complete change history
 - Review `/development/NEW_MODULE_STRUCTURE.md` for architecture
 - Review `/development/V3_IMPLEMENTATION_STATUS.md` for current status
 - Review `/development/NEW_WORKFLOWS_PHASE5.md` for detailed workflows
 
 ### For Agents
+
 - Load `steering/steering.md` for core workflows
 - Load `steering/agent-instructions.md` for behavior guidance
 - Refer to `/policies/` for file organization rules

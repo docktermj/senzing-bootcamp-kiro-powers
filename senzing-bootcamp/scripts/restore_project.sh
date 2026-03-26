@@ -99,7 +99,7 @@ if unzip -o "$BACKUP_FILE" -q; then
     echo ""
     echo "Restored to: $RESTORE_DIR"
     echo ""
-    
+
     # Check what was restored
     echo "Restored items:"
     for item in database data licenses config src scripts docs; do
@@ -108,7 +108,7 @@ if unzip -o "$BACKUP_FILE" -q; then
         fi
     done
     echo ""
-    
+
     # Provide next steps
     echo "Next steps:"
     if [ "$RESTORE_DIR" != "$PROJECT_ROOT" ]; then

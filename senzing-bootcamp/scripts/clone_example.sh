@@ -109,7 +109,7 @@ case $REPLY in
             exit 0
         fi
         ;;
-    
+
     [Bb])
         read -p "Enter directory name: " DIR_NAME
         DEST_DIR="$PROJECT_ROOT/$DIR_NAME"
@@ -120,12 +120,12 @@ case $REPLY in
         mkdir -p "$DEST_DIR"
         echo -e "${GREEN}✓${NC} Created directory: $DEST_DIR"
         ;;
-    
+
     [Qq])
         echo "Cancelled."
         exit 0
         ;;
-    
+
     *)
         echo -e "${RED}Invalid option.${NC}"
         exit 1
@@ -143,14 +143,14 @@ SKIPPED=0
 # Copy directory structure
 for item in "$SOURCE_DIR"/*; do
     basename_item=$(basename "$item")
-    
+
     # Skip README if merging
     if [ "$DEST_DIR" = "$PROJECT_ROOT" ] && [ "$basename_item" = "README.md" ]; then
         echo -e "${YELLOW}⚠${NC} Skipping README.md (preserving your existing README)"
         ((SKIPPED++))
         continue
     fi
-    
+
     if [ -d "$item" ]; then
         # Copy directory
         if [ -d "$DEST_DIR/$basename_item" ]; then

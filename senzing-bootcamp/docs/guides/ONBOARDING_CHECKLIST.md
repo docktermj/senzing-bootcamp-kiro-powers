@@ -9,12 +9,14 @@ Complete this checklist before starting the boot camp to ensure a smooth experie
 **This should be your first step!** Create the organized directory layout for your Senzing project:
 
 - [ ] **Create project directory**
+
   ```bash
   mkdir my-senzing-project
   cd my-senzing-project
   ```
 
 - [ ] **Create directory structure**
+
   ```bash
   mkdir -p data/{raw,transformed,samples,backups}
   mkdir -p database
@@ -29,6 +31,7 @@ Complete this checklist before starting the boot camp to ensure a smooth experie
   ```
 
 - [ ] **Create initial files**
+
   ```bash
   touch README.md
   touch .gitignore
@@ -36,12 +39,14 @@ Complete this checklist before starting the boot camp to ensure a smooth experie
   ```
 
 - [ ] **Verify structure**
+
   ```bash
   tree -L 2  # or ls -R
   ```
 
 Expected structure:
-```
+
+```text
 my-senzing-project/
 ├── data/
 │   ├── raw/
@@ -206,34 +211,40 @@ my-senzing-project/
 Run these commands to verify your setup:
 
 ### Check Python
+
 ```bash
 python --version  # Should be 3.8+
 pip --version
 ```
 
 ### Check Java (if using)
+
 ```bash
 java -version  # Should be 11+
 mvn --version  # or gradle --version
 ```
 
 ### Check Git
+
 ```bash
 git --version
 ```
 
 ### Check Docker (if using)
+
 ```bash
 docker --version
 docker ps
 ```
 
 ### Check Disk Space
+
 ```bash
 df -h  # Linux/macOS
 ```
 
 ### Check Memory
+
 ```bash
 free -h  # Linux
 vm_stat  # macOS
@@ -245,31 +256,36 @@ vm_stat  # macOS
 
 You're ready to start the boot camp! Tell the agent:
 
-```
+```text
 "I'm ready to start the Senzing boot camp"
 ```
 
 ### Some Checks Incomplete ⚠️
 
 **Missing system requirements?**
+
 - Install required software first
 - Or use Docker to avoid local installation
 
 **Don't have data yet?**
+
 - Start with Module 0 (Quick Demo) using sample data
 - Prepare your data while learning
 
 **Limited time?**
+
 - Choose the 30-minute fast track
 - Or complete modules incrementally
 
 **Need help?**
+
 - Ask the agent: "Help me prepare for the boot camp"
 - Review `docs/guides/QUICK_START.md` for path options
 
 ## Troubleshooting
 
 ### Python Issues
+
 ```bash
 # Install Python 3.8+
 sudo apt install python3.11  # Ubuntu/Debian
@@ -282,6 +298,7 @@ venv\Scripts\activate     # Windows
 ```
 
 ### Docker Issues
+
 ```bash
 # Install Docker
 # Follow: https://docs.docker.com/get-docker/
@@ -291,6 +308,7 @@ docker run hello-world
 ```
 
 ### Database Issues
+
 ```bash
 # Install PostgreSQL
 sudo apt install postgresql  # Ubuntu/Debian
@@ -302,6 +320,7 @@ brew services start postgresql   # macOS
 ```
 
 ### Disk Space Issues
+
 ```bash
 # Clean up Docker
 docker system prune -a
@@ -324,7 +343,7 @@ After completing this checklist:
 
 Need help with the checklist?
 
-```
+```text
 "Help me check if I'm ready for the boot camp"
 "What do I need to install?"
 "I don't have [requirement], what should I do?"
@@ -332,5 +351,5 @@ Need help with the checklist?
 
 ---
 
-**Version**: 1.0.0  
+**Version**: 1.0.0
 **Last updated**: 2026-03-23

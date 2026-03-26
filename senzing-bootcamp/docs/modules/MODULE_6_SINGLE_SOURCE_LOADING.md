@@ -31,6 +31,7 @@ By the end of this module, you will:
 ### Data Source
 
 A **data source** is a named collection of records from a single system or file. Examples:
+
 - `CUSTOMERS_CRM` - Customer records from CRM system
 - `VENDORS_ERP` - Vendor records from ERP system
 - `EMPLOYEES_HR` - Employee records from HR system
@@ -50,6 +51,7 @@ An **entity** is Senzing's resolved view of a real-world person or organization.
 ### Step 1: Choose Data Source to Load
 
 Start with ONE data source:
+
 - Choose the simplest or most important source first
 - Verify the transformed file exists in `data/transformed/`
 - Verify the file passed linting (Module 4)
@@ -76,7 +78,7 @@ if data_source_code not in [ds['DSRC_CODE'] for ds in config.get('G2_CONFIG', {}
 
 Generate a loading program using the Senzing MCP server:
 
-```
+```text
 Use: generate_scaffold
 Parameters:
   language: python (or java, csharp, rust)
@@ -85,6 +87,7 @@ Parameters:
 ```
 
 The scaffold will include:
+
 - SDK initialization
 - Data source registration
 - Record loading loop
@@ -122,11 +125,11 @@ PROGRESS_INTERVAL = 1000  # Report every 1000 records
 
 def load_data_source():
     """Load data source into Senzing"""
-    
+
     # Initialize engine
     engine = SzEngine()
     engine.initialize(instance_name='senzing-bootcamp', settings=ENGINE_CONFIG)
-    
+
     # Statistics
     stats = {
         'attempted': 0,
@@ -134,44 +137,44 @@ def load_data_source():
         'failed': 0,
         'start_time': time.time()
     }
-    
+
     # Load records
     print(f"Loading {DATA_SOURCE} from {INPUT_FILE}...")
-    
+
     with open(INPUT_FILE) as f:
         for line in f:
             record = json.loads(line)
             record_id = record['RECORD_ID']
             stats['attempted'] += 1
-            
+
             try:
                 engine.addRecord(DATA_SOURCE, record_id, json.dumps(record))
                 stats['loaded'] += 1
-                
+
                 # Progress reporting
                 if stats['attempted'] % PROGRESS_INTERVAL == 0:
                     elapsed = time.time() - stats['start_time']
                     rate = stats['loaded'] / elapsed
                     print(f"  Loaded {stats['loaded']:,} records ({rate:.0f} rec/sec)")
-            
+
             except Exception as e:
                 stats['failed'] += 1
                 print(f"  ERROR loading record {record_id}: {e}")
-    
+
     # Final statistics
     elapsed = time.time() - stats['start_time']
     rate = stats['loaded'] / elapsed if elapsed > 0 else 0
-    
+
     print(f"\n✅ Loading complete!")
     print(f"  Attempted: {stats['attempted']:,}")
     print(f"  Loaded: {stats['loaded']:,}")
     print(f"  Failed: {stats['failed']:,}")
     print(f"  Duration: {elapsed:.1f} seconds")
     print(f"  Throughput: {rate:.0f} records/second")
-    
+
     # Cleanup
     engine.destroy()
-    
+
     return stats
 
 if __name__ == '__main__':
@@ -187,6 +190,7 @@ python3 src/load/load_customers_crm.py
 ```
 
 Monitor the output for:
+
 - Progress updates
 - Error messages
 - Final statistics
@@ -206,6 +210,7 @@ print(f"Total entities: {stats['ENTITY_COUNT']}")
 ```
 
 Expected output:
+
 ```json
 {
   "CUSTOMERS_CRM": {
@@ -216,6 +221,7 @@ Expected output:
 ```
 
 **Interpretation**:
+
 - 10,000 records loaded
 - 9,850 unique entities created
 - 150 records matched to existing entities (duplicates found)
@@ -227,6 +233,7 @@ For production systems, you'll need to load only new or changed records instead 
 ### Quick Overview
 
 **Full Reload** (Module 6 default):
+
 ```python
 # Load all records every time
 for record in read_all_records(file):
@@ -234,6 +241,7 @@ for record in read_all_records(file):
 ```
 
 **Incremental Load** (Production):
+
 ```python
 # Load only records modified since last load
 last_load_time = get_last_load_time()
@@ -243,6 +251,7 @@ for record in read_records(file):
 ```
 
 **When to use**:
+
 - Full reload: Small datasets (< 100K), infrequent updates
 - Incremental: Large datasets, frequent updates, production systems
 
@@ -252,20 +261,23 @@ for record in read_records(file):
 
 ### Common Loading Errors
 
-**SENZ0005: Invalid JSON**
-```
+#### SENZ0005: Invalid JSON
+
+```text
 Cause: Malformed JSON in record
 Solution: Validate with linter, check for special characters
 ```
 
-**SENZ0042: Missing RECORD_ID**
-```
+#### SENZ0042: Missing RECORD_ID
+
+```text
 Cause: Record missing required RECORD_ID field
 Solution: Ensure all records have RECORD_ID in transformation
 ```
 
-**SENZ0025: Database connection failed**
-```
+#### SENZ0025: Database connection failed
+
+```text
 Cause: Database not accessible
 Solution: Check database is running, verify connection string
 ```
@@ -300,8 +312,8 @@ Track and document loading statistics:
 ```markdown
 # Loading Statistics - CUSTOMERS_CRM
 
-**Date:** 2026-03-17  
-**File:** data/transformed/customers_crm.jsonl  
+**Date:** 2026-03-17
+**File:** data/transformed/customers_crm.jsonl
 **Data Source:** CUSTOMERS_CRM
 
 ## Results
@@ -353,31 +365,39 @@ Module 6 is complete when:
 ## Common Issues
 
 ### Issue: Slow Loading Performance
-**Symptoms:** < 50 records/second  
+
+**Symptoms:** < 50 records/second
 **Solutions:**
+
 - Use batch loading (load multiple records per call)
 - Optimize database (indexes, memory)
 - Use PostgreSQL instead of SQLite
 - Use MCP: `search_docs(query="performance optimization", category="performance")`
 
 ### Issue: High Error Rate
-**Symptoms:** > 5% of records fail to load  
+
+**Symptoms:** > 5% of records fail to load
 **Solutions:**
+
 - Review error messages
 - Re-run linter on transformed data
 - Check for data quality issues
 - Validate transformation logic
 
 ### Issue: All Records Become One Entity
-**Symptoms:** Entity count = 1  
+
+**Symptoms:** Entity count = 1
 **Solutions:**
+
 - Check RECORD_ID is unique per record
 - Verify records have distinguishing features
 - Review entity resolution configuration
 
 ### Issue: No Duplicates Found
-**Symptoms:** Entity count = record count  
+
+**Symptoms:** Entity count = record count
 **Solutions:**
+
 - Verify data actually has duplicates
 - Check matching features are present (names, addresses, etc.)
 - Review data quality scores from Module 3
@@ -391,7 +411,7 @@ Module 6 is complete when:
 
 ## File Locations
 
-```
+```text
 project/
 ├── src/
 │   └── load/
@@ -441,4 +461,3 @@ When a user is in Module 6:
 ## Version History
 
 - **v3.0.0** (2026-03-17): Module 6 refocused on single-source loading with incremental loading enhancement
-

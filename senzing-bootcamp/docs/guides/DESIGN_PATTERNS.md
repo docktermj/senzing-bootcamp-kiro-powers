@@ -24,6 +24,7 @@ The design pattern gallery is presented in Module 1 when users are asked:
 10. Supply Chain Entity Resolution
 
 Each pattern includes:
+
 - Problem description
 - Goal
 - Key matching criteria
@@ -46,18 +47,21 @@ Each pattern includes:
 The design pattern gallery will be enhanced with:
 
 ### Phase 2: Interactive Explorer
+
 - Visual diagrams for each pattern
 - Before/after data examples
 - Entity relationship diagrams
 - Data flow visualizations
 
 ### Phase 3: Pattern Templates
+
 - Sample data for each pattern
 - Pre-configured transformation templates
 - Query program templates
 - Test data generators
 
 ### Phase 4: Industry Variations
+
 - Healthcare-specific patterns
 - Financial services patterns
 - Retail and e-commerce patterns
@@ -65,12 +69,14 @@ The design pattern gallery will be enhanced with:
 - Manufacturing and supply chain patterns
 
 ### Phase 5: Success Metrics
+
 - Benchmark metrics by pattern
 - ROI calculators
 - Performance expectations
 - Data quality thresholds
 
 ### Phase 6: Pattern Combinations
+
 - Guidance on combining patterns
 - Multi-pattern architectures
 - Pattern evolution paths
@@ -115,6 +121,7 @@ When a user selects a pattern, it influences:
 ## Usage Statistics (To Be Tracked)
 
 Future versions will track:
+
 - Which patterns are most commonly selected
 - Success rates by pattern
 - Time to completion by pattern
@@ -131,7 +138,7 @@ If you've successfully implemented an entity resolution solution and want to con
 
 ## References
 
-- Senzing Documentation: https://senzing.com/documentation
+- Senzing Documentation: <https://senzing.com/documentation>
 - Entity Resolution Best Practices: [To be added]
 - Industry-Specific Guides: [To be added]
 

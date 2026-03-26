@@ -17,7 +17,7 @@ if ! command -v markdownlint &> /dev/null; then
     echo -e "${YELLOW}⚠️  markdownlint-cli not found${NC}"
     echo "Installing markdownlint-cli..."
     npm install -g markdownlint-cli 2>&1 | grep -v "npm WARN" || true
-    
+
     if ! command -v markdownlint &> /dev/null; then
         echo -e "${RED}❌ Failed to install markdownlint-cli${NC}"
         echo "Please install manually: npm install -g markdownlint-cli"

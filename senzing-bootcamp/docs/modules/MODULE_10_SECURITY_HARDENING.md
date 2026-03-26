@@ -21,23 +21,27 @@ After performance testing in Module 9, Module 10 helps you:
 ### 1. Secrets Management
 
 ❌ **Bad**: Hardcoded credentials
+
 ```python
 DATABASE_URL = "postgresql://user:password123@localhost/senzing"
 ```
 
 ✅ **Good**: Environment variables
+
 ```python
 import os
 DATABASE_URL = os.getenv('DATABASE_URL')
 ```
 
 ✅ **Better**: Secrets manager
+
 ```python
 from aws_secretsmanager import get_secret
 DATABASE_URL = get_secret('prod/senzing/database_url')
 ```
 
 **Tools**:
+
 - AWS Secrets Manager
 - Azure Key Vault
 - HashiCorp Vault
@@ -71,6 +75,7 @@ def search():
 ```
 
 **Authentication Methods**:
+
 - API Keys
 - OAuth 2.0
 - JWT tokens
@@ -79,11 +84,13 @@ def search():
 ### 3. Data Encryption
 
 **At Rest**:
+
 - Database encryption (PostgreSQL: pgcrypto, TDE)
 - File system encryption
 - Backup encryption
 
 **In Transit**:
+
 - HTTPS/TLS for all connections
 - Database SSL connections
 - VPN for internal traffic
@@ -96,6 +103,7 @@ DATABASE_URL = "postgresql://user:pass@host/db?sslmode=require"
 ### 4. PII Handling Compliance
 
 **GDPR Requirements**:
+
 - Right to access
 - Right to erasure
 - Data minimization
@@ -103,6 +111,7 @@ DATABASE_URL = "postgresql://user:pass@host/db?sslmode=require"
 - Breach notification
 
 **Implementation**:
+
 ```python
 def anonymize_pii(record):
     """Anonymize PII for non-production environments"""
@@ -115,6 +124,7 @@ def anonymize_pii(record):
 ### 5. Security Scanning
 
 **Dependency Scanning**:
+
 ```bash
 # Python
 pip install safety
@@ -128,6 +138,7 @@ mvn dependency-check:check
 ```
 
 **Container Scanning**:
+
 ```bash
 # Scan Docker images
 docker scan my-senzing-app:latest
@@ -137,6 +148,7 @@ trivy image my-senzing-app:latest
 ```
 
 **Code Scanning**:
+
 ```bash
 # Bandit (Python)
 bandit -r src/
@@ -148,11 +160,13 @@ sonar-scanner
 ### 6. Network Security
 
 **Firewall Rules**:
+
 - Allow only necessary ports
 - Restrict database access to application servers
 - Use security groups/network policies
 
 **Example AWS Security Group**:
+
 ```yaml
 SecurityGroup:
   Ingress:
@@ -165,6 +179,7 @@ SecurityGroup:
 ### 7. Access Control
 
 **Principle of Least Privilege**:
+
 - Application uses read-only database user for queries
 - Separate users for loading vs querying
 - Admin access only when needed
@@ -214,11 +229,11 @@ def validate_search_input(query):
     for char in dangerous_chars:
         if char in query:
             raise ValueError(f"Invalid character in query: {char}")
-    
+
     # Limit length
     if len(query) > 1000:
         raise ValueError("Query too long")
-    
+
     return query
 ```
 

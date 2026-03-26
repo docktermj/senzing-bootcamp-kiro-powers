@@ -5,13 +5,15 @@ This directory contains complete example projects demonstrating different use ca
 ## Available Examples
 
 ### 1. Simple Single Source
-**Path**: `simple-single-source/`  
-**Use case**: Basic customer deduplication with one data source  
-**Complexity**: Beginner  
-**Time to complete**: 2-3 hours  
+
+**Path**: `simple-single-source/`
+**Use case**: Basic customer deduplication with one data source
+**Complexity**: Beginner
+**Time to complete**: 2-3 hours
 **Modules covered**: 1-6, 8
 
 A minimal example showing:
+
 - Single CSV data source (customers)
 - Basic data mapping
 - SQLite database
@@ -23,13 +25,15 @@ A minimal example showing:
 ---
 
 ### 2. Multi-Source Project
-**Path**: `multi-source-project/`  
-**Use case**: Customer 360 with three data sources  
-**Complexity**: Intermediate  
-**Time to complete**: 6-8 hours  
+
+**Path**: `multi-source-project/`
+**Use case**: Customer 360 with three data sources
+**Complexity**: Intermediate
+**Time to complete**: 6-8 hours
 **Modules covered**: 1-8
 
 A realistic example showing:
+
 - Three data sources (CRM, e-commerce, support)
 - Data quality evaluation
 - Complex mappings
@@ -42,13 +46,15 @@ A realistic example showing:
 ---
 
 ### 3. Production Deployment
-**Path**: `production-deployment/`  
-**Use case**: Production-ready vendor MDM system  
-**Complexity**: Advanced  
-**Time to complete**: 12-15 hours  
+
+**Path**: `production-deployment/`
+**Use case**: Production-ready vendor MDM system
+**Complexity**: Advanced
+**Time to complete**: 12-15 hours
 **Modules covered**: All (0-12)
 
 A complete production example showing:
+
 - Two data sources (vendor master, procurement)
 - Full data quality pipeline
 - PostgreSQL with replication
@@ -66,13 +72,16 @@ A complete production example showing:
 ## Using the Examples
 
 ### Option 1: Study the Example
+
 Browse the example directory to see:
+
 - Project structure
 - Code organization
 - Documentation style
 - Best practices
 
 ### Option 2: Copy and Adapt
+
 ```bash
 # Copy example to your project
 cp -r senzing-bootcamp/examples/simple-single-source/* my-project/
@@ -84,7 +93,9 @@ cp -r senzing-bootcamp/examples/simple-single-source/* my-project/
 ```
 
 ### Option 3: Follow Along
+
 Use the example as a guide while building your own project:
+
 1. Compare your structure to the example
 2. Reference code patterns
 3. Check documentation format
@@ -94,7 +105,7 @@ Use the example as a guide while building your own project:
 
 Each example includes:
 
-```
+```text
 example-name/
 ├── README.md                      # Example overview and instructions
 ├── data/
@@ -120,36 +131,39 @@ example-name/
 
 ## Comparison Matrix
 
-| Feature | Simple | Multi-Source | Production |
-|---------|--------|--------------|------------|
-| Data sources | 1 | 3 | 2 |
-| Database | SQLite | PostgreSQL | PostgreSQL + replica |
-| Records | 10K | 500K | 5M |
-| Modules | 1-6, 8 | 1-8 | 0-12 |
-| Testing | Basic | UAT | Full test suite |
-| Monitoring | None | Basic | Full observability |
-| Security | Basic | Medium | Hardened |
-| Deployment | Local | Docker | Docker + K8s |
-| CI/CD | No | No | Yes |
-| API | No | No | Yes |
-| Documentation | Minimal | Complete | Comprehensive |
-| Time | 2-3 hrs | 6-8 hrs | 12-15 hrs |
+| Feature       | Simple  | Multi-Source | Production           |
+|---------------|---------|--------------|----------------------|
+| Data sources  | 1       | 3            | 2                    |
+| Database      | SQLite  | PostgreSQL   | PostgreSQL + replica |
+| Records       | 10K     | 500K         | 5M                   |
+| Modules       | 1-6, 8  | 1-8          | 0-12                 |
+| Testing       | Basic   | UAT          | Full test suite      |
+| Monitoring    | None    | Basic        | Full observability   |
+| Security      | Basic   | Medium       | Hardened             |
+| Deployment    | Local   | Docker       | Docker + K8s         |
+| CI/CD         | No      | No           | Yes                  |
+| API           | No      | No           | Yes                  |
+| Documentation | Minimal | Complete     | Comprehensive        |
+| Time          | 2-3 hrs | 6-8 hrs      | 12-15 hrs            |
 
 ## Learning Path
 
 ### Beginner Path
+
 1. Start with **Simple Single Source**
 2. Complete Modules 1-6 and 8
 3. Understand the basics
 4. Build confidence
 
 ### Intermediate Path
+
 1. Review **Simple Single Source** quickly
 2. Work through **Multi-Source Project**
 3. Complete Modules 1-8
 4. Handle realistic complexity
 
 ### Advanced Path
+
 1. Skim **Simple** and **Multi-Source**
 2. Focus on **Production Deployment**
 3. Complete all Modules 0-12
@@ -212,24 +226,28 @@ open http://localhost:3000  # Grafana dashboard
 ## Customization Tips
 
 ### Adapting Data Sources
+
 1. Replace sample data with your data
 2. Update field mappings in transformation programs
 3. Adjust data source names in configuration
 4. Re-run quality evaluation
 
 ### Changing Database
+
 1. Update connection string in `.env`
 2. Modify engine configuration
 3. Re-register data sources
 4. Test connection
 
 ### Scaling Up
+
 1. Increase batch sizes in loading programs
 2. Add parallel processing
 3. Optimize database configuration
 4. Add monitoring
 
 ### Adding Features
+
 1. Add new data sources (follow Module 2-4)
 2. Add new queries (follow Module 8)
 3. Add API endpoints (follow Module 12)
@@ -237,19 +255,19 @@ open http://localhost:3000  # Grafana dashboard
 
 ## Common Questions
 
-**Q: Can I use these examples in production?**  
+**Q: Can I use these examples in production?**
 A: The production example is production-ready. Simple and multi-source examples are for learning and need hardening for production use.
 
-**Q: Do I need to complete all modules to use an example?**  
+**Q: Do I need to complete all modules to use an example?**
 A: No. Each example is complete and runnable. Use them as reference or starting points.
 
-**Q: Can I mix and match from different examples?**  
+**Q: Can I mix and match from different examples?**
 A: Yes! Take the orchestration from multi-source, security from production, etc.
 
-**Q: Are the sample data files real?**  
+**Q: Are the sample data files real?**
 A: They're realistic synthetic data for demonstration purposes.
 
-**Q: How do I contribute my own example?**  
+**Q: How do I contribute my own example?**
 A: Create a PR with your example following the structure above.
 
 ## Support
@@ -269,6 +287,7 @@ This directory includes reference `requirements.txt` files to help you set up Py
 ### Using the Requirements Files
 
 **For your project:**
+
 ```bash
 # Copy the example file to your project root
 cp requirements.txt.example ../my-project/requirements.txt
@@ -278,6 +297,7 @@ pip install -r requirements.txt
 ```
 
 **For development:**
+
 ```bash
 # Copy both files
 cp requirements.txt.example ../my-project/requirements.txt

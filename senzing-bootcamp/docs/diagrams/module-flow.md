@@ -2,7 +2,7 @@
 
 ## Complete Module Flow
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    SENZING BOOT CAMP MODULES                        │
 └─────────────────────────────────────────────────────────────────────┘
@@ -166,32 +166,36 @@
 ## Learning Paths
 
 ### Path A: Quick Demo (10 minutes)
-```
+
+```text
 Module 0 → Done
 ```
 
 ### Path B: Fast Track (30 minutes)
-```
+
+```text
 Module 5 → Module 6 → Done
 (For users with SGES-compliant data)
 ```
 
 ### Path C: Complete Beginner (2-3 hours)
-```
-Module 1 → Module 2 → Module 3 → Module 4 → 
+
+```text
+Module 1 → Module 2 → Module 3 → Module 4 →
 Module 5 → Module 6 → Module 8 → Done
 ```
 
 ### Path D: Full Production (10-18 hours)
-```
-Module 0 → Module 1 → Module 2 → Module 3 → Module 4 → 
-Module 5 → Module 6 → Module 7 → Module 8 → Module 9 → 
+
+```text
+Module 0 → Module 1 → Module 2 → Module 3 → Module 4 →
+Module 5 → Module 6 → Module 7 → Module 8 → Module 9 →
 Module 10 → Module 11 → Module 12 → Done
 ```
 
 ## Module Dependencies
 
-```
+```text
 Module 0: No dependencies
 Module 1: No dependencies
 Module 2: Requires Module 1
@@ -209,7 +213,7 @@ Module 12: Requires Module 11 (optional)
 
 ## Skip Conditions
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │ Can I skip this module?                                 │
 ├─────────────────────────────────────────────────────────┤
@@ -231,7 +235,7 @@ Module 12: Requires Module 11 (optional)
 
 ## Time Estimates
 
-```
+```text
 ┌──────────────────────────────────────────────────────────┐
 │ Module                    │ Time Estimate                │
 ├──────────────────────────────────────────────────────────┤
@@ -255,7 +259,7 @@ Module 12: Requires Module 11 (optional)
 
 ## Module Outputs
 
-```
+```text
 Module 0  → Demo results, understanding of entity resolution
 Module 1  → docs/business_problem.md
 Module 2  → data/raw/* files, docs/data_source_evaluation.md
@@ -274,11 +278,13 @@ Module 12 → Deployment artifacts, runbooks
 ## Progress Tracking
 
 Check your progress:
+
 ```bash
 ./scripts/status.sh
 ```
 
 View detailed progress:
+
 ```bash
 cat docs/guides/PROGRESS_TRACKER.md
 ```

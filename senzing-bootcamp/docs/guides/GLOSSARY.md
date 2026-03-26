@@ -185,6 +185,7 @@ A step-by-step process for completing a task, documented in steering files.
 ## Common Senzing Attributes
 
 ### Name Attributes
+
 - `NAME_FULL`: Complete name (e.g., "John Smith")
 - `NAME_FIRST`: First/given name
 - `NAME_LAST`: Last/family name
@@ -194,6 +195,7 @@ A step-by-step process for completing a task, documented in steering files.
 - `NAME_ORG`: Organization name
 
 ### Address Attributes
+
 - `ADDR_FULL`: Complete address
 - `ADDR_LINE1`: Street address line 1
 - `ADDR_LINE2`: Street address line 2 (apt, suite)
@@ -203,11 +205,13 @@ A step-by-step process for completing a task, documented in steering files.
 - `ADDR_COUNTRY`: Country
 
 ### Contact Attributes
+
 - `PHONE_NUMBER`: Phone number
 - `EMAIL_ADDRESS`: Email address
 - `WEBSITE_ADDRESS`: Website URL
 
 ### Identifier Attributes
+
 - `SSN_NUMBER`: Social Security Number (US)
 - `DRIVERS_LICENSE_NUMBER`: Driver's license
 - `PASSPORT_NUMBER`: Passport number
@@ -215,11 +219,13 @@ A step-by-step process for completing a task, documented in steering files.
 - `TAX_ID_NUMBER`: Tax ID (EIN, VAT)
 
 ### Date Attributes
+
 - `DATE_OF_BIRTH`: Birth date
 - `DATE_OF_DEATH`: Death date
 - `REGISTRATION_DATE`: Registration/creation date
 
 ### Other Attributes
+
 - `GENDER`: Gender
 - `NATIONALITY`: Nationality/citizenship
 - `CITIZENSHIP`: Country of citizenship

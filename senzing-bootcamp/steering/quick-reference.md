@@ -8,14 +8,15 @@ Fast reference for common Senzing MCP tool calls and workflows.
 
 ## Essential First Call
 
-```
+```text
 get_capabilities(version="current")
 ```
+
 Always call this first to discover available tools and confirm MCP server connectivity.
 
 ## Module 0: Quick Demo
 
-```
+```text
 # Get sample data
 get_sample_data(dataset="las-vegas", limit=100)
 
@@ -23,7 +24,8 @@ get_sample_data(dataset="las-vegas", limit=100)
 generate_scaffold(language="python", workflow="full_pipeline", version="current")
 ```
 
-**IMPORTANT**: 
+**IMPORTANT**:
+
 - Create `src/quickstart_demo/` directory for all Module 0 demo code
 - Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
 - Save sample data to `src/quickstart_demo/sample_data_[dataset_name].jsonl`
@@ -38,6 +40,7 @@ No MCP calls required - focus on discovery questions and documentation.
 No MCP calls required - focus on collecting data files.
 
 **Actions**:
+
 - Help user upload files to `data/raw/`
 - Document data source locations in `docs/data_source_locations.md`
 - Handle different source types: files, databases, APIs
@@ -46,7 +49,7 @@ No MCP calls required - focus on collecting data files.
 
 ## Module 3: Evaluate Data Quality
 
-```
+```text
 # Analyze data quality
 analyze_record(file_paths=["data/transformed/customers.jsonl"], version="current")
 
@@ -56,7 +59,7 @@ search_docs(query="data quality", category="data_analysis", version="current")
 
 ## Module 4: Map Your Data
 
-```
+```text
 # Start mapping workflow
 mapping_workflow(action="start", file_paths=["data/raw/customers.csv"], version="current")
 
@@ -74,7 +77,7 @@ analyze_record(file_paths=["data/transformed/customers.jsonl"], version="current
 
 ## Module 5: Set Up SDK
 
-```
+```text
 # FIRST: Check if already installed
 python -c "import senzing; print('Senzing version:', senzing.__version__)" 2>/dev/null
 
@@ -94,7 +97,7 @@ search_docs(query="installation best practices", category="anti_patterns", versi
 
 ## Module 6: Load Single Data Source
 
-```
+```text
 # Generate loading code
 generate_scaffold(language="python", workflow="add_records", version="current")
 
@@ -110,13 +113,14 @@ sdk_guide(topic="full_pipeline", language="python", platform="docker", version="
 No specific MCP calls - focus on orchestration logic.
 
 **Actions**:
+
 - Define load order based on dependencies
 - Create orchestration scripts
 - Implement error handling across sources
 
 ## Module 8: Query and Validate Results
 
-```
+```text
 # Generate query code
 generate_scaffold(language="python", workflow="query", version="current")
 generate_scaffold(language="python", workflow="search", version="current")
@@ -128,29 +132,33 @@ get_sdk_reference(topic="flags", version="current")
 
 ## Modules 9-12: Production Readiness
 
-**Module 9: Performance Testing**
+### Module 9: Performance Testing
+
 - Benchmark transformation and loading
 - Test query response times
 - Profile resource utilization
 
-**Module 10: Security Hardening**
+### Module 10: Security Hardening
+
 - Implement secrets management
 - Set up authentication/authorization
 - Enable encryption
 
-**Module 11: Monitoring**
+### Module 11: Monitoring
+
 - Set up logging and metrics
 - Configure alerting
 - Create dashboards
 
-**Module 12: Deployment**
+### Module 12: Deployment
+
 - Package application
 - Set up multi-environment strategy
 - Implement disaster recovery
 
 ## Troubleshooting
 
-```
+```text
 # Explain error codes
 explain_error_code(error_code="SENZ0005", version="current")
 explain_error_code(error_code="0042", version="current")
@@ -168,7 +176,7 @@ find_examples(repo="brianmacy/sz_mem-v4", file_path="sz_mem.py")
 
 ## SDK Reference
 
-```
+```text
 # Get method signatures
 get_sdk_reference(topic="functions", filter="addRecord", version="current")
 
@@ -182,18 +190,21 @@ get_sdk_reference(topic="response_schemas", version="current")
 ## Common Patterns
 
 ### Check Before Recommending Architecture
-```
+
+```text
 search_docs(query="[your approach]", category="anti_patterns", version="current")
 ```
 
 ### Never Guess Attribute Names
-```
+
+```text
 # WRONG: Hand-coding {"BUSINESS_NAME_ORG": "Acme Corp"}
 # RIGHT: Use mapping_workflow to get correct attribute names
 ```
 
 ### Never Guess Method Names
-```
+
+```text
 # WRONG: engine.close_export(handle)
 # RIGHT: Use generate_scaffold or get_sdk_reference
 ```
@@ -201,12 +212,14 @@ search_docs(query="[your approach]", category="anti_patterns", version="current"
 ## Version Parameter
 
 All MCP tools accept a `version` parameter:
+
 - `"current"` - Latest Senzing version (default, recommended)
 - `"4.0"` - Senzing V4 specific
 
 ## When to Load This Reference
 
 Load this quick reference when:
+
 - Starting any module
 - User asks "what MCP tool should I use?"
 - Need a fast reminder of tool signatures

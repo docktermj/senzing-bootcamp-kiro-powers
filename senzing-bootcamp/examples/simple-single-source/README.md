@@ -4,10 +4,10 @@ A minimal Senzing project demonstrating customer deduplication with a single dat
 
 ## Overview
 
-**Use case:** Deduplicate customer records from a CRM system  
-**Data source:** Single CSV file with 10,000 customer records  
-**Database:** SQLite (no setup required)  
-**Time to complete:** 2-3 hours  
+**Use case:** Deduplicate customer records from a CRM system
+**Data source:** Single CSV file with 10,000 customer records
+**Database:** SQLite (no setup required)
+**Time to complete:** 2-3 hours
 **Modules covered:** 1-6, 8
 
 ## What You'll Learn
@@ -152,7 +152,7 @@ def load_records(input_file):
     """Load records from JSONL file"""
     engine = G2Engine()
     engine.init("LoadCustomers", get_config(), False)
-    
+
     with open(input_file, 'r') as f:
         for line in f:
             record = json.loads(line)
@@ -161,7 +161,7 @@ def load_records(input_file):
                 record["RECORD_ID"],
                 line
             )
-    
+
     engine.destroy()
 ```
 
@@ -174,23 +174,23 @@ def find_duplicates():
     """Find entities with multiple records"""
     engine = G2Engine()
     engine.init("FindDuplicates", get_config(), False)
-    
+
     # Export all entities
     export_handle = engine.exportJSONEntityReport(0)
-    
+
     duplicates = []
     while True:
         entity_json = engine.fetchNext(export_handle)
         if not entity_json:
             break
-        
+
         entity = json.loads(entity_json)
         if len(entity["RESOLVED_ENTITY"]["RECORDS"]) > 1:
             duplicates.append(entity)
-    
+
     engine.closeExport(export_handle)
     engine.destroy()
-    
+
     return duplicates
 ```
 
@@ -243,6 +243,7 @@ result = engine.whyEntities(
 ```
 
 Output shows:
+
 - Name similarity: 95%
 - Address match: 100%
 - Phone match: 100%
@@ -262,14 +263,17 @@ Output shows:
 1. Install PostgreSQL
 2. Create database: `createdb senzing`
 3. Update `.env`:
-   ```
+
+   ```text
    DATABASE_URL=postgresql://user:pass@localhost:5432/senzing
    ```
+
 4. Re-run loading
 
 ### Add More Queries
 
 Create new query programs in `src/query/`:
+
 - Search by name
 - Search by phone
 - Search by email
@@ -277,22 +281,26 @@ Create new query programs in `src/query/`:
 
 ## Troubleshooting
 
-**Issue: Import error for senzing**
+### Issue: Import error for senzing
+
 ```bash
 pip install senzing
 ```
 
-**Issue: Database file not found**
+### Issue: Database file not found
+
 ```bash
 mkdir -p database
 ```
 
-**Issue: No duplicates found**
+### Issue: No duplicates found
+
 - Check that data loaded correctly
 - Verify records have matching attributes
 - Review data quality
 
-**Issue: Too many/few matches**
+### Issue: Too many/few matches
+
 - This is normal - entity resolution is probabilistic
 - Review match reasons with `whyEntities`
 - Adjust matching thresholds (advanced)

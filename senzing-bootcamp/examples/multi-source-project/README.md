@@ -3,30 +3,33 @@
 ## Overview
 
 This example demonstrates a complete Customer 360 implementation using three data sources:
+
 - CRM system (customers)
 - E-commerce platform (orders/accounts)
 - Support ticketing system (support contacts)
 
-**Time to Complete:** 6-8 hours  
-**Difficulty:** Intermediate  
+**Time to Complete:** 6-8 hours
+**Difficulty:** Intermediate
 **Modules Covered:** 1-8
 
 ## Business Problem
 
 **Scenario:** A retail company has customer data scattered across three systems. They need a unified view to:
+
 - Identify duplicate customers across systems
 - Link customer interactions (purchases, support tickets)
 - Enable personalized marketing
 - Improve customer service
 
 **Expected Outcomes:**
+
 - Reduce duplicate customer records by 80%
 - Link 95%+ of customer interactions to correct entities
 - Enable single customer view for service reps
 
 ## Project Structure
 
-```
+```text
 multi-source-customer360/
 ├── data/
 │   ├── raw/
@@ -116,7 +119,7 @@ Create `docs/business_problem.md`:
 # Business Problem: Customer 360 View
 
 ## Problem Statement
-We have customer data in three disconnected systems (CRM, E-commerce, Support). 
+We have customer data in three disconnected systems (CRM, E-commerce, Support).
 This causes:
 - Duplicate customer records
 - Incomplete customer history
@@ -143,6 +146,7 @@ This causes:
 ### Module 2: Collect Data Sources
 
 Download sample data:
+
 ```bash
 # Create directories
 mkdir -p data/raw data/samples
@@ -154,30 +158,31 @@ mkdir -p data/raw data/samples
 ### Module 3: Evaluate Data Quality
 
 Run quality assessment:
+
 ```python
 # src/utils/data_quality.py
 import pandas as pd
 
 def assess_quality(file_path, source_name):
     df = pd.read_csv(file_path)
-    
+
     report = {
         'source': source_name,
         'total_records': len(df),
         'completeness': {},
         'duplicates': {}
     }
-    
+
     # Check completeness
     for col in df.columns:
         non_null = df[col].notna().sum()
         report['completeness'][col] = (non_null / len(df)) * 100
-    
+
     # Check for duplicates
     if 'email' in df.columns:
         dup_emails = df['email'].duplicated().sum()
         report['duplicates']['email'] = dup_emails
-    
+
     return report
 
 # Run for each source
@@ -190,6 +195,7 @@ print(f"CRM Quality Score: {sum(crm_quality['completeness'].values()) / len(crm_
 Create transformation programs for each source:
 
 **src/transform/transform_crm.py**:
+
 ```python
 #!/usr/bin/env python3
 """Transform CRM customers to Senzing format"""
@@ -221,7 +227,7 @@ def transform_file(input_file, output_file):
         for row in reader:
             senzing_record = transform_crm_record(row)
             outfile.write(json.dumps(senzing_record) + '\n')
-    
+
     print(f"✅ Transformed {input_file} -> {output_file}")
 
 if __name__ == '__main__':
@@ -229,6 +235,7 @@ if __name__ == '__main__':
 ```
 
 **src/transform/transform_ecommerce.py**:
+
 ```python
 #!/usr/bin/env python3
 """Transform E-commerce accounts to Senzing format"""
@@ -240,7 +247,7 @@ def transform_ecommerce_record(row):
     """Transform single e-commerce record"""
     # Parse name (could be "First Last" or "First Middle Last")
     name_parts = row['name'].split()
-    
+
     return {
         "DATA_SOURCE": "ECOMMERCE",
         "RECORD_ID": row['account_id'],
@@ -264,7 +271,7 @@ def transform_file(input_file, output_file):
         for row in reader:
             senzing_record = transform_ecommerce_record(row)
             outfile.write(json.dumps(senzing_record) + '\n')
-    
+
     print(f"✅ Transformed {input_file} -> {output_file}")
 
 if __name__ == '__main__':
@@ -272,6 +279,7 @@ if __name__ == '__main__':
 ```
 
 **src/transform/transform_support.py**:
+
 ```python
 #!/usr/bin/env python3
 """Transform Support contacts to Senzing format"""
@@ -299,7 +307,7 @@ def transform_file(input_file, output_file):
         for row in reader:
             senzing_record = transform_support_record(row)
             outfile.write(json.dumps(senzing_record) + '\n')
-    
+
     print(f"✅ Transformed {input_file} -> {output_file}")
 
 if __name__ == '__main__':
@@ -333,6 +341,7 @@ EOF
 ### Module 6-7: Load Data Sources with Orchestration
 
 **src/load/orchestrator.py**:
+
 ```python
 #!/usr/bin/env python3
 """Multi-source loading orchestrator"""
@@ -345,20 +354,20 @@ class LoadOrchestrator:
     def __init__(self, config_file='config/senzing_config.json'):
         with open(config_file) as f:
             self.config = json.load(f)
-        
+
         self.engine = G2Engine()
         self.engine.init("Orchestrator", json.dumps(self.config), False)
-    
+
     def load_source(self, data_source, input_file):
         """Load a single data source"""
         print(f"\n{'='*60}")
         print(f"Loading {data_source} from {input_file}")
         print(f"{'='*60}")
-        
+
         start_time = time.time()
         success_count = 0
         error_count = 0
-        
+
         with open(input_file, 'r') as f:
             for line_num, line in enumerate(f, 1):
                 try:
@@ -369,29 +378,29 @@ class LoadOrchestrator:
                         json.dumps(record)
                     )
                     success_count += 1
-                    
+
                     if line_num % 1000 == 0:
                         print(f"  Loaded {line_num:,} records...")
-                
+
                 except Exception as e:
                     error_count += 1
                     print(f"  Error on line {line_num}: {e}")
-        
+
         duration = time.time() - start_time
-        
+
         print(f"\n✅ {data_source} Loading Complete:")
         print(f"   Success: {success_count:,} records")
         print(f"   Errors: {error_count:,} records")
         print(f"   Duration: {duration:.1f} seconds")
         print(f"   Rate: {success_count/duration:.1f} records/sec")
-        
+
         return {
             'data_source': data_source,
             'success': success_count,
             'errors': error_count,
             'duration': duration
         }
-    
+
     def load_all(self):
         """Load all data sources in optimal order"""
         sources = [
@@ -399,12 +408,12 @@ class LoadOrchestrator:
             ('ECOMMERCE', 'data/transformed/ecommerce_accounts.jsonl'),
             ('SUPPORT', 'data/transformed/support_contacts.jsonl')
         ]
-        
+
         results = []
         for data_source, input_file in sources:
             result = self.load_source(data_source, input_file)
             results.append(result)
-        
+
         # Print summary
         print(f"\n{'='*60}")
         print("LOADING SUMMARY")
@@ -412,14 +421,14 @@ class LoadOrchestrator:
         total_records = sum(r['success'] for r in results)
         total_errors = sum(r['errors'] for r in results)
         total_duration = sum(r['duration'] for r in results)
-        
+
         print(f"Total Records Loaded: {total_records:,}")
         print(f"Total Errors: {total_errors:,}")
         print(f"Total Duration: {total_duration:.1f} seconds")
         print(f"Overall Rate: {total_records/total_duration:.1f} records/sec")
-        
+
         return results
-    
+
     def cleanup(self):
         """Clean up resources"""
         self.engine.destroy()
@@ -433,6 +442,7 @@ if __name__ == '__main__':
 ```
 
 Run the orchestrator:
+
 ```bash
 python src/load/orchestrator.py
 ```
@@ -440,6 +450,7 @@ python src/load/orchestrator.py
 ### Module 8: Query and Validate Results
 
 **src/query/customer_360_view.py**:
+
 ```python
 #!/usr/bin/env python3
 """Generate Customer 360 view"""
@@ -449,49 +460,49 @@ from senzing import G2Engine
 
 def get_customer_360(record_id, data_source):
     """Get complete 360 view of a customer"""
-    
+
     # Initialize engine
     with open('config/senzing_config.json') as f:
         config = json.load(f)
-    
+
     engine = G2Engine()
     engine.init("Customer360", json.dumps(config), False)
-    
+
     try:
         # Get entity for this record
         entity_json = engine.getEntityByRecordID(data_source, record_id)
         entity = json.loads(entity_json)
-        
+
         print(f"\n{'='*60}")
         print(f"CUSTOMER 360 VIEW")
         print(f"{'='*60}")
         print(f"Entity ID: {entity['RESOLVED_ENTITY']['ENTITY_ID']}")
         print(f"\nResolved Identity:")
         print(f"  Name: {entity['RESOLVED_ENTITY']['ENTITY_NAME']}")
-        
+
         # Show all records that resolved to this entity
         print(f"\nLinked Records ({len(entity['RESOLVED_ENTITY']['RECORDS'])} total):")
         for record in entity['RESOLVED_ENTITY']['RECORDS']:
             print(f"  - {record['DATA_SOURCE']}: {record['RECORD_ID']}")
-        
+
         # Show contact information
         if 'PHONE' in entity['RESOLVED_ENTITY']:
             print(f"\nPhone Numbers:")
             for phone in entity['RESOLVED_ENTITY']['PHONE']:
                 print(f"  - {phone['PHONE_NUMBER']}")
-        
+
         if 'EMAIL' in entity['RESOLVED_ENTITY']:
             print(f"\nEmail Addresses:")
             for email in entity['RESOLVED_ENTITY']['EMAIL']:
                 print(f"  - {email['EMAIL_ADDRESS']}")
-        
+
         if 'ADDRESS' in entity['RESOLVED_ENTITY']:
             print(f"\nAddresses:")
             for addr in entity['RESOLVED_ENTITY']['ADDRESS']:
                 print(f"  - {addr.get('ADDR_FULL', 'N/A')}")
-        
+
         return entity
-    
+
     finally:
         engine.destroy()
 
@@ -501,6 +512,7 @@ if __name__ == '__main__':
 ```
 
 **src/query/find_duplicates.py**:
+
 ```python
 #!/usr/bin/env python3
 """Find duplicate customers across sources"""
@@ -510,27 +522,27 @@ from senzing import G2Engine
 
 def find_cross_source_duplicates():
     """Find entities with records from multiple sources"""
-    
+
     with open('config/senzing_config.json') as f:
         config = json.load(f)
-    
+
     engine = G2Engine()
     engine.init("FindDuplicates", json.dumps(config), False)
-    
+
     try:
         # Export all entities
         export_handle = engine.exportJSONEntityReport(0)
-        
+
         multi_source_entities = []
-        
+
         while True:
             entity_json = engine.fetchNext(export_handle)
             if not entity_json:
                 break
-            
+
             entity = json.loads(entity_json)
             records = entity['RESOLVED_ENTITY']['RECORDS']
-            
+
             # Check if entity has records from multiple sources
             sources = set(r['DATA_SOURCE'] for r in records)
             if len(sources) > 1:
@@ -540,23 +552,23 @@ def find_cross_source_duplicates():
                     'sources': list(sources),
                     'record_count': len(records)
                 })
-        
+
         engine.closeExport(export_handle)
-        
+
         # Print results
         print(f"\n{'='*60}")
         print(f"CROSS-SOURCE DUPLICATES FOUND")
         print(f"{'='*60}")
         print(f"Total entities with multiple sources: {len(multi_source_entities)}")
-        
+
         print(f"\nTop 10 Examples:")
         for i, entity in enumerate(multi_source_entities[:10], 1):
             print(f"\n{i}. Entity {entity['entity_id']}: {entity['name']}")
             print(f"   Sources: {', '.join(entity['sources'])}")
             print(f"   Total records: {entity['record_count']}")
-        
+
         return multi_source_entities
-    
+
     finally:
         engine.destroy()
 
@@ -601,17 +613,20 @@ After completing this example, you should see:
 
 ## Troubleshooting
 
-**Issue: Low match rates**
+### Issue: Low match rates
+
 - Check data quality scores
 - Review mapping specifications
 - Verify name/address standardization
 
-**Issue: Slow loading**
+### Issue: Slow loading
+
 - Use PostgreSQL instead of SQLite
 - Increase batch sizes
 - Optimize transformation code
 
-**Issue: Unexpected matches**
+### Issue: Unexpected matches
+
 - Review match keys and thresholds
 - Check for data quality issues
 - Use `explain_error_code` for diagnostics

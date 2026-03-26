@@ -18,6 +18,7 @@ After understanding the business problem in Module 1, users need to gather the a
 ### Step 1: Identify Data Sources
 
 Help the user identify which data sources they need:
+
 - What systems contain the relevant data?
 - What format is the data in (CSV, JSON, database, API)?
 - How much data is there?
@@ -26,6 +27,7 @@ Help the user identify which data sources they need:
 ### Step 2: Collect Data
 
 The user can provide data in several ways:
+
 - **Upload files:** User uploads CSV, JSON, or other data files
 - **Provide URLs:** User provides links to data sources
 - **Database connection:** User provides database connection details
@@ -34,6 +36,7 @@ The user can provide data in several ways:
 ### Step 3: Store in `data/raw/`
 
 All raw data sources must be stored in the `data/raw/` directory:
+
 - Create `data/raw/` if it doesn't exist
 - Save uploaded files to `data/raw/[source_name].[extension]`
 - For large datasets, create representative samples
@@ -42,6 +45,7 @@ All raw data sources must be stored in the `data/raw/` directory:
 ### Step 4: Document Data Sources
 
 Create or update `docs/data_source_locations.md` with:
+
 - Data source name
 - Original location (URL, database, system)
 - File location in project (`data/raw/...`)
@@ -102,15 +106,19 @@ Module 2 is complete when:
 ## Common Issues
 
 ### Issue: Dataset Too Large
+
 **Solution:** Create a representative sample of 1000-10000 records instead of loading the entire dataset
 
 ### Issue: Data Not Accessible
+
 **Solution:** Work with user to get access, or use alternative data sources
 
 ### Issue: Multiple File Formats
+
 **Solution:** Document each format, handle them separately in later modules
 
 ### Issue: Sensitive Data
+
 **Solution:** Use anonymized or synthetic data for evaluation, document security requirements
 
 ## Integration with Other Modules
@@ -122,12 +130,14 @@ Module 2 is complete when:
 ## File Naming Conventions
 
 Use descriptive names for data files:
+
 - `customers.csv` - Customer data from CRM
 - `vendors.json` - Vendor data from procurement system
 - `transactions_sample.jsonl` - Sample of transaction data
 - `employees_2024.csv` - Employee data snapshot
 
 Avoid:
+
 - Generic names like `data.csv` or `file1.json`
 - Special characters or spaces in filenames
 - Extremely long filenames

@@ -33,17 +33,27 @@ This boot camp complements the optional **senzing** Kiro Power. Both connect to 
 
 Load these on-demand when needed:
 
-**Core Workflows:**
+**Module Workflows (load the one you need):**
 
-- `steering.md` — Complete workflows for all modules (0-12)
-- `agent-instructions.md` — Consolidated agent behavior guide
-- `quick-reference.md` — MCP tool quick reference card
+- `module-00-quick-demo.md` — Module 0: Quick Demo
+- `module-01-business-problem.md` — Module 1: Business Problem
+- `module-02-data-collection.md` — Module 2: Data Collection
+- `module-03-data-quality.md` — Module 3: Data Quality + Hook Installation
+- `module-04-data-mapping.md` — Module 4: Data Mapping
+- `module-05-sdk-setup.md` — Module 5: SDK Setup
+- `module-06-single-source.md` — Module 6: Single Source Loading
+- `module-07-multi-source.md` — Module 7: Multi-Source Orchestration
+- `module-08-query-validation.md` — Module 8: Query and Validation
+- `module-09-performance.md` — Module 9: Performance Testing
+- `module-10-security.md` — Module 10: Security Hardening
+- `module-11-monitoring.md` — Module 11: Monitoring
+- `module-12-deployment.md` — Module 12: Deployment
+
+**Agent Behavior:**
+
+- `agent-instructions.md` — Consolidated agent behavior guide (always loaded)
+- `security-privacy.md` — Data privacy and PII protection (always loaded)
 - `feedback-workflow.md` — Feedback collection workflow
-
-**Project Setup:**
-
-- `project-structure.md` — Directory structure and setup commands
-- `environment-setup.md` — Version control, Python venv, Docker setup
 
 **Planning and Design:**
 
@@ -51,10 +61,15 @@ Load these on-demand when needed:
 - `module-prerequisites.md` — Prerequisites and dependencies for each module
 - `complexity-estimator.md` — Time estimation based on data characteristics
 - `cost-estimation.md` — Pricing, ROI, deployment costs
+- `quick-reference.md` — MCP tool quick reference card
 
-**Advanced Workflows:**
+**Project Setup:**
 
-- `modules-7-12-workflows.md` — Detailed workflows for advanced modules
+- `project-structure.md` — Directory structure and setup commands
+- `environment-setup.md` — Version control, Python venv, Docker setup
+
+**Advanced Topics:**
+
 - `data-lineage.md` — Track data transformations and lineage
 - `incremental-loading.md` — Delta/CDC loading patterns
 - `uat-framework.md` — User acceptance testing framework
@@ -64,7 +79,6 @@ Load these on-demand when needed:
 
 - `common-pitfalls.md` — Common mistakes and solutions
 - `troubleshooting-decision-tree.md` — Visual diagnostic flowchart
-- `security-privacy.md` — Data privacy, PII protection, compliance
 - `lessons-learned.md` — Post-project retrospective template
 
 ## MCP Server Configuration

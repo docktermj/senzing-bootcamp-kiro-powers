@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Module Prerequisites
 
 Before starting each module, ensure prerequisites are met. This guide helps you verify you're ready to proceed.

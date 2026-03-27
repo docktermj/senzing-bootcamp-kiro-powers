@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Project Directory Structure
 
 The Senzing Boot Camp agent will create this organized directory structure for you at the start of Module 1:

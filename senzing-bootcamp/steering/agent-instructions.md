@@ -537,7 +537,25 @@ Before proceeding to next module, verify:
 
 ## Steering File Loading
 
-Load steering files on-demand:
+Load the per-module steering file when the user starts a module:
+
+| Module | Steering File                   |
+|--------|---------------------------------|
+| 0      | `module-00-quick-demo.md`       |
+| 1      | `module-01-business-problem.md` |
+| 2      | `module-02-data-collection.md`  |
+| 3      | `module-03-data-quality.md`     |
+| 4      | `module-04-data-mapping.md`     |
+| 5      | `module-05-sdk-setup.md`        |
+| 6      | `module-06-single-source.md`    |
+| 7      | `module-07-multi-source.md`     |
+| 8      | `module-08-query-validation.md` |
+| 9      | `module-09-performance.md`      |
+| 10     | `module-10-security.md`         |
+| 11     | `module-11-monitoring.md`       |
+| 12     | `module-12-deployment.md`       |
+
+Load additional steering files as needed:
 
 - `steering/steering.md` - Core workflows (always available)
 - `steering/quick-reference.md` - MCP tool quick reference

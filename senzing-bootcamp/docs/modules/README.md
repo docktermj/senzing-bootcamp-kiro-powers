@@ -214,7 +214,7 @@ Module 2 → Module 3 → Module 4 → Module 5 → Module 6
 ## Related Documentation
 
 - **Main Guide**: `../../POWER.md`
-- **Workflows**: `../../steering/steering.md` and `../../steering/modules-7-12-workflows.md`
+- **Workflows**: `../../steering/module-*.md` (per-module steering files)
 - **Policies**: `../policies/`
 - **Guides**: `../guides/`
 

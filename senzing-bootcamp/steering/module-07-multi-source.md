@@ -1,0 +1,115 @@
+---
+inclusion: manual
+---
+
+# Module 7: Multi-Source Orchestration
+
+**Purpose**: Coordinate loading of multiple data sources with dependencies and optimization.
+
+**Prerequisites**:
+
+- ✅ Module 6 complete (first source loaded successfully)
+- ✅ Multiple data sources to orchestrate
+- ✅ Loading statistics reviewed for first source
+
+**Agent Workflow**:
+
+1. **Analyze data sources and dependencies**:
+
+   Ask: "Do any of your data sources depend on others being loaded first?"
+
+   WAIT for response.
+
+   Common dependency patterns:
+   - Parent-child relationships (load parents first)
+   - Reference data (load lookups first)
+   - Temporal ordering (load historical first)
+
+2. **Determine loading strategy**:
+
+   Ask: "Would you like to load sources sequentially or in parallel?"
+
+   Options:
+   - **Sequential**: One at a time, safer, easier to debug
+   - **Parallel**: Multiple at once, faster, requires more resources
+   - **Hybrid**: Some parallel, some sequential based on dependencies
+
+   WAIT for response.
+
+3. **Create orchestration plan**:
+
+   Document in `docs/loading_strategy.md`:
+
+   ```markdown
+   # Loading Strategy
+
+   ## Load Order
+   1. Reference data (COUNTRIES, STATES)
+   2. Core entities (CUSTOMERS, PRODUCTS)
+   3. Transactions (ORDERS, SUPPORT_TICKETS)
+
+   ## Parallel Groups
+   - Group 1: CUSTOMERS, PRODUCTS (no dependencies)
+   - Group 2: ORDERS, SUPPORT_TICKETS (depend on Group 1)
+
+   ## Resource Allocation
+   - Max parallel loaders: 4
+   - Memory per loader: 2GB
+   - Expected duration: 2-3 hours
+   ```
+
+4. **Create orchestrator program**:
+
+   Use `generate_scaffold` with `workflow='orchestration'` or create from template.
+
+   Save to `src/load/orchestrator.py`.
+
+   Key features:
+   - Dependency management
+   - Parallel execution (ThreadPoolExecutor or multiprocessing)
+   - Progress tracking across sources
+   - Error handling and recovery
+   - Statistics aggregation
+
+5. **Test orchestration with samples**:
+
+   Before running on full data:
+
+   ```bash
+   # Test with small samples
+   python src/load/orchestrator.py --test --limit 100
+   ```
+
+6. **Run full orchestration**:
+
+   ```bash
+   python src/load/orchestrator.py
+   ```
+
+   Monitor:
+   - Progress for each source
+   - Overall completion percentage
+   - Error rates
+   - Resource utilization
+
+7. **Validate results**:
+
+   After loading:
+   - Check record counts for each source
+   - Verify cross-source matches
+   - Review error logs
+   - Confirm no data loss
+
+**Success Criteria**:
+
+- ✅ All sources loaded successfully
+- ✅ Dependencies respected
+- ✅ Cross-source matches identified
+- ✅ Error rate < 1%
+- ✅ Loading statistics documented
+
+**Common Issues**:
+
+- Dependency cycles: Redesign load order
+- Resource exhaustion: Reduce parallelism
+- Slow performance: Optimize transformations or use PostgreSQL

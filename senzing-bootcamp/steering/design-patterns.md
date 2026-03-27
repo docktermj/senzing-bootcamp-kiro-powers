@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Entity Resolution Design Pattern Gallery
 
 When starting Module 1, offer users a gallery of common entity resolution patterns to help them identify which pattern(s) match their situation.

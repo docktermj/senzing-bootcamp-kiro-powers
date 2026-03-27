@@ -1,0 +1,145 @@
+---
+inclusion: manual
+---
+
+# Module 2: Identify and Collect Data Sources
+
+## Workflow: Identify and Collect Data Sources (Module 2)
+
+**Time**: 10-15 minutes per data source
+
+**Prerequisites**: ✅ Module 1 complete (business problem defined, data sources identified)
+
+**Purpose**: Collect the actual data files from each identified data source and store them in the project for analysis and mapping.
+
+1. **Review identified data sources**: Recap the data sources identified in Module 1. Review `docs/business_problem.md` for the complete list.
+
+2. **For each data source, collect the data**:
+
+   First, ask: "How would you like to provide the data for [datasource_name]? You can upload a file, provide a URL/file path, connect to a database, or use an API endpoint."
+
+   WAIT for their response, then proceed with the appropriate option:
+
+   **Option A: User uploads files**
+   - Ask user to provide data files (CSV, JSON, Excel, etc.)
+   - User can drag and drop files into the chat or use file upload
+   - Save uploaded files to `data/raw/[datasource_name].[extension]`
+   - Example: `data/raw/customer_crm.csv`, `data/raw/vendor_api.json`
+
+   **Option B: User provides URL/location**
+   - Ask user for the URL or file path where data resides
+   - Document the location in `docs/data_source_locations.md`
+   - If accessible, download/copy data to `data/raw/`
+   - If not accessible (requires credentials, VPN, etc.), document access method
+
+   **Option C: Database connection**
+   - Ask user for database connection details
+   - Document connection string (without passwords) in `docs/data_source_locations.md`
+   - Store sample query results in `data/raw/[datasource_name]_sample.csv`
+   - Document the query used to extract data
+
+   **Option D: API endpoint**
+   - Ask user for API endpoint URL and authentication method
+   - Document API details in `docs/data_source_locations.md`
+   - Store sample API response in `data/raw/[datasource_name]_sample.json`
+   - Document the API call used
+
+3. **Verify data was received**:
+
+   ```bash
+   # Check that files are in data/raw/
+   ls -lh data/raw/
+
+   # Show first few lines of each file
+   head -5 data/raw/customer_crm.csv
+   head -5 data/raw/vendor_api.json
+   ```
+
+4. **Document data source locations**: Create or update `docs/data_source_locations.md`:
+
+   ```markdown
+   # Data Source Locations
+
+   ## Data Source 1: Customer CRM
+   - **Type**: CSV file
+   - **Location**: `data/raw/customer_crm.csv`
+   - **Original Source**: Uploaded by user from local system
+   - **Last Updated**: 2025-01-17
+   - **Record Count**: ~50,000 records
+   - **Access Method**: One-time upload
+
+   ## Data Source 2: Vendor API
+   - **Type**: JSON API
+   - **Location**: Sample data in `data/raw/vendor_api_sample.json`
+   - **Original Source**: https://api.vendor.com/v1/suppliers
+   - **Last Updated**: 2025-01-17
+   - **Record Count**: ~5,000 records
+   - **Access Method**: API call with Bearer token authentication
+   - **API Documentation**: https://api.vendor.com/docs
+   - **Sample API Call**:
+     ```bash
+     curl -H "Authorization: Bearer $API_TOKEN" \
+          https://api.vendor.com/v1/suppliers?limit=100
+     ```
+
+   ## Data Source 3: Legacy Database
+
+   - **Type**: PostgreSQL database
+   - **Location**: Sample data in `data/raw/legacy_db_sample.csv`
+   - **Original Source**: postgresql://dbserver.company.com:5432/legacy_db
+   - **Last Updated**: 2025-01-17
+   - **Record Count**: ~200,000 records
+   - **Access Method**: Database query (requires VPN)
+   - **Sample Query**:
+
+     ```sql
+     SELECT customer_id, name, address, phone, email
+     FROM customers
+     WHERE active = true
+     LIMIT 1000;
+     ```
+
+   ```text
+
+5. **Handle sensitive data appropriately**:
+
+   - Remind user about data privacy (see `steering/security-privacy.md`)
+   - If data contains PII, suggest anonymizing for testing
+   - Ensure `.gitignore` excludes `data/raw/*` to prevent committing sensitive data
+   - Document any data handling requirements in `docs/security_compliance.md`
+
+6. **Create sample files if needed**:
+
+   - If full dataset is very large (>1GB), create smaller sample files
+   - Save samples to `data/samples/[datasource_name]_sample.[extension]`
+   - Document sampling method (first N records, random sample, etc.)
+   - Ensure sample is representative of full dataset
+
+7. **Verify data quality at a glance**:
+
+   - Check file sizes are reasonable
+   - Verify files are not empty
+   - Check file formats are as expected
+   - Look for obvious issues (corrupted files, wrong format, etc.)
+
+8. **Update data source tracking**:
+
+   ```markdown
+   Data Source Collection Status:
+   - ✅ Customer CRM - Collected (data/raw/customer_crm.csv)
+   - ✅ Vendor API - Sample collected (data/raw/vendor_api_sample.json)
+   - ⬜ Legacy Database - Pending (requires VPN access)
+   ```
+
+9. **Transition to Module 3**: "Great! Now that we have the data files, let's evaluate each one to see if it needs mapping or if it's already in the right format for Senzing."
+
+**Success indicator**: ✅ All data sources have files in `data/raw/` OR documented locations + `docs/data_source_locations.md` created + data collection status tracked
+
+**Agent behavior**:
+
+- Be patient with file uploads - they may take time
+- Provide clear instructions for each data source type
+- Help user create sample files if full datasets are too large
+- Remind about data privacy and security
+- Verify files are accessible before proceeding
+- Document everything in `docs/data_source_locations.md`

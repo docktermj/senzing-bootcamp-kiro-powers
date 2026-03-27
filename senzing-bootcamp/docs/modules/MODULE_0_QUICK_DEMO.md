@@ -222,6 +222,10 @@ Key Insights:
 - The engine learns patterns from your data
 - No training data required
 
+### Understanding `get_stats()` vs. Record Counts
+
+A common pitfall: `sz_engine.get_stats()` tracks per-process workload statistics for the current engine session, not the total records in the repository. It resets after each call and may return `-1` for fields like `loadedRecords` if stats haven't accumulated. To get accurate record counts, track them during loading (e.g., increment a counter per successful `add_record` call) rather than relying on `get_stats()`. The correct use of `get_stats()` is for monitoring ongoing operations, covered in Module 9 (Performance Testing).
+
 ## File Locations
 
 All Module 0 demo code is saved in `src/quickstart_demo/`:

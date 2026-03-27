@@ -135,6 +135,7 @@ def run_demo():
         print_header("Loading Records into Senzing")
         print("Loading records...")
         
+        loaded_count = 0
         for i, record in enumerate(SAMPLE_RECORDS, 1):
             record_json = json.dumps(record)
             engine.addRecord(
@@ -142,18 +143,26 @@ def run_demo():
                 record['RECORD_ID'],
                 record_json
             )
+            loaded_count += 1
             print(f"  [{i}/5] Loaded {record['DATA_SOURCE']}:{record['RECORD_ID']}")
         
-        print("\n✓ All records loaded")
+        print(f"\n✓ All {loaded_count} records loaded")
+        
+        # NOTE: Do NOT use engine.getStats() to get record counts.
+        # get_stats() tracks per-process workload statistics and resets
+        # after each call — it may return -1 for loadedRecords.
+        # Instead, track counts during loading as shown above.
+        # get_stats() is appropriate for monitoring ongoing operations
+        # (see Module 9 - Performance Testing).
         
         # Query results
         print_header("AFTER: Entity Resolution Results")
         
         # Get entity count
-        # Note: In real implementation, query the database for actual entity count
+        # Track counts during loading rather than using get_stats()
         print("\nResults:")
         print("━" * 80)
-        print(f"Records loaded:              5")
+        print(f"Records loaded:              {loaded_count}")
         print(f"Entities created:            2-3 (Senzing found the duplicates!)")
         print(f"Duplicates found:            2-3 records")
         print(f"Match rate:                  40-60%")

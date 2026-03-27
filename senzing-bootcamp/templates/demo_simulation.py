@@ -9,7 +9,7 @@ IMPORTANT: This is a SIMULATION showing what Senzing would do.
 For the real Senzing SDK demo, use the Docker option or install the SDK.
 
 Author: Senzing Boot Camp
-Version: 1.0.0
+Version: 0.1.0
 Date: 2026-03-26
 """
 

@@ -180,6 +180,7 @@ If directory creation fails:
    - SQLite databases → `database/`
    - Configuration → `config/`
    - Docker files → `docker/` (NEVER in project root)
+   - **When MCP tools generate files in the project root, immediately relocate them to the correct directory**
 
 10. **All Python code must be PEP-8 compliant**:
     - Maximum line length: 100 characters (for readability)
@@ -321,12 +322,16 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - **Always pass exact `state` object** between workflow calls
 - Create separate transformation program for each data source
 - **Offer to use templates** from `templates/` directory
-- Save programs in `src/transform/`
+- **CRITICAL — File placement**: All generated files MUST go to the correct directories, never the project root:
+  - Python mapper scripts → `src/transform/transform_[datasource].py`
+  - Transformed JSONL output → `data/transformed/[datasource].jsonl`
+  - Mapping documentation → `docs/mapping_[datasource].md`
+  - Shell scripts → `scripts/`
+  - If the mapping workflow generates files in the root, immediately relocate them
 - Test on small sample (10-100 records) first
 - Use `lint_record` to validate output
 - Use `analyze_record` to check quality
 - Iterate if quality score < 70%
-- Document mappings in `docs/mapping_[datasource].md`
 - Track which sources are mapped vs pending
 - **At end of module**: Present module transition with completion checklist
 

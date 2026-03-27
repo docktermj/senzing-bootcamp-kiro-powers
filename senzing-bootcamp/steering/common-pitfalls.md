@@ -6,6 +6,14 @@ inclusion: always
 
 Learn from common mistakes to save time and frustration.
 
+## Module 0: Quick Demo
+
+### Pitfall: Using `get_stats()` for Record Counts
+
+**Symptom**: `get_stats()` returns `-1` for `loadedRecords` even though records loaded successfully
+**Problem**: `get_stats()` tracks per-process workload statistics, not repository totals. It resets after each call.
+**Solution**: Track record counts during loading with a simple counter. Use `get_stats()` only for monitoring ongoing operations (Module 9).
+
 ## Module 1: Business Problem
 
 ### Pitfall: Problem Too Vague
@@ -119,6 +127,19 @@ Learn from common mistakes to save time and frustration.
 **Symptom**: `mapping_workflow` errors about missing state
 **Problem**: Not passing the `state` object between calls
 **Solution**: Always pass the EXACT `state` JSON from previous response
+
+### Pitfall: Generated Files Placed in Project Root
+
+**Symptom**: `.py`, `.jsonl`, `.md`, `.sh` files appear in project root after mapping
+**Problem**: MCP tools may output files to the current directory instead of the proper subdirectory
+**Solution**: Always relocate generated files immediately:
+
+- Python mapper scripts → `src/transform/`
+- Transformed JSONL output → `data/transformed/`
+- Mapping documentation → `docs/`
+- Shell scripts → `scripts/`
+
+If files land in the root, move them before proceeding.
 
 ## Module 5: Set Up SDK
 

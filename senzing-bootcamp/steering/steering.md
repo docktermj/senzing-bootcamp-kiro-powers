@@ -161,7 +161,7 @@ Use this workflow when a user wants to see entity resolution in action before wo
 
 9. **Display results with match explanations**: After the demo runs, show:
 
-   a) **Summary statistics**:
+   a) **Summary statistics** (use the count tracked during loading, NOT `get_stats()`):
 
    ```text
    Results:

@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-# Module 4: Data Mapping
+# Module 5: Data Mapping
 
 ## Workflow: Data Mapping End-to-End (Module 4)
 

@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-# Module 3: Verify Data Sources Against SGES
+# Module 4: Verify Data Sources Against SGES
 
 ## Workflow: Verify Data Sources Against SGES (Module 3)
 

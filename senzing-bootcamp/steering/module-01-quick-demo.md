@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-# Module 0: Quick Demo (Optional)
+# Module 1: Quick Demo (Optional)
 
 ## Workflow: Quick Demo (Module 0 - Optional)
 

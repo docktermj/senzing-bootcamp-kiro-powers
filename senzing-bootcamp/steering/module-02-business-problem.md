@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-# Module 1: Discover the Business Problem
+# Module 2: Discover the Business Problem
 
 ## Workflow: Discover the Business Problem (Module 1)
 

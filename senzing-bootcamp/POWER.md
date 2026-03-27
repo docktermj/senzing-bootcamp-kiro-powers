@@ -18,12 +18,12 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 **New users:** Say "start the boot camp" to begin. Choose your path:
 
-- A) Quick Demo (10 min) — Module 0
+- A) Quick Demo (10 min) — Module 1
 - B) Fast Track (30 min) — Modules 5-6 (for users with SGES-compliant data)
-- C) Complete Beginner (2-3 hrs) — Modules 1-6, 8
+- C) Complete Beginner (2-3 hrs) — Modules 2-6, 8
 - D) Full Production (10-18 hrs) — All Modules 0-12
 
-**Experienced users:** Skip to Module 5 (have SGES data), Module 6 (SDK installed), or Module 8 (data loaded).
+**Experienced users:** Skip to Module 5 (have SGES data), Module 6 (SDK + data ready), or Module 8 (data loaded).
 
 ## Relationship to Senzing Power
 
@@ -35,12 +35,12 @@ Load these on-demand when needed:
 
 **Module Workflows (load the one you need):**
 
-- `module-00-quick-demo.md` — Module 0: Quick Demo
-- `module-01-business-problem.md` — Module 1: Business Problem
-- `module-02-data-collection.md` — Module 2: Data Collection
-- `module-03-data-quality.md` — Module 3: Data Quality + Hook Installation
-- `module-04-data-mapping.md` — Module 4: Data Mapping
-- `module-05-sdk-setup.md` — Module 5: SDK Setup
+- `module-00-sdk-setup.md` — Module 0: SDK Setup
+- `module-01-quick-demo.md` — Module 1: Quick Demo (Optional)
+- `module-02-business-problem.md` — Module 2: Business Problem
+- `module-03-data-collection.md` — Module 3: Data Collection
+- `module-04-data-quality.md` — Module 4: Data Quality + Hook Installation
+- `module-05-data-mapping.md` — Module 5: Data Mapping
 - `module-06-single-source.md` — Module 6: Single Source Loading
 - `module-07-multi-source.md` — Module 7: Multi-Source Orchestration
 - `module-08-query-validation.md` — Module 8: Query and Validation
@@ -131,12 +131,12 @@ Always call `get_capabilities` first when starting a session.
 
 | Module | Topic                              | Time              |
 |--------|------------------------------------|-------------------|
-| 0      | Quick Demo (Optional)              | 10-15 min         |
-| 1      | Understand Business Problem        | 20-30 min         |
-| 2      | Identify and Collect Data Sources  | 10-15 min/source  |
-| 3      | Evaluate Data Quality              | 15-20 min/source  |
-| 4      | Map Your Data                      | 1-2 hrs/source    |
-| 5      | Set Up SDK                         | 30 min - 1 hr     |
+| 0      | Set Up SDK                         | 30 min - 1 hr     |
+| 1      | Quick Demo (Optional)              | 10-15 min         |
+| 2      | Understand Business Problem        | 20-30 min         |
+| 3      | Identify and Collect Data Sources  | 10-15 min/source  |
+| 4      | Evaluate Data Quality              | 15-20 min/source  |
+| 5      | Map Your Data                      | 1-2 hrs/source    |
 | 6      | Load Single Data Source            | 30 min/source     |
 | 7      | Multi-Source Orchestration         | 1-2 hrs           |
 | 8      | Query and Validate Results         | 1-2 hrs           |
@@ -145,7 +145,7 @@ Always call `get_capabilities` first when starting a session.
 | 11     | Monitoring and Observability       | 1-2 hrs           |
 | 12     | Package and Deploy                 | 2-3 hrs           |
 
-Modules are progressive but iterative. Skip ahead options: have SGES data (skip 4), SDK installed (skip 5), single source (skip 7), not deploying to production (skip 9-12).
+Modules are progressive but iterative. Skip ahead options: have SGES data (skip 5), single source (skip 7), not deploying to production (skip 9-12).
 
 ## Code Quality Standards
 

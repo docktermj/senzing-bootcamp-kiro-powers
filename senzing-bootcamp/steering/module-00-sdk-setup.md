@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-# Module 5: SDK Installation and Configuration
+# Module 0: SDK Installation and Configuration
 
 ## Workflow: Quick SDK Test Load — Part A: SDK Installation and Configuration (Module 5)
 

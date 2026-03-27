@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-# Module 2: Identify and Collect Data Sources
+# Module 3: Identify and Collect Data Sources
 
 ## Workflow: Identify and Collect Data Sources (Module 2)
 

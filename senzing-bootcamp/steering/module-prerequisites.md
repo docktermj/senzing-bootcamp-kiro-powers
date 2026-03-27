@@ -6,125 +6,11 @@ inclusion: manual
 
 Before starting each module, ensure prerequisites are met. This guide helps you verify you're ready to proceed.
 
-## Module 0: Quick Demo (Optional)
+## Module 0: Set Up SDK
 
 **Prerequisites**:
 
-- No prerequisites
-
-**Recommended**:
-
-- 10-15 minutes of uninterrupted time
-- Curiosity about entity resolution
-
-**Skip if**:
-
-- You're already familiar with Senzing
-- You want to dive directly into your own project
-
-## Module 1: Understand Business Problem
-
-**Prerequisites**:
-
-- No prerequisites
-
-**Recommended**:
-
-- Have business problem in mind
-- Understand your organization's pain points
-- Know who will use the entity resolution results
-
-**Ready to proceed when**:
-
-- You can articulate the business problem in 2-3 sentences
-- You know what success looks like
-
-## Module 2: Identify and Collect Data Sources
-
-**Prerequisites**:
-
-- ✅ Module 1 complete (business problem defined)
-- ✅ Data sources identified in Module 1
-
-**Recommended**:
-
-- Access to data source systems
-- Permissions to extract sample data
-- Understanding of data formats (CSV, JSON, database, API)
-
-**Ready to proceed when**:
-
-- You have a list of data sources to work with
-- You know where each data source is located
-- You have access permissions to extract data
-
-**Common blockers**:
-
-- Missing access permissions → Request access from data owners
-- Unknown data locations → Review Module 1 problem statement
-- Too many sources → Start with 1-2 most important sources
-
-## Module 3: Evaluate Data Quality
-
-**Prerequisites**:
-
-- ✅ Module 2 complete (data sources collected)
-- ✅ Data files in `data/raw/` directory
-- ✅ Sample data available for evaluation
-
-**Recommended**:
-
-- Representative sample of each data source (1000-10000 records)
-- Understanding of expected data quality
-- Knowledge of critical attributes for matching
-
-**Ready to proceed when**:
-
-- Data files are in `data/raw/` directory
-- You can open and view the data files
-- You understand the data format (CSV, JSON, etc.)
-
-**Common blockers**:
-
-- Data files too large → Extract representative sample
-- Data in proprietary format → Convert to CSV or JSON
-- Missing data files → Return to Module 2
-
-## Module 4: Map Your Data
-
-**Prerequisites**:
-
-- ✅ Module 3 complete (sources evaluated)
-- ✅ Non-compliant sources identified
-- ✅ Quality scores reviewed
-
-**Recommended**:
-
-- Understanding of source data fields
-- Knowledge of which fields are important for matching
-- Sample records for testing transformations
-
-**Ready to proceed when**:
-
-- You know which sources need mapping (non-SGES sources)
-- You understand the source data structure
-- You have quality scores from Module 3
-
-**Common blockers**:
-
-- Unclear field meanings → Consult data source documentation
-- Complex data structures → Start with simple fields first
-- Poor data quality → Document quality issues, proceed with mapping
-
-**Skip if**:
-
-- All sources are already SGES-compliant → Go directly to Module 5
-
-## Module 5: Set Up SDK
-
-**Prerequisites**:
-
-- ✅ Module 4 complete (all sources mapped) OR
+- ✅ Module 5 complete (all sources mapped) OR
 - ✅ All sources are SGES-compliant
 - ✅ Platform/environment ready
 
@@ -152,11 +38,125 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 
 - Senzing is already installed → Verify with `G2ConfigMgr.py` or similar
 
+## Module 1: Quick Demo (Optional)
+
+**Prerequisites**:
+
+- No prerequisites
+
+**Recommended**:
+
+- 10-15 minutes of uninterrupted time
+- Curiosity about entity resolution
+
+**Skip if**:
+
+- You're already familiar with Senzing
+- You want to dive directly into your own project
+
+## Module 2: Understand Business Problem
+
+**Prerequisites**:
+
+- No prerequisites
+
+**Recommended**:
+
+- Have business problem in mind
+- Understand your organization's pain points
+- Know who will use the entity resolution results
+
+**Ready to proceed when**:
+
+- You can articulate the business problem in 2-3 sentences
+- You know what success looks like
+
+## Module 3: Identify and Collect Data Sources
+
+**Prerequisites**:
+
+- ✅ Module 2 complete (business problem defined)
+- ✅ Data sources identified in Module 2
+
+**Recommended**:
+
+- Access to data source systems
+- Permissions to extract sample data
+- Understanding of data formats (CSV, JSON, database, API)
+
+**Ready to proceed when**:
+
+- You have a list of data sources to work with
+- You know where each data source is located
+- You have access permissions to extract data
+
+**Common blockers**:
+
+- Missing access permissions → Request access from data owners
+- Unknown data locations → Review Module 2 problem statement
+- Too many sources → Start with 1-2 most important sources
+
+## Module 4: Evaluate Data Quality
+
+**Prerequisites**:
+
+- ✅ Module 3 complete (data sources collected)
+- ✅ Data files in `data/raw/` directory
+- ✅ Sample data available for evaluation
+
+**Recommended**:
+
+- Representative sample of each data source (1000-10000 records)
+- Understanding of expected data quality
+- Knowledge of critical attributes for matching
+
+**Ready to proceed when**:
+
+- Data files are in `data/raw/` directory
+- You can open and view the data files
+- You understand the data format (CSV, JSON, etc.)
+
+**Common blockers**:
+
+- Data files too large → Extract representative sample
+- Data in proprietary format → Convert to CSV or JSON
+- Missing data files → Return to Module 3
+
+## Module 5: Map Your Data
+
+**Prerequisites**:
+
+- ✅ Module 4 complete (sources evaluated)
+- ✅ Non-compliant sources identified
+- ✅ Quality scores reviewed
+
+**Recommended**:
+
+- Understanding of source data fields
+- Knowledge of which fields are important for matching
+- Sample records for testing transformations
+
+**Ready to proceed when**:
+
+- You know which sources need mapping (non-SGES sources)
+- You understand the source data structure
+- You have quality scores from Module 4
+
+**Common blockers**:
+
+- Unclear field meanings → Consult data source documentation
+- Complex data structures → Start with simple fields first
+- Poor data quality → Document quality issues, proceed with mapping
+
+**Skip if**:
+
+- All sources are already SGES-compliant → Go directly to Module 0
+
 ## Module 6: Load Single Data Source
 
 **Prerequisites**:
 
-- ✅ Module 5 complete (SDK installed)
+- ✅ Module 0 complete (SDK installed)
 - ✅ Database configured
 - ✅ At least one transformed data source ready
 
@@ -175,9 +175,9 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 
 **Common blockers**:
 
-- SDK not working → Return to Module 5, verify installation
+- SDK not working → Return to Module 0, verify installation
 - Database not initialized → Run initialization commands
-- No transformed data → Return to Module 4
+- No transformed data → Return to Module 5
 
 **Skip if**:
 
@@ -371,13 +371,13 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 ## Quick Reference: Module Dependencies
 
 ```text
-Module 0 (Optional) → No dependencies
-Module 1 → No dependencies
-Module 2 → Requires Module 1
+Module 0 (Set Up SDK) → Requires Module 5 (or SGES data)
+Module 1 (Optional) → No dependencies
+Module 2 → No dependencies
 Module 3 → Requires Module 2
-Module 4 → Requires Module 3 (or skip if SGES-compliant)
-Module 5 → Requires Module 4 (or SGES data)
-Module 6 → Requires Module 5
+Module 4 → Requires Module 3
+Module 5 → Requires Module 4 (or skip if SGES-compliant)
+Module 6 → Requires Module 0
 Module 7 → Requires Module 6 (or skip if single source)
 Module 8 → Requires Module 6 or 7
 Module 9 → Requires Module 8 (or skip if not needed)

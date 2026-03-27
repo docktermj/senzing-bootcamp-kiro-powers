@@ -121,8 +121,8 @@ fi
 **TRIGGER POINTS** (execute directory creation at ANY of these):
 
 - User says "start the boot camp"
-- User says "Module 0" or "quick demo"
-- User says "Module 1" or any module number
+- User says "Module 1" or "quick demo"
+- User says any module number
 - User selects any path (A, B, C, D)
 - User asks to begin
 - **ANY indication they want to start using the power**
@@ -202,9 +202,9 @@ If directory creation fails:
 **WRONG** (causes confusion):
 
 ```text
-1. Quick Demo (10 min) - Start with Module 0
+1. Quick Demo (10 min) - Start with Module 1
 2. Fast Track (30 min) - Start with Module 5
-3. Complete Path (2-3 hrs) - Start with Module 1
+3. Complete Path (2-3 hrs) - Start with Module 2
 ```
 
 Problem: User entering "1" is ambiguous - do they mean option 1 or Module 1?
@@ -214,7 +214,7 @@ Problem: User entering "1" is ambiguous - do they mean option 1 or Module 1?
 ```text
 Which path would you like to take?
 
-A) Quick Demo (10 min) - Module 0
+A) Quick Demo (10 min) - Module 1
    See entity resolution in action with sample data
 
 B) Fast Track (30 min) - Modules 5-6
@@ -231,12 +231,12 @@ Please respond with A, B, C, or D (or describe what you want to do)
 
 **Interpreting User Responses**:
 
-- "A", "a", "demo", "quick demo", "Module 0" → Start Module 0
+- "A", "a", "demo", "quick demo", "Module 1" → Start Module 1
 - "B", "b", "fast", "fast track" → Start Module 5
-- "C", "c", "complete", "beginner" → Start Module 1
-- "D", "d", "full", "production" → Start Module 1 (full path)
-- "1" → Ask for clarification: "Did you mean option A (Quick Demo) or Module 1 (Business Problem)?"
-- "0" → Assume Module 0 (Quick Demo)
+- "C", "c", "complete", "beginner" → Start Module 2
+- "D", "d", "full", "production" → Start Module 0 (full path)
+- "1" → Ask for clarification: "Did you mean option A (Quick Demo) or Module 1?"
+- "0" → Assume Module 0 (SDK Setup)
 
 **CRITICAL**: If user enters a number (1, 2, 3) when you've presented lettered options (A, B, C), ALWAYS clarify which they meant before proceeding.
 
@@ -248,7 +248,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 
 ## Module-Specific Behaviors
 
-### Module 0: Quick Demo
+### Module 1: Quick Demo
 
 - **FIRST: CREATE DIRECTORY STRUCTURE** - See "🚨 MANDATORY FIRST ACTION" at the top of this document
 - Execute directory creation commands BEFORE doing anything else
@@ -273,7 +273,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
   - After simulation, offer to help install SDK or Docker
 - Connect demo results to user's potential use case
 
-### Module 1: Business Problem
+### Module 2: Business Problem
 
 - **FIRST: CREATE DIRECTORY STRUCTURE** - See "🚨 MANDATORY FIRST ACTION" at the top of this document
 - Execute directory creation commands BEFORE doing anything else
@@ -290,9 +290,9 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - If already a git repository, acknowledge and proceed
 - **Inform user about feedback mechanism**: "If you encounter any issues or have suggestions during the boot camp, just say 'power feedback' or 'bootcamp feedback' and I'll help you document them for the power author."
 
-### Module 2: Identify and Collect Data Sources
+### Module 3: Identify and Collect Data Sources
 
-- Review data sources identified in Module 1
+- Review data sources identified in Module 2
 - Help user upload or link to data files
 - Save all data to `data/raw/[datasource_name].[extension]`
 - Document data source locations in `docs/data_source_locations.md`
@@ -302,7 +302,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - Verify files are accessible before proceeding
 - Track data collection status
 
-### Module 3: Evaluate Data Quality
+### Module 4: Evaluate Data Quality
 
 - **Run automated quality scoring** on each data source
 - Use data quality scorer script from docs/modules/MODULE_3_DATA_QUALITY_SCORING.md
@@ -316,7 +316,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - Categorize: SGES-compliant, needs mapping, needs enrichment
 - **At end of module**: Suggest installing hooks for quality checks
 
-### Module 4: Data Mapping
+### Module 5: Data Mapping
 
 - **Use `mapping_workflow`** - never hand-code attribute names
 - **Always pass exact `state` object** between workflow calls
@@ -335,7 +335,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - Track which sources are mapped vs pending
 - **At end of module**: Present module transition with completion checklist
 
-### Module 5: SDK Setup
+### Module 0: SDK Setup
 
 - Use `sdk_guide` with correct platform parameter
 - **Check if Senzing is already installed before installing**
@@ -346,7 +346,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - **For SQLite: Create `database/` directory and use `database/G2C.db` path**
 - **Never use system paths like `/var/opt/senzing/sqlite/` for SQLite databases**
 - Verify installation with test script
-- Register all data sources from Module 1
+- Register all data sources from Module 2
 - Create engine configuration
 - Test database connection before proceeding
 
@@ -369,7 +369,7 @@ When user chooses Docker deployment:
 - Reference `steering/docker-deployment.md` for complete examples with correct schema
 - Check `docs/guides/TROUBLESHOOTING_INDEX.md` for Docker-specific issues (SENZ1019, SENZ7223, SENZ1001 column errors)
 
-### Module 6: Loading
+### Module 6: Single Source Loading
 
 - **Verify `.kiro/hooks/` exists** before installing hooks
 - **Remind to backup** before loading (or use backup hook)
@@ -384,9 +384,9 @@ When user chooses Docker deployment:
 - Track which sources are loaded vs pending
 - **At end of module**: Present module transition with troubleshooting tips
 
-### Module 7: Querying
+### Module 8: Query and Validation
 
-- Review business problem from Module 1
+- Review business problem from Module 2
 - Design queries that answer specific business questions
 - Use `generate_scaffold` for query code
 - Save programs in `src/query/`
@@ -439,9 +439,9 @@ All feedback files must be in `docs/feedback/`:
 
 Create and maintain:
 
-- `docs/business_problem.md` - Module 1
-- `docs/data_source_evaluation.md` - Module 2
-- `docs/mapping_[datasource].md` - Module 3 (per source)
+- `docs/business_problem.md` - Module 2
+- `docs/data_source_evaluation.md` - Module 3
+- `docs/mapping_[datasource].md` - Module 5 (per source)
 - `docs/query_specifications.md` - Module 6
 - `docs/lessons_learned.md` - After Module 6
 - `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` - Throughout (user creates from template)
@@ -449,7 +449,7 @@ Create and maintain:
 
 ### Version Control
 
-- Initialize git at start of Module 1
+- Initialize git at start of Module 2
 - Commit after each module completion
 - Create .gitignore to exclude sensitive data
 - Never commit .env files
@@ -466,43 +466,47 @@ Maintain awareness of:
 
 Periodically remind users:
 
-- "You've completed Module 3 for Customer CRM. Ready to move to Module 4?"
-- "You have 2 more data sources to map before Module 4"
+- "You've completed Module 4 for Customer CRM. Ready to move to Module 5?"
+- "You have 2 more data sources to map before Module 5"
 - "All data loaded! Let's create query programs in Module 6"
 
 ## Validation Gates
 
 Before proceeding to next module, verify:
 
-**Module 1 → Module 2**:
+**Module 0 → Module 1**:
+
+- ✅ SDK installed
+- ✅ Database configured
+- ✅ Test script runs successfully
+
+**Module 1 → Module 2** (Quick Demo is optional, can skip):
+
+- ✅ Demo completed or skipped
+
+**Module 2 → Module 3**:
 
 - ✅ Problem statement documented
 - ✅ Data sources identified
 - ✅ Success criteria defined
 
-**Module 2 → Module 3**:
+**Module 3 → Module 4**:
 
 - ✅ All data sources collected
 - ✅ Files in `data/raw/` or locations documented
 - ✅ Data source locations documented
 
-**Module 3 → Module 4**:
+**Module 4 → Module 5**:
 
 - ✅ All sources evaluated
 - ✅ SGES compliance determined
 - ✅ Sample data available
 
-**Module 4 → Module 5**:
+**Module 5 → Module 6**:
 
 - ✅ All non-compliant sources mapped
 - ✅ Transformation programs tested
 - ✅ Quality validation passed (>70%)
-
-**Module 5 → Module 6**:
-
-- ✅ SDK installed
-- ✅ Database configured
-- ✅ Test script runs successfully
 
 **Module 6 → Module 7**:
 
@@ -510,7 +514,11 @@ Before proceeding to next module, verify:
 - ✅ No critical errors
 - ✅ Loading statistics captured
 
-**Module 7 → Complete**:
+**Module 7 → Module 8**:
+
+- ✅ All sources orchestrated (or single source loaded)
+
+**Module 8 → Module 9**:
 
 - ✅ Query programs answer business problem
 - ✅ Results validated with user
@@ -541,12 +549,12 @@ Load the per-module steering file when the user starts a module:
 
 | Module | Steering File                   |
 |--------|---------------------------------|
-| 0      | `module-00-quick-demo.md`       |
-| 1      | `module-01-business-problem.md` |
-| 2      | `module-02-data-collection.md`  |
-| 3      | `module-03-data-quality.md`     |
-| 4      | `module-04-data-mapping.md`     |
-| 5      | `module-05-sdk-setup.md`        |
+| 0      | `module-00-sdk-setup.md`        |
+| 1      | `module-01-quick-demo.md`       |
+| 2      | `module-02-business-problem.md` |
+| 3      | `module-03-data-collection.md`  |
+| 4      | `module-04-data-quality.md`     |
+| 5      | `module-05-data-mapping.md`     |
 | 6      | `module-06-single-source.md`    |
 | 7      | `module-07-multi-source.md`     |
 | 8      | `module-08-query-validation.md` |
@@ -556,12 +564,10 @@ Load the per-module steering file when the user starts a module:
 | 12     | `module-12-deployment.md`       |
 
 Load additional steering files as needed:
-
-- `steering/steering.md` - Core workflows (always available)
 - `steering/quick-reference.md` - MCP tool quick reference
-- `steering/environment-setup.md` - Module 1, setup questions
-- `steering/security-privacy.md` - Module 2, sensitive data
-- `steering/cost-estimation.md` - Module 1 or 4, cost questions
+- `steering/environment-setup.md` - Module 0, setup questions
+- `steering/security-privacy.md` - Module 3, sensitive data
+- `steering/cost-estimation.md` - Module 2 or 5, cost questions
 - `steering/common-pitfalls.md` - Any module, troubleshooting
 - `steering/lessons-learned.md` - After Module 6
 
@@ -632,13 +638,15 @@ For `mapping_workflow`:
 
 Recognize when modules are complete:
 
-- Module 1: Problem statement + data sources + success metrics
-- Module 2: All data sources collected + files in data/raw/ + locations documented
-- Module 3: All sources categorized
-- Module 4: Working transformation programs + quality >70%
-- Module 5: SDK installed + test passes
+- Module 0: SDK installed + test passes
+- Module 1: Demo completed (or skipped)
+- Module 2: Problem statement + data sources + success metrics
+- Module 3: All data sources collected + files in data/raw/ + locations documented
+- Module 4: All sources categorized
+- Module 5: Working transformation programs + quality >70%
 - Module 6: All sources loaded + statistics captured
-- Module 7: Query programs answer business problem
+- Module 7: Multi-source orchestration complete (or single source)
+- Module 8: Query programs answer business problem
 
 ## When User is Stuck
 
@@ -659,9 +667,9 @@ Remember:
 - Discovery is non-linear
 - Support flexibility while maintaining quality
 
-### Module 8: Deployment Packaging
+### Module 12: Deployment Packaging
 
-- Review all code from Modules 4, 6, and 7
+- Review all code from Modules 5, 6, and 8
 - Guide user through deployment decisions:
   - Target database (PostgreSQL recommended)
   - Programming language (stick with boot camp language)

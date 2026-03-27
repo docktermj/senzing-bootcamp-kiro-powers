@@ -1,6 +1,8 @@
 # Senzing Boot Camp Examples
 
-This directory contains complete example projects demonstrating different use cases and deployment patterns.
+This directory contains reference project blueprints demonstrating different use cases and deployment patterns.
+
+**Note:** These examples currently contain detailed README documentation describing the project structure, code patterns, and expected results. The actual source code files are generated during the boot camp using MCP tools (`generate_scaffold`, `mapping_workflow`). Use these READMEs as architectural references when building your own project.
 
 ## Available Examples
 

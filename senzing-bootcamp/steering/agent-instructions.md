@@ -192,17 +192,6 @@ If directory creation fails:
     - Use PascalCase for classes
     - Add docstrings to all functions, classes, and modules
 
-11. **All Python code must be PEP-8 compliant**:
-    - Maximum line length: 100 characters (for readability)
-    - No trailing whitespace
-    - Two blank lines between top-level functions/classes
-    - One blank line between methods
-    - Imports at top of file (standard library, third-party, local)
-    - Use 4 spaces for indentation (never tabs)
-    - Use snake_case for functions and variables
-    - Use PascalCase for classes
-    - Add docstrings to all functions, classes, and modules
-
 ## Special Workflows
 
 ### Handling User Path Selection
@@ -254,72 +243,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 
 **Trigger phrases**: When user says "power feedback", "bootcamp feedback", "submit feedback", "provide feedback", "I have feedback", or "report an issue"
 
-**Immediate actions**:
-
-1. **Check for feedback file**:
-
-   ```bash
-   if [ ! -f "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md" ]; then
-       # Create from template
-       cp docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md \
-          docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
-
-       # Update header with current date
-       sed -i "s/\[Date when you started using the power\]/$(date +%Y-%m-%d)/" \
-          docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
-   fi
-   ```
-
-2. **Gather feedback information** (ask one question at a time):
-   - "What would you like to provide feedback about?" (present categories)
-   - "Which module is this related to?" (0-12, or general)
-   - "What happened or what issue did you encounter?"
-   - "Why is this a problem? What was the impact?"
-   - "Do you have a suggested fix or improvement?"
-   - "What priority would you assign?" (High/Medium/Low)
-
-3. **Format feedback entry**:
-
-   ```markdown
-   ## Improvement: [Brief title based on user's description]
-
-   **Date**: YYYY-MM-DD
-   **Module**: [Module number or "General"]
-   **Priority**: [High/Medium/Low]
-   **Category**: [Documentation/Workflow/Tools/UX/Bug/Performance/Security]
-
-   ### What Happened
-   [User's description of the issue]
-
-   ### Why It's a Problem
-   [User's explanation of impact]
-
-   ### Suggested Fix
-   [User's suggestion, or "None provided"]
-
-   ### Workaround Used
-   [If user found a workaround, or "None"]
-   ```
-
-4. **Append to feedback file**:
-   - Add the formatted entry to the "Your Feedback" section
-   - Preserve any existing feedback entries
-
-5. **Confirm and guide**:
-   - "✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`"
-   - "You can review or edit it anytime"
-   - "Would you like to add more feedback, or continue with the boot camp?"
-
-6. **Remind about submission**:
-   - "When you complete the boot camp, please share this file with the power author to help improve the experience for future users"
-
-**Important**:
-
-- Always create feedback file from template if it doesn't exist
-- Ask questions one at a time (don't overwhelm user)
-- Be supportive and encouraging about feedback
-- Make it easy to add multiple feedback entries
-- Remind about submission at end of Module 12
+**Action**: Load the `feedback-workflow.md` steering file and follow the complete workflow defined there.
 
 ## Module-Specific Behaviors
 
@@ -763,108 +687,7 @@ Remember:
 
 ## Code Quality Standards
 
-### Python Code Standards (PEP-8 Compliance)
-
-All Python code generated during the boot camp must follow PEP-8 standards:
-
-**Line Length**:
-
-- Maximum 100 characters per line (more readable than strict 79)
-- Break long lines using parentheses, not backslashes
-- Break long function calls across multiple lines
-
-**Whitespace**:
-
-- No trailing whitespace on any line
-- Two blank lines between top-level functions and classes
-- One blank line between methods in a class
-- One space after commas in lists, tuples, and function arguments
-- No spaces around = in keyword arguments
-
-**Naming Conventions**:
-
-- `snake_case` for functions, variables, and module names
-- `PascalCase` for class names
-- `UPPER_CASE` for constants
-- Descriptive names (avoid single letters except in loops)
-
-**Imports**:
-
-- All imports at top of file
-- Group imports: standard library, third-party, local
-- One import per line (except `from x import a, b`)
-- Alphabetical order within groups
-
-**Documentation**:
-
-- Module docstring at top of file
-- Docstring for every function and class
-- Use triple quotes for docstrings
-- Include purpose, parameters, and return values
-
-**Example of PEP-8 Compliant Code**:
-
-```python
-#!/usr/bin/env python3
-"""
-Module for transforming customer data to Senzing format.
-
-This module provides functions to read CSV files and transform
-them into Senzing JSON format.
-"""
-
-import json
-import sys
-from pathlib import Path
-
-# Constants
-DATA_SOURCE = "CUSTOMERS"
-MAX_RECORDS = 10000
-
-
-def transform_record(source_record):
-    """
-    Transform a source record to Senzing JSON format.
-
-    Args:
-        source_record (dict): Source data record
-
-    Returns:
-        dict: Senzing-formatted record
-    """
-    return {
-        "DATA_SOURCE": DATA_SOURCE,
-        "RECORD_ID": source_record.get("id"),
-        "NAME_FULL": source_record.get("name"),
-        "EMAIL_ADDRESS": source_record.get("email")
-    }
-
-
-def main():
-    """Main entry point."""
-    # Implementation here
-    pass
-
-
-if __name__ == "__main__":
-    sys.exit(main())
-```
-
-**When Generating Code**:
-
-1. Always generate PEP-8 compliant code from the start
-2. Use proper indentation (4 spaces)
-3. Add docstrings to all functions
-4. Keep lines under 100 characters
-5. Remove trailing whitespace
-6. Use proper naming conventions
-
-**When User Provides Code**:
-
-1. Check for PEP-8 compliance
-2. Suggest fixes if non-compliant
-3. Explain why compliance matters (readability, maintainability)
-4. Offer to fix issues automatically
+All Python code must follow PEP-8 standards as defined in Core Principle #10 above. See `docs/policies/PEP8_COMPLIANCE.md` for complete details.
 
 ### Code Quality Checks
 

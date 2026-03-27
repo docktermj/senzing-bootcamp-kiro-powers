@@ -4,7 +4,7 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 
 ## Available Hooks
 
-### 1. PEP-8 Compliance Check (`pep8-check.hook`) ⭐
+### 1. PEP-8 Compliance Check (`pep8-check.kiro.hook`) ⭐
 
 **Trigger**: When Python files are edited
 **Action**: Checks for PEP-8 compliance and suggests fixes
@@ -57,7 +57,7 @@ This script provides:
 
 ```bash
 # Copy all hooks to your project
-cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
+cp senzing-bootcamp/hooks/*.kiro.hook .kiro/hooks/
 
 # Or copy individual hooks
 cp senzing-bootcamp/hooks/data-quality-check.kiro.hook .kiro/hooks/

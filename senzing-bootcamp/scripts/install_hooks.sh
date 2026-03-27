@@ -42,7 +42,7 @@ echo -e "${CYAN}Available Hooks:${NC}"
 echo ""
 
 HOOKS=(
-    "pep8-check.hook:PEP-8 Compliance Check:Ensures Python code follows PEP-8 standards"
+    "pep8-check.kiro.hook:PEP-8 Compliance Check:Ensures Python code follows PEP-8 standards"
     "data-quality-check.kiro.hook:Data Quality Check:Validates quality when transformations change"
     "backup-before-load.kiro.hook:Backup Before Load:Reminds to backup before loading"
     "validate-senzing-json.kiro.hook:Validate Senzing JSON:Validates output format against SGES"
@@ -99,7 +99,7 @@ case $REPLY in
     [Bb])
         echo -e "${CYAN}Installing essential hooks...${NC}"
         echo ""
-        ESSENTIAL=("pep8-check.hook" "backup-before-load.kiro.hook" "backup-project-on-request.kiro.hook")
+        ESSENTIAL=("pep8-check.kiro.hook" "backup-before-load.kiro.hook" "backup-project-on-request.kiro.hook")
         INSTALLED=0
         for filename in "${ESSENTIAL[@]}"; do
             if [ -f "$POWER_HOOKS_DIR/$filename" ]; then

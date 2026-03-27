@@ -1,5 +1,5 @@
 ---
-inclusion: always
+inclusion: manual
 ---
 
 # Senzing Boot Camp — Steering Guide
@@ -8,23 +8,7 @@ This document provides detailed workflows for the Senzing Boot Camp power. The a
 
 ## Code Quality Standards
 
-**IMPORTANT**: All Python code generated or modified during the boot camp must follow PEP-8 standards:
-
-- **Maximum line length**: 100 characters
-- **No trailing whitespace**
-- **4 spaces for indentation** (no tabs)
-- **Proper docstrings** for all functions, classes, and modules
-- **Organized imports** (standard library, third-party, local)
-- **Consistent naming**: `snake_case` for functions/variables, `PascalCase` for classes, `UPPER_CASE` for constants
-
-**Agent Responsibilities**:
-
-1. Generate PEP-8 compliant code by default
-2. Check user-provided code for PEP-8 compliance
-3. Suggest specific fixes for violations
-4. Explain benefits of compliance when relevant
-
-See `docs/policies/PEP8_COMPLIANCE.md` for complete details.
+All Python code must follow PEP-8 standards. See `docs/policies/PEP8_COMPLIANCE.md` for complete details and the agent-instructions steering file for enforcement rules.
 
 ## Progress Tracking
 
@@ -56,85 +40,7 @@ Use this workflow when a user wants to see entity resolution in action before wo
 
 **IMPORTANT**: Before starting Module 0, ensure the project directory structure exists. If the user is starting with Module 0 (before Module 1), create the full project structure first.
 
-1. **Create project structure (if needed)**: Check if the project structure exists:
-
-   ```bash
-   # Check if structure exists
-   if [ ! -d "src/quickstart_demo" ]; then
-       echo "Creating project structure..."
-   fi
-   ```
-
-   If the structure doesn't exist, create it:
-
-   ```bash
-   mkdir -p my-senzing-project/{data/{raw,transformed,samples,backups},database,src/{quickstart_demo,transform,load,query,utils},tests,docs,config,docker,logs,monitoring,scripts}
-   cd my-senzing-project
-   ```
-
-   Create essential files:
-
-   ```bash
-   # .gitignore
-   cat > .gitignore << 'EOF'
-   # Sensitive data
-   .env
-   *.key
-   *.pem
-
-   # Data files
-   data/raw/*
-   data/transformed/*
-   !data/raw/.gitkeep
-   !data/transformed/.gitkeep
-
-   # Database files
-   database/*.db
-   database/*.db-journal
-   !database/.gitkeep
-
-   # Logs
-   logs/*.log
-
-   # Python
-   __pycache__/
-   *.pyc
-   .pytest_cache/
-   venv/
-   EOF
-
-   # .env.example
-   cat > .env.example << 'EOF'
-   # Senzing Configuration
-   SENZING_ENGINE_CONFIGURATION_JSON=
-
-   # Database
-   DATABASE_URL=sqlite3://na:na@database/G2C.db
-
-   # Optional: PostgreSQL
-   # DATABASE_URL=postgresql://user:password@localhost:5432/senzing
-   EOF
-
-   # README.md
-   cat > README.md << 'EOF'
-   # Senzing Boot Camp Project
-
-   This project was created using the Senzing Boot Camp power.
-
-   ## Quick Start
-
-   See `docs/` directory for project documentation.
-   EOF
-
-   # Create .gitkeep files
-   touch data/raw/.gitkeep
-   touch data/transformed/.gitkeep
-   touch data/samples/.gitkeep
-   touch data/backups/.gitkeep
-   touch database/.gitkeep
-   ```
-
-   Tell the user: "I've created the project directory structure for you. All demo files will be saved in `src/quickstart_demo/`."
+1. **Create project structure (if needed)**: Follow the directory creation commands from the agent-instructions steering file. If the structure doesn't exist, create it before proceeding. After creation, tell the user: "I've created the project directory structure for you. All demo files will be saved in `src/quickstart_demo/`."
 
 2. **Explain the demo**: "Let's run a live demo using sample data so you can see entity resolution in action. We'll actually run the Senzing SDK to load duplicate records and watch them automatically resolve into unique entities. This isn't a simulation - it's the real thing!"
 
@@ -349,30 +255,7 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
 
 **Prerequisites**: None (or Module 0 complete if they did the demo)
 
-1. **Set up project directory structure**: The agent will create an organized project structure for the user. Execute the following command to create the directory structure:
-
-   ```bash
-   mkdir -p my-senzing-project/{data/{raw,transformed,samples,backups},src/{transform,load,query,utils},tests,docs,config,logs,monitoring,scripts}
-   cd my-senzing-project
-   ```
-
-   After creating the structure, explain the purpose of each folder:
-   - `data/raw/` - Original source data files
-   - `data/transformed/` - Senzing-formatted JSON output
-   - `data/samples/` - Sample data for testing
-   - `data/backups/` - Database backups
-   - `src/quickstart_demo/` - Module 0 demo code (optional)
-   - `src/transform/` - Transformation programs (Module 3)
-   - `src/load/` - Loading programs (Module 5)
-   - `src/query/` - Query programs (Module 6)
-   - `src/utils/` - Shared utilities
-   - `tests/` - Test files
-   - `docs/` - Design documents and specifications
-   - `config/` - Configuration files
-   - `logs/` - Log files
-   - `monitoring/` - Dashboards and metrics
-
-   **Important**: All source code, including utility scripts, must be in the `src/` directory (e.g., `src/utils/backup_database.sh`, `src/utils/rollback.sh`).
+1. **Set up project directory structure**: Follow the directory creation commands from the agent-instructions steering file. After creating the structure, explain the purpose of each folder to the user.
 
    **Initialize version control**:
 
@@ -382,104 +265,14 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
    git rev-parse --git-dir 2>/dev/null
    ```
 
-   If the command returns an error (not a git repository), ask the user:
-   "Would you like to initialize this as a git repository? This will help track changes throughout the boot camp."
-
-   If yes, initialize git:
+   If not a git repository, ask the user if they want to initialize one. If yes:
 
    ```bash
    git init
    echo "# [Project Name] - Senzing Entity Resolution" > README.md
    ```
 
-   If the directory is already a git repository, acknowledge it:
-   "Great! I see this is already a git repository. We'll use it to track your boot camp progress."
-
-   **Create .gitignore**:
-
-   ```gitignore
-   # Sensitive data
-   .env
-   *.key
-   *.pem
-   config/*_credentials.json
-
-   # Data files
-   data/raw/*
-   data/transformed/*
-   !data/raw/.gitkeep
-   !data/transformed/.gitkeep
-
-   # Database files
-   database/*.db
-   database/*.db-journal
-   !database/.gitkeep
-
-   # Logs
-   logs/*.log
-
-   # Python
-   __pycache__/
-   *.py[cod]
-   .venv/
-   venv/
-
-   # Backups
-   data/backups/*.sql
-   ```
-
-   **Set up Python environment** (if using Python):
-
-   ```bash
-   python -m venv venv
-   source venv/bin/activate
-   pip install senzing pytest
-   pip freeze > requirements.txt
-   ```
-
-   **Create environment template** (.env.example):
-
-   ```bash
-   # Senzing Configuration
-   SENZING_ENGINE_CONFIG_JSON={"PIPELINE":{"CONFIGPATH":"/etc/opt/senzing"}}
-   SENZING_DATABASE_URL=sqlite3://na:na@database/G2C.db
-
-   # Data Source Credentials
-   CRM_API_KEY=your_api_key_here
-   DATABASE_CONNECTION_STRING=your_connection_string_here
-
-   # Monitoring
-   ENABLE_MONITORING=true
-   LOG_LEVEL=INFO
-   ```
-
-   **Initial git commit**:
-
-   ```bash
-   git add .
-   git commit -m "Initial project setup"
-   ```
-
-   Create a basic README.md:
-
-   ```markdown
-   # [Project Name] - Senzing Entity Resolution
-
-   ## Overview
-   [To be filled in after Module 1]
-
-   ## Business Problem
-   [To be filled in after Module 1]
-
-   ## Data Sources
-   [To be filled in after Module 2]
-
-   ## Setup Instructions
-   [To be filled in after Module 4]
-
-   ## Usage
-   [To be filled in after Module 6]
-   ```
+   If already a git repository, acknowledge and proceed.
 
 2. **Data privacy reminder**: "Before we proceed, a quick reminder about data privacy. We'll be working with potentially sensitive data. Please ensure you have permission to use this data, and consider anonymizing any PII for testing purposes. We'll set up proper security measures as we go."
 
@@ -1377,7 +1170,7 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 
 ## Workflow: Multi-Source Orchestration (Module 7)
 
-**Note**: For the comprehensive, detailed workflow for Module 7, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 7 section, 2,100+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 7, see `steering/modules-7-12-workflows.md` (Module 7 section, 2,100+ lines).
 
 Use this workflow after loading at least one data source successfully (Module 6). The goal is to orchestrate loading of multiple data sources with proper dependency management, error handling, and progress tracking.
 
@@ -1410,13 +1203,13 @@ Use this workflow after loading at least one data source successfully (Module 6)
 
 **Success indicator**: ✅ All data sources loaded + orchestration script created + progress tracked + results documented
 
-**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 7 section).
+**For detailed step-by-step instructions**, see `steering/modules-7-12-workflows.md` (Module 7 section).
 
 **Transition to Module 8**: Once all sources are loaded successfully, proceed to Module 8 (Query and Validate Results).
 
 ## Workflow: Query and Validate Results with UAT (Module 8)
 
-**Note**: For the comprehensive, detailed workflow for Module 8, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 8 section, 1,000+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 8, see `steering/modules-7-12-workflows.md` (Module 8 section, 1,000+ lines).
 
 This workflow replaces the old "Module 7: Query Results" workflow. Use this after all data sources are loaded (Modules 6-7).
 
@@ -1450,13 +1243,13 @@ This workflow replaces the old "Module 7: Query Results" workflow. Use this afte
 
 **Success indicator**: ✅ Query programs created + UAT tests passed + Stakeholder sign-off obtained
 
-**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 8 section).
+**For detailed step-by-step instructions**, see `steering/modules-7-12-workflows.md` (Module 8 section).
 
 **Transition to Module 9**: If deploying to production, proceed to Module 9 (Performance Testing). If not deploying to production, boot camp complete!
 
 ## Workflow: Performance Testing and Benchmarking (Module 9)
 
-**Note**: For the comprehensive, detailed workflow for Module 9, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 9 section, 1,500+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 9, see `steering/modules-7-12-workflows.md` (Module 9 section, 1,500+ lines).
 
 Use this workflow after query validation (Module 8) and before production deployment. The goal is to test performance and scalability to ensure the solution meets production requirements.
 
@@ -1488,13 +1281,13 @@ Use this workflow after query validation (Module 8) and before production deploy
 
 **Success indicator**: ✅ Performance targets met + Benchmarks documented + Bottlenecks identified + Production readiness confirmed
 
-**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 9 section).
+**For detailed step-by-step instructions**, see `steering/modules-7-12-workflows.md` (Module 9 section).
 
 **Transition to Module 10**: Once performance testing is complete, proceed to Module 10 (Security Hardening).
 
 ## Workflow: Security Hardening (Module 10)
 
-**Note**: For the comprehensive, detailed workflow for Module 10, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 10 section, 1,500+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 10, see `steering/modules-7-12-workflows.md` (Module 10 section, 1,500+ lines).
 
 Use this workflow after performance testing (Module 9) and before production deployment. The goal is to secure the application and data for production use.
 
@@ -1527,13 +1320,13 @@ Use this workflow after performance testing (Module 9) and before production dep
 
 **Success indicator**: ✅ Secrets managed + Authentication implemented + Encryption enabled + PII protected + Vulnerabilities fixed + Security audit complete
 
-**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 10 section).
+**For detailed step-by-step instructions**, see `steering/modules-7-12-workflows.md` (Module 10 section).
 
 **Transition to Module 11**: Once security hardening is complete, proceed to Module 11 (Monitoring and Observability).
 
 ## Workflow: Monitoring and Observability (Module 11)
 
-**Note**: For the comprehensive, detailed workflow for Module 11, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 11 section, 1,500+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 11, see `steering/modules-7-12-workflows.md` (Module 11 section, 1,500+ lines).
 
 Use this workflow after security hardening (Module 10) and before final deployment. The goal is to set up comprehensive monitoring, logging, and alerting for production operations.
 
@@ -1570,13 +1363,13 @@ Use this workflow after security hardening (Module 10) and before final deployme
 
 **Success indicator**: ✅ Monitoring stack deployed + Metrics collected + Logs structured + Alerts configured + Dashboards created + Runbooks documented + Team trained
 
-**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 11 section).
+**For detailed step-by-step instructions**, see `steering/modules-7-12-workflows.md` (Module 11 section).
 
 **Transition to Module 12**: Once monitoring is fully operational, proceed to Module 12 (Package and Deploy).
 
 ## Workflow: Package and Deploy (Module 12)
 
-**Note**: For the comprehensive, detailed workflow for Module 12, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 12 section, 1,000+ lines).
+**Note**: For the comprehensive, detailed workflow for Module 12, see `steering/modules-7-12-workflows.md` (Module 12 section, 1,000+ lines).
 
 This workflow has been updated to reference Modules 9, 10, and 11. Use this workflow after monitoring setup (Module 11) to package and deploy your production-ready solution.
 
@@ -1616,7 +1409,7 @@ This workflow has been updated to reference Modules 9, 10, and 11. Use this work
 
 **Success indicator**: ✅ Code packaged + Tests passing + Deployment artifacts created + Documentation complete + Validation passed + Production deployed
 
-**For detailed step-by-step instructions**, see `steering/NEW_WORKFLOWS_PHASE5.md` (Module 12 section).
+**For detailed step-by-step instructions**, see `steering/modules-7-12-workflows.md` (Module 12 section).
 
 **Boot Camp Complete!** 🎉
 
@@ -1652,7 +1445,7 @@ Before recommending any installation or deployment approach, call `search_docs` 
 
 **Note**: This workflow has been superseded by the new Module 8 workflow above. This section is kept for reference only.
 
-**For current workflow**, see "Workflow: Query and Validate Results with UAT (Module 8)" above, or see the detailed workflow in `steering/NEW_WORKFLOWS_PHASE5.md`.
+**For current workflow**, see "Workflow: Query and Validate Results with UAT (Module 8)" above, or see the detailed workflow in `steering/modules-7-12-workflows.md`.
 
 ---
 
@@ -1905,7 +1698,7 @@ This power should activate when the user mentions or is working on:
 
 **Note**: This workflow has been superseded by the new Module 12 workflow above. This section is kept for reference only.
 
-**For current workflow**, see "Workflow: Package and Deploy (Module 12)" above, or see the detailed workflow in `steering/NEW_WORKFLOWS_PHASE5.md`.
+**For current workflow**, see "Workflow: Package and Deploy (Module 12)" above, or see the detailed workflow in `steering/modules-7-12-workflows.md`.
 
 ---
 

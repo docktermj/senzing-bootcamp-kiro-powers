@@ -158,7 +158,7 @@ class Loader:
 
 ## Workflow Updates Needed
 
-The following workflows in `NEW_WORKFLOWS_PHASE5.md` reference shell scripts and should follow this policy:
+The following workflows in `modules-7-12-workflows.md` reference shell scripts and should follow this policy:
 
 ### Workflow Updates Needed Module 7: Multi-Source Orchestration
 
@@ -225,4 +225,4 @@ find src/ -name "*.sh" -type f
 - Module 10 workflow: Security Hardening
 - Module 11 workflow: Monitoring and Observability
 - Module 12 workflow: Package and Deploy
-- `NEW_WORKFLOWS_PHASE5.md`: All workflow documentation
+- `modules-7-12-workflows.md`: All workflow documentation

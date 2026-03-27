@@ -47,7 +47,7 @@ Development progress tracking and implementation documentation.
 
 - `IMPROVEMENTS.md` - Complete summary of all improvements
 - `NEW_MODULE_STRUCTURE.md` - Documentation of new 13-module structure
-- `NEW_WORKFLOWS_PHASE5.md` - Comprehensive workflows for Modules 7-12 (~10,000+ lines)
+- `modules-7-12-workflows.md` - Comprehensive workflows for Modules 7-12 (~10,000+ lines)
 - `V3_IMPLEMENTATION_STATUS.md` - Overall implementation status
 - `PHASE_1_COMPLETE.md` - Phase 1 completion summary
 - `PHASE_2_COMPLETE.md` - Phase 2 completion summary
@@ -82,7 +82,7 @@ The following files remain in the root `senzing-bootcamp/` directory:
 - Review `/development/IMPROVEMENTS.md` for complete change history
 - Review `/development/NEW_MODULE_STRUCTURE.md` for architecture
 - Review `/development/V3_IMPLEMENTATION_STATUS.md` for current status
-- Review `/development/NEW_WORKFLOWS_PHASE5.md` for detailed workflows
+- Review `/development/modules-7-12-workflows.md` for detailed workflows
 
 ### For Agents
 

@@ -5,9 +5,41 @@ All notable changes to the Senzing Boot Camp power will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-03-27
+
+### Added in 1.0.0
+
+- Quick Start section at top of POWER.md for immediate orientation
+- Explicit MCP server configuration section with JSON schema
+- MCP tool usage patterns section in Best Practices
+- Three new steering files for better content organization:
+  - `steering/project-structure.md` - Detailed directory structure and setup
+  - `steering/design-patterns.md` - Complete pattern gallery with use cases
+  - `steering/module-prerequisites.md` - Prerequisites for each module
+- Testing documentation in development repository (`TESTING.md`)
+- Enhanced repository structure documentation in root README.md
+
+### Changed in 1.0.0
+
+- Reorganized POWER.md to be more concise (reduced from 912 to ~650 lines)
+- Moved detailed content to steering files for on-demand loading
+- Reformatted "Available Steering Files" section to match power-builder pattern
+- Updated "Last Updated" date to March 27, 2026
+- Improved frontmatter keywords for better discoverability
+- Enhanced Best Practices section with explicit MCP tool patterns
+- Removed "What's New" section from POWER.md (now only in CHANGELOG.md)
+
+### Improved in 1.0.0
+
+- Better alignment with power-builder best practices
+- More scannable POWER.md with clear section hierarchy
+- Clearer separation between user-facing and development documentation
+- Enhanced testing documentation for maintainers
+- Better context preservation through strategic steering file usage
+
 ## [0.26.0] - 2026-03-24
 
-### Added
+### Added in 0.26.0
 
 - Live demo implementation for Module 0 that actually runs Senzing SDK
 - New demo template: `templates/demo_quick_start.py` with working entity resolution
@@ -16,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SDK availability check with Docker fallback option
 - Detailed match explanations in demo output
 
-### Changed
+### Changed in 0.26.0
 
 - Module 0 documentation now emphasizes live demonstration vs simulation
 - Steering workflow updated to require actual SDK execution
@@ -25,13 +57,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated success criteria to include actual execution verification
 - Improved troubleshooting section for SDK installation
 
-### Fixed
+### Fixed in 0.26.0
 
 - Module 0 now delivers on promise of "seeing entity resolution in action"
 - Demo creates "aha moment" by showing real technology working
 - First-time user experience significantly improved
 
-### User Feedback Addressed
+### User Feedback Addressed in 0.26.0
 
 - Issue: Quick Demo only showed sample data without running Senzing
 - Solution: Implemented live demo that actually runs SDK and shows match explanations
@@ -64,7 +96,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Progress tracking system
 - PEP-8 compliance checking
 
-### Documentation
+### Documentation in 0.24.0
 
 - Complete module documentation (MODULE_0 through MODULE_12)
 - Steering guide with detailed workflows

@@ -10,7 +10,26 @@ author: "Senzing"
 
 ## 🚨 CRITICAL: Agent Must Read This First 🚨
 
-**TO THE AGENT:** Before you do ANYTHING else - before greeting the user, before asking questions, before presenting options - you MUST create the project directory structure. This is MANDATORY. See the "Agent Behavior" section under "Project Directory Structure" below for exact commands. DO NOT SKIP THIS.
+**TO THE AGENT:** Before you do ANYTHING else - before greeting the user, before asking questions, before presenting options - you MUST create the project directory structure. This is MANDATORY. See the "Project Directory Structure" section below and load `steering/project-structure.md` for exact commands. DO NOT SKIP THIS.
+
+---
+
+## Quick Start
+
+**New users:**
+
+1. Say "start the boot camp" to begin
+2. Choose your path: Demo (10 min), Fast Track (30 min), Complete (2-3 hrs), or Production (10-18 hrs)
+3. Agent will create project structure automatically
+4. Follow module-by-module guidance
+
+**Experienced users:**
+
+- Skip to Module 5 if you have SGES-compliant data
+- Skip to Module 6 if Senzing is already installed
+- Jump to Module 8 if data is already loaded
+
+**Need help?** See `docs/guides/QUICK_START.md` for detailed fast paths.
 
 ---
 
@@ -50,6 +69,43 @@ Unlike the senzing reference power, this boot camp provides:
 **Use this power when:** You're learning Senzing or building your first project
 **Use senzing power when:** You need quick reference or troubleshooting
 
+## Available Steering Files
+
+This power includes detailed steering files for specific workflows. Load these on-demand when needed:
+
+**Core Workflows:**
+
+- **steering.md** - Complete workflows for all modules (0-12)
+- **agent-instructions.md** - Consolidated agent behavior guide
+- **quick-reference.md** - MCP tool quick reference card
+
+**Project Setup:**
+
+- **project-structure.md** - Detailed directory structure and setup commands
+- **environment-setup.md** - Version control, Python venv, Docker setup
+
+**Planning and Design:**
+
+- **design-patterns.md** - 10 common entity resolution patterns with use cases
+- **module-prerequisites.md** - Prerequisites and dependencies for each module
+- **complexity-estimator.md** - Time estimation based on data characteristics
+- **cost-estimation.md** - Pricing, ROI, deployment costs
+
+**Advanced Workflows:**
+
+- **modules-7-12-workflows.md** - Detailed workflows for advanced modules
+- **data-lineage.md** - Track data transformations and lineage
+- **incremental-loading.md** - Delta/CDC loading patterns
+- **uat-framework.md** - User acceptance testing framework
+- **docker-deployment.md** - Container deployment strategies
+
+**Troubleshooting and Best Practices:**
+
+- **common-pitfalls.md** - Common mistakes and solutions
+- **troubleshooting-decision-tree.md** - Visual diagnostic flowchart
+- **security-privacy.md** - Data privacy, PII protection, compliance
+- **lessons-learned.md** - Post-project retrospective template
+
 ## Code Quality Standards
 
 All Python code generated during the boot camp follows **PEP-8** standards for consistency, readability, and maintainability:
@@ -69,24 +125,13 @@ The agent will automatically generate PEP-8 compliant code and check user-provid
 
 **Before doing anything else**, the agent will automatically create the project directory structure. This happens at the very beginning of Module 0 or Module 1, whichever you start with.
 
-The agent will execute:
-
-```bash
-mkdir -p data/{raw,transformed,samples,backups}
-mkdir -p database
-mkdir -p src/{transform,load,query,utils}
-mkdir -p tests
-mkdir -p docs/feedback
-mkdir -p config
-mkdir -p docker/scripts
-mkdir -p logs
-mkdir -p monitoring
-mkdir -p scripts
-```
-
-And create initial files: `.gitignore`, `.env.example`, `README.md`
-
 **Why first?** This ensures all generated files go to the correct locations throughout the boot camp.
+
+**For complete details**, load the steering file:
+
+```text
+readSteering: powerName="senzing-bootcamp", steeringFile="project-structure.md"
+```
 
 ### New to Senzing?
 
@@ -95,11 +140,6 @@ And create initial files: `.gitignore`, `.env.example`, `README.md`
 3. **Check the Onboarding Checklist:** Complete `docs/guides/ONBOARDING_CHECKLIST.md` before starting
 4. **Review FAQ:** See `docs/guides/FAQ.md` for 100+ common questions and answers
 5. **Learn Terminology:** Check `docs/guides/GLOSSARY.md` for Senzing-specific terms
-6. **Choose Your Path:**
-   - **Demo** (10 min): Module 0 with sample data
-   - **Fast Track** (30 min): Modules 5-6 with SGES data
-   - **Complete** (2-3 hrs): Modules 1-6, 8
-   - **Production** (10-18 hrs): All modules 0-12
 
 ### Track Your Progress
 
@@ -126,11 +166,33 @@ Use utility templates from `templates/` directory:
 
 **Note:** Transformation, loading, and query code should be generated via MCP server tools (`mapping_workflow`, `generate_scaffold`) rather than using templates. See `templates/README.md` for details.
 
+## MCP Server Configuration
+
+This power connects to the Senzing MCP server via the following configuration:
+
+```json
+{
+  "mcpServers": {
+    "senzing-mcp-server": {
+      "url": "https://mcp.senzing.com/mcp",
+      "disabled": false,
+      "autoApprove": [],
+      "timeout": 60000,
+      "env": {
+        "SENZING_MCP_LOG_LEVEL": "INFO"
+      }
+    }
+  }
+}
+```
+
+**No API keys or tokens required** - the server is publicly accessible and ready to use immediately after installing the power.
+
+**Server name**: When using MCP tools, the server name is `senzing-mcp-server`.
+
 ## Available MCP Tools
 
 This boot camp connects to the Senzing MCP server and provides access to all entity resolution tools.
-
-**MCP Server Configuration:** This power uses a public Senzing MCP server at `https://mcp.senzing.com/mcp`. No API keys, tokens, or configuration placeholders are needed - the server is ready to use immediately after installing the power.
 
 **Most commonly used tools in this boot camp:**
 
@@ -190,105 +252,65 @@ The boot camp follows a progressive learning path with 13 focused modules (0-12)
 
 **Modules:**
 
-- **Module 0: Quick Demo (Optional)**
-  - **FIRST:** Agent creates project directory structure automatically
+- **Module 0: Quick Demo (Optional)** - 10-15 minutes
   - Experience entity resolution with sample data
   - See how Senzing resolves duplicate records automatically
-  - 10-15 minutes
 
-- **Module 1: Understand Business Problem**
-  - **FIRST:** Agent creates project directory structure automatically (if not already created in Module 0)
+- **Module 1: Understand Business Problem** - 20-30 minutes
   - Define your problem and identify data sources
   - View design pattern gallery
-  - **NEW:** Calculate costs and ROI
-  - Create problem statement document
-  - 20-30 minutes
+  - Calculate costs and ROI
 
-- **Module 2: Identify and Collect Data Sources**
+- **Module 2: Identify and Collect Data Sources** - 10-15 minutes per source
   - Upload or link to data source files
-  - Store data in data/raw/ directory
-  - **NEW:** Track data lineage
-  - Document data source locations
-  - 10-15 minutes per data source
+  - Track data lineage
 
-- **Module 3: Evaluate Data Quality**
-  - **NEW:** Automated quality scoring (0-100)
-  - **NEW:** Attribute completeness metrics
-  - **NEW:** Data consistency analysis
-  - **NEW:** Visual quality dashboard
-  - Create data quality report
-  - 15-20 minutes per data source
+- **Module 3: Evaluate Data Quality** - 15-20 minutes per source
+  - Automated quality scoring (0-100)
+  - Attribute completeness metrics
+  - Data consistency analysis
 
-- **Module 4: Map Your Data**
+- **Module 4: Map Your Data** - 1-2 hours per source
   - Create transformation programs
-  - **NEW:** Track transformation lineage
+  - Track transformation lineage
   - Validate data quality
-  - Generate test files
-  - 1-2 hours per data source
 
-- **Module 5: Set Up SDK**
-  - Check if Senzing is already installed
-  - Install and configure Senzing (if needed)
+- **Module 5: Set Up SDK** - 30 minutes - 1 hour
+  - Install and configure Senzing
   - Set up database (SQLite or PostgreSQL)
-  - Verify installation
-  - 30 minutes - 1 hour
 
-- **Module 6: Load Single Data Source**
+- **Module 6: Load Single Data Source** - 30 minutes per source
   - Load ONE data source and verify
-  - **NEW:** Incremental loading strategies
-  - **NEW:** Delta/CDC patterns
-  - Generate loading statistics
-  - 30 minutes per source
+  - Incremental loading strategies
 
-- **Module 7: Multi-Source Orchestration (NEW)**
+- **Module 7: Multi-Source Orchestration** - 1-2 hours
   - Manage dependencies between sources
   - Optimize load order
   - Parallel loading strategies
-  - Error handling across sources
-  - Multi-source progress tracking
-  - 1-2 hours
 
-- **Module 8: Query and Validate Results**
+- **Module 8: Query and Validate Results** - 1-2 hours
   - Create query programs
-  - **NEW:** User Acceptance Testing (UAT) framework
-  - **NEW:** Results validation criteria
-  - Business user testing
-  - 1-2 hours
+  - User Acceptance Testing (UAT) framework
 
-- **Module 9: Performance Testing and Benchmarking (NEW)**
-  - Benchmark transformation speed
-  - Benchmark loading performance
+- **Module 9: Performance Testing and Benchmarking** - 1-2 hours
+  - Benchmark transformation and loading
   - Query response time testing
-  - Resource utilization profiling
-  - Scalability testing (10K, 100K, 1M records)
-  - 1-2 hours
+  - Scalability testing
 
-- **Module 10: Security Hardening (NEW)**
+- **Module 10: Security Hardening** - 1-2 hours
   - Secrets management
   - API authentication/authorization
-  - Data encryption
   - PII handling compliance
-  - Security scanning
-  - Vulnerability assessment
-  - 1-2 hours
 
-- **Module 11: Monitoring and Observability (NEW)**
+- **Module 11: Monitoring and Observability** - 1-2 hours
   - Distributed tracing setup
   - Structured logging
   - Metrics collection
-  - APM integration
-  - Alerting rules
-  - Health checks
-  - 1-2 hours
 
-- **Module 12: Package and Deploy**
+- **Module 12: Package and Deploy** - 2-3 hours
   - Refactor code into deployable package
-  - **NEW:** Multi-environment strategy
-  - **NEW:** Automated code quality gates
-  - **NEW:** Disaster recovery playbook
-  - **NEW:** API gateway integration
-  - Create deployment artifacts
-  - 2-3 hours
+  - Multi-environment strategy
+  - Disaster recovery playbook
 
 **Total Time:** 10-18 hours for a comprehensive production-ready project
 
@@ -303,198 +325,72 @@ Experienced users can skip modules based on their situation:
 - **Just want to explore?** → Start with Module 0 (Quick Demo)
 - **Single data source only?** → Skip Module 7 (Multi-Source Orchestration)
 - **Already loaded data?** → Jump directly to Module 8
-- **Know your problem well?** → Skim Module 1, focus on Modules 2-12
-- **Data already collected?** → Skip Module 2, go to Module 3
 - **Not deploying to production?** → Skip Modules 9-12
-- **Performance not critical?** → Skip Module 9
-- **Internal use only?** → Simplify Module 10 (Security)
-- **Basic monitoring sufficient?** → Simplify Module 11
 
 ### Module Prerequisites
 
-Before starting each module, ensure prerequisites are met:
+Before starting each module, ensure prerequisites are met. For complete details, load the steering file:
 
-**Module 0** (Optional):
+```text
+readSteering: powerName="senzing-bootcamp", steeringFile="module-prerequisites.md"
+```
 
-- No prerequisites
+**Quick reference:**
 
-**Module 1**:
-
-- No prerequisites
-- Recommended: Have business problem in mind
-
-**Module 2**:
-
-- ✅ Module 1 complete (business problem defined)
-- ✅ Data sources identified in Module 1
-
-**Module 3**:
-
-- ✅ Module 2 complete (data sources collected)
-- ✅ Data files in `data/raw/` directory
-- ✅ Sample data available for evaluation
-
-**Module 4**:
-
-- ✅ Module 3 complete (sources evaluated)
-- ✅ Non-compliant sources identified
-- ✅ Quality scores reviewed
-
-**Module 5**:
-
-- ✅ Module 4 complete (all sources mapped) OR
-- ✅ All sources are SGES-compliant
-- ✅ Platform/environment ready
-
-**Module 6**:
-
-- ✅ Module 5 complete (SDK installed)
-- ✅ Database configured
-- ✅ At least one transformed data source ready
-
-**Module 7**:
-
-- ✅ Module 6 complete (first source loaded successfully)
-- ✅ Multiple data sources to orchestrate
-- ✅ Loading statistics reviewed for first source
-
-**Module 8**:
-
-- ✅ Module 7 complete (all sources loaded) OR
-- ✅ Module 6 complete (single source loaded)
-- ✅ No critical loading errors
-
-**Module 9**:
-
-- ✅ Module 8 complete (queries working)
-- ✅ Representative data loaded
-- ✅ Test environment available
-
-**Module 10**:
-
-- ✅ Module 9 complete (performance validated)
-- ✅ Security requirements identified
-- ✅ Compliance needs documented
-
-**Module 11**:
-
-- ✅ Module 10 complete (security hardened)
-- ✅ Monitoring tools selected
-- ✅ Production environment identified
-
-**Module 12**:
-
-- ✅ Module 11 complete (monitoring configured)
-- ✅ All tests passing
-- ✅ Deployment target confirmed
+- Module 0: No prerequisites
+- Module 1: No prerequisites
+- Module 2: Requires Module 1
+- Module 3: Requires Module 2
+- Module 4: Requires Module 3
+- Module 5: Requires Module 4 (or SGES data)
+- Module 6: Requires Module 5
+- Module 7: Requires Module 6 (skip if single source)
+- Module 8: Requires Module 6 or 7
+- Module 9-12: Sequential, but can be skipped if not deploying to production
 
 ## Project Directory Structure
 
-The Senzing Boot Camp agent will create this organized directory structure for you at the start of Module 1:
+The agent will create an organized directory structure at the start of Module 0 or Module 1. This ensures all generated files go to the correct locations throughout the boot camp.
+
+**For complete details and agent behavior**, load the steering file:
 
 ```text
-my-senzing-project/
-├── .git/                          # Version control (optional, but recommended)
-├── .gitignore                     # Exclude sensitive data
-├── .env.example                   # Template for environment variables
-├── .env                           # Actual environment variables (not in git)
-├── data/                          # User's data files
-│   ├── raw/                       # Original source data
-│   ├── transformed/               # Senzing-formatted JSON output
-│   ├── samples/                   # Sample data for testing
-│   └── backups/                   # Database backups (created by user)
-├── database/                      # SQLite database files
-│   ├── G2C.db                     # Main Senzing database (SQLite)
-│   └── .gitkeep                   # Keep directory in git
-├── src/                           # Generated program source
-│   ├── quickstart_demo/           # Module 0 demo code (optional)
-│   ├── transform/                 # Transformation programs (Module 3)
-│   ├── load/                      # Loading programs (Module 5)
-│   ├── query/                     # Query programs (Module 6)
-│   └── utils/                     # Shared utilities
-├── tests/                         # Test files for project
-├── docs/                          # Design documents
-│   ├── business_problem.md        # Module 1 output
-│   ├── data_source_evaluation.md  # Module 2 output
-│   ├── mapping_specifications.md  # Module 3 mappings
-│   ├── query_specifications.md    # Module 6 queries
-│   └── lessons_learned.md         # Post-project retrospective
-├── config/                        # Configuration files
-├── docker/                        # Docker files (if using containers)
-│   ├── Dockerfile                 # Container definition
-│   ├── docker-compose.yml         # Multi-container setup
-│   └── scripts/                   # Docker-specific scripts
-├── logs/                          # Log files
-├── monitoring/                    # Monitoring and dashboards
-├── requirements.txt               # Python dependencies for your project
-└── README.md                      # Project description
-
-**Important**: All generated source code (transformation programs, loading programs, query programs, utilities, and scripts) should be placed in the `src/` directory structure, not in the project root. Docker files should be placed in the `docker/` directory, never in the project root.
-
-**Note on backups**: The `data/backups/` directory is created by users in their project for storing database backups. This is NOT part of the power distribution itself.
-
-**Note on requirements.txt**: Users should create a `requirements.txt` file in their project root to manage Python dependencies. See `examples/` for reference implementations.
-
-**CRITICAL - SQLite Database Location**: All SQLite databases MUST be placed in `database/G2C.db` (project-relative path). Never use `/tmp/sqlite` or system-wide locations. This allows multiple bootcamp instances to run concurrently on the same machine. See `docs/policies/SQLITE_DATABASE_LOCATION.md` for complete policy.
+readSteering: powerName="senzing-bootcamp", steeringFile="project-structure.md"
 ```
 
-**Agent behavior**:
+**Key directories:**
 
-- **🚨 MANDATORY - EXECUTE FIRST 🚨**: Before ANY other action, check if project structure exists
-- **🚨 MANDATORY - EXECUTE FIRST 🚨**: If structure doesn't exist, create it immediately using commands above
-- **🚨 MANDATORY - EXECUTE FIRST 🚨**: Do not greet user, do not ask questions, do not present options until structure is created
-- **🚨 MANDATORY - EXECUTE FIRST 🚨**: This happens BEFORE everything else - no exceptions
-- Inform user that structure has been created
-- As you generate programs throughout the boot camp, save them in the appropriate folders
+- `data/` - Raw, transformed, and sample data
+- `database/` - SQLite database files
+- `src/` - Generated program source code
+- `docs/` - Design documents and specifications
+- `config/` - Configuration files
+- `docker/` - Container definitions
+- `logs/` - Log files
+- `monitoring/` - Monitoring and dashboards
 
-**Trigger points for directory creation** (create structure at ANY of these):
+## Entity Resolution Design Patterns
 
-- User says "start the boot camp"
-- User mentions any module number (0-12)
-- User selects any path (A, B, C, D)
-- User asks to begin
-- ANY indication they want to use the power
+When starting Module 1, users can choose from 10 common entity resolution patterns to guide their project.
 
-## When to Load Steering Files
+**For complete pattern gallery with use cases and matching strategies**, load the steering file:
 
-The boot camp includes detailed steering files for specific topics. Load these on-demand when users need detailed guidance:
+```text
+readSteering: powerName="senzing-bootcamp", steeringFile="design-patterns.md"
+```
 
-### Core Workflows (Always Available)
+**Available patterns:**
 
-- **steering/steering.md** — Detailed workflows for all modules (Module 0-6)
-- **steering/agent-instructions.md** — Consolidated agent behavior guide (load at start)
-- **steering/quick-reference.md** — MCP tool quick reference card
-
-### Supporting Topics (Load on Demand)
-
-- **steering/environment-setup.md** — Version control, Python venv, Docker, environment variables
-  - Load when: Starting Module 1, user asks about setup
-
-- **steering/security-privacy.md** — Data privacy, PII protection, compliance, anonymization
-  - Load when: Starting Module 2, working with sensitive data
-
-- **steering/cost-estimation.md** — Pricing, ROI, deployment costs
-  - Load when: Module 1 (planning), Module 4 (deployment choice)
-
-- **steering/lessons-learned.md** — Post-project retrospective template
-  - Load when: After Module 6, project completion
-
-- **steering/common-pitfalls.md** — Common mistakes and how to avoid them
-  - Load when: Any module, troubleshooting, user is stuck
-
-- **steering/troubleshooting-decision-tree.md** — Visual flowchart for diagnosing issues
-  - Load when: User encounters errors, systematic troubleshooting needed
-
-- **steering/complexity-estimator.md** — Estimate time based on data characteristics
-  - Load when: Module 1 (planning), user asks "how long will this take?"
-
-**Note**: For testing, performance monitoring, integration patterns, disaster recovery, and collaboration guidance, use MCP server tools:
-
-- Testing strategies → Use `search_docs(query="testing best practices")`
-- Performance monitoring → Use `search_docs(query="performance monitoring", category="performance")`
-- Integration patterns → Use `find_examples(query="API integration")` or `search_docs(query="integration patterns")`
-- Disaster recovery → Use `search_docs(query="backup and recovery")`
-- Collaboration → Standard software engineering practices
+- Customer 360 - Unified customer view
+- Fraud Detection - Identify fraud rings
+- Data Migration - Merge legacy systems
+- Compliance Screening - Watchlist matching
+- Marketing Dedup - Eliminate duplicates
+- Patient Matching - Unified medical records
+- Vendor MDM - Clean vendor master
+- Claims Fraud - Detect staged accidents
+- KYC/Onboarding - Verify identity
+- Supply Chain - Unified supplier view
 
 ## Recommended Hooks
 
@@ -526,42 +422,6 @@ cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
 - **Proactively suggest hooks** at the start of Module 4 (data mapping)
 - Remind users about backup hook before Module 6 (loading)
 - Emphasize PEP-8 hook for maintaining code quality throughout
-
-## Entity Resolution Design Pattern Gallery
-
-When starting Module 1, offer users a gallery of common entity resolution patterns:
-
-| Pattern                  | Use Case                | Key Matching                      | Typical ROI                            |
-|--------------------------|-------------------------|-----------------------------------|----------------------------------------|
-| **Customer 360**         | Unified customer view   | Names, emails, phones, addresses  | Improved service, targeted marketing   |
-| **Fraud Detection**      | Identify fraud rings    | Names, addresses, devices, IPs    | Loss prevention, faster detection      |
-| **Data Migration**       | Merge legacy systems    | All available identifiers         | Reduced storage, simplified ops        |
-| **Compliance Screening** | Watchlist matching      | Names, DOB, nationalities, IDs    | Regulatory compliance, risk mitigation |
-| **Marketing Dedup**      | Eliminate duplicates    | Names, addresses, emails          | Reduced mailing costs, better metrics  |
-| **Patient Matching**     | Unified medical records | Names, DOB, SSN, MRNs             | Patient safety, care coordination      |
-| **Vendor MDM**           | Clean vendor master     | Company names, tax IDs, addresses | Better pricing, consolidated spend     |
-| **Claims Fraud**         | Detect staged accidents | Names, vehicles, providers        | Reduced fraudulent payouts             |
-| **KYC/Onboarding**       | Verify identity         | Names, DOB, SSN, gov IDs          | Reduced fraud, compliance              |
-| **Supply Chain**         | Unified supplier view   | Company names, GLNs, tax IDs      | Visibility, risk management            |
-
-**When to use each pattern**:
-
-- **Customer 360**: Multiple customer touchpoints, CRM consolidation
-- **Fraud Detection**: Financial services, insurance, e-commerce
-- **Data Migration**: M&A, system consolidation, cloud migration
-- **Compliance**: Banking, fintech, international trade
-- **Marketing**: Email campaigns, direct mail, lead management
-- **Healthcare**: Hospital networks, HIE, patient portals
-- **Vendor MDM**: Procurement, AP, spend analysis
-- **Claims Fraud**: Insurance, workers comp, auto claims
-- **KYC**: Banking, fintech, account opening
-- **Supply Chain**: Manufacturing, logistics, procurement
-
-**Agent behavior**:
-
-- Present this gallery when user requests it in Module 1
-- Help them identify which pattern(s) match their situation
-- Use the selected pattern to guide problem definition and set realistic expectations
 
 ## Best Practices
 
@@ -607,6 +467,38 @@ This boot camp follows Senzing best practices.
 - Use CORD sample data (Module 0) before working with real data
 - Start with SQLite for evaluation; use PostgreSQL for production
 
+### MCP Tool Usage Patterns
+
+**Always start with capabilities:**
+
+```text
+get_capabilities() → Returns all available tools
+```
+
+**For data mapping:**
+
+```text
+mapping_workflow(source_data, data_source_code) → Interactive 7-step mapping
+lint_record(record) → Validate mapped data
+analyze_record(record) → Quality metrics
+```
+
+**For code generation:**
+
+```text
+generate_scaffold(language, workflow_type) → Complete working code
+sdk_guide(platform, language) → Installation instructions
+get_sdk_reference(method_name) → Method signatures
+```
+
+**For troubleshooting:**
+
+```text
+explain_error_code(code) → Error diagnosis and solutions
+search_docs(query, category) → Find relevant documentation
+find_examples(query) → Working code examples
+```
+
 **Senzing tool best practices**:
 
 - Always call `get_capabilities` first when starting a Senzing session
@@ -625,12 +517,18 @@ See [steering/steering.md](steering/steering.md) for detailed step-by-step workf
 - Module 4: Data Mapping End-to-End (with Lineage Tracking)
 - Module 5: Install Senzing SDK
 - Module 6: Load Single Data Source (with Incremental Loading)
+
+For Modules 7-12, see [steering/modules-7-12-workflows.md](steering/modules-7-12-workflows.md):
+
 - Module 7: Multi-Source Orchestration
 - Module 8: Query and Validate Results (with UAT Framework)
 - Module 9: Performance Testing and Benchmarking
 - Module 10: Security Hardening
 - Module 11: Monitoring and Observability
 - Module 12: Package and Deploy
+
+Additional workflows:
+
 - Troubleshooting and Error Resolution
 - Explore Code Examples
 
@@ -638,12 +536,12 @@ See [steering/steering.md](steering/steering.md) for detailed step-by-step workf
 
 **Boot camp-specific troubleshooting**:
 
-- **Module stuck?** Check prerequisites in module description
+- **Module stuck?** Check prerequisites in module description or load `steering/module-prerequisites.md`
 - **Directory structure missing?** Agent should create it automatically at start of Module 0 or 1
 - **Code not PEP-8 compliant?** Use the agent's validation feature
 - **Lost progress?** Run `./scripts/status.sh` or check `docs/guides/PROGRESS_TRACKER.md`
 - **Can't find generated files?** Check the `src/` directory structure
-- **Module prerequisites not met?** Review the "Module Prerequisites" section above
+- **Module prerequisites not met?** Load `steering/module-prerequisites.md` for details
 - **Environment issues?** Run `./scripts/check_prerequisites.sh` to validate setup
 
 **MCP tool troubleshooting**:
@@ -660,6 +558,7 @@ See [steering/steering.md](steering/steering.md) for detailed step-by-step workf
 - **Glossary**: Check `docs/guides/GLOSSARY.md` for terminology
 - **Visual guides**: Review `docs/diagrams/module-flow.md` and `docs/diagrams/data-flow.md`
 - **Troubleshooting index**: See `docs/guides/TROUBLESHOOTING_INDEX.md`
+- **Decision tree**: Load `steering/troubleshooting-decision-tree.md` for visual diagnostic flowchart
 - **Senzing power**: Optionally install for quick reference and top 5 common issues
 
 ## Providing Feedback
@@ -714,7 +613,7 @@ When user requests to provide feedback:
    - Fill in all sections with user's responses
    - Add to the "Your Feedback" section
 
-6. **Confirm and offer next steps**:
+6. **Confirm to user**:
    - "I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`"
    - "Would you like to add more feedback, or continue with the boot camp?"
 
@@ -867,45 +766,6 @@ After completing all modules, you'll have:
 
 **Current Version**: 1.0.0
 **Senzing Compatibility**: V4.0
-**Last Updated**: March 23, 2026
+**Last Updated**: March 27, 2026
 
 See [CHANGELOG.md](CHANGELOG.md) for complete version history and release notes.
-
-## What's New in v1.0.0 (March 2026)
-
-**Complete Learning Path:**
-
-- 13 focused modules from quick demo to production deployment
-- Automated data quality scoring
-- Multi-source orchestration
-- Performance testing and optimization
-- Security hardening
-- Monitoring and observability
-- UAT framework
-- Cost calculator
-- Data lineage tracking
-
-**Senzing MCP Server Integration:**
-
-- Live, always-current Senzing documentation
-- SDK code generation and scaffolding
-- Interactive data mapping workflow (8 steps)
-- Sample data access (CORD datasets)
-- Error code explanations (456+ codes)
-- Working code examples (27 GitHub repositories)
-
-**Kiro Features:**
-
-- 4 automation hooks for quality and validation
-- 12 ready-to-use code templates
-- 16 steering files for guided workflows
-- 8 user guides
-- 14 module documentation files
-- 3 complete example projects
-
-**Streamlined Distribution:**
-
-- 50% smaller than initial development version
-- Focused exclusively on boot camp-specific content
-- MCP server provides all Senzing documentation
-- No static content that can become outdated

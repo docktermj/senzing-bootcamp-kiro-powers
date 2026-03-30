@@ -16,7 +16,7 @@ Use this workflow when a user wants to see entity resolution in action before wo
 
 1. **Create project structure (if needed)**: Follow the directory creation commands from the agent-instructions steering file. If the structure doesn't exist, create it before proceeding. After creation, tell the user: "I've created the project directory structure for you. All demo files will be saved in `src/quickstart_demo/`."
 
-2. **Explain the demo**: "Let's run a live demo using sample data so you can see entity resolution in action. We'll actually run the Senzing SDK to load duplicate records and watch them automatically resolve into unique entities. This isn't a simulation - it's the real thing!"
+2. **Explain the demo**: "Let's run a demo using sample data so you can see entity resolution in action. We'll run the Senzing SDK to load duplicate records and watch them automatically resolve into unique entities."
 
 3. **Verify Senzing SDK is available**: The SDK should already be installed from Module 0. Verify:
 
@@ -24,12 +24,9 @@ Use this workflow when a user wants to see entity resolution in action before wo
    python -c "import senzing" 2>/dev/null && echo "SDK found" || echo "SDK not found"
    ```
 
-   **If SDK found** → Use live demo with `demo_quick_start.py`
-   - "Great! Senzing SDK is ready. Let's run a live demo."
+   **If SDK found** → Proceed with the live demo using `demo_quick_start.py`.
 
-   **If SDK not found** → Use simulation fallback with `demo_simulation.py`
-   - "The SDK doesn't appear to be installed. Let me show you a simulation that demonstrates how entity resolution works."
-   - After simulation: "To see the real SDK in action, complete Module 0 (SDK Setup) first."
+   **If SDK not found** → Direct user to complete Module 0 (SDK Setup) first. Do not proceed without the SDK.
 
 4. **Choose sample dataset**: Call `get_sample_data` to retrieve one of the CORD datasets:
    - **Las Vegas**: Customer records with duplicates (good for retail/hospitality use cases)

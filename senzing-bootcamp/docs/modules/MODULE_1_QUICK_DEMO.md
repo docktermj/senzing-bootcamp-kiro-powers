@@ -6,45 +6,14 @@ Module 1 provides a demonstration of Senzing entity resolution using sample data
 
 This module offers multiple demo options to ensure everyone can see entity resolution working, regardless of their environment.
 
-**Time**:
-
-- Live Demo (SDK installed): 10-15 minutes
-- Simulation Demo: 5-10 minutes (no SDK required)
+**Time**: 10-15 minutes
 
 **Output**: Working demo showing entity resolution results
 
 ## Prerequisites
 
-### For Live Demo (Recommended - Real SDK)
-
 - ✅ Module 0 complete (Senzing SDK installed)
 - ✅ Python 3.8+ with senzing package
-
-### For Simulation Demo (No SDK - Shows Concepts)
-
-- ✅ Python 3.8+ installed
-- ✅ No other requirements!
-
-**Setup time**: Instant (no downloads)
-
-**Note**: Simulation demo shows what Senzing would do using pre-computed results. Use this if you haven't completed Module 0 yet.
-
-## Choosing Your Demo Path
-
-**Recommended for most users**: Live Demo (SDK)
-
-- ✓ Real Senzing SDK
-- ✓ Actual entity resolution
-- ✓ Match explanations with confidence scores
-- ⏱ 10-15 minutes
-
-**Best for quick preview**: Simulation Demo
-
-- ✓ No SDK needed
-- ✓ Instant results
-- ✓ Shows concepts clearly
-- ⚠ Simulation, not real SDK
-- ⏱ 5-10 minutes
 
 ## Learning Objectives
 
@@ -104,7 +73,6 @@ The generated demo script will:
 7. **Display example entities** with all matching records side-by-side
 8. **Provide before/after comparison** (e.g., "5 records → 3 entities")
 
-This is a real, working demonstration - not a simulation!
 
 ## Example Output
 
@@ -278,10 +246,10 @@ After completing the demo:
 ## Common Questions
 
 **Q: Do I need to install Senzing to run the demo?**
-A: Yes, the SDK should be installed in Module 0 (SDK Setup). If you haven't done that yet, the simulation demo can show you the concepts without the SDK.
+A: Yes. Complete Module 0 (SDK Setup) first.
 
-**Q: Does this actually run Senzing, or is it a simulation?**
-A: This runs the real Senzing SDK! You'll see actual entity resolution happening, not a simulation or mock-up.
+**Q: Does this actually run Senzing?**
+A: Yes. This runs the real Senzing SDK with actual entity resolution.
 
 **Q: Can I use my own data for the demo?**
 A: The demo uses sample data to ensure a quick, successful experience. You'll work with your data starting in Module 3.
@@ -337,10 +305,6 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
    ls -la database/
    ```
 
-3. **Use Simulation Demo** as a fallback
-   - No database required
-   - Shows same concepts
-
 ---
 
 ### Issue: Demo Runs But No Matches Found
@@ -364,57 +328,9 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 ---
 
-### Issue: Want to See Real SDK, Not Simulation
-
-**If simulation demo was used but you want to see real SDK**:
-
-1. **Complete Module 0** (SDK Setup)
-   - Install the Senzing SDK natively
-   - Return to Module 1 and run the live demo
-
-2. **Continue to Module 6**
-   - You'll see real SDK in action with your own data
-   - More comprehensive than the demo
-
-3. **Accept simulation for now**
-   - Concepts are the same
-   - Real SDK comes in later modules
-
----
-
-### Issue: Python Not Installed (For Simulation Demo)
-
-**Symptoms**:
-
-- "python: command not found"
-- "python3: command not found"
-
-**Solutions**:
-
-1. **Install Python 3.8+**
-   - **macOS**: `brew install python3` or download from [python.org](https://www.python.org)
-   - **Linux**: `sudo apt install python3` (Ubuntu/Debian)
-   - **Windows**: Download from [python.org](https://www.python.org)
-
-2. **Verify installation**
-
-   ```bash
-   python3 --version
-   # Should show: Python 3.8.x or higher
-   ```
-
-3. **Skip to Module 2**
-   - Come back to Module 1 later
-   - See real SDK in Module 6
-
----
-
 ### Issue: Module 1 Taking Longer Than Expected
 
-**Expected times**:
-
-- **Live Demo (SDK)**: 10-15 minutes
-- **Simulation Demo**: 5-10 minutes
+**Expected time**: 10-15 minutes
 
 **If taking longer**:
 
@@ -422,12 +338,7 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
    - Database initialization? (Should be <1 minute)
    - Demo execution? (Should be <2 minutes)
 
-2. **Use Simulation Demo** for faster experience
-   - Instant execution
-   - No setup time
-   - Same learning outcomes
-
-3. **Continue anyway**
+2. **Continue anyway**
    - First-time setup is one-time cost
    - Subsequent runs will be faster
 
@@ -519,25 +430,13 @@ And provide recommendations based on your environment.
 
 ## Success Criteria
 
-**For Live Demo (SDK installed)**:
-✅ Senzing SDK is installed and working
+✅ Senzing SDK is installed and working (from Module 0)
 ✅ Demo script executes successfully
 ✅ Sample data loads without errors
 ✅ Entities are resolved and displayed with match explanations
 ✅ You understand what entity resolution does and WHY records matched
 ✅ You can see the before/after transformation
 ✅ You're excited to try it with your own data!
-
-**For Simulation Demo**:
-✅ Simulation script runs successfully
-✅ Sample records displayed (before resolution)
-✅ Resolved entities displayed (after resolution)
-✅ Match explanations shown with confidence scores
-✅ You understand entity resolution concepts
-✅ You understand this is a simulation (not real SDK)
-✅ You're ready to see the real SDK in Module 6!
-
-**Either demo achieves the goal**: Understanding how entity resolution works!
 
 ## Related Documentation
 

@@ -47,34 +47,6 @@ python templates/demo_quick_start.py
 - Displays confidence scores and match explanations
 - Creates the "aha moment" for new users
 
-#### demo_simulation.py ⭐ NEW - Module 1 Fallback
-
-**Purpose**: Simulated demonstration when Senzing SDK is not available
-**Use when**: Module 1 (Quick Demo), SDK not yet installed
-**Complexity**: Beginner
-**Prerequisites**: Python 3.8+ only (no Senzing SDK required)
-**Usage**:
-
-```bash
-# Run the simulation
-python templates/demo_simulation.py
-```
-
-**What it does**:
-
-- Displays 5 sample records with obvious duplicates
-- Simulates entity resolution logic
-- Shows which records would match and WHY
-- Displays simulated confidence scores
-- Explains entity resolution concepts
-- Perfect fallback when SDK unavailable
-
-**When to use each**:
-
-- Use `demo_quick_start.py` when Senzing SDK is available (preferred)
-- Use `demo_simulation.py` when SDK is not yet installed
-- Agent automatically chooses based on environment
-
 ### Database Management Templates
 
 #### backup_database.py ⭐ IMPORTANT

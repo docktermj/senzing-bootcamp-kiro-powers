@@ -16,8 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Steering guides for all modules with on-demand loading
 - Progress tracking system (`scripts/status.sh`)
 - PEP-8 compliance checking via hooks
-- Live demo for Module 0 that runs real Senzing SDK
-- Simulation fallback demo when SDK unavailable
+- Live demo for Module 1 that runs real Senzing SDK
 - Feedback collection workflow
 - Prerequisite checker (`scripts/check_prerequisites.sh`)
 - Hook auto-installer (`scripts/install_hooks.sh`)

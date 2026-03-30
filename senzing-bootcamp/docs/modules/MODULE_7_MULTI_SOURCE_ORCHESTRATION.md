@@ -246,17 +246,14 @@ class MultiSourceOrchestrator:
         start_time = time.time()
 
         try:
-            # TODO: Implement actual loading logic
-            # load_records_from_source(source)
-
-            # Simulate loading
-            time.sleep(2)
+            # Load records from source using Senzing SDK
+            records_loaded = load_records_from_source(source, engine)
 
             duration = time.time() - start_time
             self.stats[source] = {
                 'status': 'success',
                 'duration': duration,
-                'records': 10000  # TODO: Get actual count
+                'records': records_loaded
             }
             self.loaded.add(source)
             logger.info(f"✅ Loaded {source} in {duration:.1f}s")

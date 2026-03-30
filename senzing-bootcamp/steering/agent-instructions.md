@@ -251,22 +251,16 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - **FIRST: CREATE DIRECTORY STRUCTURE** - See "🚨 MANDATORY FIRST ACTION" at the top of this document
 - Execute directory creation commands BEFORE doing anything else
 - Create `src/quickstart_demo/` subdirectory for demo code
-- **Check SDK availability and choose demo type**:
-  1. Check if Senzing SDK is installed
-  2. If SDK found → Use `demo_quick_start.py` (preferred)
-  3. If SDK not found → Use `demo_simulation.py` (fallback)
-- **For live demo** (SDK installed):
+- **Check SDK availability**:
+  1. Check if Senzing SDK is installed (should be from Module 0)
+  2. If SDK found → Use `demo_quick_start.py`
+  3. If SDK not found → Direct user to complete Module 0 first
+- **For the demo** (SDK installed):
   - Use `get_sample_data` to retrieve CORD datasets
   - Use `generate_scaffold` with `full_pipeline` for demo scripts
   - Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
   - Save sample data to `src/quickstart_demo/sample_data_[dataset_name].jsonl`
   - Show entity resolution in action with real examples
-- **For simulation demo** (fallback):
-  - Use pre-built `templates/demo_simulation.py`
-  - Copy to `src/quickstart_demo/demo_simulation.py`
-  - Execute to show entity resolution concepts
-  - Set expectations: "This is a simulation. For a live demo, complete Module 0 (SDK Setup) first."
-  - After simulation, offer to help install SDK via Module 0
 - Connect demo results to user's potential use case
 
 ### Module 2: Business Problem

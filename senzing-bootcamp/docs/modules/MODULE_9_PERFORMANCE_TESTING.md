@@ -196,14 +196,10 @@ class PerformanceTester:
         start_time = time.time()
         records_processed = 0
 
-        # TODO: Implement actual transformation
-        # for record in read_source(input_file, limit=sample_size):
-        #     transformed = transform(record)
-        #     records_processed += 1
-
-        # Simulate for now
-        time.sleep(2)
-        records_processed = sample_size
+        # Run actual transformation on source data
+        for record in read_source(input_file, limit=sample_size):
+            transformed = transform(record)
+            records_processed += 1
 
         duration = time.time() - start_time
         throughput = records_processed / duration
@@ -236,14 +232,10 @@ class PerformanceTester:
         start_time = time.time()
         records_loaded = 0
 
-        # TODO: Implement actual loading
-        # for record in read_transformed(input_file, limit=sample_size):
-        #     engine.addRecord(DATA_SOURCE, record['RECORD_ID'], record)
-        #     records_loaded += 1
-
-        # Simulate for now
-        time.sleep(5)
-        records_loaded = sample_size
+        # Load records using Senzing SDK
+        for record in read_transformed(input_file, limit=sample_size):
+            engine.add_record(DATA_SOURCE, record['RECORD_ID'], json.dumps(record))
+            records_loaded += 1
 
         duration = time.time() - start_time
         throughput = records_loaded / duration
@@ -278,11 +270,8 @@ class PerformanceTester:
         for i in range(num_queries):
             start = time.time()
 
-            # TODO: Implement actual query
-            # result = engine.searchByAttributes(search_criteria)
-
-            # Simulate for now
-            time.sleep(0.025)  # 25ms
+            # Execute actual query using Senzing SDK
+            result = engine.search_by_attributes(json.dumps(search_criteria))
 
             duration = (time.time() - start) * 1000  # Convert to ms
             response_times.append(duration)

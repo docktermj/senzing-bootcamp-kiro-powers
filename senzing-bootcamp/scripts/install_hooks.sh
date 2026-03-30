@@ -47,6 +47,9 @@ HOOKS=(
     "backup-before-load.kiro.hook:Backup Before Load:Reminds to backup before loading"
     "validate-senzing-json.kiro.hook:Validate Senzing JSON:Validates output format against SGES"
     "backup-project-on-request.kiro.hook:Backup on Request:Auto-backup when user requests it"
+    "commonmark-validation.kiro.hook:CommonMark Validation:Validates Markdown files follow CommonMark spec"
+    "commonmark-pre-commit.kiro.hook:CommonMark Pre-Commit:Checks Markdown before committing"
+    "validate-commonmark-on-save.kiro.hook:Validate CommonMark on Save:Validates Markdown on file save"
 )
 
 for hook_info in "${HOOKS[@]}"; do

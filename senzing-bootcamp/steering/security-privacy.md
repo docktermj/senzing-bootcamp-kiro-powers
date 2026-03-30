@@ -78,15 +78,3 @@ Create `docs/security_compliance.md`:
 - Contact: [security team email]
 - Procedure: [link to incident response plan]
 ```
-
-## When to Load This Guide
-
-Load this steering file when:
-
-- Starting Module 3 (before collecting data)
-- Starting Module 4 (before evaluating data quality)
-- User asks about data privacy or security
-- Working with sensitive or regulated data
-- Planning production deployment (Module 12)
-- Setting up production deployments
-- User mentions compliance requirements (GDPR, CCPA, HIPAA)

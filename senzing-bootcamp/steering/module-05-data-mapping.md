@@ -176,22 +176,22 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Retest the program after changes. You may cycle through steps multiple times before achieving the desired quality.
 
-1. **Step 10 — Save and Document**: Ensure the transformation program is properly saved and documented:
+11. **Step 10 — Save and Document**: Ensure the transformation program is properly saved and documented:
 
-- Program saved in `src/transform/transform_[datasource_name].py` (all source code must be in `src/`)
-- Create `docs/mapping_[datasource_name].md` with:
-  - Field mappings
-  - Transformation logic
-  - Data quality results
-  - How to run the program
-  - Dependencies and prerequisites
-- Save sample output in `data/transformed/[datasource_name]_sample.jsonl`
+    - Program saved in `src/transform/transform_[datasource_name].py` (all source code must be in `src/`)
+    - Create `docs/mapping_[datasource_name].md` with:
+      - Field mappings
+      - Transformation logic
+      - Data quality results
+      - How to run the program
+      - Dependencies and prerequisites
+    - Save sample output in `data/transformed/[datasource_name]_sample.jsonl`
 
-1. **Mark data source as complete**: Once the user is satisfied with the transformation program for this data source, mark it as complete and move to the next data source that needs mapping.
+11. **Mark data source as complete**: Once the user is satisfied with the transformation program for this data source, mark it as complete and move to the next data source that needs mapping.
 
-2. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 3), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
+12. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 3), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
 
-3. **Transition to Module 0**: Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 0 (SDK Setup).
+13. **Transition to Module 0**: Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 0 (SDK Setup).
 
 ### Important Rules for Data Mapping
 

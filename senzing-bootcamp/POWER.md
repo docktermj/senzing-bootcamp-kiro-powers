@@ -1,7 +1,7 @@
 ---
 name: "senzing-bootcamp"
 displayName: "Senzing Boot Camp"
-description: "Guided 13-module boot camp for learning Senzing entity resolution, from first demo to production deployment. Interactive MCP-assisted workflows for data mapping, SDK setup, loading, querying, and deployment."
+description: "Guided 13-module boot camp for learning Senzing entity resolution, from first demo to production deployment."
 keywords: ["senzing", "bootcamp", "training", "tutorial", "learning-path", "entity-resolution", "guided-workflow"]
 author: "Senzing"
 ---
@@ -19,7 +19,7 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 **New users:** Say "start the boot camp" to begin. Choose your path:
 
 - A) Quick Demo (10 min) — Module 1
-- B) Fast Track (30 min) — Modules 0, 6 (for users with SGES-compliant data)
+- B) Fast Track (30 min) — Modules 5-6 (for users with SGES-compliant data)
 - C) Complete Beginner (2-3 hrs) — Modules 2-6, 8
 - D) Full Production (10-18 hrs) — All Modules 0-12
 

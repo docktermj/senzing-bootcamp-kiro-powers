@@ -5,6 +5,18 @@ All notable changes to the Senzing Boot Camp power will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-03-30
+
+### Improved
+
+- Reduced `agent-instructions.md` (always-loaded) from 734 to ~150 lines by moving module-specific behaviors into their respective module steering files and removing content duplicated in policies
+- Removed content duplication: directory creation script lives only in `project-structure.md`, file placement rules live only in `FILE_STORAGE_POLICY.md`, module behaviors live only in per-module steering files
+- Fixed `security-privacy.md` contradicting itself — was `inclusion: always` but had a "When to Load" section listing manual triggers. Removed the contradictory section
+- Fixed Path B inconsistency: POWER.md said "Modules 0, 6" while agent-instructions said "Modules 5-6". Aligned to "Modules 5-6" everywhere
+- Tightened POWER.md description from 2 sentences to 1 (removed redundant second sentence)
+- Added boot camp completion and feedback reminder to Module 12 steering file
+- Added feedback mechanism mention to Module 2 steering file
+
 ## [0.1.1] - 2026-03-30
 
 ### Improved

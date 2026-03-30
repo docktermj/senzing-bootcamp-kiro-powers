@@ -159,3 +159,11 @@ inclusion: manual
 - ✅ Deployed to staging successfully
 - ✅ Deployed to production successfully
 - ✅ Operations documentation complete
+
+## Boot Camp Completion
+
+When Module 12 is complete, congratulate the user and remind them about feedback:
+
+- "Congratulations on completing the Senzing Boot Camp!"
+- "If you have any feedback about your experience, say 'power feedback' or 'bootcamp feedback' and I'll help you document it"
+- "If you've already documented feedback in `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`, please share that file with the power author"

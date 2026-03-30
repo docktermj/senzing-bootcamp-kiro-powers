@@ -12,7 +12,7 @@ This document defines where different types of files should be stored in the Sen
 
 1. **Never use `/tmp`** for project files
 2. **Source code goes in `src/`** - never in project root
-4. **Use project-specific directories** for all file types
+3. **Use project-specific directories** for all file types
 
 ## File Storage Rules
 

@@ -29,7 +29,6 @@ This module offers multiple demo options to ensure everyone can see entity resol
 
 **Note**: Simulation demo shows what Senzing would do using pre-computed results. Use this if you haven't completed Module 0 yet.
 
-
 ## Choosing Your Demo Path
 
 **Recommended for most users**: Live Demo (SDK)
@@ -308,7 +307,7 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
    - Module 0 installs the SDK natively
    - Return to Module 1 after installation
 
-3. **Check Python environment**
+2. **Check Python environment**
 
    ```bash
    pip list | grep senzing

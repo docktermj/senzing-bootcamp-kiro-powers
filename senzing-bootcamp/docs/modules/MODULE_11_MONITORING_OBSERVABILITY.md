@@ -100,8 +100,9 @@ def search():
 **Grafana:** Visualization and dashboards
 
 Install Prometheus and Grafana natively on your system or use your organization's existing monitoring infrastructure. See the official documentation:
-- Prometheus: https://prometheus.io/docs/prometheus/latest/installation/
-- Grafana: https://grafana.com/docs/grafana/latest/setup-grafana/installation/
+
+- Prometheus: <https://prometheus.io/docs/prometheus/latest/installation/>
+- Grafana: <https://grafana.com/docs/grafana/latest/setup-grafana/installation/>
 
 ### Option 2: ELK Stack (Elasticsearch, Logstash, Kibana)
 

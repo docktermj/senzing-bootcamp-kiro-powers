@@ -19,6 +19,7 @@ python3 -c "import senzing; print('Senzing version:', senzing.__version__)" 2>/d
 ```
 
 If Senzing is found:
+
 - Verify the version is compatible (V4.0+)
 - If compatible, skip to Step 4 (verify installation)
 - If incompatible or broken, proceed with installation
@@ -32,6 +33,7 @@ WAIT for response before proceeding.
 Use `sdk_guide` with `topic='install'` and the user's platform to get current installation commands. The MCP server always has the latest instructions.
 
 **Platform options for `sdk_guide`**:
+
 - `platform='linux_apt'` — Ubuntu/Debian
 - `platform='linux_yum'` — RHEL/CentOS/Fedora
 - `platform='macos_arm'` — macOS (Apple Silicon)
@@ -84,11 +86,13 @@ Ask: "Which database would you like to use? SQLite is recommended for learning a
 WAIT for response.
 
 **For SQLite** (recommended for boot camp):
+
 - Create the database directory: `mkdir -p database`
 - Database path: `database/G2C.db`
 - No additional setup needed — SQLite is built in
 
 **For PostgreSQL** (production):
+
 - User needs PostgreSQL installed and running
 - Create a database for Senzing
 - Use `sdk_guide` with `topic='configure'` for PostgreSQL setup
@@ -142,6 +146,7 @@ engine.destroy()
 ## Transition
 
 Once the SDK is installed and verified, proceed to:
+
 - **Module 1** (Quick Demo) — see the SDK in action with sample data
 - **Module 2** (Business Problem) — start working with your own data
 

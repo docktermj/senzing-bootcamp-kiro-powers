@@ -542,6 +542,7 @@ Load the per-module steering file when the user starts a module:
 | 12     | `module-12-deployment.md`       |
 
 Load additional steering files as needed:
+
 - `steering/environment-setup.md` - Module 0, setup questions
 - `steering/security-privacy.md` - Module 3, sensitive data
 - For cost/pricing questions, use MCP `search_docs` with query "pricing"

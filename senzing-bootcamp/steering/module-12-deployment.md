@@ -92,7 +92,7 @@ inclusion: manual
    echo "Deployment complete!"
    ```
 
-6. **Create CI/CD pipeline**:
+5. **Create CI/CD pipeline**:
 
    Create `.github/workflows/ci.yml`:
 
@@ -112,7 +112,7 @@ inclusion: manual
            run: bandit -r src/
    ```
 
-7. **Create disaster recovery plan**:
+6. **Create disaster recovery plan**:
 
    Document in `docs/operations/disaster_recovery.md`:
    - Backup procedures
@@ -120,7 +120,7 @@ inclusion: manual
    - RTO/RPO targets
    - Failover process
 
-8. **Deploy to staging**:
+7. **Deploy to staging**:
 
    ```bash
    ./deployment/scripts/deploy.sh staging 1.0.0
@@ -131,7 +131,7 @@ inclusion: manual
    - Verify monitoring
    - Check performance
 
-9. **Deploy to production**:
+8. **Deploy to production**:
 
    ```bash
    ./deployment/scripts/deploy.sh prod 1.0.0
@@ -142,7 +142,7 @@ inclusion: manual
    - Check error rates
    - Verify functionality
 
-10. **Create operations documentation**:
+9. **Create operations documentation**:
 
     Document in `docs/operations/`:
     - `deployment_guide.md` - How to deploy

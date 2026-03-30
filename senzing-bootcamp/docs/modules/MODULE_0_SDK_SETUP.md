@@ -43,6 +43,7 @@ pip list | grep senzing
 ```
 
 If Senzing is found:
+
 - Verify version is V4.0+
 - Skip to "Database Configuration" section
 - If version is incompatible, proceed with installation
@@ -54,13 +55,15 @@ A valid Senzing license is required to install and use the SDK.
 ### Obtaining a License
 
 **Evaluation License (Recommended for Boot Camp):**
-- Email: support@senzing.com
+
+- Email: <support@senzing.com>
 - Mention: "Requesting evaluation license for Senzing Boot Camp"
 - Response time: 1-2 business days
 - Valid for 30-90 days
 
 **Production License:**
-- Email: sales@senzing.com
+
+- Email: <sales@senzing.com>
 - Pricing based on data source records (DSRs)
 
 **Install License:**

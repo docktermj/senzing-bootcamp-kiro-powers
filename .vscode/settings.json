@@ -176,6 +176,7 @@
     "utcnow",
     "uvicorn",
     "VARCHAR",
+    "venv",
     "Watchlist",
     "watchlists",
     "writeheader",

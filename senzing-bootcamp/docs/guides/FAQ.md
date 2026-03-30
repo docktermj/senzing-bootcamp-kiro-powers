@@ -29,7 +29,7 @@ Required: Python 3.7+, pip, git, curl, zip/unzip. Optional: PostgreSQL. Run `./s
 
 ### Do I need a Senzing license?
 
-Module 1 (Quick Demo) doesn't need one. Module 0+ (SDK) requires a license. Request a free evaluation license from support@senzing.com (1-2 business days). See `licenses/README.md`.
+Module 1 (Quick Demo) doesn't need one. Module 0+ (SDK) requires a license. Request a free evaluation license from <support@senzing.com> (1-2 business days). See `licenses/README.md`.
 
 ### Where should I put my files?
 

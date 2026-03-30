@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hook auto-installer (`scripts/install_hooks.sh`)
 - Example project cloner (`scripts/clone_example.sh`)
 - Project backup/restore scripts
-- FAQ (100+ questions), glossary, collaboration guide
+- FAQ, collaboration guide
 - Visual diagrams (module flow, data flow)
 - Dedicated feedback workflow steering file
 - Explicit MCP tool usage patterns in documentation

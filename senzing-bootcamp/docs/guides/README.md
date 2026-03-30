@@ -22,20 +22,11 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 
 ### Reference Documentation
 
-**[FAQ.md](FAQ.md)** ⭐ NEW!
+**[FAQ.md](FAQ.md)**
 
-- 100+ frequently asked questions
+- Frequently asked questions about the boot camp
 - Organized by category
-- Quick answers to common questions
-- Covers all modules
-
-**[GLOSSARY.md](GLOSSARY.md)** ⭐ NEW!
-
-- A-Z terminology
-- Senzing-specific terms
-- Common attributes
-- MCP tools reference
-- Acronyms
+- Covers modules, files, troubleshooting
 
 **[DESIGN_PATTERNS.md](DESIGN_PATTERNS.md)**
 
@@ -74,11 +65,7 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 
 ### Troubleshooting
 
-**[TROUBLESHOOTING_INDEX.md](TROUBLESHOOTING_INDEX.md)**
-
-- Common issues and solutions
-- Error code explanations
-- Debugging strategies
+For Senzing error codes, use the MCP `explain_error_code` tool. For Senzing concepts and documentation, use `search_docs`. For bootcamp-specific issues, check `steering/common-pitfalls.md`.
 
 ### Installation and Setup
 
@@ -122,13 +109,12 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 1. Read [QUICK_START.md](QUICK_START.md)
 2. Complete [ONBOARDING_CHECKLIST.md](ONBOARDING_CHECKLIST.md)
 3. Check [FAQ.md](FAQ.md) for common questions
-4. Review [GLOSSARY.md](GLOSSARY.md) for terminology
 
 ### Need Help?
 
 1. Check [FAQ.md](FAQ.md) first
-2. Review [TROUBLESHOOTING_INDEX.md](TROUBLESHOOTING_INDEX.md)
-3. Look up terms in [GLOSSARY.md](GLOSSARY.md)
+2. Use MCP `search_docs` for Senzing topics
+3. Use MCP `explain_error_code` for SENZ errors
 4. Ask the agent for guidance
 
 ### Working with a Team?
@@ -205,12 +191,10 @@ docs/
 │   ├── README.md             # This file
 │   ├── QUICK_START.md        # Getting started
 │   ├── ONBOARDING_CHECKLIST.md
-│   ├── FAQ.md                # ⭐ NEW! 100+ Q&A
-│   ├── GLOSSARY.md           # ⭐ NEW! A-Z terms
-│   ├── COLLABORATION_GUIDE.md # ⭐ NEW! Team workflows
+│   ├── FAQ.md
+│   ├── COLLABORATION_GUIDE.md
 │   ├── DESIGN_PATTERNS.md
 │   ├── PROGRESS_TRACKER.md
-│   ├── TROUBLESHOOTING_INDEX.md
 │   └── HOOKS_INSTALLATION_GUIDE.md
 ├── diagrams/                  # ⭐ NEW! Visual docs
 │   ├── module-flow.md        # Module diagrams
@@ -232,8 +216,7 @@ docs/
 
 ### New Guides
 
-- ✅ **FAQ.md**: 100+ questions and answers
-- ✅ **GLOSSARY.md**: Complete A-Z terminology
+- ✅ **FAQ.md**: Common bootcamp questions
 - ✅ **COLLABORATION_GUIDE.md**: Team workflows
 
 ### New Scripts
@@ -261,8 +244,8 @@ docs/
 ### Self-Service
 
 1. **FAQ**: Check [FAQ.md](FAQ.md) for quick answers
-2. **Glossary**: Look up terms in [GLOSSARY.md](GLOSSARY.md)
-3. **Troubleshooting**: Review [TROUBLESHOOTING_INDEX.md](TROUBLESHOOTING_INDEX.md)
+2. **MCP Tools**: Use `search_docs` for Senzing topics, `explain_error_code` for errors
+3. **Troubleshooting**: Review [../steering/common-pitfalls.md](../../steering/common-pitfalls.md)
 4. **Diagrams**: Study visual flows in [diagrams/](../diagrams/)
 
 ### Agent Assistance

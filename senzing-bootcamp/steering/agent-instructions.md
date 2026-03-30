@@ -542,7 +542,6 @@ Load the per-module steering file when the user starts a module:
 | 12     | `module-12-deployment.md`       |
 
 Load additional steering files as needed:
-- `steering/quick-reference.md` - MCP tool quick reference
 - `steering/environment-setup.md` - Module 0, setup questions
 - `steering/security-privacy.md` - Module 3, sensitive data
 - `steering/cost-estimation.md` - Module 2 or 5, cost questions

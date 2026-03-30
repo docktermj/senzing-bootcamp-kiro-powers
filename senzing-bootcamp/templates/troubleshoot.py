@@ -152,7 +152,7 @@ class TroubleshootingWizard:
         print("\n✅ Installation looks good!")
         print("If you're still having issues, check:")
         print("  - docs/guides/PREFLIGHT_CHECKLIST.md")
-        print("  - docs/guides/TROUBLESHOOTING_INDEX.md")
+        print("  - docs/guides/FAQ.md (or use MCP explain_error_code tool)")
 
     def troubleshoot_transformation(self):
         """Troubleshoot transformation issues"""
@@ -278,7 +278,7 @@ class TroubleshootingWizard:
             print(f"\n💡 Solution:")
             print(f"Use explain_error_code tool:")
             print(f"  explain_error_code('{error_code}')")
-            print(f"\nOr check TROUBLESHOOTING_INDEX.md")
+            print(f"\nOr use MCP search_docs tool for more details")
 
     def troubleshoot_queries(self):
         """Troubleshoot query issues"""
@@ -361,7 +361,7 @@ class TroubleshootingWizard:
         print("\n2. Use PostgreSQL instead of SQLite")
         print("\n3. Increase batch sizes")
         print("\n4. Add more CPU/memory if possible")
-        print("\n5. See docs/guides/TROUBLESHOOTING_INDEX.md")
+        print("\n5. See docs/guides/FAQ.md (or use MCP explain_error_code tool)")
 
     def troubleshoot_database(self):
         """Troubleshoot database issues"""
@@ -451,7 +451,7 @@ class TroubleshootingWizard:
 
         print("\n📚 Troubleshooting Resources:")
         print("\n1. Troubleshooting Index:")
-        print("   docs/guides/TROUBLESHOOTING_INDEX.md")
+        print("   docs/guides/FAQ.md (or use MCP explain_error_code tool)")
         print("\n2. Module-specific guides:")
         print("   docs/modules/MODULE_*.md")
         print("\n3. Pre-flight check:")
@@ -478,7 +478,7 @@ def main():
         print("TROUBLESHOOTING COMPLETE")
         print("="*60)
         print("\nIf you're still having issues:")
-        print("  - Review docs/guides/TROUBLESHOOTING_INDEX.md")
+        print("  - Review docs/guides/FAQ.md (or use MCP explain_error_code tool)")
         print("  - Ask the agent for help")
         print("  - Check Senzing documentation")
 

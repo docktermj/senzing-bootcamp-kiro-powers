@@ -61,7 +61,6 @@ Load these on-demand when needed:
 - `module-prerequisites.md` — Prerequisites and dependencies for each module
 - `complexity-estimator.md` — Time estimation based on data characteristics
 - `cost-estimation.md` — Pricing, ROI, deployment costs
-- `quick-reference.md` — MCP tool quick reference card
 
 **Project Setup:**
 
@@ -178,7 +177,7 @@ The agent creates an organized directory structure at boot camp start. Key direc
 - MCP connection issues? Check internet/firewall for `mcp.senzing.com:443`
 - Visual diagnostic? Load `troubleshooting-decision-tree.md`
 
-Additional resources: `docs/guides/FAQ.md`, `docs/guides/GLOSSARY.md`, `docs/guides/TROUBLESHOOTING_INDEX.md`.
+Additional resources: `docs/guides/FAQ.md`. For Senzing terminology and error codes, use MCP tools `search_docs` and `explain_error_code`.
 
 ## Providing Feedback
 
@@ -197,7 +196,6 @@ Say "power feedback" or "bootcamp feedback" at any time to document issues or su
 ## Additional Resources
 
 - FAQ: `docs/guides/FAQ.md`
-- Glossary: `docs/guides/GLOSSARY.md`
 - Quick Start: `docs/guides/QUICK_START.md`
 - Collaboration Guide: `docs/guides/COLLABORATION_GUIDE.md`
 - Module Flow Diagram: `docs/diagrams/module-flow.md`

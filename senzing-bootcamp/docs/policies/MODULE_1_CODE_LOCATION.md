@@ -211,7 +211,7 @@ All documentation has been updated:
 - ✅ Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
 - ✅ Save sample data to `src/quickstart_demo/sample_data_[dataset_name].jsonl`
 
-### steering/quick-reference.md - Module 1
+### POWER.md - Module 1
 
 - ✅ Important note about creating `src/quickstart_demo/`
 - ✅ File naming conventions

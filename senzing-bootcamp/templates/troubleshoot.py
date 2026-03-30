@@ -82,7 +82,6 @@ class TroubleshootingWizard:
                 "Data loading errors",
                 "Query or results issues",
                 "Performance problems",
-                "Docker or container issues",
                 "Database connection issues",
                 "Other or not sure"
             ]
@@ -100,8 +99,6 @@ class TroubleshootingWizard:
         elif category_idx == 4:
             self.troubleshoot_performance()
         elif category_idx == 5:
-            self.troubleshoot_docker()
-        elif category_idx == 6:
             self.troubleshoot_database()
         else:
             self.troubleshoot_general()
@@ -366,61 +363,6 @@ class TroubleshootingWizard:
         print("\n4. Add more CPU/memory if possible")
         print("\n5. See docs/guides/TROUBLESHOOTING_INDEX.md")
 
-    def troubleshoot_docker(self):
-        """Troubleshoot Docker issues"""
-        self.print_header("DOCKER TROUBLESHOOTING")
-
-        # Check Docker
-        success, stdout, stderr = self.run_diagnostic(
-            "docker --version",
-            "Checking Docker"
-        )
-
-        if not success:
-            print("\n❌ Docker not found")
-            print("\n💡 Solution:")
-            print("Install Docker:")
-            print("  curl -fsSL https://get.docker.com -o get-docker.sh")
-            print("  sudo sh get-docker.sh")
-            return
-
-        print(f"✅ Docker found: {stdout.strip()}")
-
-        # Check Docker running
-        success, stdout, stderr = self.run_diagnostic(
-            "docker ps",
-            "Checking Docker daemon"
-        )
-
-        if not success:
-            print("\n❌ Docker daemon not running or no permissions")
-            print("\n💡 Solutions:")
-            print("1. Start Docker:")
-            print("   sudo systemctl start docker")
-            print("\n2. Add user to docker group:")
-            print("   sudo usermod -aG docker $USER")
-            print("   # Log out and back in")
-            return
-
-        print("✅ Docker daemon running")
-
-        # Check for schema issues
-        if self.ask_yes_no("Are you seeing schema-related errors?"):
-            print("\n💡 Common Docker Schema Issues:")
-            print("\n1. Column 'sys_create_dt' does not exist:")
-            print("   Fix: ALTER TABLE sys_cfg RENAME COLUMN sys_create_date TO sys_create_dt")
-            print("\n2. Column 'code_id' does not exist:")
-            print("   Fix: ALTER TABLE sys_codes_used ADD COLUMN code_id BIGSERIAL")
-            print("\n3. Validate schema:")
-            print("   python templates/validate_schema.py --database postgresql \\")
-            print("     --connection 'postgresql://senzing:pass@localhost:5432/senzing'")
-            print("\n4. See docs/guides/DOCKER_QUICK_START.md")
-
-        print("\n✅ Docker setup looks good!")
-        print("For more help, see:")
-        print("  - docs/guides/DOCKER_QUICK_START.md")
-        print("  - steering/docker-deployment.md")
-
     def troubleshoot_database(self):
         """Troubleshoot database issues"""
         self.print_header("DATABASE TROUBLESHOOTING")
@@ -512,9 +454,7 @@ class TroubleshootingWizard:
         print("   docs/guides/TROUBLESHOOTING_INDEX.md")
         print("\n2. Module-specific guides:")
         print("   docs/modules/MODULE_*.md")
-        print("\n3. Docker issues:")
-        print("   docs/guides/DOCKER_QUICK_START.md")
-        print("\n4. Pre-flight check:")
+        print("\n3. Pre-flight check:")
         print("   bash scripts/preflight_check.sh")
         print("\n5. Schema validation:")
         print("   python templates/validate_schema.py")

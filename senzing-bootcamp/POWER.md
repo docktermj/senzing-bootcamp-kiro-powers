@@ -66,14 +66,13 @@ Load these on-demand when needed:
 **Project Setup:**
 
 - `project-structure.md` — Directory structure and setup commands
-- `environment-setup.md` — Version control, Python venv, Docker setup
+- `environment-setup.md` — Version control, Python venv setup
 
 **Advanced Topics:**
 
 - `data-lineage.md` — Track data transformations and lineage
 - `incremental-loading.md` — Delta/CDC loading patterns
 - `uat-framework.md` — User acceptance testing framework
-- `docker-deployment.md` — Container deployment strategies
 
 **Troubleshooting:**
 
@@ -164,7 +163,7 @@ Available: `pep8-check`, `data-quality-check`, `backup-before-load`, `validate-s
 
 ## Project Directory Structure
 
-The agent creates an organized directory structure at boot camp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `docker/`, `logs/`, `monitoring/`. Load `project-structure.md` for details.
+The agent creates an organized directory structure at boot camp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `logs/`, `monitoring/`. Load `project-structure.md` for details.
 
 ## Entity Resolution Design Patterns
 

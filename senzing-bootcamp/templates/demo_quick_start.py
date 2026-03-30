@@ -102,8 +102,8 @@ def run_demo():
             print("✗ Senzing SDK not found")
             print("\nTo run this demo, you need the Senzing SDK.")
             print("Options:")
-            print("  1. Use Docker: docker run -v $(pwd):/data senzing/senzing-tools python /data/demo.py")
-            print("  2. Install SDK: pip install senzing")
+            print("  1. Install SDK: pip install senzing")
+            print("  2. Complete Module 0 (SDK Setup) first")
             sys.exit(1)
         
         # Initialize engine with in-memory database
@@ -210,8 +210,9 @@ def run_demo():
         
     except Exception as e:
         print(f"\n✗ Error: {e}")
-        print("\nIf you're seeing this error, try running with Docker:")
-        print("  docker run -v $(pwd):/data senzing/senzing-tools python /data/demo.py")
+        print("\nIf you're seeing this error, install the SDK first:")
+        print("  pip install senzing")
+        print("  Or complete Module 0 (SDK Setup)")
         sys.exit(1)
 
 

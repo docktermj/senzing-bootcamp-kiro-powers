@@ -140,9 +140,6 @@ mvn dependency-check:check
 **Container Scanning**:
 
 ```bash
-# Scan Docker images
-docker scan my-senzing-app:latest
-
 # Trivy
 trivy image my-senzing-app:latest
 ```

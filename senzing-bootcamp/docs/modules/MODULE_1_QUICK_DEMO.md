@@ -371,26 +371,17 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 
 **If simulation demo was used but you want to see real SDK**:
 
-**Options**:
+1. **Complete Module 0** (SDK Setup)
+   - Install the Senzing SDK natively
+   - Return to Module 1 and run the live demo
 
-1. **Install Docker** and retry Docker demo
-   - Follow Docker installation instructions above
-   - Return to Module 0 after installation
+2. **Continue to Module 6**
+   - You'll see real SDK in action with your own data
+   - More comprehensive than the demo
 
-2. **Install Senzing SDK** locally (Module 5)
-   - Complete Module 5 (SDK Setup)
-   - Return to Module 0 with installed SDK
-   - Run native SDK demo
-
-3. **Continue to Module 6**
-   - You'll see real SDK in action
-   - Module 6 loads actual data
-   - More comprehensive than Module 0 demo
-
-4. **Accept simulation for now**
+3. **Accept simulation for now**
    - Concepts are the same
-   - Real SDK comes later
-   - Focus on learning entity resolution
+   - Real SDK comes in later modules
 
 ---
 
@@ -421,18 +412,16 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 
 ---
 
-### Issue: Module 0 Taking Longer Than Expected
+### Issue: Module 1 Taking Longer Than Expected
 
 **Expected times**:
 
-- **First time (Docker)**: 15-20 minutes (includes download)
-- **Subsequent runs (Docker)**: 10-15 minutes
+- **Live Demo (SDK)**: 10-15 minutes
 - **Simulation Demo**: 5-10 minutes
 
 **If taking longer**:
 
 1. **Check what's taking time**
-   - Docker image download? (2-5 minutes is normal)
    - Database initialization? (Should be <1 minute)
    - Demo execution? (Should be <2 minutes)
 
@@ -505,7 +494,7 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 
 4. **Contact Senzing support**
    - Provide error details
-   - Share environment info (OS, Docker version)
+   - Share environment info (OS, Python version)
    - Include steps to reproduce
 
 ---
@@ -522,7 +511,7 @@ Run the pre-flight check script:
 
 This will check:
 
-- ✓ Docker availability
+- ✓ Senzing SDK installation
 - ✓ Disk space
 - ✓ Network connectivity
 - ✓ Python installation
@@ -533,8 +522,8 @@ And provide recommendations based on your environment.
 
 ## Success Criteria
 
-**For Docker Demo**:
-✅ Senzing SDK is running (Docker or local installation)
+**For Live Demo (SDK installed)**:
+✅ Senzing SDK is installed and working
 ✅ Demo script executes successfully
 ✅ Sample data loads without errors
 ✅ Entities are resolved and displayed with match explanations

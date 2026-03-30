@@ -3,10 +3,10 @@
 Senzing Boot Camp - Module 0 Simulation Demo
 
 This demo simulates entity resolution without requiring Senzing SDK installation.
-Perfect for when Docker isn't available or SDK installation isn't desired.
+Use this when the SDK hasn't been installed yet.
 
 IMPORTANT: This is a SIMULATION showing what Senzing would do.
-For the real Senzing SDK demo, use the Docker option or install the SDK.
+For the real Senzing SDK demo, install the SDK via Module 0 first.
 
 Author: Senzing Boot Camp
 Version: 0.1.0
@@ -221,8 +221,7 @@ def run_demo():
     print("This demo uses pre-computed results to demonstrate the concepts.")
     print()
     print("For the REAL Senzing SDK demo:")
-    print("  • Use the Docker option (recommended)")
-    print("  • Or install Senzing SDK locally")
+    print("  • Install the SDK via Module 0 (SDK Setup)")
     print("  • You'll see the real SDK in Module 6")
     print()
     input("Press Enter to continue with the simulation...")
@@ -329,8 +328,8 @@ def run_demo():
     print("You've seen how entity resolution works!")
     print()
     print("Next steps:")
-    print("  • Continue to Module 1 to work with your own data")
-    print("  • Or try the Docker demo to see the real Senzing SDK")
+    print("  • Continue to Module 2 to work with your own data")
+    print("  • Or install the SDK (Module 0) to see the real demo")
     print("  • You'll see the real SDK in action in Module 6")
     print()
     print("Remember: This was a SIMULATION. The real Senzing SDK:")

@@ -4,7 +4,7 @@ inclusion: manual
 
 # Module 0: SDK Installation and Configuration
 
-Install and configure the Senzing SDK natively on your machine. This is the first step of the boot camp — once the SDK is installed, all subsequent modules use it directly without Docker.
+Install and configure the Senzing SDK natively on your machine. This is the first step of the boot camp — once the SDK is installed, all subsequent modules use it directly.
 
 **Time**: 30 minutes - 1 hour
 
@@ -133,7 +133,7 @@ engine.destroy()
 
 ## Success Criteria
 
-- ✅ Senzing SDK installed natively (no Docker)
+- ✅ Senzing SDK installed natively
 - ✅ `import senzing` works in Python
 - ✅ Engine initializes without errors
 - ✅ Database connection works
@@ -156,7 +156,7 @@ Once the SDK is installed and verified, proceed to:
 ## Agent Behavior
 
 - Always check for existing installation first
-- Do NOT offer Docker as an installation option — install the SDK natively
+- Do NOT offer alternatives — install the SDK natively
 - Use `sdk_guide` MCP tool for current platform-specific instructions
 - Use `search_docs` with `category='anti_patterns'` before recommending approaches
 - Recommend SQLite for evaluation, PostgreSQL for production

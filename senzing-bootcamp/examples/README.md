@@ -63,7 +63,7 @@ A complete production example showing:
 - Performance testing and optimization
 - Security hardening
 - Monitoring and observability
-- Docker deployment
+- Containerized deployment
 - CI/CD pipeline
 - API gateway integration
 
@@ -128,7 +128,7 @@ example-name/
 ├── config/                        # Configuration files
 ├── scripts/                       # Automation scripts
 ├── .env.example                   # Environment template
-└── docker-compose.yml             # Docker setup (if applicable)
+└── deploy.yml                     # Deployment config (if applicable)
 ```
 
 ## Comparison Matrix
@@ -142,7 +142,7 @@ example-name/
 | Testing       | Basic   | UAT          | Full test suite      |
 | Monitoring    | None    | Basic        | Full observability   |
 | Security      | Basic   | Medium       | Hardened             |
-| Deployment    | Local   | Docker       | Docker + K8s         |
+| Deployment    | Local   | Scripted     | Production           |
 | CI/CD         | No      | No           | Yes                  |
 | API           | No      | No           | Yes                  |
 | Documentation | Minimal | Complete     | Comprehensive        |
@@ -214,9 +214,6 @@ python src/query/customer_360.py
 ```bash
 # Navigate to example
 cd senzing-bootcamp/examples/production-deployment
-
-# Start with Docker Compose
-docker-compose up -d
 
 # Run full pipeline
 ./scripts/run_pipeline.sh

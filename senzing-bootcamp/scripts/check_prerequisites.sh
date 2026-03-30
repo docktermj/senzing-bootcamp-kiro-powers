@@ -93,9 +93,6 @@ echo ""
 echo -e "${BLUE}Optional Tools:${NC}"
 echo ""
 
-# Check Docker
-check_command "docker" "Docker" "optional" "https://docs.docker.com/get-docker/"
-
 # Check PostgreSQL client
 check_command "psql" "PostgreSQL client" "optional" "sudo apt install postgresql-client (Ubuntu) or brew install postgresql (macOS)"
 

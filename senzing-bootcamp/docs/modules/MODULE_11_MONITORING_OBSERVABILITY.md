@@ -99,24 +99,9 @@ def search():
 **Prometheus:** Metrics collection and storage
 **Grafana:** Visualization and dashboards
 
-```yaml
-# docker-compose.yml
-version: '3.8'
-services:
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-```
+Install Prometheus and Grafana natively on your system or use your organization's existing monitoring infrastructure. See the official documentation:
+- Prometheus: https://prometheus.io/docs/prometheus/latest/installation/
+- Grafana: https://grafana.com/docs/grafana/latest/setup-grafana/installation/
 
 ### Option 2: ELK Stack (Elasticsearch, Logstash, Kibana)
 

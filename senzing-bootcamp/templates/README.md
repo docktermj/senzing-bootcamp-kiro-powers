@@ -30,15 +30,12 @@ Utility templates for database management, data collection, validation, and plan
 **Use when**: Module 0 (Quick Demo), first-time users, demonstrations
 **Features**: Actually runs Senzing SDK, shows before/after, displays match explanations
 **Complexity**: Beginner
-**Prerequisites**: Senzing SDK installed OR Docker available
+**Prerequisites**: Senzing SDK installed (Module 0)
 **Usage**:
 
 ```bash
 # Run the demo
 python templates/demo_quick_start.py
-
-# Or with Docker (no installation required)
-docker run -v $(pwd):/data senzing/senzing-tools python /data/templates/demo_quick_start.py
 ```
 
 **What it does**:
@@ -53,7 +50,7 @@ docker run -v $(pwd):/data senzing/senzing-tools python /data/templates/demo_qui
 #### demo_simulation.py ⭐ NEW - Module 0 Fallback
 
 **Purpose**: Simulated demonstration when Senzing SDK is not available
-**Use when**: Module 0 (Quick Demo), Docker unavailable, SDK installation issues
+**Use when**: Module 1 (Quick Demo), SDK not yet installed
 **Features**: Pure Python simulation, no dependencies, shows entity resolution concepts
 **Complexity**: Beginner
 **Prerequisites**: Python 3.8+ only (no Senzing SDK required)
@@ -76,7 +73,7 @@ python templates/demo_simulation.py
 **When to use each**:
 
 - Use `demo_quick_start.py` when Senzing SDK is available (preferred)
-- Use `demo_simulation.py` when SDK is not available or Docker fails
+- Use `demo_simulation.py` when SDK is not yet installed
 - Agent automatically chooses based on environment
 
 ### Database Management Templates

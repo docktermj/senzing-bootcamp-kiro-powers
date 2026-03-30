@@ -34,7 +34,6 @@ if [ ! -d "src" ] || [ ! -d "data" ] || [ ! -d "docs" ]; then
     mkdir -p tests
     mkdir -p docs/feedback
     mkdir -p config
-    mkdir -p docker/scripts
     mkdir -p logs
     mkdir -p monitoring
     mkdir -p scripts
@@ -179,7 +178,6 @@ If directory creation fails:
    - Data files → `data/`
    - SQLite databases → `database/`
    - Configuration → `config/`
-   - Docker files → `docker/` (NEVER in project root)
    - **When MCP tools generate files in the project root, immediately relocate them to the correct directory**
 
 10. **All Python code must be PEP-8 compliant**:
@@ -256,10 +254,8 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - **Check SDK availability and choose demo type**:
   1. Check if Senzing SDK is installed
   2. If SDK found → Use `demo_quick_start.py` (preferred)
-  3. If SDK not found → Check Docker availability
-  4. If Docker found → Offer Docker option for live demo
-  5. If Docker not found OR user declines → Use `demo_simulation.py` (fallback)
-- **For live demo** (SDK or Docker):
+  3. If SDK not found → Use `demo_simulation.py` (fallback)
+- **For live demo** (SDK installed):
   - Use `get_sample_data` to retrieve CORD datasets
   - Use `generate_scaffold` with `full_pipeline` for demo scripts
   - Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
@@ -269,8 +265,8 @@ Please respond with A, B, C, or D (or describe what you want to do)
   - Use pre-built `templates/demo_simulation.py`
   - Copy to `src/quickstart_demo/demo_simulation.py`
   - Execute to show entity resolution concepts
-  - Set expectations: "This is a simulation. For a live demo, we can set up SDK or Docker later."
-  - After simulation, offer to help install SDK or Docker
+  - Set expectations: "This is a simulation. For a live demo, complete Module 0 (SDK Setup) first."
+  - After simulation, offer to help install SDK via Module 0
 - Connect demo results to user's potential use case
 
 ### Module 2: Business Problem
@@ -338,7 +334,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 ### Module 0: SDK Setup
 
 - Use `sdk_guide` with correct platform parameter
-- **Do NOT offer Docker** — install the SDK natively
+- **Do NOT offer alternatives** — install the SDK natively
 - **Check if Senzing is already installed before installing**
 - Verify existing installation version and compatibility
 - Skip installation if compatible version exists
@@ -655,7 +651,7 @@ Remember:
 - Guide user through deployment decisions:
   - Target database (PostgreSQL recommended)
   - Programming language (stick with boot camp language)
-  - Deployment environment (Docker recommended)
+  - Deployment environment
   - Integration pattern (from Module 7)
 - Refactor code into proper package structure
 - Extract common functionality into utilities
@@ -674,15 +670,12 @@ Remember:
   - docs/monitoring.md
   - docs/troubleshooting.md
 - Create deployment artifacts:
-  - Dockerfile
-  - docker-compose.yml
   - Deployment scripts
   - CI/CD pipeline configuration
   - Kubernetes manifests (if applicable)
 - Validate package:
   - Run all tests
   - Check code quality (linting, type checking)
-  - Test Docker build
   - Test deployment in staging
   - Verify documentation completeness
 - Create release notes and tag version

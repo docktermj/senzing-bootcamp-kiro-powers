@@ -84,7 +84,6 @@ python -c "import senzing; print('Senzing version:', senzing.__version__)" 2>/de
 # If not installed, get installation commands
 sdk_guide(topic="install", platform="linux_apt", version="current")
 sdk_guide(topic="install", platform="macos_arm", version="current")
-sdk_guide(topic="install", platform="docker", version="current")
 
 # Get configuration guidance
 sdk_guide(topic="configure", data_sources=["CUSTOMER_DB", "VENDOR_API"], version="current")
@@ -105,7 +104,7 @@ generate_scaffold(language="python", workflow="add_records", version="current")
 sdk_guide(topic="load", input_file="data/transformed/customers.jsonl", version="current")
 
 # Get full pipeline example
-sdk_guide(topic="full_pipeline", language="python", platform="docker", version="current")
+sdk_guide(topic="full_pipeline", language="python", platform="linux_apt", version="current")
 ```
 
 ## Module 7: Multi-Source Orchestration

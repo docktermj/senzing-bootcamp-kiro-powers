@@ -62,8 +62,6 @@ my-senzing-project/
 ├── docs/
 │   └── feedback/
 ├── config/
-├── docker/
-│   └── scripts/
 ├── logs/
 ├── monitoring/
 ├── scripts/
@@ -80,7 +78,6 @@ my-senzing-project/
   - Linux (Ubuntu 20.04+, RHEL 8+, Debian 11+)
   - macOS (Intel or ARM) - Development only
   - Windows with WSL2 - Development only
-  - Docker available
 
 - [ ] **Python** (if using Python SDK)
   - Python 3.8 or higher installed
@@ -229,13 +226,6 @@ mvn --version  # or gradle --version
 git --version
 ```
 
-### Check Docker (if using)
-
-```bash
-docker --version
-docker ps
-```
-
 ### Check Disk Space
 
 ```bash
@@ -264,7 +254,6 @@ You're ready to start the boot camp! Tell the agent:
 **Missing system requirements?**
 
 - Install required software first
-- Or use Docker to avoid local installation
 
 **Don't have data yet?**
 
@@ -296,16 +285,6 @@ source venv/bin/activate  # Linux/macOS
 venv\Scripts\activate     # Windows
 ```
 
-### Docker Issues
-
-```bash
-# Install Docker
-# Follow: https://docs.docker.com/get-docker/
-
-# Verify installation
-docker run hello-world
-```
-
 ### Database Issues
 
 ```bash
@@ -321,9 +300,6 @@ brew services start postgresql   # macOS
 ### Disk Space Issues
 
 ```bash
-# Clean up Docker
-docker system prune -a
-
 # Clean up package caches
 sudo apt clean  # Ubuntu/Debian
 brew cleanup    # macOS

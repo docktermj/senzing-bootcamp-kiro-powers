@@ -44,7 +44,6 @@ Module 12 takes this production-ready code and:
 3. **Deployment Environment**
    - On-premises servers
    - Cloud (AWS, Azure, GCP)
-   - Docker containers
    - Kubernetes
    - Serverless (Lambda, Azure Functions)
 
@@ -70,8 +69,6 @@ my-senzing-project/
 ├── README.md                   # Project documentation
 ├── LICENSE                     # License file
 ├── .gitignore                  # Git ignore rules
-├── Dockerfile                  # Container definition (optional)
-├── docker-compose.yml          # Multi-container setup (optional)
 ├── my_senzing_project/         # Main package
 │   ├── __init__.py
 │   ├── __version__.py
@@ -131,7 +128,6 @@ my-senzing-project/
 my-senzing-project/
 ├── pom.xml                     # Maven configuration
 ├── README.md
-├── Dockerfile
 ├── src/
 │   ├── main/
 │   │   ├── java/
@@ -167,7 +163,6 @@ my-senzing-project/
 MySenzingProject/
 ├── MySenzingProject.sln        # Solution file
 ├── README.md
-├── Dockerfile
 ├── src/
 │   ├── MySenzingProject/
 │   │   ├── MySenzingProject.csproj
@@ -540,75 +535,12 @@ See [troubleshooting.md](troubleshooting.md) for common issues.
 
 Generate deployment-ready artifacts:
 
-#### Docker Container
-
-```dockerfile
-# Dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application
-COPY my_senzing_project/ ./my_senzing_project/
-COPY config/ ./config/
-COPY scripts/ ./scripts/
-
-# Set environment
-ENV PYTHONPATH=/app
-ENV CONFIG_PATH=/app/config/config.prod.yaml
-
-# Run application
-CMD ["python", "-m", "my_senzing_project.load.cli"]
-```
-
-#### Docker Compose
-
-```yaml
-# docker-compose.yml
-version: '3.8'
-
-services:
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: senzing
-      POSTGRES_USER: senzing
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
-  senzing-app:
-    build: .
-    depends_on:
-      - postgres
-    environment:
-      DATABASE_URL: postgresql://senzing:${DB_PASSWORD}@postgres:5432/senzing
-      SENZING_ENGINE_CONFIGURATION_JSON: ${SENZING_CONFIG}
-    volumes:
-      - ./data:/app/data
-      - ./logs:/app/logs
-
-volumes:
-  postgres_data:
-```
-
 ## Agent Behavior
 
-When a user is in Module 8, the agent should:
+When a user is in Module 12, the agent should:
 
 1. **Assess Current Code**
-   - Review code from Modules 4, 6, and 7
+   - Review code from Modules 5, 6, and 8
    - Identify refactoring opportunities
    - Note code duplication and inconsistencies
 
@@ -647,8 +579,6 @@ When a user is in Module 8, the agent should:
    - Document monitoring setup
 
 7. **Create Deployment Artifacts**
-   - Generate Dockerfile
-   - Create docker-compose.yml
    - Write deployment scripts
    - Create CI/CD pipeline configuration
    - Generate Kubernetes manifests (if applicable)
@@ -669,7 +599,7 @@ Before completing Module 8, verify:
 - [ ] Integration tests pass
 - [ ] Language-specific packaging applied
 - [ ] Deployment documentation complete
-- [ ] Dockerfile and deployment scripts created
+- [ ] Deployment scripts created
 - [ ] Configuration management implemented
 - [ ] Logging configured
 - [ ] Error handling comprehensive
@@ -698,10 +628,6 @@ Module 8 is complete when:
 ### Issue: Package Installation Fails
 
 **Solution:** Verify all dependencies are listed, check version constraints
-
-### Issue: Docker Build Fails
-
-**Solution**: Check Dockerfile syntax, verify base image, ensure all files are copied
 
 ### Issue: Configuration Management Complex
 

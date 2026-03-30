@@ -397,7 +397,7 @@ Examples:
   python validate_schema.py --database sqlite \\
     --connection "database/G2C.db"
 
-  # Docker PostgreSQL
+  # PostgreSQL
   python validate_schema.py --database postgresql \\
     --connection "postgresql://senzing:pass@postgres:5432/senzing"
         """

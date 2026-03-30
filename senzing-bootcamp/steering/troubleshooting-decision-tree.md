@@ -29,7 +29,7 @@ Installation failing?
 │
 ├─→ Platform mismatch?
 │   └─→ Use sdk_guide with correct platform parameter
-│       (linux_apt, linux_yum, macos_arm, windows, docker)
+│       (linux_apt, linux_yum, macos_arm, windows)
 │
 ├─→ Missing dependencies?
 │   └─→ Check error message

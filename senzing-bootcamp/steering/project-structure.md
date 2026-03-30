@@ -34,10 +34,6 @@ my-senzing-project/
 │   ├── query_specifications.md    # Module 6 queries
 │   └── lessons_learned.md         # Post-project retrospective
 ├── config/                        # Configuration files
-├── docker/                        # Docker files (if using containers)
-│   ├── Dockerfile                 # Container definition
-│   ├── docker-compose.yml         # Multi-container setup
-│   └── scripts/                   # Docker-specific scripts
 ├── logs/                          # Log files
 ├── monitoring/                    # Monitoring and dashboards
 ├── requirements.txt               # Python dependencies for your project
@@ -46,7 +42,7 @@ my-senzing-project/
 
 ## Important Notes
 
-**Source Code Location**: All generated source code (transformation programs, loading programs, query programs, utilities, and scripts) should be placed in the `src/` directory structure, not in the project root. Docker files should be placed in the `docker/` directory, never in the project root.
+**Source Code Location**: All generated source code (transformation programs, loading programs, query programs, utilities, and scripts) should be placed in the `src/` directory structure, not in the project root.
 
 **Backups Directory**: The `data/backups/` directory is created by users in their project for storing database backups. This is NOT part of the power distribution itself.
 
@@ -72,7 +68,6 @@ mkdir -p src/{transform,load,query,utils}
 mkdir -p tests
 mkdir -p docs/feedback
 mkdir -p config
-mkdir -p docker/scripts
 mkdir -p logs
 mkdir -p monitoring
 mkdir -p scripts

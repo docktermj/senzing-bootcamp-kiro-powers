@@ -96,7 +96,7 @@ inclusion: manual
    # Code scanning
    bandit -r src/
 
-   # Container scanning (if using Docker)
+   # Container scanning
    trivy image your-image:latest
    ```
 

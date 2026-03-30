@@ -296,7 +296,7 @@ A: Demo if exploring, Fast Track if experienced, Complete if learning.
 A: Yes! Start with demo, then do Fast Track or Complete.
 
 **Q: Do I need to install anything?**
-A: Demo needs nothing. Others need Python or Docker.
+A: Module 0 installs the Senzing SDK. All paths need Python 3.8+.
 
 **Q: How long does each path take?**
 A: Demo: 10 min, Fast Track: 30 min, Complete: 2-3 hrs.

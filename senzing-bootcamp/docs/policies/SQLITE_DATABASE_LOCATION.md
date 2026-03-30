@@ -230,7 +230,6 @@ Initializing Senzing engine with SQLite database...
 
 - **FILE_STORAGE_POLICY.md** - Where to store all project files
 - **MODULE_0_CODE_LOCATION.md** - Module 0 code location
-- **DOCKER_FOLDER_POLICY.md** - Docker file locations
 
 ## Version History
 

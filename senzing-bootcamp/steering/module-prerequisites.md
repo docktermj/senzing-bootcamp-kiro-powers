@@ -19,7 +19,6 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 - Admin/sudo access for installation
 - 10GB free disk space
 - Internet connection for downloads
-- Docker installed (optional, for containerized setup)
 
 **Ready to proceed when**:
 
@@ -30,7 +29,7 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 
 **Common blockers**:
 
-- Missing admin access → Use Docker or request permissions
+- Missing admin access → Request permissions from IT
 - Insufficient disk space → Free up space or use external storage
 - Network restrictions → Work with IT to allow downloads
 

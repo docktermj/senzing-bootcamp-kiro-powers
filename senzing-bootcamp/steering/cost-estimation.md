@@ -170,7 +170,6 @@ Total DSRs = 500,000 + 300,000 + 200,000 + 50,000 = 1,050,000 DSRs
 - **Personnel**: 1 developer
 - **Infrastructure**: Minimal (local development)
   - SQLite: Free
-  - Docker: Free
   - Development tools: Free
 
 ## ROI Calculator

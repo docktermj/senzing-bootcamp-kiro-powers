@@ -171,7 +171,7 @@ This directory contains detailed documentation for each boot camp module.
 - Comprehensive test suite
 - Language-specific packaging (pip, Maven, NuGet, Cargo)
 - Deployment documentation
-- Deployment artifacts (Docker, CI/CD, Kubernetes)
+- Deployment artifacts (CI/CD, Kubernetes)
 - Production validation
 - Integration with Modules 9, 10, 11
 

@@ -84,14 +84,8 @@ enterprise-customer-mdm/
 │   └── performance/
 │       ├── test_load_performance.py
 │       └── test_query_performance.py
-├── docker/
-│   ├── Dockerfile                     # Main Dockerfile
-│   ├── Dockerfile.dev                 # Development Dockerfile
-│   ├── Dockerfile.prod                # Production Dockerfile
-│   ├── docker-compose.yml             # Development compose
-│   ├── docker-compose.prod.yml        # Production compose
-│   ├── .dockerignore                  # Docker ignore rules
-│   └── scripts/
+├── deployment/
+│   ├── scripts/
 │       ├── entrypoint.sh
 │       └── healthcheck.sh
 ├── deployment/
@@ -728,13 +722,12 @@ echo "Deploying Senzing MDM to $ENVIRONMENT (version: $VERSION)"
 echo "Running tests..."
 pytest tests/ -v
 
-# Build Docker image
-echo "Building Docker image..."
-docker build -t company/senzing-api:$VERSION .
+# Package application
+echo "Packaging application..."
+python setup.py sdist bdist_wheel
 
-# Push to registry
-echo "Pushing to registry..."
-docker push company/senzing-api:$VERSION
+# Deploy to target environment
+echo "Deploying version $VERSION..."
 
 # Deploy to Kubernetes
 echo "Deploying to Kubernetes..."

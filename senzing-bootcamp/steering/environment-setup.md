@@ -105,44 +105,13 @@ LOG_LEVEL=INFO
 
 Copy to `.env` and fill in actual values (never commit `.env` to git).
 
-## Docker Environment (Optional)
-
-Create `docker-compose.yml` in the project root for containerized setup:
-
-```yaml
-version: '3.8'
-services:
-  senzing:
-    image: senzing/senzing-tools:latest
-    volumes:
-      - ./data:/data
-      - ./config:/config
-    environment:
-      - SENZING_ENGINE_CONFIGURATION_JSON=${SENZING_ENGINE_CONFIG_JSON}
-
-  postgres:
-    image: postgres:14
-    environment:
-      - POSTGRES_DB=senzing
-      - POSTGRES_USER=senzing
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
-volumes:
-  postgres_data:
-```
-
 ## When to Load This Guide
 
 Load this steering file when:
 
-- Starting Module 1 (initial project setup)
+- Starting Module 0 (initial project setup)
 - User asks about version control setup
 - User needs help with environment configuration
-- Setting up Docker or containerized environments
 
 ## Important Note on Source Code Location
 

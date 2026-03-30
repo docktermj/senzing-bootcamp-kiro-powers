@@ -67,39 +67,7 @@ inclusion: manual
        └── app_config.yaml
    ```
 
-4. **Create Dockerfile** (if using containers):
-
-   Create `docker/Dockerfile`:
-
-   ```dockerfile
-   FROM python:3.11-slim
-
-   WORKDIR /app
-
-   COPY requirements.txt .
-   RUN pip install -r requirements.txt
-
-   COPY . .
-
-   CMD ["python", "src/load/orchestrator.py"]
-   ```
-
-   Create `docker/docker-compose.yml`:
-
-   ```yaml
-   version: '3.8'
-   services:
-     senzing-api:
-       build:
-         context: ..
-         dockerfile: docker/Dockerfile
-       ports:
-         - "8080:8080"
-       environment:
-         - CONFIG_FILE=/app/config/prod/senzing_config.json
-   ```
-
-5. **Create deployment scripts**:
+4. **Create deployment scripts**:
 
    Create `deployment/scripts/deploy.sh`:
 

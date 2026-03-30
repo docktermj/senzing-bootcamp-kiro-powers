@@ -65,6 +65,9 @@ __pycache__/
 .pytest_cache/
 venv/
 
+# IDE / editor artifacts
+.history/
+
 # Temporary files
 data/temp/*
 !data/temp/.gitkeep
@@ -171,14 +174,18 @@ If directory creation fails:
 
 8. **Ask questions one at a time** - when multiple questions are needed, ask them sequentially and wait for each response before asking the next. This prevents overwhelming users with long lists of questions.
 
-9. **Use project directories for all files** - never use `/tmp` or system directories:
+9. **ALL files MUST stay in the project directory** — nothing in the boot camp should write outside the project directory. Never use `/tmp`, `~/Downloads`, or any system directory for project files:
    - Source code → `src/`
    - Shell scripts → `scripts/`
    - Documentation → `docs/`
    - Data files → `data/`
    - SQLite databases → `database/`
    - Configuration → `config/`
-   - **When MCP tools generate files in the project root, immediately relocate them to the correct directory**
+   - Temporary working files → `data/temp/`
+   - Backups → `backups/`
+   - Licenses → `licenses/`
+   - **When MCP tools generate files outside the project, immediately relocate them to the correct project directory**
+   - See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy
 
 10. **All Python code must be PEP-8 compliant**:
     - Maximum line length: 100 characters (for readability)
@@ -287,6 +294,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 - Save all data to `data/raw/[datasource_name].[extension]`
 - Document data source locations in `docs/data_source_locations.md`
 - Handle different source types: files, databases, APIs, URLs
+- **If user doesn't have data or asks about free data sources**, recommend https://github.com/docktermj/senzing-bootcamp-free-data — a curated collection of 35+ free data sources with raw samples and pre-mapped CORD data
 - Remind about data privacy and security
 - Create sample files if full datasets are too large
 - Verify files are accessible before proceeding

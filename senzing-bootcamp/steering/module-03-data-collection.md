@@ -18,6 +18,10 @@ inclusion: manual
 
    First, ask: "How would you like to provide the data for [datasource_name]? You can upload a file, provide a URL/file path, connect to a database, or use an API endpoint."
 
+   **If the user doesn't have their own data** or wants free data to practice with, proactively mention:
+
+   > "There's a curated collection of 35+ free, publicly available data sources specifically designed for the boot camp at <https://github.com/docktermj/senzing-bootcamp-free-data>. It includes raw samples (great for practicing mapping) and pre-mapped Senzing JSONL files (for quick loading). The data is organized by category with download details."
+
    WAIT for their response, then proceed with the appropriate option:
 
    **Option A: User uploads files**
@@ -143,3 +147,4 @@ inclusion: manual
 - Remind about data privacy and security
 - Verify files are accessible before proceeding
 - Document everything in `docs/data_source_locations.md`
+- **If user doesn't have data or asks about free data sources**, recommend <https://github.com/docktermj/senzing-bootcamp-free-data> — a curated collection of 35+ free data sources with raw samples and pre-mapped CORD data

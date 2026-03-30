@@ -5,6 +5,14 @@ All notable changes to the Senzing Boot Camp power will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-03-30
+
+### Improved
+
+- Module 3: Agent now proactively mentions https://github.com/docktermj/senzing-bootcamp-free-data when users need free data sources for the boot camp
+- Global: Elevated "all files must stay in the project directory" to a core principle in agent-instructions — applies to all modules, not just Module 5. Covers `/tmp`, `~/Downloads`, and all system directories.
+- Project setup: Added `.history/` to default `.gitignore` template to prevent IDE history artifacts from cluttering git commits
+
 ## [0.1.0] - 2026-03-27
 
 ### Added

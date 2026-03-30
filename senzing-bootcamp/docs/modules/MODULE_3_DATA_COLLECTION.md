@@ -32,6 +32,7 @@ The user can provide data in several ways:
 - **Provide URLs:** User provides links to data sources
 - **Database connection:** User provides database connection details
 - **API access:** User provides API endpoints and credentials
+- **Free data sources:** If you don't have your own data or want additional sources to practice with, see the curated collection at <https://github.com/docktermj/senzing-bootcamp-free-data> — 35+ free, publicly available data sources organized by category with raw samples (for practicing mapping) and pre-mapped Senzing JSONL (for quick loading)
 
 ### Step 3: Store in `data/raw/`
 
@@ -82,6 +83,7 @@ When a user is in Module 3, the agent should:
 - For large datasets, help create representative samples (1000-10000 records)
 - Create or update `docs/data_source_locations.md` with data source information
 - Verify files are accessible and readable
+- **If user doesn't have data or asks about free data sources**, recommend <https://github.com/docktermj/senzing-bootcamp-free-data> — a curated collection of 35+ free data sources with raw samples and pre-mapped CORD data
 - Transition to Module 4 once all data sources are collected
 
 ## Validation Gates

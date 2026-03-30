@@ -664,7 +664,7 @@ Module 12 is complete when:
 ## Related Documentation
 
 - `POWER.md` - Module 12 overview
-- `steering/steering.md` - Module 12 workflow
+- `steering/module-12-deployment.md` - Module 12 workflow
 - `steering/agent-instructions.md` - Agent behavior for Module 12
 - Use MCP: `find_examples(query="API integration")` for deployment patterns
 - `PYTHON_REQUIREMENTS_POLICY.md` - Python dependency management

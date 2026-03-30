@@ -424,7 +424,7 @@ Module 9 is complete when:
 ## Related Documentation
 
 - `POWER.md` - Module 9 overview
-- `steering/steering.md` - Module 9 workflow (to be added)
+- `steering/module-09-performance.md` - Module 9 workflow
 - Use MCP: `search_docs(query="performance monitoring", category="performance")` for ongoing monitoring
 
 ## Version History

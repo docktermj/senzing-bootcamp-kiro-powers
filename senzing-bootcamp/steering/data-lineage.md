@@ -457,7 +457,7 @@ Load this guide when:
 ## Related Documentation
 
 - `POWER.md` - Modules 2, 4, 6, 8
-- `steering/steering.md` - Module workflows
+- per-module steering files (`module-00-sdk-setup.md` through `module-12-deployment.md`)
 - `steering/security-privacy.md` - Compliance requirements
 
 ## Version History

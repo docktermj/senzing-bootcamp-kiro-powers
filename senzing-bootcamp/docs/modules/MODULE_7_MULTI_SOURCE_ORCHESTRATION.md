@@ -353,7 +353,7 @@ Module 7 is complete when:
 ## Related Documentation
 
 - `POWER.md` - Module 7 overview
-- `steering/steering.md` - Module 7 workflow (to be added)
+- `steering/module-07-multi-source.md` - Module 7 workflow
 - `MODULE_6_SINGLE_SOURCE_LOADING.md` - Single source loading
 
 ## Version History

@@ -198,7 +198,7 @@ These policies are:
 
 - **Agent Instructions**: `../../steering/agent-instructions.md`
 - **Module Documentation**: `../modules/`
-- **Workflows**: `../../steering/steering.md`
+- **Workflows**: per-module steering files in `../../steering/`
 
 ## For Agents
 

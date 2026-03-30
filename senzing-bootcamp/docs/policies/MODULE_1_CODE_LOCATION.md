@@ -199,7 +199,7 @@ The separation is clear and intentional.
 
 All documentation has been updated:
 
-### steering/steering.md - Module 1 Workflow
+### steering/module-01-quick-demo.md - Module 1 Workflow
 
 - ✅ Step 4: Create `src/quickstart_demo/` directory
 - ✅ Step 5: Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
@@ -222,7 +222,7 @@ All documentation has been updated:
 - ✅ Added `src/quickstart_demo/` to directory tree
 - ✅ Marked as "(optional)" since Module 1 is optional
 
-### steering/steering.md - Project Directory Structure
+### steering/project-structure.md - Project Directory Structure
 
 - ✅ Added `src/quickstart_demo/` to directory listing
 - ✅ Marked as "Module 1 demo code (optional)"

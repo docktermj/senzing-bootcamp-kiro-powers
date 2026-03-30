@@ -94,7 +94,7 @@ To add a new pattern to the gallery:
    - Key matching criteria
    - Typical data sources
    - Business value
-3. Update the steering guide in `senzing-bootcamp/steering/steering.md`
+3. Update the steering guide in the appropriate per-module steering file
 4. Add to this document for tracking
 
 ### Pattern Template

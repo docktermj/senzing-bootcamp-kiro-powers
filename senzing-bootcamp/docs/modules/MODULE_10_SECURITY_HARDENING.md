@@ -341,7 +341,7 @@ Module 10 is complete when:
 ## Related Documentation
 
 - `POWER.md` - Module 10 overview
-- `steering/steering.md` - Module 10 workflow (to be added)
+- `steering/module-10-security.md` - Module 10 workflow
 - `steering/security-privacy.md` - Security best practices
 
 ## Version History

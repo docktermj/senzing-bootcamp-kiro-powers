@@ -605,7 +605,7 @@ When a user is in Module 8:
 ## Related Documentation
 
 - `POWER.md` - Module 8 overview
-- `steering/steering.md` - Detailed Module 8 workflow
+- `steering/module-08-query-validation.md` - Module 8 workflow
 - `steering/agent-instructions.md` - Agent behavior for Module 8
 - `steering/uat-framework.md` - Comprehensive UAT guidance (load on demand)
 - Use MCP: `search_docs(query="testing best practices")` for overall testing approach

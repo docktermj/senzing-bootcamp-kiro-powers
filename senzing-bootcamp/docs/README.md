@@ -86,7 +86,7 @@ The following files remain in the root `senzing-bootcamp/` directory:
 
 ### For Agents
 
-- Load `steering/steering.md` for core workflows
+- Load per-module steering files as needed (e.g., `module-00-sdk-setup.md`)
 - Load `steering/agent-instructions.md` for behavior guidance
 - Refer to `/policies/` for file organization rules
 - Refer to `/modules/` for module-specific details

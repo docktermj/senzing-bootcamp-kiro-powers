@@ -292,7 +292,7 @@ After completing Module 2:
 ## Related Documentation
 
 - `POWER.md` - Boot camp overview
-- `steering/steering.md` - Module 2 detailed workflow
+- `steering/module-02-business-problem.md` - Module 2 workflow
 - Use MCP `search_docs` with query "pricing" for current Senzing pricing
 - `docs/guides/DESIGN_PATTERNS.md` - Design pattern details
 

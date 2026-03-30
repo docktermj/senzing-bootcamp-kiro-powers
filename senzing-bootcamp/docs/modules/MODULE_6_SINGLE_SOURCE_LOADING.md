@@ -452,7 +452,7 @@ When a user is in Module 6:
 ## Related Documentation
 
 - `POWER.md` - Module 6 overview
-- `steering/steering.md` - Detailed Module 6 workflow
+- `steering/module-06-single-source.md` - Module 6 workflow
 - `steering/agent-instructions.md` - Agent behavior for Module 6
 - Use MCP: `search_docs(query="incremental loading")` for incremental loading strategies
 - Use MCP: `search_docs(query="performance optimization")` for performance optimization

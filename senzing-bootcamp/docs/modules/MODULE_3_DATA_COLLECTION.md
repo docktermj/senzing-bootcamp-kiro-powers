@@ -193,7 +193,7 @@ sources:
 ## Related Documentation
 
 - `POWER.md` - Main boot camp guide with Module 3 overview
-- `steering/steering.md` - Detailed Module 3 workflow steps
+- `steering/module-03-data-collection.md` - Module 3 workflow
 - `steering/agent-instructions.md` - Agent behavior for Module 3
 - `steering/data-lineage.md` - Data lineage tracking (load on demand)
 - `steering/common-pitfalls.md` - Common Module 3 pitfalls

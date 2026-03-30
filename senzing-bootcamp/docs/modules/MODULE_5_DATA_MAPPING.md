@@ -518,7 +518,7 @@ After completing Module 5:
 ## Related Documentation
 
 - `POWER.md` - Boot camp overview
-- `steering/steering.md` - Module 5 detailed workflow
+- `steering/module-05-data-mapping.md` - Module 5 workflow
 - `steering/data-lineage.md` - Lineage tracking guide
 - Senzing SGES documentation (use `search_docs` MCP tool)
 

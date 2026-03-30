@@ -368,7 +368,7 @@ Load this guide when:
 ## Related Documentation
 
 - `POWER.md` - Module 8 overview
-- `steering/steering.md` - Module 8 workflow
+- `steering/module-08-query-validation.md` - Module 8 workflow
 - Use MCP: `search_docs(query="testing best practices")` for overall testing approach
 
 ## Version History

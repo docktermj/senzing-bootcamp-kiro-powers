@@ -543,7 +543,7 @@ And provide recommendations based on your environment.
 ## Related Documentation
 
 - `../../POWER.md` - Boot camp overview
-- `../../steering/steering.md` - Module 1 workflow
+- `../../steering/module-01-quick-demo.md` - Module 1 workflow
 - `QUICK_START.md` - Quick start guide
 
 ## Version History

@@ -4,7 +4,7 @@ inclusion: manual
 
 # Entity Resolution Design Pattern Gallery
 
-When starting Module 1, offer users a gallery of common entity resolution patterns to help them identify which pattern(s) match their situation.
+When starting Module 2, offer users a gallery of common entity resolution patterns to help them identify which pattern(s) match their situation.
 
 ## Pattern Overview
 
@@ -237,13 +237,13 @@ When starting Module 1, offer users a gallery of common entity resolution patter
 
 ## Agent Behavior
 
-When user starts Module 1:
+When user starts Module 2:
 
 1. Present this gallery and ask which pattern(s) match their situation
 2. Help them identify the most relevant pattern(s)
 3. Use the selected pattern to guide problem definition
 4. Set realistic expectations based on the pattern's typical outcomes
-5. Recommend key matching attributes to focus on during data mapping (Module 4)
+5. Recommend key matching attributes to focus on during data mapping (Module 5)
 
 ## Multiple Patterns
 

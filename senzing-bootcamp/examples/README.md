@@ -12,7 +12,7 @@ This directory contains reference project blueprints demonstrating different use
 **Use case**: Basic customer deduplication with one data source
 **Complexity**: Beginner
 **Time to complete**: 2-3 hours
-**Modules covered**: 1-6, 8
+**Modules covered**: 2-6, 8
 
 A minimal example showing:
 
@@ -32,7 +32,7 @@ A minimal example showing:
 **Use case**: Customer 360 with three data sources
 **Complexity**: Intermediate
 **Time to complete**: 6-8 hours
-**Modules covered**: 1-8
+**Modules covered**: 2-8
 
 A realistic example showing:
 
@@ -138,7 +138,7 @@ example-name/
 | Data sources  | 1       | 3            | 2                    |
 | Database      | SQLite  | PostgreSQL   | PostgreSQL + replica |
 | Records       | 10K     | 500K         | 5M                   |
-| Modules       | 1-6, 8  | 1-8          | 0-12                 |
+| Modules       | 2-6, 8  | 2-8          | 0-12                 |
 | Testing       | Basic   | UAT          | Full test suite      |
 | Monitoring    | None    | Basic        | Full observability   |
 | Security      | Basic   | Medium       | Hardened             |
@@ -153,7 +153,7 @@ example-name/
 ### Beginner Path
 
 1. Start with **Simple Single Source**
-2. Complete Modules 1-6 and 8
+2. Complete Modules 2-6 and 8
 3. Understand the basics
 4. Build confidence
 
@@ -247,7 +247,7 @@ open http://localhost:3000  # Grafana dashboard
 
 ### Adding Features
 
-1. Add new data sources (follow Module 2-4)
+1. Add new data sources (follow Module 3-5)
 2. Add new queries (follow Module 8)
 3. Add API endpoints (follow Module 12)
 4. Add monitoring (follow Module 11)

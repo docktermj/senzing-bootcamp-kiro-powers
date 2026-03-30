@@ -4,13 +4,13 @@ inclusion: manual
 
 # Module 2: Discover the Business Problem
 
-## Workflow: Discover the Business Problem (Module 1)
+## Workflow: Discover the Business Problem (Module 2)
 
 Use this workflow when starting the boot camp or when a user wants to explore how Senzing can solve their specific challenge.
 
 **Time**: 15-30 minutes
 
-**Prerequisites**: None (or Module 0 complete if they did the demo)
+**Prerequisites**: None (or Module 1 complete if they did the demo)
 
 1. **Set up project directory structure**: Follow the directory creation commands from the agent-instructions steering file. After creating the structure, explain the purpose of each folder to the user.
 

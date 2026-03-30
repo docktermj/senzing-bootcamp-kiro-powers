@@ -14,7 +14,7 @@ get_capabilities(version="current")
 
 Always call this first to discover available tools and confirm MCP server connectivity.
 
-## Module 0: Quick Demo
+## Module 1: Quick Demo
 
 ```text
 # Get sample data
@@ -26,16 +26,16 @@ generate_scaffold(language="python", workflow="full_pipeline", version="current"
 
 **IMPORTANT**:
 
-- Create `src/quickstart_demo/` directory for all Module 0 demo code
+- Create `src/quickstart_demo/` directory for all Module 1 demo code
 - Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
 - Save sample data to `src/quickstart_demo/sample_data_[dataset_name].jsonl`
 - Keep demo code separate from main boot camp project code
 
-## Module 1: Business Problem
+## Module 2: Business Problem
 
 No MCP calls required - focus on discovery questions and documentation.
 
-## Module 2: Identify and Collect Data Sources
+## Module 3: Identify and Collect Data Sources
 
 No MCP calls required - focus on collecting data files.
 
@@ -47,7 +47,7 @@ No MCP calls required - focus on collecting data files.
 - Create sample files if datasets are too large
 - Verify files are accessible
 
-## Module 3: Evaluate Data Quality
+## Module 4: Evaluate Data Quality
 
 ```text
 # Analyze data quality
@@ -57,7 +57,7 @@ analyze_record(file_paths=["data/transformed/customers.jsonl"], version="current
 search_docs(query="data quality", category="data_analysis", version="current")
 ```
 
-## Module 4: Map Your Data
+## Module 5: Map Your Data
 
 ```text
 # Start mapping workflow
@@ -75,7 +75,7 @@ analyze_record(file_paths=["data/transformed/customers.jsonl"], version="current
 
 **CRITICAL**: Always pass the exact `state` object from the previous response back in the next call.
 
-## Module 5: Set Up SDK
+## Module 0: Set Up SDK
 
 ```text
 # FIRST: Check if already installed

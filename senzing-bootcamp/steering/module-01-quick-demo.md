@@ -4,7 +4,7 @@ inclusion: manual
 
 # Module 1: Quick Demo (Optional)
 
-## Workflow: Quick Demo (Module 0 - Optional)
+## Workflow: Quick Demo (Module 1 - Optional)
 
 Use this workflow when a user wants to see entity resolution in action before working with their own data. This is perfect for first-time users who want to understand what Senzing does.
 
@@ -12,7 +12,7 @@ Use this workflow when a user wants to see entity resolution in action before wo
 
 **Time**: 10-15 minutes
 
-**IMPORTANT**: Before starting Module 0, ensure the project directory structure exists. If the user is starting with Module 0 (before Module 1), create the full project structure first.
+**IMPORTANT**: Before starting Module 1, ensure the project directory structure exists. If the user is starting with Module 1 (before Module 2), create the full project structure first.
 
 1. **Create project structure (if needed)**: Follow the directory creation commands from the agent-instructions steering file. If the structure doesn't exist, create it before proceeding. After creation, tell the user: "I've created the project directory structure for you. All demo files will be saved in `src/quickstart_demo/`."
 
@@ -190,7 +190,7 @@ Use this workflow when a user wants to see entity resolution in action before wo
 12. **Connect to their use case**: "Now imagine this with your data. Instead of [sample data], you'd have [their data sources]. The same process would find duplicates, match records across systems, and give you a unified view. What you just saw is exactly how Senzing will work with your data."
 
 13. **Transition**: Ask if they want to:
-    - Start Module 1 with their own data
+    - Start Module 2 with their own data
     - Try another sample dataset
     - Learn more about how entity resolution works
     - See the match explanations in more detail

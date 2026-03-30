@@ -25,7 +25,7 @@ A pattern for capturing and loading only changed records, rather than reloading 
 The process of grouping related entities together based on matching attributes.
 
 **CORD**
-Sample dataset used in Module 0 (Quick Demo) showing duplicate customer records.
+Sample dataset used in Module 1 (Quick Demo) showing duplicate customer records.
 
 ## D
 

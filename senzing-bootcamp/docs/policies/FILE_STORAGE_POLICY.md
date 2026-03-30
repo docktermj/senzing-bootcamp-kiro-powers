@@ -24,7 +24,7 @@ This document defines where different types of files should be stored in the Sen
 
 ```text
 src/
-├── quickstart_demo/     # Module 0 demo code
+├── quickstart_demo/     # Module 1 demo code
 ├── transform/           # Transformation programs (Module 4)
 ├── load/                # Loading programs (Module 6)
 ├── query/               # Query programs (Module 8)
@@ -95,7 +95,7 @@ docs/
 ```bash
 # ✅ CORRECT
 docs/guides/QUICK_START.md
-docs/modules/MODULE_1_BUSINESS_PROBLEM.md
+docs/modules/MODULE_2_BUSINESS_PROBLEM.md
 docs/policies/FILE_STORAGE_POLICY.md
 POWER.md                # Exception: required in root
 README.md               # Exception: required in root
@@ -484,7 +484,7 @@ grep -r "/tmp" senzing-bootcamp/**/*.md
 
 ## Related Policies
 
-- [MODULE_0_CODE_LOCATION.md](MODULE_0_CODE_LOCATION.md) - Module 0 code placement
+- [MODULE_1_CODE_LOCATION.md](MODULE_1_CODE_LOCATION.md) - Module 0 code placement
 - [SHELL_SCRIPT_LOCATIONS.md](SHELL_SCRIPT_LOCATIONS.md) - Shell script placement
 - [PYTHON_REQUIREMENTS_POLICY.md](PYTHON_REQUIREMENTS_POLICY.md) - Python package management
 

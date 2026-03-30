@@ -26,7 +26,7 @@ Create `docs/lessons_learned.md` and fill it out after Module 8 (or Module 12 fo
 
 ## What Worked Well
 
-### Data Mapping (Module 4)
+### Data Mapping (Module 5)
 - **Success**: [What went smoothly]
 - **Why**: [Reasons for success]
 - **Recommendation**: [How to replicate]

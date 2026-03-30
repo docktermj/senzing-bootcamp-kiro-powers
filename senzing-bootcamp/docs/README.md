@@ -10,8 +10,8 @@ Module-specific documentation files. Each module has detailed documentation abou
 
 **Files:**
 
-- `MODULE_2_DATA_COLLECTION.md` - Data collection and source management
-- `MODULE_3_DATA_QUALITY_SCORING.md` - Automated data quality assessment
+- `MODULE_3_DATA_COLLECTION.md` - Data collection and source management
+- `MODULE_4_DATA_QUALITY_SCORING.md` - Automated data quality assessment
 - `MODULE_6_SINGLE_SOURCE_LOADING.md` - Single source loading patterns
 - `MODULE_7_MULTI_SOURCE_ORCHESTRATION.md` - Multi-source orchestration
 - `MODULE_8_QUERY_VALIDATION.md` - Query and validation with UAT
@@ -26,7 +26,7 @@ Policy documents that define standards and conventions for the boot camp.
 
 **Files:**
 
-- `MODULE_0_CODE_LOCATION.md` - Policy for Module 0 demo code location
+- `MODULE_1_CODE_LOCATION.md` - Policy for Module 1 demo code location
 - `PYTHON_REQUIREMENTS_POLICY.md` - Python dependency management policy
 - `SHELL_SCRIPT_LOCATIONS.md` - Shell script organization policy
 

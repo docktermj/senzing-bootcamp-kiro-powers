@@ -4,18 +4,18 @@ This directory is for storing your Senzing license file(s).
 
 ## Do I Need a License?
 
-### Module 0 (Quick Demo)
+### Module 1 (Quick Demo)
 
-**No license required** - Module 0 uses sample data and doesn't require a license.
+**No license required** - Module 1 uses sample data and doesn't require a license.
 
-### Modules 5+ (SDK Installation and Beyond)
+### Module 0+ (SDK Installation and Beyond)
 
 **License required** - You'll need a valid Senzing license to:
 
 - Install and use the Senzing SDK
 - Load your own data
 - Perform entity resolution on production data
-- Complete Modules 5-12
+- Complete Modules 0 and 6-12
 
 ## How to Obtain a Senzing License
 
@@ -276,11 +276,11 @@ echo "licenses/*.lic" >> .gitignore
 
 ### Can I use the boot camp without a license?
 
-**Module 0 only**: Yes, Module 0 (Quick Demo) doesn't require a license.
+**Module 1 only**: Yes, Module 1 (Quick Demo) doesn't require a license.
 
-**Modules 5+**: No, you'll need a license to install the SDK and complete the remaining modules.
+**Module 0+**: No, you'll need a license to install the SDK and complete the remaining modules.
 
-**Recommendation**: Request an evaluation license before starting Module 5.
+**Recommendation**: Request an evaluation license before starting Module 0.
 
 ### How long does it take to get an evaluation license?
 
@@ -307,7 +307,7 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 
 ### Can I complete the boot camp with an expired license?
 
-**No** - You'll need a valid license for Modules 5+. Contact Senzing for renewal before your license expires.
+**No** - You'll need a valid license for Module 0+. Contact Senzing for renewal before your license expires.
 
 ## Contact Information
 
@@ -332,12 +332,12 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 2. **Wait for Email**: Typically 1-2 business days
 3. **Install License**: Place `g2.lic` in this directory
 4. **Verify**: Run verification script above
-5. **Continue Boot Camp**: Proceed to Module 5
+5. **Continue Boot Camp**: Proceed to Module 0 (SDK Setup)
 
 ## Related Documentation
 
 - **FAQ**: `docs/guides/FAQ.md` - Common questions about licensing
-- **Module 5**: `docs/modules/MODULE_5_SDK_SETUP.md` - SDK installation
+- **Module 0**: `docs/modules/MODULE_0_SDK_SETUP.md` - SDK installation
 - **File Storage Policy**: `docs/policies/FILE_STORAGE_POLICY.md` - Where to store files
 - **Cost Estimation**: `steering/cost-estimation.md` - Pricing information
 

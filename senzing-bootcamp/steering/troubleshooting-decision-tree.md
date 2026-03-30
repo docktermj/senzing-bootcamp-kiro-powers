@@ -90,7 +90,7 @@ Transformation not working?
 Loading failing?
 │
 ├─→ Connection errors?
-│   └─→ Verify SDK configuration from Module 5
+│   └─→ Verify SDK configuration from Module 0
 │       └─→ Test with simple add/get record
 │
 ├─→ Record errors?
@@ -201,10 +201,10 @@ System too slow?
 ```text
 Poor matching results?
 │
-├─→ Review data quality from Module 4
+├─→ Review data quality from Module 5
 │   └─→ Run analyze_record on transformed data
 │       └─→ Quality score < 70%?
-│           └─→ Go back to Module 4
+│           └─→ Go back to Module 5
 │               └─→ Improve mappings
 │
 ├─→ Missing critical attributes?

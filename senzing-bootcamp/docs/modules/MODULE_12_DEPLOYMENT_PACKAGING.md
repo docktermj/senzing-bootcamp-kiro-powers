@@ -8,7 +8,7 @@ Module 12 is the final module that packages your production-ready code and deplo
 
 After completing Modules 0-11, you have:
 
-- Working transformation, loading, and query code
+- Working transformation, loading, and query code from Modules 5, 6, and 8
 - Performance tested and optimized
 - Security hardened
 - Monitoring and observability configured
@@ -541,8 +541,6 @@ When a user is in Module 12, the agent should:
 
 1. **Assess Current Code**
    - Review code from Modules 5, 6, and 8
-   - Identify refactoring opportunities
-   - Note code duplication and inconsistencies
 
 2. **Guide Deployment Decisions**
    - Help choose target database
@@ -592,7 +590,7 @@ When a user is in Module 12, the agent should:
 
 ## Validation Gates
 
-Before completing Module 8, verify:
+Before completing Module 12, verify:
 
 - [ ] Code refactored into proper package structure
 - [ ] All components have unit tests (>80% coverage)
@@ -608,7 +606,7 @@ Before completing Module 8, verify:
 
 ## Success Indicators
 
-Module 8 is complete when:
+Module 12 is complete when:
 
 - Package can be installed via standard package manager
 - All tests pass
@@ -635,9 +633,9 @@ Module 8 is complete when:
 
 ## Integration with Other Modules
 
-- **From Module 4**: Refactor transformation code
+- **From Module 5**: Refactor transformation code
 - **From Module 6**: Refactor loading code
-- **From Module 7**: Refactor query code
+- **From Module 8**: Refactor query code
 - **To Production**: Deploy packaged application
 
 ## Tools and Resources
@@ -665,12 +663,12 @@ Module 8 is complete when:
 
 ## Related Documentation
 
-- `POWER.md` - Module 8 overview
-- `steering/steering.md` - Module 8 workflow
-- `steering/agent-instructions.md` - Agent behavior for Module 8
+- `POWER.md` - Module 12 overview
+- `steering/steering.md` - Module 12 workflow
+- `steering/agent-instructions.md` - Agent behavior for Module 12
 - Use MCP: `find_examples(query="API integration")` for deployment patterns
 - `PYTHON_REQUIREMENTS_POLICY.md` - Python dependency management
 
 ## Version History
 
-- **v2.0.0** (2026-03-17): Module 8 added to boot camp structure
+- **v2.0.0** (2026-03-17): Module 12 added to boot camp structure

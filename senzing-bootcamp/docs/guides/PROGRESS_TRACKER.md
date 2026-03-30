@@ -11,7 +11,7 @@ Track your progress through the boot camp modules. Check off each module as you 
 
 ## Module Checklist
 
-### Module 0: Quick Demo (Optional)
+### Module 1: Quick Demo (Optional)
 
 - [ ] Choose sample dataset (Las Vegas, London, or Moscow)
 - [ ] Review sample records
@@ -25,7 +25,7 @@ Track your progress through the boot camp modules. Check off each module as you 
 
 ---
 
-### Module 1: Understand Business Problem
+### Module 2: Understand Business Problem
 
 - [ ] Set up project directory structure
 - [ ] Initialize version control (optional)
@@ -41,9 +41,9 @@ Track your progress through the boot camp modules. Check off each module as you 
 
 ---
 
-### Module 2: Identify and Collect Data Sources
+### Module 3: Identify and Collect Data Sources
 
-- [ ] Review identified data sources from Module 1
+- [ ] Review identified data sources from Module 2
 - [ ] Collect data for each source
 - [ ] Save data to `data/raw/` directory
 - [ ] Document data source locations
@@ -56,7 +56,7 @@ Track your progress through the boot camp modules. Check off each module as you 
 
 ---
 
-### Module 3: Evaluate Data Quality
+### Module 4: Evaluate Data Quality
 
 - [ ] Run automated quality scoring on each source
 - [ ] Review quality metrics (completeness, consistency, validity)
@@ -70,9 +70,9 @@ Track your progress through the boot camp modules. Check off each module as you 
 
 ---
 
-### Module 4: Map Your Data
+### Module 5: Map Your Data
 
-- [ ] Review data quality scores from Module 3
+- [ ] Review data quality scores from Module 4
 - [ ] Use `mapping_workflow` for each non-compliant source
 - [ ] Create transformation programs
 - [ ] Test on small samples
@@ -86,7 +86,7 @@ Track your progress through the boot camp modules. Check off each module as you 
 
 ---
 
-### Module 5: Set Up SDK
+### Module 0: Set Up SDK
 
 - [ ] Check if Senzing is already installed
 - [ ] Choose platform (if not installed)
@@ -136,7 +136,7 @@ Track your progress through the boot camp modules. Check off each module as you 
 
 ### Module 8: Query and Validate Results
 
-- [ ] Review business problem from Module 1
+- [ ] Review business problem from Module 2
 - [ ] Design queries to answer business questions
 - [ ] Create query programs
 - [ ] Test queries and validate results
@@ -222,15 +222,15 @@ Track your progress through the boot camp modules. Check off each module as you 
 
 **Modules completed**: 0 / 13
 **Estimated time remaining**: 10-18 hours
-**Current module**: Module 0 or Module 1
+**Current module**: Module 1 or Module 2
 
 ## Skip Ahead Options
 
 You can skip modules based on your situation:
 
-- **Have SGES-compliant data?** → Skip Module 4
-- **Senzing already installed?** → Skip Module 5
-- **Just want to explore?** → Start with Module 0
+- **Have SGES-compliant data?** → Skip Module 5
+- **Senzing already installed?** → Skip Module 0
+- **Just want to explore?** → Start with Module 1
 - **Single data source only?** → Skip Module 7
 - **Already loaded data?** → Jump to Module 8
 - **Not deploying to production?** → Skip Modules 9-12
@@ -259,7 +259,7 @@ After completing all modules:
 2. ✅ Monitor performance (Module 11 dashboards)
 3. ✅ Respond to alerts (Module 11 runbooks)
 4. ✅ Iterate and improve (Module 9 benchmarks)
-5. ✅ Expand with more data sources (Modules 2-7)
+5. ✅ Expand with more data sources (Modules 3-7)
 6. ✅ Maintain security (Module 10 checklist)
 7. ✅ Scale as needed (Module 9 capacity planning)
 

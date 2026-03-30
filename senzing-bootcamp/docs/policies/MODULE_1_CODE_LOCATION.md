@@ -1,12 +1,12 @@
-# Module 0 (Quick Demo) Code Location Policy
+# Module 1 (Quick Demo) Code Location Policy
 
 ## Policy
 
-All code generated during Module 0 (Quick Demo) must be saved in the `src/quickstart_demo/` directory. This keeps demo code separate from the main boot camp project code.
+All code generated during Module 1 (Quick Demo) must be saved in the `src/quickstart_demo/` directory. This keeps demo code separate from the main boot camp project code.
 
 ## Why This Matters
 
-Module 0 is optional and exploratory:
+Module 1 is optional and exploratory:
 
 - Users may try multiple demo datasets
 - Demo code is temporary/experimental
@@ -19,16 +19,16 @@ Module 0 is optional and exploratory:
 ```text
 my-senzing-project/
 ├── src/
-│   ├── quickstart_demo/           # Module 0 demo code (optional)
+│   ├── quickstart_demo/           # Module 1 demo code (optional)
 │   │   ├── demo_las_vegas.py      # Demo script for Las Vegas dataset
 │   │   ├── demo_london.py         # Demo script for London dataset
 │   │   ├── demo_moscow.py         # Demo script for Moscow dataset
 │   │   ├── sample_data_las_vegas.jsonl  # Sample data
 │   │   ├── sample_data_london.jsonl     # Sample data
 │   │   └── sample_data_moscow.jsonl     # Sample data
-│   ├── transform/                 # Module 3 - Real transformation programs
-│   ├── load/                      # Module 5 - Real loading programs
-│   ├── query/                     # Module 6 - Real query programs
+│   ├── transform/                 # Module 5 - Real transformation programs
+│   ├── load/                      # Module 6 - Real loading programs
+│   ├── query/                     # Module 8 - Real query programs
 │   └── utils/                     # Shared utilities
 ```
 
@@ -37,9 +37,6 @@ my-senzing-project/
 ### Demo Scripts
 
 - ✅ `demo_[dataset_name].py` - Complete demo script
-- ✅ `demo_las_vegas.py` - Las Vegas dataset demo
-- ✅ `demo_london.py` - London dataset demo
-- ✅ `demo_moscow.py` - Moscow dataset demo
 
 ### Sample Data Files
 
@@ -64,12 +61,12 @@ my-senzing-project/
 
 These belong in:
 
-- `src/transform/` - Real transformation programs (Module 3)
-- `src/load/` - Real loading programs (Module 5)
-- `src/query/` - Real query programs (Module 6)
+- `src/transform/` - Real transformation programs (Module 5)
+- `src/load/` - Real loading programs (Module 6)
+- `src/query/` - Real query programs (Module 8)
 - `src/utils/` - Shared utilities
 
-## Agent Behavior for Module 0
+## Agent Behavior for Module 1
 
 ### Step 1: Create Directory
 
@@ -77,7 +74,7 @@ These belong in:
 mkdir -p src/quickstart_demo
 ```
 
-Always create this directory before generating any Module 0 code.
+Always create this directory before generating any Module 1 code.
 
 ### Step 2: Generate Demo Script
 
@@ -152,7 +149,7 @@ Examples:
 
 ## Cleanup After Demo
 
-After completing Module 0, users can optionally clean up demo files:
+After completing Module 1, users can optionally clean up demo files:
 
 ```bash
 # Remove all demo code (optional)
@@ -182,15 +179,15 @@ This is fine! All demos stay in the same directory.
 
 ## Transition to Real Project
 
-When user moves from Module 0 to Module 1:
+When user moves from Module 1 to Module 2:
 
-**Module 0 (Demo)**:
+**Module 1 (Demo)**:
 
 - Code in: `src/quickstart_demo/`
 - Data: Sample CORD datasets
 - Purpose: Learning and exploration
 
-**Module 1+ (Real Project)**:
+**Module 2+ (Real Project)**:
 
 - Code in: `src/transform/`, `src/load/`, `src/query/`
 - Data: User's actual data sources
@@ -202,19 +199,19 @@ The separation is clear and intentional.
 
 All documentation has been updated:
 
-### steering/steering.md - Module 0 Workflow
+### steering/steering.md - Module 1 Workflow
 
 - ✅ Step 4: Create `src/quickstart_demo/` directory
 - ✅ Step 5: Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
 - ✅ Step 6: Save sample data to `src/quickstart_demo/sample_data_[dataset_name].jsonl`
 
-### steering/agent-instructions.md - Module 0
+### steering/agent-instructions.md - Module 1
 
 - ✅ Create `src/quickstart_demo/` directory for all demo code
 - ✅ Save demo script to `src/quickstart_demo/demo_[dataset_name].py`
 - ✅ Save sample data to `src/quickstart_demo/sample_data_[dataset_name].jsonl`
 
-### steering/quick-reference.md - Module 0
+### steering/quick-reference.md - Module 1
 
 - ✅ Important note about creating `src/quickstart_demo/`
 - ✅ File naming conventions
@@ -223,17 +220,17 @@ All documentation has been updated:
 ### POWER.md - Project Directory Structure
 
 - ✅ Added `src/quickstart_demo/` to directory tree
-- ✅ Marked as "(optional)" since Module 0 is optional
+- ✅ Marked as "(optional)" since Module 1 is optional
 
 ### steering/steering.md - Project Directory Structure
 
 - ✅ Added `src/quickstart_demo/` to directory listing
-- ✅ Marked as "Module 0 demo code (optional)"
+- ✅ Marked as "Module 1 demo code (optional)"
 
-## Example Module 0 Session
+## Example Module 1 Session
 
 ```bash
-# User starts Module 0
+# User starts Module 1
 $ mkdir -p src/quickstart_demo
 
 # Agent generates demo script
@@ -241,7 +238,7 @@ $ cat src/quickstart_demo/demo_las_vegas.py
 #!/usr/bin/env python3
 """
 Quick Demo: Las Vegas Dataset
-Generated for Senzing Boot Camp Module 0
+Generated for Senzing Boot Camp Module 1
 """
 import json
 from senzing import G2Engine
@@ -262,7 +259,7 @@ Loading 100 sample records...
 ✅ Found 13 duplicates
 ...
 
-# User moves to Module 1
+# User moves to Module 2
 # Demo code stays in src/quickstart_demo/
 # Real project code goes in src/transform/, src/load/, src/query/
 ```
@@ -277,7 +274,7 @@ Loading 100 sample records...
 
 ## Summary
 
-✅ All Module 0 code → `src/quickstart_demo/`
+✅ All Module 1 code → `src/quickstart_demo/`
 ✅ Demo scripts → `src/quickstart_demo/demo_[dataset].py`
 ✅ Sample data → `src/quickstart_demo/sample_data_[dataset].jsonl`
 ✅ Keep separate from main project code

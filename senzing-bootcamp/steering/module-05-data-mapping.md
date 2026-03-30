@@ -4,7 +4,7 @@ inclusion: manual
 
 # Module 5: Data Mapping
 
-## Workflow: Data Mapping End-to-End (Module 4)
+## Workflow: Data Mapping End-to-End (Module 5)
 
 Use this workflow for each data source that needs mapping (identified in Module 3). Complete the entire mapping process for one data source before moving to the next.
 
@@ -189,9 +189,9 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 1. **Mark data source as complete**: Once the user is satisfied with the transformation program for this data source, mark it as complete and move to the next data source that needs mapping.
 
-2. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 2), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
+2. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 3), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
 
-3. **Transition to Module 5**: Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 5 (SDK Setup).
+3. **Transition to Module 0**: Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 0 (SDK Setup).
 
 ### Important Rules for Data Mapping
 

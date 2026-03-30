@@ -1,11 +1,11 @@
-# Module 4: Map Your Data
+# Module 5: Map Your Data
 
 ## Overview
 
-Module 4 transforms your source data into Senzing's Generic Entity Specification (SGES) format. This is where you map your data fields to Senzing attributes, creating transformation programs for each data source.
+Module 5 transforms your source data into Senzing's Generic Entity Specification (SGES) format. This is where you map your data fields to Senzing attributes, creating transformation programs for each data source.
 
 **Time:** 1-2 hours per data source
-**Prerequisites:** ✅ Module 3 complete (data quality evaluated)
+**Prerequisites:** ✅ Module 4 complete (data quality evaluated)
 **Output:** Transformation programs, mapped data files, quality validation
 
 ## Learning Objectives
@@ -20,7 +20,7 @@ By the end of this module, you will:
 
 ## What You'll Do
 
-1. Review data quality scores from Module 3
+1. Review data quality scores from Module 4
 2. Use `mapping_workflow` MCP tool for each data source
 3. Create transformation programs
 4. Test on small samples
@@ -510,18 +510,18 @@ Track how data flows through transformations:
 
 ## Next Steps
 
-After completing Module 4:
+After completing Module 5:
 
-- **Proceed to Module 5:** Install Senzing SDK
+- **Proceed to Module 0:** Set Up Senzing SDK
 - **Or skip to Module 6:** If SDK already installed
 
 ## Related Documentation
 
 - `POWER.md` - Boot camp overview
-- `steering/steering.md` - Module 4 detailed workflow
+- `steering/steering.md` - Module 5 detailed workflow
 - `steering/data-lineage.md` - Lineage tracking guide
 - Senzing SGES documentation (use `search_docs` MCP tool)
 
 ## Version History
 
-- **v3.0.0** (2026-03-17): Module 4 documentation created
+- **v3.0.0** (2026-03-17): Module 5 documentation created

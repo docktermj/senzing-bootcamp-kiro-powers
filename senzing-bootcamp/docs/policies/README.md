@@ -19,28 +19,28 @@ This directory contains policy documents that define coding standards and organi
 
 **Why It Matters**: Allows multiple bootcamp instances to run concurrently on the same machine without database conflicts
 
-**Applies To**: All modules using SQLite (Modules 0, 5, 6, 7, 8)
+**Applies To**: All modules using SQLite (Modules 1, 0, 6, 7, 8)
 
 **Critical**: Overrides Senzing MCP server recommendation of `/tmp/sqlite` - always use project-local `database/` directory
 
 ---
 
-### Module 0 Code Location Policy
+### Module 1 Code Location Policy
 
-**File**: [MODULE_0_CODE_LOCATION.md](MODULE_0_CODE_LOCATION.md)
+**File**: [MODULE_1_CODE_LOCATION.md](MODULE_1_CODE_LOCATION.md)
 
-**Purpose**: Define where Module 0 demo code should be stored
+**Purpose**: Define where Module 1 demo code should be stored
 
 **Key Rules**:
 
-- All Module 0 demo code goes in `src/quickstart_demo/`
+- All Module 1 demo code goes in `src/quickstart_demo/`
 - Demo scripts: `src/quickstart_demo/demo_[dataset_name].py`
 - Sample data: `src/quickstart_demo/sample_data_[dataset_name].jsonl`
 - Keep demo code separate from main project code
 
 **Why It Matters**: Prevents confusion between demo code and production code
 
-**Applies To**: Module 0 (Quick Demo)
+**Applies To**: Module 1 (Quick Demo)
 
 ---
 
@@ -61,7 +61,7 @@ This directory contains policy documents that define coding standards and organi
 
 **Why It Matters**: Ensures reproducible builds and clear dependency management
 
-**Applies To**: All Python projects (Modules 4, 5, 6, 7, 8, 9, 10, 11, 12)
+**Applies To**: All Python projects (Modules 5, 0, 6, 7, 8, 9, 10, 11, 12)
 
 ---
 
@@ -118,8 +118,8 @@ This directory contains policy documents that define coding standards and organi
 
 | Policy              | Directory              | File Types          | Applies To            |
 |---------------------|------------------------|---------------------|-----------------------|
-| SQLite Database     | `database/`            | `*.db`              | Modules 0, 5, 6, 7, 8 |
-| Module 0 Code       | `src/quickstart_demo/` | Python/Java/C#/Rust | Module 0              |
+| SQLite Database     | `database/`            | `*.db`              | Modules 1, 0, 6, 7, 8 |
+| Module 1 Code       | `src/quickstart_demo/` | Python/Java/C#/Rust | Module 1              |
 | Python Requirements | Project root           | `requirements*.txt` | All Python projects   |
 | Shell Scripts       | `scripts/`             | `*.sh`              | Modules 10, 11, 12    |
 | File Storage        | Various                | All files           | All modules           |
@@ -132,7 +132,7 @@ project-root/
 │   ├── G2C.db                # Main Senzing database
 │   └── .gitkeep              # Keep directory in git
 ├── src/                      # All source code (Python/Java/C#/Rust)
-│   ├── quickstart_demo/      # Module 0 demo code
+│   ├── quickstart_demo/      # Module 1 demo code
 │   ├── transform/            # Transformation programs
 │   ├── load/                 # Loading programs
 │   ├── query/                # Query programs
@@ -228,7 +228,7 @@ When organizing your project:
 - **v1.1.0** (2026-03-17): Added file storage policy
   - FILE_STORAGE_POLICY.md
 - **v1.0.0** (2026-03-17): Initial policies created
-  - MODULE_0_CODE_LOCATION.md
+  - MODULE_1_CODE_LOCATION.md
   - PYTHON_REQUIREMENTS_POLICY.md
   - SHELL_SCRIPT_LOCATIONS.md
 

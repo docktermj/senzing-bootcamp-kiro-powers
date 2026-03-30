@@ -13,7 +13,7 @@ Module 8 focuses on creating query programs to explore entity resolution results
 - ✅ Module 7 complete (all sources loaded) OR Module 6 complete (single source loaded)
 - ✅ No critical loading errors
 - ✅ Loading statistics reviewed
-- ✅ Business requirements from Module 1 available
+- ✅ Business requirements from Module 2 available
 
 ## Learning Objectives
 
@@ -85,7 +85,7 @@ Use when: You want to see the resolution steps
 
 ### Step 1: Define Query Requirements
 
-Based on Module 1 business problem, identify what queries you need:
+Based on Module 2 business problem, identify what queries you need:
 
 **Customer 360 Example:**
 
@@ -549,15 +549,15 @@ Module 8 is complete when:
 **Solutions:**
 
 - Analyze root cause (data quality, configuration, expectations)
-- Review transformation logic from Module 4
-- Check data quality scores from Module 3
+- Review transformation logic from Module 5
+- Check data quality scores from Module 4
 - Adjust expectations if they were unrealistic
 
 ## Integration with Other Modules
 
 - **From Module 7:** Queries loaded data from all sources
 - **From Module 6:** Queries loaded data from single source
-- **From Module 1:** Validates against business requirements
+- **From Module 2:** Validates against business requirements
 - **To Module 9:** Performance testing uses query programs
 - **To Module 12:** Query programs included in deployment package
 
@@ -585,7 +585,7 @@ project/
 
 When a user is in Module 8:
 
-1. **Review business requirements:** Load Module 1 business problem
+1. **Review business requirements:** Load Module 2 business problem
 2. **Define query requirements:** What queries are needed?
 3. **Generate query programs:** Use `generate_scaffold` with `query` workflow
 4. **Customize programs:** Add specific query logic

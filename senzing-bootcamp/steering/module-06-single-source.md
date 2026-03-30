@@ -10,8 +10,8 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 
 **Before starting**: Identify which data sources are ready to load:
 
-- Data sources that were mapped in Module 4 (have transformation program output)
-- Data sources that were SGES-compliant from Module 3 (can load directly)
+- Data sources that were mapped in Module 5 (have transformation program output)
+- Data sources that were SGES-compliant from Module 4 (can load directly)
 
 **For each data source**:
 

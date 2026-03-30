@@ -1,8 +1,8 @@
-# Module 0: Quick Demo (Optional)
+# Module 1: Quick Demo (Optional)
 
 ## Overview
 
-Module 0 provides a demonstration of Senzing entity resolution using sample data. This optional module is perfect for first-time users who want to see entity resolution in action before working with their own data.
+Module 1 provides a demonstration of Senzing entity resolution using sample data. This optional module is perfect for first-time users who want to see entity resolution in action before working with their own data.
 
 This module offers multiple demo options to ensure everyone can see entity resolution working, regardless of their environment.
 
@@ -28,6 +28,7 @@ This module offers multiple demo options to ensure everyone can see entity resol
 **Setup time**: Instant (no downloads)
 
 **Note**: Simulation demo shows what Senzing would do using pre-computed results. Use this if you haven't completed Module 0 yet.
+
 
 ## Choosing Your Demo Path
 
@@ -61,6 +62,7 @@ By the end of this module, you will:
 1. Choose a sample dataset (Las Vegas, London, or Moscow)
 2. Review sample records showing duplicates
 3. Verify Senzing SDK is available (installed in Module 0)
+
 4. Initialize an in-memory SQLite database
 5. Load sample records into Senzing
 6. Query the resolved entities
@@ -94,7 +96,7 @@ By the end of this module, you will:
 
 The generated demo script will:
 
-1. **Verify Senzing SDK** - Confirms SDK is installed from Module 0
+1. **Verify Senzing SDK** - Confirms SDK is installed from Module 0 (SDK Setup)
 2. **Initialize Senzing** with in-memory SQLite database
 3. **Load sample records** from the chosen dataset (with progress bar)
 4. **Query resolved entities** to show which records matched
@@ -208,7 +210,7 @@ A common pitfall: `sz_engine.get_stats()` tracks per-process workload statistics
 
 ## File Locations
 
-All Module 0 demo code is saved in `src/quickstart_demo/`:
+All Module 1 demo code is saved in `src/quickstart_demo/`:
 
 ```text
 src/quickstart_demo/
@@ -222,9 +224,9 @@ src/quickstart_demo/
 
 ## Running the Demo
 
-The demo runs automatically when you start Module 1. The agent will:
+The demo runs automatically when you start Module 1 (Quick Demo). The agent will:
 
-1. Verify Senzing SDK is installed (from Module 0)
+1. Verify Senzing SDK is installed (from Module 0 SDK Setup)
 2. Generate and run the demo script
 3. Display results in real-time
 
@@ -270,28 +272,28 @@ After the demo, consider:
 
 After completing the demo:
 
-- **Ready to start?** → Proceed to Module 1 (Business Problem)
+- **Ready to start?** → Proceed to Module 2 (Business Problem)
 - **Want to try another dataset?** → Run another demo
 - **Have questions?** → Ask about specific entity resolution concepts
 
 ## Common Questions
 
 **Q: Do I need to install Senzing to run the demo?**
-A: Yes, the SDK should be installed in Module 0. If you haven't done that yet, the simulation demo can show you the concepts without the SDK.
+A: Yes, the SDK should be installed in Module 0 (SDK Setup). If you haven't done that yet, the simulation demo can show you the concepts without the SDK.
 
 **Q: Does this actually run Senzing, or is it a simulation?**
 A: This runs the real Senzing SDK! You'll see actual entity resolution happening, not a simulation or mock-up.
 
 **Q: Can I use my own data for the demo?**
-A: The demo uses sample data to ensure a quick, successful experience. You'll work with your data starting in Module 2.
+A: The demo uses sample data to ensure a quick, successful experience. You'll work with your data starting in Module 3.
 
 **Q: How accurate is entity resolution?**
 A: Accuracy depends on data quality. Typical match rates: 90-99% precision, 85-95% recall. The demo shows real match confidence scores.
 
 **Q: Can I skip this module?**
-A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data. But we recommend the demo - it only takes 10 minutes and shows the value immediately.
+A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data. But we recommend the demo - it only takes 10 minutes and shows the value immediately.
 
-## Troubleshooting Module 0
+## Troubleshooting Module 1
 
 ### Issue: SDK Not Found
 
@@ -305,10 +307,6 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 1. **Complete Module 0 first** (SDK Setup)
    - Module 0 installs the SDK natively
    - Return to Module 1 after installation
-
-2. **Use Simulation Demo** as a preview
-   - Shows same concepts without SDK
-   - Complete Module 0 later
 
 3. **Check Python environment**
 
@@ -406,8 +404,8 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
    # Should show: Python 3.8.x or higher
    ```
 
-3. **Skip to Module 1**
-   - Come back to Module 0 later
+3. **Skip to Module 2**
+   - Come back to Module 1 later
    - See real SDK in Module 6
 
 ---
@@ -501,7 +499,7 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 
 ### Pre-Flight Check
 
-**Before starting Module 0, verify your environment**:
+**Before starting Module 1, verify your environment**:
 
 Run the pre-flight check script:
 
@@ -545,9 +543,9 @@ And provide recommendations based on your environment.
 ## Related Documentation
 
 - `../../POWER.md` - Boot camp overview
-- `../../steering/steering.md` - Module 0 workflow
+- `../../steering/steering.md` - Module 1 workflow
 - `QUICK_START.md` - Quick start guide
 
 ## Version History
 
-- **v3.0.0** (2026-03-17): Module 0 documentation created
+- **v3.0.0** (2026-03-17): Module 1 documentation created

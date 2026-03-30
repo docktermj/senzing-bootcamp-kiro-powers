@@ -4,15 +4,15 @@ inclusion: manual
 
 # Module 3: Identify and Collect Data Sources
 
-## Workflow: Identify and Collect Data Sources (Module 2)
+## Workflow: Identify and Collect Data Sources (Module 3)
 
 **Time**: 10-15 minutes per data source
 
-**Prerequisites**: ✅ Module 1 complete (business problem defined, data sources identified)
+**Prerequisites**: ✅ Module 2 complete (business problem defined, data sources identified)
 
 **Purpose**: Collect the actual data files from each identified data source and store them in the project for analysis and mapping.
 
-1. **Review identified data sources**: Recap the data sources identified in Module 1. Review `docs/business_problem.md` for the complete list.
+1. **Review identified data sources**: Recap the data sources identified in Module 2. Review `docs/business_problem.md` for the complete list.
 
 2. **For each data source, collect the data**:
 
@@ -131,7 +131,7 @@ inclusion: manual
    - ⬜ Legacy Database - Pending (requires VPN access)
    ```
 
-9. **Transition to Module 3**: "Great! Now that we have the data files, let's evaluate each one to see if it needs mapping or if it's already in the right format for Senzing."
+9. **Transition to Module 4**: "Great! Now that we have the data files, let's evaluate each one to see if it needs mapping or if it's already in the right format for Senzing."
 
 **Success indicator**: ✅ All data sources have files in `data/raw/` OR documented locations + `docs/data_source_locations.md` created + data collection status tracked
 

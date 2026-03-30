@@ -1,12 +1,12 @@
-# Module 3: Evaluate Data Quality with Automated Scoring
+# Module 4: Evaluate Data Quality with Automated Scoring
 
 ## Overview
 
-Module 3 evaluates data quality using automated scoring and metrics. This module provides objective measurements to help you understand data readiness for entity resolution.
+Module 4 evaluates data quality using automated scoring and metrics. This module provides objective measurements to help you understand data readiness for entity resolution.
 
 ## Purpose
 
-After collecting data sources in Module 2, you need to assess their quality before mapping. Module 3 provides:
+After collecting data sources in Module 3, you need to assess their quality before mapping. Module 4 provides:
 
 1. **Automated Quality Scoring** (0-100 scale)
 2. **Attribute Completeness Metrics**
@@ -691,7 +691,7 @@ def generate_html_dashboard(report: Dict, output_path: str):
 
 ## Agent Behavior
 
-When a user is in Module 3, the agent should:
+When a user is in Module 4, the agent should:
 
 1. **Run quality scorer** on each data source
 2. **Generate quality report** with scores and metrics
@@ -709,10 +709,10 @@ When a user is in Module 3, the agent should:
 
 ## Related Documentation
 
-- `POWER.md` - Module 3 overview
-- `steering/steering.md` - Module 3 workflow
+- `POWER.md` - Module 4 overview
+- `steering/steering.md` - Module 4 workflow
 - `steering/data-quality-scoring.md` - Detailed scoring guide
 
 ## Version History
 
-- **v3.0.0** (2026-03-17): Module 3 enhanced with automated quality scoring
+- **v3.0.0** (2026-03-17): Module 4 enhanced with automated quality scoring

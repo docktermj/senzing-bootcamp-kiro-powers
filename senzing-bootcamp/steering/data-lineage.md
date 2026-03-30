@@ -18,7 +18,7 @@ Data lineage tracks the flow of data from source to destination, documenting tra
 
 ## Lineage Levels
 
-### 1. Source Lineage (Module 2)
+### 1. Source Lineage (Module 3)
 
 Track where data came from:
 
@@ -43,7 +43,7 @@ sources:
     file_location: data/raw/customers_ecommerce.json
 ```
 
-### 2. Transformation Lineage (Module 4)
+### 2. Transformation Lineage (Module 5)
 
 Track how data was transformed:
 
@@ -285,7 +285,7 @@ class LineageTracker:
 if __name__ == '__main__':
     tracker = LineageTracker()
 
-    # Track source (Module 2)
+    # Track source (Module 3)
     tracker.track_source('customers_crm', {
         'type': 'database',
         'location': 'postgresql://prod-db/crm',
@@ -296,7 +296,7 @@ if __name__ == '__main__':
         'file_location': 'data/raw/customers_crm.csv'
     })
 
-    # Track transformation (Module 4)
+    # Track transformation (Module 5)
     tracker.track_transformation('customers_crm', {
         'source_file': 'data/raw/customers_crm.csv',
         'transformation_script': 'src/transform/transform_customers_crm.py',
@@ -415,14 +415,14 @@ def generate_compliance_report(record_id: str):
 
 ## Agent Behavior
 
-### Module 2: Source Lineage
+### Module 3: Source Lineage
 
 - Create `docs/data_lineage.yaml` if it doesn't exist
 - Track each data source as it's collected
 - Document source location, type, extraction date
 - Save lineage after each source
 
-### Module 4: Transformation Lineage
+### Module 5: Transformation Lineage
 
 - Track transformation for each source
 - Document field mappings
@@ -448,8 +448,8 @@ def generate_compliance_report(record_id: str):
 
 Load this guide when:
 
-- Starting Module 2 (data collection)
-- Starting Module 4 (transformation)
+- Starting Module 3 (data collection)
+- Starting Module 5 (transformation)
 - User asks about compliance
 - User asks about data provenance
 - Debugging data issues

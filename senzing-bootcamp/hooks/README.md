@@ -114,7 +114,7 @@ Example customization:
 - ✅ **PEP-8 Compliance Check** (ensures code quality for Python)
 - ✅ **Backup Project on Request** (quick backups via voice commands)
 
-### Module 4 (Data Mapping)
+### Module 5 (Data Mapping)
 
 - ✅ PEP-8 Compliance Check
 - ✅ Data Quality Check

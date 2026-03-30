@@ -4,7 +4,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ## Three Quick Start Paths
 
-### Path A: 10-Minute Demo (Module 0)
+### Path A: 10-Minute Demo (Module 1)
 
 **Best for:** First-time users, seeing entity resolution in action
 
@@ -92,7 +92,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 **Output:** Complete working project
 
-**Modules:** 1-6, 8
+**Modules:** 2-6, 8
 
 ---
 
@@ -103,20 +103,16 @@ Get started with Senzing entity resolution in 30 minutes or less.
 **"See a demo first"** → Path A (10-Minute Demo)
 
 - Start with Module 1 (after SDK setup in Module 0)
-- Sample data provided
-- See entity resolution in action
 
 **"Get results fast"** → Path B (30-Minute Fast Track)
 
-- Skip to Module 5 (Data Mapping)
+- Skip to Module 0 (SDK Setup) then Module 6
 - Requires SGES-compliant data
 - SQLite for quick start
 
 **"Learn properly"** → Path C (2-Hour Complete)
 
 - Start with Module 2
-- Work with your raw data
-- Complete understanding
 
 **"Build for production"** → Path D: Full Boot Camp (10-18 hours)
 
@@ -167,7 +163,6 @@ Get started with Senzing entity resolution in 30 minutes or less.
 - ✅ SGES-formatted data file
 - ✅ Python 3.8+
 - ✅ Senzing SDK installed (Module 0)
-- ✅ 30 minutes
 
 ### For Complete Beginner (Path C)
 
@@ -189,12 +184,12 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ### Module Overview
 
-- **Module 0**: Quick Demo (10 min) - Optional
-- **Module 1**: Business Problem (20 min)
-- **Module 2**: Collect Data (15 min per source)
-- **Module 3**: Evaluate Quality (15 min per source)
-- **Module 4**: Map Data (1-2 hrs per source)
-- **Module 5**: Install SDK (30-60 min)
+- **Module 1**: Quick Demo (10 min) - Optional
+- **Module 2**: Business Problem (20 min)
+- **Module 3**: Collect Data (15 min per source)
+- **Module 4**: Evaluate Quality (15 min per source)
+- **Module 5**: Map Data (1-2 hrs per source)
+- **Module 0**: Set Up SDK (30-60 min)
 - **Module 6**: Load Data (30 min per source)
 - **Module 7**: Multi-Source Orchestration (1-2 hrs)
 - **Module 8**: Query & Validate (1-2 hrs)
@@ -205,8 +200,8 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ### Skip Ahead Options
 
-- Have SGES data? → Skip Module 4
-- Senzing installed? → Skip Module 5
+- Have SGES data? → Skip Module 5
+- Senzing installed? → Skip Module 0
 - Single source? → Skip Module 7
 - Not production? → Skip Modules 9-12
 
@@ -225,7 +220,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 **After Fast Track (Path B)**:
 
 1. Review results and validate accuracy
-2. Add more data sources (Module 2-4, 6-7)
+2. Add more data sources (Module 3-5, 6-7)
 3. Consider production deployment (Modules 9-12)
 
 **After Complete Beginner (Path C)**:
@@ -281,7 +276,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 **After Complete Beginner**:
 
-- ✅ All modules 1-6 and 8 complete
+- ✅ All modules 2-6 and 8 complete
 - ✅ Transformation and query programs work
 - ✅ Results validated and documented
 
@@ -297,9 +292,6 @@ A: Yes! Start with demo, then do Fast Track or Complete.
 
 **Q: Do I need to install anything?**
 A: Module 0 installs the Senzing SDK. All paths need Python 3.8+.
-
-**Q: How long does each path take?**
-A: Demo: 10 min, Fast Track: 30 min, Complete: 2-3 hrs.
 
 **Q: Can I use my own data?**
 A: Yes for Fast Track and Complete. Demo uses sample data.

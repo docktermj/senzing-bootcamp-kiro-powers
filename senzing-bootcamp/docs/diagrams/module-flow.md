@@ -8,7 +8,7 @@
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────┐
-│   MODULE 0 (Optional)│
+│   MODULE 1 (Optional)│
 │    Quick Demo        │
 │    10-15 minutes     │
 │                      │
@@ -19,7 +19,7 @@
            │
            ▼
 ┌──────────────────────┐
-│      MODULE 1        │
+│      MODULE 2        │
 │  Business Problem    │
 │    20-30 minutes     │
 │                      │
@@ -30,7 +30,7 @@
            │
            ▼
 ┌──────────────────────┐
-│      MODULE 2        │
+│      MODULE 3        │
 │  Data Collection     │
 │  10-15 min/source    │
 │                      │
@@ -41,7 +41,7 @@
            │
            ▼
 ┌──────────────────────┐
-│      MODULE 3        │
+│      MODULE 4        │
 │   Data Quality       │
 │  15-20 min/source    │
 │                      │
@@ -52,7 +52,7 @@
            │
            ▼
 ┌──────────────────────┐
-│      MODULE 4        │
+│      MODULE 5        │
 │   Data Mapping       │
 │   1-2 hrs/source     │
 │                      │
@@ -63,7 +63,7 @@
            │
            ▼
 ┌──────────────────────┐
-│      MODULE 5        │
+│      MODULE 0        │
 │    SDK Setup         │
 │   30 min - 1 hour    │
 │                      │
@@ -168,28 +168,28 @@
 ### Path A: Quick Demo (10 minutes)
 
 ```text
-Module 0 → Done
+Module 1 → Done
 ```
 
 ### Path B: Fast Track (30 minutes)
 
 ```text
-Module 5 → Module 6 → Done
+Module 0 → Module 6 → Done
 (For users with SGES-compliant data)
 ```
 
 ### Path C: Complete Beginner (2-3 hours)
 
 ```text
-Module 1 → Module 2 → Module 3 → Module 4 →
-Module 5 → Module 6 → Module 8 → Done
+Module 2 → Module 3 → Module 4 → Module 5 →
+Module 0 → Module 6 → Module 8 → Done
 ```
 
 ### Path D: Full Production (10-18 hours)
 
 ```text
-Module 0 → Module 1 → Module 2 → Module 3 → Module 4 →
-Module 5 → Module 6 → Module 7 → Module 8 → Module 9 →
+Module 1 → Module 2 → Module 3 → Module 4 → Module 5 →
+Module 0 → Module 6 → Module 7 → Module 8 → Module 9 →
 Module 10 → Module 11 → Module 12 → Done
 ```
 
@@ -198,11 +198,11 @@ Module 10 → Module 11 → Module 12 → Done
 ```text
 Module 0: No dependencies
 Module 1: No dependencies
-Module 2: Requires Module 1
+Module 2: No dependencies
 Module 3: Requires Module 2
 Module 4: Requires Module 3
-Module 5: Requires Module 4 (or SGES data)
-Module 6: Requires Module 5
+Module 5: Requires Module 4
+Module 6: Requires Module 0 (SDK) and Module 5 (or SGES data)
 Module 7: Requires Module 6 (optional if single source)
 Module 8: Requires Module 6 or 7
 Module 9: Requires Module 8 (optional)
@@ -217,12 +217,12 @@ Module 12: Requires Module 11 (optional)
 ┌─────────────────────────────────────────────────────────┐
 │ Can I skip this module?                                 │
 ├─────────────────────────────────────────────────────────┤
-│ Module 0: Yes (but recommended for first-timers)        │
-│ Module 1: No (unless you know your problem well)        │
-│ Module 2: No (unless data already collected)            │
-│ Module 3: No (unless quality already validated)         │
-│ Module 4: Yes (if data is SGES-compliant)               │
-│ Module 5: Yes (if Senzing already installed)            │
+│ Module 0: Yes (if Senzing already installed)            │
+│ Module 1: Yes (but recommended for first-timers)        │
+│ Module 2: No (unless you know your problem well)        │
+│ Module 3: No (unless data already collected)            │
+│ Module 4: No (unless quality already validated)         │
+│ Module 5: Yes (if data is SGES-compliant)               │
 │ Module 6: No (core loading module)                      │
 │ Module 7: Yes (if single source only)                   │
 │ Module 8: No (must validate results)                    │
@@ -239,12 +239,12 @@ Module 12: Requires Module 11 (optional)
 ┌──────────────────────────────────────────────────────────┐
 │ Module                    │ Time Estimate                │
 ├──────────────────────────────────────────────────────────┤
-│ Module 0: Quick Demo      │ 10-15 minutes                │
-│ Module 1: Business        │ 20-30 minutes                │
-│ Module 2: Collection      │ 10-15 min per source         │
-│ Module 3: Quality         │ 15-20 min per source         │
-│ Module 4: Mapping         │ 1-2 hours per source         │
-│ Module 5: SDK Setup       │ 30 minutes - 1 hour          │
+│ Module 0: SDK Setup       │ 30 minutes - 1 hour          │
+│ Module 1: Quick Demo      │ 10-15 minutes                │
+│ Module 2: Business        │ 20-30 minutes                │
+│ Module 3: Collection      │ 10-15 min per source         │
+│ Module 4: Quality         │ 15-20 min per source         │
+│ Module 5: Mapping         │ 1-2 hours per source         │
 │ Module 6: Loading         │ 30 minutes per source        │
 │ Module 7: Orchestration   │ 1-2 hours                    │
 │ Module 8: Queries         │ 1-2 hours                    │
@@ -260,12 +260,12 @@ Module 12: Requires Module 11 (optional)
 ## Module Outputs
 
 ```text
-Module 0  → Demo results, understanding of entity resolution
-Module 1  → docs/business_problem.md
-Module 2  → data/raw/* files, docs/data_source_evaluation.md
-Module 3  → Data quality reports
-Module 4  → src/transform/* programs, data/transformed/* files
-Module 5  → Installed SDK, configured database
+Module 0  → Installed SDK, configured database
+Module 1  → Demo results, understanding of entity resolution
+Module 2  → docs/business_problem.md
+Module 3  → data/raw/* files, docs/data_source_evaluation.md
+Module 4  → Data quality reports
+Module 5  → src/transform/* programs, data/transformed/* files
 Module 6  → Loaded data, loading statistics
 Module 7  → Multi-source orchestration scripts
 Module 8  → src/query/* programs, UAT results

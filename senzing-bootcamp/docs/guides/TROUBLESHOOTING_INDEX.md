@@ -40,7 +40,7 @@ Quick reference for common issues and solutions across all boot camp modules.
    python --version
    ```
 
-**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+**Related**: [MODULE_0_SDK_SETUP.md](../modules/MODULE_0_SDK_SETUP.md)
 
 ---
 
@@ -110,7 +110,7 @@ Quick reference for common issues and solutions across all boot camp modules.
    - Document limitations
    - Proceed with caution
 
-**Related**: [MODULE_3_DATA_QUALITY_SCORING.md](../modules/MODULE_3_DATA_QUALITY_SCORING.md)
+**Related**: [MODULE_4_DATA_QUALITY_SCORING.md](../modules/MODULE_4_DATA_QUALITY_SCORING.md)
 
 ---
 
@@ -152,7 +152,7 @@ Quick reference for common issues and solutions across all boot camp modules.
 
 2. Use data cleaning libraries (phonenumbers, usaddress)
 
-**Related**: [MODULE_4_DATA_MAPPING.md](../modules/MODULE_4_DATA_MAPPING.md)
+**Related**: [MODULE_5_DATA_MAPPING.md](../modules/MODULE_5_DATA_MAPPING.md)
 
 ---
 
@@ -213,7 +213,7 @@ Quick reference for common issues and solutions across all boot camp modules.
        return None
    ```
 
-**Related**: [MODULE_4_DATA_MAPPING.md](../modules/MODULE_4_DATA_MAPPING.md)
+**Related**: [MODULE_5_DATA_MAPPING.md](../modules/MODULE_5_DATA_MAPPING.md)
 
 ---
 
@@ -280,7 +280,7 @@ Quick reference for common issues and solutions across all boot camp modules.
 
 3. Verify credentials in connection string
 
-**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+**Related**: [MODULE_0_SDK_SETUP.md](../modules/MODULE_0_SDK_SETUP.md)
 
 ---
 
@@ -363,7 +363,7 @@ Quick reference for common issues and solutions across all boot camp modules.
 
 2. Or use MCP tool `sdk_guide` with topic='configure'
 
-**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+**Related**: [MODULE_0_SDK_SETUP.md](../modules/MODULE_0_SDK_SETUP.md)
 
 ---
 
@@ -514,11 +514,11 @@ Quick reference for common issues and solutions across all boot camp modules.
    mkdir -p config
    ```
 
-2. Create config file (see MODULE_5_SDK_SETUP.md)
+2. Create config file (see MODULE_0_SDK_SETUP.md)
 
 3. Check file path in code
 
-**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+**Related**: [MODULE_0_SDK_SETUP.md](../modules/MODULE_0_SDK_SETUP.md)
 
 ---
 
@@ -542,7 +542,7 @@ Quick reference for common issues and solutions across all boot camp modules.
 
 3. Use template from documentation
 
-**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+**Related**: [MODULE_0_SDK_SETUP.md](../modules/MODULE_0_SDK_SETUP.md)
 
 ---
 
@@ -596,7 +596,7 @@ Quick reference for common issues and solutions across all boot camp modules.
    ps aux | grep python
    ```
 
-**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+**Related**: [MODULE_0_SDK_SETUP.md](../modules/MODULE_0_SDK_SETUP.md)
 
 ---
 
@@ -618,7 +618,7 @@ Quick reference for common issues and solutions across all boot camp modules.
 
 4. Verify firewall rules
 
-**Related**: [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md)
+**Related**: [MODULE_0_SDK_SETUP.md](../modules/MODULE_0_SDK_SETUP.md)
 
 ---
 

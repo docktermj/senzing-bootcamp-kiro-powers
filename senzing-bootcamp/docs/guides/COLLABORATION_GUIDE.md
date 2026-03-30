@@ -198,11 +198,11 @@ Track who's working on what:
 ```markdown
 # Module Assignments
 
-- Module 1 (Business Problem): @project-lead
-- Module 2 (Data Collection): @data-engineer
-- Module 3 (Data Quality): @data-engineer
-- Module 4 (Mapping): @data-engineer
-- Module 5 (SDK Setup): @integration-dev
+- Module 2 (Business Problem): @project-lead
+- Module 3 (Data Collection): @data-engineer
+- Module 4 (Data Quality): @data-engineer
+- Module 5 (Mapping): @data-engineer
+- Module 0 (SDK Setup): @integration-dev
 - Module 6 (Loading): @integration-dev
 - Module 7 (Orchestration): @integration-dev
 - Module 8 (Queries): @integration-dev, @qa-tester
@@ -436,7 +436,7 @@ When team members disagree:
 - [ ] Share data access credentials
 - [ ] Provide Senzing license
 - [ ] Review project documentation
-- [ ] Run through Module 0 (Quick Demo)
+- [ ] Run through Module 1 (Quick Demo)
 - [ ] Assign first task
 - [ ] Schedule pairing session
 

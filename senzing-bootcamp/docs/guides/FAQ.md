@@ -10,21 +10,21 @@ The Senzing Boot Camp is a comprehensive, guided learning experience for Senzing
 
 It depends on your path:
 
-- **Quick Demo** (Module 0): 10-15 minutes
-- **Fast Track** (Modules 5-6): 30 minutes
-- **Complete Beginner** (Modules 1-6, 8): 2-3 hours
+- **Quick Demo** (Module 1): 10-15 minutes
+- **Fast Track** (Modules 0, 6): 30 minutes
+- **Complete Beginner** (Modules 2-6, 8): 2-3 hours
 - **Full Production** (All Modules 0-12): 10-18 hours
 
 ### Do I need prior Senzing experience?
 
-No! The boot camp is designed for beginners. Start with Module 0 (Quick Demo) to see entity resolution in action, then work through the modules in order.
+No! The boot camp is designed for beginners. Start with Module 1 (Quick Demo) to see entity resolution in action, then work through the modules in order.
 
 ### Can I skip modules?
 
 Yes, experienced users can skip modules:
 
-- Have SGES-compliant data? Skip Module 4
-- Senzing already installed? Skip Module 5
+- Have SGES-compliant data? Skip Module 5
+- Senzing already installed? Skip Module 0
 - Single data source only? Skip Module 7
 - Not deploying to production? Skip Modules 9-12
 
@@ -39,7 +39,7 @@ Both connect to the same MCP server. Use bootcamp for learning, senzing for quic
 
 ### How do I start the boot camp?
 
-1. Tell the agent: "start the boot camp" or "start module 0"
+1. Tell the agent: "start the boot camp" or "start module 1"
 2. The agent will automatically create your project structure
 3. Follow the guided workflows for each module
 
@@ -61,10 +61,10 @@ Run `./scripts/check_prerequisites.sh` to verify your environment.
 
 ### Do I need a Senzing license?
 
-**Module 0 (Quick Demo):**
+**Module 1 (Quick Demo):**
 No license required - uses sample data only.
 
-**Modules 5+ (SDK Installation):**
+**Module 0+ (SDK Installation):**
 Yes, you'll need a valid Senzing license.
 
 **How to get a license:**
@@ -147,7 +147,7 @@ The boot camp helps you transform any format to Senzing JSON.
 
 ### Do I need to manually map my data?
 
-No! Use the `mapping_workflow` MCP tool in Module 4. It guides you through an interactive 7-step process to map your data correctly.
+No! Use the `mapping_workflow` MCP tool in Module 5. It guides you through an interactive 7-step process to map your data correctly.
 
 ### What is SGES?
 
@@ -165,12 +165,12 @@ Use these MCP tools:
 
 ### Do I need to install Senzing locally?
 
-Not for Module 0 (Quick Demo). For Modules 5+, you have options:
+Not for Module 1 (Quick Demo). For Module 0 (SDK Setup), you have options:
 
 - Local installation (Linux, macOS, Windows)
 - Cloud deployment
 
-Module 5 guides you through installation.
+Module 0 guides you through installation.
 
 ### Which database should I use?
 

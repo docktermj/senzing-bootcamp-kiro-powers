@@ -21,9 +21,9 @@ my-senzing-project/
 │   ├── G2C.db                     # Main Senzing database (SQLite)
 │   └── .gitkeep                   # Keep directory in git
 ├── src/                           # Generated program source
-│   ├── quickstart_demo/           # Module 0 demo code (optional)
-│   ├── transform/                 # Transformation programs (Module 3)
-│   ├── load/                      # Loading programs (Module 5)
+│   ├── quickstart_demo/           # Module 1 demo code (optional)
+│   ├── transform/                 # Transformation programs (Module 5)
+│   ├── load/                      # Loading programs (Module 6)
 │   ├── query/                     # Query programs (Module 6)
 │   └── utils/                     # Shared utilities
 ├── tests/                         # Test files for project

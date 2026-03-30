@@ -27,7 +27,7 @@ Utility templates for database management, data collection, validation, and plan
 #### demo_quick_start.py ⭐ RECOMMENDED - Module 0
 
 **Purpose**: Live demonstration of Senzing entity resolution with sample data
-**Use when**: Module 0 (Quick Demo), first-time users, demonstrations
+**Use when**: Module 1 (Quick Demo), first-time users, demonstrations
 **Features**: Actually runs Senzing SDK, shows before/after, displays match explanations
 **Complexity**: Beginner
 **Prerequisites**: Senzing SDK installed (Module 0)
@@ -47,11 +47,10 @@ python templates/demo_quick_start.py
 - Displays confidence scores and match explanations
 - Creates the "aha moment" for new users
 
-#### demo_simulation.py ⭐ NEW - Module 0 Fallback
+#### demo_simulation.py ⭐ NEW - Module 1 Fallback
 
 **Purpose**: Simulated demonstration when Senzing SDK is not available
 **Use when**: Module 1 (Quick Demo), SDK not yet installed
-**Features**: Pure Python simulation, no dependencies, shows entity resolution concepts
 **Complexity**: Beginner
 **Prerequisites**: Python 3.8+ only (no Senzing SDK required)
 **Usage**:
@@ -141,7 +140,7 @@ python templates/rollback_load.py \
 #### collect_from_csv.py
 
 **Purpose**: Collect and sample CSV data sources
-**Use when**: Module 2 (data collection), working with CSV files
+**Use when**: Module 3 (data collection), working with CSV files
 **Features**: Auto-detects delimiter and encoding, creates samples
 **Complexity**: Beginner
 **Usage**:
@@ -156,7 +155,7 @@ python templates/collect_from_csv.py \
 #### collect_from_json.py
 
 **Purpose**: Collect and sample JSON data sources
-**Use when**: Module 2 (data collection), working with JSON files
+**Use when**: Module 3 (data collection), working with JSON files
 **Features**: Handles JSON and JSON Lines formats, creates samples
 **Complexity**: Beginner
 **Usage**:
@@ -171,7 +170,7 @@ python templates/collect_from_json.py \
 #### collect_from_api.py
 
 **Purpose**: Collect data from REST APIs with pagination
-**Use when**: Module 2 (data collection), API data sources
+**Use when**: Module 3 (data collection), API data sources
 **Features**: Pagination, authentication, rate limiting, retry logic
 **Complexity**: Intermediate
 **Usage**:
@@ -187,7 +186,7 @@ python templates/collect_from_api.py \
 #### collect_from_database.py
 
 **Purpose**: Extract data from databases
-**Use when**: Module 2 (data collection), database sources
+**Use when**: Module 3 (data collection), database sources
 **Features**: Supports PostgreSQL, MySQL, SQLite, SQL Server, Oracle
 **Complexity**: Intermediate
 **Usage**:
@@ -250,7 +249,7 @@ python templates/troubleshoot.py
 #### cost_calculator.py
 
 **Purpose**: Interactive cost estimation for Senzing projects
-**Use when**: Module 1 (planning), stakeholder presentations
+**Use when**: Module 2 (planning), stakeholder presentations
 **Features**: DSR licensing, infrastructure costs, time estimates
 **Complexity**: Beginner
 **Usage**:

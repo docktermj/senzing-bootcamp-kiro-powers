@@ -218,7 +218,7 @@ A) Quick Demo (10 min) - Module 1
 B) Fast Track (30 min) - Modules 5-6
    For users with SGES-compliant data
 
-C) Complete Beginner (2-3 hrs) - Modules 1-6, 8
+C) Complete Beginner (2-3 hrs) - Modules 2-6, 8
    Work with your raw data from start to finish
 
 D) Full Production (10-18 hrs) - All Modules 0-12
@@ -301,7 +301,7 @@ Please respond with A, B, C, or D (or describe what you want to do)
 ### Module 4: Evaluate Data Quality
 
 - **Run automated quality scoring** on each data source
-- Use data quality scorer script from docs/modules/MODULE_3_DATA_QUALITY_SCORING.md
+- Use data quality scorer script from docs/modules/MODULE_4_DATA_QUALITY_SCORING.md
 - Generate quality report with scores (0-100)
 - Calculate completeness, consistency, validity, uniqueness metrics
 - Create HTML dashboard for visualization

@@ -10,7 +10,7 @@ Module 6 focuses on loading ONE data source into Senzing and verifying the resul
 
 ## Prerequisites
 
-- ✅ Module 5 complete (SDK installed and configured)
+- ✅ Module 0 complete (SDK installed and configured)
 - ✅ Database configured (SQLite or PostgreSQL)
 - ✅ At least one transformed data source in `data/transformed/`
 - ✅ Transformation validated with linter
@@ -400,12 +400,12 @@ Module 6 is complete when:
 
 - Verify data actually has duplicates
 - Check matching features are present (names, addresses, etc.)
-- Review data quality scores from Module 3
+- Review data quality scores from Module 4
 
 ## Integration with Other Modules
 
-- **From Module 5:** Uses installed SDK and configured database
-- **From Module 4:** Loads transformed data files
+- **From Module 0:** Uses installed SDK and configured database
+- **From Module 5:** Loads transformed data files
 - **To Module 7:** Single-source loading is foundation for multi-source orchestration
 - **To Module 8:** Loaded data is queried and validated
 

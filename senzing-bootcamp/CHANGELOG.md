@@ -27,8 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Visual diagrams (module flow, data flow)
 - Dedicated feedback workflow steering file
 - Explicit MCP tool usage patterns in documentation
-- `get_stats()` usage clarification in Module 0 docs and demo template
-- File placement enforcement for Module 4 mapping workflow
+- `get_stats()` usage clarification in Module 1 docs and demo template
+- File placement enforcement for Module 5 mapping workflow
 
 ### Architecture
 

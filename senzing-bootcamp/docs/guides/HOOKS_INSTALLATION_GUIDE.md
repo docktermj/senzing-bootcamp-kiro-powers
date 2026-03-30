@@ -43,14 +43,14 @@ Four pre-configured hooks that support the boot camp workflow:
 | Hook                  | Trigger                     | Action                     | Module   |
 |-----------------------|-----------------------------|----------------------------|----------|
 | PEP-8 Check           | Save Python file            | Check PEP-8 compliance     | All      |
-| Data Quality Check    | Save transformation program | Remind to validate quality | Module 3 |
-| Backup Before Load    | Save loading program        | Remind to backup database  | Module 5 |
-| Validate Senzing JSON | Save transformed data       | Validate with lint_record  | Module 3 |
+| Data Quality Check    | Save transformation program | Remind to validate quality | Module 4 |
+| Backup Before Load    | Save loading program        | Remind to backup database  | Module 6 |
+| Validate Senzing JSON | Save transformed data       | Validate with lint_record  | Module 5 |
 
 ## When to Install
 
 **Recommended:**
-Install hooks at the start of Module 3 (Data Mapping)
+Install hooks at the start of Module 5 (Data Mapping)
 
 This gives you automated quality checks as you develop transformation programs.
 
@@ -140,7 +140,7 @@ Increase timeout in hook file:
 # 1. Start boot camp
 cd my-senzing-project
 
-# 2. Install hooks (Module 3)
+# 2. Install hooks (Module 5)
 # First ensure .kiro directory exists
 mkdir -p .kiro/hooks
 

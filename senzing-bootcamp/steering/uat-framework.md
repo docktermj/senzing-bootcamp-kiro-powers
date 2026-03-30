@@ -20,7 +20,7 @@ UAT validates that the entity resolution solution meets business requirements an
 
 ### Phase 1: Planning (Before Module 8)
 
-1. **Define acceptance criteria** from Module 1 business problem
+1. **Define acceptance criteria** from Module 2 business problem
 2. **Identify test scenarios** based on use cases
 3. **Select test data** representative of production
 4. **Assign testers** (business users, not developers)

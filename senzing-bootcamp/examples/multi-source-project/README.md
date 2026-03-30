@@ -10,7 +10,7 @@ This example demonstrates a complete Customer 360 implementation using three dat
 
 **Time to Complete:** 6-8 hours
 **Difficulty:** Intermediate
-**Modules Covered:** 1-8
+**Modules Covered:** 2-8
 
 ## Business Problem
 
@@ -111,7 +111,7 @@ SUP-5003,Bob Johnson,bob.j@email.com,555-0103,Gamma LLC,2023-08-10
 
 ## Step-by-Step Walkthrough
 
-### Module 1: Define Business Problem
+### Module 2: Define Business Problem
 
 Create `docs/business_problem.md`:
 
@@ -143,7 +143,7 @@ This causes:
 - Single customer view available in < 1 second
 ```
 
-### Module 2: Collect Data Sources
+### Module 3: Collect Data Sources
 
 Download sample data:
 
@@ -155,7 +155,7 @@ mkdir -p data/raw data/samples
 # For this example, use provided sample files
 ```
 
-### Module 3: Evaluate Data Quality
+### Module 4: Evaluate Data Quality
 
 Run quality assessment:
 
@@ -190,7 +190,7 @@ crm_quality = assess_quality('data/raw/crm_customers.csv', 'CRM')
 print(f"CRM Quality Score: {sum(crm_quality['completeness'].values()) / len(crm_quality['completeness']):.1f}%")
 ```
 
-### Module 4: Map Data to Senzing Format
+### Module 5: Map Data to Senzing Format
 
 Create transformation programs for each source:
 
@@ -314,7 +314,7 @@ if __name__ == '__main__':
     transform_file('data/raw/support_contacts.csv', 'data/transformed/support_contacts.jsonl')
 ```
 
-### Module 5: Set Up SDK
+### Module 0: Set Up SDK
 
 ```bash
 # Install Senzing (if not already installed)

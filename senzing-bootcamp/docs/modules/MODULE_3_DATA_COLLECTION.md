@@ -1,12 +1,12 @@
-# Module 2: Data Collection Policy
+# Module 3: Data Collection Policy
 
 ## Overview
 
-Module 2 is a new module added between Module 1 (Understand Business Problem) and Module 3 (Verify Data Sources). This module focuses on identifying and collecting the actual data sources that will be used for entity resolution.
+Module 3 is a new module added between Module 2 (Understand Business Problem) and Module 4 (Verify Data Sources). This module focuses on identifying and collecting the actual data sources that will be used for entity resolution.
 
 ## Purpose
 
-After understanding the business problem in Module 1, users need to gather the actual data before they can evaluate or map it. Module 2 provides a structured approach to:
+After understanding the business problem in Module 2, users need to gather the actual data before they can evaluate or map it. Module 3 provides a structured approach to:
 
 1. Identify data sources
 2. Collect or link to data files
@@ -73,20 +73,20 @@ project/
 
 ## Agent Behavior
 
-When a user is in Module 2, the agent should:
+When a user is in Module 3, the agent should:
 
-- Help identify which data sources are needed based on Module 1 business problem
+- Help identify which data sources are needed based on Module 2 business problem
 - Assist with uploading or linking to data files
 - Create the `data/raw/` directory if it doesn't exist
 - Save files to `data/raw/` with appropriate names
 - For large datasets, help create representative samples (1000-10000 records)
 - Create or update `docs/data_source_locations.md` with data source information
 - Verify files are accessible and readable
-- Transition to Module 3 once all data sources are collected
+- Transition to Module 4 once all data sources are collected
 
 ## Validation Gates
 
-Before proceeding to Module 3, verify:
+Before proceeding to Module 4, verify:
 
 - [ ] At least one data source has been identified
 - [ ] Data files are stored in `data/raw/` directory
@@ -96,12 +96,12 @@ Before proceeding to Module 3, verify:
 
 ## Success Indicators
 
-Module 2 is complete when:
+Module 3 is complete when:
 
 - All identified data sources are collected or linked
 - Files are properly stored in `data/raw/`
 - Data source documentation is complete
-- User is ready to evaluate data quality (Module 3)
+- User is ready to evaluate data quality (Module 4)
 
 ## Common Issues
 
@@ -123,9 +123,9 @@ Module 2 is complete when:
 
 ## Integration with Other Modules
 
-- **From Module 1:** Uses business problem definition to identify which data sources are needed
-- **To Module 3:** Provides raw data files for quality evaluation
-- **To Module 4:** Raw data will be transformed into Senzing JSON format
+- **From Module 2:** Uses business problem definition to identify which data sources are needed
+- **To Module 4:** Provides raw data files for quality evaluation
+- **To Module 5:** Raw data will be transformed into Senzing JSON format
 
 ## File Naming Conventions
 
@@ -170,7 +170,7 @@ Example `docs/data_source_locations.md`:
 
 ## Data Lineage Tracking
 
-Module 2 is where data lineage tracking begins. Track where data came from, when it was collected, and who collected it. See `steering/data-lineage.md` for comprehensive lineage tracking guidance.
+Module 3 is where data lineage tracking begins. Track where data came from, when it was collected, and who collected it. See `steering/data-lineage.md` for comprehensive lineage tracking guidance.
 
 ### Quick Lineage Tracking
 
@@ -188,18 +188,18 @@ sources:
     file_location: data/raw/customers_crm.csv
 ```
 
-**Agent behavior**: Create `docs/data_lineage.yaml` when starting Module 2. Add each data source as it's collected. Load `steering/data-lineage.md` if user asks about lineage tracking or compliance.
+**Agent behavior**: Create `docs/data_lineage.yaml` when starting Module 3. Add each data source as it's collected. Load `steering/data-lineage.md` if user asks about lineage tracking or compliance.
 
 ## Related Documentation
 
-- `POWER.md` - Main boot camp guide with Module 2 overview
-- `steering/steering.md` - Detailed Module 2 workflow steps
-- `steering/agent-instructions.md` - Agent behavior for Module 2
+- `POWER.md` - Main boot camp guide with Module 3 overview
+- `steering/steering.md` - Detailed Module 3 workflow steps
+- `steering/agent-instructions.md` - Agent behavior for Module 3
 - `steering/data-lineage.md` - Data lineage tracking (load on demand)
-- `steering/common-pitfalls.md` - Common Module 2 pitfalls
+- `steering/common-pitfalls.md` - Common Module 3 pitfalls
 - `steering/security-privacy.md` - Data privacy considerations
 
 ## Version History
 
 - **v3.0.0** (2026-03-17): Added data lineage tracking enhancement
-- **v2.0.0** (2024-03-17): Module 2 added to boot camp structure
+- **v2.0.0** (2024-03-17): Module 3 added to boot camp structure

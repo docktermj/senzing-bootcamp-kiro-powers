@@ -8,7 +8,7 @@ A minimal Senzing project demonstrating customer deduplication with a single dat
 **Data source:** Single CSV file with 10,000 customer records
 **Database:** SQLite (no setup required)
 **Time to complete:** 2-3 hours
-**Modules covered:** 1-6, 8
+**Modules covered:** 2-6, 8
 
 ## What You'll Learn
 

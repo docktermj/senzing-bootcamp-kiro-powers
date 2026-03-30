@@ -204,7 +204,7 @@ Source Systems → ETL/Transform → Senzing Load → PostgreSQL
 
 ## Module-by-Module Implementation
 
-### Module 1: Business Problem (30 min)
+### Module 2: Define Business Problem
 
 **docs/architecture/system_architecture.md**:
 
@@ -226,11 +226,11 @@ Source Systems → ETL/Transform → Senzing Load → PostgreSQL
 - DR RTO: 4 hours, RPO: 15 minutes
 ```
 
-### Module 2-4: Data Collection, Quality, Mapping (4-6 hours)
+### Module 3-5: Data Collection, Quality, Mapping (4-6 hours)
 
 Implement transformers for each source with comprehensive error handling and logging.
 
-### Module 5: SDK Setup (1 hour)
+### Module 0: SDK Setup (1 hour)
 
 **Production Configuration:**
 
@@ -257,8 +257,6 @@ Implement transformers for each source with comprehensive error handling and log
 ```
 
 ### Module 6-7: Loading with Orchestration (2-3 hours)
-
-**src/load/orchestrator.py** (Production version):
 
 ```python
 #!/usr/bin/env python3

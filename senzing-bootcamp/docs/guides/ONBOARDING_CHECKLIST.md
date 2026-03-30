@@ -156,7 +156,7 @@ my-senzing-project/
 ### ✅ Step 6: Time and Resources
 
 - [ ] **Time Commitment**
-  - 2-3 hours for quick start (Modules 1-6, 8)
+  - 2-3 hours for quick start (Modules 2-6, 8)
   - 10-18 hours for complete boot camp (Modules 0-12)
   - Flexible schedule for iterative work
 
@@ -257,7 +257,7 @@ You're ready to start the boot camp! Tell the agent:
 
 **Don't have data yet?**
 
-- Start with Module 0 (Quick Demo) using sample data
+- Start with Module 1 (Quick Demo) using sample data
 - Prepare your data while learning
 
 **Limited time?**

@@ -1,11 +1,11 @@
-# Module 1: Understand Business Problem
+# Module 2: Understand Business Problem
 
 ## Overview
 
-Module 1 helps you define your entity resolution problem, identify data sources, and create a clear project plan. This foundation ensures the rest of the boot camp is tailored to your specific needs.
+Module 2 helps you define your entity resolution problem, identify data sources, and create a clear project plan. This foundation ensures the rest of the boot camp is tailored to your specific needs.
 
 **Time:** 20-30 minutes
-**Prerequisites:** None (or Module 0 complete if you did the demo)
+**Prerequisites:** None (or Module 1 complete if you did the demo)
 **Output:** Business problem statement document, project directory structure, cost estimate
 
 ## Learning Objectives
@@ -115,7 +115,7 @@ my-senzing-project/
 │   ├── samples/                   # Sample data for testing
 │   └── backups/                   # Database backups
 ├── src/
-│   ├── quickstart_demo/           # Module 0 demo code (optional)
+│   ├── quickstart_demo/           # Module 1 demo code (optional)
 │   ├── transform/                 # Transformation programs
 │   ├── load/                      # Loading programs
 │   ├── query/                     # Query programs
@@ -271,7 +271,7 @@ The agent will update your project README with:
 ### Unrealistic Timeline
 
 ❌ "Complete in 2 hours"
-✅ "Complete Modules 1-6 in 8-10 hours over 2 weeks"
+✅ "Complete Modules 2-6 in 8-10 hours over 2 weeks"
 
 ## Tips for Success
 
@@ -283,16 +283,16 @@ The agent will update your project README with:
 
 ## Next Steps
 
-After completing Module 1:
+After completing Module 2:
 
-- **Proceed to Module 2:** Collect actual data from identified sources
+- **Proceed to Module 3:** Collect actual data from identified sources
 - **Review with stakeholders:** Get buy-in on problem statement and costs
 - **Adjust timeline:** Based on complexity estimate
 
 ## Related Documentation
 
 - `POWER.md` - Boot camp overview
-- `steering/steering.md` - Module 1 detailed workflow
+- `steering/steering.md` - Module 2 detailed workflow
 - `steering/cost-estimation.md` - Cost calculator and ROI guide
 - `docs/guides/DESIGN_PATTERNS.md` - Design pattern details
 
@@ -322,4 +322,4 @@ After completing Module 1:
 
 ## Version History
 
-- **v3.0.0** (2026-03-17): Module 1 documentation created
+- **v3.0.0** (2026-03-17): Module 2 documentation created

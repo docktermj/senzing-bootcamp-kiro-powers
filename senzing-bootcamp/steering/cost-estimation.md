@@ -164,7 +164,7 @@ Total DSRs = 500,000 + 300,000 + 200,000 + 50,000 = 1,050,000 DSRs
 
 **Per DSR**: $0.011/year
 
-## Development Phase Costs (Modules 1-6)
+## Development Phase Costs (Modules 2-6)
 
 - **Time**: 3-6 hours for single data source
 - **Personnel**: 1 developer
@@ -440,7 +440,7 @@ Payback = Total Cost / (Total Benefit / 12) months
 
 ## Agent Behavior
 
-When helping users with cost estimation in Module 1:
+When helping users with cost estimation in Module 2:
 
 1. **Count DSRs** across all identified data sources
 2. **Estimate license tier** based on total DSRs
@@ -454,9 +454,9 @@ When helping users with cost estimation in Module 1:
 
 Load this guide when:
 
-- Starting Module 1 (business problem definition)
+- Starting Module 2 (business problem definition)
 - User asks about costs or pricing
-- Planning production deployment (Module 5 or Module 12)
+- Planning production deployment (Module 0 or Module 12)
 - Justifying project to stakeholders
 - Comparing build vs buy options
 - Preparing business case or ROI analysis

@@ -370,13 +370,13 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 ## Quick Reference: Module Dependencies
 
 ```text
-Module 0 (Set Up SDK) → Requires Module 5 (or SGES data)
+Module 0 (Set Up SDK) → No prerequisites (first module)
 Module 1 (Optional) → No dependencies
 Module 2 → No dependencies
 Module 3 → Requires Module 2
 Module 4 → Requires Module 3
 Module 5 → Requires Module 4 (or skip if SGES-compliant)
-Module 6 → Requires Module 0
+Module 6 → Requires Module 0 and Module 5
 Module 7 → Requires Module 6 (or skip if single source)
 Module 8 → Requires Module 6 or 7
 Module 9 → Requires Module 8 (or skip if not needed)

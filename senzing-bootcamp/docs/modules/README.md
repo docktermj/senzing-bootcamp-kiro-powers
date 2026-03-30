@@ -4,9 +4,9 @@ This directory contains detailed documentation for each boot camp module.
 
 ## Available Modules
 
-### Module 2: Data Collection
+### Module 3: Data Collection
 
-**File**: [MODULE_2_DATA_COLLECTION.md](MODULE_2_DATA_COLLECTION.md)
+**File**: [MODULE_3_DATA_COLLECTION.md](MODULE_3_DATA_COLLECTION.md)
 
 **Purpose**: Collect data from identified sources and store in project structure
 
@@ -18,13 +18,13 @@ This directory contains detailed documentation for each boot camp module.
 - Sample data creation
 - Documentation requirements
 
-**When to Use**: After Module 1 (business problem defined)
+**When to Use**: After Module 2 (business problem defined)
 
 ---
 
-### Module 3: Data Quality Scoring
+### Module 4: Data Quality Scoring
 
-**File**: [MODULE_3_DATA_QUALITY_SCORING.md](MODULE_3_DATA_QUALITY_SCORING.md)
+**File**: [MODULE_4_DATA_QUALITY_SCORING.md](MODULE_4_DATA_QUALITY_SCORING.md)
 
 **Purpose**: Automated quality assessment before mapping
 
@@ -37,7 +37,7 @@ This directory contains detailed documentation for each boot camp module.
 - HTML dashboard generation
 - Quality recommendations
 
-**When to Use**: After Module 2 (data collected)
+**When to Use**: After Module 3 (data collected)
 
 ---
 
@@ -56,7 +56,7 @@ This directory contains detailed documentation for each boot camp module.
 - Statistics generation
 - Backup procedures
 
-**When to Use**: After Module 5 (SDK installed)
+**When to Use**: After Module 0 (SDK installed)
 
 ---
 
@@ -182,7 +182,7 @@ This directory contains detailed documentation for each boot camp module.
 ## Module Dependencies
 
 ```text
-Module 2 → Module 3 → Module 4 → Module 5 → Module 6
+Module 3 → Module 4 → Module 5 → Module 0 → Module 6
                                               ↓
                                          Module 7 (if multiple sources)
                                               ↓
@@ -201,8 +201,8 @@ Module 2 → Module 3 → Module 4 → Module 5 → Module 6
 
 | Module | Time             | Required For           |
 |--------|------------------|------------------------|
-| 2      | 10-15 min/source | All projects           |
-| 3      | 15-20 min/source | All projects           |
+| 3      | 10-15 min/source | All projects           |
+| 4      | 15-20 min/source | All projects           |
 | 6      | 30 min/source    | All projects           |
 | 7      | 1-2 hours        | Multi-source projects  |
 | 8      | 1-2 hours        | All projects           |

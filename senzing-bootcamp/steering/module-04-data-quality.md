@@ -4,7 +4,7 @@ inclusion: manual
 
 # Module 4: Verify Data Sources Against SGES
 
-## Workflow: Verify Data Sources Against SGES (Module 3)
+## Workflow: Verify Data Sources Against SGES (Module 4)
 
 **Time**: 10 minutes per data source
 
@@ -33,7 +33,7 @@ inclusion: manual
    - Check if `DATA_SOURCE` and `RECORD_ID` are present or can be derived
 
 5. **Categorize each data source**:
-   - **SGES-compliant**: Data already uses standard Senzing attribute names and structure. Can proceed directly to Module 4 (SDK setup) and Module 5 (loading).
+   - **SGES-compliant**: Data already uses standard Senzing attribute names and structure. Can proceed directly to Module 0 (SDK setup) and Module 6 (loading).
    - **Needs mapping**: Data uses different field names or structures. Proceed to Module 3 (data mapping).
    - **Needs enrichment**: Data is missing critical attributes. Discuss with user whether additional data sources can provide missing information.
 
@@ -75,7 +75,7 @@ inclusion: manual
    2. [Data source] - [Reason for priority]
    ```
 
-7. **Proceed to mapping**: For each data source that needs mapping, transition to the "Data Mapping End-to-End" workflow (Module 4).
+7. **Proceed to mapping**: For each data source that needs mapping, transition to the "Data Mapping End-to-End" workflow (Module 5).
 
 **Success indicator**: ✅ All data sources categorized + `docs/data_source_evaluation.md` created
 

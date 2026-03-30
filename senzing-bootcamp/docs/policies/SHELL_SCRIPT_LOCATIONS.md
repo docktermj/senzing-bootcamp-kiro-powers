@@ -213,7 +213,7 @@ find src/ -name "*.sh" -type f
 
 - **Python Requirements Policy**: See `PYTHON_REQUIREMENTS_POLICY.md`
 - **Code Organization**: See `NEW_MODULE_STRUCTURE.md`
-- **Module 0 Code Location**: See `MODULE_0_CODE_LOCATION.md`
+- **Module 0 Code Location**: See `MODULE_1_CODE_LOCATION.md`
 
 ## Version History
 

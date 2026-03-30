@@ -6,7 +6,7 @@ inclusion: manual
 
 Learn from common mistakes to save time and frustration.
 
-## Module 0: Quick Demo
+## Module 1: Quick Demo
 
 ### Pitfall: Using `get_stats()` for Record Counts
 
@@ -14,7 +14,7 @@ Learn from common mistakes to save time and frustration.
 **Problem**: `get_stats()` tracks per-process workload statistics, not repository totals. It resets after each call.
 **Solution**: Track record counts during loading with a simple counter. Use `get_stats()` only for monitoring ongoing operations (Module 9).
 
-## Module 1: Business Problem
+## Module 2: Business Problem
 
 ### Pitfall: Problem Too Vague
 
@@ -39,7 +39,7 @@ Learn from common mistakes to save time and frustration.
 **Problem**: Entity resolution is powerful but not magic
 **Solution**: Set clear expectations about what ER can and cannot do
 
-## Module 2: Identify and Collect Data Sources
+## Module 3: Identify and Collect Data Sources
 
 ### Pitfall: Not Documenting Data Locations
 
@@ -59,7 +59,7 @@ Learn from common mistakes to save time and frustration.
 **Problem**: Slow, unnecessary for evaluation
 **Solution**: Create representative samples (1000-10000 records)
 
-## Module 3: Evaluate Data Quality
+## Module 4: Evaluate Data Quality
 
 ### Pitfall: Insufficient Sample Data
 
@@ -77,7 +77,7 @@ Learn from common mistakes to save time and frustration.
 
 **Symptom**: "We'll fix the data later"
 **Problem**: Poor quality = poor matching results
-**Solution**: Address quality issues during mapping (Module 4)
+**Solution**: Address quality issues during mapping (Module 5)
 
 ### Pitfall: Accepting Low Quality Scores
 
@@ -85,7 +85,7 @@ Learn from common mistakes to save time and frustration.
 **Problem**: Poor matching results, wasted effort
 **Solution**: Improve data quality before mapping or adjust expectations
 
-## Module 4: Map Your Data
+## Module 5: Map Your Data
 
 ### Pitfall: Hand-Coding Attribute Names
 
@@ -141,7 +141,7 @@ Learn from common mistakes to save time and frustration.
 
 If files land in the root, move them before proceeding.
 
-## Module 5: Set Up SDK
+## Module 0: Set Up SDK
 
 ### Pitfall: Installing Over Existing Installation
 
@@ -210,7 +210,7 @@ If already installed, verify version and use existing installation.
 
 **Symptom**: Records load but queries don't work
 **Problem**: DATA_SOURCE doesn't match registered name
-**Solution**: Verify DATA_SOURCE matches Module 5 configuration
+**Solution**: Verify DATA_SOURCE matches Module 0 configuration
 
 ### Pitfall: Not Monitoring Progress
 

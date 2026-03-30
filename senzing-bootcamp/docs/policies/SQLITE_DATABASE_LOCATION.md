@@ -122,8 +122,8 @@ config = {
 
 This policy applies to:
 
-- ✅ **Module 0**: Quick Demo (if using SQLite)
-- ✅ **Module 5**: SDK Setup (SQLite option)
+- ✅ **Module 1**: Quick Demo (if using SQLite)
+- ✅ **Module 0**: SDK Setup (SQLite option)
 - ✅ **Module 6**: Single Source Loading (SQLite)
 - ✅ **Module 7**: Multi-Source Orchestration (SQLite)
 - ✅ **Module 8**: Query and Validation (SQLite)
@@ -229,7 +229,7 @@ Initializing Senzing engine with SQLite database...
 ## Related Policies
 
 - **FILE_STORAGE_POLICY.md** - Where to store all project files
-- **MODULE_0_CODE_LOCATION.md** - Module 0 code location
+- **MODULE_1_CODE_LOCATION.md** - Module 0 code location
 
 ## Version History
 

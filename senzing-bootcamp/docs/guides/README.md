@@ -216,8 +216,9 @@ docs/
 │   ├── module-flow.md        # Module diagrams
 │   └── data-flow.md          # Data pipeline diagrams
 ├── modules/                   # Module documentation
-│   ├── MODULE_0_QUICK_DEMO.md
-│   ├── MODULE_1_BUSINESS_PROBLEM.md
+│   ├── MODULE_0_SDK_SETUP.md
+│   ├── MODULE_1_QUICK_DEMO.md
+│   ├── MODULE_2_BUSINESS_PROBLEM.md
 │   └── ... (Modules 2-12)
 ├── policies/                  # Policy documents
 │   ├── FILE_STORAGE_POLICY.md
@@ -297,8 +298,8 @@ Found an issue or have a suggestion?
 ## Quick Links
 
 - [Boot Camp Overview](../../POWER.md)
-- [Module 0: Quick Demo](../modules/MODULE_0_QUICK_DEMO.md)
-- [Module 1: Business Problem](../modules/MODULE_1_BUSINESS_PROBLEM.md)
+- [Module 1: Quick Demo](../modules/MODULE_1_QUICK_DEMO.md)
+- [Module 2: Business Problem](../modules/MODULE_2_BUSINESS_PROBLEM.md)
 - [File Storage Policy](../policies/FILE_STORAGE_POLICY.md)
 - [PEP-8 Compliance](../policies/PEP8_COMPLIANCE.md)
 

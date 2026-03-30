@@ -19,7 +19,7 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 **New users:** Say "start the boot camp" to begin. Choose your path:
 
 - A) Quick Demo (10 min) — Module 1
-- B) Fast Track (30 min) — Modules 5-6 (for users with SGES-compliant data)
+- B) Fast Track (30 min) — Modules 0, 6 (for users with SGES-compliant data)
 - C) Complete Beginner (2-3 hrs) — Modules 2-6, 8
 - D) Full Production (10-18 hrs) — All Modules 0-12
 
@@ -159,7 +159,7 @@ mkdir -p .kiro/hooks
 cp senzing-bootcamp/hooks/*.kiro.hook .kiro/hooks/
 ```
 
-Available: `pep8-check`, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`.
+Available: `pep8-check`, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `commonmark-pre-commit`, `validate-commonmark-on-save`.
 
 ## Project Directory Structure
 

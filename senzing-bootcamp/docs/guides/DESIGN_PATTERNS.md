@@ -6,7 +6,7 @@ The Senzing Boot Camp includes a gallery of common entity resolution design patt
 
 ## Current Implementation (v1.0)
 
-The design pattern gallery is presented in Module 1 when users are asked:
+The design pattern gallery is presented in Module 2 when users are asked:
 
 > "Would you like to see examples of common business problems that entity resolution can solve? I can show you a gallery of entity resolution design patterns with real-world use cases."
 
@@ -33,13 +33,13 @@ Each pattern includes:
 
 ## How It Works
 
-1. User is offered the gallery at the start of Module 1
+1. User is offered the gallery at the start of Module 2
 2. If they view it, they can browse patterns and identify matches
 3. If they select a pattern, it becomes a template for their problem definition:
    - Pre-fills data source types
    - Suggests matching criteria
    - Provides success metrics
-   - Guides the rest of Module 1
+   - Guides the rest of Module 2
 4. Problem statement includes reference to the selected pattern
 
 ## Future Enhancements (Planned)
@@ -113,10 +113,10 @@ To add a new pattern to the gallery:
 
 When a user selects a pattern, it influences:
 
-1. **Module 1**: Problem statement pre-filled with pattern details
-2. **Module 2**: Data source evaluation guided by pattern's typical sources
-3. **Module 3**: Mapping priorities based on pattern's key matching criteria
-4. **Module 6**: Query programs aligned with pattern's goals
+1. **Module 2**: Problem statement pre-filled with pattern details
+2. **Module 3**: Data source evaluation guided by pattern's typical sources
+3. **Module 5**: Mapping priorities based on pattern's key matching criteria
+4. **Module 8**: Query programs aligned with pattern's goals
 
 ## Usage Statistics (To Be Tracked)
 

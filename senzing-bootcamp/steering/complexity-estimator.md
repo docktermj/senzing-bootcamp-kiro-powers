@@ -112,7 +112,7 @@ Add up the points:
 
 ## Detailed Estimator
 
-### Module 4: Data Mapping Time Estimate
+### Module 5: Data Mapping Time Estimate
 
 ```text
 Base Time: 1 hour

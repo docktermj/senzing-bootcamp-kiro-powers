@@ -18,10 +18,10 @@ The `requirements.txt` file:
 
 Create or update `requirements.txt` when generating Python code in:
 
-- **Module 0**: Quick Demo scripts
-- **Module 4**: Data transformation programs
+- **Module 1**: Quick Demo scripts
+- **Module 5**: Data transformation programs
 - **Module 6**: Data loading programs
-- **Module 7**: Query programs
+- **Module 8**: Query programs
 - **Any utility scripts**: In `src/utils/`
 
 ## File Location
@@ -151,7 +151,7 @@ pytest>=7.4.0
 pytest-cov>=4.1.0
 ```
 
-### Module 0 Quick Demo
+### Module 1 Quick Demo
 
 ```text
 # Senzing SDK
@@ -245,17 +245,17 @@ pandas==2.0.3
 
 ## Integration with Other Modules
 
-### Module 0: Quick Demo
+### Module 1: Quick Demo
 
 - Create `requirements.txt` with minimal dependencies
 - Include Senzing SDK and JSON processing
 
-### Module 4: Data Mapping
+### Module 5: Data Mapping
 
 - Update `requirements.txt` with data processing libraries
 - Add pandas, orjson, jsonschema as needed
 
-### Module 5: SDK Setup
+### Module 0: SDK Setup
 
 - Verify Senzing SDK version in `requirements.txt` matches installed version
 - Update if needed
@@ -265,7 +265,7 @@ pandas==2.0.3
 - Update `requirements.txt` with database drivers if needed
 - Add psycopg2-binary for PostgreSQL
 
-### Module 7: Query Results
+### Module 8: Query Results
 
 - Update `requirements.txt` with any additional libraries for result formatting
 - Add requests if building API integration
@@ -333,7 +333,7 @@ Before finalizing `requirements.txt`:
 - `POWER.md` - Project structure includes requirements.txt
 - `steering/environment-setup.md` - Environment setup guidance
 - `steering/agent-instructions.md` - Agent behavior for Python projects
-- `MODULE_0_CODE_LOCATION.md` - Module 0 requirements
+- `MODULE_1_CODE_LOCATION.md` - Module 1 requirements
 
 ## Version History
 

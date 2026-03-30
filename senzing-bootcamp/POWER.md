@@ -60,7 +60,6 @@ Load these on-demand when needed:
 - `design-patterns.md` — 10 entity resolution patterns with use cases
 - `module-prerequisites.md` — Prerequisites and dependencies for each module
 - `complexity-estimator.md` — Time estimation based on data characteristics
-- `cost-estimation.md` — Pricing, ROI, deployment costs
 
 **Project Setup:**
 
@@ -70,7 +69,6 @@ Load these on-demand when needed:
 **Advanced Topics:**
 
 - `data-lineage.md` — Track data transformations and lineage
-- `incremental-loading.md` — Delta/CDC loading patterns
 - `uat-framework.md` — User acceptance testing framework
 
 **Troubleshooting:**
@@ -107,7 +105,7 @@ Always call `get_capabilities` first when starting a session.
 **Core tools:**
 
 - `get_capabilities` — Discover all tools and workflows
-- `mapping_workflow` — Interactive 7-step data mapping to Senzing JSON
+- `mapping_workflow` — Interactive 8-step data mapping to Senzing JSON
 - `generate_scaffold` — Generate SDK code (Python, Java, C#, Rust, TypeScript)
 - `get_sample_data` — Download sample datasets (Las Vegas, London, Moscow)
 - `search_docs` — Search indexed Senzing documentation
@@ -117,6 +115,8 @@ Always call `get_capabilities` first when starting a session.
 - `sdk_guide` — Platform-specific SDK installation and setup
 - `find_examples` — Working code from 27 Senzing GitHub repositories
 - `get_sdk_reference` — SDK method signatures and flags
+- `reporting_guide` — Reporting, visualization, and dashboard guidance
+- `download_resource` — Download workflow resources (entity spec, analyzer script)
 - `submit_feedback` — Report issues or suggestions
 
 **Key rules:**

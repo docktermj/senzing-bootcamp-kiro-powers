@@ -228,7 +228,7 @@ Expected output:
 
 ## Incremental Loading
 
-For production systems, you'll need to load only new or changed records instead of reloading everything. See `steering/incremental-loading.md` for detailed strategies.
+For production systems, you'll need to load only new or changed records instead of reloading everything. Use MCP `search_docs` with query "incremental loading" for current strategies.
 
 ### Quick Overview
 
@@ -255,7 +255,7 @@ for record in read_records(file):
 - Full reload: Small datasets (< 100K), infrequent updates
 - Incremental: Large datasets, frequent updates, production systems
 
-**Agent behavior**: For Module 6, generate full reload scripts. Mention incremental loading as a future enhancement. Load `steering/incremental-loading.md` if user asks about incremental loading or has frequently updated data.
+**Agent behavior**: For Module 6, generate full reload scripts. Mention incremental loading as a future enhancement. Use MCP `search_docs` if user asks about incremental loading.
 
 ## Error Handling
 
@@ -445,7 +445,7 @@ When a user is in Module 6:
 9. **Document results:** Create loading statistics document
 10. **Validate success:** Verify loading gates before proceeding
 
-**If user asks about incremental loading:** Load `steering/incremental-loading.md` and explain strategies.
+**If user asks about incremental loading:** Use MCP `search_docs` with query "incremental loading" and explain strategies.
 
 **If user has multiple sources:** After first source succeeds, offer to continue with Module 6 for additional sources, or proceed to Module 7 for orchestration.
 
@@ -454,7 +454,7 @@ When a user is in Module 6:
 - `POWER.md` - Module 6 overview
 - `steering/steering.md` - Detailed Module 6 workflow
 - `steering/agent-instructions.md` - Agent behavior for Module 6
-- `steering/incremental-loading.md` - Incremental loading strategies (load on demand)
+- Use MCP: `search_docs(query="incremental loading")` for incremental loading strategies
 - Use MCP: `search_docs(query="performance optimization")` for performance optimization
 - Use MCP: `search_docs(query="backup and recovery")` for backup and recovery
 

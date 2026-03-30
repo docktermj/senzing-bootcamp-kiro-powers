@@ -339,7 +339,7 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 - **FAQ**: `docs/guides/FAQ.md` - Common questions about licensing
 - **Module 0**: `docs/modules/MODULE_0_SDK_SETUP.md` - SDK installation
 - **File Storage Policy**: `docs/policies/FILE_STORAGE_POLICY.md` - Where to store files
-- **Cost Estimation**: `steering/cost-estimation.md` - Pricing information
+- **Cost Estimation**: Use MCP `search_docs` with query "pricing" for current information
 
 ---
 

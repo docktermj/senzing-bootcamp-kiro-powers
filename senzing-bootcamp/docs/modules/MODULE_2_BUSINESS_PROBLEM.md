@@ -293,7 +293,7 @@ After completing Module 2:
 
 - `POWER.md` - Boot camp overview
 - `steering/steering.md` - Module 2 detailed workflow
-- `steering/cost-estimation.md` - Cost calculator and ROI guide
+- Use MCP `search_docs` with query "pricing" for current Senzing pricing
 - `docs/guides/DESIGN_PATTERNS.md` - Design pattern details
 
 ## Troubleshooting

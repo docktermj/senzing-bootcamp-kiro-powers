@@ -5,26 +5,6 @@ All notable changes to the Senzing Boot Camp power will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0] - 2026-03-30
-
-### Improved
-
-- Reduced `agent-instructions.md` (always-loaded) from 734 to ~150 lines by moving module-specific behaviors into their respective module steering files and removing content duplicated in policies
-- Removed content duplication: directory creation script lives only in `project-structure.md`, file placement rules live only in `FILE_STORAGE_POLICY.md`, module behaviors live only in per-module steering files
-- Fixed `security-privacy.md` contradicting itself — was `inclusion: always` but had a "When to Load" section listing manual triggers. Removed the contradictory section
-- Fixed Path B inconsistency: POWER.md said "Modules 0, 6" while agent-instructions said "Modules 5-6". Aligned to "Modules 5-6" everywhere
-- Tightened POWER.md description from 2 sentences to 1 (removed redundant second sentence)
-- Added boot camp completion and feedback reminder to Module 12 steering file
-- Added feedback mechanism mention to Module 2 steering file
-
-## [0.1.1] - 2026-03-30
-
-### Improved
-
-- Module 3: Agent now proactively mentions https://github.com/docktermj/senzing-bootcamp-free-data when users need free data sources for the boot camp
-- Global: Elevated "all files must stay in the project directory" to a core principle in agent-instructions — applies to all modules, not just Module 5. Covers `/tmp`, `~/Downloads`, and all system directories.
-- Project setup: Added `.history/` to default `.gitignore` template to prevent IDE history artifacts from cluttering git commits
-
 ## [0.1.0] - 2026-03-27
 
 ### Added
@@ -48,6 +28,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Explicit MCP tool usage patterns in documentation
 - `get_stats()` usage clarification in Module 1 docs and demo template
 - File placement enforcement for Module 5 mapping workflow
+- Module 3: Agent proactively mentions [senzing-bootcamp-free-data](https://github.com/docktermj/senzing-bootcamp-free-data) when users need free data sources
+- Elevated "all files must stay in the project directory" to a core principle in agent-instructions
+- Added `.history/` to default `.gitignore` template
+- Reduced `agent-instructions.md` from 734 to ~150 lines by moving module-specific behaviors into per-module steering files
+- Removed content duplication across steering files and policies
+- Fixed `security-privacy.md` contradicting itself with a "When to Load" section on an always-loaded file
+- Fixed Path B inconsistency: aligned to "Modules 5-6" everywhere
+- Tightened POWER.md description from 2 sentences to 1
+- Added boot camp completion and feedback reminder to Module 12 steering file
+- Added feedback mechanism mention to Module 2 steering file
 
 ### Architecture
 

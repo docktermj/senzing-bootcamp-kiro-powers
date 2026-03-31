@@ -1,5 +1,7 @@
 # Multi-Source Project Example: Customer 360
 
+> **Blueprint Project:** This directory contains a detailed README describing the project architecture, code patterns, and expected results. The actual source code files referenced below are generated during the boot camp using MCP tools (`generate_scaffold`, `mapping_workflow`). Use this README as an architectural reference when building your own project.
+
 ## Overview
 
 This example demonstrates a complete Customer 360 implementation using three data sources:

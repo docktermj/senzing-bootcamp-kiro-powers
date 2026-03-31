@@ -1,5 +1,7 @@
 # Production Deployment Example: Enterprise Customer MDM
 
+> **Blueprint Project:** This directory contains a detailed README describing the project architecture, code patterns, and expected results. The actual source code files referenced below are generated during the boot camp using MCP tools (`generate_scaffold`, `mapping_workflow`). Use this README as an architectural reference when building your own project.
+
 ## Overview
 
 This example demonstrates a complete production-ready deployment of Senzing for enterprise Customer Master Data Management (MDM). It covers all 13 modules (0-12) with production-grade implementations.

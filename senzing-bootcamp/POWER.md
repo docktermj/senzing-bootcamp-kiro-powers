@@ -2,7 +2,7 @@
 name: "senzing-bootcamp"
 displayName: "Senzing Boot Camp"
 description: "Guided 13-module boot camp for learning Senzing entity resolution, from first demo to production deployment."
-keywords: ["senzing", "bootcamp", "training", "tutorial", "learning-path", "entity-resolution", "guided-workflow"]
+keywords: ["senzing", "bootcamp", "entity-resolution", "senzing-bootcamp", "learning-path"]
 author: "Senzing"
 ---
 
@@ -158,7 +158,7 @@ mkdir -p .kiro/hooks
 cp senzing-bootcamp/hooks/*.kiro.hook .kiro/hooks/
 ```
 
-Available: `pep8-check`, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `commonmark-pre-commit`, `validate-commonmark-on-save`.
+Available: `pep8-check`, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`.
 
 ## Project Directory Structure
 

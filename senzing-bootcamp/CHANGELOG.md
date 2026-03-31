@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Progress tracking system (`scripts/status.sh`)
 - PEP-8 compliance checking via hooks
 - Live demo for Module 1 that runs real Senzing SDK
-- Feedback collection workflow
+- Feedback collection workflow with dual submission (local file + MCP server)
 - Prerequisite checker (`scripts/check_prerequisites.sh`)
 - Hook auto-installer (`scripts/install_hooks.sh`)
 - Example project cloner (`scripts/clone_example.sh`)
@@ -30,20 +30,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - File placement enforcement for Module 5 mapping workflow
 - Module 3: Agent proactively mentions [senzing-bootcamp-free-data](https://github.com/docktermj/senzing-bootcamp-free-data) when users need free data sources
 - Elevated "all files must stay in the project directory" to a core principle in agent-instructions
-- Added `.history/` to default `.gitignore` template
+- `.history/` in default `.gitignore` template
 - Reduced `agent-instructions.md` from 734 to ~150 lines by moving module-specific behaviors into per-module steering files
 - Removed content duplication across steering files and policies
-- Fixed `security-privacy.md` contradicting itself with a "When to Load" section on an always-loaded file
-- Fixed Path B inconsistency: aligned to "Modules 5-6" everywhere
+- Boot camp completion and feedback reminder in Module 12 steering file
+- Feedback mechanism mention in Module 2 steering file
+- MCP caching policy: agents must make fresh MCP calls on every Senzing question, even repeated ones within the same session
+- "Repeated Questions" section in `SENZING_INFORMATION_POLICY.md`
+- Apache 2.0 LICENSE file
+- Blueprint notices on all example project READMEs
+
+### Fixed
+
+- `security-privacy.md` contradicting itself with a "When to Load" section on an always-loaded file
+- Path B inconsistency: aligned to "Modules 5-6" everywhere
+- Module 0 prerequisites incorrectly required Module 5 completion
+- Duplicate numbering in `agent-instructions.md` Core Principles
+- `backup-before-load.kiro.hook` referenced non-existent `backup_database.sh`
+- Path A time estimate in `QUICK_START.md` now clarifies Module 0 prerequisite
+- Complexity estimator "When to Load" referenced wrong module numbers
+
+### Changed
+
 - Tightened POWER.md description from 2 sentences to 1
-- Added boot camp completion and feedback reminder to Module 12 steering file
-- Added feedback mechanism mention to Module 2 steering file
+- Consolidated three CommonMark validation hooks into one (`commonmark-validation.kiro.hook`)
+- Narrowed POWER.md keywords to avoid false-positive activations
 
 ### Architecture
 
 - POWER.md kept concise (~190 lines) with details in steering files
 - `agent-instructions.md` (always loaded) for behavioral rules
-- `steering.md` (manual inclusion) for detailed module workflows
+- Per-module steering files (manual inclusion) for detailed module workflows
 - 19 steering files organized by category
 - Separate development repository for internal docs
 

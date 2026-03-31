@@ -1,5 +1,7 @@
 # Simple Single Source Example
 
+> **Blueprint Project:** This directory contains a detailed README describing the project architecture, code patterns, and expected results. The actual source code files referenced below are generated during the boot camp using MCP tools (`generate_scaffold`, `mapping_workflow`). Use this README as an architectural reference when building your own project.
+
 A minimal Senzing project demonstrating customer deduplication with a single data source.
 
 ## Overview

@@ -8,6 +8,6 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "A loading program was modified. Before running this in production, remind the user to backup the database using: ./scripts/backup_database.sh"
+    "prompt": "A loading program was modified. Before running this in production, remind the user to backup the database using: ./scripts/backup_project.sh"
   }
 }

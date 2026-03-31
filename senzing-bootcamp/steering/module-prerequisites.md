@@ -10,8 +10,7 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 
 **Prerequisites**:
 
-- ✅ Module 5 complete (all sources mapped) OR
-- ✅ All sources are SGES-compliant
+- No module prerequisites (this is the first technical module)
 - ✅ Platform/environment ready
 
 **Recommended**:
@@ -19,13 +18,13 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 - Admin/sudo access for installation
 - 10GB free disk space
 - Internet connection for downloads
+- Python 3.8+
 
 **Ready to proceed when**:
 
-- You have transformed data ready to load OR
-- You have SGES-compliant data ready to load
 - You have installation permissions
 - You've chosen database type (SQLite or PostgreSQL)
+- You have sufficient disk space
 
 **Common blockers**:
 
@@ -35,7 +34,7 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 
 **Skip if**:
 
-- Senzing is already installed → Verify with `G2ConfigMgr.py` or similar
+- Senzing is already installed → Verify with `python -c "import senzing; print(senzing.__version__)"`
 
 ## Module 1: Quick Demo (Optional)
 

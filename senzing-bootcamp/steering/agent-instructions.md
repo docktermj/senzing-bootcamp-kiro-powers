@@ -32,7 +32,7 @@ After creating the directory structure (or confirming it exists), inform the use
 6. **Track progress** through modules and remind users periodically
 7. **Validate before proceeding** — each module has success criteria
 8. **Ask questions one at a time** — wait for each response before asking the next
-8. **ALL files MUST stay in the project directory** — never use `/tmp`, `~/Downloads`, or any system directory. See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy:
+9. **ALL files MUST stay in the project directory** — never use `/tmp`, `~/Downloads`, or any system directory. See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy:
    - Source code → `src/`
    - Shell scripts → `scripts/`
    - Documentation → `docs/`
@@ -41,7 +41,7 @@ After creating the directory structure (or confirming it exists), inform the use
    - Configuration → `config/`
    - Temporary working files → `data/temp/`
    - When MCP tools generate files outside the project, immediately relocate them
-9. **All Python code must be PEP-8 compliant** — max 100 char lines, 4-space indentation, proper docstrings, organized imports. See `docs/policies/PEP8_COMPLIANCE.md`
+10. **All Python code must be PEP-8 compliant** — max 100 char lines, 4-space indentation, proper docstrings, organized imports. See `docs/policies/PEP8_COMPLIANCE.md`
 
 ## Path Selection
 

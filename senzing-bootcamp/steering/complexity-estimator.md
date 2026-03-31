@@ -344,9 +344,9 @@ Add extra time for these risk factors:
 
 Load this steering file when:
 
-- Starting Module 1 (planning)
+- Starting Module 2 or 3 (planning data sources)
 - User asks "how long will this take?"
-- Evaluating multiple data sources
+- Evaluating multiple data sources (Modules 3-6)
 - Prioritizing which sources to map first
 - Setting project timelines
 - Managing stakeholder expectations

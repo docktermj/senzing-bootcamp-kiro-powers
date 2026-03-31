@@ -36,6 +36,12 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 **Use case**: Quick project backups via natural language commands
 **Example prompts**: "backup my project", "create a backup", "make a backup"
 
+### 6. CommonMark Validation (`commonmark-validation.kiro.hook`)
+
+**Trigger**: When Markdown files are edited
+**Action**: Checks for CommonMark compliance and auto-fixes issues
+**Use case**: Ensures consistent Markdown formatting across all documentation
+
 ## Installation
 
 ### Option 1: Use Install Script (Recommended)

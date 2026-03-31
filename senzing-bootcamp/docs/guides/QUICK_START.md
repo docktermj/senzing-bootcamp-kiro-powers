@@ -8,6 +8,8 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 **Best for:** First-time users, seeing entity resolution in action
 
+**Prerequisite:** Module 0 (SDK Setup) must be completed first (30-60 min one-time setup).
+
 ```bash
 # 1. Ask the agent
 "Let's run the quick demo with the Las Vegas dataset"
@@ -102,7 +104,8 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 **"See a demo first"** → Path A (10-Minute Demo)
 
-- Start with Module 1 (after SDK setup in Module 0)
+- Requires Module 0 (SDK Setup) first — 30-60 min one-time setup
+- Then Module 1 demo itself takes 10-15 min
 
 **"Get results fast"** → Path B (30-Minute Fast Track)
 

@@ -55,6 +55,7 @@ When running any module in the Senzing Boot Camp, the agent must never state Sen
 - Explain Senzing error codes without using `explain_error_code`
 - Claim how Senzing features work without MCP tool confirmation
 - Provide Senzing configuration values from training data
+- Reuse a previous MCP response from earlier in the conversation — always make a fresh MCP call, even for repeated questions
 
 ## Examples
 
@@ -77,11 +78,22 @@ Agent: "Senzing uses ADDR_FULL, ADDR_LINE1, ADDR_CITY..."
 → ❌ Stated from training data without MCP verification
 ```
 
+## Repeated Questions
+
+If the user asks the same Senzing question more than once in a session, the agent **must** call the MCP tool again. Do not answer from a previous MCP response stored in conversation history. Reasons:
+
+- Senzing configuration or data may have changed between asks
+- The user may be testing whether the agent gives a consistent, verified answer
+- Skipping verification undermines trust in the boot camp workflow
+
+This applies even if the question is worded identically and was answered moments ago.
+
 ## Enforcement
 
 - This policy is referenced in `steering/agent-instructions.md`
 - Applies across all modules without exception
 - Agents should proactively use MCP tools rather than waiting to be corrected
+- Agents must not cache or reuse previous MCP responses within a session
 
 ## Version History
 

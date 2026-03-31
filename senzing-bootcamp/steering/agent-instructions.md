@@ -102,6 +102,8 @@ Load additional steering files as needed:
 
 **Never**: state Senzing facts from training data, hand-code Senzing JSON attribute names, guess SDK method names, use outdated patterns from training data, skip anti-pattern checks, or proceed without validation. When asked any Senzing-specific question, always use MCP tools to get the authoritative answer.
 
+**No caching of Senzing facts**: Even if the same Senzing question was asked earlier in the session and you already retrieved the answer via MCP, you must call the MCP tool again on every subsequent ask. Do not reuse previous MCP responses from conversation history. MCP state or data may have changed, and the user expects verified answers every time.
+
 ## State Management
 
 For `mapping_workflow`:

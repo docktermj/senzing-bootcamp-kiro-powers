@@ -104,6 +104,12 @@ Load additional steering files as needed:
 
 **No caching of Senzing facts**: Even if the same Senzing question was asked earlier in the session and you already retrieved the answer via MCP, you must call the MCP tool again on every subsequent ask. Do not reuse previous MCP responses from conversation history. MCP state or data may have changed, and the user expects verified answers every time.
 
+**No fabrication when MCP has no answer**: If you query the MCP server and it does not return a definitive answer for a Senzing-specific question, you must NOT infer, guess, or construct an answer from general knowledge. Instead:
+
+1. Tell the user: "I wasn't able to find definitive documentation for that."
+2. Suggest they check [docs.senzing.com](https://docs.senzing.com) or contact [support@senzing.com](mailto:support@senzing.com) for the authoritative answer.
+3. Never present an inferred answer as if it were sourced from Senzing documentation.
+
 ## State Management
 
 For `mapping_workflow`:

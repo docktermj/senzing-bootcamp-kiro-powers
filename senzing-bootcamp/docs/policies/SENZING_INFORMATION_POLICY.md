@@ -56,6 +56,21 @@ When running any module in the Senzing Boot Camp, the agent must never state Sen
 - Claim how Senzing features work without MCP tool confirmation
 - Provide Senzing configuration values from training data
 - Reuse a previous MCP response from earlier in the conversation — always make a fresh MCP call, even for repeated questions
+- Present inferred or guessed answers as authoritative when MCP returns no definitive result
+
+## No Fabrication Rule
+
+If the MCP server does not return a definitive answer for a Senzing-specific question, the agent **must not** infer, guess, or construct an answer from general knowledge or pattern matching. This includes:
+
+- Inferring the meaning of Senzing codes, acronyms, or terms from their letters (e.g., guessing "SNAME means Same Name")
+- Combining partial MCP results with general knowledge to produce an answer that sounds authoritative
+- Presenting any non-MCP-sourced information as if it came from Senzing documentation
+
+**Instead, the agent must:**
+
+1. Tell the user clearly: "I wasn't able to find definitive documentation for that in the Senzing knowledge base."
+2. Suggest checking [docs.senzing.com](https://docs.senzing.com) or contacting [support@senzing.com](mailto:support@senzing.com).
+3. If the agent has a reasonable guess, it may share it only if explicitly prefaced with: "This is not from Senzing documentation — it's my best guess, and I recommend verifying with Senzing support."
 
 ## Examples
 

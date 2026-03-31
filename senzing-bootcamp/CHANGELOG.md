@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "Repeated Questions" section in `SENZING_INFORMATION_POLICY.md`
 - Apache 2.0 LICENSE file
 - Blueprint notices on all example project READMEs
+- No-fabrication rule: agent must not present inferred answers as authoritative when MCP returns no definitive result
 
 ### Fixed
 

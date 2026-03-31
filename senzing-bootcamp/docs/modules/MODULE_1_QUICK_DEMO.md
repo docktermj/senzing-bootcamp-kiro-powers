@@ -73,7 +73,6 @@ The generated demo script will:
 7. **Display example entities** with all matching records side-by-side
 8. **Provide before/after comparison** (e.g., "5 records → 3 entities")
 
-
 ## Example Output
 
 ```text

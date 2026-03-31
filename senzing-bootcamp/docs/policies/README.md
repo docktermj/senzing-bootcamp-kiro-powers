@@ -114,10 +114,30 @@ This directory contains policy documents that define coding standards and organi
 
 ---
 
+### Senzing Information Policy
+
+**File**: [SENZING_INFORMATION_POLICY.md](SENZING_INFORMATION_POLICY.md)
+
+**Purpose**: Ensure all Senzing facts come from the MCP server, never from training data
+
+**Key Rules**:
+
+- **Never state Senzing facts from training data**
+- Always use MCP tools (`search_docs`, `mapping_workflow`, `get_sdk_reference`, etc.) for Senzing-specific information
+- Covers attribute names, SDK methods, JSON formats, error codes, configuration, and all other Senzing specifics
+- Say "Let me look that up" and call the appropriate MCP tool
+
+**Why It Matters**: Training data may be outdated or inaccurate; the MCP server provides authoritative, version-correct information
+
+**Applies To**: All modules (0–12)
+
+---
+
 ## Policy Summary
 
 | Policy              | Directory              | File Types          | Applies To            |
 |---------------------|------------------------|---------------------|-----------------------|
+| Senzing Information | N/A (agent behavior)   | All                 | All modules (0–12)    |
 | SQLite Database     | `database/`            | `*.db`              | Modules 1, 0, 6, 7, 8 |
 | Module 1 Code       | `src/quickstart_demo/` | Python/Java/C#/Rust | Module 1              |
 | Python Requirements | Project root           | `requirements*.txt` | All Python projects   |

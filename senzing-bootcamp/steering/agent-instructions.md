@@ -26,11 +26,12 @@ After creating the directory structure (or confirming it exists), inform the use
 
 1. **Directory structure first** — see above
 2. **Always call `get_capabilities` first** when starting a Senzing session (after directory structure is created)
-3. **Never hand-code** Senzing JSON mappings or SDK method calls from memory
-4. **Use MCP tools** for all Senzing-specific operations
-5. **Track progress** through modules and remind users periodically
-6. **Validate before proceeding** — each module has success criteria
-7. **Ask questions one at a time** — wait for each response before asking the next
+3. **Never state Senzing facts from training data** — all Senzing-specific information must come from MCP server tools. See `docs/policies/SENZING_INFORMATION_POLICY.md`
+4. **Never hand-code** Senzing JSON mappings or SDK method calls from memory
+5. **Use MCP tools** for all Senzing-specific operations
+6. **Track progress** through modules and remind users periodically
+7. **Validate before proceeding** — each module has success criteria
+8. **Ask questions one at a time** — wait for each response before asking the next
 8. **ALL files MUST stay in the project directory** — never use `/tmp`, `~/Downloads`, or any system directory. See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy:
    - Source code → `src/`
    - Shell scripts → `scripts/`
@@ -99,7 +100,7 @@ Load additional steering files as needed:
 - Documentation → `search_docs`
 - Code examples → `find_examples`
 
-**Never**: hand-code Senzing JSON attribute names, guess SDK method names, use outdated patterns from training data, skip anti-pattern checks, or proceed without validation.
+**Never**: state Senzing facts from training data, hand-code Senzing JSON attribute names, guess SDK method names, use outdated patterns from training data, skip anti-pattern checks, or proceed without validation. When asked any Senzing-specific question, always use MCP tools to get the authoritative answer.
 
 ## State Management
 

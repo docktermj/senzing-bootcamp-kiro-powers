@@ -282,9 +282,9 @@ Module 0 ──────────────────────→ M
 | 7      | 1-2 hours        | Multi-source projects  |
 | 8      | 1-2 hours        | All projects           |
 | 9      | 1-2 hours        | Production deployments |
-| 10     | 1-2 hours        | Production deployments |
-| 11     | 1-2 hours        | Production deployments |
-| 12     | 2-3 hours        | Production deployments |
+| 10     | 2-8 hours        | Production deployments |
+| 11     | 60-90 min        | Production deployments |
+| 12     | 2-4 hours        | Production deployments |
 
 ## Related Documentation
 

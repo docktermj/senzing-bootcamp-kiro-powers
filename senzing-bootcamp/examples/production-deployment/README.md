@@ -1,6 +1,6 @@
 # Production Deployment Example: Enterprise Customer MDM
 
-> **Blueprint Project:** This directory contains a detailed README describing the project architecture, code patterns, and expected results. The actual source code files referenced below are generated during the boot camp using MCP tools (`generate_scaffold`, `mapping_workflow`). Use this README as an architectural reference when building your own project.
+> **Blueprint Project:** This directory contains a detailed README describing the project architecture, data flow, and expected results. The actual source code files are generated during the boot camp using MCP tools (`generate_scaffold`, `mapping_workflow`) in your chosen programming language (Python, Java, C#, Rust, or TypeScript).
 
 ## Overview
 
@@ -37,124 +37,52 @@ enterprise-customer-mdm/
 │   ├── raw/                           # Source data
 │   ├── transformed/                   # Senzing JSON
 │   └── backups/                       # Database backups
-├── database/
-│   └── .gitkeep                       # PostgreSQL used in production
+├── database/                          # PostgreSQL used in production
 ├── src/
-│   ├── transform/
-│   │   ├── __init__.py
-│   │   ├── base_transformer.py        # Base class
-│   │   ├── crm_transformer.py
-│   │   ├── erp_transformer.py
-│   │   ├── web_transformer.py
-│   │   ├── mobile_transformer.py
-│   │   ├── partner_transformer.py
-│   │   └── legacy_transformer.py
+│   ├── transform/                     # One transformer per source (6 total)
 │   ├── load/
-│   │   ├── __init__.py
-│   │   ├── batch_loader.py            # Batch loading
-│   │   ├── streaming_loader.py        # Real-time streaming
-│   │   ├── incremental_loader.py      # Delta/CDC
-│   │   └── orchestrator.py            # Multi-source orchestration
+│   │   ├── batch_loader               # Batch loading
+│   │   ├── streaming_loader           # Real-time streaming
+│   │   ├── incremental_loader         # Delta/CDC
+│   │   └── orchestrator               # Multi-source orchestration
 │   ├── query/
-│   │   ├── __init__.py
-│   │   ├── api_server.py              # REST API
-│   │   ├── search_service.py
-│   │   └── export_service.py
+│   │   ├── api_server                 # REST API
+│   │   ├── search_service             # Entity search
+│   │   └── export_service             # Data export
 │   ├── monitoring/
-│   │   ├── __init__.py
-│   │   ├── metrics_collector.py       # Prometheus metrics
-│   │   ├── health_checks.py
-│   │   └── alerting.py
+│   │   ├── metrics_collector          # Prometheus metrics
+│   │   ├── health_checks              # Liveness/readiness
+│   │   └── alerting                   # Alert rules
 │   ├── security/
-│   │   ├── __init__.py
-│   │   ├── secrets_manager.py         # AWS Secrets Manager
-│   │   ├── auth.py                    # JWT authentication
-│   │   └── encryption.py              # Data encryption
-│   └── utils/
-│       ├── __init__.py
-│       ├── config.py
-│       ├── logging_config.py
-│       └── db_manager.py
+│   │   ├── secrets_manager            # AWS Secrets Manager
+│   │   ├── auth                       # JWT authentication
+│   │   └── encryption                 # Data encryption
+│   └── utils/                         # Config, logging, DB management
 ├── tests/
-│   ├── unit/
-│   │   ├── test_transformers.py
-│   │   ├── test_loaders.py
-│   │   └── test_queries.py
-│   ├── integration/
-│   │   ├── test_end_to_end.py
-│   │   └── test_api.py
-│   └── performance/
-│       ├── test_load_performance.py
-│       └── test_query_performance.py
+│   ├── unit/                          # Transformer, loader, query tests
+│   ├── integration/                   # End-to-end, API tests
+│   └── performance/                   # Load and query benchmarks
 ├── deployment/
-│   ├── scripts/
-│       ├── entrypoint.sh
-│       └── healthcheck.sh
-├── deployment/
-│   ├── kubernetes/
-│   │   ├── deployment.yaml
-│   │   ├── service.yaml
-│   │   ├── ingress.yaml
-│   │   └── configmap.yaml
-│   ├── terraform/
-│   │   ├── main.tf
-│   │   ├── variables.tf
-│   │   └── outputs.tf
-│   └── scripts/
-│       ├── deploy.sh
-│       ├── rollback.sh
-│       └── health_check.sh
+│   ├── kubernetes/                    # K8s manifests (deployment, service, ingress)
+│   ├── terraform/                     # Infrastructure as code
+│   └── scripts/                       # Deploy, rollback, health check scripts
 ├── monitoring/
-│   ├── prometheus/
-│   │   └── prometheus.yml
-│   ├── grafana/
-│   │   └── dashboards/
-│   │       ├── loading_dashboard.json
-│   │       ├── query_dashboard.json
-│   │       └── system_dashboard.json
-│   └── alerts/
-│       └── alert_rules.yml
+│   ├── prometheus/                    # Metrics collection config
+│   ├── grafana/dashboards/            # Loading, query, system dashboards
+│   └── alerts/                        # Alert rules
 ├── docs/
-│   ├── architecture/
-│   │   ├── system_architecture.md
-│   │   ├── data_flow.md
-│   │   └── security_architecture.md
-│   ├── operations/
-│   │   ├── deployment_guide.md
-│   │   ├── monitoring_guide.md
-│   │   ├── disaster_recovery.md
-│   │   └── runbooks/
-│   │       ├── high_cpu.md
-│   │       ├── slow_queries.md
-│   │       └── data_quality_issues.md
-│   └── api/
-│       └── api_documentation.md
+│   ├── architecture/                  # System, data flow, security docs
+│   ├── operations/                    # Deployment, monitoring, DR, runbooks
+│   └── api/                           # API documentation
 ├── config/
-│   ├── dev/
-│   │   ├── senzing_config.json
-│   │   └── app_config.yaml
-│   ├── staging/
-│   │   ├── senzing_config.json
-│   │   └── app_config.yaml
-│   └── prod/
-│       ├── senzing_config.json
-│       └── app_config.yaml
-├── scripts/
-│   ├── setup_environment.sh
-│   ├── run_tests.sh
-│   ├── backup_database.sh
-│   └── performance_test.sh
-├── .github/
-│   └── workflows/
-│       ├── ci.yml                     # Continuous Integration
-│       ├── cd.yml                     # Continuous Deployment
-│       └── security_scan.yml
+│   ├── dev/                           # Development config
+│   ├── staging/                       # Staging config
+│   └── prod/                          # Production config
+├── scripts/                           # Setup, test, backup, perf scripts
+├── .github/workflows/                 # CI/CD and security scan pipelines
 ├── .env.example
 ├── .gitignore
-├── requirements.txt
-├── requirements-dev.txt
-├── setup.py
-├── pyproject.toml
+├── <language-specific dependency file> # e.g. requirements.txt, pom.xml, etc.
 └── README.md                          # This file
 ```
 
@@ -208,543 +136,88 @@ Source Systems → ETL/Transform → Senzing Load → PostgreSQL
 
 ### Module 2: Define Business Problem
 
-**docs/architecture/system_architecture.md**:
+Document system architecture requirements including:
 
-```markdown
-# System Architecture
-
-## Business Requirements
 - 5M customer records across 6 systems
 - Real-time and batch processing
-- 99.9% availability
-- SOC 2 compliance
-- Multi-region deployment
-
-## Technical Requirements
-- Throughput: 1000+ records/sec
-- Query latency: < 100ms p95
-- Data retention: 7 years
-- Backup: Daily with 30-day retention
-- DR RTO: 4 hours, RPO: 15 minutes
-```
+- 99.9% availability, SOC 2 compliance
+- Throughput: 1000+ records/sec, query latency < 100ms p95
+- DR targets: RTO 4 hours, RPO 15 minutes
 
 ### Module 3-5: Data Collection, Quality, Mapping (4-6 hours)
 
-Implement transformers for each source with comprehensive error handling and logging.
+Implement transformers for each of the 6 sources (CRM, ERP, Web, Mobile, Partner, Legacy) with comprehensive error handling and logging. Each transformer maps source-specific fields to Senzing attributes.
+
+> The agent generates this code in your chosen language using `generate_scaffold` and `mapping_workflow` during the bootcamp.
 
 ### Module 0: SDK Setup (1 hour)
 
-**Production Configuration:**
-
-```json
-{
-  "PIPELINE": {
-    "CONFIGPATH": "/etc/opt/senzing",
-    "RESOURCEPATH": "/opt/senzing/er/resources",
-    "SUPPORTPATH": "/opt/senzing/data"
-  },
-  "SQL": {
-    "CONNECTION": "postgresql://senzing:${DB_PASSWORD}@prod-db.region.rds.amazonaws.com:5432/senzing",
-    "BACKEND": "HYBRID"
-  },
-  "HYBRID": {
-    "RES_FEAT_EKEY": "REDIS",
-    "RES_FEAT_LKEY": "REDIS",
-    "RES_FEAT_STAT": "REDIS"
-  },
-  "REDIS": {
-    "CONNECTION": "redis://prod-redis.region.cache.amazonaws.com:6379"
-  }
-}
-```
+Configure the Senzing engine for production with PostgreSQL (Multi-AZ RDS) and optional Redis caching for high-throughput scenarios. Use environment-specific config files under `config/dev/`, `config/staging/`, and `config/prod/`.
 
 ### Module 6-7: Loading with Orchestration (2-3 hours)
 
-```python
-#!/usr/bin/env python3
-"""Production-grade multi-source orchestrator with monitoring"""
+The production orchestrator loads all 6 sources in parallel with:
 
-import json
-import time
-import logging
-from typing import List, Dict
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from senzing_core import SzAbstractFactoryCore
-from prometheus_client import Counter, Histogram, Gauge
+- **Parallel loading** using a configurable thread pool (default: 6 workers)
+- **Batch processing** (configurable batch size, default: 1000 records)
+- **Prometheus metrics** — records loaded, load duration, errors, active loaders
+- **Error recovery** — per-record error handling with logging, no batch-level failures
+- **Progress reporting** — periodic log output every 10,000 records per source
 
-# Metrics
-records_loaded = Counter('senzing_records_loaded_total', 'Total records loaded', ['data_source'])
-load_duration = Histogram('senzing_load_duration_seconds', 'Load duration', ['data_source'])
-load_errors = Counter('senzing_load_errors_total', 'Load errors', ['data_source', 'error_type'])
-active_loaders = Gauge('senzing_active_loaders', 'Number of active loaders')
+Data sources loaded: CRM, ERP, Web, Mobile, Partner, Legacy.
 
-class ProductionOrchestrator:
-    """Production orchestrator with monitoring, error handling, and recovery"""
+Run the loading program using the appropriate command for your chosen language.
 
-    def __init__(self, config_file: str, max_workers: int = 4):
-        self.config_file = config_file
-        self.max_workers = max_workers
-        self.logger = logging.getLogger(__name__)
-
-        with open(config_file) as f:
-            self.config = json.load(f)
-
-    def load_source_parallel(self, data_source: str, input_file: str,
-                            batch_size: int = 1000) -> Dict:
-        """Load source with batching and error recovery"""
-
-        sz_factory = SzAbstractFactoryCore(
-            f"Loader-{data_source}", json.dumps(self.config)
-        )
-        engine = sz_factory.create_engine()
-
-        active_loaders.inc()
-
-        try:
-            start_time = time.time()
-            success_count = 0
-            error_count = 0
-            batch = []
-
-            with open(input_file, 'r') as f:
-                for line_num, line in enumerate(f, 1):
-                    try:
-                        record = json.loads(line)
-                        batch.append(record)
-
-                        if len(batch) >= batch_size:
-                            # Process batch
-                            for rec in batch:
-                                try:
-                                    engine.addRecord(
-                                        data_source,
-                                        rec['RECORD_ID'],
-                                        json.dumps(rec)
-                                    )
-                                    success_count += 1
-                                    records_loaded.labels(data_source=data_source).inc()
-                                except Exception as e:
-                                    error_count += 1
-                                    load_errors.labels(
-                                        data_source=data_source,
-                                        error_type=type(e).__name__
-                                    ).inc()
-                                    self.logger.error(f"Error loading {rec['RECORD_ID']}: {e}")
-
-                            batch = []
-
-                            if line_num % 10000 == 0:
-                                self.logger.info(f"{data_source}: Loaded {line_num:,} records")
-
-                    except json.JSONDecodeError as e:
-                        error_count += 1
-                        self.logger.error(f"JSON error on line {line_num}: {e}")
-
-                # Process remaining batch
-                for rec in batch:
-                    try:
-                        engine.addRecord(data_source, rec['RECORD_ID'], json.dumps(rec))
-                        success_count += 1
-                        records_loaded.labels(data_source=data_source).inc()
-                    except Exception as e:
-                        error_count += 1
-                        load_errors.labels(
-                            data_source=data_source,
-                            error_type=type(e).__name__
-                        ).inc()
-
-            duration = time.time() - start_time
-            load_duration.labels(data_source=data_source).observe(duration)
-
-            return {
-                'data_source': data_source,
-                'success': success_count,
-                'errors': error_count,
-                'duration': duration,
-                'rate': success_count / duration if duration > 0 else 0
-            }
-
-        finally:
-            sz_factory.destroy()
-            active_loaders.dec()
-
-    def load_all_parallel(self, sources: List[tuple]) -> List[Dict]:
-        """Load all sources in parallel"""
-
-        results = []
-
-        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            futures = {
-                executor.submit(self.load_source_parallel, ds, file): ds
-                for ds, file in sources
-            }
-
-            for future in as_completed(futures):
-                data_source = futures[future]
-                try:
-                    result = future.result()
-                    results.append(result)
-                    self.logger.info(f"✅ {data_source} completed: {result['success']:,} records")
-                except Exception as e:
-                    self.logger.error(f"❌ {data_source} failed: {e}")
-                    results.append({
-                        'data_source': data_source,
-                        'success': 0,
-                        'errors': -1,
-                        'error': str(e)
-                    })
-
-        return results
-
-if __name__ == '__main__':
-    # Configure logging
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
-
-    # Start metrics server
-    from prometheus_client import start_http_server
-    start_http_server(8000)
-
-    # Load all sources
-    orchestrator = ProductionOrchestrator('config/prod/senzing_config.json', max_workers=6)
-
-    sources = [
-        ('CRM', 'data/transformed/crm.jsonl'),
-        ('ERP', 'data/transformed/erp.jsonl'),
-        ('WEB', 'data/transformed/web.jsonl'),
-        ('MOBILE', 'data/transformed/mobile.jsonl'),
-        ('PARTNER', 'data/transformed/partner.jsonl'),
-        ('LEGACY', 'data/transformed/legacy.jsonl')
-    ]
-
-    results = orchestrator.load_all_parallel(sources)
-
-    # Print summary
-    total_success = sum(r['success'] for r in results)
-    total_errors = sum(r['errors'] for r in results if r['errors'] > 0)
-
-    print(f"\n{'='*60}")
-    print(f"PRODUCTION LOAD COMPLETE")
-    print(f"{'='*60}")
-    print(f"Total Records: {total_success:,}")
-    print(f"Total Errors: {total_errors:,}")
-    print(f"Success Rate: {(total_success/(total_success+total_errors)*100):.2f}%")
-```
+> The agent generates this code in your chosen language using `generate_scaffold` during the bootcamp.
 
 ### Module 8: Query with REST API (2 hours)
 
-**src/query/api_server.py**:
+The REST API provides:
 
-```python
-#!/usr/bin/env python3
-"""Production REST API with authentication and monitoring"""
+- `GET /health` — health check endpoint
+- `GET /entity/{entity_id}` — get entity by ID (JWT-authenticated)
+- `POST /search` — search by name, email, phone (JWT-authenticated)
+- Prometheus metrics on every endpoint (request count, duration, errors)
 
-from fastapi import FastAPI, HTTPException, Depends, Security
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
-import json
-import jwt
-from senzing_core import SzAbstractFactoryCore
-from prometheus_client import Counter, Histogram
-import time
-
-app = FastAPI(title="Senzing MDM API", version="1.0.0")
-security = HTTPBearer()
-
-# Metrics
-api_requests = Counter('api_requests_total', 'Total API requests', ['endpoint', 'method'])
-api_duration = Histogram('api_duration_seconds', 'API request duration', ['endpoint'])
-api_errors = Counter('api_errors_total', 'API errors', ['endpoint', 'error_type'])
-
-# Initialize Senzing
-with open('config/prod/senzing_config.json') as f:
-    config = json.load(f)
-
-sz_factory = SzAbstractFactoryCore("APIServer", json.dumps(config))
-engine = sz_factory.create_engine()
-
-def verify_token(credentials: HTTPAuthorizationCredentials = Security(security)):
-    """Verify JWT token"""
-    try:
-        token = credentials.credentials
-        payload = jwt.decode(token, "SECRET_KEY", algorithms=["HS256"])
-        return payload
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expired")
-    except jwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Invalid token")
-
-class SearchRequest(BaseModel):
-    name: str
-    email: str = None
-    phone: str = None
-
-@app.get("/health")
-def health_check():
-    """Health check endpoint"""
-    return {"status": "healthy", "timestamp": time.time()}
-
-@app.get("/entity/{entity_id}")
-def get_entity(entity_id: int, user=Depends(verify_token)):
-    """Get entity by ID"""
-    api_requests.labels(endpoint='/entity', method='GET').inc()
-
-    start = time.time()
-    try:
-        entity_json = engine.getEntityByEntityID(entity_id)
-        api_duration.labels(endpoint='/entity').observe(time.time() - start)
-        return json.loads(entity_json)
-    except Exception as e:
-        api_errors.labels(endpoint='/entity', error_type=type(e).__name__).inc()
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/search")
-def search_entities(request: SearchRequest, user=Depends(verify_token)):
-    """Search for entities"""
-    api_requests.labels(endpoint='/search', method='POST').inc()
-
-    start = time.time()
-    try:
-        search_json = json.dumps({
-            "NAME_FULL": request.name,
-            "EMAIL_ADDRESS": request.email,
-            "PHONE_NUMBER": request.phone
-        })
-
-        result_json = engine.searchByAttributes(search_json)
-        api_duration.labels(endpoint='/search').observe(time.time() - start)
-        return json.loads(result_json)
-    except Exception as e:
-        api_errors.labels(endpoint='/search', error_type=type(e).__name__).inc()
-        raise HTTPException(status_code=500, detail=str(e))
-
-if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8080)
-```
+> The agent generates this code in your chosen language using `generate_scaffold` during the bootcamp.
 
 ### Module 9: Performance Testing (1-2 hours)
 
-**tests/performance/test_load_performance.py**:
+Benchmark loading and query performance against production targets:
 
-```python
-#!/usr/bin/env python3
-"""Performance benchmarking suite"""
+- Loading: target 1000+ records/sec
+- Query: target < 100ms p95 latency
 
-import time
-import json
-from senzing_core import SzAbstractFactoryCore
-
-def benchmark_loading(sample_size=10000):
-    """Benchmark loading performance"""
-
-    with open('config/prod/senzing_config.json') as f:
-        config = json.dumps(json.load(f))
-
-    sz_factory = SzAbstractFactoryCore("Benchmark", config)
-    engine = sz_factory.create_engine()
-
-    start = time.time()
-
-    for i in range(sample_size):
-        record = {
-            "DATA_SOURCE": "BENCHMARK",
-            "RECORD_ID": f"BENCH-{i:06d}",
-            "NAME_FULL": f"Test Person {i}",
-            "EMAIL_ADDRESS": f"test{i}@example.com"
-        }
-        engine.addRecord("BENCHMARK", record['RECORD_ID'], json.dumps(record))
-
-    duration = time.time() - start
-    rate = sample_size / duration
-
-    print(f"Loaded {sample_size:,} records in {duration:.1f} seconds")
-    print(f"Rate: {rate:.1f} records/second")
-
-    sz_factory.destroy()
-
-    return rate
-
-if __name__ == '__main__':
-    rate = benchmark_loading(10000)
-
-    # Assert performance requirements
-    assert rate > 1000, f"Performance below threshold: {rate:.1f} < 1000 records/sec"
-    print("✅ Performance test PASSED")
-```
+> The agent generates this code in your chosen language using `generate_scaffold` during the bootcamp.
 
 ### Module 10: Security Hardening (1-2 hours)
 
-**src/security/secrets_manager.py**:
+Implement secrets management (e.g., AWS Secrets Manager), JWT authentication for API endpoints, and data encryption. No credentials stored in code or config files.
 
-```python
-#!/usr/bin/env python3
-"""AWS Secrets Manager integration"""
-
-import boto3
-import json
-from typing import Dict
-
-class SecretsManager:
-    """Manage secrets from AWS Secrets Manager"""
-
-    def __init__(self, region='us-east-1'):
-        self.client = boto3.client('secretsmanager', region_name=region)
-
-    def get_secret(self, secret_name: str) -> Dict:
-        """Retrieve secret from AWS Secrets Manager"""
-        try:
-            response = self.client.get_secret_value(SecretId=secret_name)
-            return json.loads(response['SecretString'])
-        except Exception as e:
-            raise Exception(f"Failed to retrieve secret {secret_name}: {e}")
-
-    def get_database_credentials(self) -> Dict:
-        """Get database credentials"""
-        return self.get_secret('prod/senzing/database')
-
-    def get_api_keys(self) -> Dict:
-        """Get API keys"""
-        return self.get_secret('prod/senzing/api-keys')
-
-# Usage
-secrets = SecretsManager()
-db_creds = secrets.get_database_credentials()
-```
+> The agent generates this code in your chosen language using `generate_scaffold` during the bootcamp.
 
 ### Module 11: Monitoring (1-2 hours)
 
-**monitoring/grafana/dashboards/loading_dashboard.json**:
+Set up Grafana dashboards tracking:
 
-```json
-{
-  "dashboard": {
-    "title": "Senzing Loading Dashboard",
-    "panels": [
-      {
-        "title": "Records Loaded per Second",
-        "targets": [
-          {
-            "expr": "rate(senzing_records_loaded_total[5m])"
-          }
-        ]
-      },
-      {
-        "title": "Load Errors",
-        "targets": [
-          {
-            "expr": "rate(senzing_load_errors_total[5m])"
-          }
-        ]
-      },
-      {
-        "title": "Active Loaders",
-        "targets": [
-          {
-            "expr": "senzing_active_loaders"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
+- Records loaded per second
+- Load error rates
+- Active loader count
+- API request rates and latency
+- System resource utilization
+
+Configure alert rules for error rate spikes, slow queries, and resource exhaustion.
 
 ### Module 12: Deployment (2-3 hours)
 
-**deployment/kubernetes/deployment.yaml**:
+Deploy using Kubernetes with:
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: senzing-api
-  labels:
-    app: senzing-api
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: senzing-api
-  template:
-    metadata:
-      labels:
-        app: senzing-api
-    spec:
-      containers:
-      - name: api
-        image: company/senzing-api:1.0.0
-        ports:
-        - containerPort: 8080
-        env:
-        - name: CONFIG_FILE
-          value: /config/senzing_config.json
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: senzing-secrets
-              key: db-password
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "1000m"
-          limits:
-            memory: "4Gi"
-            cpu: "2000m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 5
-```
-
-**deployment/scripts/deploy.sh**:
-
-```bash
-#!/bin/bash
-# Production deployment script
-
-set -e
-
-ENVIRONMENT=${1:-prod}
-VERSION=${2:-latest}
-
-echo "Deploying Senzing MDM to $ENVIRONMENT (version: $VERSION)"
-
-# Run tests
-echo "Running tests..."
-pytest tests/ -v
-
-# Package application
-echo "Packaging application..."
-python setup.py sdist bdist_wheel
-
-# Deploy to target environment
-echo "Deploying version $VERSION..."
-
-# Deploy to Kubernetes
-echo "Deploying to Kubernetes..."
-kubectl apply -f deployment/kubernetes/
-
-# Wait for rollout
-echo "Waiting for rollout..."
-kubectl rollout status deployment/senzing-api
-
-# Run smoke tests
-echo "Running smoke tests..."
-./deployment/scripts/health_check.sh
-
-echo "✅ Deployment complete!"
-```
+- 3 API server replicas behind a load balancer
+- Resource requests/limits (2-4 GB memory, 1-2 CPU per pod)
+- Liveness and readiness probes on `/health`
+- Secrets injected via Kubernetes secrets
+- CI/CD pipeline (test → build → deploy → smoke test)
+- Rollback scripts for failed deployments
 
 ## Expected Results
 
@@ -762,7 +235,7 @@ echo "✅ Deployment complete!"
 - 1.2M cross-source matches
 - 99.2% data quality score
 
-## Key Learnings
+## What You'll Learn
 
 1. **Scalability:** Horizontal scaling with load balancers
 2. **Reliability:** Multi-AZ deployment, automated failover
@@ -774,7 +247,7 @@ echo "✅ Deployment complete!"
 
 - [ ] All tests passing (unit, integration, performance)
 - [ ] Security scan completed
-- [ ] Secrets configured in AWS Secrets Manager
+- [ ] Secrets configured in secrets manager
 - [ ] Monitoring dashboards created
 - [ ] Alert rules configured
 - [ ] Disaster recovery tested

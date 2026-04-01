@@ -1,5 +1,7 @@
 # Module 7: Multi-Source Orchestration
 
+> **Agent workflow:** The agent follows `steering/module-07-multi-source.md` for this module's step-by-step workflow.
+
 ## Overview
 
 Module 7 focuses on orchestrating the loading of multiple data sources with proper dependency management, load order optimization, and error handling.
@@ -53,19 +55,20 @@ dependencies:
 
 ### Parallel Loading
 
-Load independent sources in parallel:
+Load independent sources concurrently using your language's concurrency primitives (threads, async, goroutines, coroutines, etc.):
 
-```python
-# Sequential (slow)
-load_source('customers')  # 10 minutes
-load_source('vendors')    # 10 minutes
-# Total: 20 minutes
+```text
+Sequential (slow):
+  load_source("customers")   -- 10 minutes
+  load_source("vendors")     -- 10 minutes
+  Total: 20 minutes
 
-# Parallel (fast)
-with ThreadPoolExecutor() as executor:
-    executor.submit(load_source, 'customers')
-    executor.submit(load_source, 'vendors')
-# Total: 10 minutes
+Parallel (fast):
+  Start concurrent tasks:
+    task 1: load_source("customers")
+    task 2: load_source("vendors")
+  Wait for all tasks to complete
+  Total: 10 minutes
 ```
 
 ### Error Handling Strategies
@@ -81,9 +84,9 @@ with ThreadPoolExecutor() as executor:
 
 Simple, predictable, but slow:
 
-```python
-sources = ['customers', 'vendors', 'products', 'orders']
-for source in sources:
+```text
+sources = ["customers", "vendors", "products", "orders"]
+For each source in sources:
     load_source(source)
 ```
 
@@ -91,49 +94,44 @@ for source in sources:
 
 Fast for independent sources:
 
-```python
-independent_sources = ['customers', 'vendors', 'products']
-with ThreadPoolExecutor(max_workers=3) as executor:
-    futures = [executor.submit(load_source, s) for s in independent_sources]
-    wait(futures)
+```text
+independent_sources = ["customers", "vendors", "products"]
+Run all of the following concurrently (up to 3 workers):
+    For each source in independent_sources:
+        load_source(source)
+Wait for all to complete
 ```
 
 ### Pattern 3: Dependency-Aware Loading
 
 Respects dependencies:
 
-```python
-def load_with_dependencies(source, dependencies, loaded):
-    # Wait for dependencies
-    for dep in dependencies.get(source, []):
-        if dep not in loaded:
-            load_with_dependencies(dep, dependencies, loaded)
+```text
+Function load_with_dependencies(source, dependencies, loaded_set):
+    For each dep in dependencies[source]:
+        If dep is NOT in loaded_set:
+            load_with_dependencies(dep, dependencies, loaded_set)
 
-    # Load this source
     load_source(source)
-    loaded.add(source)
+    Add source to loaded_set
 ```
 
 ### Pattern 4: Pipeline Loading
 
 Streaming pipeline for large datasets:
 
-```python
-# Producer-consumer pattern
-queue = Queue()
+```text
+Producer-consumer pattern using a thread-safe queue:
 
-# Producer: Read and transform
-def producer(source):
-    for record in read_source(source):
+Producer (one per source):
+    For each record in source:
         transformed = transform(record)
-        queue.put(transformed)
+        Put transformed record onto queue
 
-# Consumer: Load to Senzing
-def consumer():
-    while True:
-        record = queue.get()
-        if record is None:
-            break
+Consumer (one or more):
+    Loop:
+        Take record from queue
+        If record is a stop signal, exit loop
         load_record(record)
 ```
 
@@ -158,149 +156,78 @@ Total: 86,000 / 250,000 records (34%)
 Estimated completion: 15 minutes
 ```
 
-## Orchestration Script Template
+## Orchestrator Design
 
-```python
-#!/usr/bin/env python3
-"""
-Multi-Source Orchestration Script
-Coordinates loading of multiple data sources
-"""
+The orchestrator is responsible for coordinating the loading of all data sources. Rather than prescribing a specific implementation, here is what the orchestrator must do:
 
-import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Dict, List, Set
-import time
+### Inputs
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+- **Source list:** An ordered list of data source names to load (e.g., `["customers", "vendors", "products", "orders"]`)
+- **Dependency map:** A mapping from each source to its prerequisite sources (e.g., `orders` depends on `["customers", "products"]`)
+- **Strategy:** One of `sequential`, `parallel`, or `dependency-aware`
 
-class MultiSourceOrchestrator:
-    def __init__(self, config: Dict):
-        self.config = config
-        self.sources = config['sources']
-        self.dependencies = config.get('dependencies', {})
-        self.loaded = set()
-        self.failed = set()
-        self.stats = {}
+### Internal State
 
-    def load_all(self, strategy='dependency-aware'):
-        """Load all sources using specified strategy"""
-        if strategy == 'sequential':
-            self._load_sequential()
-        elif strategy == 'parallel':
-            self._load_parallel()
-        elif strategy == 'dependency-aware':
-            self._load_dependency_aware()
-        else:
-            raise ValueError(f"Unknown strategy: {strategy}")
+- **loaded:** Set of sources that have been successfully loaded
+- **failed:** Set of sources that failed to load
+- **stats:** Per-source statistics (status, duration, record count, error message)
 
-    def _load_sequential(self):
-        """Load sources sequentially"""
-        for source in self.sources:
-            self._load_source(source)
+### Algorithm
 
-    def _load_parallel(self):
-        """Load sources in parallel"""
-        with ThreadPoolExecutor(max_workers=4) as executor:
-            futures = {
-                executor.submit(self._load_source, source): source
-                for source in self.sources
-            }
+```text
+Function load_all(strategy):
+    If strategy is "sequential":
+        For each source in source_list:
+            load_source(source)
 
-            for future in as_completed(futures):
-                source = futures[future]
-                try:
-                    future.result()
-                except Exception as e:
-                    logger.error(f"Failed to load {source}: {e}")
-                    self.failed.add(source)
+    If strategy is "parallel":
+        Run all sources concurrently (limit concurrency to ~4 workers)
+        For each completed task:
+            If it failed, log the error and add source to failed set
 
-    def _load_dependency_aware(self):
-        """Load sources respecting dependencies"""
-        for source in self.sources:
-            self._load_with_dependencies(source)
+    If strategy is "dependency-aware":
+        For each source in source_list:
+            Recursively ensure all dependencies are loaded first
+            Then load the source
 
-    def _load_with_dependencies(self, source: str):
-        """Load source after its dependencies"""
-        if source in self.loaded or source in self.failed:
-            return
+Function load_source(source):
+    Log "Loading source: <source>"
+    Record start time
+    Try:
+        Load all records from source using the Senzing SDK
+        Record duration and record count in stats
+        Add source to loaded set
+        Log success with duration
+    On error:
+        Log failure with error message
+        Add source to failed set
+        Record error in stats
 
-        # Load dependencies first
-        deps = self.dependencies.get(source, [])
-        for dep in deps:
-            if dep not in self.loaded:
-                logger.info(f"{source} waiting for dependency: {dep}")
-                self._load_with_dependencies(dep)
-
-        # Load this source
-        self._load_source(source)
-
-    def _load_source(self, source: str):
-        """Load a single source"""
-        logger.info(f"Loading source: {source}")
-        start_time = time.time()
-
-        try:
-            # Load records from source using Senzing SDK
-            records_loaded = load_records_from_source(source, engine)
-
-            duration = time.time() - start_time
-            self.stats[source] = {
-                'status': 'success',
-                'duration': duration,
-                'records': records_loaded
-            }
-            self.loaded.add(source)
-            logger.info(f"✅ Loaded {source} in {duration:.1f}s")
-
-        except Exception as e:
-            logger.error(f"❌ Failed to load {source}: {e}")
-            self.failed.add(source)
-            self.stats[source] = {
-                'status': 'failed',
-                'error': str(e)
-            }
-
-    def print_summary(self):
-        """Print loading summary"""
-        print("\n" + "="*60)
-        print("MULTI-SOURCE LOADING SUMMARY")
-        print("="*60)
-        print(f"Total sources: {len(self.sources)}")
-        print(f"Loaded: {len(self.loaded)}")
-        print(f"Failed: {len(self.failed)}")
-
-        if self.loaded:
-            print("\n✅ Successfully loaded:")
-            for source in self.loaded:
-                stats = self.stats[source]
-                print(f"  - {source}: {stats['records']:,} records in {stats['duration']:.1f}s")
-
-        if self.failed:
-            print("\n❌ Failed to load:")
-            for source in self.failed:
-                print(f"  - {source}: {self.stats[source]['error']}")
-
-        print("="*60)
-
-# Example configuration
-config = {
-    'sources': ['customers', 'vendors', 'products', 'orders'],
-    'dependencies': {
-        'orders': ['customers', 'products']
-    }
-}
-
-if __name__ == '__main__':
-    orchestrator = MultiSourceOrchestrator(config)
-    orchestrator.load_all(strategy='dependency-aware')
-    orchestrator.print_summary()
+Function print_summary():
+    Print total sources, loaded count, failed count
+    For each loaded source: print name, record count, duration
+    For each failed source: print name and error message
 ```
+
+### Outputs
+
+- Console log of per-source load status (success/failure, duration, record count)
+- A summary report showing total sources, successes, failures, and per-source statistics
+
+### Configuration
+
+```yaml
+sources:
+  - customers
+  - vendors
+  - products
+  - orders
+dependencies:
+  orders: [customers, products]
+strategy: dependency-aware
+```
+
+> **Agent instruction:** Use `generate_scaffold` with the bootcamper's chosen language and `find_examples(query='multi-source')` to generate orchestration code.
 
 ## Agent Behavior
 
@@ -342,7 +269,7 @@ Module 7 is complete when:
 
 ## Output Files
 
-- `src/orchestration/load_all_sources.py` - Orchestration script
+- `src/orchestration/load_all_sources.[ext]` - Orchestration script
 - `docs/orchestration_strategy.md` - Strategy documentation
 - `docs/multi_source_dashboard.html` - Progress dashboard
 - `logs/orchestration.log` - Loading logs

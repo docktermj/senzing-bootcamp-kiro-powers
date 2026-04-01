@@ -398,7 +398,7 @@ Metadata tracked:
 • Collection date: 2026-03-26
 • Record count: 10,000
 • Quality score: 85/100
-• Transformation: transform_customers.py v1.0
+• Transformation: transform_customers.[ext] v1.0
 • Load date: 2026-03-26
 • Entities created: 8,500
 • Duplicates resolved: 1,500

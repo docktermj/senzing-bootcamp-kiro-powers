@@ -5,25 +5,83 @@ All notable changes to the Senzing Boot Camp power will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.6] - 2026-04-01
+
+### Added
+
+- `docs/guides/AFTER_BOOTCAMP.md`: Post-bootcamp guide covering production maintenance cadence, scaling, adding new data sources, staying updated, advanced topics, and community resources
+- `docs/guides/GLOSSARY.md`: Quick-reference glossary of 18 Senzing entity resolution terms
+- Cross-references between all 13 steering files and their corresponding module docs for easier navigation
+
+### Changed
+
+- Consolidated 3 micro-policies (`MODULE_1_CODE_LOCATION.md`, `SQLITE_DATABASE_LOCATION.md`, `SHELL_SCRIPT_LOCATIONS.md`) into `FILE_STORAGE_POLICY.md` — policies/ reduced from 8 files to 5
+- Trimmed all 3 example project READMEs to architecture-only descriptions — removed inline Python code, kept project structure, data flow diagrams, field mappings, and expected results
+
+### Removed
+
+- `docs/policies/MODULE_1_CODE_LOCATION.md` (consolidated into FILE_STORAGE_POLICY.md)
+- `docs/policies/SQLITE_DATABASE_LOCATION.md` (consolidated into FILE_STORAGE_POLICY.md)
+- `docs/policies/SHELL_SCRIPT_LOCATIONS.md` (consolidated into FILE_STORAGE_POLICY.md)
+
 ## [0.1.5] - 2026-04-01
 
 ### Added
 
 - Multi-language support: bootcamp now queries the Senzing MCP server for supported programming languages and asks the bootcamper to choose before starting. All generated code, scaffold calls, and examples use the chosen language throughout every module.
 - Language-appropriate prerequisite checks (Python, Java, C#, Rust, TypeScript/Node.js)
-- Language-appropriate coding standards guidance (PEP-8, Java conventions, .NET conventions, rustfmt/clippy, ESLint)
+- Language-appropriate coding standards guidance via `docs/policies/CODE_QUALITY_STANDARDS.md`
+- Language-agnostic dependency management via `docs/policies/DEPENDENCY_MANAGEMENT_POLICY.md`
+- Session persistence: language choice and path saved to `config/bootcamp_preferences.yaml`
+- Progress tracking: `config/bootcamp_progress.json` updated after each module's validation gate
+- Resume flow: agent checks for existing progress on startup and offers to continue
+- Progress celebration: congratulates user every 3 modules
+- `run-tests-after-change.kiro.hook`: reminds agent to run tests after code changes in src/
+- Expanded Modules 9-12 steering files to match the depth of Modules 0-5 (3-10x more content each)
+  - Module 9: 13 steps with MCP tool integration, database-specific tuning, scalability testing, 4-point ER evaluation framework
+  - Module 10: 12 steps covering secrets management, authentication, RBAC, encryption, audit logging, input validation, network security, Senzing-specific security, vulnerability scanning
+  - Module 11: 10 steps with Senzing-specific monitoring (get_stats semantics, redo queue, cross-source metrics), 4 dashboard definitions, alert rules with escalation, health checks, runbooks
+  - Module 12: 14 steps covering containerization, database migration, CI/CD (GitHub Actions/GitLab/Jenkins), REST API layer, scaling guidance, Kubernetes manifests, pre-deployment checklist, rollback plan
+- Language-aware .gitignore generation in environment-setup.md
+- MCP-driven SDK verification in Module 0 (replaces hardcoded per-language checks)
+- Actionable MCP tool calls in troubleshooting-decision-tree.md
 
 ### Changed
 
-- `agent-instructions.md`: Added "Programming Language Selection" as Second Action (before prerequisite check). Prerequisite check is now Third Action and adapts to chosen language.
-- `module-00-sdk-setup.md`: Installation verification and scaffold calls now use chosen language instead of hardcoded Python
+- `agent-instructions.md`: Added progress check as First Action, directory creation as Second Action, language selection as Third Action, prerequisite check as Fourth Action. Added progress persistence after validation gates. Added resume flow.
+- `module-00-sdk-setup.md`: SDK verification now uses MCP `sdk_guide` instead of hardcoded per-language commands
+- `module-09-performance.md`: Expanded from 1-page skeleton to comprehensive 13-step workflow with MCP integration
+- `module-10-security.md`: Expanded from 1-page skeleton to comprehensive 12-step workflow with Senzing-specific security
+- `module-11-monitoring.md`: Expanded from 1-page skeleton to comprehensive 10-step workflow with Senzing-specific monitoring
+- `module-12-deployment.md`: Expanded from 1-page skeleton to comprehensive 14-step workflow with containerization, CI/CD, and scaling
+- `environment-setup.md`: .gitignore now generates language-specific entries based on chosen language
+- `troubleshooting-decision-tree.md`: Added MCP tool calls for each diagnostic path
+- `POWER.md`: Updated time estimates for Modules 9-12 to be realistic; noted Modules 9-12 are production-focused and optional
+- `hooks/pep8-check.kiro.hook`: Renamed to `code-style-check.kiro.hook`
 - `module-01-quick-demo.md`: Demo script generation uses chosen language; file extensions are language-appropriate
 - `module-05-data-mapping.md`: Transformation program generation uses chosen language
 - `module-06-single-source.md`: Loading program generation uses chosen language
 - `module-07-multi-source.md`: Orchestrator generation uses chosen language
 - `module-08-query-validation.md`: Query program generation uses chosen language
+- `module-09-performance.md`: Performance benchmarks use pseudocode instead of Python
+- `module-10-security.md`: Security code references use generic file extensions
+- `module-11-monitoring.md`: Monitoring code uses pseudocode instead of Python
+- `module-12-deployment.md`: Package structure is language-agnostic
 - `project-structure.md`: Dependency file guidance now covers all supported languages
+- `data-lineage.md`: Lineage tracker described as algorithm instead of Python class
+- `common-pitfalls.md`: File references use generic extensions
+- `environment-setup.md`: Setup instructions cover all supported languages
 - `POWER.md`: Code quality standards section updated to reflect multi-language support
+- All module docs (MODULE_0 through MODULE_9): Replaced Python code with pseudocode and MCP scaffold instructions
+- All hooks: Updated file patterns to match all supported language extensions
+- `hooks/pep8-check.kiro.hook`: Renamed to "Code Style Check", now triggers on all source file types
+
+### Removed
+
+- 12 Python template files from `templates/` (replaced by dynamic MCP code generation)
+- `docs/policies/PEP8_COMPLIANCE.md` (replaced by `CODE_QUALITY_STANDARDS.md`)
+- `docs/policies/PYTHON_REQUIREMENTS_POLICY.md` (replaced by `DEPENDENCY_MANAGEMENT_POLICY.md`)
+- `examples/requirements.txt.example` and `examples/requirements-dev.txt.example`
 
 ## [0.1.4] - 2026-04-01
 

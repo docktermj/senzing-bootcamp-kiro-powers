@@ -1,5 +1,7 @@
 # Module 1: Quick Demo (Optional)
 
+> **Agent workflow:** The agent follows `steering/module-01-quick-demo.md` for this module's step-by-step workflow.
+
 ## Overview
 
 Module 1 provides a demonstration of Senzing entity resolution using sample data. This optional module is perfect for first-time users who want to see entity resolution in action before working with their own data.
@@ -13,7 +15,7 @@ This module offers multiple demo options to ensure everyone can see entity resol
 ## Prerequisites
 
 - ✅ Module 0 complete (Senzing SDK installed)
-- ✅ Python 3.10+ with senzing package
+- ✅ Senzing SDK installed and accessible from chosen programming language
 
 ## Learning Objectives
 
@@ -178,11 +180,13 @@ A common pitfall: `sz_engine.get_stats()` tracks per-process workload statistics
 
 All Module 1 demo code is saved in `src/quickstart_demo/`:
 
+Demo scripts use the file extension appropriate for the chosen language (e.g., `.py`, `.java`, `.cs`, `.rs`, `.ts`).
+
 ```text
 src/quickstart_demo/
-├── demo_las_vegas.py          # Demo script for Las Vegas dataset
-├── demo_london.py              # Demo script for London dataset
-├── demo_moscow.py              # Demo script for Moscow dataset
+├── demo_las_vegas.[ext]        # Demo script for Las Vegas dataset
+├── demo_london.[ext]           # Demo script for London dataset
+├── demo_moscow.[ext]           # Demo script for Moscow dataset
 ├── sample_data_las_vegas.jsonl # Sample data
 ├── sample_data_london.jsonl    # Sample data
 └── sample_data_moscow.jsonl    # Sample data
@@ -200,10 +204,7 @@ The demo runs automatically when you start Module 1 (Quick Demo). The agent will
 
 If you want to run the demo again later:
 
-```bash
-cd src/quickstart_demo
-python demo_las_vegas.py
-```
+Run the demo using the appropriate command for your chosen language from the `src/quickstart_demo/` directory.
 
 ## What to Look For
 
@@ -265,7 +266,6 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 **Symptoms**:
 
-- "ModuleNotFoundError: No module named 'senzing'"
 - SDK check returns "SDK not found"
 
 **Solutions**:
@@ -274,12 +274,9 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
    - Module 0 installs the SDK natively
    - Return to Module 1 after installation
 
-2. **Check Python environment**
+2. **Verify SDK installation**
 
-   ```bash
-   pip list | grep senzing
-   python3 -c "import senzing; print(senzing.__version__)"
-   ```
+   Verify the SDK is installed for your chosen language using the checks from Module 0.
 
 ---
 
@@ -395,7 +392,7 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 3. **Contact Senzing support**
    - Provide error details
-   - Share environment info (OS, Python version)
+   - Share environment info (OS, language version, SDK version)
    - Include steps to reproduce
 
 ---
@@ -415,7 +412,7 @@ This will check:
 - ✓ Senzing SDK installation
 - ✓ Disk space
 - ✓ Network connectivity
-- ✓ Python installation
+- ✓ Language runtime/compiler
 
 And provide recommendations based on your environment.
 

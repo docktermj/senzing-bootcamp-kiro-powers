@@ -1,5 +1,7 @@
 # Module 3: Data Collection Policy
 
+> **Agent workflow:** The agent follows `steering/module-03-data-collection.md` for this module's step-by-step workflow.
+
 ## Overview
 
 Module 3 is a new module added between Module 2 (Understand Business Problem) and Module 4 (Verify Data Sources). This module focuses on identifying and collecting the actual data sources that will be used for entity resolution.

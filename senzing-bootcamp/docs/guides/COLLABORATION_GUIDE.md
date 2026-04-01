@@ -138,7 +138,7 @@ Closes #123
 1. **Run checks:**
 
    ```bash
-   # Check PEP-8 compliance
+   # Check coding standards compliance
    flake8 src/
 
    # Run tests
@@ -175,7 +175,7 @@ Closes #123
 
 **What to check:**
 
-- Code quality and PEP-8 compliance
+- Code quality and coding standards compliance
 - Logic correctness
 - Error handling
 - Performance considerations

@@ -221,21 +221,23 @@ Poor matching results?
 
 ## Quick Diagnostic Commands
 
-```bash
-# Check if Senzing is installed
-python -c "import senzing; print(senzing.__version__)"
+Use MCP tools for diagnosis:
 
+- **Senzing error code**: `explain_error_code(error_code="SENZXXXX", version="current")`
+- **Installation issues**: `search_docs(query="installation troubleshooting", category="troubleshooting", version="current")`
+- **Performance issues**: `search_docs(query="performance", category="anti_patterns", version="current")`
+- **Database issues**: `search_docs(query="database troubleshooting", category="troubleshooting", version="current")`
+- **Mapping issues**: `analyze_record(file_paths=["data/transformed/output.jsonl"])` to validate output
+- **SDK method questions**: `get_sdk_reference(topic="functions", filter="<method_name>", version="current")`
+
+System-level checks:
+
+```bash
 # Check database connection (SQLite)
 ls -lh database/G2C.db
 
 # Check database connection (PostgreSQL)
 psql -h localhost -U senzing -d senzing -c "SELECT 1"
-
-# Check transformation output
-head -n 5 data/transformed/output.jsonl | python -m json.tool
-
-# Check loading logs
-tail -n 50 logs/load.log
 
 # Check system resources
 df -h  # Disk space

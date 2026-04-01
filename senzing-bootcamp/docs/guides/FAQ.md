@@ -68,11 +68,11 @@ Transformation: `src/transform/`. Loading: `src/load/`. Queries: `src/query/`. U
 
 ### What are the code quality standards?
 
-PEP-8: 100 char lines, 4-space indentation, docstrings, organized imports. Install the `pep8-check` hook.
+The boot camp applies language-appropriate coding standards based on your chosen language. See `docs/policies/CODE_QUALITY_STANDARDS.md` for details. Install the Code Style Check hook for automated checking.
 
 ### Which hooks should I install?
 
-Run `./scripts/install_hooks.sh` for interactive installation. Recommended: `pep8-check`, `backup-before-load`, `data-quality-check`, `validate-senzing-json`.
+Run `./scripts/install_hooks.sh` for interactive installation. Recommended: Code Style Check, `backup-before-load`, `data-quality-check`, `validate-senzing-json`.
 
 ## Backup and Recovery
 

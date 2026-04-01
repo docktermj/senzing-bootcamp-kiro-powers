@@ -60,117 +60,21 @@ test_cases:
 
 ### Phase 3: Test Execution (Module 8)
 
-Execute tests and document results:
+Execute tests and document results. The UAT executor program should:
 
-```python
-#!/usr/bin/env python3
-"""
-UAT Test Executor
-Runs UAT test cases and generates report
-"""
+1. Load test cases from `docs/uat_test_cases.yaml`
+2. For each test case:
+   - Execute the appropriate Senzing query (search by attributes, get entity, etc.)
+   - Compare actual results to expected outcomes
+   - Record status (PASS, FAIL, PENDING) with tester info and timestamp
+3. Generate a summary report (`docs/uat_results.md`) showing:
+   - Total tests, passed count, failed count, pending count with percentages
+   - Per-test details: status icon, scenario, tester, date, actual result, notes
+   - Overall verdict: all passed (ready for production), some failed (issues to resolve), or in progress
 
-import yaml
-import json
-from typing import Dict, List
-
-class UATExecutor:
-    def __init__(self, test_cases_file='docs/uat_test_cases.yaml'):
-        self.test_cases = self.load_test_cases(test_cases_file)
-        self.results = []
-
-    def load_test_cases(self, file_path):
-        """Load UAT test cases"""
-        with open(file_path) as f:
-            data = yaml.safe_load(f)
-        return data['test_cases']
-
-    def execute_test(self, test_case: Dict):
-        """Execute a single test case"""
-        test_id = test_case['id']
-        print(f"\nExecuting {test_id}: {test_case['scenario']}")
-
-        # TODO: Implement actual test execution
-        # For now, return manual result
-
-        result = {
-            'test_id': test_id,
-            'scenario': test_case['scenario'],
-            'status': 'PENDING',  # PASS, FAIL, PENDING
-            'actual_result': None,
-            'notes': '',
-            'tester': test_case['tester'],
-            'tested_date': None
-        }
-
-        return result
-
-    def execute_all(self):
-        """Execute all test cases"""
-        print(f"Executing {len(self.test_cases)} UAT test cases...")
-
-        for test_case in self.test_cases:
-            result = self.execute_test(test_case)
-            self.results.append(result)
-
-        return self.results
-
-    def generate_report(self, output_file='docs/uat_results.md'):
-        """Generate UAT results report"""
-        passed = sum(1 for r in self.results if r['status'] == 'PASS')
-        failed = sum(1 for r in self.results if r['status'] == 'FAIL')
-        pending = sum(1 for r in self.results if r['status'] == 'PENDING')
-        total = len(self.results)
-
-        report = []
-        report.append("# UAT Results Report\n\n")
-        report.append("## Summary\n\n")
-        report.append(f"- **Total Tests**: {total}\n")
-        report.append(f"- **Passed**: {passed} ({passed/total*100:.1f}%)\n")
-        report.append(f"- **Failed**: {failed} ({failed/total*100:.1f}%)\n")
-        report.append(f"- **Pending**: {pending} ({pending/total*100:.1f}%)\n\n")
-
-        if failed == 0 and pending == 0:
-            report.append("✅ **All tests passed! Ready for production.**\n\n")
-        elif failed > 0:
-            report.append("❌ **Some tests failed. Issues must be resolved before production.**\n\n")
-        else:
-            report.append("⏳ **Testing in progress.**\n\n")
-
-        report.append("## Test Results\n\n")
-
-        for result in self.results:
-            status_icon = {
-                'PASS': '✅',
-                'FAIL': '❌',
-                'PENDING': '⏳'
-            }.get(result['status'], '❓')
-
-            report.append(f"### {status_icon} {result['test_id']}: {result['scenario']}\n\n")
-            report.append(f"- **Status**: {result['status']}\n")
-            report.append(f"- **Tester**: {result['tester']}\n")
-
-            if result['tested_date']:
-                report.append(f"- **Date**: {result['tested_date']}\n")
-
-            if result['actual_result']:
-                report.append(f"- **Actual Result**: {result['actual_result']}\n")
-
-            if result['notes']:
-                report.append(f"- **Notes**: {result['notes']}\n")
-
-            report.append("\n")
-
-        with open(output_file, 'w') as f:
-            f.writelines(report)
-
-        print(f"\n✅ UAT report generated: {output_file}")
-
-# Example usage
-if __name__ == '__main__':
-    executor = UATExecutor()
-    executor.execute_all()
-    executor.generate_report()
-```
+> **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='query', version='current')`
+> as a starting point, then build a UAT executor that implements the above logic.
+> Save it to `src/query/uat_executor.[ext]`.
 
 ### Phase 4: Issue Resolution
 

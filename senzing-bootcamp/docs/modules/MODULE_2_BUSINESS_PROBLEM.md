@@ -1,5 +1,7 @@
 # Module 2: Understand Business Problem
 
+> **Agent workflow:** The agent follows `steering/module-02-business-problem.md` for this module's step-by-step workflow.
+
 ## Overview
 
 Module 2 helps you define your entity resolution problem, identify data sources, and create a clear project plan. This foundation ensures the rest of the boot camp is tailored to your specific needs.

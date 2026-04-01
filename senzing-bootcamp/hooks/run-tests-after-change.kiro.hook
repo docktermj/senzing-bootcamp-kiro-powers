@@ -1,0 +1,13 @@
+{
+  "name": "Run Tests After Code Change",
+  "version": "1.0.0",
+  "description": "Reminds the agent to run the test suite after source code changes in loading, query, or transformation programs.",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["src/load/*.*", "src/query/*.*", "src/transform/*.*"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Source code was modified. If tests exist in the tests/ directory, remind the user to run them to verify the change didn't break anything. Suggest the appropriate test command for the chosen language."
+  }
+}

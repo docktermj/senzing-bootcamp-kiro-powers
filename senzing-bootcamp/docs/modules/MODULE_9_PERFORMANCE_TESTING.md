@@ -1,5 +1,7 @@
 # Module 9: Performance Testing and Benchmarking
 
+> **Agent workflow:** The agent follows `steering/module-09-performance.md` for this module's step-by-step workflow.
+
 ## Overview
 
 Module 9 focuses on testing performance and scalability before production deployment. This module ensures your entity resolution solution can handle expected workloads.
@@ -29,21 +31,18 @@ After validating results in Module 8, Module 9 helps you:
 
 Test data transformation speed:
 
-```python
-# Benchmark transformation
-import time
-
-start = time.time()
-records_transformed = 0
-
-for record in read_source('data/raw/customers.csv'):
-    transformed = transform(record)
-    records_transformed += 1
-
-duration = time.time() - start
-throughput = records_transformed / duration
-
-print(f"Transformation: {throughput:.0f} records/second")
+```text
+BENCHMARK: Transformation Throughput
+─────────────────────────────────────
+1. Record the current timestamp (start_time)
+2. Set records_transformed = 0
+3. For each record in source file (e.g., data/raw/customers.csv):
+     a. Apply transformation logic to the record
+     b. Increment records_transformed
+4. Record the current timestamp (end_time)
+5. Compute duration = end_time - start_time
+6. Compute throughput = records_transformed / duration
+7. Print "Transformation: {throughput} records/second"
 ```
 
 **Typical Performance:**
@@ -54,19 +53,18 @@ Use `search_docs(query="transformation performance", version="current")` for cur
 
 Test Senzing loading speed:
 
-```python
-# Benchmark loading
-start = time.time()
-records_loaded = 0
-
-for record in read_transformed('data/transformed/customers.jsonl'):
-    engine.addRecord(DATA_SOURCE, record['RECORD_ID'], record)
-    records_loaded += 1
-
-duration = time.time() - start
-throughput = records_loaded / duration
-
-print(f"Loading: {throughput:.0f} records/second")
+```text
+BENCHMARK: Loading Throughput
+─────────────────────────────
+1. Record the current timestamp (start_time)
+2. Set records_loaded = 0
+3. For each record in transformed file (e.g., data/transformed/customers.jsonl):
+     a. Call engine.addRecord(DATA_SOURCE, record.RECORD_ID, record)
+     b. Increment records_loaded
+4. Record the current timestamp (end_time)
+5. Compute duration = end_time - start_time
+6. Compute throughput = records_loaded / duration
+7. Print "Loading: {throughput} records/second"
 ```
 
 **Typical Performance:**
@@ -80,23 +78,20 @@ print(f"Loading: {throughput:.0f} records/second")
 
 Test query response times:
 
-```python
-# Benchmark queries
-import statistics
-
-response_times = []
-
-for i in range(100):
-    start = time.time()
-    result = engine.searchByAttributes(search_criteria)
-    duration = time.time() - start
-    response_times.append(duration * 1000)  # Convert to ms
-
-print(f"Query response time:")
-print(f"  Average: {statistics.mean(response_times):.1f} ms")
-print(f"  Median: {statistics.median(response_times):.1f} ms")
-print(f"  P95: {statistics.quantiles(response_times, n=20)[18]:.1f} ms")
-print(f"  P99: {statistics.quantiles(response_times, n=100)[98]:.1f} ms")
+```text
+BENCHMARK: Query Response Times
+────────────────────────────────
+1. Initialize an empty list: response_times
+2. Repeat num_queries times (e.g., 100):
+     a. Record start_time
+     b. Call engine.searchByAttributes(search_criteria)
+     c. Record end_time
+     d. Append (end_time - start_time) in milliseconds to response_times
+3. Compute and print:
+     - Average:  mean(response_times)
+     - Median:   median(response_times)
+     - P95:      95th percentile of response_times
+     - P99:      99th percentile of response_times
 ```
 
 **Typical Performance:**
@@ -107,24 +102,21 @@ Use `search_docs(query="query response time benchmarks", version="current")` for
 
 Monitor system resources during loading:
 
-```python
-import psutil
-import time
-
-def monitor_resources(duration=60):
-    """Monitor CPU, memory, disk for specified duration"""
-    samples = []
-
-    for i in range(duration):
-        sample = {
-            'cpu_percent': psutil.cpu_percent(interval=1),
-            'memory_percent': psutil.virtual_memory().percent,
-            'disk_io': psutil.disk_io_counters(),
-        }
-        samples.append(sample)
-
-    return samples
+```text
+BENCHMARK: Resource Utilization
+────────────────────────────────
+1. Set monitoring duration (e.g., 60 seconds)
+2. Initialize an empty list: samples
+3. Repeat once per second for the duration:
+     a. Sample current CPU usage (percent)
+     b. Sample current memory usage (percent)
+     c. Sample current disk I/O counters
+     d. Append {cpu_percent, memory_percent, disk_io} to samples
+4. Compute averages and peaks across all samples
+5. Report: avg CPU %, peak CPU %, avg memory %, peak memory %, total disk I/O
 ```
+
+Use your language's profiling and resource monitoring tools (e.g., OS-level APIs, runtime profilers, or third-party monitoring libraries) to collect these metrics.
 
 ## Scalability Testing
 
@@ -149,190 +141,120 @@ Test 3: 1,000,000 records
 
 ## Performance Testing Script
 
-```python
-#!/usr/bin/env python3
-"""
-Performance Testing and Benchmarking Script
-Tests transformation, loading, and query performance
-"""
+> **Agent instruction:** Generate performance testing code in the bootcamper's chosen
+> language using `generate_scaffold(language=<chosen>, workflow="full_pipeline", version="current")`
+> and `find_examples(query="performance benchmarking")`. The generated script should be
+> saved to `src/testing/performance_test.[ext]`.
 
-import time
-import statistics
-import psutil
-import json
-from typing import Dict, List
-from dataclasses import dataclass, asdict
+The performance tester should implement the following:
 
-@dataclass
-class PerformanceMetrics:
-    test_name: str
-    record_count: int
-    duration_seconds: float
-    throughput_per_second: float
-    cpu_avg_percent: float
-    memory_avg_percent: float
+### Data Structure: PerformanceMetrics
 
-    def to_dict(self):
-        return asdict(self)
+Each benchmark run produces a metrics record containing:
 
-class PerformanceTester:
-    def __init__(self):
-        self.results = []
+| Field                  | Type    | Description                                                          |
+|------------------------|---------|----------------------------------------------------------------------|
+| test_name              | string  | Name of the benchmark (e.g., "transformation", "loading", "queries") |
+| record_count           | integer | Number of records processed                                          |
+| duration_seconds       | float   | Total elapsed time                                                   |
+| throughput_per_second  | float   | Records processed per second                                         |
+| cpu_avg_percent        | float   | Average CPU utilization during test                                  |
+| memory_avg_percent     | float   | Average memory utilization during test                               |
 
-    def benchmark_transformation(self, input_file: str, sample_size: int = 10000):
-        """Benchmark transformation performance"""
-        print(f"\n{'='*60}")
-        print(f"TRANSFORMATION BENCHMARK ({sample_size:,} records)")
-        print(f"{'='*60}")
+### Benchmarks to Implement
 
-        # Monitor resources
-        cpu_samples = []
-        memory_samples = []
+#### 1. Transformation Benchmark
 
-        start_time = time.time()
-        records_processed = 0
+```text
+benchmark_transformation(input_file, sample_size=10000):
+─────────────────────────────────────────────────────────
+1. Print header: "TRANSFORMATION BENCHMARK ({sample_size} records)"
+2. Record start_time
+3. For each record in input_file (up to sample_size):
+     a. Apply transformation logic
+     b. Increment records_processed
+4. Record end_time
+5. Compute duration and throughput
+6. Sample current CPU and memory usage
+7. Store PerformanceMetrics(test_name="transformation", ...)
+8. Print: records processed, duration, throughput, CPU %, memory %
+9. Return the metrics
+```
 
-        # Run actual transformation on source data
-        for record in read_source(input_file, limit=sample_size):
-            transformed = transform(record)
-            records_processed += 1
+#### 2. Loading Benchmark
 
-        duration = time.time() - start_time
-        throughput = records_processed / duration
+```text
+benchmark_loading(input_file, sample_size=1000):
+─────────────────────────────────────────────────
+1. Print header: "LOADING BENCHMARK ({sample_size} records)"
+2. Record start_time
+3. For each record in input_file (up to sample_size):
+     a. Call engine.add_record(DATA_SOURCE, record.RECORD_ID, JSON(record))
+     b. Increment records_loaded
+4. Record end_time
+5. Compute duration and throughput
+6. Sample current CPU and memory usage
+7. Store PerformanceMetrics(test_name="loading", ...)
+8. Print: records loaded, duration, throughput, CPU %, memory %
+9. Return the metrics
+```
 
-        metrics = PerformanceMetrics(
-            test_name='transformation',
-            record_count=records_processed,
-            duration_seconds=duration,
-            throughput_per_second=throughput,
-            cpu_avg_percent=psutil.cpu_percent(),
-            memory_avg_percent=psutil.virtual_memory().percent
-        )
+#### 3. Query Benchmark
 
-        self.results.append(metrics)
+```text
+benchmark_queries(num_queries=100):
+────────────────────────────────────
+1. Print header: "QUERY BENCHMARK ({num_queries} queries)"
+2. Initialize empty list: response_times
+3. Repeat num_queries times:
+     a. Record start_time
+     b. Call engine.search_by_attributes(JSON(search_criteria))
+     c. Compute elapsed time in milliseconds, append to response_times
+4. Compute: average, median, P95, P99 from response_times
+5. Print all statistics
+6. Return the query metrics
+```
 
-        print(f"Records processed: {records_processed:,}")
-        print(f"Duration: {duration:.2f} seconds")
-        print(f"Throughput: {throughput:.0f} records/second")
-        print(f"CPU: {metrics.cpu_avg_percent:.1f}%")
-        print(f"Memory: {metrics.memory_avg_percent:.1f}%")
+#### 4. Scalability Test
 
-        return metrics
+```text
+scalability_test(sizes=[1000, 10000, 100000]):
+───────────────────────────────────────────────
+1. Print header: "SCALABILITY TEST"
+2. For each size in sizes:
+     a. Print "Testing with {size} records..."
+     b. Run benchmark_transformation(source_file, size)
+     c. Run benchmark_loading(transformed_file, min(size, 10000))
+3. Compare throughput degradation across sizes
+```
 
-    def benchmark_loading(self, input_file: str, sample_size: int = 1000):
-        """Benchmark loading performance"""
-        print(f"\n{'='*60}")
-        print(f"LOADING BENCHMARK ({sample_size:,} records)")
-        print(f"{'='*60}")
+#### 5. Report Generation
 
-        start_time = time.time()
-        records_loaded = 0
+```text
+generate_report(output_file="docs/performance_report.json"):
+─────────────────────────────────────────────────────────────
+1. Collect system info: CPU count, total memory (GB), platform
+2. Build report object:
+     {
+       "timestamp": current datetime,
+       "system_info": { cpu_count, memory_total_gb, platform },
+       "results": [ each stored PerformanceMetrics as a dictionary ]
+     }
+3. Write report as JSON to output_file
+4. Print "Performance report saved to: {output_file}"
+```
 
-        # Load records using Senzing SDK
-        for record in read_transformed(input_file, limit=sample_size):
-            engine.add_record(DATA_SOURCE, record['RECORD_ID'], json.dumps(record))
-            records_loaded += 1
+### Main Entry Point
 
-        duration = time.time() - start_time
-        throughput = records_loaded / duration
-
-        metrics = PerformanceMetrics(
-            test_name='loading',
-            record_count=records_loaded,
-            duration_seconds=duration,
-            throughput_per_second=throughput,
-            cpu_avg_percent=psutil.cpu_percent(),
-            memory_avg_percent=psutil.virtual_memory().percent
-        )
-
-        self.results.append(metrics)
-
-        print(f"Records loaded: {records_loaded:,}")
-        print(f"Duration: {duration:.2f} seconds")
-        print(f"Throughput: {throughput:.0f} records/second")
-        print(f"CPU: {metrics.cpu_avg_percent:.1f}%")
-        print(f"Memory: {metrics.memory_avg_percent:.1f}%")
-
-        return metrics
-
-    def benchmark_queries(self, num_queries: int = 100):
-        """Benchmark query performance"""
-        print(f"\n{'='*60}")
-        print(f"QUERY BENCHMARK ({num_queries} queries)")
-        print(f"{'='*60}")
-
-        response_times = []
-
-        for i in range(num_queries):
-            start = time.time()
-
-            # Execute actual query using Senzing SDK
-            result = engine.search_by_attributes(json.dumps(search_criteria))
-
-            duration = (time.time() - start) * 1000  # Convert to ms
-            response_times.append(duration)
-
-        avg_time = statistics.mean(response_times)
-        median_time = statistics.median(response_times)
-        p95_time = statistics.quantiles(response_times, n=20)[18] if len(response_times) >= 20 else max(response_times)
-        p99_time = statistics.quantiles(response_times, n=100)[98] if len(response_times) >= 100 else max(response_times)
-
-        print(f"Queries executed: {num_queries}")
-        print(f"Average response time: {avg_time:.1f} ms")
-        print(f"Median response time: {median_time:.1f} ms")
-        print(f"P95 response time: {p95_time:.1f} ms")
-        print(f"P99 response time: {p99_time:.1f} ms")
-
-        return {
-            'num_queries': num_queries,
-            'avg_ms': avg_time,
-            'median_ms': median_time,
-            'p95_ms': p95_time,
-            'p99_ms': p99_time
-        }
-
-    def scalability_test(self, sizes: List[int] = [1000, 10000, 100000]):
-        """Test scalability with increasing data volumes"""
-        print(f"\n{'='*60}")
-        print(f"SCALABILITY TEST")
-        print(f"{'='*60}")
-
-        for size in sizes:
-            print(f"\nTesting with {size:,} records...")
-            self.benchmark_transformation('data/raw/test.csv', size)
-            self.benchmark_loading('data/transformed/test.jsonl', min(size, 10000))
-
-    def generate_report(self, output_file: str = 'docs/performance_report.json'):
-        """Generate performance report"""
-        report = {
-            'timestamp': time.strftime('%Y-%m-%d %H:%M:%S'),
-            'system_info': {
-                'cpu_count': psutil.cpu_count(),
-                'memory_total_gb': psutil.virtual_memory().total / (1024**3),
-                'platform': 'Linux'  # TODO: Get actual platform
-            },
-            'results': [r.to_dict() for r in self.results]
-        }
-
-        with open(output_file, 'w') as f:
-            json.dump(report, f, indent=2)
-
-        print(f"\nPerformance report saved to: {output_file}")
-        return report
-
-if __name__ == '__main__':
-    tester = PerformanceTester()
-
-    # Run benchmarks
-    tester.benchmark_transformation('data/raw/customers.csv', 10000)
-    tester.benchmark_loading('data/transformed/customers.jsonl', 1000)
-    tester.benchmark_queries(100)
-
-    # Scalability test
-    # tester.scalability_test([1000, 10000, 100000])
-
-    # Generate report
-    tester.generate_report()
+```text
+main():
+──────
+1. Initialize the performance tester
+2. Run benchmark_transformation("data/raw/customers.csv", 10000)
+3. Run benchmark_loading("data/transformed/customers.jsonl", 1000)
+4. Run benchmark_queries(100)
+5. (Optional) Run scalability_test([1000, 10000, 100000])
+6. Generate report
 ```
 
 ## Performance Optimization Tips
@@ -365,7 +287,7 @@ if __name__ == '__main__':
 
 When a user is in Module 9, the agent should:
 
-1. **Create performance testing script** in `src/testing/`
+1. **Create performance testing script** in `src/testing/performance_test.[ext]`
 2. **Run transformation benchmarks**
 3. **Run loading benchmarks**
 4. **Run query benchmarks**
@@ -401,7 +323,7 @@ Module 9 is complete when:
 
 ## Output Files
 
-- `src/testing/performance_test.py` - Testing script
+- `src/testing/performance_test.[ext]` - Testing script
 - `docs/performance_report.json` - Detailed metrics
 - `docs/performance_report.md` - Summary and recommendations
 - `docs/performance_dashboard.html` - Visual dashboard
@@ -416,4 +338,5 @@ Module 9 is complete when:
 
 ## Version History
 
+- **v4.0.0** (2026-04-01): Rewritten to be language-agnostic; replaced Python code with pseudocode and agent scaffold instructions
 - **v3.0.0** (2026-03-17): Module 9 created for performance testing

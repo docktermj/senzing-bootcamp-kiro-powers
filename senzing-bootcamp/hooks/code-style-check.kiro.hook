@@ -1,0 +1,13 @@
+{
+  "name": "Code Style Check",
+  "version": "2.0.0",
+  "description": "Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions.",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["*.py", "*.java", "*.cs", "*.rs", "*.ts", "*.js"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A source code file was just edited. Check it for language-appropriate coding standards (Python: PEP-8 with max line length 100; Java: standard conventions; C#: .NET conventions; Rust: rustfmt/clippy; TypeScript: ESLint conventions). If violations are found, suggest specific fixes. If compliant, acknowledge briefly and continue."
+  }
+}

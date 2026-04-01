@@ -127,7 +127,7 @@ Learn from common mistakes to save time and frustration.
 
 ### Pitfall: Generated Files Placed in Project Root
 
-**Symptom**: `.py`, `.jsonl`, `.md`, `.sh` files appear in project root after mapping
+**Symptom**: Source code, data, and documentation files appear in project root after mapping
 **Problem**: MCP tools may output files to the current directory instead of the proper subdirectory
 **Solution**: Always relocate generated files immediately:
 
@@ -371,7 +371,7 @@ rm data/transformed/bad_output.jsonl
 
 ```bash
 # Restore file from git
-git checkout HEAD -- src/transform/program.py
+git checkout HEAD -- src/transform/program.[ext]
 ```
 
 ## Prevention Checklist

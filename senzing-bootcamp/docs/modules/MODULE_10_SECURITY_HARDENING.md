@@ -1,5 +1,7 @@
 # Module 10: Security Hardening
 
+> **Agent workflow:** The agent follows `steering/module-10-security.md` for this module's step-by-step workflow.
+
 ## Overview
 
 Module 10 focuses on securing your entity resolution application for production deployment. This module ensures your solution follows security best practices.
@@ -22,22 +24,20 @@ After performance testing in Module 9, Module 10 helps you:
 
 ❌ **Bad**: Hardcoded credentials
 
-```python
+```text
 DATABASE_URL = "postgresql://user:password123@localhost/senzing"
 ```
 
 ✅ **Good**: Environment variables
 
-```python
-import os
-DATABASE_URL = os.getenv('DATABASE_URL')
+```text
+Read DATABASE_URL from environment variable
 ```
 
 ✅ **Better**: Secrets manager
 
-```python
-from aws_secretsmanager import get_secret
-DATABASE_URL = get_secret('prod/senzing/database_url')
+```text
+Retrieve "prod/senzing/database_url" from secrets manager service
 ```
 
 **Tools**:
@@ -52,26 +52,17 @@ DATABASE_URL = get_secret('prod/senzing/database_url')
 
 Implement authentication for all APIs:
 
-```python
-from flask import Flask, request, jsonify
-from functools import wraps
+```text
+function require_api_key(handler):
+    Extract "X-API-Key" header from request
+    If key is missing or invalid:
+        Return 401 Unauthorized
+    Otherwise:
+        Proceed to handler
 
-app = Flask(__name__)
-
-def require_api_key(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        api_key = request.headers.get('X-API-Key')
-        if not api_key or not validate_api_key(api_key):
-            return jsonify({'error': 'Unauthorized'}), 401
-        return f(*args, **kwargs)
-    return decorated_function
-
-@app.route('/api/search')
-@require_api_key
-def search():
-    # Protected endpoint
-    pass
+Route GET /api/search through require_api_key:
+    function search():
+        // Protected endpoint logic
 ```
 
 **Authentication Methods**:
@@ -95,9 +86,9 @@ def search():
 - Database SSL connections
 - VPN for internal traffic
 
-```python
-# Force SSL for database connections
-DATABASE_URL = "postgresql://user:pass@host/db?sslmode=require"
+```text
+Connect to database with SSL mode = "require"
+Example connection string: "postgresql://user:pass@host/db?sslmode=require"
 ```
 
 ### 4. PII Handling Compliance
@@ -112,13 +103,12 @@ DATABASE_URL = "postgresql://user:pass@host/db?sslmode=require"
 
 **Implementation**:
 
-```python
-def anonymize_pii(record):
-    """Anonymize PII for non-production environments"""
-    if os.getenv('ENVIRONMENT') != 'production':
-        record['SSN_NUMBER'] = 'XXX-XX-' + record['SSN_NUMBER'][-4:]
-        record['EMAIL_ADDRESS'] = hash_email(record['EMAIL_ADDRESS'])
-    return record
+```text
+function anonymize_pii(record):
+    If environment is not "production":
+        Mask SSN_NUMBER: keep last 4 digits, replace rest with "XXX-XX-"
+        Hash EMAIL_ADDRESS
+    Return record
 ```
 
 ### 5. Security Scanning
@@ -195,63 +185,50 @@ GRANT INSERT, UPDATE ON ALL TABLES IN SCHEMA public TO senzing_load;
 
 Log all security-relevant events:
 
-```python
-import logging
+```text
+Create a dedicated security logger
 
-security_logger = logging.getLogger('security')
-security_logger.setLevel(logging.INFO)
+function log_access(user, action, resource):
+    Write info log: "User {user} performed {action} on {resource}"
 
-def log_access(user, action, resource):
-    security_logger.info(f"User {user} performed {action} on {resource}")
-
-# Log authentication attempts
-def authenticate(username, password):
-    if valid_credentials(username, password):
-        log_access(username, 'login', 'system')
-        return True
-    else:
-        security_logger.warning(f"Failed login attempt for {username}")
-        return False
+function authenticate(username, password):
+    If credentials are valid:
+        log_access(username, "login", "system")
+        Return true
+    Else:
+        Write warning log: "Failed login attempt for {username}"
+        Return false
 ```
 
 ### 9. Input Validation
 
 Prevent injection attacks:
 
-```python
-def validate_search_input(query):
-    """Validate and sanitize search input"""
-    # Remove SQL injection attempts
-    dangerous_chars = [';', '--', '/*', '*/', 'xp_', 'sp_']
-    for char in dangerous_chars:
-        if char in query:
-            raise ValueError(f"Invalid character in query: {char}")
+```text
+function validate_search_input(query):
+    Define dangerous patterns: [";", "--", "/*", "*/", "xp_", "sp_"]
+    For each pattern in dangerous patterns:
+        If pattern found in query:
+            Raise error: "Invalid character in query"
 
-    # Limit length
-    if len(query) > 1000:
-        raise ValueError("Query too long")
+    If length of query > 1000:
+        Raise error: "Query too long"
 
-    return query
+    Return sanitized query
 ```
 
 ### 10. Rate Limiting
 
 Prevent abuse:
 
-```python
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
+```text
+Configure rate limiter:
+    Default limit: 100 requests per hour per IP
 
-limiter = Limiter(
-    app,
-    key_func=get_remote_address,
-    default_limits=["100 per hour"]
-)
-
-@app.route('/api/search')
-@limiter.limit("10 per minute")
-def search():
-    pass
+Route GET /api/search:
+    Rate limit: 10 requests per minute per IP
+    function search():
+        // Search logic
 ```
 
 ## Security Audit Checklist

@@ -2,6 +2,8 @@
 inclusion: manual
 ---
 
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_1_QUICK_DEMO.md`.
+
 # Module 1: Quick Demo (Optional)
 
 ## Workflow: Quick Demo (Module 1 - Optional)

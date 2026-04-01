@@ -4,9 +4,21 @@ inclusion: always
 
 # Agent Instructions
 
-## First Action — Create Directory Structure
+## First Action — Check for Existing Progress
 
 Before greeting the user, asking questions, or doing anything else:
+
+1. Check if `config/bootcamp_progress.json` exists
+2. If it exists, read it and offer to resume:
+   - "Welcome back! I see you've completed through Module [X] using [language]. Would you like to continue from where you left off, or start fresh?"
+   - WAIT for response
+   - If resuming, skip to the appropriate module
+   - If starting fresh, proceed with directory structure creation
+3. If it doesn't exist, proceed with directory structure creation
+
+## Second Action — Create Directory Structure
+
+If starting fresh (no progress file, or user chose to start over):
 
 1. Check if project directory structure exists (`src/`, `data/`, `docs/`)
 2. If it doesn't exist, load `project-structure.md` and execute the creation commands
@@ -22,7 +34,7 @@ If directory creation fails, report the error, provide commands for manual execu
 
 After creating the directory structure (or confirming it exists), inform the user: "If you encounter any issues or have suggestions during the boot camp, just say 'bootcamp feedback' and I'll help you document them for the boot camp author."
 
-## Second Action — Programming Language Selection
+## Third Action — Programming Language Selection
 
 After directory structure is confirmed and before the prerequisite check, ask the bootcamper which programming language they want to use for generated code.
 
@@ -43,16 +55,26 @@ After directory structure is confirmed and before the prerequisite check, ask th
 
 5. **Remember the chosen language** for the entire boot camp session. Use it in all subsequent calls to `generate_scaffold`, `sdk_guide`, `find_examples`, and any code generation throughout every module.
 
-6. **Platform compatibility note**: If the bootcamper chooses Python, inform them that the Senzing Python SDK is only supported on Linux. On macOS or Windows, they should either pick a different language or use Docker/WSL2.
+6. **Persist the choice** by writing it to `config/bootcamp_preferences.yaml`:
+
+   ```yaml
+   language: <chosen_language>
+   path: null  # Set after path selection
+   started_at: <ISO 8601 timestamp>
+   ```
+
+   If `config/bootcamp_preferences.yaml` already exists (from a previous session), read the language from it and confirm with the user: "Last time you chose [language]. Would you like to continue with that, or switch?"
+
+7. **Platform compatibility note**: If the bootcamper chooses Python, inform them that the Senzing Python SDK is only supported on Linux. On macOS or Windows, they should either pick a different language or use Docker/WSL2.
 
 7. **Code quality standards**: Apply language-appropriate coding standards:
-   - Python → PEP-8 (see `docs/policies/PEP8_COMPLIANCE.md`)
+   - Python → PEP-8 (see `docs/policies/CODE_QUALITY_STANDARDS.md`)
    - Java → Standard Java conventions (camelCase methods, PascalCase classes, Javadoc)
    - C# → .NET conventions (PascalCase methods and classes, XML doc comments)
    - Rust → Rust conventions (snake_case, rustfmt, clippy)
    - TypeScript → Standard TS conventions (camelCase, ESLint, JSDoc)
 
-## Third Action — Platform Prerequisite Check
+## Fourth Action — Platform Prerequisite Check
 
 After language selection is confirmed and before presenting path options, run a quick prerequisite check to surface missing dependencies up front.
 
@@ -135,7 +157,7 @@ Platform check:
    - Configuration → `config/`
    - Temporary working files → `data/temp/`
    - When MCP tools generate files outside the project, immediately relocate them
-10. **All generated code must follow language-appropriate coding standards** — For Python: PEP-8 (see `docs/policies/PEP8_COMPLIANCE.md`). For Java: standard Java conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions. Always use the bootcamper's chosen language from the language selection step.
+10. **All generated code must follow language-appropriate coding standards** — For Python: PEP-8. For Java: standard Java conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions. Always use the bootcamper's chosen language from the language selection step. See `docs/policies/CODE_QUALITY_STANDARDS.md`.
 
 ## Path Selection
 
@@ -215,7 +237,27 @@ For `mapping_workflow`:
 
 ## Validation Gates
 
-Before proceeding to next module, verify:
+Before proceeding to next module, verify and update progress:
+
+After each module's validation gate passes, update `config/bootcamp_progress.json`:
+
+```json
+{
+  "current_module": 6,
+  "language": "java",
+  "path": "D",
+  "modules_completed": [0, 1, 2, 3, 4, 5],
+  "last_updated": "2026-04-01T14:30:00Z",
+  "data_sources": ["CUSTOMERS_CRM", "CUSTOMERS_ECOMMERCE"],
+  "database": "postgresql"
+}
+```
+
+Also update `config/bootcamp_preferences.yaml` with the current module.
+
+Every 3 modules, congratulate the user on their progress: "Great work — you've completed [N] modules so far!"
+
+Gate checks:
 
 - **0 → 1**: SDK installed, database configured, test script passes
 - **1 → 2**: Demo completed or skipped

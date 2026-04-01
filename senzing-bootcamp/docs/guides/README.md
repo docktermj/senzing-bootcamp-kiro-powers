@@ -28,11 +28,26 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - Organized by category
 - Covers modules, files, troubleshooting
 
+**[GLOSSARY.md](GLOSSARY.md)**
+
+- Quick-reference glossary of Senzing entity resolution terms
+- 18 key terms: entity, data source, record, feature, SGES, redo record, and more
+- Concise definitions without needing MCP round-trips
+
 **[DESIGN_PATTERNS.md](DESIGN_PATTERNS.md)**
 
 - 10 common entity resolution patterns
 - Use cases and examples
 - When to use each pattern
+
+### After the Boot Camp
+
+**[AFTER_BOOTCAMP.md](AFTER_BOOTCAMP.md)**
+
+- What to do after completing the boot camp
+- Production maintenance cadence (daily/weekly/monthly/quarterly)
+- Scaling, adding new data sources, staying updated
+- Advanced topics and community resources
 
 ### Progress and Tracking
 
@@ -195,6 +210,8 @@ docs/
 │   ├── COLLABORATION_GUIDE.md
 │   ├── DESIGN_PATTERNS.md
 │   ├── PROGRESS_TRACKER.md
+│   ├── AFTER_BOOTCAMP.md
+│   ├── GLOSSARY.md
 │   └── HOOKS_INSTALLATION_GUIDE.md
 ├── diagrams/                  # ⭐ NEW! Visual docs
 │   ├── module-flow.md        # Module diagrams
@@ -206,7 +223,7 @@ docs/
 │   └── ... (Modules 2-12)
 ├── policies/                  # Policy documents
 │   ├── FILE_STORAGE_POLICY.md
-│   ├── PEP8_COMPLIANCE.md
+│   ├── CODE_QUALITY_STANDARDS.md
 │   └── ... (other policies)
 └── feedback/                  # Feedback templates
     └── SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md
@@ -284,7 +301,7 @@ Found an issue or have a suggestion?
 - [Module 1: Quick Demo](../modules/MODULE_1_QUICK_DEMO.md)
 - [Module 2: Business Problem](../modules/MODULE_2_BUSINESS_PROBLEM.md)
 - [File Storage Policy](../policies/FILE_STORAGE_POLICY.md)
-- [PEP-8 Compliance](../policies/PEP8_COMPLIANCE.md)
+- [Code Quality Standards](../policies/CODE_QUALITY_STANDARDS.md)
 
 ---
 

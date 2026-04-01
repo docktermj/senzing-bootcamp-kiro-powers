@@ -2,6 +2,8 @@
 inclusion: manual
 ---
 
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_4_DATA_QUALITY_SCORING.md`.
+
 # Module 4: Verify Data Sources Against SGES
 
 ## Workflow: Verify Data Sources Against SGES (Module 4)
@@ -106,7 +108,7 @@ Use this workflow to set up automated quality checks and reminders before starti
    cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
 
    # Or copy individual hooks
-   cp senzing-bootcamp/hooks/pep8-check.kiro.hook .kiro/hooks/
+   cp senzing-bootcamp/hooks/code-style-check.kiro.hook .kiro/hooks/
    cp senzing-bootcamp/hooks/data-quality-check.kiro.hook .kiro/hooks/
    cp senzing-bootcamp/hooks/backup-before-load.kiro.hook .kiro/hooks/
    cp senzing-bootcamp/hooks/validate-senzing-json.kiro.hook .kiro/hooks/

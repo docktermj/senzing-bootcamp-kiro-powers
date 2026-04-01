@@ -2,6 +2,8 @@
 inclusion: manual
 ---
 
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_0_SDK_SETUP.md`.
+
 # Module 0: SDK Installation and Configuration
 
 Install and configure the Senzing SDK natively on your machine. This is the first step of the boot camp — once the SDK is installed, all subsequent modules use it directly.
@@ -16,30 +18,7 @@ Install and configure the Senzing SDK natively on your machine. This is the firs
 
 Before installing, check if Senzing is already present. Adapt the check to the chosen language:
 
-**Python:**
-```bash
-python3 -c "import senzing; print('Senzing version:', senzing.__version__)" 2>/dev/null
-```
-
-**Java:**
-```bash
-java -cp "/opt/senzing/er/sdk/java/*" com.senzing.sdk.core.SzCoreEnvironment 2>/dev/null
-```
-
-**C#:**
-```bash
-dotnet list package | grep -i senzing 2>/dev/null
-```
-
-**Rust:**
-```bash
-cargo search senzing 2>/dev/null
-```
-
-**TypeScript:**
-```bash
-npm list | grep -i senzing 2>/dev/null
-```
+> **Agent instruction:** Use `sdk_guide(topic='install', platform='<user_platform>', language='<chosen_language>', version='current')` to get the correct verification commands for the user's platform and language combination. Do not hardcode verification commands — the MCP server provides the correct ones for each platform/language pair.
 
 If Senzing is found:
 
@@ -138,7 +117,7 @@ Once the SDK is installed and verified, proceed to:
 
 - Installation fails? Use `explain_error_code` for SENZ errors
 - Platform not supported? Use `search_docs` for alternative installation methods
-- Database errors? Check `docs/policies/SQLITE_DATABASE_LOCATION.md` for path requirements
+- Database errors? Check `docs/policies/FILE_STORAGE_POLICY.md` for path requirements
 - Permission issues? Ensure you have admin/sudo access for installation
 - Missing dependencies? Run `./scripts/check_prerequisites.sh`
 

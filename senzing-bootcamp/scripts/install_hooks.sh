@@ -42,14 +42,15 @@ echo -e "${CYAN}Available Hooks:${NC}"
 echo ""
 
 HOOKS=(
-    "pep8-check.kiro.hook:PEP-8 Compliance Check:Ensures Python code follows PEP-8 standards"
+    "code-style-check.kiro.hook:Code Style Check:Ensures code follows language-appropriate standards"
     "data-quality-check.kiro.hook:Data Quality Check:Validates quality when transformations change"
     "backup-before-load.kiro.hook:Backup Before Load:Reminds to backup before loading"
     "validate-senzing-json.kiro.hook:Validate Senzing JSON:Validates output format against SGES"
     "backup-project-on-request.kiro.hook:Backup on Request:Auto-backup when user requests it"
     "commonmark-validation.kiro.hook:CommonMark Validation:Validates Markdown files follow CommonMark spec"
-    "commonmark-pre-commit.kiro.hook:CommonMark Pre-Commit:Checks Markdown before committing"
-    "validate-commonmark-on-save.kiro.hook:Validate CommonMark on Save:Validates Markdown on file save"
+    "verify-senzing-facts.kiro.hook:Verify Senzing Facts:Verifies Senzing content via MCP before writing"
+    "analyze-after-mapping.kiro.hook:Analyze After Mapping:Validates transformed data before loading"
+    "run-tests-after-change.kiro.hook:Run Tests After Change:Reminds to run tests after code changes"
 )
 
 for hook_info in "${HOOKS[@]}"; do
@@ -102,7 +103,7 @@ case $REPLY in
     [Bb])
         echo -e "${CYAN}Installing essential hooks...${NC}"
         echo ""
-        ESSENTIAL=("pep8-check.kiro.hook" "backup-before-load.kiro.hook" "backup-project-on-request.kiro.hook")
+        ESSENTIAL=("code-style-check.kiro.hook" "backup-before-load.kiro.hook" "backup-project-on-request.kiro.hook")
         INSTALLED=0
         for filename in "${ESSENTIAL[@]}"; do
             if [ -f "$POWER_HOOKS_DIR/$filename" ]; then

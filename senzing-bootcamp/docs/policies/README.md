@@ -4,113 +4,47 @@ This directory contains policy documents that define coding standards and organi
 
 ## Available Policies
 
-### SQLite Database Location Policy
+### File Storage Policy
 
-**File**: [SQLITE_DATABASE_LOCATION.md](SQLITE_DATABASE_LOCATION.md)
+**File**: [FILE_STORAGE_POLICY.md](FILE_STORAGE_POLICY.md)
 
-**Purpose**: Define where SQLite databases must be created during the bootcamp
+**Purpose**: Comprehensive guide for where all file types should be stored (never use /tmp)
 
-**Key Rules**:
+**Covers**:
 
-- All SQLite databases MUST be placed in `database/G2C.db` (project-relative path)
-- Never use `/tmp/sqlite` or system-wide locations
-- Create `database/` directory if it doesn't exist
-- Use absolute path from project root
+- Source code → `src/` (including Module 1 demo code in `src/quickstart_demo/`)
+- Shell scripts → `scripts/`
+- Data files → `data/`
+- Database files → `database/G2C.db` (project-relative, never `/tmp/sqlite`)
+- Configuration → `config/`
+- Documentation → `docs/`
+- License files → `licenses/`
+- Backups → `backups/`
+- Temporary files → `data/temp/`
 
-**Why It Matters**: Allows multiple bootcamp instances to run concurrently on the same machine without database conflicts
+**Why It Matters**: Consistent project organization, concurrent bootcamp support, no `/tmp` conflicts
 
-**Applies To**: All modules using SQLite (Modules 1, 0, 6, 7, 8)
-
-**Critical**: Overrides Senzing MCP server recommendation of `/tmp/sqlite` - always use project-local `database/` directory
-
----
-
-### Module 1 Code Location Policy
-
-**File**: [MODULE_1_CODE_LOCATION.md](MODULE_1_CODE_LOCATION.md)
-
-**Purpose**: Define where Module 1 demo code should be stored
-
-**Key Rules**:
-
-- All Module 1 demo code goes in `src/quickstart_demo/`
-- Demo scripts: `src/quickstart_demo/demo_[dataset_name].py`
-- Sample data: `src/quickstart_demo/sample_data_[dataset_name].jsonl`
-- Keep demo code separate from main project code
-
-**Why It Matters**: Prevents confusion between demo code and production code
-
-**Applies To**: Module 1 (Quick Demo)
+**Applies To**: All modules
 
 ---
 
-### Python Requirements Policy
+### Dependency Management Policy
 
-**File**: [PYTHON_REQUIREMENTS_POLICY.md](PYTHON_REQUIREMENTS_POLICY.md)
+**File**: [DEPENDENCY_MANAGEMENT_POLICY.md](DEPENDENCY_MANAGEMENT_POLICY.md)
 
-**Purpose**: Define how Python dependencies should be managed
+**Purpose**: Define how project dependencies should be managed across all supported languages
 
 **Key Rules**:
 
-- Use `requirements.txt` for production dependencies
-- Use `requirements-dev.txt` for development dependencies
-- Pin versions for production (`package==1.2.3`)
-- Use ranges for development (`package>=1.2.0`)
+- Use the appropriate dependency file for your language (e.g., `requirements.txt`, `pom.xml`, `Cargo.toml`, `package.json`)
+- Pin versions for production
+- Use ranges for development
 - Document why each dependency is needed
 - Keep dependencies minimal
 
 **Why It Matters**: Ensures reproducible builds and clear dependency management
 
-**Applies To**: All Python projects (Modules 5, 0, 6, 7, 8, 9, 10, 11, 12)
-
----
-
-### Shell Script Locations Policy
-
-**File**: [SHELL_SCRIPT_LOCATIONS.md](SHELL_SCRIPT_LOCATIONS.md)
-
-**Purpose**: Define where shell scripts should be stored
-
-**Key Rules**:
-
-- **All shell scripts (*.sh) go in `scripts/` directory**
-- Python/Java/C# code goes in `src/` directory
-- Use descriptive names: `deploy.sh`, not `d.sh`
-- Include shebang: `#!/bin/bash`
-- Add comments explaining what script does
-
-**Common Scripts**:
-
-- `scripts/deploy.sh` - Deployment automation
-- `scripts/backup.sh` - Database backup
-- `scripts/migrate_db.sh` - Database migration
-- `scripts/run_pipeline.sh` - Pipeline execution
-- `scripts/health_check.sh` - Health checks
-
-**Why It Matters**: Consistent project organization and clear separation of concerns
-
-**Applies To**: All modules that generate shell scripts (Modules 10, 11, 12)
-
----
-
-### File Storage Policy
-
-**File**: [FILE_STORAGE_POLICY.md](FILE_STORAGE_POLICY.md)
-
-**Purpose**: Define where all file types should be stored (never use /tmp)
-
-**Key Rules**:
-
-- **Source code** → `src/` directory
-- **Shell scripts** → `scripts/` directory
-- **Documentation** → `docs/` directory
-- **Data files** → `data/` directory
-- **Configuration** → `config/` directory or root (for .env)
-- **Never use `/tmp`** for project files
-
-**Why It Matters**: Ensures files persist, are organized, and are easy to find
-
-**Applies To**: All modules and all file types
+**Applies To**: All projects (Modules 5, 0, 6, 7, 8, 9, 10, 11, 12)
 
 ---
 
@@ -135,14 +69,12 @@ This directory contains policy documents that define coding standards and organi
 
 ## Policy Summary
 
-| Policy              | Directory              | File Types          | Applies To            |
-|---------------------|------------------------|---------------------|-----------------------|
-| Senzing Information | N/A (agent behavior)   | All                 | All modules (0–12)    |
-| SQLite Database     | `database/`            | `*.db`              | Modules 1, 0, 6, 7, 8 |
-| Module 1 Code       | `src/quickstart_demo/` | Python/Java/C#/Rust | Module 1              |
-| Python Requirements | Project root           | `requirements*.txt` | All Python projects   |
-| Shell Scripts       | `scripts/`             | `*.sh`              | Modules 10, 11, 12    |
-| File Storage        | Various                | All files           | All modules           |
+| Policy              | Directory              | File Types          | Applies To             |
+|---------------------|------------------------|---------------------|------------------------|
+| File Storage        | Various                | All files           | All modules            |
+| Code Quality        | N/A (standards)        | Source code         | All modules            |
+| Dependencies        | Project root           | Language-specific   | All projects           |
+| Senzing Information | N/A (agent behavior)   | All                 | All modules (0–12)     |
 
 ## File Organization Overview
 
@@ -151,7 +83,7 @@ project-root/
 ├── database/                 # SQLite database files (REQUIRED LOCATION)
 │   ├── G2C.db                # Main Senzing database
 │   └── .gitkeep              # Keep directory in git
-├── src/                      # All source code (Python/Java/C#/Rust)
+├── src/                      # All source code
 │   ├── quickstart_demo/      # Module 1 demo code
 │   ├── transform/            # Transformation programs
 │   ├── load/                 # Loading programs
@@ -173,8 +105,7 @@ project-root/
 │   ├── policies/             # Policy docs
 │   └── feedback/             # User feedback
 ├── config/                   # Configuration files
-├── requirements.txt          # Python production dependencies
-├── requirements-dev.txt      # Python development dependencies
+├── requirements.txt / pom.xml / etc.  # Language-specific dependencies
 └── ...
 ```
 
@@ -241,16 +172,12 @@ When organizing your project:
 
 ## Version History
 
+- **v2.0.0** (2026-04-01): Consolidated micro-policies into FILE_STORAGE_POLICY.md
+  - Removed SQLITE_DATABASE_LOCATION.md, MODULE_1_CODE_LOCATION.md, SHELL_SCRIPT_LOCATIONS.md
+  - Their rules are now in FILE_STORAGE_POLICY.md
 - **v1.2.0** (2026-03-26): Added SQLite database location policy
-  - SQLITE_DATABASE_LOCATION.md
-  - Overrides MCP server `/tmp/sqlite` recommendation
-  - Enables concurrent bootcamp instances
 - **v1.1.0** (2026-03-17): Added file storage policy
-  - FILE_STORAGE_POLICY.md
 - **v1.0.0** (2026-03-17): Initial policies created
-  - MODULE_1_CODE_LOCATION.md
-  - PYTHON_REQUIREMENTS_POLICY.md
-  - SHELL_SCRIPT_LOCATIONS.md
 
 ## Navigation
 

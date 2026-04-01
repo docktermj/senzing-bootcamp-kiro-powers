@@ -30,13 +30,10 @@ Policy documents that define standards and conventions for the boot camp.
 
 **Files:**
 
-- `FILE_STORAGE_POLICY.md` - Where to store all project files
-- `MODULE_1_CODE_LOCATION.md` - Policy for Module 1 demo code location
-- `PEP8_COMPLIANCE.md` - PEP-8 coding standards
-- `PYTHON_REQUIREMENTS_POLICY.md` - Python dependency management policy
+- `FILE_STORAGE_POLICY.md` - Where to store all project files (includes shell scripts, database, and demo code rules)
+- `CODE_QUALITY_STANDARDS.md` - Coding standards and quality guidelines
+- `DEPENDENCY_MANAGEMENT_POLICY.md` - Dependency management policy
 - `SENZING_INFORMATION_POLICY.md` - MCP-only Senzing facts policy
-- `SHELL_SCRIPT_LOCATIONS.md` - Shell script organization policy
-- `SQLITE_DATABASE_LOCATION.md` - SQLite database path policy
 
 ### `/guides/`
 

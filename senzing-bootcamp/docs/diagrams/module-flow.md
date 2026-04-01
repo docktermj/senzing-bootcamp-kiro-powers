@@ -124,7 +124,7 @@
 ┌──────────────────────┐
 │     MODULE 10        │
 │ Security Hardening   │
-│      1-2 hours       │
+│    2-8 hours         │
 │                      │
 │  • Secrets mgmt      │
 │  • Encryption        │
@@ -135,7 +135,7 @@
 ┌──────────────────────┐
 │     MODULE 11        │
 │     Monitoring       │
-│      1-2 hours       │
+│    60-90 minutes     │
 │                      │
 │  • Logging           │
 │  • Metrics           │
@@ -146,7 +146,7 @@
 ┌──────────────────────┐
 │     MODULE 12        │
 │     Deployment       │
-│      2-3 hours       │
+│      2-4 hours       │
 │                      │
 │  • Package code      │
 │  • Multi-env config  │
@@ -249,11 +249,11 @@ Module 12: Requires Module 11 (optional)
 │ Module 7: Orchestration   │ 1-2 hours                    │
 │ Module 8: Queries         │ 1-2 hours                    │
 │ Module 9: Performance     │ 1-2 hours                    │
-│ Module 10: Security       │ 1-2 hours                    │
-│ Module 11: Monitoring     │ 1-2 hours                    │
-│ Module 12: Deployment     │ 2-3 hours                    │
+│ Module 10: Security       │ 2-8 hours                    │
+│ Module 11: Monitoring     │ 60-90 minutes                │
+│ Module 12: Deployment     │ 2-4 hours                    │
 ├──────────────────────────────────────────────────────────┤
-│ TOTAL (all modules)       │ 10-18 hours                  │
+│ TOTAL (all modules)       │ 10-20 hours                  │
 └──────────────────────────────────────────────────────────┘
 ```
 

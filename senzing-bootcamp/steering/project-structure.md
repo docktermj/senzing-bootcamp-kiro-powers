@@ -34,9 +34,11 @@ my-senzing-project/
 │   ├── query_specifications.md    # Module 6 queries
 │   └── lessons_learned.md         # Post-project retrospective
 ├── config/                        # Configuration files
+│   ├── bootcamp_preferences.yaml  # Language choice, path selection (auto-generated)
+│   └── bootcamp_progress.json     # Module completion tracking (auto-generated)
 ├── logs/                          # Log files
 ├── monitoring/                    # Monitoring and dashboards
-├── requirements.txt               # Python dependencies for your project
+├── <dependency file>               # Language-specific (requirements.txt, pom.xml, etc.)
 └── README.md                      # Project description
 ```
 
@@ -55,7 +57,7 @@ my-senzing-project/
 
 See `examples/` for reference implementations.
 
-**SQLite Database Location**: All SQLite databases MUST be placed in `database/G2C.db` (project-relative path). Never use `/tmp/sqlite` or system-wide locations. This allows multiple bootcamp instances to run concurrently on the same machine. See `docs/policies/SQLITE_DATABASE_LOCATION.md` for complete policy.
+**SQLite Database Location**: All SQLite databases MUST be placed in `database/G2C.db` (project-relative path). Never use `/tmp/sqlite` or system-wide locations. This allows multiple bootcamp instances to run concurrently on the same machine. See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy.
 
 ## Agent Behavior
 

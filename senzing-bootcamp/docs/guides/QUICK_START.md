@@ -37,7 +37,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 > **Agent instruction:** For Path B, offer the user two options:
 >
-> 1. **Fastest**: Use `sdk_guide(topic='full_pipeline', platform='<user_platform>', language='python', version='current')` to get install + configure + load + export in one call. This is the quickest way to see results.
+> 1. **Fastest**: Use `sdk_guide(topic='full_pipeline', platform='<user_platform>', language='<chosen_language>', version='current')` to get install + configure + load + export in one call. This is the quickest way to see results.
 > 2. **Step-by-step**: Walk through Module 0 then Module 6 separately for more control.
 
 ```bash

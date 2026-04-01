@@ -64,7 +64,7 @@ Load these on-demand when needed:
 **Project Setup:**
 
 - `project-structure.md` — Directory structure and setup commands
-- `environment-setup.md` — Version control, Python venv setup
+- `environment-setup.md` — Version control, language-specific environment setup
 
 **Advanced Topics:**
 
@@ -126,27 +126,27 @@ Always call `get_capabilities` first when starting a session.
 
 ## Boot Camp Modules
 
-| Module | Topic                              | Time              |
-|--------|------------------------------------|-------------------|
-| 0      | Set Up SDK                         | 30 min - 1 hr     |
-| 1      | Quick Demo (Optional)              | 10-15 min         |
-| 2      | Understand Business Problem        | 20-30 min         |
-| 3      | Identify and Collect Data Sources  | 10-15 min/source  |
-| 4      | Evaluate Data Quality              | 15-20 min/source  |
-| 5      | Map Your Data                      | 1-2 hrs/source    |
-| 6      | Load Single Data Source            | 30 min/source     |
-| 7      | Multi-Source Orchestration         | 1-2 hrs           |
-| 8      | Query and Validate Results         | 1-2 hrs           |
-| 9      | Performance Testing                | 1-2 hrs           |
-| 10     | Security Hardening                 | 1-2 hrs           |
-| 11     | Monitoring and Observability       | 1-2 hrs           |
-| 12     | Package and Deploy                 | 2-3 hrs           |
+| Module | Topic                              | Time                           |
+|--------|------------------------------------|--------------------------------|
+| 0      | Set Up SDK                         | 30 min - 1 hr                  |
+| 1      | Quick Demo (Optional)              | 10-15 min                      |
+| 2      | Understand Business Problem        | 20-30 min                      |
+| 3      | Identify and Collect Data Sources  | 10-15 min/source               |
+| 4      | Evaluate Data Quality              | 15-20 min/source               |
+| 5      | Map Your Data                      | 1-2 hrs/source                 |
+| 6      | Load Single Data Source            | 30 min/source                  |
+| 7      | Multi-Source Orchestration         | 1-2 hrs                        |
+| 8      | Query and Validate Results         | 1-2 hrs                        |
+| 9      | Performance Testing                | 1-2 hrs                        |
+| 10     | Security Hardening                 | 2-8 hrs (varies by compliance) |
+| 11     | Monitoring and Observability       | 60-90 min                      |
+| 12     | Package and Deploy                 | 2-4 hrs (varies by target)     |
 
-Modules are progressive but iterative. Skip ahead options: have SGES data (skip 5), single source (skip 7), not deploying to production (skip 9-12).
+Modules are progressive but iterative. Skip ahead options: have SGES data (skip 5), single source (skip 7), not deploying to production (skip 9-12). Modules 9-12 are production-focused and optional for learning/evaluation.
 
 ## Code Quality Standards
 
-All generated code follows language-appropriate coding standards based on the bootcamper's chosen language. The boot camp supports Python, Java, C#, Rust, and TypeScript/Node.js — the agent queries the Senzing MCP server for the current list and asks the bootcamper to choose at the start. For Python: PEP-8 (see `docs/policies/PEP8_COMPLIANCE.md`). For other languages, standard community conventions apply.
+All generated code follows language-appropriate coding standards based on the bootcamper's chosen language. The boot camp supports Python, Java, C#, Rust, and TypeScript/Node.js — the agent queries the Senzing MCP server for the current list and asks the bootcamper to choose at the start. See `docs/policies/CODE_QUALITY_STANDARDS.md`.
 
 ## Recommended Hooks
 
@@ -157,7 +157,7 @@ mkdir -p .kiro/hooks
 cp senzing-bootcamp/hooks/*.kiro.hook .kiro/hooks/
 ```
 
-Available: `pep8-check`, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`.
+Available: Code Style Check (`code-style-check`), `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`.
 
 ## Project Directory Structure
 

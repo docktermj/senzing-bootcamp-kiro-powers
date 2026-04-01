@@ -171,6 +171,10 @@ database/*.db-journal
 !database/.gitkeep
 ```
 
+**Concurrent bootcamp instances**: Using project-relative paths (`database/G2C.db`) allows multiple bootcamp projects to run on the same machine without conflicts. Never use `/tmp/sqlite/G2C.db` or system-wide paths — if the Senzing MCP server recommends `/tmp/sqlite`, override with the project-local path.
+
+**Module 1 demo code**: All code generated during Module 1 (Quick Demo) goes in `src/quickstart_demo/`. Demo scripts use the naming convention `demo_[dataset_name].[ext]` and sample data uses `sample_data_[dataset_name].jsonl`. This keeps demo code separate from production code in `src/transform/`, `src/load/`, and `src/query/`.
+
 ### Configuration Files
 
 **Rule**: Configuration files (`.json`, `.yaml`, `.yml`, `.env`, `.ini`) should be stored in the `config/` directory or project root (for `.env` files).
@@ -336,8 +340,8 @@ data/backups/           # (data/backups/ is for database exports, not project ba
 - ❌ `.git/` - Git repository (use git for version control)
 - ❌ `.env` - Environment secrets (use .env.example as template)
 - ❌ `data/temp/` - Temporary files
-- ❌ `__pycache__/`, `*.pyc` - Python cache files
-- ❌ `node_modules/`, `venv/` - Dependencies
+- ❌ Language-specific cache/build artifacts (e.g., `__pycache__/`, `*.pyc`, `target/`, `bin/`, `obj/`, `node_modules/`)
+- ❌ `venv/` - Virtual environments / dependencies
 
 **Creating Backups**:
 
@@ -411,16 +415,16 @@ python /tmp/transform.py
 
 When providing code examples:
 
-```python
+```text
 # ✅ DO THIS
-output_file = "data/transformed/output.jsonl"
-with open(output_file, 'w') as f:
-    f.write(json.dumps(record) + '\n')
+# Write output to a project-relative path, e.g.:
+#   output_file = "data/transformed/output.jsonl"
+#   Open the file for writing and append each JSON record followed by a newline.
 
 # ❌ DON'T DO THIS
-output_file = "/tmp/output.jsonl"
-with open(output_file, 'w') as f:
-    f.write(json.dumps(record) + '\n')
+# Write output to a system temporary path, e.g.:
+#   output_file = "/tmp/output.jsonl"
+#   Temporary directories are not persistent and violate project organization.
 ```
 
 ### For Agent Instructions
@@ -484,9 +488,9 @@ grep -r "/tmp" senzing-bootcamp/**/*.md
 
 ## Related Policies
 
-- [MODULE_1_CODE_LOCATION.md](MODULE_1_CODE_LOCATION.md) - Module 0 code placement
-- [SHELL_SCRIPT_LOCATIONS.md](SHELL_SCRIPT_LOCATIONS.md) - Shell script placement
-- [PYTHON_REQUIREMENTS_POLICY.md](PYTHON_REQUIREMENTS_POLICY.md) - Python package management
+- [DEPENDENCY_MANAGEMENT_POLICY.md](DEPENDENCY_MANAGEMENT_POLICY.md) - Dependency management
+- [CODE_QUALITY_STANDARDS.md](CODE_QUALITY_STANDARDS.md) - Coding standards
+- [SENZING_INFORMATION_POLICY.md](SENZING_INFORMATION_POLICY.md) - MCP-only Senzing facts
 
 ## Version History
 

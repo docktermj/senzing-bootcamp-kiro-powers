@@ -4,12 +4,12 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 
 ## Available Hooks
 
-### 1. PEP-8 Compliance Check (`pep8-check.kiro.hook`) ⭐
+### 1. Code Style Check (`code-style-check.kiro.hook`) ⭐
 
-**Trigger**: When Python files are edited
-**Action**: Checks for PEP-8 compliance and suggests fixes
-**Use case**: Ensures all Python code follows PEP-8 standards
-**Recommended**: Install for all modules that generate Python code
+**Trigger**: When source code files are edited (`.py`, `.java`, `.cs`, `.rs`, `.ts`, `.js`)
+**Action**: Checks for language-appropriate coding standards and suggests fixes
+**Use case**: Ensures all generated code follows proper conventions for the chosen language
+**Recommended**: Install for all modules that generate code
 
 ### 2. Data Quality Check (`data-quality-check.kiro.hook`)
 
@@ -54,6 +54,12 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 **Action**: Reminds agent to run `analyze_record` before proceeding to loading
 **Use case**: Catches bad mappings early — validates quality score >70% before Module 6
 
+### 9. Run Tests After Change (`run-tests-after-change.kiro.hook`)
+
+**Trigger**: When source code files are modified in `src/load/`, `src/query/`, or `src/transform/`
+**Action**: Reminds agent to run the test suite to verify the change
+**Use case**: Catches regressions after code changes in Modules 6-8
+
 ## Installation
 
 ### Option 1: Use Install Script (Recommended)
@@ -62,14 +68,6 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 # Interactive installation with guided options
 ./scripts/install_hooks.sh
 ```
-
-This script provides:
-
-- Install all hooks at once
-- Install essential hooks only
-- Select hooks individually
-- Prevents duplicate installations
-- Shows descriptions of each hook
 
 ### Option 2: Copy to Workspace Hooks Directory
 
@@ -109,43 +107,28 @@ You can customize any hook by editing the JSON file:
 - **command**: Change what command runs
 - **timeout**: Adjust command timeout
 
-Example customization:
-
-```json
-{
-  "name": "My Custom Hook",
-  "when": {
-    "type": "fileEdited",
-    "patterns": ["my-custom-pattern/*.py"]
-  },
-  "then": {
-    "type": "askAgent",
-    "prompt": "My custom message"
-  }
-}
-```
-
 ## Recommended Hooks by Module
 
 ### All Modules
 
-- ✅ **PEP-8 Compliance Check** (ensures code quality for Python)
+- ✅ **Code Style Check** (ensures code quality for the chosen language)
 - ✅ **Backup Project on Request** (quick backups via voice commands)
 
 ### Module 5 (Data Mapping)
 
-- ✅ PEP-8 Compliance Check
+- ✅ Code Style Check
 - ✅ Data Quality Check
 - ✅ Validate Senzing JSON
+- ✅ Analyze After Mapping
 
 ### Module 6 (Data Loading)
 
-- ✅ PEP-8 Compliance Check
+- ✅ Code Style Check
 - ✅ Backup Before Load
 
-### Module 7 (Query Programs)
+### Module 8 (Query Programs)
 
-- ✅ PEP-8 Compliance Check
+- ✅ Code Style Check
 
 ## Troubleshooting
 

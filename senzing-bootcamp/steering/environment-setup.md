@@ -19,7 +19,7 @@ git commit -m "Initial project setup"
 
 ## .gitignore Configuration
 
-Create a `.gitignore` file to exclude sensitive data and large files:
+Create a `.gitignore` file that covers the bootcamper's chosen language plus common project exclusions:
 
 ```gitignore
 # Sensitive data
@@ -48,18 +48,6 @@ logs/*.log
 *.sqlite
 *.sqlite3
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-.venv/
-venv/
-env/
-
-# Node
-node_modules/
-npm-debug.log
-
 # IDE
 .vscode/
 .idea/
@@ -74,15 +62,89 @@ Thumbs.db
 data/backups/*.sql
 ```
 
-## Python Environment
+Add language-specific entries based on the bootcamper's chosen language:
 
-If using Python, set up a virtual environment:
+**Python:**
+```gitignore
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+```
+
+**Java:**
+```gitignore
+target/
+*.class
+*.jar
+*.war
+.gradle/
+build/
+```
+
+**C#:**
+```gitignore
+bin/
+obj/
+*.user
+*.suo
+packages/
+```
+
+**Rust:**
+```gitignore
+target/
+Cargo.lock
+```
+
+**TypeScript / Node.js:**
+```gitignore
+node_modules/
+dist/
+npm-debug.log
+```
+
+## Language Environment
+
+Set up the development environment for your chosen language:
+
+### Python
 
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install senzing
 pip freeze > requirements.txt
+```
+
+### Java
+
+```bash
+# Use Maven or Gradle to manage dependencies
+# Add senzing SDK dependency to pom.xml or build.gradle
+```
+
+### C#
+
+```bash
+dotnet new console -n my-senzing-project
+# Add Senzing NuGet package
+```
+
+### Rust
+
+```bash
+cargo init my-senzing-project
+# Add senzing dependency to Cargo.toml
+```
+
+### TypeScript / Node.js
+
+```bash
+npm init -y
+# Add senzing dependency to package.json
 ```
 
 ## Environment Variables

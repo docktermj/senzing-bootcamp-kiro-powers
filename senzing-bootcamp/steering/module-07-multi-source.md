@@ -2,6 +2,8 @@
 inclusion: manual
 ---
 
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_7_MULTI_SOURCE_ORCHESTRATION.md`.
+
 # Module 7: Multi-Source Orchestration
 
 **Purpose**: Coordinate loading of multiple data sources with dependencies and optimization.

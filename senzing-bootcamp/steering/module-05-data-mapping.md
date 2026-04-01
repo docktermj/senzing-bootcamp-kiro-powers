@@ -2,6 +2,8 @@
 inclusion: manual
 ---
 
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_5_DATA_MAPPING.md`.
+
 # Module 5: Data Mapping
 
 ## Workflow: Data Mapping End-to-End (Module 5)

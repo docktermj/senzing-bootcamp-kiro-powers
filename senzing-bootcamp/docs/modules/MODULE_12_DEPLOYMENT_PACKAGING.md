@@ -1,5 +1,7 @@
 # Module 12: Package and Deploy
 
+> **Agent workflow:** The agent follows `steering/module-12-deployment.md` for this module's step-by-step workflow.
+
 ## Overview
 
 Module 12 is the final module that packages your production-ready code and deploys it to the target environment. After completing security hardening (Module 10) and monitoring setup (Module 11), you're ready for deployment.
@@ -213,61 +215,54 @@ Add tests for all components:
 - Verify data completeness
 - Test error handling
 
-#### Example Python Test (pytest)
+#### Example Test (pseudocode)
 
-```python
-# tests/test_transform/test_customers.py
-import pytest
-from my_senzing_project.transform.customers import CustomerTransformer
-
-def test_customer_transformer_basic():
-    """Test basic customer transformation"""
-    transformer = CustomerTransformer()
+```text
+Test: "Basic customer transformation"
+    Create a CustomerTransformer instance
 
     input_data = {
-        "customer_id": "12345",
-        "first_name": "John",
-        "last_name": "Doe",
-        "email": "john.doe@example.com"
+        customer_id: "12345",
+        first_name:  "John",
+        last_name:   "Doe",
+        email:       "john.doe@example.com"
     }
 
     result = transformer.transform(input_data)
 
-    assert result["DATA_SOURCE"] == "CUSTOMERS"
-    assert result["RECORD_ID"] == "12345"
-    assert result["NAME_FULL"] == "John Doe"
-    assert result["EMAIL_ADDRESS"] == "john.doe@example.com"
+    Assert result.DATA_SOURCE  == "CUSTOMERS"
+    Assert result.RECORD_ID    == "12345"
+    Assert result.NAME_FULL    == "John Doe"
+    Assert result.EMAIL_ADDRESS == "john.doe@example.com"
 
-def test_customer_transformer_missing_fields():
-    """Test handling of missing fields"""
-    transformer = CustomerTransformer()
+Test: "Handling missing fields"
+    Create a CustomerTransformer instance
 
     input_data = {
-        "customer_id": "12345",
-        "first_name": "John"
-        # Missing last_name
+        customer_id: "12345",
+        first_name:  "John"
+        // last_name is missing
     }
 
     result = transformer.transform(input_data)
 
-    assert result["NAME_FULL"] == "John"
-    assert "last_name" not in result
+    Assert result.NAME_FULL == "John"
+    Assert "last_name" not in result
 
-def test_customer_transformer_invalid_email():
-    """Test handling of invalid email"""
-    transformer = CustomerTransformer()
+Test: "Handling invalid email"
+    Create a CustomerTransformer instance
 
     input_data = {
-        "customer_id": "12345",
-        "first_name": "John",
-        "last_name": "Doe",
-        "email": "invalid-email"
+        customer_id: "12345",
+        first_name:  "John",
+        last_name:   "Doe",
+        email:       "invalid-email"
     }
 
     result = transformer.transform(input_data)
 
-    # Should skip invalid email
-    assert "EMAIL_ADDRESS" not in result
+    // Should skip invalid email
+    Assert "EMAIL_ADDRESS" not in result
 ```
 
 ### Step 4: Apply Language-Specific Packaging
@@ -276,52 +271,31 @@ def test_customer_transformer_invalid_email():
 
 Create `setup.py`:
 
-```python
-from setuptools import setup, find_packages
+```text
+Define package configuration:
+    name:         "my-senzing-project"
+    version:      "1.0.0"
+    description:  "Entity resolution solution using Senzing"
+    python:       requires >= 3.10
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+    dependencies:
+        senzing          >= 4.0.0
+        pandas           >= 2.0.0
+        orjson           >= 3.9.0
+        pyyaml           >= 6.0
+        psycopg2-binary  >= 2.9.0
 
-setup(
-    name="my-senzing-project",
-    version="1.0.0",
-    author="Your Name",
-    author_email="your.email@example.com",
-    description="Entity resolution solution using Senzing",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/my-senzing-project",
-    packages=find_packages(),
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ],
-    python_requires=">=3.10",
-    install_requires=[
-        "senzing>=4.0.0",
-        "pandas>=2.0.0",
-        "orjson>=3.9.0",
-        "pyyaml>=6.0",
-        "psycopg2-binary>=2.9.0",
-    ],
-    extras_require={
-        "dev": [
-            "pytest>=7.4.0",
-            "pytest-cov>=4.1.0",
-            "black>=23.0.0",
-            "flake8>=6.0.0",
-            "mypy>=1.0.0",
-        ]
-    },
-    entry_points={
-        "console_scripts": [
-            "senzing-transform=my_senzing_project.transform.cli:main",
-            "senzing-load=my_senzing_project.load.cli:main",
-            "senzing-query=my_senzing_project.query.cli:main",
-        ],
-    },
-)
+    dev dependencies:
+        pytest      >= 7.4.0
+        pytest-cov  >= 4.1.0
+        black       >= 23.0.0
+        flake8      >= 6.0.0
+        mypy        >= 1.0.0
+
+    console entry points:
+        senzing-transform → my_senzing_project.transform.cli:main
+        senzing-load      → my_senzing_project.load.cli:main
+        senzing-query     → my_senzing_project.query.cli:main
 ```
 
 Create `pyproject.toml`:
@@ -535,6 +509,7 @@ See [troubleshooting.md](troubleshooting.md) for common issues.
 
 Generate deployment-ready artifacts:
 
+
 ## Agent Behavior
 
 When a user is in Module 12, the agent should:
@@ -667,7 +642,7 @@ Module 12 is complete when:
 - `steering/module-12-deployment.md` - Module 12 workflow
 - `steering/agent-instructions.md` - Agent behavior for Module 12
 - Use MCP: `find_examples(query="API integration")` for deployment patterns
-- `PYTHON_REQUIREMENTS_POLICY.md` - Python dependency management
+- `DEPENDENCY_MANAGEMENT_POLICY.md` - Dependency management
 
 ## Version History
 

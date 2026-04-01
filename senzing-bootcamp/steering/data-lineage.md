@@ -51,7 +51,7 @@ Track how data was transformed:
 transformations:
   customers_crm:
     source_file: data/raw/customers_crm.csv
-    transformation_script: src/transform/transform_customers_crm.py
+    transformation_script: src/transform/transform_customers_crm.[ext]
     transformation_date: 2026-03-17
     transformed_by: jane.smith@company.com
     output_file: data/transformed/customers_crm.jsonl
@@ -89,7 +89,7 @@ Track what was loaded into Senzing:
 loading:
   customers_crm:
     source_file: data/transformed/customers_crm.jsonl
-    loading_script: src/load/load_customers_crm.py
+    loading_script: src/load/load_customers_crm.[ext]
     loading_date: 2026-03-17
     loaded_by: automated_job
     data_source: CUSTOMERS_CRM
@@ -116,14 +116,14 @@ Track how data is used:
 ```yaml
 usage:
   customer_360_query:
-    query_script: src/query/customer_360.py
+    query_script: src/query/customer_360.[ext]
     data_sources_used: [CUSTOMERS_CRM, CUSTOMERS_ECOMMERCE]
     query_type: searchByAttributes
     average_response_time: 45  # ms
     queries_per_day: 10000
 
   fraud_detection:
-    query_script: src/query/fraud_detection.py
+    query_script: src/query/fraud_detection.[ext]
     data_sources_used: [CUSTOMERS_CRM, TRANSACTIONS]
     query_type: getEntityByRecordID
     average_response_time: 25  # ms
@@ -134,200 +134,59 @@ usage:
 
 ### Automatic Lineage Capture
 
-```python
-#!/usr/bin/env python3
-"""
-Data Lineage Tracker
-Automatically captures lineage metadata
-"""
+The lineage tracker is a utility that automatically captures and persists metadata about data flow through the pipeline. It should be implemented in the bootcamper's chosen language.
 
-import yaml
-import json
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List
+#### Lineage Tracker — Design
 
-class LineageTracker:
-    def __init__(self, lineage_file='docs/data_lineage.yaml'):
-        self.lineage_file = lineage_file
-        self.lineage = self.load_lineage()
+The tracker manages a YAML file (`docs/data_lineage.yaml`) with four sections: `sources`, `transformations`, `loading`, and `usage`.
 
-    def load_lineage(self) -> Dict:
-        """Load existing lineage or create new"""
-        if Path(self.lineage_file).exists():
-            with open(self.lineage_file) as f:
-                return yaml.safe_load(f) or {}
-        return {'sources': {}, 'transformations': {}, 'loading': {}, 'usage': {}}
+**Operations:**
 
-    def save_lineage(self):
-        """Save lineage to file"""
-        with open(self.lineage_file, 'w') as f:
-            yaml.dump(self.lineage, f, default_flow_style=False, sort_keys=False)
+- `track_source(source_name, metadata)` — Record a data source with its type, location, extraction date, record count, and file location
+- `track_transformation(source_name, metadata)` — Record a transformation with input file, output file, script path, records in/out, rejected count, and quality score
+- `track_loading(source_name, metadata)` — Record a loading operation with data source name, records loaded, throughput, and duration
+- `track_usage(query_name, metadata)` — Record a query/usage pattern with data sources used, query type, and frequency
+- `get_lineage_for_source(source_name)` — Return the complete lineage chain for a source (source → transformation → loading → usage)
+- `generate_lineage_report(output_file)` — Generate a human-readable Markdown report of all lineage data
 
-    def track_source(self, source_name: str, metadata: Dict):
-        """Track data source"""
-        if 'sources' not in self.lineage:
-            self.lineage['sources'] = {}
+Each tracking operation appends a timestamp and persists the updated lineage file.
 
-        self.lineage['sources'][source_name] = {
-            **metadata,
-            'tracked_date': datetime.now().isoformat()
-        }
-        self.save_lineage()
-        print(f"✅ Tracked source: {source_name}")
+> **Agent instruction:** Implement the lineage tracker in the bootcamper's chosen language. The tracker is a simple YAML read/write utility — no Senzing SDK dependency required.
 
-    def track_transformation(self, source_name: str, metadata: Dict):
-        """Track transformation"""
-        if 'transformations' not in self.lineage:
-            self.lineage['transformations'] = {}
+#### Example Lineage Data
 
-        self.lineage['transformations'][source_name] = {
-            **metadata,
-            'transformation_date': datetime.now().isoformat()
-        }
-        self.save_lineage()
-        print(f"✅ Tracked transformation: {source_name}")
+```yaml
+# Track source (Module 3)
+customers_crm:
+  type: database
+  location: postgresql://prod-db/crm
+  record_count: 500000
+  file_location: data/raw/customers_crm.csv
 
-    def track_loading(self, source_name: str, metadata: Dict):
-        """Track loading"""
-        if 'loading' not in self.lineage:
-            self.lineage['loading'] = {}
+# Track transformation (Module 5)
+customers_crm:
+  source_file: data/raw/customers_crm.csv
+  transformation_script: src/transform/transform_customers_crm.[ext]
+  output_file: data/transformed/customers_crm.jsonl
+  records_in: 500000
+  records_out: 498500
+  quality_score: 87.5
 
-        self.lineage['loading'][source_name] = {
-            **metadata,
-            'loading_date': datetime.now().isoformat()
-        }
-        self.save_lineage()
-        print(f"✅ Tracked loading: {source_name}")
-
-    def track_usage(self, query_name: str, metadata: Dict):
-        """Track data usage"""
-        if 'usage' not in self.lineage:
-            self.lineage['usage'] = {}
-
-        self.lineage['usage'][query_name] = {
-            **metadata,
-            'tracked_date': datetime.now().isoformat()
-        }
-        self.save_lineage()
-        print(f"✅ Tracked usage: {query_name}")
-
-    def get_lineage_for_source(self, source_name: str) -> Dict:
-        """Get complete lineage for a data source"""
-        lineage = {
-            'source': self.lineage.get('sources', {}).get(source_name),
-            'transformation': self.lineage.get('transformations', {}).get(source_name),
-            'loading': self.lineage.get('loading', {}).get(source_name),
-            'usage': []
-        }
-
-        # Find all queries using this source
-        for query_name, query_info in self.lineage.get('usage', {}).items():
-            if source_name in query_info.get('data_sources_used', []):
-                lineage['usage'].append({
-                    'query_name': query_name,
-                    **query_info
-                })
-
-        return lineage
-
-    def generate_lineage_report(self, output_file='docs/lineage_report.md'):
-        """Generate human-readable lineage report"""
-        report = []
-        report.append("# Data Lineage Report\n")
-        report.append(f"Generated: {datetime.now().isoformat()}\n\n")
-
-        # Sources
-        report.append("## Data Sources\n\n")
-        for source_name, source_info in self.lineage.get('sources', {}).items():
-            report.append(f"### {source_name}\n\n")
-            report.append(f"- **Type**: {source_info.get('type')}\n")
-            report.append(f"- **Location**: {source_info.get('location')}\n")
-            report.append(f"- **Extracted**: {source_info.get('extracted_date')}\n")
-            report.append(f"- **Records**: {source_info.get('record_count'):,}\n")
-            report.append(f"- **File**: `{source_info.get('file_location')}`\n\n")
-
-        # Transformations
-        report.append("## Transformations\n\n")
-        for source_name, trans_info in self.lineage.get('transformations', {}).items():
-            report.append(f"### {source_name}\n\n")
-            report.append(f"- **Input**: `{trans_info.get('source_file')}`\n")
-            report.append(f"- **Output**: `{trans_info.get('output_file')}`\n")
-            report.append(f"- **Script**: `{trans_info.get('transformation_script')}`\n")
-            report.append(f"- **Records In**: {trans_info.get('records_in'):,}\n")
-            report.append(f"- **Records Out**: {trans_info.get('records_out'):,}\n")
-            report.append(f"- **Quality Score**: {trans_info.get('quality_score')}\n\n")
-
-        # Loading
-        report.append("## Loading\n\n")
-        for source_name, load_info in self.lineage.get('loading', {}).items():
-            report.append(f"### {source_name}\n\n")
-            report.append(f"- **Data Source**: {load_info.get('data_source')}\n")
-            report.append(f"- **Records Loaded**: {load_info.get('records_loaded'):,}\n")
-            report.append(f"- **Throughput**: {load_info.get('throughput')} records/sec\n")
-            report.append(f"- **Duration**: {load_info.get('loading_duration')} seconds\n\n")
-
-        # Usage
-        report.append("## Data Usage\n\n")
-        for query_name, usage_info in self.lineage.get('usage', {}).items():
-            report.append(f"### {query_name}\n\n")
-            report.append(f"- **Sources Used**: {', '.join(usage_info.get('data_sources_used', []))}\n")
-            report.append(f"- **Query Type**: {usage_info.get('query_type')}\n")
-            report.append(f"- **Queries/Day**: {usage_info.get('queries_per_day'):,}\n\n")
-
-        # Write report
-        with open(output_file, 'w') as f:
-            f.writelines(report)
-
-        print(f"✅ Lineage report generated: {output_file}")
-
-# Example usage
-if __name__ == '__main__':
-    tracker = LineageTracker()
-
-    # Track source (Module 3)
-    tracker.track_source('customers_crm', {
-        'type': 'database',
-        'location': 'postgresql://prod-db/crm',
-        'table': 'customers',
-        'extracted_date': '2026-03-17',
-        'extracted_by': 'john.doe@company.com',
-        'record_count': 500000,
-        'file_location': 'data/raw/customers_crm.csv'
-    })
-
-    # Track transformation (Module 5)
-    tracker.track_transformation('customers_crm', {
-        'source_file': 'data/raw/customers_crm.csv',
-        'transformation_script': 'src/transform/transform_customers_crm.py',
-        'output_file': 'data/transformed/customers_crm.jsonl',
-        'records_in': 500000,
-        'records_out': 498500,
-        'records_rejected': 1500,
-        'quality_score': 87.5
-    })
-
-    # Track loading (Module 6)
-    tracker.track_loading('customers_crm', {
-        'source_file': 'data/transformed/customers_crm.jsonl',
-        'loading_script': 'src/load/load_customers_crm.py',
-        'data_source': 'CUSTOMERS_CRM',
-        'records_loaded': 498450,
-        'throughput': 199
-    })
-
-    # Generate report
-    tracker.generate_lineage_report()
+# Track loading (Module 6)
+customers_crm:
+  loading_script: src/load/load_customers_crm.[ext]
+  data_source: CUSTOMERS_CRM
+  records_loaded: 498450
+  throughput: 199
 ```
 
 ## Integration with Transformation Scripts
 
-Add lineage tracking to transformation scripts:
+Add lineage tracking calls to your transformation scripts. After each transformation completes, call the tracker to record the input file, output file, record counts, and quality score.
 
-```python
-from lineage_tracker import LineageTracker
+## Integration with Loading Scripts
 
-def transform_customers(input_file, output_file):
+Add lineage tracking calls to your loading scripts. After each load completes, call the tracker to record the data source, records loaded, throughput, and duration.
     tracker = LineageTracker()
 
     # Track start
@@ -360,58 +219,30 @@ def transform_customers(input_file, output_file):
 
 ## Lineage Visualization
 
-Generate visual lineage diagram:
+Generate a visual lineage diagram using Mermaid syntax. The diagram should show the flow from source → transformation → loading → usage queries:
 
-```python
-def generate_lineage_diagram(source_name: str):
-    """Generate Mermaid diagram for lineage"""
-    lineage = tracker.get_lineage_for_source(source_name)
+```text
+Example Mermaid diagram for a source:
 
-    diagram = ["```mermaid", "graph LR"]
-
-    # Source
-    diagram.append(f"    A[Source: {source_name}]")
-
-    # Transformation
-    if lineage['transformation']:
-        diagram.append(f"    B[Transform]")
-        diagram.append(f"    A --> B")
-
-    # Loading
-    if lineage['loading']:
-        diagram.append(f"    C[Load to Senzing]")
-        diagram.append(f"    B --> C")
-
-    # Usage
-    for i, usage in enumerate(lineage['usage']):
-        diagram.append(f"    D{i}[{usage['query_name']}]")
-        diagram.append(f"    C --> D{i}")
-
-    diagram.append("```")
-
-    return "\n".join(diagram)
+graph LR
+    A[Source: customers_crm] --> B[Transform]
+    B --> C[Load to Senzing]
+    C --> D0[customer_360_query]
+    C --> D1[fraud_detection]
 ```
+
+The lineage tracker should have a function that reads the lineage data for a given source and generates this Mermaid diagram automatically.
 
 ## Compliance Reporting
 
-Generate compliance report showing data lineage:
+Generate a compliance report showing the complete data lineage for a specific record. The report should include:
 
-```python
-def generate_compliance_report(record_id: str):
-    """Generate compliance report for a specific record"""
-    report = {
-        'record_id': record_id,
-        'data_sources': [],
-        'transformations': [],
-        'access_log': []
-    }
+- Which data sources contributed to the record
+- What transformations were applied
+- When the record was loaded
+- Who/what has accessed the record
 
-    # Find which sources contributed to this record
-    # Track all transformations applied
-    # Log all access to this record
-
-    return report
-```
+This is useful for GDPR, CCPA, and other regulatory compliance requirements.
 
 ## Agent Behavior
 

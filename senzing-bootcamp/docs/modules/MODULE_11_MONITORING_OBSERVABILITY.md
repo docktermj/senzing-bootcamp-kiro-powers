@@ -1,5 +1,7 @@
 # Module 11: Monitoring and Observability
 
+> **Agent workflow:** The agent follows `steering/module-11-monitoring.md` for this module's step-by-step workflow.
+
 ## Overview
 
 Module 11 focuses on setting up comprehensive monitoring, logging, and alerting for production operations.
@@ -22,74 +24,58 @@ After security hardening in Module 10, Module 11 helps you:
 
 Quantitative measurements over time:
 
-```python
-from prometheus_client import Counter, Histogram, Gauge
+```text
+Define metrics:
 
-# Counters
-records_loaded = Counter('records_loaded_total', 'Total records loaded')
-errors_total = Counter('errors_total', 'Total errors', ['error_type'])
+  Counters (monotonically increasing):
+    records_loaded_total    — "Total records loaded"
+    errors_total            — "Total errors", labeled by error_type
 
-# Histograms
-query_duration = Histogram('query_duration_seconds', 'Query duration')
-load_duration = Histogram('load_duration_seconds', 'Load duration')
+  Histograms (distribution of values):
+    query_duration_seconds  — "Query duration"
+    load_duration_seconds   — "Load duration"
 
-# Gauges
-active_connections = Gauge('active_connections', 'Active database connections')
-queue_size = Gauge('queue_size', 'Records in queue')
+  Gauges (point-in-time values):
+    active_connections      — "Active database connections"
+    queue_size              — "Records in queue"
 ```
 
 ### 2. Logs (What happened?)
 
 Structured, searchable event records:
 
-```python
-import logging
-import json
+```text
+Define a JSON log formatter:
+    For each log record, output a JSON object with:
+        timestamp  — formatted time
+        level      — log level (INFO, ERROR, etc.)
+        message    — log message text
+        module     — source module name
+        function   — source function name
+        user_id    — if available on the record
+        request_id — if available on the record
 
-class JSONFormatter(logging.Formatter):
-    def format(self, record):
-        log_data = {
-            'timestamp': self.formatTime(record),
-            'level': record.levelname,
-            'message': record.getMessage(),
-            'module': record.module,
-            'function': record.funcName,
-        }
-        if hasattr(record, 'user_id'):
-            log_data['user_id'] = record.user_id
-        if hasattr(record, 'request_id'):
-            log_data['request_id'] = record.request_id
-        return json.dumps(log_data)
-
-# Configure structured logging
-handler = logging.StreamHandler()
-handler.setFormatter(JSONFormatter())
-logger = logging.getLogger()
-logger.addHandler(handler)
+Configure the logger to use this JSON formatter on standard output.
 ```
 
 ### 3. Traces (Why did it happen?)
 
 Request flow through distributed systems:
 
-```python
-from opentelemetry import trace
-from opentelemetry.instrumentation.flask import FlaskInstrumentor
+```text
+Initialize a tracer for the current module
 
-tracer = trace.get_tracer(__name__)
+Route GET /api/search:
+    Start span "search_request":
+        Set attribute "user.id" to current user ID
 
-@app.route('/api/search')
-def search():
-    with tracer.start_as_current_span("search_request") as span:
-        span.set_attribute("user.id", get_user_id())
+        Start child span "database_query":
+            results = query the database
 
-        with tracer.start_as_current_span("database_query"):
-            results = query_database()
+        Start child span "format_results":
+            formatted = format results for response
 
-        with tracer.start_as_current_span("format_results"):
-            formatted = format_results(results)
-
-        return formatted
+        Return formatted results
 ```
 
 ## Monitoring Stack Options
@@ -126,42 +112,39 @@ Install Prometheus and Grafana natively on your system or use your organization'
 
 ### Application Metrics
 
-```python
-# Transformation metrics
-transformation_records_per_second = Gauge('transformation_throughput', 'Records/second')
-transformation_errors = Counter('transformation_errors_total', 'Transformation errors')
+```text
+Transformation metrics:
+    transformation_throughput   (Gauge)   — Records/second
+    transformation_errors_total (Counter) — Transformation errors
 
-# Loading metrics
-loading_records_per_second = Gauge('loading_throughput', 'Records/second')
-loading_errors = Counter('loading_errors_total', 'Loading errors')
-loading_queue_size = Gauge('loading_queue_size', 'Records waiting to load')
+Loading metrics:
+    loading_throughput          (Gauge)   — Records/second
+    loading_errors_total        (Counter) — Loading errors
+    loading_queue_size          (Gauge)   — Records waiting to load
 
-# Query metrics
-query_count = Counter('queries_total', 'Total queries')
-query_duration = Histogram('query_duration_seconds', 'Query duration')
-query_errors = Counter('query_errors_total', 'Query errors')
+Query metrics:
+    queries_total               (Counter)   — Total queries
+    query_duration_seconds      (Histogram) — Query duration
+    query_errors_total          (Counter)   — Query errors
 ```
 
 ### System Metrics
 
-```python
-import psutil
+```text
+Collect system resource metrics periodically:
 
-# CPU
-cpu_percent = Gauge('cpu_percent', 'CPU utilization')
-cpu_percent.set(psutil.cpu_percent())
+    CPU:
+        cpu_percent     (Gauge) — CPU utilization percentage
 
-# Memory
-memory_percent = Gauge('memory_percent', 'Memory utilization')
-memory_percent.set(psutil.virtual_memory().percent)
+    Memory:
+        memory_percent  (Gauge) — Memory utilization percentage
 
-# Disk
-disk_percent = Gauge('disk_percent', 'Disk utilization')
-disk_percent.set(psutil.disk_usage('/').percent)
+    Disk:
+        disk_percent    (Gauge) — Disk utilization percentage
 
-# Network
-network_bytes_sent = Counter('network_bytes_sent', 'Network bytes sent')
-network_bytes_recv = Counter('network_bytes_recv', 'Network bytes received')
+    Network:
+        network_bytes_sent (Counter) — Network bytes sent
+        network_bytes_recv (Counter) — Network bytes received
 ```
 
 ### Database Metrics
@@ -246,54 +229,30 @@ groups:
 
 ## Health Check Endpoints
 
-```python
-from flask import Flask, jsonify
-import psycopg2
+```text
+Route GET /health:
+    Return { "status": "healthy" } with HTTP 200
 
-app = Flask(__name__)
-
-@app.route('/health')
-def health():
-    """Basic health check"""
-    return jsonify({'status': 'healthy'}), 200
-
-@app.route('/health/ready')
-def readiness():
-    """Readiness check - can accept traffic?"""
+Route GET /health/ready:
     checks = {
-        'database': check_database(),
-        'senzing': check_senzing(),
+        "database": check_database(),
+        "senzing":  check_senzing()
     }
+    If all checks pass:
+        Return { "status": "ready", "checks": checks } with HTTP 200
+    Else:
+        Return { "status": "not ready", "checks": checks } with HTTP 503
 
-    all_healthy = all(checks.values())
-    status_code = 200 if all_healthy else 503
+Route GET /health/live:
+    Return { "status": "alive" } with HTTP 200
 
-    return jsonify({
-        'status': 'ready' if all_healthy else 'not ready',
-        'checks': checks
-    }), status_code
+function check_database():
+    Try to open and close a database connection
+    Return true on success, false on failure
 
-@app.route('/health/live')
-def liveness():
-    """Liveness check - is process alive?"""
-    return jsonify({'status': 'alive'}), 200
-
-def check_database():
-    """Check database connectivity"""
-    try:
-        conn = psycopg2.connect(DATABASE_URL)
-        conn.close()
-        return True
-    except:
-        return False
-
-def check_senzing():
-    """Check Senzing engine"""
-    try:
-        # TODO: Implement Senzing health check
-        return True
-    except:
-        return False
+function check_senzing():
+    Try to verify Senzing engine is responsive
+    Return true on success, false on failure
 ```
 
 ## Monitoring Dashboard
@@ -349,39 +308,27 @@ Create Grafana dashboard:
 
 ### Structured Logging Example
 
-```python
-import logging
-import json
-from datetime import datetime
+```text
+Define a StructuredLogger class:
+    Initialize with a logger name
 
-class StructuredLogger:
-    def __init__(self, name):
-        self.logger = logging.getLogger(name)
+    function log(level, message, extra_fields...):
+        Build a JSON object:
+            timestamp — current UTC time in ISO format
+            level     — the log level
+            message   — the log message
+            (include any additional key-value fields)
+        Write the JSON string to the underlying logger
 
-    def log(self, level, message, **kwargs):
-        log_entry = {
-            'timestamp': datetime.utcnow().isoformat(),
-            'level': level,
-            'message': message,
-            **kwargs
-        }
-        self.logger.log(getattr(logging, level), json.dumps(log_entry))
+    Convenience methods: info(), error(), warning()
+        Each calls log() with the appropriate level
 
-    def info(self, message, **kwargs):
-        self.log('INFO', message, **kwargs)
-
-    def error(self, message, **kwargs):
-        self.log('ERROR', message, **kwargs)
-
-    def warning(self, message, **kwargs):
-        self.log('WARNING', message, **kwargs)
-
-# Usage
-logger = StructuredLogger('senzing')
-logger.info('Record loaded',
-    record_id='12345',
-    data_source='CUSTOMERS',
-    duration_ms=25)
+Usage:
+    logger = new StructuredLogger("senzing")
+    logger.info("Record loaded",
+        record_id="12345",
+        data_source="CUSTOMERS",
+        duration_ms=25)
 ```
 
 ## Agent Behavior

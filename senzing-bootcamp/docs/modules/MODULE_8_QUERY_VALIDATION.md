@@ -1,5 +1,7 @@
 # Module 8: Query and Validate Results
 
+> **Agent workflow:** The agent follows `steering/module-08-query-validation.md` for this module's step-by-step workflow.
+
 ## Overview
 
 Module 8 focuses on creating query programs to explore entity resolution results and validating that the solution meets business requirements through User Acceptance Testing (UAT).
@@ -31,7 +33,7 @@ By the end of this module, you will:
 ### Query Types
 
 > **Agent instruction:** Do not use the method signatures below — they may not match the
-> current SDK version. Always use `generate_scaffold(language='python', workflow='query', version='current')`
+> current SDK version. Always use `generate_scaffold(language='<chosen_language>', workflow='query', version='current')`
 > for query code, and `get_sdk_reference(topic='functions', version='current')` for method signatures.
 
 Senzing provides several query operations. Use the MCP server to get current method signatures:
@@ -73,7 +75,7 @@ Generate a query program using the Senzing MCP server:
 ```text
 Use: generate_scaffold
 Parameters:
-  language: python (or java, csharp, rust)
+  language: <chosen_language>
   workflow: query
   version: current
 ```
@@ -87,7 +89,7 @@ The scaffold will include:
 
 ### Step 3: Customize Query Program
 
-> **Agent instruction:** Use `generate_scaffold(language='python', workflow='query', version='current')`
+> **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='query', version='current')`
 > to get the current query scaffold. Customize it for the user's specific use case
 > (Customer 360, fraud detection, etc.) based on their Module 2 business problem.
 > Use `get_sdk_reference(topic='flags', version='current')` for the correct query flags.
@@ -104,9 +106,7 @@ Customize the MCP-generated scaffold for your use case:
 
 Run the query program with test cases:
 
-```bash
-python3 src/query/customer_360.py
-```
+Run the query program using the appropriate command for your chosen language.
 
 Verify:
 
@@ -159,85 +159,18 @@ Execute each test case:
 4. **Document results** (PASS/FAIL)
 5. **Log issues** for any failures
 
-```python
-#!/usr/bin/env python3
-"""
-UAT Test Executor
-"""
+The UAT executor program should:
 
-import yaml
-import json
-from datetime import datetime
+1. Load test cases from `docs/uat_test_cases.yaml`
+2. For each test case, run the appropriate query against the Senzing engine
+3. Compare actual results to expected outcomes
+4. Record each result as PASS, FAIL, or PENDING with timestamps and tester info
+5. Generate a summary report (`docs/uat_results.md`) showing total, passed, failed, and pending counts with percentages
+6. Indicate overall status: all passed (ready for production), some failed (issues to resolve), or testing in progress
 
-def execute_uat_test(test_case):
-    """Execute a single UAT test case"""
-
-    print(f"\nExecuting {test_case['id']}: {test_case['scenario']}")
-
-    # TODO: Implement test execution logic
-    # 1. Query for test data
-    # 2. Verify results match expected
-    # 3. Return PASS/FAIL
-
-    result = {
-        'test_id': test_case['id'],
-        'scenario': test_case['scenario'],
-        'status': 'PENDING',  # PASS, FAIL, PENDING
-        'actual_result': None,
-        'notes': '',
-        'tester': test_case['tester'],
-        'tested_date': datetime.now().isoformat()
-    }
-
-    return result
-
-def run_all_uat_tests():
-    """Run all UAT test cases"""
-
-    # Load test cases
-    with open('docs/uat_test_cases.yaml') as f:
-        data = yaml.safe_load(f)
-
-    results = []
-    for test_case in data['test_cases']:
-        result = execute_uat_test(test_case)
-        results.append(result)
-
-    # Generate report
-    generate_uat_report(results)
-
-def generate_uat_report(results):
-    """Generate UAT results report"""
-
-    passed = sum(1 for r in results if r['status'] == 'PASS')
-    failed = sum(1 for r in results if r['status'] == 'FAIL')
-    pending = sum(1 for r in results if r['status'] == 'PENDING')
-    total = len(results)
-
-    report = []
-    report.append("# UAT Results Report\n\n")
-    report.append("## Summary\n\n")
-    report.append(f"- **Total Tests:** {total}\n")
-    report.append(f"- **Passed:** {passed} ({passed/total*100:.1f}%)\n")
-    report.append(f"- **Failed:** {failed} ({failed/total*100:.1f}%)\n")
-    report.append(f"- **Pending:** {pending} ({pending/total*100:.1f}%)\n\n")
-
-    if failed == 0 and pending == 0:
-        report.append("✅ **All tests passed! Ready for production.**\n\n")
-    elif failed > 0:
-        report.append("❌ **Some tests failed. Issues must be resolved.**\n\n")
-    else:
-        report.append("⏳ **Testing in progress.**\n\n")
-
-    # Write report
-    with open('docs/uat_results.md', 'w') as f:
-        f.writelines(report)
-
-    print(f"\n✅ UAT report generated: docs/uat_results.md")
-
-if __name__ == '__main__':
-    run_all_uat_tests()
-```
+> **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='query', version='current')`
+> as a starting point, then build a UAT executor program that implements the above logic.
+> Save it to `src/query/uat_executor.[ext]`.
 
 ### Step 7: Resolve Issues
 
@@ -321,7 +254,7 @@ Load `steering/uat-framework.md` when:
 
 > **Agent instruction:** Do not use the example code below. Generate current query code using:
 >
-> - `generate_scaffold(language='python', workflow='query', version='current')` for query patterns
+> - `generate_scaffold(language='<chosen_language>', workflow='query', version='current')` for query patterns
 > - `get_sdk_reference(topic='functions', filter='search_by_attributes', version='current')` for method details
 > - `get_sdk_reference(topic='functions', filter='why_entities', version='current')` for match explanation
 > - `get_sdk_reference(topic='flags', version='current')` for flag constants
@@ -410,10 +343,10 @@ Module 8 is complete when:
 project/
 ├── src/
 │   └── query/
-│       ├── customer_360.py           # Customer lookup query
-│       ├── find_duplicates.py        # Duplicate detection
-│       ├── fraud_detection.py        # Fraud queries
-│       └── uat_executor.py           # UAT test runner
+│       ├── customer_360.[ext]           # Customer lookup query
+│       ├── find_duplicates.[ext]        # Duplicate detection
+│       ├── fraud_detection.[ext]        # Fraud queries
+│       └── uat_executor.[ext]           # UAT test runner
 ├── docs/
 │   ├── uat_test_cases.yaml           # UAT test cases
 │   ├── uat_results.md                # UAT results report

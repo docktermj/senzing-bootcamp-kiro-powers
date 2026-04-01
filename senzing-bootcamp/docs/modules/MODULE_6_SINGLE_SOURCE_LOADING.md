@@ -1,5 +1,7 @@
 # Module 6: Load Single Data Source
 
+> **Agent workflow:** The agent follows `steering/module-06-single-source.md` for this module's step-by-step workflow.
+
 ## Overview
 
 Module 6 focuses on loading ONE data source into Senzing and verifying the results. This module teaches the fundamentals of loading before tackling multi-source orchestration in Module 7.
@@ -74,7 +76,7 @@ Start with ONE data source:
 
 Before loading, register the data source name with Senzing.
 
-> **Agent instruction:** Use `generate_scaffold(language='python', workflow='configure', version='current')`
+> **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='configure', version='current')`
 > to get the current data source registration pattern. Do not use the legacy code pattern below.
 
 Use the `generate_scaffold` MCP tool with `workflow='configure'` to get the current SDK code for registering data sources.
@@ -102,7 +104,7 @@ The scaffold will include:
 
 ### Step 4: Customize Loading Program
 
-> **Agent instruction:** Use `generate_scaffold(language='python', workflow='add_records', version='current')`
+> **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='add_records', version='current')`
 > to get the current record loading pattern. Customize the generated scaffold with:
 >
 > 1. The user's input file path
@@ -117,11 +119,7 @@ The `generate_scaffold` tool with `workflow='add_records'` provides the current 
 
 ### Step 5: Run Loading Program
 
-Execute the loading program:
-
-```bash
-python3 src/load/load_customers_crm.py
-```
+Execute the loading program using the appropriate command for your chosen language from the `src/load/` directory.
 
 Monitor the output for:
 
@@ -133,7 +131,7 @@ Monitor the output for:
 
 After loading, verify the results using SDK query methods.
 
-> **Agent instruction:** Use `generate_scaffold(language='python', workflow='query', version='current')`
+> **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='query', version='current')`
 > or `get_sdk_reference(topic='functions', filter='get_entity', version='current')` to get
 > the current method signatures for verifying loaded data. Do not guess method names.
 
@@ -162,20 +160,20 @@ For production systems, you'll need to load only new or changed records instead 
 
 **Full Reload** (Module 6 default):
 
-```python
-# Load all records every time
-for record in read_all_records(file):
-    engine.addRecord(DATA_SOURCE, record_id, record)
+```text
+Load all records every time:
+  For each record in the source file:
+      Call engine.addRecord(DATA_SOURCE, record_id, record)
 ```
 
 **Incremental Load** (Production):
 
-```python
-# Load only records modified since last load
-last_load_time = get_last_load_time()
-for record in read_records(file):
-    if record['modified_date'] > last_load_time:
-        engine.addRecord(DATA_SOURCE, record_id, record)
+```text
+Load only records modified since last load:
+  Determine last_load_time
+  For each record in the source file:
+      If record.modified_date > last_load_time:
+          Call engine.addRecord(DATA_SOURCE, record_id, record)
 ```
 
 **When to use**:
@@ -199,21 +197,16 @@ Use `explain_error_code` tool for detailed error diagnosis on any error encounte
 
 Log failed records for review:
 
-```python
-error_log = []
+```text
+Error logging pattern:
+  Initialize an empty error log list
+  For each record to load:
+      Try:
+          Call engine.addRecord(DATA_SOURCE, record_id, record_json)
+      On error:
+          Append { record_id, error_message, record } to error log
 
-try:
-    engine.addRecord(DATA_SOURCE, record_id, record_json)
-except Exception as e:
-    error_log.append({
-        'record_id': record_id,
-        'error': str(e),
-        'record': record
-    })
-
-# Save error log
-with open('logs/loading_errors.json', 'w') as f:
-    json.dump(error_log, f, indent=2)
+  Save error log to logs/loading_errors.json
 ```
 
 ## Loading Statistics

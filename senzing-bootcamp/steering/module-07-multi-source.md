@@ -105,6 +105,17 @@ inclusion: manual
    - Review error logs
    - Confirm no data loss
 
+   > **Agent instruction:** Use `reporting_guide(topic='graph', version='current')` to get
+   > network graph export patterns for visualizing cross-source entity relationships.
+   > This helps users see how entities connect across their data sources.
+
+**Error Recovery**:
+
+> **Agent instruction:** When a source fails during orchestration, use
+> `explain_error_code(error_code="<code>", version="current")` to diagnose the error
+> before deciding whether to continue with remaining sources. Document the error and
+> resolution in `docs/loading_strategy.md`.
+
 **Success Criteria**:
 
 - ✅ All sources loaded successfully

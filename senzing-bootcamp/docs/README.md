@@ -10,8 +10,12 @@ Module-specific documentation files. Each module has detailed documentation abou
 
 **Files:**
 
+- `MODULE_0_SDK_SETUP.md` - SDK installation and configuration
+- `MODULE_1_QUICK_DEMO.md` - Quick demo with sample data (optional)
+- `MODULE_2_BUSINESS_PROBLEM.md` - Business problem definition
 - `MODULE_3_DATA_COLLECTION.md` - Data collection and source management
 - `MODULE_4_DATA_QUALITY_SCORING.md` - Automated data quality assessment
+- `MODULE_5_DATA_MAPPING.md` - Data mapping to Senzing format
 - `MODULE_6_SINGLE_SOURCE_LOADING.md` - Single source loading patterns
 - `MODULE_7_MULTI_SOURCE_ORCHESTRATION.md` - Multi-source orchestration
 - `MODULE_8_QUERY_VALIDATION.md` - Query and validation with UAT
@@ -26,9 +30,13 @@ Policy documents that define standards and conventions for the boot camp.
 
 **Files:**
 
+- `FILE_STORAGE_POLICY.md` - Where to store all project files
 - `MODULE_1_CODE_LOCATION.md` - Policy for Module 1 demo code location
+- `PEP8_COMPLIANCE.md` - PEP-8 coding standards
 - `PYTHON_REQUIREMENTS_POLICY.md` - Python dependency management policy
+- `SENZING_INFORMATION_POLICY.md` - MCP-only Senzing facts policy
 - `SHELL_SCRIPT_LOCATIONS.md` - Shell script organization policy
+- `SQLITE_DATABASE_LOCATION.md` - SQLite database path policy
 
 ### `/guides/`
 
@@ -36,27 +44,13 @@ User guides and installation instructions.
 
 **Files:**
 
+- `COLLABORATION_GUIDE.md` - Team collaboration workflows
 - `DESIGN_PATTERNS.md` - Entity resolution design patterns
+- `FAQ.md` - Frequently asked questions
 - `HOOKS_INSTALLATION_GUIDE.md` - Guide for installing Kiro hooks
-
-### `/development/`
-
-Development progress tracking and implementation documentation.
-
-**Files:**
-
-- `IMPROVEMENTS.md` - Complete summary of all improvements
-- `NEW_MODULE_STRUCTURE.md` - Documentation of new 13-module structure
-- Per-module steering files (`module-00-quick-demo.md` through `module-12-deployment.md`)
-- `V3_IMPLEMENTATION_STATUS.md` - Overall implementation status
-- `PHASE_1_COMPLETE.md` - Phase 1 completion summary
-- `PHASE_2_COMPLETE.md` - Phase 2 completion summary
-- `PHASE_2_PROGRESS.md` - Phase 2 progress tracking
-- `PHASE_3_COMPLETE.md` - Phase 3 completion summary
-- `PHASE_4_COMPLETE.md` - Phase 4 completion summary
-- `PHASE_5_COMPLETE.md` - Phase 5 completion summary
-- `PHASE_5_STATUS.md` - Phase 5 status tracking
-- `TASK_7_COMPLETION_SUMMARY.md` - Task 7 completion summary
+- `ONBOARDING_CHECKLIST.md` - Pre-bootcamp checklist
+- `PROGRESS_TRACKER.md` - Module completion tracking
+- `QUICK_START.md` - Three fast paths to get started
 
 ## Root Level Files
 
@@ -79,10 +73,8 @@ The following files remain in the root `senzing-bootcamp/` directory:
 
 ### For Developers
 
-- Review `/development/IMPROVEMENTS.md` for complete change history
-- Review `/development/NEW_MODULE_STRUCTURE.md` for architecture
-- Review `/development/V3_IMPLEMENTATION_STATUS.md` for current status
-- Review per-module steering files for detailed workflows
+- Development documentation is in `senzing-bootcamp-power-development/`
+- Review per-module steering files in `steering/` for detailed workflows
 
 ### For Agents
 

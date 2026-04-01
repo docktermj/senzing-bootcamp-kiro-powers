@@ -104,6 +104,7 @@ The scaffold will include:
 
 > **Agent instruction:** Use `generate_scaffold(language='python', workflow='add_records', version='current')`
 > to get the current record loading pattern. Customize the generated scaffold with:
+>
 > 1. The user's input file path
 > 2. The user's data source name
 > 3. Progress reporting every N records

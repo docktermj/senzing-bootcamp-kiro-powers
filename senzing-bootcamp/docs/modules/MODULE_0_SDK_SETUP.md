@@ -89,6 +89,7 @@ See `licenses/README.md` for complete licensing information.
 Use the `sdk_guide` MCP tool with the user's platform for current installation commands.
 
 Supported platforms:
+
 - `linux_apt` — Ubuntu/Debian
 - `linux_yum` — RHEL/CentOS/Fedora
 - `macos_arm` — macOS (Apple Silicon)

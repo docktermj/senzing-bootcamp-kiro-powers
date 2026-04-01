@@ -171,7 +171,7 @@ project-root/
 │   ├── guides/               # User guides
 │   ├── modules/              # Module docs
 │   ├── policies/             # Policy docs
-│   └── development/          # Internal docs
+│   └── feedback/             # User feedback
 ├── config/                   # Configuration files
 ├── requirements.txt          # Python production dependencies
 ├── requirements-dev.txt      # Python development dependencies
@@ -257,4 +257,3 @@ When organizing your project:
 - [← Back to docs/](../)
 - [→ Modules](../modules/)
 - [→ Guides](../guides/)
-- [→ Development](../development/)

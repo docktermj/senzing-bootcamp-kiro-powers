@@ -87,7 +87,7 @@ docs/
 ├── guides/              # User-facing guides
 ├── modules/             # Module documentation
 ├── policies/            # Policy documents (like this file)
-└── development/         # Internal documentation
+└── feedback/            # User feedback templates
 ```
 
 **Examples**:

@@ -157,7 +157,7 @@ mkdir -p .kiro/hooks
 cp senzing-bootcamp/hooks/*.kiro.hook .kiro/hooks/
 ```
 
-Available: `pep8-check`, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`.
+Available: `pep8-check`, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`.
 
 ## Project Directory Structure
 

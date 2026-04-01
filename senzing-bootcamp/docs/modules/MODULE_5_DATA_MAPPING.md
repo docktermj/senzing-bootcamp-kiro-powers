@@ -34,6 +34,7 @@ SGES is Senzing's JSON format for entity data. Every record requires `DATA_SOURC
 
 > **Agent instruction:** Do not list or hardcode Senzing attribute names. Always retrieve
 > the current attribute reference from the MCP server:
+>
 > - Use `mapping_workflow` to interactively map fields (this is the primary workflow)
 > - Use `search_docs(query="entity specification attributes", version="current")` for the full attribute reference
 > - Use `download_resource(filename="senzing_entity_specification.md")` for the complete specification document

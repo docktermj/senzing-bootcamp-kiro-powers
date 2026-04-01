@@ -58,6 +58,10 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    **CRITICAL**: Never guess attribute names. Use the mapping workflow to ensure correct names.
 
+   > **Agent instruction:** If the user's data contains non-Latin characters (Cyrillic, CJK,
+   > Arabic, etc.), use `search_docs(query="globalization", category="globalization", version="current")`
+   > for character set and transliteration guidance before mapping.
+
    Advance with `mapping_workflow` using `action='schema_mappings'` and your field mappings.
 
 5. **Step 4 — Generate Starter Code**: The workflow generates:
@@ -123,7 +127,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Retest the program after changes. You may cycle through steps multiple times before achieving the desired quality.
 
-11. **Step 10 — Save and Document**: Ensure the transformation program is properly saved and documented:
+1. **Step 10 — Save and Document**: Ensure the transformation program is properly saved and documented:
 
     - Program saved in `src/transform/transform_[datasource_name].py` (all source code must be in `src/`)
     - Create `docs/mapping_[datasource_name].md` with:
@@ -134,11 +138,11 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
       - Dependencies and prerequisites
     - Save sample output in `data/transformed/[datasource_name]_sample.jsonl`
 
-11. **Mark data source as complete**: Once the user is satisfied with the transformation program for this data source, mark it as complete and move to the next data source that needs mapping.
+2. **Mark data source as complete**: Once the user is satisfied with the transformation program for this data source, mark it as complete and move to the next data source that needs mapping.
 
-12. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 3), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
+3. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 3), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
 
-13. **Transition to Module 0**: Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 0 (SDK Setup).
+4. **Transition to Module 0**: Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 0 (SDK Setup).
 
 ### Important Rules for Data Mapping
 

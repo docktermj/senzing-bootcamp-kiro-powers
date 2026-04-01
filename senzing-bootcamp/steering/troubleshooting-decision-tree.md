@@ -263,7 +263,7 @@ top  # CPU and processes
    - Proceed more carefully
 
 6. **Ask for help**
-   - Senzing support: support@senzing.com
+   - Senzing support: <support@senzing.com>
    - Documentation: docs.senzing.com
 
 ## Related Resources

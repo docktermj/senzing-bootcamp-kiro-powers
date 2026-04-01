@@ -320,6 +320,7 @@ Load `steering/uat-framework.md` when:
 ## Query Examples
 
 > **Agent instruction:** Do not use the example code below. Generate current query code using:
+>
 > - `generate_scaffold(language='python', workflow='query', version='current')` for query patterns
 > - `get_sdk_reference(topic='functions', filter='search_by_attributes', version='current')` for method details
 > - `get_sdk_reference(topic='functions', filter='why_entities', version='current')` for match explanation

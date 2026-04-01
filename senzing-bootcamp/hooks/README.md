@@ -48,6 +48,12 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 **Action**: Reminds agent to verify Senzing-specific content via MCP tools
 **Use case**: Enforces SENZING_INFORMATION_POLICY — prevents writing Senzing facts from training data
 
+### 8. Analyze After Mapping (`analyze-after-mapping.kiro.hook`)
+
+**Trigger**: When new Senzing JSON files are created in `data/transformed/`
+**Action**: Reminds agent to run `analyze_record` before proceeding to loading
+**Use case**: Catches bad mappings early — validates quality score >70% before Module 6
+
 ## Installation
 
 ### Option 1: Use Install Script (Recommended)

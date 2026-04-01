@@ -320,8 +320,8 @@ class TroubleshootingWizard:
         else:
             print("\n❌ Unexpected Matches")
             print("\n💡 Solutions:")
-            print("1. Use whyEntities to understand matching:")
-            print("   engine.whyEntities(entity1, entity2)")
+            print("1. Use why_entities to understand matching:")
+            print("   engine.why_entities(entity1, entity2)")
             print("\n2. Review matching rules")
             print("\n3. Check data quality")
 

@@ -1,0 +1,13 @@
+{
+  "name": "Analyze After Mapping",
+  "version": "1.0.0",
+  "description": "After completing a mapping task, reminds the agent to validate the transformation output using analyze_record before proceeding to loading.",
+  "when": {
+    "type": "fileCreated",
+    "patterns": ["data/transformed/*.jsonl", "data/transformed/*.json"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A new Senzing JSON file was created in data/transformed/. Before proceeding to loading (Module 6), use the analyze_record MCP tool to validate a sample of records from this file. Check feature distribution, attribute coverage, and data quality. Quality score should be >70% before loading."
+  }
+}

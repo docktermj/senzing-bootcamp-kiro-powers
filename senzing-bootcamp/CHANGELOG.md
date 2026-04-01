@@ -5,6 +5,22 @@ All notable changes to the Senzing Boot Camp power will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2026-04-01
+
+### Added
+
+- `analyze-after-mapping.kiro.hook`: Triggers on new JSONL files in `data/transformed/`, reminds agent to run `analyze_record` before loading
+- Module 3 steering: `get_sample_data` MCP tool as first option when users need sample data (alongside existing GitHub free-data link)
+- Module 7 steering: `reporting_guide(topic='graph')` for cross-source entity relationship visualization
+- Module 7 steering: `explain_error_code` guidance for diagnosing per-source failures during orchestration
+- Module 5 steering: Globalization guidance — `search_docs(category='globalization')` for non-Latin character data
+
+### Fixed
+
+- PEP8_COMPLIANCE.md CI/CD example used `python-version: 3.8` — corrected to `3.10`
+- Example project READMEs used wrong Senzing attribute names (`PRIMARY_NAME_LAST`, `PRIMARY_NAME_FULL`, `EMPLOYER_NAME`) — corrected to V4 names (`NAME_LAST`, `NAME_FULL`, `NAME_ORG`) with note that `mapping_workflow` generates the actual names
+- Production deployment example benchmark used `PRIMARY_NAME_FULL` — corrected to `NAME_FULL`
+
 ## [0.1.3] - 2026-04-01
 
 ### Fixed
@@ -15,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `addRecord`/`deleteRecord`/`getRecord`/`searchByAttributes` → `add_record`/`delete_record`/`get_record`/`search_by_attributes`
   - `/opt/senzing/g2/resources` → `/opt/senzing/er/resources`
 - Files updated: `templates/demo_quick_start.py`, `templates/rollback_load.py`, `templates/performance_baseline.py`, `examples/simple-single-source/README.md`, `examples/multi-source-project/README.md`, `examples/production-deployment/README.md`, `docs/policies/PEP8_COMPLIANCE.md`, `docs/policies/MODULE_1_CODE_LOCATION.md`, `docs/policies/SQLITE_DATABASE_LOCATION.md`
+- Removed references to non-existent `docs/development/` directory from `docs/README.md`, `docs/policies/FILE_STORAGE_POLICY.md`, `docs/policies/README.md` (development docs are in `senzing-bootcamp-power-development/`)
+- Fixed `docs/README.md` incomplete file listings — added missing Modules 0, 1, 2, 5 and missing policy/guide files
+- Fixed V3 method name `whyEntities` → `why_entities` in `templates/troubleshoot.py`
 
 ## [0.1.2] - 2026-04-01
 

@@ -552,7 +552,7 @@ def benchmark_loading(sample_size=10000):
         record = {
             "DATA_SOURCE": "BENCHMARK",
             "RECORD_ID": f"BENCH-{i:06d}",
-            "PRIMARY_NAME_FULL": f"Test Person {i}",
+            "NAME_FULL": f"Test Person {i}",
             "EMAIL_ADDRESS": f"test{i}@example.com"
         }
         engine.addRecord("BENCHMARK", record['RECORD_ID'], json.dumps(record))

@@ -20,7 +20,11 @@ inclusion: manual
 
    **If the user doesn't have their own data** or wants free data to practice with, proactively mention:
 
-   > "There's a curated collection of 35+ free, publicly available data sources specifically designed for the boot camp at <https://github.com/docktermj/senzing-bootcamp-free-data>. It includes raw samples (great for practicing mapping) and pre-mapped Senzing JSONL files (for quick loading). The data is organized by category with download details."
+   > "You have two options for sample data:
+   > 1. **MCP sample data**: I can pull real data from CORD datasets (Las Vegas, London, Moscow) using the `get_sample_data` tool — these are ready-to-use Senzing JSONL files.
+   > 2. **Free raw data**: There's a curated collection of 35+ free data sources at <https://github.com/docktermj/senzing-bootcamp-free-data> — these include raw samples (great for practicing mapping) and pre-mapped files."
+
+   Use `get_sample_data(dataset='list')` to show available CORD datasets. Present the `download_url` from the response so the user can download the full JSONL file.
 
    WAIT for their response, then proceed with the appropriate option:
 
@@ -147,4 +151,4 @@ inclusion: manual
 - Remind about data privacy and security
 - Verify files are accessible before proceeding
 - Document everything in `docs/data_source_locations.md`
-- **If user doesn't have data or asks about free data sources**, recommend <https://github.com/docktermj/senzing-bootcamp-free-data> — a curated collection of 35+ free data sources with raw samples and pre-mapped CORD data
+- **If user doesn't have data or asks about free data sources**, first offer `get_sample_data` MCP tool for CORD datasets (Las Vegas, London, Moscow), then recommend <https://github.com/docktermj/senzing-bootcamp-free-data> for raw samples and additional sources

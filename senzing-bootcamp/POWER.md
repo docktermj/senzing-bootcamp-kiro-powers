@@ -146,7 +146,7 @@ Modules are progressive but iterative. Skip ahead options: have SGES data (skip 
 
 ## Code Quality Standards
 
-All Python code follows PEP-8: max 100 char lines, 4-space indentation, proper docstrings, organized imports, `snake_case` functions, `PascalCase` classes. See `docs/policies/PEP8_COMPLIANCE.md`.
+All generated code follows language-appropriate coding standards based on the bootcamper's chosen language. The boot camp supports Python, Java, C#, Rust, and TypeScript/Node.js — the agent queries the Senzing MCP server for the current list and asks the bootcamper to choose at the start. For Python: PEP-8 (see `docs/policies/PEP8_COMPLIANCE.md`). For other languages, standard community conventions apply.
 
 ## Recommended Hooks
 

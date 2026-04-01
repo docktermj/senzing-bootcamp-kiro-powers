@@ -28,24 +28,19 @@ inclusion: manual
 
 2. **Create query programs**:
 
-   For each query type, create a program in `src/query/`.
+   For each query type, create a program in `src/query/` using the bootcamper's chosen language.
 
-   Use `generate_scaffold` with `workflow='query'` or use query template.
+   Use `generate_scaffold` with `workflow='query'` and the chosen language, or use a query template.
 
-   Example queries:
-   - `find_duplicates.py` - Find entities with multiple records
-   - `search_entities.py` - Search by name, email, phone
-   - `customer_360.py` - Get complete customer view
-   - `export_results.py` - Export to CSV/JSON
+   Example queries (file extensions depend on chosen language):
+   - `find_duplicates` - Find entities with multiple records
+   - `search_entities` - Search by name, email, phone
+   - `customer_360` - Get complete customer view
+   - `export_results` - Export to CSV/JSON
 
 3. **Run exploratory queries**:
 
-   Execute queries to understand results:
-
-   ```bash
-   python src/query/find_duplicates.py
-   python src/query/search_entities.py --name "John Smith"
-   ```
+   Execute queries to understand results. Use the appropriate run command for the chosen language (e.g., `python src/query/find_duplicates.py` for Python, `java -cp ... FindDuplicates` for Java, etc.).
 
 4. **Create UAT test cases**:
 

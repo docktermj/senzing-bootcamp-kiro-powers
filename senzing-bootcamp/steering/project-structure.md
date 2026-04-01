@@ -46,7 +46,14 @@ my-senzing-project/
 
 **Backups Directory**: The `data/backups/` directory is created by users in their project for storing database backups. This is NOT part of the power distribution itself.
 
-**Python Dependencies**: Users should create a `requirements.txt` file in their project root to manage Python dependencies. See `examples/` for reference implementations.
+**Dependencies**: Users should create a dependency file appropriate for their chosen language in the project root:
+- Python: `requirements.txt`
+- Java: `pom.xml` or `build.gradle`
+- C#: `.csproj` file
+- Rust: `Cargo.toml`
+- TypeScript: `package.json`
+
+See `examples/` for reference implementations.
 
 **SQLite Database Location**: All SQLite databases MUST be placed in `database/G2C.db` (project-relative path). Never use `/tmp/sqlite` or system-wide locations. This allows multiple bootcamp instances to run concurrently on the same machine. See `docs/policies/SQLITE_DATABASE_LOCATION.md` for complete policy.
 

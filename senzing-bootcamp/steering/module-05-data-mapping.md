@@ -75,12 +75,12 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 6. **Step 5 — Build the Transformation Program**: Help the user create a complete, runnable program for this data source.
 
-   **IMPORTANT**: All generated Python code must be PEP-8 compliant (max 100 chars/line, no trailing whitespace, proper docstrings, 4-space indentation).
+   **IMPORTANT**: All generated code must follow the coding standards for the bootcamper's chosen language. For Python: PEP-8 compliant (max 100 chars/line, no trailing whitespace, proper docstrings, 4-space indentation). For other languages, follow their standard conventions.
 
    > **Agent instruction:** The `mapping_workflow` generates starter code in Step 4. Use that
    > as the foundation. Do not use the inline example below — use `generate_scaffold` or the
-   > mapping_workflow output for current SDK patterns. Customize based on the user's language,
-   > data source type, and volume.
+   > mapping_workflow output for current SDK patterns. Customize based on the user's chosen
+   > language, data source type, and volume.
 
    The program should handle:
 
@@ -89,7 +89,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
    **Output**: Write Senzing JSON records to JSONL file in `data/transformed/`
    **Errors**: Handle malformed input records gracefully
 
-   **Save the program**: Save to `src/transform/transform_[datasource_name].py` (or appropriate extension). All transformation programs must be in the `src/transform/` directory.
+   **Save the program**: Save to `src/transform/transform_[datasource_name].[ext]` where `[ext]` is the appropriate file extension for the chosen language. All transformation programs must be in the `src/transform/` directory.
 
 7. **Step 6 — Test the Program**: Run the transformation program on sample data from `data/samples/`:
    - Start with a small subset (10-100 records) for initial testing
@@ -129,7 +129,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 1. **Step 10 — Save and Document**: Ensure the transformation program is properly saved and documented:
 
-    - Program saved in `src/transform/transform_[datasource_name].py` (all source code must be in `src/`)
+    - Program saved in `src/transform/transform_[datasource_name].[ext]` (all source code must be in `src/`)
     - Create `docs/mapping_[datasource_name].md` with:
       - Field mappings
       - Transformation logic

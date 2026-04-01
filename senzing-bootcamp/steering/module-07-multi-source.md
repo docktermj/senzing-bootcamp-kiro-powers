@@ -64,32 +64,25 @@ inclusion: manual
 
 4. **Create orchestrator program**:
 
-   Use `generate_scaffold` with `workflow='add_records'` for loading patterns.
-   Use `find_examples(query="queue loading")` or `find_examples(query="multi-source")` for real-world orchestration patterns from GitHub repos.
+   Use `generate_scaffold` with `workflow='add_records'` and the bootcamper's chosen language for loading patterns.
+   Use `find_examples(query="queue loading", language="<chosen_language>")` or `find_examples(query="multi-source")` for real-world orchestration patterns from GitHub repos.
 
-   Save to `src/load/orchestrator.py`.
+   Save to `src/load/orchestrator.[ext]` (using the appropriate file extension for the chosen language).
 
    Key features:
    - Dependency management
-   - Parallel execution (ThreadPoolExecutor or multiprocessing)
+   - Parallel execution (language-appropriate concurrency: threads, async, etc.)
    - Progress tracking across sources
    - Error handling and recovery
    - Statistics aggregation
 
 5. **Test orchestration with samples**:
 
-   Before running on full data:
-
-   ```bash
-   # Test with small samples
-   python src/load/orchestrator.py --test --limit 100
-   ```
+   Before running on full data, run the orchestrator with a small test limit. The exact command depends on the chosen language (e.g., `python src/load/orchestrator.py --test --limit 100` for Python, or the equivalent for other languages).
 
 6. **Run full orchestration**:
 
-   ```bash
-   python src/load/orchestrator.py
-   ```
+   Run the orchestrator program using the appropriate command for the chosen language.
 
    Monitor:
    - Progress for each source

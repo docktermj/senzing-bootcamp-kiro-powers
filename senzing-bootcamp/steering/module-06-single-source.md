@@ -28,18 +28,18 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 
 2. **Create the loading program**: Help the user build a complete program that loads this specific data source.
 
-   **IMPORTANT**: All generated Python code must be PEP-8 compliant (max 100 chars/line, no trailing whitespace, proper docstrings, 4-space indentation).
+   **IMPORTANT**: All generated code must follow the coding standards for the bootcamper's chosen language. For Python: PEP-8 compliant. For other languages, follow their standard conventions.
 
-   > **Agent instruction:** Use `generate_scaffold(language='python', workflow='add_records', version='current')`
+   > **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='add_records', version='current')`
    > to get the current loading pattern. Do not use the inline example below — it uses V3 patterns
    > (G2Engine, init/destroy) that are incorrect for V4. Customize the scaffold with the user's
    > file path, data source name, and progress reporting.
 
    The program should handle: SDK initialization, record loading loop, error handling per record, progress tracking, and statistics reporting.
 
-   **Save the program**: Save in `src/load/` with a clear name (e.g., `src/load/load_customer_db.py`).
+   **Save the program**: Save in `src/load/` with a clear name (e.g., `src/load/load_customer_db.[ext]` using the appropriate file extension for the chosen language).
 
-3. **Use MCP tools for code generation**: Call `generate_scaffold` with workflow `add_records` to get version-correct SDK code. Call `sdk_guide` with `topic='load'` for platform-specific loading patterns.
+3. **Use MCP tools for code generation**: Call `generate_scaffold` with workflow `add_records` and the bootcamper's chosen language to get version-correct SDK code. Call `sdk_guide` with `topic='load'` for platform-specific loading patterns.
 
 4. **Test with sample data**: Run the loading program on a small subset first:
    - Start with 10-100 records
@@ -59,7 +59,7 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
    - Note loading statistics (time, throughput, error rate)
 
 7. **Save the loading program**: Document and save the program:
-   - Save in `src/load/` with a clear name (e.g., `src/load/load_customer_db.py`)
+   - Save in `src/load/` with a clear name (e.g., `src/load/load_customer_db.[ext]`)
    - All loading programs must be in the `src/load/` directory
    - Document how to run it (command line, configuration)
    - Note any prerequisites or dependencies

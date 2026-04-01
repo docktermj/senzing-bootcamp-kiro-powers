@@ -22,21 +22,84 @@ If directory creation fails, report the error, provide commands for manual execu
 
 After creating the directory structure (or confirming it exists), inform the user: "If you encounter any issues or have suggestions during the boot camp, just say 'bootcamp feedback' and I'll help you document them for the boot camp author."
 
-## Second Action — Platform Prerequisite Check
+## Second Action — Programming Language Selection
 
-After directory structure is confirmed and before presenting path options, run a quick prerequisite check to surface missing dependencies up front:
+After directory structure is confirmed and before the prerequisite check, ask the bootcamper which programming language they want to use for generated code.
+
+1. **Query the Senzing MCP server** for supported languages by calling `generate_scaffold` with `workflow='initialize'` and `version='current'` for each candidate language, or by calling `get_capabilities` and reviewing the language list in the response. The MCP server is the authoritative source for which languages are available.
+
+2. **Present the supported languages** to the bootcamper. As of the last check, the Senzing SDK supports:
+   - Python (Linux only — not natively supported on macOS/Windows)
+   - Java
+   - C#
+   - Rust
+   - TypeScript / Node.js
+
+   However, always confirm with the MCP server — do not rely on this list alone.
+
+3. **Ask the bootcamper**: "Which programming language would you like to use for the boot camp? The Senzing SDK supports: [list from MCP]. All generated code, templates, and examples will use your chosen language."
+
+4. **WAIT for their response** before proceeding.
+
+5. **Remember the chosen language** for the entire boot camp session. Use it in all subsequent calls to `generate_scaffold`, `sdk_guide`, `find_examples`, and any code generation throughout every module.
+
+6. **Platform compatibility note**: If the bootcamper chooses Python, inform them that the Senzing Python SDK is only supported on Linux. On macOS or Windows, they should either pick a different language or use Docker/WSL2.
+
+7. **Code quality standards**: Apply language-appropriate coding standards:
+   - Python → PEP-8 (see `docs/policies/PEP8_COMPLIANCE.md`)
+   - Java → Standard Java conventions (camelCase methods, PascalCase classes, Javadoc)
+   - C# → .NET conventions (PascalCase methods and classes, XML doc comments)
+   - Rust → Rust conventions (snake_case, rustfmt, clippy)
+   - TypeScript → Standard TS conventions (camelCase, ESLint, JSDoc)
+
+## Third Action — Platform Prerequisite Check
+
+After language selection is confirmed and before presenting path options, run a quick prerequisite check to surface missing dependencies up front.
+
+Adapt the checks based on the chosen language:
+
+**For Python:**
 
 ```bash
-# 1. Detect platform
-uname -s  # Linux or Darwin (macOS)
-
-# 2. Check Python version (3.10+ required)
+uname -s
 python3 --version 2>/dev/null || echo "Python3 not found"
-
-# 3. Check if Senzing SDK is installed
 python3 -c "import senzing; print('Senzing SDK:', senzing.__version__)" 2>/dev/null || echo "Senzing SDK not installed"
+```
 
-# 4. macOS only: check Homebrew
+**For Java:**
+
+```bash
+uname -s
+java --version 2>/dev/null || echo "Java not found"
+```
+
+**For C#:**
+
+```bash
+uname -s
+dotnet --version 2>/dev/null || echo ".NET SDK not found"
+```
+
+**For Rust:**
+
+```bash
+uname -s
+rustc --version 2>/dev/null || echo "Rust not found"
+cargo --version 2>/dev/null || echo "Cargo not found"
+```
+
+**For TypeScript / Node.js:**
+
+```bash
+uname -s
+node --version 2>/dev/null || echo "Node.js not found"
+npm --version 2>/dev/null || echo "npm not found"
+```
+
+**All languages — also check:**
+
+```bash
+# macOS only: check Homebrew
 command -v brew >/dev/null 2>&1 && echo "Homebrew found" || echo "Homebrew not found"
 ```
 
@@ -44,7 +107,7 @@ Present results as a checklist before path selection:
 
 ```text
 Platform check:
-  ✅ / ❌  Python 3.10+
+  ✅ / ❌  [Language runtime/compiler]
   ✅ / ❌  Senzing SDK
   ✅ / ❌  Homebrew (macOS only)
 ```
@@ -72,7 +135,7 @@ Platform check:
    - Configuration → `config/`
    - Temporary working files → `data/temp/`
    - When MCP tools generate files outside the project, immediately relocate them
-10. **All Python code must be PEP-8 compliant** — max 100 char lines, 4-space indentation, proper docstrings, organized imports. See `docs/policies/PEP8_COMPLIANCE.md`
+10. **All generated code must follow language-appropriate coding standards** — For Python: PEP-8 (see `docs/policies/PEP8_COMPLIANCE.md`). For Java: standard Java conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions. Always use the bootcamper's chosen language from the language selection step.
 
 ## Path Selection
 

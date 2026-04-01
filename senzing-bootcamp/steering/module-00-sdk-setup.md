@@ -10,12 +10,35 @@ Install and configure the Senzing SDK natively on your machine. This is the firs
 
 **Prerequisites**: None (this is the first module)
 
+**Language**: Use the bootcamper's chosen programming language from the language selection step in agent-instructions. All code generation, scaffold calls, and examples in this module must use that language.
+
 ## Step 1: Check for Existing Installation
 
-Before installing, check if Senzing is already present:
+Before installing, check if Senzing is already present. Adapt the check to the chosen language:
 
+**Python:**
 ```bash
 python3 -c "import senzing; print('Senzing version:', senzing.__version__)" 2>/dev/null
+```
+
+**Java:**
+```bash
+java -cp "/opt/senzing/er/sdk/java/*" com.senzing.sdk.core.SzCoreEnvironment 2>/dev/null
+```
+
+**C#:**
+```bash
+dotnet list package | grep -i senzing 2>/dev/null
+```
+
+**Rust:**
+```bash
+cargo search senzing 2>/dev/null
+```
+
+**TypeScript:**
+```bash
+npm list | grep -i senzing 2>/dev/null
 ```
 
 If Senzing is found:
@@ -30,7 +53,7 @@ Ask: "What platform are you using? Linux, macOS, or Windows?"
 
 WAIT for response before proceeding.
 
-Use `sdk_guide` with `topic='install'` and the user's platform to get current installation commands. The MCP server always has the latest instructions.
+Use `sdk_guide` with `topic='install'` and the user's platform to get current installation commands. Pass the bootcamper's chosen language as the `language` parameter. The MCP server always has the latest instructions.
 
 **Platform options for `sdk_guide`**:
 
@@ -52,24 +75,7 @@ Follow the platform-specific instructions from `sdk_guide`. The typical flow:
 
 ## Step 4: Verify Installation
 
-Run a verification script:
-
-```python
-#!/usr/bin/env python3
-"""Verify Senzing SDK installation."""
-
-import senzing
-from senzing import SzEngine
-
-print(f"Senzing version: {senzing.__version__}")
-
-try:
-    engine = SzEngine()
-    print("✅ Senzing engine initialized successfully")
-    engine.destroy()
-except Exception as e:
-    print(f"❌ Error initializing engine: {e}")
-```
+Generate a verification script in the bootcamper's chosen language using `generate_scaffold(language='<chosen_language>', workflow='initialize', version='current')`. The script should initialize the Senzing engine and print the version to confirm the SDK is working.
 
 If verification fails, use `explain_error_code` for any SENZ error codes and `search_docs` for troubleshooting.
 
@@ -100,7 +106,7 @@ WAIT for response.
 ## Step 7: Create Engine Configuration
 
 > **Agent instruction:** Do not use the example JSON below. Use
-> `sdk_guide(topic='configure', platform='<user_platform>', language='python', version='current')`
+> `sdk_guide(topic='configure', platform='<user_platform>', language='<chosen_language>', version='current')`
 > to get the correct engine configuration for the user's platform. The MCP server provides
 > correct paths and catches anti-patterns.
 
@@ -108,7 +114,7 @@ Use `sdk_guide` with `topic='configure'` to generate the correct engine configur
 
 ## Step 8: Test Database Connection
 
-> **Agent instruction:** Use `generate_scaffold(language='python', workflow='initialize', version='current')`
+> **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='initialize', version='current')`
 > to get the current V4 initialization and connection test pattern.
 
 Use the MCP-generated initialization code to verify the database connection works.
@@ -116,7 +122,7 @@ Use the MCP-generated initialization code to verify the database connection work
 ## Success Criteria
 
 - ✅ Senzing SDK installed natively
-- ✅ `import senzing` works in Python
+- ✅ SDK imports/references work in the chosen language
 - ✅ Engine initializes without errors
 - ✅ Database connection works
 - ✅ Project directory structure created

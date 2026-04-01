@@ -5,6 +5,26 @@ All notable changes to the Senzing Boot Camp power will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.5] - 2026-04-01
+
+### Added
+
+- Multi-language support: bootcamp now queries the Senzing MCP server for supported programming languages and asks the bootcamper to choose before starting. All generated code, scaffold calls, and examples use the chosen language throughout every module.
+- Language-appropriate prerequisite checks (Python, Java, C#, Rust, TypeScript/Node.js)
+- Language-appropriate coding standards guidance (PEP-8, Java conventions, .NET conventions, rustfmt/clippy, ESLint)
+
+### Changed
+
+- `agent-instructions.md`: Added "Programming Language Selection" as Second Action (before prerequisite check). Prerequisite check is now Third Action and adapts to chosen language.
+- `module-00-sdk-setup.md`: Installation verification and scaffold calls now use chosen language instead of hardcoded Python
+- `module-01-quick-demo.md`: Demo script generation uses chosen language; file extensions are language-appropriate
+- `module-05-data-mapping.md`: Transformation program generation uses chosen language
+- `module-06-single-source.md`: Loading program generation uses chosen language
+- `module-07-multi-source.md`: Orchestrator generation uses chosen language
+- `module-08-query-validation.md`: Query program generation uses chosen language
+- `project-structure.md`: Dependency file guidance now covers all supported languages
+- `POWER.md`: Code quality standards section updated to reflect multi-language support
+
 ## [0.1.4] - 2026-04-01
 
 ### Added

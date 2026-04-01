@@ -12,19 +12,17 @@ Use this workflow when a user wants to see entity resolution in action before wo
 
 **Time**: 10-15 minutes
 
+**Language**: Use the bootcamper's chosen programming language from the language selection step. All code generation, scaffold calls, and examples in this module must use that language.
+
 **IMPORTANT**: Before starting Module 1, ensure the project directory structure exists. If the user is starting with Module 1 (before Module 2), create the full project structure first.
 
 1. **Create project structure (if needed)**: Follow the directory creation commands from the agent-instructions steering file. If the structure doesn't exist, create it before proceeding. After creation, tell the user: "I've created the project directory structure for you. All demo files will be saved in `src/quickstart_demo/`."
 
 2. **Explain the demo**: "Let's run a demo using sample data so you can see entity resolution in action. We'll run the Senzing SDK to load duplicate records and watch them automatically resolve into unique entities."
 
-3. **Verify Senzing SDK is available**: The SDK should already be installed from Module 0. Verify:
+3. **Verify Senzing SDK is available**: The SDK should already be installed from Module 0. Verify using a language-appropriate check (see Module 0 Step 1 for examples).
 
-   ```bash
-   python -c "import senzing" 2>/dev/null && echo "SDK found" || echo "SDK not found"
-   ```
-
-   **If SDK found** → Proceed with the live demo using `demo_quick_start.py`.
+   **If SDK found** → Proceed with the live demo.
 
    **If SDK not found** → Direct user to complete Module 0 (SDK Setup) first. Do not proceed without the SDK.
 
@@ -80,16 +78,16 @@ Use this workflow when a user wants to see entity resolution in action before wo
    Let's see if Senzing agrees!
    ```
 
-6. **Generate demo script**: Call `generate_scaffold` with workflow `full_pipeline` to create a complete demo script that:
+6. **Generate demo script**: Call `generate_scaffold` with workflow `full_pipeline` and the bootcamper's chosen language to create a complete demo script that:
    - Initializes Senzing with in-memory SQLite database
    - Loads the sample records (with progress indicator)
    - Queries the resolved entities
    - Shows match explanations using `why_entity_by_entity_id` or `how_entity_by_entity_id`
    - Displays before/after comparison
 
-   **Save the generated script to**: `src/quickstart_demo/demo_[dataset_name].py`
+   **Save the generated script to**: `src/quickstart_demo/demo_[dataset_name].[ext]` where `[ext]` is the appropriate file extension for the chosen language (`.py`, `.java`, `.cs`, `.rs`, `.ts`).
 
-   Example: `src/quickstart_demo/demo_las_vegas.py`
+   Example: `src/quickstart_demo/demo_las_vegas.py` (for Python)
 
    **CRITICAL**: The script must include:
    - SDK initialization code
@@ -110,12 +108,7 @@ Use this workflow when a user wants to see entity resolution in action before wo
    - How many entities were created from the records
    - Example of resolved entities showing all matching records
 
-   **CRITICAL**: Actually execute the script - don't just show what it would do!
-
-   ```bash
-   cd src/quickstart_demo
-   python demo_las_vegas.py
-   ```
+   **CRITICAL**: Actually execute the script - don't just show what it would do! Use the appropriate run command for the chosen language.
 
 9. **Display results with match explanations**: After the demo runs, show:
 

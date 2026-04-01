@@ -30,56 +30,17 @@ By the end of this module, you will:
 
 ### Query Types
 
-Senzing provides several query operations:
+> **Agent instruction:** Do not use the method signatures below — they may not match the
+> current SDK version. Always use `generate_scaffold(language='python', workflow='query', version='current')`
+> for query code, and `get_sdk_reference(topic='functions', version='current')` for method signatures.
 
-#### 1. Get Entity by Record ID
+Senzing provides several query operations. Use the MCP server to get current method signatures:
 
-```python
-# Find the entity that contains a specific record
-entity = engine.getEntityByRecordID(DATA_SOURCE, RECORD_ID)
-```
-
-Use when: You have a specific record and want to see its resolved entity
-
-#### 2. Search by Attributes
-
-```python
-# Search for entities matching attributes
-search_json = json.dumps({
-    "NAME_FULL": "John Smith",
-    "ADDR_FULL": "123 Main St"
-})
-results = engine.searchByAttributes(search_json)
-```
-
-Use when: You want to find entities matching certain criteria
-
-#### 3. Get Entity by Entity ID
-
-```python
-# Get a specific entity by its ID
-entity = engine.getEntityByEntityID(entity_id)
-```
-
-Use when: You know the entity ID and want full details
-
-#### 4. Why Entities
-
-```python
-# Understand why two records resolved together
-why = engine.whyEntities(entity_id_1, entity_id_2)
-```
-
-Use when: You want to understand matching logic
-
-#### 5. How Entity
-
-```python
-# See how an entity was built from records
-how = engine.howEntityByEntityID(entity_id)
-```
-
-Use when: You want to see the resolution steps
+- **Get Entity by Record ID** — Find the entity that contains a specific record
+- **Search by Attributes** — Find entities matching certain criteria
+- **Get Entity by Entity ID** — Get a specific entity by its ID
+- **Why Entities** — Understand why two records resolved together
+- **How Entity** — See how an entity was built from records
 
 ## Workflow
 
@@ -126,95 +87,18 @@ The scaffold will include:
 
 ### Step 3: Customize Query Program
 
-Customize the generated scaffold for your use case:
+> **Agent instruction:** Use `generate_scaffold(language='python', workflow='query', version='current')`
+> to get the current query scaffold. Customize it for the user's specific use case
+> (Customer 360, fraud detection, etc.) based on their Module 2 business problem.
+> Use `get_sdk_reference(topic='flags', version='current')` for the correct query flags.
+> Do not use the example code patterns in this section — they may use outdated method names or flag constants.
 
-```python
-#!/usr/bin/env python3
-"""
-Customer 360 Query Program
-Find complete customer profile by name and email
-"""
+Customize the MCP-generated scaffold for your use case:
 
-import json
-from senzing import SzEngine, SzEngineFlags
-
-def find_customer(name, email):
-    """Find customer entity by name and email"""
-
-    # Initialize engine
-    engine = SzEngine()
-    engine.initialize(instance_name='senzing-bootcamp', settings=ENGINE_CONFIG)
-
-    # Build search attributes
-    search_attrs = {
-        "NAME_FULL": name,
-        "EMAIL_ADDRESS": email
-    }
-
-    # Search for matching entities
-    results = engine.searchByAttributes(
-        json.dumps(search_attrs),
-        flags=SzEngineFlags.SZ_SEARCH_INCLUDE_RESOLVED
-    )
-
-    results_data = json.loads(results)
-
-    if not results_data.get('RESOLVED_ENTITIES'):
-        print(f"No customer found for {name} / {email}")
-        return None
-
-    # Get first match (highest confidence)
-    entity_id = results_data['RESOLVED_ENTITIES'][0]['ENTITY']['RESOLVED_ENTITY']['ENTITY_ID']
-
-    # Get full entity details
-    entity = engine.getEntityByEntityID(
-        entity_id,
-        flags=SzEngineFlags.SZ_ENTITY_INCLUDE_ALL_FEATURES
-    )
-
-    entity_data = json.loads(entity)
-
-    # Format output
-    print(f"\n{'='*60}")
-    print(f"CUSTOMER PROFILE - Entity ID: {entity_id}")
-    print(f"{'='*60}")
-
-    # Names
-    print(f"\nNames:")
-    for name_record in entity_data['RESOLVED_ENTITY'].get('NAME', []):
-        print(f"  - {name_record['NAME_FULL']}")
-
-    # Addresses
-    print(f"\nAddresses:")
-    for addr in entity_data['RESOLVED_ENTITY'].get('ADDRESS', []):
-        print(f"  - {addr['ADDR_FULL']}")
-
-    # Phones
-    print(f"\nPhones:")
-    for phone in entity_data['RESOLVED_ENTITY'].get('PHONE', []):
-        print(f"  - {phone['PHONE_NUMBER']}")
-
-    # Emails
-    print(f"\nEmails:")
-    for email_rec in entity_data['RESOLVED_ENTITY'].get('EMAIL', []):
-        print(f"  - {email_rec['EMAIL_ADDRESS']}")
-
-    # Data sources
-    print(f"\nData Sources:")
-    for record in entity_data['RESOLVED_ENTITY'].get('RECORDS', []):
-        print(f"  - {record['DATA_SOURCE']}: {record['RECORD_ID']}")
-
-    print(f"\n{'='*60}\n")
-
-    # Cleanup
-    engine.destroy()
-
-    return entity_data
-
-if __name__ == '__main__':
-    # Example usage
-    find_customer("John Smith", "john.smith@email.com")
-```
+1. Set search attributes based on your business requirements
+2. Choose appropriate query flags (use `get_sdk_reference` for current flags)
+3. Format output for your stakeholders
+4. Add error handling
 
 ### Step 4: Test Query Program
 
@@ -435,59 +319,17 @@ Load `steering/uat-framework.md` when:
 
 ## Query Examples
 
-### Example 1: Find Duplicates
+> **Agent instruction:** Do not use the example code below. Generate current query code using:
+> - `generate_scaffold(language='python', workflow='query', version='current')` for query patterns
+> - `get_sdk_reference(topic='functions', filter='search_by_attributes', version='current')` for method details
+> - `get_sdk_reference(topic='functions', filter='why_entities', version='current')` for match explanation
+> - `get_sdk_reference(topic='flags', version='current')` for flag constants
 
-```python
-def find_duplicates_for_record(data_source, record_id):
-    """Find all records that resolved with this record"""
+Common query patterns (use MCP tools to generate current code):
 
-    entity = engine.getEntityByRecordID(data_source, record_id)
-    entity_data = json.loads(entity)
-
-    records = entity_data['RESOLVED_ENTITY']['RECORDS']
-
-    print(f"\nEntity ID: {entity_data['RESOLVED_ENTITY']['ENTITY_ID']}")
-    print(f"Total Records: {len(records)}")
-    print(f"\nRecords:")
-
-    for record in records:
-        print(f"  - {record['DATA_SOURCE']}: {record['RECORD_ID']}")
-```
-
-### Example 2: Search for Customer
-
-```python
-def search_customer(name, phone):
-    """Search for customer by name and phone"""
-
-    search_attrs = {
-        "NAME_FULL": name,
-        "PHONE_NUMBER": phone
-    }
-
-    results = engine.searchByAttributes(json.dumps(search_attrs))
-    results_data = json.loads(results)
-
-    for entity in results_data.get('RESOLVED_ENTITIES', []):
-        entity_id = entity['ENTITY']['RESOLVED_ENTITY']['ENTITY_ID']
-        match_score = entity['MATCH_INFO']['MATCH_SCORE']
-        print(f"Entity {entity_id}: Match Score {match_score}")
-```
-
-### Example 3: Explain Match
-
-```python
-def explain_why_matched(entity_id_1, entity_id_2):
-    """Explain why two entities matched"""
-
-    why = engine.whyEntities(entity_id_1, entity_id_2)
-    why_data = json.loads(why)
-
-    print(f"\nWhy Entities {entity_id_1} and {entity_id_2} Matched:")
-
-    for match in why_data['WHY_RESULTS'][0]['MATCH_INFO']['WHY_RESULT']:
-        print(f"  - {match['WHY_KEY']}: {match['WHY_RESULT']}")
-```
+- **Find Duplicates** — Get entity by record ID, list all records in the entity
+- **Search for Customer** — Search by attributes (name, phone, email, etc.)
+- **Explain Match** — Use why_entities to understand matching logic
 
 ## Validation Gates
 
@@ -608,6 +450,9 @@ When a user is in Module 8:
 - `steering/module-08-query-validation.md` - Module 8 workflow
 - `steering/agent-instructions.md` - Agent behavior for Module 8
 - `steering/uat-framework.md` - Comprehensive UAT guidance (load on demand)
+- Use MCP: `reporting_guide(topic="evaluation")` for the 4-point ER evaluation framework
+- Use MCP: `reporting_guide(topic="quality")` for precision/recall, split/merge detection, and review queues
+- Use MCP: `reporting_guide(topic="export")` for SDK data extraction patterns
 - Use MCP: `search_docs(query="testing best practices")` for overall testing approach
 
 ## Version History

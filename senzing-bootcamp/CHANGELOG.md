@@ -5,6 +5,42 @@ All notable changes to the Senzing Boot Camp power will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2026-04-01
+
+### Fixed
+
+- Updated all V3 SDK patterns to V4 across example projects and templates:
+  - `G2Engine` → `SzAbstractFactoryCore` + `create_engine()`
+  - `engine.init()`/`engine.destroy()` → factory-based lifecycle
+  - `addRecord`/`deleteRecord`/`getRecord`/`searchByAttributes` → `add_record`/`delete_record`/`get_record`/`search_by_attributes`
+  - `/opt/senzing/g2/resources` → `/opt/senzing/er/resources`
+- Files updated: `templates/demo_quick_start.py`, `templates/rollback_load.py`, `templates/performance_baseline.py`, `examples/simple-single-source/README.md`, `examples/multi-source-project/README.md`, `examples/production-deployment/README.md`, `docs/policies/PEP8_COMPLIANCE.md`, `docs/policies/MODULE_1_CODE_LOCATION.md`, `docs/policies/SQLITE_DATABASE_LOCATION.md`
+
+## [0.1.2] - 2026-04-01
+
+### Added
+
+- MODULE_6: Quick test path using `mapping_workflow` steps 5-8 for fast feedback before writing custom loading programs
+- MODULE_8: `reporting_guide` references for 4-point ER evaluation framework and quality metrics
+- MODULE_9: `reporting_guide` references for SQL analytics and data mart patterns
+- MODULE_0: `find_examples` reference for real-world initialization patterns from GitHub
+- MODULE_7 steering: `find_examples` reference for queue-based and multi-source loading patterns
+- MODULE_12 steering: `find_examples` reference for Dockerfile patterns
+- MODULE_1 steering: Instruction to present `download_url` from `get_sample_data` to users
+- MODULE_6 steering: Anti-pattern check before loading
+- MODULE_7 steering: Anti-pattern check before multi-source orchestration
+- MODULE_12 steering: Anti-pattern check before deployment
+- `verify-senzing-facts.kiro.hook`: preToolUse hook that enforces SENZING_INFORMATION_POLICY by reminding agent to verify Senzing facts via MCP before writing
+- QUICK_START Path B: `sdk_guide(topic='full_pipeline')` as fastest option for experienced users
+- Cross-references between troubleshooting-decision-tree and common-pitfalls steering files
+
+### Changed
+
+- steering/module-05-data-mapping: Replaced inline 40-line example program with `mapping_workflow`/`generate_scaffold` delegation
+- steering/module-06-single-source: Replaced inline V3-style loading example with `generate_scaffold` delegation
+- steering/troubleshooting-decision-tree: Added anti-pattern check to "When All Else Fails" section
+- steering/common-pitfalls: Added cross-reference to troubleshooting decision tree
+
 ## [0.1.1] - 2026-04-01
 
 ### Changed
@@ -13,6 +49,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added agent instruction to always fetch current requirements via `search_docs` during onboarding
 - Added cloud-managed database options (AWS Aurora/RDS, Azure SQL) to database checklist
 - Added link to official Senzing v4 System Requirements page
+- MODULE_5: Replaced hardcoded SGES attribute reference with MCP server delegation (`mapping_workflow`, `search_docs`, `download_resource`)
+- MODULE_5: Replaced hardcoded mapping pattern code with MCP delegation reference
+- MODULE_0: Replaced hardcoded platform install commands with `sdk_guide` delegation
+- MODULE_0: Replaced hardcoded database config JSON and verification script with `sdk_guide`/`generate_scaffold` delegation
+- MODULE_6: Replaced hardcoded error code explanations with `explain_error_code` delegation
+- MODULE_6: Replaced hardcoded data source registration and loading code with `generate_scaffold` delegation
+- MODULE_8: Replaced hardcoded SDK method signatures and query code with `generate_scaffold`/`get_sdk_reference` delegation
+- MODULE_9: Replaced hardcoded performance benchmark numbers with `search_docs` delegation
+- steering/module-00-sdk-setup: Replaced hardcoded engine config JSON and test script with MCP delegation
+- steering/troubleshooting-decision-tree: Removed hardcoded attribute name and method name examples
+- steering/common-pitfalls: Removed hardcoded wrong/right attribute and method name lists, replaced with MCP tool references
+- All changes align with SENZING_INFORMATION_POLICY.md which mandates MCP-sourced Senzing facts
+
+### Fixed
+
+- Replaced all `lint_record` references with `analyze_record` — `lint_record` does not exist as an MCP tool; `analyze_record` handles both validation and quality analysis
+- docs/modules/README.md was missing entries for Modules 0, 1, 2, and 5 — added all four
+- docs/modules/README.md had broken navigation link to non-existent `docs/development/` — removed
+- docs/modules/README.md dependency flow diagram incorrectly showed Module 5 → Module 0 → Module 6; corrected to show Module 0 and Module 5 as parallel prerequisites for Module 6
+- docs/modules/README.md Quick Reference table was missing Modules 0, 1, 2, and 5 — added all four
+- MODULE_12 example code had `python_requires=">=3.8"` in both setup.py and pyproject.toml — corrected to `>=3.10` to match bootcamp-wide Python version requirement
+- steering/module-05-data-mapping.md still had hardcoded Senzing attribute names in Step 3 and "Important Rules" section — replaced with MCP delegation per SENZING_INFORMATION_POLICY
 
 ## [0.1.0] - 2026-03-27
 

@@ -35,6 +35,8 @@ Use this workflow when a user wants to see entity resolution in action before wo
 
    Ask the user which scenario interests them most, or default to Las Vegas.
 
+   **IMPORTANT**: Present the `download_url` from the `get_sample_data` response to the user so they can download the full JSONL dataset if they want to explore further. Do not dump raw records into the conversation — the inline records are a small preview only.
+
    **IMPORTANT**: Use a small sample (5-10 records) for the quick demo to ensure fast execution and clear results. The goal is to show the concept, not process large volumes.
 
 5. **Show sample records BEFORE resolution**: Display 3-5 sample records from the dataset. Point out:

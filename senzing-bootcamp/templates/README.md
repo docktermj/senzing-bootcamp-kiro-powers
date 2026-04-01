@@ -248,7 +248,7 @@ Use the `mapping_workflow` MCP tool for interactive data mapping:
 Agent: Call mapping_workflow(action="start", file_paths=["data/raw/customers.csv"])
 → Follow the 7-step interactive workflow
 → Agent generates transformation code automatically
-→ Validates with lint_record and analyze_record
+→ Validates with analyze_record
 ```
 
 **Supports**: CSV, JSON, database extracts, API responses

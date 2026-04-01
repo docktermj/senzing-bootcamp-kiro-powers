@@ -35,6 +35,11 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 **Best for:** Experienced users with SGES-compliant data
 
+> **Agent instruction:** For Path B, offer the user two options:
+>
+> 1. **Fastest**: Use `sdk_guide(topic='full_pipeline', platform='<user_platform>', language='python', version='current')` to get install + configure + load + export in one call. This is the quickest way to see results.
+> 2. **Step-by-step**: Walk through Module 0 then Module 6 separately for more control.
+
 ```bash
 # 1. Define problem (5 min)
 "I want to deduplicate customers from my CRM"
@@ -42,11 +47,9 @@ Get started with Senzing entity resolution in 30 minutes or less.
 # 2. Upload data (5 min)
 # Drag and drop your SGES-formatted JSON file
 
-# 3. Install SDK (10 min)
-"Install Senzing with SQLite"
-
-# 4. Load and query (10 min)
-"Load my data and find duplicates"
+# 3. Install SDK and load data (20 min)
+# Agent uses sdk_guide(topic='full_pipeline') for fastest setup
+# Or walk through Module 0 → Module 6 for step-by-step control
 ```
 
 **Time:** 30 minutes

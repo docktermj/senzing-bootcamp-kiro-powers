@@ -240,7 +240,7 @@ Implement transformers for each source with comprehensive error handling and log
 {
   "PIPELINE": {
     "CONFIGPATH": "/etc/opt/senzing",
-    "RESOURCEPATH": "/opt/senzing/g2/resources",
+    "RESOURCEPATH": "/opt/senzing/er/resources",
     "SUPPORTPATH": "/opt/senzing/data"
   },
   "SQL": {
@@ -269,7 +269,7 @@ import time
 import logging
 from typing import List, Dict
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from senzing import G2Engine
+from senzing_core import SzAbstractFactoryCore
 from prometheus_client import Counter, Histogram, Gauge
 
 # Metrics
@@ -293,8 +293,10 @@ class ProductionOrchestrator:
                             batch_size: int = 1000) -> Dict:
         """Load source with batching and error recovery"""
 
-        engine = G2Engine()
-        engine.init(f"Loader-{data_source}", json.dumps(self.config), False)
+        sz_factory = SzAbstractFactoryCore(
+            f"Loader-{data_source}", json.dumps(self.config)
+        )
+        engine = sz_factory.create_engine()
 
         active_loaders.inc()
 
@@ -363,7 +365,7 @@ class ProductionOrchestrator:
             }
 
         finally:
-            engine.destroy()
+            sz_factory.destroy()
             active_loaders.dec()
 
     def load_all_parallel(self, sources: List[tuple]) -> List[Dict]:
@@ -444,7 +446,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 import json
 import jwt
-from senzing import G2Engine
+from senzing_core import SzAbstractFactoryCore
 from prometheus_client import Counter, Histogram
 import time
 
@@ -460,8 +462,8 @@ api_errors = Counter('api_errors_total', 'API errors', ['endpoint', 'error_type'
 with open('config/prod/senzing_config.json') as f:
     config = json.load(f)
 
-engine = G2Engine()
-engine.init("APIServer", json.dumps(config), False)
+sz_factory = SzAbstractFactoryCore("APIServer", json.dumps(config))
+engine = sz_factory.create_engine()
 
 def verify_token(credentials: HTTPAuthorizationCredentials = Security(security)):
     """Verify JWT token"""
@@ -533,16 +535,16 @@ if __name__ == '__main__':
 
 import time
 import json
-from senzing import G2Engine
+from senzing_core import SzAbstractFactoryCore
 
 def benchmark_loading(sample_size=10000):
     """Benchmark loading performance"""
 
     with open('config/prod/senzing_config.json') as f:
-        config = json.load(f)
+        config = json.dumps(json.load(f))
 
-    engine = G2Engine()
-    engine.init("Benchmark", json.dumps(config), False)
+    sz_factory = SzAbstractFactoryCore("Benchmark", config)
+    engine = sz_factory.create_engine()
 
     start = time.time()
 
@@ -561,7 +563,7 @@ def benchmark_loading(sample_size=10000):
     print(f"Loaded {sample_size:,} records in {duration:.1f} seconds")
     print(f"Rate: {rate:.1f} records/second")
 
-    engine.destroy()
+    sz_factory.destroy()
 
     return rate
 

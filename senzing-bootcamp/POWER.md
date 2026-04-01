@@ -110,8 +110,7 @@ Always call `get_capabilities` first when starting a session.
 - `get_sample_data` — Download sample datasets (Las Vegas, London, Moscow)
 - `search_docs` — Search indexed Senzing documentation
 - `explain_error_code` — Diagnose Senzing errors (456 error codes)
-- `analyze_record` — Analyze mapped data quality and coverage
-- `lint_record` — Validate mapped data format against Senzing JSON spec
+- `analyze_record` — Analyze and validate mapped data against the Senzing Entity Specification
 - `sdk_guide` — Platform-specific SDK installation and setup
 - `find_examples` — Working code from 27 Senzing GitHub repositories
 - `get_sdk_reference` — SDK method signatures and flags
@@ -158,7 +157,7 @@ mkdir -p .kiro/hooks
 cp senzing-bootcamp/hooks/*.kiro.hook .kiro/hooks/
 ```
 
-Available: `pep8-check`, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`.
+Available: `pep8-check`, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`.
 
 ## Project Directory Structure
 

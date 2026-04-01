@@ -99,41 +99,19 @@ WAIT for response.
 
 ## Step 7: Create Engine Configuration
 
-Create `config/engine_config.json`:
+> **Agent instruction:** Do not use the example JSON below. Use
+> `sdk_guide(topic='configure', platform='<user_platform>', language='python', version='current')`
+> to get the correct engine configuration for the user's platform. The MCP server provides
+> correct paths and catches anti-patterns.
 
-```json
-{
-    "PIPELINE": {
-        "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/er/resources",
-        "SUPPORTPATH": "/opt/senzing/data"
-    },
-    "SQL": {
-        "CONNECTION": "sqlite3://na:na@database/G2C.db"
-    }
-}
-```
-
-Adjust paths based on the user's platform and `sdk_guide` output.
+Use `sdk_guide` with `topic='configure'` to generate the correct engine configuration JSON for the user's platform and database choice. Save it to `config/engine_config.json`.
 
 ## Step 8: Test Database Connection
 
-```python
-#!/usr/bin/env python3
-"""Test Senzing database connection."""
+> **Agent instruction:** Use `generate_scaffold(language='python', workflow='initialize', version='current')`
+> to get the current V4 initialization and connection test pattern.
 
-import json
-from senzing import SzEngine
-
-config_path = "config/engine_config.json"
-with open(config_path) as f:
-    config = json.load(f)
-
-engine = SzEngine()
-engine.initialize("TestApp", json.dumps(config), False)
-print("✅ Database connection successful")
-engine.destroy()
-```
+Use the MCP-generated initialization code to verify the database connection works.
 
 ## Success Criteria
 

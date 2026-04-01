@@ -96,36 +96,34 @@ def run_demo():
         print("Checking for Senzing SDK...")
         
         try:
-            from senzing import G2Engine, G2Exception
+            from senzing import SzError
+            from senzing_core import SzAbstractFactoryCore
             print("✓ Senzing SDK found")
         except ImportError:
             print("✗ Senzing SDK not found")
             print("\nTo run this demo, you need the Senzing SDK.")
             print("Options:")
-            print("  1. Install SDK: pip install senzing")
-            print("  2. Complete Module 0 (SDK Setup) first")
+            print("  1. Complete Module 0 (SDK Setup) first")
+            print("  2. Use sdk_guide MCP tool for install commands")
             sys.exit(1)
         
         # Initialize engine with in-memory database
         print("\nInitializing Senzing engine with in-memory database...")
-        engine = G2Engine()
         
         # Configuration for in-memory SQLite
-        config = {
+        config = json.dumps({
             "PIPELINE": {
                 "CONFIGPATH": "/etc/opt/senzing",
-                "RESOURCEPATH": "/opt/senzing/g2/resources",
+                "RESOURCEPATH": "/opt/senzing/er/resources",
                 "SUPPORTPATH": "/opt/senzing/data"
             },
             "SQL": {
                 "CONNECTION": "sqlite3://na:na@:memory:"
             }
-        }
+        })
         
-        module_name = "SenzingQuickDemo"
-        verbose_logging = False
-        
-        engine.init(module_name, json.dumps(config), verbose_logging)
+        sz_factory = SzAbstractFactoryCore("SenzingQuickDemo", config)
+        engine = sz_factory.create_engine()
         print("✓ Engine initialized")
         
         # Show sample records
@@ -138,7 +136,7 @@ def run_demo():
         loaded_count = 0
         for i, record in enumerate(SAMPLE_RECORDS, 1):
             record_json = json.dumps(record)
-            engine.addRecord(
+            engine.add_record(
                 record['DATA_SOURCE'],
                 record['RECORD_ID'],
                 record_json
@@ -206,7 +204,7 @@ def run_demo():
         print("=" * 80)
         
         # Cleanup
-        engine.destroy()
+        sz_factory.destroy()
         
     except Exception as e:
         print(f"\n✗ Error: {e}")

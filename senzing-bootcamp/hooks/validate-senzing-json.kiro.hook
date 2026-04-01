@@ -8,6 +8,6 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "Senzing JSON output was modified. Please use the lint_record MCP tool to validate a sample of records from this file to ensure they conform to the Senzing Generic Entity Specification."
+    "prompt": "Senzing JSON output was modified. Please use the analyze_record MCP tool to validate a sample of records from this file to ensure they conform to the Senzing Generic Entity Specification."
   }
 }

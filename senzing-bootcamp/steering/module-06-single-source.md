@@ -10,6 +10,11 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 
 **Before starting**: Identify which data sources are ready to load:
 
+> **Agent instruction:** Before starting any loading, check for anti-patterns:
+> `search_docs(query="loading", category="anti_patterns", version="current")`.
+> This catches known pitfalls like bulk loading issues, threading problems, and
+> PostgreSQL schema DDL requirements.
+
 - Data sources that were mapped in Module 5 (have transformation program output)
 - Data sources that were SGES-compliant from Module 4 (can load directly)
 
@@ -21,95 +26,18 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
    - Database query results
    - API responses
 
-2. **Create the loading program**: Help the user build a complete program that loads this specific data source. The program should:
+2. **Create the loading program**: Help the user build a complete program that loads this specific data source.
 
    **IMPORTANT**: All generated Python code must be PEP-8 compliant (max 100 chars/line, no trailing whitespace, proper docstrings, 4-space indentation).
 
-   **Connection handling**:
-   - Initialize the Senzing engine
-   - Connect to the configured database (SQLite or PostgreSQL)
-   - Handle connection errors gracefully
+   > **Agent instruction:** Use `generate_scaffold(language='python', workflow='add_records', version='current')`
+   > to get the current loading pattern. Do not use the inline example below — it uses V3 patterns
+   > (G2Engine, init/destroy) that are incorrect for V4. Customize the scaffold with the user's
+   > file path, data source name, and progress reporting.
 
-   **Record loading**:
-   - Read Senzing JSON records from the input source
-   - Call the SDK's add record method for each record
-   - Use the correct `DATA_SOURCE` identifier for this source
-   - Process records in batches for efficiency
+   The program should handle: SDK initialization, record loading loop, error handling per record, progress tracking, and statistics reporting.
 
-   **Error handling**:
-   - Catch and log errors for individual records
-   - Continue processing even if some records fail
-   - Track which records succeeded and which failed
-
-   **Progress tracking**:
-   - Report loading progress (records processed, success rate)
-   - Show timing information
-   - Display entity resolution statistics if available
-
-   **Example loading program** (Python):
-
-   ```python
-   import json
-   from senzing import G2Engine, G2Exception
-
-   def load_records(input_file, data_source_code):
-       """Load Senzing JSON records into the engine"""
-
-       # Initialize engine
-       engine = G2Engine()
-       config = {
-           "PIPELINE": {
-               "CONFIGPATH": "/etc/opt/senzing",
-               "RESOURCEPATH": "/opt/senzing/g2/resources",
-               "SUPPORTPATH": "/opt/senzing/data"
-           },
-           "SQL": {
-               "CONNECTION": "sqlite3://na:na@database/G2C.db"
-           }
-       }
-       engine.init("LoaderApp", json.dumps(config), False)
-
-       # Load records
-       success_count = 0
-       error_count = 0
-
-       with open(input_file, 'r') as f:
-           for line_num, line in enumerate(f, 1):
-               try:
-                   record = json.loads(line)
-                   engine.addRecord(
-                       data_source_code,
-                       record.get("RECORD_ID"),
-                       json.dumps(record)
-                   )
-                   success_count += 1
-
-                   if success_count % 100 == 0:
-                       print(f"Loaded {success_count} records...")
-
-               except G2Exception as e:
-                   error_count += 1
-                   print(f"Error on line {line_num}: {e}")
-               except json.JSONDecodeError as e:
-                   error_count += 1
-                   print(f"Invalid JSON on line {line_num}: {e}")
-
-       # Cleanup
-       engine.destroy()
-
-       print(f"\nLoading complete:")
-       print(f"  Success: {success_count}")
-       print(f"  Errors: {error_count}")
-
-   if __name__ == "__main__":
-       load_records("customer_data_senzing.jsonl", "CUSTOMER_DB")
-   ```
-
-   **Customize the program** based on:
-   - User's preferred programming language (Python, Java, C#, Rust)
-   - Data source location (file, database, stream)
-   - Data volume (small dataset vs. millions of records)
-   - Environment (local script, cloud function, production pipeline)
+   **Save the program**: Save in `src/load/` with a clear name (e.g., `src/load/load_customer_db.py`).
 
 3. **Use MCP tools for code generation**: Call `generate_scaffold` with workflow `add_records` to get version-correct SDK code. Call `sdk_guide` with `topic='load'` for platform-specific loading patterns.
 

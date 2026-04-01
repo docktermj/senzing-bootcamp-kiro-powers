@@ -12,7 +12,8 @@ Usage:
 import argparse
 import json
 import sys
-from senzing import G2Engine
+from senzing import SzError
+from senzing_core import SzAbstractFactoryCore
 
 
 def rollback_load(data_source: str, engine_config: str, confirm: bool = True) -> bool:
@@ -29,8 +30,10 @@ def rollback_load(data_source: str, engine_config: str, confirm: bool = True) ->
         print(f"Rolling back data source: {data_source}")
 
         # Initialize engine
-        engine = G2Engine()
-        engine.init("RollbackLoad", engine_config, False)
+        sz_factory = SzAbstractFactoryCore(
+            "RollbackLoad", engine_config
+        )
+        engine = sz_factory.create_engine()
 
         # Get all record IDs for this data source
         print("  Fetching record IDs...")
@@ -44,6 +47,7 @@ def rollback_load(data_source: str, engine_config: str, confirm: bool = True) ->
         print("   Consider using backup/restore instead")
 
         engine.destroy()
+        sz_factory.destroy()
         return False
 
     except Exception as e:

@@ -14,6 +14,10 @@ inclusion: manual
 
 **Agent Workflow**:
 
+> **Agent instruction:** Before starting multi-source orchestration, check for anti-patterns:
+> `search_docs(query="multi-source loading orchestration", category="anti_patterns", version="current")`.
+> Key pitfalls include threading issues, redo processing, and load order dependencies.
+
 1. **Analyze data sources and dependencies**:
 
    Ask: "Do any of your data sources depend on others being loaded first?"
@@ -60,7 +64,8 @@ inclusion: manual
 
 4. **Create orchestrator program**:
 
-   Use `generate_scaffold` with `workflow='orchestration'` or create from template.
+   Use `generate_scaffold` with `workflow='add_records'` for loading patterns.
+   Use `find_examples(query="queue loading")` or `find_examples(query="multi-source")` for real-world orchestration patterns from GitHub repos.
 
    Save to `src/load/orchestrator.py`.
 

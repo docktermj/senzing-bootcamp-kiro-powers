@@ -4,6 +4,57 @@ This directory contains detailed documentation for each boot camp module.
 
 ## Available Modules
 
+### Module 0: SDK Setup
+
+**File**: [MODULE_0_SDK_SETUP.md](MODULE_0_SDK_SETUP.md)
+
+**Purpose**: Install and configure the Senzing SDK natively on your machine
+
+**Key Topics**:
+
+- Platform-specific installation
+- Database configuration (SQLite or PostgreSQL)
+- Installation verification
+- Project directory structure creation
+
+**When to Use**: First technical module — start here
+
+---
+
+### Module 1: Quick Demo (Optional)
+
+**File**: [MODULE_1_QUICK_DEMO.md](MODULE_1_QUICK_DEMO.md)
+
+**Purpose**: See Senzing entity resolution in action with sample data
+
+**Key Topics**:
+
+- Sample dataset selection (Las Vegas, London, Moscow)
+- Live SDK demo with real entity resolution
+- Match explanations and confidence scores
+- Before/after comparison
+
+**When to Use**: Optional — for first-time users who want to see ER working
+
+---
+
+### Module 2: Understand Business Problem
+
+**File**: [MODULE_2_BUSINESS_PROBLEM.md](MODULE_2_BUSINESS_PROBLEM.md)
+
+**Purpose**: Define the business problem that entity resolution will solve
+
+**Key Topics**:
+
+- Problem definition and scoping
+- Design pattern selection (10 patterns available)
+- Success criteria definition
+- Stakeholder identification
+
+**When to Use**: Starting point for all projects
+
+---
+
 ### Module 3: Data Collection
 
 **File**: [MODULE_3_DATA_COLLECTION.md](MODULE_3_DATA_COLLECTION.md)
@@ -38,6 +89,24 @@ This directory contains detailed documentation for each boot camp module.
 - Quality recommendations
 
 **When to Use**: After Module 3 (data collected)
+
+---
+
+### Module 5: Data Mapping
+
+**File**: [MODULE_5_DATA_MAPPING.md](MODULE_5_DATA_MAPPING.md)
+
+**Purpose**: Transform source data into Senzing's Generic Entity Specification format
+
+**Key Topics**:
+
+- Senzing SGES format
+- Interactive mapping workflow via MCP
+- Transformation program creation
+- Data quality validation with `analyze_record`
+- Transformation lineage tracking
+
+**When to Use**: After Module 4 (data quality evaluated)
 
 ---
 
@@ -182,27 +251,33 @@ This directory contains detailed documentation for each boot camp module.
 ## Module Dependencies
 
 ```text
-Module 3 → Module 4 → Module 5 → Module 0 → Module 6
-                                              ↓
-                                         Module 7 (if multiple sources)
-                                              ↓
-                                         Module 8
-                                              ↓
-                                         Module 9 (for production)
-                                              ↓
-                                         Module 10 (for production)
-                                              ↓
-                                         Module 11 (for production)
-                                              ↓
-                                         Module 12 (for production)
+Module 2 → Module 3 → Module 4 → Module 5
+                                     ↓
+Module 0 ──────────────────────→ Module 6 (requires Module 0 + Module 5)
+                                     ↓
+                                Module 7 (if multiple sources)
+                                     ↓
+                                Module 8
+                                     ↓
+                                Module 9 (for production)
+                                     ↓
+                                Module 10 (for production)
+                                     ↓
+                                Module 11 (for production)
+                                     ↓
+                                Module 12 (for production)
 ```
 
 ## Quick Reference
 
 | Module | Time             | Required For           |
 |--------|------------------|------------------------|
+| 0      | 30 min - 1 hr    | All projects           |
+| 1      | 10-15 min        | Optional               |
+| 2      | 20-30 min        | All projects           |
 | 3      | 10-15 min/source | All projects           |
 | 4      | 15-20 min/source | All projects           |
+| 5      | 1-2 hrs/source   | All projects           |
 | 6      | 30 min/source    | All projects           |
 | 7      | 1-2 hours        | Multi-source projects  |
 | 8      | 1-2 hours        | All projects           |
@@ -223,4 +298,3 @@ Module 3 → Module 4 → Module 5 → Module 0 → Module 6
 - [← Back to docs/](../)
 - [→ Policies](../policies/)
 - [→ Guides](../guides/)
-- [→ Development](../development/)

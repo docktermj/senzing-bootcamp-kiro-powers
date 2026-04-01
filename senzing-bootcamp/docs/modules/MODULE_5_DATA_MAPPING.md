@@ -24,72 +24,21 @@ By the end of this module, you will:
 2. Use `mapping_workflow` MCP tool for each data source
 3. Create transformation programs
 4. Test on small samples
-5. Validate with `lint_record` and `analyze_record`
+5. Validate with `analyze_record`
 6. Generate full transformed datasets
 7. Document mappings
 
 ## Senzing Generic Entity Specification (SGES)
 
-SGES is Senzing's JSON format for entity data:
+SGES is Senzing's JSON format for entity data. Every record requires `DATA_SOURCE` and `RECORD_ID`. Beyond those, Senzing supports 100+ attributes across 30+ feature types for names, addresses, contact info, identifiers, dates, and more.
 
-```json
-{
-  "DATA_SOURCE": "CUSTOMERS",
-  "RECORD_ID": "CUST-12345",
-  "RECORD_TYPE": "PERSON",
-  "NAME_FULL": "John Smith",
-  "ADDR_FULL": "123 Main Street, Springfield, IL 62701",
-  "PHONE_NUMBER": "555-123-4567",
-  "EMAIL_ADDRESS": "john.smith@example.com",
-  "DATE_OF_BIRTH": "1985-03-15"
-}
-```
-
-### Key Attributes
-
-**Names:**
-
-- `NAME_FULL` - Full name
-- `NAME_FIRST` - First name
-- `NAME_LAST` - Last name
-- `NAME_MIDDLE` - Middle name
-- `NAME_PREFIX` - Title (Mr., Dr.)
-- `NAME_SUFFIX` - Suffix (Jr., III)
-- `NAME_ORG` - Organization name
-
-**Addresses:**
-
-- `ADDR_FULL` - Complete address
-- `ADDR_LINE1` - Street address
-- `ADDR_CITY` - City
-- `ADDR_STATE` - State/province
-- `ADDR_POSTAL_CODE` - ZIP/postal code
-- `ADDR_COUNTRY` - Country
-
-**Contact:**
-
-- `PHONE_NUMBER` - Phone
-- `EMAIL_ADDRESS` - Email
-- `WEBSITE_ADDRESS` - Website
-
-**Identifiers:**
-
-- `SSN_NUMBER` - Social Security Number
-- `DRIVERS_LICENSE_NUMBER` - Driver's license
-- `PASSPORT_NUMBER` - Passport
-- `NATIONAL_ID_NUMBER` - National ID
-- `TAX_ID_NUMBER` - Tax ID (EIN, VAT)
-
-**Dates:**
-
-- `DATE_OF_BIRTH` - Birth date
-- `DATE_OF_DEATH` - Death date
-- `REGISTRATION_DATE` - Registration date
-
-**Required Fields:**
-
-- `DATA_SOURCE` - Source system identifier
-- `RECORD_ID` - Unique ID within source
+> **Agent instruction:** Do not list or hardcode Senzing attribute names. Always retrieve
+> the current attribute reference from the MCP server:
+> - Use `mapping_workflow` to interactively map fields (this is the primary workflow)
+> - Use `search_docs(query="entity specification attributes", version="current")` for the full attribute reference
+> - Use `download_resource(filename="senzing_entity_specification.md")` for the complete specification document
+>
+> Per the Senzing Information Policy, attribute names must come from the MCP server, not from training data or this document.
 
 ## Mapping Workflow
 
@@ -191,17 +140,7 @@ head -5 data/transformed/customers.jsonl
 
 ### Step 5: Validate Quality
 
-Use `lint_record` to check format:
-
-```python
-# Agent calls this
-lint_record(
-    record=transformed_record,
-    data_source="CUSTOMERS"
-)
-```
-
-Use `analyze_record` to check quality:
+Use `analyze_record` to check format and quality:
 
 ```python
 # Agent calls this
@@ -210,6 +149,8 @@ analyze_record(
     data_source="CUSTOMERS"
 )
 ```
+
+The `analyze_record` tool validates records against the Entity Specification and examines feature distribution, attribute coverage, and data quality.
 
 Quality score should be > 70% after mapping.
 
@@ -321,68 +262,24 @@ data/transformed/
 
 ## Common Mapping Patterns
 
-### Pattern 1: Full Name vs Components
+> **Agent instruction:** The `mapping_workflow` MCP tool handles all field mapping
+> interactively, including name vs. component patterns, address formats, multiple
+> phones/emails, and date formatting. Do not hardcode attribute names in mapping
+> examples. Instead, use `mapping_workflow` to generate the correct transformation
+> code, and use `download_resource(filename="senzing_mapping_examples.md")` for
+> the current mapping examples reference.
 
-**Option A: Full name available**
-```python
-senzing_record["NAME_FULL"] = source_record["full_name"]
-```
+The `mapping_workflow` tool handles common patterns automatically:
 
-### Option B: Name components
+- Full name vs. name components (first/last/middle)
+- Full address vs. address components (street/city/state/zip)
+- Multiple phones and emails
+- Date format conversion
+- Organization vs. person records
 
-```python
-senzing_record["NAME_FIRST"] = source_record["first_name"]
-senzing_record["NAME_LAST"] = source_record["last_name"]
-senzing_record["NAME_MIDDLE"] = source_record.get("middle_name", "")
-```
+### Data Quality Improvements
 
-### Pattern 2: Full Address vs Components
-
-#### Option A: Full address
-
-```python
-senzing_record["ADDR_FULL"] = source_record["address"]
-```
-
-#### Option B: Address components
-
-```python
-senzing_record["ADDR_LINE1"] = source_record["street"]
-senzing_record["ADDR_CITY"] = source_record["city"]
-senzing_record["ADDR_STATE"] = source_record["state"]
-senzing_record["ADDR_POSTAL_CODE"] = source_record["zip"]
-```
-
-### Pattern 3: Multiple Phones/Emails
-
-```python
-# Primary phone
-if source_record.get("phone_primary"):
-    senzing_record["PHONE_NUMBER"] = source_record["phone_primary"]
-
-# Mobile phone
-if source_record.get("phone_mobile"):
-    senzing_record["PHONE_MOBILE"] = source_record["phone_mobile"]
-
-# Work phone
-if source_record.get("phone_work"):
-    senzing_record["PHONE_OFFICE"] = source_record["phone_work"]
-```
-
-### Pattern 4: Date Formatting
-
-```python
-from datetime import datetime
-
-# Convert various date formats to YYYY-MM-DD
-date_str = source_record["birth_date"]
-date_obj = datetime.strptime(date_str, "%m/%d/%Y")
-senzing_record["DATE_OF_BIRTH"] = date_obj.strftime("%Y-%m-%d")
-```
-
-## Data Quality Improvements
-
-### Name Cleaning
+General-purpose cleaning functions (not Senzing-specific) that improve matching quality:
 
 ```python
 def clean_name(name):
@@ -503,7 +400,7 @@ Track how data flows through transformations:
 
 1. **Use mapping_workflow:** Don't hand-code attribute names
 2. **Test small first:** 10-100 records before full dataset
-3. **Validate quality:** Use `lint_record` and `analyze_record`
+3. **Validate quality:** Use `analyze_record`
 4. **Document everything:** Future you will thank you
 5. **Track lineage:** Know where data came from and how it changed
 6. **Iterate:** Mapping is exploratory, refine as needed

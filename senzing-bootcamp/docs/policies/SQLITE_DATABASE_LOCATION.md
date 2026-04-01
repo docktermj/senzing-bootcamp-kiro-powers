@@ -84,7 +84,7 @@ db_path = "/var/lib/senzing/G2C.db"  # ❌ Requires permissions
 {
   "PIPELINE": {
     "CONFIGPATH": "/etc/opt/senzing",
-    "RESOURCEPATH": "/opt/senzing/g2/resources",
+    "RESOURCEPATH": "/opt/senzing/er/resources",
     "SUPPORTPATH": "/opt/senzing/data"
   },
   "SQL": {
@@ -97,7 +97,7 @@ db_path = "/var/lib/senzing/G2C.db"  # ❌ Requires permissions
 
 ```python
 import os
-from senzing import G2Engine, G2ConfigMgr
+from senzing_core import SzAbstractFactoryCore
 
 # Project root
 project_root = os.getcwd()
@@ -109,7 +109,7 @@ db_path = os.path.join(project_root, "database", "G2C.db")
 config = {
     "PIPELINE": {
         "CONFIGPATH": "/etc/opt/senzing",
-        "RESOURCEPATH": "/opt/senzing/g2/resources",
+        "RESOURCEPATH": "/opt/senzing/er/resources",
         "SUPPORTPATH": "/opt/senzing/data"
     },
     "SQL": {

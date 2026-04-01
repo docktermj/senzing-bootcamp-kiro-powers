@@ -241,7 +241,7 @@ Quick Demo: Las Vegas Dataset
 Generated for Senzing Boot Camp Module 1
 """
 import json
-from senzing import G2Engine
+from senzing_core import SzAbstractFactoryCore
 # ... demo code ...
 
 # Agent saves sample data

@@ -79,6 +79,12 @@ inclusion: manual
 
 6. **Validate results quality**:
 
+   > **Agent instruction:** Use `reporting_guide(topic='evaluation', version='current')` to get
+   > the 4-point ER evaluation framework with evidence requirements. Use
+   > `reporting_guide(topic='quality', version='current')` for precision/recall metrics,
+   > split/merge detection, and review queue strategies. These provide structured evaluation
+   > approaches rather than ad-hoc quality checks.
+
    Check:
    - Match accuracy (are correct records matched?)
    - False positives (are incorrect records matched?)

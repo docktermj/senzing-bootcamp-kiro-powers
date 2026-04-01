@@ -297,7 +297,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.10",
     install_requires=[
         "senzing>=4.0.0",
         "pandas>=2.0.0",
@@ -336,7 +336,7 @@ name = "my-senzing-project"
 version = "1.0.0"
 description = "Entity resolution solution using Senzing"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
     {name = "Your Name", email = "your.email@example.com"}

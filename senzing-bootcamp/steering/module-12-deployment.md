@@ -14,6 +14,10 @@ inclusion: manual
 
 **Agent Workflow**:
 
+> **Agent instruction:** Before starting deployment, check for anti-patterns:
+> `search_docs(query="deployment", category="anti_patterns", version="current")`.
+> Key pitfalls include Docker base image issues, wrong paths, and initialization patterns.
+
 1. **Refactor code into package**:
 
    Organize code:
@@ -93,6 +97,8 @@ inclusion: manual
    ```
 
 5. **Create CI/CD pipeline**:
+
+   Use `find_examples(query="dockerfile")` for container build patterns using the official senzingsdk-runtime base image.
 
    Create `.github/workflows/ci.yml`:
 

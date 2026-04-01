@@ -62,7 +62,7 @@ Transformation not working?
 │   └─→ Check error message in logs/transform.log
 │
 ├─→ Output validation fails?
-│   ├─→ Run lint_record on output
+│   ├─→ Run analyze_record on output
 │   │   └─→ Fix attribute name errors
 │   │       └─→ Use mapping_workflow (don't guess!)
 │   └─→ Missing required fields?
@@ -78,10 +78,8 @@ Transformation not working?
 └─→ Wrong attribute names?
     └─→ NEVER hand-code attribute names
         └─→ Use mapping_workflow
-            └─→ Common mistakes:
-                • BUSINESS_NAME_ORG → NAME_ORG
-                • PHONE → PHONE_NUMBER
-                • EMAIL → EMAIL_ADDRESS
+            └─→ Use search_docs or download_resource
+                for the current entity specification
 ```
 
 ## Section C: Loading Issues
@@ -129,9 +127,6 @@ Queries not working?
 ├─→ Method not found?
 │   └─→ NEVER guess method names
 │       └─→ Use generate_scaffold or get_sdk_reference
-│           └─→ Common mistakes:
-│               • close_export → closeExport
-│               • whyEntityByEntityID → whyEntities (V4)
 │
 ├─→ Wrong results?
 │   ├─→ Too many matches?
@@ -151,8 +146,6 @@ Queries not working?
 ├─→ Performance slow?
 │   ├─→ Add database indexes
 │   ├─→ Use appropriate query method
-│   │   • getEntityByEntityID for known IDs
-│   │   • searchByAttributes for searches
 │   └─→ Check search_docs(category="performance")
 │
 └─→ No results found?
@@ -261,8 +254,8 @@ top  # CPU and processes
 3. **Search documentation**
    - Use search_docs with relevant query
 
-4. **Check common pitfalls**
-   - Load steering/common-pitfalls.md
+4. **Check anti-patterns**
+   - Use `search_docs(category="anti_patterns")` with a query describing your situation
 
 5. **Start fresh**
    - Restore from backup
@@ -270,9 +263,12 @@ top  # CPU and processes
    - Proceed more carefully
 
 6. **Ask for help**
-   - Senzing support
-   - Community forums
-   - Documentation
+   - Senzing support: support@senzing.com
+   - Documentation: docs.senzing.com
+
+## Related Resources
+
+For detailed pitfall descriptions and prevention strategies by module, load `steering/common-pitfalls.md`. This decision tree provides the diagnostic flow; common-pitfalls provides the detailed context and solutions for each module.
 
 ## Prevention is Better Than Cure
 

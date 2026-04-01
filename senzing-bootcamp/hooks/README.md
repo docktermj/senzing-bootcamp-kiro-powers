@@ -26,7 +26,7 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 ### 4. Validate Senzing JSON (`validate-senzing-json.kiro.hook`)
 
 **Trigger**: When Senzing JSON output files are modified
-**Action**: Suggests validating with lint_record
+**Action**: Suggests validating with analyze_record
 **Use case**: Ensures output conforms to SGES
 
 ### 5. Backup Project on Request (`backup-project-on-request.kiro.hook`)
@@ -41,6 +41,12 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 **Trigger**: When Markdown files are edited
 **Action**: Checks for CommonMark compliance and auto-fixes issues
 **Use case**: Ensures consistent Markdown formatting across all documentation
+
+### 7. Verify Senzing Facts (`verify-senzing-facts.kiro.hook`)
+
+**Trigger**: Before any write operation (preToolUse)
+**Action**: Reminds agent to verify Senzing-specific content via MCP tools
+**Use case**: Enforces SENZING_INFORMATION_POLICY — prevents writing Senzing facts from training data
 
 ## Installation
 

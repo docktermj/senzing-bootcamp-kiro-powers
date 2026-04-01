@@ -124,7 +124,7 @@ Use this workflow to set up automated quality checks and reminders before starti
    - **Data Quality Check**: Triggers when you save files in `src/transform/`. The agent will remind you to run quality validation.
    - **Backup Before Load**: Triggers when you save files in `src/load/`. The agent will remind you to backup the database.
    - **Test Before Commit**: Triggers when you save any source file. Automatically runs `pytest tests/`.
-   - **Validate Senzing JSON**: Triggers when you modify files in `data/transformed/`. The agent will suggest using `lint_record`.
+   - **Validate Senzing JSON**: Triggers when you modify files in `data/transformed/`. The agent will suggest using `analyze_record`.
    - **Update Documentation**: Triggers when you save source files. The agent will remind you to update docs.
 
 6. **Customize if needed**: Users can customize hooks by editing the JSON files:

@@ -76,7 +76,7 @@ Track your progress through the boot camp modules. Check off each module as you 
 - [ ] Use `mapping_workflow` for each non-compliant source
 - [ ] Create transformation programs
 - [ ] Test on small samples
-- [ ] Validate with `lint_record` and `analyze_record`
+- [ ] Validate with `analyze_record`
 - [ ] Generate full transformed datasets
 - [ ] Document mappings and lineage
 

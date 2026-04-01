@@ -89,17 +89,14 @@ Learn from common mistakes to save time and frustration.
 
 ### Pitfall: Hand-Coding Attribute Names
 
-**Symptom**: Using `BUSINESS_NAME_ORG` instead of `NAME_ORG`
-**Problem**: Wrong attribute names cause loading failures
-**Solution**: ALWAYS use `mapping_workflow` - never guess
+**Symptom**: Wrong attribute names cause loading failures or silent quality degradation
+**Problem**: Training data and documentation may have outdated attribute names
+**Solution**: ALWAYS use `mapping_workflow` — never guess attribute names
 
-**Common wrong names**:
-
-- ❌ `BUSINESS_NAME_ORG` → ✅ `NAME_ORG`
-- ❌ `EMPLOYER_NAME` → ✅ `NAME_ORG`
-- ❌ `PHONE` → ✅ `PHONE_NUMBER`
-- ❌ `EMAIL` → ✅ `EMAIL_ADDRESS`
-- ❌ `SSN` → ✅ `SSN_NUMBER`
+> **Agent instruction:** Do not list specific wrong/right attribute name pairs here.
+> Use `search_docs(query="entity specification", version="current")` or
+> `download_resource(filename="senzing_entity_specification.md")` for the current
+> authoritative attribute reference.
 
 ### Pitfall: Forgetting Required Fields
 
@@ -248,15 +245,13 @@ If already installed, verify version and use existing installation.
 
 ### Pitfall: Guessing SDK Method Names
 
-**Symptom**: Using `close_export` instead of `closeExport`
-**Problem**: Method doesn't exist, code fails
-**Solution**: Use `generate_scaffold` or `get_sdk_reference`
+**Symptom**: Method doesn't exist, code fails
+**Problem**: Method names changed between V3 and V4
+**Solution**: Use `generate_scaffold` or `get_sdk_reference` — never guess method names
 
-**Common wrong methods**:
-
-- ❌ `close_export` → ✅ `closeExport`
-- ❌ `close_export_report` → ✅ `closeExport`
-- ❌ `whyEntityByEntityID` → ✅ `whyEntities` (V4)
+> **Agent instruction:** Do not list specific wrong/right method name pairs here.
+> Use `get_sdk_reference(topic='migration', version='current')` for V3→V4 method
+> renames, or `get_sdk_reference(topic='functions', version='current')` for current signatures.
 
 ### Pitfall: Wrong Query Flags
 
@@ -362,7 +357,7 @@ If already installed, verify version and use existing installation.
 rm data/transformed/bad_output.jsonl
 # Fix transformation program
 # Re-run on sample first
-# Validate with lint_record
+# Validate with analyze_record
 ```
 
 ### Lost Mapping State
@@ -399,3 +394,5 @@ Load this steering file when:
 - User says "it's not working"
 - Troubleshooting issues
 - User is stuck or frustrated
+
+For a visual diagnostic flowchart, load `steering/troubleshooting-decision-tree.md` instead. The decision tree provides the diagnostic flow; this file provides detailed pitfall descriptions and solutions by module.

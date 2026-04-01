@@ -152,19 +152,19 @@ Loads records into Senzing:
 ```python
 def load_records(input_file):
     """Load records from JSONL file"""
-    engine = G2Engine()
-    engine.init("LoadCustomers", get_config(), False)
+    sz_factory = SzAbstractFactoryCore("LoadCustomers", get_config())
+    engine = sz_factory.create_engine()
 
     with open(input_file, 'r') as f:
         for line in f:
             record = json.loads(line)
-            engine.addRecord(
+            engine.add_record(
                 record["DATA_SOURCE"],
                 record["RECORD_ID"],
                 line
             )
 
-    engine.destroy()
+    sz_factory.destroy()
 ```
 
 ### find_duplicates.py
@@ -174,8 +174,8 @@ Finds entities with multiple records:
 ```python
 def find_duplicates():
     """Find entities with multiple records"""
-    engine = G2Engine()
-    engine.init("FindDuplicates", get_config(), False)
+    sz_factory = SzAbstractFactoryCore("FindDuplicates", get_config())
+    engine = sz_factory.create_engine()
 
     # Export all entities
     export_handle = engine.exportJSONEntityReport(0)
@@ -190,8 +190,8 @@ def find_duplicates():
         if len(entity["RESOLVED_ENTITY"]["RECORDS"]) > 1:
             duplicates.append(entity)
 
-    engine.closeExport(export_handle)
-    engine.destroy()
+    engine.close_export(export_handle)
+    sz_factory.destroy()
 
     return duplicates
 ```

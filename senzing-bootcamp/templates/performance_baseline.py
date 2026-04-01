@@ -13,7 +13,8 @@ import argparse
 import json
 import time
 import sys
-from senzing import G2Engine
+from senzing import SzError
+from senzing_core import SzAbstractFactoryCore
 
 
 def generate_test_records(count: int) -> list:
@@ -38,7 +39,7 @@ def test_loading(engine, records: list) -> dict:
     start_time = time.time()
 
     for record in records:
-        engine.addRecord(
+        engine.add_record(
             record["DATA_SOURCE"],
             record["RECORD_ID"],
             json.dumps(record)
@@ -63,14 +64,14 @@ def test_queries(engine, record_count: int) -> dict:
     # Test getRecord
     start = time.time()
     for i in range(min(100, record_count)):
-        engine.getRecord("TEST", f"TEST-{i:06d}")
+        engine.get_record("TEST", f"TEST-{i:06d}")
     elapsed = time.time() - start
     queries.append(('getRecord', elapsed, 100))
 
     # Test searchByAttributes
     start = time.time()
     for i in range(10):
-        engine.searchByAttributes(json.dumps({"NAME_FULL": f"Test Person {i}"}))
+        engine.search_by_attributes(json.dumps({"NAME_FULL": f"Test Person {i}"}))
     elapsed = time.time() - start
     queries.append(('searchByAttributes', elapsed, 10))
 
@@ -85,7 +86,7 @@ def cleanup(engine, record_count: int):
     print("\nCleaning up test records...")
     for i in range(record_count):
         try:
-            engine.deleteRecord("TEST", f"TEST-{i:06d}")
+            engine.delete_record("TEST", f"TEST-{i:06d}")
         except:
             pass
 
@@ -98,8 +99,8 @@ def run_baseline(engine_config: str):
     print("="*60)
 
     # Initialize engine
-    engine = G2Engine()
-    engine.init("BaselineTest", engine_config, False)
+    sz_factory = SzAbstractFactoryCore("BaselineTest", engine_config)
+    engine = sz_factory.create_engine()
 
     try:
         # Generate test data
@@ -158,7 +159,7 @@ def run_baseline(engine_config: str):
         cleanup(engine, len(records))
 
     finally:
-        engine.destroy()
+        sz_factory.destroy()
 
 
 def main():

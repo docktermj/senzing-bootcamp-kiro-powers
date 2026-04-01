@@ -255,7 +255,7 @@ from pathlib import Path
 import sys
 import json
 import pandas as pd
-from senzing import G2Engine
+from senzing_core import SzAbstractFactoryCore
 ```
 
 **Fix**:
@@ -270,7 +270,7 @@ from pathlib import Path
 import pandas as pd
 
 # Local
-from senzing import G2Engine
+from senzing_core import SzAbstractFactoryCore
 ```
 
 ## Agent Behavior

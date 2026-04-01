@@ -48,9 +48,7 @@ print(f"Transformation: {throughput:.0f} records/second")
 
 **Typical Performance:**
 
-- Simple transformations: 1,000-10,000 records/second
-- Complex transformations: 100-1,000 records/second
-- With validation: 50-500 records/second
+Use `search_docs(query="transformation performance", version="current")` for current benchmarks.
 
 ### Loading Performance
 
@@ -73,10 +71,10 @@ print(f"Loading: {throughput:.0f} records/second")
 
 **Typical Performance:**
 
-- SQLite: 20-50 records/second
-- PostgreSQL (local): 100-500 records/second
-- PostgreSQL (tuned): 500-2,000 records/second
-- PostgreSQL (clustered): 2,000-10,000 records/second
+> **Agent instruction:** Do not state specific performance numbers. Use
+> `search_docs(query="loading performance benchmarks", version="current")` to get
+> current performance expectations for each database type. Performance varies by
+> Senzing version, hardware, and configuration.
 
 ### Query Performance
 
@@ -103,9 +101,7 @@ print(f"  P99: {statistics.quantiles(response_times, n=100)[98]:.1f} ms")
 
 **Typical Performance:**
 
-- Simple queries: 10-50 ms
-- Complex queries: 50-200 ms
-- Large result sets: 200-1000 ms
+Use `search_docs(query="query response time benchmarks", version="current")` for current benchmarks.
 
 ### Resource Utilization
 
@@ -414,6 +410,8 @@ Module 9 is complete when:
 
 - `POWER.md` - Module 9 overview
 - `steering/module-09-performance.md` - Module 9 workflow
+- Use MCP: `reporting_guide(topic="reports")` for SQL analytics queries on entity resolution results
+- Use MCP: `reporting_guide(topic="data_mart")` for analytical schema and incremental update patterns
 - Use MCP: `search_docs(query="performance monitoring", category="performance")` for ongoing monitoring
 
 ## Version History

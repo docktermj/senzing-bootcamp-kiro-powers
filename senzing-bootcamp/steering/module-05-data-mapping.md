@@ -46,13 +46,15 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Advance with `mapping_workflow` using `action='entity_plan'` and your plan.
 
-4. **Step 3 — Map**: Map each source field to Senzing features and attributes:
-   - Name fields → `NAME_FULL`, `NAME_FIRST`, `NAME_LAST`, `NAME_ORG`
-   - Address fields → `ADDR_FULL`, `ADDR_LINE1`, `ADDR_CITY`, `ADDR_STATE`, `ADDR_POSTAL_CODE`, `ADDR_COUNTRY`
-   - Contact fields → `PHONE_NUMBER`, `EMAIL_ADDRESS`, `WEBSITE_ADDRESS`
-   - Identifier fields → `SSN_NUMBER`, `PASSPORT_NUMBER`, `DRIVERS_LICENSE_NUMBER`, `NATIONAL_ID_NUMBER`
-   - Date fields → `DATE_OF_BIRTH`, `REGISTRATION_DATE`
-   - Assign confidence scores (0-100) based on data quality
+4. **Step 3 — Map**: Map each source field to Senzing features and attributes.
+
+   > **Agent instruction:** Do not list specific attribute names here. The `mapping_workflow`
+   > tool handles field mapping interactively and provides the correct, current attribute names.
+   > Use `download_resource(filename="senzing_entity_specification.md")` if the user needs
+   > the full attribute reference.
+
+   Map fields for: names, addresses, contact info, identifiers, and dates.
+   Assign confidence scores (0-100) based on data quality.
 
    **CRITICAL**: Never guess attribute names. Use the mapping workflow to ensure correct names.
 
@@ -67,78 +69,23 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Advance with `mapping_workflow` using `action='paths'` and the output file paths.
 
-6. **Step 5 — Build the Transformation Program**: Help the user create a complete, runnable program for this data source. The program should:
+6. **Step 5 — Build the Transformation Program**: Help the user create a complete, runnable program for this data source.
 
    **IMPORTANT**: All generated Python code must be PEP-8 compliant (max 100 chars/line, no trailing whitespace, proper docstrings, 4-space indentation).
 
-   **Input handling**:
-   - Read from the original data source format (CSV file, JSON file, database query, API endpoint, etc.)
-   - Handle file paths, connection strings, or API credentials
-   - Process records in batches for large datasets
+   > **Agent instruction:** The `mapping_workflow` generates starter code in Step 4. Use that
+   > as the foundation. Do not use the inline example below — use `generate_scaffold` or the
+   > mapping_workflow output for current SDK patterns. Customize based on the user's language,
+   > data source type, and volume.
 
-   **Transformation logic**:
-   - Apply the field mappings from Step 3
-   - Handle data type conversions (dates, numbers, booleans)
-   - Combine fields when needed (e.g., first_name + last_name → NAME_FULL)
-   - Split fields when needed (e.g., full address → ADDR_LINE1, ADDR_CITY, ADDR_STATE)
-   - Apply data cleansing (trim whitespace, normalize formats)
-   - Set required fields: `DATA_SOURCE` (unique identifier for this source) and `RECORD_ID` (unique within the source)
+   The program should handle:
 
-   **Output handling**:
-   - Write Senzing JSON records to output file (one JSON object per line, JSONL format)
-   - Or prepare records for direct loading via SDK
-   - Include error handling for malformed input records
+   **Input**: Read from the original data source format (CSV, JSON, database, API)
+   **Transformation**: Apply field mappings from Step 3, handle type conversions, combine/split fields, apply cleansing, set required `DATA_SOURCE` and `RECORD_ID` fields
+   **Output**: Write Senzing JSON records to JSONL file in `data/transformed/`
+   **Errors**: Handle malformed input records gracefully
 
-   **Example program structure** (Python):
-
-   ```python
-   import csv
-   import json
-
-   def transform_record(source_record):
-       """Transform a single source record to Senzing format"""
-       senzing_record = {
-           "DATA_SOURCE": "CUSTOMER_DB",
-           "RECORD_ID": source_record["customer_id"],
-       }
-
-       # Map name fields
-       if source_record.get("full_name"):
-           senzing_record["NAME_FULL"] = source_record["full_name"]
-
-       # Map address fields
-       if source_record.get("address"):
-           senzing_record["ADDR_FULL"] = source_record["address"]
-
-       # Map contact fields
-       if source_record.get("phone"):
-           senzing_record["PHONE_NUMBER"] = source_record["phone"]
-
-       return senzing_record
-
-   def main():
-       with open("input_data.csv", "r") as infile:
-           reader = csv.DictReader(infile)
-
-           with open("output_senzing.jsonl", "w") as outfile:
-               for row in reader:
-                   try:
-                       senzing_record = transform_record(row)
-                       outfile.write(json.dumps(senzing_record) + "\n")
-                   except Exception as e:
-                       print(f"Error processing record {row.get('customer_id')}: {e}")
-
-   if __name__ == "__main__":
-       main()
-   ```
-
-   **Customize the program** based on:
-   - User's preferred programming language (Python, JavaScript, Java, etc.)
-   - Data source type (file, database, API)
-   - Data volume (single file vs. batch processing)
-   - Environment (local script, cloud function, ETL pipeline)
-
-   **Save the program**: Save to `src/transform/transform_[datasource_name].py` (or appropriate extension for the language). All transformation programs must be in the `src/transform/` directory.
+   **Save the program**: Save to `src/transform/transform_[datasource_name].py` (or appropriate extension). All transformation programs must be in the `src/transform/` directory.
 
 7. **Step 6 — Test the Program**: Run the transformation program on sample data from `data/samples/`:
    - Start with a small subset (10-100 records) for initial testing
@@ -146,7 +93,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
    - Check that output files are created in `data/transformed/`
    - Inspect a few output records manually
 
-   Call `lint_record` with sample output records to validate they're syntactically correct Senzing JSON.
+   Call `analyze_record` with sample output records to validate they conform to the Senzing Entity Specification and check data quality.
 
 8. **Step 7 — Quality Analysis**: Run the program on a larger sample (1000+ records if available). Call `analyze_record` with several mapped records to evaluate:
    - Feature distribution (are all important features populated?)
@@ -195,6 +142,6 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 ### Important Rules for Data Mapping
 
-- NEVER hand-code Senzing JSON attribute names — common mistakes include using `BUSINESS_NAME_ORG` instead of the correct `NAME_ORG`, or `EMPLOYER_NAME` instead of `NAME_ORG`.
+- NEVER hand-code Senzing JSON attribute names — use `mapping_workflow` to get the correct names. Use `search_docs` or `download_resource` for the current entity specification if needed.
 - NEVER guess method signatures — use `generate_scaffold` or `get_sdk_reference` for correct API calls.
-- Always validate output with `lint_record` before proceeding to loading.
+- Always validate output with `analyze_record` before proceeding to loading.

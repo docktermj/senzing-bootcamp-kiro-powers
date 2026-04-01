@@ -330,7 +330,7 @@ cat > config/senzing_config.json << EOF
 {
   "PIPELINE": {
     "CONFIGPATH": "/etc/opt/senzing",
-    "RESOURCEPATH": "/opt/senzing/g2/resources",
+    "RESOURCEPATH": "/opt/senzing/er/resources",
     "SUPPORTPATH": "/opt/senzing/data"
   },
   "SQL": {
@@ -350,15 +350,17 @@ EOF
 
 import json
 import time
-from senzing import G2Engine
+from senzing_core import SzAbstractFactoryCore
 
 class LoadOrchestrator:
     def __init__(self, config_file='config/senzing_config.json'):
         with open(config_file) as f:
-            self.config = json.load(f)
+            self.config = json.dumps(json.load(f))
 
-        self.engine = G2Engine()
-        self.engine.init("Orchestrator", json.dumps(self.config), False)
+        self.sz_factory = SzAbstractFactoryCore(
+            "Orchestrator", self.config
+        )
+        self.engine = self.sz_factory.create_engine()
 
     def load_source(self, data_source, input_file):
         """Load a single data source"""
@@ -433,7 +435,7 @@ class LoadOrchestrator:
 
     def cleanup(self):
         """Clean up resources"""
-        self.engine.destroy()
+        self.sz_factory.destroy()
 
 if __name__ == '__main__':
     orchestrator = LoadOrchestrator()
@@ -458,17 +460,17 @@ python src/load/orchestrator.py
 """Generate Customer 360 view"""
 
 import json
-from senzing import G2Engine
+from senzing_core import SzAbstractFactoryCore
 
 def get_customer_360(record_id, data_source):
     """Get complete 360 view of a customer"""
 
     # Initialize engine
     with open('config/senzing_config.json') as f:
-        config = json.load(f)
+        config = json.dumps(json.load(f))
 
-    engine = G2Engine()
-    engine.init("Customer360", json.dumps(config), False)
+    sz_factory = SzAbstractFactoryCore("Customer360", config)
+    engine = sz_factory.create_engine()
 
     try:
         # Get entity for this record
@@ -506,7 +508,7 @@ def get_customer_360(record_id, data_source):
         return entity
 
     finally:
-        engine.destroy()
+        sz_factory.destroy()
 
 if __name__ == '__main__':
     # Example: Get 360 view for CRM customer
@@ -520,16 +522,16 @@ if __name__ == '__main__':
 """Find duplicate customers across sources"""
 
 import json
-from senzing import G2Engine
+from senzing_core import SzAbstractFactoryCore
 
 def find_cross_source_duplicates():
     """Find entities with records from multiple sources"""
 
     with open('config/senzing_config.json') as f:
-        config = json.load(f)
+        config = json.dumps(json.load(f))
 
-    engine = G2Engine()
-    engine.init("FindDuplicates", json.dumps(config), False)
+    sz_factory = SzAbstractFactoryCore("FindDuplicates", config)
+    engine = sz_factory.create_engine()
 
     try:
         # Export all entities
@@ -572,7 +574,7 @@ def find_cross_source_duplicates():
         return multi_source_entities
 
     finally:
-        engine.destroy()
+        sz_factory.destroy()
 
 if __name__ == '__main__':
     duplicates = find_cross_source_duplicates()

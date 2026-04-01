@@ -210,7 +210,7 @@ class TroubleshootingWizard:
             print("\n2. Check completeness:")
             print("   - Are required fields populated?")
             print("   - Are values in correct format?")
-            print("\n3. Use lint_record to validate output")
+            print("\n3. Use analyze_record to validate output")
 
         else:
             print("\n❌ File Encoding Problems")

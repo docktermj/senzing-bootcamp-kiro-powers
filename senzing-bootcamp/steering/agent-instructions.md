@@ -22,6 +22,37 @@ If directory creation fails, report the error, provide commands for manual execu
 
 After creating the directory structure (or confirming it exists), inform the user: "If you encounter any issues or have suggestions during the boot camp, just say 'bootcamp feedback' and I'll help you document them for the boot camp author."
 
+## Second Action — Platform Prerequisite Check
+
+After directory structure is confirmed and before presenting path options, run a quick prerequisite check to surface missing dependencies up front:
+
+```bash
+# 1. Detect platform
+uname -s  # Linux or Darwin (macOS)
+
+# 2. Check Python version (3.10+ required)
+python3 --version 2>/dev/null || echo "Python3 not found"
+
+# 3. Check if Senzing SDK is installed
+python3 -c "import senzing; print('Senzing SDK:', senzing.__version__)" 2>/dev/null || echo "Senzing SDK not installed"
+
+# 4. macOS only: check Homebrew
+command -v brew >/dev/null 2>&1 && echo "Homebrew found" || echo "Homebrew not found"
+```
+
+Present results as a checklist before path selection:
+
+```text
+Platform check:
+  ✅ / ❌  Python 3.10+
+  ✅ / ❌  Senzing SDK
+  ✅ / ❌  Homebrew (macOS only)
+```
+
+- If everything passes → proceed to path selection normally.
+- If anything is missing → tell the user exactly what needs to be installed manually before they can run code. Provide the install commands. Let them choose to install now or pick a path first (they can still do Module 2 — Business Problem — without the SDK).
+- Do NOT discover missing dependencies one at a time during later modules. Surface them all here.
+
 ## Core Principles
 
 1. **Directory structure first** — see above

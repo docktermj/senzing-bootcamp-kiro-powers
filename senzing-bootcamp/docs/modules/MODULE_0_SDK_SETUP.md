@@ -205,7 +205,7 @@ except Exception as e:
 
 - **Permission denied**: Use `sudo` for system installation
 - **Database connection fails**: Verify database path exists (`mkdir -p database`)
-- **Import error**: Verify `pip install senzing` completed, check Python 3.8+
+- **Import error**: Verify `pip install senzing` completed, check Python 3.10+
 - **Configuration not found**: Check CONFIGPATH, verify `/etc/opt/senzing` exists
 
 ## Next Steps

@@ -473,8 +473,8 @@ Create comprehensive deployment documentation:
 
 ## Prerequisites
 
-- Python 3.8+ (or Java 11+, .NET 6+)
-- PostgreSQL 12+ (or chosen database)
+- Python 3.10+ (or Java 17+, .NET Standard 2.0+)
+- PostgreSQL 15+ (or chosen database)
 - Senzing SDK 4.0+
 - 4GB RAM minimum
 - 50GB disk space

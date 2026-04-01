@@ -164,13 +164,13 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ### For Fast Track (Path B)
 
 - ✅ SGES-formatted data file
-- ✅ Python 3.8+
+- ✅ Python 3.10+
 - ✅ Senzing SDK installed (Module 0)
 
 ### For Complete Beginner (Path C)
 
 - ✅ Raw data file (CSV, JSON, Excel, etc.)
-- ✅ Python 3.8+
+- ✅ Python 3.10+
 - ✅ 2-3 hours
 - ✅ Basic understanding of your data
 
@@ -294,7 +294,7 @@ A: Demo if exploring, Fast Track if experienced, Complete if learning.
 A: Yes! Start with demo, then do Fast Track or Complete.
 
 **Q: Do I need to install anything?**
-A: Module 0 installs the Senzing SDK. All paths need Python 3.8+.
+A: Module 0 installs the Senzing SDK. All paths need Python 3.10+.
 
 **Q: Can I use my own data?**
 A: Yes for Fast Track and Complete. Demo uses sample data.

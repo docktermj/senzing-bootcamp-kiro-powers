@@ -116,7 +116,7 @@ class TroubleshootingWizard:
         if not success:
             print("\n❌ Python not found or not working")
             print("\n💡 Solution:")
-            print("Install Python 3.8+:")
+            print("Install Python 3.10+:")
             print("  Ubuntu/Debian: sudo apt install python3 python3-pip")
             print("  macOS: brew install python3")
             return
@@ -134,8 +134,8 @@ class TroubleshootingWizard:
             print("\n💡 Solution:")
             print("Install Senzing SDK:")
             print("  pip install senzing")
-            print("\nOr follow Module 5 installation guide:")
-            print("  docs/modules/MODULE_5_SDK_SETUP.md")
+            print("\nOr follow Module 0 installation guide:")
+            print("  docs/modules/MODULE_0_SDK_SETUP.md")
             return
 
         print(f"✅ Senzing SDK found: {stdout.strip()}")
@@ -271,7 +271,7 @@ class TroubleshootingWizard:
             print("   # In Module 5 setup")
             print("2. Check registered sources:")
             print("   # Query sys_codes_used table")
-            print("\n3. See MODULE_5_SDK_SETUP.md")
+            print("\n3. See MODULE_0_SDK_SETUP.md")
 
         else:
             error_code = input("\nEnter SENZ error code (e.g., 1001): ").strip()
@@ -460,7 +460,7 @@ class TroubleshootingWizard:
         print("   python templates/validate_schema.py")
 
         print("\n💡 Common Solutions:")
-        print("  - Check Python version (3.8+)")
+        print("  - Check Python version (3.10+)")
         print("  - Verify Senzing is installed")
         print("  - Check disk space and memory")
         print("  - Review error messages carefully")

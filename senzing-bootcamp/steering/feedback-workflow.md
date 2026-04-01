@@ -67,24 +67,13 @@ fi
 - Add the formatted entry to the "Your Feedback" section
 - Preserve any existing feedback entries
 
-### Step 5: Submit to Senzing MCP Server
-
-After saving the feedback locally, submit it to the Senzing MCP server for centralized tracking:
-
-1. Call the `submit_feedback` MCP tool with the feedback details:
-   - Category, module, priority
-   - Description of the issue
-   - Suggested fix (if provided)
-2. If the MCP server is unavailable, inform the user: "I saved your feedback locally. I couldn't reach the Senzing MCP server right now — we can try submitting again later."
-3. If submission succeeds, confirm: "Your feedback has been submitted to the Senzing team and saved locally."
-
-### Step 6: Confirm and Guide
+### Step 5: Confirm and Guide
 
 - "I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` and submitted it to the Senzing team"
 - "You can review or edit it anytime"
 - "Would you like to add more feedback, or continue with the boot camp?"
 
-### Step 7: Remind About Submission
+### Step 6: Remind About Submission
 
 - "When you complete the boot camp, please share this file with the power author"
 - "You can add more feedback anytime by saying 'power feedback'"

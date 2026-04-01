@@ -18,8 +18,8 @@ if command -v python3 &> /dev/null; then
     # Check version is 3.8+
     MAJOR=$(echo $PYTHON_VERSION | cut -d'.' -f1)
     MINOR=$(echo $PYTHON_VERSION | cut -d'.' -f2)
-    if [ "$MAJOR" -lt 3 ] || ([ "$MAJOR" -eq 3 ] && [ "$MINOR" -lt 8 ]); then
-        echo "❌ Python 3.8+ required (found $PYTHON_VERSION)"
+    if [ "$MAJOR" -lt 3 ] || ([ "$MAJOR" -eq 3 ] && [ "$MINOR" -lt 10 ]); then
+        echo "❌ Python 3.10+ required (found $PYTHON_VERSION)"
         ((ERRORS++))
     fi
 else

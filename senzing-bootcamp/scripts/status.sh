@@ -88,12 +88,12 @@ if [ ${#COMPLETED_MODULES[@]} -gt 0 ]; then
     echo -e "${GREEN}✓ Completed Modules:${NC}"
     for mod in "${COMPLETED_MODULES[@]}"; do
         case $mod in
-            0) echo "  ✓ Module 0: Quick Demo" ;;
-            1) echo "  ✓ Module 1: Business Problem" ;;
-            2) echo "  ✓ Module 2: Data Collection" ;;
-            3) echo "  ✓ Module 3: Data Quality" ;;
-            4) echo "  ✓ Module 4: Data Mapping" ;;
-            5) echo "  ✓ Module 5: SDK Setup" ;;
+            0) echo "  ✓ Module 0: SDK Setup" ;;
+            1) echo "  ✓ Module 1: Quick Demo" ;;
+            2) echo "  ✓ Module 2: Business Problem" ;;
+            3) echo "  ✓ Module 3: Data Collection" ;;
+            4) echo "  ✓ Module 4: Data Quality" ;;
+            5) echo "  ✓ Module 5: Data Mapping" ;;
             6) echo "  ✓ Module 6: Single Source Loading" ;;
             7) echo "  ✓ Module 7: Multi-Source Orchestration" ;;
             8) echo "  ✓ Module 8: Query & Validation" ;;
@@ -111,33 +111,33 @@ if [ $CURRENT_MODULE -le 12 ]; then
     echo -e "${CYAN}→ Next Steps:${NC}"
     case $CURRENT_MODULE in
         0)
-            echo "  1. Start Module 0: Quick Demo (10-15 min)"
-            echo "  2. See entity resolution in action with sample data"
+            echo "  1. Start Module 0: SDK Setup (30 min - 1 hr)"
+            echo "  2. Install and configure Senzing SDK"
             echo "  3. Command: Tell agent 'Start Module 0'"
             ;;
         1)
-            echo "  1. Start Module 1: Business Problem (20-30 min)"
-            echo "  2. Define your problem and identify data sources"
+            echo "  1. Start Module 1: Quick Demo (10-15 min)"
+            echo "  2. See entity resolution in action with sample data"
             echo "  3. Command: Tell agent 'Start Module 1'"
             ;;
         2)
-            echo "  1. Start Module 2: Data Collection (10-15 min per source)"
-            echo "  2. Upload or link to data source files"
+            echo "  1. Start Module 2: Business Problem (20-30 min)"
+            echo "  2. Define your problem and identify data sources"
             echo "  3. Command: Tell agent 'Start Module 2'"
             ;;
         3)
-            echo "  1. Start Module 3: Data Quality (15-20 min per source)"
-            echo "  2. Evaluate data quality with automated scoring"
+            echo "  1. Start Module 3: Data Collection (10-15 min per source)"
+            echo "  2. Upload or link to data source files"
             echo "  3. Command: Tell agent 'Start Module 3'"
             ;;
         4)
-            echo "  1. Start Module 4: Data Mapping (1-2 hrs per source)"
-            echo "  2. Create transformation programs"
+            echo "  1. Start Module 4: Data Quality (15-20 min per source)"
+            echo "  2. Evaluate data quality with automated scoring"
             echo "  3. Command: Tell agent 'Start Module 4'"
             ;;
         5)
-            echo "  1. Start Module 5: SDK Setup (30 min - 1 hr)"
-            echo "  2. Install and configure Senzing SDK"
+            echo "  1. Start Module 5: Data Mapping (1-2 hrs per source)"
+            echo "  2. Create transformation programs"
             echo "  3. Command: Tell agent 'Start Module 5'"
             ;;
         6)

@@ -165,7 +165,7 @@ If already installed, verify version and use existing installation.
 ### Pitfall: Using SQLite for Production
 
 **Symptom**: "SQLite is working fine for 10K records"
-**Problem**: Doesn't scale, poor performance at 100K+
+**Problem**: Doesn't scale, SQLite is limited to <1M records
 **Solution**: SQLite for evaluation only, PostgreSQL for production
 
 ### Pitfall: Skipping Anti-Pattern Check

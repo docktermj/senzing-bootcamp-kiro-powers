@@ -5,6 +5,15 @@ All notable changes to the Senzing Boot Camp power will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-04-01
+
+### Changed
+
+- System requirements in onboarding checklist now reference the Senzing MCP server as the source of truth instead of hardcoding version numbers
+- Added agent instruction to always fetch current requirements via `search_docs` during onboarding
+- Added cloud-managed database options (AWS Aurora/RDS, Azure SQL) to database checklist
+- Added link to official Senzing v4 System Requirements page
+
 ## [0.1.0] - 2026-03-27
 
 ### Added
@@ -50,6 +59,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `backup-before-load.kiro.hook` referenced non-existent `backup_database.sh`
 - Path A time estimate in `QUICK_START.md` now clarifies Module 0 prerequisite
 - Complexity estimator "When to Load" referenced wrong module numbers
+- `status.sh` had wrong module names (0=Quick Demo instead of 0=SDK Setup, etc.) — aligned to canonical numbering
+- `troubleshoot.py` referenced non-existent `MODULE_5_SDK_SETUP.md` — corrected to `MODULE_0_SDK_SETUP.md`
+- Python version requirement unified to 3.10+ across all files (was inconsistently 3.7+, 3.8+, or 3.10+)
+- `MODULE_1_QUICK_DEMO.md` referenced non-existent `check_module0_prerequisites.sh` — corrected to `preflight_check.sh`
+- `MODULE_1_QUICK_DEMO.md` referenced non-existent "Simulation Demo" fallback — removed
+- System requirements aligned with official Senzing v4 specs: Java ≥ 17, .NET Standard 2.0, PostgreSQL ≥ 15, Ubuntu ≥ 22.04, macOS ≥ 15 Apple Silicon only, Windows ≥ 11, SQLite <1M records
 
 ### Changed
 

@@ -1,5 +1,5 @@
 # Senzing Boot Camp Requirements
-# Python 3.8+
+# Python 3.10+
 
 # Core Senzing SDK
 senzing>=4.0.0

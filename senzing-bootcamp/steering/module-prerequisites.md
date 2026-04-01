@@ -18,7 +18,7 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 - Admin/sudo access for installation
 - 10GB free disk space
 - Internet connection for downloads
-- Python 3.8+
+- Python 3.10+
 
 **Ready to proceed when**:
 

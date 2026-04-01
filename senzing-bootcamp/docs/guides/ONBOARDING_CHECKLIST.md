@@ -74,23 +74,20 @@ my-senzing-project/
 
 ### ✅ Step 2: System Requirements
 
-- [ ] **Operating System**
-  - Linux (Ubuntu 20.04+, RHEL 8+, Debian 11+)
-  - macOS (Intel or ARM) - Development only
-  - Windows with WSL2 - Development only
+> **Note for agents:** Do not rely on the versions listed below. During onboarding,
+> always fetch the current official requirements via the Senzing MCP server:
+> `search_docs(query="system requirements", version="current")`.
+> The values below are a snapshot for offline reference only.
 
-- [ ] **Python** (if using Python SDK)
-  - Python 3.8 or higher installed
-  - pip package manager available
-  - Virtual environment tool (venv or conda)
+- [ ] **Operating System** — verify against [Senzing v4 System Requirements](https://www.senzing.com/docs/release/4/4_0_hw_sw)
+  - Linux (Ubuntu LTS, RHEL, Debian, Amazon Linux)
+  - macOS (Apple Silicon only, Limited Availability)
+  - Windows (Limited Availability)
 
-- [ ] **Java** (if using Java SDK)
-  - Java 11 or higher installed
-  - Maven or Gradle available
-
-- [ ] **C#** (if using C# SDK)
-  - .NET 6.0 or higher installed
-  - NuGet package manager available
+- [ ] **SDK Language** — verify minimum versions via MCP `search_docs`
+  - Python: pip package manager available, virtual environment tool (venv or conda)
+  - Java: Maven or Gradle available
+  - C#: NuGet package manager available
 
 - [ ] **Disk Space**
   - Minimum: 10 GB free
@@ -125,10 +122,11 @@ my-senzing-project/
 
 ### ✅ Step 4: Database Setup
 
-- [ ] **Database Choice**
-  - SQLite for evaluation (< 100K records)
+- [ ] **Database Choice** — verify supported versions via MCP `search_docs(query="system requirements", version="current")`
+  - SQLite for evaluation (small datasets)
   - PostgreSQL for production (recommended)
-  - MySQL/MSSQL/Oracle (if required)
+  - MySQL, MSSQL, Oracle also supported — check MCP for minimum versions
+  - Cloud-managed databases (AWS Aurora/RDS, Azure SQL) also supported
 
 - [ ] **Database Access** (if using PostgreSQL/MySQL/etc.)
   - Database server available
@@ -209,14 +207,14 @@ Run these commands to verify your setup:
 ### Check Python
 
 ```bash
-python --version  # Should be 3.8+
+python --version  # Verify against MCP system requirements
 pip --version
 ```
 
 ### Check Java (if using)
 
 ```bash
-java -version  # Should be 11+
+java -version  # Verify against MCP system requirements
 mvn --version  # or gradle --version
 ```
 
@@ -275,7 +273,7 @@ You're ready to start the boot camp! Tell the agent:
 ### Python Issues
 
 ```bash
-# Install Python 3.8+
+# Install Python 3.10+
 sudo apt install python3.11  # Ubuntu/Debian
 brew install python@3.11     # macOS
 
@@ -326,5 +324,5 @@ Need help with the checklist?
 
 ---
 
-**Version**: 1.0.0
-**Last updated**: 2026-03-23
+**Version**: 1.1.0
+**Last updated**: 2026-04-01

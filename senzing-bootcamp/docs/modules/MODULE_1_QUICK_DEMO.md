@@ -13,7 +13,7 @@ This module offers multiple demo options to ensure everyone can see entity resol
 ## Prerequisites
 
 - ✅ Module 0 complete (Senzing SDK installed)
-- ✅ Python 3.8+ with senzing package
+- ✅ Python 3.10+ with senzing package
 
 ## Learning Objectives
 
@@ -384,22 +384,16 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 **If none of these solutions work**:
 
-1. **Try Simulation Demo**
-   - Guaranteed to work
-   - No dependencies
-   - Shows same concepts
-
-2. **Share error messages with agent**
+1. **Share error messages with agent**
    - Copy full error output
    - Describe what you tried
    - Agent can provide specific guidance
 
-3. **Skip to Module 1**
-   - Continue learning
-   - Return to Module 0 later
-   - See real SDK in Module 6
+2. **Skip to Module 2**
+   - Continue learning with your business problem
+   - Return to Module 0 and 1 later when setup is resolved
 
-4. **Contact Senzing support**
+3. **Contact Senzing support**
    - Provide error details
    - Share environment info (OS, Python version)
    - Include steps to reproduce
@@ -413,7 +407,7 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 Run the pre-flight check script:
 
 ```bash
-./scripts/check_module0_prerequisites.sh
+./scripts/preflight_check.sh
 ```
 
 This will check:

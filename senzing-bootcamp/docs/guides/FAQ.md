@@ -25,7 +25,7 @@ Say "start the boot camp". The agent creates your project structure and guides y
 
 ### What are the prerequisites?
 
-Required: Python 3.7+, pip, git, curl, zip/unzip. Optional: PostgreSQL. Run `./scripts/check_prerequisites.sh` to verify.
+Required: Python 3.10+, pip, git, curl, zip/unzip. Optional: PostgreSQL. Run `./scripts/check_prerequisites.sh` to verify.
 
 ### Do I need a Senzing license?
 

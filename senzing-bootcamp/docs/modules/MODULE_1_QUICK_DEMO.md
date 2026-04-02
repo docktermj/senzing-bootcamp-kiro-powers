@@ -8,9 +8,9 @@ Module 1 provides a demonstration of Senzing entity resolution using sample data
 
 This module offers multiple demo options to ensure everyone can see entity resolution working, regardless of their environment.
 
-**Time**: 10-15 minutes
+**Time:** 10-15 minutes
 
-**Output**: Working demo showing entity resolution results
+**Output:** Working demo showing entity resolution results
 
 ## Prerequisites
 
@@ -44,23 +44,23 @@ By the end of this module, you will:
 ### Las Vegas Dataset
 
 - **Type:** Customer records
-- **Records**: ~1,000
-- **Use case**: Retail/hospitality customer deduplication
-- **Duplicates**: Same customers with variations in names, addresses, phones
+- **Records:** ~1,000
+- **Use case:** Retail/hospitality customer deduplication
+- **Duplicates:** Same customers with variations in names, addresses, phones
 
 ### London Dataset
 
 - **Type:** Person records
-- **Records**: ~1,000
-- **Use case**: Identity management
-- **Duplicates**: Same people with name variations and different contact info
+- **Records:** ~1,000
+- **Use case:** Identity management
+- **Duplicates:** Same people with name variations and different contact info
 
 ### Moscow Dataset
 
 - **Type:** Organization records
-- **Records**: ~1,000
-- **Use case**: B2B vendor/supplier matching
-- **Duplicates**: Same companies with different names and addresses
+- **Records:** ~1,000
+- **Use case:** B2B vendor/supplier matching
+- **Duplicates:** Same companies with different names and addresses
 
 ## Demo Script Structure
 
@@ -264,11 +264,11 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 ### Issue: SDK Not Found
 
-**Symptoms**:
+**Symptoms:**
 
 - SDK check returns "SDK not found"
 
-**Solutions**:
+**Solutions:**
 
 1. **Complete Module 0 first** (SDK Setup)
    - Module 0 installs the SDK natively
@@ -282,12 +282,12 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 ### Issue: Database Initialization Failed
 
-**Symptoms**:
+**Symptoms:**
 
 - Error: "unable to open database file"
 - Error: "SzDatabaseError - SENZ1001"
 
-**Solutions**:
+**Solutions:**
 
 1. **Check database directory exists**
 
@@ -307,7 +307,7 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 **This shouldn't happen** with sample data - the records are designed to match.
 
-**If it does happen**:
+**If it does happen:**
 
 1. **Check sample data loaded correctly**
    - Verify 5 records were loaded
@@ -326,9 +326,9 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 ### Issue: Module 1 Taking Longer Than Expected
 
-**Expected time**: 10-15 minutes
+**Expected time:** 10-15 minutes
 
-**If taking longer**:
+**If taking longer:**
 
 1. **Check what's taking time**
    - Database initialization? (Should be <1 minute)
@@ -342,17 +342,17 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 ### Issue: Permission Denied Errors
 
-**Symptoms**:
+**Symptoms:**
 
 - "Permission denied" when creating files
 - "Cannot write to directory"
 
-**Causes**:
+**Causes:**
 
 - Insufficient permissions in project directory
 - Running in protected directory
 
-**Solutions**:
+**Solutions:**
 
 1. **Check project directory permissions**
 
@@ -369,7 +369,7 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
    cd my-senzing-project
    ```
 
-3. **Fix permissions** (if needed)
+3. **Fix permissions** (Linux/macOS, if needed)
 
    ```bash
    chmod 755 .
@@ -379,7 +379,7 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 ### Getting Help
 
-**If none of these solutions work**:
+**If none of these solutions work:**
 
 1. **Share error messages with agent**
    - Copy full error output

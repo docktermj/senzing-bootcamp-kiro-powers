@@ -68,8 +68,14 @@ The Senzing SDK includes built-in evaluation limits that work for the boot camp.
 **Install License:**
 
 ```bash
+# Linux / macOS
 cp /path/to/downloaded/g2.lic licenses/g2.lic
 chmod 644 licenses/g2.lic
+```
+
+```powershell
+# Windows (PowerShell)
+Copy-Item C:\path\to\downloaded\g2.lic licenses\g2.lic
 ```
 
 Senzing checks licenses in order: `licenses/g2.lic` → `SENZING_LICENSE_PATH` env var → `/etc/opt/senzing/g2.lic`

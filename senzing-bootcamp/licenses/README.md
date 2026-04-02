@@ -34,7 +34,7 @@ You can always add a license later by placing it in `licenses/g2.lic`.
 
 4. **Install License**:
    - Save the `g2.lic` file to this directory: `licenses/g2.lic`
-   - Ensure file permissions are readable: `chmod 644 licenses/g2.lic`
+   - Ensure the file is readable (Linux/macOS: `chmod 644 licenses/g2.lic`)
    - Restart any running Senzing processes
 
 ### Option 2: Production License
@@ -88,11 +88,14 @@ licenses/
 **Command**:
 
 ```bash
-# Place your license file here
+# Linux / macOS
 cp /path/to/your/g2.lic licenses/g2.lic
-
-# Set proper permissions
 chmod 644 licenses/g2.lic
+```
+
+```powershell
+# Windows (PowerShell)
+Copy-Item C:\path\to\your\g2.lic licenses\g2.lic
 ```
 
 ### Incorrect Locations ❌
@@ -200,8 +203,8 @@ echo "licenses/*.lic" >> .gitignore
 
 **Solutions**:
 
-1. Verify file exists: `ls -la licenses/g2.lic`
-2. Check file permissions: `chmod 644 licenses/g2.lic`
+1. Verify file exists: `ls licenses/g2.lic` (Linux/macOS) or `dir licenses\g2.lic` (Windows)
+2. Check file permissions (Linux/macOS: `chmod 644 licenses/g2.lic`)
 3. Verify file path in configuration
 4. Check for typos in filename (must be exactly `g2.lic`)
 

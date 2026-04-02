@@ -1026,7 +1026,7 @@ Entity resolution with Senzing introduces unique security concerns beyond genera
 
 // ✅ ALWAYS do these:
 //   - Store in a secrets manager or environment variable
-//   - Restrict file permissions if stored on disk (chmod 600)
+//   - Restrict file permissions if stored on disk (Linux/macOS: chmod 600; Windows: use icacls or file properties)
 //   - Rotate the database password it contains on a schedule
 //   - Audit access to the secret
 
@@ -1091,7 +1091,7 @@ function create_least_privilege_db_user():
 // The Senzing license file (if applicable) should be treated as a secret:
 //   - Do not commit to version control
 //   - Store in secrets manager or encrypted storage
-//   - Restrict file permissions (chmod 600)
+//   - Restrict file permissions (Linux/macOS: chmod 600; Windows: use icacls or file properties)
 //   - Monitor for unauthorized access
 
 // Add to .gitignore:

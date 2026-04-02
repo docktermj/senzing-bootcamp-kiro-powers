@@ -59,7 +59,7 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 
 **Status Command** ⭐ NEW!
 
-```
+```text
 python scripts/status.py
 ```
 
@@ -92,7 +92,7 @@ For Senzing error codes, use the MCP `explain_error_code` tool. For Senzing conc
 
 **Hook Installer** ⭐ NEW!
 
-```
+```text
 python scripts/install_hooks.py
 ```
 
@@ -156,7 +156,7 @@ All scripts are cross-platform Python (Linux, macOS, Windows).
 
 ### Check Prerequisites
 
-```
+```text
 python scripts/check_prerequisites.py
 ```
 
@@ -164,7 +164,7 @@ Validates your environment before starting.
 
 ### Check Status
 
-```
+```text
 python scripts/status.py
 ```
 
@@ -172,7 +172,7 @@ Shows current module, progress, and next steps.
 
 ### Install Hooks
 
-```
+```text
 python scripts/install_hooks.py
 ```
 
@@ -180,7 +180,7 @@ Interactive hook installation.
 
 ### Clone Example
 
-```
+```text
 python scripts/clone_example.py
 ```
 
@@ -188,7 +188,7 @@ Clone example projects to your workspace.
 
 ### Backup Project
 
-```
+```text
 python scripts/backup_project.py
 ```
 
@@ -196,7 +196,7 @@ Or say: "backup my project"
 
 ### Restore Project
 
-```
+```text
 python scripts/restore_project.py <backup-file>
 ```
 

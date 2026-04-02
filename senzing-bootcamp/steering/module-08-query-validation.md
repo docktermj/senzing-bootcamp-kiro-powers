@@ -2,9 +2,9 @@
 inclusion: manual
 ---
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_8_QUERY_VALIDATION.md`.
-
 # Module 8: Query and Validate Results
+
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_8_QUERY_VALIDATION.md`.
 
 **Purpose**: Create query programs and conduct user acceptance testing.
 

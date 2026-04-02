@@ -43,17 +43,17 @@ Copy-Item senzing-bootcamp\hooks\*.hook .kiro\hooks\
 
 Nine pre-configured hooks that support the boot camp workflow:
 
-| Hook                    | Trigger                     | Action                       | Module     |
-|-------------------------|-----------------------------|------------------------------|------------|
-| Code Style Check        | Save source code file       | Check coding standards       | All        |
-| Data Quality Check      | Save transformation program | Remind to validate quality   | Module 4-5 |
-| Backup Before Load      | Save loading program        | Remind to backup database    | Module 6   |
-| Validate Senzing JSON   | Save transformed data       | Validate with analyze_record | Module 5   |
-| Backup Project on Request | Manual trigger (button)   | Run project backup script    | All        |
-| CommonMark Validation   | Save Markdown file          | Check CommonMark compliance  | All        |
-| Verify Senzing Facts    | Before any write operation  | Verify facts via MCP tools   | All        |
-| Analyze After Mapping   | New file in data/transformed| Run analyze_record           | Module 5-6 |
-| Run Tests After Change  | Save src/ code files        | Remind to run tests          | Module 6-8 |
+| Hook                      | Trigger                     | Action                       | Module     |
+|---------------------------|-----------------------------|------------------------------|------------|
+| Code Style Check          | Save source code file       | Check coding standards       | All        |
+| Data Quality Check        | Save transformation program | Remind to validate quality   | Module 4-5 |
+| Backup Before Load        | Save loading program        | Remind to backup database    | Module 6   |
+| Validate Senzing JSON     | Save transformed data       | Validate with analyze_record | Module 5   |
+| Backup Project on Request | Manual trigger (button)     | Run project backup script    | All        |
+| CommonMark Validation     | Save Markdown file          | Check CommonMark compliance  | All        |
+| Verify Senzing Facts      | Before any write operation  | Verify facts via MCP tools   | All        |
+| Analyze After Mapping     | New file in data/transformed| Run analyze_record           | Module 5-6 |
+| Run Tests After Change    | Save src/ code files        | Remind to run tests          | Module 6-8 |
 
 ## When to Install
 

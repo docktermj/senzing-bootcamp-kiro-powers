@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "CommonMark Validation",
+  "description": "Validates markdown files in the senzing-bootcamp power for CommonMark compliance when edited. Checks for blank lines around headings, code blocks, and lists, language specifiers on fenced code blocks, and other common issues.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "senzing-bootcamp/**/*.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A markdown file in the senzing-bootcamp power was just edited. Validate it for CommonMark compliance. Check for:\n\n1. MD022: Headings should be surrounded by blank lines\n2. MD031: Fenced code blocks should be surrounded by blank lines\n3. MD032: Lists should be surrounded by blank lines\n4. MD040: Fenced code blocks should have a language specified\n5. Bold text followed by colons should use format: **Label:** (with space before colon)\n\nIf any issues are found, fix them automatically."
+  }
+}

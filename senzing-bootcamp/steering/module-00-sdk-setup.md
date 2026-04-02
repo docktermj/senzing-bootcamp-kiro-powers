@@ -2,9 +2,9 @@
 inclusion: manual
 ---
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_0_SDK_SETUP.md`.
-
 # Module 0: SDK Installation and Configuration
+
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_0_SDK_SETUP.md`.
 
 Install and configure the Senzing SDK natively on your machine. This is the first step of the boot camp — once the SDK is installed, all subsequent modules use it directly.
 

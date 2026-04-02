@@ -29,7 +29,7 @@ The boot camp supports the languages available through the Senzing MCP server. T
 - **Imports**: Organized by package, no wildcard imports
 - **Validation tools**: `checkstyle`, `spotbugs`, `PMD`
 
-### C#
+### C-sharp
 
 - **Style guide**: .NET conventions
 - **Indentation**: 4 spaces

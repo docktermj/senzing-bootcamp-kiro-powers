@@ -2,9 +2,9 @@
 inclusion: manual
 ---
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_10_SECURITY_HARDENING.md`.
-
 # Module 10: Security Hardening
+
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_10_SECURITY_HARDENING.md`.
 
 ## Workflow: Security Hardening End-to-End (Module 10)
 
@@ -448,7 +448,6 @@ function check_datasource_access(user_context, data_source):
 Entity resolution systems process PII by definition — names, addresses, identifiers, contact information. Encryption is not optional.
 
 > **Agent instruction:** Call `search_docs(query='encryption', version='current')` to retrieve the latest Senzing encryption guidance before recommending specific approaches.
-
 > **Agent instruction:** Call `search_docs(query='PII protection', category='concepts', version='current')` to retrieve Senzing-specific PII protection guidance.
 
 Ask: "What encryption requirements do you have? Let's cover three layers: (1) data at rest — is your database encrypted? (2) data in transit — are all connections using TLS? (3) field-level encryption — do specific PII fields need application-level encryption beyond database encryption?"
@@ -1328,7 +1327,7 @@ Once security hardening is complete, proceed to:
 
 "Module 10 is complete. Your entity resolution system now has production-grade security controls.
 
-**Module 10 Complete ✅**
+### Module 10 Complete ✅
 
 - ✅ Secrets management — credentials protected
 - ✅ Authentication — access controlled

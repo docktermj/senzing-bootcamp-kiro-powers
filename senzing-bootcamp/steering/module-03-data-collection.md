@@ -2,9 +2,9 @@
 inclusion: manual
 ---
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_3_DATA_COLLECTION.md`.
-
 # Module 3: Identify and Collect Data Sources
+
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_3_DATA_COLLECTION.md`.
 
 ## Workflow: Identify and Collect Data Sources (Module 3)
 

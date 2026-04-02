@@ -2,9 +2,9 @@
 inclusion: manual
 ---
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_6_SINGLE_SOURCE_LOADING.md`.
-
 # Module 6: Load Single Data Source
+
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_6_SINGLE_SOURCE_LOADING.md`.
 
 ## Workflow: Quick SDK Test Load — Part B: Create Loading Programs (Module 6)
 

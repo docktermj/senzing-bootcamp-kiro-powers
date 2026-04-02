@@ -126,13 +126,13 @@ Notice records 1, 2, and 3 are the same person with variations.
 
 Each CSV record is mapped to Senzing JSON format with these field mappings:
 
-| CSV Field    | Senzing Attribute |
-|-------------|-------------------|
-| customer_id | RECORD_ID         |
-| full_name   | NAME_FULL         |
-| address + city + state + zip | ADDR_FULL |
-| phone       | PHONE_NUMBER      |
-| email       | EMAIL_ADDRESS     |
+| CSV Field                    | Senzing Attribute |
+|------------------------------|-------------------|
+| customer_id                  | RECORD_ID         |
+| full_name                    | NAME_FULL         |
+| address + city + state + zip | ADDR_FULL         |
+| phone                        | PHONE_NUMBER      |
+| email                        | EMAIL_ADDRESS     |
 
 All records use `DATA_SOURCE: "CUSTOMERS"`.
 

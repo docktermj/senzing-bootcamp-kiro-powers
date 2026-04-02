@@ -167,17 +167,17 @@ Assess each source for completeness, duplicates, and format consistency. Key met
 
 Each source requires a transformer that maps its fields to Senzing attributes:
 
-| Source | Source Fields | Senzing Attributes |
-|--------|-------------|-------------------|
-| CRM | first_name, last_name | NAME_FIRST, NAME_LAST |
-| CRM | email, phone | EMAIL_ADDRESS, PHONE_NUMBER |
-| CRM | address, city, state, zip | ADDR_FULL, ADDR_CITY, ADDR_STATE, ADDR_POSTAL_CODE |
-| E-commerce | name | NAME_FULL |
-| E-commerce | email, phone | EMAIL_ADDRESS, PHONE_NUMBER |
+| Source     | Source Fields                              | Senzing                                            |
+|------------|--------------------------------------------|----------------------------------------------------|
+| CRM        | first_name, last_name                      | NAME_FIRST, NAME_LAST                              |
+| CRM        | email, phone                               | EMAIL_ADDRESS, PHONE_NUMBER                        |
+| CRM        | address, city, state, zip                  | ADDR_FULL, ADDR_CITY, ADDR_STATE, ADDR_POSTAL_CODE |
+| E-commerce | name                                       | NAME_FULL                                          |
+| E-commerce | email, phone                               | EMAIL_ADDRESS, PHONE_NUMBER                        |
 | E-commerce | shipping_address, city, state, postal_code | ADDR_FULL, ADDR_CITY, ADDR_STATE, ADDR_POSTAL_CODE |
-| Support | full_name | NAME_FULL |
-| Support | email, phone | EMAIL_ADDRESS, PHONE_NUMBER |
-| Support | company | NAME_ORG |
+| Support    | full_name                                  | NAME_FULL                                          |
+| Support    | email, phone                               | EMAIL_ADDRESS, PHONE_NUMBER                        |
+| Support    | company                                    | NAME_ORG                                           |
 
 > The agent generates this code in your chosen language using `generate_scaffold` and `mapping_workflow` during the bootcamp.
 
@@ -190,6 +190,7 @@ Install the Senzing SDK for your chosen language and configure the engine with a
 Run the loading program using the appropriate command for your chosen language.
 
 The orchestrator:
+
 1. Loads each source sequentially (CRM → E-commerce → Support)
 2. Tracks success/error counts per source
 3. Reports loading rate (records/sec)
@@ -202,6 +203,7 @@ The orchestrator:
 Run the query program using the appropriate command for your chosen language.
 
 The Customer 360 view shows, for a given record:
+
 - The resolved entity ID and name
 - All linked records across sources
 - Unified contact information (phones, emails, addresses)

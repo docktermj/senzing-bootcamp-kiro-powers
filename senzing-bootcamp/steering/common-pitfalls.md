@@ -346,7 +346,7 @@ If already installed, verify version and use existing installation.
 
 ### Loaded Wrong Data
 
-```
+```text
 # Restore from backup
 python scripts/restore_project.py backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip
 ```

@@ -187,6 +187,8 @@ Add lineage tracking calls to your transformation scripts. After each transforma
 ## Integration with Loading Scripts
 
 Add lineage tracking calls to your loading scripts. After each load completes, call the tracker to record the data source, records loaded, throughput, and duration.
+
+```python
     tracker = LineageTracker()
 
     # Track start
@@ -215,6 +217,7 @@ Add lineage tracking calls to your loading scripts. After each load completes, c
         'records_rejected': records_rejected,
         'duration': time.time() - start_time
     })
+
 ```
 
 ## Lineage Visualization

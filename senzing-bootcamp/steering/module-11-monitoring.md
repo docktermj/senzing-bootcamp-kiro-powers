@@ -2,9 +2,9 @@
 inclusion: manual
 ---
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_11_MONITORING_OBSERVABILITY.md`.
-
 # Module 11: Monitoring and Observability
+
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_11_MONITORING_OBSERVABILITY.md`.
 
 ## Workflow: Production Monitoring and Observability (Module 11)
 
@@ -65,7 +65,6 @@ This is the most critical step. Senzing provides engine-level statistics through
 > **Agent instruction:** Call `get_sdk_reference(topic='functions', filter='get_stats', version='current')`
 > to get the exact method signature and return format for the stats method. Do not guess the
 > method name or response schema — it varies between V3 and V4.
-
 > **Agent instruction:** Call `generate_scaffold(language='<chosen_language>', workflow='information', version='current')`
 > to get version-correct code for retrieving engine statistics. Use this as the foundation for
 > the metrics collector, not hand-coded SDK calls.
@@ -348,7 +347,6 @@ Dashboards provide at-a-glance visibility into system health and performance. Th
 
 > **Agent instruction:** Call `reporting_guide(topic='dashboard', language='<chosen_language>')` to get
 > visualization concepts, recommended chart types, and data source patterns for Senzing dashboards.
-
 > **Agent instruction:** Call `reporting_guide(topic='reports')` to get SQL analytics queries that
 > power dashboard panels. These queries run against the Senzing database and provide entity-level
 > aggregate metrics.
@@ -1089,7 +1087,7 @@ When all validation gates are met:
 
 "Module 11 is complete. You now have comprehensive monitoring and observability for your Senzing deployment.
 
-**Module 11 Complete ✅**
+### Module 11 Complete ✅
 
 - ✅ Metrics collection running (Senzing stats + application + system)
 - ✅ Structured logging with correlation IDs

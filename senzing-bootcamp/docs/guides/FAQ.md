@@ -82,7 +82,7 @@ Say "backup my project" (with hook installed), or run `python scripts/backup_pro
 
 ### How do I restore?
 
-```
+```text
 python scripts/restore_project.py backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip
 ```
 

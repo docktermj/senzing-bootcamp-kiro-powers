@@ -2,9 +2,9 @@
 inclusion: manual
 ---
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_4_DATA_QUALITY_SCORING.md`.
-
 # Module 4: Verify Data Sources Against SGES
+
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_4_DATA_QUALITY_SCORING.md`.
 
 ## Workflow: Verify Data Sources Against SGES (Module 4)
 

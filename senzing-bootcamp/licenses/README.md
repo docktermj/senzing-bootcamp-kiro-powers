@@ -7,8 +7,8 @@ This directory is for storing your Senzing license file(s).
 The boot camp agent will ask about your license early in the workflow (before Module 0). You have three options:
 
 - **No license**: The SDK includes built-in evaluation limits that work for the boot camp
-- **Evaluation license**: Removes limits, free from Senzing (email support@senzing.com)
-- **Production license**: For production deployments (contact sales@senzing.com)
+- **Evaluation license**: Removes limits, free from Senzing (email <support@senzing.com>)
+- **Production license**: For production deployments (contact <sales@senzing.com>)
 
 You can always add a license later by placing it in `licenses/g2.lic`.
 

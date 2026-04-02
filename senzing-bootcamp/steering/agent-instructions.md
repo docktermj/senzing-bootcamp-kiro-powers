@@ -97,7 +97,7 @@ After language selection is confirmed and before the prerequisite check, ask the
      ```
 
 4. **If they don't have a license**:
-   - Inform them: "No problem. The SDK includes built-in evaluation limits that are fine for the boot camp. If you'd like a full evaluation license later, you can email support@senzing.com."
+   - Inform them: "No problem. The SDK includes built-in evaluation limits that are fine for the boot camp. If you'd like a full evaluation license later, you can email <support@senzing.com>."
    - Record in `config/bootcamp_preferences.yaml`:
 
      ```yaml

@@ -279,7 +279,7 @@ Module 12 → Deployment artifacts, runbooks
 
 Check your progress:
 
-```
+```text
 python scripts/status.py
 ```
 

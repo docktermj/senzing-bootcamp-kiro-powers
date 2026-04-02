@@ -2,9 +2,9 @@
 inclusion: manual
 ---
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_12_DEPLOYMENT_PACKAGING.md`.
-
 # Module 12: Package and Deploy
+
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_12_DEPLOYMENT_PACKAGING.md`.
 
 ## Workflow: Package, Deploy, and Go Live (Module 12)
 

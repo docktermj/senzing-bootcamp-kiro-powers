@@ -246,7 +246,8 @@ print(f"Disk free: {usage.free / (1024**3):.1f} GB")
 ```
 
 For PostgreSQL:
-```
+
+```console
 psql -h localhost -U senzing -d senzing -c "SELECT 1"
 ```
 

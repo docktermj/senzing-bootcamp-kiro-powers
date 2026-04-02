@@ -55,6 +55,7 @@ my-senzing-project/
 **Backups Directory**: The `data/backups/` directory is created by users in their project for storing database backups. This is NOT part of the power distribution itself.
 
 **Dependencies**: Users should create a dependency file appropriate for their chosen language in the project root:
+
 - Python: `requirements.txt`
 - Java: `pom.xml` or `build.gradle`
 - C#: `.csproj` file
@@ -90,12 +91,14 @@ for d in [
 Or using shell commands:
 
 On Linux / macOS:
+
 ```bash
 mkdir -p data/{raw,transformed,samples,backups,temp} database licenses \
   src/{transform,load,query,utils} tests backups docs/feedback config logs monitoring scripts
 ```
 
 On Windows (PowerShell):
+
 ```powershell
 foreach ($d in @(
   "data\raw","data\transformed","data\samples","data\backups","data\temp",

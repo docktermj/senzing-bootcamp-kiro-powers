@@ -2,9 +2,9 @@
 inclusion: manual
 ---
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_2_BUSINESS_PROBLEM.md`.
-
 # Module 2: Discover the Business Problem
+
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_2_BUSINESS_PROBLEM.md`.
 
 ## Workflow: Discover the Business Problem (Module 2)
 

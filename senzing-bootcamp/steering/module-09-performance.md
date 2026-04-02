@@ -2,9 +2,9 @@
 inclusion: manual
 ---
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_9_PERFORMANCE_TESTING.md`.
-
 # Module 9: Performance Testing and Benchmarking
+
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_9_PERFORMANCE_TESTING.md`.
 
 ## Workflow: Performance Testing and Optimization (Module 9)
 
@@ -42,25 +42,25 @@ Ask: "How many records per second do you need to load? This depends on your data
 
 WAIT for response.
 
-**Question 2: Query latency**
+### Question 2: Query latency
 
 Ask: "What query response times do you need? For example: real-time search (<100ms), interactive queries (<1 second), or batch processing (minutes are acceptable)?"
 
 WAIT for response.
 
-**Question 3: Concurrent users**
+### Question 3: Concurrent users
 
 Ask: "How many concurrent users or processes will query the system? This affects connection pooling and resource allocation."
 
 WAIT for response.
 
-**Question 4: Data volume and growth**
+### Question 4: Data volume and growth
 
 Ask: "What's your current data volume, and how fast is it growing? For example: 100K records now, growing 10K/month. This determines whether we need to plan for scale-out."
 
 WAIT for response.
 
-**Question 5: Database choice**
+### Question 5: Database choice
 
 Ask: "Are you using SQLite or PostgreSQL? This significantly affects performance characteristics and optimization strategies."
 
@@ -104,6 +104,7 @@ Before writing any benchmark code, check for known performance pitfalls.
 > **Agent instruction:** Call `search_docs(query='loading performance', category='anti_patterns', version='current')`
 > to retrieve known performance anti-patterns. Review these BEFORE recommending any optimization
 > strategies. Common anti-patterns include:
+>
 > - Single-threaded loading when multi-threading is available
 > - Not processing redo records
 > - Using SQLite for large production workloads
@@ -513,6 +514,7 @@ SQLite is excellent for evaluation and small-to-medium workloads but has inheren
 Ask: "You're using SQLite. This is great for evaluation, but it has a single-writer limitation that caps loading throughput. For your data volume of [X] records, SQLite should work fine. If you need higher throughput later, we can discuss migrating to PostgreSQL."
 
 **When to recommend PostgreSQL migration**:
+
 - Data volume exceeds 500K records
 - Loading throughput requirements exceed what SQLite can deliver
 - Multiple concurrent writers are needed
@@ -773,6 +775,7 @@ Performance isn't just about speed — resolution quality can change at differen
 > **Agent instruction:** Call `reporting_guide(topic='evaluation', version='current')` to get the
 > 4-point ER evaluation framework with evidence requirements. This framework provides a structured
 > approach to evaluating entity resolution quality:
+>
 > 1. Entity count and distribution
 > 2. Match quality (precision/recall)
 > 3. Data source contribution
@@ -914,6 +917,7 @@ function analyze_bottlenecks(transform_results, load_results, query_results, res
 Present relevant optimizations based on the bottleneck analysis:
 
 **Loading throughput optimizations**:
+
 - Switch from SQLite to PostgreSQL for >500K records
 - Use multi-threaded loading (PostgreSQL only — SQLite is single-writer)
 - Optimize transformation to reduce record size (remove unnecessary fields)
@@ -922,6 +926,7 @@ Present relevant optimizations based on the bottleneck analysis:
 - Process redo records in parallel with loading (advanced)
 
 **Query latency optimizations**:
+
 - Ensure database indexes are current
 - Increase engine cache size
 - Use connection pooling for concurrent queries
@@ -929,6 +934,7 @@ Present relevant optimizations based on the bottleneck analysis:
 - Consider read replicas for PostgreSQL (advanced)
 
 **Resource optimizations**:
+
 - CPU-bound: Add cores, use multi-threading
 - Memory-bound: Increase RAM, reduce batch size, stream data
 - I/O-bound: Use SSD, tune database I/O parameters, increase WAL buffers
@@ -996,7 +1002,7 @@ Document in `docs/performance_report.md`:
 ## Executive Summary
 [One paragraph: key findings, whether requirements are met, top recommendation]
 
-## Performance Requirements vs Actuals
+### ## Performance Requirements vs Actuals
 
 | Metric                  | Target          | Actual          | Status |
 |-------------------------|-----------------|-----------------|--------|
@@ -1164,7 +1170,8 @@ Inform the user:
 
 "Module 9 is complete. You now have a comprehensive performance profile of your entity resolution pipeline.
 
-**Module 9 Complete ✅**
+### Module 9 Complete ✅
+
 - ✅ Performance requirements defined
 - ✅ Transformation, loading, and query benchmarks completed
 - ✅ Resource usage profiled
@@ -1175,6 +1182,7 @@ Inform the user:
 - ✅ Performance report documented
 
 **Key Results**:
+
 - Loading: [X] records/sec
 - Query p95: [X] ms
 - Scalability: [Linear/Moderate/Needs attention] up to [X] records

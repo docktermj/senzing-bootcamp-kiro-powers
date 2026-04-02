@@ -152,7 +152,7 @@ All generated code follows language-appropriate coding standards based on the bo
 
 Install pre-configured hooks for automated quality checks:
 
-```
+```console
 python senzing-bootcamp/scripts/install_hooks.py
 ```
 
@@ -187,7 +187,7 @@ Say "power feedback" or "bootcamp feedback" at any time to document issues or su
 
 All scripts are cross-platform Python (Linux, macOS, Windows):
 
-```
+```console
 python scripts/status.py              # Check progress
 python scripts/check_prerequisites.py # Validate prerequisites
 python scripts/install_hooks.py       # Install hooks

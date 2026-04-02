@@ -509,7 +509,6 @@ See [troubleshooting.md](troubleshooting.md) for common issues.
 
 Generate deployment-ready artifacts:
 
-
 ## Agent Behavior
 
 When a user is in Module 12, the agent should:

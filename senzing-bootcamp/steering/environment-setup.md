@@ -67,6 +67,7 @@ data/backups/*.sql
 Add language-specific entries based on the bootcamper's chosen language:
 
 **Python:**
+
 ```gitignore
 __pycache__/
 *.py[cod]
@@ -77,6 +78,7 @@ env/
 ```
 
 **Java:**
+
 ```gitignore
 target/
 *.class
@@ -87,6 +89,7 @@ build/
 ```
 
 **C#:**
+
 ```gitignore
 bin/
 obj/
@@ -96,12 +99,14 @@ packages/
 ```
 
 **Rust:**
+
 ```gitignore
 target/
 Cargo.lock
 ```
 
 **TypeScript / Node.js:**
+
 ```gitignore
 node_modules/
 dist/
@@ -137,7 +142,7 @@ pip freeze > requirements.txt
 # Add senzing SDK dependency to pom.xml or build.gradle
 ```
 
-### C#
+### C-sharp
 
 ```bash
 dotnet new console -n my-senzing-project

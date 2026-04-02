@@ -88,7 +88,7 @@ Generate a loading program using the Senzing MCP server:
 ```text
 Use: generate_scaffold
 Parameters:
-  language: python (or java, csharp, rust)
+  language: <chosen_language>
   workflow: add_records
   version: current
 ```
@@ -319,9 +319,9 @@ Module 6 is complete when:
 project/
 ├── src/
 │   └── load/
-│       ├── load_customers_crm.py      # Generated loading program
-│       ├── load_vendors_erp.py        # Additional sources
-│       └── utils.py                   # Shared loading utilities
+│       ├── load_customers_crm.[ext]   # Generated loading program
+│       ├── load_vendors_erp.[ext]     # Additional sources
+│       └── utils.[ext]                # Shared loading utilities
 ├── data/
 │   └── transformed/
 │       ├── customers_crm.jsonl        # Input file
@@ -342,7 +342,7 @@ When a user is in Module 6:
 2. **Choose data source:** Help user select which source to load first
 3. **Generate loading program:** Use `generate_scaffold` with `add_records` workflow
 4. **Customize program:** Add file path, data source name, progress reporting
-5. **Save program:** Save to `src/load/load_[data_source].py`
+5. **Save program:** Save to `src/load/load_[data_source].[ext]`
 6. **Guide execution:** Help user run the program
 7. **Review statistics:** Analyze loading results
 8. **Handle errors:** Help diagnose and fix any errors

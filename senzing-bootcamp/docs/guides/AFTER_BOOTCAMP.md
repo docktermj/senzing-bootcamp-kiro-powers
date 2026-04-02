@@ -193,7 +193,7 @@ Use `find_examples` to discover working code across 27+ indexed Senzing GitHub r
 
 ```text
 "Show me examples of multi-threaded loading"
-"Find examples of redo processing in Python"
+"Find examples of redo processing"
 "How do other projects handle error retry?"
 ```
 
@@ -225,7 +225,7 @@ Feedback helps improve the boot camp for everyone who comes after you.
 | Find code examples | `find_examples` | `find_examples(query='multi-threaded loading')` |
 | SDK method reference | `get_sdk_reference` | `get_sdk_reference(topic='functions', filter='add_record')` |
 | Setup guidance | `sdk_guide` | `sdk_guide(topic='install', platform='linux_apt')` |
-| Generate code | `generate_scaffold` | `generate_scaffold(language='python', workflow='load', version='current')` |
+| Generate code | `generate_scaffold` | `generate_scaffold(language='<chosen_language>', workflow='load', version='current')` |
 | Reporting patterns | `reporting_guide` | `reporting_guide(topic='reports')` |
 | Check capabilities | `get_capabilities` | See current version and all available tools |
 

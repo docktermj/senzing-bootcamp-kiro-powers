@@ -52,7 +52,7 @@ Add up the points:
 
 ### 6-9 Points: Low Complexity ✅
 
-**Estimated Time**: 1-2 hours for Module 4
+**Estimated Time**: 1-2 hours for mapping (Module 5)
 **Characteristics**:
 
 - Simple CSV or JSON file
@@ -71,7 +71,7 @@ Add up the points:
 
 ### 10-14 Points: Medium Complexity ⚠️
 
-**Estimated Time**: 2-4 hours for Module 4
+**Estimated Time**: 2-4 hours for mapping (Module 5)
 **Characteristics**:
 
 - Multiple tables or moderate API
@@ -91,7 +91,7 @@ Add up the points:
 
 ### 15-18 Points: High Complexity 🔴
 
-**Estimated Time**: 4-8 hours for Module 4
+**Estimated Time**: 4-8 hours for mapping (Module 5)
 **Characteristics**:
 
 - Complex nested data or difficult API

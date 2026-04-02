@@ -12,7 +12,8 @@ Before greeting the user, asking questions, or doing anything else:
 2. If it exists, read it and offer to resume:
    - "Welcome back! I see you've completed through Module [X] using [language]. Would you like to continue from where you left off, or start fresh?"
    - WAIT for response
-   - If resuming, skip to the appropriate module
+   - If resuming, also read `config/bootcamp_preferences.yaml` to restore language, license, and path choices. If any field is missing (e.g., `license` is absent because the session was interrupted before the Fourth Action), ask the user to fill it in before proceeding.
+   - Skip to the appropriate module
    - If starting fresh, proceed with directory structure creation
 3. If it doesn't exist, proceed with directory structure creation
 
@@ -33,6 +34,8 @@ If starting fresh (no progress file, or user chose to start over):
 If directory creation fails, report the error, provide commands for manual execution, and do not proceed until the structure exists.
 
 After creating the directory structure (or confirming it exists), inform the user: "If you encounter any issues or have suggestions during the boot camp, just say 'bootcamp feedback' and I'll help you document them for the boot camp author."
+
+Then offer to install hooks: "I can also install some automated quality checks (hooks) that help catch issues as we work. Would you like me to set those up? It takes about a minute." If yes, follow the Hooks Management section below. If no, proceed — hooks can always be installed later with `./scripts/install_hooks.sh`.
 
 ## Third Action — Programming Language Selection
 
@@ -67,16 +70,67 @@ After directory structure is confirmed and before the prerequisite check, ask th
 
 7. **Platform compatibility note**: If the bootcamper chooses Python, inform them that the Senzing Python SDK is only supported on Linux. On macOS or Windows, they should either pick a different language or use Docker/WSL2.
 
-7. **Code quality standards**: Apply language-appropriate coding standards:
+8. **Code quality standards**: Apply language-appropriate coding standards:
    - Python → PEP-8 (see `docs/policies/CODE_QUALITY_STANDARDS.md`)
    - Java → Standard Java conventions (camelCase methods, PascalCase classes, Javadoc)
    - C# → .NET conventions (PascalCase methods and classes, XML doc comments)
    - Rust → Rust conventions (snake_case, rustfmt, clippy)
    - TypeScript → Standard TS conventions (camelCase, ESLint, JSDoc)
 
-## Fourth Action — Platform Prerequisite Check
+## Fourth Action — Senzing License Check
 
-After language selection is confirmed and before presenting path options, run a quick prerequisite check to surface missing dependencies up front.
+After language selection is confirmed and before the prerequisite check, ask the bootcamper about their Senzing license.
+
+1. **Ask**: "Do you have a Senzing license you'd like to use? If you have an evaluation or production license file (`g2.lic`), we can configure it now. If not, no worries — the SDK works with its built-in evaluation limits."
+
+2. **WAIT for their response** before proceeding.
+
+3. **If they have a license**:
+   - Ask them to place it at `licenses/g2.lic` (create the directory if needed: `mkdir -p licenses`)
+   - Verify the file exists: `ls -la licenses/g2.lic`
+   - Inform them: "Your license is configured. Senzing will use it automatically."
+   - Record the license status in `config/bootcamp_preferences.yaml`:
+
+     ```yaml
+     license: custom  # or "evaluation" / "none"
+     license_path: licenses/g2.lic
+     ```
+
+4. **If they don't have a license**:
+   - Inform them: "No problem. The SDK includes built-in evaluation limits that are fine for the boot camp. If you'd like a full evaluation license later, you can email support@senzing.com."
+   - Record in `config/bootcamp_preferences.yaml`:
+
+     ```yaml
+     license: evaluation
+     license_path: null
+     ```
+
+5. **If they're unsure**: Explain the difference briefly:
+   - Evaluation (built-in): Works out of the box, may have record count limits
+   - Custom license: Removes limits, needed for production or large datasets
+   - They can always add a license later by placing it in `licenses/g2.lic`
+
+### Complete `bootcamp_preferences.yaml` Schema
+
+After the Third and Fourth Actions, `config/bootcamp_preferences.yaml` should contain all of these fields:
+
+```yaml
+# Language and path (set during Third Action and Path Selection)
+language: <chosen_language>       # python, java, csharp, rust, typescript
+path: <chosen_path>               # A, B, C, D (null until path is selected)
+started_at: <ISO 8601 timestamp>  # When the bootcamp started
+current_module: <number>          # Last module worked on
+
+# License (set during Fourth Action)
+license: <license_type>           # custom, evaluation, or none
+license_path: <path_or_null>      # licenses/g2.lic or null
+```
+
+When writing to this file, always read the existing content first and merge — never overwrite fields set by a previous action.
+
+## Fifth Action — Platform Prerequisite Check
+
+After the license check is confirmed and before presenting path options, run a quick prerequisite check to surface missing dependencies up front.
 
 Adapt the checks based on the chosen language:
 
@@ -166,9 +220,11 @@ Use lettered options (A/B/C/D) to avoid ambiguity with module numbers:
 ```text
 A) Quick Demo (10 min) — Module 1
 B) Fast Track (30 min) — Modules 5-6 (for users with SGES-compliant data)
-C) Complete Beginner (2-3 hrs) — Modules 2-6, 8
+C) Complete Beginner (2-3 hrs) — Modules 2-6, 8 (Module 0 inserted automatically before Module 6)
 D) Full Production (10-18 hrs) — All Modules 0-12
 ```
+
+**Path C note**: Module 0 (SDK Setup) is required before Module 6 (Loading). When the user reaches Module 6 on Path C, check if Module 0 is complete. If not, insert it: "Before we can load data, we need to set up the Senzing SDK. Let's do Module 0 now — it takes about 30-60 minutes."
 
 **Interpreting responses**:
 
@@ -268,6 +324,9 @@ Gate checks:
 - **6 → 7**: All sources loaded, no critical errors, loading statistics captured
 - **7 → 8**: All sources orchestrated (or single source loaded)
 - **8 → 9**: Query programs answer business problem, results validated, documentation complete
+- **9 → 10**: Performance baselines captured, bottlenecks identified and documented, optimization recommendations recorded
+- **10 → 11**: Security checklist complete, no critical vulnerabilities, secrets management configured, compliance documentation updated
+- **11 → 12**: Monitoring dashboards configured, alerting rules defined, health checks passing, runbooks created
 
 ## Error Handling
 

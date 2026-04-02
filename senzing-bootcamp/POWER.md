@@ -20,7 +20,7 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 - A) Quick Demo (10 min) — Module 1
 - B) Fast Track (30 min) — Modules 5-6 (for users with SGES-compliant data)
-- C) Complete Beginner (2-3 hrs) — Modules 2-6, 8
+- C) Complete Beginner (2-3 hrs) — Modules 2-6, 8 (Module 0 auto-inserted before 6)
 - D) Full Production (10-18 hrs) — All Modules 0-12
 
 **Experienced users:** Skip to Module 5 (have SGES data), Module 6 (SDK + data ready), or Module 8 (data loaded).
@@ -39,7 +39,7 @@ Load these on-demand when needed:
 - `module-01-quick-demo.md` — Module 1: Quick Demo (Optional)
 - `module-02-business-problem.md` — Module 2: Business Problem
 - `module-03-data-collection.md` — Module 3: Data Collection
-- `module-04-data-quality.md` — Module 4: Data Quality + Hook Installation
+- `module-04-data-quality.md` — Module 4: Data Quality
 - `module-05-data-mapping.md` — Module 5: Data Mapping
 - `module-06-single-source.md` — Module 6: Single Source Loading
 - `module-07-multi-source.md` — Module 7: Multi-Source Orchestration

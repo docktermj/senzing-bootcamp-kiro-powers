@@ -16,22 +16,28 @@ my-senzing-project/
 │   ├── raw/                       # Original source data
 │   ├── transformed/               # Senzing-formatted JSON output
 │   ├── samples/                   # Sample data for testing
-│   └── backups/                   # Database backups (created by user)
+│   ├── backups/                   # Database backups (created by user)
+│   └── temp/                      # Temporary working files (gitignored)
 ├── database/                      # SQLite database files
 │   ├── G2C.db                     # Main Senzing database (SQLite)
 │   └── .gitkeep                   # Keep directory in git
+├── licenses/                      # Senzing license files
+│   ├── g2.lic                     # Senzing license (if provided)
+│   └── README.md                  # License instructions
 ├── src/                           # Generated program source
 │   ├── quickstart_demo/           # Module 1 demo code (optional)
 │   ├── transform/                 # Transformation programs (Module 5)
 │   ├── load/                      # Loading programs (Module 6)
-│   ├── query/                     # Query programs (Module 6)
+│   ├── query/                     # Query programs (Module 8)
 │   └── utils/                     # Shared utilities
+├── scripts/                       # Shell scripts
 ├── tests/                         # Test files for project
+├── backups/                       # Project backup archives
 ├── docs/                          # Design documents
-│   ├── business_problem.md        # Module 1 output
-│   ├── data_source_evaluation.md  # Module 2 output
-│   ├── mapping_specifications.md  # Module 3 mappings
-│   ├── query_specifications.md    # Module 6 queries
+│   ├── business_problem.md        # Module 2 output
+│   ├── data_source_evaluation.md  # Module 4 output
+│   ├── mapping_specifications.md  # Module 5 mappings
+│   ├── query_specifications.md    # Module 8 queries
 │   └── lessons_learned.md         # Post-project retrospective
 ├── config/                        # Configuration files
 │   ├── bootcamp_preferences.yaml  # Language choice, path selection (auto-generated)
@@ -71,10 +77,12 @@ See `examples/` for reference implementations.
 **Commands to execute**:
 
 ```bash
-mkdir -p data/{raw,transformed,samples,backups}
+mkdir -p data/{raw,transformed,samples,backups,temp}
 mkdir -p database
+mkdir -p licenses
 mkdir -p src/{transform,load,query,utils}
 mkdir -p tests
+mkdir -p backups
 mkdir -p docs/feedback
 mkdir -p config
 mkdir -p logs

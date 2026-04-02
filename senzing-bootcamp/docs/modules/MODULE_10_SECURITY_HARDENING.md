@@ -116,15 +116,12 @@ function anonymize_pii(record):
 **Dependency Scanning**:
 
 ```bash
-# Python
-pip install safety
-safety check
-
-# Node.js
-npm audit
-
-# Java
-mvn dependency-check:check
+# Use the appropriate scanner for your language:
+# Python:     pip install safety && safety check
+# Node.js:    npm audit
+# Java:       mvn dependency-check:check
+# C#:         dotnet list package --vulnerable
+# Rust:       cargo audit
 ```
 
 **Container Scanning**:
@@ -137,11 +134,13 @@ trivy image my-senzing-app:latest
 **Code Scanning**:
 
 ```bash
-# Bandit (Python)
-bandit -r src/
-
-# SonarQube
-sonar-scanner
+# Use the appropriate static analysis tool for your language:
+# Python:     bandit -r src/
+# Java:       spotbugs, PMD
+# C#:         Roslyn analyzers
+# Rust:       cargo clippy
+# TypeScript: eslint --ext .ts src/
+# General:    SonarQube (sonar-scanner)
 ```
 
 ### 6. Network Security
@@ -252,14 +251,15 @@ Route GET /api/search:
 ## Security Testing
 
 ```bash
-# Run security tests
-python src/testing/security_test.py
+# Run security tests (use the appropriate command for your language)
+# The agent generates test scripts via generate_scaffold
 
-# Check for common vulnerabilities
-bandit -r src/
+# Scan dependencies for known vulnerabilities
+# Python: safety check | Java: mvn dependency-check:check | Rust: cargo audit
+# C#: dotnet list package --vulnerable | Node.js: npm audit
 
-# Scan dependencies
-safety check
+# Run static analysis
+# Python: bandit -r src/ | Rust: cargo clippy | TypeScript: eslint src/
 
 # Test authentication
 curl -H "X-API-Key: invalid" https://api.example.com/search

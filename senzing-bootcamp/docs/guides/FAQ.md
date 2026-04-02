@@ -25,11 +25,11 @@ Say "start the boot camp". The agent creates your project structure and guides y
 
 ### What are the prerequisites?
 
-Required: Python 3.10+, pip, git, curl, zip/unzip. Optional: PostgreSQL. Run `./scripts/check_prerequisites.sh` to verify.
+Required: A supported language runtime (Python, Java, C#, Rust, or TypeScript/Node.js), git, curl, zip/unzip. Optional: PostgreSQL. Run `./scripts/check_prerequisites.sh` to verify.
 
 ### Do I need a Senzing license?
 
-Module 1 (Quick Demo) doesn't need one. Module 0+ (SDK) requires a license. Request a free evaluation license from <support@senzing.com> (1-2 business days). See `licenses/README.md`.
+The agent asks about your license early in the workflow. The SDK includes built-in evaluation limits that work for the boot camp. For a full evaluation license (no limits), email <support@senzing.com> (1-2 business days). See `licenses/README.md`.
 
 ### Where should I put my files?
 

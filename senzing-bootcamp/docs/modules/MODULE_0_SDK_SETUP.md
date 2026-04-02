@@ -47,7 +47,9 @@ If Senzing is found:
 
 ## Senzing License Requirements
 
-A valid Senzing license is required to install and use the SDK.
+The Senzing SDK includes built-in evaluation limits that work for the boot camp. If you have a license or want to remove limits, configure it now.
+
+> **Note:** The agent asks about your license during the boot camp setup (before Module 0). If you've already configured your license, you can skip this section.
 
 ### Obtaining a License
 

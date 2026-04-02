@@ -131,7 +131,7 @@ Learn from common mistakes to save time and frustration.
 **Problem**: MCP tools may output files to the current directory instead of the proper subdirectory
 **Solution**: Always relocate generated files immediately:
 
-- Python mapper scripts → `src/transform/`
+- Mapper scripts → `src/transform/`
 - Transformed JSONL output → `data/transformed/`
 - Mapping documentation → `docs/`
 - Shell scripts → `scripts/`
@@ -147,14 +147,15 @@ If files land in the root, move them before proceeding.
 **Solution**: Always check first:
 
 ```bash
-# Check Python package
-python -c "import senzing; print(senzing.__version__)" 2>/dev/null
-
 # Check installation directory
 ls -la /opt/senzing 2>/dev/null
 
-# Check pip
-pip list | grep senzing
+# Check SDK availability (use the appropriate command for your language)
+# Python:     python -c "import senzing; print(senzing.__version__)"
+# Java:       check classpath for senzing JAR
+# C#:         dotnet list package | grep -i senzing
+# Rust:       cargo tree | grep senzing
+# TypeScript: npm list | grep senzing
 ```
 
 If already installed, verify version and use existing installation.

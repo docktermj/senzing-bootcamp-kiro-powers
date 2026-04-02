@@ -1,5 +1,6 @@
 #!/bin/bash
 # Senzing Boot Camp Pre-flight Check
+# Checks core system requirements (language-agnostic)
 
 echo "=================================="
 echo "SENZING BOOT CAMP PRE-FLIGHT CHECK"
@@ -9,43 +10,44 @@ echo ""
 ERRORS=0
 WARNINGS=0
 
-# Check Python
-echo "Checking Python..."
+# Check for at least one supported language runtime
+echo "Checking language runtimes..."
+LANG_FOUND=0
 if command -v python3 &> /dev/null; then
-    PYTHON_VERSION=$(python3 --version | cut -d' ' -f2)
-    echo "✅ Python $PYTHON_VERSION installed"
-
-    # Check version is 3.8+
-    MAJOR=$(echo $PYTHON_VERSION | cut -d'.' -f1)
-    MINOR=$(echo $PYTHON_VERSION | cut -d'.' -f2)
-    if [ "$MAJOR" -lt 3 ] || ([ "$MAJOR" -eq 3 ] && [ "$MINOR" -lt 10 ]); then
-        echo "❌ Python 3.10+ required (found $PYTHON_VERSION)"
-        ((ERRORS++))
-    fi
-else
-    echo "❌ Python not found"
-    ((ERRORS++))
+    echo "✅ Python $(python3 --version 2>&1 | cut -d' ' -f2) installed"
+    LANG_FOUND=1
 fi
-echo ""
-
-# Check pip
-echo "Checking pip..."
-if command -v pip3 &> /dev/null; then
-    echo "✅ pip installed"
-else
-    echo "❌ pip not found"
+if command -v java &> /dev/null; then
+    echo "✅ Java $(java --version 2>&1 | head -1) installed"
+    LANG_FOUND=1
+fi
+if command -v dotnet &> /dev/null; then
+    echo "✅ .NET $(dotnet --version 2>&1) installed"
+    LANG_FOUND=1
+fi
+if command -v rustc &> /dev/null; then
+    echo "✅ Rust $(rustc --version 2>&1 | cut -d' ' -f2) installed"
+    LANG_FOUND=1
+fi
+if command -v node &> /dev/null; then
+    echo "✅ Node.js $(node --version 2>&1) installed"
+    LANG_FOUND=1
+fi
+if [ $LANG_FOUND -eq 0 ]; then
+    echo "❌ No supported language runtime found"
+    echo "   Install one of: Python 3.10+, Java 17+, .NET SDK, Rust, or Node.js"
     ((ERRORS++))
 fi
 echo ""
 
 # Check disk space
 echo "Checking disk space..."
-AVAILABLE=$(df -BG . | tail -1 | awk '{print $4}' | sed 's/G//')
-if [ "$AVAILABLE" -ge 10 ]; then
+AVAILABLE=$(df -BG . 2>/dev/null | tail -1 | awk '{print $4}' | sed 's/G//')
+if [ -n "$AVAILABLE" ] && [ "$AVAILABLE" -ge 10 ] 2>/dev/null; then
     echo "✅ ${AVAILABLE}GB available (10GB+ required)"
 else
-    echo "❌ Only ${AVAILABLE}GB available (10GB+ required)"
-    ((ERRORS++))
+    echo "⚠️  Could not verify disk space (10GB+ recommended)"
+    ((WARNINGS++))
 fi
 echo ""
 
@@ -80,13 +82,13 @@ echo "Checking PostgreSQL..."
 if command -v psql &> /dev/null; then
     echo "✅ PostgreSQL client installed"
 else
-    echo "ℹ️  PostgreSQL not found (optional)"
+    echo "ℹ️  PostgreSQL not found (optional — SQLite works for evaluation)"
 fi
 echo ""
 
 # Check write permissions
 echo "Checking permissions..."
-if mkdir -p test_preflight && rmdir test_preflight; then
+if mkdir -p test_preflight 2>/dev/null && rmdir test_preflight 2>/dev/null; then
     echo "✅ Write permissions OK"
 else
     echo "❌ Cannot write to current directory"
@@ -105,6 +107,7 @@ echo ""
 if [ $ERRORS -eq 0 ]; then
     echo "✅ PRE-FLIGHT CHECK PASSED!"
     echo "You're ready to start the Senzing Boot Camp."
+    echo "The agent will ask which language you'd like to use."
     exit 0
 else
     echo "❌ PRE-FLIGHT CHECK FAILED"

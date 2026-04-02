@@ -4,18 +4,13 @@ This directory is for storing your Senzing license file(s).
 
 ## Do I Need a License?
 
-### Module 1 (Quick Demo)
+The boot camp agent will ask about your license early in the workflow (before Module 0). You have three options:
 
-**No license required** - Module 1 uses sample data and doesn't require a license.
+- **No license**: The SDK includes built-in evaluation limits that work for the boot camp
+- **Evaluation license**: Removes limits, free from Senzing (email support@senzing.com)
+- **Production license**: For production deployments (contact sales@senzing.com)
 
-### Module 0+ (SDK Installation and Beyond)
-
-**License required** - You'll need a valid Senzing license to:
-
-- Install and use the Senzing SDK
-- Load your own data
-- Perform entity resolution on production data
-- Complete Modules 0 and 6-12
+You can always add a license later by placing it in `licenses/g2.lic`.
 
 ## How to Obtain a Senzing License
 
@@ -127,31 +122,11 @@ After placing your license file, verify it's working:
 # Check if license file exists
 ls -la licenses/g2.lic
 
-# Verify Senzing can read the license
-python3 -c "
-from senzing import G2Product
-import json
-
-product = G2Product()
-config = {
-    'PIPELINE': {
-        'CONFIGPATH': '/etc/opt/senzing',
-        'LICENSESTRINGBASE64': open('licenses/g2.lic').read()
-    }
-}
-product.init('LicenseCheck', json.dumps(config), False)
-print('License valid!')
-print('Version:', product.version())
-product.destroy()
-"
+# Verify permissions
+stat licenses/g2.lic
 ```
 
-Expected output:
-
-```text
-License valid!
-Version: 4.0.0
-```
+The agent will verify the license during the boot camp's license check step (Fourth Action in agent-instructions). You can also verify by running the SDK initialization script generated in Module 0 — if the license is valid, the SDK will initialize without errors.
 
 ## Security and Git
 
@@ -276,11 +251,9 @@ echo "licenses/*.lic" >> .gitignore
 
 ### Can I use the boot camp without a license?
 
-**Module 1 only**: Yes, Module 1 (Quick Demo) doesn't require a license.
+**Yes** — the SDK includes built-in evaluation limits that are sufficient for the boot camp. For larger datasets or production use, request an evaluation or production license.
 
-**Module 0+**: No, you'll need a license to install the SDK and complete the remaining modules.
-
-**Recommendation**: Request an evaluation license before starting Module 0.
+**Recommendation**: If you plan to work with large datasets, request an evaluation license before starting Module 0.
 
 ### How long does it take to get an evaluation license?
 
@@ -307,7 +280,7 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 
 ### Can I complete the boot camp with an expired license?
 
-**No** - You'll need a valid license for Module 0+. Contact Senzing for renewal before your license expires.
+**Yes, with limitations** — the SDK's built-in evaluation limits still work. But for larger datasets, contact Senzing for renewal before your license expires.
 
 ## Contact Information
 

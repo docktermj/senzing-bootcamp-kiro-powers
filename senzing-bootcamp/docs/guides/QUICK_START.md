@@ -97,7 +97,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 **Output:** Complete working project
 
-**Modules:** 2-6, 8
+**Modules:** 2-6, 8 (Module 0 is auto-inserted before Module 6 for SDK setup)
 
 ---
 
@@ -167,13 +167,13 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ### For Fast Track (Path B)
 
 - ✅ SGES-formatted data file
-- ✅ Python 3.10+
 - ✅ Senzing SDK installed (Module 0)
+- ✅ Language runtime for your chosen language (Python, Java, C#, Rust, or TypeScript)
 
 ### For Complete Beginner (Path C)
 
 - ✅ Raw data file (CSV, JSON, Excel, etc.)
-- ✅ Python 3.10+
+- ✅ Language runtime for your chosen language
 - ✅ 2-3 hours
 - ✅ Basic understanding of your data
 
@@ -200,9 +200,9 @@ Get started with Senzing entity resolution in 30 minutes or less.
 - **Module 7**: Multi-Source Orchestration (1-2 hrs)
 - **Module 8**: Query & Validate (1-2 hrs)
 - **Module 9**: Performance Testing (1-2 hrs)
-- **Module 10**: Security Hardening (1-2 hrs)
-- **Module 11**: Monitoring (1-2 hrs)
-- **Module 12**: Package & Deploy (2-3 hrs)
+- **Module 10**: Security Hardening (2-8 hrs)
+- **Module 11**: Monitoring (60-90 min)
+- **Module 12**: Package & Deploy (2-4 hrs)
 
 ### Skip Ahead Options
 
@@ -297,7 +297,7 @@ A: Demo if exploring, Fast Track if experienced, Complete if learning.
 A: Yes! Start with demo, then do Fast Track or Complete.
 
 **Q: Do I need to install anything?**
-A: Module 0 installs the Senzing SDK. All paths need Python 3.10+.
+A: Module 0 installs the Senzing SDK. You'll also need a runtime for your chosen language (Python, Java, C#, Rust, or TypeScript).
 
 **Q: Can I use my own data?**
 A: Yes for Fast Track and Complete. Demo uses sample data.

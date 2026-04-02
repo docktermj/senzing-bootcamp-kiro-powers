@@ -117,7 +117,7 @@ Create `docs/mapping_customers.md`:
 **Date:** 2026-03-17
 **Source:** data/raw/customers.csv
 **Output:** data/transformed/customers.jsonl
-**Program:** src/transform/transform_customers.py
+**Program:** src/transform/transform_customers.[ext]
 
 ## Field Mappings
 
@@ -187,10 +187,10 @@ All transformation programs go in `src/transform/`:
 ```
 
 src/transform/
-├── transform_customers.py
-├── transform_vendors.py
-├── transform_employees.py
-└── utils.py                    # Shared transformation utilities
+├── transform_customers.[ext]
+├── transform_vendors.[ext]
+├── transform_employees.[ext]
+└── utils.[ext]                    # Shared transformation utilities
 
 ```text
 

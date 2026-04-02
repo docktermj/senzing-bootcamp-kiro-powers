@@ -80,7 +80,7 @@ inclusion: manual
 
 5. **Test orchestration with samples**:
 
-   Before running on full data, run the orchestrator with a small test limit. The exact command depends on the chosen language (e.g., `python src/load/orchestrator.py --test --limit 100` for Python, or the equivalent for other languages).
+   Before running on full data, run the orchestrator with a small test limit. Use the appropriate run command for the chosen language.
 
 6. **Run full orchestration**:
 

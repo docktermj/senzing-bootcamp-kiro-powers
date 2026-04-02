@@ -48,7 +48,7 @@ Follow the platform-specific instructions from `sdk_guide`. The typical flow:
 1. Add the Senzing package repository
 2. Install the Senzing SDK package
 3. Accept the EULA
-4. Install the Python bindings: `pip install senzing`
+4. Install the language-specific SDK bindings (e.g., `pip install senzing` for Python, or the equivalent for your chosen language)
 
 **Before recommending any approach**, call `search_docs` with `category='anti_patterns'` to check for known pitfalls on the user's platform.
 
@@ -75,6 +75,7 @@ WAIT for response.
 - Create the database directory: `mkdir -p database`
 - Database path: `database/G2C.db`
 - No additional setup needed — SQLite is built in
+- **IMPORTANT**: Never use `/tmp/` or in-memory databases. If `generate_scaffold` or `ExampleEnvironment` defaults to `/tmp/`, override the path to `database/G2C.db`.
 
 **For PostgreSQL** (production):
 

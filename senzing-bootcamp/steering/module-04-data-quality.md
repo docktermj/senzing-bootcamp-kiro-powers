@@ -10,7 +10,7 @@ inclusion: manual
 
 **Time**: 10 minutes per data source
 
-**Prerequisites**: ✅ Module 2 complete (data sources collected, files in `data/raw/`)
+**Prerequisites**: ✅ Module 3 complete (data sources collected, files in `data/raw/`)
 
 1. **List the agreed-upon data sources**: Recap the data sources identified during the business problem discussion. Review `docs/business_problem.md` for the list.
 
@@ -36,7 +36,7 @@ inclusion: manual
 
 5. **Categorize each data source**:
    - **SGES-compliant**: Data already uses standard Senzing attribute names and structure. Can proceed directly to Module 0 (SDK setup) and Module 6 (loading).
-   - **Needs mapping**: Data uses different field names or structures. Proceed to Module 3 (data mapping).
+   - **Needs mapping**: Data uses different field names or structures. Proceed to Module 5 (data mapping).
    - **Needs enrichment**: Data is missing critical attributes. Discuss with user whether additional data sources can provide missing information.
 
 6. **Summarize findings and save evaluation report**: Create `docs/data_source_evaluation.md`:
@@ -67,7 +67,7 @@ inclusion: manual
 
    **Reason**: [Why it needs mapping or is compliant]
 
-   **Next step**: [Module 3 / Module 4]
+   **Next step**: [Module 5 / Module 6]
 
    ### Data Source 2: [Name]
    [Same structure]
@@ -81,69 +81,6 @@ inclusion: manual
 
 **Success indicator**: ✅ All data sources categorized + `docs/data_source_evaluation.md` created
 
-## Workflow: Install Senzing Boot Camp Hooks (Before Module 4)
+## Workflow: Install Senzing Boot Camp Hooks
 
-Use this workflow to set up automated quality checks and reminders before starting data mapping.
-
-**Time**: 5 minutes
-
-**Purpose**: Install hooks that automate quality checks, backups, and documentation reminders throughout the boot camp.
-
-1. **Explain hooks**: "Kiro hooks can automate common tasks and provide helpful reminders. I recommend installing a few hooks that will help maintain quality as we work through the boot camp."
-
-2. **Recommend hooks for the boot camp**:
-   - **Data Quality Check**: Reminds you to validate data quality when transformation programs change
-   - **Backup Before Load**: Reminds you to backup the database before loading data
-   - **Test Before Commit**: Automatically runs tests when you save source files
-   - **Validate Senzing JSON**: Checks that output conforms to SGES format
-   - **Update Documentation**: Reminds you to keep documentation in sync with code
-
-3. **Install hooks**: Copy the pre-configured hooks from the power directory:
-
-   ```bash
-   # Create hooks directory if it doesn't exist
-   mkdir -p .kiro/hooks
-
-   # Copy all Senzing Boot Camp hooks
-   cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
-
-   # Or copy individual hooks
-   cp senzing-bootcamp/hooks/code-style-check.kiro.hook .kiro/hooks/
-   cp senzing-bootcamp/hooks/data-quality-check.kiro.hook .kiro/hooks/
-   cp senzing-bootcamp/hooks/backup-before-load.kiro.hook .kiro/hooks/
-   cp senzing-bootcamp/hooks/validate-senzing-json.kiro.hook .kiro/hooks/
-   ```
-
-4. **Verify installation**: Check that hooks are installed:
-
-   ```bash
-   ls -la .kiro/hooks/
-   ```
-
-   You should see the `.kiro.hook` files.
-
-5. **Explain hook behavior**:
-   - **Data Quality Check**: Triggers when you save files in `src/transform/`. The agent will remind you to run quality validation.
-   - **Backup Before Load**: Triggers when you save files in `src/load/`. The agent will remind you to backup the database.
-   - **Test Before Commit**: Triggers when you save any source file. Automatically runs `pytest tests/`.
-   - **Validate Senzing JSON**: Triggers when you modify files in `data/transformed/`. The agent will suggest using `analyze_record`.
-   - **Update Documentation**: Triggers when you save source files. The agent will remind you to update docs.
-
-6. **Customize if needed**: Users can customize hooks by editing the JSON files:
-   - Change file patterns to match their project structure
-   - Modify prompts to fit their workflow
-   - Adjust timeouts for commands
-   - Enable/disable specific hooks
-
-7. **Test a hook**: Save a file in `src/transform/` to test the Data Quality Check hook. The agent should provide a reminder about data quality validation.
-
-8. **Commit hooks to version control**:
-
-   ```bash
-   git add .kiro/hooks/
-   git commit -m "Add Senzing Boot Camp hooks"
-   ```
-
-**Success indicator**: ✅ Hooks installed in `.kiro/hooks/` + hooks verified working
-
-**Note**: Hooks are optional but highly recommended. They help catch issues early and maintain quality throughout the boot camp.
+**Note**: Hook installation has been moved to the agent-instructions setup flow. The agent offers to install hooks after the directory structure is created (Second Action). See `agent-instructions.md` for the hook installation workflow. Hooks can also be installed at any time by saying "install hooks" or running `./scripts/install_hooks.sh`.

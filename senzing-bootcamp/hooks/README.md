@@ -31,10 +31,10 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 
 ### 5. Backup Project on Request (`backup-project-on-request.kiro.hook`)
 
-**Trigger**: When user submits a prompt requesting a backup
-**Action**: Automatically runs the project backup script
-**Use case**: Quick project backups via natural language commands
-**Example prompts**: "backup my project", "create a backup", "make a backup"
+**Trigger**: Manual — click the hook button in the Agent Hooks panel
+**Action**: Runs the project backup script
+**Use case**: Quick project backups without typing a command
+**How to use**: Click the "Backup Project on Request" button in the Kiro Agent Hooks explorer view, or say "backup my project" to the agent directly
 
 ### 6. CommonMark Validation (`commonmark-validation.kiro.hook`)
 

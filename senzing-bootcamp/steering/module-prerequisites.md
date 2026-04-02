@@ -18,7 +18,7 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 - Admin/sudo access for installation
 - 10GB free disk space
 - Internet connection for downloads
-- Python 3.10+
+- Language runtime for your chosen language (Python 3.10+, Java 17+, .NET, Rust, or Node.js)
 
 **Ready to proceed when**:
 
@@ -34,7 +34,7 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 
 **Skip if**:
 
-- Senzing is already installed → Verify with `python -c "import senzing; print(senzing.__version__)"`
+- Senzing is already installed → Verify with a language-appropriate SDK import check
 
 ## Module 1: Quick Demo (Optional)
 

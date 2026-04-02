@@ -44,10 +44,12 @@ User guides and installation instructions.
 - `COLLABORATION_GUIDE.md` - Team collaboration workflows
 - `DESIGN_PATTERNS.md` - Entity resolution design patterns
 - `FAQ.md` - Frequently asked questions
+- `GLOSSARY.md` - Senzing entity resolution terminology
 - `HOOKS_INSTALLATION_GUIDE.md` - Guide for installing Kiro hooks
 - `ONBOARDING_CHECKLIST.md` - Pre-bootcamp checklist
 - `PROGRESS_TRACKER.md` - Module completion tracking
 - `QUICK_START.md` - Three fast paths to get started
+- `AFTER_BOOTCAMP.md` - Post-bootcamp guide for production and next steps
 
 ## Root Level Files
 

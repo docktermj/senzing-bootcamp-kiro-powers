@@ -18,10 +18,12 @@ Complete this checklist before starting the boot camp to ensure a smooth experie
 - [ ] **Create directory structure**
 
   ```bash
-  mkdir -p data/{raw,transformed,samples,backups}
+  mkdir -p data/{raw,transformed,samples,backups,temp}
   mkdir -p database
+  mkdir -p licenses
   mkdir -p src/{transform,load,query,utils}
   mkdir -p tests
+  mkdir -p backups
   mkdir -p docs/feedback
   mkdir -p config
   mkdir -p logs
@@ -51,14 +53,17 @@ my-senzing-project/
 │   ├── raw/
 │   ├── transformed/
 │   ├── samples/
-│   └── backups/
+│   ├── backups/
+│   └── temp/
 ├── database/
+├── licenses/
 ├── src/
 │   ├── transform/
 │   ├── load/
 │   ├── query/
 │   └── utils/
 ├── tests/
+├── backups/
 ├── docs/
 │   └── feedback/
 ├── config/
@@ -85,9 +90,11 @@ my-senzing-project/
   - Windows (Limited Availability)
 
 - [ ] **SDK Language** — verify minimum versions via MCP `search_docs`
-  - Python: pip package manager available, virtual environment tool (venv or conda)
-  - Java: Maven or Gradle available
-  - C#: NuGet package manager available
+  - Python: pip package manager, virtual environment tool (venv or conda)
+  - Java: JDK 17+, Maven or Gradle
+  - C#: .NET SDK, NuGet package manager
+  - Rust: rustc, Cargo
+  - TypeScript/Node.js: Node.js, npm
 
 - [ ] **Disk Space**
   - Minimum: 10 GB free
@@ -173,7 +180,7 @@ my-senzing-project/
 ### ✅ Step 7: Knowledge Prerequisites
 
 - [ ] **Basic Programming**
-  - Comfortable with Python, Java, or C#
+  - Comfortable with at least one supported language (Python, Java, C#, Rust, or TypeScript)
   - Understanding of functions and classes
   - Ability to read and modify code
 
@@ -204,18 +211,15 @@ my-senzing-project/
 
 Run these commands to verify your setup:
 
-### Check Python
+### Check Your Language Runtime
 
 ```bash
-python --version  # Verify against MCP system requirements
-pip --version
-```
-
-### Check Java (if using)
-
-```bash
-java -version  # Verify against MCP system requirements
-mvn --version  # or gradle --version
+# Check whichever language you plan to use:
+python3 --version    # Python
+java --version       # Java
+dotnet --version     # C#
+rustc --version      # Rust
+node --version       # TypeScript/Node.js
 ```
 
 ### Check Git
@@ -270,17 +274,26 @@ You're ready to start the boot camp! Tell the agent:
 
 ## Troubleshooting
 
-### Python Issues
+### Language Runtime Issues
 
 ```bash
-# Install Python 3.10+
+# Python
 sudo apt install python3.11  # Ubuntu/Debian
 brew install python@3.11     # macOS
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/macOS
-venv\Scripts\activate     # Windows
+# Java
+sudo apt install openjdk-17-jdk  # Ubuntu/Debian
+brew install openjdk@17          # macOS
+
+# C#
+# See https://dotnet.microsoft.com/download
+
+# Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Node.js
+sudo apt install nodejs npm  # Ubuntu/Debian
+brew install node            # macOS
 ```
 
 ### Database Issues

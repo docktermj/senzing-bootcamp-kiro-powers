@@ -5,10 +5,9 @@
 **Created**: [Date when you started using the power]
 **Your Name/Team**: [Optional - helps author understand user context]
 
-**Submission**: Your feedback is automatically submitted to:
+**Submission**: Your feedback is saved to:
 
-1. ✅ This local file (for your records)
-2. ✅ Senzing MCP server (for centralized tracking)
+1. ✅ This local file (for your records and to share with the power author)
 
 ---
 
@@ -20,7 +19,8 @@ As you work through the Senzing Boot Camp, document any issues, confusion points
 
 1. Guide you through documenting the feedback
 2. Save it to this file
-3. Submit it to the Senzing MCP server automatically
+
+When you complete the boot camp, share this file with the power author.
 
 **When to add feedback**:
 

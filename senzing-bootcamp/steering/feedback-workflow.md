@@ -69,14 +69,16 @@ fi
 
 ### Step 5: Confirm and Guide
 
-- "I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` and submitted it to the Senzing team"
-- "You can review or edit it anytime"
+- "I've saved your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`."
+- "You can review or edit it anytime."
 - "Would you like to add more feedback, or continue with the boot camp?"
+
+**IMPORTANT**: Do NOT submit feedback to the Senzing MCP server. Feedback is saved locally only. Only submit to the MCP server if the user explicitly asks to do so.
 
 ### Step 6: Remind About Submission
 
-- "When you complete the boot camp, please share this file with the power author"
-- "You can add more feedback anytime by saying 'power feedback'"
+- "When you complete the boot camp, please share your feedback file with the power author."
+- "You can add more feedback anytime by saying 'power feedback'."
 
 ## Feedback Categories
 

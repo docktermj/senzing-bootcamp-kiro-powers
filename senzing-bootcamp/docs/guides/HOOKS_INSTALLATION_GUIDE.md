@@ -50,7 +50,7 @@ Four pre-configured hooks that support the boot camp workflow:
 ## When to Install
 
 **Recommended:**
-Install hooks at the start of Module 5 (Data Mapping)
+Install hooks during initial project setup (the agent offers this automatically), or at any time by saying "install hooks".
 
 This gives you automated quality checks as you develop transformation programs.
 
@@ -65,7 +65,7 @@ All hooks can be customized by editing the JSON files in `.kiro/hooks/`:
   "description": "What this hook does",
   "when": {
     "type": "fileEdited",
-    "patterns": ["src/**/*.py"]
+    "patterns": ["src/**/*.py", "src/**/*.java", "src/**/*.cs", "src/**/*.rs", "src/**/*.ts"]
   },
   "then": {
     "type": "askAgent",
@@ -79,7 +79,7 @@ All hooks can be customized by editing the JSON files in `.kiro/hooks/`:
 **Change file patterns**:
 
 ```json
-"patterns": ["my-custom-path/*.py"]
+"patterns": ["my-custom-path/*.*"]
 ```
 
 **Change command**:
@@ -122,7 +122,7 @@ Increase timeout in hook file:
 
 ## Best Practices
 
-1. **Install early:** Set up hooks before Module 3
+1. **Install early:** Set up hooks during initial project setup (the agent offers this automatically)
 2. **Commit to git:** Include hooks in version control
 3. **Team alignment:** Ensure team agrees on hook behavior
 4. **Test hooks:** Verify they work as expected
@@ -140,7 +140,7 @@ Increase timeout in hook file:
 # 1. Start boot camp
 cd my-senzing-project
 
-# 2. Install hooks (Module 5)
+# 2. Install hooks (during setup or anytime)
 # First ensure .kiro directory exists
 mkdir -p .kiro/hooks
 

@@ -252,7 +252,7 @@ When implementing UAT in Module 8:
 1. **Review business problem** from Module 1
 2. **Extract acceptance criteria** from requirements
 3. **Generate test case template** in `docs/uat_test_cases.yaml`
-4. **Create test executor script** in `src/testing/uat_executor.py`
+4. **Create test executor script** in `src/testing/uat_executor.[ext]`
 5. **Prepare test data** from real or synthetic sources
 6. **Guide user through test execution**
 7. **Track issues** in `docs/uat_issues.yaml`

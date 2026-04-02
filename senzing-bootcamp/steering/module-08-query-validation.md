@@ -42,7 +42,7 @@ inclusion: manual
 
 3. **Run exploratory queries**:
 
-   Execute queries to understand results. Use the appropriate run command for the chosen language (e.g., `python src/query/find_duplicates.py` for Python, `java -cp ... FindDuplicates` for Java, etc.).
+   Execute queries to understand results. Use the appropriate run command for the chosen language.
 
 4. **Create UAT test cases**:
 

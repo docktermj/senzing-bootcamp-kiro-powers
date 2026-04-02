@@ -71,7 +71,7 @@ Create `docs/security_compliance.md`:
 4. Data retention: [specify period]
 
 ## Anonymization Strategy
-- Test data: Use faker library to generate synthetic data
+- Test data: Use a synthetic data generation library for your language (e.g., Faker for Python/Java, Bogus for C#, fake-rs for Rust, @faker-js/faker for TypeScript)
 - Sample data: Mask last 4 digits of SSN, use fake addresses
 
 ## Incident Response

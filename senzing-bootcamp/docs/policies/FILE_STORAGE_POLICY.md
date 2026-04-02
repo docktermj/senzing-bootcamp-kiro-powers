@@ -35,15 +35,15 @@ src/
 
 ```bash
 # ✅ CORRECT
-src/transform/transform_customers.py
-src/load/load_customers.py
-src/query/find_duplicates.py
-src/utils/data_quality_checker.py
+src/transform/transform_customers.[ext]
+src/load/load_customers.[ext]
+src/query/find_duplicates.[ext]
+src/utils/data_quality_checker.[ext]
 
 # ❌ WRONG
-/tmp/transform.py
-~/Downloads/loader.py
-transform_customers.py  # (in project root)
+/tmp/transform.[ext]
+~/Downloads/loader.[ext]
+transform_customers.[ext]  # (in project root)
 ```
 
 ### Shell Scripts
@@ -173,6 +173,8 @@ database/*.db-journal
 
 **Concurrent bootcamp instances**: Using project-relative paths (`database/G2C.db`) allows multiple bootcamp projects to run on the same machine without conflicts. Never use `/tmp/sqlite/G2C.db` or system-wide paths — if the Senzing MCP server recommends `/tmp/sqlite`, override with the project-local path.
 
+**ExampleEnvironment helper override**: The Senzing SDK's `ExampleEnvironment` helper class creates SQLite databases in `/tmp/` by default (e.g., `/tmp/senzing_test_*.db`). When using `ExampleEnvironment` or any MCP-generated scaffold code, always override the database path to `database/G2C.db`. If the generated code uses `ExampleEnvironment`, replace it with explicit engine configuration pointing to `database/G2C.db`.
+
 **Module 1 demo code**: All code generated during Module 1 (Quick Demo) goes in `src/quickstart_demo/`. Demo scripts use the naming convention `demo_[dataset_name].[ext]` and sample data uses `sample_data_[dataset_name].jsonl`. This keeps demo code separate from production code in `src/transform/`, `src/load/`, and `src/query/`.
 
 ### Configuration Files
@@ -283,10 +285,11 @@ data/
 ```bash
 # ✅ CORRECT
 mkdir -p data/temp
-python process.py --temp-dir data/temp
+# Run your program with project-local temp dir, e.g.:
+#   --temp-dir data/temp
 
 # ❌ WRONG
-python process.py --temp-dir /tmp
+# Using /tmp as temp directory violates project organization
 ```
 
 **Note**: Add `data/temp/` to `.gitignore`:
@@ -402,12 +405,14 @@ When writing documentation that includes file operations:
 ```bash
 # ✅ DO THIS
 wget https://example.com/file.deb -O ~/file.deb
-python src/transform/transform.py
+# Run programs from project directories:
+#   src/transform/transform.[ext]
 ./scripts/deploy.sh
 
 # ❌ DON'T DO THIS
 wget https://example.com/file.deb -O /tmp/file.deb
-python /tmp/transform.py
+# Never run from /tmp:
+#   /tmp/transform.[ext]
 /tmp/deploy.sh
 ```
 
@@ -470,10 +475,8 @@ The only files that should be in the project root are:
 4. **.env.example** - Environment template
 5. **.gitignore** - Git ignore rules
 6. **LICENSE** - License file
-7. **requirements.txt** - Python dependencies (if applicable)
-8. **package.json** - Node dependencies (if applicable)
-9. **pom.xml** / **build.gradle** - Java dependencies (if applicable)
-10. **Cargo.toml** - Rust dependencies (if applicable)
+7. **requirements.txt** / **pom.xml** / **Cargo.toml** / **package.json** - Language-specific dependencies (if applicable)
+8. **Cargo.toml** - Rust dependencies (if applicable)
 
 ## Verification
 

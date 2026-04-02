@@ -81,7 +81,8 @@ Use this workflow when a user wants to see entity resolution in action before wo
    ```
 
 6. **Generate demo script**: Call `generate_scaffold` with workflow `full_pipeline` and the bootcamper's chosen language to create a complete demo script that:
-   - Initializes Senzing with in-memory SQLite database
+   - Initializes Senzing with a project-local SQLite database at `database/G2C.db` (never `/tmp/` or in-memory — see `docs/policies/FILE_STORAGE_POLICY.md`)
+   - Creates the `database/` directory if it doesn't exist (`mkdir -p database`)
    - Loads the sample records (with progress indicator)
    - Queries the resolved entities
    - Shows match explanations using `why_entity_by_entity_id` or `how_entity_by_entity_id`
@@ -89,10 +90,10 @@ Use this workflow when a user wants to see entity resolution in action before wo
 
    **Save the generated script to**: `src/quickstart_demo/demo_[dataset_name].[ext]` where `[ext]` is the appropriate file extension for the chosen language (`.py`, `.java`, `.cs`, `.rs`, `.ts`).
 
-   Example: `src/quickstart_demo/demo_las_vegas.py` (for Python)
+   Example: `src/quickstart_demo/demo_las_vegas.py` (Python), `demo_las_vegas.java` (Java), etc.
 
    **CRITICAL**: The script must include:
-   - SDK initialization code
+   - SDK initialization code using `database/G2C.db` as the database path (never `/tmp/` or in-memory)
    - Record loading with error handling
    - Entity querying to show resolved results
    - Match explanation retrieval (why/how records matched)
@@ -194,6 +195,7 @@ Use this workflow when a user wants to see entity resolution in action before wo
 **Agent behavior**:
 
 - MUST actually run Senzing SDK - not just describe what would happen
+- MUST use `database/G2C.db` for the SQLite database path — never `/tmp/`, never in-memory. If `generate_scaffold` or `ExampleEnvironment` defaults to `/tmp/`, override the database path to `database/G2C.db`. Create the `database/` directory first with `mkdir -p database`.
 - Show real match explanations with confidence scores
 - Display clear before/after comparison
 - Make the "aha moment" obvious

@@ -149,22 +149,21 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
 
 12. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
 
-13. **Transition to Module 2**:
+13. **Transition to Module 3**:
 
-    "Great! Module 1 is complete. You now have a clear problem statement and project structure.
+    "Great! Module 2 is complete. You now have a clear problem statement and project structure.
 
-    **Module 1 Complete ✅**
+    **Module 2 Complete ✅**
     - ✅ Business problem defined
     - ✅ Data sources identified
     - ✅ Success criteria set
-    - ✅ Cost estimate created
     - ✅ Project structure ready
 
     **Common Issues to Watch For**:
     - If data sources are hard to access, document access requirements now
-    - If stakeholder approval needed, use cost estimate document
+    - If stakeholder approval needed, prepare a summary for them
     - If timeline is tight, consider starting with one data source
 
-    Ready to move to Module 2 and collect your data sources?"
+    Ready to move to Module 3 and collect your data sources?"
 
 **Success indicator**: ✅ Clear problem statement + identified data sources + defined success metrics + user confirmation + `docs/business_problem.md` created

@@ -8,7 +8,7 @@ inclusion: manual
 
 ## Workflow: Data Mapping End-to-End (Module 5)
 
-Use this workflow for each data source that needs mapping (identified in Module 3). Complete the entire mapping process for one data source before moving to the next.
+Use this workflow for each data source that needs mapping (identified in Module 4). Complete the entire mapping process for one data source before moving to the next.
 
 **Important**: While these steps are numbered sequentially, mapping is an iterative and exploratory process. Users can:
 
@@ -30,6 +30,8 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 **For the current data source**:
 
 1. **Start the mapping workflow**: Call `mapping_workflow` with `action='start'` and the user's source file path from `data/raw/` or `data/samples/` for this specific data source. The workflow will return a unique session ID for tracking this mapping.
+
+   **IMPORTANT**: If the mapping workflow returns any file paths pointing to `/tmp/` or other system temporary directories, override them with project-local paths. Downloaded resources go in `data/temp/` or `data/raw/`, profiler output goes in `data/temp/`, and generated scripts go in `src/transform/`. See `docs/policies/FILE_STORAGE_POLICY.md`.
 
 2. **Step 1 — Profile**: Run the profiler script returned by the workflow, or read the data directly. Summarize:
    - Column names and their meanings
@@ -68,7 +70,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 5. **Step 4 — Generate Starter Code**: The workflow generates:
    - Sample Senzing JSON output showing the target format
-   - Starter mapper code (Python, JavaScript, or other languages)
+   - Starter mapper code in the bootcamper's chosen language
    - Transformation logic for complex fields
 
    This provides the foundation for the transformation program.
@@ -77,7 +79,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 6. **Step 5 — Build the Transformation Program**: Help the user create a complete, runnable program for this data source.
 
-   **IMPORTANT**: All generated code must follow the coding standards for the bootcamper's chosen language. For Python: PEP-8 compliant (max 100 chars/line, no trailing whitespace, proper docstrings, 4-space indentation). For other languages, follow their standard conventions.
+   **IMPORTANT**: All generated code must follow the coding standards for the bootcamper's chosen language (see `docs/policies/CODE_QUALITY_STANDARDS.md`).
 
    > **Agent instruction:** The `mapping_workflow` generates starter code in Step 4. Use that
    > as the foundation. Do not use the inline example below — use `generate_scaffold` or the
@@ -142,7 +144,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 2. **Mark data source as complete**: Once the user is satisfied with the transformation program for this data source, mark it as complete and move to the next data source that needs mapping.
 
-3. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 3), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
+3. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 4), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
 
 4. **Transition to Module 0**: Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 0 (SDK Setup).
 
@@ -150,4 +152,5 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 - NEVER hand-code Senzing JSON attribute names — use `mapping_workflow` to get the correct names. Use `search_docs` or `download_resource` for the current entity specification if needed.
 - NEVER guess method signatures — use `generate_scaffold` or `get_sdk_reference` for correct API calls.
+- NEVER save files to `/tmp/` or any system temporary directory — all resources, profiler output, scripts, and generated files must stay in the project directory. Downloaded resources go in `data/temp/` or `data/raw/`, profiler scripts go in `scripts/` or `src/transform/`, and generated output goes in `data/transformed/`. See `docs/policies/FILE_STORAGE_POLICY.md`.
 - Always validate output with `analyze_record` before proceeding to loading.

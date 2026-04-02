@@ -1,6 +1,6 @@
 #!/bin/bash
 # Senzing Boot Camp - Prerequisites Checker
-# Validates environment before starting modules
+# Validates environment before starting modules (language-agnostic)
 
 set -e
 
@@ -46,38 +46,8 @@ check_command() {
     fi
 }
 
-# Function to check Python package
-check_python_package() {
-    local package=$1
-    local name=$2
-    local required=$3
-
-    if python3 -c "import $package" 2>/dev/null; then
-        echo -e "${GREEN}✓${NC} Python package '$name': ${GREEN}installed${NC}"
-        ((PASSED++))
-        return 0
-    else
-        if [ "$required" = "required" ]; then
-            echo -e "${RED}✗${NC} Python package '$name': ${RED}NOT FOUND${NC} (required)"
-            echo -e "  ${YELLOW}Install:${NC} pip install $package"
-            ((FAILED++))
-        else
-            echo -e "${YELLOW}⚠${NC} Python package '$name': ${YELLOW}NOT FOUND${NC} (optional)"
-            echo -e "  ${YELLOW}Install:${NC} pip install $package"
-            ((WARNINGS++))
-        fi
-        return 1
-    fi
-}
-
 echo -e "${BLUE}Core Requirements:${NC}"
 echo ""
-
-# Check Python
-check_command "python3" "Python 3" "required" "sudo apt install python3 (Ubuntu) or brew install python3 (macOS)"
-
-# Check pip
-check_command "pip3" "pip" "required" "sudo apt install python3-pip (Ubuntu) or brew install python3 (macOS)"
 
 # Check git
 check_command "git" "Git" "required" "sudo apt install git (Ubuntu) or brew install git (macOS)"
@@ -90,6 +60,79 @@ check_command "zip" "zip" "required" "sudo apt install zip (Ubuntu) or brew inst
 check_command "unzip" "unzip" "required" "sudo apt install unzip (Ubuntu) or brew install unzip (macOS)"
 
 echo ""
+echo -e "${BLUE}Language Runtimes (at least one required):${NC}"
+echo ""
+
+LANG_COUNT=0
+
+# Check Python
+if command -v python3 &> /dev/null; then
+    local_ver=$(python3 --version 2>&1 | head -n1)
+    echo -e "${GREEN}✓${NC} Python: ${GREEN}installed${NC} ($local_ver)"
+    ((PASSED++))
+    ((LANG_COUNT++))
+
+    # Check pip
+    if command -v pip3 &> /dev/null; then
+        echo -e "${GREEN}✓${NC}   pip: ${GREEN}installed${NC}"
+        ((PASSED++))
+    else
+        echo -e "${YELLOW}⚠${NC}   pip: ${YELLOW}NOT FOUND${NC} (needed for Python SDK)"
+        echo -e "  ${YELLOW}Install:${NC} sudo apt install python3-pip (Ubuntu)"
+        ((WARNINGS++))
+    fi
+else
+    echo -e "${YELLOW}○${NC} Python: not installed"
+fi
+
+# Check Java
+if command -v java &> /dev/null; then
+    local_ver=$(java --version 2>&1 | head -n1)
+    echo -e "${GREEN}✓${NC} Java: ${GREEN}installed${NC} ($local_ver)"
+    ((PASSED++))
+    ((LANG_COUNT++))
+else
+    echo -e "${YELLOW}○${NC} Java: not installed"
+fi
+
+# Check C# / .NET
+if command -v dotnet &> /dev/null; then
+    local_ver=$(dotnet --version 2>&1)
+    echo -e "${GREEN}✓${NC} .NET SDK: ${GREEN}installed${NC} ($local_ver)"
+    ((PASSED++))
+    ((LANG_COUNT++))
+else
+    echo -e "${YELLOW}○${NC} .NET SDK: not installed"
+fi
+
+# Check Rust
+if command -v rustc &> /dev/null; then
+    local_ver=$(rustc --version 2>&1 | head -n1)
+    echo -e "${GREEN}✓${NC} Rust: ${GREEN}installed${NC} ($local_ver)"
+    ((PASSED++))
+    ((LANG_COUNT++))
+else
+    echo -e "${YELLOW}○${NC} Rust: not installed"
+fi
+
+# Check Node.js / TypeScript
+if command -v node &> /dev/null; then
+    local_ver=$(node --version 2>&1)
+    echo -e "${GREEN}✓${NC} Node.js: ${GREEN}installed${NC} ($local_ver)"
+    ((PASSED++))
+    ((LANG_COUNT++))
+else
+    echo -e "${YELLOW}○${NC} Node.js: not installed"
+fi
+
+if [ $LANG_COUNT -eq 0 ]; then
+    echo ""
+    echo -e "${RED}✗${NC} No supported language runtime found"
+    echo -e "  ${YELLOW}Install one of:${NC} Python 3.10+, Java 17+, .NET SDK, Rust, or Node.js"
+    ((FAILED++))
+fi
+
+echo ""
 echo -e "${BLUE}Optional Tools:${NC}"
 echo ""
 
@@ -98,20 +141,6 @@ check_command "psql" "PostgreSQL client" "optional" "sudo apt install postgresql
 
 # Check jq (for JSON processing)
 check_command "jq" "jq (JSON processor)" "optional" "sudo apt install jq (Ubuntu) or brew install jq (macOS)"
-
-echo ""
-echo -e "${BLUE}Python Packages:${NC}"
-echo ""
-
-# Check if Python is available before checking packages
-if command -v python3 &> /dev/null; then
-    check_python_package "json" "json" "required"
-    check_python_package "csv" "csv" "required"
-    check_python_package "requests" "requests" "optional"
-else
-    echo -e "${YELLOW}⚠${NC} Skipping Python package checks (Python not found)"
-    ((WARNINGS++))
-fi
 
 echo ""
 echo -e "${BLUE}Directory Structure:${NC}"

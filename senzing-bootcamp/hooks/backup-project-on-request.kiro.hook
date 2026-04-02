@@ -1,12 +1,12 @@
 {
   "name": "Backup Project on Request",
-  "version": "1.0.0",
-  "description": "Automatically run project backup when user requests it",
+  "version": "2.0.0",
+  "description": "Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead.",
   "when": {
-    "type": "promptSubmit"
+    "type": "userTriggered"
   },
   "then": {
-    "type": "askAgent",
-    "prompt": "Check if the user's message is requesting a project backup (phrases like 'backup my project', 'create a backup', 'backup the project', 'make a backup', etc.). If yes, run the backup script: ./scripts/backup_project.sh and report the results to the user. If no, ignore this hook and continue with the user's request normally."
+    "type": "runCommand",
+    "command": "./scripts/backup_project.sh"
   }
 }

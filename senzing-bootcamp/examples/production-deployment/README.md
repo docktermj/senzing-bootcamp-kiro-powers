@@ -190,7 +190,7 @@ Benchmark loading and query performance against production targets:
 
 > The agent generates this code in your chosen language using `generate_scaffold` during the bootcamp.
 
-### Module 10: Security Hardening (1-2 hours)
+### Module 10: Security Hardening (2-8 hours)
 
 Implement secrets management (e.g., AWS Secrets Manager), JWT authentication for API endpoints, and data encryption. No credentials stored in code or config files.
 

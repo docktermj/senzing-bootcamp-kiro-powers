@@ -33,7 +33,7 @@ By the end of this module, you will:
 2. Review sample records showing duplicates
 3. Verify Senzing SDK is available (installed in Module 0)
 
-4. Initialize an in-memory SQLite database
+4. Initialize a project-local SQLite database (`database/G2C.db`)
 5. Load sample records into Senzing
 6. Query the resolved entities
 7. See match explanations showing WHY records matched
@@ -67,7 +67,7 @@ By the end of this module, you will:
 The generated demo script will:
 
 1. **Verify Senzing SDK** - Confirms SDK is installed from Module 0 (SDK Setup)
-2. **Initialize Senzing** with in-memory SQLite database
+2. **Initialize Senzing** with a project-local SQLite database (`database/G2C.db`)
 3. **Load sample records** from the chosen dataset (with progress bar)
 4. **Query resolved entities** to show which records matched
 5. **Display match explanations** showing WHY records matched (name similarity, address match, etc.)
@@ -81,7 +81,7 @@ The generated demo script will:
 Checking Senzing SDK installation...
 ✓ Senzing SDK found (version 3.8.0)
 
-Initializing Senzing engine with in-memory database...
+Initializing Senzing engine with database/G2C.db...
 ✓ Engine initialized
 
 Loading sample records...

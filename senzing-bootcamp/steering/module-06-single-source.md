@@ -30,7 +30,7 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 
 2. **Create the loading program**: Help the user build a complete program that loads this specific data source.
 
-   **IMPORTANT**: All generated code must follow the coding standards for the bootcamper's chosen language. For Python: PEP-8 compliant. For other languages, follow their standard conventions.
+   **IMPORTANT**: All generated code must follow the coding standards for the bootcamper's chosen language (see `docs/policies/CODE_QUALITY_STANDARDS.md`).
 
    > **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='add_records', version='current')`
    > to get the current loading pattern. Do not use the inline example below — it uses V3 patterns

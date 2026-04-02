@@ -5,6 +5,93 @@ All notable changes to the Senzing Boot Camp power will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.8] - 2026-04-02
+
+### Added
+
+- Validation gates for Modules 9→10, 10→11, 11→12 in `agent-instructions.md` — production modules now have explicit criteria before advancing
+- Path C auto-insertion of Module 0: agent-instructions now detect when Path C reaches Module 6 without Module 0 complete and insert SDK setup automatically
+- Complete `bootcamp_preferences.yaml` schema documented in agent-instructions — defines all fields (language, path, started_at, current_module, license, license_path) with merge-not-overwrite rule
+- Resume resilience: First Action now checks `bootcamp_preferences.yaml` for missing fields (e.g., license) when resuming an interrupted session and asks user to fill gaps
+- Hook installation offer moved to Second Action (directory creation) — agent now offers hooks during initial setup instead of burying it in Module 4
+
+### Changed
+
+- `backup-project-on-request.kiro.hook`: Changed from `promptSubmit` (fired on every message) to `userTriggered` (manual button click) to eliminate per-prompt latency; action changed from `askAgent` to `runCommand` for direct execution
+- `module-04-data-quality.md`: Removed embedded hook installation workflow (moved to agent-instructions); fixed prerequisite from "Module 2" to "Module 3"
+- `environment-setup.md`: Added `data/temp/*` to `.gitignore` template
+- `security-privacy.md`: Replaced Python-specific "faker library" with language-agnostic list of synthetic data libraries
+- `complexity-estimator.md`: Fixed "Module 4" references to "Module 5" in all three complexity tier time estimates
+- `POWER.md` and `QUICK_START.md`: Path C description now notes Module 0 is auto-inserted before Module 6
+- Fifth Action intro text corrected from "After language selection" to "After the license check"
+
+### Fixed
+
+- Module 2 steering transition text said "Module 1 Complete" and "Ready to move to Module 2" — corrected to "Module 2 Complete" and "Ready to move to Module 3"
+- Module 4 prerequisite said "Module 2 complete" — corrected to "Module 3 complete" (data collection, not business problem)
+- Module 4 categorization step said "Proceed to Module 3 (data mapping)" — corrected to "Module 5" (Module 3 is data collection, Module 5 is mapping)
+- Module 4 evaluation template "Next step" said "Module 3 / Module 4" — corrected to "Module 5 / Module 6"
+- Module 5 steering said "identified in Module 3" — corrected to "identified in Module 4" (Module 4 categorizes sources, Module 3 collects them)
+- `POWER.md` steering file list said "Module 4: Data Quality + Hook Installation" — removed hook reference since hooks moved to setup
+- `HOOKS_INSTALLATION_GUIDE.md` said "Install hooks at the start of Module 5" and "before Module 3" — updated to reference initial project setup
+
+## [0.1.7] - 2026-04-02
+
+### Added
+
+- Senzing license check step in `agent-instructions.md` (new Fourth Action): agent now asks bootcampers about their Senzing license before the prerequisite check, guides license placement in `licenses/g2.lic`, and persists the choice in `config/bootcamp_preferences.yaml`
+- `ExampleEnvironment` override note in `FILE_STORAGE_POLICY.md`: explicitly documents that the SDK helper's `/tmp/` default must be overridden with `database/G2C.db`
+
+### Changed
+
+- `module-01-quick-demo.md`: Demo script now uses `database/G2C.db` instead of in-memory SQLite; agent behavior section reinforces overriding `/tmp/` defaults from `generate_scaffold` or `ExampleEnvironment`
+- `module-05-data-mapping.md`: Added instruction to override any `/tmp/` paths returned by `mapping_workflow` with project-local paths (`data/temp/`, `data/raw/`, `src/transform/`); added file storage rule to Important Rules section
+- `module-00-sdk-setup.md`: SQLite configuration step now includes explicit warning against `/tmp/` and in-memory databases; SDK install step is now language-agnostic
+- `feedback-workflow.md`: Feedback is now saved locally only — removed MCP server submission. Agent will only submit to MCP if user explicitly requests it
+- `SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md`: Removed MCP server submission references; updated submission section to local-only
+- `senzing-bootcamp-power-development/guides/FEEDBACK_WORKFLOW.md`: Updated to local-only feedback, removed dual-submission references, updated agent best practices and example interaction
+- Removed Python bias across the entire power to support language-agnostic bootcamp:
+  - `scripts/preflight_check.sh`: Rewritten to detect all supported language runtimes instead of only Python/pip
+  - `scripts/check_prerequisites.sh`: Rewritten with language runtime section checking all 5 languages; removed Python package checks; language runtimes shown as "at least one required"
+  - `scripts/backup_project.sh`: Exclude patterns now cover all language build artifacts (target/, bin/, obj/, node_modules/, dist/)
+  - `docs/guides/FAQ.md`: Prerequisites no longer list "Python 3.10+, pip" — now say "a supported language runtime"
+  - `docs/guides/ONBOARDING_CHECKLIST.md`: SDK Language section lists all 5 languages with tooling; Quick Validation checks all runtimes; Troubleshooting covers all languages
+  - `docs/guides/AFTER_BOOTCAMP.md`: Removed `language='python'` from example MCP call
+  - `docs/guides/HOOKS_INSTALLATION_GUIDE.md`: Example hook patterns cover all source file extensions
+  - `docs/modules/MODULE_5_DATA_MAPPING.md`: File extensions changed from `.py` to `.[ext]`
+  - `docs/modules/MODULE_6_SINGLE_SOURCE_LOADING.md`: File extensions changed from `.py` to `.[ext]`; scaffold example uses `<chosen_language>` instead of `python`
+  - `docs/modules/MODULE_10_SECURITY_HARDENING.md`: Security scanning and testing sections now show tools for all languages
+  - `docs/policies/FILE_STORAGE_POLICY.md`: Examples use `.[ext]` instead of `.py`; dependency file list consolidated; temp dir examples are language-neutral
+  - `steering/common-pitfalls.md`: SDK check commands cover all languages; "Python mapper scripts" → "Mapper scripts"
+  - `steering/module-05-data-mapping.md`: Code quality reference points to policy doc instead of inlining Python-specific rules
+  - `steering/module-06-single-source.md`: Code quality reference points to policy doc
+  - `steering/module-07-multi-source.md`: Removed Python-specific example command
+  - `steering/module-08-query-validation.md`: Removed Python-specific example command
+  - `steering/uat-framework.md`: Test executor uses `.[ext]` instead of `.py`
+
+### Fixed
+
+- Module 1 demo created SQLite databases in `/tmp/` instead of project `database/` directory
+- Feedback workflow submitted to MCP server without explicit user consent
+- No license check before Module 1, causing bootcampers with paid licenses to miss using them
+- Module 5 mapping workflow saved resources and profiler output to `/tmp/` instead of project directories
+- Duplicate step numbering (two step 7s) in `agent-instructions.md` Third Action
+- `QUICK_START.md` time estimates for Modules 10-12 inconsistent with `POWER.md` (now aligned: Module 10 = 2-8 hrs, Module 11 = 60-90 min, Module 12 = 2-4 hrs)
+- `QUICK_START.md` listed "Python 3.10+" as requirement for all paths — updated to mention all supported languages
+- `environment-setup.md` contradicted `FILE_STORAGE_POLICY.md` by saying shell scripts don't go in `scripts/` — corrected
+- `project-structure.md` tree diagram missing `licenses/`, `backups/`, `data/temp/`, and `scripts/` directories — added
+- `project-structure.md` wrong module references in docs comments (Module 1→2, Module 2→4, Module 3→5, Module 6→8)
+- `project-structure.md` mkdir commands missing `licenses/`, `backups/`, and `data/temp/` — added
+- `ONBOARDING_CHECKLIST.md` directory structure and mkdir commands missing `licenses/`, `backups/`, and `data/temp/` — added
+- `module-prerequisites.md` Module 0 had Python-only references — updated to multi-language
+- `MODULE_1_QUICK_DEMO.md` referenced "in-memory SQLite database" — updated to `database/G2C.db`
+- `docs/README.md` missing `AFTER_BOOTCAMP.md` and `GLOSSARY.md` from guides listing
+- `production-deployment/README.md` Module 10 time estimate "1-2 hours" inconsistent with POWER.md "2-8 hrs" — corrected
+- `licenses/README.md` had Python-specific verification script — replaced with language-agnostic instructions
+- `licenses/README.md` and `FAQ.md` said license was "required" for Module 0+ — updated to reflect SDK built-in evaluation limits
+- `MODULE_0_SDK_SETUP.md` said "A valid Senzing license is required" — updated to reflect built-in evaluation limits and reference the new license check step
+- `MODULE_1_QUICK_DEMO.md` example output still showed "in-memory database" — corrected to `database/G2C.db`
+
 ## [0.1.6] - 2026-04-01
 
 ### Added
@@ -181,7 +268,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Progress tracking system (`scripts/status.sh`)
 - PEP-8 compliance checking via hooks
 - Live demo for Module 1 that runs real Senzing SDK
-- Feedback collection workflow with dual submission (local file + MCP server)
+- Feedback collection workflow with local file storage
 - Prerequisite checker (`scripts/check_prerequisites.sh`)
 - Hook auto-installer (`scripts/install_hooks.sh`)
 - Example project cloner (`scripts/clone_example.sh`)

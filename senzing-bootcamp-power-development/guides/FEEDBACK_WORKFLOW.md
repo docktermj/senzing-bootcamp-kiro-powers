@@ -2,12 +2,13 @@
 
 **Purpose**: Guide users through providing structured feedback about the Senzing Boot Camp power.
 **Trigger**: User says "power feedback", "bootcamp feedback", "submit feedback", "provide feedback", "I have feedback", or "report an issue"
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-02
 
-**CRITICAL**: Feedback must be submitted to TWO locations:
+**CRITICAL**: Feedback is saved locally only:
 
 1. **Local file**: `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` (user's copy)
-2. **Senzing MCP server**: For centralized tracking and power improvement
+
+Do NOT submit feedback to the Senzing MCP server unless the user explicitly asks to do so.
 
 ---
 
@@ -19,14 +20,10 @@ When user requests feedback:
 2. ✅ Ask what type of feedback (one question at a time)
 3. ✅ Gather details (module, issue, impact, suggestion, priority)
 4. ✅ Format and append to feedback file
-5. ✅ Submit to Senzing MCP server (if available)
-6. ✅ Confirm and offer to add more
-7. ✅ Remind about dual submission at end
+5. ✅ Confirm and offer to add more
+6. ✅ Remind user to share file with power author when done
 
-**IMPORTANT**: Feedback must go to TWO places:
-
-1. User's `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` (local copy)
-2. Senzing MCP server (for power improvement tracking)
+**IMPORTANT**: Feedback is saved to the local file only. Do not send feedback to the Senzing MCP server unless the user explicitly requests it.
 
 ---
 
@@ -125,7 +122,7 @@ fi
 Agent says:
 
 ```text
-✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
+✅ I've saved your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 
 You can review or edit it anytime. Would you like to:
 - Add more feedback
@@ -133,18 +130,7 @@ You can review or edit it anytime. Would you like to:
 - Review the feedback file
 ```
 
-If MCP submission failed or unavailable:
-
-```text
-✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
-
-You can review or edit it anytime. Would you like to:
-- Add more feedback
-- Continue with the boot camp
-- Review the feedback file
-```
-
-### Step 6: Remind About Submission
+### Step 6: Remind About Sharing
 
 Agent says:
 
@@ -152,8 +138,8 @@ Agent says:
 Your feedback has been saved in:
 1. ✅ Local file: `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 
-When you complete the boot camp, please also share your local feedback
-file with the power author for additional context.
+When you complete the boot camp, please share your feedback
+file with the power author.
 
 You can add more feedback anytime by saying "power feedback".
 ```
@@ -196,8 +182,7 @@ You can add more feedback anytime by saying "power feedback".
 
 **User**: "Medium"
 
-**Agent**: "✅ I've added your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
-✅ Submitted to Senzing MCP server for tracking
+**Agent**: "✅ I've saved your feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 
 You can review or edit it anytime. Would you like to:
 
@@ -293,15 +278,15 @@ You can review or edit it anytime. Would you like to:
 
 ## Agent Best Practices
 
-1. **Be supportive**: Thank user for providing feedback
-2. **Ask one at a time**: Don't overwhelm with multiple questions
-3. **Be patient**: Let user explain in their own words
-4. **Clarify if needed**: Ask follow-up questions for clarity
-5. **Confirm understanding**: Summarize before adding to file
-6. **Submit to both locations**: Local file AND MCP server
-7. **Handle MCP failures gracefully**: If MCP submission fails, note it and continue
-8. **Make it easy**: Offer to add more feedback
-9. **Remind about value**: Explain how feedback helps improve the power
+5. **Be supportive**: Thank user for providing feedback
+6. **Ask one at a time**: Don't overwhelm with multiple questions
+7. **Be patient**: Let user explain in their own words
+8. **Clarify if needed**: Ask follow-up questions for clarity
+9. **Confirm understanding**: Summarize before adding to file
+10. **Save locally only**: Do not submit to MCP server unless user explicitly asks
+11. **Handle gracefully**: If user asks to submit to MCP, use `submit_feedback` tool
+12. **Make it easy**: Offer to add more feedback
+13. **Remind about value**: Explain how feedback helps improve the power
 
 ---
 
@@ -321,9 +306,10 @@ Agent says: "🎉 Congratulations on completing the Senzing Boot Camp!
 
 Your feedback has been:
 ✅ Saved locally: `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
-✅ Submitted to Senzing MCP server throughout the boot camp
 
-If you have any additional feedback, say 'power feedback' or 'bootcamp feedback' and I'll help you document it. You can also share your local feedback file with the power author for additional context."
+Please share your feedback file with the power author to help improve the boot camp.
+
+If you have any additional feedback, say 'power feedback' or 'bootcamp feedback' and I'll help you document it."
 
 ---
 

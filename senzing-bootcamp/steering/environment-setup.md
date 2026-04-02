@@ -31,8 +31,10 @@ config/*_credentials.json
 # Data files (too large for git)
 data/raw/*
 data/transformed/*
+data/temp/*
 !data/raw/.gitkeep
 !data/transformed/.gitkeep
+!data/temp/.gitkeep
 
 # Database files
 database/*.db
@@ -177,11 +179,11 @@ Load this steering file when:
 
 ## Important Note on Source Code Location
 
-All generated source code, including utility scripts like backup and rollback scripts, must be placed in the `src/` directory structure:
+All generated source code must be placed in the `src/` directory structure:
 
 - Transformation programs → `src/transform/`
 - Loading programs → `src/load/`
 - Query programs → `src/query/`
 - Utility scripts → `src/utils/`
 
-Never place source code files in the project root or in a separate `scripts/` directory.
+Shell scripts (`.sh`) go in `scripts/`. See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy.

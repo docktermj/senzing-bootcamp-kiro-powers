@@ -110,7 +110,7 @@ Loading failing?
 │
 ├─→ Database corruption?
 │   └─→ Restore from backup
-│       └─→ ./src/utils/rollback.sh data/backups/G2C_*.db
+│       └─→ python scripts/restore_project.py <backup-file>
 │
 └─→ Partial load failure?
     ├─→ Check which records failed
@@ -230,19 +230,24 @@ Use MCP tools for diagnosis:
 - **Mapping issues**: `analyze_record(file_paths=["data/transformed/output.jsonl"])` to validate output
 - **SDK method questions**: `get_sdk_reference(topic="functions", filter="<method_name>", version="current")`
 
-System-level checks:
+System-level checks (cross-platform):
 
-```bash
+```python
+import os, shutil
 # Check database connection (SQLite)
-ls -lh database/G2C.db
+db = os.path.join("database", "G2C.db")
+print(f"SQLite DB exists: {os.path.isfile(db)}")
+if os.path.isfile(db):
+    print(f"  Size: {os.path.getsize(db) / 1024:.0f} KB")
 
-# Check database connection (PostgreSQL)
+# Check disk space
+usage = shutil.disk_usage(os.getcwd())
+print(f"Disk free: {usage.free / (1024**3):.1f} GB")
+```
+
+For PostgreSQL:
+```
 psql -h localhost -U senzing -d senzing -c "SELECT 1"
-
-# Check system resources
-df -h  # Disk space
-free -h  # Memory
-top  # CPU and processes
 ```
 
 ## When All Else Fails

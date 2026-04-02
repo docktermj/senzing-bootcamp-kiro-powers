@@ -66,17 +66,22 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 
 ```bash
 # Interactive installation with guided options
-./scripts/install_hooks.sh
+python scripts/install_hooks.py
 ```
 
 ### Option 2: Copy to Workspace Hooks Directory
 
 ```bash
-# Copy all hooks to your project
+# Linux/macOS: Copy all hooks to your project
 cp senzing-bootcamp/hooks/*.kiro.hook .kiro/hooks/
 
 # Or copy individual hooks
 cp senzing-bootcamp/hooks/data-quality-check.kiro.hook .kiro/hooks/
+```
+
+```powershell
+# Windows (PowerShell)
+Copy-Item senzing-bootcamp\hooks\*.kiro.hook .kiro\hooks\
 ```
 
 ### Option 3: Use Kiro Command Palette

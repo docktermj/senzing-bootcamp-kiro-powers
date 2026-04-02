@@ -20,12 +20,15 @@ The agent will:
 ### Method 2: Command Line
 
 ```bash
-# From your project root
-# Create .kiro directory structure if it doesn't exist
+# From your project root (Linux/macOS)
 mkdir -p .kiro/hooks
-
-# Copy hooks
 cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
+```
+
+```powershell
+# From your project root (Windows PowerShell)
+New-Item -ItemType Directory -Force -Path .kiro\hooks | Out-Null
+Copy-Item senzing-bootcamp\hooks\*.hook .kiro\hooks\
 ```
 
 ### Method 3: Kiro UI
@@ -38,14 +41,19 @@ cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
 
 ## What Gets Installed
 
-Four pre-configured hooks that support the boot camp workflow:
+Nine pre-configured hooks that support the boot camp workflow:
 
-| Hook                  | Trigger                     | Action                       | Module   |
-|-----------------------|-----------------------------|------------------------------|----------|
-| Code Style Check     | Save source code file       | Check coding standards       | All      |
-| Data Quality Check    | Save transformation program | Remind to validate quality   | Module 4 |
-| Backup Before Load    | Save loading program        | Remind to backup database    | Module 6 |
-| Validate Senzing JSON | Save transformed data       | Validate with analyze_record | Module 5 |
+| Hook                    | Trigger                     | Action                       | Module     |
+|-------------------------|-----------------------------|------------------------------|------------|
+| Code Style Check        | Save source code file       | Check coding standards       | All        |
+| Data Quality Check      | Save transformation program | Remind to validate quality   | Module 4-5 |
+| Backup Before Load      | Save loading program        | Remind to backup database    | Module 6   |
+| Validate Senzing JSON   | Save transformed data       | Validate with analyze_record | Module 5   |
+| Backup Project on Request | Manual trigger (button)   | Run project backup script    | All        |
+| CommonMark Validation   | Save Markdown file          | Check CommonMark compliance  | All        |
+| Verify Senzing Facts    | Before any write operation  | Verify facts via MCP tools   | All        |
+| Analyze After Mapping   | New file in data/transformed| Run analyze_record           | Module 5-6 |
+| Run Tests After Change  | Save src/ code files        | Remind to run tests          | Module 6-8 |
 
 ## When to Install
 
@@ -140,15 +148,12 @@ Increase timeout in hook file:
 # 1. Start boot camp
 cd my-senzing-project
 
-# 2. Install hooks (during setup or anytime)
-# First ensure .kiro directory exists
-mkdir -p .kiro/hooks
-
-# Then copy hooks
-cp senzing-bootcamp/hooks/*.hook .kiro/hooks/
+# 2. Install hooks (recommended: use the Python installer)
+python scripts/install_hooks.py
 
 # 3. Verify installation
-ls .kiro/hooks/
+ls .kiro/hooks/          # Linux/macOS
+dir .kiro\hooks\         # Windows
 
 # 4. Test a hook
 # Save a file in src/transform/ and watch for agent reminder
@@ -163,10 +168,14 @@ git commit -m "Add Senzing Boot Camp hooks"
 
 ## Uninstalling
 
-To remove hooks:
+Remove hook files from `.kiro/hooks/`:
 
 ```bash
+# Linux/macOS
 rm .kiro/hooks/*.kiro.hook
+
+# Windows (PowerShell)
+Remove-Item .kiro\hooks\*.kiro.hook
 ```
 
 Or delete individual hook files.

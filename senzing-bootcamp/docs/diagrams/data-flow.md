@@ -288,7 +288,7 @@ PROJECT FILES
 │ • licenses/      │
 └────────┬─────────┘
          │
-         │ ./scripts/backup_project.sh
+         │ python scripts/backup_project.py
          ▼
 ┌──────────────────┐
 │  Compression     │

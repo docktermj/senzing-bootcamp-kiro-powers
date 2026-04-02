@@ -115,8 +115,17 @@ Set up the development environment for your chosen language:
 ### Python
 
 ```bash
+# Linux / macOS
+python3 -m venv venv
+source venv/bin/activate
+pip install senzing
+pip freeze > requirements.txt
+```
+
+```powershell
+# Windows (PowerShell)
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+venv\Scripts\Activate.ps1
 pip install senzing
 pip freeze > requirements.txt
 ```
@@ -186,4 +195,4 @@ All generated source code must be placed in the `src/` directory structure:
 - Query programs → `src/query/`
 - Utility scripts → `src/utils/`
 
-Shell scripts (`.sh`) go in `scripts/`. See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy.
+Automation scripts (`.py`) go in `scripts/`. See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy.

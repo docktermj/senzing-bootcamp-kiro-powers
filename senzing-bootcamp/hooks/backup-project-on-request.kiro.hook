@@ -1,12 +1,12 @@
 {
   "name": "Backup Project on Request",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead.",
   "when": {
     "type": "userTriggered"
   },
   "then": {
-    "type": "runCommand",
-    "command": "./scripts/backup_project.sh"
+    "type": "askAgent",
+    "prompt": "The user wants to back up their project. Run the backup script: python3 scripts/backup_project.py (on Linux/macOS) or python scripts/backup_project.py (on Windows). Create the backups/ directory first if it doesn't exist."
   }
 }

@@ -84,15 +84,19 @@ Browse the example directory to see:
 
 ### Option 2: Copy and Adapt
 
-```bash
-# Copy example to your project
-cp -r senzing-bootcamp/examples/simple-single-source/* my-project/
+Copy an example into your project directory. You can use your file manager, or from a terminal:
 
-# Adapt to your data
-# - Update data sources
-# - Modify mappings
-# - Adjust configurations
+```bash
+# Linux / macOS
+cp -r senzing-bootcamp/examples/simple-single-source/* my-project/
 ```
+
+```powershell
+# Windows (PowerShell)
+Copy-Item -Recurse senzing-bootcamp\examples\simple-single-source\* my-project\
+```
+
+Then adapt to your data: update data sources, modify mappings, adjust configurations.
 
 ### Option 3: Follow Along
 
@@ -219,11 +223,8 @@ cp .env.example .env
 # Navigate to example
 cd senzing-bootcamp/examples/production-deployment
 
-# Run full pipeline
-./scripts/run_pipeline.sh
-
-# Check monitoring
-open http://localhost:3000  # Grafana dashboard
+# Run full pipeline (cross-platform)
+python scripts/run_pipeline.py
 ```
 
 ## Customization Tips

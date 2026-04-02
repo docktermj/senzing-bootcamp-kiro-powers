@@ -74,20 +74,35 @@ See `examples/` for reference implementations.
 - Do not greet user, do not ask questions, do not present options until structure is created
 - This happens BEFORE everything else - no exceptions
 
-**Commands to execute**:
+**Commands to execute** (cross-platform):
 
+```python
+import os
+for d in [
+    "data/raw", "data/transformed", "data/samples", "data/backups", "data/temp",
+    "database", "licenses",
+    "src/transform", "src/load", "src/query", "src/utils",
+    "tests", "backups", "docs/feedback", "config", "logs", "monitoring", "scripts",
+]:
+    os.makedirs(d, exist_ok=True)
+```
+
+Or using shell commands:
+
+On Linux / macOS:
 ```bash
-mkdir -p data/{raw,transformed,samples,backups,temp}
-mkdir -p database
-mkdir -p licenses
-mkdir -p src/{transform,load,query,utils}
-mkdir -p tests
-mkdir -p backups
-mkdir -p docs/feedback
-mkdir -p config
-mkdir -p logs
-mkdir -p monitoring
-mkdir -p scripts
+mkdir -p data/{raw,transformed,samples,backups,temp} database licenses \
+  src/{transform,load,query,utils} tests backups docs/feedback config logs monitoring scripts
+```
+
+On Windows (PowerShell):
+```powershell
+foreach ($d in @(
+  "data\raw","data\transformed","data\samples","data\backups","data\temp",
+  "database","licenses",
+  "src\transform","src\load","src\query","src\utils",
+  "tests","backups","docs\feedback","config","logs","monitoring","scripts"
+)) { New-Item -ItemType Directory -Force -Path $d | Out-Null }
 ```
 
 And create initial files: `.gitignore`, `.env.example`, `README.md`

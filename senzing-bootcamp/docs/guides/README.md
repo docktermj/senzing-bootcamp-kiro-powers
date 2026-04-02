@@ -59,8 +59,8 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 
 **Status Command** ⭐ NEW!
 
-```bash
-./scripts/status.sh
+```
+python scripts/status.py
 ```
 
 - Shows current module
@@ -92,8 +92,8 @@ For Senzing error codes, use the MCP `explain_error_code` tool. For Senzing conc
 
 **Hook Installer** ⭐ NEW!
 
-```bash
-./scripts/install_hooks.sh
+```
+python scripts/install_hooks.py
 ```
 
 - Interactive installation
@@ -142,7 +142,7 @@ For Senzing error codes, use the MCP `explain_error_code` tool. For Senzing conc
 ### Track Progress
 
 1. Use [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md) manually
-2. Or run `./scripts/status.sh` for automated status
+2. Or run `python scripts/status.py` for automated status
 
 ### Visual Learner?
 
@@ -152,50 +152,52 @@ For Senzing error codes, use the MCP `explain_error_code` tool. For Senzing conc
 
 ## Useful Scripts
 
+All scripts are cross-platform Python (Linux, macOS, Windows).
+
 ### Check Prerequisites
 
-```bash
-./scripts/check_prerequisites.sh
+```
+python scripts/check_prerequisites.py
 ```
 
 Validates your environment before starting.
 
 ### Check Status
 
-```bash
-./scripts/status.sh
+```
+python scripts/status.py
 ```
 
 Shows current module, progress, and next steps.
 
 ### Install Hooks
 
-```bash
-./scripts/install_hooks.sh
+```
+python scripts/install_hooks.py
 ```
 
 Interactive hook installation.
 
 ### Clone Example
 
-```bash
-./scripts/clone_example.sh
+```
+python scripts/clone_example.py
 ```
 
 Clone example projects to your workspace.
 
 ### Backup Project
 
-```bash
-./scripts/backup_project.sh
+```
+python scripts/backup_project.py
 ```
 
 Or say: "backup my project"
 
 ### Restore Project
 
-```bash
-./scripts/restore_project.sh <backup-file>
+```
+python scripts/restore_project.py <backup-file>
 ```
 
 ## Documentation Structure
@@ -238,10 +240,10 @@ docs/
 
 ### New Scripts
 
-- ✅ **status.sh**: Automated progress checking
-- ✅ **check_prerequisites.sh**: Environment validation
-- ✅ **install_hooks.sh**: Interactive hook installation
-- ✅ **clone_example.sh**: Example project cloning
+- ✅ **status.py**: Automated progress checking
+- ✅ **check_prerequisites.py**: Environment validation
+- ✅ **install_hooks.py**: Interactive hook installation
+- ✅ **clone_example.py**: Example project cloning
 
 ### New Diagrams
 

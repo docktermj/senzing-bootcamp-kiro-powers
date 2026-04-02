@@ -346,9 +346,9 @@ If already installed, verify version and use existing installation.
 
 ### Loaded Wrong Data
 
-```bash
+```
 # Restore from backup
-./src/utils/rollback.sh data/backups/G2C_YYYYMMDD_HHMMSS.db
+python scripts/restore_project.py backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip
 ```
 
 ### Wrong Transformation

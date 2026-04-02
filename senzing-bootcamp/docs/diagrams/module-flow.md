@@ -279,8 +279,8 @@ Module 12 → Deployment artifacts, runbooks
 
 Check your progress:
 
-```bash
-./scripts/status.sh
+```
+python scripts/status.py
 ```
 
 View detailed progress:

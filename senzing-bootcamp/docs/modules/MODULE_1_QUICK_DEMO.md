@@ -403,8 +403,8 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 Run the pre-flight check script:
 
-```bash
-./scripts/preflight_check.sh
+```
+python scripts/preflight_check.py
 ```
 
 This will check:

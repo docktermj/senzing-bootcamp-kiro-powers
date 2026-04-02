@@ -152,10 +152,11 @@ All generated code follows language-appropriate coding standards based on the bo
 
 Install pre-configured hooks for automated quality checks:
 
-```bash
-mkdir -p .kiro/hooks
-cp senzing-bootcamp/hooks/*.kiro.hook .kiro/hooks/
 ```
+python senzing-bootcamp/scripts/install_hooks.py
+```
+
+Or manually copy hook files into `.kiro/hooks/`.
 
 Available: Code Style Check (`code-style-check`), `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`.
 
@@ -184,12 +185,15 @@ Say "power feedback" or "bootcamp feedback" at any time to document issues or su
 
 ## Useful Commands
 
-```bash
-./scripts/status.sh              # Check progress
-./scripts/check_prerequisites.sh # Validate prerequisites
-./scripts/install_hooks.sh       # Install hooks
-./scripts/clone_example.sh       # Clone example project
-./scripts/backup_project.sh      # Backup project
+All scripts are cross-platform Python (Linux, macOS, Windows):
+
+```
+python scripts/status.py              # Check progress
+python scripts/check_prerequisites.py # Validate prerequisites
+python scripts/install_hooks.py       # Install hooks
+python scripts/clone_example.py       # Clone example project
+python scripts/backup_project.py      # Backup project
+python scripts/restore_project.py     # Restore from backup
 ```
 
 ## Additional Resources

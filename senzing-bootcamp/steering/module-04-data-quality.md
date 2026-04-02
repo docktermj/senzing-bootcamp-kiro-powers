@@ -83,4 +83,4 @@ inclusion: manual
 
 ## Workflow: Install Senzing Boot Camp Hooks
 
-**Note**: Hook installation has been moved to the agent-instructions setup flow. The agent offers to install hooks after the directory structure is created (Second Action). See `agent-instructions.md` for the hook installation workflow. Hooks can also be installed at any time by saying "install hooks" or running `./scripts/install_hooks.sh`.
+**Note**: Hook installation has been moved to the agent-instructions setup flow. The agent offers to install hooks after the directory structure is created (Second Action). See `agent-instructions.md` for the hook installation workflow. Hooks can also be installed at any time by saying "install hooks" or running `python scripts/install_hooks.py`.

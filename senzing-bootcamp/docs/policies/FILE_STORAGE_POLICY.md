@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document defines where different types of files should be stored in the Senzing Boot Camp project structure. Never use temporary directories like `/tmp` for project files.
+This document defines where different types of files should be stored in the Senzing Boot Camp project structure. Never use system temporary directories for project files.
 
 ## Core Principle
 
@@ -10,7 +10,7 @@ This document defines where different types of files should be stored in the Sen
 
 ## Core Rules
 
-1. **Never use `/tmp`** for project files
+1. **Never use system temp directories** (`/tmp` on Linux/macOS, `%TEMP%` on Windows) for project files
 2. **Source code goes in `src/`** - never in project root
 3. **Use project-specific directories** for all file types
 
@@ -33,47 +33,48 @@ src/
 
 **Examples**:
 
-```bash
+```text
 # ✅ CORRECT
 src/transform/transform_customers.[ext]
 src/load/load_customers.[ext]
 src/query/find_duplicates.[ext]
 src/utils/data_quality_checker.[ext]
 
-# ❌ WRONG
-/tmp/transform.[ext]
-~/Downloads/loader.[ext]
-transform_customers.[ext]  # (in project root)
+# ❌ WRONG (system temp or home directories)
+# /tmp/transform.[ext]          (Linux/macOS)
+# %TEMP%\transform.[ext]        (Windows)
+# ~/Downloads/loader.[ext]
+# transform_customers.[ext]     (in project root)
 ```
 
-### Shell Scripts
+### Automation Scripts
 
-**Rule**: All shell scripts (`.sh`) must be stored in the `scripts/` directory.
+**Rule**: All automation scripts (`.py`) must be stored in the `scripts/` directory.
 
 **Structure**:
 
 ```text
 scripts/
-├── deploy.sh            # Deployment automation
-├── backup.sh            # Database backup
-├── migrate_db.sh        # Database migration
-├── run_pipeline.sh      # Pipeline execution
-├── health_check.sh      # Health checks
-└── setup_env.sh         # Environment setup
+├── backup_project.py    # Project backup
+├── restore_project.py   # Project restore
+├── status.py            # Boot camp status
+├── check_prerequisites.py # Prerequisites check
+├── install_hooks.py     # Hook installer
+├── clone_example.py     # Example cloner
+└── validate_commonmark.py # Markdown validation
 ```
 
 **Examples**:
 
-```bash
+```text
 # ✅ CORRECT
-scripts/deploy.sh
-scripts/backup.sh
-scripts/run_pipeline.sh
+scripts/backup_project.py
+scripts/status.py
 
 # ❌ WRONG
-/tmp/deploy.sh
-src/deploy.sh           # Shell scripts don't go in src/
-deploy.sh               # (in project root)
+# /tmp/deploy.py
+# src/deploy.py           (scripts don't go in src/)
+# deploy.py               (in project root)
 ```
 
 ### Documentation Files
@@ -92,7 +93,7 @@ docs/
 
 **Examples**:
 
-```bash
+```text
 # ✅ CORRECT
 docs/guides/QUICK_START.md
 docs/modules/MODULE_2_BUSINESS_PROBLEM.md
@@ -101,9 +102,9 @@ POWER.md                # Exception: required in root
 README.md               # Exception: required in root
 
 # ❌ WRONG
-/tmp/guide.md
-~/Documents/module.md
-my_notes.md             # (in project root)
+# /tmp/guide.md  or  %TEMP%\guide.md
+# ~/Documents/module.md
+# my_notes.md             (in project root)
 ```
 
 ### Data Files
@@ -122,7 +123,7 @@ data/
 
 **Examples**:
 
-```bash
+```text
 # ✅ CORRECT
 data/raw/customers.csv
 data/transformed/customers.jsonl
@@ -130,9 +131,9 @@ data/samples/test_data.json
 data/backups/senzing_backup_20260317.sql
 
 # ❌ WRONG
-/tmp/customers.csv
-~/Downloads/data.json
-customers.csv           # (in project root)
+# /tmp/customers.csv  or  %TEMP%\customers.csv
+# ~/Downloads/data.json
+# customers.csv           (in project root)
 ```
 
 ### Database Files
@@ -150,16 +151,16 @@ database/
 
 **Examples**:
 
-```bash
+```text
 # ✅ CORRECT
 database/G2C.db
 database/test.db
 
 # ❌ WRONG
-/var/opt/senzing/sqlite/G2C.db
-/tmp/G2C.db
-G2C.db                  # (in project root)
-data/G2C.db             # (data/ is for data files, not databases)
+# /var/opt/senzing/sqlite/G2C.db
+# /tmp/G2C.db  or  %TEMP%\G2C.db
+# G2C.db                  (in project root)
+# data/G2C.db             (data/ is for data files, not databases)
 ```
 
 **Note**: Add `database/*.db` to `.gitignore` to exclude database files from version control:
@@ -196,7 +197,7 @@ config/
 
 **Examples**:
 
-```bash
+```text
 # ✅ CORRECT
 config/senzing_config.json
 config/database_config.yaml
@@ -204,9 +205,9 @@ config/database_config.yaml
 .env.example            # Exception: in root
 
 # ❌ WRONG
-/tmp/config.json
-~/config.yaml
-senzing_config.json     # (in project root, should be in config/)
+# /tmp/config.json  or  %TEMP%\config.json
+# ~/config.yaml
+# senzing_config.json     (in project root, should be in config/)
 ```
 
 ### License Files
@@ -224,17 +225,17 @@ licenses/
 
 **Examples**:
 
-```bash
+```text
 # ✅ CORRECT
 licenses/g2.lic
 licenses/g2_dev.lic
 licenses/g2_prod.lic
 
 # ❌ WRONG
-/etc/opt/senzing/g2.lic
-/tmp/g2.lic
-g2.lic                  # (in project root)
-config/g2.lic           # (config/ is for configuration, not licenses)
+# /etc/opt/senzing/g2.lic
+# /tmp/g2.lic  or  %TEMP%\g2.lic
+# g2.lic                  (in project root)
+# config/g2.lic           (config/ is for configuration, not licenses)
 ```
 
 **Note**: Add `licenses/*.lic` to `.gitignore` to exclude license files from version control:
@@ -255,18 +256,17 @@ If users already have a system-wide Senzing license, they don't need to place on
 
 ### Downloaded Files
 
-**Rule**: Downloaded installation files should be stored in the user's home directory, not `/tmp`.
+**Rule**: Downloaded installation files should be stored in the user's home directory, not system temp directories.
 
 **Examples**:
 
-```bash
+```text
 # ✅ CORRECT - Download to home directory
-wget -qO - https://example.com/package.deb -O ~/package.deb
-sudo apt install ~/package.deb
+# Linux/macOS: ~/package.deb
+# Windows: %USERPROFILE%\package.msi
 
-# ❌ WRONG - Don't use /tmp
-wget -qO - https://example.com/package.deb -O /tmp/package.deb
-sudo apt install /tmp/package.deb
+# ❌ WRONG - Don't use system temp
+# /tmp/package.deb  or  %TEMP%\package.msi
 ```
 
 ### Temporary Working Files
@@ -282,14 +282,12 @@ data/
 
 **Examples**:
 
-```bash
+```text
 # ✅ CORRECT
-mkdir -p data/temp
-# Run your program with project-local temp dir, e.g.:
-#   --temp-dir data/temp
+# Use data/temp/ for project-local temporary files
 
 # ❌ WRONG
-# Using /tmp as temp directory violates project organization
+# Using /tmp or %TEMP% as temp directory violates project organization
 ```
 
 **Note**: Add `data/temp/` to `.gitignore`:
@@ -315,16 +313,16 @@ backups/
 
 **Examples**:
 
-```bash
+```text
 # ✅ CORRECT
 backups/senzing-bootcamp-backup_20260326_143022.zip
 backups/senzing-bootcamp-backup_20260325_091500.zip
 
 # ❌ WRONG
-/tmp/backup.zip
-~/Downloads/project-backup.zip
-backup.zip              # (in project root)
-data/backups/           # (data/backups/ is for database exports, not project backups)
+# /tmp/backup.zip  or  %TEMP%\backup.zip
+# ~/Downloads/project-backup.zip
+# backup.zip              (in project root)
+# data/backups/           (data/backups/ is for database exports, not project backups)
 ```
 
 **Backup Contents**: Backups include all user data and project files:
@@ -348,21 +346,20 @@ data/backups/           # (data/backups/ is for database exports, not project ba
 
 **Creating Backups**:
 
-```bash
-# Use the backup script
-./scripts/backup_project.sh
-
-# Creates: backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip
 ```
+python scripts/backup_project.py
+```
+
+Creates: `backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip`
 
 **Restoring Backups**:
 
-```bash
+```
 # Restore to current location
-./scripts/restore_project.sh backups/senzing-bootcamp-backup_20260326_143022.zip
+python scripts/restore_project.py backups/senzing-bootcamp-backup_20260326_143022.zip
 
 # Restore to new location
-./scripts/restore_project.sh backups/senzing-bootcamp-backup_20260326_143022.zip ~/new-project
+python scripts/restore_project.py backups/senzing-bootcamp-backup_20260326_143022.zip ~/new-project
 ```
 
 **Note**: Add `backups/*.zip` to `.gitignore` to exclude backup files from version control:
@@ -376,12 +373,12 @@ backups/*.zip
 
 ## Rationale
 
-### Why Not Use /tmp?
+### Why Not Use System Temp Directories?
 
-1. **Persistence**: Files in `/tmp` may be deleted on system reboot
-2. **Permissions**: `/tmp` may have different permissions than project directories
+1. **Persistence**: Files in `/tmp` or `%TEMP%` may be deleted on system reboot
+2. **Permissions**: Temp directories may have different permissions than project directories
 3. **Organization**: Project files should stay within project structure
-4. **Portability**: Paths like `/tmp` are system-specific
+4. **Portability**: Paths like `/tmp` are platform-specific and don't exist on Windows
 5. **Debugging**: Easier to find and debug files in project directories
 6. **Version Control**: Project directories can be properly gitignored
 7. **Cleanup**: Easier to clean up project-specific temporary files
@@ -402,18 +399,13 @@ backups/*.zip
 
 When writing documentation that includes file operations:
 
-```bash
-# ✅ DO THIS
-wget https://example.com/file.deb -O ~/file.deb
-# Run programs from project directories:
-#   src/transform/transform.[ext]
-./scripts/deploy.sh
+```text
+# ✅ DO THIS — use project-relative paths
+# src/transform/transform.[ext]
+# scripts/backup_project.py
 
-# ❌ DON'T DO THIS
-wget https://example.com/file.deb -O /tmp/file.deb
-# Never run from /tmp:
-#   /tmp/transform.[ext]
-/tmp/deploy.sh
+# ❌ DON'T DO THIS — never use system temp directories
+# /tmp/transform.[ext]  or  %TEMP%\transform.[ext]
 ```
 
 ### For Code Examples
@@ -437,32 +429,31 @@ When providing code examples:
 When the agent generates code or provides commands:
 
 1. **Always use project directories** for file storage
-2. **Never suggest `/tmp`** for any file operations
+2. **Never suggest system temp directories** (`/tmp`, `%TEMP%`) for any file operations
 3. **Use appropriate subdirectories** based on file type
-4. **Create directories if needed** with `mkdir -p`
+4. **Create directories if needed** using `os.makedirs(path, exist_ok=True)` or equivalent
 5. **Follow the structure** defined in this policy
+6. **Use `os.path.join()`** or `pathlib.Path` for cross-platform path construction
 
 ## Directory Creation
 
-Always create directories before using them:
+Always create directories before using them (cross-platform Python):
 
-```bash
-# Create project directories
-mkdir -p data/{raw,transformed,samples,backups,temp}
-mkdir -p database
-mkdir -p licenses
-mkdir -p backups
-mkdir -p src/{transform,load,query,utils}
-mkdir -p scripts
-mkdir -p config
-mkdir -p docs/{guides,modules,policies,development}
+```python
+import os
+dirs = [
+    "data/raw", "data/transformed", "data/samples", "data/backups", "data/temp",
+    "database", "licenses", "backups",
+    "src/transform", "src/load", "src/query", "src/utils",
+    "scripts", "config",
+    "docs/guides", "docs/modules", "docs/policies", "docs/development",
+]
+for d in dirs:
+    os.makedirs(d, exist_ok=True)
 
 # Create .gitkeep files to preserve empty directories in git
-touch data/raw/.gitkeep
-touch data/transformed/.gitkeep
-touch database/.gitkeep
-touch licenses/.gitkeep
-touch backups/.gitkeep
+for d in ["data/raw", "data/transformed", "database", "licenses", "backups"]:
+    open(os.path.join(d, ".gitkeep"), "a").close()
 ```
 
 ## Exceptions
@@ -480,13 +471,20 @@ The only files that should be in the project root are:
 
 ## Verification
 
-To verify compliance with this policy:
+To verify compliance with this policy, search for system temp directory references:
 
-```bash
-# Check for /tmp references in documentation
-grep -r "/tmp" senzing-bootcamp/**/*.md
-
-# Should return no results
+```python
+# Quick check for /tmp or %TEMP% references in documentation
+import os
+for root, dirs, files in os.walk("senzing-bootcamp"):
+    dirs[:] = [d for d in dirs if d not in (".git", ".history", "node_modules")]
+    for f in files:
+        if f.endswith(".md"):
+            path = os.path.join(root, f)
+            with open(path) as fh:
+                for i, line in enumerate(fh, 1):
+                    if "/tmp" in line.lower() or "%temp%" in line.lower():
+                        print(f"{path}:{i}: {line.rstrip()}")
 ```
 
 ## Related Policies
@@ -522,6 +520,6 @@ If you're unsure where to place a file:
 6. **License file?** → `licenses/`
 7. **Backup file?** → `backups/`
 8. **Database file?** → `database/`
-9. **Temporary?** → `data/temp/` (not `/tmp`)
+9. **Temporary?** → `data/temp/` (not `/tmp` or `%TEMP%`)
 
-When in doubt, ask: "Does this file belong to the project?" If yes, it goes in a project directory. Never use `/tmp`.
+When in doubt, ask: "Does this file belong to the project?" If yes, it goes in a project directory. Never use system temp directories.

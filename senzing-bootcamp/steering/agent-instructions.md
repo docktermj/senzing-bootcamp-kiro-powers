@@ -35,7 +35,7 @@ If directory creation fails, report the error, provide commands for manual execu
 
 After creating the directory structure (or confirming it exists), inform the user: "If you encounter any issues or have suggestions during the boot camp, just say 'bootcamp feedback' and I'll help you document them for the boot camp author."
 
-Then offer to install hooks: "I can also install some automated quality checks (hooks) that help catch issues as we work. Would you like me to set those up? It takes about a minute." If yes, follow the Hooks Management section below. If no, proceed — hooks can always be installed later with `./scripts/install_hooks.sh`.
+Then offer to install hooks: "I can also install some automated quality checks (hooks) that help catch issues as we work. Would you like me to set those up? It takes about a minute." If yes, follow the Hooks Management section below. If no, proceed — hooks can always be installed later with `python scripts/install_hooks.py`.
 
 ## Third Action — Programming Language Selection
 
@@ -68,7 +68,7 @@ After directory structure is confirmed and before the prerequisite check, ask th
 
    If `config/bootcamp_preferences.yaml` already exists (from a previous session), read the language from it and confirm with the user: "Last time you chose [language]. Would you like to continue with that, or switch?"
 
-7. **Platform compatibility note**: If the bootcamper chooses Python, inform them that the Senzing Python SDK is only supported on Linux. On macOS or Windows, they should either pick a different language or use Docker/WSL2.
+7. **Platform compatibility note**: If the bootcamper chooses Python, inform them that the Senzing Python SDK is only supported on Linux. On macOS or Windows, they should either pick a different language or use Docker/WSL2. Always detect the user's OS (`sys.platform` or `platform.system()`) and adapt commands accordingly — use forward-slash paths on Linux/macOS and backslash or `os.path.join` on Windows; use `python3` on Linux/macOS and `python` on Windows.
 
 8. **Code quality standards**: Apply language-appropriate coding standards:
    - Python → PEP-8 (see `docs/policies/CODE_QUALITY_STANDARDS.md`)
@@ -86,8 +86,8 @@ After language selection is confirmed and before the prerequisite check, ask the
 2. **WAIT for their response** before proceeding.
 
 3. **If they have a license**:
-   - Ask them to place it at `licenses/g2.lic` (create the directory if needed: `mkdir -p licenses`)
-   - Verify the file exists: `ls -la licenses/g2.lic`
+   - Ask them to place it at `licenses/g2.lic` (create the directory if needed: `os.makedirs('licenses', exist_ok=True)`)
+   - Verify the file exists
    - Inform them: "Your license is configured. Senzing will use it automatically."
    - Record the license status in `config/bootcamp_preferences.yaml`:
 
@@ -132,51 +132,65 @@ When writing to this file, always read the existing content first and merge — 
 
 After the license check is confirmed and before presenting path options, run a quick prerequisite check to surface missing dependencies up front.
 
-Adapt the checks based on the chosen language:
+**Detect the user's platform first** using a cross-platform approach:
+
+```python
+import platform
+print(f"OS: {platform.system()} ({platform.machine()})")
+```
+
+Then adapt the checks based on the chosen language. Use `shutil.which()` in Python or equivalent cross-platform checks — do NOT use `command -v` or `uname -s` which are Unix-only.
 
 **For Python:**
 
-```bash
-uname -s
-python3 --version 2>/dev/null || echo "Python3 not found"
-python3 -c "import senzing; print('Senzing SDK:', senzing.__version__)" 2>/dev/null || echo "Senzing SDK not installed"
+```python
+import shutil, subprocess
+py = shutil.which("python3") or shutil.which("python")
+if py:
+    subprocess.run([py, "--version"])
+    subprocess.run([py, "-c", "import senzing; print('Senzing SDK:', senzing.__version__)"])
 ```
 
 **For Java:**
 
-```bash
-uname -s
-java --version 2>/dev/null || echo "Java not found"
+```python
+import shutil, subprocess
+if shutil.which("java"):
+    subprocess.run(["java", "--version"])
 ```
 
 **For C#:**
 
-```bash
-uname -s
-dotnet --version 2>/dev/null || echo ".NET SDK not found"
+```python
+import shutil, subprocess
+if shutil.which("dotnet"):
+    subprocess.run(["dotnet", "--version"])
 ```
 
 **For Rust:**
 
-```bash
-uname -s
-rustc --version 2>/dev/null || echo "Rust not found"
-cargo --version 2>/dev/null || echo "Cargo not found"
+```python
+import shutil, subprocess
+if shutil.which("rustc"):
+    subprocess.run(["rustc", "--version"])
+    subprocess.run(["cargo", "--version"])
 ```
 
 **For TypeScript / Node.js:**
 
-```bash
-uname -s
-node --version 2>/dev/null || echo "Node.js not found"
-npm --version 2>/dev/null || echo "npm not found"
+```python
+import shutil, subprocess
+if shutil.which("node"):
+    subprocess.run(["node", "--version"])
+    subprocess.run(["npm", "--version"])
 ```
 
 **All languages — also check:**
 
-```bash
-# macOS only: check Homebrew
-command -v brew >/dev/null 2>&1 && echo "Homebrew found" || echo "Homebrew not found"
+```python
+import shutil, platform
+if platform.system() == "Darwin" and shutil.which("brew"):
+    print("Homebrew found")
 ```
 
 Present results as a checklist before path selection:
@@ -202,7 +216,7 @@ Platform check:
 6. **Track progress** through modules and remind users periodically
 7. **Validate before proceeding** — each module has success criteria
 8. **Ask questions one at a time** — wait for each response before asking the next
-9. **ALL files MUST stay in the project directory** — never use `/tmp`, `~/Downloads`, or any system directory. See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy:
+9. **ALL files MUST stay in the project directory** — never use system temporary directories (`/tmp` on Unix, `%TEMP%` on Windows, `~/Downloads`, etc.). See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy:
    - Source code → `src/`
    - Shell scripts → `scripts/`
    - Documentation → `docs/`
@@ -356,6 +370,6 @@ Gate checks:
 When installing hooks:
 
 1. Check if `.kiro/hooks/` exists
-2. Create with `mkdir -p .kiro/hooks` if needed
+2. Create with `os.makedirs('.kiro/hooks', exist_ok=True)` (or equivalent) if needed
 3. Copy hook files from `senzing-bootcamp/hooks/`
 4. Verify installation and explain hook behavior

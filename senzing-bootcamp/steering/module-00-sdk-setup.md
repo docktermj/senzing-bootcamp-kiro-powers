@@ -120,7 +120,7 @@ Once the SDK is installed and verified, proceed to:
 - Platform not supported? Use `search_docs` for alternative installation methods
 - Database errors? Check `docs/policies/FILE_STORAGE_POLICY.md` for path requirements
 - Permission issues? Ensure you have admin/sudo access for installation
-- Missing dependencies? Run `./scripts/check_prerequisites.sh`
+- Missing dependencies? Run `python scripts/check_prerequisites.py`
 
 ## Agent Behavior
 

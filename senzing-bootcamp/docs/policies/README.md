@@ -89,9 +89,9 @@ project-root/
 │   ├── load/                 # Loading programs
 │   ├── query/                # Query programs
 │   └── utils/                # Utility modules
-├── scripts/                  # All shell scripts
-│   ├── deploy.sh
-│   ├── backup.sh
+├── scripts/                  # Automation scripts (Python)
+│   ├── backup_project.py
+│   ├── status.py
 │   └── ...
 ├── data/                     # All data files
 │   ├── raw/                  # Original source data

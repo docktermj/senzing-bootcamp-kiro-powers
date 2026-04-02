@@ -25,7 +25,7 @@ Say "start the boot camp". The agent creates your project structure and guides y
 
 ### What are the prerequisites?
 
-Required: A supported language runtime (Python, Java, C#, Rust, or TypeScript/Node.js), git, curl, zip/unzip. Optional: PostgreSQL. Run `./scripts/check_prerequisites.sh` to verify.
+Required: A supported language runtime (Python, Java, C#, Rust, or TypeScript/Node.js), git, curl. Optional: PostgreSQL. Run `python scripts/check_prerequisites.py` to verify.
 
 ### Do I need a Senzing license?
 
@@ -46,7 +46,7 @@ See `docs/policies/FILE_STORAGE_POLICY.md`.
 
 ### How do I know which module I'm on?
 
-Run `./scripts/status.sh`.
+Run `python scripts/status.py`.
 
 ### Can I go back to a previous module?
 
@@ -72,18 +72,18 @@ The boot camp applies language-appropriate coding standards based on your chosen
 
 ### Which hooks should I install?
 
-Run `./scripts/install_hooks.sh` for interactive installation. Recommended: Code Style Check, `backup-before-load`, `data-quality-check`, `validate-senzing-json`.
+Run `python scripts/install_hooks.py` for interactive installation. Recommended: Code Style Check, `backup-before-load`, `data-quality-check`, `validate-senzing-json`.
 
 ## Backup and Recovery
 
 ### How do I backup?
 
-Say "backup my project" (with hook installed), or run `./scripts/backup_project.sh`.
+Say "backup my project" (with hook installed), or run `python scripts/backup_project.py`.
 
 ### How do I restore?
 
-```bash
-./scripts/restore_project.sh backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip
+```
+python scripts/restore_project.py backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip
 ```
 
 ## Troubleshooting

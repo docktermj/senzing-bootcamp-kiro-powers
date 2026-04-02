@@ -17,6 +17,8 @@ Complete this checklist before starting the boot camp to ensure a smooth experie
 
 - [ ] **Create directory structure**
 
+  On Linux / macOS:
+
   ```bash
   mkdir -p data/{raw,transformed,samples,backups,temp}
   mkdir -p database
@@ -31,6 +33,17 @@ Complete this checklist before starting the boot camp to ensure a smooth experie
   mkdir -p scripts
   ```
 
+  On Windows (PowerShell):
+
+  ```powershell
+  foreach ($d in @(
+    "data\raw","data\transformed","data\samples","data\backups","data\temp",
+    "database","licenses",
+    "src\transform","src\load","src\query","src\utils",
+    "tests","backups","docs\feedback","config","logs","monitoring","scripts"
+  )) { New-Item -ItemType Directory -Force -Path $d | Out-Null }
+  ```
+
 - [ ] **Create initial files**
 
   ```bash
@@ -42,7 +55,11 @@ Complete this checklist before starting the boot camp to ensure a smooth experie
 - [ ] **Verify structure**
 
   ```bash
-  tree -L 2  # or ls -R
+  # Linux/macOS
+  ls -R
+
+  # Windows (PowerShell)
+  Get-ChildItem -Recurse -Depth 2
   ```
 
 Expected structure:
@@ -230,15 +247,20 @@ git --version
 
 ### Check Disk Space
 
-```bash
-df -h  # Linux/macOS
+```python
+import shutil
+usage = shutil.disk_usage(".")
+print(f"{usage.free / (1024**3):.0f} GB free")
 ```
 
 ### Check Memory
 
-```bash
-free -h  # Linux
-vm_stat  # macOS
+```python
+# Run: python scripts/preflight_check.py
+# Or check manually per platform:
+# Linux:   free -h
+# macOS:   sysctl -n hw.memsize
+# Windows: systeminfo | findstr "Total Physical Memory"
 ```
 
 ## Ready to Start?
@@ -280,20 +302,24 @@ You're ready to start the boot camp! Tell the agent:
 # Python
 sudo apt install python3.11  # Ubuntu/Debian
 brew install python@3.11     # macOS
+# Windows: Download from https://www.python.org/downloads/
 
 # Java
 sudo apt install openjdk-17-jdk  # Ubuntu/Debian
 brew install openjdk@17          # macOS
+# Windows: Download from https://adoptium.net/
 
 # C#
 # See https://dotnet.microsoft.com/download
 
 # Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh  # Linux/macOS
+# Windows: Download from https://rustup.rs/
 
 # Node.js
 sudo apt install nodejs npm  # Ubuntu/Debian
 brew install node            # macOS
+# Windows: Download from https://nodejs.org/
 ```
 
 ### Database Issues
@@ -302,10 +328,12 @@ brew install node            # macOS
 # Install PostgreSQL
 sudo apt install postgresql  # Ubuntu/Debian
 brew install postgresql      # macOS
+# Windows: Download from https://www.postgresql.org/download/windows/
 
 # Start PostgreSQL
 sudo systemctl start postgresql  # Linux
 brew services start postgresql   # macOS
+# Windows: PostgreSQL runs as a service automatically
 ```
 
 ### Disk Space Issues
@@ -314,6 +342,7 @@ brew services start postgresql   # macOS
 # Clean up package caches
 sudo apt clean  # Ubuntu/Debian
 brew cleanup    # macOS
+# Windows: Run Disk Cleanup (cleanmgr)
 ```
 
 ## Next Steps

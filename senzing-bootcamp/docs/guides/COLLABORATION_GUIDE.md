@@ -138,14 +138,11 @@ Closes #123
 1. **Run checks:**
 
    ```bash
-   # Check coding standards compliance
-   flake8 src/
-
-   # Run tests
+   # Run tests (use appropriate command for your language)
    python -m pytest tests/
 
-   # Check for PII
-   ./scripts/scan_pii.sh
+   # Check for PII in data files
+   # Review data/raw/ and data/transformed/ for sensitive information
    ```
 
 2. **Update documentation:**
@@ -445,7 +442,7 @@ When team members disagree:
 **Day 1:**
 
 - Repository setup
-- Run `./scripts/check_prerequisites.sh`
+- Run `python scripts/check_prerequisites.py`
 - Complete Module 0
 
 **Day 2-3:**

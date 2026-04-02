@@ -2,7 +2,7 @@
 
 This directory contains reference project blueprints demonstrating different use cases and deployment patterns.
 
-**Note:** These examples currently contain detailed README documentation describing the project structure, code patterns, and expected results. The actual source code files are generated during the boot camp using MCP tools (`generate_scaffold`, `mapping_workflow`). Use these READMEs as architectural references when building your own project.
+**Note:** These examples are architectural blueprints, not runnable code. Each contains a README describing the project structure, code patterns, and expected results. The actual source code is generated during the boot camp by the agent using MCP tools (`generate_scaffold`, `mapping_workflow`) in your chosen programming language. Use these blueprints as reference architectures when building your own project.
 
 ## Available Examples
 

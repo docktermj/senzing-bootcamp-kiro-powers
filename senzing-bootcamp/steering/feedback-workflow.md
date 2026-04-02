@@ -21,14 +21,10 @@ When user says any of these, immediately start the feedback workflow:
 
 ### Step 1: Check for Feedback File
 
-```bash
-if [ ! -f "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md" ]; then
-    cp docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md \
-       docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
-    sed -i "s/\[Date when you started using the power\]/$(date +%Y-%m-%d)/" \
-       docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md
-fi
-```
+Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists. If not:
+
+1. Copy `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md` to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
+2. Replace the placeholder `[Date when you started using the power]` with today's date
 
 ### Step 2: Gather Feedback (One Question at a Time)
 

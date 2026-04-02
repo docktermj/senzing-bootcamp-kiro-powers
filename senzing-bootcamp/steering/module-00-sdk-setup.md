@@ -58,13 +58,43 @@ Generate a verification script in the bootcamper's chosen language using `genera
 
 If verification fails, use `explain_error_code` for any SENZ error codes and `search_docs` for troubleshooting.
 
-## Step 5: Create Project Directory Structure
+## Step 5: Configure License (Optional)
+
+Ask: "Do you have a Senzing license file (`g2.lic`)? If not, no worries — the SDK works with its built-in evaluation limits."
+
+WAIT for response.
+
+**If they have a license**:
+
+- Ask them to place it at `licenses/g2.lic`
+- Verify the file exists
+- Inform them: "Your license is configured. Senzing will use it automatically."
+- Record in `config/bootcamp_preferences.yaml`:
+
+  ```yaml
+  license: custom
+  license_path: licenses/g2.lic
+  ```
+
+**If they don't have a license**:
+
+- Inform them: "No problem. The SDK includes built-in evaluation limits that are fine for the boot camp. If you'd like a full evaluation license later, you can email support@senzing.com."
+- Record in `config/bootcamp_preferences.yaml`:
+
+  ```yaml
+  license: evaluation
+  license_path: null
+  ```
+
+**If they're unsure**: Evaluation (built-in) works out of the box with record count limits. A custom license removes limits. They can always add one later by placing it in `licenses/g2.lic`.
+
+## Step 6: Create Project Directory Structure
 
 Follow the directory creation commands from the agent-instructions steering file. This creates the organized project layout (`data/`, `database/`, `src/`, `docs/`, etc.) that all subsequent modules use.
 
 After creation, inform the user: "I've set up the project directory structure. All files will be organized properly throughout the boot camp."
 
-## Step 6: Configure Database
+## Step 7: Configure Database
 
 Ask: "Which database would you like to use? SQLite is recommended for learning and evaluation. PostgreSQL is better for production."
 
@@ -83,7 +113,7 @@ WAIT for response.
 - Create a database for Senzing
 - Use `sdk_guide` with `topic='configure'` for PostgreSQL setup
 
-## Step 7: Create Engine Configuration
+## Step 8: Create Engine Configuration
 
 > **Agent instruction:** Do not use the example JSON below. Use
 > `sdk_guide(topic='configure', platform='<user_platform>', language='<chosen_language>', version='current')`
@@ -92,7 +122,7 @@ WAIT for response.
 
 Use `sdk_guide` with `topic='configure'` to generate the correct engine configuration JSON for the user's platform and database choice. Save it to `config/engine_config.json`.
 
-## Step 8: Test Database Connection
+## Step 9: Test Database Connection
 
 > **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='initialize', version='current')`
 > to get the current V4 initialization and connection test pattern.

@@ -38,10 +38,11 @@ Module 12 takes this production-ready code and:
    - Oracle
 
 2. **Programming Language**
-   - Python (most common, easiest)
+   - Python
    - Java (enterprise environments)
    - C# (.NET environments)
    - Rust (performance-critical)
+   - TypeScript / Node.js
 
 3. **Deployment Environment**
    - On-premises servers
@@ -189,6 +190,10 @@ MySenzingProject/
 ├── scripts/
 └── docs/
 ```
+
+#### Rust and TypeScript / Node.js
+
+For Rust (`Cargo.toml` workspace) and TypeScript (`package.json` with `src/` layout), use `generate_scaffold(language='<language>', workflow='full_pipeline', version='current')` and `find_examples(query='project structure', language='<language>')` to get current, idiomatic project structures. These evolve with the ecosystem, so MCP-generated scaffolds are more reliable than static templates.
 
 ### Step 3: Create Comprehensive Test Suite
 
@@ -603,37 +608,37 @@ Module 12 is complete when:
 
 ### Issue: Configuration Management Complex
 
-**Solution**: Use environment variables for secrets, YAML for structure, provide examples
+**Solution:** Use environment variables for secrets, YAML for structure, provide examples
 
 ## Integration with Other Modules
 
-- **From Module 5**: Refactor transformation code
-- **From Module 6**: Refactor loading code
-- **From Module 8**: Refactor query code
-- **To Production**: Deploy packaged application
+- **From Module 5:** Refactor transformation code
+- **From Module 6:** Refactor loading code
+- **From Module 8:** Refactor query code
+- **To Production:** Deploy packaged application
 
 ## Tools and Resources
 
 ### Python
 
 - **Packaging:** setuptools, poetry, flit
-- **Testing**: pytest, unittest, coverage.py
-- **Linting**: flake8, pylint, black
-- **Type checking**: mypy
+- **Testing:** pytest, unittest, coverage.py
+- **Linting:** flake8, pylint, black
+- **Type checking:** mypy
 
 ### Java
 
 - **Packaging:** Maven, Gradle
-- **Testing**: JUnit, TestNG, Mockito
-- **Build**: Maven Surefire, Gradle Test
-- **Quality**: SonarQube, Checkstyle
+- **Testing:** JUnit, TestNG, Mockito
+- **Build:** Maven Surefire, Gradle Test
+- **Quality:** SonarQube, Checkstyle
 
 ### C sharp
 
 - **Packaging:** NuGet
-- **Testing**: xUnit, NUnit, MSTest
-- **Build**: MSBuild, dotnet CLI
-- **Quality**: SonarQube, StyleCop
+- **Testing:** xUnit, NUnit, MSTest
+- **Build:** MSBuild, dotnet CLI
+- **Quality:** SonarQube, StyleCop
 
 ## Related Documentation
 

@@ -18,7 +18,7 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 **New users:** Say "start the boot camp" to begin. Choose your path:
 
-- A) Quick Demo (10 min) — Module 1
+- A) Quick Demo (10 min + Module 0 setup) — Module 1 (requires SDK from Module 0)
 - B) Fast Track (30 min) — Modules 5-6 (for users with SGES-compliant data)
 - C) Complete Beginner (2-3 hrs) — Modules 2-6, 8 (Module 0 auto-inserted before 6)
 - D) Full Production (10-18 hrs) — All Modules 0-12
@@ -185,15 +185,15 @@ Say "power feedback" or "bootcamp feedback" at any time to document issues or su
 
 ## Useful Commands
 
-All scripts are cross-platform Python (Linux, macOS, Windows):
+All scripts are cross-platform Python (Linux, macOS, Windows). Use `python3` on Linux/macOS or `python` on Windows:
 
-```console
-python scripts/status.py              # Check progress
-python scripts/check_prerequisites.py # Validate prerequisites
-python scripts/install_hooks.py       # Install hooks
-python scripts/clone_example.py       # Clone example project
-python scripts/backup_project.py      # Backup project
-python scripts/restore_project.py     # Restore from backup
+```text
+python3 scripts/status.py              # Check progress
+python3 scripts/check_prerequisites.py # Validate prerequisites
+python3 scripts/install_hooks.py       # Install hooks
+python3 scripts/clone_example.py       # Clone example project
+python3 scripts/backup_project.py      # Backup project
+python3 scripts/restore_project.py     # Restore from backup
 ```
 
 ## Additional Resources

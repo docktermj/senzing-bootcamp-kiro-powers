@@ -12,7 +12,7 @@ Before greeting the user, asking questions, or doing anything else:
 2. If it exists, read it and offer to resume:
    - "Welcome back! I see you've completed through Module [X] using [language]. Would you like to continue from where you left off, or start fresh?"
    - WAIT for response
-   - If resuming, also read `config/bootcamp_preferences.yaml` to restore language, license, and path choices. If any field is missing (e.g., `license` is absent because the session was interrupted before the Fourth Action), ask the user to fill it in before proceeding.
+   - If resuming, also read `config/bootcamp_preferences.yaml` to restore language and path choices. If any field is missing, ask the user to fill it in before proceeding.
    - Skip to the appropriate module
    - If starting fresh, proceed with directory structure creation
 3. If it doesn't exist, proceed with directory structure creation
@@ -77,60 +77,22 @@ After directory structure is confirmed and before the prerequisite check, ask th
    - Rust → Rust conventions (snake_case, rustfmt, clippy)
    - TypeScript → Standard TS conventions (camelCase, ESLint, JSDoc)
 
-## Fourth Action — Senzing License Check
+### `bootcamp_preferences.yaml` Schema
 
-After language selection is confirmed and before the prerequisite check, ask the bootcamper about their Senzing license.
-
-1. **Ask**: "Do you have a Senzing license you'd like to use? If you have an evaluation or production license file (`g2.lic`), we can configure it now. If not, no worries — the SDK works with its built-in evaluation limits."
-
-2. **WAIT for their response** before proceeding.
-
-3. **If they have a license**:
-   - Ask them to place it at `licenses/g2.lic` (create the directory if needed: `os.makedirs('licenses', exist_ok=True)`)
-   - Verify the file exists
-   - Inform them: "Your license is configured. Senzing will use it automatically."
-   - Record the license status in `config/bootcamp_preferences.yaml`:
-
-     ```yaml
-     license: custom  # or "evaluation" / "none"
-     license_path: licenses/g2.lic
-     ```
-
-4. **If they don't have a license**:
-   - Inform them: "No problem. The SDK includes built-in evaluation limits that are fine for the boot camp. If you'd like a full evaluation license later, you can email <support@senzing.com>."
-   - Record in `config/bootcamp_preferences.yaml`:
-
-     ```yaml
-     license: evaluation
-     license_path: null
-     ```
-
-5. **If they're unsure**: Explain the difference briefly:
-   - Evaluation (built-in): Works out of the box, may have record count limits
-   - Custom license: Removes limits, needed for production or large datasets
-   - They can always add a license later by placing it in `licenses/g2.lic`
-
-### Complete `bootcamp_preferences.yaml` Schema
-
-After the Third and Fourth Actions, `config/bootcamp_preferences.yaml` should contain all of these fields:
+After the Third Action, `config/bootcamp_preferences.yaml` should contain:
 
 ```yaml
-# Language and path (set during Third Action and Path Selection)
 language: <chosen_language>       # python, java, csharp, rust, typescript
 path: <chosen_path>               # A, B, C, D (null until path is selected)
 started_at: <ISO 8601 timestamp>  # When the bootcamp started
 current_module: <number>          # Last module worked on
-
-# License (set during Fourth Action)
-license: <license_type>           # custom, evaluation, or none
-license_path: <path_or_null>      # licenses/g2.lic or null
 ```
 
-When writing to this file, always read the existing content first and merge — never overwrite fields set by a previous action.
+The `license` and `license_path` fields are added later during Module 0 (SDK Setup). When writing to this file, always read the existing content first and merge — never overwrite fields set by a previous action.
 
-## Fifth Action — Platform Prerequisite Check
+## Fourth Action — Platform Prerequisite Check
 
-After the license check is confirmed and before presenting path options, run a quick prerequisite check to surface missing dependencies up front.
+After language selection is confirmed and before presenting path options, run a quick prerequisite check to surface missing dependencies up front.
 
 **Detect the user's platform first** using a cross-platform approach:
 
@@ -232,11 +194,13 @@ Platform check:
 Use lettered options (A/B/C/D) to avoid ambiguity with module numbers:
 
 ```text
-A) Quick Demo (10 min) — Module 1
+A) Quick Demo (10 min + Module 0 setup) — Module 1 (requires SDK from Module 0)
 B) Fast Track (30 min) — Modules 5-6 (for users with SGES-compliant data)
 C) Complete Beginner (2-3 hrs) — Modules 2-6, 8 (Module 0 inserted automatically before Module 6)
 D) Full Production (10-18 hrs) — All Modules 0-12
 ```
+
+**Path A note**: Module 0 (SDK Setup) is required before Module 1 (Quick Demo). If Module 0 is not complete, insert it first: "To run the demo, we need the Senzing SDK installed. Let's do Module 0 first — it takes about 30-60 minutes as a one-time setup."
 
 **Path C note**: Module 0 (SDK Setup) is required before Module 6 (Loading). When the user reaches Module 6 on Path C, check if Module 0 is complete. If not, insert it: "Before we can load data, we need to set up the Senzing SDK. Let's do Module 0 now — it takes about 30-60 minutes."
 
@@ -288,7 +252,7 @@ Load additional steering files as needed:
 
 **Never**: state Senzing facts from training data, hand-code Senzing JSON attribute names, guess SDK method names, use outdated patterns from training data, skip anti-pattern checks, or proceed without validation. When asked any Senzing-specific question, always use MCP tools to get the authoritative answer.
 
-**No caching of Senzing facts**: Even if the same Senzing question was asked earlier in the session and you already retrieved the answer via MCP, you must call the MCP tool again on every subsequent ask. Do not reuse previous MCP responses from conversation history. MCP state or data may have changed, and the user expects verified answers every time.
+**MCP response reuse within a session**: Within the same module, you may reuse MCP responses from earlier in the conversation for the same query. Across module boundaries, always re-query the MCP server. If the user explicitly asks you to "look it up again" or "verify that," always make a fresh MCP call regardless.
 
 **No fabrication when MCP has no answer**: If you query the MCP server and it does not return a definitive answer for a Senzing-specific question, you must NOT infer, guess, or construct an answer from general knowledge. Instead:
 
@@ -304,6 +268,15 @@ For `mapping_workflow`:
 - Never modify or reconstruct state
 - If state lost, start workflow over
 - Each data source has separate workflow session
+
+## Session Pause and Resume
+
+Users may close Kiro mid-module and return later. Handle this gracefully:
+
+- **Progress is persisted** in `config/bootcamp_progress.json` — the First Action checks for this on every session start.
+- **Preferences are persisted** in `config/bootcamp_preferences.yaml` — language, path, and license choices survive across sessions.
+- **Mapping workflow state is NOT persisted** — if the user was mid-way through `mapping_workflow` when they stopped, that state is lost. Warn users before starting long mapping sessions: "This mapping may take a while. If you need to stop, your module progress is saved, but we'll need to restart the mapping workflow for this data source."
+- **Before starting any module estimated at >30 minutes**, inform the user: "This module typically takes [time]. Your progress is saved automatically, so you can pause and resume anytime. Just note that any in-progress data mapping will need to restart."
 
 ## Validation Gates
 

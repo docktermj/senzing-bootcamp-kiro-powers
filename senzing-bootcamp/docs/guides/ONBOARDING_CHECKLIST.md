@@ -118,8 +118,8 @@ my-senzing-project/
   - Recommended: 50 GB+ for production
 
 - [ ] **Memory**
-  - Minimum: 8 GB RAM
-  - Recommended: 16 GB+ for production
+  - Minimum: 4 GB RAM
+  - Recommended: 8 GB+ (16 GB+ for production)
 
 ### ✅ Step 3: Data Preparation
 

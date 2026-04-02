@@ -82,7 +82,7 @@ git checkout -b feature/module-4-customer-mapping
 # ... make changes ...
 
 # Commit changes
-git add src/transform/transform_customers.py
+git add src/transform/transform_customers.[ext]
 git commit -m "Add customer data transformation for Module 4"
 
 # Push to remote

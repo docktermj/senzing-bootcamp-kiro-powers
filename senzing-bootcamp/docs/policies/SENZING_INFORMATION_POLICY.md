@@ -93,22 +93,21 @@ Agent: "Senzing uses ADDR_FULL, ADDR_LINE1, ADDR_CITY..."
 → ❌ Stated from training data without MCP verification
 ```
 
-## Repeated Questions
+## MCP Response Reuse
 
-If the user asks the same Senzing question more than once in a session, the agent **must** call the MCP tool again. Do not answer from a previous MCP response stored in conversation history. Reasons:
+Within the same module, the agent may reuse MCP responses from earlier in the conversation for the same query. This avoids unnecessary latency and context window usage. However:
 
-- Senzing configuration or data may have changed between asks
-- The user may be testing whether the agent gives a consistent, verified answer
-- Skipping verification undermines trust in the boot camp workflow
-
-This applies even if the question is worded identically and was answered moments ago.
+- Across module boundaries, always re-query the MCP server
+- If the user explicitly asks to "look it up again" or "verify that," always make a fresh call
+- If the question is about something that could have changed (e.g., after loading data, after configuration changes), make a fresh call
 
 ## Enforcement
 
 - This policy is referenced in `steering/agent-instructions.md`
 - Applies across all modules without exception
 - Agents should proactively use MCP tools rather than waiting to be corrected
-- Agents must not cache or reuse previous MCP responses within a session
+- Within the same module, agents may reuse earlier MCP responses for the same query
+- Across module boundaries, always re-query
 
 ## Version History
 

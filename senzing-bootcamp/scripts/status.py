@@ -67,44 +67,69 @@ def main():
     print(blue("╚════════════════════════════════════════════════════════════╝"))
     print()
 
-    progress_file = Path("docs") / "guides" / "PROGRESS_TRACKER.md"
-    if not progress_file.is_file():
-        print(yellow("⚠ Progress tracker not found"))
-        print("Copy it into your project first.")
-        sys.exit(1)
+    progress_json = Path("config") / "bootcamp_progress.json"
+    progress_md = Path("docs") / "guides" / "PROGRESS_TRACKER.md"
 
-    # Parse progress
+    # Canonical source: bootcamp_progress.json (written by the agent)
+    # Fallback: PROGRESS_TRACKER.md (manual tracking)
     completed = []
     in_progress = None
-    checked_re = re.compile(r"\[x\].*Module\s+(\d+)", re.IGNORECASE)
-    unchecked_re = re.compile(r"\[\s\].*Module\s+(\d+)", re.IGNORECASE)
+    current = 0
+    status = "Not Started"
+    language = None
 
-    for line in progress_file.read_text(encoding="utf-8").splitlines():
-        m = checked_re.search(line)
-        if m:
-            completed.append(int(m.group(1)))
-            continue
-        m = unchecked_re.search(line)
-        if m and in_progress is None:
-            in_progress = int(m.group(1))
-
-    # Determine status
-    if not completed:
-        current = 0
-        status = "Not Started"
-    elif in_progress is not None:
-        current = in_progress
-        status = "In Progress"
+    if progress_json.is_file():
+        import json
+        try:
+            data = json.loads(progress_json.read_text(encoding="utf-8"))
+            completed = data.get("modules_completed", [])
+            current = data.get("current_module", 0)
+            language = data.get("language")
+            if completed:
+                last = max(completed)
+                if current > last:
+                    status = "Ready to Start"
+                elif current in completed:
+                    status = "Complete" if last >= 12 else "Ready to Start"
+                else:
+                    status = "In Progress"
+        except (json.JSONDecodeError, KeyError):
+            pass
+    elif progress_md.is_file():
+        # Fallback: parse the markdown tracker
+        checked_re = re.compile(r"\[x\].*Module\s+(\d+)", re.IGNORECASE)
+        unchecked_re = re.compile(r"\[\s\].*Module\s+(\d+)", re.IGNORECASE)
+        for line in progress_md.read_text(encoding="utf-8").splitlines():
+            m = checked_re.search(line)
+            if m:
+                completed.append(int(m.group(1)))
+                continue
+            m = unchecked_re.search(line)
+            if m and in_progress is None:
+                in_progress = int(m.group(1))
+        if not completed:
+            current = 0
+            status = "Not Started"
+        elif in_progress is not None:
+            current = in_progress
+            status = "In Progress"
+        else:
+            last = max(completed)
+            current = min(last + 1, 12)
+            status = "Complete" if last >= 12 else "Ready to Start"
     else:
-        last = max(completed)
-        current = min(last + 1, 12)
-        status = "Complete" if last >= 12 else "Ready to Start"
+        print(yellow("⚠ No progress data found"))
+        print("Start the boot camp to begin tracking progress.")
+        print()
+        # Continue to show project health below
 
     total_modules = 13
     pct = len(completed) * 100 // total_modules
 
     print(f"  {green('Current Module:')} Module {current}")
     print(f"  {green('Status:')} {status}")
+    if language:
+        print(f"  {green('Language:')} {language}")
     print(f"  {green('Progress:')} {len(completed)}/{total_modules} modules ({pct}%)")
     print()
 

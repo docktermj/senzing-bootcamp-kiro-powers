@@ -200,4 +200,4 @@ All generated source code must be placed in the `src/` directory structure:
 - Query programs → `src/query/`
 - Utility scripts → `src/utils/`
 
-Automation scripts (`.py`) go in `scripts/`. See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy.
+Automation scripts go in `scripts/`. See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy.

@@ -29,3 +29,14 @@ This repository contains the Senzing Boot Camp Kiro Power and its development do
     ```
 
 1. In Kiro's agentic chat, say **"Start the boot camp"** to begin.
+
+## Clean up the bootcamp
+
+All artifacts created by the Senzing Boot Camp are in the Kiro project directory.
+
+1. Delete the directory hosting the Senzing Boot Camp.
+   Example:
+
+    ```console
+    rmdir senzing-bootcamp
+    ```

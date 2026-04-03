@@ -188,6 +188,7 @@ Platform check:
    - Temporary working files → `data/temp/`
    - When MCP tools generate files outside the project, immediately relocate them
 10. **All generated code must follow language-appropriate coding standards** — For Python: PEP-8. For Java: standard Java conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions. Always use the bootcamper's chosen language from the language selection step. See `docs/policies/CODE_QUALITY_STANDARDS.md`.
+11. **All generated code must be production-scale ready** — The bootcamp uses small sample data, but generated code is for production systems. When requesting code from the Senzing MCP server, always specify that the code must handle large data volumes. Do not accept small-data-only patterns like `exportJSONEntityReport()`.
 
 ## Path Selection
 
@@ -249,6 +250,12 @@ Load additional steering files as needed:
 - Error diagnosis → `explain_error_code`
 - Documentation → `search_docs`
 - Code examples → `find_examples`
+
+**Production-scale code generation:** The bootcamp uses small sample data sets for learning, but all generated code is intended for production systems with large data volumes. When calling MCP tools that generate or recommend code (`generate_scaffold`, `sdk_guide`, `find_examples`, `get_sdk_reference`), always include context indicating that the code must be suitable for large-scale production use. Specifically:
+
+- If the MCP tool accepts a description, context, or notes parameter, include: "Generate code suitable for large production data sets, not just the small sample data used in this bootcamp."
+- Do not accept recommendations that only work for small data sets (e.g., `exportJSONEntityReport()`). If the MCP server suggests such methods, ask it for a scalable alternative by re-querying with explicit large-scale context.
+- If the MCP server has no scalable alternative, tell the user the limitation and note that the small-data-only approach should be replaced before production use.
 
 **Never**: state Senzing facts from training data, hand-code Senzing JSON attribute names, guess SDK method names, use outdated patterns from training data, skip anti-pattern checks, or proceed without validation. When asked any Senzing-specific question, always use MCP tools to get the authoritative answer.
 

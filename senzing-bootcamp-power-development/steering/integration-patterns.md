@@ -10,7 +10,7 @@ Common patterns for integrating Senzing query results into your applications and
 
 After loading data (Modules 6-7), you need to integrate entity resolution into your business processes. This guide covers common integration patterns for Module 8.
 
-## Pattern 1: Batch Export
+## Pattern 1: Batch Report
 
 **Use Case**: Generate daily/weekly reports of resolved entities
 
@@ -23,39 +23,51 @@ After loading data (Modules 6-7), you need to integrate entity resolution into y
 
 **Implementation**:
 
+Iterate over your known record IDs (from your loaded data sources) and retrieve each entity individually. This scales to large data sets without requiring a full entity export.
+
 ```python
-# src/query/batch_export.py
+# src/query/batch_report.py
 import json
-from senzing import G2Engine
+from senzing import SzEngine
 from datetime import datetime
 
-def export_all_entities(output_file):
-    """Export all resolved entities to a file"""
-    engine = G2Engine()
-    # ... initialize engine ...
+def report_entities_by_records(record_ids, data_source, output_file):
+    """Report resolved entities by iterating over known record IDs"""
+    engine = SzEngine(instance_name="BATCH_REPORT", settings={})
+    # ... initialize engine with proper settings ...
 
-    export_handle = engine.exportJSONEntityReport(0)
+    seen_entity_ids = set()
 
     with open(output_file, 'w') as f:
-        while True:
-            response = engine.fetchNext(export_handle)
-            if not response:
-                break
-            f.write(response + '\n')
+        for record_id in record_ids:
+            try:
+                response = engine.get_entity_by_record_id(data_source, record_id)
+                entity = json.loads(response)
+                entity_id = entity['RESOLVED_ENTITY']['ENTITY_ID']
 
-    engine.closeExport(export_handle)
-    engine.destroy()
+                # Deduplicate — only write each entity once
+                if entity_id not in seen_entity_ids:
+                    seen_entity_ids.add(entity_id)
+                    f.write(json.dumps(entity) + '\n')
+            except Exception as e:
+                print(f"Error retrieving entity for {record_id}: {e}")
+
+    print(f"Wrote {len(seen_entity_ids)} unique entities to {output_file}")
 
 if __name__ == "__main__":
+    # Load record IDs from your source data
+    record_ids = []  # Populate from your data source
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    export_all_entities(f"exports/entities_{timestamp}.jsonl")
+    report_entities_by_records(record_ids, "CUSTOMERS", f"exports/entities_{timestamp}.jsonl")
 ```
+
+> **Note**: Use `generate_scaffold` and `get_sdk_reference` from the Senzing MCP server for current method signatures. The code above is illustrative — always verify against the MCP server.
 
 **Scheduling**:
 
 ```bash
-# Add to crontab for daily export at 2 AM
-0 2 * * * cd /path/to/project && python src/query/batch_export.py
+# Add to crontab for daily report at 2 AM
+0 2 * * * cd /path/to/project && python src/query/batch_report.py
 ```
 
 ## Pattern 2: REST API
@@ -192,14 +204,16 @@ if __name__ == "__main__":
 
 **Implementation**:
 
+Iterate over known record IDs from your loaded data sources and upsert each resolved entity into the target database.
+
 ```python
 # src/query/db_sync.py
 import psycopg2
-from senzing import G2Engine
+from senzing import SzEngine
 import json
 
-def sync_entities_to_postgres():
-    """Sync resolved entities to PostgreSQL"""
+def sync_entities_to_postgres(record_ids, data_source):
+    """Sync resolved entities to PostgreSQL by iterating over known records"""
     # Connect to target database
     conn = psycopg2.connect(
         host="localhost",
@@ -210,43 +224,50 @@ def sync_entities_to_postgres():
     cur = conn.cursor()
 
     # Initialize Senzing
-    engine = G2Engine()
-    # ... initialize engine ...
+    engine = SzEngine(instance_name="DB_SYNC", settings={})
+    # ... initialize engine with proper settings ...
 
-    # Export entities
-    export_handle = engine.exportJSONEntityReport(0)
+    seen_entity_ids = set()
+    synced_count = 0
 
-    while True:
-        response = engine.fetchNext(export_handle)
-        if not response:
-            break
+    for record_id in record_ids:
+        try:
+            response = engine.get_entity_by_record_id(data_source, record_id)
+            entity = json.loads(response)
+            entity_id = entity['RESOLVED_ENTITY']['ENTITY_ID']
 
-        entity = json.loads(response)
-        entity_id = entity['RESOLVED_ENTITY']['ENTITY_ID']
+            # Skip entities we've already synced
+            if entity_id in seen_entity_ids:
+                continue
+            seen_entity_ids.add(entity_id)
 
-        # Extract key attributes
-        records = entity['RESOLVED_ENTITY']['RECORDS']
+            records = entity['RESOLVED_ENTITY']['RECORDS']
 
-        # Upsert to target database
-        cur.execute("""
-            INSERT INTO entities (entity_id, record_count, data, updated_at)
-            VALUES (%s, %s, %s, NOW())
-            ON CONFLICT (entity_id)
-            DO UPDATE SET
-                record_count = EXCLUDED.record_count,
-                data = EXCLUDED.data,
-                updated_at = NOW()
-        """, (entity_id, len(records), json.dumps(entity)))
+            # Upsert to target database
+            cur.execute("""
+                INSERT INTO entities (entity_id, record_count, data, updated_at)
+                VALUES (%s, %s, %s, NOW())
+                ON CONFLICT (entity_id)
+                DO UPDATE SET
+                    record_count = EXCLUDED.record_count,
+                    data = EXCLUDED.data,
+                    updated_at = NOW()
+            """, (entity_id, len(records), json.dumps(entity)))
+            synced_count += 1
+        except Exception as e:
+            print(f"Error syncing record {record_id}: {e}")
 
     conn.commit()
-    engine.closeExport(export_handle)
-    engine.destroy()
     cur.close()
     conn.close()
+    print(f"Synced {synced_count} unique entities to warehouse")
 
 if __name__ == "__main__":
-    sync_entities_to_postgres()
+    record_ids = []  # Populate from your data source
+    sync_entities_to_postgres(record_ids, "CUSTOMERS")
 ```
+
+> **Note**: Use `generate_scaffold` and `get_sdk_reference` from the Senzing MCP server for current method signatures.
 
 ## Pattern 5: Duplicate Detection Service
 
@@ -261,41 +282,47 @@ if __name__ == "__main__":
 
 **Implementation**:
 
+Iterate over known record IDs for a data source and identify entities that contain multiple records from that source.
+
 ```python
 # src/query/find_duplicates.py
-from senzing import G2Engine
+from senzing import SzEngine
 import json
 import csv
 
-def find_duplicates_by_datasource(data_source, output_file):
+def find_duplicates_by_datasource(data_source, record_ids, output_file):
     """Find all duplicate entities for a data source"""
-    engine = G2Engine()
-    # ... initialize engine ...
+    engine = SzEngine(instance_name="FIND_DUPES", settings={})
+    # ... initialize engine with proper settings ...
 
+    seen_entity_ids = set()
     duplicates = []
-    export_handle = engine.exportJSONEntityReport(0)
 
-    while True:
-        response = engine.fetchNext(export_handle)
-        if not response:
-            break
+    for record_id in record_ids:
+        try:
+            response = engine.get_entity_by_record_id(data_source, record_id)
+            entity = json.loads(response)
+            entity_id = entity['RESOLVED_ENTITY']['ENTITY_ID']
 
-        entity = json.loads(response)
-        records = entity['RESOLVED_ENTITY']['RECORDS']
+            # Skip entities we've already checked
+            if entity_id in seen_entity_ids:
+                continue
+            seen_entity_ids.add(entity_id)
 
-        # Filter for entities with multiple records from this source
-        source_records = [r for r in records if r['DATA_SOURCE'] == data_source]
+            records = entity['RESOLVED_ENTITY']['RECORDS']
 
-        if len(source_records) > 1:
-            duplicates.append({
-                'entity_id': entity['RESOLVED_ENTITY']['ENTITY_ID'],
-                'duplicate_count': len(source_records),
-                'record_ids': [r['RECORD_ID'] for r in source_records],
-                'best_name': entity['RESOLVED_ENTITY'].get('ENTITY_NAME', 'Unknown')
-            })
+            # Filter for entities with multiple records from this source
+            source_records = [r for r in records if r['DATA_SOURCE'] == data_source]
 
-    engine.closeExport(export_handle)
-    engine.destroy()
+            if len(source_records) > 1:
+                duplicates.append({
+                    'entity_id': entity_id,
+                    'duplicate_count': len(source_records),
+                    'record_ids': [r['RECORD_ID'] for r in source_records],
+                    'best_name': entity['RESOLVED_ENTITY'].get('ENTITY_NAME', 'Unknown')
+                })
+        except Exception as e:
+            print(f"Error checking record {record_id}: {e}")
 
     # Write to CSV for review
     with open(output_file, 'w', newline='') as f:
@@ -303,12 +330,15 @@ def find_duplicates_by_datasource(data_source, output_file):
         writer.writeheader()
         writer.writerows(duplicates)
 
+    print(f"Found {len(duplicates)} entities with duplicates")
     return duplicates
 
 if __name__ == "__main__":
-    dupes = find_duplicates_by_datasource('CUSTOMER_DB', 'reports/duplicates.csv')
-    print(f"Found {len(dupes)} entities with duplicates")
+    record_ids = []  # Populate from your data source
+    dupes = find_duplicates_by_datasource('CUSTOMER_DB', record_ids, 'reports/duplicates.csv')
 ```
+
+> **Note**: Use `generate_scaffold` and `get_sdk_reference` from the Senzing MCP server for current method signatures.
 
 ## Pattern 6: Watchlist Screening
 
@@ -446,7 +476,7 @@ if __name__ == "__main__":
 
 | Pattern             | Real-time | Complexity | Best For                       |
 |---------------------|-----------|------------|--------------------------------|
-| Batch Export        | No        | Low        | Reports, analytics             |
+| Batch Report        | No        | Low        | Reports, analytics             |
 | REST API            | Yes       | Medium     | Web apps, microservices        |
 | Streaming           | Yes       | High       | Event-driven, real-time alerts |
 | Database Sync       | No        | Medium     | Data warehouses, BI tools      |

@@ -208,7 +208,7 @@ The Customer 360 view shows, for a given record:
 - All linked records across sources
 - Unified contact information (phones, emails, addresses)
 
-The cross-source duplicate finder exports all entities and identifies those with records from multiple sources.
+The cross-source duplicate finder queries entities by record ID and identifies those with records from multiple sources.
 
 > The agent generates this code in your chosen language using `generate_scaffold` during the bootcamp.
 

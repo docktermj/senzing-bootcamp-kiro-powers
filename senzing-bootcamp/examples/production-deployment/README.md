@@ -48,7 +48,7 @@ enterprise-customer-mdm/
 │   ├── query/
 │   │   ├── api_server                 # REST API
 │   │   ├── search_service             # Entity search
-│   │   └── export_service             # Data export
+│   │   └── query_service              # Entity queries and data retrieval
 │   ├── monitoring/
 │   │   ├── metrics_collector          # Prometheus metrics
 │   │   ├── health_checks              # Liveness/readiness
@@ -127,7 +127,7 @@ Source Systems → ETL/Transform → Senzing Load → PostgreSQL
                                        ↓
                                  Entity Resolution
                                        ↓
-                              REST API / Export
+                              REST API / Query
                                        ↓
                             Consuming Applications
 ```

@@ -618,7 +618,7 @@ function scalability_test(input_file, test_sizes = [1000, 5000, 10000, 50000, 10
         query_p95 = percentile(query_latencies, 95)
 
         -- Measure entity count
-        -- (Use export or stats to get entity count)
+        -- (Use stats or per-entity queries to get entity count)
 
         engine.destroy()
 
@@ -802,7 +802,7 @@ function evaluate_resolution_quality():
 
     -- Point 1: Entity count and distribution
     print "1. Entity Count and Distribution"
-    -- Export entities and count records per entity
+    -- Enumerate entities and count records per entity
     -- Use SQL analytics queries from reporting_guide
     total_records = count_total_records()
     total_entities = count_total_entities()

@@ -24,7 +24,7 @@ inclusion: manual
    - Find cross-source matches
    - Search for specific entities
    - Get entity 360 view
-   - Export resolved entities
+   - Retrieve and format resolved entities
 
    WAIT for response.
 
@@ -38,7 +38,7 @@ inclusion: manual
    - `find_duplicates` - Find entities with multiple records
    - `search_entities` - Search by name, email, phone
    - `customer_360` - Get complete customer view
-   - `export_results` - Export to CSV/JSON
+   - `query_results` - Retrieve and format resolved entities
 
 3. **Run exploratory queries**:
 

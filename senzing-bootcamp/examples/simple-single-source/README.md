@@ -104,7 +104,7 @@ customers.csv (10K records)
          │
          ▼
   ┌─────────────┐
-  │   Query      │  Export entities, find duplicates
+  │   Query      │  Find duplicates, get entity details
   └─────────────┘
 ```
 

@@ -30,13 +30,32 @@ This repository contains the Senzing Boot Camp Kiro Power and its development do
 
 1. In Kiro's agentic chat, say **"Start the boot camp"** to begin.
 
-## Clean up the bootcamp
+## Clean up the Boot Camp
 
+After completing the boot camp, save any artifacts of interest.
 All artifacts created by the Senzing Boot Camp are in the Kiro project directory.
 
-1. Delete the directory hosting the Senzing Boot Camp.
-   Example:
+1. **(Optional) Remove the Senzing Boot Camp Power:**
+   1. In Kiro's left-hand icon bar, click on the **Powers** icon.
+   1. In the **Powers** panel, under **Installed**, find "Senzing Boot Camp".
+   1. In the **Power: Senzing Boot Camp** panel, click the **Uninstall** button.
 
-    ```console
-    rmdir senzing-bootcamp
-    ```
+1. **Delete the Senzing Boot Camp project directory.**
+
+   - **Linux / macOS:**
+
+     ```console
+     rm -rf senzing-bootcamp
+     ```
+
+   - **Windows (Command Prompt):**
+
+     ```console
+     rmdir /s /q senzing-bootcamp
+     ```
+
+   - **Windows (PowerShell):**
+
+     ```powershell
+     Remove-Item -Recurse -Force senzing-bootcamp
+     ```

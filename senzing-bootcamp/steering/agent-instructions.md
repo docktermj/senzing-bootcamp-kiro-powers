@@ -213,9 +213,40 @@ D) Full Production (10-18 hrs) — All Modules 0-12
 - "D", "full", "production" → Start Module 0
 - A bare number (1, 2, 3) → Ask for clarification: "Did you mean option [letter] or Module [number]?"
 
+## Switching Paths Mid-Bootcamp
+
+Users may want to change paths after starting. Handle this gracefully:
+
+- **Upgrading** (e.g., A→C or C→D): All completed modules carry forward. Identify which modules the new path requires that haven't been done yet, and resume from the first missing one.
+- **Downgrading** (e.g., D→C or C→A): All completed modules still count. The user simply stops at the new path's endpoint. No work is lost.
+- **Switching** (e.g., A→B): Check which modules overlap. Completed modules carry forward; start the first module in the new path that hasn't been completed.
+
+When a user asks to switch paths:
+
+1. Read `config/bootcamp_progress.json` to see completed modules.
+2. Show what the new path requires vs. what's already done.
+3. Update `config/bootcamp_preferences.yaml` with the new path.
+4. Resume from the first incomplete module in the new path.
+
 ## Steering File Loading
 
-Load the per-module steering file when the user starts a module:
+Load the per-module steering file when the user starts a module.
+
+**After Module 2 (Business Problem)**: Once the user has described their data sources and business problem, load `complexity-estimator.md` and run a quick complexity assessment. Present personalized time estimates for their specific data before confirming the path:
+
+```text
+Based on your data:
+  CUSTOMERS_CRM (CSV, ~50K records, clean)     → Low complexity, ~1-2 hrs for mapping
+  VENDORS_LEGACY (API, ~200K records, messy)    → High complexity, ~4-8 hrs for mapping
+
+Estimated total for your chosen path:
+  Path C (Complete Beginner): ~5-7 hours (instead of the typical 2-3 hrs)
+  Path D (Full Production):   ~14-22 hours
+
+Would you like to adjust your path based on these estimates?
+```
+
+This helps users make informed decisions about scope and time commitment.
 
 | Module | Steering File                    |
 | ------ | -------------------------------- |
@@ -237,7 +268,8 @@ Load additional steering files as needed:
 
 - `environment-setup.md` — Module 0, setup questions
 - `common-pitfalls.md` — any module, troubleshooting
-- `lessons-learned.md` — after Module 8
+- `lessons-learned.md` — at the end of any completed path (after Module 1 for Path A, after Module 6 for Path B, after Module 8 for Path C, after Module 12 for Path D)
+- `complexity-estimator.md` — after Module 2 for personalized time estimates
 - For cost/pricing questions, use MCP `search_docs` with query "pricing"
 
 ## MCP Tool Usage
@@ -287,7 +319,9 @@ Users may close Kiro mid-module and return later. Handle this gracefully:
 
 ## Validation Gates
 
-Before proceeding to next module, verify and update progress:
+Before proceeding to next module, verify and update progress.
+
+**Automated validation**: Run `python scripts/validate_module.py --module N` to check if module N's artifacts are in place. Use `python scripts/validate_module.py --next N` to check if the user is ready to start module N. This catches missing files and documentation before the user moves on.
 
 After each module's validation gate passes, update `config/bootcamp_progress.json`:
 
@@ -305,7 +339,15 @@ After each module's validation gate passes, update `config/bootcamp_progress.jso
 
 Also update `config/bootcamp_preferences.yaml` with the current module.
 
-Every 3 modules, congratulate the user on their progress: "Great work — you've completed [N] modules so far!"
+Every 3 modules, congratulate the user on their progress and show a visual progress bar:
+
+```text
+Boot Camp Progress:  [████████░░░░░░░░░░░░░░░░░░] 4/13 modules
+Completed: 0, 1, 2, 3  |  Next: Module 4 (Data Quality)
+Great work — you've completed 4 modules so far!
+```
+
+Adjust the bar length proportionally (each █ = one completed module out of 13). Always show which modules are done and what's next.
 
 Gate checks:
 

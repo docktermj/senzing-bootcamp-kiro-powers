@@ -94,7 +94,7 @@ Connects to the Senzing MCP server (no API keys required):
 }
 ```
 
-**Server name**: `senzing-mcp-server`
+**Server name:** `senzing-mcp-server`
 
 All tools are enabled by default. To disable specific tools, add their names to `disabledTools` (e.g., `["submit_feedback"]`). See <https://kiro.dev/docs/mcp/configuration/> for full configuration options.
 
@@ -158,7 +158,7 @@ python senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: Code Style Check (`code-style-check`), `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`.
+Available: Code Style Check (`code-style-check`), `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`.
 
 ## Project Directory Structure
 
@@ -190,6 +190,8 @@ All scripts are cross-platform Python (Linux, macOS, Windows). Use `python3` on 
 ```text
 python3 scripts/status.py              # Check progress
 python3 scripts/check_prerequisites.py # Validate prerequisites
+python3 scripts/validate_module.py     # Validate current module completion
+python3 scripts/validate_module.py --next 6  # Check if ready for module 6
 python3 scripts/install_hooks.py       # Install hooks
 python3 scripts/clone_example.py       # Clone example project
 python3 scripts/backup_project.py      # Backup project

@@ -118,6 +118,8 @@ This order maximizes match quality by loading the most complete data first.
 
 ## Sample Data
 
+Each data source includes a 10-row sample in `data/samples/` so you can run through the example end-to-end without generating your own data.
+
 ### CRM Customers (crm_customers.csv)
 
 ```csv

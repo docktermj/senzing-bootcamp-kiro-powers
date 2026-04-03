@@ -166,6 +166,43 @@ If already installed, verify version and use existing installation.
 **Problem**: Doesn't scale, SQLite is limited to <1M records
 **Solution**: SQLite for evaluation only, PostgreSQL for production
 
+### Migrating from SQLite to PostgreSQL
+
+If you started with SQLite and need to switch to PostgreSQL (common when reaching Modules 9-12 or when data exceeds 100K records):
+
+**When to migrate**:
+
+- Data volume exceeds 100K records and loading is slow
+- You need multi-threaded loading (SQLite is single-writer)
+- You're preparing for production deployment (Modules 9-12)
+- Performance testing shows SQLite is the bottleneck
+
+**Migration steps**:
+
+1. **Install PostgreSQL** and create a database:
+
+   ```bash
+   # Linux (apt)
+   sudo apt install postgresql
+   sudo -u postgres createdb senzing
+
+   # macOS (Homebrew)
+   brew install postgresql
+   createdb senzing
+   ```
+
+2. **Reconfigure the Senzing engine** — use `sdk_guide(topic='configure', platform='<your_platform>', language='<chosen_language>', version='current')` to get the correct PostgreSQL engine configuration JSON. The key change is replacing the SQLite connection string with a PostgreSQL one.
+
+3. **Reload your data** — PostgreSQL requires a fresh load. Your transformation programs and loading scripts from Modules 5-6 are reusable. Run them against the new database.
+
+4. **Update your preferences** — update `config/bootcamp_preferences.yaml` and `config/bootcamp_progress.json` to reflect the database change.
+
+5. **Re-run validation** — verify queries still work against the new database.
+
+**What carries forward**: All source code (`src/`), transformed data (`data/transformed/`), documentation (`docs/`), and configuration. Only the database itself needs rebuilding.
+
+**What doesn't carry forward**: The SQLite database file (`database/G2C.db`). Keep it as a backup until PostgreSQL is verified.
+
 ### Pitfall: Skipping Anti-Pattern Check
 
 **Symptom**: Following outdated installation guides
@@ -209,6 +246,29 @@ If already installed, verify version and use existing installation.
 **Symptom**: Records load but queries don't work
 **Problem**: DATA_SOURCE doesn't match registered name
 **Solution**: Verify DATA_SOURCE matches Module 0 configuration
+
+### Pitfall: Poor DATA_SOURCE Naming
+
+**Symptom**: Confusing data source names like `file1`, `data`, `test`
+**Problem**: Hard to identify sources in results, confusing in multi-source projects
+**Solution**: Use descriptive, uppercase names with underscores. Include the system of origin:
+
+```text
+✅ Good names:
+  CUSTOMERS_CRM
+  VENDORS_ERP
+  EMPLOYEES_HR
+  CONTACTS_SALESFORCE
+
+❌ Bad names:
+  file1
+  data
+  test
+  my_data
+  customers (too generic if you have multiple customer sources)
+```
+
+Rules: uppercase, no spaces, no special characters beyond underscores, descriptive of the source system.
 
 ### Pitfall: Not Monitoring Progress
 

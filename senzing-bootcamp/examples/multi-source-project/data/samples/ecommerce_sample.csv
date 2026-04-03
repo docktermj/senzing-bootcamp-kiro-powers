@@ -1,0 +1,11 @@
+account_id,name,email,phone,shipping_address,city,state,postal_code,registration_date
+EC-1001,John Smith,jsmith@email.com,5550101,123 Main Street,Boston,MA,02101,2023-01-20
+EC-1002,Jane M Doe,jane.doe@email.com,555-0102,456 Oak Avenue,Boston,MA,02102,2023-02-25
+EC-1003,Robert Johnson,robert.johnson@email.com,555-0199,321 Elm St,Somerville,MA,02144,2023-04-05
+EC-1004,Maria Garcia,mgarcia@email.com,(555) 010-4000,321 Elm Street,Boston,MA,02103,2023-04-10
+EC-1005,D. Brown,david.brown@email.com,555-0105,654 Maple Drive,Somerville,MA,02144,2023-05-15
+EC-1006,Sarah Miller,sarah.m@email.com,5550106,987 Cedar Lane,Cambridge,MA,02139,2023-06-20
+EC-1007,Mike Wilson,michael.wilson@email.com,555-0107,147 Birch Way,Boston,MA,02104,2023-07-25
+EC-1008,Emily Davis,emily.davis@email.com,(555) 010-8000,258 Walnut Street,Brookline,MA,02445,2023-09-01
+EC-1009,James Taylor,jtaylor@email.com,555-0109,369 Spruce Avenue,Boston,MA,02105,2023-09-18
+EC-1010,J. Anderson,jen.a@email.com,555-0110,741 Ash Boulevard,Cambridge,MA,02140,2023-10-05

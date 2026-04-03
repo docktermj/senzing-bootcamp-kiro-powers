@@ -39,7 +39,34 @@ inclusion: manual
    - **Needs mapping**: Data uses different field names or structures. Proceed to Module 5 (data mapping).
    - **Needs enrichment**: Data is missing critical attributes. Discuss with user whether additional data sources can provide missing information.
 
-6. **Summarize findings and save evaluation report**: Create `docs/data_source_evaluation.md`:
+6. **Assess data quality and apply thresholds**:
+
+   For each data source, compute a quality score based on field completeness, format consistency, and duplicate rate. Use these thresholds to guide the decision:
+
+   - **≥70% quality score** → Proceed to Module 5 (mapping). Data is good enough for meaningful entity resolution.
+   - **50-69% quality score** → Warn the user. Suggest specific fixes (fill nulls, standardize formats, deduplicate within source). Proceed to Module 5 if the user accepts the risk, but document the quality gaps.
+   - **<50% quality score** → Strongly recommend fixing data quality before mapping. Entity resolution results will be poor. Help the user identify the biggest quality issues and create a remediation plan. Only proceed if the user explicitly chooses to continue.
+
+   Present the assessment clearly:
+
+   ```text
+   Data Quality Assessment:
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Source: CUSTOMERS_CRM
+     Field completeness:  82%  (name: 99%, phone: 75%, email: 68%)
+     Format consistency:  90%
+     Duplicate rate:       3%
+     Overall quality:     78%  ✅ Ready for mapping
+
+   Source: VENDORS_LEGACY
+     Field completeness:  45%  (name: 90%, phone: 20%, email: 15%)
+     Format consistency:  55%
+     Duplicate rate:      12%
+     Overall quality:     42%  ⚠ Recommend fixing before mapping
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ```
+
+7. **Summarize findings and save evaluation report**: Create `docs/data_source_evaluation.md`:
 
    ```markdown
    # Data Source Evaluation Report
@@ -77,7 +104,7 @@ inclusion: manual
    2. [Data source] - [Reason for priority]
    ```
 
-7. **Proceed to mapping**: For each data source that needs mapping, transition to the "Data Mapping End-to-End" workflow (Module 5).
+8. **Proceed to mapping**: For each data source that needs mapping, transition to the "Data Mapping End-to-End" workflow (Module 5).
 
 **Success indicator**: ✅ All data sources categorized + `docs/data_source_evaluation.md` created
 

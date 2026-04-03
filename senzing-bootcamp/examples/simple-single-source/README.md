@@ -110,7 +110,7 @@ customers.csv (10K records)
 
 ## Sample Data
 
-The `customers.csv` file contains realistic customer data:
+The `customers.csv` file contains realistic customer data. A 20-row sample is included at `data/samples/customers_sample.csv` so you can run through the example end-to-end without generating your own data:
 
 ```csv
 customer_id,full_name,address,city,state,zip,phone,email

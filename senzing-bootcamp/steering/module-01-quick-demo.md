@@ -39,6 +39,18 @@ Use this workflow when a user wants to see entity resolution in action before wo
 
    **IMPORTANT**: Use a small sample (5-10 records) for the quick demo to ensure fast execution and clear results. The goal is to show the concept, not process large volumes.
 
+   **Fallback if `get_sample_data` fails**: If the MCP server is unreachable or `get_sample_data` returns an error, use this minimal inline dataset so the demo can still proceed:
+
+   ```json
+   {"DATA_SOURCE": "CRM_SYSTEM", "RECORD_ID": "DEMO-001", "NAME_FULL": "John Smith", "ADDR_FULL": "123 Main St, Las Vegas, NV 89101", "PHONE_NUMBER": "555-123-4567", "EMAIL_ADDRESS": "john.smith@example.com"}
+   {"DATA_SOURCE": "SUPPORT_SYSTEM", "RECORD_ID": "DEMO-002", "NAME_FULL": "J. Smith", "ADDR_FULL": "123 Main Street, Las Vegas, NV 89101", "PHONE_NUMBER": "5551234567", "EMAIL_ADDRESS": "jsmith@example.com"}
+   {"DATA_SOURCE": "SALES_SYSTEM", "RECORD_ID": "DEMO-003", "NAME_FULL": "John R Smith", "ADDR_FULL": "123 Main St Apt 1, Las Vegas, NV 89101", "PHONE_NUMBER": "(555) 123-4567", "EMAIL_ADDRESS": "john.smith@example.com"}
+   {"DATA_SOURCE": "CRM_SYSTEM", "RECORD_ID": "DEMO-004", "NAME_FULL": "Jane Doe", "ADDR_FULL": "456 Oak Ave, Las Vegas, NV 89102", "PHONE_NUMBER": "555-987-6543", "EMAIL_ADDRESS": "jane.doe@example.com"}
+   {"DATA_SOURCE": "SUPPORT_SYSTEM", "RECORD_ID": "DEMO-005", "NAME_FULL": "Jane M. Doe", "ADDR_FULL": "456 Oak Avenue, Las Vegas, NV 89102", "PHONE_NUMBER": "5559876543", "EMAIL_ADDRESS": "j.doe@example.com"}
+   ```
+
+   Save this to `src/quickstart_demo/sample_data_fallback.jsonl` and use it for the demo. Tell the user: "I couldn't reach the Senzing sample data server, so I'm using a small built-in dataset. The demo will work the same way."
+
 5. **Show sample records BEFORE resolution**: Display 3-5 sample records from the dataset. Point out:
    - How the same person/organization appears multiple times
    - Variations in names, addresses, phone numbers

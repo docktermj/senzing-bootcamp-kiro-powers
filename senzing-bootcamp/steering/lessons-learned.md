@@ -149,8 +149,10 @@ Create `docs/lessons_learned.md` and fill it out after Module 8 (or Module 12 fo
 
 ## When to Use This Template
 
-- After completing Module 8 (query and validation)
-- After completing Module 12 (full deployment)
+- After completing any boot camp path (A, B, C, or D)
+- After completing Module 8 (query and validation) on Path C
+- After completing Module 12 (full deployment) on Path D
+- Even after Path A (Quick Demo) — capture first impressions while fresh
 - Before closing out the project
 - During project retrospectives
 - When documenting for future projects
@@ -170,8 +172,7 @@ Create `docs/lessons_learned.md` and fill it out after Module 8 (or Module 12 fo
 
 Load this steering file when:
 
-- Completing Module 8 (query and validation)
-- Completing Module 12 (deployment)
+- Completing the final module of any path (Module 1 for Path A, Module 6 for Path B, Module 8 for Path C, Module 12 for Path D)
 - User asks about lessons learned or retrospectives
 - Preparing final project documentation
 - Planning future entity resolution projects

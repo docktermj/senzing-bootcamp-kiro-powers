@@ -1,0 +1,11 @@
+customer_id,first_name,last_name,email,phone,address,city,state,zip,created_date
+CRM-001,John,Smith,john.smith@email.com,555-0101,123 Main St,Boston,MA,02101,2023-01-15
+CRM-002,Jane,Doe,jane.doe@email.com,555-0102,456 Oak Ave,Boston,MA,02102,2023-02-20
+CRM-003,Bob,Johnson,bob.j@email.com,555-0103,789 Pine Rd,Cambridge,MA,02138,2023-03-10
+CRM-004,Maria,Garcia,maria.g@email.com,555-0104,321 Elm St,Boston,MA,02103,2023-04-05
+CRM-005,David,Brown,david.brown@email.com,555-0105,654 Maple Dr,Somerville,MA,02144,2023-05-12
+CRM-006,Sarah,Miller,sarah.m@email.com,555-0106,987 Cedar Ln,Cambridge,MA,02139,2023-06-18
+CRM-007,Michael,Wilson,mike.w@email.com,555-0107,147 Birch Way,Boston,MA,02104,2023-07-22
+CRM-008,Emily,Davis,emily.d@email.com,555-0108,258 Walnut St,Brookline,MA,02445,2023-08-30
+CRM-009,James,Taylor,james.t@email.com,555-0109,369 Spruce Ave,Boston,MA,02105,2023-09-14
+CRM-010,Jennifer,Anderson,jen.a@email.com,555-0110,741 Ash Blvd,Cambridge,MA,02140,2023-10-01

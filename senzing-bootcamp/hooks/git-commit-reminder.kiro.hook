@@ -1,0 +1,12 @@
+{
+  "name": "Git Commit Reminder",
+  "version": "1.0.0",
+  "description": "Reminds the user to commit their work after completing a module. Triggered manually via button click.",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "The user wants to commit their bootcamp progress. Check config/bootcamp_progress.json for the current module number and list of completed modules. Then suggest a git commit with a descriptive message like: git add . && git commit -m \"Complete Module [N]: [Module Name]\". Show the user the command and ask if they'd like you to run it."
+  }
+}

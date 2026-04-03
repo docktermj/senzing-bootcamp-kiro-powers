@@ -54,6 +54,19 @@ inclusion: manual
    - Store sample API response in `data/raw/[datasource_name]_sample.json`
    - Document the API call used
 
+   **Handling different data formats:**
+
+   Not all data arrives as CSV. Common formats and how to handle them:
+
+   - **Excel (.xlsx)**: Convert to CSV first. Most languages have libraries for this (e.g., `openpyxl` for Python, Apache POI for Java). Save the CSV to `data/raw/`.
+   - **Parquet / Avro**: Use language-appropriate libraries to read and convert to CSV or JSON. These formats are common in data lake exports.
+   - **XML**: Parse and flatten to JSON or CSV. Use `find_examples(query='XML data loading')` for patterns.
+   - **Database exports (SQL dump)**: Extract the relevant tables to CSV using the database's export tools.
+   - **API pagination**: If the API returns paginated results, document the pagination strategy and write a collection script in `scripts/` that fetches all pages and saves to `data/raw/`.
+   - **Real-time streams (Kafka, etc.)**: For the bootcamp, capture a snapshot to a file. Document the stream details for production use in Module 12.
+
+   For any non-CSV/JSON format, the goal is to get the data into a flat file in `data/raw/` that Module 4 can evaluate.
+
 3. **Verify data was received**:
 
    ```bash

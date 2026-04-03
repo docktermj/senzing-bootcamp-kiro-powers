@@ -271,7 +271,6 @@ When a user is in Module 4, the agent should:
 
 - `POWER.md` - Module 4 overview
 - `steering/module-04-data-quality.md` - Module 4 workflow
-- `steering/data-quality-scoring.md` - Detailed scoring guide
 
 ## Version History
 

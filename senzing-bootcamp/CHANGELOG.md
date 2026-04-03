@@ -5,6 +5,46 @@ All notable changes to the Senzing Boot Camp power will be documented in this fi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.9] - 2026-04-03
+
+### Added
+
+- `exportJSONEntityReport()` restriction in `docs/policies/CODE_QUALITY_STANDARDS.md` — agent must avoid this method unless data set is explicitly small and bounded
+- Production-scale code generation guidance in `steering/agent-instructions.md` — agent now tells the Senzing MCP server that generated code must be suitable for large production data sets
+- `scripts/validate_module.py` — automated module gate validation script that checks prerequisites and success criteria for all 13 modules
+- Data quality thresholds in `steering/module-04-data-quality.md` — concrete guidance (≥70% proceed, 50-69% warn, <50% fix first) with formatted assessment template
+- SQLite → PostgreSQL migration guide in `steering/common-pitfalls.md` — step-by-step migration path covering when to migrate, installation on all platforms, and what carries forward
+- Path switching guidance in `steering/agent-instructions.md` — handles upgrades, downgrades, and lateral path changes mid-bootcamp
+- Module 1 sample data fallback in `steering/module-01-quick-demo.md` — 5 inline records for when `get_sample_data` MCP tool is unreachable
+- `hooks/git-commit-reminder.kiro.hook` — manual-trigger hook that suggests descriptive git commits after module completion
+- Data format handling guidance in `steering/module-03-data-collection.md` — covers Excel, Parquet, XML, SQL dumps, API pagination, and streaming
+- Complexity estimator integration in `steering/agent-instructions.md` — agent runs personalized time estimates after Module 2 before confirming path
+- Visual progress bar template in `steering/agent-instructions.md` — `[████░░░░]` style display shown every 3 modules
+- DATA_SOURCE naming conventions in `steering/common-pitfalls.md` — good/bad examples and naming rules
+- Sample data files in `examples/simple-single-source/data/samples/customers_sample.csv` (20 rows) and `examples/multi-source-project/data/samples/` (3 files, 10 rows each)
+- `validate_module.py` reference in POWER.md useful commands section
+
+### Changed
+
+- `steering/agent-instructions.md`: `lessons-learned.md` now triggered at end of any completed path (A, B, C, or D), not just Module 8/12
+- `steering/lessons-learned.md`: Updated "When to Use" and "When to Load" sections to cover all paths
+- `hooks/commonmark-validation.kiro.hook`: Added CHANGELOG.md exception for MD024 (duplicate headings are standard in Keep a Changelog format)
+- `scripts/install_hooks.py`: Replaced hardcoded HOOKS list with dynamic `discover_hooks()` that scans the hooks directory; added `git-commit-reminder` to known hooks metadata; prevents silent drift when hooks are added
+- `hooks/README.md`: Added git-commit-reminder hook documentation (hook #10)
+- `docs/policies/README.md`: Added missing CODE_QUALITY_STANDARDS.md description section
+- `steering/data-lineage.md`: Converted Python code block to language-agnostic pseudocode
+- `docs/modules/MODULE_12_DEPLOYMENT_PACKAGING.md`: Made deployment guide template language-neutral with multi-language comments
+- `steering/common-pitfalls.md`: Added Windows PowerShell commands to PostgreSQL migration section
+- `examples/simple-single-source/README.md`: Updated sample data section to reference included CSV; data flow diagram changed from "Export entities" to "Find duplicates, get entity details"
+- `examples/multi-source-project/README.md`: Updated sample data section; changed "exports all entities" to "queries entities by record ID"
+- `examples/production-deployment/README.md`: Changed `export_service` to `query_service`; changed "REST API / Export" to "REST API / Query"
+- `steering/module-08-query-validation.md`: Changed `export_results` to `query_results`; changed "Export resolved entities" to "Retrieve and format resolved entities"
+- `steering/module-09-performance.md`: Changed export-oriented comments to use stats/query language
+
+### Fixed
+
+- `docs/modules/MODULE_4_DATA_QUALITY_SCORING.md`: Removed broken reference to non-existent `steering/data-quality-scoring.md`
+
 ## [0.1.8] - 2026-04-02
 
 ### Added

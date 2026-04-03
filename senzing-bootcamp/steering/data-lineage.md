@@ -188,36 +188,35 @@ Add lineage tracking calls to your transformation scripts. After each transforma
 
 Add lineage tracking calls to your loading scripts. After each load completes, call the tracker to record the data source, records loaded, throughput, and duration.
 
-```python
-    tracker = LineageTracker()
+```text
+    tracker = create_lineage_tracker()
 
-    # Track start
-    start_time = time.time()
+    -- Track start
+    start_time = current_timestamp()
     records_in = 0
     records_out = 0
     records_rejected = 0
 
-    # Transform data
-    for record in read_csv(input_file):
-        records_in += 1
+    -- Transform data
+    for each record in read_csv(input_file):
+        records_in = records_in + 1
         try:
             transformed = transform_record(record)
             write_jsonl(output_file, transformed)
-            records_out += 1
-        except Exception as e:
-            records_rejected += 1
+            records_out = records_out + 1
+        on error:
+            records_rejected = records_rejected + 1
 
-    # Track transformation
-    tracker.track_transformation('customers_crm', {
-        'source_file': input_file,
-        'transformation_script': __file__,
-        'output_file': output_file,
-        'records_in': records_in,
-        'records_out': records_out,
-        'records_rejected': records_rejected,
-        'duration': time.time() - start_time
+    -- Track transformation
+    tracker.track_transformation("customers_crm", {
+        source_file: input_file,
+        transformation_script: current_script_path,
+        output_file: output_file,
+        records_in: records_in,
+        records_out: records_out,
+        records_rejected: records_rejected,
+        duration: current_timestamp() - start_time
     })
-
 ```
 
 ## Lineage Visualization

@@ -452,7 +452,7 @@ Create comprehensive deployment documentation:
 
 ## Prerequisites
 
-- Python 3.10+ (or Java 17+, .NET Standard 2.0+)
+- Your chosen language runtime (Python 3.10+, Java 17+, .NET Standard 2.0+, Rust, or Node.js)
 - PostgreSQL 15+ (or chosen database)
 - Senzing SDK 4.0+
 - 4GB RAM minimum
@@ -463,7 +463,12 @@ Create comprehensive deployment documentation:
 ### 1. Install Dependencies
 
 \`\`\`bash
-pip install -r requirements.txt
+# Use the appropriate command for your language:
+# Python:     pip install -r requirements.txt
+# Java:       mvn dependency:resolve
+# C#:         dotnet restore
+# Rust:       cargo build --release
+# TypeScript: npm ci
 \`\`\`
 
 ### 2. Configure Database
@@ -472,8 +477,7 @@ pip install -r requirements.txt
 # Create database
 createdb senzing_prod
 
-# Run migrations
-python scripts/migrate_db.py
+# Run migrations (use the appropriate command for your language)
 \`\`\`
 
 ### 3. Configure Application
@@ -488,13 +492,18 @@ cp config/config.example.yaml config/config.prod.yaml
 ### 4. Run Tests
 
 \`\`\`bash
-pytest tests/
+# Use the appropriate test runner for your language:
+# Python:     pytest tests/
+# Java:       mvn test
+# C#:         dotnet test
+# Rust:       cargo test
+# TypeScript: npm test
 \`\`\`
 
 ### 5. Deploy
 
 \`\`\`bash
-./scripts/deploy.sh production
+# Use your deployment script or CI/CD pipeline
 \`\`\`
 
 ## Configuration

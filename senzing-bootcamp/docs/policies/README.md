@@ -67,12 +67,30 @@ This directory contains policy documents that define coding standards and organi
 
 ---
 
+### Code Quality Standards
+
+**File**: [CODE_QUALITY_STANDARDS.md](CODE_QUALITY_STANDARDS.md)
+
+**Purpose**: Define language-appropriate coding standards for all generated code
+
+**Key Rules**:
+
+- Python → PEP-8, Java → standard conventions, C# → .NET conventions, Rust → rustfmt/clippy, TypeScript → ESLint
+- Proper naming conventions, documentation, and import organization per language
+- Avoid `exportJSONEntityReport()` unless data set is explicitly small and bounded
+
+**Why It Matters**: Consistent, readable code across all modules regardless of chosen language
+
+**Applies To**: All modules that generate code
+
+---
+
 ## Policy Summary
 
 | Policy              | Directory              | File Types          | Applies To             |
 |---------------------|------------------------|---------------------|------------------------|
 | File Storage        | Various                | All files           | All modules            |
-| Code Quality        | N/A (standards)        | Source code         | All modules            |
+| Code Quality        | N/A (standards)        | Source code         | All code modules       |
 | Dependencies        | Project root           | Language-specific   | All projects           |
 | Senzing Information | N/A (agent behavior)   | All                 | All modules (0–12)     |
 

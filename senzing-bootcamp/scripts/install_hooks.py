@@ -34,15 +34,26 @@ def red(t): return c("0;31", t)
 
 
 HOOKS = [
-    ("code-style-check.kiro.hook", "Code Style Check", "Ensures code follows language-appropriate standards"),
-    ("data-quality-check.kiro.hook", "Data Quality Check", "Validates quality when transformations change"),
-    ("backup-before-load.kiro.hook", "Backup Before Load", "Reminds to backup before loading"),
-    ("validate-senzing-json.kiro.hook", "Validate Senzing JSON", "Validates output format against SGES"),
-    ("backup-project-on-request.kiro.hook", "Backup on Request", "Auto-backup when user requests it"),
-    ("commonmark-validation.kiro.hook", "CommonMark Validation", "Validates Markdown files follow CommonMark spec"),
-    ("verify-senzing-facts.kiro.hook", "Verify Senzing Facts", "Verifies Senzing content via MCP before writing"),
-    ("analyze-after-mapping.kiro.hook", "Analyze After Mapping", "Validates transformed data before loading"),
-    ("run-tests-after-change.kiro.hook", "Run Tests After Change", "Reminds to run tests after code changes"),
+    ("code-style-check.kiro.hook", "Code Style Check",
+     "Ensures code follows language-appropriate standards"),
+    ("data-quality-check.kiro.hook", "Data Quality Check",
+     "Validates quality when transformations change"),
+    ("backup-before-load.kiro.hook", "Backup Before Load",
+     "Reminds to backup before loading"),
+    ("validate-senzing-json.kiro.hook", "Validate Senzing JSON",
+     "Validates output format against SGES"),
+    ("backup-project-on-request.kiro.hook", "Backup on Request",
+     "Auto-backup when user requests it"),
+    ("commonmark-validation.kiro.hook", "CommonMark Validation",
+     "Validates Markdown files follow CommonMark spec"),
+    ("verify-senzing-facts.kiro.hook", "Verify Senzing Facts",
+     "Verifies Senzing content via MCP before writing"),
+    ("analyze-after-mapping.kiro.hook", "Analyze After Mapping",
+     "Validates transformed data before loading"),
+    ("run-tests-after-change.kiro.hook", "Run Tests After Change",
+     "Reminds to run tests after code changes"),
+    ("git-commit-reminder.kiro.hook", "Git Commit Reminder",
+     "Reminds to commit progress after completing a module"),
 ]
 
 ESSENTIAL = {
@@ -50,6 +61,22 @@ ESSENTIAL = {
     "backup-before-load.kiro.hook",
     "backup-project-on-request.kiro.hook",
 }
+
+
+def discover_hooks(power_dir):
+    """Discover hook files, using known metadata when available."""
+    known = {filename: (name, desc) for filename, name, desc in HOOKS}
+    discovered = []
+    for hook_file in sorted(power_dir.glob("*.kiro.hook")):
+        filename = hook_file.name
+        if filename in known:
+            name, desc = known[filename]
+        else:
+            # Derive a display name from the filename
+            name = filename.replace(".kiro.hook", "").replace("-", " ").title()
+            desc = "(no description — add to HOOKS list in install_hooks.py)"
+        discovered.append((filename, name, desc))
+    return discovered
 
 
 
@@ -89,15 +116,19 @@ def main():
 
     user_hooks.mkdir(parents=True, exist_ok=True)
 
+    # Discover all hooks from the power directory
+    hooks = discover_hooks(power_hooks)
+
+    if not hooks:
+        print(yellow("⚠ No hook files found in power directory."))
+        sys.exit(1)
+
     # Show available hooks
     print(cyan("Available Hooks:"))
     print()
-    for filename, name, desc in HOOKS:
-        if (power_hooks / filename).is_file():
-            print(f"  {green('✓')} {name}")
-            print(f"    {cyan('→')} {desc}")
-        else:
-            print(f"  {yellow('⚠')} {name} (file not found)")
+    for filename, name, desc in hooks:
+        print(f"  {green('✓')} {name}")
+        print(f"    {cyan('→')} {desc}")
     print()
 
     print(cyan("Installation Options:"))
@@ -113,7 +144,7 @@ def main():
     if choice == "A":
         print(cyan("Installing all hooks..."))
         print()
-        installed, skipped = install_hooks(HOOKS, power_hooks, user_hooks)
+        installed, skipped = install_hooks(hooks, power_hooks, user_hooks)
         print()
         print(green("Installation complete!"))
         print(f"  Installed: {installed} hooks")
@@ -122,8 +153,10 @@ def main():
     elif choice == "B":
         print(cyan("Installing essential hooks..."))
         print()
-        essential = [h for h in HOOKS if h[0] in ESSENTIAL]
-        installed, skipped = install_hooks(essential, power_hooks, user_hooks)
+        essential = [h for h in hooks if h[0] in ESSENTIAL]
+        installed, skipped = install_hooks(
+            essential, power_hooks, user_hooks
+        )
         print()
         print(green("Installation complete!"))
         print(f"  Installed: {installed} essential hooks")
@@ -131,7 +164,7 @@ def main():
     elif choice == "C":
         print(cyan("Select hooks to install:"))
         print()
-        for filename, name, _ in HOOKS:
+        for filename, name, _ in hooks:
             src = power_hooks / filename
             dst = user_hooks / filename
             if not src.is_file():

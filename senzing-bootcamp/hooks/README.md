@@ -60,6 +60,13 @@ This directory contains pre-configured Kiro hooks to support the Senzing Boot Ca
 **Action**: Reminds agent to run the test suite to verify the change
 **Use case**: Catches regressions after code changes in Modules 6-8
 
+### 10. Git Commit Reminder (`git-commit-reminder.kiro.hook`)
+
+**Trigger**: Manual — click the hook button in the Agent Hooks panel
+**Action**: Suggests a descriptive git commit based on the current module
+**Use case**: Reminds users to commit progress after completing a module
+**How to use**: Click the "Git Commit Reminder" button in the Kiro Agent Hooks explorer view
+
 ## Installation
 
 ### Option 1: Use Install Script (Recommended)

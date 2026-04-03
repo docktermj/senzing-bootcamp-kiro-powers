@@ -191,6 +191,13 @@ If you started with SQLite and need to switch to PostgreSQL (common when reachin
    createdb senzing
    ```
 
+   ```powershell
+   # Windows (PowerShell) — download from https://www.postgresql.org/download/windows/
+   # After installation, PostgreSQL runs as a service automatically.
+   # Use the bundled command-line tools:
+   & "C:\Program Files\PostgreSQL\<version>\bin\createdb.exe" -U postgres senzing
+   ```
+
 2. **Reconfigure the Senzing engine** — use `sdk_guide(topic='configure', platform='<your_platform>', language='<chosen_language>', version='current')` to get the correct PostgreSQL engine configuration JSON. The key change is replacing the SQLite connection string with a PostgreSQL one.
 
 3. **Reload your data** — PostgreSQL requires a fresh load. Your transformation programs and loading scripts from Modules 5-6 are reusable. Run them against the new database.

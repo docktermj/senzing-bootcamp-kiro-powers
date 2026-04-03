@@ -17,4 +17,15 @@ This repository contains the Senzing Boot Camp Kiro Power and its development do
    https://github.com/docktermj/senzing-bootcamp-kiro-powers/tree/main/senzing-bootcamp
    ```
 
-Once installed, open the agentic chat and say **"Start the boot camp"** to begin.
+## Start the Senzing Boot Camp
+
+1. Start Kiro in a new, empty directory.
+   Example:
+
+    ```console
+    mkdir senzing-bootcamp
+    cd senzing-bootcamp
+    kiro .
+    ```
+
+1. In Kiro's agentic chat, say **"Start the boot camp"** to begin.

@@ -278,15 +278,15 @@ You can review or edit it anytime. Would you like to:
 
 ## Agent Best Practices
 
-5. **Be supportive**: Thank user for providing feedback
-6. **Ask one at a time**: Don't overwhelm with multiple questions
-7. **Be patient**: Let user explain in their own words
-8. **Clarify if needed**: Ask follow-up questions for clarity
-9. **Confirm understanding**: Summarize before adding to file
-10. **Save locally only**: Do not submit to MCP server unless user explicitly asks
-11. **Handle gracefully**: If user asks to submit to MCP, use `submit_feedback` tool
-12. **Make it easy**: Offer to add more feedback
-13. **Remind about value**: Explain how feedback helps improve the power
+1. **Be supportive**: Thank user for providing feedback
+2. **Ask one at a time**: Don't overwhelm with multiple questions
+3. **Be patient**: Let user explain in their own words
+4. **Clarify if needed**: Ask follow-up questions for clarity
+5. **Confirm understanding**: Summarize before adding to file
+6. **Save locally only**: Do not submit to MCP server unless user explicitly asks
+7. **Handle gracefully**: If user asks to submit to MCP, use `submit_feedback` tool
+8. **Make it easy**: Offer to add more feedback
+9. **Remind about value**: Explain how feedback helps improve the power
 
 ---
 

@@ -430,7 +430,6 @@ fi
 **Solutions** (try in order):
 
 1. **Use Simulation Demo instead** (Recommended)
-   ```
 
    Ask agent: "Use simulation demo instead"
 
@@ -438,20 +437,22 @@ fi
    - No Docker required
    - Shows same concepts
    - Instant results
+   ```
 
-2. **Use in-memory database** (Docker)
+1. **Use in-memory database** (Docker)
    - Agent will automatically try this
    - No file system permissions needed
    - Database in RAM only
 
-3. **Check Docker permissions**
+2. **Check Docker permissions**
+
    ```bash
    # Linux: Add user to docker group
    sudo usermod -aG docker $USER
    # Then log out and back in
    ```
 
-1. **Disable SELinux temporarily** (Linux only)
+3. **Disable SELinux temporarily** (Linux only)
 
    ```bash
    # Check if SELinux is the issue
@@ -463,7 +464,7 @@ fi
    sudo setenforce 1
    ```
 
-2. **Try different Docker volume mount**
+4. **Try different Docker volume mount**
    - Agent will try /tmp, /var/tmp, /app
    - If all fail, use Simulation Demo
 

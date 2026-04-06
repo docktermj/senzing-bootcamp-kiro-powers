@@ -34,9 +34,9 @@ def cyan(t): return c("0;36", t)
 
 
 EXAMPLES = [
-    ("simple-single-source", "Simple Single Source", "Basic customer deduplication (2-3 hours)"),
-    ("multi-source-project", "Multi-Source Project", "Customer 360 with three sources (6-8 hours)"),
-    ("production-deployment", "Production Deployment", "Complete production-ready system (12-15 hours)"),
+    ("simple-single-source", "Simple Single Source", "Basic customer deduplication"),
+    ("multi-source-project", "Multi-Source Project", "Customer 360 with three sources"),
+    ("production-deployment", "Production Deployment", "Complete production-ready system"),
 ]
 
 

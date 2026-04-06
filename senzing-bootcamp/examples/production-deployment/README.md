@@ -144,17 +144,17 @@ Document system architecture requirements including:
 - Throughput: 1000+ records/sec, query latency < 100ms p95
 - DR targets: RTO 4 hours, RPO 15 minutes
 
-### Module 3-5: Data Collection, Quality, Mapping (4-6 hours)
+### Module 3-5: Data Collection, Quality, Mapping
 
 Implement transformers for each of the 6 sources (CRM, ERP, Web, Mobile, Partner, Legacy) with comprehensive error handling and logging. Each transformer maps source-specific fields to Senzing attributes.
 
 > The agent generates this code in your chosen language using `generate_scaffold` and `mapping_workflow` during the bootcamp.
 
-### Module 0: SDK Setup (1 hour)
+### Module 0: SDK Setup
 
 Configure the Senzing engine for production with PostgreSQL (Multi-AZ RDS) and optional Redis caching for high-throughput scenarios. Use environment-specific config files under `config/dev/`, `config/staging/`, and `config/prod/`.
 
-### Module 6-7: Loading with Orchestration (2-3 hours)
+### Module 6-7: Loading with Orchestration
 
 The production orchestrator loads all 6 sources in parallel with:
 
@@ -170,7 +170,7 @@ Run the loading program using the appropriate command for your chosen language.
 
 > The agent generates this code in your chosen language using `generate_scaffold` during the bootcamp.
 
-### Module 8: Query with REST API (2 hours)
+### Module 8: Query with REST API
 
 The REST API provides:
 
@@ -181,7 +181,7 @@ The REST API provides:
 
 > The agent generates this code in your chosen language using `generate_scaffold` during the bootcamp.
 
-### Module 9: Performance Testing (1-2 hours)
+### Module 9: Performance Testing
 
 Benchmark loading and query performance against production targets:
 
@@ -190,13 +190,13 @@ Benchmark loading and query performance against production targets:
 
 > The agent generates this code in your chosen language using `generate_scaffold` during the bootcamp.
 
-### Module 10: Security Hardening (2-8 hours)
+### Module 10: Security Hardening
 
 Implement secrets management (e.g., AWS Secrets Manager), JWT authentication for API endpoints, and data encryption. No credentials stored in code or config files.
 
 > The agent generates this code in your chosen language using `generate_scaffold` during the bootcamp.
 
-### Module 11: Monitoring (1-2 hours)
+### Module 11: Monitoring
 
 Set up Grafana dashboards tracking:
 
@@ -208,7 +208,7 @@ Set up Grafana dashboards tracking:
 
 Configure alert rules for error rate spikes, slow queries, and resource exhaustion.
 
-### Module 12: Deployment (2-3 hours)
+### Module 12: Deployment
 
 Deploy using Kubernetes with:
 

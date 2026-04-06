@@ -11,7 +11,6 @@ This directory contains reference project blueprints demonstrating different use
 **Path**: `simple-single-source/`
 **Use case**: Basic customer deduplication with one data source
 **Complexity**: Beginner
-**Time to complete**: 2-3 hours
 **Modules covered**: 2-6, 8
 
 A minimal example showing:
@@ -31,7 +30,6 @@ A minimal example showing:
 **Path**: `multi-source-project/`
 **Use case**: Customer 360 with three data sources
 **Complexity**: Intermediate
-**Time to complete**: 6-8 hours
 **Modules covered**: 2-8
 
 A realistic example showing:
@@ -52,7 +50,6 @@ A realistic example showing:
 **Path**: `production-deployment/`
 **Use case**: Production-ready vendor MDM system
 **Complexity**: Advanced
-**Time to complete**: 12-15 hours
 **Modules covered**: All (0-12)
 
 A complete production example showing:

@@ -195,10 +195,10 @@ Platform check:
 Use lettered options (A/B/C/D) to avoid ambiguity with module numbers:
 
 ```text
-A) Quick Demo (10 min + Module 0 setup) — Module 1 (requires SDK from Module 0)
-B) Fast Track (30 min) — Modules 5-6 (for users with SGES-compliant data)
-C) Complete Beginner (2-3 hrs) — Modules 2-6, 8 (Module 0 inserted automatically before Module 6)
-D) Full Production (10-18 hrs) — All Modules 0-12
+A) Quick Demo — Module 1 (requires SDK from Module 0)
+B) Fast Track — Modules 5-6 (for users with SGES-compliant data)
+C) Complete Beginner — Modules 2-6, 8 (Module 0 inserted automatically before Module 6)
+D) Full Production — All Modules 0-12
 ```
 
 **Path A note**: Module 0 (SDK Setup) is required before Module 1 (Quick Demo). If Module 0 is not complete, insert it first: "To run the demo, we need the Senzing SDK installed. Let's do Module 0 first — it takes about 30-60 minutes as a one-time setup."

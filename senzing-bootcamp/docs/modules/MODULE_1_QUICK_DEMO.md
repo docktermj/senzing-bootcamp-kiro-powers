@@ -8,8 +8,6 @@ Module 1 provides a demonstration of Senzing entity resolution using sample data
 
 This module offers multiple demo options to ensure everyone can see entity resolution working, regardless of their environment.
 
-**Time:** 10-15 minutes
-
 **Output:** Working demo showing entity resolution results
 
 ## Prerequisites
@@ -326,9 +324,7 @@ A: Yes, it's optional. Skip to Module 2 if you're ready to start with your data.
 
 ### Issue: Module 1 Taking Longer Than Expected
 
-**Expected time:** 10-15 minutes
-
-**If taking longer:**
+**If taking longer than expected:**
 
 1. **Check what's taking time**
    - Database initialization? (Should be <1 minute)

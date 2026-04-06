@@ -4,11 +4,11 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ## Three Quick Start Paths
 
-### Path A: 10-Minute Demo (Module 1)
+### Path A: Demo (Module 1)
 
 **Best for:** First-time users, seeing entity resolution in action
 
-**Prerequisite:** Module 0 (SDK Setup) must be completed first (30-60 min one-time setup).
+**Prerequisite:** Module 0 (SDK Setup) must be completed first.
 
 ```bash
 # 1. Ask the agent
@@ -25,13 +25,13 @@ Get started with Senzing entity resolution in 30 minutes or less.
 # - Connect to your use case
 ```
 
-**Time:** 10-15 minutes
+**Time:** Quick
 
 **Output:** Understanding of entity resolution
 
 ---
 
-### Path B: 30-Minute Fast Track
+### Path B: Fast Track
 
 **Best for:** Experienced users with SGES-compliant data
 
@@ -41,18 +41,18 @@ Get started with Senzing entity resolution in 30 minutes or less.
 > 2. **Step-by-step**: Walk through Module 0 then Module 6 separately for more control.
 
 ```bash
-# 1. Define problem (5 min)
+# 1. Define problem
 "I want to deduplicate customers from my CRM"
 
-# 2. Upload data (5 min)
+# 2. Upload data
 # Drag and drop your SGES-formatted JSON file
 
-# 3. Install SDK and load data (20 min)
+# 3. Install SDK and load data
 # Agent uses sdk_guide(topic='full_pipeline') for fastest setup
 # Or walk through Module 0 → Module 6 for step-by-step control
 ```
 
-**Time:** 30 minutes
+**Time:** Quick
 
 **Output:** Working entity resolution on your data
 
@@ -60,40 +60,38 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ---
 
-### Path C: 2-Hour Complete Beginner
+### Path C: Complete Beginner
 
 **Best for:** New users with raw data (CSV, database, etc.)
 
 ```bash
-# 1. Define problem (20 min)
+# 1. Define problem
 # - Answer discovery questions
 # - Identify data sources
 # - Set success criteria
 
-# 2. Collect data (15 min)
+# 2. Collect data
 # - Upload or link to data files
 # - Document locations
 
-# 3. Evaluate quality (15 min)
+# 3. Evaluate quality
 # - Run automated quality scoring
 # - Review metrics
 
-# 4. Map data (45 min)
+# 4. Map data
 # - Use mapping_workflow tool
 # - Create transformation program
 # - Validate quality
 
-# 5. Install SDK (15 min)
+# 5. Install SDK
 # - Install Senzing
 # - Configure database
 
-# 6. Load and query (30 min)
+# 6. Load and query
 # - Load data
 # - Find duplicates
 # - Examine results
 ```
-
-**Time:** 2-3 hours
 
 **Output:** Complete working project
 
@@ -105,22 +103,22 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ### I want to
 
-**"See a demo first"** → Path A (10-Minute Demo)
+**"See a demo first"** → Path A (Demo)
 
-- Requires Module 0 (SDK Setup) first — 30-60 min one-time setup
-- Then Module 1 demo itself takes 10-15 min
+- Requires Module 0 (SDK Setup) first
+- Then Module 1 demo
 
-**"Get results fast"** → Path B (30-Minute Fast Track)
+**"Get results fast"** → Path B (Fast Track)
 
 - Skip to Module 0 (SDK Setup) then Module 6
 - Requires SGES-compliant data
 - SQLite for quick start
 
-**"Learn properly"** → Path C (2-Hour Complete)
+**"Learn properly"** → Path C (Complete)
 
 - Start with Module 2
 
-**"Build for production"** → Path D: Full Bootcamp (10-18 hours)
+**"Build for production"** → Path D: Full Bootcamp
 
 - Complete all modules 0-12
 - Production-ready deployment
@@ -174,14 +172,12 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 - ✅ Raw data file (CSV, JSON, Excel, etc.)
 - ✅ Language runtime for your chosen language
-- ✅ 2-3 hours
 - ✅ Basic understanding of your data
 
 ### For Production (Path D - Full Bootcamp)
 
 - ✅ All data sources identified
 - ✅ PostgreSQL database (or plan to set up)
-- ✅ 10-18 hours over 1-2 weeks
 - ✅ Production environment access
 
 ---
@@ -190,19 +186,19 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ### Module Overview
 
-- **Module 1**: Quick Demo (10 min) - Optional
-- **Module 2**: Business Problem (20 min)
-- **Module 3**: Collect Data (15 min per source)
-- **Module 4**: Evaluate Quality (15 min per source)
-- **Module 5**: Map Data (1-2 hrs per source)
-- **Module 0**: Set Up SDK (30-60 min)
-- **Module 6**: Load Data (30 min per source)
-- **Module 7**: Multi-Source Orchestration (1-2 hrs)
-- **Module 8**: Query & Validate (1-2 hrs)
-- **Module 9**: Performance Testing (1-2 hrs)
-- **Module 10**: Security Hardening (2-8 hrs)
-- **Module 11**: Monitoring (60-90 min)
-- **Module 12**: Package & Deploy (2-4 hrs)
+- **Module 1**: Quick Demo - Optional
+- **Module 2**: Business Problem
+- **Module 3**: Collect Data
+- **Module 4**: Evaluate Quality
+- **Module 5**: Map Data
+- **Module 0**: Set Up SDK
+- **Module 6**: Load Data
+- **Module 7**: Multi-Source Orchestration
+- **Module 8**: Query & Validate
+- **Module 9**: Performance Testing
+- **Module 10**: Security Hardening
+- **Module 11**: Monitoring
+- **Module 12**: Package & Deploy
 
 ### Skip Ahead Options
 

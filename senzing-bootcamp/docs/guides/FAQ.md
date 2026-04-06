@@ -4,10 +4,7 @@
 
 ### How long does the bootcamp take?
 
-- Quick Demo (Module 1): 10-15 minutes
-- Fast Track (Modules 0, 6): 30 minutes
-- Complete Beginner (Modules 2-6, 8): 2-3 hours
-- Full Production (All Modules 0-12): 10-18 hours
+It depends on the path you choose and the complexity of your data. The complexity estimator (loaded after Module 2) gives personalized estimates based on your specific data sources.
 
 ### Can I skip modules?
 

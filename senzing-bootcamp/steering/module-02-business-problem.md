@@ -10,8 +10,6 @@ inclusion: manual
 
 Use this workflow when starting the bootcamp or when a user wants to explore how Senzing can solve their specific challenge.
 
-**Time**: 15-30 minutes
-
 **Prerequisites**: None (or Module 1 complete if they did the demo)
 
 1. **Set up project directory structure**: Follow the directory creation commands from the agent-instructions steering file. After creating the structure, explain the purpose of each folder to the user.

@@ -18,10 +18,10 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 **New users:** Say "start the bootcamp" to begin. Choose your path:
 
-- A) Quick Demo (10 min + Module 0 setup) — Module 1 (requires SDK from Module 0)
-- B) Fast Track (30 min) — Modules 5-6 (for users with SGES-compliant data)
-- C) Complete Beginner (2-3 hrs) — Modules 2-6, 8 (Module 0 auto-inserted before 6)
-- D) Full Production (10-18 hrs) — All Modules 0-12
+- A) Quick Demo — Module 1 (requires SDK from Module 0)
+- B) Fast Track — Modules 5-6 (for users with SGES-compliant data)
+- C) Complete Beginner — Modules 2-6, 8 (Module 0 auto-inserted before 6)
+- D) Full Production — All Modules 0-12
 
 **Experienced users:** Skip to Module 5 (have SGES data), Module 6 (SDK + data ready), or Module 8 (data loaded).
 
@@ -126,21 +126,21 @@ Always call `get_capabilities` first when starting a session.
 
 ## Bootcamp Modules
 
-| Module | Topic                              | Time                           |
-|--------|------------------------------------|--------------------------------|
-| 0      | Set Up SDK                         | 30 min - 1 hr                  |
-| 1      | Quick Demo (Optional)              | 10-15 min                      |
-| 2      | Understand Business Problem        | 20-30 min                      |
-| 3      | Identify and Collect Data Sources  | 10-15 min/source               |
-| 4      | Evaluate Data Quality              | 15-20 min/source               |
-| 5      | Map Your Data                      | 1-2 hrs/source                 |
-| 6      | Load Single Data Source            | 30 min/source                  |
-| 7      | Multi-Source Orchestration         | 1-2 hrs                        |
-| 8      | Query and Validate Results         | 1-2 hrs                        |
-| 9      | Performance Testing                | 1-2 hrs                        |
-| 10     | Security Hardening                 | 2-8 hrs (varies by compliance) |
-| 11     | Monitoring and Observability       | 60-90 min                      |
-| 12     | Package and Deploy                 | 2-4 hrs (varies by target)     |
+| Module | Topic                              |
+|--------|------------------------------------|
+| 0      | Set Up SDK                         |
+| 1      | Quick Demo (Optional)              |
+| 2      | Understand Business Problem        |
+| 3      | Identify and Collect Data Sources  |
+| 4      | Evaluate Data Quality              |
+| 5      | Map Your Data                      |
+| 6      | Load Single Data Source            |
+| 7      | Multi-Source Orchestration         |
+| 8      | Query and Validate Results         |
+| 9      | Performance Testing                |
+| 10     | Security Hardening                 |
+| 11     | Monitoring and Observability       |
+| 12     | Package and Deploy                 |
 
 Modules are progressive but iterative. Skip ahead options: have SGES data (skip 5), single source (skip 7), not deploying to production (skip 9-12). Modules 9-12 are production-focused and optional for learning/evaluation.
 

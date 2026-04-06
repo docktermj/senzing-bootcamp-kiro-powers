@@ -12,8 +12,6 @@ Use this workflow to set up comprehensive monitoring, structured logging, dashbo
 
 **Important**: Monitoring is not a one-time setup. As the system evolves — new data sources, changing volumes, configuration tuning — monitoring must evolve with it. Encourage the user to revisit and refine their monitoring setup as their deployment matures.
 
-**Time**: 60-90 minutes
-
 **Language**: Use the bootcamper's chosen programming language from the language selection step. All code generation, scaffold calls, and examples in this module must use that language. Reference it as `<chosen_language>` throughout.
 
 **Prerequisites**:

@@ -8,8 +8,6 @@ Module 6 focuses on loading ONE data source into Senzing and verifying the resul
 
 **Focus:** Load a single data source successfully and understand the loading process.
 
-**Time:** 30 minutes per data source
-
 ## Prerequisites
 
 - ✅ Module 0 complete (SDK installed and configured)

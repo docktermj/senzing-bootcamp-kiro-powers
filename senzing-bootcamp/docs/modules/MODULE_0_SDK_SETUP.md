@@ -6,7 +6,6 @@
 
 Module 0 installs and configures the Senzing SDK natively on your machine. This is the first step of the bootcamp — once the SDK is installed, all subsequent modules use it directly.
 
-**Time:** 30 minutes - 1 hour
 **Prerequisites:** None (this is the first module)
 **Output:** Installed SDK, configured database, verified installation
 

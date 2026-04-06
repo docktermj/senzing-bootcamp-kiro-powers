@@ -127,6 +127,7 @@
     "Npgsql",
     "nunique",
     "okey",
+    "openpyxl",
     "orjson",
     "Overpromised",
     "pathlib",

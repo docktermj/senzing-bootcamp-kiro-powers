@@ -178,8 +178,8 @@ my-senzing-project/
 ### ✅ Step 6: Time and Resources
 
 - [ ] **Time Commitment**
-  - 2-3 hours for quick start (Modules 2-6, 8)
-  - 10-18 hours for complete bootcamp (Modules 0-12)
+  - Time varies by path and data complexity
+  - The complexity estimator provides personalized estimates after Module 2
   - Flexible schedule for iterative work
 
 - [ ] **Team Resources** (if applicable)

@@ -10,8 +10,6 @@ inclusion: manual
 
 Implement production-grade security measures for your Senzing entity resolution system. This module covers secrets management, authentication, authorization, encryption, audit logging, input validation, network security, and Senzing-specific security concerns.
 
-**Time**: Varies significantly by compliance requirements (2-8 hrs). Simple setups with environment variables and basic TLS may take 2 hours. Full compliance implementations (HIPAA, PCI-DSS) with vault integration, field-level encryption, and comprehensive audit logging can take a full day or more.
-
 **Language**: Use the bootcamper's chosen programming language (`<chosen_language>`) from the language selection step. All code generation, scaffold calls, and examples in this module must use that language.
 
 **Prerequisites**:

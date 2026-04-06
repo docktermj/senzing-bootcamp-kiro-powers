@@ -6,7 +6,6 @@
 
 Module 5 transforms your source data into Senzing's Generic Entity Specification (SGES) format. This is where you map your data fields to Senzing attributes, creating transformation programs for each data source.
 
-**Time:** 1-2 hours per data source
 **Prerequisites:** ✅ Module 4 complete (data quality evaluated)
 **Output:** Transformation programs, mapped data files, quality validation
 

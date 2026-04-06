@@ -10,7 +10,7 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 
 **[QUICK_START.md](QUICK_START.md)**
 
-- Three fast paths (10 min, 30 min, 2 hours)
+- Three fast paths to get started
 - Choose your learning path
 - Get started quickly
 

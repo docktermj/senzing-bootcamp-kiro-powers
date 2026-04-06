@@ -6,7 +6,6 @@
 
 Module 2 helps you define your entity resolution problem, identify data sources, and create a clear project plan. This foundation ensures the rest of the bootcamp is tailored to your specific needs.
 
-**Time:** 20-30 minutes
 **Prerequisites:** None (or Module 1 complete if you did the demo)
 **Output:** Business problem statement document, project directory structure, cost estimate
 

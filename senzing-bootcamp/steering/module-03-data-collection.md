@@ -8,8 +8,6 @@ inclusion: manual
 
 ## Workflow: Identify and Collect Data Sources (Module 3)
 
-**Time**: 10-15 minutes per data source
-
 **Prerequisites**: ✅ Module 2 complete (business problem defined, data sources identified)
 
 **Purpose**: Collect the actual data files from each identified data source and store them in the project for analysis and mapping.

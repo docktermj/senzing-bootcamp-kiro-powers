@@ -270,21 +270,21 @@ Module 0 ──────────────────────→ M
 
 ## Quick Reference
 
-| Module | Time             | Required For           |
-|--------|------------------|------------------------|
-| 0      | 30 min - 1 hr    | All projects           |
-| 1      | 10-15 min        | Optional               |
-| 2      | 20-30 min        | All projects           |
-| 3      | 10-15 min/source | All projects           |
-| 4      | 15-20 min/source | All projects           |
-| 5      | 1-2 hrs/source   | All projects           |
-| 6      | 30 min/source    | All projects           |
-| 7      | 1-2 hours        | Multi-source projects  |
-| 8      | 1-2 hours        | All projects           |
-| 9      | 1-2 hours        | Production deployments |
-| 10     | 2-8 hours        | Production deployments |
-| 11     | 60-90 min        | Production deployments |
-| 12     | 2-4 hours        | Production deployments |
+| Module | Required For           |
+|--------|------------------------|
+| 0      | All projects           |
+| 1      | Optional               |
+| 2      | All projects           |
+| 3      | All projects           |
+| 4      | All projects           |
+| 5      | All projects           |
+| 6      | All projects           |
+| 7      | Multi-source projects  |
+| 8      | All projects           |
+| 9      | Production deployments |
+| 10     | Production deployments |
+| 11     | Production deployments |
+| 12     | Production deployments |
 
 ## Related Documentation
 

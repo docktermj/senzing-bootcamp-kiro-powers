@@ -10,7 +10,6 @@
 ┌──────────────────────┐
 │   MODULE 1 (Optional)│
 │    Quick Demo        │
-│    10-15 minutes     │
 │                      │
 │  • Sample data       │
 │  • Live resolution   │
@@ -21,7 +20,6 @@
 ┌──────────────────────┐
 │      MODULE 2        │
 │  Business Problem    │
-│    20-30 minutes     │
 │                      │
 │  • Define problem    │
 │  • Design patterns   │
@@ -32,7 +30,6 @@
 ┌──────────────────────┐
 │      MODULE 3        │
 │  Data Collection     │
-│  10-15 min/source    │
 │                      │
 │  • Identify sources  │
 │  • Collect data      │
@@ -43,7 +40,6 @@
 ┌──────────────────────┐
 │      MODULE 4        │
 │   Data Quality       │
-│  15-20 min/source    │
 │                      │
 │  • Quality scoring   │
 │  • Completeness      │
@@ -54,7 +50,6 @@
 ┌──────────────────────┐
 │      MODULE 5        │
 │   Data Mapping       │
-│   1-2 hrs/source     │
 │                      │
 │  • Transform data    │
 │  • Map attributes    │
@@ -65,7 +60,6 @@
 ┌──────────────────────┐
 │      MODULE 0        │
 │    SDK Setup         │
-│   30 min - 1 hour    │
 │                      │
 │  • Install SDK       │
 │  • Configure DB      │
@@ -76,7 +70,6 @@
 ┌──────────────────────┐
 │      MODULE 6        │
 │  Single Source Load  │
-│   30 min/source      │
 │                      │
 │  • Load one source   │
 │  • Verify results    │
@@ -89,7 +82,6 @@
 ┌──────────────────────┐  ┌──────────────────────┐
 │      MODULE 7        │  │   Skip if single     │
 │  Multi-Source Orch.  │  │   source only        │
-│      1-2 hours       │  └──────────────────────┘
 │                      │
 │  • Dependencies      │
 │  • Load order        │
@@ -100,7 +92,6 @@
 ┌──────────────────────┐
 │      MODULE 8        │
 │ Query & Validation   │
-│      1-2 hours       │
 │                      │
 │  • Create queries    │
 │  • UAT testing       │
@@ -113,7 +104,6 @@
 ┌──────────────────────┐  ┌──────────────────────┐
 │      MODULE 9        │  │   Skip if not        │
 │ Performance Testing  │  │   production         │
-│      1-2 hours       │  └──────────────────────┘
 │                      │
 │  • Benchmarking      │
 │  • Optimization      │
@@ -124,7 +114,6 @@
 ┌──────────────────────┐
 │     MODULE 10        │
 │ Security Hardening   │
-│    2-8 hours         │
 │                      │
 │  • Secrets mgmt      │
 │  • Encryption        │
@@ -135,7 +124,6 @@
 ┌──────────────────────┐
 │     MODULE 11        │
 │     Monitoring       │
-│    60-90 minutes     │
 │                      │
 │  • Logging           │
 │  • Metrics           │
@@ -146,7 +134,6 @@
 ┌──────────────────────┐
 │     MODULE 12        │
 │     Deployment       │
-│      2-4 hours       │
 │                      │
 │  • Package code      │
 │  • Multi-env config  │
@@ -165,27 +152,27 @@
 
 ## Learning Paths
 
-### Path A: Quick Demo (10 minutes)
+### Path A: Quick Demo
 
 ```text
 Module 1 → Done
 ```
 
-### Path B: Fast Track (30 minutes)
+### Path B: Fast Track
 
 ```text
 Module 0 → Module 6 → Done
 (For users with SGES-compliant data)
 ```
 
-### Path C: Complete Beginner (2-3 hours)
+### Path C: Complete Beginner
 
 ```text
 Module 2 → Module 3 → Module 4 → Module 5 →
 Module 0 → Module 6 → Module 8 → Done
 ```
 
-### Path D: Full Production (10-18 hours)
+### Path D: Full Production
 
 ```text
 Module 1 → Module 2 → Module 3 → Module 4 → Module 5 →
@@ -231,30 +218,6 @@ Module 12: Requires Module 11 (optional)
 │ Module 11: Yes (if basic monitoring sufficient)         │
 │ Module 12: Yes (if not deploying to production)         │
 └─────────────────────────────────────────────────────────┘
-```
-
-## Time Estimates
-
-```text
-┌──────────────────────────────────────────────────────────┐
-│ Module                    │ Time Estimate                │
-├──────────────────────────────────────────────────────────┤
-│ Module 0: SDK Setup       │ 30 minutes - 1 hour          │
-│ Module 1: Quick Demo      │ 10-15 minutes                │
-│ Module 2: Business        │ 20-30 minutes                │
-│ Module 3: Collection      │ 10-15 min per source         │
-│ Module 4: Quality         │ 15-20 min per source         │
-│ Module 5: Mapping         │ 1-2 hours per source         │
-│ Module 6: Loading         │ 30 minutes per source        │
-│ Module 7: Orchestration   │ 1-2 hours                    │
-│ Module 8: Queries         │ 1-2 hours                    │
-│ Module 9: Performance     │ 1-2 hours                    │
-│ Module 10: Security       │ 2-8 hours                    │
-│ Module 11: Monitoring     │ 60-90 minutes                │
-│ Module 12: Deployment     │ 2-4 hours                    │
-├──────────────────────────────────────────────────────────┤
-│ TOTAL (all modules)       │ 10-20 hours                  │
-└──────────────────────────────────────────────────────────┘
 ```
 
 ## Module Outputs

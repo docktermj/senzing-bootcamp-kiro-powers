@@ -8,8 +8,6 @@ Module 8 focuses on creating query programs to explore entity resolution results
 
 **Focus:** Query resolved entities and validate results against business requirements.
 
-**Time:** 1-2 hours
-
 ## Prerequisites
 
 - ✅ Module 7 complete (all sources loaded) OR Module 6 complete (single source loaded)

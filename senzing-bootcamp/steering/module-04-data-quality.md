@@ -8,8 +8,6 @@ inclusion: manual
 
 ## Workflow: Verify Data Sources Against SGES (Module 4)
 
-**Time**: 10 minutes per data source
-
 **Prerequisites**: ✅ Module 3 complete (data sources collected, files in `data/raw/`)
 
 1. **List the agreed-upon data sources**: Recap the data sources identified during the business problem discussion. Review `docs/business_problem.md` for the list.

@@ -10,8 +10,6 @@ inclusion: manual
 
 Take the entity resolution pipeline built throughout the bootcamp and prepare it for production deployment. This module covers containerization, database migration, configuration management, CI/CD pipelines, API layers, scaling, and operational readiness.
 
-**Time**: 2-4 hours (varies significantly by deployment target and infrastructure)
-
 **Language**: Use the bootcamper's chosen programming language from the language selection step. All code generation, scaffold calls, and examples in this module must use `<chosen_language>`.
 
 **Prerequisites**:

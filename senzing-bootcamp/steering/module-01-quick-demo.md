@@ -12,8 +12,6 @@ Use this workflow when a user wants to see entity resolution in action before wo
 
 **IMPORTANT**: This module must actually run the Senzing SDK to demonstrate real entity resolution, not just describe it. The goal is to create an "aha moment" where users see the technology working.
 
-**Time**: 10-15 minutes
-
 **Language**: Use the bootcamper's chosen programming language from the language selection step. All code generation, scaffold calls, and examples in this module must use that language.
 
 **IMPORTANT**: Before starting Module 1, ensure the project directory structure exists. If the user is starting with Module 1 (before Module 2), create the full project structure first.

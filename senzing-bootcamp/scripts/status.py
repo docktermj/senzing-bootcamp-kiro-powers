@@ -41,19 +41,19 @@ MODULE_NAMES = {
 }
 
 NEXT_STEPS = {
-    0:  ("Start Module 0: SDK Setup (30 min - 1 hr)", "Install and configure Senzing SDK"),
-    1:  ("Start Module 1: Quick Demo (10-15 min)", "See entity resolution in action with sample data"),
-    2:  ("Start Module 2: Business Problem (20-30 min)", "Define your problem and identify data sources"),
-    3:  ("Start Module 3: Data Collection (10-15 min per source)", "Upload or link to data source files"),
-    4:  ("Start Module 4: Data Quality (15-20 min per source)", "Evaluate data quality with automated scoring"),
-    5:  ("Start Module 5: Data Mapping (1-2 hrs per source)", "Create transformation programs"),
-    6:  ("Start Module 6: Single Source Loading (30 min per source)", "Load your first data source"),
-    7:  ("Start Module 7: Multi-Source Orchestration (1-2 hrs)", "Manage dependencies between sources"),
-    8:  ("Start Module 8: Query & Validation (1-2 hrs)", "Create query programs and validate results"),
-    9:  ("Start Module 9: Performance Testing (1-2 hrs)", "Benchmark and optimize performance"),
-    10: ("Start Module 10: Security Hardening (1-2 hrs)", "Implement security best practices"),
-    11: ("Start Module 11: Monitoring (1-2 hrs)", "Set up monitoring and observability"),
-    12: ("Start Module 12: Deployment (2-3 hrs)", "Package and deploy to production"),
+    0:  ("Start Module 0: SDK Setup", "Install and configure Senzing SDK"),
+    1:  ("Start Module 1: Quick Demo", "See entity resolution in action with sample data"),
+    2:  ("Start Module 2: Business Problem", "Define your problem and identify data sources"),
+    3:  ("Start Module 3: Data Collection", "Upload or link to data source files"),
+    4:  ("Start Module 4: Data Quality", "Evaluate data quality with automated scoring"),
+    5:  ("Start Module 5: Data Mapping", "Create transformation programs"),
+    6:  ("Start Module 6: Single Source Loading", "Load your first data source"),
+    7:  ("Start Module 7: Multi-Source Orchestration", "Manage dependencies between sources"),
+    8:  ("Start Module 8: Query & Validation", "Create query programs and validate results"),
+    9:  ("Start Module 9: Performance Testing", "Benchmark and optimize performance"),
+    10: ("Start Module 10: Security Hardening", "Implement security best practices"),
+    11: ("Start Module 11: Monitoring", "Set up monitoring and observability"),
+    12: ("Start Module 12: Deployment", "Package and deploy to production"),
 }
 
 

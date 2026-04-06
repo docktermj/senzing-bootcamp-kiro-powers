@@ -8,8 +8,6 @@ inclusion: manual
 
 Install and configure the Senzing SDK natively on your machine. This is the first step of the bootcamp — once the SDK is installed, all subsequent modules use it directly.
 
-**Time**: 30 minutes - 1 hour
-
 **Prerequisites**: None (this is the first module)
 
 **Language**: Use the bootcamper's chosen programming language from the language selection step in agent-instructions. All code generation, scaffold calls, and examples in this module must use that language.
@@ -78,7 +76,7 @@ WAIT for response.
 
 **If they don't have a license**:
 
-- Inform them: "No problem. The SDK includes built-in evaluation limits that are fine for the bootcamp. If you'd like a full evaluation license later, you can email support@senzing.com."
+- Inform them: "No problem. The SDK includes built-in evaluation limits that are fine for the bootcamp. If you'd like a full evaluation license later, you can email <support@senzing.com>."
 - Record in `config/bootcamp_preferences.yaml`:
 
   ```yaml

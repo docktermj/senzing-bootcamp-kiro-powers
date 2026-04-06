@@ -10,8 +10,6 @@ inclusion: manual
 
 Benchmark, profile, and optimize your Senzing entity resolution pipeline for production-grade performance. This module takes the working system from Modules 6-8 and ensures it meets real-world throughput, latency, and scalability requirements.
 
-**Time**: 1-2 hours (varies with data volume and optimization cycles)
-
 **Language**: Use the bootcamper's chosen programming language throughout. All code generation, scaffold calls, benchmark scripts, and examples must use `<chosen_language>`.
 
 **Prerequisites**:

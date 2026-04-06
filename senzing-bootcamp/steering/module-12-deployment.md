@@ -20,6 +20,8 @@ Take the entity resolution pipeline built throughout the bootcamp and prepare it
 - ✅ Performance benchmarks documented (Module 9)
 - ✅ All data sources mapped and loading successfully (Modules 5-7)
 
+**Cloud-aware guidance**: Read `cloud_provider` from `config/bootcamp_preferences.yaml`. If the bootcamper chose AWS, tailor deployment guidance to AWS services — use ECS or EKS for container orchestration, ECR for container registry, RDS/Aurora for database, and CodePipeline or GitHub Actions with AWS deployment targets for CI/CD. Adapt examples and MCP tool calls accordingly.
+
 **Before starting**: The agent MUST call the following to check for known deployment pitfalls:
 
 > **Agent instruction:** Call `search_docs(query='deployment', category='anti_patterns', version='current')` before giving any deployment advice. Key pitfalls include Docker base image issues, wrong SDK paths, initialization race conditions, and database connection pooling mistakes. Review the results and keep them in context throughout this module.

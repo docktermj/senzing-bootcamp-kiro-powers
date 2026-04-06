@@ -63,3 +63,23 @@ mapping_workflow(action="start", file_paths=["data/raw/customers.csv"])
 - Bootcampers work in their preferred language from day one
 - Generated code follows current Senzing best practices and correct method names
 - Automatically adapts when the SDK introduces breaking changes
+
+## Creating Your Own Reusable Templates
+
+As you work through the bootcamp, the agent generates code tailored to your data. To turn that generated code into reusable templates for future projects:
+
+1. **After Module 5** — your transformation programs in `src/transform/` are already templates. Copy them to a new project and change the field mappings for different data sources.
+2. **After Module 6** — your loading programs in `src/load/` work for any JSONL file. The only thing that changes between projects is the file path and DATA_SOURCE name.
+3. **After Module 8** — your query programs in `src/query/` are reusable patterns. The search attributes change, but the structure stays the same.
+
+To save a template for reuse:
+
+```text
+# Copy a working program to a templates directory in your own project
+mkdir -p my-templates/
+cp src/transform/transform_customers.[ext] my-templates/transform_template.[ext]
+cp src/load/load_customers.[ext] my-templates/load_template.[ext]
+cp src/query/find_duplicates.[ext] my-templates/query_template.[ext]
+```
+
+Then for your next project, copy the template and customize the data-specific parts (file paths, field mappings, DATA_SOURCE names).

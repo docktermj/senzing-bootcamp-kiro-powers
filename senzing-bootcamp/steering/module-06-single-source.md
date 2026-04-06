@@ -72,3 +72,18 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 9. **Repeat for remaining data sources**: If there are more data sources to load, repeat this entire workflow for each one. Each data source should have its own loading program.
 
 10. **Transition to Module 7**: Once all data sources have been loaded, proceed to Module 7 (Multi-Source Orchestration) to orchestrate loading of multiple sources with dependencies. If you only have one data source, skip to Module 8 (Query and Validate Results).
+
+## Recovery from Failed Load
+
+If loading fails partway through (crash, error, disk full, etc.):
+
+1. **Check what loaded** — query a few known RECORD_IDs using `get_entity_by_record_id` to see if they exist. The loading program's progress counter tells you approximately how far it got.
+2. **Decide — wipe and restart vs. resume:**
+   - **Wipe and restart** (simpler): Restore the database from the backup created before loading (use `python scripts/restore_project.py`), fix the issue, and re-run the loading program from the beginning.
+   - **Resume from where it stopped** (faster for large loads): Modify the loading program to skip records that are already loaded. The simplest approach is to track the last successfully loaded RECORD_ID and start from the next one.
+3. **If the database is corrupted** — restore from backup. This is why the `backup-before-load` hook exists. If no backup exists, delete `database/G2C.db` and re-run Module 0's database configuration step, then reload.
+4. **Common causes of mid-load failure:**
+   - Disk full → free space or move database to a larger volume
+   - Out of memory → reduce batch size or add RAM
+   - Invalid records → check the error log, fix the transformation, and reload the bad records
+   - Network timeout (remote database) → check connection and retry

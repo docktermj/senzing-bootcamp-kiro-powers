@@ -189,6 +189,7 @@ All scripts are cross-platform Python (Linux, macOS, Windows). Use `python3` on 
 
 ```text
 python3 scripts/status.py              # Check progress
+python3 scripts/status.py --sync       # Sync progress to PROGRESS_TRACKER.md
 python3 scripts/check_prerequisites.py # Validate prerequisites
 python3 scripts/validate_module.py     # Validate current module completion
 python3 scripts/validate_module.py --next 6  # Check if ready for module 6

@@ -254,6 +254,20 @@ If you started with SQLite and need to switch to PostgreSQL (common when reachin
 **Problem**: DATA_SOURCE doesn't match registered name
 **Solution**: Verify DATA_SOURCE matches Module 0 configuration
 
+### Pitfall: Duplicate RECORD_IDs Within a Source
+
+**Symptom**: Record count after loading is lower than expected; some records seem to disappear
+**Problem**: If two records in the same DATA_SOURCE have the same RECORD_ID, Senzing treats the second as an update — it overwrites the first, not adds alongside it
+**Solution**: Ensure RECORD_IDs are unique within each DATA_SOURCE. Check for duplicates before loading:
+
+```text
+-- Count duplicate RECORD_IDs in your JSONL file
+-- Read each line, extract RECORD_ID, count occurrences
+-- Flag any RECORD_ID that appears more than once
+```
+
+If your source data naturally has duplicates, append a sequence number or use a composite key (e.g., `source_id + "_" + row_number`).
+
 ### Pitfall: Poor DATA_SOURCE Naming
 
 **Symptom**: Confusing data source names like `file1`, `data`, `test`
@@ -372,6 +386,27 @@ Rules: uppercase, no spaces, no special characters beyond underscores, descripti
 **Solution**: Complete Module 12 DR planning and test backups
 
 ## General Pitfalls
+
+### Pitfall: Corporate Proxy or Firewall Blocking MCP
+
+**Symptom**: MCP tool calls time out or return connection errors; `mcp.senzing.com` is unreachable
+**Problem**: Corporate firewalls or proxy servers block outbound HTTPS to `mcp.senzing.com:443`
+**Solution**:
+
+1. Verify connectivity: `curl -s https://mcp.senzing.com/mcp` — if this times out, the network is blocking it.
+2. Ask your IT team to allowlist `mcp.senzing.com` on port 443 (HTTPS).
+3. If you're behind an HTTP proxy, configure it in your environment:
+
+   ```bash
+   # Linux/macOS
+   export HTTPS_PROXY=http://proxy.company.com:8080
+
+   # Windows (PowerShell)
+   $env:HTTPS_PROXY = "http://proxy.company.com:8080"
+   ```
+
+4. If the proxy requires authentication, include credentials: `http://user:password@proxy.company.com:8080`
+5. While waiting for network access, you can still work on Modules 2-4 (business problem, data collection, data quality) which don't require MCP calls.
 
 ### Pitfall: Not Reading Error Messages
 

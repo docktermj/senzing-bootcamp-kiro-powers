@@ -87,7 +87,7 @@ python scripts/restore_project.py backups/senzing-bootcamp-backup_YYYYMMDD_HHMMS
 
 ### MCP server isn't connecting?
 
-Check internet, verify firewall allows `mcp.senzing.com:443`, check `senzing-bootcamp/mcp.json`, restart Kiro.
+Check internet, verify firewall allows `mcp.senzing.com:443`, check `senzing-bootcamp/mcp.json`, restart Kiro. If you're behind a corporate proxy, set `HTTPS_PROXY` in your environment. See `steering/common-pitfalls.md` for details.
 
 ### Getting a SENZ error code?
 
@@ -96,6 +96,22 @@ Use the MCP tool: `explain_error_code("SENZ0005")`. It covers 456 error codes wi
 ### Files created in wrong location?
 
 Review `docs/policies/FILE_STORAGE_POLICY.md` and relocate files to the correct directories.
+
+### What if I run out of disk space during loading?
+
+Stop the loading program, free disk space (clear `data/temp/`, remove old backups from `backups/`, or move the database to a larger volume), then resume or restart loading. The `backup-before-load` hook helps you recover if the database is corrupted.
+
+### Can I run multiple bootcamp projects on the same machine?
+
+Yes. Each project has its own directory with its own `database/G2C.db`, `config/`, and `src/`. They don't interfere with each other as long as you use project-local paths (which the FILE_STORAGE_POLICY enforces).
+
+### What if my data has non-English names?
+
+Senzing handles non-Latin characters (Cyrillic, CJK, Arabic, etc.) natively. During Module 5 (Data Mapping), the agent will use `search_docs(query="globalization")` for character set guidance. Make sure your source files are UTF-8 encoded — see the encoding guidance in `steering/module-05-data-mapping.md`.
+
+### What if my internet connection drops during an MCP call?
+
+The agent will retry once automatically. If it still fails, you'll be told the MCP server isn't responding. You can continue working on non-MCP tasks (documentation, data collection, code review) and retry when connectivity returns. See the MCP Failure Recovery section in `steering/agent-instructions.md`.
 
 ### For Senzing-specific questions
 

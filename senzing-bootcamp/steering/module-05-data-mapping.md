@@ -154,3 +154,13 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 - NEVER guess method signatures — use `generate_scaffold` or `get_sdk_reference` for correct API calls.
 - NEVER save files to `/tmp/` or any system temporary directory — all resources, profiler output, scripts, and generated files must stay in the project directory. Downloaded resources go in `data/temp/` or `data/raw/`, profiler scripts go in `scripts/` or `src/transform/`, and generated output goes in `data/transformed/`. See `docs/policies/FILE_STORAGE_POLICY.md`.
 - Always validate output with `analyze_record` before proceeding to loading.
+
+### Handling Encoding and Special Characters
+
+Source data may have encoding issues that cause silent data corruption during transformation. Check for these before mapping:
+
+- **Detect encoding**: If the source file isn't UTF-8, the profiler step (Step 1) may show garbled characters. Common encodings: Latin-1 (ISO-8859-1), Windows-1252, Shift-JIS, GB2312.
+- **Convert to UTF-8**: The transformation program should read the source file in its original encoding and write UTF-8 output. Most languages have built-in encoding support (e.g., Python's `open(file, encoding='latin-1')`, Java's `InputStreamReader` with charset).
+- **Non-Latin characters**: If the data contains Cyrillic, CJK, Arabic, or other non-Latin scripts, use `search_docs(query="globalization", category="globalization", version="current")` for Senzing's transliteration and character handling guidance.
+- **Special characters in field values**: Ensure JSON output properly escapes special characters (quotes, backslashes, control characters). Most JSON serialization libraries handle this automatically.
+- **BOM (Byte Order Mark)**: Some Windows-generated CSV files start with a UTF-8 BOM (`\xEF\xBB\xBF`). Strip it during reading or it will corrupt the first field name.

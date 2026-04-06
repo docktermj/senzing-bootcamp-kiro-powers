@@ -21,9 +21,11 @@ Use this workflow to set up comprehensive monitoring, structured logging, dashbo
 - ✅ Query and validation complete (Module 8 complete)
 - ✅ Production environment identified or planned
 
+**Cloud-aware guidance**: Read `cloud_provider` from `config/bootcamp_preferences.yaml`. If the bootcamper chose AWS, tailor monitoring guidance to AWS services — use CloudWatch for metrics and logs, SNS for alerting, and X-Ray for tracing. If they chose a different provider or on-premises, adapt accordingly.
+
 **Before starting**: Confirm the user's deployment context. Monitoring choices depend heavily on environment:
 
-- Cloud provider (AWS, Azure, GCP) or on-premises
+- Cloud provider (AWS, Azure, GCP) or on-premises — check `config/bootcamp_preferences.yaml` for the choice made at the 8→9 gate
 - Container orchestration (Kubernetes, ECS, bare metal)
 - Existing monitoring infrastructure (Prometheus, Datadog, CloudWatch, etc.)
 - Team size and on-call structure

@@ -19,6 +19,8 @@ Implement production-grade security measures for your Senzing entity resolution 
 - ✅ Compliance needs documented (or will be documented in Step 1)
 - ✅ Working Senzing deployment to harden
 
+**Cloud-aware guidance**: Read `cloud_provider` from `config/bootcamp_preferences.yaml`. If the bootcamper chose AWS, tailor security guidance to AWS services — use AWS Secrets Manager for credentials, IAM roles for access control, KMS for encryption, and CloudTrail for audit logging. Adapt examples and MCP tool calls accordingly.
+
 **Before starting**: Call `search_docs(query='security best practices', version='current')` to retrieve the latest Senzing security guidance. Review the results and incorporate any platform-specific recommendations into the workflow below.
 
 ## Step 1: Assess Security and Compliance Requirements

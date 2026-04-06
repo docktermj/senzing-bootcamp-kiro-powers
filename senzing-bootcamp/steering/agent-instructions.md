@@ -52,7 +52,7 @@ After directory structure is confirmed and before the prerequisite check, ask th
 
    However, always confirm with the MCP server — do not rely on this list alone.
 
-3. **Ask the bootcamper**: "Which programming language would you like to use for the bootcamp? The Senzing SDK supports: [list from MCP]. All generated code, templates, and examples will use your chosen language."
+3. **Ask the bootcamper:** "Which programming language would you like to use for the bootcamp? The Senzing SDK supports: [list from MCP]. All generated code, templates, and examples will use your chosen language."
 
 4. **WAIT for their response** before proceeding.
 
@@ -68,9 +68,9 @@ After directory structure is confirmed and before the prerequisite check, ask th
 
    If `config/bootcamp_preferences.yaml` already exists (from a previous session), read the language from it and confirm with the user: "Last time you chose [language]. Would you like to continue with that, or switch?"
 
-7. **Platform compatibility note**: If the bootcamper chooses Python, inform them that the Senzing Python SDK is only supported on Linux. On macOS or Windows, they should either pick a different language or use Docker/WSL2. Always detect the user's OS (`sys.platform` or `platform.system()`) and adapt commands accordingly — use forward-slash paths on Linux/macOS and backslash or `os.path.join` on Windows; use `python3` on Linux/macOS and `python` on Windows.
+7. **Platform compatibility note:** If the bootcamper chooses Python, inform them that the Senzing Python SDK is only supported on Linux. On macOS or Windows, they should either pick a different language or use Docker/WSL2. Always detect the user's OS (`sys.platform` or `platform.system()`) and adapt commands accordingly — use forward-slash paths on Linux/macOS and backslash or `os.path.join` on Windows; use `python3` on Linux/macOS and `python` on Windows.
 
-8. **Code quality standards**: Apply language-appropriate coding standards:
+8. **Code quality standards:** Apply language-appropriate coding standards:
    - Python → PEP-8 (see `docs/policies/CODE_QUALITY_STANDARDS.md`)
    - Java → Standard Java conventions (camelCase methods, PascalCase classes, Javadoc)
    - C# → .NET conventions (PascalCase methods and classes, XML doc comments)
@@ -88,7 +88,7 @@ started_at: <ISO 8601 timestamp>  # When the bootcamp started
 current_module: <number>          # Last module worked on
 ```
 
-The `license` and `license_path` fields are added later during Module 0 (SDK Setup). When writing to this file, always read the existing content first and merge — never overwrite fields set by a previous action.
+The `license` and `license_path` fields are added later during Module 0 (SDK Setup). The `cloud_provider` field is added at the Module 8→9 gate (e.g., `aws`, `azure`, `gcp`, `on-premises`, or `local`). When writing to this file, always read the existing content first and merge — never overwrite fields set by a previous action.
 
 ## Fourth Action — Platform Prerequisite Check
 
@@ -201,11 +201,11 @@ C) Complete Beginner — Modules 2-6, 8 (Module 0 inserted automatically before 
 D) Full Production — All Modules 0-12
 ```
 
-**Path A note**: Module 0 (SDK Setup) is required before Module 1 (Quick Demo). If Module 0 is not complete, insert it first: "To run the demo, we need the Senzing SDK installed. Let's do Module 0 first — it takes about 30-60 minutes as a one-time setup."
+**Path A note:** Module 0 (SDK Setup) is required before Module 1 (Quick Demo). If Module 0 is not complete, insert it first: "To run the demo, we need the Senzing SDK installed. Let's do Module 0 first — it takes about 30-60 minutes as a one-time setup."
 
-**Path C note**: Module 0 (SDK Setup) is required before Module 6 (Loading). When the user reaches Module 6 on Path C, check if Module 0 is complete. If not, insert it: "Before we can load data, we need to set up the Senzing SDK. Let's do Module 0 now — it takes about 30-60 minutes."
+**Path C note:** Module 0 (SDK Setup) is required before Module 6 (Loading). When the user reaches Module 6 on Path C, check if Module 0 is complete. If not, insert it: "Before we can load data, we need to set up the Senzing SDK. Let's do Module 0 now — it takes about 30-60 minutes."
 
-**Interpreting responses**:
+**Interpreting responses:**
 
 - "A", "demo", "quick demo", "Module 1" → Start Module 1
 - "B", "fast", "fast track" → Start Module 5
@@ -228,11 +228,20 @@ When a user asks to switch paths:
 3. Update `config/bootcamp_preferences.yaml` with the new path.
 4. Resume from the first incomplete module in the new path.
 
+## Changing Language Mid-Bootcamp
+
+If a user wants to switch programming languages after generating code:
+
+1. Update `config/bootcamp_preferences.yaml` with the new language.
+2. **Previously generated code will not work** in the new language — it must be regenerated. Inform the user: "Switching languages means the code we've already generated (in `src/`) will need to be recreated in [new language]. Your data files, documentation, and configuration are unaffected."
+3. For each module that produced code (Modules 1, 5, 6, 7, 8), regenerate using `generate_scaffold` with the new language. The transformation logic and query designs carry forward — only the implementation language changes.
+4. **Do not mix languages** within the bootcamp project. All generated code should use the same language for consistency and maintainability.
+
 ## Steering File Loading
 
 Load the per-module steering file when the user starts a module.
 
-**After Module 2 (Business Problem)**: Once the user has described their data sources and business problem, load `complexity-estimator.md` and run a quick complexity assessment. Present personalized time estimates for their specific data before confirming the path:
+**After Module 2 (Business Problem):** Once the user has described their data sources and business problem, load `complexity-estimator.md` and run a quick complexity assessment. Present personalized time estimates for their specific data before confirming the path:
 
 ```text
 Based on your data:
@@ -274,7 +283,7 @@ Load additional steering files as needed:
 
 ## MCP Tool Usage
 
-**Always use MCP tools for**:
+**Always use MCP tools for:**
 
 - Attribute names → `mapping_workflow`
 - SDK code → `generate_scaffold` or `sdk_guide`
@@ -289,11 +298,11 @@ Load additional steering files as needed:
 - Do not accept recommendations that only work for small data sets (e.g., `exportJSONEntityReport()`). If the MCP server suggests such methods, ask it for a scalable alternative by re-querying with explicit large-scale context.
 - If the MCP server has no scalable alternative, tell the user the limitation and note that the small-data-only approach should be replaced before production use.
 
-**Never**: state Senzing facts from training data, hand-code Senzing JSON attribute names, guess SDK method names, use outdated patterns from training data, skip anti-pattern checks, or proceed without validation. When asked any Senzing-specific question, always use MCP tools to get the authoritative answer.
+**Never:** state Senzing facts from training data, hand-code Senzing JSON attribute names, guess SDK method names, use outdated patterns from training data, skip anti-pattern checks, or proceed without validation. When asked any Senzing-specific question, always use MCP tools to get the authoritative answer.
 
-**MCP response reuse within a session**: Within the same module, you may reuse MCP responses from earlier in the conversation for the same query. Across module boundaries, always re-query the MCP server. If the user explicitly asks you to "look it up again" or "verify that," always make a fresh MCP call regardless.
+**MCP response reuse within a session:** Within the same module, you may reuse MCP responses from earlier in the conversation for the same query. Across module boundaries, always re-query the MCP server. If the user explicitly asks you to "look it up again" or "verify that," always make a fresh MCP call regardless.
 
-**No fabrication when MCP has no answer**: If you query the MCP server and it does not return a definitive answer for a Senzing-specific question, you must NOT infer, guess, or construct an answer from general knowledge. Instead:
+**No fabrication when MCP has no answer:** If you query the MCP server and it does not return a definitive answer for a Senzing-specific question, you must NOT infer, guess, or construct an answer from general knowledge. Instead:
 
 1. Tell the user: "I wasn't able to find definitive documentation for that."
 2. Suggest they check [docs.senzing.com](https://docs.senzing.com) or contact [support@senzing.com](mailto:support@senzing.com) for the authoritative answer.
@@ -314,14 +323,15 @@ Users may close Kiro mid-module and return later. Handle this gracefully:
 
 - **Progress is persisted** in `config/bootcamp_progress.json` — the First Action checks for this on every session start.
 - **Preferences are persisted** in `config/bootcamp_preferences.yaml` — language, path, and license choices survive across sessions.
+- **If progress file is corrupted or missing** — run `python scripts/validate_module.py` to determine actual state by checking which module artifacts exist on disk. Use the results to reconstruct `config/bootcamp_progress.json` manually, or start fresh if the user prefers.
 - **Mapping workflow state is NOT persisted** — if the user was mid-way through `mapping_workflow` when they stopped, that state is lost. Warn users before starting long mapping sessions: "This mapping may take a while. If you need to stop, your module progress is saved, but we'll need to restart the mapping workflow for this data source."
-- **Before starting any module estimated at >30 minutes**, inform the user: "This module typically takes [time]. Your progress is saved automatically, so you can pause and resume anytime. Just note that any in-progress data mapping will need to restart."
+- **Before starting any module**, inform the user: "Your progress is saved automatically, so you can pause and resume anytime. Just note that any in-progress data mapping will need to restart."
 
 ## Validation Gates
 
 Before proceeding to next module, verify and update progress.
 
-**Automated validation**: Run `python scripts/validate_module.py --module N` to check if module N's artifacts are in place. Use `python scripts/validate_module.py --next N` to check if the user is ready to start module N. This catches missing files and documentation before the user moves on.
+**Automated validation:** Run `python scripts/validate_module.py --module N` to check if module N's artifacts are in place. Use `python scripts/validate_module.py --next N` to check if the user is ready to start module N. This catches missing files and documentation before the user moves on.
 
 After each module's validation gate passes, update `config/bootcamp_progress.json`:
 
@@ -351,18 +361,24 @@ Adjust the bar length proportionally (each █ = one completed module out of 13)
 
 Gate checks:
 
-- **0 → 1**: SDK installed, database configured, test script passes
-- **1 → 2**: Demo completed or skipped
-- **2 → 3**: Problem statement documented, data sources identified, success criteria defined
-- **3 → 4**: All data sources collected, files in `data/raw/` or locations documented
-- **4 → 5**: All sources evaluated, SGES compliance determined, sample data available
-- **5 → 6**: All non-compliant sources mapped, transformation programs tested, quality >70%
-- **6 → 7**: All sources loaded, no critical errors, loading statistics captured
-- **7 → 8**: All sources orchestrated (or single source loaded)
-- **8 → 9**: Query programs answer business problem, results validated, documentation complete
-- **9 → 10**: Performance baselines captured, bottlenecks identified and documented, optimization recommendations recorded
-- **10 → 11**: Security checklist complete, no critical vulnerabilities, secrets management configured, compliance documentation updated
-- **11 → 12**: Monitoring dashboards configured, alerting rules defined, health checks passing, runbooks created
+- **0 → 1:** SDK installed, database configured, test script passes
+- **1 → 2:** Demo completed or skipped
+- **2 → 3:** Problem statement documented, data sources identified, success criteria defined
+- **3 → 4:** All data sources collected, files in `data/raw/` or locations documented
+- **4 → 5:** All sources evaluated, SGES compliance determined, sample data available
+- **5 → 6:** All non-compliant sources mapped, transformation programs tested, quality >70%
+- **6 → 7:** All sources loaded, no critical errors, loading statistics captured
+- **7 → 8:** All sources orchestrated (or single source loaded)
+- **8 → 9:** Query programs answer business problem, results validated, documentation complete. **Before starting Module 9**, ask the bootcamper about their production infrastructure:
+
+  Ask: "Now that your entity resolution is working, let's talk about production infrastructure. Modules 9-12 cover performance, security, monitoring, and deployment. Would you like to use AWS for your production environment? AWS options include RDS/Aurora for PostgreSQL, Secrets Manager for credentials, CloudWatch for monitoring, and ECS/EKS for deployment. Or would you prefer a different cloud provider, on-premises, or just continue with local development for now?"
+
+  WAIT for response.
+
+  Persist the choice in `config/bootcamp_preferences.yaml` as `cloud_provider` (e.g., `aws`, `azure`, `gcp`, `on-premises`, or `local`). If the user chooses AWS, Modules 9-12 should use AWS-specific guidance when calling MCP tools (e.g., `sdk_guide` with AWS context, RDS for database tuning, Secrets Manager for security, CloudWatch for monitoring, ECS/EKS for deployment).
+- **9 → 10:** Performance baselines captured, bottlenecks identified and documented, optimization recommendations recorded
+- **10 → 11:** Security checklist complete, no critical vulnerabilities, secrets management configured, compliance documentation updated
+- **11 → 12:** Monitoring dashboards configured, alerting rules defined, health checks passing, runbooks created
 
 ## Error Handling
 
@@ -372,6 +388,19 @@ Gate checks:
 4. Use `search_docs` for context
 5. Provide specific solution, not generic advice
 6. Verify fix before proceeding
+
+## MCP Failure Recovery
+
+If an MCP tool call fails (timeout, connection error, empty response):
+
+1. **Retry once** — transient network issues are common. Wait a few seconds and try the same call again.
+2. **If retry fails**, tell the user: "The Senzing MCP server isn't responding right now. This is usually temporary."
+3. **For `mapping_workflow`** — if state is lost, the workflow must be restarted from `action='start'`. Warn the user before starting long mapping sessions.
+4. **For `generate_scaffold` / `sdk_guide`** — if code generation fails, use `find_examples` as a fallback to find similar patterns from indexed GitHub repos.
+5. **For `search_docs`** — if documentation search fails, suggest the user check [docs.senzing.com](https://docs.senzing.com) directly.
+6. **For `explain_error_code`** — if error lookup fails, tell the user the error code and suggest contacting [support@senzing.com](mailto:support@senzing.com).
+7. **Never fabricate Senzing information** as a substitute for a failed MCP call. It's better to say "I can't look that up right now" than to guess.
+8. **If MCP is down for an extended period**, the user can still work on non-MCP tasks: documenting business problems (Module 2), collecting data (Module 3), reviewing existing code, writing tests, or working on deployment configuration.
 
 ## Communication Style
 
@@ -383,9 +412,9 @@ Gate checks:
 
 ## Feedback Workflow
 
-**Trigger phrases**: "power feedback", "bootcamp feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue"
+**Trigger phrases:** "power feedback", "bootcamp feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue"
 
-**Action**: Load `feedback-workflow.md` and follow the workflow defined there.
+**Action:** Load `feedback-workflow.md` and follow the workflow defined there.
 
 ## Hooks Management
 

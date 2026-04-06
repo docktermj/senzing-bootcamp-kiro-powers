@@ -19,6 +19,9 @@ Benchmark, profile, and optimize your Senzing entity resolution pipeline for pro
 - ✅ Test environment available (dedicated machine or container — not shared dev)
 - ✅ Loading programs from Module 6/7 available in `src/load/`
 - ✅ Query programs from Module 8 available in `src/query/`
+- ✅ Cloud provider preference set in `config/bootcamp_preferences.yaml` (asked at the 8→9 gate)
+
+**Cloud-aware guidance:** If the bootcamper chose AWS at the 8→9 gate, tailor performance testing recommendations to AWS infrastructure — use RDS/Aurora benchmarks for database tuning, reference EC2 instance types for hardware profiling, and note AWS-specific optimization strategies (e.g., RDS read replicas, Aurora Serverless scaling). Read `cloud_provider` from `config/bootcamp_preferences.yaml` and adapt accordingly.
 
 ## Step 1: Establish Performance Requirements
 
@@ -1000,7 +1003,7 @@ Document in `docs/performance_report.md`:
 ## Executive Summary
 [One paragraph: key findings, whether requirements are met, top recommendation]
 
-### ## Performance Requirements vs Actuals
+## Performance Requirements vs Actuals
 
 | Metric                  | Target          | Actual          | Status |
 |-------------------------|-----------------|-----------------|--------|

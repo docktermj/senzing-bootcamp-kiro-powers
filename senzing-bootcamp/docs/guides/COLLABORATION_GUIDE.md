@@ -246,9 +246,18 @@ Review progress weekly:
 
 **For large files:**
 
-1. Cloud storage (S3, Google Drive, Dropbox)
-2. Shared network drive
-3. Data transfer service
+1. **Git LFS** (recommended for teams using git): Track large files without bloating the repo.
+
+   ```bash
+   git lfs install
+   git lfs track "data/raw/*.csv"
+   git lfs track "data/raw/*.json"
+   git add .gitattributes
+   ```
+
+2. **Cloud storage** (S3, Google Drive, Dropbox): Upload large files and share links. Document the location in `docs/data_source_locations.md`.
+3. **Shared network drive**: Mount a shared volume and reference files by path.
+4. **Data transfer service**: For very large datasets (>10GB), use a dedicated transfer tool.
 
 **Document data location:**
 

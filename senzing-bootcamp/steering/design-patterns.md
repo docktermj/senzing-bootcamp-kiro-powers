@@ -239,11 +239,36 @@ When starting Module 2, offer users a gallery of common entity resolution patter
 
 When user starts Module 2:
 
-1. Present this gallery and ask which pattern(s) match their situation
+1. Present the pattern selection guide below to help them identify their pattern
 2. Help them identify the most relevant pattern(s)
 3. Use the selected pattern to guide problem definition
 4. Set realistic expectations based on the pattern's typical outcomes
 5. Recommend key matching attributes to focus on during data mapping (Module 5)
+
+## Which Pattern Fits Your Use Case?
+
+Walk through these questions with the user to narrow down the right pattern:
+
+**Question 1: What type of entities are you matching?**
+
+- People (individuals) → Go to Question 2
+- Organizations (companies, vendors) → Vendor MDM or Supply Chain
+- Both people and organizations → Customer 360 or Data Migration
+
+**Question 2: What's the primary goal?**
+
+- Find duplicates within one system → Marketing Dedup
+- Unify records across multiple systems → Customer 360 or Data Migration
+- Detect bad actors or fraud → Fraud Detection or Claims Fraud
+- Meet regulatory requirements → Compliance Screening or KYC/Onboarding
+- Improve patient care → Patient Matching
+
+**Question 3: Is this a one-time project or ongoing?**
+
+- One-time (migration, cleanup) → Data Migration or Marketing Dedup
+- Ongoing (continuous matching) → Customer 360, Fraud Detection, Compliance Screening
+
+**If the user's use case spans multiple patterns**, help them prioritize: start with the pattern that delivers the most immediate business value, then layer on additional patterns in later iterations.
 
 ## Multiple Patterns
 

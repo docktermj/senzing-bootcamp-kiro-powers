@@ -5,6 +5,32 @@ All notable changes to the Senzing Bootcamp power will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-04-06
+
+### Changed
+
+- Standardized "boot camp" → "bootcamp" (one word) across all 55+ files in the power per naming policy
+- Removed time estimates from all module listings (POWER.md table, QUICK_START.md, module docs, steering files, diagrams, scripts, examples) — the complexity estimator provides personalized estimates instead
+- `steering/agent-instructions.md`: Added MCP Failure Recovery section with retry logic, per-tool fallbacks, and guidance for when MCP is down
+- `steering/agent-instructions.md`: Added "Changing Language Mid-Bootcamp" section explaining code regeneration requirements
+- `steering/agent-instructions.md`: Added progress file corruption recovery guidance referencing `validate_module.py`
+- `steering/agent-instructions.md`: Added AWS/cloud provider infrastructure question at the 8→9 validation gate; choice persisted as `cloud_provider` in `bootcamp_preferences.yaml`
+- `steering/module-09-performance.md`: Added cloud-aware guidance for AWS (RDS/Aurora, EC2 instance types)
+- `steering/module-10-security.md`: Added cloud-aware guidance for AWS (Secrets Manager, IAM, KMS, CloudTrail)
+- `steering/module-11-monitoring.md`: Added cloud-aware guidance for AWS (CloudWatch, SNS, X-Ray)
+- `steering/module-12-deployment.md`: Added cloud-aware guidance for AWS (ECS/EKS, ECR, RDS/Aurora, CodePipeline)
+- `steering/module-06-single-source.md`: Added "Recovery from Failed Load" section covering check/wipe/resume decisions
+- `steering/module-05-data-mapping.md`: Added "Handling Encoding and Special Characters" section (UTF-8 conversion, BOM stripping, non-Latin scripts)
+- `steering/design-patterns.md`: Added "Which Pattern Fits Your Use Case?" decision tree with guided questions
+- `steering/common-pitfalls.md`: Added corporate proxy/firewall pitfall with proxy configuration for all platforms
+- `steering/common-pitfalls.md`: Added duplicate RECORD_ID pitfall explaining overwrite behavior
+- `docs/guides/FAQ.md`: Added 4 new questions (disk space, multiple projects, non-English names, internet drops)
+- `docs/guides/COLLABORATION_GUIDE.md`: Expanded data sharing section with Git LFS instructions
+- `docs/guides/PROGRESS_TRACKER.md`: Simplified to point at `status.py --sync` for auto-generation
+- `scripts/status.py`: Added `--sync` flag that generates PROGRESS_TRACKER.md from bootcamp_progress.json
+- `templates/README.md`: Added "Creating Your Own Reusable Templates" section
+- `POWER.md`: Added `status.py --sync` to useful commands
+
 ## [0.1.9] - 2026-04-03
 
 ### Added

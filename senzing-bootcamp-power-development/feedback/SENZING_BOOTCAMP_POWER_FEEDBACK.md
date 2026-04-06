@@ -1,14 +1,14 @@
-# Senzing Boot Camp Power - Improvement Feedback
+# Senzing Bootcamp Power - Improvement Feedback
 
 **Date:** 2026-03-17
 **Power Version:** 3.0.0
-**Submitted By:** Boot Camp User
+**Submitted By:** Bootcamp User
 
 ---
 
 ## Instructions
 
-This file captures issues, confusion points, and improvement suggestions encountered during the Senzing Boot Camp. Please document problems as you encounter them, then share this file with the power author after completing the boot camp.
+This file captures issues, confusion points, and improvement suggestions encountered during the Senzing Bootcamp. Please document problems as you encounter them, then share this file with the power author after completing the bootcamp.
 
 ---
 
@@ -23,7 +23,7 @@ This file captures issues, confusion points, and improvement suggestions encount
 **Priority:** High
 
 **What Happened:**
-The SDK guide tool returns database path as `/tmp/sqlite/G2C.db`, but the boot camp creates a `database/` directory in the project structure. This creates inconsistency - the SDK guide points to `/tmp` while the project structure expects `database/G2C.db` in the project root.
+The SDK guide tool returns database path as `/tmp/sqlite/G2C.db`, but the bootcamp creates a `database/` directory in the project structure. This creates inconsistency - the SDK guide points to `/tmp` while the project structure expects `database/G2C.db` in the project root.
 
 **Why This Is a Problem:**
 
@@ -66,4 +66,4 @@ If `/tmp/sqlite/` is intentional for quick demos, add explicit documentation exp
 
 ## Submission
 
-When you complete the boot camp, please share this file with the power author.
+When you complete the bootcamp, please share this file with the power author.

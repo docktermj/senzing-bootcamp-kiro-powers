@@ -1,10 +1,10 @@
-# Senzing Boot Camp - Module Flow Diagram
+# Senzing Bootcamp - Module Flow Diagram
 
 ## Complete Module Flow
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    SENZING BOOT CAMP MODULES                        │
+│                    SENZING BOOTCAMP MODULES                        │
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────┐

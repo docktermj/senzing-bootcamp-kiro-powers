@@ -1,6 +1,6 @@
 # Policies and Standards Index
 
-This directory contains policy documents that define coding standards and organizational conventions for the Senzing Boot Camp.
+This directory contains policy documents that define coding standards and organizational conventions for the Senzing Bootcamp.
 
 ## Available Policies
 
@@ -161,7 +161,7 @@ These policies are:
 - ✅ Referenced in agent instructions
 - ✅ Enforced by agent behavior
 - ✅ Included in code reviews
-- ✅ Part of boot camp workflows
+- ✅ Part of bootcamp workflows
 
 ## Related Documentation
 

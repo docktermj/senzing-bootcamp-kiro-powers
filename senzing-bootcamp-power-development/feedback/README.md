@@ -1,6 +1,6 @@
 # Power Development Feedback
 
-This directory contains development documentation, improvement notes, and implementation details for the Senzing Boot Camp power.
+This directory contains development documentation, improvement notes, and implementation details for the Senzing Bootcamp power.
 
 ## Purpose
 

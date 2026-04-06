@@ -1,6 +1,6 @@
-# Senzing Boot Camp Power - Improvements Feedback
+# Senzing Bootcamp Power - Improvements Feedback
 
-**Purpose**: Collect feedback and improvement suggestions during boot camp usage to enhance the power.
+**Purpose**: Collect feedback and improvement suggestions during bootcamp usage to enhance the power.
 **Audience**: Power author and Senzing team (for continuous improvement)
 **Created**: [Date when you started using the power]
 **Your Name/Team**: [Optional - helps author understand user context]
@@ -13,14 +13,14 @@
 
 ## How to Use This File
 
-As you work through the Senzing Boot Camp, document any issues, confusion points, or improvement ideas here.
+As you work through the Senzing Bootcamp, document any issues, confusion points, or improvement ideas here.
 
 **To provide feedback**: Simply say "power feedback" or "bootcamp feedback" to the agent, and it will:
 
 1. Guide you through documenting the feedback
 2. Save it to this file
 
-When you complete the boot camp, share this file with the power author.
+When you complete the bootcamp, share this file with the power author.
 
 **When to add feedback**:
 
@@ -37,7 +37,7 @@ When you complete the boot camp, share this file with the power author.
 
 - Issues specific to your data (not general problems)
 - Senzing SDK bugs (report those to Senzing directly)
-- Feature requests outside boot camp scope
+- Feature requests outside bootcamp scope
 - One-time edge cases
 
 ---
@@ -77,7 +77,7 @@ Copy this template for each improvement suggestion:
 
 ## General Comments
 
-[Any overall thoughts about the boot camp experience? What worked well? What could be better?]
+[Any overall thoughts about the bootcamp experience? What worked well? What could be better?]
 
 ---
 
@@ -92,4 +92,4 @@ Copy this template for each improvement suggestion:
 
 ---
 
-**Thank you for your feedback!** Your input helps make the Senzing Boot Camp better for everyone.
+**Thank you for your feedback!** Your input helps make the Senzing Bootcamp better for everyone.

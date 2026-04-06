@@ -6,7 +6,7 @@ inclusion: manual
 
 > **User reference:** For detailed background on this module, see `docs/modules/MODULE_0_SDK_SETUP.md`.
 
-Install and configure the Senzing SDK natively on your machine. This is the first step of the boot camp — once the SDK is installed, all subsequent modules use it directly.
+Install and configure the Senzing SDK natively on your machine. This is the first step of the bootcamp — once the SDK is installed, all subsequent modules use it directly.
 
 **Time**: 30 minutes - 1 hour
 
@@ -78,7 +78,7 @@ WAIT for response.
 
 **If they don't have a license**:
 
-- Inform them: "No problem. The SDK includes built-in evaluation limits that are fine for the boot camp. If you'd like a full evaluation license later, you can email support@senzing.com."
+- Inform them: "No problem. The SDK includes built-in evaluation limits that are fine for the bootcamp. If you'd like a full evaluation license later, you can email support@senzing.com."
 - Record in `config/bootcamp_preferences.yaml`:
 
   ```yaml
@@ -92,7 +92,7 @@ WAIT for response.
 
 Follow the directory creation commands from the agent-instructions steering file. This creates the organized project layout (`data/`, `database/`, `src/`, `docs/`, etc.) that all subsequent modules use.
 
-After creation, inform the user: "I've set up the project directory structure. All files will be organized properly throughout the boot camp."
+After creation, inform the user: "I've set up the project directory structure. All files will be organized properly throughout the bootcamp."
 
 ## Step 7: Configure Database
 
@@ -100,7 +100,7 @@ Ask: "Which database would you like to use? SQLite is recommended for learning a
 
 WAIT for response.
 
-**For SQLite** (recommended for boot camp):
+**For SQLite** (recommended for bootcamp):
 
 - Create the database directory: `mkdir -p database`
 - Database path: `database/G2C.db`

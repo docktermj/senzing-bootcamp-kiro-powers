@@ -17,9 +17,9 @@ Entity resolution (ER) is the process of determining whether different records r
 
 ### Do I need to be a data scientist to use Senzing?
 
-No. Senzing is designed to be used by developers and data engineers. The boot camp guides you through the entire process step-by-step.
+No. Senzing is designed to be used by developers and data engineers. The bootcamp guides you through the entire process step-by-step.
 
-### How long does the boot camp take?
+### How long does the bootcamp take?
 
 - Quick Demo (Module 0): 10-15 minutes
 - Basic Project (Modules 1-6): 2-3 hours
@@ -35,7 +35,7 @@ Senzing SDKs are available for:
 - Rust
 - C/C++
 
-The boot camp focuses on Python but concepts apply to all languages.
+The bootcamp focuses on Python but concepts apply to all languages.
 
 ---
 
@@ -417,7 +417,7 @@ Yes, Senzing can:
 
 ### Where can I find more documentation?
 
-- Boot camp docs: `docs/` directory
+- Bootcamp docs: `docs/` directory
 - Senzing docs: <https://senzing.com/docs>
 - API reference: Use `get_sdk_reference` tool
 - Examples: `examples/` directory
@@ -433,7 +433,7 @@ Yes, Senzing can:
 
 Yes, Senzing offers:
 
-- This boot camp (self-paced)
+- This bootcamp (self-paced)
 - Instructor-led training
 - Custom workshops
 - Consulting services
@@ -442,7 +442,7 @@ Contact Senzing for details.
 
 ### Where can I find code examples?
 
-- Boot camp templates: `templates/` directory
+- Bootcamp templates: `templates/` directory
 - Example projects: `examples/` directory
 - Senzing GitHub: Use `find_examples` tool
 - Community examples: Senzing community forums
@@ -529,6 +529,6 @@ python templates/performance_baseline.py \
 
 ---
 
-**Document Owner**: Boot Camp Team
+**Document Owner**: Bootcamp Team
 **Last Updated**: 2026-03-17
 **Contributions Welcome**: Submit questions to improve this FAQ

@@ -240,7 +240,7 @@ Received detailed user feedback on Module 0 (Quick Demo) experiencing critical D
 
 - Other modules may have similar issues
 - Need pre-flight checks for all modules
-- Need fallback strategies throughout boot camp
+- Need fallback strategies throughout bootcamp
 - Time estimates should include first-time setup
 
 ---

@@ -27,13 +27,13 @@ If starting fresh (no progress file, or user chose to start over):
 
 **Trigger points** — create structure at any of these:
 
-- User says "start the boot camp" or mentions any module number (0-12)
+- User says "start the bootcamp" or mentions any module number (0-12)
 - User selects any path (A, B, C, D) or asks to begin
 - Any indication they want to start using the power
 
 If directory creation fails, report the error, provide commands for manual execution, and do not proceed until the structure exists.
 
-After creating the directory structure (or confirming it exists), inform the user: "If you encounter any issues or have suggestions during the boot camp, just say 'bootcamp feedback' and I'll help you document them for the boot camp author."
+After creating the directory structure (or confirming it exists), inform the user: "If you encounter any issues or have suggestions during the bootcamp, just say 'bootcamp feedback' and I'll help you document them for the bootcamp author."
 
 Then offer to install hooks: "I can also install some automated quality checks (hooks) that help catch issues as we work. Would you like me to set those up? It takes about a minute." If yes, follow the Hooks Management section below. If no, proceed — hooks can always be installed later with `python scripts/install_hooks.py`.
 
@@ -52,11 +52,11 @@ After directory structure is confirmed and before the prerequisite check, ask th
 
    However, always confirm with the MCP server — do not rely on this list alone.
 
-3. **Ask the bootcamper**: "Which programming language would you like to use for the boot camp? The Senzing SDK supports: [list from MCP]. All generated code, templates, and examples will use your chosen language."
+3. **Ask the bootcamper**: "Which programming language would you like to use for the bootcamp? The Senzing SDK supports: [list from MCP]. All generated code, templates, and examples will use your chosen language."
 
 4. **WAIT for their response** before proceeding.
 
-5. **Remember the chosen language** for the entire boot camp session. Use it in all subsequent calls to `generate_scaffold`, `sdk_guide`, `find_examples`, and any code generation throughout every module.
+5. **Remember the chosen language** for the entire bootcamp session. Use it in all subsequent calls to `generate_scaffold`, `sdk_guide`, `find_examples`, and any code generation throughout every module.
 
 6. **Persist the choice** by writing it to `config/bootcamp_preferences.yaml`:
 
@@ -342,7 +342,7 @@ Also update `config/bootcamp_preferences.yaml` with the current module.
 Every 3 modules, congratulate the user on their progress and show a visual progress bar:
 
 ```text
-Boot Camp Progress:  [████████░░░░░░░░░░░░░░░░░░] 4/13 modules
+Bootcamp Progress:  [████████░░░░░░░░░░░░░░░░░░] 4/13 modules
 Completed: 0, 1, 2, 3  |  Next: Module 4 (Data Quality)
 Great work — you've completed 4 modules so far!
 ```

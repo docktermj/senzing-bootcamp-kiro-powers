@@ -1,6 +1,6 @@
 # Multi-Source Project Example: Customer 360
 
-> **Blueprint Project:** This directory contains a detailed README describing the project architecture, data flow, and expected results. The actual source code files are generated during the boot camp using MCP tools (`generate_scaffold`, `mapping_workflow`) in your chosen programming language (Python, Java, C#, Rust, or TypeScript).
+> **Blueprint Project:** This directory contains a detailed README describing the project architecture, data flow, and expected results. The actual source code files are generated during the bootcamp using MCP tools (`generate_scaffold`, `mapping_workflow`) in your chosen programming language (Python, Java, C#, Rust, or TypeScript).
 
 ## Overview
 
@@ -271,7 +271,7 @@ After completing this example, you should see:
 
 ## Related Documentation
 
-- [POWER.md](../../POWER.md) - Boot camp overview
+- [POWER.md](../../POWER.md) - Bootcamp overview
 - [MODULE_7_MULTI_SOURCE_ORCHESTRATION.md](../../docs/modules/MODULE_7_MULTI_SOURCE_ORCHESTRATION.md)
 - [simple-single-source](../simple-single-source/README.md) - Simpler example
 

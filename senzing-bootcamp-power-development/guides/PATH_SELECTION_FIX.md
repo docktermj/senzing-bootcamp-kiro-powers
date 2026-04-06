@@ -100,7 +100,7 @@ Added section: "Presenting Path Options to Users"
 - "Path 1" → "Path A"
 - "Path 2" → "Path B"
 - "Path 3" → "Path C"
-- "Full Boot Camp" → "Path D"
+- "Full Bootcamp" → "Path D"
 
 **Updated sections**:
 

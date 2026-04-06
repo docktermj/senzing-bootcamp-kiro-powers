@@ -1,6 +1,6 @@
-# Senzing Boot Camp Hooks
+# Senzing Bootcamp Hooks
 
-This directory contains pre-configured Kiro hooks to support the Senzing Boot Camp workflow.
+This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow.
 
 ## Available Hooks
 
@@ -100,7 +100,7 @@ Copy-Item senzing-bootcamp\hooks\*.kiro.hook .kiro\hooks\
 
 ### Option 4: Ask the Agent
 
-Simply ask: "Please install the Senzing Boot Camp hooks from the power directory"
+Simply ask: "Please install the Senzing Bootcamp hooks from the power directory"
 
 ## Enabling/Disabling Hooks
 

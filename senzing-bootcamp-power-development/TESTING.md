@@ -1,6 +1,6 @@
-# Testing Guide for Senzing Boot Camp Power
+# Testing Guide for Senzing Bootcamp Power
 
-This guide documents how to test the Senzing Boot Camp power locally before distribution.
+This guide documents how to test the Senzing Bootcamp power locally before distribution.
 
 ## Overview
 
@@ -100,7 +100,7 @@ kiroPowers action="use" powerName="senzing-bootcamp" serverName="senzing" toolNa
 
 ### 5. Test MCP Tools
 
-Test key MCP tools used in the boot camp:
+Test key MCP tools used in the bootcamp:
 
 **Test get_sample_data:**
 
@@ -381,7 +381,7 @@ For ongoing development:
    - Don't rely on cached state
 
 3. **Test with real users**
-   - Get feedback from actual boot camp users
+   - Get feedback from actual bootcamp users
    - Document issues in feedback files
 
 4. **Monitor MCP server**

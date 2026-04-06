@@ -1,4 +1,4 @@
-# Senzing Boot Camp - Data Flow Diagram
+# Senzing Bootcamp - Data Flow Diagram
 
 ## Complete Data Flow
 

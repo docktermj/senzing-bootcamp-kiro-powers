@@ -8,7 +8,7 @@ inclusion: manual
 
 ## Workflow: Discover the Business Problem (Module 2)
 
-Use this workflow when starting the boot camp or when a user wants to explore how Senzing can solve their specific challenge.
+Use this workflow when starting the bootcamp or when a user wants to explore how Senzing can solve their specific challenge.
 
 **Time**: 15-30 minutes
 
@@ -50,7 +50,7 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
    - Suggest matching criteria from the pattern
    - Adapt the pattern to their specific context
 
-5. **Set expectations**: "Let's start by understanding your business problem. This will help us tailor the boot camp to your specific needs. We'll identify your data sources, define success criteria, and create a plan."
+5. **Set expectations**: "Let's start by understanding your business problem. This will help us tailor the bootcamp to your specific needs. We'll identify your data sources, define success criteria, and create a plan."
 
 6. **Ask guided discovery questions**: Work through these questions systematically, ONE AT A TIME. Wait for the user's response to each question before asking the next one. This prevents overwhelming the user with multiple questions at once.
 
@@ -145,7 +145,7 @@ Use this workflow when starting the boot camp or when a user wants to explore ho
 
 10. **Update README.md**: Fill in the Overview and Business Problem sections with the information gathered. If a design pattern was selected, mention it in the overview.
 
-11. **Propose solution approach**: Explain how Senzing can solve this and which modules will be most relevant. If they selected a pattern, reference how the boot camp will implement that pattern.
+11. **Propose solution approach**: Explain how Senzing can solve this and which modules will be most relevant. If they selected a pattern, reference how the bootcamp will implement that pattern.
 
 12. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
 

@@ -790,7 +790,7 @@ See `steering/uat-framework.md` for comprehensive UAT guidance.
 Once UAT is complete and stakeholders have signed off:
 
 1. **If deploying to production**: Proceed to Module 9 (Performance Testing)
-2. **If not deploying to production**: Boot camp complete! User has working solution.
+2. **If not deploying to production**: Bootcamp complete! User has working solution.
 
 **Success indicator**: ✅ Query programs created + UAT tests passed + Stakeholder sign-off obtained
 

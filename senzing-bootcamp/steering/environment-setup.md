@@ -4,7 +4,7 @@ inclusion: manual
 
 # Environment Setup
 
-This guide covers setting up your development environment before starting the Senzing Boot Camp.
+This guide covers setting up your development environment before starting the Senzing Bootcamp.
 
 ## Version Control
 

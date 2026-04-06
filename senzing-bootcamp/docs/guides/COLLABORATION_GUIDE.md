@@ -1,8 +1,8 @@
-# Senzing Boot Camp - Collaboration Guide
+# Senzing Bootcamp - Collaboration Guide
 
 ## Overview
 
-This guide helps teams collaborate effectively on Senzing Boot Camp projects using git, code reviews, and shared workflows.
+This guide helps teams collaborate effectively on Senzing Bootcamp projects using git, code reviews, and shared workflows.
 
 ## Team Roles
 
@@ -63,7 +63,7 @@ git checkout -b main
 
 # Initial commit
 git add .
-git commit -m "Initial Senzing Boot Camp project structure"
+git commit -m "Initial Senzing Bootcamp project structure"
 
 # Add remote (GitHub, GitLab, Bitbucket)
 git remote add origin <repository-url>

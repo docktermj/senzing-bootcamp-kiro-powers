@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Senzing Boot Camp Pre-flight Check.
+"""Senzing Bootcamp Pre-flight Check.
 
 Checks core system requirements (language-agnostic).
 Cross-platform: works on Linux, macOS, and Windows.
@@ -30,7 +30,7 @@ def main():
     global ERRORS, WARNINGS
 
     print("==================================")
-    print("SENZING BOOT CAMP PRE-FLIGHT CHECK")
+    print("SENZING BOOTCAMP PRE-FLIGHT CHECK")
     print("==================================")
     print()
 
@@ -130,7 +130,7 @@ def main():
 
     if ERRORS == 0:
         print("✅ PRE-FLIGHT CHECK PASSED!")
-        print("You're ready to start the Senzing Boot Camp.")
+        print("You're ready to start the Senzing Bootcamp.")
         print("The agent will ask which language you'd like to use.")
     else:
         print("❌ PRE-FLIGHT CHECK FAILED")

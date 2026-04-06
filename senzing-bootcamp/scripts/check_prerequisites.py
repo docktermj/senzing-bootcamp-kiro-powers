@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Senzing Boot Camp - Prerequisites Checker.
+"""Senzing Bootcamp - Prerequisites Checker.
 
 Validates environment before starting modules (language-agnostic).
 Cross-platform: works on Linux, macOS, and Windows.
@@ -74,7 +74,7 @@ def main():
     global PASSED, FAILED, WARNINGS
 
     print(blue("╔════════════════════════════════════════════════════════════╗"))
-    print(blue("║") + "  Senzing Boot Camp - Prerequisites Check                  " + blue("║"))
+    print(blue("║") + "  Senzing Bootcamp - Prerequisites Check                  " + blue("║"))
     print(blue("╚════════════════════════════════════════════════════════════╝"))
     print()
 
@@ -212,7 +212,7 @@ def main():
 
     if FAILED == 0:
         if WARNINGS == 0:
-            print(green("✓ All prerequisites met! Ready to start the boot camp."))
+            print(green("✓ All prerequisites met! Ready to start the bootcamp."))
         else:
             print(yellow("⚠ Some optional prerequisites missing, but you can proceed."))
     else:

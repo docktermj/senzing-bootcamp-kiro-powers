@@ -6,7 +6,7 @@
 
 ## Overview
 
-When running any module in the Senzing Boot Camp, the agent must never state Senzing facts from its training data. All Senzing-specific information must come from the Senzing MCP server's tools.
+When running any module in the Senzing Bootcamp, the agent must never state Senzing facts from its training data. All Senzing-specific information must come from the Senzing MCP server's tools.
 
 ## Policy
 

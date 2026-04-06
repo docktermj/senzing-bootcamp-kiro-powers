@@ -1,8 +1,8 @@
-# New Module Structure - Refactored Boot Camp
+# New Module Structure - Refactored Bootcamp
 
 ## Overview
 
-The Senzing Boot Camp has been refactored from 9 modules (0-8) to 13 modules (0-12) with each module having a single, focused purpose. This restructuring incorporates 14 new improvements while maintaining the logical flow of the boot camp.
+The Senzing Bootcamp has been refactored from 9 modules (0-8) to 13 modules (0-12) with each module having a single, focused purpose. This restructuring incorporates 14 new improvements while maintaining the logical flow of the bootcamp.
 
 ## Module Structure (0-12)
 
@@ -269,7 +269,7 @@ Each module has one clear purpose, making it easier to:
 - Understand what each module does
 - Skip modules that don't apply
 - Focus on specific concerns
-- Teach and learn the boot camp
+- Teach and learn the bootcamp
 
 ### Better Separation of Concerns
 

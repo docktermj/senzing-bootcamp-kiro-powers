@@ -4,7 +4,7 @@ inclusion: manual
 
 # Project Directory Structure
 
-The Senzing Boot Camp agent will create this organized directory structure for you at the start of Module 1:
+The Senzing Bootcamp agent will create this organized directory structure for you at the start of Module 1:
 
 ```text
 my-senzing-project/
@@ -113,13 +113,13 @@ And create initial files: `.gitignore`, `.env.example`, `README.md`
 **After creation**:
 
 - Inform user that structure has been created
-- As you generate programs throughout the boot camp, save them in the appropriate folders
+- As you generate programs throughout the bootcamp, save them in the appropriate folders
 
 ## Trigger Points for Directory Creation
 
 Create structure at ANY of these:
 
-- User says "start the boot camp"
+- User says "start the bootcamp"
 - User mentions any module number (0-12)
 - User selects any path (A, B, C, D)
 - User asks to begin
@@ -127,4 +127,4 @@ Create structure at ANY of these:
 
 ## Why Directory-First Approach?
 
-This ensures all generated files go to the correct locations throughout the boot camp. Without this structure in place first, files might be scattered or placed incorrectly.
+This ensures all generated files go to the correct locations throughout the bootcamp. Without this structure in place first, files might be scattered or placed incorrectly.

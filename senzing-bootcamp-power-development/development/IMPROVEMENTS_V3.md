@@ -1,12 +1,12 @@
-# Senzing Boot Camp Version 3.0.0 Improvements
+# Senzing Bootcamp Version 3.0.0 Improvements
 
-This document summarizes all improvements implemented in boot camp version 3.0.0.
+This document summarizes all improvements implemented in bootcamp version 3.0.0.
 
-**Note**: This refers to version 3.0.0 of the boot camp power, not Senzing software version. The boot camp uses Senzing V4.0 exclusively.
+**Note**: This refers to version 3.0.0 of the bootcamp power, not Senzing software version. The bootcamp uses Senzing V4.0 exclusively.
 
 ## Summary
 
-All 12 recommended improvements have been successfully implemented to enhance the Senzing Boot Camp power.
+All 12 recommended improvements have been successfully implemented to enhance the Senzing Bootcamp power.
 
 ## Improvements Implemented
 
@@ -155,7 +155,7 @@ All 12 recommended improvements have been successfully implemented to enhance th
   - Platform support
   - Database versions
   - Python package versions
-  - Boot camp module compatibility
+  - Bootcamp module compatibility
 
 **Files created**:
 
@@ -306,7 +306,7 @@ Potential future improvements:
 3. **Add video tutorials**: Screen recordings for each module
 4. **Add interactive demos**: Web-based demos without installation
 5. **Add assessment quizzes**: Test understanding after each module
-6. **Add certification**: Boot camp completion certificate
+6. **Add certification**: Bootcamp completion certificate
 7. **Add community examples**: User-contributed examples
 8. **Add troubleshooting videos**: Visual guides for common issues
 9. **Add performance calculator**: Estimate performance based on data volume
@@ -320,7 +320,7 @@ Potential future improvements:
 
 ## Conclusion
 
-All 12 recommended improvements have been successfully implemented, significantly enhancing the Senzing Boot Camp power with better onboarding, clearer guidance, more examples, and improved user experience.
+All 12 recommended improvements have been successfully implemented, significantly enhancing the Senzing Bootcamp power with better onboarding, clearer guidance, more examples, and improved user experience.
 
 ---
 

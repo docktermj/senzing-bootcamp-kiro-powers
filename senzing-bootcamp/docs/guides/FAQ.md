@@ -1,8 +1,8 @@
-# Senzing Boot Camp - Frequently Asked Questions
+# Senzing Bootcamp - Frequently Asked Questions
 
 ## General
 
-### How long does the boot camp take?
+### How long does the bootcamp take?
 
 - Quick Demo (Module 1): 10-15 minutes
 - Fast Track (Modules 0, 6): 30 minutes
@@ -21,7 +21,7 @@ senzing-bootcamp is a structured 13-module curriculum. The senzing power is a qu
 
 ### How do I start?
 
-Say "start the boot camp". The agent creates your project structure and guides you through each module.
+Say "start the bootcamp". The agent creates your project structure and guides you through each module.
 
 ### What are the prerequisites?
 
@@ -29,7 +29,7 @@ Required: A supported language runtime (Python, Java, C#, Rust, or TypeScript/No
 
 ### Do I need a Senzing license?
 
-The agent asks about your license early in the workflow. The SDK includes built-in evaluation limits that work for the boot camp. For a full evaluation license (no limits), email <support@senzing.com> (1-2 business days). See `licenses/README.md`.
+The agent asks about your license early in the workflow. The SDK includes built-in evaluation limits that work for the bootcamp. For a full evaluation license (no limits), email <support@senzing.com> (1-2 business days). See `licenses/README.md`.
 
 ### Where should I put my files?
 
@@ -50,7 +50,7 @@ Run `python scripts/status.py`.
 
 ### Can I go back to a previous module?
 
-Yes. The boot camp is iterative.
+Yes. The bootcamp is iterative.
 
 ### What if I get stuck?
 
@@ -68,7 +68,7 @@ Transformation: `src/transform/`. Loading: `src/load/`. Queries: `src/query/`. U
 
 ### What are the code quality standards?
 
-The boot camp applies language-appropriate coding standards based on your chosen language. See `docs/policies/CODE_QUALITY_STANDARDS.md` for details. Install the Code Style Check hook for automated checking.
+The bootcamp applies language-appropriate coding standards based on your chosen language. See `docs/policies/CODE_QUALITY_STANDARDS.md` for details. Install the Code Style Check hook for automated checking.
 
 ### Which hooks should I install?
 

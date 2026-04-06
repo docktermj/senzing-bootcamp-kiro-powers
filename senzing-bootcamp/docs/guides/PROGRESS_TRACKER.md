@@ -1,6 +1,6 @@
-# Senzing Boot Camp Progress Tracker
+# Senzing Bootcamp Progress Tracker
 
-Track your progress through the boot camp modules. Check off each module as you complete it.
+Track your progress through the bootcamp modules. Check off each module as you complete it.
 
 ## Quick Reference
 

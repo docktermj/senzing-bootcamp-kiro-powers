@@ -1,4 +1,4 @@
-# Senzing Boot Camp Quick Start
+# Senzing Bootcamp Quick Start
 
 Get started with Senzing entity resolution in 30 minutes or less.
 
@@ -120,7 +120,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 - Start with Module 2
 
-**"Build for production"** → Path D: Full Boot Camp (10-18 hours)
+**"Build for production"** → Path D: Full Bootcamp (10-18 hours)
 
 - Complete all modules 0-12
 - Production-ready deployment
@@ -139,7 +139,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ### Define Your Problem
 
 ```text
-"I want to start the Senzing boot camp"
+"I want to start the Senzing bootcamp"
 ```
 
 ### Skip to Loading
@@ -153,7 +153,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ```text
 "What is entity resolution?"
 "How do I map my data?"
-"Show me the boot camp modules"
+"Show me the bootcamp modules"
 ```
 
 ---
@@ -177,7 +177,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 - ✅ 2-3 hours
 - ✅ Basic understanding of your data
 
-### For Production (Path D - Full Boot Camp)
+### For Production (Path D - Full Bootcamp)
 
 - ✅ All data sources identified
 - ✅ PostgreSQL database (or plan to set up)
@@ -242,7 +242,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 ### Ask the Agent
 
 ```text
-"How do I start the boot camp?"
+"How do I start the bootcamp?"
 "What's the fastest way to see results?"
 "I'm stuck on Module 4, help!"
 "Show me examples"
@@ -257,7 +257,7 @@ Get started with Senzing entity resolution in 30 minutes or less.
 
 ### Review Documentation
 
-- `../../POWER.md` - Complete boot camp overview
+- `../../POWER.md` - Complete bootcamp overview
 - `PROGRESS_TRACKER.md` - Track your progress
 - `../modules/` - Detailed module guides
 - `../../examples/` - Complete example projects
@@ -315,7 +315,7 @@ Choose your path and tell the agent:
 "Let's run the quick demo"
 "I want to do the 30-minute fast track"
 "I'm ready for the complete beginner path"
-"Show me the full boot camp"
+"Show me the full bootcamp"
 ```
 
 The agent will guide you through every step!

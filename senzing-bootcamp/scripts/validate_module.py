@@ -238,7 +238,7 @@ def print_results(module_num, results):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Validate Senzing Boot Camp module prerequisites and success criteria."
+        description="Validate Senzing Bootcamp module prerequisites and success criteria."
     )
     group = parser.add_mutually_exclusive_group()
     group.add_argument(

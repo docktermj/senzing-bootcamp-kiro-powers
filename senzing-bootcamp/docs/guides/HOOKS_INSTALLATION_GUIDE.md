@@ -1,15 +1,15 @@
-# Senzing Boot Camp Hooks - Installation Guide
+# Senzing Bootcamp Hooks - Installation Guide
 
 ## Quick Start
 
-The easiest way to install hooks for the Senzing Boot Camp power:
+The easiest way to install hooks for the Senzing Bootcamp power:
 
 ### Method 1: Ask the Agent (Recommended)
 
 Simply ask Kiro:
 
 ```text
-"Please install the Senzing Boot Camp hooks"
+"Please install the Senzing Bootcamp hooks"
 ```
 
 The agent will:
@@ -41,7 +41,7 @@ Copy-Item senzing-bootcamp\hooks\*.hook .kiro\hooks\
 
 ## What Gets Installed
 
-Nine pre-configured hooks that support the boot camp workflow:
+Nine pre-configured hooks that support the bootcamp workflow:
 
 | Hook                      | Trigger                     | Action                       | Module     |
 |---------------------------|-----------------------------|------------------------------|------------|
@@ -145,7 +145,7 @@ Increase timeout in hook file:
 ## Example Workflow
 
 ```bash
-# 1. Start boot camp
+# 1. Start bootcamp
 cd my-senzing-project
 
 # 2. Install hooks (recommended: use the Python installer)
@@ -160,9 +160,9 @@ dir .kiro\hooks\         # Windows
 
 # 5. Commit hooks
 git add .kiro/hooks/
-git commit -m "Add Senzing Boot Camp hooks"
+git commit -m "Add Senzing Bootcamp hooks"
 
-# 6. Continue with boot camp
+# 6. Continue with bootcamp
 # Hooks will now provide automated assistance
 ```
 

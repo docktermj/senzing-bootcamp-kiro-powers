@@ -196,7 +196,7 @@ sources:
 
 ## Related Documentation
 
-- `POWER.md` - Main boot camp guide with Module 3 overview
+- `POWER.md` - Main bootcamp guide with Module 3 overview
 - `steering/module-03-data-collection.md` - Module 3 workflow
 - `steering/agent-instructions.md` - Agent behavior for Module 3
 - `steering/data-lineage.md` - Data lineage tracking (load on demand)
@@ -206,4 +206,4 @@ sources:
 ## Version History
 
 - **v3.0.0** (2026-03-17): Added data lineage tracking enhancement
-- **v2.0.0** (2024-03-17): Module 3 added to boot camp structure
+- **v2.0.0** (2024-03-17): Module 3 added to bootcamp structure

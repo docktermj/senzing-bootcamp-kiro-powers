@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Senzing Boot Camp power will be documented in this file.
+All notable changes to the Senzing Bootcamp power will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -300,7 +300,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Comprehensive guided boot camp with 13 modules (0-12)
+- Comprehensive guided bootcamp with 13 modules (0-12)
 - Design pattern gallery with 10 common entity resolution patterns
 - 3 example project blueprints (simple, multi-source, production)
 - 10+ code templates for utilities (backup, restore, collection, validation)
@@ -324,7 +324,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `.history/` in default `.gitignore` template
 - Reduced `agent-instructions.md` from 734 to ~150 lines by moving module-specific behaviors into per-module steering files
 - Removed content duplication across steering files and policies
-- Boot camp completion and feedback reminder in Module 12 steering file
+- Bootcamp completion and feedback reminder in Module 12 steering file
 - Feedback mechanism mention in Module 2 steering file
 - MCP caching policy: agents must make fresh MCP calls on every Senzing question, even repeated ones within the same session
 - "Repeated Questions" section in `SENZING_INFORMATION_POLICY.md`
@@ -364,4 +364,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Feedback
 
-We welcome feedback on the boot camp experience. Say "power feedback" at any time during the boot camp, or document issues in `docs/feedback/`.
+We welcome feedback on the bootcamp experience. Say "power feedback" at any time during the bootcamp, or document issues in `docs/feedback/`.

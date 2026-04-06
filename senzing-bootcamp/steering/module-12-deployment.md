@@ -8,7 +8,7 @@ inclusion: manual
 
 ## Workflow: Package, Deploy, and Go Live (Module 12)
 
-Take the entity resolution pipeline built throughout the boot camp and prepare it for production deployment. This module covers containerization, database migration, configuration management, CI/CD pipelines, API layers, scaling, and operational readiness.
+Take the entity resolution pipeline built throughout the bootcamp and prepare it for production deployment. This module covers containerization, database migration, configuration management, CI/CD pipelines, API layers, scaling, and operational readiness.
 
 **Time**: 2-4 hours (varies significantly by deployment target and infrastructure)
 
@@ -36,7 +36,7 @@ Ask: "What is your deployment target? Options include Docker containers, bare me
 
 WAIT for response before proceeding.
 
-Ask: "What database will you use in production? PostgreSQL is strongly recommended for production workloads. If you've been using SQLite during the boot camp, we'll migrate to PostgreSQL in this module."
+Ask: "What database will you use in production? PostgreSQL is strongly recommended for production workloads. If you've been using SQLite during the bootcamp, we'll migrate to PostgreSQL in this module."
 
 WAIT for response before proceeding.
 
@@ -76,7 +76,7 @@ Document the answers in `docs/deployment_plan.md`:
 
 ## Step 2: Refactor Code into a Deployable Package
 
-Organize the code built throughout the boot camp into a clean, deployable package structure.
+Organize the code built throughout the bootcamp into a clean, deployable package structure.
 
 > **Agent instruction:** Call `generate_scaffold(language='<chosen_language>', workflow='full_pipeline', version='current')` to get the current recommended project structure and deployment patterns. Use the scaffold output as the foundation — do not hand-code SDK initialization or method calls.
 
@@ -376,7 +376,7 @@ volumes:
 
 ## Step 5: Database Migration (SQLite → PostgreSQL)
 
-If the user has been using SQLite during the boot camp and is moving to PostgreSQL for production, guide them through the migration.
+If the user has been using SQLite during the bootcamp and is moving to PostgreSQL for production, guide them through the migration.
 
 > **Agent instruction:** Call `search_docs(query='database setup', version='current')` for production database configuration guidance. Use the results to ensure correct schema creation and connection string format.
 
@@ -1490,11 +1490,11 @@ For any SENZ error codes encountered during deployment, use `explain_error_code`
 
 ---
 
-## Boot Camp Completion
+## Bootcamp Completion
 
 When Module 12 is complete and the production deployment is verified, celebrate the user's achievement:
 
-🎉 **Congratulations on completing the Senzing Boot Camp!** 🎉
+🎉 **Congratulations on completing the Senzing Bootcamp!** 🎉
 
 You've built a complete entity resolution pipeline from scratch:
 
@@ -1513,6 +1513,6 @@ You've built a complete entity resolution pipeline from scratch:
 
 Your entity resolution system is now running in production. 🚀
 
-If you have any feedback about your boot camp experience, say **"power feedback"** or **"bootcamp feedback"** and I'll help you document it. Your feedback helps improve the boot camp for future users.
+If you have any feedback about your bootcamp experience, say **"power feedback"** or **"bootcamp feedback"** and I'll help you document it. Your feedback helps improve the bootcamp for future users.
 
 If you've already documented feedback in `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`, please share that file with the power author.

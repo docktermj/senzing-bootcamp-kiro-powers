@@ -1,10 +1,10 @@
-# Senzing Boot Camp - Quick Reference Card
+# Senzing Bootcamp - Quick Reference Card
 
 **Version**: 1.0 | **Last Updated**: 2026-03-17
 
 ---
 
-## Boot Camp Modules (13 Total)
+## Bootcamp Modules (13 Total)
 
 | Module | Name             | Time           | Key Output        |
 |--------|------------------|----------------|-------------------|
@@ -358,4 +358,4 @@ my-project/
 
 ---
 
-**Print this card for quick reference during the boot camp!**
+**Print this card for quick reference during the bootcamp!**

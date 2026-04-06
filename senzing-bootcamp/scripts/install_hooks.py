@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Senzing Boot Camp - Hook Installer.
+"""Senzing Bootcamp - Hook Installer.
 
 Installs all recommended hooks with one command.
 Cross-platform: works on Linux, macOS, and Windows.
@@ -105,13 +105,13 @@ def main():
     user_hooks = project_root / ".kiro" / "hooks"
 
     print(blue("╔════════════════════════════════════════════════════════════╗"))
-    print(blue("║") + "  Senzing Boot Camp - Hook Installer                       " + blue("║"))
+    print(blue("║") + "  Senzing Bootcamp - Hook Installer                       " + blue("║"))
     print(blue("╚════════════════════════════════════════════════════════════╝"))
     print()
 
     if not power_hooks.is_dir():
         print(yellow(f"⚠ Power hooks directory not found: {power_hooks}"))
-        print("Make sure you're running this from a Senzing Boot Camp project.")
+        print("Make sure you're running this from a Senzing Bootcamp project.")
         sys.exit(1)
 
     user_hooks.mkdir(parents=True, exist_ok=True)

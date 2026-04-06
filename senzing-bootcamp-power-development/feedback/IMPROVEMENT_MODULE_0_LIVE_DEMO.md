@@ -242,4 +242,4 @@ To measure the success of this improvement:
 
 This improvement transforms Module 0 from a static explanation into a live demonstration that proves the value of entity resolution immediately. Users now see the technology working in real-time, understand WHY records match, and experience the "aha moment" that motivates them to continue with their own data.
 
-The change addresses the core feedback: users expect a demo to show the actual technology working, not just describe it. By running the real Senzing SDK and displaying match explanations, we create a compelling first impression that sets the stage for the rest of the boot camp.
+The change addresses the core feedback: users expect a demo to show the actual technology working, not just describe it. By running the real Senzing SDK and displaying match explanations, we create a compelling first impression that sets the stage for the rest of the bootcamp.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Senzing Boot Camp - Example Project Cloner.
+"""Senzing Bootcamp - Example Project Cloner.
 
 Copies an example project to user's workspace.
 Cross-platform: works on Linux, macOS, and Windows.
@@ -46,7 +46,7 @@ def main():
     examples_dir = project_root / "senzing-bootcamp" / "examples"
 
     print(blue("╔════════════════════════════════════════════════════════════╗"))
-    print(blue("║") + "  Senzing Boot Camp - Example Project Cloner               " + blue("║"))
+    print(blue("║") + "  Senzing Bootcamp - Example Project Cloner               " + blue("║"))
     print(blue("╚════════════════════════════════════════════════════════════╝"))
     print()
 

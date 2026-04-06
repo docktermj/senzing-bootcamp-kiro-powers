@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Senzing Boot Camp - Status Command.
+"""Senzing Bootcamp - Status Command.
 
 Shows current module, progress, and next steps.
 Cross-platform: works on Linux, macOS, and Windows.
@@ -63,7 +63,7 @@ def main():
     os.chdir(project_root)
 
     print(blue("╔════════════════════════════════════════════════════════════╗"))
-    print(blue("║") + "  " + cyan("Senzing Boot Camp - Project Status") + "                     " + blue("║"))
+    print(blue("║") + "  " + cyan("Senzing Bootcamp - Project Status") + "                     " + blue("║"))
     print(blue("╚════════════════════════════════════════════════════════════╝"))
     print()
 
@@ -119,7 +119,7 @@ def main():
             status = "Complete" if last >= 12 else "Ready to Start"
     else:
         print(yellow("⚠ No progress data found"))
-        print("Start the boot camp to begin tracking progress.")
+        print("Start the bootcamp to begin tracking progress.")
         print()
         # Continue to show project health below
 
@@ -157,7 +157,7 @@ def main():
             print(f"    3. Tell agent 'Start Module {current}'")
         print()
     else:
-        print(green("🎉 Boot Camp Complete!"))
+        print(green("🎉 Bootcamp Complete!"))
         print()
 
     # Project health

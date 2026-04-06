@@ -59,7 +59,7 @@ Module 12 takes this production-ready code and:
 
 ### Step 2: Refactor Code Structure
 
-Transform the boot camp code into a proper package structure:
+Transform the bootcamp code into a proper package structure:
 
 #### Python Package Structure
 
@@ -659,4 +659,4 @@ Module 12 is complete when:
 
 ## Version History
 
-- **v2.0.0** (2026-03-17): Module 12 added to boot camp structure
+- **v2.0.0** (2026-03-17): Module 12 added to bootcamp structure

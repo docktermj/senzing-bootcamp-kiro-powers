@@ -7,7 +7,7 @@ inclusion: always
 **Version**: 1.0
 **Last Updated**: 2026-03-17
 
-This document defines logging standards for all Senzing Boot Camp code.
+This document defines logging standards for all Senzing Bootcamp code.
 
 ---
 
@@ -594,6 +594,6 @@ if __name__ == "__main__":
 
 ---
 
-**Document Owner**: Boot Camp Team
+**Document Owner**: Bootcamp Team
 **Last Updated**: 2026-03-17
 **Next Review**: 2026-06-17

@@ -1,6 +1,6 @@
-# Senzing Boot Camp - Development Documentation
+# Senzing Bootcamp - Development Documentation
 
-Internal development documentation for the Senzing Boot Camp Kiro Power. These files are not distributed with the power.
+Internal development documentation for the Senzing Bootcamp Kiro Power. These files are not distributed with the power.
 
 ## Purpose
 

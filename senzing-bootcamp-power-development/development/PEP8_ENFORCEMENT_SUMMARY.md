@@ -5,7 +5,7 @@
 
 ## Overview
 
-All Python code in the Senzing Boot Camp power now adheres to PEP-8 standards, and the agent is configured to enforce PEP-8 compliance for all user-generated code throughout the boot camp.
+All Python code in the Senzing Bootcamp power now adheres to PEP-8 standards, and the agent is configured to enforce PEP-8 compliance for all user-generated code throughout the bootcamp.
 
 ## Implementation Complete
 
@@ -189,7 +189,7 @@ def check_pep8(filepath):
 4. **Tool Support**: Better IDE and linting tool support
 5. **Collaboration**: Team members can easily read each other's code
 
-### For the Boot Camp
+### For the Bootcamp
 
 1. **Quality**: All generated code is high quality
 2. **Maintainability**: Easier to update and extend
@@ -358,7 +358,7 @@ jobs:
 
 ## Summary
 
-PEP-8 compliance is now fully enforced throughout the Senzing Boot Camp power:
+PEP-8 compliance is now fully enforced throughout the Senzing Bootcamp power:
 
 ✅ All existing scripts compliant
 ✅ Agent configured to generate compliant code
@@ -368,11 +368,11 @@ PEP-8 compliance is now fully enforced throughout the Senzing Boot Camp power:
 ✅ Module workflows updated
 ✅ Validation tools documented
 
-Users will receive high-quality, professional Python code that follows industry standards throughout their boot camp experience.
+Users will receive high-quality, professional Python code that follows industry standards throughout their bootcamp experience.
 
 ---
 
 **Document Version**: 1.0
 **Last Updated**: 2026-03-17
 **Status**: Complete
-**Maintained by**: Senzing Boot Camp Team
+**Maintained by**: Senzing Bootcamp Team

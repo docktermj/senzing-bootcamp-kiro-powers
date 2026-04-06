@@ -36,7 +36,7 @@ User encountered critical Docker database initialization issues in Module 0 that
 
 ```python
 """
-Senzing Boot Camp - Module 0 Simulation Demo
+Senzing Bootcamp - Module 0 Simulation Demo
 This demo simulates entity resolution without requiring Senzing SDK installation.
 Perfect for when Docker isn't available or SDK installation isn't desired.
 """
@@ -782,7 +782,7 @@ We appreciate your patience and detailed feedback!
 ### Broader Implications
 - Other modules may have similar issues
 - Need pre-flight checks for all modules
-- Need fallback strategies throughout boot camp
+- Need fallback strategies throughout bootcamp
 - Time estimates should include first-time setup
 
 ---

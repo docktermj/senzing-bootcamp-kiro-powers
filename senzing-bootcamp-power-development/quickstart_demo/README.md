@@ -1,6 +1,6 @@
 # Removed Demo Scripts
 
-These demo scripts were removed from the Senzing Boot Camp Power distribution because the MCP server can generate them dynamically.
+These demo scripts were removed from the Senzing Bootcamp Power distribution because the MCP server can generate them dynamically.
 
 ## Files in This Directory (3 files)
 

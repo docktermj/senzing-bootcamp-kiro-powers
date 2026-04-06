@@ -1,12 +1,12 @@
 # Removed Steering Files
 
-This directory contains steering files that were removed from the Power distribution because they contain generic best practices rather than boot camp-specific content.
+This directory contains steering files that were removed from the Power distribution because they contain generic best practices rather than bootcamp-specific content.
 
 ## Why These Were Removed
 
 These files were moved to the development repository on March 23, 2026 because:
 
-1. **Generic Content**: They contain standard software engineering practices, not boot camp-specific guidance
+1. **Generic Content**: They contain standard software engineering practices, not bootcamp-specific guidance
 2. **MCP Server Coverage**: The Senzing MCP server provides this information dynamically through `search_docs` and `find_examples`
 3. **Maintenance Burden**: Keeping static copies of generic best practices creates unnecessary maintenance
 4. **Always Current**: MCP tools provide up-to-date information automatically
@@ -31,7 +31,7 @@ These files were moved to the development repository on March 23, 2026 because:
 
 1. **api-gateway-patterns.md** - API integration patterns
    - **Replacement**: Use `find_examples(query="API gateway")` or `search_docs(query="API integration")`
-   - **Reason**: Generic API patterns, not boot camp-specific
+   - **Reason**: Generic API patterns, not bootcamp-specific
 
 2. **integration-patterns.md** - REST API, batch export, streaming, database sync
    - **Replacement**: Use `find_examples(query="integration patterns")`
@@ -45,7 +45,7 @@ These files were moved to the development repository on March 23, 2026 because:
 
 1. **disaster-recovery.md** - Backup, rollback, disaster recovery
    - **Replacement**: Use `search_docs(query="disaster recovery")`
-   - **Reason**: Generic DR best practices, too advanced for boot camp
+   - **Reason**: Generic DR best practices, too advanced for bootcamp
 
 2. **recovery-procedures.md** - Error recovery procedures
    - **Replacement**: Use `search_docs(query="backup and recovery")` or `explain_error_code`
@@ -57,7 +57,7 @@ These files were moved to the development repository on March 23, 2026 because:
 
 ## What Remains in Power (16 files)
 
-The Power distribution now contains only boot camp-specific steering files:
+The Power distribution now contains only bootcamp-specific steering files:
 
 **Core Workflows (5 files)**:
 
@@ -67,9 +67,9 @@ The Power distribution now contains only boot camp-specific steering files:
 - modules-7-12-workflows.md - Advanced modules
 - NEW_WORKFLOWS_PHASE5.md - Module 7 orchestration (to be merged)
 
-**Boot Camp Support (11 files)**:
+**Bootcamp Support (11 files)**:
 
-- common-pitfalls.md - Boot camp troubleshooting
+- common-pitfalls.md - Bootcamp troubleshooting
 - troubleshooting-decision-tree.md - Diagnostic tree
 - complexity-estimator.md - Project estimation
 - cost-estimation.md - Cost calculation
@@ -91,7 +91,7 @@ The Power distribution now contains only boot camp-specific steering files:
 
 When considering adding new steering files, ask:
 
-1. **Is this boot camp-specific?** If no, don't add it
+1. **Is this bootcamp-specific?** If no, don't add it
 2. **Does the MCP server provide this?** If yes, use MCP tools instead
 3. **Is this generic best practice?** If yes, reference external resources
 4. **Is this critical for learners?** If no, move to development

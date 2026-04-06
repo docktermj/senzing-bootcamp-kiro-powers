@@ -2,9 +2,9 @@
 inclusion: always
 ---
 
-# Repository Organization - Senzing Boot Camp Power
+# Repository Organization - Senzing Bootcamp Power
 
-This steering file defines the organizational structure for the Senzing Boot Camp Power repository.
+This steering file defines the organizational structure for the Senzing Bootcamp Power repository.
 
 ## Core Principle
 

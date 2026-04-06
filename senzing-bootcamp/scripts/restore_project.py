@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Senzing Boot Camp Project Restore Script.
+"""Senzing Bootcamp Project Restore Script.
 
 Restores a project from a backup ZIP file.
 Cross-platform: works on Linux, macOS, and Windows.
@@ -56,7 +56,7 @@ def main():
     backup_file = Path(sys.argv[1]).resolve()
     restore_dir = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else project_root
 
-    print(green("Senzing Boot Camp - Project Restore"))
+    print(green("Senzing Bootcamp - Project Restore"))
     print("======================================")
     print()
 

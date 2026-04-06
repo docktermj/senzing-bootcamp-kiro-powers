@@ -4,7 +4,7 @@
 
 ## Overview
 
-Module 0 installs and configures the Senzing SDK natively on your machine. This is the first step of the boot camp — once the SDK is installed, all subsequent modules use it directly.
+Module 0 installs and configures the Senzing SDK natively on your machine. This is the first step of the bootcamp — once the SDK is installed, all subsequent modules use it directly.
 
 **Time:** 30 minutes - 1 hour
 **Prerequisites:** None (this is the first module)
@@ -47,16 +47,16 @@ If Senzing is found:
 
 ## Senzing License Requirements
 
-The Senzing SDK includes built-in evaluation limits that work for the boot camp. If you have a license or want to remove limits, configure it now.
+The Senzing SDK includes built-in evaluation limits that work for the bootcamp. If you have a license or want to remove limits, configure it now.
 
-> **Note:** The agent asks about your license during the boot camp setup (before Module 0). If you've already configured your license, you can skip this section.
+> **Note:** The agent asks about your license during the bootcamp setup (before Module 0). If you've already configured your license, you can skip this section.
 
 ### Obtaining a License
 
-**Evaluation License (Recommended for Boot Camp):**
+**Evaluation License (Recommended for Bootcamp):**
 
 - Email: <support@senzing.com>
-- Mention: "Requesting evaluation license for Senzing Boot Camp"
+- Mention: "Requesting evaluation license for Senzing Bootcamp"
 - Response time: 1-2 business days
 - Valid for 30-90 days
 
@@ -110,7 +110,7 @@ After system installation, verify the SDK is accessible from your chosen languag
 > The MCP server provides correct paths (CONFIGPATH, RESOURCEPATH, SUPPORTPATH) for
 > each platform and catches common anti-patterns like wrong paths or missing schema creation.
 
-### SQLite (Recommended for Boot Camp)
+### SQLite (Recommended for Bootcamp)
 
 No setup required — SQLite is built in and file-based.
 

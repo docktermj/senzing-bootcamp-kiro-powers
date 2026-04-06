@@ -184,7 +184,7 @@ Yes - required for SDK installation
 ```markdown
 - [ ] Budget
   - Senzing license obtained or requested (see licenses/README.md)
-  - For boot camp: Request free evaluation license from support@senzing.com
+  - For bootcamp: Request free evaluation license from support@senzing.com
   - For production: Contact sales@senzing.com for pricing
 
 - [ ] Support Channels
@@ -320,15 +320,15 @@ Reference documentation available anytime:
 
 ## Key Messages Communicated
 
-### For Boot Camp Users (Evaluation)
+### For Bootcamp Users (Evaluation)
 
 1. **Free evaluation license available**
    - No cost for learning
    - Contact <support@senzing.com>
-   - Mention "Senzing Boot Camp"
+   - Mention "Senzing Bootcamp"
    - Receive in 1-2 business days
 
-2. **Sufficient for entire boot camp**
+2. **Sufficient for entire bootcamp**
    - Valid 30-90 days
    - Covers all modules
    - Can complete at your own pace

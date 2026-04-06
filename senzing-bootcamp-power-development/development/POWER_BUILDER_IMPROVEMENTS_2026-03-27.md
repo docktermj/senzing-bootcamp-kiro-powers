@@ -1,6 +1,6 @@
 # Power Builder Improvements - March 27, 2026
 
-This document summarizes all improvements made to align the Senzing Boot Camp power with power-builder best practices.
+This document summarizes all improvements made to align the Senzing Bootcamp power with power-builder best practices.
 
 ## Overview
 
@@ -209,7 +209,7 @@ Based on a comprehensive review against the "Build a Power" power (power-builder
 
 ## Alignment with Power-Builder
 
-The Senzing Boot Camp power now aligns with power-builder best practices in:
+The Senzing Bootcamp power now aligns with power-builder best practices in:
 
 1. ✅ **POWER.md Structure** - Concise, focused, with steering files for details
 2. ✅ **Frontmatter** - Uses only valid fields
@@ -253,4 +253,4 @@ The Senzing Boot Camp power now aligns with power-builder best practices in:
 
 ---
 
-**Summary**: The Senzing Boot Camp power is now fully aligned with power-builder best practices, with improved organization, documentation, and maintainability.
+**Summary**: The Senzing Bootcamp power is now fully aligned with power-builder best practices, with improved organization, documentation, and maintainability.

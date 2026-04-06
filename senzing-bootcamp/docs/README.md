@@ -1,6 +1,6 @@
-# Senzing Boot Camp Documentation
+# Senzing Bootcamp Documentation
 
-This directory contains all documentation for the Senzing Boot Camp.
+This directory contains all documentation for the Senzing Bootcamp.
 
 ## Directory Structure
 
@@ -26,7 +26,7 @@ Module-specific documentation files. Each module has detailed documentation abou
 
 ### `/policies/`
 
-Policy documents that define standards and conventions for the boot camp.
+Policy documents that define standards and conventions for the bootcamp.
 
 **Files:**
 

@@ -1,6 +1,6 @@
 # Module Completion Tracker
 
-Track your progress through the Senzing Boot Camp with completion criteria and certificates.
+Track your progress through the Senzing Bootcamp with completion criteria and certificates.
 
 ## How to Use This Tracker
 
@@ -459,7 +459,7 @@ Track your progress through the Senzing Boot Camp with completion criteria and c
 Once you've completed your chosen path, generate a completion certificate:
 
 ```markdown
-# Senzing Boot Camp Completion Certificate
+# Senzing Bootcamp Completion Certificate
 
 This certifies that
 
@@ -467,7 +467,7 @@ This certifies that
 
 has successfully completed the
 
-**Senzing Boot Camp - [Path Name]**
+**Senzing Bootcamp - [Path Name]**
 
 on **[Completion Date]**
 
@@ -492,7 +492,7 @@ on **[Completion Date]**
 
 ---
 
-Senzing Boot Camp v3.0.0
+Senzing Bootcamp v3.0.0
 ```
 
 ### Share Your Achievement
@@ -500,7 +500,7 @@ Senzing Boot Camp v3.0.0
 - Add certificate to your project README
 - Share on LinkedIn or professional networks
 - Include in portfolio or resume
-- Contribute back to the boot camp!
+- Contribute back to the bootcamp!
 
 ---
 
@@ -521,7 +521,7 @@ Senzing Boot Camp v3.0.0
 
 ### Take Breaks
 
-- Boot camp can take 10-18 hours total
+- Bootcamp can take 10-18 hours total
 - Break it into manageable sessions
 - Don't rush through modules
 
@@ -538,7 +538,7 @@ Senzing Boot Camp v3.0.0
 
 - [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md) - Simple progress checklist
 - [QUICK_START.md](QUICK_START.md) - Getting started guide
-- [POWER.md](../../POWER.md) - Boot camp overview
+- [POWER.md](../../POWER.md) - Bootcamp overview
 
 ## Version History
 

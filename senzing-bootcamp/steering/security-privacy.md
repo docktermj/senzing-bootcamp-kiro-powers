@@ -4,7 +4,7 @@ inclusion: always
 
 # Data Privacy and Security
 
-**CRITICAL**: Handle data responsibly throughout the boot camp.
+**CRITICAL**: Handle data responsibly throughout the bootcamp.
 
 ## Data Privacy Considerations
 

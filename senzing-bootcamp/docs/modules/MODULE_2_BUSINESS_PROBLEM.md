@@ -4,7 +4,7 @@
 
 ## Overview
 
-Module 2 helps you define your entity resolution problem, identify data sources, and create a clear project plan. This foundation ensures the rest of the boot camp is tailored to your specific needs.
+Module 2 helps you define your entity resolution problem, identify data sources, and create a clear project plan. This foundation ensures the rest of the bootcamp is tailored to your specific needs.
 
 **Time:** 20-30 minutes
 **Prerequisites:** None (or Module 1 complete if you did the demo)
@@ -103,7 +103,7 @@ Consider:
 
 ## Project Directory Structure
 
-The Senzing Boot Camp agent will automatically create this organized directory structure for you:
+The Senzing Bootcamp agent will automatically create this organized directory structure for you:
 
 ```text
 my-senzing-project/
@@ -148,7 +148,7 @@ If not, you'll be asked: "Would you like to initialize this as a git repository?
 
 Benefits of using git:
 
-- Track changes throughout the boot camp
+- Track changes throughout the bootcamp
 - Revert mistakes easily
 - Collaborate with team members
 - Document progress with commits
@@ -293,7 +293,7 @@ After completing Module 2:
 
 ## Related Documentation
 
-- `POWER.md` - Boot camp overview
+- `POWER.md` - Bootcamp overview
 - `steering/module-02-business-problem.md` - Module 2 workflow
 - Use MCP `search_docs` with query "pricing" for current Senzing pricing
 - `docs/guides/DESIGN_PATTERNS.md` - Design pattern details

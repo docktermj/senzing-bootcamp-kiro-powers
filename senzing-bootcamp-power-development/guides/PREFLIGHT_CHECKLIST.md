@@ -1,6 +1,6 @@
 # Pre-flight Checklist
 
-Complete this checklist before starting the Senzing Boot Camp to ensure your environment is ready.
+Complete this checklist before starting the Senzing Bootcamp to ensure your environment is ready.
 
 ## Quick Check
 
@@ -338,7 +338,7 @@ pip install --dry-run senzing
 - [ ] **Basic SQL** (if using databases)
 - [ ] **Basic Docker** (if using containers)
 
-**Note**: Don't worry if you're not an expert. The boot camp will guide you!
+**Note**: Don't worry if you're not an expert. The bootcamp will guide you!
 
 ---
 
@@ -391,10 +391,10 @@ Save this as `scripts/preflight_check.sh`:
 
 ```bash
 #!/bin/bash
-# Senzing Boot Camp Pre-flight Check
+# Senzing Bootcamp Pre-flight Check
 
 echo "=================================="
-echo "SENZING BOOT CAMP PRE-FLIGHT CHECK"
+echo "SENZING BOOTCAMP PRE-FLIGHT CHECK "
 echo "=================================="
 echo ""
 
@@ -510,7 +510,7 @@ echo ""
 
 if [ $ERRORS -eq 0 ]; then
     echo "✅ PRE-FLIGHT CHECK PASSED!"
-    echo "You're ready to start the Senzing Boot Camp."
+    echo "You're ready to start the Senzing Bootcamp."
     exit 0
 else
     echo "❌ PRE-FLIGHT CHECK FAILED"
@@ -627,7 +627,7 @@ Once all critical checks pass:
 
 - [QUICK_START.md](QUICK_START.md) - Getting started guide
 - [ONBOARDING_CHECKLIST.md](ONBOARDING_CHECKLIST.md) - Onboarding steps
-- [POWER.md](../../POWER.md) - Boot camp overview
+- [POWER.md](../../POWER.md) - Bootcamp overview
 - [MODULE_5_SDK_SETUP.md](../modules/MODULE_5_SDK_SETUP.md) - SDK installation
 
 ## Version History

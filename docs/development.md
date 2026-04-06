@@ -1,6 +1,6 @@
 # Senzing Kiro Power development
 
-This repository contains the Senzing Boot Camp Kiro Power and its development documentation.
+This repository contains the Senzing Bootcamp Kiro Power and its development documentation.
 
 ## Repository Structure
 
@@ -47,7 +47,7 @@ When developing the power:
 
 ## For Users
 
-To use the Senzing Boot Camp power:
+To use the Senzing Bootcamp power:
 
 1. Install the power from the `senzing-bootcamp/` directory
 2. Follow the instructions in `senzing-bootcamp/POWER.md`

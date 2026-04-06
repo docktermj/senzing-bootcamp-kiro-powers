@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Senzing Boot Camp Project Backup Script.
+"""Senzing Bootcamp Project Backup Script.
 
 Creates a timestamped ZIP archive of all project data.
 Cross-platform: works on Linux, macOS, and Windows.
@@ -68,7 +68,7 @@ def main():
     backups_dir.mkdir(exist_ok=True)
     backup_file = backups_dir / f"{backup_name}.zip"
 
-    print(green("Senzing Boot Camp - Project Backup"))
+    print(green("Senzing Bootcamp - Project Backup"))
     print("======================================")
     print()
 

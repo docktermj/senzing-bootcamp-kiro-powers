@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Senzing Boot Camp includes 10 common entity resolution design patterns to help you identify and articulate your business problem. These patterns are presented during Module 2 when defining your use case.
+The Senzing Bootcamp includes 10 common entity resolution design patterns to help you identify and articulate your business problem. These patterns are presented during Module 2 when defining your use case.
 
 To see the full pattern gallery with detailed matching attributes, expected outcomes, and agent guidance, ask the agent to load the `design-patterns.md` steering file:
 

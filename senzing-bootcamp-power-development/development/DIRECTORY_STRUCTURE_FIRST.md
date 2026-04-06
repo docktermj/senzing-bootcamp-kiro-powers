@@ -160,9 +160,9 @@ EOF
 
     # Create README.md
     cat > README.md << 'EOF'
-# Senzing Boot Camp Project
+# Senzing Bootcamp Project
 
-This project was created using the Senzing Boot Camp power.
+This project was created using the Senzing Bootcamp power.
 
 ## Quick Start
 
@@ -189,7 +189,7 @@ fi
 
 **TRIGGER POINTS** - Execute directory creation at ANY of these:
 
-- User says "start the boot camp"
+- User says "start the bootcamp"
 - User says "Module 0" or "quick demo"
 - User says "Module 1" or any module number
 - User selects any path (A, B, C, D)
@@ -321,7 +321,7 @@ There are **NO EXCEPTIONS** to this rule:
 
 ## Checklist for Agent
 
-Before proceeding with ANY boot camp activity:
+Before proceeding with ANY bootcamp activity:
 
 - [ ] Have I checked if directory structure exists?
 - [ ] If it doesn't exist, have I created it?

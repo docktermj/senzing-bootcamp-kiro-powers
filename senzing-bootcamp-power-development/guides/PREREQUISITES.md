@@ -1,6 +1,6 @@
-# Senzing Boot Camp Prerequisites
+# Senzing Bootcamp Prerequisites
 
-What you need before starting the boot camp.
+What you need before starting the bootcamp.
 
 ## Hardware
 

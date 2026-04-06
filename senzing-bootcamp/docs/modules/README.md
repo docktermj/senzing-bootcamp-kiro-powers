@@ -1,6 +1,6 @@
 # Module Documentation Index
 
-This directory contains detailed documentation for each boot camp module.
+This directory contains detailed documentation for each bootcamp module.
 
 ## Available Modules
 

@@ -19,7 +19,7 @@ Learn from common mistakes to save time and frustration.
 ### Pitfall: Problem Too Vague
 
 **Symptom**: "I want to clean my data"
-**Problem**: Not specific enough to guide the boot camp
+**Problem**: Not specific enough to guide the bootcamp
 **Solution**: Ask targeted questions:
 
 - What specific data quality issue?
@@ -31,7 +31,7 @@ Learn from common mistakes to save time and frustration.
 
 **Symptom**: User lists 10+ data sources
 **Problem**: Overwhelming scope, long timeline
-**Solution**: Prioritize 1-2 sources for initial boot camp, expand later
+**Solution**: Prioritize 1-2 sources for initial bootcamp, expand later
 
 ### Pitfall: Unrealistic Expectations
 

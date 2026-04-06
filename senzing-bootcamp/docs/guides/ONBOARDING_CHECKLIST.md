@@ -1,6 +1,6 @@
-# Senzing Boot Camp Onboarding Checklist
+# Senzing Bootcamp Onboarding Checklist
 
-Complete this checklist before starting the boot camp to ensure a smooth experience.
+Complete this checklist before starting the bootcamp to ensure a smooth experience.
 
 ## Pre-Flight Checklist
 
@@ -179,7 +179,7 @@ my-senzing-project/
 
 - [ ] **Time Commitment**
   - 2-3 hours for quick start (Modules 2-6, 8)
-  - 10-18 hours for complete boot camp (Modules 0-12)
+  - 10-18 hours for complete bootcamp (Modules 0-12)
   - Flexible schedule for iterative work
 
 - [ ] **Team Resources** (if applicable)
@@ -189,7 +189,7 @@ my-senzing-project/
 
 - [ ] **Budget** (if applicable)
   - Senzing license obtained or requested (see `licenses/README.md`)
-  - For boot camp: Request free evaluation license from [support@senzing.com](mailto:support@senzing.com)
+  - For bootcamp: Request free evaluation license from [support@senzing.com](mailto:support@senzing.com)
   - For production: Contact [sales@senzing.com](mailto:sales@senzing.com) for pricing
   - Infrastructure budget allocated
   - Timeline for procurement
@@ -215,7 +215,7 @@ my-senzing-project/
 
 - [ ] **Documentation Access**
   - Senzing documentation available
-  - Boot camp power installed in Kiro
+  - Bootcamp power installed in Kiro
   - MCP server configured
 
 - [ ] **Support Channels**
@@ -267,10 +267,10 @@ print(f"{usage.free / (1024**3):.0f} GB free")
 
 ### All Checks Complete ✅
 
-You're ready to start the boot camp! Tell the agent:
+You're ready to start the bootcamp! Tell the agent:
 
 ```text
-"I'm ready to start the Senzing boot camp"
+"I'm ready to start the Senzing bootcamp"
 ```
 
 ### Some Checks Incomplete ⚠️
@@ -291,7 +291,7 @@ You're ready to start the boot camp! Tell the agent:
 
 **Need help?**
 
-- Ask the agent: "Help me prepare for the boot camp"
+- Ask the agent: "Help me prepare for the bootcamp"
 - Review `docs/guides/QUICK_START.md` for path options
 
 ## Troubleshooting
@@ -359,7 +359,7 @@ After completing this checklist:
 Need help with the checklist?
 
 ```text
-"Help me check if I'm ready for the boot camp"
+"Help me check if I'm ready for the bootcamp"
 "What do I need to install?"
 "I don't have [requirement], what should I do?"
 ```

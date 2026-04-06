@@ -1,6 +1,6 @@
 # Production Deployment Example: Enterprise Customer MDM
 
-> **Blueprint Project:** This directory contains a detailed README describing the project architecture, data flow, and expected results. The actual source code files are generated during the boot camp using MCP tools (`generate_scaffold`, `mapping_workflow`) in your chosen programming language (Python, Java, C#, Rust, or TypeScript).
+> **Blueprint Project:** This directory contains a detailed README describing the project architecture, data flow, and expected results. The actual source code files are generated during the bootcamp using MCP tools (`generate_scaffold`, `mapping_workflow`) in your chosen programming language (Python, Java, C#, Rust, or TypeScript).
 
 ## Overview
 
@@ -8,7 +8,7 @@ This example demonstrates a complete production-ready deployment of Senzing for 
 
 **Time to Complete:** 12-15 hours
 **Difficulty:** Advanced
-**Modules Covered:** 0-12 (complete boot camp)
+**Modules Covered:** 0-12 (complete bootcamp)
 
 ## Business Problem
 
@@ -262,7 +262,7 @@ See `docs/operations/runbooks/` for detailed troubleshooting guides.
 
 ## Related Documentation
 
-- [POWER.md](../../POWER.md) - Boot camp overview
+- [POWER.md](../../POWER.md) - Bootcamp overview
 - [MODULE_12_DEPLOYMENT_PACKAGING.md](../../docs/modules/MODULE_12_DEPLOYMENT_PACKAGING.md)
 - [multi-source-project](../multi-source-project/README.md) - Simpler multi-source example
 

@@ -1,12 +1,12 @@
-# Visual Guide: Senzing Boot Camp
+# Visual Guide: Senzing Bootcamp
 
-This guide provides visual diagrams to help understand the boot camp flow, data transformations, and architecture patterns.
+This guide provides visual diagrams to help understand the bootcamp flow, data transformations, and architecture patterns.
 
-## Boot Camp Flow Diagram
+## Bootcamp Flow Diagram
 
 ```mermaid
 graph TD
-    Start[Start Boot Camp] --> M0{Want Quick Demo?}
+    Start[Start Bootcamp] --> M0{Want Quick Demo?}
     M0 -->|Yes| Module0[Module 0: Quick Demo<br/>10-15 min]
     M0 -->|No| Module1
     Module0 --> Module1
@@ -28,7 +28,7 @@ graph TD
 
     Module8[Module 8: Query & Validate<br/>1-2 hrs] --> M9{Production<br/>Deployment?}
 
-    M9 -->|No| Complete[Boot Camp Complete!]
+    M9 -->|No| Complete[Bootcamp Complete!]
     M9 -->|Yes| Module9[Module 9: Performance<br/>Testing<br/>1-2 hrs]
 
     Module9 --> Module10[Module 10: Security<br/>Hardening<br/>1-2 hrs]
@@ -417,7 +417,7 @@ graph LR
 
 ```mermaid
 gantt
-    title Boot Camp Time Estimates
+    title Bootcamp Time Estimates
     dateFormat X
     axisFormat %H:%M
 
@@ -514,7 +514,7 @@ To customize diagrams:
 
 ## Related Documentation
 
-- [POWER.md](../../POWER.md) - Boot camp overview
+- [POWER.md](../../POWER.md) - Bootcamp overview
 - [QUICK_START.md](QUICK_START.md) - Getting started guide
 - [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md) - Track your progress
 

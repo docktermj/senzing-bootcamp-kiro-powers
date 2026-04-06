@@ -1,6 +1,6 @@
-# Senzing Boot Camp Templates
+# Senzing Bootcamp Templates
 
-Templates are no longer shipped as static Python files. Instead, the boot camp generates language-specific code on the fly using the Senzing MCP server's `generate_scaffold` and `sdk_guide` tools, tailored to the bootcamper's chosen programming language.
+Templates are no longer shipped as static Python files. Instead, the bootcamp generates language-specific code on the fly using the Senzing MCP server's `generate_scaffold` and `sdk_guide` tools, tailored to the bootcamper's chosen programming language.
 
 ## Supported Languages
 

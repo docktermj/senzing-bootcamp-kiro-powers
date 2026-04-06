@@ -8,7 +8,7 @@ Before performing any software installation (especially Senzing), always verify 
 
 Users may:
 
-- Try the boot camp multiple times
+- Try the bootcamp multiple times
 - Have Senzing already installed from previous attempts
 - Be working in a shared environment
 - Have multiple Python environments

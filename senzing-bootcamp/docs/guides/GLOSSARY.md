@@ -1,6 +1,6 @@
 # Senzing Entity Resolution Glossary
 
-> For detailed documentation on any term, use the `search_docs` MCP tool. This glossary provides quick definitions for common terms encountered during the boot camp.
+> For detailed documentation on any term, use the `search_docs` MCP tool. This glossary provides quick definitions for common terms encountered during the bootcamp.
 
 ---
 

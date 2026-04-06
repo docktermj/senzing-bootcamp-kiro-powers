@@ -8,7 +8,7 @@ Document insights for future projects and continuous improvement.
 
 ## Purpose
 
-After completing the boot camp, capture what you learned to improve future entity resolution projects. This template helps you reflect on successes, challenges, and key decisions.
+After completing the bootcamp, capture what you learned to improve future entity resolution projects. This template helps you reflect on successes, challenges, and key decisions.
 
 ## Template
 
@@ -149,7 +149,7 @@ Create `docs/lessons_learned.md` and fill it out after Module 8 (or Module 12 fo
 
 ## When to Use This Template
 
-- After completing any boot camp path (A, B, C, or D)
+- After completing any bootcamp path (A, B, C, or D)
 - After completing Module 8 (query and validation) on Path C
 - After completing Module 12 (full deployment) on Path D
 - Even after Path A (Quick Demo) — capture first impressions while fresh

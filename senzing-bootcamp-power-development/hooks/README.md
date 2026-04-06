@@ -1,13 +1,13 @@
 # Removed Hooks
 
-This directory contains hooks that were removed from the Power distribution because they are generic software engineering practices rather than boot camp-specific automation.
+This directory contains hooks that were removed from the Power distribution because they are generic software engineering practices rather than bootcamp-specific automation.
 
 ## Why These Were Removed
 
 These hooks were moved to the development repository on March 23, 2026 because:
 
-1. **Generic Content**: They contain standard software engineering practices, not boot camp-specific automation
-2. **Conflicts with Workflow**: Some conflict with boot camp agent instructions
+1. **Generic Content**: They contain standard software engineering practices, not bootcamp-specific automation
+2. **Conflicts with Workflow**: Some conflict with bootcamp agent instructions
 3. **May Be Disruptive**: Trigger on every file save, which may annoy users
 4. **Users Can Create Own**: Users who want these can easily create their own hooks
 
@@ -22,10 +22,10 @@ These hooks were moved to the development repository on March 23, 2026 because:
 **Why Removed**:
 
 - **Conflicts with agent instructions**: Agent instructions say "DO NOT automatically add tests unless explicitly requested"
-- **Assumes tests exist**: Boot camp doesn't require tests in early modules
+- **Assumes tests exist**: Bootcamp doesn't require tests in early modules
 - **May fail**: If pytest not installed or no tests directory exists
 - **Disruptive**: Runs on every file save
-- **Generic practice**: Not specific to boot camp workflow
+- **Generic practice**: Not specific to bootcamp workflow
 
 **Replacement**: Users who want automated testing can create their own hook or use git pre-commit hooks
 
@@ -37,22 +37,22 @@ These hooks were moved to the development repository on March 23, 2026 because:
 
 **Why Removed**:
 
-- **Generic reminder**: Not specific to boot camp workflow
+- **Generic reminder**: Not specific to bootcamp workflow
 - **Repetitive**: Triggers on every file save
 - **Vague**: Generic reminder without specific guidance
-- **Already covered**: Boot camp workflows already emphasize documentation
+- **Already covered**: Bootcamp workflows already emphasize documentation
 - **May be annoying**: Users may find it disruptive
 
-**Replacement**: Boot camp module workflows already include documentation steps
+**Replacement**: Bootcamp module workflows already include documentation steps
 
 ## What Remains in Power (4 hooks)
 
-The Power distribution now contains only boot camp-specific hooks:
+The Power distribution now contains only bootcamp-specific hooks:
 
-1. **pep8-check.hook** - Enforces boot camp PEP-8 standards (100 char limit)
-2. **data-quality-check.kiro.hook** - Boot camp quality thresholds (>70%)
-3. **backup-before-load.kiro.hook** - References boot camp scripts
-4. **validate-senzing-json.kiro.hook** - Uses boot camp MCP tool (`lint_record`)
+1. **pep8-check.hook** - Enforces bootcamp PEP-8 standards (100 char limit)
+2. **data-quality-check.kiro.hook** - Bootcamp quality thresholds (>70%)
+3. **backup-before-load.kiro.hook** - References bootcamp scripts
+4. **validate-senzing-json.kiro.hook** - Uses bootcamp MCP tool (`lint_record`)
 
 ## Impact
 
@@ -99,7 +99,7 @@ python -m pytest tests/ -v
 
 Ask these questions:
 
-1. **Is this boot camp-specific?**
+1. **Is this bootcamp-specific?**
    - If no → Don't add it to Power distribution
 
 2. **Does it conflict with agent instructions?**
@@ -114,11 +114,11 @@ Ask these questions:
 5. **Does it provide unique value?**
    - If no → Don't add it
 
-### Boot Camp-Specific Hooks Should
+### Bootcamp-Specific Hooks Should
 
-- Enforce boot camp standards (PEP-8 with 100 char limit)
-- Reference boot camp tools (MCP tools, boot camp scripts)
-- Support boot camp workflows (quality checks, backups)
+- Enforce bootcamp standards (PEP-8 with 100 char limit)
+- Reference bootcamp tools (MCP tools, bootcamp scripts)
+- Support bootcamp workflows (quality checks, backups)
 - Trigger at appropriate times (not every save)
 - Provide specific, actionable guidance
 

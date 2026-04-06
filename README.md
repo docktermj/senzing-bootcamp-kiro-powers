@@ -1,12 +1,12 @@
 # Senzing Kiro Power
 
-This repository contains the Senzing Boot Camp Kiro Power and its development documentation.
+This repository contains the Senzing Bootcamp Kiro Power and its development documentation.
 
 ## Prerequisites
 
 1. [Install Kiro](docs/install-kiro.md)
 
-## Install the Senzing Boot Camp Power
+## Install the Senzing Bootcamp Power
 
 1. In Kiro's left-hand icon bar, click on the **Powers** icon.
 1. In the **Powers** panel, under **Installed**, click on "Add Custom Power".
@@ -17,7 +17,7 @@ This repository contains the Senzing Boot Camp Kiro Power and its development do
    https://github.com/docktermj/senzing-bootcamp-kiro-powers/tree/main/senzing-bootcamp
    ```
 
-## Start the Senzing Boot Camp
+## Start the Senzing Bootcamp
 
 1. Start Kiro in a new, empty directory.
    Example:
@@ -28,19 +28,19 @@ This repository contains the Senzing Boot Camp Kiro Power and its development do
     kiro .
     ```
 
-1. In Kiro's agentic chat, say **"Start the boot camp"** to begin.
+1. In Kiro's agentic chat, say **"Start the bootcamp"** to begin.
 
-## Clean up the Boot Camp
+## Clean up the Bootcamp
 
-After completing the boot camp, save any artifacts of interest.
-All artifacts created by the Senzing Boot Camp are in the Kiro project directory.
+After completing the bootcamp, save any artifacts of interest.
+All artifacts created by the Senzing Bootcamp are in the Kiro project directory.
 
-1. **(Optional) Remove the Senzing Boot Camp Power:**
+1. **(Optional) Remove the Senzing Bootcamp Power:**
    1. In Kiro's left-hand icon bar, click on the **Powers** icon.
-   1. In the **Powers** panel, under **Installed**, find "Senzing Boot Camp".
-   1. In the **Power: Senzing Boot Camp** panel, click the **Uninstall** button.
+   1. In the **Powers** panel, under **Installed**, find "Senzing Bootcamp".
+   1. In the **Power: Senzing Bootcamp** panel, click the **Uninstall** button.
 
-1. **Delete the Senzing Boot Camp project directory.**
+1. **Delete the Senzing Bootcamp project directory.**
 
    - **Linux / macOS:**
 

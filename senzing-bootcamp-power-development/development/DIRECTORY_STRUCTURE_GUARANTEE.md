@@ -5,7 +5,7 @@
 
 ## Guarantee Statement
 
-The Senzing Boot Camp power **GUARANTEES** that the project directory structure will be created automatically at the very beginning of the boot camp, before any other activity occurs.
+The Senzing Bootcamp power **GUARANTEES** that the project directory structure will be created automatically at the very beginning of the bootcamp, before any other activity occurs.
 
 ## Where This is Enforced
 
@@ -15,7 +15,7 @@ The Senzing Boot Camp power **GUARANTEES** that the project directory structure 
 
 ```text
 1. ALWAYS CREATE DIRECTORY STRUCTURE FIRST - Before doing ANYTHING else
-   in the boot camp (Module 0 or Module 1), check if the project directory
+   in the bootcamp (Module 0 or Module 1), check if the project directory
    structure exists. If it doesn't exist, create it immediately using the
    commands below. This is MANDATORY and must happen before any other boot
    camp activity.

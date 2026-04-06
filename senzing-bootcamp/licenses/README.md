@@ -4,9 +4,9 @@ This directory is for storing your Senzing license file(s).
 
 ## Do I Need a License?
 
-The boot camp agent will ask about your license early in the workflow (before Module 0). You have three options:
+The bootcamp agent will ask about your license early in the workflow (before Module 0). You have three options:
 
-- **No license**: The SDK includes built-in evaluation limits that work for the boot camp
+- **No license**: The SDK includes built-in evaluation limits that work for the bootcamp
 - **Evaluation license**: Removes limits, free from Senzing (email <support@senzing.com>)
 - **Production license**: For production deployments (contact <sales@senzing.com>)
 
@@ -14,7 +14,7 @@ You can always add a license later by placing it in `licenses/g2.lic`.
 
 ## How to Obtain a Senzing License
 
-### Option 1: Evaluation License (Recommended for Boot Camp)
+### Option 1: Evaluation License (Recommended for Bootcamp)
 
 **For learning and evaluation purposes**, request a free evaluation license:
 
@@ -23,7 +23,7 @@ You can always add a license later by placing it in `licenses/g2.lic`.
    - **Website**: [https://senzing.com/contact/](https://senzing.com/contact/)
 
 2. **Request Information**:
-   - Mention you're completing the Senzing Boot Camp
+   - Mention you're completing the Senzing Bootcamp
    - Specify "evaluation license" for learning purposes
    - Provide your name, company, and use case
 
@@ -69,7 +69,7 @@ You can always add a license later by placing it in `licenses/g2.lic`.
    - You don't need to place a license in this directory
    - The SDK will automatically use the system-wide license
 
-2. **Project-Specific License** (recommended for boot camp):
+2. **Project-Specific License** (recommended for bootcamp):
    - Place your license file in this directory: `licenses/g2.lic`
    - This allows different projects to use different licenses
    - Useful for separating evaluation and production environments
@@ -129,7 +129,7 @@ ls -la licenses/g2.lic
 stat licenses/g2.lic
 ```
 
-The agent will verify the license during the boot camp's license check step (Fourth Action in agent-instructions). You can also verify by running the SDK initialization script generated in Module 0 — if the license is valid, the SDK will initialize without errors.
+The agent will verify the license during the bootcamp's license check step (Fourth Action in agent-instructions). You can also verify by running the SDK initialization script generated in Module 0 — if the license is valid, the SDK will initialize without errors.
 
 ## Security and Git
 
@@ -171,7 +171,7 @@ echo "licenses/*.lic" >> .gitignore
 
 **Best for**:
 
-- Completing the boot camp
+- Completing the bootcamp
 - Proof of concept projects
 - Learning and training
 - Development and testing
@@ -252,9 +252,9 @@ echo "licenses/*.lic" >> .gitignore
 
 ## Frequently Asked Questions
 
-### Can I use the boot camp without a license?
+### Can I use the bootcamp without a license?
 
-**Yes** — the SDK includes built-in evaluation limits that are sufficient for the boot camp. For larger datasets or production use, request an evaluation or production license.
+**Yes** — the SDK includes built-in evaluation limits that are sufficient for the bootcamp. For larger datasets or production use, request an evaluation or production license.
 
 **Recommendation**: If you plan to work with large datasets, request an evaluation license before starting Module 0.
 
@@ -281,7 +281,7 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 - Use production license for production deployments
 - Keep licenses separate by using project-specific license files
 
-### Can I complete the boot camp with an expired license?
+### Can I complete the bootcamp with an expired license?
 
 **Yes, with limitations** — the SDK's built-in evaluation limits still work. But for larger datasets, contact Senzing for renewal before your license expires.
 
@@ -308,7 +308,7 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 2. **Wait for Email**: Typically 1-2 business days
 3. **Install License**: Place `g2.lic` in this directory
 4. **Verify**: Run verification script above
-5. **Continue Boot Camp**: Proceed to Module 0 (SDK Setup)
+5. **Continue Bootcamp**: Proceed to Module 0 (SDK Setup)
 
 ## Related Documentation
 

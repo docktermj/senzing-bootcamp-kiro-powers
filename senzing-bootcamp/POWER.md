@@ -1,22 +1,22 @@
 ---
 name: "senzing-bootcamp"
-displayName: "Senzing Boot Camp"
-description: "Guided 13-module boot camp for learning Senzing entity resolution, from first demo to production deployment."
+displayName: "Senzing Bootcamp"
+description: "Guided 13-module bootcamp for learning Senzing entity resolution, from first demo to production deployment."
 keywords: ["senzing", "bootcamp", "entity-resolution", "senzing-bootcamp", "learning-path"]
 author: "Senzing"
 ---
 
-# Senzing Boot Camp
+# Senzing Bootcamp
 
 ## Overview
 
-This power provides a guided boot camp for learning Senzing entity resolution through a structured 13-module curriculum (Modules 0-12). It connects to the Senzing MCP server to provide interactive, tool-assisted workflows covering data mapping, SDK installation, record loading, and entity resolution exploration.
+This power provides a guided bootcamp for learning Senzing entity resolution through a structured 13-module curriculum (Modules 0-12). It connects to the Senzing MCP server to provide interactive, tool-assisted workflows covering data mapping, SDK installation, record loading, and entity resolution exploration.
 
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
 ## Quick Start
 
-**New users:** Say "start the boot camp" to begin. Choose your path:
+**New users:** Say "start the bootcamp" to begin. Choose your path:
 
 - A) Quick Demo (10 min + Module 0 setup) — Module 1 (requires SDK from Module 0)
 - B) Fast Track (30 min) — Modules 5-6 (for users with SGES-compliant data)
@@ -27,7 +27,7 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 ## Relationship to Senzing Power
 
-This boot camp complements the optional **senzing** Kiro Power. Both connect to the same MCP server. Use this power for structured learning; use the senzing power for quick reference and troubleshooting.
+This bootcamp complements the optional **senzing** Kiro Power. Both connect to the same MCP server. Use this power for structured learning; use the senzing power for quick reference and troubleshooting.
 
 ## Available Steering Files
 
@@ -124,7 +124,7 @@ Always call `get_capabilities` first when starting a session.
 - Never guess SDK method signatures — use `generate_scaffold` or `sdk_guide`
 - Use `search_docs` with category `anti_patterns` before recommending approaches
 
-## Boot Camp Modules
+## Bootcamp Modules
 
 | Module | Topic                              | Time                           |
 |--------|------------------------------------|--------------------------------|
@@ -146,7 +146,7 @@ Modules are progressive but iterative. Skip ahead options: have SGES data (skip 
 
 ## Code Quality Standards
 
-All generated code follows language-appropriate coding standards based on the bootcamper's chosen language. The boot camp supports Python, Java, C#, Rust, and TypeScript/Node.js — the agent queries the Senzing MCP server for the current list and asks the bootcamper to choose at the start. See `docs/policies/CODE_QUALITY_STANDARDS.md`.
+All generated code follows language-appropriate coding standards based on the bootcamper's chosen language. The bootcamp supports Python, Java, C#, Rust, and TypeScript/Node.js — the agent queries the Senzing MCP server for the current list and asks the bootcamper to choose at the start. See `docs/policies/CODE_QUALITY_STANDARDS.md`.
 
 ## Recommended Hooks
 
@@ -162,7 +162,7 @@ Available: Code Style Check (`code-style-check`), `data-quality-check`, `backup-
 
 ## Project Directory Structure
 
-The agent creates an organized directory structure at boot camp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `logs/`, `monitoring/`. Load `project-structure.md` for details.
+The agent creates an organized directory structure at bootcamp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `logs/`, `monitoring/`. Load `project-structure.md` for details.
 
 ## Entity Resolution Design Patterns
 

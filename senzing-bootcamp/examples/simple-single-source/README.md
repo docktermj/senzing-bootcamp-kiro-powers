@@ -1,6 +1,6 @@
 # Simple Single Source Example
 
-> **Blueprint Project:** This directory contains a detailed README describing the project architecture, data flow, and expected results. The actual source code files are generated during the boot camp using MCP tools (`generate_scaffold`, `mapping_workflow`) in your chosen programming language (Python, Java, C#, Rust, or TypeScript).
+> **Blueprint Project:** This directory contains a detailed README describing the project architecture, data flow, and expected results. The actual source code files are generated during the bootcamp using MCP tools (`generate_scaffold`, `mapping_workflow`) in your chosen programming language (Python, Java, C#, Rust, or TypeScript).
 
 A minimal Senzing project demonstrating customer deduplication with a single data source.
 
@@ -231,7 +231,7 @@ After completing this example:
 
 ## Related Documentation
 
-- `../../POWER.md` - Boot camp overview
+- `../../POWER.md` - Bootcamp overview
 - `../../docs/modules/` - Module documentation
 - `../../docs/guides/QUICK_START.md` - Quick start guide
 

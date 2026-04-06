@@ -1,6 +1,6 @@
-# What to Do After the Boot Camp
+# What to Do After the Bootcamp
 
-Congratulations — you did it! You've worked through the Senzing Boot Camp and built a working entity resolution pipeline from the ground up. You understand your data, you've mapped and loaded it, validated results, and (if you went the full route) hardened, monitored, and packaged your deployment. That's a serious accomplishment.
+Congratulations — you did it! You've worked through the Senzing Bootcamp and built a working entity resolution pipeline from the ground up. You understand your data, you've mapped and loaded it, validated results, and (if you went the full route) hardened, monitored, and packaged your deployment. That's a serious accomplishment.
 
 This guide covers what comes next: keeping your system healthy, scaling when you need to, adding new data, staying current, and exploring advanced topics.
 
@@ -175,7 +175,7 @@ Explore embeddings-based candidate generation for fuzzy matching scenarios where
 
 ## Community and Support
 
-You're not on your own after the boot camp.
+You're not on your own after the bootcamp.
 
 ### Documentation
 
@@ -205,12 +205,12 @@ Use `get_sdk_reference` for precise method signatures, flag definitions, and API
 
 ## Providing Feedback
 
-Your experience matters. If you have feedback on the boot camp:
+Your experience matters. If you have feedback on the bootcamp:
 
 1. **Say "bootcamp feedback"** to the agent — it will walk you through documenting your experience
 2. **Share your feedback file** at `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` with the power author
 
-Feedback helps improve the boot camp for everyone who comes after you.
+Feedback helps improve the bootcamp for everyone who comes after you.
 
 ---
 

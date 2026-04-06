@@ -2,7 +2,7 @@
 
 ## Senzing Version Support
 
-This boot camp uses Senzing V4.0 exclusively.
+This bootcamp uses Senzing V4.0 exclusively.
 
 | Feature               | Senzing 4.0 | Notes                  |
 |-----------------------|-------------|------------------------|
@@ -58,7 +58,7 @@ This boot camp uses Senzing V4.0 exclusively.
 | **pymysql**  | 0.9         | 1.0+        | MySQL          |
 | **pyodbc**   | 4.0         | 4.0+        | MSSQL          |
 
-## Boot Camp Module Compatibility
+## Bootcamp Module Compatibility
 
 All modules are designed for Senzing V4.0.
 

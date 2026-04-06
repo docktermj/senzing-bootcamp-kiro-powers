@@ -1,8 +1,8 @@
-# Senzing Boot Camp Examples
+# Senzing Bootcamp Examples
 
 This directory contains reference project blueprints demonstrating different use cases and deployment patterns.
 
-**Note:** These examples are architectural blueprints, not runnable code. Each contains a README describing the project structure, code patterns, and expected results. The actual source code is generated during the boot camp by the agent using MCP tools (`generate_scaffold`, `mapping_workflow`) in your chosen programming language. Use these blueprints as reference architectures when building your own project.
+**Note:** These examples are architectural blueprints, not runnable code. Each contains a README describing the project structure, code patterns, and expected results. The actual source code is generated during the bootcamp by the agent using MCP tools (`generate_scaffold`, `mapping_workflow`) in your chosen programming language. Use these blueprints as reference architectures when building your own project.
 
 ## Available Examples
 
@@ -283,7 +283,7 @@ A: Create a PR with your example following the structure above.
 
 ## Dependency Management
 
-The boot camp supports multiple programming languages. Dependency files are language-specific:
+The bootcamp supports multiple programming languages. Dependency files are language-specific:
 
 - Python: `requirements.txt`
 - Java: `pom.xml` or `build.gradle`

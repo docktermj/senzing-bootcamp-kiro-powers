@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document defines where different types of files should be stored in the Senzing Boot Camp project structure. Never use system temporary directories for project files.
+This document defines where different types of files should be stored in the Senzing Bootcamp project structure. Never use system temporary directories for project files.
 
 ## Core Principle
 
@@ -57,7 +57,7 @@ src/utils/data_quality_checker.[ext]
 scripts/
 ├── backup_project.py    # Project backup
 ├── restore_project.py   # Project restore
-├── status.py            # Boot camp status
+├── status.py            # Bootcamp status
 ├── check_prerequisites.py # Prerequisites check
 ├── install_hooks.py     # Hook installer
 ├── clone_example.py     # Example cloner

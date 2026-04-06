@@ -1,6 +1,6 @@
 # Power Feedback Workflow
 
-**Purpose**: Guide users through providing structured feedback about the Senzing Boot Camp power.
+**Purpose**: Guide users through providing structured feedback about the Senzing Bootcamp power.
 **Trigger**: User says "power feedback", "bootcamp feedback", "submit feedback", "provide feedback", "I have feedback", or "report an issue"
 **Last Updated**: 2026-04-02
 
@@ -126,7 +126,7 @@ Agent says:
 
 You can review or edit it anytime. Would you like to:
 - Add more feedback
-- Continue with the boot camp
+- Continue with the bootcamp
 - Review the feedback file
 ```
 
@@ -138,7 +138,7 @@ Agent says:
 Your feedback has been saved in:
 1. ✅ Local file: `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 
-When you complete the boot camp, please share your feedback
+When you complete the bootcamp, please share your feedback
 file with the power author.
 
 You can add more feedback anytime by saying "power feedback".
@@ -187,7 +187,7 @@ You can add more feedback anytime by saying "power feedback".
 You can review or edit it anytime. Would you like to:
 
 - Add more feedback
-- Continue with the boot camp
+- Continue with the bootcamp
 - Review the feedback file"
 
 ---
@@ -294,7 +294,7 @@ You can review or edit it anytime. Would you like to:
 
 ### Module 1 Start
 
-Agent says: "If you encounter any issues or have suggestions during the boot camp, just say 'power feedback' or 'bootcamp feedback' and I'll help you document them."
+Agent says: "If you encounter any issues or have suggestions during the bootcamp, just say 'power feedback' or 'bootcamp feedback' and I'll help you document them."
 
 ### During Any Module
 
@@ -302,12 +302,12 @@ User can say "power feedback" or "bootcamp feedback" at any time to document iss
 
 ### Module 12 Completion
 
-Agent says: "🎉 Congratulations on completing the Senzing Boot Camp!
+Agent says: "🎉 Congratulations on completing the Senzing Bootcamp!
 
 Your feedback has been:
 ✅ Saved locally: `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 
-Please share your feedback file with the power author to help improve the boot camp.
+Please share your feedback file with the power author to help improve the bootcamp.
 
 If you have any additional feedback, say 'power feedback' or 'bootcamp feedback' and I'll help you document it."
 
@@ -335,6 +335,6 @@ If you have any additional feedback, say 'power feedback' or 'bootcamp feedback'
 
 ---
 
-**Document Owner**: Senzing Boot Camp Team
+**Document Owner**: Senzing Bootcamp Team
 **Maintained By**: Agent during power usage
 **Review Frequency**: After each feedback submission

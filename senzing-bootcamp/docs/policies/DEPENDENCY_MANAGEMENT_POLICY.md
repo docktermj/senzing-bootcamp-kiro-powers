@@ -2,7 +2,7 @@
 
 ## Overview
 
-When generating source code for the Senzing Boot Camp, a dependency file appropriate for the chosen programming language must be created or updated in the project root.
+When generating source code for the Senzing Bootcamp, a dependency file appropriate for the chosen programming language must be created or updated in the project root.
 
 ## Dependency Files by Language
 

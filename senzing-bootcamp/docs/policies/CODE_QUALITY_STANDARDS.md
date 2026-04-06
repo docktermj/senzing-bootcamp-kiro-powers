@@ -2,11 +2,11 @@
 
 ## Overview
 
-All source code generated during the Senzing Boot Camp must follow language-appropriate coding standards for the bootcamper's chosen programming language.
+All source code generated during the Senzing Bootcamp must follow language-appropriate coding standards for the bootcamper's chosen programming language.
 
 ## Supported Languages
 
-The boot camp supports the languages available through the Senzing MCP server. The agent queries the MCP server at the start of each session and asks the bootcamper to choose.
+The bootcamp supports the languages available through the Senzing MCP server. The agent queries the MCP server at the start of each session and asks the bootcamper to choose.
 
 ## Standards by Language
 

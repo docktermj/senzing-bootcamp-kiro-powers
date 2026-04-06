@@ -1,8 +1,8 @@
-# Senzing Boot Camp - Guides Directory
+# Senzing Bootcamp - Guides Directory
 
 ## Overview
 
-This directory contains comprehensive guides to help you succeed with the Senzing Boot Camp.
+This directory contains comprehensive guides to help you succeed with the Senzing Bootcamp.
 
 ## Available Guides
 
@@ -24,7 +24,7 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 
 **[FAQ.md](FAQ.md)**
 
-- Frequently asked questions about the boot camp
+- Frequently asked questions about the bootcamp
 - Organized by category
 - Covers modules, files, troubleshooting
 
@@ -40,11 +40,11 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - Use cases and examples
 - When to use each pattern
 
-### After the Boot Camp
+### After the Bootcamp
 
 **[AFTER_BOOTCAMP.md](AFTER_BOOTCAMP.md)**
 
-- What to do after completing the boot camp
+- What to do after completing the bootcamp
 - Production maintenance cadence (daily/weekly/monthly/quarterly)
 - Scaling, adding new data sources, staying updated
 - Advanced topics and community resources
@@ -299,7 +299,7 @@ Found an issue or have a suggestion?
 
 ## Quick Links
 
-- [Boot Camp Overview](../../POWER.md)
+- [Bootcamp Overview](../../POWER.md)
 - [Module 1: Quick Demo](../modules/MODULE_1_QUICK_DEMO.md)
 - [Module 2: Business Problem](../modules/MODULE_2_BUSINESS_PROBLEM.md)
 - [File Storage Policy](../policies/FILE_STORAGE_POLICY.md)

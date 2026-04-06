@@ -7,7 +7,7 @@ This directory contains guides for power developers and maintainers, not for boo
 ### MODULE_0_AGENT_GUIDE.md
 
 **Purpose**: Step-by-step instructions for agents running Module 0 (Quick Demo)
-**Audience**: AI agents implementing the boot camp
+**Audience**: AI agents implementing the bootcamp
 **Contents**:
 
 - Critical requirements for Module 0
@@ -34,7 +34,7 @@ This directory contains guides for power developers and maintainers, not for boo
 
 ## Removed Guide Files (Historical)
 
-These guide files were removed from the Senzing Boot Camp Power distribution because they either duplicate MCP server functionality or are internal documentation.
+These guide files were removed from the Senzing Bootcamp Power distribution because they either duplicate MCP server functionality or are internal documentation.
 
 ### Files in This Directory (15+ files)
 
@@ -63,7 +63,7 @@ These guides duplicate information that the Senzing MCP Server provides dynamica
    - **Why Removed**: MCP server provides current Docker setup instructions
 
 6. **DEPLOYMENT_CHECKLIST.md** - Generic deployment checklist
-   - **Why Removed**: Generic checklist, not boot camp-specific
+   - **Why Removed**: Generic checklist, not bootcamp-specific
 
 ### Internal/Development Documentation (7 files)
 
@@ -92,14 +92,14 @@ These are internal development notes, not user-facing guides:
 
 ## What Remains in the Power (User-Facing)
 
-Only 6 essential boot camp-specific guides remain in `senzing-bootcamp/docs/guides/`:
+Only 6 essential bootcamp-specific guides remain in `senzing-bootcamp/docs/guides/`:
 
-1. **QUICK_START.md** - Boot camp-specific quick start paths
-2. **ONBOARDING_CHECKLIST.md** - Boot camp-specific pre-flight checklist
+1. **QUICK_START.md** - Bootcamp-specific quick start paths
+2. **ONBOARDING_CHECKLIST.md** - Bootcamp-specific pre-flight checklist
 3. **PROGRESS_TRACKER.md** - Track progress through 13 modules
-4. **DESIGN_PATTERNS.md** - Boot camp-specific pattern gallery
-5. **TROUBLESHOOTING_INDEX.md** - Boot camp-specific troubleshooting
-6. **HOOKS_INSTALLATION_GUIDE.md** - Kiro hooks for boot camp
+4. **DESIGN_PATTERNS.md** - Bootcamp-specific pattern gallery
+5. **TROUBLESHOOTING_INDEX.md** - Bootcamp-specific troubleshooting
+6. **HOOKS_INSTALLATION_GUIDE.md** - Kiro hooks for bootcamp
 
 ## What's in Development Repository (Agent/Developer)
 
@@ -114,7 +114,7 @@ Agent and developer guides are in `senzing-bootcamp-power-development/guides/`:
 1. **Reduced duplication** - MCP server is the single source of truth for Senzing documentation
 2. **Always current** - MCP server documentation stays up-to-date automatically
 3. **Smaller distribution** - Power package is more focused
-4. **Clearer purpose** - Guides focus on boot camp-specific workflows
+4. **Clearer purpose** - Guides focus on bootcamp-specific workflows
 5. **Better maintenance** - Fewer files to keep in sync
 
 ## For Maintainers

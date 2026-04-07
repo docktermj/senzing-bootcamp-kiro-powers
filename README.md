@@ -6,6 +6,17 @@ This repository contains the Senzing Bootcamp Kiro Power and its development doc
 
 1. [Install Kiro](docs/install-kiro.md)
 
+## Start Kiro in a Senzing Bootcamp directory
+
+1. Start Kiro in a new, empty directory.
+   Example:
+
+    ```console
+    mkdir senzing-bootcamp
+    cd senzing-bootcamp
+    kiro .
+    ```
+
 ## Install the Senzing Bootcamp Power
 
 1. In Kiro's left-hand icon bar, click on the **Powers** icon.
@@ -17,18 +28,11 @@ This repository contains the Senzing Bootcamp Kiro Power and its development doc
    https://github.com/docktermj/senzing-bootcamp-kiro-powers/tree/main/senzing-bootcamp
    ```
 
-## Start the Senzing Bootcamp
-
-1. Start Kiro in a new, empty directory.
-   Example:
-
-    ```console
-    mkdir senzing-bootcamp
-    cd senzing-bootcamp
-    kiro .
-    ```
-
 1. In Kiro's agentic chat, say **"Start the bootcamp"** to begin.
+
+## Follow the Senzing Bootcamp
+
+Kiro's agentic chat panel will guide you through the Bootcamp.
 
 ## Clean up the Bootcamp
 

@@ -53,11 +53,19 @@ Load these on-demand when needed:
 
 **Agent Behavior:**
 
-- `agent-instructions.md` — Core agent rules and MCP usage (always loaded)
+- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~80 lines)
 - `onboarding-flow.md` — Full onboarding sequence: directory creation, language selection, prerequisite checks, path selection, validation gates
 - `cloud-provider-setup.md` — Cloud provider selection at the 8→9 gate (AWS, Azure, GCP, on-premises, local)
 - `security-privacy.md` — Data privacy and PII protection
 - `feedback-workflow.md` — Feedback collection workflow
+
+**Language-Specific (loaded automatically when editing matching files):**
+
+- `lang-python.md` — Python/PEP-8 conventions (loads on `*.py`)
+- `lang-java.md` — Java conventions (loads on `*.java`)
+- `lang-csharp.md` — C#/.NET conventions (loads on `*.cs`)
+- `lang-rust.md` — Rust conventions (loads on `*.rs`)
+- `lang-typescript.md` — TypeScript conventions (loads on `*.ts`, `*.tsx`, `*.js`, `*.jsx`)
 
 **Planning and Design:**
 
@@ -70,16 +78,16 @@ Load these on-demand when needed:
 - `project-structure.md` — Directory structure and setup commands
 - `environment-setup.md` — Version control, language-specific environment setup
 
+**Troubleshooting (auto-included when relevant):**
+
+- `common-pitfalls.md` — Common mistakes and solutions (auto-included by Kiro when relevant)
+- `troubleshooting-decision-tree.md` — Visual diagnostic flowchart
+- `lessons-learned.md` — Post-project retrospective template
+
 **Advanced Topics:**
 
 - `data-lineage.md` — Track data transformations and lineage
 - `uat-framework.md` — User acceptance testing framework
-
-**Troubleshooting:**
-
-- `common-pitfalls.md` — Common mistakes and solutions
-- `troubleshooting-decision-tree.md` — Visual diagnostic flowchart
-- `lessons-learned.md` — Post-project retrospective template
 
 ## MCP Server Configuration
 

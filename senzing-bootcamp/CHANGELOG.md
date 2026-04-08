@@ -12,12 +12,25 @@ For the complete version history (0.1.0 through 0.1.9), see the development repo
 ### Changed in 0.3.0
 
 - Split `agent-instructions.md` into a slim always-loaded core (principles, MCP rules, error handling) and a manual `onboarding-flow.md` (directory creation, language selection, prerequisites, path selection, validation gates) to reduce context usage on every turn
+- Tightened `agent-instructions.md` from 156 lines to 90 lines — more prescriptive, less descriptive, uses `#[[file:]]` references instead of inline content
 - Changed `security-privacy.md` from `inclusion: always` to `inclusion: manual` — loaded on demand during Module 10 or when handling PII
+- Changed `common-pitfalls.md` from `inclusion: manual` to `inclusion: auto` — Kiro includes it when relevant to the conversation
 - Extracted 8→9 gate cloud provider selection into dedicated `cloud-provider-setup.md` steering file
+- Trimmed Modules 9-12 steering files from 1,100-1,500 lines each to 78-119 lines — removed verbose pseudocode, kept prescriptive step lists with MCP tool delegation
 - Clarified script paths in POWER.md — scripts live in `senzing-bootcamp/scripts/` and should be referenced from the power directory
 - Updated example project READMEs to explicitly note they are architectural blueprints, not runnable code
 - Added diagram viewing guidance in POWER.md (Mermaid preview extension or mermaid.live)
 - Trimmed CHANGELOG to current version only; full history moved to development repository
+- Added foundational steering file generation (product.md, tech.md, structure.md) to onboarding flow
+- Added `#[[file:]]` references in steering files to pull policy docs into context when needed
+
+### Added in 0.3.0
+
+- `lang-python.md` — conditional steering for Python files (`*.py`)
+- `lang-java.md` — conditional steering for Java files (`*.java`)
+- `lang-csharp.md` — conditional steering for C# files (`*.cs`)
+- `lang-rust.md` — conditional steering for Rust files (`*.rs`)
+- `lang-typescript.md` — conditional steering for TypeScript/JavaScript files (`*.ts`, `*.tsx`, `*.js`, `*.jsx`)
 
 ### Removed in 0.3.0
 

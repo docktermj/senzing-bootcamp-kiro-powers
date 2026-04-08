@@ -1,5 +1,5 @@
 ---
-inclusion: manual
+inclusion: auto
 ---
 
 # Common Pitfalls and How to Avoid Them

@@ -10,18 +10,18 @@ To see the full pattern gallery with detailed matching attributes, expected outc
 
 ## Available Patterns
 
-| Pattern | Use Case | Key Matching |
-|---------|----------|--------------|
-| Customer 360 | Unified customer view | Names, emails, phones, addresses |
-| Fraud Detection | Identify fraud rings | Names, addresses, devices, IPs |
-| Data Migration | Merge legacy systems | All available identifiers |
-| Compliance Screening | Watchlist matching | Names, DOB, nationalities, IDs |
-| Marketing Dedup | Eliminate duplicates | Names, addresses, emails |
-| Patient Matching | Unified medical records | Names, DOB, SSN, MRNs |
-| Vendor MDM | Clean vendor master | Company names, tax IDs, addresses |
-| Claims Fraud | Detect staged accidents | Names, vehicles, providers |
-| KYC/Onboarding | Verify identity | Names, DOB, SSN, gov IDs |
-| Supply Chain | Unified supplier view | Company names, GLNs, tax IDs |
+| Pattern              | Use Case                | Key Matching                      |
+|----------------------|-------------------------|-----------------------------------|
+| Customer 360         | Unified customer view   | Names, emails, phones, addresses  |
+| Fraud Detection      | Identify fraud rings    | Names, addresses, devices, IPs    |
+| Data Migration       | Merge legacy systems    | All available identifiers         |
+| Compliance Screening | Watchlist matching      | Names, DOB, nationalities, IDs    |
+| Marketing Dedup      | Eliminate duplicates    | Names, addresses, emails          |
+| Patient Matching     | Unified medical records | Names, DOB, SSN, MRNs             |
+| Vendor MDM           | Clean vendor master     | Company names, tax IDs, addresses |
+| Claims Fraud         | Detect staged accidents | Names, vehicles, providers        |
+| KYC/Onboarding       | Verify identity         | Names, DOB, SSN, gov IDs          |
+| Supply Chain         | Unified supplier view   | Company names, GLNs, tax IDs      |
 
 ## How Patterns Are Used
 

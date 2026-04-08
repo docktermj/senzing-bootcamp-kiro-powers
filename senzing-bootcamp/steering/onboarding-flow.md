@@ -9,7 +9,7 @@ This steering file contains the full onboarding sequence: directory creation, la
 ## Create Directory Structure
 
 1. Check if project directory structure exists (`src/`, `data/`, `docs/`)
-2. If it doesn't exist, load `project-structure.md` and execute the creation commands
+2. If it doesn't exist, load `project-structure.md` and execute the creation commands. Also reference #[[file:docs/policies/FILE_STORAGE_POLICY.md]] for the complete file placement rules.
 3. Only then proceed with any other activity
 
 **Trigger points** — create structure at any of these:
@@ -23,6 +23,16 @@ If directory creation fails, report the error, provide commands for manual execu
 After creating the directory structure (or confirming it exists), inform the user: "If you encounter any issues or have suggestions during the bootcamp, just say 'bootcamp feedback' and I'll help you document them for the bootcamp author."
 
 Then offer to install hooks: "I can also install some automated quality checks (hooks) that help catch issues as we work. Would you like me to set those up? It takes about a minute." If yes, follow the Hooks Management section in `agent-instructions.md`. If no, proceed — hooks can always be installed later with `python scripts/install_hooks.py`.
+
+## Generate Foundational Steering Files
+
+After directory creation, generate project-specific steering files for the user's workspace at `.kiro/steering/`:
+
+1. **product.md** — project purpose, target users, business objectives (based on what the user describes in Module 2, or a placeholder if starting with Module 0/1)
+2. **tech.md** — chosen language, Senzing SDK, database choice, key dependencies
+3. **structure.md** — project directory layout, naming conventions, import patterns
+
+Use Kiro's built-in "Generate Steering Docs" if available, or create minimal versions that get refined as the bootcamp progresses. These help Kiro understand the project context beyond what the bootcamp steering files provide.
 
 ## Programming Language Selection
 

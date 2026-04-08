@@ -1,5 +1,7 @@
 # Senzing Bootcamp - Module Flow Diagram
 
+> **Viewing:** These diagrams use text-based ASCII art and are viewable in any text editor or markdown viewer. No special extensions required.
+
 ## Complete Module Flow
 
 ```text

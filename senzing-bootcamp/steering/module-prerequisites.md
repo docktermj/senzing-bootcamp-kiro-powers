@@ -40,7 +40,7 @@ Before starting each module, ensure prerequisites are met. This guide helps you 
 
 **Prerequisites**:
 
-- No prerequisites
+- ✅ Module 0 complete (SDK installed and database configured)
 
 **Recommended**:
 

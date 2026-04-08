@@ -6,68 +6,70 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 
 ### 1. Code Style Check (`code-style-check.kiro.hook`) ⭐
 
-**Trigger**: When source code files are edited (`.py`, `.java`, `.cs`, `.rs`, `.ts`, `.js`)
-**Action**: Checks for language-appropriate coding standards and suggests fixes
-**Use case**: Ensures all generated code follows proper conventions for the chosen language
-**Recommended**: Install for all modules that generate code
+**Trigger:** When source code files are edited (`.py`, `.java`, `.cs`, `.rs`, `.ts`, `.js`)
+**Action:** Checks for language-appropriate coding standards and suggests fixes
+**Use case:** Ensures all generated code follows proper conventions for the chosen language
+**Recommended:** Install for all modules that generate code
 
 ### 2. Data Quality Check (`data-quality-check.kiro.hook`)
 
-**Trigger**: When transformation programs are saved
-**Action**: Reminds to validate data quality
-**Use case**: Ensures transformation changes don't degrade data quality
+**Trigger:** When transformation programs are saved
+**Action:** Reminds to validate data quality
+**Use case:** Ensures transformation changes don't degrade data quality
 
 ### 3. Backup Before Load (`backup-before-load.kiro.hook`)
 
-**Trigger**: When loading programs are modified
-**Action**: Reminds to backup database before running
-**Use case**: Prevents data loss from failed loads
+**Trigger:** When loading programs are modified
+**Action:** Reminds to backup database before running
+**Use case:** Prevents data loss from failed loads
 
 ### 4. Validate Senzing JSON (`validate-senzing-json.kiro.hook`)
 
-**Trigger**: When Senzing JSON output files are modified
-**Action**: Suggests validating with analyze_record
-**Use case**: Ensures output conforms to SGES
+**Trigger:** When Senzing JSON output files are modified
+**Action:** Suggests validating with analyze_record
+**Use case:** Ensures output conforms to SGES
 
 ### 5. Backup Project on Request (`backup-project-on-request.kiro.hook`)
 
-**Trigger**: Manual — click the hook button in the Agent Hooks panel
-**Action**: Runs the project backup script
-**Use case**: Quick project backups without typing a command
-**How to use**: Click the "Backup Project on Request" button in the Kiro Agent Hooks explorer view, or say "backup my project" to the agent directly
+**Trigger:** Manual — click the hook button in the Agent Hooks panel
+**Action:** Runs the project backup script
+**Use case:** Quick project backups without typing a command
+**How to use:** Click the "Backup Project on Request" button in the Kiro Agent Hooks explorer view, or say "backup my project" to the agent directly
 
 ### 6. CommonMark Validation (`commonmark-validation.kiro.hook`)
 
-**Trigger**: When Markdown files are edited
-**Action**: Checks for CommonMark compliance and auto-fixes issues
-**Use case**: Ensures consistent Markdown formatting across all documentation
+**Trigger:** When Markdown files are edited
+**Action:** Checks for CommonMark compliance and auto-fixes issues
+**Use case:** Ensures consistent Markdown formatting across all documentation
 
 ### 7. Verify Senzing Facts (`verify-senzing-facts.kiro.hook`)
 
-**Trigger**: Before any write operation (preToolUse)
-**Action**: Reminds agent to verify Senzing-specific content via MCP tools
-**Use case**: Enforces SENZING_INFORMATION_POLICY — prevents writing Senzing facts from training data
+**Trigger:** Before any write operation (preToolUse)
+**Action:** Reminds agent to verify Senzing-specific content via MCP tools
+**Use case:** Enforces SENZING_INFORMATION_POLICY — prevents writing Senzing facts from training data
 
 ### 8. Analyze After Mapping (`analyze-after-mapping.kiro.hook`)
 
-**Trigger**: When new Senzing JSON files are created in `data/transformed/`
-**Action**: Reminds agent to run `analyze_record` before proceeding to loading
-**Use case**: Catches bad mappings early — validates quality score >70% before Module 6
+**Trigger:** When new Senzing JSON files are created in `data/transformed/`
+**Action:** Reminds agent to run `analyze_record` before proceeding to loading
+**Use case:** Catches bad mappings early — validates quality score >70% before Module 6
 
 ### 9. Run Tests After Change (`run-tests-after-change.kiro.hook`)
 
-**Trigger**: When source code files are modified in `src/load/`, `src/query/`, or `src/transform/`
-**Action**: Reminds agent to run the test suite to verify the change
-**Use case**: Catches regressions after code changes in Modules 6-8
+**Trigger:** When source code files are modified in `src/load/`, `src/query/`, or `src/transform/`
+**Action:** Reminds agent to run the test suite to verify the change
+**Use case:** Catches regressions after code changes in Modules 6-8
 
 ### 10. Git Commit Reminder (`git-commit-reminder.kiro.hook`)
 
-**Trigger**: Manual — click the hook button in the Agent Hooks panel
-**Action**: Suggests a descriptive git commit based on the current module
-**Use case**: Reminds users to commit progress after completing a module
-**How to use**: Click the "Git Commit Reminder" button in the Kiro Agent Hooks explorer view
+**Trigger:** Manual — click the hook button in the Agent Hooks panel
+**Action:** Suggests a descriptive git commit based on the current module
+**Use case:** Reminds users to commit progress after completing a module
+**How to use:** Click the "Git Commit Reminder" button in the Kiro Agent Hooks explorer view
 
 ## Installation
+
+**Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.
 
 ### Option 1: Use Install Script (Recommended)
 

@@ -14,6 +14,8 @@ This power provides a guided bootcamp for learning Senzing entity resolution thr
 
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
+This power works best with Claude Opus 4.6 or similar.
+
 ## Quick Start
 
 **New users:** Say "start the bootcamp" to begin. Choose your path:
@@ -51,8 +53,10 @@ Load these on-demand when needed:
 
 **Agent Behavior:**
 
-- `agent-instructions.md` — Consolidated agent behavior guide (always loaded)
-- `security-privacy.md` — Data privacy and PII protection (always loaded)
+- `agent-instructions.md` — Core agent rules and MCP usage (always loaded)
+- `onboarding-flow.md` — Full onboarding sequence: directory creation, language selection, prerequisite checks, path selection, validation gates
+- `cloud-provider-setup.md` — Cloud provider selection at the 8→9 gate (AWS, Azure, GCP, on-premises, local)
+- `security-privacy.md` — Data privacy and PII protection
 - `feedback-workflow.md` — Feedback collection workflow
 
 **Planning and Design:**
@@ -144,6 +148,10 @@ Always call `get_capabilities` first when starting a session.
 
 Modules are progressive but iterative. Skip ahead options: have SGES data (skip 5), single source (skip 7), not deploying to production (skip 9-12). Modules 9-12 are production-focused and optional for learning/evaluation.
 
+## Code Generation
+
+All code templates are generated dynamically by the Senzing MCP server using `generate_scaffold`, `sdk_guide`, and `mapping_workflow` in your chosen programming language. No static templates are shipped — this ensures generated code always matches the current SDK version and follows current best practices.
+
 ## Code Quality Standards
 
 All generated code follows language-appropriate coding standards based on the bootcamper's chosen language. The bootcamp supports Python, Java, C#, Rust, and TypeScript/Node.js — the agent queries the Senzing MCP server for the current list and asks the bootcamper to choose at the start. See `docs/policies/CODE_QUALITY_STANDARDS.md`.
@@ -185,28 +193,30 @@ Say "power feedback" or "bootcamp feedback" at any time to document issues or su
 
 ## Useful Commands
 
-All scripts are cross-platform Python (Linux, macOS, Windows). Use `python3` on Linux/macOS or `python` on Windows:
+All scripts are cross-platform Python and live in `senzing-bootcamp/scripts/`. Run them from your project root after the agent copies them during setup, or reference them directly from the power directory:
 
 ```text
-python3 scripts/status.py              # Check progress
-python3 scripts/status.py --sync       # Sync progress to PROGRESS_TRACKER.md
-python3 scripts/check_prerequisites.py # Validate prerequisites
-python3 scripts/validate_module.py     # Validate current module completion
-python3 scripts/validate_module.py --next 6  # Check if ready for module 6
-python3 scripts/install_hooks.py       # Install hooks
-python3 scripts/clone_example.py       # Clone example project
-python3 scripts/backup_project.py      # Backup project
-python3 scripts/restore_project.py     # Restore from backup
+python3 senzing-bootcamp/scripts/status.py              # Check progress
+python3 senzing-bootcamp/scripts/status.py --sync       # Sync progress to PROGRESS_TRACKER.md
+python3 senzing-bootcamp/scripts/check_prerequisites.py # Validate prerequisites
+python3 senzing-bootcamp/scripts/validate_module.py     # Validate current module completion
+python3 senzing-bootcamp/scripts/validate_module.py --next 6  # Check if ready for module 6
+python3 senzing-bootcamp/scripts/install_hooks.py       # Install hooks
+python3 senzing-bootcamp/scripts/clone_example.py       # Clone example project
+python3 senzing-bootcamp/scripts/backup_project.py      # Backup project
+python3 senzing-bootcamp/scripts/restore_project.py     # Restore from backup
 ```
+
+Use `python` instead of `python3` on Windows.
 
 ## Additional Resources
 
 - FAQ: `docs/guides/FAQ.md`
 - Quick Start: `docs/guides/QUICK_START.md`
 - Collaboration Guide: `docs/guides/COLLABORATION_GUIDE.md`
-- Module Flow Diagram: `docs/diagrams/module-flow.md`
-- Data Flow Diagram: `docs/diagrams/data-flow.md`
-- Example Projects: `examples/` (simple single source, multi-source, production deployment)
+- Module Flow Diagram: `docs/diagrams/module-flow.md` (text-based; use a Mermaid preview extension or paste into [mermaid.live](https://mermaid.live) to render)
+- Data Flow Diagram: `docs/diagrams/data-flow.md` (text-based ASCII art, viewable in any editor)
+- Example Projects: `examples/` — architectural blueprints (not runnable code) for simple single source, multi-source, and production deployment patterns
 
 ## Senzing Contact Information
 

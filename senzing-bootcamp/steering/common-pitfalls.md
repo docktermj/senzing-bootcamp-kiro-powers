@@ -345,7 +345,7 @@ Rules: uppercase, no spaces, no special characters beyond underscores, descripti
 
 **Symptom**: "These shouldn't have matched"
 **Problem**: Don't understand resolution behavior
-**Solution**: Use `whyEntities` to see match details and scoring
+**Solution**: Use the SDK's "why" method (via `get_sdk_reference`) to see match details and scoring
 
 ### Pitfall: Expecting Perfect Results Immediately
 

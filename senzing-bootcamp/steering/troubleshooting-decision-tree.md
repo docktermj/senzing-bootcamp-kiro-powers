@@ -130,7 +130,7 @@ Queries not working?
 │
 ├─→ Wrong results?
 │   ├─→ Too many matches?
-│   │   ├─→ Use whyEntities to see why they matched
+│   │   ├─→ Use the SDK's "why" method (via `get_sdk_reference`) to see why they matched
 │   │   ├─→ Lower confidence scores in mappings
 │   │   └─→ Improve data quality
 │   │

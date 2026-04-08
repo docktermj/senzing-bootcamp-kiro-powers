@@ -59,7 +59,7 @@ BENCHMARK: Loading Throughput
 1. Record the current timestamp (start_time)
 2. Set records_loaded = 0
 3. For each record in transformed file (e.g., data/transformed/customers.jsonl):
-     a. Call engine.addRecord(DATA_SOURCE, record.RECORD_ID, record)
+     a. Call engine.add_record(DATA_SOURCE, record.RECORD_ID, record)
      b. Increment records_loaded
 4. Record the current timestamp (end_time)
 5. Compute duration = end_time - start_time
@@ -84,7 +84,7 @@ BENCHMARK: Query Response Times
 1. Initialize an empty list: response_times
 2. Repeat num_queries times (e.g., 100):
      a. Record start_time
-     b. Call engine.searchByAttributes(search_criteria)
+     b. Call engine.search_by_attributes(search_criteria)
      c. Record end_time
      d. Append (end_time - start_time) in milliseconds to response_times
 3. Compute and print:

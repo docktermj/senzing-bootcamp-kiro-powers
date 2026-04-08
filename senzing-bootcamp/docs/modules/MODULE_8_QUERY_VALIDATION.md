@@ -312,7 +312,7 @@ Module 8 is complete when:
 **Symptoms:** Records match that shouldn't
 **Solutions:**
 
-- Use `whyEntities` to understand matching logic
+- Use the SDK's "why" method (via `get_sdk_reference`) to understand matching logic
 - Review data quality from Module 3
 - Check for missing or incorrect data
 - Adjust matching configuration if needed

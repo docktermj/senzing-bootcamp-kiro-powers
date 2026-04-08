@@ -183,7 +183,7 @@ A resolved entity contains all records that Senzing determined belong to the sam
 
 ### Match Reasons
 
-Use the `whyEntities` SDK method to understand why records matched. For the example above, output shows:
+Use the SDK's "why" method (use `get_sdk_reference` for the exact method name) to understand why records matched. For the example above, output shows:
 
 - Name similarity: 95%
 - Address match: 100%
@@ -217,7 +217,7 @@ Use the `whyEntities` SDK method to understand why records matched. For the exam
 ### Issue: Too many/few matches
 
 - This is normal — entity resolution is probabilistic
-- Review match reasons with `whyEntities`
+- Review match reasons with the SDK's "why" method
 - Adjust matching thresholds (advanced)
 
 ## Next Steps

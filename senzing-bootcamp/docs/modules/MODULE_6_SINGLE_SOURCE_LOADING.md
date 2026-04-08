@@ -144,7 +144,7 @@ Expected output:
 }
 ```
 
-**Interpretation**:
+**Interpretation:**
 
 - 10,000 records loaded
 - 9,850 unique entities created
@@ -161,7 +161,7 @@ For production systems, you'll need to load only new or changed records instead 
 ```text
 Load all records every time:
   For each record in the source file:
-      Call engine.addRecord(DATA_SOURCE, record_id, record)
+      Call engine.add_record(DATA_SOURCE, record_id, record)
 ```
 
 **Incremental Load** (Production):
@@ -171,15 +171,15 @@ Load only records modified since last load:
   Determine last_load_time
   For each record in the source file:
       If record.modified_date > last_load_time:
-          Call engine.addRecord(DATA_SOURCE, record_id, record)
+          Call engine.add_record(DATA_SOURCE, record_id, record)
 ```
 
-**When to use**:
+**When to use:**
 
 - Full reload: Small datasets (< 100K), infrequent updates
 - Incremental: Large datasets, frequent updates, production systems
 
-**Agent behavior**: For Module 6, generate full reload scripts. Mention incremental loading as a future enhancement. Use MCP `search_docs` if user asks about incremental loading.
+**Agent behavior:** For Module 6, generate full reload scripts. Mention incremental loading as a future enhancement. Use MCP `search_docs` if user asks about incremental loading.
 
 ## Error Handling
 
@@ -200,7 +200,7 @@ Error logging pattern:
   Initialize an empty error log list
   For each record to load:
       Try:
-          Call engine.addRecord(DATA_SOURCE, record_id, record_json)
+          Call engine.add_record(DATA_SOURCE, record_id, record_json)
       On error:
           Append { record_id, error_message, record } to error log
 

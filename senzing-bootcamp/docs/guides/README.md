@@ -294,7 +294,6 @@ Found an issue or have a suggestion?
 - **Policy Documentation**: `docs/policies/`
 - **Steering Files**: `senzing-bootcamp/steering/`
 - **Examples**: `senzing-bootcamp/examples/`
-- **Templates**: `senzing-bootcamp/templates/`
 - **Hooks**: `senzing-bootcamp/hooks/`
 
 ## Quick Links

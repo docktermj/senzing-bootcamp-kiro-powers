@@ -118,7 +118,7 @@ usage:
   customer_360_query:
     query_script: src/query/customer_360.[ext]
     data_sources_used: [CUSTOMERS_CRM, CUSTOMERS_ECOMMERCE]
-    query_type: searchByAttributes
+    query_type: search_by_attributes
     average_response_time: 45  # ms
     queries_per_day: 10000
 

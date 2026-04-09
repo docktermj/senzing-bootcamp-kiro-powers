@@ -20,10 +20,10 @@ This power works best with Claude Opus 4.6 or similar.
 
 **New users:** Say "start the bootcamp" to begin. Choose your path:
 
-- A) Quick Demo — Module 1 (requires SDK from Module 0)
-- B) Fast Track — Modules 5-6 (for users with SGES-compliant data)
-- C) Complete Beginner — Modules 2-6, 8 (Module 0 auto-inserted before 6)
-- D) Full Production — All Modules 0-12
+- A) Quick Demo — see entity resolution in action
+- B) Fast Track — already have Senzing-ready data
+- C) Complete Beginner — full learning path
+- D) Full Production — all modules through deployment
 
 **Experienced users:** Skip to Module 5 (have SGES data), Module 6 (SDK + data ready), or Module 8 (data loaded).
 

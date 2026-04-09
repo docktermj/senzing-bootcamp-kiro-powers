@@ -22,7 +22,7 @@ Say "start the bootcamp". The agent creates your project structure and guides yo
 
 ### What are the prerequisites?
 
-Required: A supported language runtime (Python, Java, C#, Rust, or TypeScript/Node.js), git, curl. Optional: PostgreSQL. Run `python scripts/check_prerequisites.py` to verify.
+Required: A supported language runtime (Python, Java, C#, Rust, or TypeScript/Node.js), git, curl. Optional: PostgreSQL. Prerequisites are checked automatically when you start the bootcamp — the agent will tell you if anything's missing.
 
 ### Do I need a Senzing license?
 
@@ -69,7 +69,7 @@ The bootcamp applies language-appropriate coding standards based on your chosen 
 
 ### Which hooks should I install?
 
-Run `python scripts/install_hooks.py` for interactive installation. Recommended: Code Style Check, `backup-before-load`, `data-quality-check`, `validate-senzing-json`.
+Hooks are installed automatically when you start the bootcamp. To reinstall or add hooks later, run `python scripts/install_hooks.py`.
 
 ## Backup and Recovery
 

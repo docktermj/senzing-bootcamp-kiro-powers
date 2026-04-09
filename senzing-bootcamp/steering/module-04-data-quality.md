@@ -108,4 +108,4 @@ inclusion: manual
 
 ## Workflow: Install Senzing Bootcamp Hooks
 
-**Note**: Hook installation has been moved to the agent-instructions setup flow. The agent offers to install hooks after the directory structure is created (Second Action). See `agent-instructions.md` for the hook installation workflow. Hooks can also be installed at any time by saying "install hooks" or running `python scripts/install_hooks.py`.
+**Note**: Hooks are installed automatically during onboarding — no user action needed. The agent copies all `.kiro.hook` files from `senzing-bootcamp/hooks/` to `.kiro/hooks/` when the bootcamp starts. Hooks can also be reinstalled at any time by saying "install hooks" or running `python scripts/install_hooks.py`.

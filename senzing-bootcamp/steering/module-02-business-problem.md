@@ -12,11 +12,9 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
 **Prerequisites**: None (or Module 1 complete if they did the demo)
 
-1. **Set up project directory structure**: Follow the directory creation commands from the agent-instructions steering file. After creating the structure, explain the purpose of each folder to the user.
+1. **Initialize version control** (if not already done):
 
-   **Initialize version control**:
-
-   First, check if this is already a git repository:
+   Check if this is already a git repository:
 
    ```bash
    # Linux / macOS
@@ -28,14 +26,14 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    git rev-parse --git-dir 2>$null
    ```
 
-   If not a git repository, ask the user if they want to initialize one. If yes:
+   If not, ask the user if they want to initialize one. If yes:
 
    ```bash
    git init
    echo "# [Project Name] - Senzing Entity Resolution" > README.md
    ```
 
-   If already a git repository, acknowledge and proceed.
+   If already a git repository, proceed.
 
 2. **Data privacy reminder**: "Before we proceed, a quick reminder about data privacy. We'll be working with potentially sensitive data. Please ensure you have permission to use this data, and consider anonymizing any PII for testing purposes. We'll set up proper security measures as we go."
 
@@ -153,21 +151,6 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
 12. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
 
-13. **Transition to Module 3**:
-
-    "Great! Module 2 is complete. You now have a clear problem statement and project structure.
-
-    **Module 2 Complete ✅**
-    - ✅ Business problem defined
-    - ✅ Data sources identified
-    - ✅ Success criteria set
-    - ✅ Project structure ready
-
-    **Common Issues to Watch For**:
-    - If data sources are hard to access, document access requirements now
-    - If stakeholder approval needed, prepare a summary for them
-    - If timeline is tight, consider starting with one data source
-
-    Ready to move to Module 3 and collect your data sources?"
+13. **Transition to Module 3**: "Module 2 complete. Ready to collect your data sources?"
 
 **Success indicator**: ✅ Clear problem statement + identified data sources + defined success metrics + user confirmation + `docs/business_problem.md` created

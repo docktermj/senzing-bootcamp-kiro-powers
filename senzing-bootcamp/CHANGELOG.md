@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For the complete version history (0.1.0 through 0.1.9), see the development repository at `senzing-bootcamp-power-development/CHANGELOG_FULL.md`.
 
+## [0.4.0] - 2026-04-09
+
+### Changed in 0.4.0
+
+- Streamlined onboarding: directory creation, hook installation, and steering generation now happen silently — user only sees two questions (language and path)
+- Hooks install automatically at bootcamp start — no longer asks for permission
+- Trimmed path descriptions in POWER.md and onboarding-flow.md to concise labels
+- Rewrote QUICK_START.md from 230 lines to ~50 lines, aligned with current onboarding flow
+- Condensed `common-pitfalls.md` from 514 to ~150 lines using prescriptive table format, changed from `auto` to `manual` inclusion
+- Condensed `module-prerequisites.md` from 401 to ~54 lines using compact tables
+- Condensed `complexity-estimator.md` from 352 to ~53 lines using compact tables
+- Removed `#[[file:]]` references from always-loaded `agent-instructions.md` — reduced effective always-on context from ~700 to ~90 lines
+- Changed `security-privacy.md` and `project-structure.md` from `manual` to `auto` inclusion
+- Removed redundant directory setup narration from Module 2
+- Updated HOOKS_INSTALLATION_GUIDE.md to reflect automatic installation
+- Fixed broken markdown fence in module-03-data-collection.md
+- Updated FAQ to note prerequisites are checked automatically
+
+### Added in 0.4.0
+
+- `session-resume.md` — structured workflow for resuming previous bootcamp sessions across context windows
+- `enforce-working-directory.kiro.hook` — preToolUse hook that blocks writes to `/tmp` or paths outside the working directory
+- Tool Usage Examples section in POWER.md with concrete MCP tool call examples
+- Mapping workflow state loss recovery guidance in `common-pitfalls.md`
+- Windows/WSL2 setup instructions in onboarding flow
+- Path B note for Module 0 requirement in onboarding flow
+- PowerShell equivalents for all bash commands in modules 0-3
+- AWS CDK guidance at the 8→9 gate and in Module 12
+- Language steering file loaded immediately after language selection (not just on file match)
+- Explicit `inclusion` frontmatter instructions for generated workspace steering files
+- Kiro Refine button recommendation for generated steering files
+- `preflight_check.py` and `validate_commonmark.py` added to POWER.md Useful Commands
+
+### Fixed in 0.4.0
+
+- `module-prerequisites.md` Module 5 skip note said "Go directly to Module 0" — corrected to Module 6
+- `module-01-quick-demo.md` had Python-specific `os.makedirs` in language-agnostic instructions — made language-neutral
+- `export_report` and `exportJSONEntityReport()` now explicitly banned across agent-instructions, module-08, and policies
+- `/tmp` override instructions added to modules 6, 7, 8, 9 (previously only in 0, 1, 5)
+- `generate_scaffold(workflow='redo')` in Module 9 Step 9 now has path override reminder
+
 ## [0.3.0] - 2026-04-08
 
 ### Changed in 0.3.0

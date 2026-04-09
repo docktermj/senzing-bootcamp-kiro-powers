@@ -100,7 +100,7 @@ WAIT for response.
 
 **For SQLite** (recommended for bootcamp):
 
-- Create the database directory: `mkdir -p database`
+- Create the database directory: `mkdir -p database` (Linux/macOS) or `New-Item -ItemType Directory -Force -Path database` (PowerShell)
 - Database path: `database/G2C.db`
 - No additional setup needed — SQLite is built in
 - **IMPORTANT**: Never use `/tmp/` or in-memory databases. If `generate_scaffold` or `ExampleEnvironment` defaults to `/tmp/`, override the path to `database/G2C.db`.

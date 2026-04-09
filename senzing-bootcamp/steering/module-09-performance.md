@@ -30,7 +30,7 @@ Use `find_examples(query='performance testing')` for patterns. Generate a timed 
 
 ## Step 5: Benchmark Loading (Critical)
 
-Call `generate_scaffold(language='<chosen_language>', workflow='add_records', version='current')` for the loading pattern. Build a benchmark that measures records/sec at multiple sample sizes with fresh DB each run. Save to `tests/performance/bench_load.[ext]`.
+Call `generate_scaffold(language='<chosen_language>', workflow='add_records', version='current')` for the loading pattern. If the generated scaffold uses `/tmp/`, `ExampleEnvironment`, or any path outside the working directory, override the database path to `database/G2C.db` and ensure all output files use project-relative paths. Build a benchmark that measures records/sec at multiple sample sizes with fresh DB each run. Save to `tests/performance/bench_load.[ext]`.
 
 ## Step 6: Benchmark Query Latency
 
@@ -51,7 +51,7 @@ Document in `docs/database_tuning.md`.
 
 ## Step 9: Scalability Testing
 
-Test with progressively larger datasets (1K → 5K → 10K → 50K → 100K). Measure throughput degradation curve. For >1M records: require PostgreSQL, test multi-threaded loading with `find_examples(query='multi-threaded loading')`, include redo processing via `generate_scaffold(workflow='redo')`.
+Test with progressively larger datasets (1K → 5K → 10K → 50K → 100K). Measure throughput degradation curve. For >1M records: require PostgreSQL, test multi-threaded loading with `find_examples(query='multi-threaded loading')`, include redo processing via `generate_scaffold(workflow='redo')`. If the generated redo scaffold uses `/tmp/`, `ExampleEnvironment`, or any path outside the working directory, override the database path to `database/G2C.db` and ensure all output files use project-relative paths.
 
 ## Step 10: Evaluate ER Quality at Scale
 

@@ -36,6 +36,8 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
    > to get the current loading pattern. Do not use the inline example below — it uses V3 patterns
    > (G2Engine, init/destroy) that are incorrect for V4. Customize the scaffold with the user's
    > file path, data source name, and progress reporting.
+   >
+   > **CRITICAL**: If the generated scaffold uses `/tmp/`, `ExampleEnvironment`, or any path outside the working directory, override the database path to `database/G2C.db` and ensure all output files use project-relative paths. No files may be placed outside the working directory.
 
    The program should handle: SDK initialization, record loading loop, error handling per record, progress tracking, and statistics reporting.
 

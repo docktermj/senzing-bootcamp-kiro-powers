@@ -92,7 +92,7 @@ Use this workflow when a user wants to see entity resolution in action before wo
 
 6. **Generate demo script**: Call `generate_scaffold` with workflow `full_pipeline` and the bootcamper's chosen language to create a complete demo script that:
    - Initializes Senzing with a project-local SQLite database at `database/G2C.db` (never `/tmp/` or in-memory — see `docs/policies/FILE_STORAGE_POLICY.md`)
-   - Creates the `database/` directory if it doesn't exist (`mkdir -p database`)
+   - Creates the `database/` directory if it doesn't exist (using the language-appropriate directory creation method)
    - Loads the sample records (with progress indicator)
    - Queries the resolved entities
    - Shows match explanations using `why_entity_by_entity_id` or `how_entity_by_entity_id`
@@ -205,7 +205,7 @@ Use this workflow when a user wants to see entity resolution in action before wo
 **Agent behavior**:
 
 - MUST actually run Senzing SDK - not just describe what would happen
-- MUST use `database/G2C.db` for the SQLite database path — never `/tmp/`, never in-memory. If `generate_scaffold` or `ExampleEnvironment` defaults to `/tmp/`, override the database path to `database/G2C.db`. Create the `database/` directory first with `mkdir -p database`.
+- MUST use `database/G2C.db` for the SQLite database path — never `/tmp/`, never in-memory. If `generate_scaffold` or `ExampleEnvironment` defaults to `/tmp/`, override the database path to `database/G2C.db`. Create the `database/` directory first (`os.makedirs('database', exist_ok=True)` in the script, or `mkdir -p database` on Linux/macOS, or `New-Item -ItemType Directory -Force -Path database` on PowerShell).
 - Show real match explanations with confidence scores
 - Display clear before/after comparison
 - Make the "aha moment" obvious

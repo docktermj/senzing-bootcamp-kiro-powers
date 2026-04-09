@@ -77,7 +77,7 @@ This directory contains policy documents that define coding standards and organi
 
 - Python → PEP-8, Java → standard conventions, C# → .NET conventions, Rust → rustfmt/clippy, TypeScript → ESLint
 - Proper naming conventions, documentation, and import organization per language
-- Avoid `exportJSONEntityReport()` unless data set is explicitly small and bounded
+- Avoid `exportJSONEntityReport()` and `export_report` — these do not scale. Use per-entity queries or streaming patterns instead
 
 **Why It Matters**: Consistent, readable code across all modules regardless of chosen language
 

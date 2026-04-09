@@ -67,6 +67,13 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 **Use case:** Reminds users to commit progress after completing a module
 **How to use:** Click the "Git Commit Reminder" button in the Kiro Agent Hooks explorer view
 
+### 11. Enforce Working Directory Paths (`enforce-working-directory.kiro.hook`) ⭐
+
+**Trigger:** Before any file write operation (preToolUse)
+**Action:** Checks that file paths don't reference `/tmp`, `%TEMP%`, or any location outside the working directory
+**Use case:** Enforces the file storage policy automatically — prevents MCP-generated code from placing files in system temp directories
+**Recommended:** Install for all modules
+
 ## Installation
 
 **Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.

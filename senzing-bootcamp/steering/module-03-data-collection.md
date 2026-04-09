@@ -68,12 +68,17 @@ inclusion: manual
 3. **Verify data was received**:
 
    ```bash
-   # Check that files are in data/raw/
+   # Linux / macOS
    ls -lh data/raw/
-
-   # Show first few lines of each file
    head -5 data/raw/customer_crm.csv
    head -5 data/raw/vendor_api.json
+   ```
+
+   ```powershell
+   # Windows (PowerShell)
+   Get-ChildItem data\raw\ | Format-Table Name, Length
+   Get-Content data\raw\customer_crm.csv -TotalCount 5
+   Get-Content data\raw\vendor_api.json -TotalCount 5
    ```
 
 4. **Document data source locations**: Create or update `docs/data_source_locations.md`:
@@ -99,8 +104,15 @@ inclusion: manual
    - **API Documentation**: https://api.vendor.com/docs
    - **Sample API Call**:
      ```bash
+     # Linux / macOS
      curl -H "Authorization: Bearer $API_TOKEN" \
           https://api.vendor.com/v1/suppliers?limit=100
+     ```
+
+     ```powershell
+     # Windows (PowerShell)
+     Invoke-RestMethod -Headers @{Authorization="Bearer $env:API_TOKEN"} `
+       -Uri "https://api.vendor.com/v1/suppliers?limit=100"
      ```
 
    ## Data Source 3: Legacy Database

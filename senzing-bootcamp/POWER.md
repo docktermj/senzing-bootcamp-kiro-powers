@@ -54,10 +54,15 @@ Load these on-demand when needed:
 **Agent Behavior:**
 
 - `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~80 lines)
+- `session-resume.md` — Restores full context when resuming a previous bootcamp session
 - `onboarding-flow.md` — Full onboarding sequence: directory creation, language selection, prerequisite checks, path selection, validation gates
 - `cloud-provider-setup.md` — Cloud provider selection at the 8→9 gate (AWS, Azure, GCP, on-premises, local)
-- `security-privacy.md` — Data privacy and PII protection
 - `feedback-workflow.md` — Feedback collection workflow
+
+**Auto-included (Kiro loads when relevant to the conversation):**
+
+- `security-privacy.md` — Data privacy and PII protection (auto-included when PII or security is discussed)
+- `project-structure.md` — Directory structure and setup commands (auto-included when creating files)
 
 **Language-Specific (loaded automatically when editing matching files):**
 
@@ -75,12 +80,11 @@ Load these on-demand when needed:
 
 **Project Setup:**
 
-- `project-structure.md` — Directory structure and setup commands
 - `environment-setup.md` — Version control, language-specific environment setup
 
-**Troubleshooting (auto-included when relevant):**
+**Troubleshooting:**
 
-- `common-pitfalls.md` — Common mistakes and solutions (auto-included by Kiro when relevant)
+- `common-pitfalls.md` — Common mistakes and solutions (load on errors or when user is stuck)
 - `troubleshooting-decision-tree.md` — Visual diagnostic flowchart
 - `lessons-learned.md` — Post-project retrospective template
 
@@ -174,7 +178,7 @@ python senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: Code Style Check (`code-style-check`), `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`.
+Available: Code Style Check (`code-style-check`), `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory`.
 
 ## Project Directory Structure
 
@@ -213,6 +217,8 @@ python3 senzing-bootcamp/scripts/install_hooks.py       # Install hooks
 python3 senzing-bootcamp/scripts/clone_example.py       # Clone example project
 python3 senzing-bootcamp/scripts/backup_project.py      # Backup project
 python3 senzing-bootcamp/scripts/restore_project.py     # Restore from backup
+python3 senzing-bootcamp/scripts/preflight_check.py     # Pre-demo environment check
+python3 senzing-bootcamp/scripts/validate_commonmark.py  # Validate Markdown formatting
 ```
 
 Use `python` instead of `python3` on Windows.

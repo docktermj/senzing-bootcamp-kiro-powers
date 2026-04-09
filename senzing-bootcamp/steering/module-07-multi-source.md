@@ -69,6 +69,8 @@ inclusion: manual
    Use `generate_scaffold` with `workflow='add_records'` and the bootcamper's chosen language for loading patterns.
    Use `find_examples(query="queue loading", language="<chosen_language>")` or `find_examples(query="multi-source")` for real-world orchestration patterns from GitHub repos.
 
+   **CRITICAL**: If the generated scaffold uses `/tmp/`, `ExampleEnvironment`, or any path outside the working directory, override the database path to `database/G2C.db` and ensure all output files use project-relative paths. No files may be placed outside the working directory.
+
    Save to `src/load/orchestrator.[ext]` (using the appropriate file extension for the chosen language).
 
    Key features:

@@ -6,7 +6,7 @@ inclusion: manual
 
 > **User reference:** See `docs/modules/MODULE_12_DEPLOYMENT_PACKAGING.md` for background.
 
-Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` — if AWS, use ECS/EKS, ECR, RDS/Aurora, CodePipeline.
+Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` — if AWS, use CDK to define infrastructure (ECS/EKS, ECR, RDS/Aurora, CodePipeline) as code in the bootcamper's language.
 
 **Prerequisites**: Module 11 complete, all tests passing, deployment target confirmed.
 
@@ -62,7 +62,7 @@ Create pipeline config for user's platform (GitHub Actions, GitLab CI, Jenkins):
 3. Deploy to staging: apply config, run smoke tests
 4. Deploy to prod: apply config, run health checks
 
-Save to `.github/workflows/` or equivalent. For AWS: CodePipeline + CodeBuild.
+Save to `.github/workflows/` or equivalent. For AWS: CodePipeline + CodeBuild (define via CDK if the bootcamper chose AWS at the 8→9 gate).
 
 ## Step 7: REST API Layer (If Requested)
 

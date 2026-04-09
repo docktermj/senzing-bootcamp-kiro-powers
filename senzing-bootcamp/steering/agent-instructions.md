@@ -4,7 +4,7 @@ inclusion: always
 
 # Agent Core Rules
 
-On session start: check `config/bootcamp_progress.json`. If exists, offer to resume. If not, load `onboarding-flow.md`.
+On session start: check `config/bootcamp_progress.json`. If exists, load `session-resume.md` and follow the resume workflow. If not, load `onboarding-flow.md`.
 
 ## File Placement
 
@@ -18,7 +18,7 @@ On session start: check `config/bootcamp_progress.json`. If exists, offer to res
 | Config      | `config/`    |
 | Temp files  | `data/temp/` |
 
-Never use `/tmp`, `%TEMP%`, `~/Downloads`, or any system temp directory. If MCP tools generate files outside the project, relocate immediately. See #[[file:docs/policies/FILE_STORAGE_POLICY.md]].
+**🚨 MANDATORY:** ALL files MUST be placed within the working directory. Never use `/tmp`, `%TEMP%`, `~/Downloads`, or any path outside the project. If MCP tools (e.g., `generate_scaffold`, `ExampleEnvironment`, `mapping_workflow`, `download_resource`) return code or paths referencing `/tmp/` or any system temporary directory, you MUST override those paths to use project-relative directories before saving or executing.
 
 ## MCP Rules
 
@@ -32,9 +32,10 @@ Never use `/tmp`, `%TEMP%`, `~/Downloads`, or any system temp directory. If MCP 
 - Examples → `find_examples`
 - Always call `get_capabilities` first when starting a session
 - Tell MCP to generate production-scale code, not small-data-only patterns
-- Reject `exportJSONEntityReport()` unless data is explicitly small and bounded
+- Reject `exportJSONEntityReport()` and `export_report` — these do not scale. Use per-entity queries (`get_entity_by_entity_id`, `get_entity_by_record_id`, `search_by_attributes`) or streaming patterns instead
 - Reuse MCP responses within a module; re-query across module boundaries
 - If MCP has no answer: say so, suggest docs.senzing.com or <support@senzing.com> — never fabricate
+- **Path override rule:** When MCP tools return code or paths containing `/tmp/`, `ExampleEnvironment`, or any location outside the working directory, ALWAYS replace those paths with project-relative equivalents (e.g., `database/G2C.db`, `data/temp/`, `src/`) before saving or executing
 
 ## MCP Failure
 
@@ -68,7 +69,7 @@ On PII/security questions: load `security-privacy.md`.
 
 ## Code Standards
 
-Follow language-appropriate standards per #[[file:docs/policies/CODE_QUALITY_STANDARDS.md]]. Use the bootcamper's chosen language for all generated code.
+Follow language-appropriate standards for the bootcamper's chosen language (Python→PEP-8, Java→standard conventions, C#→.NET conventions, Rust→rustfmt/clippy, TypeScript→ESLint). Use the bootcamper's chosen language for all generated code.
 
 ## State & Progress
 

@@ -19,7 +19,13 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    First, check if this is already a git repository:
 
    ```bash
+   # Linux / macOS
    git rev-parse --git-dir 2>/dev/null
+   ```
+
+   ```powershell
+   # Windows (PowerShell)
+   git rev-parse --git-dir 2>$null
    ```
 
    If not a git repository, ask the user if they want to initialize one. If yes:

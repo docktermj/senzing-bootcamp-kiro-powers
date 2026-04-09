@@ -6,14 +6,14 @@ inclusion: manual
 
 > **User reference:** For detailed background on this module, see `docs/modules/MODULE_8_QUERY_VALIDATION.md`.
 
-**Purpose**: Create query programs and conduct user acceptance testing.
+**Purpose:** Create query programs and conduct user acceptance testing.
 
-**Prerequisites**:
+**Prerequisites:**
 
 - ✅ Module 7 complete (all sources loaded) OR Module 6 complete (single source)
 - ✅ No critical loading errors
 
-**Agent Workflow**:
+**Agent Workflow:**
 
 1. **Define query requirements**:
 
@@ -34,11 +34,15 @@ inclusion: manual
 
    Use `generate_scaffold` with `workflow='query'` and the chosen language, or use a query template.
 
+   **CRITICAL:** If the generated scaffold uses `/tmp/`, `ExampleEnvironment`, or any path outside the working directory, override the database path to `database/G2C.db` and ensure all output files use project-relative paths. No files may be placed outside the working directory.
+
    Example queries (file extensions depend on chosen language):
    - `find_duplicates` - Find entities with multiple records
    - `search_entities` - Search by name, email, phone
    - `customer_360` - Get complete customer view
    - `query_results` - Retrieve and format resolved entities
+
+   **Do NOT use `exportJSONEntityReport()` or `export_report`** — these do not scale. Use per-entity queries (`get_entity_by_entity_id`, `get_entity_by_record_id`, `search_by_attributes`) or streaming patterns instead.
 
 3. **Run exploratory queries**:
 
@@ -52,16 +56,16 @@ inclusion: manual
    # User Acceptance Test Cases
 
    ## Test Case 1: Duplicate Detection
-   **Scenario**: Find John Smith duplicates
-   **Expected**: 3 records resolve to 1 entity
-   **Actual**: [To be filled]
-   **Status**: [Pass/Fail]
+   **Scenario:** Find John Smith duplicates
+   **Expected:** 3 records resolve to 1 entity
+   **Actual:** [To be filled]
+   **Status:** [Pass/Fail]
 
    ## Test Case 2: Cross-Source Matching
-   **Scenario**: Customer in CRM and E-commerce
-   **Expected**: Records linked to same entity
-   **Actual**: [To be filled]
-   **Status**: [Pass/Fail]
+   **Scenario:** Customer in CRM and E-commerce
+   **Expected:** Records linked to same entity
+   **Actual:** [To be filled]
+   **Status:** [Pass/Fail]
    ```
 
 5. **Execute UAT with business users**:
@@ -106,7 +110,7 @@ inclusion: manual
    - Resolution plan: [describe]
    ```
 
-**Success Criteria**:
+**Success Criteria:**
 
 - ✅ Query programs created and tested
 - ✅ UAT test cases defined

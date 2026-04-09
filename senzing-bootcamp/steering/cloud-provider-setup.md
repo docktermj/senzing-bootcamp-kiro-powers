@@ -26,9 +26,13 @@ Modules 9-12 should use AWS-specific guidance when calling MCP tools:
 - CloudWatch for monitoring (Module 11)
 - ECS/EKS for deployment (Module 12)
 
+**Guide the bootcamper toward using AWS CDK for infrastructure deployment.** CDK lets them define AWS resources (RDS, ECS/EKS, Secrets Manager, CloudWatch alarms, etc.) as code in their chosen programming language, which aligns naturally with the bootcamp's code-first approach. Mention this early so they can plan for it:
+
+> "Since you're going with AWS, I'd recommend using **AWS Cloud Development Kit (CDK)** to define and deploy your infrastructure as code. CDK lets you provision RDS/Aurora, ECS/EKS, Secrets Manager, CloudWatch, and other resources using the same programming language you've been using throughout the bootcamp. We'll build up the CDK stack as we work through Modules 9-12."
+
 Also recommend that they install the "Build AWS infrastructure with CDK and CloudFormation" Kiro Power for infrastructure-as-code support:
 
-> "Since you're going with AWS, I'd recommend installing the **Build AWS infrastructure with CDK and CloudFormation** Kiro Power — it can help with provisioning RDS, ECS/EKS, and other AWS resources using CDK or CloudFormation as we work through Modules 9-12."
+> "I'd also recommend installing the **Build AWS infrastructure with CDK and CloudFormation** Kiro Power — it provides guided workflows for CDK that will help as we provision resources in Modules 9-12."
 
 ## If the User Chooses Another Provider
 

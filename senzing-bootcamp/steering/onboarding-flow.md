@@ -34,6 +34,28 @@ After directory creation, generate project-specific steering files for the user'
 
 Use Kiro's built-in "Generate Steering Docs" if available, or create minimal versions that get refined as the bootcamp progresses. These help Kiro understand the project context beyond what the bootcamp steering files provide.
 
+After generating the foundational files, suggest the user click the "Refine" button in Kiro's steering UI to optimize them for LLM consumption — this removes redundancy and tightens language automatically.
+
+**Frontmatter for generated steering files:** Each file MUST include explicit `inclusion` frontmatter so Kiro knows when to load them:
+
+```yaml
+# product.md — always relevant for project context
+---
+inclusion: always
+---
+
+# tech.md — always relevant for code generation
+---
+inclusion: always
+---
+
+# structure.md — load when editing source files
+---
+inclusion: fileMatch
+fileMatchPattern: "src/**/*"
+---
+```
+
 ## Programming Language Selection
 
 After directory structure is confirmed and before the prerequisite check, ask the bootcamper which programming language they want to use for generated code.
@@ -67,12 +89,46 @@ After directory structure is confirmed and before the prerequisite check, ask th
 
 7. **Platform compatibility note:** If the bootcamper chooses Python, inform them that the Senzing Python SDK is only supported on Linux. On macOS or Windows, they should either pick a different language or use Docker/WSL2.
 
+   **Windows/WSL2 setup** (for Python or if the SDK has Linux dependencies for other languages):
+
+   If the bootcamper is on Windows and needs a Linux environment:
+
+   1. Install WSL2 (requires Windows 10 version 2004+ or Windows 11):
+
+      ```powershell
+      wsl --install
+      ```
+
+      This installs Ubuntu by default. Restart when prompted.
+
+   2. Open the Ubuntu terminal and set up the development environment inside WSL2:
+
+      ```bash
+      sudo apt update && sudo apt upgrade -y
+      sudo apt install -y python3 python3-pip python3-venv git
+      ```
+
+   3. The bootcamp project directory should live inside the WSL2 filesystem (e.g., `~/my-senzing-project`), not on the Windows filesystem (`/mnt/c/...`), for better performance.
+
+   4. Kiro can connect to WSL2 — open the project from within the WSL2 filesystem.
+
+   5. All subsequent bootcamp commands should be run inside the WSL2 terminal.
+
+   If the bootcamper prefers not to use WSL2, recommend they choose Java, C#, Rust, or TypeScript instead, as these have broader platform support.
+
 8. **Code quality standards:** Apply language-appropriate coding standards:
    - Python → PEP-8 (see `docs/policies/CODE_QUALITY_STANDARDS.md`)
    - Java → Standard Java conventions (camelCase methods, PascalCase classes, Javadoc)
    - C# → .NET conventions (PascalCase methods and classes, XML doc comments)
    - Rust → Rust conventions (snake_case, rustfmt, clippy)
    - TypeScript → Standard TS conventions (camelCase, ESLint, JSDoc)
+
+9. **Load language steering file immediately:** After the language is confirmed, load the corresponding language steering file so conventions are in context for all subsequent code generation — don't wait for a matching file to be edited:
+   - Python → `lang-python.md`
+   - Java → `lang-java.md`
+   - C# → `lang-csharp.md`
+   - Rust → `lang-rust.md`
+   - TypeScript → `lang-typescript.md`
 
 ### `bootcamp_preferences.yaml` Schema
 
@@ -167,6 +223,8 @@ D) Full Production — All Modules 0-12
 ```
 
 **Path A note:** Module 0 (SDK Setup) is required before Module 1 (Quick Demo). If Module 0 is not complete, insert it first: "To run the demo, we need the Senzing SDK installed. Let's do Module 0 first — it takes about 30-60 minutes as a one-time setup."
+
+**Path B note:** Module 0 (SDK Setup) is required before Module 6 (Loading). When the user reaches Module 6 on Path B, check if Module 0 is complete. If not, insert it: "Before we can load data, we need to set up the Senzing SDK. Let's do Module 0 first — it takes about 30-60 minutes as a one-time setup."
 
 **Path C note:** Module 0 (SDK Setup) is required before Module 6 (Loading). When the user reaches Module 6 on Path C, check if Module 0 is complete. If not, insert it: "Before we can load data, we need to set up the Senzing SDK. Let's do Module 0 now — it takes about 30-60 minutes."
 

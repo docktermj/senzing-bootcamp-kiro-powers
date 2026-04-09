@@ -8,12 +8,21 @@
 
 ## Install
 
-An example of AWS instructions for installing Kiro is at
+AWS instructions for installing Kiro is at
 <https://catalog.workshops.aws/kiro-immersion/en-US/10-start-workshop/11-aws-event>.
+Be sure to install Kiro, not Kiro-CLI.
 
-1. Download the installer for your operating system from [kiro.dev/downloads](https://kiro.dev/downloads/).
-1. Open the downloaded file and follow the installation instructions for your operating system.
-1. Launch the Kiro IDE application.
+TLDR:
+
+   1. Download the installer for your operating system from [kiro.dev/downloads](https://kiro.dev/downloads/).
+      1. Do not use the `curl` command as it installs the "Kiro CLI", which is not used in the Bootcamp.
+   1. Open the downloaded file and follow the installation instructions for your operating system.
+   1. Launch the Kiro IDE application.
+      Example:
+
+      ```console
+      kiro
+      ```
 
 ## Senzing-only
 
@@ -41,12 +50,6 @@ They are for the Senzingers who are "scrubbing" the Bootcamp.
       1. Click "Sign in"
    1. In "Allow Kiro IDE to access your data?":
       1. Click "Allow access"
-1. In Kiro:
-   1. In lower-left bar, you should see "Kiro Power nnnn / nnnn"
-1. In web browser, you can see your AWS Console Home and credentials:
-   1. Visit <https://awssenzingsso.awsapps.com/start/#/?tab=accounts>
-      1. Console Home: **Kiro** > **Kiro-Developer**
-      1. Credentials: **Kiro** > Kiro-Developer > **Access keys**
 
 ## Configure
 
@@ -56,17 +59,11 @@ On first launch, Kiro walks through initial setup:
    No AWS account is required.
 1. **Import editor settings** — Optionally import VS Code settings, themes, and extensions.
    Skip this step if migrating from a different editor.
+   Depending on how many extensions are being imported, this may take a while.
 1. **Choose a theme** — Select a preferred appearance.
 1. **Enable shell integration** — Allow Kiro to set up shell integration so the agent can
    execute commands on your behalf.
 
-## How to run Kiro in a new directory
-
-1. Create a new, empty directory.
-1. In the new directory, open Kiro. Example:
-
-    ```console
-    kiro .
-    ```
+Exit Kiro.
 
 For more details, see the [Kiro documentation](https://kiro.dev/docs/getting-started/).

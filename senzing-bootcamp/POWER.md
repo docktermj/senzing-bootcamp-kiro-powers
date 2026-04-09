@@ -140,6 +140,31 @@ Always call `get_capabilities` first when starting a session.
 - Never guess SDK method signatures — use `generate_scaffold` or `sdk_guide`
 - Use `search_docs` with category `anti_patterns` before recommending approaches
 
+## Tool Usage Examples
+
+```text
+# Discover available tools and workflows
+get_capabilities()
+
+# Get SDK installation instructions for a specific platform and language
+sdk_guide(topic='install', platform='linux', language='python', version='current')
+
+# Generate loading code in the user's chosen language
+generate_scaffold(language='java', workflow='add_records', version='current')
+
+# Start an interactive data mapping session
+mapping_workflow(action='start', source_file='data/raw/customers.csv')
+
+# Search Senzing docs for anti-patterns before recommending an approach
+search_docs(query='loading performance', category='anti_patterns', version='current')
+
+# Validate a mapped record against the Senzing Entity Specification
+analyze_record(record='{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001","NAME_FULL":"John Smith"}')
+
+# Diagnose a Senzing error code
+explain_error_code(error_code='0023')
+```
+
 ## Bootcamp Modules
 
 | Module | Topic                              |

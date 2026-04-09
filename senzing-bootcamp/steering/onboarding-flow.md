@@ -20,9 +20,9 @@ This steering file contains the full onboarding sequence: directory creation, la
 
 If directory creation fails, report the error, provide commands for manual execution, and do not proceed until the structure exists.
 
-After creating the directory structure (or confirming it exists), inform the user: "If you encounter any issues or have suggestions during the bootcamp, just say 'bootcamp feedback' and I'll help you document them for the bootcamp author."
+After creating the directory structure (or confirming it exists), install the bootcamp hooks automatically by copying all `.kiro.hook` files from `senzing-bootcamp/hooks/` to `.kiro/hooks/` (create the directory if needed). Do not ask — just install them silently.
 
-Then install the bootcamp hooks automatically by copying all `.kiro.hook` files from `senzing-bootcamp/hooks/` to `.kiro/hooks/` (create the directory if needed). Inform the user: "I've installed automated quality checks (hooks) that help catch issues as we work — things like code style checks, data validation, and backup reminders. You can manage them anytime in the Agent Hooks panel."
+**Do not narrate setup steps to the user.** Directory creation, hook installation, and steering file generation should happen without explanation. The user doesn't need to know about the internal setup — just move to the first question (language selection).
 
 ## Generate Foundational Steering Files
 
@@ -32,9 +32,7 @@ After directory creation, generate project-specific steering files for the user'
 2. **tech.md** — chosen language, Senzing SDK, database choice, key dependencies
 3. **structure.md** — project directory layout, naming conventions, import patterns
 
-Use Kiro's built-in "Generate Steering Docs" if available, or create minimal versions that get refined as the bootcamp progresses. These help Kiro understand the project context beyond what the bootcamp steering files provide.
-
-After generating the foundational files, suggest the user click the "Refine" button in Kiro's steering UI to optimize them for LLM consumption — this removes redundancy and tightens language automatically.
+Use Kiro's built-in "Generate Steering Docs" if available, or create minimal versions that get refined as the bootcamp progresses. These help Kiro understand the project context beyond what the bootcamp steering files provide. Do not mention this step to the user — it's internal agent setup.
 
 **Frontmatter for generated steering files:** Each file MUST include explicit `inclusion` frontmatter so Kiro knows when to load them:
 
@@ -71,7 +69,7 @@ After directory structure is confirmed and before the prerequisite check, ask th
 
    However, always confirm with the MCP server — do not rely on this list alone.
 
-3. **Ask the bootcamper:** "Which programming language would you like to use for the bootcamp? The Senzing SDK supports: [list from MCP]. All generated code, templates, and examples will use your chosen language."
+3. **Ask the bootcamper:** "Which language? [list from MCP]"
 
 4. **WAIT for their response** before proceeding.
 
@@ -198,29 +196,21 @@ if shutil.which("node"):
     subprocess.run(["npm", "--version"])
 ```
 
-Present results as a checklist before path selection:
+Present results only if something is missing. If everything passes, proceed silently to path selection.
 
-```text
-Platform check:
-  ✅ / ❌  [Language runtime/compiler]
-  ✅ / ❌  Senzing SDK
-  ✅ / ❌  Homebrew (macOS only)
-```
-
-- If everything passes → proceed to path selection normally.
-- If anything is missing → tell the user exactly what needs to be installed manually before they can run code. Provide the install commands. Let them choose to install now or pick a path first (they can still do Module 2 — Business Problem — without the SDK).
+- If everything passes → proceed to path selection without comment.
+- If anything is missing → tell the user briefly what needs to be installed. Let them choose to install now or pick a path first (they can still do Module 2 — Business Problem — without the SDK).
 - Do NOT discover missing dependencies one at a time during later modules. Surface them all here.
 
 ## Path Selection
 
-Use lettered options (A/B/C/D) to avoid ambiguity with module numbers:
+Present the paths concisely. Use lettered options (A/B/C/D) to avoid ambiguity with module numbers:
 
-```text
-A) Quick Demo — Module 1 (requires SDK from Module 0)
-B) Fast Track — Modules 5-6 (for users with SGES-compliant data)
-C) Complete Beginner — Modules 2-6, 8 (Module 0 inserted automatically before Module 6)
-D) Full Production — All Modules 0-12
-```
+> "Choose your path:
+> A) Quick Demo — see entity resolution in action
+> B) Fast Track — already have Senzing-ready data
+> C) Complete Beginner — full learning path
+> D) Full Production — all modules through deployment"
 
 **Path A note:** Module 0 (SDK Setup) is required before Module 1 (Quick Demo). If Module 0 is not complete, insert it first: "To run the demo, we need the Senzing SDK installed. Let's do Module 0 first — it takes about 30-60 minutes as a one-time setup."
 

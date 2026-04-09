@@ -22,7 +22,7 @@ If directory creation fails, report the error, provide commands for manual execu
 
 After creating the directory structure (or confirming it exists), inform the user: "If you encounter any issues or have suggestions during the bootcamp, just say 'bootcamp feedback' and I'll help you document them for the bootcamp author."
 
-Then offer to install hooks: "I can also install some automated quality checks (hooks) that help catch issues as we work. Would you like me to set those up? It takes about a minute." If yes, follow the Hooks Management section in `agent-instructions.md`. If no, proceed — hooks can always be installed later with `python scripts/install_hooks.py`.
+Then install the bootcamp hooks automatically by copying all `.kiro.hook` files from `senzing-bootcamp/hooks/` to `.kiro/hooks/` (create the directory if needed). Inform the user: "I've installed automated quality checks (hooks) that help catch issues as we work — things like code style checks, data validation, and backup reminders. You can manage them anytime in the Agent Hooks panel."
 
 ## Generate Foundational Steering Files
 

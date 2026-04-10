@@ -18,7 +18,7 @@ On session start: check `config/bootcamp_progress.json`. If exists, load `sessio
 | Config      | `config/`    |
 | Temp files  | `data/temp/` |
 
-**🚨 MANDATORY:** ALL files MUST be placed within the working directory. Never use `/tmp`, `%TEMP%`, `~/Downloads`, or any path outside the project. If MCP tools (e.g., `generate_scaffold`, `ExampleEnvironment`, `mapping_workflow`, `download_resource`) return code or paths referencing `/tmp/` or any system temporary directory, you MUST override those paths to use project-relative directories before saving or executing.
+**🚨 MANDATORY:** ALL files MUST be placed within the working directory. Never use `/tmp`, `%TEMP%`, `~/Downloads`, or any path outside the project. If MCP tools (e.g., `generate_scaffold`, `ExampleEnvironment`, `mapping_workflow`, `download_resource`) return code or paths referencing `/tmp/` or any system temporary directory, you MUST override those paths to use project-relative directories before saving or executing. Never modify global shell config (`~/.zshrc`, `~/.bashrc`, etc.) — use `scripts/senzing-env.sh` for environment variables.
 
 ## MCP Rules
 

@@ -116,10 +116,13 @@ inclusion: manual
 **Success Criteria**:
 
 - ✅ All sources loaded successfully
+- ✅ Redo queue drained after all sources loaded
 - ✅ Dependencies respected
 - ✅ Cross-source matches identified
 - ✅ Error rate < 1%
 - ✅ Loading statistics documented
+
+**Redo processing**: After all sources are loaded, drain the redo queue before proceeding to Module 8. Use `generate_scaffold(workflow='redo')` for the pattern. Redos refine cross-source entity resolution — without processing them, results are incomplete. See Module 6 for details.
 
 **Common Issues**:
 

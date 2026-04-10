@@ -211,3 +211,4 @@ Use this workflow when a user wants to see entity resolution in action before wo
 - Make the "aha moment" obvious
 - Be enthusiastic about the results
 - Connect demo results to user's use case
+- **Data mart distinction**: If `reporting_guide` returns SQL queries referencing `sz_dm_report`, `sz_dm_record`, `sz_dm_entity`, or similar data mart tables, do NOT present these as built-in Senzing infrastructure. The data mart is a separate open-source project (`data-mart-replicator`, currently in beta for V4) that requires additional infrastructure to consume INFO messages from data modification operations. Clearly distinguish between core SDK query capabilities (which are available now) and data mart reporting (which requires separate setup).

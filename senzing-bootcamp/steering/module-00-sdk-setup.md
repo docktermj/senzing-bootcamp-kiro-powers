@@ -8,9 +8,9 @@ inclusion: manual
 
 Install and configure the Senzing SDK natively on your machine. This is the first step of the bootcamp — once the SDK is installed, all subsequent modules use it directly.
 
-**Prerequisites**: None (this is the first module)
+**Prerequisites:** None (this is the first module)
 
-**Language**: Use the bootcamper's chosen programming language from the language selection step in agent-instructions. All code generation, scaffold calls, and examples in this module must use that language.
+**Language:** Use the bootcamper's chosen programming language from the language selection step in agent-instructions. All code generation, scaffold calls, and examples in this module must use that language.
 
 ## Step 1: Check for Existing Installation
 
@@ -32,7 +32,7 @@ WAIT for response before proceeding.
 
 Use `sdk_guide` with `topic='install'` and the user's platform to get current installation commands. Pass the bootcamper's chosen language as the `language` parameter. The MCP server always has the latest instructions.
 
-**Platform options for `sdk_guide`**:
+**Platform options for `sdk_guide`:**
 
 - `platform='linux_apt'` — Ubuntu/Debian
 - `platform='linux_yum'` — RHEL/CentOS/Fedora
@@ -50,6 +50,8 @@ Follow the platform-specific instructions from `sdk_guide`. The typical flow:
 
 **Before recommending any approach**, call `search_docs` with `category='anti_patterns'` to check for known pitfalls on the user's platform.
 
+**🚨 NEVER modify the user's global shell configuration** (`~/.zshrc`, `~/.bashrc`, `~/.profile`, etc.) to set Senzing environment variables. Instead, create a project-local environment script at `scripts/senzing-env.sh` (or `.bat` for Windows) that sets `SENZING_ROOT`, library paths, and any other Senzing-specific variables. The agent should source this script before running bootcamp tasks. This keeps the bootcamp self-contained and avoids side effects on the user's system.
+
 ## Step 4: Verify Installation
 
 Generate a verification script in the bootcamper's chosen language using `generate_scaffold(language='<chosen_language>', workflow='initialize', version='current')`. The script should initialize the Senzing engine and print the version to confirm the SDK is working.
@@ -62,7 +64,7 @@ Ask: "Do you have a Senzing license file (`g2.lic`)? If not, no worries — the 
 
 WAIT for response.
 
-**If they have a license**:
+**If they have a license:**
 
 - Ask them to place it at `licenses/g2.lic`
 - Verify the file exists
@@ -74,7 +76,7 @@ WAIT for response.
   license_path: licenses/g2.lic
   ```
 
-**If they don't have a license**:
+**If they don't have a license:**
 
 - Inform them: "No problem. The SDK includes built-in evaluation limits that are fine for the bootcamp. If you'd like a full evaluation license later, you can email <support@senzing.com>."
 - Record in `config/bootcamp_preferences.yaml`:
@@ -84,7 +86,7 @@ WAIT for response.
   license_path: null
   ```
 
-**If they're unsure**: Evaluation (built-in) works out of the box with record count limits. A custom license removes limits. They can always add one later by placing it in `licenses/g2.lic`.
+**If they're unsure:** Evaluation (built-in) works out of the box with record count limits. A custom license removes limits. They can always add one later by placing it in `licenses/g2.lic`.
 
 ## Step 6: Create Project Directory Structure
 
@@ -103,7 +105,7 @@ WAIT for response.
 - Create the database directory: `mkdir -p database` (Linux/macOS) or `New-Item -ItemType Directory -Force -Path database` (PowerShell)
 - Database path: `database/G2C.db`
 - No additional setup needed — SQLite is built in
-- **IMPORTANT**: Never use `/tmp/` or in-memory databases. If `generate_scaffold` or `ExampleEnvironment` defaults to `/tmp/`, override the path to `database/G2C.db`.
+- **IMPORTANT:** Never use `/tmp/` or in-memory databases. If `generate_scaffold` or `ExampleEnvironment` defaults to `/tmp/`, override the path to `database/G2C.db`.
 
 **For PostgreSQL** (production):
 

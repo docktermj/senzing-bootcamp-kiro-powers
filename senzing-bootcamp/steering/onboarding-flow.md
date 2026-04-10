@@ -204,13 +204,16 @@ Present results only if something is missing. If everything passes, proceed sile
 
 ## Path Selection
 
-Present the paths concisely. Use lettered options (A/B/C/D) to avoid ambiguity with module numbers:
+Present the paths with enough context for an informed choice. The bootcamp has 13 modules (0-12) and each path covers a different subset:
 
-> "Choose your path:
-> A) Quick Demo — see entity resolution in action
-> B) Fast Track — already have Senzing-ready data
-> C) Complete Beginner — full learning path
-> D) Full Production — all modules through deployment"
+> "The bootcamp has 13 modules (0-12). Choose your path:
+>
+> A) Quick Demo — Modules 0 → 1. See entity resolution in action with sample data. Done in one session.
+> B) Fast Track — Modules 5 → 6 → 8. For people who already have Senzing-ready data. Skips business problem and data collection.
+> C) Complete Beginner — Modules 2 → 3 → 4 → 5 → 6 → 8. Full learning path from defining the problem through validating results. Skips production modules.
+> D) Full Production — All modules 0-12, including performance testing, security, monitoring, and deployment.
+>
+> Module 0 (SDK Setup) is inserted automatically before any module that needs it. Want me to describe the modules before you choose?"
 
 **Path A note:** Module 0 (SDK Setup) is required before Module 1 (Quick Demo). If Module 0 is not complete, insert it first: "To run the demo, we need the Senzing SDK installed. Let's do Module 0 first — it takes about 30-60 minutes as a one-time setup."
 

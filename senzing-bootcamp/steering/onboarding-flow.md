@@ -9,7 +9,7 @@ This steering file contains the full onboarding sequence: directory creation, la
 ## Create Directory Structure
 
 1. Check if project directory structure exists (`src/`, `data/`, `docs/`)
-2. If it doesn't exist, load `project-structure.md` and execute the creation commands. Also reference #[[file:docs/policies/FILE_STORAGE_POLICY.md]] for the complete file placement rules.
+2. If it doesn't exist, load `project-structure.md` and execute the creation commands.
 3. Only then proceed with any other activity
 
 **Trigger points** — create structure at any of these:

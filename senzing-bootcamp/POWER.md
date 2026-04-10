@@ -18,12 +18,14 @@ This power works best with Claude Opus 4.6 or similar.
 
 ## Quick Start
 
-**New users:** Say "start the bootcamp" to begin. Choose your path:
+**New users:** Say "start the bootcamp" to begin. The bootcamp has 13 modules (0-12). Choose your path:
 
-- A) Quick Demo — see entity resolution in action
-- B) Fast Track — already have Senzing-ready data
-- C) Complete Beginner — full learning path
-- D) Full Production — all modules through deployment
+- A) Quick Demo — Modules 0 → 1. See entity resolution in action with sample data. Done in one session.
+- B) Fast Track — Modules 5 → 6 → 8. For users who already have Senzing-ready data. Skips business problem and data collection.
+- C) Complete Beginner — Modules 2 → 3 → 4 → 5 → 6 → 8. Full learning path from defining the problem through validating results. Skips production modules.
+- D) Full Production — All modules 0-12, including performance testing, security, monitoring, and deployment.
+
+Module 0 (SDK Setup) is inserted automatically before any module that needs it.
 
 **Experienced users:** Skip to Module 5 (have SGES data), Module 6 (SDK + data ready), or Module 8 (data loaded).
 
@@ -63,6 +65,7 @@ Load these on-demand when needed:
 
 - `security-privacy.md` — Data privacy and PII protection (auto-included when PII or security is discussed)
 - `project-structure.md` — Directory structure and setup commands (auto-included when creating files)
+- `module-transitions.md` — Journey map, before/after framing, and bootcamp journal rules (auto-included during module work)
 
 **Language-Specific (loaded automatically when editing matching files):**
 

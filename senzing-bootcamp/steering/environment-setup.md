@@ -4,22 +4,17 @@ inclusion: manual
 
 # Environment Setup
 
-This guide covers setting up your development environment before starting the Senzing Bootcamp.
-
 ## Version Control
 
-Initialize git for your project:
-
 ```bash
-cd my-senzing-project
 git init
 git add .
 git commit -m "Initial project setup"
 ```
 
-## .gitignore Configuration
+## .gitignore (Senzing Bootcamp Specific)
 
-Create a `.gitignore` file that covers the bootcamper's chosen language plus common project exclusions:
+Create a `.gitignore` with these bootcamp-specific entries. Add standard language entries (Python `__pycache__`, Java `target/`, etc.) based on the chosen language — the LLM knows these.
 
 ```gitignore
 # Sensitive data
@@ -43,161 +38,41 @@ database/*.db-journal
 
 # Logs
 logs/*.log
-*.log
 
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Backups
+data/backups/*.sql
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Backups
-data/backups/*.sql
-```
-
-Add language-specific entries based on the bootcamper's chosen language:
-
-**Python:**
-
-```gitignore
-__pycache__/
-*.py[cod]
-*$py.class
-.venv/
-venv/
-env/
-```
-
-**Java:**
-
-```gitignore
-target/
-*.class
-*.jar
-*.war
-.gradle/
-build/
-```
-
-**C#:**
-
-```gitignore
-bin/
-obj/
-*.user
-*.suo
-packages/
-```
-
-**Rust:**
-
-```gitignore
-target/
-Cargo.lock
-```
-
-**TypeScript / Node.js:**
-
-```gitignore
-node_modules/
-dist/
-npm-debug.log
-```
-
-## Language Environment
-
-Set up the development environment for your chosen language:
-
-### Python
-
-```bash
-# Linux / macOS
-python3 -m venv venv
-source venv/bin/activate
-pip install senzing
-pip freeze > requirements.txt
-```
-
-```powershell
-# Windows (PowerShell)
-python -m venv venv
-venv\Scripts\Activate.ps1
-pip install senzing
-pip freeze > requirements.txt
-```
-
-### Java
-
-```bash
-# Use Maven or Gradle to manage dependencies
-# Add senzing SDK dependency to pom.xml or build.gradle
-```
-
-### C-sharp
-
-```bash
-dotnet new console -n my-senzing-project
-# Add Senzing NuGet package
-```
-
-### Rust
-
-```bash
-cargo init my-senzing-project
-# Add senzing dependency to Cargo.toml
-```
-
-### TypeScript / Node.js
-
-```bash
-npm init -y
-# Add senzing dependency to package.json
 ```
 
 ## Environment Variables
 
-Create `.env.example` as a template:
+Use a project-local script instead of modifying global shell config:
+
+Create `scripts/senzing-env.sh` (Linux/macOS) or `scripts/senzing-env.bat` (Windows):
 
 ```bash
-# Senzing Configuration
-SENZING_ENGINE_CONFIG_JSON={"PIPELINE":{"CONFIGPATH":"/etc/opt/senzing"}}
-SENZING_DATABASE_URL=sqlite3://na:na@database/G2C.db
-
-# Data Source Credentials (examples - replace with actual)
-CRM_API_KEY=your_api_key_here
-DATABASE_CONNECTION_STRING=postgresql://user:pass@localhost:5432/dbname
-
-# Monitoring
-ENABLE_MONITORING=true
-LOG_LEVEL=INFO
+# scripts/senzing-env.sh (Linux/macOS)
+export SENZING_ROOT=/opt/senzing
+export SENZING_ENGINE_CONFIG_JSON=$(cat config/engine_config.json)
+export SENZING_DATABASE_URL=sqlite3://na:na@database/G2C.db
 ```
 
-Copy to `.env` and fill in actual values (never commit `.env` to git).
+```bat
+REM scripts/senzing-env.bat (Windows)
+set SENZING_ROOT=C:\opt\senzing
+set /p SENZING_ENGINE_CONFIG_JSON=<config\engine_config.json
+set SENZING_DATABASE_URL=sqlite3://na:na@database/G2C.db
+```
 
-## When to Load This Guide
+Create `.env.example` as a template for any additional variables. Copy to `.env` and fill in actual values (never commit `.env`).
 
-Load this steering file when:
+## Language Setup
 
-- Starting Module 0 (initial project setup)
-- User asks about version control setup
-- User needs help with environment configuration
+Use `sdk_guide(topic='install', language='<chosen_language>')` for current SDK binding installation. The MCP server provides the correct commands for each language.
 
-## Important Note on Source Code Location
+## Source Code Location
 
-All generated source code must be placed in the `src/` directory structure:
-
-- Transformation programs → `src/transform/`
-- Loading programs → `src/load/`
-- Query programs → `src/query/`
-- Utility scripts → `src/utils/`
-
-Automation scripts go in `scripts/`. See `docs/policies/FILE_STORAGE_POLICY.md` for the complete policy.
+All generated source code goes in `src/` subdirectories: `src/transform/`, `src/load/`, `src/query/`, `src/utils/`. Automation scripts go in `scripts/`.

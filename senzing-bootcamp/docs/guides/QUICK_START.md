@@ -9,7 +9,7 @@ Say "start the bootcamp". The agent sets up your project, asks your language, ch
 | Path | For | Modules |
 | ---- | --- | ------- |
 | A) Quick Demo | First-time users — see entity resolution in action | 0 → 1 |
-| B) Fast Track | Have Senzing-ready (SGES) data | 0 → 5 → 6 |
+| B) Fast Track | Have Senzing-ready (SGES) data | 0 → 5 → 6 → 8 |
 | C) Complete Beginner | New users with raw data | 2 → 3 → 4 → 5 → 0 → 6 → 8 |
 | D) Full Production | All modules through deployment | 0 → 1 → 2 → ... → 12 |
 

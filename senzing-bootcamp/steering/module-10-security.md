@@ -10,6 +10,8 @@ Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcam
 
 **Prerequisites**: Module 9 complete, working Senzing deployment to harden.
 
+**Before/After**: Your system works and performs well, but it's not secure. After this module, secrets are managed, access is controlled, data is encrypted, and you have a security checklist signed off by stakeholders.
+
 Before starting: call `search_docs(query='security best practices', version='current')`. Also load `security-privacy.md` for PII handling guidance.
 
 ## Step 1: Assess Security Requirements

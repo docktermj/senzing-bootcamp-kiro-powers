@@ -10,6 +10,8 @@ inclusion: manual
 
 **Prerequisites**: ✅ Module 3 complete (data sources collected, files in `data/raw/`)
 
+**Before/After**: You have raw data files but don't know if Senzing can use them directly. After this module, each source is scored for quality and categorized — you'll know which ones need transformation and which are ready to load.
+
 1. **List the agreed-upon data sources**: Recap the data sources identified during the business problem discussion. Review `docs/business_problem.md` for the list.
 
 2. **Request sample data**: For each data source, ask the user to place sample files in `data/raw/` or `data/samples/`:

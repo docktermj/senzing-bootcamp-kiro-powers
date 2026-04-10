@@ -8,6 +8,8 @@ inclusion: manual
 
 **Purpose**: Coordinate loading of multiple data sources with dependencies and optimization.
 
+**Before/After**: You have one source loaded. After this module, all your sources are loaded with cross-source matching — Senzing is finding connections between records from different systems.
+
 **Prerequisites**:
 
 - ✅ Module 6 complete (first source loaded successfully)

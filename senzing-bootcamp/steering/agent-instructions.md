@@ -82,9 +82,36 @@ Follow language-appropriate standards for the bootcamper's chosen language (Pyth
 ## Communication
 
 - Ask one question at a time, wait for response
-- Explain "why" not just "what"
+- Explain "why" not just "what" — after each step, include a one-liner explaining what it accomplished and why it matters for what comes next
 - Admit when you need MCP tools
 - On "power feedback" / "bootcamp feedback": load `feedback-workflow.md`
+
+## Journey Map
+
+At the start of each module, show the bootcamper a compact journey map with their current position. Use the bootcamper's path from `config/bootcamp_preferences.yaml` to show only the modules in their path:
+
+```text
+✅ Module 0: Installed the SDK — Senzing is ready to use
+✅ Module 1: Ran the demo — saw entity resolution in action
+→  Module 2: Define your business problem — so we know what to solve
+   Module 3: Collect data — get your data into the project
+   Module 5: Map data — translate your fields into Senzing format
+```
+
+Mark completed modules with ✅, the current module with →, and upcoming modules plain. Include the one-line "why" for each.
+
+## Bootcamp Journal
+
+After each module completes, append a short entry to `docs/bootcamp_journal.md`:
+
+```markdown
+## Module N: [Name] — Completed [date]
+**What we did:** [1-2 sentences]
+**What was produced:** [files/artifacts created]
+**Why it matters:** [how this enables the next step]
+```
+
+Create the file if it doesn't exist. This gives the bootcamper a running narrative of their project and helps with session resumption.
 
 ## Hooks
 

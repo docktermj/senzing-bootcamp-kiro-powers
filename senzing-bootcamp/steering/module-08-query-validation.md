@@ -8,6 +8,8 @@ inclusion: manual
 
 **Purpose:** Create query programs and conduct user acceptance testing.
 
+**Before/After**: Your data is loaded and entities are resolved, but you haven't examined the results yet. After this module, you'll have query programs that answer your business questions and validated results you can trust.
+
 **Prerequisites:**
 
 - ✅ Module 7 complete (all sources loaded) OR Module 6 complete (single source)

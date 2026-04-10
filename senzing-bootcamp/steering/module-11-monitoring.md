@@ -10,6 +10,8 @@ Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcam
 
 **Prerequisites:** Module 10 complete, security hardened.
 
+**Before/After**: Your system is secure but you can't see what's happening inside it. After this module, you'll have dashboards, alerts, health checks, and runbooks — you'll know when something goes wrong and how to fix it.
+
 ## Step 1: Assess Monitoring Landscape
 
 Ask: what monitoring tools do you already use? (Prometheus, Datadog, CloudWatch, Grafana, ELK, etc.) What alerting channels? (Email, Slack, PagerDuty, SNS)

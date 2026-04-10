@@ -10,6 +10,8 @@ inclusion: manual
 
 Use this workflow for each data source that needs to be loaded into Senzing. Create a separate loading program for each data source.
 
+**Before/After**: You have Senzing-formatted JSON files but they're just files on disk. After this module, your data is loaded into the Senzing engine and entity resolution has begun — duplicates are being matched automatically.
+
 **Before starting:** Identify which data sources are ready to load:
 
 > **Agent instruction:** Before starting any loading, check for anti-patterns:

@@ -8,6 +8,8 @@ inclusion: manual
 
 Install and configure the Senzing SDK natively on your machine. This is the first step of the bootcamp — once the SDK is installed, all subsequent modules use it directly.
 
+**Before/After**: You have a project directory but no Senzing SDK. After this module, the SDK is installed, configured, and verified — ready to load data and resolve entities.
+
 **Prerequisites:** None (this is the first module)
 
 **Language:** Use the bootcamper's chosen programming language from the language selection step in agent-instructions. All code generation, scaffold calls, and examples in this module must use that language.

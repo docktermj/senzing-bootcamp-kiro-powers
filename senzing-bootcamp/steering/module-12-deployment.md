@@ -10,6 +10,8 @@ Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcam
 
 **Prerequisites**: Module 11 complete, all tests passing, deployment target confirmed.
 
+**Before/After**: Everything works locally. After this module, your entity resolution system is packaged, containerized, deployed to your target environment, and running in production with CI/CD.
+
 Before starting: call `search_docs(query='deployment', category='anti_patterns', version='current')`.
 
 ## Step 1: Deployment Requirements

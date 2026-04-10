@@ -10,7 +10,9 @@ inclusion: manual
 
 Use this workflow for each data source that needs mapping (identified in Module 4). Complete the entire mapping process for one data source before moving to the next.
 
-**Important**: While these steps are numbered sequentially, mapping is an iterative and exploratory process. Users can:
+**Before/After:** You have raw data that Senzing can't read yet. After this module, you'll have transformation programs that convert your data into Senzing JSON format, validated and ready to load.
+
+**Important:** While these steps are numbered sequentially, mapping is an iterative and exploratory process. Users can:
 
 - Jump back to earlier steps when they discover new information
 - Skip ahead to test ideas before completing all prior steps
@@ -19,21 +21,21 @@ Use this workflow for each data source that needs mapping (identified in Module 
 
 Be flexible and supportive of non-linear exploration. The goal is a working transformation program, not strict adherence to the sequence.
 
-**Before starting**: Confirm which data source you're currently mapping. If multiple sources need mapping, keep track of progress:
+**Before starting:** Confirm which data source you're currently mapping. If multiple sources need mapping, keep track of progress:
 
 - Data Source 1: Customer Database → In Progress / Complete
 - Data Source 2: Transaction Logs → Pending
 - Data Source 3: Vendor Data → Pending
 
-**Prerequisites**: ✅ Module 3 complete (sources evaluated, non-compliant sources identified)
+**Prerequisites:** ✅ Module 3 complete (sources evaluated, non-compliant sources identified)
 
-**For the current data source**:
+**For the current data source:**
 
-1. **Start the mapping workflow**: Call `mapping_workflow` with `action='start'` and the user's source file path from `data/raw/` or `data/samples/` for this specific data source. The workflow will return a unique session ID for tracking this mapping.
+1. **Start the mapping workflow:** Call `mapping_workflow` with `action='start'` and the user's source file path from `data/raw/` or `data/samples/` for this specific data source. The workflow will return a unique session ID for tracking this mapping.
 
-   **IMPORTANT**: If the mapping workflow returns any file paths pointing to `/tmp/` or other system temporary directories, override them with project-local paths. Downloaded resources go in `data/temp/` or `data/raw/`, profiler output goes in `data/temp/`, and generated scripts go in `src/transform/`. See `docs/policies/FILE_STORAGE_POLICY.md`.
+   **IMPORTANT:** If the mapping workflow returns any file paths pointing to `/tmp/` or other system temporary directories, override them with project-local paths. Downloaded resources go in `data/temp/` or `data/raw/`, profiler output goes in `data/temp/`, and generated scripts go in `src/transform/`. See `docs/policies/FILE_STORAGE_POLICY.md`.
 
-2. **Step 1 — Profile**: Run the profiler script returned by the workflow, or read the data directly. Summarize:
+2. **Step 1 — Profile:** Run the profiler script returned by the workflow, or read the data directly. Summarize:
    - Column names and their meanings
    - Data types (string, integer, date, etc.)
    - Sample values from each column
@@ -42,15 +44,15 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Advance with `mapping_workflow` using `action='profile_summary'` and your analysis.
 
-3. **Step 2 — Plan**: Identify the entity structure for this data source:
-   - **Master entities**: Are these person records, organization records, or both?
-   - **Child records**: Are there related records (e.g., multiple addresses per person)?
-   - **Relationships**: Does this data describe relationships between entities?
-   - **Lookup tables**: Are there reference data or code tables?
+3. **Step 2 — Plan:** Identify the entity structure for this data source:
+   - **Master entities:** Are these person records, organization records, or both?
+   - **Child records:** Are there related records (e.g., multiple addresses per person)?
+   - **Relationships:** Does this data describe relationships between entities?
+   - **Lookup tables:** Are there reference data or code tables?
 
    Advance with `mapping_workflow` using `action='entity_plan'` and your plan.
 
-4. **Step 3 — Map**: Map each source field to Senzing features and attributes.
+4. **Step 3 — Map:** Map each source field to Senzing features and attributes.
 
    > **Agent instruction:** Do not list specific attribute names here. The `mapping_workflow`
    > tool handles field mapping interactively and provides the correct, current attribute names.
@@ -60,7 +62,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
    Map fields for: names, addresses, contact info, identifiers, and dates.
    Assign confidence scores (0-100) based on data quality.
 
-   **CRITICAL**: Never guess attribute names. Use the mapping workflow to ensure correct names.
+   **CRITICAL:** Never guess attribute names. Use the mapping workflow to ensure correct names.
 
    > **Agent instruction:** If the user's data contains non-Latin characters (Cyrillic, CJK,
    > Arabic, etc.), use `search_docs(query="globalization", category="globalization", version="current")`
@@ -68,7 +70,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Advance with `mapping_workflow` using `action='schema_mappings'` and your field mappings.
 
-5. **Step 4 — Generate Starter Code**: The workflow generates:
+5. **Step 4 — Generate Starter Code:** The workflow generates:
    - Sample Senzing JSON output showing the target format
    - Starter mapper code in the bootcamper's chosen language
    - Transformation logic for complex fields
@@ -77,9 +79,9 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Advance with `mapping_workflow` using `action='paths'` and the output file paths.
 
-6. **Step 5 — Build the Transformation Program**: Help the user create a complete, runnable program for this data source.
+6. **Step 5 — Build the Transformation Program:** Help the user create a complete, runnable program for this data source.
 
-   **IMPORTANT**: All generated code must follow the coding standards for the bootcamper's chosen language (see `docs/policies/CODE_QUALITY_STANDARDS.md`).
+   **IMPORTANT:** All generated code must follow the coding standards for the bootcamper's chosen language (see `docs/policies/CODE_QUALITY_STANDARDS.md`).
 
    > **Agent instruction:** The `mapping_workflow` generates starter code in Step 4. Use that
    > as the foundation. Do not use the inline example below — use `generate_scaffold` or the
@@ -88,14 +90,14 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    The program should handle:
 
-   **Input**: Read from the original data source format (CSV, JSON, database, API)
-   **Transformation**: Apply field mappings from Step 3, handle type conversions, combine/split fields, apply cleansing, set required `DATA_SOURCE` and `RECORD_ID` fields
-   **Output**: Write Senzing JSON records to JSONL file in `data/transformed/`
-   **Errors**: Handle malformed input records gracefully
+   **Input:** Read from the original data source format (CSV, JSON, database, API)
+   **Transformation:** Apply field mappings from Step 3, handle type conversions, combine/split fields, apply cleansing, set required `DATA_SOURCE` and `RECORD_ID` fields
+   **Output:** Write Senzing JSON records to JSONL file in `data/transformed/`
+   **Errors:** Handle malformed input records gracefully
 
-   **Save the program**: Save to `src/transform/transform_[datasource_name].[ext]` where `[ext]` is the appropriate file extension for the chosen language. All transformation programs must be in the `src/transform/` directory.
+   **Save the program:** Save to `src/transform/transform_[datasource_name].[ext]` where `[ext]` is the appropriate file extension for the chosen language. All transformation programs must be in the `src/transform/` directory.
 
-7. **Step 6 — Test the Program**: Run the transformation program on sample data from `data/samples/`:
+7. **Step 6 — Test the Program:** Run the transformation program on sample data from `data/samples/`:
    - Start with a small subset (10-100 records) for initial testing
    - Verify the program runs without errors
    - Check that output files are created in `data/transformed/`
@@ -103,7 +105,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Call `analyze_record` with sample output records to validate they conform to the Senzing Entity Specification and check data quality.
 
-8. **Step 7 — Quality Analysis**: Run the program on a larger sample (1000+ records if available). Call `analyze_record` with several mapped records to evaluate:
+8. **Step 7 — Quality Analysis:** Run the program on a larger sample (1000+ records if available). Call `analyze_record` with several mapped records to evaluate:
    - Feature distribution (are all important features populated?)
    - Attribute coverage (what percentage of records have each attribute?)
    - Data quality scores (completeness, consistency, validity)
@@ -111,14 +113,14 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Advance with `mapping_workflow` using `action='verdict'` and your quality assessment.
 
-9. **Step 8 — Review Results**: Review the transformation program and results with the user:
+9. **Step 8 — Review Results:** Review the transformation program and results with the user:
    - Confirm the program successfully reads the input data
    - Verify the output format is correct Senzing JSON
    - Review data quality metrics
    - Discuss any data quality concerns
    - Confirm the program is ready for production use or needs adjustments
 
-10. **Step 9 — Iterate if needed**: If quality issues were found or the program needs refinement, make adjustments. This is where the iterative nature of mapping becomes clear:
+10. **Step 9 — Iterate if needed:** If quality issues were found or the program needs refinement, make adjustments. This is where the iterative nature of mapping becomes clear:
 
 - Go back to Step 3 to adjust field mappings
 - Return to Step 2 to reconsider entity structure
@@ -131,7 +133,7 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Retest the program after changes. You may cycle through steps multiple times before achieving the desired quality.
 
-1. **Step 10 — Save and Document**: Ensure the transformation program is properly saved and documented:
+1. **Step 10 — Save and Document:** Ensure the transformation program is properly saved and documented:
 
     - Program saved in `src/transform/transform_[datasource_name].[ext]` (all source code must be in `src/`)
     - Create `docs/mapping_[datasource_name].md` with:
@@ -142,11 +144,11 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
       - Dependencies and prerequisites
     - Save sample output in `data/transformed/[datasource_name]_sample.jsonl`
 
-2. **Mark data source as complete**: Once the user is satisfied with the transformation program for this data source, mark it as complete and move to the next data source that needs mapping.
+2. **Mark data source as complete:** Once the user is satisfied with the transformation program for this data source, mark it as complete and move to the next data source that needs mapping.
 
-3. **Repeat for remaining data sources**: If there are more data sources that need mapping (from Module 4), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
+3. **Repeat for remaining data sources:** If there are more data sources that need mapping (from Module 4), repeat this entire workflow for each one. Each data source should have its own transformation program in `src/transform/`.
 
-4. **Transition to Module 0**: Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 0 (SDK Setup).
+4. **Transition to Module 0:** Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 0 (SDK Setup).
 
 ### Important Rules for Data Mapping
 
@@ -159,8 +161,8 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 Source data may have encoding issues that cause silent data corruption during transformation. Check for these before mapping:
 
-- **Detect encoding**: If the source file isn't UTF-8, the profiler step (Step 1) may show garbled characters. Common encodings: Latin-1 (ISO-8859-1), Windows-1252, Shift-JIS, GB2312.
-- **Convert to UTF-8**: The transformation program should read the source file in its original encoding and write UTF-8 output. Most languages have built-in encoding support (e.g., Python's `open(file, encoding='latin-1')`, Java's `InputStreamReader` with charset).
-- **Non-Latin characters**: If the data contains Cyrillic, CJK, Arabic, or other non-Latin scripts, use `search_docs(query="globalization", category="globalization", version="current")` for Senzing's transliteration and character handling guidance.
-- **Special characters in field values**: Ensure JSON output properly escapes special characters (quotes, backslashes, control characters). Most JSON serialization libraries handle this automatically.
-- **BOM (Byte Order Mark)**: Some Windows-generated CSV files start with a UTF-8 BOM (`\xEF\xBB\xBF`). Strip it during reading or it will corrupt the first field name.
+- **Detect encoding:** If the source file isn't UTF-8, the profiler step (Step 1) may show garbled characters. Common encodings: Latin-1 (ISO-8859-1), Windows-1252, Shift-JIS, GB2312.
+- **Convert to UTF-8:** The transformation program should read the source file in its original encoding and write UTF-8 output. Most languages have built-in encoding support (e.g., Python's `open(file, encoding='latin-1')`, Java's `InputStreamReader` with charset).
+- **Non-Latin characters:** If the data contains Cyrillic, CJK, Arabic, or other non-Latin scripts, use `search_docs(query="globalization", category="globalization", version="current")` for Senzing's transliteration and character handling guidance.
+- **Special characters in field values:** Ensure JSON output properly escapes special characters (quotes, backslashes, control characters). Most JSON serialization libraries handle this automatically.
+- **BOM (Byte Order Mark):** Some Windows-generated CSV files start with a UTF-8 BOM (`\xEF\xBB\xBF`). Strip it during reading or it will corrupt the first field name.

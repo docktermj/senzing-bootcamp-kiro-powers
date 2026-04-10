@@ -8,12 +8,13 @@ Load this steering file when `config/bootcamp_progress.json` exists at session s
 
 ## Step 1: Read All State Files
 
-Read both files to reconstruct full context:
+Read these files to reconstruct full context:
 
 1. **`config/bootcamp_progress.json`** — completed modules, current module, data sources, database type
 2. **`config/bootcamp_preferences.yaml`** — chosen language, path, cloud provider, license info
+3. **`docs/bootcamp_journal.md`** (if exists) — narrative history of what was done and why
 
-If either file is missing or corrupted, inform the user and offer to reconstruct from project artifacts (check `src/`, `data/`, `docs/` for evidence of completed work).
+If progress or preferences files are missing or corrupted, inform the user and offer to reconstruct from project artifacts (check `src/`, `data/`, `docs/` for evidence of completed work).
 
 ## Step 2: Load Language Steering
 

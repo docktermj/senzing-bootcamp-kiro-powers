@@ -10,6 +10,8 @@ inclusion: manual
 
 **Prerequisites**: ✅ Module 2 complete (business problem defined, data sources identified)
 
+**Before/After**: You have a list of data sources on paper. After this module, the actual data files are in your project (`data/raw/`), documented, and ready for quality evaluation.
+
 **Purpose**: Collect the actual data files from each identified data source and store them in the project for analysis and mapping.
 
 1. **Review identified data sources**: Recap the data sources identified in Module 2. Review `docs/business_problem.md` for the complete list.

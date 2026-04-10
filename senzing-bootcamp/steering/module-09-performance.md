@@ -10,6 +10,8 @@ Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcam
 
 **Prerequisites**: Module 8 complete, representative data loaded, cloud provider set at 8→9 gate.
 
+**Before/After**: Entity resolution works but you don't know how it performs at scale. After this module, you'll have benchmarks, bottleneck analysis, and optimizations — confidence that it'll handle production volumes.
+
 ## Step 1: Define Performance Requirements
 
 Ask ONE AT A TIME: loading throughput target, query latency target, concurrent users, data volume/growth, database choice (SQLite vs PostgreSQL).

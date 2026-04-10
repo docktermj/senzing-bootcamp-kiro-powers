@@ -8,7 +8,7 @@ This repository contains the Senzing Bootcamp Kiro Power and its development doc
 
 ## Start Kiro in a Senzing Bootcamp directory
 
-1. Start Kiro in a new, empty directory.
+1. From a terminal window, start Kiro in a new, empty directory.
    Example:
 
     ```console
@@ -16,6 +16,10 @@ This repository contains the Senzing Bootcamp Kiro Power and its development doc
     cd senzing-bootcamp
     kiro .
     ```
+
+## Choose the model
+
+1. In Kiro's agentic chat, switch from "Auto" to "Claude Opus 4.6".
 
 ## Install the Senzing Bootcamp Power
 

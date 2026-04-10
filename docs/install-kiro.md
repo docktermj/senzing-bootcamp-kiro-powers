@@ -17,7 +17,7 @@ TLDR:
    1. Download the installer for your operating system from [kiro.dev/downloads](https://kiro.dev/downloads/).
       1. Do not use the `curl` command as it installs the "Kiro CLI", which is not used in the Bootcamp.
    1. Open the downloaded file and follow the installation instructions for your operating system.
-   1. Launch the Kiro IDE application.
+   1. From a terminal window, launch the Kiro IDE application.
       Example:
 
       ```console

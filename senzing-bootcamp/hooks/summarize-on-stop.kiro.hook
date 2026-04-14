@@ -1,0 +1,12 @@
+{
+  "name": "Summarize Progress on Stop",
+  "version": "1.0.0",
+  "description": "When the agent finishes working, it summarizes what was accomplished, which files changed, and what the next step is. Ensures the bootcamper always knows what happened.",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Before finishing, provide a brief summary for the bootcamper: (1) What did you just accomplish in this interaction? (2) Which files were created or modified — list the specific file paths. (3) What is the next step the bootcamper should expect when they continue? Keep it concise — a few sentences, not a wall of text."
+  }
+}

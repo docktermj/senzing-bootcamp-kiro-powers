@@ -12,21 +12,26 @@ For the complete version history (0.1.0 through 0.1.9), see the development repo
 ### Added in 0.5.0
 
 - MCP offline guidance in `common-pitfalls.md` — tables showing what works without MCP and what's blocked, with fallback instructions
-- Mapping state checkpointing in `module-05-data-mapping.md` — saves decisions to `config/mapping_state_[datasource].json` after each step so sessions can resume without re-asking questions
-- `summarize-on-stop.kiro.hook` — agentStop hook that ensures the agent summarizes what it accomplished, which files changed, and what's next before finishing
-- `verify-generated-code.kiro.hook` — fileCreated hook on `src/transform/`, `src/load/`, `src/query/` that prompts the agent to run new code on sample data and verify it works before moving on
-- Use-case bridging questions in `module-01-quick-demo.md` — after the demo, agent asks targeted questions about the user's data (record types, source count, duplicate patterns) to personalize the transition to Module 2
-- "Tell the user" blocks in `module-10-security.md` — security assessment results, secrets audit findings, vulnerability scan results, and security checklist summary now explicitly communicated to the user
-- "Tell the user" blocks in `module-12-deployment.md` — pre-deployment checklist results and production deployment status now explicitly communicated to the user
-- Bootcamp journal reflection question in `module-transitions.md` — after each module, agent asks "What's your main takeaway?" and appends the user's answer to the journal
-- Path completion celebration in `module-transitions.md` — distinct recognition when the user finishes all modules in their chosen path, with artifact summary, file locations, and next-step options
-- Sample dataset details (Las Vegas, London, Moscow) surfaced in onboarding introduction and POWER.md — users know about available sample data before choosing a path, not just during Module 1
+- Mapping state checkpointing in `module-05-data-mapping.md` — saves decisions to `config/mapping_state_[datasource].json` after each step for session resume
+- `summarize-on-stop.kiro.hook` — agentStop hook ensuring agent summarizes accomplishments, changed files, and next step
+- `verify-generated-code.kiro.hook` — fileCreated hook on `src/transform/`, `src/load/`, `src/query/` prompting agent to run and verify new code
+- `module-completion.md` — manual steering file for journal entries, reflection questions, and path completion celebration (extracted from module-transitions.md to reduce auto-included context)
+- Use-case bridging questions in `module-01-quick-demo.md` — targeted questions after demo to personalize transition to Module 2
+- "Tell the user" blocks in `module-10-security.md` and `module-12-deployment.md` for security assessment, vulnerability scan, checklist, and deployment status
+- Bootcamp journal reflection question — asks user for takeaway after each module
+- Path completion celebration — distinct recognition when user finishes their chosen path
+- Sample dataset details (Las Vegas, London, Moscow) surfaced in onboarding introduction and POWER.md
 
 ### Changed in 0.5.0
 
-- `agent-instructions.md` MCP Failure section now references the offline guidance in `common-pitfalls.md`
-- `agent-instructions.md` State & Progress section now references mapping state checkpoints
-- POWER.md hooks list updated to include `summarize-on-stop` and `verify-generated-code`
+- Rewrote `agent-instructions.md` from 98 to 54 lines — compressed tables, merged redundant rules, within 80-line always-on guideline
+- Rewrote `security-privacy.md` from 80 to 27 lines — removed generic advice the model already knows, kept only bootcamp-specific data handling rules
+- Rewrote `project-structure.md` from 130 to 44 lines — removed descriptive "why" section, duplicate trigger points, verbose notes
+- Split `module-transitions.md` (170 lines auto) into lean auto file (27 lines) + manual `module-completion.md` (49 lines) — auto context reduced 84%
+- Rewrote `module-01-quick-demo.md` from 245 to 65 lines — removed verbose example output blocks, kept prescriptive instructions
+- Rewrote `module-05-data-mapping.md` from 341 to 66 lines — removed verbose "tell the user" example text blocks, kept step structure and communication instructions
+- Rewrote `onboarding-flow.md` from 333 to 79 lines — compressed prerequisite code blocks, WSL2 setup, scene-setting, validation gates into tables
+- All changes follow "Steering Kiro: Best Practices" guidelines: prescriptive not descriptive, deliberate inclusion modes, context budget management
 
 ## [0.4.0] - 2026-04-09
 

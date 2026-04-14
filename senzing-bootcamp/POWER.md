@@ -22,21 +22,21 @@ The purpose of this bootcamp is to make you comfortable writing code — with Ki
 
 The bootcamp is a series of modules. Each module builds on the previous ones, producing working artifacts (code, data files, documentation) that you keep and extend. Here's what each module does and why it matters:
 
-| Module | What It Does | Why It Matters |
-|--------|-------------|----------------|
-| 0 — SDK Setup | Installs and configures the Senzing SDK on your machine | Everything else depends on a working SDK installation |
-| 1 — Quick Demo | Runs entity resolution on sample data so you can see it work | Validates your entire setup end-to-end; the result is trivial on purpose — the point is proving the system works |
-| 2 — Business Problem | Defines what you're trying to solve and which data sources matter | Focuses the rest of the bootcamp on your actual use case |
-| 3 — Data Collection | Gets your data files into the project | You can't resolve entities without data to work with |
-| 4 — Data Quality | Scores your data for completeness and consistency | Identifies issues before they cause bad matches |
-| 5 — Data Mapping | Transforms your data into Senzing's format (SGES) | Senzing needs data in a specific JSON format to do its work |
-| 6 — Single Source Loading | Loads your first data source into Senzing | Your first real entity resolution run with your own data |
-| 7 — Multi-Source Orchestration | Loads and coordinates multiple data sources | Cross-source matching is where entity resolution really shines |
-| 8 — Query & Validation | Builds query programs and validates results against your success criteria | Proves the system answers your business questions |
-| 9 — Performance Testing | Benchmarks and optimizes for your data volume | Ensures the system handles production-scale data |
-| 10 — Security Hardening | Implements access controls and data protection | Required for production with sensitive data |
-| 11 — Monitoring | Sets up dashboards, alerts, and health checks | Keeps the system running reliably in production |
-| 12 — Deployment | Packages everything for production deployment | Gets your solution out of the bootcamp and into the real world |
+| Module                         | What It Does                                                              | Why It Matters                                                                                                   |
+|--------------------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| 0 — SDK Setup                  | Installs and configures the Senzing SDK on your machine                   | Everything else depends on a working SDK installation                                                            |
+| 1 — Quick Demo                 | Runs entity resolution on sample data so you can see it work              | Validates your entire setup end-to-end; the result is trivial on purpose — the point is proving the system works |
+| 2 — Business Problem           | Defines what you're trying to solve and which data sources matter         | Focuses the rest of the bootcamp on your actual use case                                                         |
+| 3 — Data Collection            | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
+| 4 — Data Quality               | Scores your data for completeness and consistency                         | Identifies issues before they cause bad matches                                                                  |
+| 5 — Data Mapping               | Transforms your data into Senzing's format (SGES)                         | Senzing needs data in a specific JSON format to do its work                                                      |
+| 6 — Single Source Loading      | Loads your first data source into Senzing                                 | Your first real entity resolution run with your own data                                                         |
+| 7 — Multi-Source Orchestration | Loads and coordinates multiple data sources                               | Cross-source matching is where entity resolution really shines                                                   |
+| 8 — Query & Validation         | Builds query programs and validates results against your success criteria | Proves the system answers your business questions                                                                |
+| 9 — Performance Testing        | Benchmarks and optimizes for your data volume                             | Ensures the system handles production-scale data                                                                 |
+| 10 — Security Hardening        | Implements access controls and data protection                            | Required for production with sensitive data                                                                      |
+| 11 — Monitoring                | Sets up dashboards, alerts, and health checks                             | Keeps the system running reliably in production                                                                  |
+| 12 — Deployment                | Packages everything for production deployment                             | Gets your solution out of the bootcamp and into the real world                                                   |
 
 **Don't have data handy?** No problem — mock data can be generated at any point. Senzing also provides three ready-made sample datasets you can use throughout the bootcamp: Las Vegas (customer records), London (person records), and Moscow (organization records). Use `get_sample_data` to download them.
 
@@ -93,7 +93,8 @@ Load these on-demand when needed:
 
 - `security-privacy.md` — Data privacy and PII protection (auto-included when PII or security is discussed)
 - `project-structure.md` — Directory structure and setup commands (auto-included when creating files)
-- `module-transitions.md` — Journey map, before/after framing, and bootcamp journal rules (auto-included during module work)
+- `module-transitions.md` — Journey map, before/after framing, and step-level progress rules (auto-included during module work)
+- `module-completion.md` — Journal entries, reflection questions, and path completion celebration (load after completing any module)
 
 **Language-Specific (loaded automatically when editing matching files):**
 

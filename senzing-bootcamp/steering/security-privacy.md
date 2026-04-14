@@ -2,79 +2,26 @@
 inclusion: auto
 ---
 
-# Data Privacy and Security
+# Data Privacy — Bootcamp-Specific Rules
 
-**CRITICAL**: Handle data responsibly throughout the bootcamp.
+## Bootcamp Data Handling
 
-## Data Privacy Considerations
+- Raw data in `data/raw/` — gitignored, never committed
+- Use anonymized/synthetic data for testing when possible
+- `.env` for credentials (gitignored), `.env.example` as template
+- SQLite DB in `database/` — gitignored, never committed
+- License files in `licenses/` — gitignored
 
-- **PII Protection**: Customer data contains Personally Identifiable Information (names, addresses, SSNs, etc.)
-- **Sample Data**: Use anonymized or synthetic data for testing when possible
-- **Access Control**: Limit who can access raw data files
-- **Compliance**: Consider GDPR, CCPA, HIPAA, or other regulations applicable to your data
+## When Generating Code
 
-## Security Best Practices
+- Never hardcode credentials — use environment variables or secrets manager
+- Never log PII values in plain text — mask or redact in log output
+- Sanitize all user input before passing to Senzing SDK
 
-### 1. Never Commit Sensitive Data to Git
+## When User Mentions Compliance
 
-- Use `.gitignore` for data files
-- Store credentials in `.env` (not in git)
-- Use `.env.example` as a template
+If GDPR, CCPA, HIPAA, PCI-DSS, or similar comes up: load Module 10 (`module-10-security.md`) for the full security hardening workflow. Create `docs/security_compliance.md` to document requirements.
 
-### 2. Anonymize Test Data
+## Anonymization for Samples
 
-- Replace real names with fake names
-- Use fake addresses and phone numbers
-- Mask or remove SSNs and other identifiers
-- Keep data structure but change values
-
-### 3. Secure Credentials
-
-- Use environment variables for API keys
-- Use secrets management (AWS Secrets Manager, HashiCorp Vault)
-- Rotate credentials regularly
-- Never hardcode passwords in source code
-
-### 4. Database Security
-
-- Use strong passwords
-- Enable encryption at rest
-- Use SSL/TLS for connections
-- Regular backups with encryption
-
-### 5. Access Logging
-
-- Log who accesses data and when
-- Monitor for unusual access patterns
-- Audit trail for compliance
-
-## Security Compliance Documentation
-
-Create `docs/security_compliance.md`:
-
-```markdown
-# Security and Compliance Notes
-
-## Data Classification
-- **Data Source 1**: Contains PII (names, addresses, SSNs)
-- **Data Source 2**: Contains business data (no PII)
-
-## Compliance Requirements
-- GDPR: Right to be forgotten, data portability
-- CCPA: Consumer privacy rights
-- [Add your specific requirements]
-
-## Data Handling Procedures
-1. All PII must be encrypted at rest
-2. Access requires authentication
-3. Audit logs retained for 90 days
-4. Data retention: [specify period]
-
-## Anonymization Strategy
-- Test data: Use a synthetic data generation library for your language (e.g., Faker for Python/Java, Bogus for C#, fake-rs for Rust, @faker-js/faker for TypeScript)
-- Sample data: Mask last 4 digits of SSN, use fake addresses
-
-## Incident Response
-- Contact: [security team email]
-- Procedure: [link to incident response plan]
-```
+When creating sample data from real data: replace names, mask identifiers (keep last 4 digits), use fake addresses/phones. Use language-appropriate faker library (Python: Faker, Java: Faker, C#: Bogus, Rust: fake-rs, TypeScript: @faker-js/faker).

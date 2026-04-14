@@ -1,0 +1,13 @@
+{
+  "name": "Verify Generated Code Runs",
+  "version": "1.0.0",
+  "description": "When bootcamp source code is created, prompts the agent to run it on sample data and report results before moving on.",
+  "when": {
+    "type": "fileCreated",
+    "patterns": ["src/transform/*.*", "src/load/*.*", "src/query/*.*"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A new bootcamp source file was created. Before moving to the next step, verify this code actually runs: (1) Execute it on a small sample (10-100 records from data/samples/ or data/raw/). (2) Check for errors or exceptions. (3) If it produces output, inspect the first few records. (4) Report the results to the bootcamper — did it work, and if not, what needs fixing? Do not skip this verification step."
+  }
+}

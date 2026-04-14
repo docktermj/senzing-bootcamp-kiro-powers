@@ -11,7 +11,7 @@ Load on errors, when user is stuck, or preventively at module start. For visual 
 | Pitfall                                      | Fix                                                                          |
 | -------------------------------------------- | ---------------------------------------------------------------------------- |
 | Installing over existing SDK                 | Check first: `ls -la /opt/senzing` or language-appropriate import check      |
-| SQLite for production                        | SQLite for evaluation only (<1M records). PostgreSQL for production           |
+| SQLite for production                        | SQLite for evaluation only (<1M records). PostgreSQL for production          |
 | Skipping anti-pattern check                  | Always call `search_docs(category='anti_patterns')`                          |
 | Wrong platform commands                      | Use `sdk_guide` with correct `platform` parameter                            |
 | Missing `SENZING_ENGINE_CONFIGURATION_JSON`  | Follow `sdk_guide` configuration exactly                                     |
@@ -59,11 +59,11 @@ What carries forward: all code, transformed data, docs, config. What doesn't: th
 
 | Pitfall                                          | Fix                                                                                                          |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| Hand-coding attribute names                      | ALWAYS use `mapping_workflow` — never guess. Use `search_docs(query="entity specification")` for reference    |
+| Hand-coding attribute names                      | ALWAYS use `mapping_workflow` — never guess. Use `search_docs(query="entity specification")` for reference   |
 | Missing `DATA_SOURCE` or `RECORD_ID`             | Every record MUST have both fields                                                                           |
 | Running transformation on full dataset first     | Test on 10-100 records first                                                                                 |
 | Skipping `analyze_record` after transform        | Always validate output quality                                                                               |
-| Generated files in project root                  | Relocate: scripts→`src/transform/`, JSONL→`data/transformed/`, docs→`docs/`, shell→`scripts/`               |
+| Generated files in project root                  | Relocate: scripts→`src/transform/`, JSONL→`data/transformed/`, docs→`docs/`, shell→`scripts/`                |
 
 ### Mapping Workflow State Loss
 
@@ -84,9 +84,9 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | No database backup                               | ALWAYS backup before loading (use backup hook)                               |
 | Loading without testing                          | Test with 100 records first                                                  |
 | Ignoring error codes                             | Use `explain_error_code` for every error, fix root cause                     |
-| Wrong DATA_SOURCE name                           | Verify matches Module 0 configuration                                       |
+| Wrong DATA_SOURCE name                           | Verify matches Module 0 configuration                                        |
 | Duplicate RECORD_IDs                             | Ensure unique within each DATA_SOURCE. Append sequence number if needed      |
-| Poor DATA_SOURCE naming (`file1`, `data`)        | Use descriptive uppercase: `CUSTOMERS_CRM`, `VENDORS_ERP`                   |
+| Poor DATA_SOURCE naming (`file1`, `data`)        | Use descriptive uppercase: `CUSTOMERS_CRM`, `VENDORS_ERP`                    |
 | No progress monitoring                           | Add progress logging to loading programs                                     |
 | Manual multi-source loading                      | Use Module 7 orchestration instead                                           |
 
@@ -102,7 +102,7 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 
 | Pitfall                                      | Fix                                                                                                                      |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Guessing SDK method names                    | Use `generate_scaffold` or `get_sdk_reference` — never guess. Use `get_sdk_reference(topic='migration')` for V3→V4      |
+| Guessing SDK method names                    | Use `generate_scaffold` or `get_sdk_reference` — never guess. Use `get_sdk_reference(topic='migration')` for V3→V4       |
 | Wrong query flags                            | Use `get_sdk_reference(topic='flags')`                                                                                   |
 | "These shouldn't have matched"               | Use SDK "why" method via `get_sdk_reference` for match details                                                           |
 | Expecting perfect results immediately        | Iterate: adjust mappings, confidence scores, add attributes                                                              |
@@ -121,10 +121,10 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 
 | Pitfall                              | Fix                                                                                                      |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| Corporate proxy blocking MCP         | Allowlist `mcp.senzing.com:443`. Set `HTTPS_PROXY` if behind proxy. Modules 2-4 work without MCP        |
+| Corporate proxy blocking MCP         | Allowlist `mcp.senzing.com:443`. Set `HTTPS_PROXY` if behind proxy. Modules 2-4 work without MCP         |
 | Not reading error messages           | Read carefully, use `explain_error_code`                                                                 |
 | Guessing instead of searching docs   | Use `search_docs` liberally                                                                              |
-| Not committing to git               | Commit after each module completion                                                                      |
+| Not committing to git                | Commit after each module completion                                                                      |
 | Working in production first          | Always develop locally or in dev environment                                                             |
 | Not documenting decisions            | Document in `docs/` as you go                                                                            |
 | Rushing through modules              | Complete each module fully before proceeding                                                             |
@@ -142,17 +142,17 @@ If the MCP server is down, slow, or unreachable (corporate proxy, network outage
 | Profile data manually    | 4       | Read CSV/JSON files, count rows, check columns, assess quality by inspection           |
 | Review/edit existing code| Any     | Fix bugs, refactor, add comments, improve error handling                               |
 | Write documentation      | Any     | Update `docs/`, write journal entries, create runbooks                                 |
-| Run existing programs    | 5-8    | Transformation, loading, and query programs that are already written still run          |
+| Run existing programs    | 5-8     | Transformation, loading, and query programs that are already written still run         |
 | Git operations           | Any     | Commit, branch, review diffs                                                           |
-| Backup/restore           | Any     | `python scripts/backup_project.py` / `restore_project.py`                             |
-| Check progress           | Any     | `python scripts/status.py`, `python scripts/validate_module.py`                       |
+| Backup/restore           | Any     | `python scripts/backup_project.py` / `restore_project.py`                              |
+| Check progress           | Any     | `python scripts/status.py`, `python scripts/validate_module.py`                        |
 
 ### BLOCKED without MCP (wait or use fallbacks)
 
 | Activity                   | Modules    | Fallback                                                                                                    |
 | -------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- |
 | Get attribute names        | 5          | Check `docs/mapping_*.md` from previous sessions for documented mappings. Do NOT guess attribute names.     |
-| Generate SDK code          | 0, 1, 6, 8| Use `find_examples` (may work if cached). Check `src/` for existing scaffold code to adapt.                 |
+| Generate SDK code          | 0, 1, 6, 8 | Use `find_examples` (may work if cached). Check `src/` for existing scaffold code to adapt.                 |
 | Validate mapped records    | 5, 7       | Run transformation program and inspect output manually. Full validation waits for MCP.                      |
 | Look up error codes        | Any        | Note the error code and message. Check docs.senzing.com or email <support@senzing.com>.                     |
 | Search Senzing docs        | Any        | Go to docs.senzing.com directly in your browser.                                                            |
@@ -166,7 +166,7 @@ If the MCP server is down, slow, or unreachable (corporate proxy, network outage
 
 | Problem                  | Recovery                                                                                                     |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| Loaded wrong data        | `python scripts/restore_project.py backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip`                     |
+| Loaded wrong data        | `python scripts/restore_project.py backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip`                      |
 | Wrong transformation     | Delete `data/transformed/bad_output.jsonl`, fix program, re-run on sample, validate with `analyze_record`    |
 | Lost mapping state       | Restart workflow, reuse artifacts from `docs/` and `src/transform/`                                          |
 | Corrupted git file       | `git checkout HEAD -- src/transform/program.[ext]`                                                           |

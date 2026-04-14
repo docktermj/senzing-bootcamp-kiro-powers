@@ -24,6 +24,8 @@ Load language steering file immediately after confirmation (`lang-python.md`, `l
 
 Detect platform (`platform.system()`). Check language runtime with `shutil.which()` — cross-platform, not `command -v`. Check for Senzing SDK import. Present results only if something is missing. Surface all missing deps here — don't discover them one at a time later.
 
+**If the Senzing SDK is already installed and working (V4.0+):** Tell the user: "Senzing SDK is already installed." When Module 0 is reached (either explicitly or auto-inserted), the module's Step 1 check will detect this and skip installation. Do not re-install.
+
 ## 4. Bootcamp Introduction
 
 Present the overview before path selection. Cover all points naturally:

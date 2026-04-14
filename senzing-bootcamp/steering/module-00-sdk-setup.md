@@ -8,23 +8,38 @@ inclusion: manual
 
 Install and configure the Senzing SDK natively on your machine. This is the first step of the bootcamp — once the SDK is installed, all subsequent modules use it directly.
 
-**Before/After**: You have a project directory but no Senzing SDK. After this module, the SDK is installed, configured, and verified — ready to load data and resolve entities.
+**Before/After:** You have a project directory but no Senzing SDK. After this module, the SDK is installed, configured, and verified — ready to load data and resolve entities.
 
 **Prerequisites:** None (this is the first module)
 
 **Language:** Use the bootcamper's chosen programming language from the language selection step in agent-instructions. All code generation, scaffold calls, and examples in this module must use that language.
 
-## Step 1: Check for Existing Installation
+## Step 1: Check for Existing Installation — MUST DO FIRST
 
-Before installing, check if Senzing is already present. Adapt the check to the chosen language:
+**Before doing anything else in this module**, check if the Senzing SDK is already installed and working. There is no reason to re-install it.
 
-> **Agent instruction:** Use `sdk_guide(topic='install', platform='<user_platform>', language='<chosen_language>', version='current')` to get the correct verification commands for the user's platform and language combination. Do not hardcode verification commands — the MCP server provides the correct ones for each platform/language pair.
+Run a language-appropriate import/version check for the bootcamper's chosen language. Use `sdk_guide(topic='install', platform='<user_platform>', language='<chosen_language>', version='current')` to get the correct verification command.
 
-If Senzing is found:
+**If the SDK is found and version is V4.0+:**
 
-- Verify the version is compatible (V4.0+)
-- If compatible, skip to Step 4 (verify installation)
-- If incompatible or broken, proceed with installation
+Tell the user: "Senzing SDK is already installed (version [X]). No need to reinstall — skipping straight to configuration verification."
+
+- Skip Steps 2 and 3 entirely
+- Jump to Step 4 (verify installation) to confirm it works with the chosen language
+- If Step 4 passes, jump to Step 5 (license) then Step 7 (database) — only configure what's not already configured
+- Mark Module 0 as complete once verification passes
+
+**If the SDK is found but version is incompatible (<V4.0):**
+
+Tell the user: "Senzing SDK found but it's version [X] — the bootcamp requires V4.0+. We'll need to upgrade."
+
+- Proceed with Steps 2-3 for upgrade
+
+**If the SDK is NOT found:**
+
+Tell the user: "Senzing SDK is not installed yet. Let's set it up — this is a one-time process."
+
+- Proceed with Step 2
 
 ## Step 2: Determine Platform
 
@@ -156,7 +171,7 @@ Once the SDK is installed and verified, proceed to:
 
 ## Agent Behavior
 
-- Always check for existing installation first
+- Always check for existing installation first — if SDK is present and V4.0+, do NOT reinstall. Skip to verification.
 - Do NOT offer alternatives — install the SDK natively
 - Use `sdk_guide` MCP tool for current platform-specific instructions
 - Use `search_docs` with `category='anti_patterns'` before recommending approaches

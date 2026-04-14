@@ -35,6 +35,8 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    **IMPORTANT:** If the mapping workflow returns any file paths pointing to `/tmp/` or other system temporary directories, override them with project-local paths. Downloaded resources go in `data/temp/` or `data/raw/`, profiler output goes in `data/temp/`, and generated scripts go in `src/transform/`. See `docs/policies/FILE_STORAGE_POLICY.md`.
 
+   **Tell the user:** "I'm starting the mapping workflow for [data source name]. Mapping is the process of translating your data fields into Senzing's format so the entity resolution engine can understand them. I'll walk you through each step and explain what I find along the way."
+
 2. **Step 1 — Profile:** Run the profiler script returned by the workflow, or read the data directly. Summarize:
    - Column names and their meanings
    - Data types (string, integer, date, etc.)
@@ -44,6 +46,22 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Advance with `mapping_workflow` using `action='profile_summary'` and your analysis.
 
+   **Tell the user what was discovered:** Present the profiling results in a clear table and explain what they mean for mapping. For example:
+
+   ```text
+   Here's what I found in your data:
+
+   | Column | Type | Sample Values | Completeness | Notes |
+   |--------|------|---------------|-------------|-------|
+   | full_name | string | "John Smith", "Jane Doe" | 98% | Good — maps directly to a Senzing name attribute |
+   | address | string | "123 Main St, NY 10001" | 87% | Full address string — Senzing can parse this |
+   | phone | string | "(555) 123-4567", "555.123.4567" | 72% | Mixed formats, but Senzing handles this |
+   | internal_id | integer | 1001, 1002 | 100% | Will use as RECORD_ID (required by Senzing) |
+   | status | string | "active", "inactive" | 100% | Not an entity feature — won't map to Senzing |
+
+   Key takeaway: Your data has strong name coverage (98%) which is great for matching. Address coverage at 87% is solid. Phone at 72% means some records will rely more on name+address for matching. The "status" column doesn't describe the entity itself, so we'll skip it in the mapping.
+   ```
+
 3. **Step 2 — Plan:** Identify the entity structure for this data source:
    - **Master entities:** Are these person records, organization records, or both?
    - **Child records:** Are there related records (e.g., multiple addresses per person)?
@@ -51,6 +69,32 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
    - **Lookup tables:** Are there reference data or code tables?
 
    Advance with `mapping_workflow` using `action='entity_plan'` and your plan.
+
+   **Tell the user what was decided and why:** Explain the entity structure decision clearly:
+
+   ```text
+   Based on the profiling, here's the plan:
+
+   Entity type: PERSON — your records describe individual people (I can tell from the name and address fields).
+
+   Structure: Flat records — each row is one person with one set of attributes. No child records or relationships to handle.
+
+   What this means: Each row in your CSV will become one Senzing JSON record. Senzing will then figure out which records refer to the same real-world person.
+
+   Fields we'll map:
+   - full_name → Senzing name feature (this is the primary matching field)
+   - address → Senzing address feature (strong secondary matching)
+   - phone → Senzing phone feature (helps confirm matches)
+   - email → Senzing email feature (helps confirm matches)
+   - internal_id → RECORD_ID (required identifier, not used for matching)
+
+   Fields we'll skip:
+   - status, created_date — these describe the record, not the person
+
+   Does this plan look right, or would you like to adjust anything?
+   ```
+
+   **WAIT for user confirmation before proceeding.**
 
 4. **Step 3 — Map:** Map each source field to Senzing features and attributes.
 
@@ -70,6 +114,26 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Advance with `mapping_workflow` using `action='schema_mappings'` and your field mappings.
 
+   **Tell the user what each mapping decision means:** Don't just show a mapping table — explain the reasoning:
+
+   ```text
+   Here are the field mappings I'm recommending, and why:
+
+   | Your Field | → Senzing Attribute | Why This Mapping |
+   |-----------|-------------------|-----------------|
+   | full_name | NAME_FULL | Your data has complete names in one field. Senzing will parse first/last/middle automatically. |
+   | address | ADDR_FULL | Full address string. Senzing parses street/city/state/zip internally. |
+   | phone | PHONE_NUMBER | Senzing normalizes phone formats, so the mixed formatting in your data is fine. |
+   | email | EMAIL_ADDRESS | Direct mapping. Senzing uses email as a confirming feature. |
+   | internal_id | RECORD_ID | Every Senzing record needs a unique ID. Your internal_id is perfect for this. |
+
+   Confidence: I'm fairly confident in these mappings (85/100). The main uncertainty is whether "address" always contains a full address or sometimes just a city/state — we'll find out when we test.
+
+   Any of these look wrong, or should I adjust anything?
+   ```
+
+   **WAIT for user confirmation before proceeding.**
+
 5. **Step 4 — Generate Starter Code:** The workflow generates:
    - Sample Senzing JSON output showing the target format
    - Starter mapper code in the bootcamper's chosen language
@@ -78,6 +142,23 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
    This provides the foundation for the transformation program.
 
    Advance with `mapping_workflow` using `action='paths'` and the output file paths.
+
+   **Tell the user what was generated:** Show a sample of the target JSON format so the user can see what their data will look like after transformation:
+
+   ```text
+   Here's what your data will look like after transformation (sample record):
+
+   {
+     "DATA_SOURCE": "CUSTOMERS",
+     "RECORD_ID": "1001",
+     "NAME_FULL": "John Smith",
+     "ADDR_FULL": "123 Main St, New York, NY 10001",
+     "PHONE_NUMBER": "5551234567",
+     "EMAIL_ADDRESS": "john.smith@email.com"
+   }
+
+   The mapping workflow also generated starter code that I'll use as the foundation for your transformation program. Next, I'll build the complete program.
+   ```
 
 6. **Step 5 — Build the Transformation Program:** Help the user create a complete, runnable program for this data source.
 
@@ -97,6 +178,20 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    **Save the program:** Save to `src/transform/transform_[datasource_name].[ext]` where `[ext]` is the appropriate file extension for the chosen language. All transformation programs must be in the `src/transform/` directory.
 
+   **Tell the user what was built and where:**
+
+   ```text
+   Done. I've created the transformation program:
+
+   File: src/transform/transform_customers.py
+   - Reads: data/raw/customers.csv
+   - Writes: data/transformed/customers.jsonl
+   - Handles: name normalization, phone format cleanup, missing field defaults
+   - Error handling: Logs malformed rows to data/transformed/customers_errors.log
+
+   Next: Let's test it on a small sample to make sure everything works before running the full dataset.
+   ```
+
 7. **Step 6 — Test the Program:** Run the transformation program on sample data from `data/samples/`:
    - Start with a small subset (10-100 records) for initial testing
    - Verify the program runs without errors
@@ -105,6 +200,22 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
    Call `analyze_record` with sample output records to validate they conform to the Senzing Entity Specification and check data quality.
 
+   **Tell the user the test results clearly:**
+
+   ```text
+   Test results (ran on 10 sample records):
+
+   ✅ Program ran without errors
+   ✅ Output file created: data/transformed/customers.jsonl
+   ✅ All 10 records transformed successfully
+   ✅ Senzing validation passed — records conform to the Entity Specification
+
+   Sample output (first record):
+   {"DATA_SOURCE": "CUSTOMERS", "RECORD_ID": "1001", "NAME_FULL": "John Smith", ...}
+
+   One thing I noticed: 2 of 10 records had empty phone numbers. That's expected given the 72% completeness we saw in profiling — those records will still match on name and address.
+   ```
+
 8. **Step 7 — Quality Analysis:** Run the program on a larger sample (1000+ records if available). Call `analyze_record` with several mapped records to evaluate:
    - Feature distribution (are all important features populated?)
    - Attribute coverage (what percentage of records have each attribute?)
@@ -112,6 +223,29 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
    - Potential issues (missing critical data, malformed values)
 
    Advance with `mapping_workflow` using `action='verdict'` and your quality assessment.
+
+   **Tell the user the quality analysis results with context:**
+
+   ```text
+   Quality analysis on 1,000 records:
+
+   Overall quality score: 84/100 — Good
+
+   Feature coverage:
+   - Names: 98% of records have names → excellent for matching
+   - Addresses: 87% → solid, most records will match on address too
+   - Phones: 72% → decent, serves as confirming evidence
+   - Emails: 65% → lower, but email is a bonus feature, not required
+
+   What this means for entity resolution:
+   - Records with names + addresses (87% of your data) will have strong matching potential
+   - The 13% missing addresses will rely on name + phone/email, which may produce fewer matches
+   - No critical issues found — this data is ready to load
+
+   Potential improvements (optional):
+   - 23 records have phone numbers in an unusual format (e.g., "ext. 123") — these were kept as-is
+   - 5 records have names that look like company names — if these are organizations, we might want to map them differently
+   ```
 
 9. **Step 8 — Review Results:** Review the transformation program and results with the user:
    - Confirm the program successfully reads the input data

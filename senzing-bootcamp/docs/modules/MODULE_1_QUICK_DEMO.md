@@ -6,9 +6,11 @@
 
 Module 1 provides a demonstration of Senzing entity resolution using sample data. This optional module is perfect for first-time users who want to see entity resolution in action before working with their own data.
 
+**The main purpose of the Quick Demo is to validate that your entire system works end-to-end** — SDK installation, database configuration, data loading, and entity resolution. The demo uses a small sample dataset, so the results are intentionally trivial. Don't judge Senzing's capabilities by this demo alone — the real power shows up when you load your own data in later modules.
+
 This module offers multiple demo options to ensure everyone can see entity resolution working, regardless of their environment.
 
-**Output:** Working demo showing entity resolution results
+**Output:** Working demo showing entity resolution results, confirming your setup is correct
 
 ## Prerequisites
 

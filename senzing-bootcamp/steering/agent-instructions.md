@@ -85,9 +85,13 @@ Follow language-appropriate standards for the bootcamper's chosen language (Pyth
 
 - Ask one question at a time, wait for response
 - Explain "why" not just "what" — after each step, include a one-liner explaining what it accomplished and why it matters for what comes next
+- **Before each step:** Tell the user what you're about to do and why (never just say "Working...")
+- **During long steps:** Provide status updates describing what's happening (e.g., "Analyzing 15 columns across 1,000 rows..." not "Working...")
+- **After each step:** Summarize what changed, what was produced, and where the files are. Always include file paths.
+- **At module completion:** Provide a clear summary of what was accomplished, all files produced, and why it matters for the next module
 - Admit when you need MCP tools
 - On "power feedback" / "bootcamp feedback": load `feedback-workflow.md`
-- At module start and completion: follow the journey map, before/after framing, and journal rules in `module-transitions.md`
+- At module start and completion: follow the journey map, before/after framing, step-level progress, and journal rules in `module-transitions.md`
 
 ## Hooks
 

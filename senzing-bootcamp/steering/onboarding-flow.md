@@ -202,18 +202,52 @@ Present results only if something is missing. If everything passes, proceed sile
 - If anything is missing → tell the user briefly what needs to be installed. Let them choose to install now or pick a path first (they can still do Module 2 — Business Problem — without the SDK).
 - Do NOT discover missing dependencies one at a time during later modules. Surface them all here.
 
+## Bootcamp Introduction (Scene-Setting)
+
+Before path selection, present the bootcamp overview so the user has a clear mental model of what they're signing up for. This is critical — users who skip this step often feel lost later.
+
+Present this introduction (adapt the wording naturally, but cover all points):
+
+> "Here's what this bootcamp is about:
+>
+> The goal is to make you comfortable generating code — with my help — that uses the Senzing SDK for entity resolution. By the end, you'll have running code that serves as the foundation for your real-world use of Senzing.
+>
+> The bootcamp is a series of modules, each building on the last. Here's the full picture:
+>
+> | Module | What It Does | Why It Matters |
+> |--------|-------------|----------------|
+> | 0 — SDK Setup | Install and configure the Senzing SDK | Everything else depends on a working installation |
+> | 1 — Quick Demo | Run entity resolution on sample data | Validates your setup end-to-end (the result is trivial on purpose — the point is proving the system works) |
+> | 2 — Business Problem | Define what you're solving and which data sources matter | Focuses the rest of the bootcamp on your actual use case |
+> | 3 — Data Collection | Get your data files into the project | Can't resolve entities without data |
+> | 4 — Data Quality | Score your data for completeness and consistency | Catches issues before they cause bad matches |
+> | 5 — Data Mapping | Transform your data into Senzing's JSON format | Senzing needs data in a specific format to work |
+> | 6 — Single Source Loading | Load your first data source into Senzing | Your first real entity resolution run with your data |
+> | 7 — Multi-Source | Load and coordinate multiple data sources | Cross-source matching is where ER really shines |
+> | 8 — Query & Validation | Build query programs and validate results | Proves the system answers your business questions |
+> | 9-12 — Production | Performance, security, monitoring, deployment | Gets your solution production-ready |
+>
+> A few things to know up front:
+> - If you don't have data readily available, we can generate mock data at any point
+> - Senzing includes a built-in evaluation license for 500 records (enough for the bootcamp), but you can bring your own license for more capacity
+> - You don't have to do every module — there are paths that let you skip to what matters most to you
+>
+> You'll pick a path in a moment, but first — does this outline make sense? Any questions about what the bootcamp covers before we choose a path?"
+
+**WAIT for the user's response.** Answer any questions they have about the bootcamp structure. Only proceed to path selection after they indicate they're ready.
+
 ## Path Selection
 
 Present the paths with enough context for an informed choice. The bootcamp has 13 modules (0-12) and each path covers a different subset:
 
-> "The bootcamp has 13 modules (0-12). Choose your path:
+> "Now let's pick your path. These are not mutually exclusive — you can start with one and jump to another at any time. All completed modules carry forward.
 >
-> A) Quick Demo — Modules 0 → 1. See entity resolution in action with sample data. Done in one session.
-> B) Fast Track — Modules 5 → 6 → 8. For people who already have Senzing-ready data. Skips business problem and data collection.
-> C) Complete Beginner — Modules 2 → 3 → 4 → 5 → 6 → 8. Full learning path from defining the problem through validating results. Skips production modules.
-> D) Full Production — All modules 0-12, including performance testing, security, monitoring, and deployment.
+> A) Quick Demo — Modules 0 → 1. See entity resolution in action with sample data. Done in one session. Choose this if you want to verify the technology works before investing more time.
+> B) Fast Track — Modules 5 → 6 → 8. For people who already have Senzing-ready (SGES) data. Choose this if you've already mapped your data and want to get straight to loading and querying.
+> C) Complete Beginner — Modules 2 → 3 → 4 → 5 → 6 → 8. Full learning path from defining the problem through validating results. Choose this if you're starting from scratch with raw data and want guided help through the entire process.
+> D) Full Production — All modules 0-12, including performance testing, security, monitoring, and deployment. Choose this if you're building something that needs to run in production.
 >
-> Module 0 (SDK Setup) is inserted automatically before any module that needs it. Want me to describe the modules before you choose?"
+> Module 0 (SDK Setup) is inserted automatically before any module that needs it. Which path sounds right for you?"
 
 **Path A note:** Module 0 (SDK Setup) is required before Module 1 (Quick Demo). If Module 0 is not complete, insert it first: "To run the demo, we need the Senzing SDK installed. Let's do Module 0 first — it takes about 30-60 minutes as a one-time setup."
 

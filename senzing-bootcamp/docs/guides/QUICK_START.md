@@ -1,19 +1,29 @@
 # Senzing Bootcamp Quick Start
 
+## What This Bootcamp Does
+
+The bootcamp makes you comfortable generating code — with Kiro's help — that uses the Senzing SDK for entity resolution. You'll finish with running code that serves as the foundation for your real-world use of Senzing.
+
 ## Start
 
-Say "start the bootcamp". The agent sets up your project, asks your language, checks prerequisites, and presents four paths.
+Say "start the bootcamp". The agent sets up your project, asks your language, gives you an overview of the modules, checks prerequisites, and presents four paths.
 
 ## Choose Your Path
 
-| Path | For | Modules |
-| ---- | --- | ------- |
-| A) Quick Demo | First-time users — see entity resolution in action | 0 → 1 |
-| B) Fast Track | Have Senzing-ready (SGES) data | 0 → 5 → 6 → 8 |
-| C) Complete Beginner | New users with raw data | 2 → 3 → 4 → 5 → 0 → 6 → 8 |
-| D) Full Production | All modules through deployment | 0 → 1 → 2 → ... → 12 |
+Paths are not mutually exclusive — you can start with one and jump to another at any time. All completed modules carry forward.
+
+| Path | For | Modules | Why Choose This |
+| ---- | --- | ------- | --------------- |
+| A) Quick Demo | First-time users — see entity resolution in action | 0 → 1 | Verify the technology works before investing more time |
+| B) Fast Track | Have Senzing-ready (SGES) data | 0 → 5 → 6 → 8 | Get straight to loading and querying |
+| C) Complete Beginner | New users with raw data | 2 → 3 → 4 → 5 → 0 → 6 → 8 | Guided help through the entire process |
+| D) Full Production | All modules through deployment | 0 → 1 → 2 → ... → 12 | Building something for production |
 
 Module 0 (SDK Setup) is inserted automatically before any module that needs it.
+
+**Don't have data?** Mock data can be generated at any point.
+
+**Licensing:** Senzing includes a built-in evaluation license for 500 records. Bring your own license for more capacity.
 
 ## Quick Commands
 

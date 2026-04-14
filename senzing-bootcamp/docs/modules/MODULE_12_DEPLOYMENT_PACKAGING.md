@@ -50,6 +50,8 @@ Module 12 takes this production-ready code and:
    - Kubernetes
    - Serverless (Lambda, Azure Functions)
 
+   **AWS recommendation:** If deploying to AWS, the bootcamp recommends using **AWS Cloud Development Kit (CDK)** to define your infrastructure as code in the same programming language you've been using throughout the bootcamp. CDK provisions RDS/Aurora, ECS/EKS, ECR, Secrets Manager, CloudWatch, and CI/CD pipelines declaratively — no manual console configuration needed. Install the **Build AWS infrastructure with CDK and CloudFormation** Kiro Power for guided CDK workflows.
+
 4. **Integration Pattern** (from Module 7)
    - Batch processing
    - REST API

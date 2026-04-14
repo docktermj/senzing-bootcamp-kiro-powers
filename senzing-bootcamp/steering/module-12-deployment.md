@@ -8,11 +8,13 @@ inclusion: manual
 
 Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` — if AWS, use CDK to define infrastructure (ECS/EKS, ECR, RDS/Aurora, CodePipeline) as code in the bootcamper's language.
 
-**Prerequisites**: Module 11 complete, all tests passing, deployment target confirmed.
+**Prerequisites:** Module 11 complete, all tests passing, deployment target confirmed.
 
-**Before/After**: Everything works locally. After this module, your entity resolution system is packaged, containerized, deployed to your target environment, and running in production with CI/CD.
+**Before/After:** Everything works locally. After this module, your entity resolution system is packaged, containerized, deployed to your target environment, and running in production with CI/CD.
 
 Before starting: call `search_docs(query='deployment', category='anti_patterns', version='current')`.
+
+**If AWS:** Before starting the deployment steps, recommend the bootcamper install the "Build AWS infrastructure with CDK and CloudFormation" Kiro Power. Tell them: "Since you're deploying to AWS, I'd recommend installing the **Build AWS infrastructure with CDK and CloudFormation** Kiro Power — it provides guided CDK workflows that will help us define your infrastructure as code. You can install it from the Kiro Powers panel." This power complements the bootcamp by providing CDK-specific steering, templates, and best practices.
 
 ## Step 1: Deployment Requirements
 
@@ -29,6 +31,8 @@ Refactor bootcamp code into a deployable structure:
 - Add dependency lockfile for reproducible builds
 
 Use `generate_scaffold` for packaging patterns. Save to `src/` with clear entry points.
+
+**If AWS:** Also create an `infra/` directory for the CDK app. Initialize it with `cdk init app --language <chosen_language>`. The CDK app will define all AWS resources (RDS/Aurora, ECS/EKS, ECR, Secrets Manager, CloudWatch, VPC) as code in the bootcamper's language. This keeps infrastructure versioned alongside application code.
 
 ## Step 3: Multi-Environment Config
 
@@ -49,11 +53,23 @@ Create `Dockerfile` with: base image, SDK installation, dependency installation,
 
 Save to project root.
 
+**If AWS:** The Dockerfile is also used by ECS/EKS. Add a CDK construct for an ECR repository to store the container image, and an ECS Fargate service (or EKS deployment) to run it. Define these in `infra/`. Example CDK resources to create:
+
+- `ecr.Repository` — container image registry
+- `ecs.FargateService` or `eks.Cluster` — compute
+- `ecs.TaskDefinition` with health check, resource limits, and environment variables pointing to Secrets Manager ARNs
+
 ## Step 5: Database Migration (SQLite → PostgreSQL)
 
 If still on SQLite: guide migration to PostgreSQL for production. Steps: install PostgreSQL, create database, update engine config, reload data (SQLite data doesn't transfer — must reload from JSONL files).
 
 Call `search_docs(query='PostgreSQL configuration', version='current')` for setup guidance.
+
+**If AWS:** Use CDK to provision an RDS PostgreSQL or Aurora PostgreSQL instance instead of a local install. Define in `infra/`:
+
+- `rds.DatabaseInstance` or `rds.DatabaseCluster` (Aurora) with encryption enabled, automated backups, and Multi-AZ for production
+- `ec2.SecurityGroup` restricting access to the ECS/EKS tasks only
+- Store the connection string in Secrets Manager (CDK can create the secret automatically with `rds.DatabaseSecret`)
 
 ## Step 6: CI/CD Pipeline
 
@@ -64,7 +80,16 @@ Create pipeline config for user's platform (GitHub Actions, GitLab CI, Jenkins):
 3. Deploy to staging: apply config, run smoke tests
 4. Deploy to prod: apply config, run health checks
 
-Save to `.github/workflows/` or equivalent. For AWS: CodePipeline + CodeBuild (define via CDK if the bootcamper chose AWS at the 8→9 gate).
+Save to `.github/workflows/` or equivalent.
+
+**If AWS:** Use CDK Pipelines (`pipelines.CodePipeline`) to define the entire CI/CD pipeline as code. CDK Pipelines automatically creates a CodePipeline that:
+
+1. Pulls from the source repo (CodeStar Connections or GitHub)
+2. Runs `cdk synth` to produce CloudFormation templates
+3. Self-mutates (updates the pipeline itself if the CDK code changes)
+4. Deploys to staging, runs smoke tests, then deploys to production
+
+Define the pipeline in `infra/pipeline_stack.[ext]`. This replaces manually configuring CodePipeline + CodeBuild — CDK Pipelines handles it declaratively.
 
 ## Step 7: REST API Layer (If Requested)
 
@@ -87,6 +112,12 @@ Document scaling strategy in `docs/scaling_plan.md`.
 ## Step 9: Deployment Scripts
 
 Create scripts for: deploy, rollback, health check, database backup/restore. Save to `deployment/scripts/`.
+
+**If AWS:** The primary deployment mechanism is `cdk deploy`. Create wrapper scripts that call CDK with the right context:
+
+- `deployment/scripts/deploy.sh` — runs `cdk deploy --all --require-approval never` for the target environment
+- `deployment/scripts/rollback.sh` — rolls back to previous CloudFormation stack version
+- `deployment/scripts/diff.sh` — runs `cdk diff` to preview changes before deploying
 
 ## Step 10: Pre-Deployment Checklist
 
@@ -163,4 +194,4 @@ Create `docs/operations_guide.md` with: architecture overview, deployment proced
 
 Remind user about bootcamp feedback: "You've completed the full bootcamp! Say 'bootcamp feedback' to document your experience."
 
-**Success**: Code packaged, CI/CD pipeline working, staging deployment verified, production deployment successful, operations documented.
+**Success:** Code packaged, CI/CD pipeline working, staging deployment verified, production deployment successful, operations documented.

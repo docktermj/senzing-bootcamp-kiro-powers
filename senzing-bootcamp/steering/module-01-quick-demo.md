@@ -18,7 +18,7 @@ Use this workflow when a user wants to see entity resolution in action before wo
 
 **Tell the user:** "This demo has two phases: first we'll do some quick setup (creating the demo script and preparing sample data), then we'll run the actual demo where you'll see entity resolution in action."
 
-**Before/After**: You have the SDK installed but haven't seen it work. After this module, you'll have seen Senzing automatically match duplicate records across data sources — and understand why it's useful for your data.
+**Before/After:** You have the SDK installed but haven't seen it work. After this module, you'll have seen Senzing automatically match duplicate records across data sources — and understand why it's useful for your data.
 
 ---
 
@@ -212,7 +212,17 @@ Use this workflow when a user wants to see entity resolution in action before wo
     - "Confidence scores show match strength, helping you trust the results"
     - "This happened in real-time as records were loaded"
 
-6. **[DEMO] Connect to their use case:** "Now imagine this with your data. Instead of [sample data], you'd have [their data sources]. The same process would find duplicates, match records across systems, and give you a unified view. What you just saw is exactly how Senzing will work with your data."
+6. **[DEMO] Connect to their use case:** After the demo results, ask the user targeted questions to bridge from the demo to their real-world scenario. This makes the transition to Module 2 feel intentional rather than abrupt.
+
+    Ask these questions one at a time (wait for each response):
+
+    a) "What kind of records do you work with — people, organizations, or both?"
+    b) "How many data sources do you think you'd want to match across? (For example: a CRM, a support system, a billing system...)"
+    c) "What does a 'duplicate' look like in your world? Is it the same customer appearing in multiple systems, or the same person with slightly different info within one system?"
+
+    Use their answers to personalize the transition: "Based on what you described — [their scenario] — the bootcamp will help you build exactly that. Module 2 is where we'll define the problem formally, and by Module 6 you'll be running entity resolution on your actual data."
+
+    If the user doesn't have a specific use case yet, that's fine: "No worries — the bootcamp works great with sample data too. You can explore the technology first and bring your own data when you're ready."
 
 7. **Transition:** Ask if they want to:
 
@@ -232,4 +242,4 @@ Use this workflow when a user wants to see entity resolution in action before wo
 - Make the "aha moment" obvious
 - Be enthusiastic about the results
 - Connect demo results to user's use case
-- **Data mart distinction**: If `reporting_guide` returns SQL queries referencing `sz_dm_report`, `sz_dm_record`, `sz_dm_entity`, or similar data mart tables, do NOT present these as built-in Senzing infrastructure. The data mart is a separate open-source project (`data-mart-replicator`, currently in beta for V4) that requires additional infrastructure to consume INFO messages from data modification operations. Clearly distinguish between core SDK query capabilities (which are available now) and data mart reporting (which requires separate setup).
+- **Data mart distinction:** If `reporting_guide` returns SQL queries referencing `sz_dm_report`, `sz_dm_record`, `sz_dm_entity`, or similar data mart tables, do NOT present these as built-in Senzing infrastructure. The data mart is a separate open-source project (`data-mart-replicator`, currently in beta for V4) that requires additional infrastructure to consume INFO messages from data modification operations. Clearly distinguish between core SDK query capabilities (which are available now) and data mart reporting (which requires separate setup).

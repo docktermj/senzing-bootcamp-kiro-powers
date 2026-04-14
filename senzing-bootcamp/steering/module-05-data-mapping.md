@@ -284,6 +284,45 @@ Be flexible and supportive of non-linear exploration. The goal is a working tran
 
 4. **Transition to Module 0:** Once all data sources have been either mapped (with working transformation programs) or confirmed as SGES-compliant, proceed to Module 0 (SDK Setup).
 
+### Mapping State Checkpointing
+
+The `mapping_workflow` MCP tool's state does not persist across Kiro sessions. To avoid losing progress during long mapping sessions, save a local checkpoint after each completed step.
+
+**After each mapping step completes**, save the current state to `config/mapping_state_[datasource_name].json`:
+
+```json
+{
+  "data_source": "CUSTOMERS",
+  "source_file": "data/raw/customers.csv",
+  "current_step": 3,
+  "step_name": "Map fields",
+  "completed_steps": ["profile", "plan", "map"],
+  "decisions": {
+    "entity_type": "PERSON",
+    "structure": "flat",
+    "field_mappings": {
+      "full_name": "NAME_FULL",
+      "address": "ADDR_FULL",
+      "phone": "PHONE_NUMBER",
+      "email": "EMAIL_ADDRESS",
+      "internal_id": "RECORD_ID"
+    },
+    "skipped_fields": ["status", "created_date"],
+    "confidence_score": 85
+  },
+  "last_updated": "2026-04-14T10:30:00Z"
+}
+```
+
+**On session resume**, if `config/mapping_state_[datasource].json` exists:
+
+1. Read the checkpoint and present it to the user: "Last time we were mapping [data source]. We completed steps 1-3 (profile, plan, map). Here's where we left off: [show decisions made so far]."
+2. Restart `mapping_workflow` with `action='start'` and the same source file.
+3. Fast-track through already-decided steps by reusing the saved decisions — don't re-ask the user questions they already answered.
+4. Resume interactive work from the first incomplete step.
+
+**Delete the checkpoint** when the data source mapping is fully complete (Step 10 done).
+
 ### Important Rules for Data Mapping
 
 - NEVER hand-code Senzing JSON attribute names — use `mapping_workflow` to get the correct names. Use `search_docs` or `download_resource` for the current entity specification if needed.

@@ -100,6 +100,23 @@ Verify before deploying:
 - [ ] Rollback plan documented
 - [ ] Stakeholder sign-off
 
+**Tell the user the checklist results:**
+
+```text
+Pre-deployment checklist — here's where we stand:
+
+✅ All tests passing — [X] tests, 0 failures
+✅ Security scan clean — 0 critical/high findings (Module 10)
+✅ Monitoring configured — dashboards, alerts, health checks (Module 11)
+✅ Secrets managed — all credentials in [secrets manager], none in code
+✅ Database backed up — backup at backups/[filename]
+✅ Rollback plan — documented in docs/rollback_plan.md
+⬜ Stakeholder sign-off — [pending/complete]
+
+[If all pass]: Ready to deploy to staging!
+[If any fail]: [X] items need attention before we can deploy. Let's fix those first.
+```
+
 ## Step 11: Rollback Plan
 
 Document in `docs/rollback_plan.md`: how to revert to previous version, database rollback procedure, communication plan for failed deployments.
@@ -111,6 +128,34 @@ Deploy to staging environment. Run smoke tests. Verify monitoring dashboards and
 ## Step 13: Deploy to Production
 
 Deploy to production. Monitor closely for first 24 hours. Verify all health checks pass, alerts are quiet, performance matches Module 9 baselines.
+
+**Tell the user the deployment status:**
+
+```text
+🚀 Production deployment complete!
+
+Deployment summary:
+- Environment: [production target]
+- Version: [version/tag]
+- Deployed at: [timestamp]
+- Health checks: all passing ✅
+- Monitoring: dashboards active, alerts configured
+
+First 24 hours — watch for:
+- Loading error rate (should stay <1%)
+- Query latency (should match Module 9 baselines)
+- Redo queue depth (should not grow unbounded)
+- Disk usage (should not spike unexpectedly)
+
+If anything goes wrong: follow docs/rollback_plan.md
+
+Files produced in this module:
+- Dockerfile, docker-compose.yml
+- [CI/CD config file]
+- config/[dev|staging|prod]/ environment configs
+- deployment/scripts/ — deploy, rollback, health check scripts
+- docs/deployment_plan.md, docs/rollback_plan.md, docs/operations_guide.md
+```
 
 ## Step 14: Operations Documentation
 

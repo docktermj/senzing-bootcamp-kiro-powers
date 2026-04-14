@@ -129,6 +129,39 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | Not documenting decisions            | Document in `docs/` as you go                                                                            |
 | Rushing through modules              | Complete each module fully before proceeding                                                             |
 
+## MCP Server Unavailable — What You Can Still Do
+
+If the MCP server is down, slow, or unreachable (corporate proxy, network outage, etc.), don't stop working. Here's what requires MCP and what doesn't:
+
+### Works WITHOUT MCP (keep going)
+
+| Activity                 | Modules | What to do                                                                             |
+| ------------------------ | ------- | -------------------------------------------------------------------------------------- |
+| Define business problem  | 2       | Fully independent of MCP — document problem, identify sources, define success criteria |
+| Collect data             | 3       | Copy/download data files into `data/raw/`, document locations                          |
+| Profile data manually    | 4       | Read CSV/JSON files, count rows, check columns, assess quality by inspection           |
+| Review/edit existing code| Any     | Fix bugs, refactor, add comments, improve error handling                               |
+| Write documentation      | Any     | Update `docs/`, write journal entries, create runbooks                                 |
+| Run existing programs    | 5-8    | Transformation, loading, and query programs that are already written still run          |
+| Git operations           | Any     | Commit, branch, review diffs                                                           |
+| Backup/restore           | Any     | `python scripts/backup_project.py` / `restore_project.py`                             |
+| Check progress           | Any     | `python scripts/status.py`, `python scripts/validate_module.py`                       |
+
+### BLOCKED without MCP (wait or use fallbacks)
+
+| Activity                   | Modules    | Fallback                                                                                                    |
+| -------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- |
+| Get attribute names        | 5          | Check `docs/mapping_*.md` from previous sessions for documented mappings. Do NOT guess attribute names.     |
+| Generate SDK code          | 0, 1, 6, 8| Use `find_examples` (may work if cached). Check `src/` for existing scaffold code to adapt.                 |
+| Validate mapped records    | 5, 7       | Run transformation program and inspect output manually. Full validation waits for MCP.                      |
+| Look up error codes        | Any        | Note the error code and message. Check docs.senzing.com or email <support@senzing.com>.                     |
+| Search Senzing docs        | Any        | Go to docs.senzing.com directly in your browser.                                                            |
+| Start new mapping workflow | 5          | Cannot start — `mapping_workflow` requires MCP. Work on other data sources or documentation instead.        |
+
+### What to tell the user
+
+"The Senzing MCP server isn't responding right now. Here's what we can keep working on while we wait: [list applicable activities from the table above]. The things that need MCP — like generating new SDK code or starting a mapping workflow — we'll pick up once the connection is back. I'll retry periodically."
+
 ## Recovery Quick Reference
 
 | Problem                  | Recovery                                                                                                     |

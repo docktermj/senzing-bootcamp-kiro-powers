@@ -228,7 +228,7 @@ Present this introduction (adapt the wording naturally, but cover all points):
 > | 9-12 — Production | Performance, security, monitoring, deployment | Gets your solution production-ready |
 >
 > A few things to know up front:
-> - If you don't have data readily available, we can generate mock data at any point
+> - If you don't have data readily available, we can generate mock data at any point. Senzing also provides three ready-made sample datasets — Las Vegas (customer records), London (person records), and Moscow (organization records) — that you can use as stand-ins throughout the entire bootcamp, not just in the demo
 > - Senzing includes a built-in evaluation license for 500 records (enough for the bootcamp), but you can bring your own license for more capacity
 > - You don't have to do every module — there are paths that let you skip to what matters most to you
 >

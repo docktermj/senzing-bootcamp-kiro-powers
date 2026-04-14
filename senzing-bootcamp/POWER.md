@@ -38,7 +38,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 | 11 — Monitoring | Sets up dashboards, alerts, and health checks | Keeps the system running reliably in production |
 | 12 — Deployment | Packages everything for production deployment | Gets your solution out of the bootcamp and into the real world |
 
-**Don't have data handy?** No problem — mock data can be generated at any point so you can keep moving through the modules.
+**Don't have data handy?** No problem — mock data can be generated at any point. Senzing also provides three ready-made sample datasets you can use throughout the bootcamp: Las Vegas (customer records), London (person records), and Moscow (organization records). Use `get_sample_data` to download them.
 
 **Licensing:** Senzing includes a built-in evaluation license that allows 500 records, which is enough for the bootcamp. If you have your own license (or need more capacity), you can configure it during Module 0.
 
@@ -236,7 +236,7 @@ python senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: Code Style Check (`code-style-check`), `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory`.
+Available: Code Style Check (`code-style-check`), `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory`, `summarize-on-stop`, `verify-generated-code`.
 
 ## Project Directory Structure
 

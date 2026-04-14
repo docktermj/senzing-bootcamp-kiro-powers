@@ -112,6 +112,59 @@ After each module completes, append a short entry to `docs/bootcamp_journal.md`:
 **What we did:** [1-2 sentences]
 **What was produced:** [files/artifacts created]
 **Why it matters:** [how this enables the next step]
+**Bootcamper's takeaway:** [user's response to the reflection question]
 ```
 
 Create the file if it doesn't exist.
+
+### Reflection Question
+
+After writing the journal entry's factual sections, ask the user one reflective question before closing the module:
+
+> "What's your main takeaway from this module — anything that surprised you, or something you want to remember?"
+
+Append their response to the journal entry under "Bootcamper's takeaway." If they decline or say "nothing," write "No additional notes." and move on. Don't push — one question is enough.
+
+This makes the journal a genuine record of the bootcamp experience (not just an agent activity log) and is useful for teams where multiple people review the project later.
+
+## Path Completion Celebration
+
+When the user completes the last module in their chosen path, recognize it with a distinct celebration. This is different from a normal module completion — it's the end of their bootcamp journey on this path.
+
+**Detect path completion:** After each module completion, check `config/bootcamp_preferences.yaml` for the user's path and `config/bootcamp_progress.json` for completed modules. The path endpoints are:
+
+- **Path A:** Complete after Module 1
+- **Path B:** Complete after Module 8
+- **Path C:** Complete after Module 8
+- **Path D:** Complete after Module 12
+
+**When the path is complete, present:**
+
+```text
+🎉 You've completed Path [letter] of the Senzing Bootcamp!
+
+Here's what you built:
+- [summary of all artifacts — code, data, documentation]
+- [total files in src/, data/transformed/, docs/]
+
+Where everything lives:
+- Source code: src/
+- Transformed data: data/transformed/
+- Documentation: docs/
+- Configuration: config/
+- Database: database/
+
+Your bootcamp journal: docs/bootcamp_journal.md — a complete record of what you did and why.
+
+What's next? You have options:
+- [If Path A]: Try Path C to work with your own data, or Path D for the full production journey
+- [If Path B]: Add more data sources (Module 7), or harden for production (Modules 9-12)
+- [If Path C]: Consider production readiness (Modules 9-12) if you're deploying this
+- [If Path D]: You're production-ready! Review docs/operations_guide.md for day-to-day operations
+
+All completed modules carry forward if you switch paths.
+
+Say "bootcamp feedback" to share your experience — it helps improve the bootcamp for future users.
+```
+
+**Also:** Load `lessons-learned.md` and offer the retrospective: "Would you like to do a quick retrospective on the bootcamp? It takes 5 minutes and helps capture what worked well and what could be improved."

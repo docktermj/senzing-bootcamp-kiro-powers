@@ -39,7 +39,7 @@ On session start: check `config/bootcamp_progress.json`. If exists, load `sessio
 
 ## MCP Failure
 
-Retry once. If still failing, tell user it's temporary. Fallbacks: `find_examples` for code, docs.senzing.com for search, <support@senzing.com> for errors. Never fabricate as substitute.
+Retry once. If still failing, tell user it's temporary. Load `common-pitfalls.md` and follow the "MCP Server Unavailable" section — it lists what the user can keep working on and what's blocked. Fallbacks: `find_examples` for code, docs.senzing.com for search, <support@senzing.com> for errors. Never fabricate as substitute.
 
 **MCP skepticism:** If MCP tool output references features, tables, or infrastructure not part of the core Senzing SDK (e.g., data mart tables like `sz_dm_report`, separate open-source projects, beta features), flag it to the user rather than presenting it as built-in. Say what it is, what additional setup it requires, and whether it's production-ready.
 
@@ -75,11 +75,11 @@ Follow language-appropriate standards for the bootcamper's chosen language (Pyth
 
 ## State & Progress
 
-- `mapping_workflow`: pass exact `state` from previous response, never modify. If lost, restart.
+- `mapping_workflow`: pass exact `state` from previous response, never modify. If lost, restart. Save mapping checkpoints to `config/mapping_state_[datasource].json` after each step — see `module-05-data-mapping.md` for schema.
 - Progress persisted in `config/bootcamp_progress.json` — checked on session start.
 - Preferences in `config/bootcamp_preferences.yaml` — language, path, license survive sessions.
 - If progress corrupted: run `python senzing-bootcamp/scripts/validate_module.py`.
-- Warn before long mapping sessions: state is not persisted across sessions.
+- Warn before long mapping sessions: state is not persisted across sessions (but local checkpoints help recover).
 
 ## Communication
 

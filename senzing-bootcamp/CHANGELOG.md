@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For the complete version history (0.1.0 through 0.1.9), see the development repository at `senzing-bootcamp-power-development/CHANGELOG_FULL.md`.
 
+## [0.5.0] - 2026-04-14
+
+### Added in 0.5.0
+
+- MCP offline guidance in `common-pitfalls.md` — tables showing what works without MCP and what's blocked, with fallback instructions
+- Mapping state checkpointing in `module-05-data-mapping.md` — saves decisions to `config/mapping_state_[datasource].json` after each step so sessions can resume without re-asking questions
+- `summarize-on-stop.kiro.hook` — agentStop hook that ensures the agent summarizes what it accomplished, which files changed, and what's next before finishing
+- `verify-generated-code.kiro.hook` — fileCreated hook on `src/transform/`, `src/load/`, `src/query/` that prompts the agent to run new code on sample data and verify it works before moving on
+- Use-case bridging questions in `module-01-quick-demo.md` — after the demo, agent asks targeted questions about the user's data (record types, source count, duplicate patterns) to personalize the transition to Module 2
+- "Tell the user" blocks in `module-10-security.md` — security assessment results, secrets audit findings, vulnerability scan results, and security checklist summary now explicitly communicated to the user
+- "Tell the user" blocks in `module-12-deployment.md` — pre-deployment checklist results and production deployment status now explicitly communicated to the user
+- Bootcamp journal reflection question in `module-transitions.md` — after each module, agent asks "What's your main takeaway?" and appends the user's answer to the journal
+- Path completion celebration in `module-transitions.md` — distinct recognition when the user finishes all modules in their chosen path, with artifact summary, file locations, and next-step options
+- Sample dataset details (Las Vegas, London, Moscow) surfaced in onboarding introduction and POWER.md — users know about available sample data before choosing a path, not just during Module 1
+
+### Changed in 0.5.0
+
+- `agent-instructions.md` MCP Failure section now references the offline guidance in `common-pitfalls.md`
+- `agent-instructions.md` State & Progress section now references mapping state checkpoints
+- POWER.md hooks list updated to include `summarize-on-stop` and `verify-generated-code`
+
 ## [0.4.0] - 2026-04-09
 
 ### Changed in 0.4.0

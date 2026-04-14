@@ -25,7 +25,7 @@ This document defines where different types of files should be stored in the Sen
 ```text
 src/
 ├── quickstart_demo/     # Module 1 demo code
-├── transform/           # Transformation programs (Module 4)
+├── transform/           # Transformation programs (Module 5)
 ├── load/                # Loading programs (Module 6)
 ├── query/               # Query programs (Module 8)
 └── utils/               # Shared utilities

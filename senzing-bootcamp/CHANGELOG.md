@@ -33,6 +33,13 @@ For the complete version history (0.1.0 through 0.1.9), see the development repo
 - Rewrote `onboarding-flow.md` from 333 to 79 lines — compressed prerequisite code blocks, WSL2 setup, scene-setting, validation gates into tables
 - All changes follow "Steering Kiro: Best Practices" guidelines: prescriptive not descriptive, deliberate inclusion modes, context budget management
 
+### Fixed in 0.5.0
+
+- `FILE_STORAGE_POLICY.md` referenced transformation programs as "Module 4" — corrected to Module 5
+- `QUICK_START.md` Path B listed `0 → 5 → 6 → 8` and Path C listed `2 → 3 → 4 → 5 → 0 → 6 → 8` — corrected to match POWER.md (Module 0 is auto-inserted, not listed in path)
+- `module-flow.md` diagram Path B showed `Module 0 → Module 6 → Done` — corrected to `Module 0 → Module 5 → Module 6 → Module 8 → Done`
+- `hooks/README.md` missing entries for `summarize-on-stop` and `verify-generated-code` hooks — added
+
 ## [0.4.0] - 2026-04-09
 
 ### Changed in 0.4.0

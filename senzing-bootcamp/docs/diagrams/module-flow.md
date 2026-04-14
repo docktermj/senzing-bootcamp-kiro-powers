@@ -163,7 +163,7 @@ Module 1 → Done
 ### Path B: Fast Track
 
 ```text
-Module 0 → Module 6 → Done
+Module 0 → Module 5 → Module 6 → Module 8 → Done
 (For users with SGES-compliant data)
 ```
 

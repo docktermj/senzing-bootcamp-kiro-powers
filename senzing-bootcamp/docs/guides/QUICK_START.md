@@ -15,8 +15,8 @@ Paths are not mutually exclusive — you can start with one and jump to another 
 | Path | For | Modules | Why Choose This |
 | ---- | --- | ------- | --------------- |
 | A) Quick Demo | First-time users — see entity resolution in action | 0 → 1 | Verify the technology works before investing more time |
-| B) Fast Track | Have Senzing-ready (SGES) data | 0 → 5 → 6 → 8 | Get straight to loading and querying |
-| C) Complete Beginner | New users with raw data | 2 → 3 → 4 → 5 → 0 → 6 → 8 | Guided help through the entire process |
+| B) Fast Track | Have Senzing-ready (SGES) data | 5 → 6 → 8 | Get straight to loading and querying |
+| C) Complete Beginner | New users with raw data | 2 → 3 → 4 → 5 → 6 → 8 | Guided help through the entire process |
 | D) Full Production | All modules through deployment | 0 → 1 → 2 → ... → 12 | Building something for production |
 
 Module 0 (SDK Setup) is inserted automatically before any module that needs it.

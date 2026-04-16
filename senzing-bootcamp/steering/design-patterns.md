@@ -38,3 +38,19 @@ If the user's case spans multiple patterns, start with the one that delivers the
 3. Use the selected pattern to guide Module 2 problem definition
 4. Recommend key matching attributes for Module 5 data mapping
 5. If multiple patterns apply, help prioritize implementation order
+
+## Where Senzing Fits in Your Architecture
+
+A common misconception is putting text search (Elasticsearch/OpenSearch) before entity resolution. The correct layering is:
+
+```text
+Raw Data → Senzing (entity resolution) → Resolved Entities → Search Index (Elasticsearch/OpenSearch)
+```
+
+**Senzing first:** Senzing performs fuzzy matching, identity intelligence, and entity resolution — it figures out which records refer to the same real-world entity. This is not text search; it's probabilistic identity matching using names, addresses, phones, IDs, and other features.
+
+**Search index second:** After Senzing resolves entities, index the resolved entity IDs and their attributes into Elasticsearch/OpenSearch for fast document retrieval, faceted search, and full-text queries.
+
+**Why this order matters:** If you search first and resolve second, you'll miss matches that Senzing would catch (name variations, address normalization, cross-source linking). Senzing's matching is fundamentally different from text search — it uses entity-centric learning, not keyword matching.
+
+Present this architecture when the user's problem involves search, lookup, or retrieval alongside entity resolution. Reference it again in Module 8 (Query & Validation) when building query programs.

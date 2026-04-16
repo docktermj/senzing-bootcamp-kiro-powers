@@ -30,7 +30,6 @@ For the complete version history (0.1.0 through 0.1.9), see the development repo
 - Split `module-transitions.md` (170 lines auto) into lean auto file (27 lines) + manual `module-completion.md` (49 lines) — auto context reduced 84%
 - Rewrote `module-01-quick-demo.md` from 245 to 65 lines — removed verbose example output blocks, kept prescriptive instructions
 - Rewrote `module-05-data-mapping.md` from 341 to 66 lines — removed verbose "tell the user" example text blocks, kept step structure and communication instructions
-- Rewrote `onboarding-flow.md` from 333 to 79 lines — compressed prerequisite code blocks, WSL2 setup, scene-setting, validation gates into tables
 - All changes follow "Steering Kiro: Best Practices" guidelines: prescriptive not descriptive, deliberate inclusion modes, context budget management
 
 ### Fixed in 0.5.0
@@ -64,7 +63,6 @@ For the complete version history (0.1.0 through 0.1.9), see the development repo
 - `enforce-working-directory.kiro.hook` — preToolUse hook that blocks writes to `/tmp` or paths outside the working directory
 - Tool Usage Examples section in POWER.md with concrete MCP tool call examples
 - Mapping workflow state loss recovery guidance in `common-pitfalls.md`
-- Windows/WSL2 setup instructions in onboarding flow
 - Path B note for Module 0 requirement in onboarding flow
 - PowerShell equivalents for all bash commands in modules 0-3
 - AWS CDK guidance at the 8→9 gate and in Module 12

@@ -12,11 +12,13 @@ Check if `src/`, `data/`, `docs/` exist. If not, load `project-structure.md` and
 
 ## 2. Language Selection
 
-Query MCP (`get_capabilities`) for supported languages. Present list, ask user to choose. WAIT for response.
+**Detect the user's platform first** (`platform.system()`), then query the Senzing MCP server (`get_capabilities` or `sdk_guide`) for which languages are supported on that platform. The MCP server is the authoritative source — do not hardcode language/platform assumptions.
+
+Present the MCP-returned language list to the bootcamper. **If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly to the bootcamper** and suggest alternatives. For example, if MCP discourages Python on macOS, tell them: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
+
+Ask: "Which language would you like to use?" WAIT for response.
 
 Persist to `config/bootcamp_preferences.yaml`. If file exists from previous session, confirm: "Last time you chose [language]. Continue or switch?"
-
-Python is Linux-only. On macOS/Windows: suggest WSL2 or a different language. WSL2 setup: `wsl --install` (PowerShell), then install dev tools in Ubuntu, project lives in WSL2 filesystem.
 
 Load language steering file immediately after confirmation (`lang-python.md`, `lang-java.md`, etc.).
 
@@ -30,13 +32,14 @@ Detect platform (`platform.system()`). Check language runtime with `shutil.which
 
 Present the overview before path selection. Cover all points naturally:
 
+- This bootcamp is a **guided discovery** of how to use Senzing. It's not a race — feel free to take it slow, read what the bootcamp is telling you, and ask questions at any point to help with your understanding. The bootcamp is here to help you learn, not just to produce code.
 - Goal: comfortable generating Senzing SDK code. Finish with running code as foundation for real use.
 - Module overview table (0-12): what each does and why it matters
 - Mock data available anytime. Three sample datasets: Las Vegas (customers), London (persons), Moscow (organizations)
 - Built-in 500-record eval license; bring your own for more
 - Paths let you skip to what matters
 
-Ask: "Does this outline make sense? Any questions before we choose a path?" WAIT for response.
+Ask: "Does this outline make sense? Any questions before we choose a path? Feel free to ask about anything — that's what the bootcamp is for." WAIT for response.
 
 ## 5. Path Selection
 

@@ -67,7 +67,7 @@ Follow the platform-specific instructions from `sdk_guide`. The typical flow:
 
 **Before recommending any approach**, call `search_docs` with `category='anti_patterns'` to check for known pitfalls on the user's platform.
 
-**TypeScript/Node.js warning:** The TypeScript SDK (`sz-napi`) may require building from source if prebuilt binaries are not available for the user's platform. This involves installing the Rust toolchain, cloning `sz-rust-sdk` and `sz-rust-sdk-configtool` as Cargo dependencies, and building the native addon with `napi-rs`. Warn the user upfront: "The TypeScript SDK setup is more involved than other languages — it may require building native bindings from source, which needs the Rust toolchain. If you'd prefer a faster setup, Python (on Linux), Java, or C# have simpler install paths." If they proceed with TypeScript, guide them through the full build sequence in one go rather than letting them discover steps through trial and error.
+**TypeScript/Node.js warning:** The TypeScript SDK (`sz-napi`) may require building from source if prebuilt binaries are not available for the user's platform. This involves installing the Rust toolchain, cloning `sz-rust-sdk` and `sz-rust-sdk-configtool` as Cargo dependencies, and building the native addon with `napi-rs`. Warn the user upfront: "The TypeScript SDK setup is more involved than other languages — it may require building native bindings from source, which needs the Rust toolchain. If you'd prefer a faster setup, Java or C# typically have simpler install paths." If they proceed with TypeScript, guide them through the full build sequence in one go rather than letting them discover steps through trial and error.
 
 **🚨 NEVER modify the user's global shell configuration** (`~/.zshrc`, `~/.bashrc`, `~/.profile`, etc.) to set Senzing environment variables. Instead, create a project-local environment script at `scripts/senzing-env.sh` (or `.bat` for Windows) that sets `SENZING_ROOT`, library paths, and any other Senzing-specific variables. The agent should source this script before running bootcamp tasks. This keeps the bootcamp self-contained and avoids side effects on the user's system.
 
@@ -79,11 +79,35 @@ If verification fails, use `explain_error_code` for any SENZ error codes and `se
 
 ## Step 5: Configure License (Optional)
 
-Ask: "Do you have a Senzing license file (`g2.lic`)? If not, no worries — the SDK works with its built-in evaluation limits."
+Ask: "Do you have a Senzing license file (`g2.lic`) or a BASE64 license key? If not, no worries — the SDK works with its built-in evaluation limits (500 records)."
 
 WAIT for response.
 
-**If they have a license:**
+**🚨 NEVER ask the user to paste a license key or BASE64 string into the chat.** Chat prompt history may be retained, and license keys are sensitive. Always direct the user to save the key to a file instead.
+
+**If they have a license key (BASE64 string):**
+
+Tell them: "Please save your license key to the file `licenses/g2.lic` — don't paste it into the chat, since chat history may be kept. The license file is binary, so you'll need to decode the BASE64 string first:"
+
+```bash
+# Linux / macOS
+echo 'YOUR_BASE64_KEY' | base64 --decode > licenses/g2.lic
+```
+
+```powershell
+# Windows (PowerShell)
+[IO.File]::WriteAllBytes("licenses\g2.lic", [Convert]::FromBase64String("YOUR_BASE64_KEY"))
+```
+
+- Verify the file exists after they confirm
+- Record in `config/bootcamp_preferences.yaml`:
+
+  ```yaml
+  license: custom
+  license_path: licenses/g2.lic
+  ```
+
+**If they have a license file:**
 
 - Ask them to place it at `licenses/g2.lic`
 - Verify the file exists
@@ -97,7 +121,7 @@ WAIT for response.
 
 **If they don't have a license:**
 
-- Inform them: "No problem. The SDK includes built-in evaluation limits that are fine for the bootcamp. If you'd like a full evaluation license later, you can email <support@senzing.com>."
+- Inform them: "No problem. The SDK includes built-in evaluation limits (500 records) that are fine for the bootcamp. If you'd like a full evaluation license later, you can email <support@senzing.com>."
 - Record in `config/bootcamp_preferences.yaml`:
 
   ```yaml
@@ -105,7 +129,7 @@ WAIT for response.
   license_path: null
   ```
 
-**If they're unsure:** Evaluation (built-in) works out of the box with record count limits. A custom license removes limits. They can always add one later by placing it in `licenses/g2.lic`.
+**If they're unsure:** Evaluation (built-in) works out of the box with a 500-record limit. A custom license removes limits. They can always add one later by saving it to `licenses/g2.lic`.
 
 ## Step 6: Create Project Directory Structure
 

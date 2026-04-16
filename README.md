@@ -38,6 +38,40 @@ This repository contains the Senzing Bootcamp Kiro Power and its development doc
 
 Kiro's agentic chat panel will guide you through the Bootcamp.
 
+Helpful prompts:
+
+```console
+Where am I in the bootcamp?
+```
+
+```console
+Why am I doing this?
+```
+
+```console
+What was done?
+```
+
+```console
+Why did you do that?
+```
+
+```console
+What does ____ mean?
+```
+
+```console
+Where did you put ____?
+```
+
+To report a bug or improvement:
+
+```console
+Bootcamp Feedback:  _____
+```
+
+
+
 ## Clean up the Bootcamp
 
 After completing the bootcamp, save any artifacts of interest.

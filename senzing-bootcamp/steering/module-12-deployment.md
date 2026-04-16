@@ -6,19 +6,28 @@ inclusion: manual
 
 > **User reference:** See `docs/modules/MODULE_12_DEPLOYMENT_PACKAGING.md` for background.
 
-Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` — if AWS, use CDK to define infrastructure (ECS/EKS, ECR, RDS/Aurora, CodePipeline) as code in the bootcamper's language.
+Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` if already set.
 
-**Prerequisites:** Module 11 complete, all tests passing, deployment target confirmed.
+**Prerequisites:** Module 11 complete, all tests passing.
 
-**Before/After:** Everything works locally. After this module, your entity resolution system is packaged, containerized, deployed to your target environment, and running in production with CI/CD.
+**Before/After:** Everything works locally. After this module, your entity resolution system is packaged and ready for deployment — and optionally deployed to your target environment.
+
+**IMPORTANT — Two distinct phases:** This module has two phases that should be clearly explained to the bootcamper:
+
+1. **Packaging** (Steps 1-11): Preparing your code for deployment — containerization, configuration, CI/CD, documentation. This produces deployment-ready artifacts. Everyone does this.
+2. **Deployment** (Steps 12-15): Actually deploying to a target environment. This is optional and only happens if the bootcamper wants to deploy now.
+
+Tell the user upfront: "Module 12 has two phases. First, we'll package your code so it's deployment-ready — that means containerization, multi-environment config, CI/CD pipeline, and documentation. Once packaging is complete, I'll ask if you want to actually deploy it somewhere. Packaging and deploying are separate concerns — you can package now and deploy later."
 
 Before starting: call `search_docs(query='deployment', category='anti_patterns', version='current')`.
 
-**If AWS:** Before starting the deployment steps, recommend the bootcamper install the "Build AWS infrastructure with CDK and CloudFormation" Kiro Power. Tell them: "Since you're deploying to AWS, I'd recommend installing the **Build AWS infrastructure with CDK and CloudFormation** Kiro Power — it provides guided CDK workflows that will help us define your infrastructure as code. You can install it from the Kiro Powers panel." This power complements the bootcamp by providing CDK-specific steering, templates, and best practices.
+---
 
-## Step 1: Deployment Requirements
+## Phase 1: Packaging (Steps 1-11)
 
-Ask: deployment target (Kubernetes, ECS, Docker Compose, bare metal), environments (dev/staging/prod), scaling needs, availability requirements (uptime SLA), rollback strategy.
+## Step 1: Packaging Requirements
+
+Ask about packaging needs: environments (dev/staging/prod), scaling needs, availability requirements (uptime SLA), rollback strategy.
 
 Document in `docs/deployment_plan.md`.
 
@@ -152,11 +161,40 @@ Pre-deployment checklist — here's where we stand:
 
 Document in `docs/rollback_plan.md`: how to revert to previous version, database rollback procedure, communication plan for failed deployments.
 
-## Step 12: Deploy to Staging
+**Packaging complete.** At this point, tell the user:
 
-Deploy to staging environment. Run smoke tests. Verify monitoring dashboards and alerts. Fix any issues before production.
+"Packaging is complete! Your code is containerized, configured for multiple environments, has a CI/CD pipeline, and is fully documented. Everything is deployment-ready."
 
-## Step 13: Deploy to Production
+Then ask: **"Would you like to actually deploy this now, or would you prefer to stop here and deploy later on your own?"**
+
+WAIT for response. If they want to stop, mark Module 12 as complete with packaging only. If they want to deploy, proceed to Phase 2.
+
+---
+
+## Phase 2: Deployment (Steps 12-15) — Optional
+
+Only proceed here if the bootcamper explicitly wants to deploy now.
+
+## Step 12: Deployment Target and Method
+
+Ask two questions (one at a time, WAIT for each):
+
+1. "What is your deployment target? For example: AWS, Azure, Google Cloud, on-premises, or local Docker?"
+
+2. Based on their answer, ask about deployment method:
+   - **AWS:** "What deployment method would you like to use? I'd recommend **AWS CDK** (infrastructure as code in your language), but other options include CloudFormation templates, AWS Console, or Terraform." If they choose CDK, recommend installing the "Build AWS infrastructure with CDK and CloudFormation" Kiro Power.
+   - **Azure:** "What deployment method? Options include Azure CLI, ARM templates, Bicep, Terraform, or Azure Portal."
+   - **Google Cloud:** "What deployment method? Options include gcloud CLI, Terraform, Deployment Manager, or Cloud Console."
+   - **On-premises:** "What deployment method? Options include Docker Compose, Kubernetes (Helm charts), or bare metal scripts."
+   - **Local Docker:** "We'll use Docker Compose — that's already set up from Step 4."
+
+Persist choices in `config/bootcamp_preferences.yaml` as `deployment_target` and `deployment_method`. When mentioning any third-party deployment tools, consult `search_docs` for Senzing-specific integration guidance.
+
+## Step 13: Deploy to Staging
+
+Deploy to staging environment using the chosen method. Run smoke tests. Verify monitoring dashboards and alerts. Fix any issues before production.
+
+## Step 14: Deploy to Production
 
 Deploy to production. Monitor closely for first 24 hours. Verify all health checks pass, alerts are quiet, performance matches Module 9 baselines.
 
@@ -166,7 +204,8 @@ Deploy to production. Monitor closely for first 24 hours. Verify all health chec
 🚀 Production deployment complete!
 
 Deployment summary:
-- Environment: [production target]
+- Target: [deployment target]
+- Method: [deployment method]
 - Version: [version/tag]
 - Deployed at: [timestamp]
 - Health checks: all passing ✅
@@ -179,19 +218,12 @@ First 24 hours — watch for:
 - Disk usage (should not spike unexpectedly)
 
 If anything goes wrong: follow docs/rollback_plan.md
-
-Files produced in this module:
-- Dockerfile, docker-compose.yml
-- [CI/CD config file]
-- config/[dev|staging|prod]/ environment configs
-- deployment/scripts/ — deploy, rollback, health check scripts
-- docs/deployment_plan.md, docs/rollback_plan.md, docs/operations_guide.md
 ```
 
-## Step 14: Operations Documentation
+## Step 15: Operations Documentation
 
 Create `docs/operations_guide.md` with: architecture overview, deployment procedures, monitoring locations, escalation contacts, maintenance schedule, disaster recovery.
 
 Remind user about bootcamp feedback: "You've completed the full bootcamp! Say 'bootcamp feedback' to document your experience."
 
-**Success:** Code packaged, CI/CD pipeline working, staging deployment verified, production deployment successful, operations documented.
+**Success:** Code packaged (always). If deployed: CI/CD pipeline working, staging verified, production deployed, operations documented.

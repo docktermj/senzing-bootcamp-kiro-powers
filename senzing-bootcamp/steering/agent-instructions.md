@@ -22,6 +22,7 @@ On session start: check `config/bootcamp_progress.json`. If exists, load `sessio
 - All Senzing facts from MCP tools — never training data. Call `get_capabilities` first each session.
 - Attribute names → `mapping_workflow` | SDK code → `generate_scaffold`/`sdk_guide` | Signatures → `get_sdk_reference` | Errors → `explain_error_code` | Docs → `search_docs` | Examples → `find_examples`
 - Never hand-code Senzing JSON mappings or SDK method names
+- **Third-party software:** When mentioning or recommending third-party tools (Elasticsearch, PostgreSQL, Docker, Kubernetes, etc.) in the context of Senzing integration, always consult the Senzing MCP server first (`search_docs` with relevant query) to get Senzing's guidance on how that tool integrates with entity resolution. Do not rely on general knowledge alone.
 - Generate production-scale code. Reject `exportJSONEntityReport()`/`export_report` — use per-entity queries instead.
 - Reuse MCP responses within a module; re-query across module boundaries
 - No answer? Say so, suggest <https://docs.senzing.com> / <support@senzing.com> — never fabricate
@@ -45,6 +46,7 @@ Load per-module steering file when user starts that module (0→`module-00-sdk-s
 
 - One question at a time, wait for response
 - Before each step: what you're doing and why. During: status updates (never bare "Working..."). After: what changed, files produced with paths.
+- **Data visualization:** When presenting data results to the bootcamper (entity resolution results, quality analysis, match explanations, statistics), ask: "Would you like me to visualize this data as a web page?" If yes, generate a self-contained HTML file with the data formatted as tables/charts and save it to `docs/` or `data/temp/`.
 - At module completion: summary of accomplishments, all files, why it matters for next module
 - At module start/completion: follow `module-transitions.md` rules. After completing any module: load `module-completion.md` for journal and path-completion workflow.
 - On "power feedback" / "bootcamp feedback": load `feedback-workflow.md`

@@ -20,7 +20,7 @@ Or manually verify each item below.
 
 - [ ] **Linux** (Ubuntu 20.04+, RHEL 8+, or similar)
 - [ ] **macOS** (10.15+ for development only)
-- [ ] **Windows** (WSL2 required)
+- [ ] **Windows**
 
 **Check**:
 
@@ -52,10 +52,6 @@ sudo apt install python3 python3-pip
 
 # macOS
 brew install python3
-
-# Windows (WSL2)
-sudo apt update
-sudo apt install python3 python3-pip
 ```
 
 ---
@@ -137,9 +133,6 @@ sudo apt install git
 
 # macOS
 brew install git
-
-# Windows (WSL2)
-sudo apt install git
 ```
 
 ---

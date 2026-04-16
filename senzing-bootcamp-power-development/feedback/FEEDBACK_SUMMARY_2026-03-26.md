@@ -188,7 +188,7 @@ Received detailed user feedback on Module 0 (Quick Demo) experiencing critical D
 - ✅ macOS with Docker Desktop
 - ✅ macOS without Docker
 - ✅ Windows with Docker Desktop
-- ✅ Windows with WSL2
+- ✅ Windows
 
 ### Scenarios to Test
 

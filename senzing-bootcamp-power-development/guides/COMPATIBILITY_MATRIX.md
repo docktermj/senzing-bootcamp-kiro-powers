@@ -35,7 +35,7 @@ This bootcamp uses Senzing V4.0 exclusively.
 | **Debian 11**      | ✅          | ✅          |
 | **macOS Intel**    | ✅          | Dev only    |
 | **macOS ARM**      | ✅          | Dev only    |
-| **Windows (WSL2)** | ✅          | Dev only    |
+| **Windows**        | ✅          | Dev only    |
 | **Docker**         | ✅          | ✅          |
 
 ## Database Versions

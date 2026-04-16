@@ -39,7 +39,7 @@ Python is the most common choice and what the bootcamp examples default to. If u
 | RHEL 8 / 9           | Fully supported (production and development) |
 | Debian 11+           | Fully supported (production and development) |
 | macOS (Intel or ARM) | Development only                             |
-| Windows (WSL2)       | Development only                             |
+| Windows              | Development only                             |
 | Docker               | Fully supported (any host OS)                |
 
 ### Optional but Helpful

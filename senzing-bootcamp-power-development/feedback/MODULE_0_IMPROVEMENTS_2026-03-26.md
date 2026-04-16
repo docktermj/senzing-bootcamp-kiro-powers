@@ -690,7 +690,7 @@ Run pre-flight check:
 - ✅ macOS with Docker Desktop
 - ✅ macOS without Docker
 - ✅ Windows with Docker Desktop
-- ✅ Windows with WSL2
+- ✅ Windows
 
 ---
 

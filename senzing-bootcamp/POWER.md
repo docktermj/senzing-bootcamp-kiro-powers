@@ -18,7 +18,9 @@ This power works best with Claude Opus 4.6 or similar.
 
 ## What This Bootcamp Does
 
-The purpose of this bootcamp is to make you comfortable writing code — with Kiro's help — that uses the Senzing SDK for entity resolution. By the end, you'll have running code that serves as the foundation for your real-world use of Senzing.
+This bootcamp is a guided discovery of how to use Senzing for entity resolution. Feel free to take it slow, read what the bootcamp is telling you, and ask questions at any point — that's what it's here for.
+
+The purpose is to make you comfortable writing code — with Kiro's help — that uses the Senzing SDK. By the end, you'll have running code that serves as the foundation for your real-world use of Senzing.
 
 The bootcamp is a series of modules. Each module builds on the previous ones, producing working artifacts (code, data files, documentation) that you keep and extend. Here's what each module does and why it matters:
 

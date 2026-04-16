@@ -155,6 +155,31 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
 12. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
 
-13. **Transition to Module 3**: "Module 2 complete. Ready to collect your data sources?"
+13. **Offer stakeholder summary**: Ask: "Would you like me to create a one-page summary you can share with your team or manager? It covers the problem, approach, data sources, and next steps."
+
+    If yes, create `docs/stakeholder_summary_module2.md`:
+
+    ```markdown
+    # Entity Resolution Project — Executive Summary
+
+    **Date**: [date] | **Status**: Problem defined, ready for data collection
+
+    ## Problem
+    [One sentence from business_problem.md]
+
+    ## Approach
+    Using Senzing entity resolution to [match/deduplicate/link] [entity types] across [N] data sources.
+
+    ## Data Sources
+    [List sources with record counts]
+
+    ## Expected Outcome
+    [Success criteria from business_problem.md]
+
+    ## Next Steps
+    Collect data samples → Evaluate quality → Map to Senzing format → Load and validate
+    ```
+
+14. **Transition to Module 3**: "Module 2 complete. Ready to collect your data sources?"
 
 **Success indicator**: ✅ Clear problem statement + identified data sources + defined success metrics + user confirmation + `docs/business_problem.md` created

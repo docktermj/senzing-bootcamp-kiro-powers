@@ -38,6 +38,7 @@ Present the overview before path selection. Cover all points naturally:
 - Mock data available anytime. Three sample datasets: Las Vegas (customers), London (persons), Moscow (organizations)
 - Built-in 500-record eval license; bring your own for more
 - Paths let you skip to what matters
+- If you encounter unfamiliar terms (like SGES, DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
 
 Ask: "Does this outline make sense? Any questions before we choose a path? Feel free to ask about anything — that's what the bootcamp is for." WAIT for response.
 

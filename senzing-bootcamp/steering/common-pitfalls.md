@@ -6,6 +6,16 @@ inclusion: manual
 
 Load on errors, when user is stuck, or preventively at module start. For visual diagnostics, load `troubleshooting-decision-tree.md` instead.
 
+## Guided Troubleshooting — Ask Before Scanning
+
+When the user says "I'm stuck" or reports an error, don't just present the tables below. Ask these diagnostic questions first (one at a time, WAIT for each):
+
+1. "What module are you working on?" (narrows to the right section below)
+2. "What were you trying to do when the problem happened?" (narrows to the specific step)
+3. "Did you see an error message? If so, what did it say?" (if SENZ error → use `explain_error_code`; if other → check the pitfall tables)
+
+Then use their answers to jump to the relevant section and present only the matching pitfall/fix — not the entire table.
+
 ## Module 0: SDK Setup
 
 | Pitfall                                      | Fix                                                                          |

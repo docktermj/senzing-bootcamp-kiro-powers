@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For the complete version history (0.1.0 through 0.1.9), see the development repository at `senzing-bootcamp-power-development/CHANGELOG_FULL.md`.
 
+## [0.6.0] - 2026-04-16
+
+### Added in 0.6.0
+
+- Glossary reference in onboarding introduction — mentions `docs/guides/GLOSSARY.md` and invites questions about unfamiliar terms
+- Iterate vs. proceed decision gates in Modules 4, 5, and 8 — three-tier guidance (strong/acceptable/needs work) with specific actions at each level
+- `docs/diagrams/system-architecture.md` — runtime architecture diagram showing how SDK, database, programs, and optional layers fit together
+- Next-step options in `module-completion.md` — after every module, presents four choices (proceed, iterate, explore, share) and waits for user
+- Guided troubleshooting in `common-pitfalls.md` — diagnostic questions section at top; agent asks module/action/error before presenting pitfall tables
+- Stakeholder summary templates after Modules 2, 8, and 12 — one-page formats for sharing results with team/management
+- Explicit data visualization triggers in Modules 1, 5, 8, and 9 — agent offers HTML visualization at key data-presentation moments
+- `scripts/validate_power.py` — self-validation script checking steering frontmatter, hook JSON, module docs, scripts, POWER.md cross-references, policies, and diagrams
+- FAQ entries for guided discovery tone, glossary, license key safety, and data visualization feature
+- Guided discovery framing in POWER.md and onboarding introduction — "take it slow, ask questions"
+- Third-party MCP consultation rule in `agent-instructions.md` — always call `search_docs` before recommending Elasticsearch, PostgreSQL, Docker, etc.
+- Data visualization offer in `agent-instructions.md` Communication section
+- Module 12 restructured into Phase 1 (Packaging) and Phase 2 (Deployment, optional) — agent asks deployment target and method before deploying
+- AWS CDK guidance in Module 12 Steps 2, 4, 5, 6, 9 with recommendation to install "Build AWS infrastructure with CDK and CloudFormation" Kiro Power
+- "Where Senzing Fits in Your Architecture" section in `design-patterns.md` — correct layering for Senzing + search engines
+- TypeScript SDK build-from-source warning in Module 0 Step 3
+- `analyze_record` empty Feature Analysis table guidance in Module 5
+- License key safety rule in Module 0 Step 5 — never paste BASE64 into chat, decode to `licenses/g2.lic` instead
+
+### Changed in 0.6.0
+
+- Language selection now MCP-driven — agent detects platform, queries MCP for supported languages, relays any warnings (no hardcoded assumptions)
+- `lang-python.md` platform support line defers to MCP server
+- `onboarding-flow.md` rewritten from 333 to 85 lines
+- Module 0 SDK check strengthened — "MUST DO FIRST", explicit skip-entire-module logic for existing V4.0+ installations
+- Module 12 deployment target question moved to Phase 2 (after packaging complete)
+
 ## [0.5.0] - 2026-04-14
 
 ### Added in 0.5.0

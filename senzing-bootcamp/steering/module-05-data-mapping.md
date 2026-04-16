@@ -32,7 +32,15 @@ inclusion: manual
 
 8. **Quality analysis:** Run on 1000+ records. Evaluate feature distribution, coverage, quality scores. Advance with `action='verdict'`. **Tell user:** Overall score, per-feature coverage with what it means for matching, any issues found.
 
+   **Offer visualization:** "Would you like me to create a web page showing the quality analysis? It'll have coverage charts and the field mapping summary." If yes, generate HTML and save to `docs/mapping_[name]_quality.html`.
+
 9. **Review:** Confirm with user: output format correct, quality acceptable, ready for production or needs adjustment.
+
+   **Iterate vs. Proceed Decision Gate:** After presenting quality results, guide the decision:
+   - **Quality ≥80% and all critical fields mapped:** "Quality looks strong. Ready to proceed to loading (Module 6)."
+   - **Quality 70-79%:** "Quality is acceptable. You can proceed to loading now, or iterate to improve [specific weak areas]. What would you prefer?"
+   - **Quality <70%:** "Quality needs improvement before loading will produce meaningful results. I'd recommend going back to [Step 2/3/4] to address [specific issues]. Would you like to iterate, or proceed knowing results may be limited?"
+   WAIT for response.
 
 10. **Iterate:** If issues found, go back to relevant step. Retest after changes.
 

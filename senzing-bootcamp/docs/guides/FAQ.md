@@ -2,9 +2,13 @@
 
 ## General
 
+### What is this bootcamp?
+
+A guided discovery of how to use Senzing for entity resolution. It's not a race — take it slow, read what the bootcamp tells you, and ask questions at any point. You'll finish with running code that serves as the foundation for your real-world use of Senzing.
+
 ### How long does the bootcamp take?
 
-It depends on the path you choose and the complexity of your data. The complexity estimator (loaded after Module 2) gives personalized estimates based on your specific data sources.
+It depends on the path you choose and the complexity of your data. There are no time limits — go at your own pace.
 
 ### Can I skip modules?
 
@@ -13,6 +17,10 @@ Yes. Have SGES data? Skip Module 5. SDK installed? Skip Module 0. Single source?
 ### What's the difference between senzing-bootcamp and senzing powers?
 
 senzing-bootcamp is a structured 13-module curriculum. The senzing power is a quick reference. Both use the same MCP server.
+
+### Where can I find definitions for Senzing terms?
+
+See `docs/guides/GLOSSARY.md` for terms like SGES, DATA_SOURCE, RECORD_ID, entity resolution, features, and more. You can also ask the agent to explain any term at any time.
 
 ## Getting Started
 
@@ -26,7 +34,7 @@ Required: A supported language runtime (Python, Java, C#, Rust, or TypeScript/No
 
 ### Do I need a Senzing license?
 
-The agent asks about your license early in the workflow. The SDK includes built-in evaluation limits that work for the bootcamp. For a full evaluation license (no limits), email <support@senzing.com> (1-2 business days). See `licenses/README.md`.
+The agent asks about your license early in the workflow. The SDK includes built-in evaluation limits (500 records) that work for the bootcamp. For a full evaluation license (no limits), email <support@senzing.com> (1-2 business days). **Never paste a license key into the chat** — save it to `licenses/g2.lic` instead (the license file is binary; decode from BASE64 first). See `licenses/README.md`.
 
 ### Where should I put my files?
 
@@ -120,3 +128,7 @@ Use the MCP `search_docs` tool — it searches indexed Senzing documentation and
 ## Feedback
 
 Say "power feedback" at any time. The agent guides you through documenting issues and suggestions.
+
+## Data Visualization
+
+You can ask the agent to visualize data as a web page at any point — entity resolution results, quality analysis, match explanations, performance benchmarks. The agent will generate a self-contained HTML file you can open in your browser. The agent will also offer this at key moments (after the demo, after quality analysis, after validation, after performance testing).

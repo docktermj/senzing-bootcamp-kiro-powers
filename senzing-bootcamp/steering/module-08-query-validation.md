@@ -114,6 +114,8 @@ inclusion: manual
    - Resolution plan: [describe]
    ```
 
+   **Offer visualization:** "Would you like me to create a web page showing the query results and validation metrics? It'll have entity tables, match explanations, and UAT results." If yes, generate HTML and save to `docs/results_dashboard.html`.
+
 **Success Criteria:**
 
 - ✅ Query programs created and tested
@@ -121,3 +123,45 @@ inclusion: manual
 - ✅ Business users validated results
 - ✅ Match quality meets requirements (>90% accuracy)
 - ✅ Issues documented with resolution plan
+
+## Iterate vs. Proceed Decision Gate
+
+After presenting validation results, guide the decision:
+
+- **UAT pass rate ≥90% and match accuracy ≥90%:** "Results look strong. Ready to proceed to Module 9 (performance) or stop here if you're on Path B/C."
+- **UAT pass rate 80-89%:** "Most tests pass but there are some gaps. You can proceed, or review the failures with stakeholders first. Would you like to iterate on the failing cases, or move forward?"
+- **UAT pass rate <80%:** "Results need improvement. The failing test cases suggest issues with [mapping quality / data quality / missing data sources]. I'd recommend going back to [Module 5 or 6] to address the root causes. Would you like to investigate, or proceed anyway?"
+
+WAIT for response.
+
+## Stakeholder Summary
+
+After validation is complete, offer: "Would you like me to create a summary of these results to share with your team or stakeholders?"
+
+If yes, create `docs/stakeholder_summary_module8.md`:
+
+```markdown
+# Entity Resolution Results — Validation Summary
+
+**Date**: [date] | **Status**: Results validated
+
+## What We Did
+Loaded [N] records from [N] data sources into Senzing and ran entity resolution.
+
+## Results
+- Records loaded: [N]
+- Entities resolved: [N]
+- Match rate: [N]%
+- UAT pass rate: [N/N] test cases
+
+## Key Findings
+- [Finding 1 — e.g., "85% of CRM duplicates were automatically detected"]
+- [Finding 2 — e.g., "Cross-source matching linked 340 records across CRM and billing"]
+- [Finding 3 — e.g., "5 false positives identified and documented for review"]
+
+## Business Impact
+[How this addresses the problem defined in Module 2]
+
+## Next Steps
+[Performance testing / Production deployment / Additional data sources]
+```

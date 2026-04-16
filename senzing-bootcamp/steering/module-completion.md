@@ -24,6 +24,17 @@ After the factual journal entry, ask: "What's your main takeaway from this modul
 
 Append response under "Bootcamper's takeaway." If they decline, write "No additional notes." Don't push.
 
+## Next-Step Options
+
+After the journal entry and reflection, present 3-4 concrete options based on the module just completed. Don't just say "proceed to Module N" — give the user choices:
+
+- **Proceed:** "Ready to move on to Module [N] ([name])?"
+- **Iterate:** "Would you like to improve anything from this module first? (e.g., better quality scores, additional data sources, more test cases)"
+- **Explore:** "Would you like to dig deeper into what we just did? (e.g., examine specific entities, try different queries, review match explanations)"
+- **Share:** "Would you like to prepare a summary of these results to share with your team or stakeholders?"
+
+WAIT for response. Let the user choose their pace.
+
 ## Path Completion Detection
 
 After each module, check if the user finished their path's last module:

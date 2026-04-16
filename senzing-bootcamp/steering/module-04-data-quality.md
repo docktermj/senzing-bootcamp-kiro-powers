@@ -106,6 +106,16 @@ inclusion: manual
 
 8. **Proceed to mapping**: For each data source that needs mapping, transition to the "Data Mapping End-to-End" workflow (Module 5).
 
+## Iterate vs. Proceed Decision Gate
+
+After presenting the quality assessment, guide the user's decision:
+
+- **Quality ≥80%:** "Your data quality is strong. Ready to proceed to Module 5 (mapping)."
+- **Quality 70-79%:** "Your data quality is acceptable but has some gaps. You can proceed to mapping now — or if you'd like to improve the weakest fields first, we can work on that. What would you prefer?"
+- **Quality <70%:** "Your data quality needs attention before mapping will produce good results. I'd recommend focusing on [specific issues — e.g., filling missing phone numbers, standardizing address formats]. Would you like to work on improving the data, or proceed anyway knowing the results may be limited?"
+
+WAIT for response before proceeding.
+
 **Success indicator**: ✅ All data sources categorized + `docs/data_source_evaluation.md` created
 
 ## Workflow: Install Senzing Bootcamp Hooks

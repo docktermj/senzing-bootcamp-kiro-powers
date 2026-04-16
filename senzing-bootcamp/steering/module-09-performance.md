@@ -8,9 +8,9 @@ inclusion: manual
 
 Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` — if AWS, tailor to RDS/Aurora and EC2 instance types.
 
-**Prerequisites**: Module 8 complete, representative data loaded, cloud provider set at 8→9 gate.
+**Prerequisites:** Module 8 complete, representative data loaded, cloud provider set at 8→9 gate.
 
-**Before/After**: Entity resolution works but you don't know how it performs at scale. After this module, you'll have benchmarks, bottleneck analysis, and optimizations — confidence that it'll handle production volumes.
+**Before/After:** Entity resolution works but you don't know how it performs at scale. After this module, you'll have benchmarks, bottleneck analysis, and optimizations — confidence that it'll handle production volumes.
 
 ## Step 1: Define Performance Requirements
 
@@ -46,8 +46,8 @@ Monitor CPU, memory, disk I/O during a loading run. Identify bottleneck: CPU-bou
 
 Call `search_docs(query='database tuning', category='configuration', version='current')`.
 
-- **SQLite**: Single-writer limitation, WAL mode, page size, cache size. Recommend PostgreSQL migration if >500K records or throughput insufficient.
-- **PostgreSQL**: shared_buffers (25% RAM), effective_cache_size (75% RAM), work_mem, wal_buffers, checkpoint_completion_target, random_page_cost for SSD.
+- **SQLite:** Single-writer limitation, WAL mode, page size, cache size. Recommend PostgreSQL migration if >500K records or throughput insufficient.
+- **PostgreSQL:** shared_buffers (25% RAM), effective_cache_size (75% RAM), work_mem, wal_buffers, checkpoint_completion_target, random_page_cost for SSD.
 
 Document in `docs/database_tuning.md`.
 
@@ -78,4 +78,6 @@ Apply one optimization at a time. Re-run the relevant benchmark after each chang
 
 Create `docs/performance_report.md` with: requirements vs actuals, benchmark results, bottleneck analysis, optimizations applied, scalability projections, recommendations.
 
-**Success**: Performance baselines captured, bottlenecks identified, optimizations documented, report complete.
+**Offer visualization:** "Would you like me to create a web page showing the performance benchmarks? It'll have throughput charts, latency percentiles, and before/after comparisons." If yes, generate HTML and save to `docs/performance_dashboard.html`.
+
+**Success:** Performance baselines captured, bottlenecks identified, optimizations documented, report complete.

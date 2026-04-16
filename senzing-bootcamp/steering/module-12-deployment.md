@@ -224,6 +224,10 @@ If anything goes wrong: follow docs/rollback_plan.md
 
 Create `docs/operations_guide.md` with: architecture overview, deployment procedures, monitoring locations, escalation contacts, maintenance schedule, disaster recovery.
 
+Offer stakeholder summary: "Would you like me to create a deployment summary to share with your team?"
+
+If yes, create `docs/stakeholder_summary_module12.md` covering: what was deployed, where, deployment method, monitoring setup, security posture, rollback plan, and operational contacts.
+
 Remind user about bootcamp feedback: "You've completed the full bootcamp! Say 'bootcamp feedback' to document your experience."
 
 **Success:** Code packaged (always). If deployed: CI/CD pipeline working, staging verified, production deployed, operations documented.

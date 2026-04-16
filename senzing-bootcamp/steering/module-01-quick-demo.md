@@ -47,6 +47,8 @@ inclusion: manual
 
 4. **Explain results:** Walk through one entity — which features drove the match, what confidence scores mean, how Senzing handled format variations automatically.
 
+   **Offer visualization:** "Would you like me to create a web page showing these results? It'll have the entities, match explanations, and statistics in an interactive format." If yes, generate a self-contained HTML file and save to `src/quickstart_demo/demo_results.html`.
+
 5. **Connect to their use case:** Ask one at a time, wait for each response:
    - "What kind of records do you work with — people, organizations, or both?"
    - "How many data sources would you want to match across?"

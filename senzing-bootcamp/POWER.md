@@ -280,6 +280,7 @@ python3 senzing-bootcamp/scripts/backup_project.py      # Backup project
 python3 senzing-bootcamp/scripts/restore_project.py     # Restore from backup
 python3 senzing-bootcamp/scripts/preflight_check.py     # Pre-demo environment check
 python3 senzing-bootcamp/scripts/validate_commonmark.py  # Validate Markdown formatting
+python3 senzing-bootcamp/scripts/validate_power.py       # Validate power integrity (cross-references, hooks, steering)
 ```
 
 Use `python` instead of `python3` on Windows.
@@ -291,6 +292,7 @@ Use `python` instead of `python3` on Windows.
 - Collaboration Guide: `docs/guides/COLLABORATION_GUIDE.md`
 - Module Flow Diagram: `docs/diagrams/module-flow.md` (text-based; use a Mermaid preview extension or paste into [mermaid.live](https://mermaid.live) to render)
 - Data Flow Diagram: `docs/diagrams/data-flow.md` (text-based ASCII art, viewable in any editor)
+- System Architecture: `docs/diagrams/system-architecture.md` (shows how SDK, database, programs, and optional layers fit together)
 - Example Projects: `examples/` — architectural blueprints (not runnable code) for simple single source, multi-source, and production deployment patterns
 
 ## Senzing Contact Information

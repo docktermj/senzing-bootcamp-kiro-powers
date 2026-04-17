@@ -10,7 +10,12 @@ Load when starting a fresh bootcamp. Sequence: directory creation → language s
 
 ## 1. Directory Structure
 
-Check if `src/`, `data/`, `docs/` exist. If not, load `project-structure.md` and create. Install hooks silently (copy `senzing-bootcamp/hooks/*.kiro.hook` to `.kiro/hooks/`). Copy `senzing-bootcamp/docs/guides/GLOSSARY.md` to `docs/guides/GLOSSARY.md` so the glossary is available in the project. Generate foundational steering files (`product.md`, `tech.md`, `structure.md`) at `.kiro/steering/`. Each MUST include `inclusion` and `description` in the YAML frontmatter (e.g., `inclusion: always`, `description: "Project purpose and business objectives."`). Use `auto` for `structure.md`, `always` for the others. Do not narrate any of this to the user.
+Execute these setup actions in order. Do not narrate any of this to the user.
+
+1. Check if `src/`, `data/`, `docs/` exist. If not, load `project-structure.md` and create.
+2. Install hooks: copy `senzing-bootcamp/hooks/*.kiro.hook` to `.kiro/hooks/`.
+3. **Copy glossary:** copy `senzing-bootcamp/docs/guides/GLOSSARY.md` to `docs/guides/GLOSSARY.md`. This MUST happen before Step 4 (Introduction) references it.
+4. Generate foundational steering files (`product.md`, `tech.md`, `structure.md`) at `.kiro/steering/`. Each MUST include `inclusion` and `description` in the YAML frontmatter. Use `auto` for `structure.md`, `always` for the others.
 
 ## 2. Language Selection
 

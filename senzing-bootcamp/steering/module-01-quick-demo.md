@@ -49,14 +49,22 @@ inclusion: manual
 
    **Offer visualization:** "Would you like me to create a web page showing these results?" If yes, ask: "Would you like any interactive features? For example: (a) 'how' entity explanations, (b) 'why' match analysis, (c) search by attributes, (d) find paths between entities — or just a static summary?" Generate accordingly and save to `src/quickstart_demo/demo_results.html`.
 
-5. **Connect to their use case:** Ask one at a time, wait for each response:
+5. **Close Module 1 explicitly.** Before asking any use-case questions, mark the module as done and state its purpose:
+
+   "That's Module 1 complete! The purpose of this demo was to verify that your entire system works end-to-end — SDK, database, data loading, and entity resolution. The sample data and results were just a test, not the real work."
+
+   Follow the `module-completion.md` workflow (journal entry, reflection question, next-step options).
+
+6. **Transition to Module 2.** Only after Module 1 is closed, introduce Module 2 with a clear contrast:
+
+   "Starting with Module 2, we shift to YOUR use case — your data, your problem, your success criteria. This is where the real work begins."
+
+   Then ask the use-case discovery questions one at a time (wait for each response):
    - "What kind of records do you work with — people, organizations, or both?"
-   - "How many distinct source systems or feeds will you be ingesting from? (For example: a CRM, a billing system, a support ticket system...)"
-   - "What does a 'duplicate' look like in your world? Is it the same customer appearing in multiple systems, or the same person with slightly different info within one system?"
+   - "How many distinct source systems or feeds will you be ingesting from?"
+   - "What does a 'duplicate' look like in your world?"
 
-   Personalize the transition: "Based on what you described, the bootcamp will help you build exactly that." If no specific use case: "The bootcamp works great with sample data too."
-
-6. **Transition:** Start Module 2, try another dataset, or explore match explanations further.
+   Personalize the transition based on their answers. If no specific use case: "The bootcamp works great with sample data too."
 
 ## Agent Rules
 

@@ -28,18 +28,19 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    git rev-parse --git-dir 2>$null
    ```
 
-   If not, ask the user if they want to initialize one. If yes:
+   If not, ask: "Would you like me to initialize a git repository for version control?"
 
-   ```bash
-   git init
-   echo "# [Project Name] - Senzing Entity Resolution" > README.md
-   ```
+   WAIT for response. If yes, initialize. If no or already a repo, proceed.
 
-   If already a git repository, proceed.
+2. **Data privacy reminder** (statement, no question — do NOT combine with the next question):
 
-2. **Data privacy reminder**: "Before we proceed, a quick reminder about data privacy. We'll be working with potentially sensitive data. Please ensure you have permission to use this data, and consider anonymizing any PII for testing purposes. We'll set up proper security measures as we go."
+   "Before we proceed, a quick reminder about data privacy. We'll be working with potentially sensitive data. Please ensure you have permission to use this data, and consider anonymizing any PII for testing purposes. We'll set up proper security measures as we go."
 
-3. **Offer design pattern gallery**: "Would you like to see examples of common business problems that entity resolution can solve? I can show you a gallery of entity resolution design patterns with real-world use cases. This might help you articulate your specific problem or give you ideas."
+3. **Offer design pattern gallery** (separate question — do NOT combine with the privacy reminder):
+
+   "Would you like to see examples of common business problems that entity resolution can solve? I can show you a gallery of entity resolution design patterns with real-world use cases."
+
+   WAIT for response.
 
 4. **If user wants to see patterns**: Present the Entity Resolution Design Pattern Gallery from POWER.md. For each pattern, explain:
    - What problem it solves

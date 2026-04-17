@@ -21,9 +21,9 @@ When user says any of these, immediately start the feedback workflow:
 
 ### Step 1: Check for Feedback File
 
-Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists. If not:
+Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists in the project. If not:
 
-1. Copy `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md` to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
+1. Copy from the power distribution: `senzing-bootcamp/docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md` → `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 2. Replace the placeholder `[Date when you started using the power]` with today's date
 
 ### Step 2: Gather Feedback (One Question at a Time)

@@ -20,10 +20,10 @@ inclusion: manual
 
 3. **Choose sample dataset** via `get_sample_data`:
    - Las Vegas, London, Moscow
-   - Ask user preference, default to Las Vegas. Use 5-10 records for the demo.
+   - Ask user preference, default to Las Vegas. **Use 50-200 records** (not just 5-10) to produce interesting entity clusters, relationship paths, and meaningful search results. Stay under the 500-record evaluation limit. Download a subset from the full CORD dataset via `get_sample_data`.
    - Present `download_url` for full dataset. Don't dump raw records into chat.
 
-   **MCP fallback:** If `get_sample_data` fails, use this inline dataset saved to `src/quickstart_demo/sample_data_fallback.jsonl`:
+   **MCP fallback:** If `get_sample_data` fails, use the inline 5-record dataset below as a minimal fallback. Tell the user: "I couldn't reach the Senzing sample data server, so I'm using a small built-in dataset. The demo will work but with fewer records — we can try again with more data later." Save to `src/quickstart_demo/sample_data_fallback.jsonl`:
 
    ```json
    {"DATA_SOURCE":"CRM_SYSTEM","RECORD_ID":"DEMO-001","NAME_FULL":"John Smith","ADDR_FULL":"123 Main St, Las Vegas, NV 89101","PHONE_NUMBER":"555-123-4567","EMAIL_ADDRESS":"john.smith@example.com"}
@@ -47,7 +47,7 @@ inclusion: manual
 
 4. **Explain results:** Walk through one entity — which features drove the match, what confidence scores mean, how Senzing handled format variations automatically.
 
-   **Offer visualization:** "Would you like me to create a web page showing these results? It'll have the entities, match explanations, and statistics in an interactive format." If yes, generate a self-contained HTML file and save to `src/quickstart_demo/demo_results.html`.
+   **Offer visualization:** "Would you like me to create a web page showing these results?" If yes, ask: "Would you like any interactive features? For example: (a) 'how' entity explanations, (b) 'why' match analysis, (c) search by attributes, (d) find paths between entities — or just a static summary?" Generate accordingly and save to `src/quickstart_demo/demo_results.html`.
 
 5. **Connect to their use case:** Ask one at a time, wait for each response:
    - "What kind of records do you work with — people, organizations, or both?"

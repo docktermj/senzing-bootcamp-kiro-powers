@@ -6,9 +6,11 @@ inclusion: manual
 
 Load when starting a fresh bootcamp. Sequence: directory creation → language selection → prerequisites → introduction → path selection.
 
+**🚨 STRICT RULE: One question at a time.** Each numbered section below ends with a question and WAIT. Do NOT combine language selection, introduction, and path selection into one message. Present one question, wait for the response, then move to the next section. This is the most common onboarding complaint — do not skip the WAITs.
+
 ## 1. Directory Structure
 
-Check if `src/`, `data/`, `docs/` exist. If not, load `project-structure.md` and create. Install hooks silently (copy `senzing-bootcamp/hooks/*.kiro.hook` to `.kiro/hooks/`). Generate foundational steering files (`product.md`, `tech.md`, `structure.md`) at `.kiro/steering/` with appropriate `inclusion` frontmatter. Do not narrate any of this to the user.
+Check if `src/`, `data/`, `docs/` exist. If not, load `project-structure.md` and create. Install hooks silently (copy `senzing-bootcamp/hooks/*.kiro.hook` to `.kiro/hooks/`). Copy `senzing-bootcamp/docs/guides/GLOSSARY.md` to `docs/guides/GLOSSARY.md` so the glossary is available in the project. Generate foundational steering files (`product.md`, `tech.md`, `structure.md`) at `.kiro/steering/`. Each MUST include `inclusion` and `description` in the YAML frontmatter (e.g., `inclusion: always`, `description: "Project purpose and business objectives."`). Use `auto` for `structure.md`, `always` for the others. Do not narrate any of this to the user.
 
 ## 2. Language Selection
 

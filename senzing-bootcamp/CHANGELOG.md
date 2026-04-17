@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For the complete version history (0.1.0 through 0.1.9), see the development repository at `senzing-bootcamp-power-development/CHANGELOG_FULL.md`.
 
+## [0.7.0] - 2026-04-17
+
+### Added in 0.7.0
+
+- Glossary file copied to project during onboarding setup (was only in power distribution)
+- Strict one-question-at-a-time rule at top of `onboarding-flow.md` — most common onboarding complaint
+- `description` field required in generated steering file frontmatter (prevents Kiro warnings)
+- License discovery in Module 0 — checks CONFIGPATH for existing system license before asking user
+- `LICENSEFILE` in engine config when project-local license exists at `licenses/g2.lic` — overrides system CONFIGPATH
+- Interactive visualization features — agent asks about how/why/search/find capabilities when user requests web page
+- Module 1 demo uses 50-200 records (was 5-10) for richer entity clusters and meaningful search results
+- Zero-matches handling in Module 8 — explains three possible causes when entity resolution finds no matches
+- First-term explanation rule in `agent-instructions.md` — define Senzing terms inline on first use, reference glossary
+- Guided troubleshooting diagnostic questions at top of `common-pitfalls.md`
+- `validate_power.py` script for power self-validation
+- System architecture diagram at `docs/diagrams/system-architecture.md`
+- Stakeholder summary templates after Modules 2, 8, and 12
+- Next-step options (proceed/iterate/explore/share) in `module-completion.md`
+- Iterate vs. proceed decision gates in Modules 4, 5, and 8
+- AFTER_BOOTCAMP.md updated with mapping checkpointing, quality gates, and Phase 1/2 deployment references
+
+### Changed in 0.7.0
+
+- `onboarding-flow.md` trimmed from 109 to 87 lines — replaced verbose YAML frontmatter block with one-line instruction
+- `COLLABORATION_GUIDE.md` rewritten from 370 to 46 lines — language-agnostic, defers to CODE_QUALITY_STANDARDS.md
+- `lessons-learned.md` rewritten from 208 to 46 lines — describes sections to include, agent generates at runtime
+- `feedback-workflow.md` template path corrected to `senzing-bootcamp/docs/feedback/` (power distribution, not project)
+- `common-pitfalls.md` Module 4 pitfall aligned with three-tier iterate-vs-proceed gate
+- `data-flow.md` diagram replaced hardcoded Senzing attribute names with placeholders per SENZING_INFORMATION_POLICY
+- Module 6 Step 1 fixed "Module 3" → "Module 5" for transformation program output
+- `session-resume.md` now checks for `config/mapping_state_*.json` checkpoint files
+- Module 12 Step 1 reads existing `cloud_provider` from preferences before re-asking
+- `ONBOARDING_CHECKLIST.md` rewritten from 370 to 40 lines — reflects current automated onboarding flow
+- Module 0 engine config rule: NEVER construct JSON manually, use exact output from `sdk_guide(topic='configure')`
+- "data source" terminology in Module 1 bridging questions changed to "source systems or feeds" to avoid Senzing DATA_SOURCE collision
+
 ## [0.6.0] - 2026-04-16
 
 ### Added in 0.6.0

@@ -77,9 +77,23 @@ Generate a verification script in the bootcamper's chosen language using `genera
 
 If verification fails, use `explain_error_code` for any SENZ error codes and `search_docs` for troubleshooting.
 
-## Step 5: Configure License (Optional)
+## Step 5: Configure License
 
-Ask: "Do you have a Senzing license file (`g2.lic`) or a BASE64 license key? If not, no worries — the SDK works with its built-in evaluation limits (500 records)."
+**First, check for existing licenses** before asking the user:
+
+1. Check if a license already exists at the system CONFIGPATH (e.g., `/etc/opt/senzing/g2.lic` on Linux). Use `sdk_guide(topic='configure')` to get the correct CONFIGPATH for the platform.
+2. Check if `licenses/g2.lic` exists in the project directory.
+
+**If a system license is found at CONFIGPATH:**
+
+Tell the user: "I found an existing Senzing license at [CONFIGPATH]. Would you like to use this license, or do you have a different one you'd like to use for this project?"
+
+WAIT for response.
+
+- If they want to use the system license → no action needed, proceed to Step 6.
+- If they have a different license → proceed to the "custom license" flow below.
+
+**If no system license is found**, ask: "Do you have a Senzing license file (`g2.lic`) or a BASE64 license key? If not, no worries — the SDK works with its built-in evaluation limits (500 records)."
 
 WAIT for response.
 
@@ -100,24 +114,30 @@ echo 'YOUR_BASE64_KEY' | base64 --decode > licenses/g2.lic
 ```
 
 - Verify the file exists after they confirm
-- Record in `config/bootcamp_preferences.yaml`:
-
-  ```yaml
-  license: custom
-  license_path: licenses/g2.lic
-  ```
 
 **If they have a license file:**
 
 - Ask them to place it at `licenses/g2.lic`
 - Verify the file exists
-- Inform them: "Your license is configured. Senzing will use it automatically."
-- Record in `config/bootcamp_preferences.yaml`:
 
-  ```yaml
-  license: custom
-  license_path: licenses/g2.lic
-  ```
+**When a project-local license exists at `licenses/g2.lic`:**
+
+**🚨 IMPORTANT:** Add `LICENSEFILE` to the `PIPELINE` section of the engine configuration JSON, pointing to the project-local file. This ensures the project uses its own license instead of whatever is at the system CONFIGPATH. When generating the engine config in Step 8, include:
+
+```json
+"PIPELINE": {
+  "LICENSEFILE": "licenses/g2.lic"
+}
+```
+
+This overrides the system license. Without this, the engine will use the CONFIGPATH license, which may be stale or different from what the user provided.
+
+Record in `config/bootcamp_preferences.yaml`:
+
+```yaml
+license: custom
+license_path: licenses/g2.lic
+```
 
 **If they don't have a license:**
 
@@ -128,8 +148,6 @@ echo 'YOUR_BASE64_KEY' | base64 --decode > licenses/g2.lic
   license: evaluation
   license_path: null
   ```
-
-**If they're unsure:** Evaluation (built-in) works out of the box with a 500-record limit. A custom license removes limits. They can always add one later by saving it to `licenses/g2.lic`.
 
 ## Step 6: Create Project Directory Structure
 

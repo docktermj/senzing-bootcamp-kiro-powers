@@ -76,22 +76,26 @@ If you started with SQLite for evaluation, consider migrating to PostgreSQL when
 - You need concurrent access (multiple loaders or query processes)
 - You're moving toward production deployment
 
-Module 0 covers database setup. Re-run it with PostgreSQL as your target.
+Module 0 covers database setup. Re-run it with PostgreSQL as your target. If you're deploying to a cloud provider, Module 12 can provision a managed database (e.g., RDS/Aurora for AWS via CDK).
+
+### Deployment and Redeployment
+
+Module 12 separates **packaging** (containerization, config, CI/CD — always done) from **deployment** (actually deploying to a target — optional). If you packaged during the bootcamp but didn't deploy, you can return to Module 12 Phase 2 at any time. Your deployment target (AWS, Azure, GCP, on-premises, local) shapes what artifacts are produced — if you change targets, re-run Module 12 from Step 1.
 
 ---
 
 ## Adding New Data Sources
 
-When new data becomes available, follow the same proven workflow:
+When new data becomes available, follow the same proven workflow from the bootcamp:
 
 ### Step-by-Step
 
 1. **Collect the data** — Follow Module 3 to gather and document the new source
-2. **Evaluate quality** — Run Module 4's quality scoring on the new data
-3. **Map the data** — Use `mapping_workflow` to get correct Senzing attribute names (don't guess — attribute names like `NAME_ORG` vs `ORGANIZATION_NAME` matter)
+2. **Evaluate quality** — Run Module 4's quality scoring. Use the iterate-vs-proceed gate: ≥80% proceed, 70-79% consider improving, <70% fix first.
+3. **Map the data** — Use Module 5's `mapping_workflow` to get correct Senzing attribute names (don't guess). Mapping state is checkpointed to `config/mapping_state_[datasource].json` — if your session ends mid-mapping, you can resume where you left off.
 4. **Test with a sample** — Load 100-1000 records first and verify resolution behavior
 5. **Load the full dataset** — Follow Module 6 for single-source loading
-6. **Monitor cross-source resolution** — After loading, check how the new source resolves against existing data
+6. **Monitor cross-source resolution** — After loading, check how the new source resolves against existing data. If entity resolution found zero matches, investigate: are key fields populated? Were they mapped correctly?
 
 ### Tips
 

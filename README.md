@@ -73,6 +73,10 @@ Where did you put ____?
 ```
 
 ```console
+How does what was built in module number ____ help me?
+```
+
+```console
 Generate an HTML visualization
 ```
 
@@ -90,7 +94,7 @@ All artifacts created by the Senzing Bootcamp are in the Kiro project directory.
 1. To save bootcamp artifacts into a single compressed file, prompt:
 
    ```console
-   Backup the bootcamp
+   Backup the bootcamp to a single compressed file
    ```
 
    Move the file to a location outside of the project directory.
@@ -105,12 +109,14 @@ All artifacts created by the Senzing Bootcamp are in the Kiro project directory.
 
 ## Clean up the Bootcamp
 
-1. **(Optional) Remove the Senzing Bootcamp Power:**
-   1. In Kiro's left-hand icon bar, click on the **Powers** icon.
-   1. In the **Powers** panel, under **Installed**, find "Senzing Bootcamp".
-   1. In the **Power: Senzing Bootcamp** panel, click the **Uninstall** button.
+1. Move any files you'd like to keep out of the project directory.
+   Examples:  Backup file(s), prompt history file, source code (`src/`).
 
 1. **Delete the Senzing Bootcamp project directory.**
+
+   Since all of the artifacts created by the bootcamp are in the bootcamp directory,
+   simply delete the bootcamp directory.
+   Examples:
 
    - **Linux / macOS:**
 
@@ -129,3 +135,8 @@ All artifacts created by the Senzing Bootcamp are in the Kiro project directory.
      ```powershell
      Remove-Item -Recurse -Force senzing-bootcamp
      ```
+
+1. **(Optional) Remove the Senzing Bootcamp Power:**
+   1. In Kiro's left-hand icon bar, click on the **Powers** icon.
+   1. In the **Powers** panel, under **Installed**, find "Senzing Bootcamp".
+   1. In the **Power: Senzing Bootcamp** panel, click the **Uninstall** button.

@@ -35,7 +35,7 @@ Present the overview before path selection. Cover all points naturally:
 - This bootcamp is a **guided discovery** of how to use Senzing. It's not a race — feel free to take it slow, read what the bootcamp is telling you, and ask questions at any point to help with your understanding. The bootcamp is here to help you learn, not just to produce code.
 - Goal: comfortable generating Senzing SDK code. Finish with running code as foundation for real use.
 - Module overview table (0-12): what each does and why it matters
-- Mock data available anytime. Three sample datasets: Las Vegas (customers), London (persons), Moscow (organizations)
+- Mock data available anytime. Three sample datasets: Las Vegas, London, Moscow
 - Built-in 500-record eval license; bring your own for more
 - Paths let you skip to what matters
 - If you encounter unfamiliar terms (like SGES, DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything

@@ -32,16 +32,24 @@ This repository contains the Senzing Bootcamp Kiro Power and its development doc
    https://github.com/docktermj/senzing-bootcamp-kiro-powers/tree/main/senzing-bootcamp
    ```
 
-1. In Kiro's agentic chat, say **"Start the bootcamp"** to begin.
-
 ## Follow the Senzing Bootcamp
 
-Kiro's agentic chat panel will guide you through the Bootcamp.
+In Kiro's agentic chat, enter the following to begin the bootcamp:
 
-Helpful prompts:
+```console
+Start the bootcamp
+```
+
+Kiro's agentic chat will guide you through the Bootcamp.
+
+Helpful prompts that can be entered any time:
 
 ```console
 Where am I in the bootcamp?
+```
+
+```console
+What's next?
 ```
 
 ```console
@@ -64,13 +72,15 @@ What does ____ mean?
 Where did you put ____?
 ```
 
+```console
+Generate an HTML visualization
+```
+
 To report a bug or improvement:
 
 ```console
 Bootcamp Feedback:  _____
 ```
-
-
 
 ## Clean up the Bootcamp
 

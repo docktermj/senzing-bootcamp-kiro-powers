@@ -19,7 +19,7 @@ inclusion: manual
 2. **Verify SDK** from Module 0. If not found → direct to Module 0 first.
 
 3. **Choose sample dataset** via `get_sample_data`:
-   - Las Vegas (customer records), London (person records), Moscow (organization records)
+   - Las Vegas, London, Moscow
    - Ask user preference, default to Las Vegas. Use 5-10 records for the demo.
    - Present `download_url` for full dataset. Don't dump raw records into chat.
 

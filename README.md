@@ -82,10 +82,28 @@ To report a bug or improvement:
 Bootcamp Feedback:  _____
 ```
 
-## Clean up the Bootcamp
+## Save Bootcamp artifacts
 
 After completing the bootcamp, save any artifacts of interest.
 All artifacts created by the Senzing Bootcamp are in the Kiro project directory.
+
+1. To save bootcamp artifacts into a single compressed file, prompt:
+
+   ```console
+   Backup the bootcamp
+   ```
+
+   Move the file to a location outside of the project directory.
+
+1. To save all of your prompts:
+
+   ```console
+   Export all prompts and their effects into a markdown file
+   ```
+
+   Move the file to a location outside of the project directory.
+
+## Clean up the Bootcamp
 
 1. **(Optional) Remove the Senzing Bootcamp Power:**
    1. In Kiro's left-hand icon bar, click on the **Powers** icon.

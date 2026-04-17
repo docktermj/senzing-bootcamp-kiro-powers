@@ -158,12 +158,9 @@ WAIT for response.
 
 ## Step 8: Create Engine Configuration
 
-> **Agent instruction:** Do not use the example JSON below. Use
-> `sdk_guide(topic='configure', platform='<user_platform>', language='<chosen_language>', version='current')`
-> to get the correct engine configuration for the user's platform. The MCP server provides
-> correct paths and catches anti-patterns.
+**🚨 NEVER construct `SENZING_ENGINE_CONFIGURATION_JSON` manually.** Always use the exact JSON returned by `sdk_guide(topic='configure', platform='<user_platform>', language='<chosen_language>', version='current')`. Do not guess paths for CONFIGPATH, RESOURCEPATH, or SUPPORTPATH based on directory patterns — the correct paths vary by platform and installation method, and guessing causes engine initialization failures (e.g., SENZ2027 when SUPPORTPATH is wrong).
 
-Use `sdk_guide` with `topic='configure'` to generate the correct engine configuration JSON for the user's platform and database choice. Save it to `config/engine_config.json`.
+Use `sdk_guide` with `topic='configure'` to generate the correct engine configuration JSON for the user's platform and database choice. Save the MCP-returned JSON directly to `config/engine_config.json` — do not modify the paths.
 
 ## Step 9: Test Database Connection
 
@@ -201,6 +198,7 @@ Once the SDK is installed and verified, proceed to:
 - Do NOT offer alternatives — install the SDK natively
 - Use `sdk_guide` MCP tool for current platform-specific instructions
 - Use `search_docs` with `category='anti_patterns'` before recommending approaches
+- **NEVER construct engine configuration JSON manually** — always use the exact JSON from `sdk_guide(topic='configure')`. Do not guess CONFIGPATH, RESOURCEPATH, or SUPPORTPATH.
 - Recommend SQLite for evaluation, PostgreSQL for production
 - Always use `database/G2C.db` for SQLite (never `/tmp/sqlite`)
 - Verify installation before proceeding to Module 1

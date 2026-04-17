@@ -1,370 +1,48 @@
 # Senzing Bootcamp Onboarding Checklist
 
-Complete this checklist before starting the bootcamp to ensure a smooth experience.
+The bootcamp handles most setup automatically — just say "start the bootcamp" and the agent takes care of directory creation, prerequisite checks, and hook installation. This checklist is for reference if you want to verify readiness beforehand.
 
-## Pre-Flight Checklist
+## Before You Start
 
-### ✅ Step 1: Create Project Directory Structure
+- [ ] A supported language runtime installed (Python, Java, C#, Rust, or TypeScript/Node.js) — the agent checks this automatically
+- [ ] Git installed (optional but recommended)
+- [ ] 10 GB+ free disk space (50 GB+ for production)
+- [ ] 4 GB+ RAM (8 GB+ recommended)
 
-**This should be your first step!** Create the organized directory layout for your Senzing project:
+## Data (Optional — Not Required to Start)
 
-- [ ] **Create project directory**
+- [ ] Data sources identified (or plan to use sample data)
+- [ ] Sample data extracted (100-1000 records) if using your own data
+- [ ] Data privacy requirements understood (GDPR, HIPAA, etc.)
 
-  ```bash
-  mkdir my-senzing-project
-  cd my-senzing-project
-  ```
+If you don't have data ready, the bootcamp provides three sample datasets (Las Vegas, London, Moscow) and can generate mock data at any point.
 
-- [ ] **Create directory structure**
+## What the Agent Does for You
 
-  On Linux / macOS:
+When you say "start the bootcamp," the agent automatically:
 
-  ```bash
-  mkdir -p data/{raw,transformed,samples,backups,temp}
-  mkdir -p database
-  mkdir -p licenses
-  mkdir -p src/{transform,load,query,utils}
-  mkdir -p tests
-  mkdir -p backups
-  mkdir -p docs/feedback
-  mkdir -p config
-  mkdir -p logs
-  mkdir -p monitoring
-  mkdir -p scripts
-  ```
+1. Creates the project directory structure (`src/`, `data/`, `docs/`, `database/`, etc.)
+2. Installs bootcamp hooks for quality checks
+3. Detects your platform and queries the Senzing MCP server for supported languages
+4. Checks prerequisites and surfaces anything missing
+5. Presents the bootcamp overview and answers your questions
+6. Lets you choose a learning path
 
-  On Windows (PowerShell):
+You don't need to do any of this manually.
 
-  ```powershell
-  foreach ($d in @(
-    "data\raw","data\transformed","data\samples","data\backups","data\temp",
-    "database","licenses",
-    "src\transform","src\load","src\query","src\utils",
-    "tests","backups","docs\feedback","config","logs","monitoring","scripts"
-  )) { New-Item -ItemType Directory -Force -Path $d | Out-Null }
-  ```
-
-- [ ] **Create initial files**
-
-  ```bash
-  touch README.md
-  touch .gitignore
-  touch .env.example
-  ```
-
-- [ ] **Verify structure**
-
-  ```bash
-  # Linux/macOS
-  ls -R
-
-  # Windows (PowerShell)
-  Get-ChildItem -Recurse -Depth 2
-  ```
-
-Expected structure:
-
-```text
-my-senzing-project/
-├── data/
-│   ├── raw/
-│   ├── transformed/
-│   ├── samples/
-│   ├── backups/
-│   └── temp/
-├── database/
-├── licenses/
-├── src/
-│   ├── transform/
-│   ├── load/
-│   ├── query/
-│   └── utils/
-├── tests/
-├── backups/
-├── docs/
-│   └── feedback/
-├── config/
-├── logs/
-├── monitoring/
-├── scripts/
-├── README.md
-├── .gitignore
-└── .env.example
-```
-
-**Why first?** Having the directory structure in place ensures all generated files go to the right locations from the start.
-
-### ✅ Step 2: System Requirements
-
-> **Note for agents:** Do not rely on the versions listed below. During onboarding,
-> always fetch the current official requirements via the Senzing MCP server:
-> `search_docs(query="system requirements", version="current")`.
-> The values below are a snapshot for offline reference only.
-
-- [ ] **Operating System** — verify against [Senzing v4 System Requirements](https://www.senzing.com/docs/release/4/4_0_hw_sw)
-  - Linux (Ubuntu LTS, RHEL, Debian, Amazon Linux)
-  - macOS (Apple Silicon only, Limited Availability)
-  - Windows (Limited Availability)
-
-- [ ] **SDK Language** — verify minimum versions via MCP `search_docs`
-  - Python: pip package manager, virtual environment tool (venv or conda)
-  - Java: JDK 17+, Maven or Gradle
-  - C#: .NET SDK, NuGet package manager
-  - Rust: rustc, Cargo
-  - TypeScript/Node.js: Node.js, npm
-
-- [ ] **Disk Space**
-  - Minimum: 10 GB free
-  - Recommended: 50 GB+ for production
-
-- [ ] **Memory**
-  - Minimum: 4 GB RAM
-  - Recommended: 8 GB+ (16 GB+ for production)
-
-### ✅ Step 3: Data Preparation
-
-- [ ] **Data Sources Identified**
-  - List of all data sources documented
-  - Approximate record counts known
-  - Data owners/contacts identified
-
-- [ ] **Data Access**
-  - Access to source systems confirmed
-  - Credentials available (if needed)
-  - Sample data extracted (100-1000 records)
-  - Full data extraction plan in place
-
-- [ ] **Data Format**
-  - File formats identified (CSV, JSON, Excel, etc.)
-  - Database schemas documented (if applicable)
-  - API documentation available (if applicable)
-
-- [ ] **Data Privacy**
-  - PII handling requirements understood
-  - Data anonymization needs identified
-  - Compliance requirements documented (GDPR, HIPAA, etc.)
-
-### ✅ Step 4: Database Setup
-
-- [ ] **Database Choice** — verify supported versions via MCP `search_docs(query="system requirements", version="current")`
-  - SQLite for evaluation (small datasets)
-  - PostgreSQL for production (recommended)
-  - MySQL, MSSQL, Oracle also supported — check MCP for minimum versions
-  - Cloud-managed databases (AWS Aurora/RDS, Azure SQL) also supported
-
-- [ ] **Database Access** (if using PostgreSQL/MySQL/etc.)
-  - Database server available
-  - Admin credentials available
-  - Network access confirmed
-  - Backup strategy in place
-
-### ✅ Step 5: Development Environment
-
-- [ ] **Code Editor/IDE**
-  - VS Code, PyCharm, IntelliJ, or similar
-  - Git integration available
-  - Terminal access
-
-- [ ] **Version Control**
-  - Git installed
-  - GitHub/GitLab/Bitbucket account (optional)
-  - Understanding of basic git commands
-
-- [ ] **Command Line**
-  - Comfortable with terminal/command prompt
-  - Basic shell commands (cd, ls, mkdir, etc.)
-  - Ability to run scripts
-
-### ✅ Step 6: Time and Resources
-
-- [ ] **Time Commitment**
-  - Time varies by path and data complexity
-  - The complexity estimator provides personalized estimates after Module 2
-  - Flexible schedule for iterative work
-
-- [ ] **Team Resources** (if applicable)
-  - Data engineers available
-  - Business stakeholders identified
-  - IT/DevOps support for deployment
-
-- [ ] **Budget** (if applicable)
-  - Senzing license obtained or requested (see `licenses/README.md`)
-  - For bootcamp: Request free evaluation license from [support@senzing.com](mailto:support@senzing.com)
-  - For production: Contact [sales@senzing.com](mailto:sales@senzing.com) for pricing
-  - Infrastructure budget allocated
-  - Timeline for procurement
-
-### ✅ Step 7: Knowledge Prerequisites
-
-- [ ] **Basic Programming**
-  - Comfortable with at least one supported language (Python, Java, C#, Rust, or TypeScript)
-  - Understanding of functions and classes
-  - Ability to read and modify code
-
-- [ ] **Data Concepts**
-  - Understanding of CSV, JSON formats
-  - Basic SQL knowledge (if using databases)
-  - Familiarity with data quality concepts
-
-- [ ] **Entity Resolution** (helpful but not required)
-  - Understanding of what entity resolution is
-  - Awareness of use cases (deduplication, matching, etc.)
-  - Familiarity with data matching concepts
-
-### ✅ Step 8: Documentation and Support
-
-- [ ] **Documentation Access**
-  - Senzing documentation available
-  - Bootcamp power installed in Kiro
-  - MCP server configured
-
-- [ ] **Support Channels**
-  - Kiro agent available for guidance
-  - Senzing support contact: [support@senzing.com](mailto:support@senzing.com)
-  - Senzing sales contact (for licensing): [sales@senzing.com](mailto:sales@senzing.com)
-  - Internal team support identified
-
-## Quick Validation
-
-Run these commands to verify your setup:
-
-### Check Your Language Runtime
+## Quick Validation (Optional)
 
 ```bash
-# Check whichever language you plan to use:
-python3 --version    # Python
-java --version       # Java
-dotnet --version     # C#
-rustc --version      # Rust
-node --version       # TypeScript/Node.js
-```
+# Check your language runtime
+python3 --version    # or java --version, dotnet --version, rustc --version, node --version
 
-### Check Git
-
-```bash
+# Check git
 git --version
+
+# Check disk space (Python)
+python3 -c "import shutil; u=shutil.disk_usage('.'); print(f'{u.free/(1024**3):.0f} GB free')"
 ```
 
-### Check Disk Space
+## Ready?
 
-```python
-import shutil
-usage = shutil.disk_usage(".")
-print(f"{usage.free / (1024**3):.0f} GB free")
-```
-
-### Check Memory
-
-```python
-# Run: python scripts/preflight_check.py
-# Or check manually per platform:
-# Linux:   free -h
-# macOS:   sysctl -n hw.memsize
-# Windows: systeminfo | findstr "Total Physical Memory"
-```
-
-## Ready to Start?
-
-### All Checks Complete ✅
-
-You're ready to start the bootcamp! Tell the agent:
-
-```text
-"I'm ready to start the Senzing bootcamp"
-```
-
-### Some Checks Incomplete ⚠️
-
-**Missing system requirements?**
-
-- Install required software first
-
-**Don't have data yet?**
-
-- Start with Module 1 (Quick Demo) using sample data
-- Prepare your data while learning
-
-**Limited time?**
-
-- Choose the 30-minute fast track
-- Or complete modules incrementally
-
-**Need help?**
-
-- Ask the agent: "Help me prepare for the bootcamp"
-- Review `docs/guides/QUICK_START.md` for path options
-
-## Troubleshooting
-
-### Language Runtime Issues
-
-```bash
-# Python
-sudo apt install python3.11  # Ubuntu/Debian
-brew install python@3.11     # macOS
-# Windows: Download from https://www.python.org/downloads/
-
-# Java
-sudo apt install openjdk-17-jdk  # Ubuntu/Debian
-brew install openjdk@17          # macOS
-# Windows: Download from https://adoptium.net/
-
-# C#
-# See https://dotnet.microsoft.com/download
-
-# Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh  # Linux/macOS
-# Windows: Download from https://rustup.rs/
-
-# Node.js
-sudo apt install nodejs npm  # Ubuntu/Debian
-brew install node            # macOS
-# Windows: Download from https://nodejs.org/
-```
-
-### Database Issues
-
-```bash
-# Install PostgreSQL
-sudo apt install postgresql  # Ubuntu/Debian
-brew install postgresql      # macOS
-# Windows: Download from https://www.postgresql.org/download/windows/
-
-# Start PostgreSQL
-sudo systemctl start postgresql  # Linux
-brew services start postgresql   # macOS
-# Windows: PostgreSQL runs as a service automatically
-```
-
-### Disk Space Issues
-
-```bash
-# Clean up package caches
-sudo apt clean  # Ubuntu/Debian
-brew cleanup    # macOS
-# Windows: Run Disk Cleanup (cleanmgr)
-```
-
-## Next Steps
-
-After completing this checklist:
-
-1. **Choose your path**: Demo, Fast Track, or Complete
-2. **Start Module 0 or 1**: Tell the agent you're ready
-3. **Follow the guide**: Agent will walk you through each step
-4. **Track progress**: Use `docs/guides/PROGRESS_TRACKER.md`
-
-## Support
-
-Need help with the checklist?
-
-```text
-"Help me check if I'm ready for the bootcamp"
-"What do I need to install?"
-"I don't have [requirement], what should I do?"
-```
-
----
-
-**Version**: 1.1.0
-**Last updated**: 2026-04-01
+Say "start the bootcamp" — the agent guides you from there. See `QUICK_START.md` for path options, or `GLOSSARY.md` if you encounter unfamiliar terms.

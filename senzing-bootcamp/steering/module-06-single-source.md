@@ -25,7 +25,7 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 **For each data source:**
 
 1. **Identify the input data:** Determine where the Senzing-formatted JSON records are:
-   - Output from a transformation program (Module 3)
+   - Output from a transformation program (Module 5)
    - Direct SGES-compliant data files
    - Database query results
    - API responses

@@ -58,12 +58,12 @@ What carries forward: all code, transformed data, docs, config. What doesn't: th
 
 ## Module 4: Data Quality
 
-| Pitfall                                  | Fix                                                      |
-| ---------------------------------------- | -------------------------------------------------------- |
-| Insufficient sample data (2-3 records)   | Request 100-1000 records minimum                         |
-| Skipping quality scoring                 | Always run automated scoring for objective metrics       |
-| Ignoring quality issues                  | Address during mapping (Module 5)                        |
-| Proceeding with score <70%               | Improve quality first or adjust expectations             |
+| Pitfall                                  | Fix                                                                              |
+| ---------------------------------------- | -------------------------------------------------------------------------------- |
+| Insufficient sample data (2-3 records)   | Request 100-1000 records minimum                                                 |
+| Skipping quality scoring                 | Always run automated scoring for objective metrics                               |
+| Ignoring quality issues                  | Address during mapping (Module 5)                                                |
+| Proceeding with low quality              | Use the three-tier gate: ≥80% proceed, 70-79% warn and let user decide, <70% recommend fixing first |
 
 ## Module 5: Data Mapping
 

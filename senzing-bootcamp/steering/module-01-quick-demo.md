@@ -51,8 +51,8 @@ inclusion: manual
 
 5. **Connect to their use case:** Ask one at a time, wait for each response:
    - "What kind of records do you work with — people, organizations, or both?"
-   - "How many data sources would you want to match across?"
-   - "What does a 'duplicate' look like in your world?"
+   - "How many distinct source systems or feeds will you be ingesting from? (For example: a CRM, a billing system, a support ticket system...)"
+   - "What does a 'duplicate' look like in your world? Is it the same customer appearing in multiple systems, or the same person with slightly different info within one system?"
 
    Personalize the transition: "Based on what you described, the bootcamp will help you build exactly that." If no specific use case: "The bootcamp works great with sample data too."
 

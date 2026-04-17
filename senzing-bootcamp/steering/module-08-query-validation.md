@@ -52,6 +52,8 @@ inclusion: manual
 
    Execute queries to understand results. Use the appropriate run command for the chosen language.
 
+   **If entity resolution found zero or very few matches:** This is a valid result — don't assume something is broken. Tell the user: "Entity resolution found very few matches. This could mean: (a) your records are genuinely distinct with no duplicates, (b) the matching criteria need adjustment — perhaps key fields weren't mapped or data quality is too low, or (c) you're working with a single source that has no internal duplicates. Let's investigate which one." Check: are name/address/phone fields populated? Were they mapped correctly in Module 5? Is the data quality score from Module 4 above 70%? If the data genuinely has no duplicates, that's a valid finding — document it.
+
 4. **Create UAT test cases**:
 
    Document in `docs/uat_test_cases.md`:

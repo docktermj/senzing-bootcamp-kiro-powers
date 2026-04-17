@@ -85,7 +85,7 @@ Load these on-demand when needed:
 
 **Agent Behavior:**
 
-- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~80 lines)
+- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~57 lines)
 - `session-resume.md` — Restores full context when resuming a previous bootcamp session
 - `onboarding-flow.md` — Full onboarding sequence: directory creation, language selection, prerequisite checks, path selection, validation gates
 - `cloud-provider-setup.md` — Cloud provider selection at the 8→9 gate (AWS, Azure, GCP, on-premises, local)
@@ -96,7 +96,10 @@ Load these on-demand when needed:
 - `security-privacy.md` — Data privacy and PII protection (auto-included when PII or security is discussed)
 - `project-structure.md` — Directory structure and setup commands (auto-included when creating files)
 - `module-transitions.md` — Journey map, before/after framing, and step-level progress rules (auto-included during module work)
-- `module-completion.md` — Journal entries, reflection questions, and path completion celebration (load after completing any module)
+
+**Module Completion (load after completing any module):**
+
+- `module-completion.md` — Journal entries, reflection questions, next-step options, and path completion celebration
 
 **Language-Specific (loaded automatically when editing matching files):**
 

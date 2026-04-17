@@ -95,15 +95,17 @@ SOURCE DATA                TRANSFORMATION              SENZING JSON
 ┌──────────────┐          ┌──────────────┐          ┌──────────────┐
 │ customer_id  │          │              │          │ DATA_SOURCE  │
 │ first_name   │──────────│  Mapping     │──────────│ RECORD_ID    │
-│ last_name    │          │  Logic       │          │ NAME_FIRST   │
-│ email        │          │              │          │ NAME_LAST    │
-│ phone        │          │  • Combine   │          │ EMAIL_ADDRESS│
-│ street       │          │  • Split     │          │ PHONE_NUMBER │
-│ city         │          │  • Format    │          │ ADDR_FULL    │
-│ state        │          │  • Validate  │          │ ADDR_CITY    │
-│ zip          │          │              │          │ ADDR_STATE   │
-└──────────────┘          └──────────────┘          │ ADDR_POSTAL  │
-                                                     └──────────────┘
+│ last_name    │          │  Logic       │          │ [name attrs] │
+│ email        │          │              │          │ [email attr] │
+│ phone        │          │  • Combine   │          │ [phone attr] │
+│ street       │          │  • Split     │          │ [addr attrs] │
+│ city         │          │  • Format    │          │              │
+│ state        │          │  • Validate  │          │              │
+│ zip          │          │              │          │              │
+└──────────────┘          └──────────────┘          └──────────────┘
+
+NOTE: Actual Senzing attribute names (NAME_FULL, ADDR_FULL, etc.)
+come from the MCP server via mapping_workflow — never hardcode them.
 
 EXAMPLE:
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -118,20 +120,17 @@ EXAMPLE:
 │   state: "NV"                                                        │
 │   zip: "89101"                                                       │
 ├──────────────────────────────────────────────────────────────────────┤
-│ Output (SGES):                                                       │
+│ Output (SGES — attribute names from MCP server):                     │
 │   {                                                                  │
 │     "DATA_SOURCE": "CUSTOMERS",                                      │
 │     "RECORD_ID": "12345",                                            │
-│     "NAME_FIRST": "John",                                            │
-│     "NAME_LAST": "Smith",                                            │
-│     "EMAIL_ADDRESS": "john.smith@example.com",                       │
-│     "PHONE_NUMBER": "702-555-1234",                                  │
-│     "ADDR_FULL": "123 Main St Las Vegas NV 89101",                   │
-│     "ADDR_LINE1": "123 Main St",                                     │
-│     "ADDR_CITY": "Las Vegas",                                        │
-│     "ADDR_STATE": "NV",                                              │
-│     "ADDR_POSTAL_CODE": "89101"                                      │
+│     "<name_attribute>": "John Smith",                                │
+│     "<email_attribute>": "john.smith@example.com",                   │
+│     "<phone_attribute>": "702-555-1234",                             │
+│     "<address_attributes>": "123 Main St Las Vegas NV 89101"         │
 │   }                                                                  │
+│                                                                      │
+│   Use mapping_workflow to get the correct attribute names.            │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 

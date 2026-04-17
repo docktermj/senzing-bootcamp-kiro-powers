@@ -36,7 +36,7 @@ For the complete version history (0.1.0 through 0.1.9), see the development repo
 - `lang-python.md` platform support line defers to MCP server
 - `onboarding-flow.md` rewritten from 333 to 85 lines
 - Module 0 SDK check strengthened — "MUST DO FIRST", explicit skip-entire-module logic for existing V4.0+ installations
-- Module 12 deployment target question moved to Phase 2 (after packaging complete)
+- Module 12 deployment target question moved to Step 1 (before packaging) — target shapes what artifacts get built
 
 ## [0.5.0] - 2026-04-14
 

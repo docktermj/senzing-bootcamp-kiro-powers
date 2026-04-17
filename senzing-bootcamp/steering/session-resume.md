@@ -13,6 +13,7 @@ Read these files to reconstruct full context:
 1. **`config/bootcamp_progress.json`** — completed modules, current module, data sources, database type
 2. **`config/bootcamp_preferences.yaml`** — chosen language, path, cloud provider, license info
 3. **`docs/bootcamp_journal.md`** (if exists) — narrative history of what was done and why
+4. **`config/mapping_state_*.json`** (if any exist) — in-progress mapping checkpoints from Module 5. If found, the user was mid-mapping when the session ended.
 
 If progress or preferences files are missing or corrupted, inform the user and offer to reconstruct from project artifacts (check `src/`, `data/`, `docs/` for evidence of completed work).
 
@@ -39,7 +40,11 @@ Welcome back! Here's where you left off:
   Current: Module [N] — [module name]
   Database: [sqlite/postgresql]
   Data sources: [list]
+```
 
+**If mapping checkpoints exist** (`config/mapping_state_*.json`), also mention: "You were in the middle of mapping [data source name] — we completed steps [list] last time. I can pick up where we left off."
+
+```text
 Ready to continue with Module [N], or would you like to do something else?
 ```
 

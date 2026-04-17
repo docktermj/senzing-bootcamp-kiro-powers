@@ -80,6 +80,12 @@ How does what was built in module number ____ help me?
 Generate an HTML visualization
 ```
 
+If Kiro seems to be stuck "Working...
+
+```console
+What are you working on?
+```
+
 To report a bug or improvement:
 
 ```console

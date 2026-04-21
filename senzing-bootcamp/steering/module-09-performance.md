@@ -14,6 +14,8 @@ Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcam
 
 ## Step 1: Define Performance Requirements
 
+**Before setting targets**, direct the user to review `docs/guides/PERFORMANCE_BASELINES.md` for reference throughput, hardware requirements, and database comparison data at different data volumes. This helps them set realistic targets.
+
 Ask ONE AT A TIME: loading throughput target, query latency target, concurrent users, data volume/growth, database choice (SQLite vs PostgreSQL).
 
 Call `search_docs(query='performance benchmarks', version='current')` for current expectations. Document in `docs/performance_requirements.md`.

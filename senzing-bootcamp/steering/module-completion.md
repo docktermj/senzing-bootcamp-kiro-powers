@@ -30,10 +30,12 @@ After the journal entry and reflection, present 3-4 concrete options based on th
 
 - **Proceed:** "👉 Ready to move on to Module [N] ([name])?"
 - **Iterate:** "Would you like to improve anything from this module first?"
-- **Explore:** "Would you like to dig deeper into what we just did?"
+- **Explore:** "Would you like to explore further — visualize entities, examine match explanations, or search by attributes? (For other modules: dig deeper into what we just produced.)"
 - **Share:** "Would you like to prepare a summary to share with your team?"
 
 Present these as a single list, then: "👉 What would you like to do?" WAIT for response.
+
+**Module 1 special case:** The visualization offer (web page with interactive features) should already have been presented before reaching this workflow. If the user declined, the Explore option above gives them another chance.
 
 ## Path Completion Detection
 

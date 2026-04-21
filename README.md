@@ -17,6 +17,8 @@ This repository contains the Senzing Bootcamp Kiro Power and its development doc
     kiro .
     ```
 
+1. In macOS, start "Kiro" and open a new project on an empty directory.
+
 ## Configure Kiro
 
 1. In "Let's build", choose "Spec".

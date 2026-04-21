@@ -40,6 +40,20 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - Use cases and examples
 - When to use each pattern
 
+**[PERFORMANCE_BASELINES.md](PERFORMANCE_BASELINES.md)**
+
+- Reference throughput for transformation, loading, and querying at different data volumes
+- Hardware requirements for small (<1K), medium (1K-100K), and large (100K+) datasets
+- SQLite vs PostgreSQL comparison and migration guidance
+- Scaling recommendations including multi-threading and database tuning
+
+**[QUALITY_SCORING_METHODOLOGY.md](QUALITY_SCORING_METHODOLOGY.md)**
+
+- How quality scores are calculated (formula and weights)
+- What each scoring dimension measures (completeness, consistency, format compliance, uniqueness)
+- Threshold bands and recommended actions (≥80% proceed, 70-79% warn, <70% fix)
+- Examples of high, medium, and low quality data with sample scores
+
 ### After the Bootcamp
 
 **[AFTER_BOOTCAMP.md](AFTER_BOOTCAMP.md)**
@@ -79,6 +93,24 @@ python scripts/status.py
 - Communication guidelines
 
 ### Troubleshooting
+
+**[OFFLINE_MODE.md](OFFLINE_MODE.md)** ⭐ NEW!
+
+- What works without MCP, module by module
+- Reconnection steps you can try
+- How the agent handles outages automatically
+
+**[COMMON_MISTAKES.md](COMMON_MISTAKES.md)** ⭐ NEW!
+
+- Most frequent bootcamp mistakes with real examples
+- Data preparation, SDK configuration, loading, query, and production mistakes
+- Links to relevant guides for each mistake
+
+**[GETTING_HELP.md](GETTING_HELP.md)** ⭐ NEW!
+
+- Support hierarchy: agent → FAQ → MCP tools → guides → docs.senzing.com → support
+- When to use each resource
+- Quick reference table of guides by situation
 
 For Senzing error codes, use the MCP `explain_error_code` tool. For Senzing concepts and documentation, use `search_docs`. For bootcamp-specific issues, check `steering/common-pitfalls.md`.
 
@@ -210,11 +242,16 @@ docs/
 │   ├── ONBOARDING_CHECKLIST.md
 │   ├── FAQ.md
 │   ├── COLLABORATION_GUIDE.md
+│   ├── COMMON_MISTAKES.md
 │   ├── DESIGN_PATTERNS.md
+│   ├── GETTING_HELP.md
 │   ├── PROGRESS_TRACKER.md
 │   ├── AFTER_BOOTCAMP.md
 │   ├── GLOSSARY.md
-│   └── HOOKS_INSTALLATION_GUIDE.md
+│   ├── HOOKS_INSTALLATION_GUIDE.md
+│   ├── OFFLINE_MODE.md
+│   ├── PERFORMANCE_BASELINES.md
+│   └── QUALITY_SCORING_METHODOLOGY.md
 ├── diagrams/                  # ⭐ NEW! Visual docs
 │   ├── module-flow.md        # Module diagrams
 │   └── data-flow.md          # Data pipeline diagrams

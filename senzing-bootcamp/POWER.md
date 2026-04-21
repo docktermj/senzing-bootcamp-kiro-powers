@@ -129,6 +129,11 @@ Load these on-demand when needed:
 
 - `data-lineage.md` — Track data transformations and lineage
 - `uat-framework.md` — User acceptance testing framework
+- `deployment-onpremises.md` — On-premises/Docker Compose deployment reference
+- `deployment-azure.md` — Azure deployment reference
+- `deployment-gcp.md` — GCP/Google Cloud deployment reference
+- `deployment-kubernetes.md` — Kubernetes/Helm deployment reference
+- `module-07-reference.md` — Multi-source ordering, conflict resolution, and troubleshooting reference
 
 ## MCP Server Configuration
 
@@ -259,6 +264,7 @@ The agent creates an organized directory structure at bootcamp start. Key direct
 - Wrong attribute names? Use `mapping_workflow` (never guess)
 - Wrong method signatures? Use `generate_scaffold` or `sdk_guide`
 - MCP connection issues? Check internet/firewall for `mcp.senzing.com:443`
+- MCP down? See `docs/guides/OFFLINE_MODE.md` for what works offline and reconnection steps
 - Visual diagnostic? Load `troubleshooting-decision-tree.md`
 
 Additional resources: `docs/guides/FAQ.md`. For Senzing terminology and error codes, use MCP tools `search_docs` and `explain_error_code`.
@@ -296,6 +302,10 @@ Use `python` instead of `python3` on Windows.
 - Module Flow Diagram: `docs/diagrams/module-flow.md` (text-based; use a Mermaid preview extension or paste into [mermaid.live](https://mermaid.live) to render)
 - Data Flow Diagram: `docs/diagrams/data-flow.md` (text-based ASCII art, viewable in any editor)
 - System Architecture: `docs/diagrams/system-architecture.md` (shows how SDK, database, programs, and optional layers fit together)
+- Offline Mode Guide: `docs/guides/OFFLINE_MODE.md`
+- Quality Scoring Methodology: `docs/guides/QUALITY_SCORING_METHODOLOGY.md`
+- Performance Baselines: `docs/guides/PERFORMANCE_BASELINES.md`
+- Templates: `templates/data_collection_checklist.md`, `templates/stakeholder_summary.md`, `templates/transformation_lineage.md`, `templates/uat_test_cases.md`
 - Example Projects: `examples/` — architectural blueprints (not runnable code) for simple single source, multi-source, and production deployment patterns
 
 ## Senzing Contact Information

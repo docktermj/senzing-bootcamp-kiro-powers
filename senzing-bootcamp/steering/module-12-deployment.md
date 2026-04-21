@@ -42,6 +42,8 @@ Before starting: call `search_docs(query='deployment', category='anti_patterns',
 
 Persist choices in `config/bootcamp_preferences.yaml` as `deployment_target` and `deployment_method`. When mentioning any third-party deployment tools, consult `search_docs` for Senzing-specific integration guidance.
 
+> **Agent instruction:** After the bootcamper selects their deployment target, call `search_docs(query='deployment <selected_platform>', version='current')` to retrieve current Senzing guidance for that platform. Then load the corresponding platform steering file (`deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md`) and apply its guidance throughout the packaging and deployment phases. For AWS, continue using the existing "If AWS:" blocks in each step — no separate reference section is needed.
+
 ---
 
 ## Phase 1: Packaging (Steps 2-11)
@@ -63,6 +65,8 @@ Refactor bootcamp code into a deployable structure:
 Use `generate_scaffold` for packaging patterns. Save to `src/` with clear entry points.
 
 **If AWS:** Also create an `infra/` directory for the CDK app. Initialize it with `cdk init app --language <chosen_language>`. The CDK app will define all AWS resources (RDS/Aurora, ECS/EKS, ECR, Secrets Manager, CloudWatch, VPC) as code in the bootcamper's language. This keeps infrastructure versioned alongside application code.
+
+**If Azure / GCP / On-Premises / Kubernetes:** See the corresponding platform steering file for platform-specific project structure and infrastructure-as-code guidance.
 
 ## Step 4: Multi-Environment Config
 
@@ -89,6 +93,8 @@ Save to project root.
 - `ecs.FargateService` or `eks.Cluster` — compute
 - `ecs.TaskDefinition` with health check, resource limits, and environment variables pointing to Secrets Manager ARNs
 
+**If Azure / GCP / On-Premises / Kubernetes:** See the corresponding platform steering file for platform-specific container registry, compute service, and orchestration guidance.
+
 ## Step 6: Database Migration (SQLite → PostgreSQL)
 
 If still on SQLite: guide migration to PostgreSQL for production. Steps: install PostgreSQL, create database, update engine config, reload data (SQLite data doesn't transfer — must reload from JSONL files).
@@ -100,6 +106,12 @@ Call `search_docs(query='PostgreSQL configuration', version='current')` for setu
 - `rds.DatabaseInstance` or `rds.DatabaseCluster` (Aurora) with encryption enabled, automated backups, and Multi-AZ for production
 - `ec2.SecurityGroup` restricting access to the ECS/EKS tasks only
 - Store the connection string in Secrets Manager (CDK can create the secret automatically with `rds.DatabaseSecret`)
+
+**If Azure:** Use Azure Database for PostgreSQL — Flexible Server. See the **Azure Deployment Reference** section.
+
+**If GCP:** Use Cloud SQL for PostgreSQL. See the **GCP Deployment Reference** section.
+
+**If On-Premises / Kubernetes:** Install PostgreSQL locally or use a Kubernetes StatefulSet. See the corresponding platform steering file.
 
 ## Step 7: CI/CD Pipeline
 
@@ -120,6 +132,8 @@ Save to `.github/workflows/` or equivalent.
 4. Deploys to staging, runs smoke tests, then deploys to production
 
 Define the pipeline in `infra/pipeline_stack.[ext]`. This replaces manually configuring CodePipeline + CodeBuild — CDK Pipelines handles it declaratively.
+
+**If Azure / GCP / On-Premises / Kubernetes:** Use the CI/CD platform of choice (GitHub Actions, GitLab CI, Jenkins, Azure DevOps, Cloud Build). The pipeline stages (test → build → deploy staging → deploy prod) remain the same regardless of platform. See the corresponding platform steering file for platform-specific registry push and deployment commands.
 
 ## Step 8: REST API Layer (If Requested)
 
@@ -148,6 +162,8 @@ Create scripts for: deploy, rollback, health check, database backup/restore. Sav
 - `deployment/scripts/deploy.sh` — runs `cdk deploy --all --require-approval never` for the target environment
 - `deployment/scripts/rollback.sh` — rolls back to previous CloudFormation stack version
 - `deployment/scripts/diff.sh` — runs `cdk diff` to preview changes before deploying
+
+**If Azure / GCP / On-Premises / Kubernetes:** Create equivalent deploy, rollback, and health check scripts using the platform's native tooling. See the corresponding platform steering file for platform-specific script patterns. Call `search_docs(query='deployment scripts <platform>', version='current')` for current guidance.
 
 ## Step 11: Pre-Deployment Checklist
 
@@ -230,10 +246,52 @@ If anything goes wrong: follow docs/rollback_plan.md
 
 Create `docs/operations_guide.md` with: architecture overview, deployment procedures, monitoring locations, escalation contacts, maintenance schedule, disaster recovery.
 
-Offer stakeholder summary: "Would you like me to create a deployment summary to share with your team?"
+### Disaster Recovery Section
 
-If yes, create `docs/stakeholder_summary_module12.md` covering: what was deployed, where, deployment method, monitoring setup, security posture, rollback plan, and operational contacts.
+The operations guide MUST include a disaster recovery section. Guide the bootcamper through defining:
+
+**Recovery Objectives:**
+- **RTO (Recovery Time Objective):** How long can the system be down? (Critical: <1hr, Production: <4hr, Dev: <24hr)
+- **RPO (Recovery Point Objective):** How much data can be lost? (Critical: <5min, Production: <1hr, Dev: <24hr)
+
+**Backup Strategy (3-2-1 Rule):** 3 copies of data, 2 different media types, 1 offsite copy.
+
+**What to back up:**
+1. Database (CRITICAL) — continuous WAL archiving + daily full backups for PostgreSQL; file copy for SQLite
+2. Configuration files — version-controlled in Git
+3. Source data in `data/raw/` and `data/transformed/` — on receipt
+4. Application code — version-controlled in Git
+
+**DR Scenarios to document:**
+- Database corruption → restore from latest backup, replay WAL logs
+- Accidental data deletion → PITR to point before deletion, or reload from source
+- Bad data load → restore database to pre-load backup, fix transformation, reload
+- Server failure → provision new server, restore from backups, update DNS
+- Complete site outage → activate DR site, restore from offsite backup
+
+**Backup scripts:** Create `deployment/scripts/backup-db.sh` and `deployment/scripts/restore-db.sh`. For PostgreSQL, use `pg_dump` for full backups. For SQLite, use file copy or the SQLite backup API.
+
+> **Agent instruction:** Use `search_docs(query='backup disaster recovery', version='current')` for current Senzing DR guidance. The operations guide should be specific to the bootcamper's deployment target and database backend.
+
+👉 "What are your recovery objectives? How long can the system be down (RTO), and how much data can you afford to lose (RPO)?" WAIT for response.
+
+Offer stakeholder summary: "Would you like me to create a one-page executive summary of this deployment to share with your team? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
+
+If yes, read the template at `senzing-bootcamp/templates/stakeholder_summary.md`. Follow the **MODULE 12** guidance block in the template to fill each placeholder with Module 12 context (deployment status, production metrics, operational readiness, architecture summary). Save the filled summary to `docs/stakeholder_summary_module12.md`.
 
 Remind user about bootcamp feedback: "You've completed the full bootcamp! Say 'bootcamp feedback' to document your experience."
 
 **Success:** Code packaged (always). If deployed: CI/CD pipeline working, staging verified, production deployed, operations documented.
+
+
+---
+
+## Platform Reference Sections
+
+Load the file matching the bootcamper's deployment target:
+
+- **On-Premises / Local Docker:** Load `deployment-onpremises.md`
+- **Azure:** Load `deployment-azure.md`
+- **GCP / Google Cloud:** Load `deployment-gcp.md`
+- **Kubernetes:** Load `deployment-kubernetes.md`
+- **AWS:** Use the "If AWS:" blocks in each step above (no separate file needed)

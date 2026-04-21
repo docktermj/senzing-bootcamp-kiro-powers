@@ -56,23 +56,14 @@ inclusion: manual
 
 4. **Create UAT test cases**:
 
-   Document in `docs/uat_test_cases.md`:
+   Read the UAT test case template at `senzing-bootcamp/templates/uat_test_cases.md`. Copy it into the user's project at `docs/uat_test_cases.md`. Customize the sample test cases with scenarios specific to the user's data sources and business requirements from Module 2.
 
-   ```markdown
-   # User Acceptance Test Cases
+   The template includes structured sections for:
+   - **Functional Tests** — Known matches, known non-matches, and edge cases
+   - **Performance Tests** — Query latency and throughput
+   - **Data Quality Tests** — False positive rate and false negative rate
 
-   ## Test Case 1: Duplicate Detection
-   **Scenario:** Find John Smith duplicates
-   **Expected:** 3 records resolve to 1 entity
-   **Actual:** [To be filled]
-   **Status:** [Pass/Fail]
-
-   ## Test Case 2: Cross-Source Matching
-   **Scenario:** Customer in CRM and E-commerce
-   **Expected:** Records linked to same entity
-   **Actual:** [To be filled]
-   **Status:** [Pass/Fail]
-   ```
+   Replace sample inputs with the user's actual record examples, adjust expected thresholds to match their business requirements, and add project-specific test cases as needed.
 
 5. **Execute UAT with business users**:
 
@@ -138,32 +129,25 @@ WAIT for response.
 
 ## Stakeholder Summary
 
-After validation is complete, offer: "Would you like me to create a summary of these results to share with your team or stakeholders?"
+After validation is complete, offer: "Would you like me to create a one-page executive summary of these results to share with your team or stakeholders? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
 
-If yes, create `docs/stakeholder_summary_module8.md`:
+If yes, read the template at `senzing-bootcamp/templates/stakeholder_summary.md`. Follow the **MODULE 8** guidance block in the template to fill each placeholder with Module 8 context (validation results from `docs/results_validation.md`, match metrics, UAT outcomes, loaded record counts). Save the filled summary to `docs/stakeholder_summary_module8.md`.
 
-```markdown
-# Entity Resolution Results — Validation Summary
+## Integration Patterns
 
-**Date**: [date] | **Status**: Results validated
+After validation, the bootcamper may ask "how do I use these results in my application?" Present these common integration patterns and help them choose:
 
-## What We Did
-Loaded [N] records from [N] data sources into Senzing and ran entity resolution.
+| Pattern | Real-time | Complexity | Best For |
+|---------|-----------|------------|----------|
+| Batch Report | No | Low | Reports, analytics, data warehouse feeds |
+| REST API | Yes | Medium | Web apps, microservices, customer lookup |
+| Streaming/Event-Driven | Yes | High | Real-time fraud detection, alerts, Kafka integration |
+| Database Sync | No | Medium | Data warehouses, BI tools, legacy system integration |
+| Duplicate Detection | No | Low | Data quality initiatives, stewardship, cleanup projects |
+| Watchlist Screening | Yes | Medium | Compliance (KYC/AML), risk management |
 
-## Results
-- Records loaded: [N]
-- Entities resolved: [N]
-- Match rate: [N]%
-- UAT pass rate: [N/N] test cases
+> **Agent instruction:** When the bootcamper asks about integration, use `find_examples(query='REST API')` or `find_examples(query='batch report')` for implementation patterns. Use `generate_scaffold` for code generation. Always iterate over known record IDs (from loaded data) rather than guessing entity IDs — the caller knows their records, not Senzing's internal IDs.
 
-## Key Findings
-- [Finding 1 — e.g., "85% of CRM duplicates were automatically detected"]
-- [Finding 2 — e.g., "Cross-source matching linked 340 records across CRM and billing"]
-- [Finding 3 — e.g., "5 false positives identified and documented for review"]
+**Key implementation principle:** Query programs should iterate over loaded records using `get_entity_by_record_id(data_source, record_id)` — never iterate over a guessed range of entity IDs. The caller knows the record IDs and data source codes they loaded; entity IDs are internal to Senzing.
 
-## Business Impact
-[How this addresses the problem defined in Module 2]
-
-## Next Steps
-[Performance testing / Production deployment / Additional data sources]
-```
+👉 "Would you like to build an integration for your results? I can help with batch reports, a REST API, streaming events, database sync, or duplicate detection — which fits your use case?" WAIT for response.

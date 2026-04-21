@@ -235,6 +235,8 @@ General-purpose cleaning functions (not Senzing-specific) that improve matching 
 
 ## Transformation Lineage
 
+Use the transformation lineage template at `templates/transformation_lineage.md` to document the complete transformation chain for each data source. Copy it to `docs/transformation_lineage_[name].md` and fill in after completing the mapping.
+
 Track how data flows through transformations:
 
 ```markdown

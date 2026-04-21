@@ -47,15 +47,17 @@ inclusion: manual
 
 4. **Explain results:** Walk through one entity — which features drove the match, what confidence scores mean, how Senzing handled format variations automatically.
 
-   **Offer visualization:** "Would you like me to create a web page showing these results?" If yes, ask: "Would you like any interactive features? For example: (a) 'how' entity explanations, (b) 'why' match analysis, (c) search by attributes, (d) find paths between entities — or just a static summary?" Generate accordingly and save to `src/quickstart_demo/demo_results.html`.
+5. **Offer visualization:** "Would you like me to create a web page showing these results?" If yes, ask: "Would you like any interactive features? For example: (a) 'how' entity explanations, (b) 'why' match analysis, (c) search by attributes, (d) find paths between entities — or just a static summary?" Generate accordingly and save to `src/quickstart_demo/demo_results.html`.
 
-5. **Close Module 1 explicitly.** Before asking any use-case questions, mark the module as done and state its purpose:
+   **This step MUST complete before closing the module. Do not skip to module-completion.md until the user has responded to the visualization offer.**
+
+6. **Close Module 1 explicitly.** Before asking any use-case questions, mark the module as done and state its purpose:
 
    "That's Module 1 complete! The purpose of this demo was to verify that your entire system works end-to-end — SDK, database, data loading, and entity resolution. The sample data and results were just a test, not the real work."
 
    Follow the `module-completion.md` workflow (journal entry, reflection question, next-step options).
 
-6. **Transition to Module 2.** Only after Module 1 is closed, introduce Module 2 with a clear contrast:
+7. **Transition to Module 2.** Only after Module 1 is closed, introduce Module 2 with a clear contrast:
 
    "Starting with Module 2, we shift to YOUR use case — your data, your problem, your success criteria. This is where the real work begins."
 

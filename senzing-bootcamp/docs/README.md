@@ -72,7 +72,6 @@ The following files remain in the root `senzing-bootcamp/` directory:
 
 ### For Developers
 
-- Development documentation is in `senzing-bootcamp-power-development/`
 - Review per-module steering files in `steering/` for detailed workflows
 
 ### For Agents

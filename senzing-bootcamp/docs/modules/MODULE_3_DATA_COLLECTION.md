@@ -47,6 +47,8 @@ All raw data sources must be stored in the `data/raw/` directory:
 
 ### Step 4: Document Data Sources
 
+Use the data collection checklist template at `templates/data_collection_checklist.md` to document all data sources in a structured format. Copy it to `docs/data_collection_checklist.md` and fill in one row per source.
+
 Create or update `docs/data_source_locations.md` with:
 
 - Data source name

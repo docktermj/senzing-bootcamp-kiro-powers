@@ -115,7 +115,7 @@ Verify:
 
 ### Step 5: Create UAT Test Cases
 
-Create User Acceptance Test cases based on business requirements. See `steering/uat-framework.md` for detailed guidance.
+Create User Acceptance Test cases based on business requirements. Use the UAT test case template at `templates/uat_test_cases.md` — copy it to `docs/uat_test_cases.md` and customize with your scenarios. See `steering/uat-framework.md` for detailed guidance.
 
 **Quick UAT Template:**
 
@@ -159,7 +159,7 @@ Execute each test case:
 
 The UAT executor program should:
 
-1. Load test cases from `docs/uat_test_cases.yaml`
+1. Load test cases from `docs/uat_test_cases.md`
 2. For each test case, run the appropriate query against the Senzing engine
 3. Compare actual results to expected outcomes
 4. Record each result as PASS, FAIL, or PENDING with timestamps and tester info
@@ -346,7 +346,7 @@ project/
 │       ├── fraud_detection.[ext]        # Fraud queries
 │       └── uat_executor.[ext]           # UAT test runner
 ├── docs/
-│   ├── uat_test_cases.yaml           # UAT test cases
+│   ├── uat_test_cases.md              # UAT test cases
 │   ├── uat_results.md                # UAT results report
 │   ├── uat_issues.yaml               # Issues found during UAT
 │   ├── uat_signoff.md                # Sign-off document
@@ -365,7 +365,7 @@ When a user is in Module 8:
 4. **Customize programs:** Add specific query logic
 5. **Save programs:** Save to `src/query/`
 6. **Test queries:** Help user run and verify queries
-7. **Create UAT test cases:** Generate `docs/uat_test_cases.yaml`
+7. **Create UAT test cases:** Generate `docs/uat_test_cases.md`
 8. **Execute UAT tests:** Run tests and document results
 9. **Track issues:** Log any failures in `docs/uat_issues.yaml`
 10. **Generate reports:** Create UAT results report

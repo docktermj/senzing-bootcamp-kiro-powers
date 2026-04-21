@@ -5,6 +5,8 @@ inclusion: manual
 # Module 4: Verify Data Sources Against SGES
 
 > **User reference:** For detailed background on this module, see `docs/modules/MODULE_4_DATA_QUALITY_SCORING.md`.
+>
+> **Quality Scoring Methodology:** For a full explanation of how quality scores are calculated, what each dimension measures, and what thresholds mean, see `docs/guides/QUALITY_SCORING_METHODOLOGY.md`. When a user asks how their score was calculated or what their score means, direct them to this guide.
 
 ## Workflow: Verify Data Sources Against SGES (Module 4)
 
@@ -43,9 +45,9 @@ inclusion: manual
 
    For each data source, compute a quality score based on field completeness, format consistency, and duplicate rate. Use these thresholds to guide the decision:
 
-   - **≥70% quality score** → Proceed to Module 5 (mapping). Data is good enough for meaningful entity resolution.
-   - **50-69% quality score** → Warn the user. Suggest specific fixes (fill nulls, standardize formats, deduplicate within source). Proceed to Module 5 if the user accepts the risk, but document the quality gaps.
-   - **<50% quality score** → Strongly recommend fixing data quality before mapping. Entity resolution results will be poor. Help the user identify the biggest quality issues and create a remediation plan. Only proceed if the user explicitly chooses to continue.
+   - **≥80% quality score** → Proceed to Module 5 (mapping). Data quality is strong enough for meaningful entity resolution.
+   - **70-79% quality score** → Warn the user. Quality gaps exist — suggest specific fixes (fill nulls, standardize formats, deduplicate within source). Proceed to Module 5 if the user accepts the risk, but document the quality gaps. See `docs/guides/QUALITY_SCORING_METHODOLOGY.md` for details on what each score range means.
+   - **<70% quality score** → Strongly recommend fixing data quality before mapping. Entity resolution results will be poor. Help the user identify the biggest quality issues and create a remediation plan. Only proceed if the user explicitly chooses to continue. Direct the user to `docs/guides/QUALITY_SCORING_METHODOLOGY.md` for guidance on improving each dimension.
 
    Present the assessment clearly:
 
@@ -111,8 +113,8 @@ inclusion: manual
 After presenting the quality assessment, guide the user's decision:
 
 - **Quality ≥80%:** "Your data quality is strong. Ready to proceed to Module 5 (mapping)."
-- **Quality 70-79%:** "Your data quality is acceptable but has some gaps. You can proceed to mapping now — or if you'd like to improve the weakest fields first, we can work on that. What would you prefer?"
-- **Quality <70%:** "Your data quality needs attention before mapping will produce good results. I'd recommend focusing on [specific issues — e.g., filling missing phone numbers, standardizing address formats]. Would you like to work on improving the data, or proceed anyway knowing the results may be limited?"
+- **Quality 70-79%:** "Your data quality is acceptable but has some gaps. You can proceed to mapping now — or if you'd like to improve the weakest fields first, we can work on that. See `docs/guides/QUALITY_SCORING_METHODOLOGY.md` for details on what each dimension means. What would you prefer?"
+- **Quality <70%:** "Your data quality needs attention before mapping will produce good results. I'd recommend focusing on [specific issues — e.g., filling missing phone numbers, standardizing address formats]. See `docs/guides/QUALITY_SCORING_METHODOLOGY.md` for a full breakdown of how scores are calculated and what to improve. Would you like to work on improving the data, or proceed anyway knowing the results may be limited?"
 
 WAIT for response before proceeding.
 

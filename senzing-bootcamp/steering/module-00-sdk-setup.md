@@ -79,75 +79,27 @@ If verification fails, use `explain_error_code` for any SENZ error codes and `se
 
 ## Step 5: Configure License
 
-**First, check for existing licenses** before asking the user:
+Senzing checks for licenses in this order: project-local `licenses/g2.lic` → `SENZING_LICENSE_PATH` env var → system CONFIGPATH → built-in evaluation (500 records).
 
-1. Check if a license already exists at the system CONFIGPATH (e.g., `/etc/opt/senzing/g2.lic` on Linux). Use `sdk_guide(topic='configure')` to get the correct CONFIGPATH for the platform.
-2. Check if `licenses/g2.lic` exists in the project directory.
+Check all three locations before asking the user. If found, confirm: "I found a license at [location]. Use this one?" WAIT for response.
 
-**If a system license is found at CONFIGPATH:**
+If no license found, ask: "Do you have a Senzing license file or BASE64 key? If not, the SDK works with evaluation limits (500 records)." WAIT for response.
 
-Tell the user: "I found an existing Senzing license at [CONFIGPATH]. Would you like to use this license, or do you have a different one you'd like to use for this project?"
-
-WAIT for response.
-
-- If they want to use the system license → no action needed, proceed to Step 6.
-- If they have a different license → proceed to the "custom license" flow below.
-
-**If no system license is found**, ask: "Do you have a Senzing license file (`g2.lic`) or a BASE64 license key? If not, no worries — the SDK works with its built-in evaluation limits (500 records)."
-
-WAIT for response.
-
-**🚨 NEVER ask the user to paste a license key or BASE64 string into the chat.** Chat prompt history may be retained, and license keys are sensitive. Always direct the user to save the key to a file instead.
-
-**If they have a license key (BASE64 string):**
-
-Tell them: "Please save your license key to the file `licenses/g2.lic` — don't paste it into the chat, since chat history may be kept. The license file is binary, so you'll need to decode the BASE64 string first:"
+**🚨 NEVER ask the user to paste a license key into chat.** Direct them to decode to `licenses/g2.lic`:
 
 ```bash
-# Linux / macOS
 echo 'YOUR_BASE64_KEY' | base64 --decode > licenses/g2.lic
 ```
 
-```powershell
-# Windows (PowerShell)
-[IO.File]::WriteAllBytes("licenses\g2.lic", [Convert]::FromBase64String("YOUR_BASE64_KEY"))
-```
-
-- Verify the file exists after they confirm
-
-**If they have a license file:**
-
-- Ask them to place it at `licenses/g2.lic`
-- Verify the file exists
-
-**When a project-local license exists at `licenses/g2.lic`:**
-
-**🚨 IMPORTANT:** Add `LICENSEFILE` to the `PIPELINE` section of the engine configuration JSON, pointing to the project-local file. This ensures the project uses its own license instead of whatever is at the system CONFIGPATH. When generating the engine config in Step 8, include:
+When a project-local license exists, add `LICENSEFILE` to the engine config PIPELINE section:
 
 ```json
-"PIPELINE": {
-  "LICENSEFILE": "licenses/g2.lic"
-}
+"PIPELINE": { "LICENSEFILE": "licenses/g2.lic" }
 ```
 
-This overrides the system license. Without this, the engine will use the CONFIGPATH license, which may be stale or different from what the user provided.
+Record in `config/bootcamp_preferences.yaml`: `license: custom` or `license: evaluation`.
 
-Record in `config/bootcamp_preferences.yaml`:
-
-```yaml
-license: custom
-license_path: licenses/g2.lic
-```
-
-**If they don't have a license:**
-
-- Inform them: "No problem. The SDK includes built-in evaluation limits (500 records) that are fine for the bootcamp. If you'd like a full evaluation license later, you can email <support@senzing.com>."
-- Record in `config/bootcamp_preferences.yaml`:
-
-  ```yaml
-  license: evaluation
-  license_path: null
-  ```
+For license acquisition: evaluation → support@senzing.com (1-2 days, 30-90 day validity); production → sales@senzing.com. See `licenses/README.md` for details.
 
 ## Step 6: Create Project Directory Structure
 

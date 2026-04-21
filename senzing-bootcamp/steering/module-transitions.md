@@ -1,12 +1,32 @@
 ---
-inclusion: auto
+inclusion: fileMatch
+fileMatchPattern: "config/bootcamp_progress.json"
+description: "Module boundary guidance: start banners, journey maps, before/after framing, step-level progress, and completion summaries. Loaded when bootcamp progress is read or written."
 ---
 
 # Module Transitions
 
+## Module Start Banner
+
+Display this banner at the start of every module. This is the module equivalent of the onboarding welcome banner. Replace N with the module number and [MODULE NAME IN CAPS] with the module's full name in uppercase.
+
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀🚀🚀  MODULE N: [MODULE NAME IN CAPS]  🚀🚀🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 ## Journey Map (at module start)
 
-Show a compact journey map using the path from `config/bootcamp_preferences.yaml`. Only modules in their path. Mark completed ✅, current →, upcoming plain. Include one-line "why" for each.
+MUST use this exact table format. Only show modules in the user's selected path from `config/bootcamp_preferences.yaml`.
+
+| Module | Name | Status |
+|--------|------|--------|
+| 0 | SDK Setup | ✅ Complete |
+| → 1 | Quick Demo | 🔄 Current |
+| 2 | Business Problem | ⬜ Upcoming |
+
+Use ✅ for completed modules, 🔄 for the current module (prefix module number with →), ⬜ for upcoming modules. Include one-line "why" for each.
 
 ## Before/After Framing (at module start)
 

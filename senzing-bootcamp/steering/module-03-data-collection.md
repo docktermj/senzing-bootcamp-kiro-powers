@@ -83,7 +83,15 @@ inclusion: manual
    Get-Content data\raw\vendor_api.json -TotalCount 5
    ```
 
-4. **Document data source locations**: Create or update `docs/data_source_locations.md`:
+4. **Document data source locations**:
+
+   **Data Collection Checklist Template**: Before the user starts documenting sources, offer to copy the checklist template into their project:
+
+   > "I have a data collection checklist template that helps you document all your data sources in a structured way. Want me to copy it to `docs/data_collection_checklist.md`?"
+
+   If the user accepts, copy `senzing-bootcamp/templates/data_collection_checklist.md` to the user's `docs/data_collection_checklist.md`. Guide the user to fill in one row per data source in the Data Inventory Table and complete the Validation Checklist before proceeding to Module 4.
+
+   Also create or update `docs/data_source_locations.md`:
 
    ```markdown
    # Data Source Locations

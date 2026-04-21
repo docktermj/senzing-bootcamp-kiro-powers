@@ -36,6 +36,8 @@ Retry once. If still failing, load `common-pitfalls.md` "MCP Server Unavailable"
 
 Load per-module steering file when user starts that module (0→`module-00-sdk-setup.md` through 12→`module-12-deployment.md`). After Module 2: `complexity-estimator.md`. At 8→9 gate: `cloud-provider-setup.md`. At path end: `lessons-learned.md`. On errors: `common-pitfalls.md`.
 
+Module 12 platform files: load `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target. Module 7 reference: load `module-07-reference.md` for ordering examples, conflict resolution, and troubleshooting.
+
 ## State & Progress
 
 - `mapping_workflow`: pass exact `state`, never modify. Save checkpoints to `config/mapping_state_[datasource].json` per `module-05-data-mapping.md`.
@@ -51,7 +53,7 @@ Load per-module steering file when user starts that module (0→`module-00-sdk-s
 - Before each step: what you're doing and why. During: status updates (never bare "Working..."). After: what changed, files produced with paths.
 - **Data visualization:** When presenting data results to the bootcamper (entity resolution results, quality analysis, match explanations, statistics), ask: "👉 Would you like me to visualize this data as a web page?" If yes, ask what interactive features they'd like. Generate accordingly — use the SDK's query capabilities to power interactive features. Save to `docs/` or `data/temp/`.
 - At module completion: summary of accomplishments, all files, why it matters for next module
-- At module start/completion: follow `module-transitions.md` rules. After completing any module: load `module-completion.md` for journal and path-completion workflow.
+- At module start/completion: follow `module-transitions.md` rules (conditionally loaded when `config/bootcamp_progress.json` is accessed, not auto-included). After completing any module: load `module-completion.md` for journal and path-completion workflow.
 - On "power feedback" / "bootcamp feedback": load `feedback-workflow.md`
 
 ## Hooks

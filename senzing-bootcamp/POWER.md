@@ -85,7 +85,7 @@ Load these on-demand when needed:
 
 **Agent Behavior:**
 
-- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~57 lines)
+- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~59 lines)
 - `session-resume.md` — Restores full context when resuming a previous bootcamp session
 - `onboarding-flow.md` — Full onboarding sequence: directory creation, language selection, prerequisite checks, path selection, validation gates
 - `cloud-provider-setup.md` — Cloud provider selection at the 8→9 gate (AWS, Azure, GCP, on-premises, local)

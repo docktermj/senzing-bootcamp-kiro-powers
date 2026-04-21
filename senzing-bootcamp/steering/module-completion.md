@@ -20,7 +20,7 @@ Append to `docs/bootcamp_journal.md` (create if needed):
 
 ## Reflection Question
 
-After the factual journal entry, ask: "What's your main takeaway from this module — anything that surprised you, or something you want to remember?"
+After the factual journal entry, ask: "👉 What's your main takeaway from this module — anything that surprised you, or something you want to remember?"
 
 Append response under "Bootcamper's takeaway." If they decline, write "No additional notes." Don't push.
 
@@ -28,12 +28,12 @@ Append response under "Bootcamper's takeaway." If they decline, write "No additi
 
 After the journal entry and reflection, present 3-4 concrete options based on the module just completed. Don't just say "proceed to Module N" — give the user choices:
 
-- **Proceed:** "Ready to move on to Module [N] ([name])?"
-- **Iterate:** "Would you like to improve anything from this module first? (e.g., better quality scores, additional data sources, more test cases)"
-- **Explore:** "Would you like to dig deeper into what we just did? (e.g., examine specific entities, try different queries, review match explanations)"
-- **Share:** "Would you like to prepare a summary of these results to share with your team or stakeholders?"
+- **Proceed:** "👉 Ready to move on to Module [N] ([name])?"
+- **Iterate:** "Would you like to improve anything from this module first?"
+- **Explore:** "Would you like to dig deeper into what we just did?"
+- **Share:** "Would you like to prepare a summary to share with your team?"
 
-WAIT for response. Let the user choose their pace.
+Present these as a single list, then: "👉 What would you like to do?" WAIT for response.
 
 ## Path Completion Detection
 

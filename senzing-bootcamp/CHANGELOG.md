@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 For the complete version history (0.1.0 through 0.1.9), see the development repository at `senzing-bootcamp-power-development/CHANGELOG_FULL.md`.
 
+## [0.8.0] - 2026-04-17
+
+### Added in 0.8.0
+
+- Setup preamble in `onboarding-flow.md` — tells user admin setup is happening, bootcamp starts at "🎓 Welcome to the Senzing Bootcamp!"
+- `👉` input-required marker in `agent-instructions.md` — all questions needing a response are prefixed with 👉 so bootcampers know when input is needed
+- Goldilocks detail check every 3 modules — asks if detail level is too much, too little, or just right; persists preference as `detail_level` in `bootcamp_preferences.yaml`
+- "🎓 Welcome back to the Senzing Bootcamp!" banner in `session-resume.md`
+- `session-resume.md` now reads `detail_level` from preferences to honor previous session's detail preference
+- `module-completion.md` reflection question and next-step options now use 👉 markers
+- SQLite ≤1,000 record recommendation in Module 6 Step 6 and Module 1 Agent Rules
+- "Loading 5,000+ records on SQLite" pitfall added to `common-pitfalls.md`
+- Module 1 explicit closure before Module 2 transition — states Module 1's purpose, marks complete, contrasts with Module 2
+- Module 2 Steps 1-3 have explicit WAIT markers between git init, privacy reminder, and design patterns
+
+### Changed in 0.8.0
+
+- `agent-instructions.md` 👉 rule explicitly says "apply in ALL modules, not just onboarding"
+- `onboarding-flow.md` key questions use 👉 prefix (language, introduction, path selection)
+
 ## [0.7.0] - 2026-04-17
 
 ### Added in 0.7.0

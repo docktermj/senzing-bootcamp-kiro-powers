@@ -71,4 +71,5 @@ inclusion: manual
 - MUST run the SDK — not just describe what would happen
 - Database path: `database/G2C.db` only. Override any `/tmp/` or `ExampleEnvironment` paths.
 - Track record counts during loading — `get_stats()` is per-process stats, not totals
+- If the user wants to explore more data after the demo (e.g., load the full CORD dataset), suggest staying under 1,000 records on SQLite: "For the best experience on SQLite, I'd recommend loading up to 1,000 records. Larger datasets work better with PostgreSQL, which we can set up later."
 - Data mart distinction: if `reporting_guide` returns `sz_dm_*` tables, flag as separate project requiring additional setup — not built-in SDK

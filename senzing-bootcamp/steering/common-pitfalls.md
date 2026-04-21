@@ -93,6 +93,7 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | ------------------------------------------------ | ---------------------------------------------------------------------------- |
 | No database backup                               | ALWAYS backup before loading (use backup hook)                               |
 | Loading without testing                          | Test with 100 records first                                                  |
+| Loading 5,000+ records on SQLite                 | Start with ≤1,000 records. Single-threaded ER slows as DB grows. Use PostgreSQL for larger volumes. |
 | Ignoring error codes                             | Use `explain_error_code` for every error, fix root cause                     |
 | Wrong DATA_SOURCE name                           | Verify matches Module 0 configuration                                        |
 | Duplicate RECORD_IDs                             | Ensure unique within each DATA_SOURCE. Append sequence number if needed      |

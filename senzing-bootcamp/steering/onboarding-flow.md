@@ -8,9 +8,15 @@ Load when starting a fresh bootcamp. Sequence: directory creation → language s
 
 **🚨 STRICT RULE: One question at a time.** Each numbered section below ends with a question and WAIT. Do NOT combine language selection, introduction, and path selection into one message. Present one question, wait for the response, then move to the next section. This is the most common onboarding complaint — do not skip the WAITs.
 
+## 0. Setup Preamble
+
+Before doing any setup work, tell the user:
+
+"I'm going to do some quick administrative setup — creating your project directory, installing hooks, and checking your environment. You'll see me working for a moment. When I'm done, you'll see **'🎓 Welcome to the Senzing Bootcamp!'** — that's when the bootcamp officially starts and I'll begin asking you questions."
+
 ## 1. Directory Structure
 
-Execute these setup actions in order. Do not narrate any of this to the user.
+Execute these setup actions in order. Do not narrate the details to the user.
 
 1. Check if `src/`, `data/`, `docs/` exist. If not, load `project-structure.md` and create.
 2. Install hooks: copy `senzing-bootcamp/hooks/*.kiro.hook` to `.kiro/hooks/`.
@@ -23,7 +29,7 @@ Execute these setup actions in order. Do not narrate any of this to the user.
 
 Present the MCP-returned language list to the bootcamper. **If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly to the bootcamper** and suggest alternatives. For example, if MCP discourages Python on macOS, tell them: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
 
-Ask: "Which language would you like to use?" WAIT for response.
+Ask: "👉 Which language would you like to use?" WAIT for response.
 
 Persist to `config/bootcamp_preferences.yaml`. If file exists from previous session, confirm: "Last time you chose [language]. Continue or switch?"
 
@@ -37,6 +43,14 @@ Detect platform (`platform.system()`). Check language runtime with `shutil.which
 
 ## 4. Bootcamp Introduction
 
+**Display the welcome banner prominently:**
+
+```text
+🎓 Welcome to the Senzing Bootcamp!
+```
+
+This signals to the user that setup is done and the bootcamp is starting. Everything before this was administrative.
+
 Present the overview before path selection. Cover all points naturally:
 
 - This bootcamp is a **guided discovery** of how to use Senzing. It's not a race — feel free to take it slow, read what the bootcamp is telling you, and ask questions at any point to help with your understanding. Be curious. The bootcamp is here to help you learn, not just to produce code.
@@ -47,7 +61,7 @@ Present the overview before path selection. Cover all points naturally:
 - Paths let you skip to what matters
 - If you encounter unfamiliar terms (like SGES, DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
 
-Ask: "Does this outline make sense? Any questions before we choose a path? Feel free to ask about anything — that's what the bootcamp is for." WAIT for response.
+Ask: "👉 Does this outline make sense? Any questions before we choose a path? Feel free to ask about anything — that's what the bootcamp is for." WAIT for response.
 
 ## 5. Path Selection
 
@@ -61,6 +75,8 @@ Present paths — not mutually exclusive, all completed modules carry forward:
 Module 0 inserted automatically before any module needing SDK.
 
 Interpreting responses: "A"/"demo"→Module 1, "B"/"fast"→Module 5, "C"/"beginner"→Module 2, "D"/"full"→Module 0. Bare number→clarify letter vs module.
+
+Present paths with: "👉 Which path sounds right for you?"
 
 ## Switching Paths
 

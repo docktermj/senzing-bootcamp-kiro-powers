@@ -10,7 +10,7 @@ inclusion: manual
 
 Use this workflow for each data source that needs to be loaded into Senzing. Create a separate loading program for each data source.
 
-**Before/After**: You have Senzing-formatted JSON files but they're just files on disk. After this module, your data is loaded into the Senzing engine and entity resolution has begun — duplicates are being matched automatically.
+**Before/After:** You have Senzing-formatted JSON files but they're just files on disk. After this module, your data is loaded into the Senzing engine and entity resolution has begun — duplicates are being matched automatically.
 
 **Before starting:** Identify which data sources are ready to load:
 
@@ -63,6 +63,8 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
    - Monitor progress and performance
    - Watch for any errors or issues
    - Note loading statistics (time, throughput, error rate)
+
+   **⚠️ SQLite performance note:** On SQLite with single-threaded loading, entity resolution gets progressively slower as the database grows. For the bootcamp learning experience, recommend loading ≤1,000 records initially. This is enough to see meaningful entity resolution results without long waits. If the user has more data, suggest: "Let's start with the first 1,000 records so we can see results quickly. Once we validate the results in Module 8, we can load the full dataset — or switch to PostgreSQL for better performance with larger volumes (Module 9 covers this)."
 
 7. **Save the loading program:** Document and save the program:
    - Save in `src/load/` with a clear name (e.g., `src/load/load_customer_db.[ext]`)

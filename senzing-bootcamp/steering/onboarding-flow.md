@@ -12,7 +12,7 @@ Load when starting a fresh bootcamp. Sequence: directory creation → language s
 
 Before doing any setup work, tell the user:
 
-"I'm going to do some quick administrative setup — creating your project directory, installing hooks, and checking your environment. You'll see me working for a moment. When I'm done, you'll see **'🎓 Welcome to the Senzing Bootcamp!'** — that's when the bootcamp officially starts and I'll begin asking you questions."
+"I'm going to do some quick administrative setup — creating your project directory, installing hooks, and checking your environment. You'll see me working for a moment. When I'm done, you'll see a big **WELCOME TO THE SENZING BOOTCAMP** banner — that's when the bootcamp officially starts and I'll begin asking you questions."
 
 ## 1. Directory Structure
 
@@ -43,10 +43,12 @@ Detect platform (`platform.system()`). Check language runtime with `shutil.which
 
 ## 4. Bootcamp Introduction
 
-**Display the welcome banner prominently:**
+**Display the welcome banner — make it impossible to miss:**
 
 ```text
-🎓 Welcome to the Senzing Bootcamp!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎓🎓🎓  WELCOME TO THE SENZING BOOTCAMP!  🎓🎓🎓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 This signals to the user that setup is done and the bootcamp is starting. Everything before this was administrative.

@@ -21,7 +21,7 @@ User-facing guide documents that help bootcamp participants get started, track p
 1. THE Guide_System SHALL provide a Quick Start guide (`QUICK_START.md`) that documents all four learning paths (Quick Demo, Fast Track, Complete Beginner, Full Production) with module sequences, skip-ahead options, and quick commands.
 2. THE Guide_System SHALL provide an Onboarding Checklist (`ONBOARDING_CHECKLIST.md`) that lists environment prerequisites (language runtime, git, disk space, RAM) and describes what the agent automates during setup.
 3. THE Guide_System SHALL provide a Progress Tracker (`PROGRESS_TRACKER.md`) that lists all 13 modules (0–12) with status indicators and supports auto-generation via `scripts/status.py --sync`.
-4. THE Guide_System SHALL provide a Hooks Installation Guide (`HOOKS_INSTALLATION_GUIDE.md`) that documents automatic installation, four manual installation methods, the 11 pre-configured hooks, customization options, and uninstall instructions.
+4. THE Guide_System SHALL provide a Hooks Installation Guide (`HOOKS_INSTALLATION_GUIDE.md`) that documents automatic installation, four manual installation methods, the 13 pre-configured hooks, customization options, and uninstall instructions.
 
 ### Requirement 2: Post-Bootcamp and Team Collaboration Guides
 

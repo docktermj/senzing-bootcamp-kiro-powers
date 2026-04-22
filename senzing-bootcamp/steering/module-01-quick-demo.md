@@ -4,6 +4,8 @@ inclusion: manual
 
 # Module 1: Quick Demo (Optional)
 
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
+
 > **User reference:** `docs/modules/MODULE_1_QUICK_DEMO.md`
 
 **Language:** Use the bootcamper's chosen language for all code generation.

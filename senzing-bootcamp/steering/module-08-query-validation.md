@@ -4,6 +4,8 @@ inclusion: manual
 
 # Module 8: Query and Validate Results
 
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
+
 > **User reference:** For detailed background on this module, see `docs/modules/MODULE_8_QUERY_VALIDATION.md`.
 
 **Purpose:** Create query programs and conduct user acceptance testing.

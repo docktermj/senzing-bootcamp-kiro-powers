@@ -4,6 +4,8 @@ inclusion: manual
 
 # Module 2: Discover the Business Problem
 
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
+
 > **User reference:** For detailed background on this module, see `docs/modules/MODULE_2_BUSINESS_PROBLEM.md`.
 
 ## Workflow: Discover the Business Problem (Module 2)

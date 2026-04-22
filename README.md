@@ -21,7 +21,6 @@ This repository contains the Senzing Bootcamp Kiro Power and its development doc
 
 ## Configure Kiro
 
-1. In "Let's build", choose "Spec".
 1. In Kiro's agentic chat, switch from "Auto" to "Claude Opus 4.6".
 
 ## Install the Senzing Bootcamp Power

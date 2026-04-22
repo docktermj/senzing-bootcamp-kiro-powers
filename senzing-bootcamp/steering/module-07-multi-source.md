@@ -4,6 +4,8 @@ inclusion: manual
 
 # Module 7: Multi-Source Orchestration
 
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
+
 > **User reference:** For detailed background on this module, see `docs/modules/MODULE_7_MULTI_SOURCE_ORCHESTRATION.md`.
 
 **Purpose**: Coordinate loading of multiple data sources with dependencies, conflict resolution, and optimization.

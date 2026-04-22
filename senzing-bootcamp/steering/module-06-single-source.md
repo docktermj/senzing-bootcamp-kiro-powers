@@ -4,6 +4,8 @@ inclusion: manual
 
 # Module 6: Load Single Data Source
 
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
+
 > **User reference:** For detailed background on this module, see `docs/modules/MODULE_6_SINGLE_SOURCE_LOADING.md`.
 
 ## Workflow: Quick SDK Test Load — Part B: Create Loading Programs (Module 6)

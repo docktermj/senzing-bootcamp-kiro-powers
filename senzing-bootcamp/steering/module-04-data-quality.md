@@ -4,6 +4,8 @@ inclusion: manual
 
 # Module 4: Verify Data Sources Against SGES
 
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
+
 > **User reference:** For detailed background on this module, see `docs/modules/MODULE_4_DATA_QUALITY_SCORING.md`.
 >
 > **Quality Scoring Methodology:** For a full explanation of how quality scores are calculated, what each dimension measures, and what thresholds mean, see `docs/guides/QUALITY_SCORING_METHODOLOGY.md`. When a user asks how their score was calculated or what their score means, direct them to this guide.

@@ -4,6 +4,8 @@ inclusion: manual
 
 # Module 5: Data Mapping
 
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
+
 > **User reference:** `docs/modules/MODULE_5_DATA_MAPPING.md`
 
 **Before/After:** Raw data Senzing can't read → transformation programs that convert to Senzing JSON, validated and ready to load.

@@ -4,6 +4,8 @@ inclusion: manual
 
 # Module 3: Identify and Collect Data Sources
 
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
+
 > **User reference:** For detailed background on this module, see `docs/modules/MODULE_3_DATA_COLLECTION.md`.
 
 ## Workflow: Identify and Collect Data Sources (Module 3)

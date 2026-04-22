@@ -36,6 +36,8 @@ Retry once. If still failing, load `common-pitfalls.md` "MCP Server Unavailable"
 
 Load per-module steering file when user starts that module (0→`module-00-sdk-setup.md` through 12→`module-12-deployment.md`). After Module 2: `complexity-estimator.md`. At 8→9 gate: `cloud-provider-setup.md`. At path end: `lessons-learned.md`. On errors: `common-pitfalls.md`.
 
+**At every module start:** Read `config/bootcamp_progress.json` first (this triggers `module-transitions.md` loading), then display the module start banner, journey map, and before/after framing BEFORE doing any module-specific work. Never skip these — they orient the user.
+
 Module 12 platform files: load `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target. Module 7 reference: load `module-07-reference.md` for ordering examples, conflict resolution, and troubleshooting.
 
 ## State & Progress

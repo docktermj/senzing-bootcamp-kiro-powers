@@ -4,6 +4,8 @@ inclusion: manual
 
 # Module 12: Deployment and Packaging
 
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
+
 > **User reference:** See `docs/modules/MODULE_12_DEPLOYMENT_PACKAGING.md` for background.
 
 Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` if already set.

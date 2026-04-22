@@ -4,6 +4,8 @@ inclusion: manual
 
 # Module 9: Performance Testing
 
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
+
 > **User reference:** See `docs/modules/MODULE_9_PERFORMANCE_TESTING.md` for background.
 
 Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` — if AWS, tailor to RDS/Aurora and EC2 instance types.

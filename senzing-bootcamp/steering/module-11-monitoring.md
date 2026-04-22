@@ -4,6 +4,8 @@ inclusion: manual
 
 # Module 11: Monitoring and Observability
 
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
+
 > **User reference:** See `docs/modules/MODULE_11_MONITORING_OBSERVABILITY.md` for background.
 
 Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` — if AWS, use CloudWatch, SNS, X-Ray.

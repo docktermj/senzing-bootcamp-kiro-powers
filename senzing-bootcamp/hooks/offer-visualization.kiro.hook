@@ -1,0 +1,13 @@
+{
+  "name": "Offer Entity Graph Visualization",
+  "version": "1.0.0",
+  "description": "After query programs are created in Module 8, prompts the agent to offer generating an interactive entity graph visualization.",
+  "when": {
+    "type": "fileCreated",
+    "patterns": ["src/query/*"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A query program was just created. If the bootcamper is in Module 8 and hasn't been offered the entity graph visualization yet, offer it: 'Would you like me to generate an interactive entity graph visualization? It shows resolved entities as a force-directed network graph with clustering, search, and detail panels. I can create a self-contained HTML file you can open in any browser.' The visualization generator is at senzing-bootcamp/scripts/generate_visualization.py."
+  }
+}

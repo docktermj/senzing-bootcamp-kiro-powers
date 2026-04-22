@@ -93,7 +93,7 @@
            ▼
 ┌──────────────────────┐
 │      MODULE 8        │
-│ Query & Validation   │
+│ Query, Viz & Validate│
 │                      │
 │  • Create queries    │
 │  • UAT testing       │

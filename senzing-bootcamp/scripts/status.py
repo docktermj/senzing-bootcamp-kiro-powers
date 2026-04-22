@@ -37,7 +37,7 @@ MODULE_NAMES = {
     0: "SDK Setup", 1: "Quick Demo", 2: "Business Problem",
     3: "Data Collection", 4: "Data Quality", 5: "Data Mapping",
     6: "Single Source Loading", 7: "Multi-Source Orchestration",
-    8: "Query & Validation", 9: "Performance Testing",
+    8: "Query, Visualize & Validate", 9: "Performance Testing",
     10: "Security Hardening", 11: "Monitoring", 12: "Deployment",
 }
 
@@ -50,7 +50,7 @@ NEXT_STEPS = {
     5:  ("Start Module 5: Data Mapping", "Create transformation programs"),
     6:  ("Start Module 6: Single Source Loading", "Load your first data source"),
     7:  ("Start Module 7: Multi-Source Orchestration", "Manage dependencies between sources"),
-    8:  ("Start Module 8: Query & Validation", "Create query programs and validate results"),
+    8:  ("Start Module 8: Query, Visualize & Validate", "Create query programs, visualize results, and validate"),
     9:  ("Start Module 9: Performance Testing", "Benchmark and optimize performance"),
     10: ("Start Module 10: Security Hardening", "Implement security best practices"),
     11: ("Start Module 11: Monitoring", "Set up monitoring and observability"),

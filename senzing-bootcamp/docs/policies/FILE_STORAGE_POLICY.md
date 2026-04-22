@@ -60,7 +60,6 @@ scripts/
 ├── status.py            # Bootcamp status
 ├── check_prerequisites.py # Prerequisites check
 ├── install_hooks.py     # Hook installer
-├── clone_example.py     # Example cloner
 └── validate_commonmark.py # Markdown validation
 ```
 

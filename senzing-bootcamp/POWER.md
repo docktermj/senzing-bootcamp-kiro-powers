@@ -16,6 +16,13 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 This power works best with Claude Opus 4.6 or similar.
 
+## What's New in 0.10.0
+
+- Interactive entity graph visualization — the agent guides bootcampers through building their own D3.js force-directed graph with entity detail panels, clustering, and search. Load `steering/visualization-guide.md` during Module 8.
+- Progress repair tool (`scripts/repair_progress.py`) — reconstructs `bootcamp_progress.json` from project artifacts when state is corrupted.
+- Steering file index (`steering/steering-index.yaml`) — machine-readable mapping for faster agent file selection.
+- CI validation via GitHub Actions for power integrity, CommonMark, and tests.
+
 ## What This Bootcamp Does
 
 This bootcamp is a guided discovery of how to use Senzing for entity resolution. Feel free to take it slow, read what the bootcamp is telling you, and ask questions at any point — that's what it's here for.
@@ -34,7 +41,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 | 5 — Data Mapping                        | Transforms your data into Senzing's format (SGES)                         | Senzing needs data in a specific JSON format to do its work                                                      |
 | 6 — Single Source Loading               | Loads your first data source into Senzing                                 | Your first real entity resolution run with your own data                                                         |
 | 7 — Multi-Source Orchestration          | Loads and coordinates multiple data sources                               | Cross-source matching is where entity resolution really shines                                                   |
-| 8 — Query & Validation                  | Builds query programs and validates results against your success criteria | Proves the system answers your business questions                                                                |
+| 8 — Query, Visualize & Validate         | Builds query programs and validates results against your success criteria | Proves the system answers your business questions                                                                |
 | 9 — Performance Testing & Benchmarking  | Benchmarks and optimizes for your data volume                             | Ensures the system handles production-scale data                                                                 |
 | 10 — Security Hardening                 | Implements access controls and data protection                            | Required for production with sensitive data                                                                      |
 | 11 — Monitoring & Observability         | Sets up dashboards, alerts, and health checks                             | Keeps the system running reliably in production                                                                  |
@@ -123,6 +130,8 @@ Load these on-demand when needed:
 
 - `common-pitfalls.md` — Common mistakes and solutions (load on errors or when user is stuck)
 - `troubleshooting-decision-tree.md` — Visual diagnostic flowchart
+- `mcp-offline-fallback.md` — MCP server offline: blocked/continuable operations, fallback instructions, reconnection
+- `troubleshooting-commands.md` — Diagnostic commands, system checks, escalation procedures
 - `lessons-learned.md` — Post-project retrospective template
 
 **Advanced Topics:**
@@ -219,7 +228,7 @@ explain_error_code(error_code='0023')
 | 5      | Map Your Data                                  |
 | 6      | Load Single Data Source                        |
 | 7      | Multi-Source Orchestration                     |
-| 8      | Query and Validate Results                     |
+| 8      | Query, Visualize, and Validate Results  |
 | 9      | Performance Testing and Benchmarking           |
 | 10     | Security Hardening                             |
 | 11     | Monitoring and Observability                   |
@@ -284,7 +293,6 @@ python3 senzing-bootcamp/scripts/check_prerequisites.py # Validate prerequisites
 python3 senzing-bootcamp/scripts/validate_module.py     # Validate current module completion
 python3 senzing-bootcamp/scripts/validate_module.py --next 6  # Check if ready for module 6
 python3 senzing-bootcamp/scripts/install_hooks.py       # Install hooks
-python3 senzing-bootcamp/scripts/clone_example.py       # Clone example project
 python3 senzing-bootcamp/scripts/backup_project.py      # Backup project
 python3 senzing-bootcamp/scripts/restore_project.py     # Restore from backup
 python3 senzing-bootcamp/scripts/preflight_check.py     # Pre-demo environment check
@@ -306,7 +314,6 @@ Use `python` instead of `python3` on Windows.
 - Quality Scoring Methodology: `docs/guides/QUALITY_SCORING_METHODOLOGY.md`
 - Performance Baselines: `docs/guides/PERFORMANCE_BASELINES.md`
 - Templates: `templates/data_collection_checklist.md`, `templates/stakeholder_summary.md`, `templates/transformation_lineage.md`, `templates/uat_test_cases.md`
-- Example Projects: `examples/` — architectural blueprints (not runnable code) for simple single source, multi-source, and production deployment patterns
 
 ## Senzing Contact Information
 

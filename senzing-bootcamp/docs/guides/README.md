@@ -210,14 +210,6 @@ python scripts/install_hooks.py
 
 Interactive hook installation.
 
-### Clone Example
-
-```text
-python scripts/clone_example.py
-```
-
-Clone example projects to your workspace.
-
 ### Backup Project
 
 ```text
@@ -305,7 +297,6 @@ Found an issue or have a suggestion?
 - **Module Documentation**: `docs/modules/`
 - **Policy Documentation**: `docs/policies/`
 - **Steering Files**: `senzing-bootcamp/steering/`
-- **Examples**: `senzing-bootcamp/examples/`
 - **Hooks**: `senzing-bootcamp/hooks/`
 
 ## Quick Links

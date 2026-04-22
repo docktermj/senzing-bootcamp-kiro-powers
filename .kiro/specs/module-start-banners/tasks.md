@@ -43,7 +43,7 @@ Prepend a fenced code block banner to each of the 13 module documentation files 
     - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.4, 2.5, 3.1, 3.9, 4.1, 4.2, 4.3, 5.1, 5.2_
 
   - [x] 2.2 Add banner to MODULE_8_QUERY_VALIDATION.md
-    - Prepend the fenced code block banner with title `MODULE 8: QUERY AND VALIDATE RESULTS`
+    - Prepend the fenced code block banner with title `MODULE 8: QUERY, VISUALIZE, AND VALIDATE RESULTS`
     - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.4, 2.5, 3.1, 3.10, 4.1, 4.2, 4.3, 5.1, 5.2_
 
   - [x] 2.3 Add banner to MODULE_9_PERFORMANCE_TESTING.md

@@ -148,7 +148,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 8: Query and Validate Results
+### Module 8: Query, Visualize, and Validate Results
 
 **File**: [MODULE_8_QUERY_VALIDATION.md](MODULE_8_QUERY_VALIDATION.md)
 

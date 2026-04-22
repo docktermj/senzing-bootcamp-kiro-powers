@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Use this template during **Module 8 (Query and Validate Results)** to systematically document and execute User Acceptance Testing for your entity resolution project. The template covers three testing dimensions:
+Use this template during **Module 8 (Query, Visualize, and Validate Results)** to systematically document and execute User Acceptance Testing for your entity resolution project. The template covers three testing dimensions:
 
 - **Functional Tests** — Verify entity resolution correctness (known matches, known non-matches, edge cases)
 - **Performance Tests** — Measure query latency and throughput against defined thresholds

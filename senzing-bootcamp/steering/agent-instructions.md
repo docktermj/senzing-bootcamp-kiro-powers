@@ -30,7 +30,7 @@ On session start: check `config/bootcamp_progress.json`. If exists, load `sessio
 
 ## MCP Failure
 
-Retry once. If still failing, load `common-pitfalls.md` "MCP Server Unavailable" section for what's blocked vs. what can continue. Never fabricate.
+Retry once. If still failing, load `mcp-offline-fallback.md` for what's blocked vs. what can continue. Never fabricate.
 
 ## Module Steering
 
@@ -39,6 +39,8 @@ Load per-module steering file when user starts that module (0→`module-00-sdk-s
 **At every module start:** Read `config/bootcamp_progress.json` first (this triggers `module-transitions.md` loading), then display the module start banner, journey map, and before/after framing BEFORE doing any module-specific work. Never skip these — they orient the user.
 
 Module 12 platform files: load `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target. Module 7 reference: load `module-07-reference.md` for ordering examples, conflict resolution, and troubleshooting.
+
+**Multi-language projects:** If the bootcamper uses different languages for different components (e.g., Python for data transformation, TypeScript for a frontend), load the language steering file for whichever language is currently being edited. Don't force a single language across all components.
 
 ## State & Progress
 

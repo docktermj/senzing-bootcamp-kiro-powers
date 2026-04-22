@@ -127,7 +127,7 @@ Use the MCP `search_docs` tool — it searches indexed Senzing documentation and
 
 ## Feedback
 
-Say "power feedback" at any time. The agent guides you through documenting issues and suggestions.
+Say "power feedback" at any time. The agent guides you through documenting issues and suggestions. Your feedback is saved to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md` — see that file for the template format and submission instructions.
 
 ## Data Visualization
 

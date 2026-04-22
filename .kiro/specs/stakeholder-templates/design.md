@@ -34,7 +34,7 @@ The template uses a single-file design with conditional sections. The top of the
 Each guidance block maps to a module and tells the agent how to fill each placeholder:
 
 - **Module 2 (Business Problem)**: Problem definition focus — problem description, planned approach, identified sources, expected outcomes, data collection next steps, projected value
-- **Module 8 (Query & Validation)**: Results focus — original problem restated, resolution methodology, sources loaded with counts, match metrics and findings, performance/deployment next steps, measured impact
+- **Module 8 (Query, Visualize & Validate)**: Results focus — original problem restated, resolution methodology, sources loaded with counts, match metrics and findings, performance/deployment next steps, measured impact
 - **Module 12 (Deployment)**: Production focus — production problem statement, deployed architecture, production data sources, deployment metrics, operational next steps, production ROI
 
 ## Steering File Changes

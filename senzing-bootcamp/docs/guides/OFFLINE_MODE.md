@@ -36,7 +36,7 @@ These modules have core activities that depend on MCP tools. You can still make 
 | 5 | Data Mapping | Running existing transformation programs, reviewing previous mappings in `docs/mapping_*.md` | Starting new mapping workflows (`mapping_workflow`) |
 | 6 | Single Source Loading | Running existing loading programs, database backup/restore, monitoring progress | New loading code generation (`generate_scaffold`), SDK method lookup (`get_sdk_reference`) |
 | 7 | Multi-Source Orchestration | Running existing orchestration code, monitoring multi-source progress | New source mapping (`mapping_workflow`), code generation for new sources |
-| 8 | Query & Validation | Running existing query programs, reviewing results, conducting UAT with business users | New query code generation (`generate_scaffold`), SDK reference (`get_sdk_reference`) |
+| 8 | Query, Visualize & Validate | Running existing query programs, reviewing results, conducting UAT with business users | New query code generation (`generate_scaffold`), SDK reference (`get_sdk_reference`) |
 | 9-12 | Production Readiness | Running existing tests, reviewing documentation, infrastructure planning | Production guidance (`search_docs`), SDK reference (`get_sdk_reference`) |
 
 ### Key Takeaway

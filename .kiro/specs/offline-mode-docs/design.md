@@ -52,7 +52,7 @@ Two files are modified/created:
 | 5 (Data Mapping) | Partially blocked | `mapping_workflow` is core to this module |
 | 6 (Single Source Loading) | Partially blocked | `generate_scaffold`, `get_sdk_reference` for loading code |
 | 7 (Multi-Source) | Partially blocked | `mapping_workflow` for new sources; orchestration of existing code works |
-| 8 (Query & Validation) | Partially blocked | `generate_scaffold`, `get_sdk_reference` for query code |
+| 8 (Query, Visualize & Validate) | Partially blocked | `generate_scaffold`, `get_sdk_reference` for query code |
 | 9-12 (Production) | Partially blocked | `search_docs`, `get_sdk_reference` for production guidance |
 
 Key point: No module is fully blocked — all have some offline capability.

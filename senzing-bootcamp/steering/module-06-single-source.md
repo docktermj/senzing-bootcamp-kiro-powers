@@ -87,7 +87,7 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 
 10. **Repeat for remaining data sources:** If there are more data sources to load, repeat this entire workflow for each one. Each data source should have its own loading program.
 
-11. **Transition to Module 7:** Once all data sources have been loaded, proceed to Module 7 (Multi-Source Orchestration) to orchestrate loading of multiple sources with dependencies. If you only have one data source, skip to Module 8 (Query and Validate Results).
+11. **Transition to Module 7:** Once all data sources have been loaded, proceed to Module 7 (Multi-Source Orchestration) to orchestrate loading of multiple sources with dependencies. If you only have one data source, skip to Module 8 (Query, Visualize, and Validate Results).
 
 ## Recovery from Failed Load
 

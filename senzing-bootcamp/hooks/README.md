@@ -86,6 +86,12 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 **Action:** Prompts the agent to run the new code on sample data and verify it works before moving on
 **Use case:** Catches broken code before the user tries to run it manually
 
+### 14. Offer Entity Graph Visualization (`offer-visualization.kiro.hook`)
+
+**Trigger:** When new files are created in `src/query/`
+**Action:** Prompts the agent to offer generating an interactive entity graph visualization
+**Use case:** Ensures bootcampers are offered the visualization feature during Module 8
+
 ## Installation
 
 **Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.

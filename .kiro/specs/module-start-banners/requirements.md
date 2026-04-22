@@ -50,7 +50,7 @@ The Senzing Bootcamp power uses visual banners to signal transitions and orient 
 7. THE Banner_Block for MODULE_5 SHALL display `MODULE 5: MAP YOUR DATA` as the title text.
 8. THE Banner_Block for MODULE_6 SHALL display `MODULE 6: LOAD SINGLE DATA SOURCE` as the title text.
 9. THE Banner_Block for MODULE_7 SHALL display `MODULE 7: MULTI-SOURCE ORCHESTRATION` as the title text.
-10. THE Banner_Block for MODULE_8 SHALL display `MODULE 8: QUERY AND VALIDATE RESULTS` as the title text.
+10. THE Banner_Block for MODULE_8 SHALL display `MODULE 8: QUERY, VISUALIZE, AND VALIDATE RESULTS` as the title text.
 11. THE Banner_Block for MODULE_9 SHALL display `MODULE 9: PERFORMANCE TESTING AND BENCHMARKING` as the title text.
 12. THE Banner_Block for MODULE_10 SHALL display `MODULE 10: SECURITY HARDENING` as the title text.
 13. THE Banner_Block for MODULE_11 SHALL display `MODULE 11: MONITORING AND OBSERVABILITY` as the title text.

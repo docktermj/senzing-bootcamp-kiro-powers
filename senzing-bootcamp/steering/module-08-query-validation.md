@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-# Module 8: Query and Validate Results
+# Module 8: Query, Visualize, and Validate Results
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
@@ -56,9 +56,11 @@ inclusion: manual
 
    **If entity resolution found zero or very few matches:** This is a valid result — don't assume something is broken. Tell the user: "Entity resolution found very few matches. This could mean: (a) your records are genuinely distinct with no duplicates, (b) the matching criteria need adjustment — perhaps key fields weren't mapped or data quality is too low, or (c) you're working with a single source that has no internal duplicates. Let's investigate which one." Check: are name/address/phone fields populated? Were they mapped correctly in Module 5? Is the data quality score from Module 4 above 70%? If the data genuinely has no duplicates, that's a valid finding — document it.
 
+   **Offer entity graph visualization:** After running exploratory queries, offer: "👉 Would you like me to help you build an interactive entity graph? It shows resolved entities as a force-directed network with clustering by data source or match strength, search/filter, and detail panels." If yes, load `visualization-guide.md` and follow its workflow to walk the bootcamper through building the visualization in their chosen language.
+
 4. **Create UAT test cases**:
 
-   Read the UAT test case template at `senzing-bootcamp/templates/uat_test_cases.md`. Copy it into the user's project at `docs/uat_test_cases.md`. Customize the sample test cases with scenarios specific to the user's data sources and business requirements from Module 2.
+   Read the UAT test case template: #[[file:senzing-bootcamp/templates/uat_test_cases.md]] Copy it into the user's project at `docs/uat_test_cases.md`. Customize the sample test cases with scenarios specific to the user's data sources and business requirements from Module 2.
 
    The template includes structured sections for:
    - **Functional Tests** — Known matches, known non-matches, and edge cases
@@ -133,7 +135,7 @@ WAIT for response.
 
 After validation is complete, offer: "Would you like me to create a one-page executive summary of these results to share with your team or stakeholders? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
 
-If yes, read the template at `senzing-bootcamp/templates/stakeholder_summary.md`. Follow the **MODULE 8** guidance block in the template to fill each placeholder with Module 8 context (validation results from `docs/results_validation.md`, match metrics, UAT outcomes, loaded record counts). Save the filled summary to `docs/stakeholder_summary_module8.md`.
+If yes, read the stakeholder summary template: #[[file:senzing-bootcamp/templates/stakeholder_summary.md]] Follow the **MODULE 8** guidance block in the template to fill each placeholder with Module 8 context (validation results from `docs/results_validation.md`, match metrics, UAT outcomes, loaded record counts). Save the filled summary to `docs/stakeholder_summary_module8.md`.
 
 ## Integration Patterns
 

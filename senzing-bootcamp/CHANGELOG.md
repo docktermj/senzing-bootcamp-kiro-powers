@@ -5,6 +5,30 @@ All notable changes to the Senzing Bootcamp power will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-04-22
+
+### Added in 0.10.0
+
+- Visualization steering file (`steering/visualization-guide.md`) — guides the agent through helping bootcampers build their own interactive D3.js entity graph with detail panels, clustering, search/filter, and optional web server, in their chosen language
+- Progress repair tool (`scripts/repair_progress.py`) — reconstructs `bootcamp_progress.json` from project artifacts when state is corrupted
+- Steering file index (`steering/steering-index.yaml`) — machine-readable mapping of all steering files for faster agent file selection
+- GitHub Actions CI workflow (`.github/workflows/validate-power.yml`) for power integrity, CommonMark validation, and test execution
+- "What's New in 0.10.0" section in POWER.md for quick orientation
+- Offer Entity Graph Visualization hook (`offer-visualization.kiro.hook`) — prompts visualization offer when query files are created in Module 8
+- MCP offline fallback steering file (`steering/mcp-offline-fallback.md`) — extracted from common-pitfalls.md for leaner context loading
+- Troubleshooting commands steering file (`steering/troubleshooting-commands.md`) — extracted from troubleshooting-decision-tree.md
+
+### Changed in 0.10.0
+
+- FAQ feedback section updated with direct link to feedback template file
+- Module 8 steering file updated with visualization steering file reference (replaces script approach)
+- Hooks README updated with entry #14 for offer-visualization hook
+- `#[[file:]]` references added to module-03, module-05, and module-08 steering files for template access
+- Multi-language project note added to agent-instructions.md
+- PowerShell directory creation command added to project-structure.md
+- common-pitfalls.md reduced from 312 to 212 lines (MCP section extracted)
+- troubleshooting-decision-tree.md reduced from 299 to 224 lines (commands section extracted)
+
 ## [0.9.0] - 2026-04-21
 
 ### Added in 0.9.0

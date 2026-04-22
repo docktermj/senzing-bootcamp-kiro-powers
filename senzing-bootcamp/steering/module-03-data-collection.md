@@ -91,7 +91,7 @@ inclusion: manual
 
    > "I have a data collection checklist template that helps you document all your data sources in a structured way. Want me to copy it to `docs/data_collection_checklist.md`?"
 
-   If the user accepts, copy `senzing-bootcamp/templates/data_collection_checklist.md` to the user's `docs/data_collection_checklist.md`. Guide the user to fill in one row per data source in the Data Inventory Table and complete the Validation Checklist before proceeding to Module 4.
+   If the user accepts, copy the data collection checklist template (#[[file:senzing-bootcamp/templates/data_collection_checklist.md]]) to the user's `docs/data_collection_checklist.md`. Guide the user to fill in one row per data source in the Data Inventory Table and complete the Validation Checklist before proceeding to Module 4.
 
    Also create or update `docs/data_source_locations.md`:
 

@@ -13,7 +13,7 @@ graph TD
     M5 --> M6
 
     M6 --> M7[Module 7: Multi-Source Orchestration]
-    M6 --> M8[Module 8: Query & Validate Results]
+    M6 --> M8[Module 8: Query, Visualize & Validate Results]
     M7 --> M8
 
     M8 --> M9[Module 9: Performance Testing & Benchmarking]

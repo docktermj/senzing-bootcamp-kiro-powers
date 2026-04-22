@@ -1,0 +1,27 @@
+name: Validate Power
+
+on:
+  pull_request:
+    paths:
+      - 'senzing-bootcamp/**'
+  push:
+    branches: [main]
+    paths:
+      - 'senzing-bootcamp/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate power integrity
+        run: python senzing-bootcamp/scripts/validate_power.py
+      - name: Validate CommonMark
+        run: python senzing-bootcamp/scripts/validate_commonmark.py
+      - name: Run tests
+        run: |
+          pip install pytest hypothesis
+          python -m pytest tests/ -v --tb=short

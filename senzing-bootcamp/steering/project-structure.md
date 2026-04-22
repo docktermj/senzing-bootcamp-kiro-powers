@@ -41,4 +41,6 @@ for d in [
 
 Linux/macOS: `mkdir -p data/{raw,transformed,samples,backups,temp} database licenses src/{transform,load,query,utils} tests backups docs/feedback config logs monitoring scripts`
 
+Windows (PowerShell): `'data/raw','data/transformed','data/samples','data/backups','data/temp','database','licenses','src/transform','src/load','src/query','src/utils','tests','backups','docs/feedback','config','logs','monitoring','scripts' | ForEach-Object { New-Item -ItemType Directory -Force -Path $_ | Out-Null }`
+
 Also create: `.gitignore`, `.env.example`, `README.md`

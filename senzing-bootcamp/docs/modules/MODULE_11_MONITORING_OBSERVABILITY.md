@@ -1,3 +1,9 @@
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀🚀🚀  MODULE 11: MONITORING AND OBSERVABILITY  🚀🚀🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 # Module 11: Monitoring and Observability
 
 > **Agent workflow:** The agent follows `steering/module-11-monitoring.md` for this module's step-by-step workflow.

@@ -4,22 +4,22 @@ This diagram shows which modules depend on which. Use it to understand skip path
 
 ```mermaid
 graph TD
-    M0[Module 0: SDK Setup] --> M1[Module 1: Quick Demo]
-    M0 --> M6[Module 6: Single Source Loading]
+    M0[Module 0: Set Up SDK] --> M1[Module 1: Quick Demo]
+    M0 --> M6[Module 6: Load Single Data Source]
 
-    M2[Module 2: Business Problem] --> M3[Module 3: Data Collection]
+    M2[Module 2: Business Problem] --> M3[Module 3: Data Collection Policy]
     M3 --> M4[Module 4: Data Quality]
-    M4 --> M5[Module 5: Data Mapping]
+    M4 --> M5[Module 5: Map Your Data]
     M5 --> M6
 
     M6 --> M7[Module 7: Multi-Source Orchestration]
-    M6 --> M8[Module 8: Query & Validation]
+    M6 --> M8[Module 8: Query & Validate Results]
     M7 --> M8
 
-    M8 --> M9[Module 9: Performance Testing]
+    M8 --> M9[Module 9: Performance Testing & Benchmarking]
     M9 --> M10[Module 10: Security Hardening]
-    M10 --> M11[Module 11: Monitoring]
-    M11 --> M12[Module 12: Deployment]
+    M10 --> M11[Module 11: Monitoring & Observability]
+    M11 --> M12[Module 12: Package & Deploy]
 
     style M0 fill:#e1f5fe
     style M1 fill:#e8f5e9

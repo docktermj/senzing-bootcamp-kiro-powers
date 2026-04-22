@@ -41,15 +41,20 @@ User guides and installation instructions.
 
 **Files:**
 
+- `AFTER_BOOTCAMP.md` - Post-bootcamp guide for production and next steps
 - `COLLABORATION_GUIDE.md` - Team collaboration workflows
+- `COMMON_MISTAKES.md` - Most frequent bootcamp mistakes with real examples
 - `DESIGN_PATTERNS.md` - Entity resolution design patterns
 - `FAQ.md` - Frequently asked questions
+- `GETTING_HELP.md` - Support hierarchy and when to use each resource
 - `GLOSSARY.md` - Senzing entity resolution terminology
 - `HOOKS_INSTALLATION_GUIDE.md` - Guide for installing Kiro hooks
+- `OFFLINE_MODE.md` - What works without MCP and reconnection steps
 - `ONBOARDING_CHECKLIST.md` - Pre-bootcamp checklist
+- `PERFORMANCE_BASELINES.md` - Reference throughput and hardware requirements
 - `PROGRESS_TRACKER.md` - Module completion tracking
+- `QUALITY_SCORING_METHODOLOGY.md` - How quality scores are calculated
 - `QUICK_START.md` - Three fast paths to get started
-- `AFTER_BOOTCAMP.md` - Post-bootcamp guide for production and next steps
 
 ## Root Level Files
 

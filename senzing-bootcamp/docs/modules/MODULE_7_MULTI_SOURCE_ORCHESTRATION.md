@@ -1,3 +1,9 @@
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀🚀🚀  MODULE 7: MULTI-SOURCE ORCHESTRATION  🚀🚀🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 # Module 7: Multi-Source Orchestration
 
 > **Agent workflow:** The agent follows `steering/module-07-multi-source.md` for this module's step-by-step workflow.

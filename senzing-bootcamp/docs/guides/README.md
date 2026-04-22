@@ -254,7 +254,9 @@ docs/
 │   └── QUALITY_SCORING_METHODOLOGY.md
 ├── diagrams/                  # ⭐ NEW! Visual docs
 │   ├── module-flow.md        # Module diagrams
-│   └── data-flow.md          # Data pipeline diagrams
+│   ├── data-flow.md          # Data pipeline diagrams
+│   ├── system-architecture.md # SDK, database, and program architecture
+│   └── module-prerequisites.md # Module dependency graph
 ├── modules/                   # Module documentation
 │   ├── MODULE_0_SDK_SETUP.md
 │   ├── MODULE_1_QUICK_DEMO.md
@@ -267,33 +269,6 @@ docs/
 └── feedback/                  # Feedback templates
     └── SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md
 ```
-
-## What's New (2026-03-26)
-
-### New Guides
-
-- ✅ **FAQ.md**: Common bootcamp questions
-- ✅ **COLLABORATION_GUIDE.md**: Team workflows
-
-### New Scripts
-
-- ✅ **status.py**: Automated progress checking
-- ✅ **check_prerequisites.py**: Environment validation
-- ✅ **install_hooks.py**: Interactive hook installation
-- ✅ **clone_example.py**: Example project cloning
-
-### New Diagrams
-
-- ✅ **module-flow.md**: Visual module flow
-- ✅ **data-flow.md**: Data pipeline visualization
-
-### Enhanced Features
-
-- ✅ Automated status checking
-- ✅ One-command prerequisite validation
-- ✅ Easy hook installation
-- ✅ Example cloning
-- ✅ Visual learning aids
 
 ## Getting Help
 
@@ -343,5 +318,5 @@ Found an issue or have a suggestion?
 
 ---
 
-**Last Updated**: 2026-03-26
-**Version**: 2.0.0 (Major update with FAQ, Glossary, Collaboration Guide, and Scripts)
+**Last Updated**: 2026-04-21
+**Version**: 2.1.0

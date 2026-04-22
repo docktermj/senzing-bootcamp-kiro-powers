@@ -4,7 +4,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ## Available Modules
 
-### Module 0: SDK Setup
+### Module 0: Set Up SDK
 
 **File**: [MODULE_0_SDK_SETUP.md](MODULE_0_SDK_SETUP.md)
 
@@ -55,7 +55,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 3: Data Collection
+### Module 3: Data Collection Policy
 
 **File**: [MODULE_3_DATA_COLLECTION.md](MODULE_3_DATA_COLLECTION.md)
 
@@ -73,7 +73,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 4: Data Quality Scoring
+### Module 4: Evaluate Data Quality with Automated Scoring
 
 **File**: [MODULE_4_DATA_QUALITY_SCORING.md](MODULE_4_DATA_QUALITY_SCORING.md)
 
@@ -92,7 +92,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 5: Data Mapping
+### Module 5: Map Your Data
 
 **File**: [MODULE_5_DATA_MAPPING.md](MODULE_5_DATA_MAPPING.md)
 
@@ -110,7 +110,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 6: Single Source Loading
+### Module 6: Load Single Data Source
 
 **File**: [MODULE_6_SINGLE_SOURCE_LOADING.md](MODULE_6_SINGLE_SOURCE_LOADING.md)
 
@@ -148,7 +148,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 8: Query and Validation
+### Module 8: Query and Validate Results
 
 **File**: [MODULE_8_QUERY_VALIDATION.md](MODULE_8_QUERY_VALIDATION.md)
 
@@ -167,7 +167,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 9: Performance Testing
+### Module 9: Performance Testing and Benchmarking
 
 **File**: [MODULE_9_PERFORMANCE_TESTING.md](MODULE_9_PERFORMANCE_TESTING.md)
 

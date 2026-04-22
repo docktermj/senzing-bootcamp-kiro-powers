@@ -1,3 +1,9 @@
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀🚀🚀  MODULE 12: PACKAGE AND DEPLOY  🚀🚀🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 # Module 12: Package and Deploy
 
 > **Agent workflow:** The agent follows `steering/module-12-deployment.md` for this module's step-by-step workflow.

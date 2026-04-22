@@ -1,5 +1,5 @@
 ---
-inclusion: conditional
+inclusion: fileMatch
 fileMatchPattern: "**/*.py"
 ---
 

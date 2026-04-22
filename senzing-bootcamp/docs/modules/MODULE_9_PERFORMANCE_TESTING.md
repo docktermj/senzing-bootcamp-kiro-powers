@@ -1,3 +1,9 @@
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀🚀🚀  MODULE 9: PERFORMANCE TESTING AND BENCHMARKING  🚀🚀🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 # Module 9: Performance Testing and Benchmarking
 
 > **Agent workflow:** The agent follows `steering/module-09-performance.md` for this module's step-by-step workflow.

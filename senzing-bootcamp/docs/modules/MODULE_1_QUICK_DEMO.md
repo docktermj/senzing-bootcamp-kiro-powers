@@ -1,3 +1,9 @@
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀🚀🚀  MODULE 1: QUICK DEMO  🚀🚀🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 # Module 1: Quick Demo (Optional)
 
 > **Agent workflow:** The agent follows `steering/module-01-quick-demo.md` for this module's step-by-step workflow.
@@ -428,8 +434,8 @@ And provide recommendations based on your environment.
 
 ## Related Documentation
 
-- `../../POWER.md` - Bootcamp overview
-- `../../steering/module-01-quick-demo.md` - Module 1 workflow
+- `POWER.md` - Bootcamp overview
+- `steering/module-01-quick-demo.md` - Module 1 workflow
 - `QUICK_START.md` - Quick start guide
 
 ## Version History

@@ -1,3 +1,9 @@
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀🚀🚀  MODULE 2: UNDERSTAND BUSINESS PROBLEM  🚀🚀🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 # Module 2: Understand Business Problem
 
 > **Agent workflow:** The agent follows `steering/module-02-business-problem.md` for this module's step-by-step workflow.

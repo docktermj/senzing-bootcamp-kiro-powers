@@ -1,3 +1,9 @@
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀🚀🚀  MODULE 4: EVALUATE DATA QUALITY WITH AUTOMATED SCORING  🚀🚀🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 # Module 4: Evaluate Data Quality with Automated Scoring
 
 > **Agent workflow:** The agent follows `steering/module-04-data-quality.md` for this module's step-by-step workflow.

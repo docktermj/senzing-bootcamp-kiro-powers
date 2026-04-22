@@ -1,3 +1,9 @@
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀🚀🚀  MODULE 8: QUERY AND VALIDATE RESULTS  🚀🚀🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 # Module 8: Query and Validate Results
 
 > **Agent workflow:** The agent follows `steering/module-08-query-validation.md` for this module's step-by-step workflow.

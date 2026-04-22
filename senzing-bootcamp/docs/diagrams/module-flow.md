@@ -10,6 +10,16 @@
 └─────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────┐
+│      MODULE 0        │
+│    SDK Setup         │
+│                      │
+│  • Install SDK       │
+│  • Configure DB      │
+│  • Verify install    │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
 │   MODULE 1 (Optional)│
 │    Quick Demo        │
 │                      │
@@ -56,16 +66,6 @@
 │  • Transform data    │
 │  • Map attributes    │
 │  • Validate format   │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│      MODULE 0        │
-│    SDK Setup         │
-│                      │
-│  • Install SDK       │
-│  • Configure DB      │
-│  • Verify install    │
 └──────────┬───────────┘
            │
            ▼
@@ -177,8 +177,8 @@ Module 0 → Module 6 → Module 8 → Done
 ### Path D: Full Production
 
 ```text
-Module 1 → Module 2 → Module 3 → Module 4 → Module 5 →
-Module 0 → Module 6 → Module 7 → Module 8 → Module 9 →
+Module 0 → Module 1 → Module 2 → Module 3 → Module 4 → Module 5 →
+Module 6 → Module 7 → Module 8 → Module 9 →
 Module 10 → Module 11 → Module 12 → Done
 ```
 
@@ -228,7 +228,7 @@ Module 12: Requires Module 11 (optional)
 Module 0  → Installed SDK, configured database
 Module 1  → Demo results, understanding of entity resolution
 Module 2  → docs/business_problem.md
-Module 3  → data/raw/* files, docs/data_source_evaluation.md
+Module 3  → data/raw/* files, docs/data_source_locations.md
 Module 4  → Data quality reports
 Module 5  → src/transform/* programs, data/transformed/* files
 Module 6  → Loaded data, loading statistics

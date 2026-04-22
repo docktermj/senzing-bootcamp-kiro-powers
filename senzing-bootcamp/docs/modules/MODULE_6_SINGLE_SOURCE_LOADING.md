@@ -1,3 +1,9 @@
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀🚀🚀  MODULE 6: LOAD SINGLE DATA SOURCE  🚀🚀🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 # Module 6: Load Single Data Source
 
 > **Agent workflow:** The agent follows `steering/module-06-single-source.md` for this module's step-by-step workflow.

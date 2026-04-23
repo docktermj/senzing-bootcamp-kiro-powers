@@ -38,7 +38,7 @@ They are for the Senzingers who are "scrubbing" the Bootcamp.
       1. Click on the "Sign in via IAM Identity Center instead" link.
    1. In "Sign in with AWS IAM Identity Center":
       1. **Start URL:** <https://awssenzingsso.awsapps.com/start>
-      1. **AWS Region:** US-EAST-1
+      1. **AWS Region:** us-east-1
       1. Click "Continue"
    1. In "Sign in to awssenzingsso":
       1. **Username:**  What Ant gave you.

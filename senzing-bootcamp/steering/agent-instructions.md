@@ -58,8 +58,9 @@ Module 12 platform files: load `deployment-onpremises.md`, `deployment-azure.md`
 - **Data visualization:** When presenting data results to the bootcamper (entity resolution results, quality analysis, match explanations, statistics), ask: "👉 Would you like me to visualize this data as a web page?" If yes, ask what interactive features they'd like. Generate accordingly — use the SDK's query capabilities to power interactive features. Save to `docs/` or `data/temp/`.
 - At module completion: summary of accomplishments, all files, why it matters for next module
 - At module start/completion: follow `module-transitions.md` rules (conditionally loaded when `config/bootcamp_progress.json` is accessed, not auto-included). After completing any module: load `module-completion.md` for journal and path-completion workflow.
-- On "power feedback" / "bootcamp feedback": load `feedback-workflow.md`
+- On feedback trigger phrases ("bootcamp feedback", "power feedback", etc.): the `capture-feedback` hook handles this automatically — do not manually load `feedback-workflow.md`
 
 ## Hooks
 
 Install to `.kiro/hooks/` from `senzing-bootcamp/hooks/`. Create directory if needed.
+The `capture-feedback` hook is critical — it guarantees feedback is captured when bootcampers use trigger phrases. Verify it is installed.

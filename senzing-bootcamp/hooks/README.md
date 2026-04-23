@@ -92,6 +92,13 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 **Action:** Prompts the agent to offer generating an interactive entity graph visualization
 **Use case:** Ensures bootcampers are offered the visualization feature during Module 8
 
+### 15. Capture Bootcamp Feedback (`capture-feedback.kiro.hook`) ⭐
+
+**Trigger:** On every message submission (promptSubmit)
+**Action:** Checks for feedback trigger phrases and initiates the feedback workflow with automatic context capture
+**Use case:** Guarantees feedback is always captured when a bootcamper says "bootcamp feedback" — deterministic, not probabilistic
+**Recommended:** Install for all modules
+
 ## Installation
 
 **Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.

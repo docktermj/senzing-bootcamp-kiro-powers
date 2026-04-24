@@ -235,6 +235,139 @@ strategy: dependency-aware
 
 > **Agent instruction:** Use `generate_scaffold` with the bootcamper's chosen language and `find_examples(query='multi-source')` to generate orchestration code.
 
+## Validation Phase
+
+After all sources are loaded and orchestration is complete, validate the cross-source entity resolution results. This is the comprehensive validation phase — multi-source loading is where cross-source matching happens, so this is where you confirm match accuracy across all sources, run full UAT with business users, and obtain stakeholder sign-off.
+
+### Cross-Source Match Accuracy
+
+With multiple sources loaded, verify that records from different sources are resolving correctly:
+
+1. **Sample cross-source entities** — Pick 15–25 entities that contain records from multiple data sources and verify they represent the same real-world person or organization
+2. **Check cross-source matches** — Review entities where Senzing matched records across different sources (e.g., a CRM customer matched to an ERP vendor)
+3. **Check single-source entities** — Spot-check entities that only contain records from one source to confirm no cross-source matches were missed
+
+> **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='query', version='current')`
+> to generate code that retrieves cross-source entities for review. Use
+> `get_sdk_reference(topic='functions', filter='why_entities', version='current')` to explain
+> why records from different sources matched.
+
+### False Positive / False Negative Review
+
+- **False positives** — Records from different sources that matched but should not have (different people merged into one entity). Pay special attention to cross-source merges where matching evidence may be weaker.
+- **False negatives** — Records from different sources that should have matched but did not (same person appears as separate entities across sources). Search for known cross-source duplicates to confirm they resolved together.
+
+### Full UAT with Business Users
+
+Create and execute User Acceptance Testing with business stakeholders:
+
+1. **Define UAT test cases** — Create test cases based on the business problem (Module 2) that verify cross-source resolution meets business requirements
+2. **Execute UAT tests** — Run each test case and document pass/fail results
+3. **Review failures** — For any failing test cases, determine if the issue is data quality, matching configuration, or expected behavior
+4. **Iterate if needed** — If critical test cases fail, adjust data quality or matching configuration and re-run
+
+Document UAT results:
+
+```markdown
+# UAT Results - Multi-Source Validation
+
+**Date:** 2026-03-17
+**Sources Validated:** CUSTOMERS_CRM, VENDORS_ERP, PRODUCTS_CATALOG
+
+## Test Case Results
+
+| Test Case | Description | Result | Notes |
+|-----------|-------------|--------|-------|
+| TC-001 | Known customer-vendor matches resolve | ✅ Pass | 15/15 matched |
+| TC-002 | Distinct people stay separate | ✅ Pass | Spot-checked 20 |
+| TC-003 | Cross-source duplicates found | ✅ Pass | 342 cross-source merges |
+| TC-004 | No false merges on common names | ⚠️ Review | 2 borderline cases |
+
+## Summary
+
+- **Total Test Cases:** 12
+- **Passed:** 10
+- **Failed:** 0
+- **Needs Review:** 2
+- **UAT Pass Rate:** 83% (10/12 clear pass)
+```
+
+Save this in `docs/uat_results.md`.
+
+### Stakeholder Sign-Off
+
+After UAT is complete and issues are resolved:
+
+1. **Prepare summary** — Create a stakeholder summary showing entity resolution results, match accuracy, and UAT outcomes
+2. **Review with stakeholders** — Walk through results with business users and data stewards
+3. **Obtain sign-off** — Get formal acknowledgment that results meet business requirements
+4. **Document sign-off** — Record who signed off, when, and any conditions or caveats
+
+```markdown
+# Stakeholder Sign-Off
+
+**Date:** 2026-03-17
+**Project:** [Project Name]
+
+## Resolution Summary
+
+- **Total Records:** 62,500 (across 3 sources)
+- **Total Entities:** 58,200
+- **Cross-Source Matches:** 4,300
+- **UAT Pass Rate:** 100% (after issue resolution)
+
+## Sign-Off
+
+- [ ] Business owner confirms results meet requirements
+- [ ] Data steward confirms match accuracy is acceptable
+- [ ] Technical lead confirms system is ready for query development
+
+## Conditions
+
+(Document any conditions or caveats noted during sign-off)
+```
+
+Save this in `docs/uat_signoff.md`.
+
+### Results Validation Summary
+
+Document the overall validation findings:
+
+```markdown
+# Results Validation - Multi-Source
+
+**Date:** 2026-03-17
+**Sources:** CUSTOMERS_CRM, VENDORS_ERP, PRODUCTS_CATALOG
+
+## Cross-Source Match Accuracy
+
+- **Entities Sampled:** 25
+- **Correct Cross-Source Matches:** 23
+- **False Positives Found:** 2
+- **False Negatives Found:** 0
+
+## UAT Summary
+
+- **Test Cases Executed:** 12
+- **Pass Rate:** 100% (after iteration)
+- **Issues Found and Resolved:** 2
+
+## Stakeholder Sign-Off
+
+- **Status:** Complete
+- **Date:** 2026-03-17
+
+## Disposition
+
+- [ ] Cross-source match accuracy acceptable
+- [ ] False positives documented and reviewed
+- [ ] False negatives checked
+- [ ] UAT complete with acceptable pass rate
+- [ ] Stakeholder sign-off obtained
+```
+
+Save this in `docs/results_validation.md`.
+
 ## Agent Behavior
 
 When a user is in Module 6, the agent should:
@@ -261,6 +394,13 @@ Before completing Module 6:
 - [ ] Progress tracking implemented
 - [ ] Tested with sample data
 - [ ] All sources loaded successfully
+- [ ] Cross-source match accuracy reviewed
+- [ ] False positives and false negatives reviewed
+- [ ] UAT test cases created and executed
+- [ ] All critical UAT tests pass
+- [ ] Issues documented and resolved
+- [ ] Stakeholder sign-off obtained
+- [ ] Results validation documented
 
 ## Success Indicators
 
@@ -272,6 +412,10 @@ Module 6 is complete when:
 - Progress tracking functional
 - Multi-source dashboard generated
 - Loading statistics documented
+- Cross-source match accuracy validated
+- UAT completed with acceptable pass rate
+- Stakeholder sign-off obtained
+- Results validation documented and approved
 
 ## Output Files
 
@@ -279,6 +423,10 @@ Module 6 is complete when:
 - `docs/orchestration_strategy.md` - Strategy documentation
 - `docs/multi_source_dashboard.html` - Progress dashboard
 - `logs/orchestration.log` - Loading logs
+- `docs/uat_test_cases.md` - UAT test cases for cross-source validation
+- `docs/uat_results.md` - UAT execution results
+- `docs/uat_signoff.md` - Stakeholder sign-off documentation
+- `docs/results_validation.md` - Cross-source match accuracy and validation results
 
 ## Related Documentation
 

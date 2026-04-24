@@ -65,6 +65,21 @@ An **entity** is Senzing's resolved view of a real-world person or organization.
 >
 > If the user wants to proceed with the quick test path, advance through steps 5-8.
 > If they prefer to write their own loading program, skip to the Workflow section below.
+>
+> **Agent instruction — per-source mapping:** The `mapping_workflow` must be run
+> separately for each user-supplied source file. Each run must produce its own mapping
+> specification markdown (e.g., `scripts/toyworld_mapper.md`, `scripts/funtoys_mapper.md`).
+> Mapper code may be shared across sources if schemas are identical, but mapping
+> documentation is always per-source. Do not reuse one source's mapping output for
+> another source.
+
+### Per-Source Mapping Workflow
+
+When the user has multiple data sources, guide them through mapping each source individually:
+
+1. **Map the first source** — Run `mapping_workflow` for the first data file and complete steps 5–8. Confirm that a mapping specification markdown has been saved (e.g., `scripts/toyworld_mapper.md`).
+2. **Repeat for each additional source** — Run `mapping_workflow` again for the next data file. Complete steps 5–8 and save a separate mapping specification markdown (e.g., `scripts/funtoys_mapper.md`). Repeat until every source has been mapped.
+3. **Verify before loading** — Before proceeding to loading, confirm that a per-source mapping specification markdown exists for every user-supplied source file. Each file should be present in the `scripts/` directory.
 
 ## Workflow
 
@@ -248,6 +263,67 @@ See `logs/loading_errors.json` for details.
 
 Save this in `docs/loading_statistics_[data_source].md`.
 
+## Validation Phase
+
+After loading completes and statistics are reviewed, validate the entity resolution results for your single data source. This is the natural conclusion of the loading process — confirming that records resolved correctly before moving on.
+
+### Match Accuracy Review
+
+Check whether the right records are matching:
+
+1. **Sample resolved entities** — Pick 10–20 entities that contain multiple records and verify they represent the same real-world person or organization
+2. **Check high-confidence matches** — Review entities where Senzing matched records with strong evidence (shared name + address, shared SSN, etc.)
+3. **Check borderline matches** — Review entities where matching evidence is weaker to confirm they are correct
+
+> **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='query', version='current')`
+> to generate code that retrieves sample entities for review. Use
+> `get_sdk_reference(topic='functions', filter='why_entities', version='current')` to explain
+> why records matched.
+
+### False Positive / False Negative Review
+
+- **False positives** — Records that matched but should not have (different people merged into one entity). Look for entities with conflicting data (e.g., two different dates of birth).
+- **False negatives** — Records that should have matched but did not (same person appears as separate entities). Search for known duplicates by name or ID to confirm they resolved together.
+
+Document findings:
+
+```markdown
+# Results Validation - CUSTOMERS_CRM
+
+**Date:** 2026-03-17
+**Data Source:** CUSTOMERS_CRM
+
+## Match Accuracy
+
+- **Entities Sampled:** 20
+- **Correct Matches:** 19
+- **False Positives Found:** 1
+- **False Negatives Found:** 0
+
+## Notes
+
+- Entity 1042: Two records with same name but different addresses — confirmed same person (moved)
+- Entity 2087: False positive — two different people with same name merged. Review matching config.
+
+## Disposition
+
+- [ ] Match accuracy acceptable for single-source scenario
+- [ ] False positives documented and reviewed
+- [ ] False negatives checked (known duplicates resolved correctly)
+```
+
+Save this in `docs/results_validation.md`.
+
+### Single-Source Results Validation
+
+For a single data source, validation focuses on deduplication quality:
+
+- Are known duplicates resolving together?
+- Are distinct people staying separate?
+- Do entity counts align with expectations from the business problem (Module 2)?
+
+This is a lighter validation than the full cross-source UAT in Module 6. The goal is to catch obvious issues before adding more sources.
+
 ## Validation Gates
 
 Before proceeding to Module 6, verify:
@@ -259,6 +335,9 @@ Before proceeding to Module 6, verify:
 - [ ] Errors reviewed and understood
 - [ ] Entity counts make sense (not all records = entities)
 - [ ] Sample queries work (test with a few record IDs)
+- [ ] Match accuracy reviewed (sample entities checked)
+- [ ] False positives and false negatives reviewed
+- [ ] Results validation documented
 
 ## Success Indicators
 
@@ -268,6 +347,7 @@ Module 5 is complete when:
 - Loading statistics are documented
 - Errors are minimal and understood
 - You can query loaded records successfully
+- Match accuracy reviewed and results validated for single-source scenario
 - Ready to load additional sources (Module 6) or query results (Module 7)
 
 ## Common Issues
@@ -315,7 +395,8 @@ Module 5 is complete when:
 - **From Module 0:** Uses installed SDK and configured database
 - **From Module 4:** Loads transformed data files
 - **To Module 6:** Single-source loading is foundation for multi-source orchestration
-- **To Module 7:** Loaded data is queried and validated
+- **To Module 7:** Loaded data is queried and visualized
+- **Validation:** Single-source validation (match accuracy, false positive/negative review) is performed here as the final phase of loading, before proceeding to Module 6 or 7
 
 ## File Locations
 
@@ -335,7 +416,10 @@ project/
 │   └── loading.log                    # Detailed log
 └── docs/
     ├── loading_statistics_customers_crm.md  # Statistics
-    └── loading_strategy.md                  # Strategy documentation
+    ├── loading_strategy.md                  # Strategy documentation
+    ├── uat_test_cases.md                    # UAT test cases for validation
+    ├── uat_results.md                       # UAT execution results
+    └── results_validation.md                # Match accuracy and validation results
 ```
 
 ## Agent Behavior

@@ -10,7 +10,7 @@ inclusion: manual
 
 Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` — if AWS, tailor to RDS/Aurora and EC2 instance types.
 
-**Prerequisites:** Module 7 complete, representative data loaded, cloud provider set at 7→8 gate.
+**Prerequisites:** Module 7 (Query and Visualize) complete, representative data loaded, cloud provider set at 7→8 gate.
 
 **Before/After:** Entity resolution works but you don't know how it performs at scale. After this module, you'll have benchmarks, bottleneck analysis, and optimizations — confidence that it'll handle production volumes.
 
@@ -40,7 +40,7 @@ Call `generate_scaffold(language='<chosen_language>', workflow='add_records', ve
 
 ## Step 6: Benchmark Query Latency
 
-Benchmark all query patterns from Module 7: search by name, search by name+address, get entity by ID, get entity by record, why entity, how entity. Measure p50/p95/p99 over 100 iterations with warm-up. Save to `tests/performance/bench_query.[ext]`.
+Benchmark all query patterns from Module 7 (Query and Visualize): search by name, search by name+address, get entity by ID, get entity by record, why entity, how entity. Measure p50/p95/p99 over 100 iterations with warm-up. Save to `tests/performance/bench_query.[ext]`.
 
 ## Step 7: Profile Resources
 

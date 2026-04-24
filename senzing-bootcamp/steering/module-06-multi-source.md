@@ -147,7 +147,7 @@ inclusion: manual
    - Elapsed time and estimated time remaining
    - Resource utilization notes (if loading is slow, suggest reducing parallelism)
 
-   **⚠️ SQLite performance note:** With multiple sources on SQLite, loading gets progressively slower as the database grows. If total records across all sources exceed 1,000, recommend loading a subset first: "Let's load the first 500 records per source to validate cross-source matching. Once we confirm results in Module 7, we can load more — or switch to PostgreSQL for better performance (Module 8 covers this)."
+   **⚠️ SQLite performance note:** With multiple sources on SQLite, loading gets progressively slower as the database grows. If total records across all sources exceed 1,000, recommend loading a subset first: "Let's load the first 500 records per source to validate cross-source matching. Once we validate results here, we can load more — or switch to PostgreSQL for better performance (Module 8 covers this)."
 
 10. **Process redo queue**:
 
@@ -184,6 +184,100 @@ inclusion: manual
     - Any issues encountered and how they were resolved
     - Recommendations for future loads (e.g., switch to PostgreSQL, adjust parallelism)
 
+13. **Validate cross-source results quality**:
+
+    > **Agent instruction:** Use `reporting_guide(topic='evaluation', version='current')` to get
+    > the 4-point ER evaluation framework with evidence requirements. Use
+    > `reporting_guide(topic='quality', version='current')` for precision/recall metrics,
+    > split/merge detection, and review queue strategies. These provide structured evaluation
+    > approaches rather than ad-hoc quality checks.
+
+    Now that all sources are loaded and cross-source matching is complete, validate the results:
+    - **Match accuracy**: Query a sample of known records using `get_entity_by_record_id` — are correct records matched across sources?
+    - **False positives**: Are unrelated records from different sources being incorrectly merged into the same entity?
+    - **False negatives**: Are records that should match across sources resolving to separate entities?
+    - **Data completeness**: Are all records present? Do cross-source entity counts make sense?
+
+    If match accuracy is poor, revisit data quality (Module 4) or mapping before proceeding.
+
+14. **Execute UAT with business users**:
+
+    Ask: "Would you like to involve business users in testing the cross-source results?"
+
+    WAIT for response.
+
+    If yes:
+    - Share query examples showing cross-source matches
+    - Provide sample entities that span multiple data sources
+    - Collect feedback on match quality and completeness
+    - Document results in `docs/uat_results.md`
+
+    If no, the agent should still run a basic validation:
+    - Verify record counts per source match expectations
+    - Spot-check 5-10 cross-source entities for correctness
+    - Document findings in `docs/uat_results.md`
+
+15. **Get stakeholder sign-off**:
+
+    Once validation is complete, document the findings:
+
+    Create `docs/results_validation.md`:
+
+    ```markdown
+    # Results Validation
+
+    ## Match Quality
+    - True positives: 95%
+    - False positives: 2%
+    - False negatives: 3%
+
+    ## Business Validation
+    - Test cases passed: 45/50
+    - Issues identified: 5
+    - Resolution plan: [describe]
+    ```
+
+    ---
+
+    > **⛔ MANDATORY VISUALIZATION OFFER — RESULTS DASHBOARD**
+    >
+    > **🛑 DO NOT SKIP THIS STEP. You MUST offer the results dashboard visualization and WAIT for the user's response before proceeding.**
+
+    👉 **Ask the bootcamper:** "Would you like me to create a web page showing the cross-source results and validation metrics? It'll have entity tables, match explanations, and UAT results — saved as `docs/results_dashboard.html`."
+
+    > **⚠️ WAIT — Do NOT proceed to the Decision Gate until the bootcamper responds.**
+    >
+    > - If they say **yes**: Generate the HTML dashboard and save to `docs/results_dashboard.html`.
+    > - If they say **no** or **not now**: Acknowledge and proceed to the Decision Gate.
+    > - If they are **unsure**: Briefly explain the value, then wait for their decision.
+
+    ---
+
+16. **Document validation results**:
+
+    Save all validation findings to `docs/results_validation.md`:
+    - Total records loaded across all sources
+    - Entities created and cross-source match rate
+    - UAT results and any issues found
+    - Stakeholder feedback and sign-off status
+    - This becomes the validation baseline before proceeding to query programs in Module 7
+
+## Iterate vs. Proceed Decision Gate
+
+After presenting validation results, guide the decision:
+
+- **UAT pass rate ≥90% and match accuracy ≥90%:** "Results look strong. Ready to proceed to Module 7 (Query and Visualize) or stop here if you're on Path B/C."
+- **UAT pass rate 80-89%:** "Most tests pass but there are some gaps. You can proceed, or review the failures with stakeholders first. Would you like to iterate on the failing cases, or move forward?"
+- **UAT pass rate <80%:** "Results need improvement. The failing test cases suggest issues with [mapping quality / data quality / missing data sources]. I'd recommend going back to [Module 4 or 5] to address the root causes. Would you like to investigate, or proceed anyway?"
+
+WAIT for response.
+
+## Stakeholder Summary
+
+After validation is complete, offer: "Would you like me to create a one-page executive summary of these results to share with your team or stakeholders? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
+
+If yes, read the stakeholder summary template: #[[file:senzing-bootcamp/templates/stakeholder_summary.md]] Follow the **MODULE 6** guidance block in the template to fill each placeholder with Module 6 context (validation results from `docs/results_validation.md`, match metrics, UAT outcomes, loaded record counts across all sources). Save the filled summary to `docs/stakeholder_summary_module6.md`.
+
 ## Reference Material
 
 For source ordering examples, conflict resolution guidance, error handling procedures, and troubleshooting, load `module-06-reference.md`.
@@ -197,6 +291,10 @@ For source ordering examples, conflict resolution guidance, error handling proce
 - ✅ Error rate < 1% per source
 - ✅ Loading statistics documented in `docs/loading_strategy.md`
 - ✅ Orchestrator program saved in `src/load/orchestrator.[ext]`
+- ✅ Match accuracy validated (cross-source results reviewed for false positives/negatives)
+- ✅ UAT executed (business users or agent-driven spot checks)
+- ✅ Validation results documented in `docs/results_validation.md`
+- ✅ Stakeholder sign-off obtained (or documented as not required)
 
 ## Common Issues
 

@@ -111,6 +111,7 @@ This directory contains detailed documentation for each bootcamp module.
 - Progress tracking
 - Statistics generation
 - Backup procedures
+- Single-source results validation
 
 **When to Use**: After Module 0 (SDK installed)
 
@@ -129,25 +130,25 @@ This directory contains detailed documentation for each bootcamp module.
 - Parallel vs sequential loading
 - Error handling per source
 - Progress tracking across sources
-- Multi-source validation
+- Cross-source results validation and UAT
+- Stakeholder sign-off
 
 **When to Use**: After Module 5 (first source loaded successfully)
 
 ---
 
-### Module 7: Query, Visualize, and Validate Results
+### Module 7: Query and Visualize
 
 **File**: [MODULE_7_QUERY_VALIDATION.md](MODULE_7_QUERY_VALIDATION.md)
 
-**Purpose**: Create query programs and conduct user acceptance testing
+**Purpose**: Create query programs, overlap reports, and visualizations
 
 **Key Topics**:
 
 - Query program development
-- UAT framework implementation
-- Test case creation
-- Issue tracking and resolution
-- Stakeholder sign-off procedures
+- Search program creation
+- Overlap report generation
+- Entity visualization
 - Query specifications documentation
 
 **When to Use**: After Module 6 (all sources loaded)

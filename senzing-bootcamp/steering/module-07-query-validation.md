@@ -2,15 +2,15 @@
 inclusion: manual
 ---
 
-# Module 7: Query, Visualize, and Validate Results
+# Module 7: Query and Visualize
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
 > **User reference:** For detailed background on this module, see `docs/modules/MODULE_7_QUERY_VALIDATION.md`.
 
-**Purpose:** Create query programs and conduct user acceptance testing.
+**Purpose:** Create query programs and visualizations.
 
-**Before/After**: Your data is loaded and entities are resolved, but you haven't examined the results yet. After this module, you'll have query programs that answer your business questions and validated results you can trust.
+**Before/After**: Your data is loaded and entities are resolved, but you haven't examined the results yet. After this module, you'll have query programs that answer your business questions and visualizations of your resolved entities.
 
 **Prerequisites:**
 
@@ -64,66 +64,11 @@ inclusion: manual
 
    👉 **Ask the bootcamper:** "Would you like me to help you build an interactive entity graph? It shows resolved entities as a force-directed network graph with clustering by data source or match strength, search/filter, and detail panels. I can create a self-contained HTML file you can open in any browser."
 
-   > **⚠️ WAIT — Do NOT proceed to step 4 until the bootcamper responds.**
+   > **⚠️ WAIT — Do NOT proceed until the bootcamper responds.**
    >
    > - If they say **yes**: Load `visualization-guide.md` and follow its workflow.
-   > - If they say **no** or **not now**: Acknowledge and proceed to step 4.
+   > - If they say **no** or **not now**: Acknowledge and continue.
    > - If they are **unsure**: Briefly explain the value, then wait for their decision.
-
-   ---
-
-4. **Create UAT test cases**:
-
-   Read the UAT test case template: #[[file:senzing-bootcamp/templates/uat_test_cases.md]] Copy it into the user's project at `docs/uat_test_cases.md`. Customize the sample test cases with scenarios specific to the user's data sources and business requirements from Module 2.
-
-   The template includes structured sections for:
-   - **Functional Tests** — Known matches, known non-matches, and edge cases
-   - **Performance Tests** — Query latency and throughput
-   - **Data Quality Tests** — False positive rate and false negative rate
-
-   Replace sample inputs with the user's actual record examples, adjust expected thresholds to match their business requirements, and add project-specific test cases as needed.
-
-5. **Execute UAT with business users**:
-
-   Ask: "Would you like to involve business users in testing?"
-
-   If yes:
-   - Share query programs
-   - Provide sample queries
-   - Collect feedback
-   - Document results
-
-6. **Validate results quality**:
-
-   > **Agent instruction:** Use `reporting_guide(topic='evaluation', version='current')` to get
-   > the 4-point ER evaluation framework with evidence requirements. Use
-   > `reporting_guide(topic='quality', version='current')` for precision/recall metrics,
-   > split/merge detection, and review queue strategies. These provide structured evaluation
-   > approaches rather than ad-hoc quality checks.
-
-   Check:
-   - Match accuracy (are correct records matched?)
-   - False positives (are incorrect records matched?)
-   - False negatives (are matches missed?)
-   - Data completeness (is all data present?)
-
-7. **Document findings**:
-
-   Create `docs/results_validation.md`:
-
-   ```markdown
-   # Results Validation
-
-   ## Match Quality
-   - True positives: 95%
-   - False positives: 2%
-   - False negatives: 3%
-
-   ## Business Validation
-   - Test cases passed: 45/50
-   - Issues identified: 5
-   - Resolution plan: [describe]
-   ```
 
    ---
 
@@ -131,12 +76,12 @@ inclusion: manual
    >
    > **🛑 DO NOT SKIP THIS STEP. You MUST offer the results dashboard visualization and WAIT for the user's response before proceeding.**
 
-   👉 **Ask the bootcamper:** "Would you like me to create a web page showing the query results and validation metrics? It'll have entity tables, match explanations, and UAT results — saved as `docs/results_dashboard.html`."
+   👉 **Ask the bootcamper:** "Would you like me to create a web page showing the query results? It'll have entity tables, match explanations, and query output — saved as `docs/results_dashboard.html`."
 
-   > **⚠️ WAIT — Do NOT proceed to the Decision Gate until the bootcamper responds.**
+   > **⚠️ WAIT — Do NOT proceed until the bootcamper responds.**
    >
    > - If they say **yes**: Generate the HTML dashboard and save to `docs/results_dashboard.html`.
-   > - If they say **no** or **not now**: Acknowledge and proceed to the Decision Gate.
+   > - If they say **no** or **not now**: Acknowledge and proceed.
    > - If they are **unsure**: Briefly explain the value, then wait for their decision.
 
    ---
@@ -144,30 +89,25 @@ inclusion: manual
 **Success Criteria:**
 
 - ✅ Query programs created and tested
-- ✅ UAT test cases defined
-- ✅ Business users validated results
-- ✅ Match quality meets requirements (>90% accuracy)
-- ✅ Issues documented with resolution plan
+- ✅ Visualizations offered (entity graph and results dashboard)
 
-## Iterate vs. Proceed Decision Gate
+## Query Completeness Gate
 
-After presenting validation results, guide the decision:
+Before wrapping up this module, confirm:
 
-- **UAT pass rate ≥90% and match accuracy ≥90%:** "Results look strong. Ready to proceed to Module 8 (performance) or stop here if you're on Path B/C."
-- **UAT pass rate 80-89%:** "Most tests pass but there are some gaps. You can proceed, or review the failures with stakeholders first. Would you like to iterate on the failing cases, or move forward?"
-- **UAT pass rate <80%:** "Results need improvement. The failing test cases suggest issues with [mapping quality / data quality / missing data sources]. I'd recommend going back to [Module 4 or 5] to address the root causes. Would you like to investigate, or proceed anyway?"
+1. **Query programs created and tested?** — At least one query program runs successfully against the resolved data.
+2. **Visualizations offered?** — Both the entity graph and results dashboard were offered to the bootcamper.
+3. **Ready to proceed?**
+   - **Path A (full bootcamp):** Proceed to Module 8 (Performance Testing).
+   - **Path B/C (shorter paths):** This is a natural stopping point. The bootcamper has working query programs and can stop here.
 
-WAIT for response.
+👉 "Your query programs are working and visualizations have been offered. Would you like to continue to Module 8 (Performance Testing), or is this a good stopping point for your project?"
 
-## Stakeholder Summary
-
-After validation is complete, offer: "Would you like me to create a one-page executive summary of these results to share with your team or stakeholders? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
-
-If yes, read the stakeholder summary template: #[[file:senzing-bootcamp/templates/stakeholder_summary.md]] Follow the **MODULE 7** guidance block in the template to fill each placeholder with Module 7 context (validation results from `docs/results_validation.md`, match metrics, UAT outcomes, loaded record counts). Save the filled summary to `docs/stakeholder_summary_module7.md`.
+WAIT for response before proceeding.
 
 ## Integration Patterns
 
-After validation, the bootcamper may ask "how do I use these results in my application?" Present these common integration patterns and help them choose:
+After running queries, the bootcamper may ask "how do I use these results in my application?" Present these common integration patterns and help them choose:
 
 | Pattern | Real-time | Complexity | Best For |
 |---------|-----------|------------|----------|

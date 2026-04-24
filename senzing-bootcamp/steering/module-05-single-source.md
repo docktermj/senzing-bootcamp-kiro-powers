@@ -66,7 +66,7 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
    - Watch for any errors or issues
    - Note loading statistics (time, throughput, error rate)
 
-   **⚠️ SQLite performance note:** On SQLite with single-threaded loading, entity resolution gets progressively slower as the database grows. For the bootcamp learning experience, recommend loading ≤1,000 records initially. This is enough to see meaningful entity resolution results without long waits. If the user has more data, suggest: "Let's start with the first 1,000 records so we can see results quickly. Once we validate the results in Module 7, we can load the full dataset — or switch to PostgreSQL for better performance with larger volumes (Module 8 covers this)."
+   **⚠️ SQLite performance note:** On SQLite with single-threaded loading, entity resolution gets progressively slower as the database grows. For the bootcamp learning experience, recommend loading ≤1,000 records initially. This is enough to see meaningful entity resolution results without long waits. If the user has more data, suggest: "Let's start with the first 1,000 records so we can see results quickly. Once we validate the results here, we can load the full dataset — or switch to PostgreSQL for better performance with larger volumes (Module 8 covers this)."
 
 7. **Save the loading program:** Document and save the program:
    - Save in `src/load/` with a clear name (e.g., `src/load/load_customer_db.[ext]`)
@@ -87,7 +87,37 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 
 10. **Repeat for remaining data sources:** If there are more data sources to load, repeat this entire workflow for each one. Each data source should have its own loading program.
 
-11. **Transition to Module 6:** Once all data sources have been loaded, proceed to Module 6 (Multi-Source Orchestration) to orchestrate loading of multiple sources with dependencies. If you only have one data source, skip to Module 7 (Query, Visualize, and Validate Results).
+11. **Validate match accuracy:** Now that loading is complete, review the entity resolution results for this data source:
+    - Query a sample of known records using `get_entity_by_record_id` to check how they resolved
+    - Look for expected matches — are records that should match resolving to the same entity?
+    - Look for false positives — are unrelated records being incorrectly merged?
+    - Look for false negatives — are records that should match resolving to separate entities?
+    - If match accuracy is poor, revisit data quality (Module 4) or mapping before proceeding
+
+12. **Run basic UAT for single-source:** Validate that the loaded data meets business expectations:
+    - Verify record counts — does the number of loaded records match expectations?
+    - Spot-check entity resolution — pick 5-10 known entities and confirm they resolved correctly
+    - Document any issues found in `docs/uat_results.md`
+    - If critical issues are found, fix and reload before proceeding
+
+13. **Document results and offer visualization:** Record the validation findings:
+    - Save validation results to `docs/results_validation.md`
+    - Include: total records loaded, entities created, match rate, any issues found and their resolution
+    - This becomes the baseline for comparison if you load additional sources in Module 6
+
+    **⛔ MANDATORY VISUALIZATION OFFER — RESULTS DASHBOARD**
+
+    **🛑 DO NOT SKIP THIS STEP. You MUST offer the results dashboard visualization and WAIT for the user's response before proceeding.**
+
+    👉 **Ask the bootcamper:** "Would you like me to create a results dashboard showing your entity resolution results? It'll have entity counts, match statistics, and sample resolved entities — saved as `docs/results_dashboard.html`."
+
+    **⚠️ WAIT — Do NOT proceed until the bootcamper responds.**
+
+    - If they say **yes**: Generate the HTML dashboard and save to `docs/results_dashboard.html`.
+    - If they say **no** or **not now**: Acknowledge and proceed.
+    - If they are **unsure**: Briefly explain the value, then wait for their decision.
+
+14. **Transition to Module 6:** Once all data sources have been loaded and validation is complete, proceed to Module 6 (Multi-Source Orchestration) to orchestrate loading of multiple sources with dependencies. If you only have one data source, skip to Module 7 (Query and Visualize).
 
 ## Recovery from Failed Load
 

@@ -4,7 +4,7 @@ inclusion: manual
 
 # Cloud Provider Setup (7→8 Gate)
 
-Load this steering file at the Module 7→8 validation gate, before starting Module 8.
+Load this steering file at the Module 7→8 transition gate, before starting Module 8.
 
 ## Cloud Provider Selection
 

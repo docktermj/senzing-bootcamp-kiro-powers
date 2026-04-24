@@ -4,9 +4,9 @@ inclusion: manual
 
 # Onboarding Flow
 
-Load when starting a fresh bootcamp. Sequence: directory creation → language selection → prerequisites → introduction → path selection.
+Load when starting a fresh bootcamp. Sequence: directory creation → language selection → prerequisites → introduction → track selection.
 
-**🚨 STRICT RULE: One question at a time.** Each numbered section below ends with a question and WAIT. Do NOT combine language selection, introduction, and path selection into one message. Present one question, wait for the response, then move to the next section. This is the most common onboarding complaint — do not skip the WAITs.
+**🚨 STRICT RULE: One question at a time.** Each numbered section below ends with a question and WAIT. Do NOT combine language selection, introduction, and track selection into one message. Present one question, wait for the response, then move to the next section. This is the most common onboarding complaint — do not skip the WAITs.
 
 ## 0. Setup Preamble
 
@@ -53,21 +53,38 @@ Detect platform (`platform.system()`). Check language runtime with `shutil.which
 
 This signals to the user that setup is done and the bootcamp is starting. Everything before this was administrative.
 
-Present the overview before path selection. Cover all points naturally:
+Present the overview before track selection. Cover all points naturally:
 
 - This bootcamp is a **guided discovery** of how to use Senzing. It's not a race — feel free to take it slow, read what the bootcamp is telling you, and ask questions at any point to help with your understanding. Be curious. The bootcamp is here to help you learn, not just to produce code.
 - Goal: comfortable generating Senzing SDK code. Finish with running code as foundation for real use.
 - Module overview table (0-11): what each does and why it matters
 - Mock data available anytime. Three sample datasets: Las Vegas, London, Moscow
 - Built-in 500-record eval license; bring your own for more
-- Paths let you skip to what matters
+- Tracks let you skip to what matters
 - If you encounter unfamiliar terms (like Senzing Entity Specification (SGES), DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
 
-Ask: "👉 Does this outline make sense? Any questions before we choose a path? Feel free to ask about anything — that's what the bootcamp is for." WAIT for response.
+Ask: "👉 Does this outline make sense? Any questions before we choose a track? Feel free to ask about anything — that's what the bootcamp is for." WAIT for response.
 
-## 5. Path Selection
+## 5. Track Selection
 
-Present paths — not mutually exclusive, all completed modules carry forward:
+Display this quick-reference module table before presenting the tracks so the bootcamper can cross-reference module numbers:
+
+| Module | Title                                |
+|--------|--------------------------------------|
+| 0      | Set Up SDK                           |
+| 1      | Quick Demo (Optional)                |
+| 2      | Understand Business Problem          |
+| 3      | Data Collection Policy               |
+| 4      | Data Quality & Mapping               |
+| 5      | Load Single Data Source              |
+| 6      | Multi-Source Orchestration           |
+| 7      | Query and Visualize                  |
+| 8      | Performance Testing and Benchmarking |
+| 9      | Security Hardening                   |
+| 10     | Monitoring and Observability         |
+| 11     | Package and Deploy                   |
+
+Present tracks — not mutually exclusive, all completed modules carry forward:
 
 - **A) Quick Demo** — 0→1. Verify technology works. One session.
 - **B) Fast Track** — 4→5→7. Have Entity Specification data. Straight to loading/querying.
@@ -78,11 +95,11 @@ Module 0 inserted automatically before any module needing SDK.
 
 Interpreting responses: "A"/"demo"→Module 1, "B"/"fast"→Module 4, "C"/"beginner"→Module 2, "D"/"full"→Module 0. Bare number→clarify letter vs module.
 
-Present paths with: "👉 Which path sounds right for you?"
+Present tracks with: "👉 Which track sounds right for you?"
 
-## Switching Paths
+## Switching Tracks
 
-All completed modules carry forward. Read `bootcamp_progress.json`, show new path requirements vs. done, update preferences, resume from first incomplete module.
+All completed modules carry forward. Read `bootcamp_progress.json`, show new track requirements vs. done, update preferences, resume from first incomplete module.
 
 ## Changing Language
 
@@ -103,7 +120,7 @@ Gate checks:
 | 4→5   | Sources evaluated, mapped, programs tested, quality >70%                           |
 | 5→6   | Sources loaded, no critical errors                                                 |
 | 6→7   | All sources orchestrated (or single source)                                        |
-| 7→8   | Queries answer business problem, results validated. Load `cloud-provider-setup.md` |
+| 7→8   | Queries answer business problem. Load `cloud-provider-setup.md`                    |
 | 8→9   | Baselines captured, bottlenecks documented                                         |
 | 9→10  | Security checklist complete, no critical vulns                                     |
 | 10→11 | Monitoring configured, health checks passing                                       |
@@ -230,7 +247,7 @@ Prompt: "A query program was just created. If the bootcamper is in Module 7 and 
 
 **enforce-viz-offers** — Module 7 (agentStop → askAgent)
 
-Prompt: "First, read config/bootcamp_progress.json and check the current_module field. If the current module is NOT 7, do nothing — let the conversation end normally. If the current module IS 7, review the conversation history and check whether you offered BOTH of these visualizations during this interaction: 1. Entity graph visualization — an interactive force-directed network graph of resolved entities (offered after exploratory queries in step 3). 2. Results dashboard — an HTML page showing query results and validation metrics (offered after documenting findings in step 7). If BOTH were offered (regardless of whether the bootcamper accepted or declined), do nothing. If EITHER was NOT offered, ask the bootcamper if they would like that visualization before wrapping up. WAIT for the bootcamper's response before finishing."
+Prompt: "First, read config/bootcamp_progress.json and check the current_module field. If the current module is NOT 7, do nothing — let the conversation end normally. If the current module IS 7, review the conversation history and check whether you offered BOTH of these visualizations during this interaction: 1. Entity graph visualization — an interactive force-directed network graph of resolved entities (offered after exploratory queries in step 3). 2. Results dashboard — an HTML page showing query results and summary metrics (offered after documenting findings). If BOTH were offered (regardless of whether the bootcamper accepted or declined), do nothing. If EITHER was NOT offered, ask the bootcamper if they would like that visualization before wrapping up. WAIT for the bootcamper's response before finishing."
 
 - id: `enforce-viz-offers`
 - name: `Enforce Module 7 Visualization Offers`

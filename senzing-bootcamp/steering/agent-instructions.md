@@ -34,7 +34,7 @@ Retry once. If still failing, load `mcp-offline-fallback.md` for what's blocked 
 
 ## Module Steering
 
-Load per-module steering file when user starts that module (0→`module-00-sdk-setup.md` through 11→`module-11-deployment.md`). After Module 2: `complexity-estimator.md`. At 7→8 gate: `cloud-provider-setup.md`. At path end: `lessons-learned.md`. On errors: `common-pitfalls.md`.
+Load per-module steering file when user starts that module (0→`module-00-sdk-setup.md` through 11→`module-11-deployment.md`). After Module 2: `complexity-estimator.md`. At 7→8 gate: `cloud-provider-setup.md`. At track end: `lessons-learned.md`. On errors: `common-pitfalls.md`.
 
 **At every module start:** Read `config/bootcamp_progress.json` first (this triggers `module-transitions.md` loading), then display the module start banner, journey map, and before/after framing BEFORE doing any module-specific work. Never skip these — they orient the user.
 
@@ -57,7 +57,7 @@ Module 11 platform files: load `deployment-onpremises.md`, `deployment-azure.md`
 - Before each step: what you're doing and why. During: status updates (never bare "Working..."). After: what changed, files produced with paths.
 - **Data visualization:** When presenting data results to the bootcamper (entity resolution results, quality analysis, match explanations, statistics), ask: "👉 Would you like me to visualize this data as a web page?" If yes, ask what interactive features they'd like. Generate accordingly — use the SDK's query capabilities to power interactive features. Save to `docs/` or `data/temp/`.
 - At module completion: summary of accomplishments, all files, why it matters for next module
-- At module start/completion: follow `module-transitions.md` rules (conditionally loaded when `config/bootcamp_progress.json` is accessed, not auto-included). After completing any module: load `module-completion.md` for journal and path-completion workflow.
+- At module start/completion: follow `module-transitions.md` rules (conditionally loaded when `config/bootcamp_progress.json` is accessed, not auto-included). After completing any module: load `module-completion.md` for journal and track-completion workflow.
 - On feedback trigger phrases ("bootcamp feedback", "power feedback", etc.): the `capture-feedback` hook handles this automatically — do not manually load `feedback-workflow.md`
 
 ## Hooks

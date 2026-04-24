@@ -11,7 +11,7 @@ Load this steering file when `config/bootcamp_progress.json` exists at session s
 Read these files to reconstruct full context:
 
 1. **`config/bootcamp_progress.json`** — completed modules, current module, data sources, database type
-2. **`config/bootcamp_preferences.yaml`** — chosen language, path, cloud provider, license info, **detail_level** (if set — honor their preference for more/less/default detail)
+2. **`config/bootcamp_preferences.yaml`** — chosen language, track, cloud provider, license info, **detail_level** (if set — honor their preference for more/less/default detail)
 2b. **Check hooks_installed** in `config/bootcamp_preferences.yaml`. If `hooks_installed` key exists with hook names and timestamp, skip hook creation — hooks are already installed. If `hooks_installed` is missing or empty, load the Hook Registry from `onboarding-flow.md` and create Critical Hooks before the welcome-back banner.
 3. **`docs/bootcamp_journal.md`** (if exists) — narrative history of what was done and why
 4. **`config/mapping_state_*.json`** (if any exist) — in-progress mapping checkpoints from Module 4. If found, the user was mid-mapping when the session ended.
@@ -41,7 +41,7 @@ Present a concise summary to the user:
 ```text
 Welcome back! Here's where you left off:
 
-  Path: [path letter]
+  Track: [track letter]
   Language: [language]
   Completed: Modules [list]
   Current: Module [N] — [module name]
@@ -63,7 +63,7 @@ Based on the user's response:
 
 - If they want to continue → load the steering file for `current_module` from the Module Steering table in `agent-instructions.md`
 - If they want to switch modules → verify prerequisites via `module-prerequisites.md`, then load the requested module steering
-- If they want to switch paths → follow the "Switching Paths Mid-Bootcamp" section in `onboarding-flow.md`
+- If they want to switch tracks → follow the "Switching Tracks" section in `onboarding-flow.md`
 - If they want to start over → confirm, then load `onboarding-flow.md`
 
 ## Step 5: Re-establish MCP Context

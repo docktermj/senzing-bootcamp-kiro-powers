@@ -14,7 +14,7 @@ Module 8 focuses on testing performance and scalability before production deploy
 
 ## Purpose
 
-After validating results in Module 7, Module 8 helps you:
+After building query programs and visualizations in Module 7, Module 8 helps you:
 
 1. **Benchmark transformation speed** (records/second)
 2. **Benchmark loading performance** (records/second)

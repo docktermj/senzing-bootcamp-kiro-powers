@@ -15,7 +15,7 @@ inclusion: manual
 | 4 — Data Quality & Mapping   | Module 3, files in `data/raw/`                               | All sources Entity Specification-compliant → Module 5 |
 | 5 — Single Source Load       | Module 0 + Module 4, transformed data in `data/transformed/` | Data already loaded → Module 7                   |
 | 6 — Multi-Source             | Module 5                                                     | Single data source → Module 7                    |
-| 7 — Query & Validate         | Module 5 or 6, no critical load errors                       | Already validated → Module 8                     |
+| 7 — Query & Visualize         | Module 5 or 6, no critical load errors                       | Already validated → Module 8                     |
 | 8 — Performance              | Module 7, representative data loaded                         | Not needed for POC                               |
 | 9 — Security                 | Module 8, compliance needs documented                        | Internal-only with no sensitive data             |
 | 10 — Monitoring              | Module 9, monitoring tools selected                          | Not deploying to production                      |

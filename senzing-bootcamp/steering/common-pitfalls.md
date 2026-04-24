@@ -17,7 +17,7 @@ Jump to the relevant module section instead of scanning the entire file:
 - [Module 4: Data Quality & Mapping](#module-4)
 - [Module 5: Single Source Loading](#module-5)
 - [Module 6: Multi-Source Orchestration](#module-6)
-- [Module 7: Query and Validation](#module-7)
+- [Module 7: Query and Visualize](#module-7)
 - [Modules 8-11: Production Readiness](#modules-8-11)
 - [General Pitfalls](#general-pitfalls)
 - [MCP Server Unavailable](#mcp-unavailable)
@@ -140,7 +140,7 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 
 <a id="module-7"></a>
 
-## Module 7: Query and Validation
+## Module 7: Query and Visualize
 
 | Pitfall                                      | Fix                                                                                                                      |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -148,7 +148,7 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | Wrong query flags                            | Use `get_sdk_reference(topic='flags')`                                                                                   |
 | "These shouldn't have matched"               | Use SDK "why" method via `get_sdk_reference` for match details                                                           |
 | Expecting perfect results immediately        | Iterate: adjust mappings, confidence scores, add attributes                                                              |
-| Skipping UAT                                 | Always conduct UAT with business users before production                                                                 |
+| Skipping UAT                                 | Always conduct UAT with business users before production (see Modules 5/6)                                   |
 
 <a id="modules-8-11"></a>
 

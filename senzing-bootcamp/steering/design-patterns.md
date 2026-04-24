@@ -53,4 +53,4 @@ Raw Data → Senzing (entity resolution) → Resolved Entities → Search Index 
 
 **Why this order matters:** If you search first and resolve second, you'll miss matches that Senzing would catch (name variations, address normalization, cross-source linking). Senzing's matching is fundamentally different from text search — it uses entity-centric learning, not keyword matching.
 
-Present this architecture when the user's problem involves search, lookup, or retrieval alongside entity resolution. When discussing Elasticsearch, OpenSearch, or any other third-party integration, always call `search_docs` with the relevant tool name to get Senzing's current guidance on integration. Reference it again in Module 8 (Query, Visualize & Validate) when building query programs.
+Present this architecture when the user's problem involves search, lookup, or retrieval alongside entity resolution. When discussing Elasticsearch, OpenSearch, or any other third-party integration, always call `search_docs` with the relevant tool name to get Senzing's current guidance on integration. Reference it again in Module 8 (Query & Visualize) when building query programs.

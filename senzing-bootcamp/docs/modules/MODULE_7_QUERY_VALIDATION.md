@@ -1,18 +1,18 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 7: QUERY, VISUALIZE, AND VALIDATE RESULTS  🚀🚀🚀
+🚀🚀🚀  MODULE 7: QUERY AND VISUALIZE  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 7: Query, Visualize, and Validate Results
+# Module 7: Query and Visualize
 
 > **Agent workflow:** The agent follows `steering/module-07-query-validation.md` for this module's step-by-step workflow.
 
 ## Overview
 
-Module 7 focuses on creating query programs to explore entity resolution results and validating that the solution meets business requirements through User Acceptance Testing (UAT).
+Module 7 focuses on creating query programs, search programs, overlap reports, and visualizations to explore entity resolution results.
 
-**Focus:** Query resolved entities and validate results against business requirements.
+**Focus:** Query resolved entities and visualize results.
 
 ## Prerequisites
 
@@ -28,9 +28,8 @@ By the end of this module, you will:
 1. Understand Senzing query operations
 2. Generate query programs for your use cases
 3. Explore entity resolution results
-4. Create User Acceptance Test (UAT) cases
-5. Validate results against business requirements
-6. Get stakeholder sign-off
+4. Create overlap reports to analyze cross-source matching
+5. Build visualizations of entity resolution results
 
 ## Key Concepts
 
@@ -119,141 +118,6 @@ Verify:
 - Performance is acceptable (< 100ms per query)
 - Error handling works
 
-### Step 5: Create UAT Test Cases
-
-Create User Acceptance Test cases based on business requirements. Use the UAT test case template at `templates/uat_test_cases.md` — copy it to `docs/uat_test_cases.md` and customize with your scenarios. See `steering/uat-framework.md` for detailed guidance.
-
-**Quick UAT Template:**
-
-```yaml
-# docs/uat_test_cases.yaml
-test_cases:
-  - id: UAT-001
-    scenario: Duplicate Customer Detection
-    description: Verify duplicate customers are correctly identified
-    test_data:
-      - John Smith, 123 Main St, john@email.com
-      - J. Smith, 123 Main Street, jsmith@email.com
-    expected_result: Both records resolve to same entity
-    acceptance_criteria: Confidence > 90%
-    priority: High
-    tester: jane.doe@company.com
-    status: PENDING
-
-  - id: UAT-002
-    scenario: Different People Same Name
-    description: Verify different people with same name stay separate
-    test_data:
-      - John Smith, 123 Main St, Boston, MA
-      - John Smith, 456 Oak Ave, Seattle, WA
-    expected_result: Two separate entities
-    acceptance_criteria: Kept as separate entities
-    priority: High
-    tester: jane.doe@company.com
-    status: PENDING
-```
-
-### Step 6: Execute UAT Tests
-
-Execute each test case:
-
-1. **Load test data** (if not already loaded)
-2. **Run queries** to find test entities
-3. **Compare results** to expected outcomes
-4. **Document results** (PASS/FAIL)
-5. **Log issues** for any failures
-
-The UAT executor program should:
-
-1. Load test cases from `docs/uat_test_cases.md`
-2. For each test case, run the appropriate query against the Senzing engine
-3. Compare actual results to expected outcomes
-4. Record each result as PASS, FAIL, or PENDING with timestamps and tester info
-5. Generate a summary report (`docs/uat_results.md`) showing total, passed, failed, and pending counts with percentages
-6. Indicate overall status: all passed (ready for production), some failed (issues to resolve), or testing in progress
-
-> **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='query', version='current')`
-> as a starting point, then build a UAT executor program that implements the above logic.
-> Save it to `src/query/uat_executor.[ext]`.
-
-### Step 7: Resolve Issues
-
-For any failed tests:
-
-1. **Analyze failure:** Why didn't it meet expectations?
-2. **Identify root cause:** Data quality? Configuration? Logic?
-3. **Implement fix:** Adjust transformation, configuration, or expectations
-4. **Retest:** Run test again to verify fix
-5. **Document resolution:** Record what was changed
-
-Track issues in `docs/uat_issues.yaml`:
-
-```yaml
-issues:
-  - id: UAT-ISSUE-001
-    test_case: UAT-001
-    severity: High
-    description: False negative - duplicates not matched
-    root_cause: Name abbreviation not handled
-    resolution: Adjusted name matching configuration
-    status: Resolved
-    resolved_date: 2026-03-18
-```
-
-### Step 8: Get Sign-Off
-
-Once all tests pass, get formal sign-off from stakeholders:
-
-```markdown
-# UAT Sign-Off Document
-
-## Project
-Senzing Entity Resolution - Customer 360
-
-## UAT Summary
-- **Test Period:** March 17-20, 2026
-- **Total Test Cases:** 25
-- **Passed:** 25 (100%)
-- **Failed:** 0 (0%)
-
-## Acceptance Criteria Met
-✅ All duplicate customers correctly identified
-✅ Different people with same name kept separate
-✅ Query response time < 100ms
-✅ Data quality score > 85%
-
-## Sign-Off
-
-**Business Owner:** _________________ Date: _______
-
-**Technical Lead:** _________________ Date: _______
-
-**Approval for Production:** ☐ Approved ☐ Conditional ☐ Rejected
-```
-
-## User Acceptance Testing (UAT)
-
-UAT validates that the solution meets business requirements. See `steering/uat-framework.md` for comprehensive guidance.
-
-### UAT Process Overview
-
-1. **Planning:** Define acceptance criteria from Module 1
-2. **Test Case Creation:** Create test cases for each scenario
-3. **Test Execution:** Run tests and document results
-4. **Issue Resolution:** Fix any failures
-5. **Sign-Off:** Get stakeholder approval
-
-### When to Load UAT Framework
-
-Load `steering/uat-framework.md` when:
-
-- Starting Module 7
-- User asks about UAT or testing
-- Preparing for production deployment
-- Need stakeholder sign-off
-
-**Agent behavior:** Mention UAT framework in Module 7. Load full guide if user wants detailed UAT process.
-
 ## Query Examples
 
 > **Agent instruction:** Do not use the example code below. Generate current query code using:
@@ -276,20 +140,13 @@ Before proceeding to Module 8, verify:
 - [ ] Query programs generated and tested
 - [ ] All query types work correctly
 - [ ] Query performance is acceptable (< 100ms)
-- [ ] UAT test cases created
-- [ ] All UAT tests executed
-- [ ] All critical tests pass
-- [ ] Issues documented and resolved
-- [ ] Stakeholder sign-off obtained (if required)
 
 ## Success Indicators
 
 Module 7 is complete when:
 
 - Query programs work correctly
-- UAT tests pass
-- Results meet business requirements
-- Stakeholders approve solution
+- Visualizations created for entity resolution results
 - Ready for performance testing (Module 8) or production (if skipping 8-10)
 
 ## Common Issues
@@ -323,16 +180,6 @@ Module 7 is complete when:
 - Check for missing or incorrect data
 - Adjust matching configuration if needed
 
-### Issue: UAT Tests Fail
-
-**Symptoms:** Results don't meet expectations
-**Solutions:**
-
-- Analyze root cause (data quality, configuration, expectations)
-- Review transformation logic from Module 4
-- Check data quality scores from Module 4
-- Adjust expectations if they were unrealistic
-
 ## Integration with Other Modules
 
 - **From Module 6:** Queries loaded data from all sources
@@ -349,16 +196,9 @@ project/
 │   └── query/
 │       ├── customer_360.[ext]           # Customer lookup query
 │       ├── find_duplicates.[ext]        # Duplicate detection
-│       ├── fraud_detection.[ext]        # Fraud queries
-│       └── uat_executor.[ext]           # UAT test runner
-├── docs/
-│   ├── uat_test_cases.md              # UAT test cases
-│   ├── uat_results.md                # UAT results report
-│   ├── uat_issues.yaml               # Issues found during UAT
-│   ├── uat_signoff.md                # Sign-off document
-│   └── query_specifications.md       # Query requirements
-└── logs/
-    └── uat_execution.log             # UAT execution log
+│       └── fraud_detection.[ext]        # Fraud queries
+└── docs/
+    └── query_specifications.md       # Query requirements
 ```
 
 ## Agent Behavior
@@ -371,23 +211,13 @@ When a user is in Module 7:
 4. **Customize programs:** Add specific query logic
 5. **Save programs:** Save to `src/query/`
 6. **Test queries:** Help user run and verify queries
-7. **Create UAT test cases:** Generate `docs/uat_test_cases.md`
-8. **Execute UAT tests:** Run tests and document results
-9. **Track issues:** Log any failures in `docs/uat_issues.yaml`
-10. **Generate reports:** Create UAT results report
-11. **Get sign-off:** Create sign-off document if needed
-12. **Validate gates:** Verify all gates before proceeding
-
-**If user asks about UAT:** Load `steering/uat-framework.md` for detailed guidance.
-
-**If user wants to skip UAT:** Explain importance but allow skipping for non-production projects.
+7. **Validate gates:** Verify all gates before proceeding
 
 ## Related Documentation
 
 - `POWER.md` - Module 7 overview
 - `steering/module-07-query-validation.md` - Module 7 workflow
 - `steering/agent-instructions.md` - Agent behavior for Module 7
-- `steering/uat-framework.md` - Comprehensive UAT guidance (load on demand)
 - Use MCP: `reporting_guide(topic="evaluation")` for the 4-point ER evaluation framework
 - Use MCP: `reporting_guide(topic="quality")` for precision/recall, split/merge detection, and review queues
 - Use MCP: `reporting_guide(topic="export")` for SDK data extraction patterns

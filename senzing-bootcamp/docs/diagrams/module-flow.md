@@ -87,11 +87,11 @@
            ▼
 ┌──────────────────────┐
 │      MODULE 7        │
-│ Query, Viz & Validate│
+│ Query & Visualize    │
 │                      │
 │  • Create queries    │
-│  • UAT testing       │
-│  • Validate results  │
+│  • Overlap reports   │
+│  • Visualizations    │
 └──────────┬───────────┘
            │
            ├─────────────────────┐
@@ -225,7 +225,7 @@ Module 3  → data/raw/* files, docs/data_source_locations.md
 Module 4  → Data quality reports, src/transform/* programs, data/transformed/* files
 Module 5  → Loaded data, loading statistics
 Module 6  → Multi-source orchestration scripts
-Module 7  → src/query/* programs, UAT results
+Module 7  → src/query/* programs, visualizations
 Module 8  → Performance benchmarks, optimization recommendations
 Module 9  → Security configuration, compliance documentation
 Module 10 → Monitoring dashboards, alerting rules

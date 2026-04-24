@@ -1,27 +1,27 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 12: PACKAGE AND DEPLOY  🚀🚀🚀
+🚀🚀🚀  MODULE 11: PACKAGE AND DEPLOY  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 12: Package and Deploy
+# Module 11: Package and Deploy
 
-> **Agent workflow:** The agent follows `steering/module-12-deployment.md` for this module's step-by-step workflow.
+> **Agent workflow:** The agent follows `steering/module-11-deployment.md` for this module's step-by-step workflow.
 
 ## Overview
 
-Module 12 is the final module that packages your production-ready code and deploys it to the target environment. After completing security hardening (Module 10) and monitoring setup (Module 11), you're ready for deployment.
+Module 11 is the final module that packages your production-ready code and deploys it to the target environment. After completing security hardening (Module 9) and monitoring setup (Module 10), you're ready for deployment.
 
 ## Purpose
 
-After completing Modules 0-11, you have:
+After completing Modules 0-10, you have:
 
-- Working transformation, loading, and query code from Modules 5, 6, and 8
+- Working transformation, loading, and query code from Modules 4, 5, and 7
 - Performance tested and optimized
 - Security hardened
 - Monitoring and observability configured
 
-Module 12 takes this production-ready code and:
+Module 11 takes this production-ready code and:
 
 1. Refactors it into a clean, maintainable package structure
 2. Adds comprehensive test coverage
@@ -58,7 +58,7 @@ Module 12 takes this production-ready code and:
 
    **AWS recommendation:** If deploying to AWS, the bootcamp recommends using **AWS Cloud Development Kit (CDK)** to define your infrastructure as code in the same programming language you've been using throughout the bootcamp. CDK provisions RDS/Aurora, ECS/EKS, ECR, Secrets Manager, CloudWatch, and CI/CD pipelines declaratively — no manual console configuration needed. Install the **Build AWS infrastructure with CDK and CloudFormation** Kiro Power for guided CDK workflows.
 
-4. **Integration Pattern** (from Module 7)
+4. **Integration Pattern** (from Module 6)
    - Batch processing
    - REST API
    - Streaming/event-driven
@@ -533,10 +533,10 @@ Generate deployment-ready artifacts:
 
 ## Agent Behavior
 
-When a user is in Module 12, the agent should:
+When a user is in Module 11, the agent should:
 
 1. **Assess Current Code**
-   - Review code from Modules 5, 6, and 8
+   - Review code from Modules 4, 5, and 7
 
 2. **Guide Deployment Decisions**
    - Help choose target database
@@ -586,7 +586,7 @@ When a user is in Module 12, the agent should:
 
 ## Validation Gates
 
-Before completing Module 12, verify:
+Before completing Module 11, verify:
 
 - [ ] Code refactored into proper package structure
 - [ ] All components have unit tests (>80% coverage)
@@ -602,7 +602,7 @@ Before completing Module 12, verify:
 
 ## Success Indicators
 
-Module 12 is complete when:
+Module 11 is complete when:
 
 - Package can be installed via standard package manager
 - All tests pass
@@ -629,9 +629,9 @@ Module 12 is complete when:
 
 ## Integration with Other Modules
 
-- **From Module 5:** Refactor transformation code
-- **From Module 6:** Refactor loading code
-- **From Module 8:** Refactor query code
+- **From Module 4:** Refactor transformation code
+- **From Module 5:** Refactor loading code
+- **From Module 7:** Refactor query code
 - **To Production:** Deploy packaged application
 
 ## Tools and Resources
@@ -659,12 +659,13 @@ Module 12 is complete when:
 
 ## Related Documentation
 
-- `POWER.md` - Module 12 overview
-- `steering/module-12-deployment.md` - Module 12 workflow
-- `steering/agent-instructions.md` - Agent behavior for Module 12
+- `POWER.md` - Module 11 overview
+- `steering/module-11-deployment.md` - Module 11 workflow
+- `steering/agent-instructions.md` - Agent behavior for Module 11
 - Use MCP: `find_examples(query="API integration")` for deployment patterns
 - `DEPENDENCY_MANAGEMENT_POLICY.md` - Dependency management
 
 ## Version History
 
 - **v2.0.0** (2026-03-17): Module 12 added to bootcamp structure
+- **v3.0.0** (2026-04-17): Renumbered from Module 12 to Module 11 (merge of old Modules 4+5)

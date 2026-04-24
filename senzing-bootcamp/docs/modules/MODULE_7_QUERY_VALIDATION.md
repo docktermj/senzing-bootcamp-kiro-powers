@@ -1,22 +1,22 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 8: QUERY, VISUALIZE, AND VALIDATE RESULTS  🚀🚀🚀
+🚀🚀🚀  MODULE 7: QUERY, VISUALIZE, AND VALIDATE RESULTS  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 8: Query, Visualize, and Validate Results
+# Module 7: Query, Visualize, and Validate Results
 
-> **Agent workflow:** The agent follows `steering/module-08-query-validation.md` for this module's step-by-step workflow.
+> **Agent workflow:** The agent follows `steering/module-07-query-validation.md` for this module's step-by-step workflow.
 
 ## Overview
 
-Module 8 focuses on creating query programs to explore entity resolution results and validating that the solution meets business requirements through User Acceptance Testing (UAT).
+Module 7 focuses on creating query programs to explore entity resolution results and validating that the solution meets business requirements through User Acceptance Testing (UAT).
 
 **Focus:** Query resolved entities and validate results against business requirements.
 
 ## Prerequisites
 
-- ✅ Module 7 complete (all sources loaded) OR Module 6 complete (single source loaded)
+- ✅ Module 6 complete (all sources loaded) OR Module 5 complete (single source loaded)
 - ✅ No critical loading errors
 - ✅ Loading statistics reviewed
 - ✅ Business requirements from Module 2 available
@@ -247,12 +247,12 @@ UAT validates that the solution meets business requirements. See `steering/uat-f
 
 Load `steering/uat-framework.md` when:
 
-- Starting Module 8
+- Starting Module 7
 - User asks about UAT or testing
 - Preparing for production deployment
 - Need stakeholder sign-off
 
-**Agent behavior:** Mention UAT framework in Module 8. Load full guide if user wants detailed UAT process.
+**Agent behavior:** Mention UAT framework in Module 7. Load full guide if user wants detailed UAT process.
 
 ## Query Examples
 
@@ -271,7 +271,7 @@ Common query patterns (use MCP tools to generate current code):
 
 ## Validation Gates
 
-Before proceeding to Module 9, verify:
+Before proceeding to Module 8, verify:
 
 - [ ] Query programs generated and tested
 - [ ] All query types work correctly
@@ -284,13 +284,13 @@ Before proceeding to Module 9, verify:
 
 ## Success Indicators
 
-Module 8 is complete when:
+Module 7 is complete when:
 
 - Query programs work correctly
 - UAT tests pass
 - Results meet business requirements
 - Stakeholders approve solution
-- Ready for performance testing (Module 9) or production (if skipping 9-11)
+- Ready for performance testing (Module 8) or production (if skipping 8-10)
 
 ## Common Issues
 
@@ -329,17 +329,17 @@ Module 8 is complete when:
 **Solutions:**
 
 - Analyze root cause (data quality, configuration, expectations)
-- Review transformation logic from Module 5
+- Review transformation logic from Module 4
 - Check data quality scores from Module 4
 - Adjust expectations if they were unrealistic
 
 ## Integration with Other Modules
 
-- **From Module 7:** Queries loaded data from all sources
-- **From Module 6:** Queries loaded data from single source
+- **From Module 6:** Queries loaded data from all sources
+- **From Module 5:** Queries loaded data from single source
 - **From Module 2:** Validates against business requirements
-- **To Module 9:** Performance testing uses query programs
-- **To Module 12:** Query programs included in deployment package
+- **To Module 8:** Performance testing uses query programs
+- **To Module 11:** Query programs included in deployment package
 
 ## File Locations
 
@@ -363,7 +363,7 @@ project/
 
 ## Agent Behavior
 
-When a user is in Module 8:
+When a user is in Module 7:
 
 1. **Review business requirements:** Load Module 2 business problem
 2. **Define query requirements:** What queries are needed?
@@ -384,9 +384,9 @@ When a user is in Module 8:
 
 ## Related Documentation
 
-- `POWER.md` - Module 8 overview
-- `steering/module-08-query-validation.md` - Module 8 workflow
-- `steering/agent-instructions.md` - Agent behavior for Module 8
+- `POWER.md` - Module 7 overview
+- `steering/module-07-query-validation.md` - Module 7 workflow
+- `steering/agent-instructions.md` - Agent behavior for Module 7
 - `steering/uat-framework.md` - Comprehensive UAT guidance (load on demand)
 - Use MCP: `reporting_guide(topic="evaluation")` for the 4-point ER evaluation framework
 - Use MCP: `reporting_guide(topic="quality")` for precision/recall, split/merge detection, and review queues
@@ -396,3 +396,4 @@ When a user is in Module 8:
 ## Version History
 
 - **v3.0.0** (2026-03-17): Module 8 refocused on query and validation with UAT framework enhancement
+- **v4.0.0** (2026-04-17): Renumbered from Module 8 to Module 7 (merge of old Modules 4+5)

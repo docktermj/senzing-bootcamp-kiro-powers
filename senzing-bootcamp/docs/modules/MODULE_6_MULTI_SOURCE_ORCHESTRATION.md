@@ -1,20 +1,20 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 7: MULTI-SOURCE ORCHESTRATION  🚀🚀🚀
+🚀🚀🚀  MODULE 6: MULTI-SOURCE ORCHESTRATION  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 7: Multi-Source Orchestration
+# Module 6: Multi-Source Orchestration
 
-> **Agent workflow:** The agent follows `steering/module-07-multi-source.md` for this module's step-by-step workflow.
+> **Agent workflow:** The agent follows `steering/module-06-multi-source.md` for this module's step-by-step workflow.
 
 ## Overview
 
-Module 7 focuses on orchestrating the loading of multiple data sources with proper dependency management, load order optimization, and error handling.
+Module 6 focuses on orchestrating the loading of multiple data sources with proper dependency management, load order optimization, and error handling.
 
 ## Purpose
 
-After successfully loading a single data source in Module 6, Module 7 helps you:
+After successfully loading a single data source in Module 5, Module 6 helps you:
 
 1. **Manage dependencies** between data sources
 2. **Optimize load order** for efficiency
@@ -237,7 +237,7 @@ strategy: dependency-aware
 
 ## Agent Behavior
 
-When a user is in Module 7, the agent should:
+When a user is in Module 6, the agent should:
 
 1. **Identify all data sources** from previous modules
 2. **Determine dependencies** between sources
@@ -251,7 +251,7 @@ When a user is in Module 7, the agent should:
 
 ## Validation Gates
 
-Before completing Module 7:
+Before completing Module 6:
 
 - [ ] All data sources identified
 - [ ] Dependencies documented
@@ -264,7 +264,7 @@ Before completing Module 7:
 
 ## Success Indicators
 
-Module 7 is complete when:
+Module 6 is complete when:
 
 - All data sources loaded successfully
 - Dependencies respected
@@ -282,10 +282,11 @@ Module 7 is complete when:
 
 ## Related Documentation
 
-- `POWER.md` - Module 7 overview
-- `steering/module-07-multi-source.md` - Module 7 workflow
-- `MODULE_6_SINGLE_SOURCE_LOADING.md` - Single source loading
+- `POWER.md` - Module 6 overview
+- `steering/module-06-multi-source.md` - Module 6 workflow
+- `MODULE_5_SINGLE_SOURCE_LOADING.md` - Single source loading
 
 ## Version History
 
 - **v3.0.0** (2026-03-17): Module 7 created for multi-source orchestration
+- **v4.0.0** (2026-04-17): Renumbered from Module 7 to Module 6 (merge of old Modules 4+5)

@@ -56,24 +56,38 @@ class TestModule01Preservation:
             in self.content
         )
 
-    def test_discovery_question_record_types(self):
-        """Use-case discovery question about record types must survive."""
+    def test_no_direct_record_type_question(self):
+        """Direct record-type question must NOT appear — replaced by open-ended approach."""
         assert (
             "What kind of records do you work with"
-            in self.content
+            not in self.content
         )
 
-    def test_discovery_question_source_systems(self):
-        """Use-case discovery question about source systems must survive."""
+    def test_no_direct_source_systems_question(self):
+        """Direct source-systems question must NOT appear — replaced by open-ended approach."""
         assert (
             "How many distinct source systems or feeds will you be ingesting from?"
+            not in self.content
+        )
+
+    def test_no_direct_duplicates_question(self):
+        """Direct duplicates question must NOT appear — replaced by open-ended approach."""
+        assert (
+            "What does a 'duplicate' look like in your world?"
+            not in self.content
+        )
+
+    def test_open_ended_preview(self):
+        """Module 2 open-ended approach preview must be present in transition."""
+        assert (
+            "describe the problem you're trying to solve in your own words"
             in self.content
         )
 
-    def test_discovery_question_duplicates(self):
-        """Use-case discovery question about duplicates must survive."""
+    def test_no_use_case_fallback(self):
+        """Fallback for users with no specific use case must be present."""
         assert (
-            "What does a 'duplicate' look like in your world?"
+            "The bootcamp works great with sample data too"
             in self.content
         )
 

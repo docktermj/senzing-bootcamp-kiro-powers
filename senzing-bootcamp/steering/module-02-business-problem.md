@@ -57,42 +57,92 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    - Suggest matching criteria from the pattern
    - Adapt the pattern to their specific context
 
-5. **Set expectations**: "Let's start by understanding your business problem. This will help us tailor the bootcamp to your specific needs. We'll identify your data sources, define success criteria, and create a plan."
+5. **Open-ended discovery prompt**:
 
-6. **Ask guided discovery questions**: Work through these questions systematically, ONE AT A TIME. Wait for the user's response to each question before asking the next one. This prevents overwhelming the user with multiple questions at once.
+   Ask a single open-ended question:
 
-   **Note**: If user selected a design pattern, use it to guide these questions and pre-fill answers where applicable.
+   "Tell me about the problem you're trying to solve — what data do you have, where does it come from, and what would success look like?"
 
-   **Question 1: What problem are you trying to solve?**
-   - Ask: "What problem are you trying to solve? For example: deduplication, data matching, identity verification, fraud detection, relationship discovery, or master data management?"
-   - If they selected a pattern: "You mentioned [pattern name]. Let's refine that for your specific situation..."
-   - WAIT for their response before proceeding to Question 2
+   If the user selected a design pattern in Step 4:
 
-   **Question 2: What data sources are involved?**
-   - Ask: "What data sources are involved? For each source, I'll need to know: name, type (database/CSV/API/etc.), approximate record count, update frequency, and how to access it."
-   - If they selected a pattern: "The [pattern name] pattern typically involves [list sources]. Do you have similar data sources?"
-   - WAIT for their response before proceeding to Question 3
+   "You picked [pattern name]. Tell me how that applies to your situation — what data do you have, where does it come from, and what would success look like?"
 
-   **Question 3: What types of entities?**
-   - Ask: "What types of entities are we working with? People, organizations, both, or something else?"
-   - If they selected a pattern: "For [pattern name], we typically work with [entity types]. Is that correct for you?"
-   - WAIT for their response before proceeding to Question 4
+   WAIT for the user's full response. Do NOT interrupt with follow-up questions until they've finished describing their situation.
 
-   **Question 4: What matching criteria matter most?**
-   - Ask: "What matching criteria matter most for your use case? For example: names, addresses, contact info, identifiers, dates, or other attributes?"
-   - If they selected a pattern: "The [pattern name] pattern usually focuses on [matching criteria]. Are these the right attributes for your case?"
-   - WAIT for their response before proceeding to Question 5
+6. **Infer details from response**:
 
-   **Question 5: What's the desired outcome?**
-   - Ask: "What's the desired outcome? What format do you need (master list, API, reports, database export)? Is this one-time or ongoing? Any integration needs?"
-   - If they selected a pattern: "The typical goal for [pattern name] is [goal]. What specific outcomes are you looking for?"
-   - WAIT for their response before proceeding to step 7
+   Parse the user's response to extract the following five categories:
 
-7. **Encourage visual explanations**: Ask for diagrams showing data architecture, data flows, or example records. If images contain placeholders like [variable], ask them to specify what each represents.
+   **A. RECORD TYPES** (people / organizations / both)
 
-8. **Identify the scenario**: Categorize as Customer 360, Fraud Detection, Data Migration, Compliance, or Marketing scenario. If they selected a pattern, this is already identified.
+   Look for signals:
+   - People: mentions of customers, patients, employees, members, contacts, individuals, names, SSN, DOB, phone numbers, email addresses
+   - Organizations: mentions of companies, vendors, suppliers, businesses, firms, EIN, DUNS, corporate entities
+   - Both: mentions of both categories, or phrases like "customers and their employers", "people and the companies they work for"
+   - If unclear: default to "not yet determined"
 
-9. **Create problem statement document**: Save to `docs/business_problem.md`:
+   **B. SOURCE COUNT AND NAMES**
+
+   Look for signals:
+   - Explicit mentions: "three systems", "CRM and billing", "we have 5 feeds"
+   - Implicit mentions: each named system counts as a source (e.g., "Salesforce, our billing database, and a CSV export" = 3 sources)
+   - If only one system mentioned: note it, but don't assume there aren't others
+   - If unclear: default to "not yet determined"
+
+   **C. PROBLEM CATEGORY**
+
+   Map to: Customer 360, Fraud Detection, Data Migration, Compliance, Marketing, Healthcare, Supply Chain, KYC, Insurance, Vendor MDM
+
+   Look for signals:
+   - "duplicates across systems" → Customer 360
+   - "fraud", "suspicious", "identity theft" → Fraud Detection
+   - "migrating", "consolidating databases" → Data Migration
+   - "compliance", "regulatory", "KYC", "AML" → Compliance / KYC
+   - If unclear: default to "not yet categorized"
+
+   **D. MATCHING CRITERIA**
+
+   Look for signals:
+   - Attributes mentioned: names, addresses, phone, email, SSN, DOB, etc.
+   - Quality concerns: "messy data", "inconsistent formats", "typos"
+   - If unclear: will be determined during data mapping (Module 4)
+
+   **E. DESIRED OUTCOME**
+
+   Look for signals:
+   - Output format: "master list", "golden record", "API", "report", "export"
+   - Frequency: "one-time cleanup", "ongoing", "real-time"
+   - Integration: mentions of downstream systems
+   - If unclear: default to "not yet determined"
+
+7. **Confirm inferred details and fill gaps**:
+
+   Present what was inferred in a concise summary:
+
+   "Based on what you've described, here's what I'm picking up:
+   - **Problem:** [inferred category / description]
+   - **Record types:** [people / organizations / both / not yet determined]
+   - **Data sources:** [count and names, or 'not yet determined']
+   - **Key attributes:** [matching criteria mentioned, or 'we'll figure this out during data mapping']
+   - **Desired outcome:** [format/frequency, or 'not yet determined']
+
+   Does that sound right? Anything I missed or got wrong?"
+
+   WAIT for confirmation or corrections.
+
+   After confirmation, ask ONLY about items marked "not yet determined":
+
+   - If record types unknown: "Are you working with people records, organization records, or both?"
+   - If source count unknown: "How many distinct data sources or systems will we be working with?"
+   - If desired outcome unknown: "What does the end result look like for you — a clean master list, an API, reports, or something else?"
+
+   Ask these as a single grouped question, not one at a time. Do NOT ask about items the user already covered.
+
+8. **Encourage visual explanations**: Ask for diagrams showing data architecture, data flows, or example records. If images contain placeholders like [variable], ask them to specify what each represents.
+
+9. **Identify the scenario**: Categorize as Customer 360, Fraud Detection, Data Migration, Compliance, or Marketing scenario. If they selected a pattern, this is already identified.
+
+10. **Create problem statement document**: Save to `docs/business_problem.md`:
 
    ```markdown
    # Business Problem Statement
@@ -150,18 +200,18 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    [Any additional context, constraints, or considerations]
    ```
 
-10. **Update README.md**: Fill in the Overview and Business Problem sections with the information gathered. If a design pattern was selected, mention it in the overview.
+11. **Update README.md**: Fill in the Overview and Business Problem sections with the information gathered. If a design pattern was selected, mention it in the overview.
 
-11. **Propose solution approach**: Explain how Senzing can solve this and which modules will be most relevant. If they selected a pattern, reference how the bootcamp will implement that pattern.
+12. **Propose solution approach**: Explain how Senzing can solve this and which modules will be most relevant. If they selected a pattern, reference how the bootcamp will implement that pattern.
 
     **If the user's problem involves search or lookup** (e.g., "find a customer by name", "search across systems"): Load `design-patterns.md` and present the "Where Senzing Fits in Your Architecture" section. Clarify the correct layering: Senzing first for entity resolution, then a search index (Elasticsearch/OpenSearch) for fast retrieval against resolved entities. This prevents a common architectural mistake.
 
-12. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
+13. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
 
-13. **Offer stakeholder summary**: Ask: "Would you like me to create a one-page executive summary you can share with your team or manager? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
+14. **Offer stakeholder summary**: Ask: "Would you like me to create a one-page executive summary you can share with your team or manager? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
 
     If yes, read the template at `senzing-bootcamp/templates/stakeholder_summary.md`. Follow the **MODULE 2** guidance block in the template to fill each placeholder with Module 2 context (problem definition from `docs/business_problem.md`, identified data sources, planned approach, expected outcomes). Save the filled summary to `docs/stakeholder_summary_module2.md`.
 
-14. **Transition to Module 3**: "Module 2 complete. Ready to collect your data sources?"
+15. **Transition to Module 3**: "Module 2 complete. Ready to collect your data sources?"
 
 **Success indicator**: ✅ Clear problem statement + identified data sources + defined success metrics + user confirmation + `docs/business_problem.md` created

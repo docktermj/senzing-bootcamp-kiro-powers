@@ -2,11 +2,11 @@
 inclusion: manual
 ---
 
-# Module 7: Multi-Source Orchestration
+# Module 6: Multi-Source Orchestration
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_7_MULTI_SOURCE_ORCHESTRATION.md`.
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_6_MULTI_SOURCE_ORCHESTRATION.md`.
 
 **Purpose**: Coordinate loading of multiple data sources with dependencies, conflict resolution, and optimization.
 
@@ -14,8 +14,8 @@ inclusion: manual
 
 **Prerequisites**:
 
-- ✅ Module 6 complete (first source loaded successfully)
-- ✅ Multiple data sources mapped and transformed (Module 5)
+- ✅ Module 5 complete (first source loaded successfully)
+- ✅ Multiple data sources mapped and transformed (Module 4)
 - ✅ Loading statistics reviewed for first source
 - ✅ Redo queue drained for first source
 
@@ -35,8 +35,8 @@ inclusion: manual
    - Source name and DATA_SOURCE identifier
    - Record count (from Module 3/4)
    - Data quality score (from Module 4)
-   - Mapping status (from Module 5 — complete, partial, or pending)
-   - Whether it was already loaded in Module 6
+   - Mapping status (from Module 4 — complete, partial, or pending)
+   - Whether it was already loaded in Module 5
 
    Present a summary table to the bootcamper:
 
@@ -102,7 +102,7 @@ inclusion: manual
    - [ ] RECORD_IDs are unique within each DATA_SOURCE
    - [ ] Database backup exists (run `python scripts/backup_project.py` if not)
    - [ ] Sufficient disk space for the database to grow (estimate ~2x current size per additional source)
-   - [ ] Loading program from Module 6 works as a template for the orchestrator
+   - [ ] Loading program from Module 5 works as a template for the orchestrator
 
    If any check fails, fix it before proceeding. Tell the bootcamper what failed and how to fix it.
 
@@ -147,7 +147,7 @@ inclusion: manual
    - Elapsed time and estimated time remaining
    - Resource utilization notes (if loading is slow, suggest reducing parallelism)
 
-   **⚠️ SQLite performance note:** With multiple sources on SQLite, loading gets progressively slower as the database grows. If total records across all sources exceed 1,000, recommend loading a subset first: "Let's load the first 500 records per source to validate cross-source matching. Once we confirm results in Module 8, we can load more — or switch to PostgreSQL for better performance (Module 9 covers this)."
+   **⚠️ SQLite performance note:** With multiple sources on SQLite, loading gets progressively slower as the database grows. If total records across all sources exceed 1,000, recommend loading a subset first: "Let's load the first 500 records per source to validate cross-source matching. Once we confirm results in Module 7, we can load more — or switch to PostgreSQL for better performance (Module 8 covers this)."
 
 10. **Process redo queue**:
 
@@ -186,7 +186,7 @@ inclusion: manual
 
 ## Reference Material
 
-For source ordering examples, conflict resolution guidance, error handling procedures, and troubleshooting, load `module-07-reference.md`.
+For source ordering examples, conflict resolution guidance, error handling procedures, and troubleshooting, load `module-06-reference.md`.
 
 ## Success Criteria
 
@@ -203,5 +203,5 @@ For source ordering examples, conflict resolution guidance, error handling proce
 - **Dependency cycles**: Flag to bootcamper, explain that Senzing handles load order gracefully — load the higher-quality source first
 - **Resource exhaustion**: Reduce parallelism, check disk space, consider PostgreSQL
 - **Slow performance**: Optimize transformations, reduce record count for bootcamp, or use PostgreSQL
-- **Missing sources**: Check Module 5 — all sources must be mapped before orchestration
-- **Inconsistent mappings**: Different sources map the same real-world field to different Senzing attributes — re-run Module 5 for consistency
+- **Missing sources**: Check Module 4 — all sources must be mapped before orchestration
+- **Inconsistent mappings**: Different sources map the same real-world field to different Senzing attributes — re-run Module 4 for consistency

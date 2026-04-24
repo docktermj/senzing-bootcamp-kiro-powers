@@ -31,7 +31,7 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 **[GLOSSARY.md](GLOSSARY.md)**
 
 - Quick-reference glossary of Senzing entity resolution terms
-- 18 key terms: entity, data source, record, feature, SGES, redo record, and more
+- 18 key terms: entity, data source, record, feature, Senzing Entity Specification (SGES), redo record, and more
 - Concise definitions without needing MCP round-trips
 
 **[DESIGN_PATTERNS.md](DESIGN_PATTERNS.md)**

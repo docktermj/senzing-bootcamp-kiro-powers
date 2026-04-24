@@ -2,15 +2,15 @@
 inclusion: manual
 ---
 
-# Module 10: Security Hardening
+# Module 9: Security Hardening
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
-> **User reference:** See `docs/modules/MODULE_10_SECURITY_HARDENING.md` for background.
+> **User reference:** See `docs/modules/MODULE_9_SECURITY_HARDENING.md` for background.
 
 Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` — if AWS, use Secrets Manager, IAM, KMS, CloudTrail.
 
-**Prerequisites:** Module 9 complete, working Senzing deployment to harden.
+**Prerequisites:** Module 8 complete, working Senzing deployment to harden.
 
 **Before/After:** Your system works and performs well, but it's not secure. After this module, secrets are managed, access is controlled, data is encrypted, and you have a security checklist signed off by stakeholders.
 
@@ -75,7 +75,7 @@ Next: Let's set up authentication if your project has an API layer.
 
 ## Step 3: Authentication
 
-If the project has an API layer (Module 12): implement JWT or API key authentication. Generate via `generate_scaffold` or `find_examples(query='authentication')`. Save to `src/security/auth.[ext]`.
+If the project has an API layer (Module 11): implement JWT or API key authentication. Generate via `generate_scaffold` or `find_examples(query='authentication')`. Save to `src/security/auth.[ext]`.
 
 ## Step 4: Authorization (RBAC)
 

@@ -2,9 +2,9 @@
 inclusion: manual
 ---
 
-# Module 7: Multi-Source Reference Material
+# Module 6: Multi-Source Reference Material
 
-> Reference material for Module 7: Multi-Source Orchestration. Load this file for source ordering examples, conflict resolution guidance, error handling procedures, and troubleshooting.
+> Reference material for Module 6: Multi-Source Orchestration. Load this file for source ordering examples, conflict resolution guidance, error handling procedures, and troubleshooting.
 
 ## Source Ordering Examples
 
@@ -93,7 +93,7 @@ When one source fails during orchestration, the agent should:
 | Invalid records (malformed JSON, missing required fields) | Use `analyze_record` on a sample record from the failing source | Fix the transformation program in `src/transform/`, re-run on the source, reload |
 | Duplicate RECORD_IDs across sources | Two sources use the same RECORD_ID values (e.g., both start at "1") | RECORD_IDs only need to be unique within a DATA_SOURCE — this is usually not an error. If IDs collide within the same DATA_SOURCE, prefix with source identifier |
 | DATA_SOURCE name mismatch | The DATA_SOURCE in records does not match the engine configuration | Verify DATA_SOURCE names against Module 0 setup. Fix in the transformation program |
-| Transformation errors (wrong attribute names, missing mappings) | Use `analyze_record` to validate a sample record | Re-run Module 5 mapping workflow for the affected source |
+| Transformation errors (wrong attribute names, missing mappings) | Use `analyze_record` to validate a sample record | Re-run Module 4 mapping workflow for the affected source |
 
 ### Recovery Options
 
@@ -109,16 +109,16 @@ WAIT for response.
 
 ## Troubleshooting Quick Reference
 
-> **Agent instruction:** Use this section for quick diagnosis. If the issue is not covered here, load `common-pitfalls.md` for the full Module 7 pitfall table.
+> **Agent instruction:** Use this section for quick diagnosis. If the issue is not covered here, load `common-pitfalls.md` for the full Module 6 pitfall table.
 
 | Issue | Diagnosis | Resolution |
 | ----- | --------- | ---------- |
-| Low cross-source match rates | Check Module 4 quality scores for each source. Review Module 5 mapping consistency — are the same fields mapped to the same Senzing attributes across sources? Use `get_sdk_reference(topic='why')` to examine match details for specific entities | Improve data quality in weak sources, align attribute mappings across sources, ensure name/address/phone/email fields are mapped consistently |
+| Low cross-source match rates | Check Module 4 quality scores for each source. Review Module 4 mapping consistency — are the same fields mapped to the same Senzing attributes across sources? Use `get_sdk_reference(topic='why')` to examine match details for specific entities | Improve data quality in weak sources, align attribute mappings across sources, ensure name/address/phone/email fields are mapped consistently |
 | Unexpected entity merges | Two entities from different sources merged that should not have. Use the SDK "why" method to see which features caused the match | Check for overly generic features (e.g., common names without other distinguishing attributes). Review data quality — are placeholder values ("N/A", "Unknown") causing false matches? |
-| Slow loading with multiple sources | Check total record count, database type (SQLite vs PostgreSQL), and parallelism level | SQLite slows significantly beyond ~1,000 total records. Reduce parallelism to 1-2 workers. For larger volumes, recommend PostgreSQL migration (Module 9) |
+| Slow loading with multiple sources | Check total record count, database type (SQLite vs PostgreSQL), and parallelism level | SQLite slows significantly beyond ~1,000 total records. Reduce parallelism to 1-2 workers. For larger volumes, recommend PostgreSQL migration (Module 8) |
 | Redo queue not draining | Check for errors in redo processing output. Use `explain_error_code` for any error codes | Restart the redo processor. If errors persist, check for corrupted entities and consider restoring from backup |
 | Resource exhaustion (out of memory, disk full) | Monitor system resources during parallel loading. Check database file size | Reduce max parallel loaders. Free disk space or move database to larger volume. Increase available memory |
-| Source ordering affects resolution quality | Compare entity counts and match rates after loading in different orders | Apply the ordering heuristics from Step 4. In general, loading higher-quality sources first produces better results. If results are significantly different, the data quality gap between sources is large — address in Module 5 |
+| Source ordering affects resolution quality | Compare entity counts and match rates after loading in different orders | Apply the ordering heuristics from Step 4. In general, loading higher-quality sources first produces better results. If results are significantly different, the data quality gap between sources is large — address in Module 4 |
 
 ### Performance Benchmarks
 
@@ -127,4 +127,4 @@ Set expectations based on database type:
 - **SQLite (bootcamp default)**: ~50-200 records/second single-threaded. Slows as database grows. Suitable for ≤1,000 total records across all sources.
 - **PostgreSQL**: ~500-2,000 records/second with multi-threading. Scales to millions of records. Recommend migration when total records exceed 1,000 or when loading takes more than a few minutes.
 
-If the bootcamper is experiencing slow loading, suggest: "Loading is slow because SQLite doesn't handle concurrent writes well. For the bootcamp, let's work with a smaller subset. When you're ready for production volumes, Module 9 covers PostgreSQL migration."
+If the bootcamper is experiencing slow loading, suggest: "Loading is slow because SQLite doesn't handle concurrent writes well. For the bootcamp, let's work with a smaller subset. When you're ready for production volumes, Module 8 covers PostgreSQL migration."

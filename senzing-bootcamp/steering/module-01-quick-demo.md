@@ -63,12 +63,11 @@ inclusion: manual
 
    "Starting with Module 2, we shift to YOUR use case — your data, your problem, your success criteria. This is where the real work begins."
 
-   Then ask the use-case discovery questions one at a time (wait for each response):
-   - "What kind of records do you work with — people, organizations, or both?"
-   - "How many distinct source systems or feeds will you be ingesting from?"
-   - "What does a 'duplicate' look like in your world?"
+   "When we get there, I'll ask you to describe the problem you're trying to solve in your own words — what data you have, where it comes from, and what success looks like. That single description will tell me most of what I need to know."
 
-   Personalize the transition based on their answers. If no specific use case: "The bootcamp works great with sample data too."
+   Do NOT ask record-type, source-count, or duplicate-definition questions here. Module 2 will handle discovery through its open-ended prompt.
+
+   If the user has no specific use case: "The bootcamp works great with sample data too — we'll figure out the best path for you in Module 2."
 
 ## Agent Rules
 

@@ -13,9 +13,9 @@ Maintain `docs/data_lineage.yaml` with four sections updated as the bootcamp pro
 | Section | When | What to Record |
 | ------- | ---- | -------------- |
 | `sources` | Module 3 | Type, location, extraction date, record count, file path |
-| `transformations` | Module 5 | Input/output files, script path, records in/out/rejected, quality score, field mappings |
-| `loading` | Module 6 | Data source name, records loaded/failed, throughput, duration, error codes |
-| `usage` | Module 8 | Query script, data sources used, query type, response time |
+| `transformations` | Module 4 | Input/output files, script path, records in/out/rejected, quality score, field mappings |
+| `loading` | Module 5 | Data source name, records loaded/failed, throughput, duration, error codes |
+| `usage` | Module 7 | Query script, data sources used, query type, response time |
 
 ## Example Entry
 

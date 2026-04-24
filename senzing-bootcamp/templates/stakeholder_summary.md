@@ -138,12 +138,12 @@ Output: docs/stakeholder_summary_module8.md
   and reduce customer service lookup time by 30%."
 
 =============================================================================
-MODULE 12 — Deployment and Packaging
-Output: docs/stakeholder_summary_module12.md
+MODULE 11 — Deployment and Packaging
+Output: docs/stakeholder_summary_module11.md
 =============================================================================
 
 [status]        → "Deployed to [environment]" or "Packaged and deployment-ready"
-[module_number] → "12"
+[module_number] → "11"
 [module_name]   → "Deployment and Packaging"
 
 [problem_statement]

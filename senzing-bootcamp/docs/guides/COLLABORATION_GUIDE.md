@@ -48,7 +48,7 @@ For teams working on a Senzing Bootcamp project together. For coding standards, 
 
 ## Bootcamp-Specific Collaboration
 
-### Splitting Data Mapping Work (Module 5)
+### Splitting Data Mapping Work (Module 4)
 
 When multiple team members are mapping different data sources:
 
@@ -58,7 +58,7 @@ When multiple team members are mapping different data sources:
 4. Merge branches after both mappings are validated with `analyze_record`
 5. Document mappings in separate files: `docs/mapping_crm.md`, `docs/mapping_billing.md`
 
-### Splitting Query Work (Module 8)
+### Splitting Query Work (Module 7)
 
 When multiple team members are building different query programs:
 
@@ -72,7 +72,7 @@ When multiple team members are building different query programs:
 
 Review code at these key points:
 
-- After Module 5: Review transformation logic before loading data
-- After Module 6: Review loading programs before multi-source orchestration
-- After Module 8: Review query programs and UAT results before production
-- After Module 12: Review deployment configuration before going live
+- After Module 4: Review transformation logic before loading data
+- After Module 5: Review loading programs before multi-source orchestration
+- After Module 7: Review query programs and UAT results before production
+- After Module 11: Review deployment configuration before going live

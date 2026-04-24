@@ -41,17 +41,20 @@
 │  • Validate      │
 └────────┬─────────┘
          │
-         │ Module 5: Mapping
+         │ Module 4: Mapping
          ▼
 ┌──────────────────┐
 │data/transformed/ │
 │                  │
+│  Senzing Entity  │
+│  Specification   │
+│  (SGES) format:  │
 │  • customers.    │
-│    jsonl (SGES)  │
+│    jsonl         │
 │  • orders.jsonl  │
 └────────┬─────────┘
          │
-         │ Module 6: Loading
+         │ Module 5: Loading
          ▼
 ┌──────────────────┐
 │  SENZING ENGINE  │
@@ -62,7 +65,7 @@
 │  • Resolve       │
 └────────┬─────────┘
          │
-         │ Module 8: Querying
+         │ Module 7: Querying
          ▼
 ┌──────────────────┐
 │  RESOLVED DATA   │
@@ -72,7 +75,7 @@
 │  • Networks      │
 └────────┬─────────┘
          │
-         │ Module 12: Deployment
+         │ Module 11: Deployment
          ▼
 ┌──────────────────┐
 │   APPLICATIONS   │
@@ -120,7 +123,7 @@ EXAMPLE:
 │   state: "NV"                                                        │
 │   zip: "89101"                                                       │
 ├──────────────────────────────────────────────────────────────────────┤
-│ Output (SGES — attribute names from MCP server):                     │
+│ Output (Entity Specification — attribute names from MCP server):     │
 │   {                                                                  │
 │     "DATA_SOURCE": "CUSTOMERS",                                      │
 │     "RECORD_ID": "12345",                                            │
@@ -204,7 +207,7 @@ SOURCE 1: CRM          SOURCE 2: Orders       SOURCE 3: Support
 └──────┬───────┘      └──────┬───────┘      └──────┬───────┘
        │                     │                     │
        │ Load                │ Load                │ Load
-       │ (Module 6)          │ (Module 7)          │ (Module 7)
+       │ (Module 5)          │ (Module 6)          │ (Module 6)
        └─────────────────────┴─────────────────────┘
                              │
                              ▼

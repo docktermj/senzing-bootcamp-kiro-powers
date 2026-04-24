@@ -13,13 +13,13 @@ Score each data source on 6 dimensions (1-3 points each), then use the total to 
 | Format | CSV, JSON, single table | Multiple tables, XML, API | Nested JSON, multiple APIs, streams |
 | Volume | <10K records | 10K-100K records | >100K records |
 | Quality | Clean, few nulls | Some inconsistencies | Messy, many nulls |
-| Mapping | Fields map 1:1 to SGES | Some field combinations | Extensive transformation/parsing |
+| Mapping | Fields map 1:1 to Entity Specification | Some field combinations | Extensive transformation/parsing |
 | Structure | Flat, one entity type | Some nesting, 2 types | Hierarchical, multiple types |
 | Access | Local file, direct DB | API with docs, VPN | Complex API, auth issues, rate limits |
 
 ## Time Estimates by Score
 
-| Score | Complexity | Module 5 (Mapping) | Module 6 (Loading) | Approach |
+| Score | Complexity | Module 4 (Mapping) | Module 5 (Loading) | Approach |
 | ----- | ---------- | ------------------ | ------------------ | -------- |
 | 6-9 | Low ✅ | 1-2 hours | 30 min | Quick mapping, minimal cleansing, one session |
 | 10-14 | Medium ⚠️ | 2-4 hours | 1-2 hours | Plan structure carefully, incremental testing, may need iterations |

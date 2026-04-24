@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Use this template during **Module 5 (Data Mapping)** to document the complete transformation lineage for a single data source. Fill in one copy per data source after creating and testing the transformation program. This record captures what transformations were applied, why they were applied, and how data quality changed — supporting compliance, debugging, and governance.
+Use this template during **Module 4 (Data Quality & Mapping)** to document the complete transformation lineage for a single data source. Fill in one copy per data source after creating and testing the transformation program. This record captures what transformations were applied, why they were applied, and how data quality changed — supporting compliance, debugging, and governance.
 
 ## Instructions
 

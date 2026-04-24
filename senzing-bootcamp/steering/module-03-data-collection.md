@@ -65,7 +65,7 @@ inclusion: manual
    - **XML**: Parse and flatten to JSON or CSV. Use `find_examples(query='XML data loading')` for patterns.
    - **Database exports (SQL dump)**: Extract the relevant tables to CSV using the database's export tools.
    - **API pagination**: If the API returns paginated results, document the pagination strategy and write a collection script in `scripts/` that fetches all pages and saves to `data/raw/`.
-   - **Real-time streams (Kafka, etc.)**: For the bootcamp, capture a snapshot to a file. Document the stream details for production use in Module 12.
+   - **Real-time streams (Kafka, etc.)**: For the bootcamp, capture a snapshot to a file. Document the stream details for production use in Module 11.
 
    For any non-CSV/JSON format, the goal is to get the data into a flat file in `data/raw/` that Module 4 can evaluate.
 

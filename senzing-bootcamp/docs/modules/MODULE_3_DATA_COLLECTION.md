@@ -136,8 +136,7 @@ Module 3 is complete when:
 ## Integration with Other Modules
 
 - **From Module 2:** Uses business problem definition to identify which data sources are needed
-- **To Module 4:** Provides raw data files for quality evaluation
-- **To Module 5:** Raw data will be transformed into Senzing JSON format
+- **To Module 4:** Provides raw data files for quality evaluation and mapping into Senzing JSON format
 
 ## File Naming Conventions
 

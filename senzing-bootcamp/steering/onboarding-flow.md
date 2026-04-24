@@ -57,11 +57,11 @@ Present the overview before path selection. Cover all points naturally:
 
 - This bootcamp is a **guided discovery** of how to use Senzing. It's not a race — feel free to take it slow, read what the bootcamp is telling you, and ask questions at any point to help with your understanding. Be curious. The bootcamp is here to help you learn, not just to produce code.
 - Goal: comfortable generating Senzing SDK code. Finish with running code as foundation for real use.
-- Module overview table (0-12): what each does and why it matters
+- Module overview table (0-11): what each does and why it matters
 - Mock data available anytime. Three sample datasets: Las Vegas, London, Moscow
 - Built-in 500-record eval license; bring your own for more
 - Paths let you skip to what matters
-- If you encounter unfamiliar terms (like SGES, DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
+- If you encounter unfamiliar terms (like Senzing Entity Specification (SGES), DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
 
 Ask: "👉 Does this outline make sense? Any questions before we choose a path? Feel free to ask about anything — that's what the bootcamp is for." WAIT for response.
 
@@ -70,13 +70,13 @@ Ask: "👉 Does this outline make sense? Any questions before we choose a path? 
 Present paths — not mutually exclusive, all completed modules carry forward:
 
 - **A) Quick Demo** — 0→1. Verify technology works. One session.
-- **B) Fast Track** — 5→6→8. Have SGES data. Straight to loading/querying.
-- **C) Complete Beginner** — 2→3→4→5→6→8. From scratch with raw data.
-- **D) Full Production** — All 0-12. Building for production.
+- **B) Fast Track** — 4→5→7. Have Entity Specification data. Straight to loading/querying.
+- **C) Complete Beginner** — 2→3→4→5→7. From scratch with raw data.
+- **D) Full Production** — All 0-11. Building for production.
 
 Module 0 inserted automatically before any module needing SDK.
 
-Interpreting responses: "A"/"demo"→Module 1, "B"/"fast"→Module 5, "C"/"beginner"→Module 2, "D"/"full"→Module 0. Bare number→clarify letter vs module.
+Interpreting responses: "A"/"demo"→Module 1, "B"/"fast"→Module 4, "C"/"beginner"→Module 2, "D"/"full"→Module 0. Bare number→clarify letter vs module.
 
 Present paths with: "👉 Which path sounds right for you?"
 
@@ -100,14 +100,13 @@ Gate checks:
 | 1→2   | Demo completed or skipped                                                          |
 | 2→3   | Problem documented, sources identified, criteria defined                           |
 | 3→4   | Sources collected, files in `data/raw/`                                            |
-| 4→5   | Sources evaluated, SGES compliance determined                                      |
-| 5→6   | Sources mapped, programs tested, quality >70%                                      |
-| 6→7   | Sources loaded, no critical errors                                                 |
-| 7→8   | All sources orchestrated (or single source)                                        |
-| 8→9   | Queries answer business problem, results validated. Load `cloud-provider-setup.md` |
-| 9→10  | Baselines captured, bottlenecks documented                                         |
-| 10→11 | Security checklist complete, no critical vulns                                     |
-| 11→12 | Monitoring configured, health checks passing                                       |
+| 4→5   | Sources evaluated, mapped, programs tested, quality >70%                           |
+| 5→6   | Sources loaded, no critical errors                                                 |
+| 6→7   | All sources orchestrated (or single source)                                        |
+| 7→8   | Queries answer business problem, results validated. Load `cloud-provider-setup.md` |
+| 8→9   | Baselines captured, bottlenecks documented                                         |
+| 9→10  | Security checklist complete, no critical vulns                                     |
+| 10→11 | Monitoring configured, health checks passing                                       |
 
 ## Hook Registry
 
@@ -173,7 +172,7 @@ Prompt: "The markdown file that was just edited should be validated for CommonMa
 
 ### Module Hooks (created when module starts)
 
-**data-quality-check** — Module 5 (fileEdited → askAgent, filePatterns: `src/transform/*.*`)
+**data-quality-check** — Module 4 (fileEdited → askAgent, filePatterns: `src/transform/*.*`)
 
 Prompt: "The transformation program was just updated. Please review the changes and suggest running data quality validation tests to ensure the output still meets quality standards (>70% attribute coverage)."
 
@@ -181,7 +180,7 @@ Prompt: "The transformation program was just updated. Please review the changes 
 - name: `Senzing Data Quality Check`
 - description: `Automatically check data quality when transformation programs are saved.`
 
-**validate-senzing-json** — Module 5 (fileEdited → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
+**validate-senzing-json** — Module 4 (fileEdited → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
 
 Prompt: "Senzing JSON output was modified. Please use the analyze_record MCP tool to validate a sample of records from this file to ensure they conform to the Senzing Generic Entity Specification."
 
@@ -189,15 +188,15 @@ Prompt: "Senzing JSON output was modified. Please use the analyze_record MCP too
 - name: `Validate Senzing JSON Output`
 - description: `Validate Senzing JSON format when transformation output files are created or modified.`
 
-**analyze-after-mapping** — Module 5 (fileCreated → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
+**analyze-after-mapping** — Module 4 (fileCreated → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
 
-Prompt: "A new Senzing JSON file was created in data/transformed/. Before proceeding to loading (Module 6), use the analyze_record MCP tool to validate a sample of records from this file. Check feature distribution, attribute coverage, and data quality. Quality score should be >70% before loading."
+Prompt: "A new Senzing JSON file was created in data/transformed/. Before proceeding to loading (Module 5), use the analyze_record MCP tool to validate a sample of records from this file. Check feature distribution, attribute coverage, and data quality. Quality score should be >70% before loading."
 
 - id: `analyze-after-mapping`
 - name: `Analyze After Mapping`
 - description: `After completing a mapping task, reminds the agent to validate the transformation output using analyze_record before proceeding to loading.`
 
-**backup-before-load** — Module 6 (fileEdited → askAgent, filePatterns: `src/load/*.*`)
+**backup-before-load** — Module 5 (fileEdited → askAgent, filePatterns: `src/load/*.*`)
 
 Prompt: "A loading program was modified. Before running this in production, remind the user to backup the database using: python scripts/backup_project.py"
 
@@ -205,7 +204,7 @@ Prompt: "A loading program was modified. Before running this in production, remi
 - name: `Backup Database Before Loading`
 - description: `Remind to backup database before running loading programs.`
 
-**run-tests-on-change** — Module 6 (fileEdited → askAgent, filePatterns: `src/load/*.*, src/query/*.*, src/transform/*.*`)
+**run-tests-on-change** — Module 5 (fileEdited → askAgent, filePatterns: `src/load/*.*, src/query/*.*, src/transform/*.*`)
 
 Prompt: "Source code was modified. If tests exist in the tests/ directory, remind the user to run them to verify the change didn't break anything. Suggest the appropriate test command for the chosen language."
 
@@ -213,7 +212,7 @@ Prompt: "Source code was modified. If tests exist in the tests/ directory, remin
 - name: `Run Tests After Code Change`
 - description: `Reminds the agent to run the test suite after source code changes in loading, query, or transformation programs.`
 
-**verify-generated-code** — Module 6 (fileCreated → askAgent, filePatterns: `src/transform/*.*, src/load/*.*, src/query/*.*`)
+**verify-generated-code** — Module 5 (fileCreated → askAgent, filePatterns: `src/transform/*.*, src/load/*.*, src/query/*.*`)
 
 Prompt: "A new bootcamp source file was created. Before moving to the next step, verify this code actually runs: (1) Execute it on a small sample (10-100 records from data/samples/ or data/raw/). (2) Check for errors or exceptions. (3) If it produces output, inspect the first few records. (4) Report the results to the bootcamper — did it work, and if not, what needs fixing? Do not skip this verification step."
 
@@ -221,29 +220,29 @@ Prompt: "A new bootcamp source file was created. Before moving to the next step,
 - name: `Verify Generated Code Runs`
 - description: `When bootcamp source code is created, prompts the agent to run it on sample data and report results before moving on.`
 
-**offer-visualization** — Module 8 (fileCreated → askAgent, filePatterns: `src/query/*`)
+**offer-visualization** — Module 7 (fileCreated → askAgent, filePatterns: `src/query/*`)
 
-Prompt: "A query program was just created. If the bootcamper is in Module 8 and hasn't been offered the entity graph visualization yet, offer it: 'Would you like me to help you build an interactive entity graph visualization? It shows resolved entities as a force-directed network graph with clustering, search, and detail panels. I can create a self-contained HTML file you can open in any browser.' If they accept, load steering file visualization-guide.md and follow its workflow."
+Prompt: "A query program was just created. If the bootcamper is in Module 7 and hasn't been offered the entity graph visualization yet, offer it: 'Would you like me to help you build an interactive entity graph visualization? It shows resolved entities as a force-directed network graph with clustering, search, and detail panels. I can create a self-contained HTML file you can open in any browser.' If they accept, load steering file visualization-guide.md and follow its workflow."
 
 - id: `offer-visualization`
 - name: `Offer Entity Graph Visualization`
-- description: `After query programs are created in Module 8, prompts the agent to offer generating an interactive entity graph visualization.`
+- description: `After query programs are created in Module 7, prompts the agent to offer generating an interactive entity graph visualization.`
 
-**enforce-viz-offers** — Module 8 (agentStop → askAgent)
+**enforce-viz-offers** — Module 7 (agentStop → askAgent)
 
-Prompt: "First, read config/bootcamp_progress.json and check the current_module field. If the current module is NOT 8, do nothing — let the conversation end normally. If the current module IS 8, review the conversation history and check whether you offered BOTH of these visualizations during this interaction: 1. Entity graph visualization — an interactive force-directed network graph of resolved entities (offered after exploratory queries in step 3). 2. Results dashboard — an HTML page showing query results and validation metrics (offered after documenting findings in step 7). If BOTH were offered (regardless of whether the bootcamper accepted or declined), do nothing. If EITHER was NOT offered, ask the bootcamper if they would like that visualization before wrapping up. WAIT for the bootcamper's response before finishing."
+Prompt: "First, read config/bootcamp_progress.json and check the current_module field. If the current module is NOT 7, do nothing — let the conversation end normally. If the current module IS 7, review the conversation history and check whether you offered BOTH of these visualizations during this interaction: 1. Entity graph visualization — an interactive force-directed network graph of resolved entities (offered after exploratory queries in step 3). 2. Results dashboard — an HTML page showing query results and validation metrics (offered after documenting findings in step 7). If BOTH were offered (regardless of whether the bootcamper accepted or declined), do nothing. If EITHER was NOT offered, ask the bootcamper if they would like that visualization before wrapping up. WAIT for the bootcamper's response before finishing."
 
 - id: `enforce-viz-offers`
-- name: `Enforce Module 8 Visualization Offers`
-- description: `When the agent stops during Module 8, checks whether both visualization offers were made. If either was missed, prompts the agent to offer it before closing.`
+- name: `Enforce Module 7 Visualization Offers`
+- description: `When the agent stops during Module 7, checks whether both visualization offers were made. If either was missed, prompts the agent to offer it before closing.`
 
-**module12-phase-gate** — Module 12 (postTaskExecution → askAgent)
+**module12-phase-gate** — Module 11 (postTaskExecution → askAgent)
 
-Prompt: "First, read config/bootcamp_progress.json and check the current_module field. If the current module is NOT 12, do nothing. If the current module IS 12, display a packaging-complete summary showing all packaging steps are done (containerized, multi-env config, CI/CD, checklist, rollback plan) and note that nothing has been deployed yet — it is safe to stop here. Then ask: "Would you like to actually deploy this now, or would you prefer to stop here and deploy later on your own?" WAIT for the bootcamper's response. Do NOT proceed to deployment steps until the bootcamper explicitly says they want to deploy."
+Prompt: "First, read config/bootcamp_progress.json and check the current_module field. If the current module is NOT 11, do nothing. If the current module IS 11, display a packaging-complete summary showing all packaging steps are done (containerized, multi-env config, CI/CD, checklist, rollback plan) and note that nothing has been deployed yet — it is safe to stop here. Then ask: "Would you like to actually deploy this now, or would you prefer to stop here and deploy later on your own?" WAIT for the bootcamper's response. Do NOT proceed to deployment steps until the bootcamper explicitly says they want to deploy."
 
 - id: `module12-phase-gate`
-- name: `Module 12 Phase Gate`
-- description: `After packaging tasks complete in Module 12, displays a phase gate prompt asking the bootcamper whether to proceed to deployment or stop.`
+- name: `Module 11 Phase Gate`
+- description: `After packaging tasks complete in Module 11, displays a phase gate prompt asking the bootcamper whether to proceed to deployment or stop.`
 
 **backup-on-request** — any module (userTriggered → askAgent)
 

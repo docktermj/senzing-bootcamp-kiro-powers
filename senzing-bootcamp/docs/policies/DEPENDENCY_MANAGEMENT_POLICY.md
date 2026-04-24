@@ -20,9 +20,9 @@ When generating source code for the Senzing Bootcamp, a dependency file appropri
 Create or update the dependency file when generating code in:
 
 - Module 1: Quick Demo scripts
-- Module 5: Data transformation programs
-- Module 6: Data loading programs
-- Module 8: Query programs
+- Module 4: Data transformation programs
+- Module 5: Data loading programs
+- Module 7: Query programs
 - Any utility scripts in `src/utils/`
 
 ## File Location

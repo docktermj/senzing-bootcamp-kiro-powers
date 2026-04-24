@@ -14,12 +14,11 @@ Jump to the relevant module section instead of scanning the entire file:
 - [Module 1: Quick Demo](#module-1)
 - [Module 2: Business Problem](#module-2)
 - [Module 3: Data Collection](#module-3)
-- [Module 4: Data Quality](#module-4)
-- [Module 5: Data Mapping](#module-5)
-- [Module 6: Single Source Loading](#module-6)
-- [Module 7: Multi-Source Orchestration](#module-7)
-- [Module 8: Query and Validation](#module-8)
-- [Modules 9-12: Production Readiness](#modules-9-12)
+- [Module 4: Data Quality & Mapping](#module-4)
+- [Module 5: Single Source Loading](#module-5)
+- [Module 6: Multi-Source Orchestration](#module-6)
+- [Module 7: Query and Validation](#module-7)
+- [Modules 8-11: Production Readiness](#modules-8-11)
 - [General Pitfalls](#general-pitfalls)
 - [MCP Server Unavailable](#mcp-unavailable)
 - [Recovery Quick Reference](#recovery)
@@ -51,7 +50,7 @@ Then use their answers to jump to the relevant section and present only the matc
 
 ### SQLite → PostgreSQL Migration
 
-When to migrate: >100K records and slow, need multi-threading, preparing for Modules 9-12.
+When to migrate: >100K records and slow, need multi-threading, preparing for Modules 8-11.
 
 Steps: Install PostgreSQL (Linux: `apt install postgresql`, macOS: `brew install postgresql`, Windows: download from postgresql.org) → `sdk_guide(topic='configure')` for new config → Reload data from JSONL (SQLite data doesn't transfer) → Update `bootcamp_preferences.yaml` → Re-validate queries.
 
@@ -87,26 +86,19 @@ What carries forward: all code, transformed data, docs, config. What doesn't: th
 
 <a id="module-4"></a>
 
-## Module 4: Data Quality
+## Module 4: Data Quality & Mapping
 
 | Pitfall                                  | Fix                                                                              |
 | ---------------------------------------- | -------------------------------------------------------------------------------- |
 | Insufficient sample data (2-3 records)   | Request 100-1000 records minimum                                                 |
 | Skipping quality scoring                 | Always run automated scoring for objective metrics                               |
-| Ignoring quality issues                  | Address during mapping (Module 5)                                                |
+| Ignoring quality issues                  | Address during mapping (Phase 2 of Module 4)                                     |
 | Proceeding with low quality              | Use the three-tier gate: ≥80% proceed, 70-79% warn and let user decide, <70% recommend fixing first |
-
-<a id="module-5"></a>
-
-## Module 5: Data Mapping
-
-| Pitfall                                          | Fix                                                                                                          |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| Hand-coding attribute names                      | ALWAYS use `mapping_workflow` — never guess. Use `search_docs(query="entity specification")` for reference   |
-| Missing `DATA_SOURCE` or `RECORD_ID`             | Every record MUST have both fields                                                                           |
-| Running transformation on full dataset first     | Test on 10-100 records first                                                                                 |
-| Skipping `analyze_record` after transform        | Always validate output quality                                                                               |
-| Generated files in project root                  | Relocate: scripts→`src/transform/`, JSONL→`data/transformed/`, docs→`docs/`, shell→`scripts/`                |
+| Hand-coding attribute names              | ALWAYS use `mapping_workflow` — never guess. Use `search_docs(query="entity specification")` for reference   |
+| Missing `DATA_SOURCE` or `RECORD_ID`    | Every record MUST have both fields                                                                           |
+| Running transformation on full dataset first | Test on 10-100 records first                                                                             |
+| Skipping `analyze_record` after transform | Always validate output quality                                                                              |
+| Generated files in project root          | Relocate: scripts→`src/transform/`, JSONL→`data/transformed/`, docs→`docs/`, shell→`scripts/`                |
 
 ### Mapping Workflow State Loss
 
@@ -120,9 +112,9 @@ State cannot be reconstructed — you must restart. Recover quickly by:
 
 Prevention: warn user before long mapping sessions that state doesn't persist across sessions.
 
-<a id="module-6"></a>
+<a id="module-5"></a>
 
-## Module 6: Single Source Loading
+## Module 5: Single Source Loading
 
 | Pitfall                                          | Fix                                                                          |
 | ------------------------------------------------ | ---------------------------------------------------------------------------- |
@@ -134,11 +126,11 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | Duplicate RECORD_IDs                             | Ensure unique within each DATA_SOURCE. Append sequence number if needed      |
 | Poor DATA_SOURCE naming (`file1`, `data`)        | Use descriptive uppercase: `CUSTOMERS_CRM`, `VENDORS_ERP`                    |
 | No progress monitoring                           | Add progress logging to loading programs                                     |
-| Manual multi-source loading                      | Use Module 7 orchestration instead                                           |
+| Manual multi-source loading                      | Use Module 6 orchestration instead                                           |
 
-<a id="module-7"></a>
+<a id="module-6"></a>
 
-## Module 7: Multi-Source Orchestration
+## Module 6: Multi-Source Orchestration
 
 | Pitfall                                  | Fix                                                          |
 | ---------------------------------------- | ------------------------------------------------------------ |
@@ -146,9 +138,9 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | No per-source error handling             | Implement per-source error handling, continue on failure     |
 | Not tracking multi-source progress       | Use orchestration dashboard or logging                       |
 
-<a id="module-8"></a>
+<a id="module-7"></a>
 
-## Module 8: Query and Validation
+## Module 7: Query and Validation
 
 | Pitfall                                      | Fix                                                                                                                      |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -158,16 +150,16 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | Expecting perfect results immediately        | Iterate: adjust mappings, confidence scores, add attributes                                                              |
 | Skipping UAT                                 | Always conduct UAT with business users before production                                                                 |
 
-<a id="modules-9-12"></a>
+<a id="modules-8-11"></a>
 
-## Modules 9-12: Production Readiness
+## Modules 8-11: Production Readiness
 
 | Pitfall                          | Fix                                                      |
 | -------------------------------- | -------------------------------------------------------- |
-| Skipping performance testing     | Complete Module 9 before production                      |
-| No security hardening            | Complete Module 10 checklist                             |
-| No monitoring                    | Complete Module 11 setup                                 |
-| No disaster recovery plan        | Complete Module 12 DR planning and test backups          |
+| Skipping performance testing     | Complete Module 8 before production                      |
+| No security hardening            | Complete Module 9 checklist                             |
+| No monitoring                    | Complete Module 10 setup                                 |
+| No disaster recovery plan        | Complete Module 11 DR planning and test backups          |
 
 <a id="general-pitfalls"></a>
 

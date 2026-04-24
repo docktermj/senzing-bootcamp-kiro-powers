@@ -44,9 +44,9 @@ After each module, check if the user finished their path's last module:
 | Path | Complete after |
 |------|----------------|
 | A    | Module 1       |
-| B    | Module 8       |
-| C    | Module 8       |
-| D    | Module 12      |
+| B    | Module 7       |
+| C    | Module 7       |
+| D    | Module 11      |
 
 ## Path Completion Celebration
 

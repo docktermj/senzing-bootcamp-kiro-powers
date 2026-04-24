@@ -35,10 +35,10 @@ def cyan(t): return c("0;36", t)
 
 MODULE_NAMES = {
     0: "SDK Setup", 1: "Quick Demo", 2: "Business Problem",
-    3: "Data Collection", 4: "Data Quality", 5: "Data Mapping",
-    6: "Single Source Loading", 7: "Multi-Source Orchestration",
-    8: "Query, Visualize & Validate", 9: "Performance Testing",
-    10: "Security Hardening", 11: "Monitoring", 12: "Deployment",
+    3: "Data Collection", 4: "Data Quality & Mapping",
+    5: "Single Source Loading", 6: "Multi-Source Orchestration",
+    7: "Query, Visualize & Validate", 8: "Performance Testing",
+    9: "Security Hardening", 10: "Monitoring", 11: "Deployment",
 }
 
 NEXT_STEPS = {
@@ -46,15 +46,14 @@ NEXT_STEPS = {
     1:  ("Start Module 1: Quick Demo", "See entity resolution in action with sample data"),
     2:  ("Start Module 2: Business Problem", "Define your problem and identify data sources"),
     3:  ("Start Module 3: Data Collection", "Upload or link to data source files"),
-    4:  ("Start Module 4: Data Quality", "Evaluate data quality with automated scoring"),
-    5:  ("Start Module 5: Data Mapping", "Create transformation programs"),
-    6:  ("Start Module 6: Single Source Loading", "Load your first data source"),
-    7:  ("Start Module 7: Multi-Source Orchestration", "Manage dependencies between sources"),
-    8:  ("Start Module 8: Query, Visualize & Validate", "Create query programs, visualize results, and validate"),
-    9:  ("Start Module 9: Performance Testing", "Benchmark and optimize performance"),
-    10: ("Start Module 10: Security Hardening", "Implement security best practices"),
-    11: ("Start Module 11: Monitoring", "Set up monitoring and observability"),
-    12: ("Start Module 12: Deployment", "Package and deploy to production"),
+    4:  ("Start Module 4: Data Quality & Mapping", "Evaluate data quality and create transformation programs"),
+    5:  ("Start Module 5: Single Source Loading", "Load your first data source"),
+    6:  ("Start Module 6: Multi-Source Orchestration", "Manage dependencies between sources"),
+    7:  ("Start Module 7: Query, Visualize & Validate", "Create query programs, visualize results, and validate"),
+    8:  ("Start Module 8: Performance Testing", "Benchmark and optimize performance"),
+    9:  ("Start Module 9: Security Hardening", "Implement security best practices"),
+    10: ("Start Module 10: Monitoring", "Set up monitoring and observability"),
+    11: ("Start Module 11: Deployment", "Package and deploy to production"),
 }
 
 
@@ -68,7 +67,7 @@ def sync_progress_tracker(completed, current, language):
     lines.append("Source of truth: `config/bootcamp_progress.json`.")
     lines.append("")
 
-    total = 13
+    total = 12
     pct = len(completed) * 100 // total
     bar_w = 26
     filled = pct * bar_w // 100
@@ -76,7 +75,7 @@ def sync_progress_tracker(completed, current, language):
     lines.append(f"Progress: [{bar}] {len(completed)}/{total}")
     lines.append("")
 
-    for m in range(0, 13):
+    for m in range(0, 12):
         name = MODULE_NAMES.get(m, "?")
         if m in completed:
             icon = "✅"
@@ -129,7 +128,7 @@ def main():
                 if current > last:
                     status = "Ready to Start"
                 elif current in completed:
-                    status = "Complete" if last >= 12 else "Ready to Start"
+                    status = "Complete" if last >= 11 else "Ready to Start"
                 else:
                     status = "In Progress"
         except (json.JSONDecodeError, KeyError):
@@ -154,15 +153,15 @@ def main():
             status = "In Progress"
         else:
             last = max(completed)
-            current = min(last + 1, 12)
-            status = "Complete" if last >= 12 else "Ready to Start"
+            current = min(last + 1, 11)
+            status = "Complete" if last >= 11 else "Ready to Start"
     else:
         print(yellow("⚠ No progress data found"))
         print("Start the bootcamp to begin tracking progress.")
         print()
         # Continue to show project health below
 
-    total_modules = 13
+    total_modules = 12
     pct = len(completed) * 100 // total_modules
 
     print(f"  {green('Current Module:')} Module {current}")
@@ -187,7 +186,7 @@ def main():
         print()
 
     # Next steps
-    if current <= 12 and status != "Complete":
+    if current <= 11 and status != "Complete":
         print(cyan("→ Next Steps:"))
         step = NEXT_STEPS.get(current)
         if step:

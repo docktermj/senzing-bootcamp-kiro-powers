@@ -1,16 +1,16 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 6: LOAD SINGLE DATA SOURCE  🚀🚀🚀
+🚀🚀🚀  MODULE 5: LOAD SINGLE DATA SOURCE  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 6: Load Single Data Source
+# Module 5: Load Single Data Source
 
-> **Agent workflow:** The agent follows `steering/module-06-single-source.md` for this module's step-by-step workflow.
+> **Agent workflow:** The agent follows `steering/module-05-single-source.md` for this module's step-by-step workflow.
 
 ## Overview
 
-Module 6 focuses on loading ONE data source into Senzing and verifying the results. This module teaches the fundamentals of loading before tackling multi-source orchestration in Module 7.
+Module 5 focuses on loading ONE data source into Senzing and verifying the results. This module teaches the fundamentals of loading before tackling multi-source orchestration in Module 6.
 
 **Focus:** Load a single data source successfully and understand the loading process.
 
@@ -59,7 +59,7 @@ An **entity** is Senzing's resolved view of a real-world person or organization.
 > detect the SDK environment, load test data into a fresh SQLite DB, generate a
 > validation report, and evaluate results — all without writing any code.
 >
-> Call `mapping_workflow` with `action='advance'` to continue from where Module 5 left off.
+> Call `mapping_workflow` with `action='advance'` to continue from where Module 4 left off.
 > This gives the user fast feedback on whether their mapping produces good entity resolution
 > results before investing time in custom loading programs.
 >
@@ -162,7 +162,7 @@ For production systems, you'll need to load only new or changed records instead 
 
 ### Quick Overview
 
-**Full Reload** (Module 6 default):
+**Full Reload** (Module 5 default):
 
 ```text
 Load all records every time:
@@ -185,7 +185,7 @@ Load only records modified since last load:
 - Full reload: Small datasets (< 100K), infrequent updates
 - Incremental: Large datasets, frequent updates, production systems
 
-**Agent behavior:** For Module 6, generate full reload scripts. Mention incremental loading as a future enhancement. Use MCP `search_docs` if user asks about incremental loading.
+**Agent behavior:** For Module 5, generate full reload scripts. Mention incremental loading as a future enhancement. Use MCP `search_docs` if user asks about incremental loading.
 
 ## Error Handling
 
@@ -250,7 +250,7 @@ Save this in `docs/loading_statistics_[data_source].md`.
 
 ## Validation Gates
 
-Before proceeding to Module 7, verify:
+Before proceeding to Module 6, verify:
 
 - [ ] Loading program generated and customized
 - [ ] Data source registered with Senzing
@@ -262,13 +262,13 @@ Before proceeding to Module 7, verify:
 
 ## Success Indicators
 
-Module 6 is complete when:
+Module 5 is complete when:
 
 - At least one data source is fully loaded
 - Loading statistics are documented
 - Errors are minimal and understood
 - You can query loaded records successfully
-- Ready to load additional sources (Module 7) or query results (Module 8)
+- Ready to load additional sources (Module 6) or query results (Module 7)
 
 ## Common Issues
 
@@ -313,9 +313,9 @@ Module 6 is complete when:
 ## Integration with Other Modules
 
 - **From Module 0:** Uses installed SDK and configured database
-- **From Module 5:** Loads transformed data files
-- **To Module 7:** Single-source loading is foundation for multi-source orchestration
-- **To Module 8:** Loaded data is queried and validated
+- **From Module 4:** Loads transformed data files
+- **To Module 6:** Single-source loading is foundation for multi-source orchestration
+- **To Module 7:** Loaded data is queried and validated
 
 ## File Locations
 
@@ -340,9 +340,9 @@ project/
 
 ## Agent Behavior
 
-When a user is in Module 6:
+When a user is in Module 5:
 
-1. **Verify prerequisites:** Check Module 5 complete, transformed data exists
+1. **Verify prerequisites:** Check Module 4 complete, transformed data exists
 2. **Choose data source:** Help user select which source to load first
 3. **Generate loading program:** Use `generate_scaffold` with `add_records` workflow
 4. **Customize program:** Add file path, data source name, progress reporting
@@ -355,13 +355,13 @@ When a user is in Module 6:
 
 **If user asks about incremental loading:** Use MCP `search_docs` with query "incremental loading" and explain strategies.
 
-**If user has multiple sources:** After first source succeeds, offer to continue with Module 6 for additional sources, or proceed to Module 7 for orchestration.
+**If user has multiple sources:** After first source succeeds, offer to continue with Module 5 for additional sources, or proceed to Module 6 for orchestration.
 
 ## Related Documentation
 
-- `POWER.md` - Module 6 overview
-- `steering/module-06-single-source.md` - Module 6 workflow
-- `steering/agent-instructions.md` - Agent behavior for Module 6
+- `POWER.md` - Module 5 overview
+- `steering/module-05-single-source.md` - Module 5 workflow
+- `steering/agent-instructions.md` - Agent behavior for Module 5
 - Use MCP: `search_docs(query="incremental loading")` for incremental loading strategies
 - Use MCP: `search_docs(query="performance optimization")` for performance optimization
 - Use MCP: `search_docs(query="backup and recovery")` for backup and recovery
@@ -369,3 +369,4 @@ When a user is in Module 6:
 ## Version History
 
 - **v3.0.0** (2026-03-17): Module 6 refocused on single-source loading with incremental loading enhancement
+- **v4.0.0** (2026-04-17): Renumbered from Module 6 to Module 5 (merge of old Modules 4+5)

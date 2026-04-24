@@ -149,9 +149,9 @@ Migrate to PostgreSQL when any of these conditions apply:
 
 ### Migration Timing
 
-- **Before Module 9** is ideal — benchmark both backends and compare
-- **During Module 9** if SQLite benchmarks show insufficient throughput
-- **Before Module 12 (Deployment)** at the latest — production should use PostgreSQL
+- **Before Module 8** is ideal — benchmark both backends and compare
+- **During Module 8** if SQLite benchmarks show insufficient throughput
+- **Before Module 11 (Deployment)** at the latest — production should use PostgreSQL
 
 Use `search_docs(query="database migration", category="configuration", version="current")` for migration guidance.
 

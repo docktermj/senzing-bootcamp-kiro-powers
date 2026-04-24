@@ -2,15 +2,15 @@
 inclusion: manual
 ---
 
-# Module 12: Deployment and Packaging
+# Module 11: Deployment and Packaging
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
-> **User reference:** See `docs/modules/MODULE_12_DEPLOYMENT_PACKAGING.md` for background.
+> **User reference:** See `docs/modules/MODULE_11_DEPLOYMENT_PACKAGING.md` for background.
 
 Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` if already set.
 
-**Prerequisites:** Module 11 complete, all tests passing.
+**Prerequisites:** Module 10 complete, all tests passing.
 
 **Before/After:** Everything works locally. After this module, your entity resolution system is packaged and ready for deployment — and optionally deployed to your target environment.
 
@@ -19,7 +19,7 @@ Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcam
 1. **Packaging** (Steps 2-11): Preparing your code for deployment — containerization, configuration, CI/CD, documentation. The deployment target (chosen in Step 1) shapes what artifacts get built. Everyone does this.
 2. **Deployment** (Steps 12-15): Actually deploying to a target environment. This is optional and only happens if the bootcamper wants to deploy now.
 
-Tell the user upfront: "Module 12 has two phases. First, we'll package your code so it's deployment-ready. But before we start packaging, I need to know where you plan to deploy — because the deployment target shapes what we build. Then once packaging is complete, I'll ask if you want to actually deploy it now or save that for later."
+Tell the user upfront: "Module 11 has two phases. First, we'll package your code so it's deployment-ready. But before we start packaging, I need to know where you plan to deploy — because the deployment target shapes what we build. Then once packaging is complete, I'll ask if you want to actually deploy it now or save that for later."
 
 Before starting: call `search_docs(query='deployment', category='anti_patterns', version='current')`.
 
@@ -29,7 +29,7 @@ Before starting: call `search_docs(query='deployment', category='anti_patterns',
 
 **Ask this before creating any packaging artifacts.** The deployment target fundamentally shapes what gets built — a CDK app for AWS is completely different from a Docker Compose setup for local deployment.
 
-**Check `config/bootcamp_preferences.yaml` first.** If `cloud_provider` was already set at the 8→9 gate (via `cloud-provider-setup.md`), confirm rather than re-ask: "At the start of Module 9, you chose [cloud_provider]. Is that still your deployment target, or would you like to change it?" WAIT for response.
+**Check `config/bootcamp_preferences.yaml` first.** If `cloud_provider` was already set at the 7→8 gate (via `cloud-provider-setup.md`), confirm rather than re-ask: "At the start of Module 8, you chose [cloud_provider]. Is that still your deployment target, or would you like to change it?" WAIT for response.
 
 **If no cloud_provider is set**, ask two questions (one at a time, WAIT for each):
 
@@ -141,7 +141,7 @@ Define the pipeline in `infra/pipeline_stack.[ext]`. This replaces manually conf
 
 If the project needs an API: generate via `generate_scaffold` or `find_examples(query='REST API')`.
 
-Endpoints: `GET /health`, `GET /entity/{id}`, `POST /search`, `POST /load` (authenticated). Include JWT auth from Module 10, Prometheus metrics from Module 11.
+Endpoints: `GET /health`, `GET /entity/{id}`, `POST /search`, `POST /load` (authenticated). Include JWT auth from Module 9, Prometheus metrics from Module 10.
 
 Save to `src/api/`.
 
@@ -172,8 +172,8 @@ Create scripts for: deploy, rollback, health check, database backup/restore. Sav
 Verify before deploying:
 
 - [ ] All tests passing
-- [ ] Security scan clean (Module 10)
-- [ ] Monitoring configured (Module 11)
+- [ ] Security scan clean (Module 9)
+- [ ] Monitoring configured (Module 10)
 - [ ] Secrets in secrets manager (not in code/config)
 - [ ] Database backed up
 - [ ] Rollback plan documented
@@ -185,8 +185,8 @@ Verify before deploying:
 Pre-deployment checklist — here's where we stand:
 
 ✅ All tests passing — [X] tests, 0 failures
-✅ Security scan clean — 0 critical/high findings (Module 10)
-✅ Monitoring configured — dashboards, alerts, health checks (Module 11)
+✅ Security scan clean — 0 critical/high findings (Module 9)
+✅ Monitoring configured — dashboards, alerts, health checks (Module 10)
 ✅ Secrets managed — all credentials in [secrets manager], none in code
 ✅ Database backed up — backup at backups/[filename]
 ✅ Rollback plan — documented in docs/rollback_plan.md
@@ -232,7 +232,7 @@ Everything from the packaging phase is done:
 
 > **⚠️ WAIT — Do NOT proceed past this point until the bootcamper responds.**
 >
-> - If they want to **stop here**: Mark Module 12 as complete (packaging only). Do NOT proceed to Step 13.
+> - If they want to **stop here**: Mark Module 11 as complete (packaging only). Do NOT proceed to Step 13.
 > - If they want to **deploy now**: Proceed to Phase 2 (Steps 13–16).
 > - If they are **unsure**: Reassure them that stopping is perfectly fine and they can deploy later on their own using the scripts and documentation created during packaging.
 
@@ -248,7 +248,7 @@ Deploy to staging environment using the chosen method. Run smoke tests. Verify m
 
 ## Step 14: Deploy to Production
 
-Deploy to production. Monitor closely for first 24 hours. Verify all health checks pass, alerts are quiet, performance matches Module 9 baselines.
+Deploy to production. Monitor closely for first 24 hours. Verify all health checks pass, alerts are quiet, performance matches Module 8 baselines.
 
 **Tell the user the deployment status:**
 
@@ -265,7 +265,7 @@ Deployment summary:
 
 First 24 hours — watch for:
 - Loading error rate (should stay <1%)
-- Query latency (should match Module 9 baselines)
+- Query latency (should match Module 8 baselines)
 - Redo queue depth (should not grow unbounded)
 - Disk usage (should not spike unexpectedly)
 
@@ -310,7 +310,7 @@ The operations guide MUST include a disaster recovery section. Guide the bootcam
 
 Offer stakeholder summary: "Would you like me to create a one-page executive summary of this deployment to share with your team? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
 
-If yes, read the template at `senzing-bootcamp/templates/stakeholder_summary.md`. Follow the **MODULE 12** guidance block in the template to fill each placeholder with Module 12 context (deployment status, production metrics, operational readiness, architecture summary). Save the filled summary to `docs/stakeholder_summary_module12.md`.
+If yes, read the template at `senzing-bootcamp/templates/stakeholder_summary.md`. Follow the **MODULE 11** guidance block in the template to fill each placeholder with Module 11 context (deployment status, production metrics, operational readiness, architecture summary). Save the filled summary to `docs/stakeholder_summary_module11.md`.
 
 Remind user about bootcamp feedback: "You've completed the full bootcamp! Say 'bootcamp feedback' to document your experience."
 

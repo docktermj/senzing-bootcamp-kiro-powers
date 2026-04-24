@@ -51,18 +51,12 @@
            ▼
 ┌──────────────────────┐
 │      MODULE 4        │
-│   Data Quality       │
+│ Data Quality &       │
+│ Mapping              │
 │                      │
 │  • Quality scoring   │
 │  • Completeness      │
 │  • Consistency       │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│      MODULE 5        │
-│   Data Mapping       │
-│                      │
 │  • Transform data    │
 │  • Map attributes    │
 │  • Validate format   │
@@ -70,7 +64,7 @@
            │
            ▼
 ┌──────────────────────┐
-│      MODULE 6        │
+│      MODULE 5        │
 │  Single Source Load  │
 │                      │
 │  • Load one source   │
@@ -82,7 +76,7 @@
            │                     │
            ▼                     ▼
 ┌──────────────────────┐  ┌──────────────────────┐
-│      MODULE 7        │  │   Skip if single     │
+│      MODULE 6        │  │   Skip if single     │
 │  Multi-Source Orch.  │  │   source only        │
 │                      │
 │  • Dependencies      │
@@ -92,7 +86,7 @@
            │
            ▼
 ┌──────────────────────┐
-│      MODULE 8        │
+│      MODULE 7        │
 │ Query, Viz & Validate│
 │                      │
 │  • Create queries    │
@@ -104,7 +98,7 @@
            │                     │
            ▼                     ▼
 ┌──────────────────────┐  ┌──────────────────────┐
-│      MODULE 9        │  │   Skip if not        │
+│      MODULE 8        │  │   Skip if not        │
 │ Performance Testing  │  │   production         │
 │                      │
 │  • Benchmarking      │
@@ -114,7 +108,7 @@
            │
            ▼
 ┌──────────────────────┐
-│     MODULE 10        │
+│      MODULE 9        │
 │ Security Hardening   │
 │                      │
 │  • Secrets mgmt      │
@@ -124,7 +118,7 @@
            │
            ▼
 ┌──────────────────────┐
-│     MODULE 11        │
+│     MODULE 10        │
 │     Monitoring       │
 │                      │
 │  • Logging           │
@@ -134,7 +128,7 @@
            │
            ▼
 ┌──────────────────────┐
-│     MODULE 12        │
+│     MODULE 11        │
 │     Deployment       │
 │                      │
 │  • Package code      │
@@ -163,23 +157,23 @@ Module 1 → Done
 ### Path B: Fast Track
 
 ```text
-Module 0 → Module 5 → Module 6 → Module 8 → Done
-(For users with SGES-compliant data)
+Module 0 → Module 4 → Module 5 → Module 7 → Done
+(For users with Senzing Entity Specification (SGES)-compliant data)
 ```
 
 ### Path C: Complete Beginner
 
 ```text
-Module 2 → Module 3 → Module 4 → Module 5 →
-Module 0 → Module 6 → Module 8 → Done
+Module 2 → Module 3 → Module 4 →
+Module 0 → Module 5 → Module 7 → Done
 ```
 
 ### Path D: Full Production
 
 ```text
-Module 0 → Module 1 → Module 2 → Module 3 → Module 4 → Module 5 →
-Module 6 → Module 7 → Module 8 → Module 9 →
-Module 10 → Module 11 → Module 12 → Done
+Module 0 → Module 1 → Module 2 → Module 3 → Module 4 →
+Module 5 → Module 6 → Module 7 → Module 8 →
+Module 9 → Module 10 → Module 11 → Done
 ```
 
 ## Module Dependencies
@@ -190,14 +184,13 @@ Module 1: No dependencies
 Module 2: No dependencies
 Module 3: Requires Module 2
 Module 4: Requires Module 3
-Module 5: Requires Module 4
-Module 6: Requires Module 0 (SDK) and Module 5 (or SGES data)
-Module 7: Requires Module 6 (optional if single source)
-Module 8: Requires Module 6 or 7
+Module 5: Requires Module 0 (SDK) and Module 4 (or Entity Specification data)
+Module 6: Requires Module 5 (optional if single source)
+Module 7: Requires Module 5 or 6
+Module 8: Requires Module 7 (optional)
 Module 9: Requires Module 8 (optional)
 Module 10: Requires Module 9 (optional)
 Module 11: Requires Module 10 (optional)
-Module 12: Requires Module 11 (optional)
 ```
 
 ## Skip Conditions
@@ -210,15 +203,15 @@ Module 12: Requires Module 11 (optional)
 │ Module 1: Yes (but recommended for first-timers)        │
 │ Module 2: No (unless you know your problem well)        │
 │ Module 3: No (unless data already collected)            │
-│ Module 4: No (unless quality already validated)         │
-│ Module 5: Yes (if data is SGES-compliant)               │
-│ Module 6: No (core loading module)                      │
-│ Module 7: Yes (if single source only)                   │
-│ Module 8: No (must validate results)                    │
-│ Module 9: Yes (if not production or perf not critical)  │
-│ Module 10: Yes (if internal use only)                   │
-│ Module 11: Yes (if basic monitoring sufficient)         │
-│ Module 12: Yes (if not deploying to production)         │
+│ Module 4: No (unless quality already validated and      │
+│           data is Entity Specification-compliant)        │
+│ Module 5: No (core loading module)                      │
+│ Module 6: Yes (if single source only)                   │
+│ Module 7: No (must validate results)                    │
+│ Module 8: Yes (if not production or perf not critical)  │
+│ Module 9: Yes (if internal use only)                    │
+│ Module 10: Yes (if basic monitoring sufficient)         │
+│ Module 11: Yes (if not deploying to production)         │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -229,15 +222,14 @@ Module 0  → Installed SDK, configured database
 Module 1  → Demo results, understanding of entity resolution
 Module 2  → docs/business_problem.md
 Module 3  → data/raw/* files, docs/data_source_locations.md
-Module 4  → Data quality reports
-Module 5  → src/transform/* programs, data/transformed/* files
-Module 6  → Loaded data, loading statistics
-Module 7  → Multi-source orchestration scripts
-Module 8  → src/query/* programs, UAT results
-Module 9  → Performance benchmarks, optimization recommendations
-Module 10 → Security configuration, compliance documentation
-Module 11 → Monitoring dashboards, alerting rules
-Module 12 → Deployment artifacts, runbooks
+Module 4  → Data quality reports, src/transform/* programs, data/transformed/* files
+Module 5  → Loaded data, loading statistics
+Module 6  → Multi-source orchestration scripts
+Module 7  → src/query/* programs, UAT results
+Module 8  → Performance benchmarks, optimization recommendations
+Module 9  → Security configuration, compliance documentation
+Module 10 → Monitoring dashboards, alerting rules
+Module 11 → Deployment artifacts, runbooks
 ```
 
 ## Progress Tracking

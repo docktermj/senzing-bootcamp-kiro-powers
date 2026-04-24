@@ -106,13 +106,13 @@ Your overall quality score falls into one of three bands. Each band has a clear 
 
 | Score Range | Band   | Recommended Action                                                                                     |
 |-------------|--------|--------------------------------------------------------------------------------------------------------|
-| ≥ 80%       | Green  | **Proceed** to Module 5 (data mapping). Data quality is strong enough for meaningful entity resolution. |
+| ≥ 80%       | Green  | **Proceed** to Phase 2 (data mapping). Data quality is strong enough for meaningful entity resolution. |
 | 70 – 79%    | Yellow | **Warning.** Quality gaps exist. You may proceed or improve data first — your choice.                  |
 | < 70%       | Red    | **Fix first.** Data quality issues will produce poor entity resolution results. Address the weakest dimensions before proceeding. |
 
 ### ≥ 80% — Proceed
 
-Your data has strong completeness, consistent formats, valid values, and few duplicates. Entity resolution will have enough attributes to work with. Proceed to Module 5 (data mapping).
+Your data has strong completeness, consistent formats, valid values, and few duplicates. Entity resolution will have enough attributes to work with. Proceed to Phase 2 (data mapping).
 
 ### 70 – 79% — Warning, Your Choice
 
@@ -216,8 +216,8 @@ Quality Score = (40 × 0.40) + (45 × 0.30) + (35 × 0.20) + (80 × 0.10)
 
 ## Related Documentation
 
-- [Module 4: Data Quality Scoring](../modules/MODULE_4_DATA_QUALITY_SCORING.md) — Full module documentation with algorithm details
-- [Module 4 Steering File](../../steering/module-04-data-quality.md) — Agent workflow for Module 4
+- [Module 4: Data Quality & Mapping](../modules/MODULE_4_DATA_QUALITY_AND_MAPPING.md) — Full module documentation with algorithm details
+- [Module 4 Steering File](../../steering/module-04-data-quality-mapping.md) — Agent workflow for Module 4
 - [Data Quality Check Hook](../../hooks/data-quality-check.kiro.hook) — Automated quality check hook
 - [Performance Baselines](PERFORMANCE_BASELINES.md) — How data volume affects processing time and resource needs
 - [Offline Mode](OFFLINE_MODE.md) — What works when MCP is unavailable (Module 4 quality scoring is mostly offline)

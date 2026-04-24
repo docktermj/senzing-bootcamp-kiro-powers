@@ -2,13 +2,13 @@
 inclusion: manual
 ---
 
-# Module 6: Load Single Data Source
+# Module 5: Load Single Data Source
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_6_SINGLE_SOURCE_LOADING.md`.
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_5_SINGLE_SOURCE_LOADING.md`.
 
-## Workflow: Quick SDK Test Load — Part B: Create Loading Programs (Module 6)
+## Workflow: Quick SDK Test Load — Part B: Create Loading Programs (Module 5)
 
 Use this workflow for each data source that needs to be loaded into Senzing. Create a separate loading program for each data source.
 
@@ -21,14 +21,14 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 > This catches known pitfalls like bulk loading issues, threading problems, and
 > PostgreSQL schema DDL requirements.
 
-- Data sources that were mapped in Module 5 (have transformation program output)
-- Data sources that were SGES-compliant from Module 4 (can load directly)
+- Data sources that were mapped in Module 4 (have transformation program output)
+- Data sources that were Senzing Entity Specification (SGES)-compliant from Module 4 (can load directly)
 
 **For each data source:**
 
 1. **Identify the input data:** Determine where the Senzing-formatted JSON records are:
-   - Output from a transformation program (Module 5)
-   - Direct SGES-compliant data files
+   - Output from a transformation program (Module 4)
+   - Direct Entity Specification-compliant data files
    - Database query results
    - API responses
 
@@ -66,7 +66,7 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
    - Watch for any errors or issues
    - Note loading statistics (time, throughput, error rate)
 
-   **⚠️ SQLite performance note:** On SQLite with single-threaded loading, entity resolution gets progressively slower as the database grows. For the bootcamp learning experience, recommend loading ≤1,000 records initially. This is enough to see meaningful entity resolution results without long waits. If the user has more data, suggest: "Let's start with the first 1,000 records so we can see results quickly. Once we validate the results in Module 8, we can load the full dataset — or switch to PostgreSQL for better performance with larger volumes (Module 9 covers this)."
+   **⚠️ SQLite performance note:** On SQLite with single-threaded loading, entity resolution gets progressively slower as the database grows. For the bootcamp learning experience, recommend loading ≤1,000 records initially. This is enough to see meaningful entity resolution results without long waits. If the user has more data, suggest: "Let's start with the first 1,000 records so we can see results quickly. Once we validate the results in Module 7, we can load the full dataset — or switch to PostgreSQL for better performance with larger volumes (Module 8 covers this)."
 
 7. **Save the loading program:** Document and save the program:
    - Save in `src/load/` with a clear name (e.g., `src/load/load_customer_db.[ext]`)
@@ -87,7 +87,7 @@ Use this workflow for each data source that needs to be loaded into Senzing. Cre
 
 10. **Repeat for remaining data sources:** If there are more data sources to load, repeat this entire workflow for each one. Each data source should have its own loading program.
 
-11. **Transition to Module 7:** Once all data sources have been loaded, proceed to Module 7 (Multi-Source Orchestration) to orchestrate loading of multiple sources with dependencies. If you only have one data source, skip to Module 8 (Query, Visualize, and Validate Results).
+11. **Transition to Module 6:** Once all data sources have been loaded, proceed to Module 6 (Multi-Source Orchestration) to orchestrate loading of multiple sources with dependencies. If you only have one data source, skip to Module 7 (Query, Visualize, and Validate Results).
 
 ## Recovery from Failed Load
 

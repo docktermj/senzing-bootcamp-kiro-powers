@@ -36,7 +36,7 @@ If the user's case spans multiple patterns, start with the one that delivers the
 1. Present the table above
 2. Walk through the 3 questions to narrow down
 3. Use the selected pattern to guide Module 2 problem definition
-4. Recommend key matching attributes for Module 5 data mapping
+4. Recommend key matching attributes for Module 4 data mapping
 5. If multiple patterns apply, help prioritize implementation order
 
 ## Where Senzing Fits in Your Architecture

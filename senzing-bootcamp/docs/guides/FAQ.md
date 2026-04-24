@@ -12,15 +12,15 @@ It depends on the path you choose and the complexity of your data. There are no 
 
 ### Can I skip modules?
 
-Yes. Have SGES data? Skip Module 5. SDK installed? Skip Module 0. Single source? Skip Module 7. Not deploying to production? Skip 9-12.
+Yes. Have Senzing Entity Specification (SGES) data? Skip Module 4. SDK installed? Skip Module 0. Single source? Skip Module 6. Not deploying to production? Skip 8-11.
 
 ### What's the difference between senzing-bootcamp and senzing powers?
 
-senzing-bootcamp is a structured 13-module curriculum. The senzing power is a quick reference. Both use the same MCP server.
+senzing-bootcamp is a structured 12-module curriculum (Modules 0-11). The senzing power is a quick reference. Both use the same MCP server.
 
 ### Where can I find definitions for Senzing terms?
 
-See `docs/guides/GLOSSARY.md` for terms like SGES, DATA_SOURCE, RECORD_ID, entity resolution, features, and more. You can also ask the agent to explain any term at any time.
+See `docs/guides/GLOSSARY.md` for terms like Entity Specification, DATA_SOURCE, RECORD_ID, entity resolution, features, and more. You can also ask the agent to explain any term at any time.
 
 ## Getting Started
 
@@ -115,7 +115,7 @@ Yes. Each project has its own directory with its own `database/G2C.db`, `config/
 
 ### What if my data has non-English names?
 
-Senzing handles non-Latin characters (Cyrillic, CJK, Arabic, etc.) natively. During Module 5 (Data Mapping), the agent will use `search_docs(query="globalization")` for character set guidance. Make sure your source files are UTF-8 encoded — see the encoding guidance in `steering/module-05-data-mapping.md`.
+Senzing handles non-Latin characters (Cyrillic, CJK, Arabic, etc.) natively. During Module 4 (Data Quality & Mapping), the agent will use `search_docs(query="globalization")` for character set guidance. Make sure your source files are UTF-8 encoded — see the encoding guidance in `steering/module-04-data-quality-mapping.md`.
 
 ### What if my internet connection drops during an MCP call?
 

@@ -106,7 +106,7 @@ def check_module_docs():
         check(False, "docs/modules/ directory exists")
         return
 
-    for i in range(13):
+    for i in range(12):
         pattern = f"MODULE_{i}_*.md"
         matches = list(modules_dir.glob(pattern))
         check(len(matches) >= 1, f"Module {i} documentation exists")

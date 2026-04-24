@@ -110,4 +110,4 @@ Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists in the projec
 
 - At the start of Module 1, inform users about the feedback mechanism
 - When user triggers feedback, follow this workflow immediately
-- At the end of Module 12, remind users to share their feedback file
+- At the end of Module 11, remind users to share their feedback file

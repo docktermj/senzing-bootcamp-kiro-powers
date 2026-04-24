@@ -73,11 +73,11 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 4: Evaluate Data Quality with Automated Scoring
+### Module 4: Data Quality & Mapping
 
-**File**: [MODULE_4_DATA_QUALITY_SCORING.md](MODULE_4_DATA_QUALITY_SCORING.md)
+**File**: [MODULE_4_DATA_QUALITY_AND_MAPPING.md](MODULE_4_DATA_QUALITY_AND_MAPPING.md)
 
-**Purpose**: Automated quality assessment before mapping
+**Purpose**: Automated quality assessment and data mapping into Senzing format
 
 **Key Topics**:
 
@@ -87,32 +87,19 @@ This directory contains detailed documentation for each bootcamp module.
 - Uniqueness metrics
 - HTML dashboard generation
 - Quality recommendations
-
-**When to Use**: After Module 3 (data collected)
-
----
-
-### Module 5: Map Your Data
-
-**File**: [MODULE_5_DATA_MAPPING.md](MODULE_5_DATA_MAPPING.md)
-
-**Purpose**: Transform source data into Senzing's Generic Entity Specification format
-
-**Key Topics**:
-
-- Senzing SGES format
+- Senzing Entity Specification (SGES) format
 - Interactive mapping workflow via MCP
 - Transformation program creation
 - Data quality validation with `analyze_record`
 - Transformation lineage tracking
 
-**When to Use**: After Module 4 (data quality evaluated)
+**When to Use**: After Module 3 (data collected)
 
 ---
 
-### Module 6: Load Single Data Source
+### Module 5: Load Single Data Source
 
-**File**: [MODULE_6_SINGLE_SOURCE_LOADING.md](MODULE_6_SINGLE_SOURCE_LOADING.md)
+**File**: [MODULE_5_SINGLE_SOURCE_LOADING.md](MODULE_5_SINGLE_SOURCE_LOADING.md)
 
 **Purpose**: Load one data source and verify results
 
@@ -129,9 +116,9 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 7: Multi-Source Orchestration
+### Module 6: Multi-Source Orchestration
 
-**File**: [MODULE_7_MULTI_SOURCE_ORCHESTRATION.md](MODULE_7_MULTI_SOURCE_ORCHESTRATION.md)
+**File**: [MODULE_6_MULTI_SOURCE_ORCHESTRATION.md](MODULE_6_MULTI_SOURCE_ORCHESTRATION.md)
 
 **Purpose**: Orchestrate loading of multiple data sources with dependencies
 
@@ -144,13 +131,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Progress tracking across sources
 - Multi-source validation
 
-**When to Use**: After Module 6 (first source loaded successfully)
+**When to Use**: After Module 5 (first source loaded successfully)
 
 ---
 
-### Module 8: Query, Visualize, and Validate Results
+### Module 7: Query, Visualize, and Validate Results
 
-**File**: [MODULE_8_QUERY_VALIDATION.md](MODULE_8_QUERY_VALIDATION.md)
+**File**: [MODULE_7_QUERY_VALIDATION.md](MODULE_7_QUERY_VALIDATION.md)
 
 **Purpose**: Create query programs and conduct user acceptance testing
 
@@ -163,13 +150,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Stakeholder sign-off procedures
 - Query specifications documentation
 
-**When to Use**: After Module 7 (all sources loaded)
+**When to Use**: After Module 6 (all sources loaded)
 
 ---
 
-### Module 9: Performance Testing and Benchmarking
+### Module 8: Performance Testing and Benchmarking
 
-**File**: [MODULE_9_PERFORMANCE_TESTING.md](MODULE_9_PERFORMANCE_TESTING.md)
+**File**: [MODULE_8_PERFORMANCE_TESTING.md](MODULE_8_PERFORMANCE_TESTING.md)
 
 **Purpose**: Benchmark and optimize for production performance
 
@@ -183,13 +170,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Scalability testing
 - Performance report generation
 
-**When to Use**: After Module 8 (queries working)
+**When to Use**: After Module 7 (queries working)
 
 ---
 
-### Module 10: Security Hardening
+### Module 9: Security Hardening
 
-**File**: [MODULE_10_SECURITY_HARDENING.md](MODULE_10_SECURITY_HARDENING.md)
+**File**: [MODULE_9_SECURITY_HARDENING.md](MODULE_9_SECURITY_HARDENING.md)
 
 **Purpose**: Implement production-grade security measures
 
@@ -203,13 +190,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Security scanning (safety, bandit, trivy)
 - Security audit documentation
 
-**When to Use**: After Module 9 (performance validated)
+**When to Use**: After Module 8 (performance validated)
 
 ---
 
-### Module 11: Monitoring and Observability
+### Module 10: Monitoring and Observability
 
-**File**: [MODULE_11_MONITORING_OBSERVABILITY.md](MODULE_11_MONITORING_OBSERVABILITY.md)
+**File**: [MODULE_10_MONITORING_OBSERVABILITY.md](MODULE_10_MONITORING_OBSERVABILITY.md)
 
 **Purpose**: Set up comprehensive monitoring for production operations
 
@@ -224,13 +211,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Monitoring dashboards
 - Runbook creation
 
-**When to Use**: After Module 10 (security hardened)
+**When to Use**: After Module 9 (security hardened)
 
 ---
 
-### Module 12: Package and Deploy
+### Module 11: Package and Deploy
 
-**File**: [MODULE_12_DEPLOYMENT_PACKAGING.md](MODULE_12_DEPLOYMENT_PACKAGING.md)
+**File**: [MODULE_11_DEPLOYMENT_PACKAGING.md](MODULE_11_DEPLOYMENT_PACKAGING.md)
 
 **Purpose**: Package code and deploy to production
 
@@ -242,30 +229,30 @@ This directory contains detailed documentation for each bootcamp module.
 - Deployment documentation
 - Deployment artifacts (CI/CD, Kubernetes)
 - Production validation
-- Integration with Modules 9, 10, 11
+- Integration with Modules 8, 9, 10
 
-**When to Use**: After Module 11 (monitoring configured)
+**When to Use**: After Module 10 (monitoring configured)
 
 ---
 
 ## Module Dependencies
 
 ```text
-Module 2 → Module 3 → Module 4 → Module 5
-                                     ↓
-Module 0 ──────────────────────→ Module 6 (requires Module 0 + Module 5)
-                                     ↓
-                                Module 7 (if multiple sources)
-                                     ↓
-                                Module 8
-                                     ↓
-                                Module 9 (for production)
-                                     ↓
-                                Module 10 (for production)
-                                     ↓
-                                Module 11 (for production)
-                                     ↓
-                                Module 12 (for production)
+Module 2 → Module 3 → Module 4
+                         ↓
+Module 0 ──────────→ Module 5 (requires Module 0 + Module 4)
+                         ↓
+                    Module 6 (if multiple sources)
+                         ↓
+                    Module 7
+                         ↓
+                    Module 8 (for production)
+                         ↓
+                    Module 9 (for production)
+                         ↓
+                    Module 10 (for production)
+                         ↓
+                    Module 11 (for production)
 ```
 
 ## Quick Reference
@@ -278,13 +265,12 @@ Module 0 ──────────────────────→ M
 | 3      | All projects           |
 | 4      | All projects           |
 | 5      | All projects           |
-| 6      | All projects           |
-| 7      | Multi-source projects  |
-| 8      | All projects           |
+| 6      | Multi-source projects  |
+| 7      | All projects           |
+| 8      | Production deployments |
 | 9      | Production deployments |
 | 10     | Production deployments |
 | 11     | Production deployments |
-| 12     | Production deployments |
 
 ## Related Documentation
 

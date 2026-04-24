@@ -2,11 +2,11 @@
 inclusion: manual
 ---
 
-# Module 8: Query, Visualize, and Validate Results
+# Module 7: Query, Visualize, and Validate Results
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_8_QUERY_VALIDATION.md`.
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_7_QUERY_VALIDATION.md`.
 
 **Purpose:** Create query programs and conduct user acceptance testing.
 
@@ -14,7 +14,7 @@ inclusion: manual
 
 **Prerequisites:**
 
-- ✅ Module 7 complete (all sources loaded) OR Module 6 complete (single source)
+- ✅ Module 6 complete (all sources loaded) OR Module 5 complete (single source)
 - ✅ No critical loading errors
 
 **Agent Workflow:**
@@ -54,7 +54,7 @@ inclusion: manual
 
    Execute queries to understand results. Use the appropriate run command for the chosen language.
 
-   **If entity resolution found zero or very few matches:** This is a valid result — don't assume something is broken. Tell the user: "Entity resolution found very few matches. This could mean: (a) your records are genuinely distinct with no duplicates, (b) the matching criteria need adjustment — perhaps key fields weren't mapped or data quality is too low, or (c) you're working with a single source that has no internal duplicates. Let's investigate which one." Check: are name/address/phone fields populated? Were they mapped correctly in Module 5? Is the data quality score from Module 4 above 70%? If the data genuinely has no duplicates, that's a valid finding — document it.
+   **If entity resolution found zero or very few matches:** This is a valid result — don't assume something is broken. Tell the user: "Entity resolution found very few matches. This could mean: (a) your records are genuinely distinct with no duplicates, (b) the matching criteria need adjustment — perhaps key fields weren't mapped or data quality is too low, or (c) you're working with a single source that has no internal duplicates. Let's investigate which one." Check: are name/address/phone fields populated? Were they mapped correctly in Module 4? Is the data quality score from Module 4 above 70%? If the data genuinely has no duplicates, that's a valid finding — document it.
 
    ---
 
@@ -153,9 +153,9 @@ inclusion: manual
 
 After presenting validation results, guide the decision:
 
-- **UAT pass rate ≥90% and match accuracy ≥90%:** "Results look strong. Ready to proceed to Module 9 (performance) or stop here if you're on Path B/C."
+- **UAT pass rate ≥90% and match accuracy ≥90%:** "Results look strong. Ready to proceed to Module 8 (performance) or stop here if you're on Path B/C."
 - **UAT pass rate 80-89%:** "Most tests pass but there are some gaps. You can proceed, or review the failures with stakeholders first. Would you like to iterate on the failing cases, or move forward?"
-- **UAT pass rate <80%:** "Results need improvement. The failing test cases suggest issues with [mapping quality / data quality / missing data sources]. I'd recommend going back to [Module 5 or 6] to address the root causes. Would you like to investigate, or proceed anyway?"
+- **UAT pass rate <80%:** "Results need improvement. The failing test cases suggest issues with [mapping quality / data quality / missing data sources]. I'd recommend going back to [Module 4 or 5] to address the root causes. Would you like to investigate, or proceed anyway?"
 
 WAIT for response.
 
@@ -163,7 +163,7 @@ WAIT for response.
 
 After validation is complete, offer: "Would you like me to create a one-page executive summary of these results to share with your team or stakeholders? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
 
-If yes, read the stakeholder summary template: #[[file:senzing-bootcamp/templates/stakeholder_summary.md]] Follow the **MODULE 8** guidance block in the template to fill each placeholder with Module 8 context (validation results from `docs/results_validation.md`, match metrics, UAT outcomes, loaded record counts). Save the filled summary to `docs/stakeholder_summary_module8.md`.
+If yes, read the stakeholder summary template: #[[file:senzing-bootcamp/templates/stakeholder_summary.md]] Follow the **MODULE 7** guidance block in the template to fill each placeholder with Module 7 context (validation results from `docs/results_validation.md`, match metrics, UAT outcomes, loaded record counts). Save the filled summary to `docs/stakeholder_summary_module7.md`.
 
 ## Integration Patterns
 

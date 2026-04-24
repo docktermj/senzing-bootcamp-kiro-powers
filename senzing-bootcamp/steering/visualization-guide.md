@@ -8,9 +8,9 @@ inclusion: manual
 
 **Before/After:** You have query results but no visual way to explore them. After: a self-contained HTML graph with entities, relationships, match strengths, and interactive features.
 
-**Prerequisites:** ✅ Module 6/7 complete (data loaded) · ✅ Query programs working (Module 8 step 3)
+**Prerequisites:** ✅ Module 5/6 complete (data loaded) · ✅ Query programs working (Module 7 step 3)
 
-**Triggers:** Load this file when: (1) after exploratory queries in Module 8 step 3, (2) bootcamper asks to "visualize" / "show entity graph" / "generate a visualization", (3) after validation in Module 8 step 6. When done, return to `module-08-query-validation.md`.
+**Triggers:** Load this file when: (1) after exploratory queries in Module 7 step 3, (2) bootcamper asks to "visualize" / "show entity graph" / "generate a visualization", (3) after validation in Module 7 step 6. When done, return to `module-07-query-validation.md`.
 
 ## Agent Workflow
 
@@ -18,7 +18,7 @@ inclusion: manual
 
    👉 "Would you like me to help you build an interactive entity graph? It shows resolved entities as a force-directed network with clustering, search, and detail panels."
 
-   If declined, return to `module-08-query-validation.md`. WAIT for response.
+   If declined, return to `module-07-query-validation.md`. WAIT for response.
 
 2. **Gather requirements**
 
@@ -52,7 +52,7 @@ inclusion: manual
 
    👉 "Want any changes to the graph, features, or extraction?"
 
-   Regenerate affected components using the same MCP tools. When done, return to `module-08-query-validation.md`. WAIT for response.
+   Regenerate affected components using the same MCP tools. When done, return to `module-07-query-validation.md`. WAIT for response.
 
 ## Graph Data Model Schema
 
@@ -117,8 +117,8 @@ No server requested → produce only the self-contained HTML file.
 
 | Error Condition | Handling | User Feedback |
 |-----------------|----------|---------------|
-| SDK not initialized / missing DB | Exit with error | "Senzing database not found at database/G2C.db. Complete Module 6 first." |
-| Empty database | Exit with error | "No entities found. Load data using Module 6 first." |
+| SDK not initialized / missing DB | Exit with error | "Senzing database not found at database/G2C.db. Complete Module 5 first." |
+| Empty database | Exit with error | "No entities found. Load data using Module 5 first." |
 | Per-entity SDK error | Log, skip, continue | "Warning: Failed to retrieve entity for record {record_id}. Skipping." |
 | Per-relationship SDK error | Log, skip, continue | "Warning: Failed to retrieve relationships for entity {entity_id}. Skipping." |
 | Entity count > 500 | Warn, offer limit | "Warning: {count} entities. Rendering may be slow. Limit to 500?" |

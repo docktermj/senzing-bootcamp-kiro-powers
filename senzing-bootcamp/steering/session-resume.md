@@ -14,7 +14,7 @@ Read these files to reconstruct full context:
 2. **`config/bootcamp_preferences.yaml`** — chosen language, path, cloud provider, license info, **detail_level** (if set — honor their preference for more/less/default detail)
 2b. **Check hooks_installed** in `config/bootcamp_preferences.yaml`. If `hooks_installed` key exists with hook names and timestamp, skip hook creation — hooks are already installed. If `hooks_installed` is missing or empty, load the Hook Registry from `onboarding-flow.md` and create Critical Hooks before the welcome-back banner.
 3. **`docs/bootcamp_journal.md`** (if exists) — narrative history of what was done and why
-4. **`config/mapping_state_*.json`** (if any exist) — in-progress mapping checkpoints from Module 5. If found, the user was mid-mapping when the session ended.
+4. **`config/mapping_state_*.json`** (if any exist) — in-progress mapping checkpoints from Module 4. If found, the user was mid-mapping when the session ended.
 
 If progress or preferences files are missing or corrupted, inform the user and offer to reconstruct from project artifacts (check `src/`, `data/`, `docs/` for evidence of completed work).
 
@@ -72,7 +72,7 @@ Call `get_capabilities` to re-establish the MCP session. This is required at the
 
 ## Handling Stale or Corrupted State
 
-If `bootcamp_progress.json` exists but seems wrong (e.g., claims Module 8 is complete but `src/query/` is empty):
+If `bootcamp_progress.json` exists but seems wrong (e.g., claims Module 7 is complete but `src/query/` is empty):
 
 1. Run `python scripts/validate_module.py` to check actual artifact state
 2. Show the user any discrepancies

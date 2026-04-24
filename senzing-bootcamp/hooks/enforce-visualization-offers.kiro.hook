@@ -1,0 +1,12 @@
+{
+  "name": "Enforce Module 8 Visualization Offers",
+  "version": "1.0.0",
+  "description": "When the agent stops during Module 8, checks whether both visualization offers (entity graph and results dashboard) were made. If either was missed, prompts the agent to offer it before closing.",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "First, read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 8, do nothing — let the conversation end normally.\n\nIf the current module IS 8, review the conversation history and check whether you offered BOTH of these visualizations during this interaction:\n\n1. **Entity graph visualization** — an interactive force-directed network graph of resolved entities (offered after exploratory queries in step 3)\n2. **Results dashboard** — an HTML page showing query results and validation metrics (offered after documenting findings in step 7)\n\nIf BOTH were offered (regardless of whether the bootcamper accepted or declined), do nothing — the requirement is satisfied.\n\nIf EITHER visualization was NOT offered, display this message:\n\n```\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📊  MODULE 8 VISUALIZATION CHECK\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n```\n\nThen, for each visualization that was NOT offered, ask the bootcamper:\n\n- If the entity graph was not offered: \"Before we wrap up — would you like me to help you build an interactive entity graph? It shows resolved entities as a force-directed network with clustering, search, and detail panels.\"\n- If the results dashboard was not offered: \"Before we wrap up — would you like me to create a web page showing your query results and validation metrics?\"\n\nWAIT for the bootcamper's response before finishing. They may accept or decline — both are fine."
+  }
+}

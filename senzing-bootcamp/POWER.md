@@ -163,7 +163,7 @@ Connects to the Senzing MCP server (no API keys required):
 
 **Server name:** `senzing-mcp-server`
 
-All tools are enabled by default. To disable specific tools, add their names to `disabledTools` (e.g., `["submit_feedback"]`). See <https://kiro.dev/docs/mcp/configuration/> for full configuration options.
+All tools are enabled by default except `submit_feedback` (disabled to keep feedback local). To re-enable it or disable other tools, edit the `disabledTools` array. See <https://kiro.dev/docs/mcp/configuration/> for full configuration options.
 
 ## Available MCP Tools
 
@@ -228,7 +228,7 @@ explain_error_code(error_code='0023')
 | 5      | Map Your Data                                  |
 | 6      | Load Single Data Source                        |
 | 7      | Multi-Source Orchestration                     |
-| 8      | Query, Visualize, and Validate Results  |
+| 8      | Query, Visualize, and Validate Results         |
 | 9      | Performance Testing and Benchmarking           |
 | 10     | Security Hardening                             |
 | 11     | Monitoring and Observability                   |
@@ -256,7 +256,7 @@ python senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: Code Style Check (`code-style-check`), `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory`, `summarize-on-stop`, `verify-generated-code`.
+Available: Code Style Check (`code-style-check`) ⭐, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory` ⭐, `summarize-on-stop`, `verify-generated-code`, `offer-visualization`, `capture-feedback` ⭐, `module12-phase-gate`, `enforce-visualization-offers` ⭐.
 
 ## Project Directory Structure
 
@@ -298,6 +298,7 @@ python3 senzing-bootcamp/scripts/restore_project.py     # Restore from backup
 python3 senzing-bootcamp/scripts/preflight_check.py     # Pre-demo environment check
 python3 senzing-bootcamp/scripts/validate_commonmark.py  # Validate Markdown formatting
 python3 senzing-bootcamp/scripts/validate_power.py       # Validate power integrity (cross-references, hooks, steering)
+python3 senzing-bootcamp/scripts/repair_progress.py      # Repair corrupted bootcamp_progress.json
 ```
 
 Use `python` instead of `python3` on Windows.

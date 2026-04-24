@@ -2,70 +2,58 @@
 
 ## Automatic Installation
 
-Hooks are installed automatically when you start the bootcamp. The agent copies all pre-configured hooks from `senzing-bootcamp/hooks/` to `.kiro/hooks/` during onboarding — no action needed.
+Hooks are created automatically during onboarding. The agent reads hook definitions from the Hook Registry in `onboarding-flow.md` and calls the `createHook` tool for each one — no manual action needed. Critical hooks (7) are created during initial setup; module-specific hooks (11) are created when you reach the relevant module.
 
-## Manual Installation
+## Manual Reinstallation
 
-If you need to reinstall or add hooks later:
+If hooks need to be recreated (e.g., after clearing `.kiro/hooks/`):
 
 ### Method 1: Ask the Agent
 
 ```text
-"Please install the Senzing Bootcamp hooks"
+"Please recreate the bootcamp hooks"
 ```
 
-### Method 2: Install Script
+The agent will read the Hook Registry from `onboarding-flow.md` and recreate all Critical Hooks using the `createHook` tool.
 
-```bash
-python scripts/install_hooks.py
-```
-
-### Method 3: Command Line
-
-```bash
-# Linux / macOS
-mkdir -p .kiro/hooks
-cp senzing-bootcamp/hooks/*.kiro.hook .kiro/hooks/
-```
-
-```powershell
-# Windows (PowerShell)
-New-Item -ItemType Directory -Force -Path .kiro\hooks | Out-Null
-Copy-Item senzing-bootcamp\hooks\*.kiro.hook .kiro\hooks\
-```
-
-### Method 4: Kiro UI
+### Method 2: Kiro UI
 
 1. Open Command Palette (`Cmd/Ctrl + Shift + P`)
 2. Search: "Open Kiro Hook UI"
 3. Click "Import Hook"
-4. Navigate to `senzing-bootcamp/hooks/`
+4. Navigate to `senzing-bootcamp/hooks/` (available in development environments only)
 
 ## What Gets Installed
 
-11 pre-configured hooks:
+18 pre-configured hooks:
 
 | Hook | Trigger | Purpose |
 | ---- | ------- | ------- |
-| Code Style Check | Save source code | Check coding standards |
-| Data Quality Check | Save transformation program | Remind to validate quality |
-| Backup Before Load | Save loading program | Remind to backup database |
-| Validate Senzing JSON | Save transformed data | Validate with analyze_record |
-| Backup Project on Request | Manual trigger (button) | Run project backup script |
-| CommonMark Validation | Save Markdown file | Check CommonMark compliance |
-| Verify Senzing Facts | Before any write | Verify facts via MCP tools |
-| Analyze After Mapping | New file in data/transformed/ | Run analyze_record |
-| Run Tests After Change | Save src/ code files | Remind to run tests |
-| Git Commit Reminder | Manual trigger (button) | Suggest descriptive commit |
-| Enforce Working Directory | Before any write | Block /tmp and external paths |
+| Capture Bootcamp Feedback | Every message (promptSubmit) | Detect feedback trigger phrases |
+| Enforce Feedback File Path | Before write (preToolUse) | Ensure feedback goes to correct file |
+| Enforce Working Directory | Before write (preToolUse) | Block /tmp and external paths |
+| Verify Senzing Facts | Before write (preToolUse) | Verify facts via MCP tools |
+| Code Style Check | Save source code (fileEdited) | Check coding standards |
+| Summarize Progress on Stop | Agent stops (agentStop) | Summarize what was accomplished |
+| CommonMark Validation | Save Markdown (fileEdited) | Check CommonMark compliance |
+| Data Quality Check | Save transformation program (fileEdited) | Remind to validate quality |
+| Validate Senzing JSON | Save transformed data (fileEdited) | Validate with analyze_record |
+| Analyze After Mapping | New file in data/transformed/ (fileCreated) | Run analyze_record |
+| Backup Before Load | Save loading program (fileEdited) | Remind to backup database |
+| Run Tests After Change | Save src/ code files (fileEdited) | Remind to run tests |
+| Verify Generated Code | New source file created (fileCreated) | Run code on sample data |
+| Offer Entity Graph Visualization | New query file (fileCreated) | Offer interactive visualization |
+| Enforce Visualization Offers | Agent stops (agentStop) | Catch missed Module 8 offers |
+| Module 12 Phase Gate | After task (postTaskExecution) | Packaging-to-deployment gate |
+| Backup Project on Request | Manual trigger (userTriggered) | Run project backup script |
+| Git Commit Reminder | Manual trigger (userTriggered) | Suggest descriptive commit |
 
 ## Customization
 
-Edit hook JSON files in `.kiro/hooks/`. Common changes:
+Edit hook files in `.kiro/hooks/`. Common changes:
 
-- **File patterns:** `"patterns": ["my-custom-path/*.*"]`
-- **Disable a hook:** Delete the file or add `"enabled": false`
-- **Change timeout:** `"timeout": 120`
+- **Disable a hook:** Delete the file from `.kiro/hooks/`
+- **File patterns:** Modify the hook's file patterns to match your project structure
 
 ## Uninstalling
 

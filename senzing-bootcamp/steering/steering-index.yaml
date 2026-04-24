@@ -36,6 +36,8 @@ keywords:
   visualization: visualization-guide.md
   graph: visualization-guide.md
   entity graph: visualization-guide.md
+  offline: mcp-offline-fallback.md
+  diagnostic: troubleshooting-commands.md
 
 languages:
   python: lang-python.md

@@ -91,6 +91,7 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 **Trigger:** When new files are created in `src/query/`
 **Action:** Prompts the agent to offer generating an interactive entity graph visualization
 **Use case:** Ensures bootcampers are offered the visualization feature during Module 8
+**Note:** Works in conjunction with the Enforce Module 8 Visualization Offers hook (#17) — this hook catches query program creation proactively, while the agentStop hook catches missed offers before the agent closes the conversation
 
 ### 15. Capture Bootcamp Feedback (`capture-feedback.kiro.hook`) ⭐
 
@@ -99,18 +100,44 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 **Use case:** Guarantees feedback is always captured when a bootcamper says "bootcamp feedback" — deterministic, not probabilistic
 **Recommended:** Install for all modules
 
+### 16. Module 12 Phase Gate (`module12-phase-gate.kiro.hook`)
+
+**Trigger:** After task execution completes (postTaskExecution)
+**Action:** Checks if current module is 12, then displays packaging-complete summary and asks whether to proceed to deployment
+**Use case:** Enforces the packaging-to-deployment phase gate — prevents the agent from blending packaging and deployment phases together
+
+### 17. Enforce Module 8 Visualization Offers (`enforce-visualization-offers.kiro.hook`) ⭐
+
+**Trigger:** When the agent finishes working (agentStop)
+**Action:** Checks if current module is 8, then verifies both visualization offers (entity graph and results dashboard) were made during the interaction
+**Use case:** Safety net for Module 8 — catches missed visualization offers before the agent closes the conversation
+**Recommended:** Install for Module 8
+
+### 18. Enforce Feedback File Path (`enforce-feedback-path.kiro.hook`)
+
+**Trigger:** Before any write operation (preToolUse, write)
+**Action:** Checks if the agent is writing feedback content and ensures it goes to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
+**Use case:** Prevents feedback from being written to the wrong file or submitted externally
+
 ## Installation
 
 **Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.
 
-### Option 1: Use Install Script (Recommended)
+The `.kiro.hook` files in this directory are the canonical hook definitions. The Hook Registry in `onboarding-flow.md` must be kept in sync with these files.
 
-```bash
-# Interactive installation with guided options
-python scripts/install_hooks.py
+### Option 1: Automatic (Recommended)
+
+Hooks are created automatically during onboarding. The agent reads the Hook Registry in `onboarding-flow.md` and calls the `createHook` tool for each hook. No manual action needed.
+
+### Option 2: Ask the Agent
+
+```text
+"Please recreate the bootcamp hooks"
 ```
 
-### Option 2: Copy to Workspace Hooks Directory
+### Option 3: Copy Hook Files (Development Environments Only)
+
+This method only works when the `senzing-bootcamp/hooks/` directory is available (e.g., when working from a cloned repository, not from an installed power).
 
 ```bash
 # Linux/macOS: Copy all hooks to your project
@@ -125,16 +152,12 @@ cp senzing-bootcamp/hooks/data-quality-check.kiro.hook .kiro/hooks/
 Copy-Item senzing-bootcamp\hooks\*.kiro.hook .kiro\hooks\
 ```
 
-### Option 3: Use Kiro Command Palette
+### Option 4: Use Kiro Command Palette
 
 1. Open Command Palette (Cmd/Ctrl + Shift + P)
 2. Search for "Open Kiro Hook UI"
 3. Click "Import Hook"
 4. Select hook file from `senzing-bootcamp/hooks/`
-
-### Option 4: Ask the Agent
-
-Simply ask: "Please install the Senzing Bootcamp hooks from the power directory"
 
 ## Enabling/Disabling Hooks
 
@@ -158,6 +181,7 @@ You can customize any hook by editing the JSON file:
 ### All Modules
 
 - ✅ **Code Style Check** (ensures code quality for the chosen language)
+- ✅ **Capture Bootcamp Feedback** (guarantees feedback is always captured)
 - ✅ **Backup Project on Request** (quick backups via voice commands)
 
 ### Module 5 (Data Mapping)
@@ -175,6 +199,11 @@ You can customize any hook by editing the JSON file:
 ### Module 8 (Query Programs)
 
 - ✅ Code Style Check
+- ✅ Enforce Module 8 Visualization Offers
+
+### Module 12 (Deployment)
+
+- ✅ Module 12 Phase Gate
 
 ## Troubleshooting
 

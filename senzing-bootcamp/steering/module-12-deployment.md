@@ -200,13 +200,41 @@ Pre-deployment checklist — here's where we stand:
 
 Document in `docs/rollback_plan.md`: how to revert to previous version, database rollback procedure, communication plan for failed deployments.
 
-**Packaging complete.** At this point, tell the user:
+---
 
-"Packaging is complete! Your code is containerized, configured for multiple environments, has a CI/CD pipeline, and is fully documented. Everything is deployment-ready."
+## ⛔ PHASE GATE — PACKAGING COMPLETE, DEPLOYMENT DECISION REQUIRED
 
-Then ask: **"Would you like to actually deploy this now, or would you prefer to stop here and deploy later on your own?"**
+> **🛑 MANDATORY STOP — DO NOT SKIP THIS SECTION**
+>
+> The packaging phase (Steps 2–11) is now complete. **You MUST stop here and wait for the bootcamper's explicit decision** before proceeding to any deployment steps.
 
-WAIT for response. If they want to stop, mark Module 12 as complete with packaging only. If they want to deploy, proceed to Phase 2.
+**Display this summary to the bootcamper:**
+
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦  PACKAGING PHASE COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Everything from the packaging phase is done:
+✅ Code containerized (Dockerfile + docker-compose.yml)
+✅ Multi-environment config (dev/staging/prod)
+✅ CI/CD pipeline configured
+✅ Pre-deployment checklist verified
+✅ Rollback plan documented
+
+⚠️  Nothing has been deployed. No changes were made to any
+    target environment. Everything so far was local
+    preparation work. It is completely safe to stop here.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Then ask:** "Would you like to actually deploy this now, or would you prefer to stop here and deploy later on your own?"
+
+> **⚠️ WAIT — Do NOT proceed past this point until the bootcamper responds.**
+>
+> - If they want to **stop here**: Mark Module 12 as complete (packaging only). Do NOT proceed to Step 13.
+> - If they want to **deploy now**: Proceed to Phase 2 (Steps 13–16).
+> - If they are **unsure**: Reassure them that stopping is perfectly fine and they can deploy later on their own using the scripts and documentation created during packaging.
 
 ---
 
@@ -253,18 +281,21 @@ Create `docs/operations_guide.md` with: architecture overview, deployment proced
 The operations guide MUST include a disaster recovery section. Guide the bootcamper through defining:
 
 **Recovery Objectives:**
+
 - **RTO (Recovery Time Objective):** How long can the system be down? (Critical: <1hr, Production: <4hr, Dev: <24hr)
 - **RPO (Recovery Point Objective):** How much data can be lost? (Critical: <5min, Production: <1hr, Dev: <24hr)
 
 **Backup Strategy (3-2-1 Rule):** 3 copies of data, 2 different media types, 1 offsite copy.
 
 **What to back up:**
+
 1. Database (CRITICAL) — continuous WAL archiving + daily full backups for PostgreSQL; file copy for SQLite
 2. Configuration files — version-controlled in Git
 3. Source data in `data/raw/` and `data/transformed/` — on receipt
 4. Application code — version-controlled in Git
 
 **DR Scenarios to document:**
+
 - Database corruption → restore from latest backup, replay WAL logs
 - Accidental data deletion → PITR to point before deletion, or reload from source
 - Bad data load → restore database to pre-load backup, fix transformation, reload
@@ -284,7 +315,6 @@ If yes, read the template at `senzing-bootcamp/templates/stakeholder_summary.md`
 Remind user about bootcamp feedback: "You've completed the full bootcamp! Say 'bootcamp feedback' to document your experience."
 
 **Success:** Code packaged (always). If deployed: CI/CD pipeline working, staging verified, production deployed, operations documented.
-
 
 ---
 

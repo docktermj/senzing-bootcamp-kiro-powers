@@ -30,7 +30,7 @@ Say "start the bootcamp". The agent creates your project structure and guides yo
 
 ### What are the prerequisites?
 
-Required: A supported language runtime (Python, Java, C#, Rust, or TypeScript/Node.js), git, curl. Optional: PostgreSQL. Prerequisites are checked automatically when you start the bootcamp — the agent will tell you if anything's missing.
+Required: Python 3 (for the power's utility scripts), a supported language runtime for your bootcamp code (Python, Java, C#, Rust, or TypeScript/Node.js), git, curl. Optional: PostgreSQL. Python 3 is needed regardless of your chosen bootcamp language — it runs the power's scripts (status, validation, backup, etc.). Prerequisites are checked automatically when you start the bootcamp — the agent will tell you if anything's missing.
 
 ### Do I need a Senzing license?
 

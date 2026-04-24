@@ -56,7 +56,21 @@ inclusion: manual
 
    **If entity resolution found zero or very few matches:** This is a valid result — don't assume something is broken. Tell the user: "Entity resolution found very few matches. This could mean: (a) your records are genuinely distinct with no duplicates, (b) the matching criteria need adjustment — perhaps key fields weren't mapped or data quality is too low, or (c) you're working with a single source that has no internal duplicates. Let's investigate which one." Check: are name/address/phone fields populated? Were they mapped correctly in Module 5? Is the data quality score from Module 4 above 70%? If the data genuinely has no duplicates, that's a valid finding — document it.
 
-   **Offer entity graph visualization:** After running exploratory queries, offer: "👉 Would you like me to help you build an interactive entity graph? It shows resolved entities as a force-directed network with clustering by data source or match strength, search/filter, and detail panels." If yes, load `visualization-guide.md` and follow its workflow to walk the bootcamper through building the visualization in their chosen language.
+   ---
+
+   > **⛔ MANDATORY VISUALIZATION OFFER — ENTITY GRAPH**
+   >
+   > **🛑 DO NOT SKIP THIS STEP. You MUST offer the entity graph visualization and WAIT for the user's response before proceeding.**
+
+   👉 **Ask the bootcamper:** "Would you like me to help you build an interactive entity graph? It shows resolved entities as a force-directed network graph with clustering by data source or match strength, search/filter, and detail panels. I can create a self-contained HTML file you can open in any browser."
+
+   > **⚠️ WAIT — Do NOT proceed to step 4 until the bootcamper responds.**
+   >
+   > - If they say **yes**: Load `visualization-guide.md` and follow its workflow.
+   > - If they say **no** or **not now**: Acknowledge and proceed to step 4.
+   > - If they are **unsure**: Briefly explain the value, then wait for their decision.
+
+   ---
 
 4. **Create UAT test cases**:
 
@@ -111,7 +125,21 @@ inclusion: manual
    - Resolution plan: [describe]
    ```
 
-   **Offer visualization:** "Would you like me to create a web page showing the query results and validation metrics? It'll have entity tables, match explanations, and UAT results." If yes, generate HTML and save to `docs/results_dashboard.html`.
+   ---
+
+   > **⛔ MANDATORY VISUALIZATION OFFER — RESULTS DASHBOARD**
+   >
+   > **🛑 DO NOT SKIP THIS STEP. You MUST offer the results dashboard visualization and WAIT for the user's response before proceeding.**
+
+   👉 **Ask the bootcamper:** "Would you like me to create a web page showing the query results and validation metrics? It'll have entity tables, match explanations, and UAT results — saved as `docs/results_dashboard.html`."
+
+   > **⚠️ WAIT — Do NOT proceed to the Decision Gate until the bootcamper responds.**
+   >
+   > - If they say **yes**: Generate the HTML dashboard and save to `docs/results_dashboard.html`.
+   > - If they say **no** or **not now**: Acknowledge and proceed to the Decision Gate.
+   > - If they are **unsure**: Briefly explain the value, then wait for their decision.
+
+   ---
 
 **Success Criteria:**
 

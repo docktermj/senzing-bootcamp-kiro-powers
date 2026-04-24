@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MCP offline fallback steering file (`steering/mcp-offline-fallback.md`) — extracted from common-pitfalls.md for leaner context loading
 - Troubleshooting commands steering file (`steering/troubleshooting-commands.md`) — extracted from troubleshooting-decision-tree.md
 
+- Capture Bootcamp Feedback hook (`capture-feedback.kiro.hook`) — deterministic feedback capture via promptSubmit trigger with automatic context capture
+- Module 12 Phase Gate hook (`module12-phase-gate.kiro.hook`) — enforces packaging-to-deployment decision gate in Module 12
+- Enforce Module 8 Visualization Offers hook (`enforce-visualization-offers.kiro.hook`) — catches missed visualization offers before Module 8 closes
+- Feedback workflow rewritten with Step 0 (automatic context capture) and Step 7 (return to previous activity)
+- Module 8 steering file updated with mandatory ⛔ WAIT blocks for both visualization offers
+- Module 12 steering file updated with prominent ⛔ PHASE GATE section between packaging and deployment
+
 ### Changed in 0.10.0
 
 - FAQ feedback section updated with direct link to feedback template file

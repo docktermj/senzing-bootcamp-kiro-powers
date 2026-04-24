@@ -62,5 +62,8 @@ Module 12 platform files: load `deployment-onpremises.md`, `deployment-azure.md`
 
 ## Hooks
 
-Install to `.kiro/hooks/` from `senzing-bootcamp/hooks/`. Create directory if needed.
+Create hooks using the `createHook` tool with definitions from the Hook Registry in `onboarding-flow.md`. Critical hooks are created during onboarding. Module hooks are created when the relevant module starts — check the Hook Registry for module associations and create any missing hooks before beginning module work.
+
 The `capture-feedback` hook is critical — it guarantees feedback is captured when bootcampers use trigger phrases. Verify it is installed.
+
+On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed`. If present, skip hook creation. If absent, create Critical Hooks from the Hook Registry.

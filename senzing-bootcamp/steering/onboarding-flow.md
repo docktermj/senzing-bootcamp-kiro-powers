@@ -6,7 +6,7 @@ inclusion: manual
 
 Load when starting a fresh bootcamp. Sequence: directory creation → language selection → prerequisites → introduction → track selection.
 
-**🚨 STRICT RULE: One question at a time.** Each numbered section below ends with a question and WAIT. Do NOT combine language selection, introduction, and track selection into one message. Present one question, wait for the response, then move to the next section. This is the most common onboarding complaint — do not skip the WAITs.
+**Note:** The `ask-bootcamper` hook fires on every `agentStop` and generates a contextual 👉 closing question. Do NOT include inline closing questions or WAIT instructions at the end of steps — present the information and stop.
 
 ## 0. Setup Preamble
 
@@ -35,9 +35,7 @@ After directory setup, check whether this is a team bootcamp:
 
 **When team mode is active:**
 
-Present the member list and ask the bootcamper to identify themselves:
-
-"👉 Which team member are you?"
+Present the member list so the bootcamper can identify themselves.
 
 Display the list of members from the config:
 
@@ -48,8 +46,6 @@ Team: {team_name} ({member_count} members)
   2. {member_id} — {member_name}
   ...
 ```
-
-WAIT for response.
 
 **After the bootcamper selects a member:**
 
@@ -65,9 +61,7 @@ WAIT for response.
 
 Present the MCP-returned language list to the bootcamper. **If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly to the bootcamper** and suggest alternatives. For example, if MCP discourages Python on macOS, tell them: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
 
-Ask: "👉 Which language would you like to use?" WAIT for response.
-
-Persist to `config/bootcamp_preferences.yaml`. If file exists from previous session, confirm: "Last time you chose [language]. Continue or switch?"
+Persist the selection to `config/bootcamp_preferences.yaml`.
 
 Load language steering file immediately after confirmation (`lang-python.md`, `lang-java.md`, etc.).
 
@@ -123,8 +117,6 @@ Present the overview before track selection. Cover all points naturally:
 - Tracks let you skip to what matters
 - If you encounter unfamiliar terms (like Senzing Entity Specification (SGES), DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
 
-Ask: "👉 Does this outline make sense? Any questions before we choose a track? Feel free to ask about anything — that's what the bootcamp is for." WAIT for response.
-
 ## 5. Track Selection
 
 Display this quick-reference module table before presenting the tracks so the bootcamper can cross-reference module numbers:
@@ -154,8 +146,6 @@ Present tracks — not mutually exclusive, all completed modules carry forward:
 Module 2 inserted automatically before any module needing SDK.
 
 Interpreting responses: "A"/"demo"→Module 3, "B"/"fast"→Module 5, "C"/"beginner"→Module 1, "D"/"full"→Module 1. Bare number→clarify letter vs module.
-
-Present tracks with: "👉 Which track sounds right for you?"
 
 ## Switching Tracks
 

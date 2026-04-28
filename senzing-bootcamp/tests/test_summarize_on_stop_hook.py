@@ -121,13 +121,14 @@ class TestBugConditionExploration:
     @given(marker=question_marker_st)
     @settings(max_examples=50)
     def test_hook_prompt_contains_reordering_logic(self, marker: str):
-        """The hook prompt must contain conditional reordering instructions.
+        """The hook prompt must contain conditional handling for pending questions.
 
         **Validates: Requirements 2.1, 2.2, 2.3**
 
         When a pending question is detected, the prompt should instruct
-        the agent to present the summary BEFORE the question and re-state
-        the question as the final element.
+        the agent to handle it correctly — either by reordering (summary
+        before question) or by appending only the summary without repeating
+        the question.
         """
         prompt = _read_hook_prompt()
         prompt_lower = prompt.lower()
@@ -143,13 +144,78 @@ class TestBugConditionExploration:
             for term in ["final element", "last element", "last thing",
                          "end of the response", "very last"]
         )
+        # The fix replaces reordering with "do not repeat" — the question
+        # is already visible, so the prompt appends only the summary.
+        has_no_repeat = any(
+            term in prompt_lower
+            for term in ["do not repeat the question", "don't repeat the question",
+                         "already visible", "without re-stating",
+                         "without restating", "append only the summary"]
+        )
 
-        assert has_reorder or has_final_element, (
-            f"Hook prompt lacks reordering/final-element instructions.\n"
+        assert has_reorder or has_final_element or has_no_repeat, (
+            f"Hook prompt lacks pending-question handling instructions.\n"
             f"Generated marker: {marker!r}\n"
             f"Prompt text: {prompt!r}\n"
             f"The prompt contains no mention of reordering, 'summary before question', "
-            f"'re-state', or placing the question as the final element."
+            f"'re-state', 'do not repeat the question', or 'already visible'."
+        )
+
+    @given(marker=question_marker_st)
+    @settings(max_examples=50)
+    def test_hook_prompt_does_not_restate_question(self, marker: str):
+        """The hook prompt must NOT contain instructions to re-state the pending question.
+
+        **Validates: Requirements 1.1, 1.2, 2.1, 2.2**
+
+        For any generated question marker (👉-prefixed or WAIT pattern),
+        the prompt text should NOT instruct the agent to re-state or restate
+        the pending question — the question is already visible in the output.
+        """
+        prompt = _read_hook_prompt()
+        prompt_lower = prompt.lower()
+
+        assert "re-state the pending question" not in prompt_lower, (
+            f"Hook prompt contains 're-state the pending question' instruction.\n"
+            f"Generated marker: {marker!r}\n"
+            f"Prompt text: {prompt!r}\n"
+            f"The prompt should NOT instruct re-stating the pending question — "
+            f"it is already visible in the agent's output."
+        )
+        assert "restate the pending question" not in prompt_lower, (
+            f"Hook prompt contains 'restate the pending question' instruction.\n"
+            f"Generated marker: {marker!r}\n"
+            f"Prompt text: {prompt!r}\n"
+            f"The prompt should NOT instruct restating the pending question — "
+            f"it is already visible in the agent's output."
+        )
+
+    @given(marker=question_marker_st)
+    @settings(max_examples=50)
+    def test_registry_prompt_does_not_restate_question(self, marker: str):
+        """The registry prompt must NOT contain instructions to re-state the pending question.
+
+        **Validates: Requirements 2.2**
+
+        Both the hook file and the registry must be in sync and neither should
+        contain the re-statement instruction for pending questions.
+        """
+        prompt = _read_registry_prompt()
+        prompt_lower = prompt.lower()
+
+        assert "re-state the pending question" not in prompt_lower, (
+            f"Registry prompt contains 're-state the pending question' instruction.\n"
+            f"Generated marker: {marker!r}\n"
+            f"Prompt text: {prompt!r}\n"
+            f"The registry prompt should NOT instruct re-stating the pending question — "
+            f"it is already visible in the agent's output."
+        )
+        assert "restate the pending question" not in prompt_lower, (
+            f"Registry prompt contains 'restate the pending question' instruction.\n"
+            f"Generated marker: {marker!r}\n"
+            f"Prompt text: {prompt!r}\n"
+            f"The registry prompt should NOT instruct restating the pending question — "
+            f"it is already visible in the agent's output."
         )
 
     @given(marker=question_marker_st)

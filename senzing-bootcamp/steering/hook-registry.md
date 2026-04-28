@@ -48,13 +48,13 @@ Prompt: "A source code file was just edited. Check it for language-appropriate c
 - name: `Code Style Check`
 - description: `Automatically checks source code files for language-appropriate coding standards when edited.`
 
-**summarize-on-stop** (agentStop → askAgent)
+**ask-bootcamper** (agentStop → askAgent)
 
-Prompt: "Before finishing, check if your previous output ended with a pending question for the bootcamper — look for a line starting with 👉 or a WAIT for response pattern. If a pending question is detected, place the summary before the question so the question remains the last thing the bootcamper sees: (1) What did you accomplish? (2) Which files were created or modified? Then let the original question close the message — do not repeat it. If no pending question is detected, append the summary at the end as usual: (1) What did you accomplish? (2) Which files were created or modified? (3) What is the next step? Keep it concise."
+Prompt: "If your previous output already ends with a 👉 question, do nothing. Otherwise, if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
 
-- id: `summarize-on-stop`
-- name: `Summarize Progress on Stop`
-- description: `When the agent finishes working, it summarizes what was accomplished, which files changed, and what the next step is.`
+- id: `ask-bootcamper`
+- name: `Ask Bootcamper`
+- description: `Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question.`
 
 **commonmark-validation** (fileEdited → askAgent, filePatterns: `**/*.md`)
 

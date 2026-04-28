@@ -52,6 +52,7 @@ Module 12 platform files: load `deployment-onpremises.md`, `deployment-azure.md`
 ## Communication
 
 - One question at a time, wait for response. Prefix input-required questions with **"👉"** in ALL modules.
+- **Closing-question ownership:** Never end your turn with a closing question — the `ask-bootcamper` hook owns all closing questions. Mid-conversation 👉 questions are fine; just don't place one at the end of your output.
 - **Goldilocks check:** After Modules 3, 6, 9 ask if detail level is right. Store preference in `config/bootcamp_preferences.yaml` as `detail_level`.
 - **First-term explanations:** Define Senzing terms inline on first use, reference `docs/guides/GLOSSARY.md`. Don't re-explain.
 - Before each step: what and why. During: status updates (never bare "Working..."). After: what changed, files with paths.

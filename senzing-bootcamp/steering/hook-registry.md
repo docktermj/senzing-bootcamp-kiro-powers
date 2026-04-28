@@ -50,7 +50,7 @@ Prompt: "A source code file was just edited. Check it for language-appropriate c
 
 **summarize-on-stop** (agentStop → askAgent)
 
-Prompt: "Before finishing, check if your previous output ended with a pending question for the bootcamper — look for a line starting with 👉 or a WAIT for response pattern. If a pending question is detected, append only the summary: (1) What did you accomplish? (2) Which files were created or modified? Do not repeat the question — it is already visible to the bootcamper. If no pending question is detected, append the summary at the end as usual: (1) What did you accomplish? (2) Which files were created or modified? (3) What is the next step? Keep it concise."
+Prompt: "Before finishing, check if your previous output ended with a pending question for the bootcamper — look for a line starting with 👉 or a WAIT for response pattern. If a pending question is detected, place the summary before the question so the question remains the last thing the bootcamper sees: (1) What did you accomplish? (2) Which files were created or modified? Then let the original question close the message — do not repeat it. If no pending question is detected, append the summary at the end as usual: (1) What did you accomplish? (2) Which files were created or modified? (3) What is the next step? Keep it concise."
 
 - id: `summarize-on-stop`
 - name: `Summarize Progress on Stop`

@@ -6,15 +6,15 @@ This guide covers the most frequent mistakes bootcampers make, with real example
 
 ### Loading raw data without mapping
 
-Your source data needs to be transformed into Senzing Entity Specification (SGES) format before loading. Skipping Module 4 means Senzing can't recognize your fields.
+Your source data needs to be transformed into Senzing Entity Specification (SGES) format before loading. Skipping Module 5 means Senzing can't recognize your fields.
 
-What to do: Complete Module 4 (Data Quality & Mapping) for each data source before loading.
+What to do: Complete Module 5 (Data Quality & Mapping) for each data source before loading.
 
 ### Using too few sample records
 
 Testing with 2-3 records doesn't produce meaningful entity resolution results. You need enough records to create entity clusters.
 
-What to do: Use 50-200 records for demos (Module 1) and 100-1000 for quality testing (Module 4).
+What to do: Use 50-200 records for demos (Module 3) and 100-1000 for quality testing (Module 5).
 
 ### Ignoring data quality scores below 70%
 
@@ -58,7 +58,7 @@ What to do: Run `python scripts/backup_project.py` before every load operation.
 
 After loading, Senzing queues re-evaluations for cross-record relationships. Skipping redo processing means incomplete entity resolution.
 
-What to do: Always drain the redo queue after loading. The agent handles this in Modules 5 and 6.
+What to do: Always drain the redo queue after loading. The agent handles this in Modules 6 and 7.
 
 ## Query and Validation Mistakes
 
@@ -78,7 +78,7 @@ What to do: Use per-entity queries (`get_entity_by_record_id`, `search_by_attrib
 
 Entity resolution is iterative. First results often need mapping adjustments, quality improvements, or additional data sources.
 
-What to do: Use the iterate-vs-proceed decision gates in Modules 4 and 7 to decide when results are good enough.
+What to do: Use the iterate-vs-proceed decision gates in Modules 5 and 8 to decide when results are good enough.
 
 ## Production Mistakes
 
@@ -86,13 +86,13 @@ What to do: Use the iterate-vs-proceed decision gates in Modules 4 and 7 to deci
 
 What works with 500 records may not work with 500,000. Performance characteristics change dramatically at scale.
 
-What to do: Complete Module 8 (Performance Testing) before production. See `docs/guides/PERFORMANCE_BASELINES.md` for expected throughput.
+What to do: Complete Module 9 (Performance Testing) before production. See `docs/guides/PERFORMANCE_BASELINES.md` for expected throughput.
 
 ### No disaster recovery plan
 
 Data loss without backups means reloading everything from scratch — which can take hours or days at production scale.
 
-What to do: Follow the DR guidance in Module 11 Step 15. Implement the 3-2-1 backup rule.
+What to do: Follow the DR guidance in Module 12 Step 15. Implement the 3-2-1 backup rule.
 
 ---
 

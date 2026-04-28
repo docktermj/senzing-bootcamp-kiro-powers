@@ -19,9 +19,11 @@ jobs:
           python-version: '3.11'
       - name: Validate power integrity
         run: python senzing-bootcamp/scripts/validate_power.py
+      - name: Validate steering token counts
+        run: python senzing-bootcamp/scripts/measure_steering.py --check
       - name: Validate CommonMark
         run: python senzing-bootcamp/scripts/validate_commonmark.py
       - name: Run tests
         run: |
           pip install pytest hypothesis
-          python -m pytest tests/ -v --tb=short
+          python -m pytest senzing-bootcamp/tests/ tests/ -v --tb=short

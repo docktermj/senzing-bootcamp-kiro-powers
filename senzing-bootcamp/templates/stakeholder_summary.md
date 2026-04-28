@@ -41,6 +41,53 @@ Copy the template sections above into a new file, replace each placeholder with 
 module-specific content described below, and save to the indicated output path.
 
 =============================================================================
+MODULE 1 — Business Problem Definition
+Output: docs/stakeholder_summary_module1.md
+=============================================================================
+
+[status]        → "Problem defined, ready for data collection"
+[module_number] → "1"
+[module_name]   → "Business Problem Definition"
+
+[problem_statement]
+  Summarize the business problem from docs/business_problem.md in 2-3 sentences.
+  Focus on the business impact: what pain point does entity resolution address?
+  Example: "Customer records are duplicated across CRM and billing systems,
+  causing inaccurate reporting and wasted outreach."
+
+[approach]
+  Describe the planned entity resolution approach in non-technical terms.
+  Mention Senzing by name. Reference the design pattern if one was selected.
+  Example: "Using Senzing entity resolution to match and deduplicate customer
+  records across 3 data sources based on name, address, and email attributes."
+
+[data_sources]
+  List each identified data source with approximate record count.
+  Use a simple table or bullet list. Pull from docs/business_problem.md.
+  Example:
+  | Source | Records | Type |
+  |--------|---------|------|
+  | CRM Export | ~50,000 | CSV |
+  | Billing System | ~35,000 | Database |
+
+[key_findings]
+  Summarize what was discovered during problem analysis.
+  Example: "Identified 3 data sources with overlapping customer records.
+  Estimated 15-20% duplication rate based on preliminary analysis."
+
+[next_steps]
+  1. Set up the Senzing SDK (Module 2)
+  2. Run a quick demo with sample data (Module 3)
+  3. Collect and catalog data samples (Module 4)
+  4. Evaluate data quality and map to Senzing format (Module 5)
+
+[roi_considerations]
+  Frame the expected business value. Use estimates where possible.
+  Example: "Eliminating duplicate customer records is projected to reduce
+  mailing costs by 15% and improve campaign targeting accuracy.
+  A unified customer view enables cross-sell opportunities across channels."
+
+=============================================================================
 MODULE 2 — Business Problem Definition
 Output: docs/stakeholder_summary_module2.md
 =============================================================================
@@ -138,12 +185,113 @@ Output: docs/stakeholder_summary_module8.md
   and reduce customer service lookup time by 30%."
 
 =============================================================================
-MODULE 11 — Deployment and Packaging
+MODULE 7 — Multi-Source Orchestration
+Output: docs/stakeholder_summary_module7.md
+=============================================================================
+
+[status]        → "All sources loaded and validated, ready for querying"
+[module_number] → "7"
+[module_name]   → "Multi-Source Orchestration"
+
+[problem_statement]
+  Restate the original business problem from docs/business_problem.md.
+  Add context on multi-source loading progress.
+  Example: "We set out to deduplicate customer records across CRM and billing.
+  Data has been collected, quality-scored, mapped, and loaded from all sources."
+
+[approach]
+  Describe the multi-source orchestration approach.
+  Mention load order, source count, and orchestration strategy.
+  Example: "Loaded 85,000 records from 3 data sources into Senzing using
+  quality-first ordering. Sequential loading with per-source error isolation."
+
+[data_sources]
+  List each data source with loaded record counts and match rates.
+  Pull from docs/loading_strategy.md and config/data_sources.yaml.
+  Example:
+  | Source | Records Loaded | Cross-Source Match Rate |
+  |--------|---------------|------------------------|
+  | CRM Export | 50,000 | 18% matched across sources |
+  | Billing System | 35,000 | 22% matched across sources |
+
+[key_findings]
+  Present cross-source validation results with specific metrics.
+  Pull from docs/results_validation.md and UAT results.
+  Example:
+  - 85,000 records resolved into 62,000 unique entities
+  - 95% UAT test cases passed (45/50)
+  - 2% false positive rate, 3% false negative rate
+  - Cross-source matching linked 12,000 records across systems
+
+[next_steps]
+  Based on validation results and the user's bootcamp path:
+  - Path B/C: "Results validated. Ready to query and visualize (Module 8)."
+  - Path D: "Proceed to querying (Module 8), then performance and production."
+
+[roi_considerations]
+  Quantify actual results against the original business case.
+  Example: "Entity resolution identified 23,000 duplicate records (27% of total).
+  Eliminating these duplicates is estimated to save $45,000/year in mailing costs
+  and reduce customer service lookup time by 30%."
+
+=============================================================================
+MODULE 11 — Monitoring and Observability
 Output: docs/stakeholder_summary_module11.md
 =============================================================================
 
-[status]        → "Deployed to [environment]" or "Packaged and deployment-ready"
+[status]        → "Monitoring configured, dashboards and alerts operational"
 [module_number] → "11"
+[module_name]   → "Monitoring and Observability"
+
+[problem_statement]
+  Restate the business problem with monitoring context.
+  Example: "Customer record duplication across 3 systems was causing $60K/year
+  in wasted outreach. The entity resolution system is now running and needs
+  operational monitoring to ensure reliability."
+
+[approach]
+  Describe the monitoring setup in non-technical terms.
+  Mention dashboards, alerts, and health checks.
+  Example: "Configured monitoring dashboards, automated alerts for error rates
+  and latency, and health check endpoints for the entity resolution system."
+
+[data_sources]
+  List monitored data sources with volumes and monitoring metrics.
+  Example:
+  | Source | Records | Health Check | Alert Threshold |
+  |--------|---------|-------------|-----------------|
+  | CRM | 50,000 | ✅ Passing | Error rate > 1% |
+  | Billing | 35,000 | ✅ Passing | Latency > 500ms |
+
+[key_findings]
+  Summarize monitoring baselines and operational readiness.
+  Pull from monitoring configuration and health check results.
+  Example:
+  - All health checks passing across all components
+  - Average query latency: 45ms (p99: 120ms)
+  - Error rate baseline: 0.1%
+  - Dashboard configured with 5 key metrics panels
+  - Alert rules configured for error rate, latency, and disk usage
+
+[next_steps]
+  1. Proceed to deployment packaging (Module 12)
+  2. Monitor production performance for 30 days after deployment
+  3. Tune alert thresholds based on production traffic patterns
+  4. Schedule quarterly monitoring review
+
+[roi_considerations]
+  Frame the operational value of monitoring.
+  Example: "Proactive monitoring reduces mean time to detection from hours to
+  minutes. Automated alerts prevent data quality degradation from going
+  unnoticed, protecting the ROI of the entity resolution investment."
+
+=============================================================================
+MODULE 12 — Deployment and Packaging
+Output: docs/stakeholder_summary_module12.md
+=============================================================================
+
+[status]        → "Deployed to [environment]" or "Packaged and deployment-ready"
+[module_number] → "12"
 [module_name]   → "Deployment and Packaging"
 
 [problem_statement]

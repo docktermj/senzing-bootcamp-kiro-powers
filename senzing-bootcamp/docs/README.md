@@ -10,18 +10,18 @@ Module-specific documentation files. Each module has detailed documentation abou
 
 **Files:**
 
-- `MODULE_0_SDK_SETUP.md` - SDK installation and configuration
-- `MODULE_1_QUICK_DEMO.md` - Quick demo with sample data (optional)
-- `MODULE_2_BUSINESS_PROBLEM.md` - Business problem definition
-- `MODULE_3_DATA_COLLECTION.md` - Data collection and source management
-- `MODULE_4_DATA_QUALITY_AND_MAPPING.md` - Data quality assessment and mapping
-- `MODULE_5_SINGLE_SOURCE_LOADING.md` - Single source loading patterns
-- `MODULE_6_MULTI_SOURCE_ORCHESTRATION.md` - Multi-source orchestration
-- `MODULE_7_QUERY_VALIDATION.md` - Query and validation with UAT
-- `MODULE_8_PERFORMANCE_TESTING.md` - Performance testing and benchmarking
-- `MODULE_9_SECURITY_HARDENING.md` - Security hardening for production
-- `MODULE_10_MONITORING_OBSERVABILITY.md` - Monitoring and observability
-- `MODULE_11_DEPLOYMENT_PACKAGING.md` - Deployment packaging
+- `MODULE_1_BUSINESS_PROBLEM.md` - Business problem definition
+- `MODULE_2_SDK_SETUP.md` - SDK installation and configuration
+- `MODULE_3_QUICK_DEMO.md` - Quick demo with sample data (optional)
+- `MODULE_4_DATA_COLLECTION.md` - Data collection and source management
+- `MODULE_5_DATA_QUALITY_AND_MAPPING.md` - Data quality assessment and mapping
+- `MODULE_6_SINGLE_SOURCE_LOADING.md` - Single source loading patterns
+- `MODULE_7_MULTI_SOURCE_ORCHESTRATION.md` - Multi-source orchestration
+- `MODULE_8_QUERY_VALIDATION.md` - Query and validation with UAT
+- `MODULE_9_PERFORMANCE_TESTING.md` - Performance testing and benchmarking
+- `MODULE_10_SECURITY_HARDENING.md` - Security hardening for production
+- `MODULE_11_MONITORING_OBSERVABILITY.md` - Monitoring and observability
+- `MODULE_12_DEPLOYMENT_PACKAGING.md` - Deployment packaging
 
 ### `/policies/`
 
@@ -80,7 +80,7 @@ The following files remain in the root `senzing-bootcamp/` directory:
 
 ### For Agents
 
-- Load per-module steering files as needed (e.g., `module-00-sdk-setup.md`)
+- Load per-module steering files as needed (e.g., `module-02-sdk-setup.md`)
 - Load `steering/agent-instructions.md` for behavior guidance
 - Refer to `/policies/` for file organization rules
 - Refer to `/modules/` for module-specific details

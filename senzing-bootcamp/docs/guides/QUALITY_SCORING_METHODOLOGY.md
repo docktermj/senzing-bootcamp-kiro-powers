@@ -2,7 +2,7 @@
 
 ## Introduction
 
-When Module 4 evaluates your data sources, it produces a quality score from 0 to 100. This guide explains exactly how that score is calculated, what each component measures, and what your score means for your next steps. If you received a score and want to understand why, this is the place to look.
+When Module 5 evaluates your data sources, it produces a quality score from 0 to 100. This guide explains exactly how that score is calculated, what each component measures, and what your score means for your next steps. If you received a score and want to understand why, this is the place to look.
 
 ## How the Overall Score Is Calculated
 
@@ -216,11 +216,11 @@ Quality Score = (40 × 0.40) + (45 × 0.30) + (35 × 0.20) + (80 × 0.10)
 
 ## Related Documentation
 
-- [Module 4: Data Quality & Mapping](../modules/MODULE_4_DATA_QUALITY_AND_MAPPING.md) — Full module documentation with algorithm details
-- [Module 4 Steering File](../../steering/module-04-data-quality-mapping.md) — Agent workflow for Module 4
+- [Module 5: Data Quality & Mapping](../modules/MODULE_5_DATA_QUALITY_AND_MAPPING.md) — Full module documentation with algorithm details
+- [Module 5 Steering File](../../steering/module-05-data-quality-mapping.md) — Agent workflow for Module 5
 - [Data Quality Check Hook](../../hooks/data-quality-check.kiro.hook) — Automated quality check hook
 - [Performance Baselines](PERFORMANCE_BASELINES.md) — How data volume affects processing time and resource needs
-- [Offline Mode](OFFLINE_MODE.md) — What works when MCP is unavailable (Module 4 quality scoring is mostly offline)
+- [Offline Mode](OFFLINE_MODE.md) — What works when MCP is unavailable (Module 5 quality scoring is mostly offline)
 - [Common Mistakes](COMMON_MISTAKES.md) — Common data quality mistakes and how to avoid them
 
 ---

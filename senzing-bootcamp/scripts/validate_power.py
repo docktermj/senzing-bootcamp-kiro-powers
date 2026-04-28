@@ -106,7 +106,7 @@ def check_module_docs():
         check(False, "docs/modules/ directory exists")
         return
 
-    for i in range(12):
+    for i in range(1, 13):
         pattern = f"MODULE_{i}_*.md"
         matches = list(modules_dir.glob(pattern))
         check(len(matches) >= 1, f"Module {i} documentation exists")
@@ -135,7 +135,7 @@ def check_power_md_references():
     with open(power_md) as f:
         content = f.read()
 
-    # Find all steering file references like `module-00-sdk-setup.md`
+    # Find all steering file references like `module-02-sdk-setup.md`
     steering_refs = re.findall(r"`([\w-]+\.md)`", content)
     steering_dir = POWER_DIR / "steering"
     for ref in steering_refs:
@@ -157,6 +157,75 @@ def check_policies():
     ]
     for policy in expected:
         check((policies_dir / policy).exists(), f"{policy} exists")
+
+
+def check_steering_index_metadata():
+    print("\n=== Steering Index Metadata ===")
+    index_path = POWER_DIR / "steering" / "steering-index.yaml"
+    steering_dir = POWER_DIR / "steering"
+
+    if not index_path.exists():
+        check(False, "steering-index.yaml exists")
+        return
+    check(True, "steering-index.yaml exists")
+
+    content = index_path.read_text(encoding="utf-8")
+
+    # --- file_metadata section ---
+    has_file_metadata = re.search(r"^file_metadata:\s*$", content, re.MULTILINE) is not None
+    check(has_file_metadata, "file_metadata mapping exists in steering-index.yaml")
+
+    if not has_file_metadata:
+        return
+
+    # Parse file_metadata entries
+    fm_match = re.search(r"^file_metadata:\s*\n((?:[ ].*\n)*)", content, re.MULTILINE)
+    fm_block = fm_match.group(1) if fm_match else ""
+
+    parsed_entries = {}
+    current_file = None
+    for line in fm_block.splitlines():
+        file_match = re.match(r"^  ([\w.-]+\.md):\s*$", line)
+        if file_match:
+            current_file = file_match.group(1)
+            parsed_entries[current_file] = {}
+            continue
+        if current_file:
+            tc_match = re.match(r"^\s+token_count:\s*(.+)$", line)
+            if tc_match:
+                parsed_entries[current_file]["token_count"] = tc_match.group(1).strip()
+            sc_match = re.match(r"^\s+size_category:\s*(.+)$", line)
+            if sc_match:
+                parsed_entries[current_file]["size_category"] = sc_match.group(1).strip()
+
+    # Check every .md file in steering/ has a valid entry
+    valid_categories = {"small", "medium", "large"}
+    md_files = sorted(f.name for f in steering_dir.glob("*.md"))
+    for md_name in md_files:
+        has_entry = md_name in parsed_entries
+        check(has_entry, f"file_metadata has entry for {md_name}")
+        if has_entry:
+            entry = parsed_entries[md_name]
+            tc_raw = entry.get("token_count", "")
+            try:
+                int(tc_raw)
+                tc_valid = True
+            except (ValueError, TypeError):
+                tc_valid = False
+            check(tc_valid, f"{md_name}: token_count is an integer")
+
+            sc_raw = entry.get("size_category", "")
+            check(sc_raw in valid_categories, f"{md_name}: size_category '{sc_raw}' is valid")
+
+    # --- budget section ---
+    has_budget = re.search(r"^budget:\s*$", content, re.MULTILINE) is not None
+    check(has_budget, "budget mapping exists in steering-index.yaml")
+
+    if has_budget:
+        budget_fields = ["total_tokens", "reference_window", "warn_threshold_pct", "critical_threshold_pct"]
+        for field in budget_fields:
+            field_match = re.search(rf"^\s+{re.escape(field)}:\s*(\d+)", content, re.MULTILINE)
+            check(field_match is not None, f"budget.{field} exists and is an integer")
 
 
 def check_diagrams():
@@ -181,6 +250,7 @@ def main():
     check_power_md_references()
     check_policies()
     check_diagrams()
+    check_steering_index_metadata()
 
     print(f"\n{'=' * 50}")
     if errors:

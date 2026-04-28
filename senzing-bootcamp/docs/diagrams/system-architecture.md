@@ -13,7 +13,7 @@ This shows how the pieces you build during the bootcamp fit together at runtime.
 │  ┌──────────────┐   ┌──────────────┐   ┌──────────────────────┐   │
 │  │ Transformation│   │   Loading    │   │   Query Programs     │   │
 │  │   Programs    │   │   Programs   │   │                      │   │
-│  │ (Module 4)    │   │ (Module 5)   │   │ (Module 7)           │   │
+│  │ (Module 5)    │   │ (Module 6)   │   │ (Module 8)           │   │
 │  │               │   │              │   │  • find_duplicates   │   │
 │  │ CSV/JSON →    │   │ JSONL →      │   │  • search_entities   │   │
 │  │ Senzing JSONL │   │ Senzing SDK  │   │  • customer_360      │   │
@@ -39,7 +39,7 @@ This shows how the pieces you build during the bootcamp fit together at runtime.
 │  ┌──────────────────────────────────────────────────────────────┐  │
 │  │                    OPTIONAL LAYERS                            │  │
 │  │                                                              │  │
-│  │  REST API (Module 11)     Search Index (Elasticsearch)       │  │
+│  │  REST API (Module 12)     Search Index (Elasticsearch)       │  │
 │  │  ┌─────────────────┐     ┌─────────────────────────┐        │  │
 │  │  │ /health          │     │ Resolved entities →     │        │  │
 │  │  │ /entity/{id}     │     │ indexed for fast lookup │        │  │
@@ -48,7 +48,7 @@ This shows how the pieces you build during the bootcamp fit together at runtime.
 │  │  └─────────────────┘     │ search index SECOND     │        │  │
 │  │                           └─────────────────────────┘        │  │
 │  │                                                              │  │
-│  │  Monitoring (Module 10)   Security (Module 9)               │  │
+│  │  Monitoring (Module 11)   Security (Module 10)              │  │
 │  │  ┌─────────────────┐     ┌─────────────────────────┐        │  │
 │  │  │ Metrics, alerts, │     │ Secrets mgmt, RBAC,     │        │  │
 │  │  │ dashboards,      │     │ encryption, audit logs  │        │  │
@@ -78,16 +78,16 @@ data/raw/    ──▶  src/transform/  ──▶  SDK add_record  ──▶  sr
 ## What Each Module Produces
 
 ```text
-Module 0:  SDK installed + database/ configured
-Module 1:  src/quickstart_demo/ (demo script + sample data)
-Module 2:  docs/business_problem.md
-Module 3:  data/raw/ (source files)
-Module 4:  docs/data_source_evaluation.md, src/transform/ + data/transformed/ + docs/mapping_*.md
-Module 5:  src/load/ + loaded database
-Module 6:  Multi-source orchestration scripts
-Module 7:  src/query/ + docs/results_validation.md
-Module 8:  tests/performance/ + docs/performance_report.md
-Module 9:  src/security/ + docs/security_checklist.md
-Module 10: src/monitoring/ + monitoring/dashboards/
-Module 11: Dockerfile + CI/CD + deployment/scripts/
+Module 1:  docs/business_problem.md
+Module 2:  SDK installed + database/ configured
+Module 3:  src/quickstart_demo/ (demo script + sample data)
+Module 4:  data/raw/ (source files)
+Module 5:  docs/data_source_evaluation.md, src/transform/ + data/transformed/ + docs/mapping_*.md
+Module 6:  src/load/ + loaded database
+Module 7:  Multi-source orchestration scripts
+Module 8:  src/query/ + docs/results_validation.md
+Module 9:  tests/performance/ + docs/performance_report.md
+Module 10: src/security/ + docs/security_checklist.md
+Module 11: src/monitoring/ + monitoring/dashboards/
+Module 12: Dockerfile + CI/CD + deployment/scripts/
 ```

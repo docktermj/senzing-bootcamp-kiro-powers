@@ -14,8 +14,8 @@ These modules need no MCP connection at all. You can complete them entirely offl
 
 | Module | Name | Why It Works Offline |
 | ------ | ---- | -------------------- |
-| 2 | Business Problem | Planning and documentation only — define your problem, identify sources, set success criteria |
-| 3 | Data Collection | File operations only — copy data into `data/raw/`, document locations, assess sources |
+| 1 | Business Problem | Planning and documentation only — define your problem, identify sources, set success criteria |
+| 4 | Data Collection | File operations only — copy data into `data/raw/`, document locations, assess sources |
 
 ### Mostly Offline Modules
 
@@ -23,7 +23,7 @@ These modules work almost entirely offline, with minor MCP-dependent features.
 
 | Module | Name | What Works Offline | What Needs MCP |
 | ------ | ---- | ------------------ | -------------- |
-| 4 | Data Quality | Manual data profiling, row counts, column inspection, quality assessment by inspection | Automated quality scoring via `search_docs` (optional) |
+| 5 | Data Quality | Manual data profiling, row counts, column inspection, quality assessment by inspection | Automated quality scoring via `search_docs` (optional) |
 
 ### Partially Blocked Modules
 
@@ -31,8 +31,8 @@ These modules have core activities that depend on MCP tools. You can still make 
 
 | Module | Name | What Works Offline | What Needs MCP |
 | ------ | ---- | ------------------ | -------------- |
-| 0 | SDK Setup | Project structure setup, configuration files, directory layout | Code scaffolding (`generate_scaffold`), SDK reference (`get_sdk_reference`) |
-| 1 | Quick Demo | Reviewing existing code, running previously generated programs | Demo code generation (`generate_scaffold`) |
+| 2 | SDK Setup | Project structure setup, configuration files, directory layout | Code scaffolding (`generate_scaffold`), SDK reference (`get_sdk_reference`) |
+| 3 | Quick Demo | Reviewing existing code, running previously generated programs | Demo code generation (`generate_scaffold`) |
 | 5 | Data Mapping | Running existing transformation programs, reviewing previous mappings in `docs/mapping_*.md` | Starting new mapping workflows (`mapping_workflow`) |
 | 6 | Single Source Loading | Running existing loading programs, database backup/restore, monitoring progress | New loading code generation (`generate_scaffold`), SDK method lookup (`get_sdk_reference`) |
 | 7 | Multi-Source Orchestration | Running existing orchestration code, monitoring multi-source progress | New source mapping (`mapping_workflow`), code generation for new sources |

@@ -12,7 +12,7 @@ A running Senzing deployment needs regular attention. Here's a practical schedul
 
 ### Daily
 
-- [ ] Review monitoring dashboards (Module 10 setup)
+- [ ] Review monitoring dashboards (Module 11 setup)
 - [ ] Check error logs for new SENZ errors — use `explain_error_code` to diagnose
 - [ ] Verify database backups completed successfully
 - [ ] Confirm loading jobs (if scheduled) ran without failures
@@ -26,7 +26,7 @@ A running Senzing deployment needs regular attention. Here's a practical schedul
 
 ### Monthly
 
-- [ ] Rotate secrets and API keys (Module 9 practices)
+- [ ] Rotate secrets and API keys (Module 10 practices)
 - [ ] Update SDK and dependencies to latest patch versions
 - [ ] Review alert thresholds — adjust for current data volumes
 - [ ] Run database maintenance:
@@ -37,7 +37,7 @@ A running Senzing deployment needs regular attention. Here's a practical schedul
 ### Quarterly
 
 - [ ] Run a disaster recovery test — restore from backup and verify
-- [ ] Conduct a security audit (Module 9 checklist)
+- [ ] Conduct a security audit (Module 10 checklist)
 - [ ] Capacity planning review — project growth for next quarter
 - [ ] Review Senzing release notes for new features
 - [ ] Update documentation to reflect any changes
@@ -76,11 +76,11 @@ If you started with SQLite for evaluation, consider migrating to PostgreSQL when
 - You need concurrent access (multiple loaders or query processes)
 - You're moving toward production deployment
 
-Module 0 covers database setup. Re-run it with PostgreSQL as your target. If you're deploying to a cloud provider, Module 11 can provision a managed database (e.g., RDS/Aurora for AWS via CDK).
+Module 2 covers database setup. Re-run it with PostgreSQL as your target. If you're deploying to a cloud provider, Module 12 can provision a managed database (e.g., RDS/Aurora for AWS via CDK).
 
 ### Deployment and Redeployment
 
-Module 11 separates **packaging** (containerization, config, CI/CD — always done) from **deployment** (actually deploying to a target — optional). If you packaged during the bootcamp but didn't deploy, you can return to Module 11 Phase 2 at any time. Your deployment target (AWS, Azure, GCP, on-premises, local) shapes what artifacts are produced — if you change targets, re-run Module 11 from Step 1.
+Module 12 separates **packaging** (containerization, config, CI/CD — always done) from **deployment** (actually deploying to a target — optional). If you packaged during the bootcamp but didn't deploy, you can return to Module 12 Phase 2 at any time. Your deployment target (AWS, Azure, GCP, on-premises, local) shapes what artifacts are produced — if you change targets, re-run Module 12 from Step 1.
 
 ---
 
@@ -90,11 +90,11 @@ When new data becomes available, follow the same proven workflow from the bootca
 
 ### Step-by-Step
 
-1. **Collect the data** — Follow Module 3 to gather and document the new source
-2. **Evaluate quality** — Run Module 4's quality scoring. Use the iterate-vs-proceed gate: ≥80% proceed, 70-79% consider improving, <70% fix first.
-3. **Map the data** — Use Module 4's `mapping_workflow` to get correct Senzing attribute names (don't guess). Mapping state is checkpointed to `config/mapping_state_[datasource].json` — if your session ends mid-mapping, you can resume where you left off.
+1. **Collect the data** — Follow Module 4 to gather and document the new source
+2. **Evaluate quality** — Run Module 5's quality scoring. Use the iterate-vs-proceed gate: ≥80% proceed, 70-79% consider improving, <70% fix first.
+3. **Map the data** — Use Module 5's `mapping_workflow` to get correct Senzing attribute names (don't guess). Mapping state is checkpointed to `config/mapping_state_[datasource].json` — if your session ends mid-mapping, you can resume where you left off.
 4. **Test with a sample** — Load 100-1000 records first and verify resolution behavior
-5. **Load the full dataset** — Follow Module 5 for single-source loading
+5. **Load the full dataset** — Follow Module 6 for single-source loading
 6. **Monitor cross-source resolution** — After loading, check how the new source resolves against existing data. If entity resolution found zero matches, investigate: are key fields populated? Were they mapped correctly?
 
 ### Tips
@@ -126,7 +126,7 @@ Use `get_sdk_reference(topic='migration')` for detailed V3→V4 migration guidan
 1. **Read the release notes** — use `search_docs(query='release notes', version='current')`
 2. **Test in staging first** — never upgrade production without testing
 3. **Back up your database** before upgrading
-4. **Run your validation queries** (Module 7) after upgrading to confirm results are consistent
+4. **Run your validation queries** (Module 8) after upgrading to confirm results are consistent
 5. **Update your code** for any API changes flagged by the migration guide
 
 ---

@@ -14,12 +14,12 @@ Paths are not mutually exclusive — you can start with one and jump to another 
 
 | Path | For | Modules | Why Choose This |
 | ---- | --- | ------- | --------------- |
-| A) Quick Demo | First-time users — see entity resolution in action | 0 → 1 | Verify the technology works before investing more time |
-| B) Fast Track | Have Senzing Entity Specification (SGES) data | 4 → 5 → 7 | Get straight to loading and querying |
-| C) Complete Beginner | New users with raw data | 2 → 3 → 4 → 5 → 7 | Guided help through the entire process |
-| D) Full Production | All modules through deployment | 0 → 1 → 2 → ... → 11 | Building something for production |
+| A) Quick Demo | First-time users — see entity resolution in action | 2 → 3 | Verify the technology works before investing more time |
+| B) Fast Track | Have Senzing Entity Specification (SGES) data | 5 → 6 → 8 | Get straight to loading and querying |
+| C) Complete Beginner | New users with raw data | 1 → 4 → 5 → 6 → 8 | Guided help through the entire process |
+| D) Full Production | All modules through deployment | 1 → 2 → 3 → ... → 12 | Building something for production |
 
-Module 0 (SDK Setup) is inserted automatically before any module that needs it.
+Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 
 **Don't have data?** Mock data can be generated at any point.
 
@@ -41,15 +41,15 @@ Module 0 (SDK Setup) is inserted automatically before any module that needs it.
 
 ## Skip Ahead
 
-- Have Entity Specification data? → Skip to Module 4 mapping phase
-- SDK installed? → Skip Module 0
-- Single source? → Skip Module 6
-- Not deploying to production? → Skip Modules 8-11
+- Have Entity Specification data? → Skip to Module 5 mapping phase
+- SDK installed? → Skip Module 2
+- Single source? → Skip Module 7
+- Not deploying to production? → Skip Modules 9-12
 
 ## After Your Path
 
 - **After A**: Decide if ER fits your use case, then try Path B or C with your data
-- **After B**: Validate results, add more sources (Modules 3-4, 6), consider production (8-11)
+- **After B**: Validate results, add more sources (Modules 4-5, 7), consider production (9-12)
 - **After C**: Validate with stakeholders, plan production deployment
 - **After D**: You're production-ready
 

@@ -52,13 +52,13 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 
 **Trigger:** When new Senzing JSON files are created in `data/transformed/`
 **Action:** Reminds agent to run `analyze_record` before proceeding to loading
-**Use case:** Catches bad mappings early — validates quality score >70% before Module 5
+**Use case:** Catches bad mappings early — validates quality score >70% before Module 6
 
 ### 9. Run Tests After Change (`run-tests-after-change.kiro.hook`)
 
 **Trigger:** When source code files are modified in `src/load/`, `src/query/`, or `src/transform/`
 **Action:** Reminds agent to run the test suite to verify the change
-**Use case:** Catches regressions after code changes in Modules 5-7
+**Use case:** Catches regressions after code changes in Modules 6-8
 
 ### 10. Git Commit Reminder (`git-commit-reminder.kiro.hook`)
 
@@ -90,8 +90,8 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 
 **Trigger:** When new files are created in `src/query/`
 **Action:** Prompts the agent to offer generating an interactive entity graph visualization
-**Use case:** Ensures bootcampers are offered the visualization feature during Module 7
-**Note:** Works in conjunction with the Enforce Module 7 Visualization Offers hook (#17) — this hook catches query program creation proactively, while the agentStop hook catches missed offers before the agent closes the conversation
+**Use case:** Ensures bootcampers are offered the visualization feature during Module 8
+**Note:** Works in conjunction with the Enforce Module 8 Visualization Offers hook (#17) — this hook catches query program creation proactively, while the agentStop hook catches missed offers before the agent closes the conversation
 
 ### 15. Capture Bootcamp Feedback (`capture-feedback.kiro.hook`) ⭐
 
@@ -100,18 +100,18 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 **Use case:** Guarantees feedback is always captured when a bootcamper says "bootcamp feedback" — deterministic, not probabilistic
 **Recommended:** Install for all modules
 
-### 16. Module 11 Phase Gate (`module11-phase-gate.kiro.hook`)
+### 16. Module 12 Phase Gate (`module12-phase-gate.kiro.hook`)
 
 **Trigger:** After task execution completes (postTaskExecution)
-**Action:** Checks if current module is 11, then displays packaging-complete summary and asks whether to proceed to deployment
+**Action:** Checks if current module is 12, then displays packaging-complete summary and asks whether to proceed to deployment
 **Use case:** Enforces the packaging-to-deployment phase gate — prevents the agent from blending packaging and deployment phases together
 
-### 17. Enforce Module 7 Visualization Offers (`enforce-visualization-offers.kiro.hook`) ⭐
+### 17. Enforce Module 8 Visualization Offers (`enforce-visualization-offers.kiro.hook`) ⭐
 
 **Trigger:** When the agent finishes working (agentStop)
-**Action:** Checks if current module is 7, then verifies both visualization offers (entity graph and results dashboard) were made during the interaction
-**Use case:** Safety net for Module 7 — catches missed visualization offers before the agent closes the conversation
-**Recommended:** Install for Module 7
+**Action:** Checks if current module is 8, then verifies both visualization offers (entity graph and results dashboard) were made during the interaction
+**Use case:** Safety net for Module 8 — catches missed visualization offers before the agent closes the conversation
+**Recommended:** Install for Module 8
 
 ### 18. Enforce Feedback File Path (`enforce-feedback-path.kiro.hook`)
 
@@ -123,11 +123,11 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 
 **Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.
 
-The `.kiro.hook` files in this directory are the canonical hook definitions. The Hook Registry in `onboarding-flow.md` must be kept in sync with these files.
+The `.kiro.hook` files in this directory are the canonical hook definitions. The Hook Registry in `hook-registry.md` (referenced from `onboarding-flow.md`) must be kept in sync with these files.
 
 ### Option 1: Automatic (Recommended)
 
-Hooks are created automatically during onboarding. The agent reads the Hook Registry in `onboarding-flow.md` and calls the `createHook` tool for each hook. No manual action needed.
+Hooks are created automatically during onboarding. The agent reads the Hook Registry in `hook-registry.md` (loaded via `onboarding-flow.md`) and calls the `createHook` tool for each hook. No manual action needed.
 
 ### Option 2: Ask the Agent
 
@@ -184,26 +184,26 @@ You can customize any hook by editing the JSON file:
 - ✅ **Capture Bootcamp Feedback** (guarantees feedback is always captured)
 - ✅ **Backup Project on Request** (quick backups via voice commands)
 
-### Module 4 (Data Quality & Mapping)
+### Module 5 (Data Quality & Mapping)
 
 - ✅ Code Style Check
 - ✅ Data Quality Check
 - ✅ Validate Senzing JSON
 - ✅ Analyze After Mapping
 
-### Module 5 (Data Loading)
+### Module 6 (Data Loading)
 
 - ✅ Code Style Check
 - ✅ Backup Before Load
 
-### Module 7 (Query Programs)
+### Module 8 (Query Programs)
 
 - ✅ Code Style Check
-- ✅ Enforce Module 7 Visualization Offers
+- ✅ Enforce Module 8 Visualization Offers
 
-### Module 11 (Deployment)
+### Module 12 (Deployment)
 
-- ✅ Module 11 Phase Gate
+- ✅ Module 12 Phase Gate
 
 ## Troubleshooting
 

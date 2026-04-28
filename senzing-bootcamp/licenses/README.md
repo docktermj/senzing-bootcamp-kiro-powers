@@ -4,7 +4,7 @@ This directory is for storing your Senzing license file(s).
 
 ## Do I Need a License?
 
-The bootcamp agent will ask about your license early in the workflow (before Module 0). You have three options:
+The bootcamp agent will ask about your license early in the workflow (before Module 2). You have three options:
 
 - **No license**: The SDK includes built-in evaluation limits that work for the bootcamp
 - **Evaluation license**: Removes limits, free from Senzing (email <support@senzing.com>)
@@ -129,7 +129,7 @@ ls -la licenses/g2.lic
 stat licenses/g2.lic
 ```
 
-The agent will verify the license during the bootcamp's license check step (Fourth Action in agent-instructions). You can also verify by running the SDK initialization script generated in Module 0 — if the license is valid, the SDK will initialize without errors.
+The agent will verify the license during the bootcamp's license check step (Fourth Action in agent-instructions). You can also verify by running the SDK initialization script generated in Module 2 — if the license is valid, the SDK will initialize without errors.
 
 ## Security and Git
 
@@ -256,7 +256,7 @@ echo "licenses/*.lic" >> .gitignore
 
 **Yes** — the SDK includes built-in evaluation limits that are sufficient for the bootcamp. For larger datasets or production use, request an evaluation or production license.
 
-**Recommendation**: If you plan to work with large datasets, request an evaluation license before starting Module 0.
+**Recommendation**: If you plan to work with large datasets, request an evaluation license before starting Module 2.
 
 ### How long does it take to get an evaluation license?
 
@@ -308,12 +308,12 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 2. **Wait for Email**: Typically 1-2 business days
 3. **Install License**: Place `g2.lic` in this directory
 4. **Verify**: Run verification script above
-5. **Continue Bootcamp**: Proceed to Module 0 (SDK Setup)
+5. **Continue Bootcamp**: Proceed to Module 2 (SDK Setup)
 
 ## Related Documentation
 
 - **FAQ**: `docs/guides/FAQ.md` - Common questions about licensing
-- **Module 0**: `docs/modules/MODULE_0_SDK_SETUP.md` - SDK installation
+- **Module 2**: `docs/modules/MODULE_2_SDK_SETUP.md` - SDK installation
 - **File Storage Policy**: `docs/policies/FILE_STORAGE_POLICY.md` - Where to store files
 - **Cost Estimation**: Use MCP `search_docs` with query "pricing" for current information
 

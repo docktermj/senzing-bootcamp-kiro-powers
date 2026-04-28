@@ -9,148 +9,93 @@ Visual flowchart for diagnosing common issues.
 ## Start Here: What's the Problem?
 
 ```text
-┌─────────────────────────────────────┐
-│   What type of issue are you       │
-│   experiencing?                     │
-└─────────────────────────────────────┘
-           │
-           ├─→ Installation/Setup Issues → See Section A
-           ├─→ Transformation Issues → See Section B
-           ├─→ Loading Issues → See Section C
-           ├─→ Query Issues → See Section D
-           ├─→ Performance Issues → See Section E
-           └─→ Data Quality Issues → See Section F
+What type of issue?
+├─→ Installation/Setup → Section A
+├─→ Transformation     → Section B
+├─→ Loading            → Section C
+├─→ Query              → Section D
+├─→ Performance        → Section E
+└─→ Data Quality       → Section F
 ```
 
 ## Section A: Installation/Setup Issues
 
 ```text
 Installation failing?
-│
 ├─→ Platform mismatch?
 │   └─→ Use sdk_guide with correct platform parameter
-│       (linux_apt, linux_yum, macos_arm, windows)
-│
 ├─→ Missing dependencies?
-│   └─→ Check error message
-│       └─→ Use search_docs(category="installation")
-│
+│   └─→ Check error → Use search_docs(category="installation")
 ├─→ Permission errors?
-│   └─→ Check file permissions
-│       └─→ May need sudo for system-wide install
-│
+│   └─→ Check file permissions → May need sudo for system-wide install
 ├─→ Database connection fails?
-│   ├─→ SQLite: Check path exists
-│   │   └─→ database/G2C.db
-│   └─→ PostgreSQL: Check connection string
-│       └─→ Verify host, port, credentials
-│
+│   ├─→ SQLite: Check path exists → database/G2C.db
+│   └─→ PostgreSQL: Verify host, port, credentials
 └─→ Configuration errors?
     └─→ Use search_docs(category="anti_patterns")
-        └─→ Check for known issues
 ```
 
 ## Section B: Transformation Issues
 
 ```text
 Transformation not working?
-│
 ├─→ Program crashes?
-│   ├─→ Check input file exists
-│   ├─→ Check file format (CSV, JSON, etc.)
+│   ├─→ Check input file exists and format (CSV, JSON, etc.)
 │   ├─→ Test with small sample (10 records)
 │   └─→ Check error message in logs/transform.log
-│
 ├─→ Output validation fails?
-│   ├─→ Run analyze_record on output
-│   │   └─→ Fix attribute name errors
-│   │       └─→ Use mapping_workflow (don't guess!)
-│   └─→ Missing required fields?
-│       └─→ Add DATA_SOURCE and RECORD_ID
-│
+│   ├─→ Run analyze_record → Fix attribute names via mapping_workflow
+│   └─→ Missing required fields? → Add DATA_SOURCE and RECORD_ID
 ├─→ Low quality score?
-│   ├─→ Run analyze_record
-│   ├─→ Check attribute coverage
+│   ├─→ Run analyze_record → Check attribute coverage
 │   │   └─→ < 70%? Add more field mappings
-│   └─→ Check data completeness
-│       └─→ Source data missing values?
-│
+│   └─→ Check data completeness → Source data missing values?
 └─→ Wrong attribute names?
-    └─→ NEVER hand-code attribute names
-        └─→ Use mapping_workflow
-            └─→ Use search_docs or download_resource
-                for the current entity specification
+    └─→ NEVER hand-code → Use mapping_workflow
+        └─→ Use search_docs or download_resource for entity spec
 ```
 
 ## Section C: Loading Issues
 
 ```text
 Loading failing?
-│
 ├─→ Connection errors?
-│   └─→ Verify SDK configuration from Module 0
-│       └─→ Test with simple add/get record
-│
+│   └─→ Verify SDK config from Module 2 → Test with simple add/get
 ├─→ Record errors?
-│   ├─→ Get error code from logs
-│   ├─→ Use explain_error_code(error_code="SENZXXXX")
-│   └─→ Common issues:
-│       • Invalid JSON format
-│       • Missing required fields
-│       • Wrong DATA_SOURCE name
-│       • Malformed attribute values
-│
+│   ├─→ Get error code → Use explain_error_code(error_code="SENZXXXX")
+│   └─→ Common: Invalid JSON, missing fields, wrong DATA_SOURCE, malformed values
 ├─→ Performance too slow?
 │   ├─→ Use batch loading (1000 records/batch)
-│   ├─→ Check database performance
-│   │   └─→ SQLite slow for >100K records
-│   │       └─→ Switch to PostgreSQL
-│   └─→ Check system resources
-│       └─→ CPU, memory, disk I/O
-│
+│   ├─→ SQLite slow for >100K records → Switch to PostgreSQL
+│   └─→ Check system resources (CPU, memory, disk I/O)
 ├─→ Database corruption?
-│   └─→ Restore from backup
-│       └─→ python scripts/restore_project.py <backup-file>
-│
+│   └─→ Restore: python scripts/restore_project.py <backup-file>
 └─→ Partial load failure?
-    ├─→ Check which records failed
-    ├─→ Fix data quality issues
-    ├─→ Restore from backup
-    └─→ Reload with fixed data
+    └─→ Check failed records → Fix data → Restore from backup → Reload
 ```
 
 ## Section D: Query Issues
 
 ```text
 Queries not working?
-│
 ├─→ Method not found?
-│   └─→ NEVER guess method names
-│       └─→ Use generate_scaffold or get_sdk_reference
-│
+│   └─→ NEVER guess → Use generate_scaffold or get_sdk_reference
 ├─→ Wrong results?
 │   ├─→ Too many matches?
-│   │   ├─→ Use the SDK's "why" method (via `get_sdk_reference`) to see why they matched
+│   │   ├─→ Use SDK "why" method (via get_sdk_reference)
 │   │   ├─→ Lower confidence scores in mappings
 │   │   └─→ Improve data quality
-│   │
 │   ├─→ Too few matches?
-│   │   ├─→ Check data quality
-│   │   ├─→ Raise confidence scores
+│   │   ├─→ Check data quality / Raise confidence scores
 │   │   └─→ Add more matching attributes
-│   │
 │   └─→ Missing information?
-│       └─→ Check query flags
-│           └─→ Use get_sdk_reference(topic="flags")
-│
+│       └─→ Check query flags → get_sdk_reference(topic="flags")
 ├─→ Performance slow?
 │   ├─→ Add database indexes
 │   ├─→ Use appropriate query method
 │   └─→ Check search_docs(category="performance")
-│
 └─→ No results found?
-    ├─→ Verify data was loaded
-    │   └─→ Check loading statistics
+    ├─→ Verify data was loaded (check loading statistics)
     ├─→ Verify DATA_SOURCE name matches
     └─→ Check query parameters
 ```
@@ -159,33 +104,21 @@ Queries not working?
 
 ```text
 System too slow?
-│
 ├─→ Transformation slow?
-│   ├─→ Process in batches
-│   ├─→ Use multiprocessing for large files
-│   └─→ Check data source performance
-│       └─→ Database query slow?
-│       └─→ API rate limited?
-│
+│   ├─→ Process in batches / Use multiprocessing
+│   └─→ Check data source (DB query slow? API rate limited?)
 ├─→ Loading slow?
-│   ├─→ Check database type
-│   │   └─→ SQLite: Max ~50 records/sec
-│   │   └─→ PostgreSQL: 100-500 records/sec
-│   ├─→ Optimize batch size
-│   │   └─→ Try 100, 500, 1000 records/batch
-│   ├─→ Check system resources
-│   │   └─→ CPU, memory, disk I/O
+│   ├─→ SQLite: ~50 rec/sec │ PostgreSQL: 100-500 rec/sec
+│   ├─→ Optimize batch size (try 100, 500, 1000)
+│   ├─→ Check system resources (CPU, memory, disk I/O)
 │   └─→ Use search_docs(category="performance")
-│
 ├─→ Query slow?
 │   ├─→ Add database indexes
 │   ├─→ Use specific queries (not export all)
 │   └─→ Check search_docs(category="database")
-│
 └─→ System resources maxed?
     ├─→ Check monitoring dashboard
-    ├─→ Increase memory allocation
-    ├─→ Use more powerful hardware
+    ├─→ Increase memory / more powerful hardware
     └─→ Consider distributed processing
 ```
 
@@ -193,30 +126,17 @@ System too slow?
 
 ```text
 Poor matching results?
-│
 ├─→ Review data quality from Module 5
-│   └─→ Run analyze_record on transformed data
-│       └─→ Quality score < 70%?
-│           └─→ Go back to Module 5
-│               └─→ Improve mappings
-│
+│   └─→ Run analyze_record → Quality < 70%? → Back to Module 5
 ├─→ Missing critical attributes?
-│   ├─→ Check attribute coverage
-│   ├─→ Add more field mappings
+│   ├─→ Check attribute coverage / Add more field mappings
 │   └─→ Consider additional data sources
-│
 ├─→ Inconsistent data formats?
-│   ├─→ Add data cleansing to transformation
-│   │   • Normalize phone numbers
-│   │   • Standardize addresses
-│   │   • Clean name formats
+│   ├─→ Add cleansing: normalize phones, standardize addresses, clean names
 │   └─→ Use confidence scores appropriately
-│
 └─→ Source data quality poor?
-    ├─→ Document issues
-    ├─→ Work with data owners to improve
-    ├─→ Use anonymized test data
-    └─→ Set realistic expectations
+    ├─→ Document issues / Work with data owners
+    └─→ Use anonymized test data / Set realistic expectations
 ```
 
 ## Diagnostic Commands

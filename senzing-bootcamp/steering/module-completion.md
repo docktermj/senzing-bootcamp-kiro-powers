@@ -31,11 +31,12 @@ After the journal entry and reflection, present 3-4 concrete options based on th
 - **Proceed:** "👉 Ready to move on to Module [N] ([name])?"
 - **Iterate:** "Would you like to improve anything from this module first?"
 - **Explore:** "Would you like to explore further — visualize entities, examine match explanations, or search by attributes? (For other modules: dig deeper into what we just produced.)"
+- **Undo:** "Roll back this module's work with `python scripts/rollback_module.py --module N`"
 - **Share:** "Would you like to prepare a summary to share with your team?"
 
 Present these as a single list, then: "👉 What would you like to do?" WAIT for response.
 
-**Module 1 special case:** The visualization offer (web page with interactive features) should already have been presented before reaching this workflow. If the user declined, the Explore option above gives them another chance.
+**Module 3 special case:** The visualization offer (web page with interactive features) should already have been presented before reaching this workflow. If the user declined, the Explore option above gives them another chance.
 
 ## Path Completion Detection
 
@@ -43,10 +44,10 @@ After each module, check if the user finished their path's last module:
 
 | Path | Complete after |
 |------|----------------|
-| A    | Module 1       |
-| B    | Module 7       |
-| C    | Module 7       |
-| D    | Module 11      |
+| A    | Module 3       |
+| B    | Module 8       |
+| C    | Module 8       |
+| D    | Module 12      |
 
 ## Path Completion Celebration
 
@@ -57,6 +58,13 @@ When path is complete, present:
 - Where everything lives (src/, data/transformed/, docs/, config/, database/)
 - Reference to `docs/bootcamp_journal.md`
 - Next options: switch to longer path (modules carry forward), harden for production, or start using the code
+- Export option: "Would you like to export a shareable report of your bootcamp results?" — when accepted, run `python scripts/export_results.py` and present the output path to the bootcamper. This option appears only at track completion, not after every module.
+- Graduation offer (after the export offer, before the feedback reminder):
+  1. Read `skip_graduation` from `config/bootcamp_preferences.yaml`. If `skip_graduation` is `true`, skip the graduation offer entirely.
+  2. If not skipped, present: "🎓 Would you like to run the graduation workflow? It will help you turn your bootcamp project into a production-ready codebase — clean structure, production configs, CI/CD pipeline, and a migration checklist."
+  3. WAIT for response.
+  4. If accepted: load `steering/graduation.md` and begin the workflow.
+  5. If declined: ask "Would you like me to remember this choice so I don't ask again?" If the bootcamper confirms, set `skip_graduation: true` in `config/bootcamp_preferences.yaml`. Then continue with the remaining post-completion options.
 - Remind: "Say 'bootcamp feedback' to share your experience"
 
 Load `lessons-learned.md` and offer the retrospective.

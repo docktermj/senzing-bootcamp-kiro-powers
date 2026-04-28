@@ -24,7 +24,7 @@ This document defines where different types of files should be stored in the Sen
 
 ```text
 src/
-├── quickstart_demo/     # Module 1 demo code
+├── quickstart_demo/     # Module 3 demo code
 ├── transform/           # Transformation programs (Module 5)
 ├── load/                # Loading programs (Module 6)
 ├── query/               # Query programs (Module 8)
@@ -95,7 +95,7 @@ docs/
 ```text
 # ✅ CORRECT
 docs/guides/QUICK_START.md
-docs/modules/MODULE_2_BUSINESS_PROBLEM.md
+docs/modules/MODULE_1_BUSINESS_PROBLEM.md
 docs/policies/FILE_STORAGE_POLICY.md
 POWER.md                # Exception: required in root
 README.md               # Exception: required in root
@@ -175,7 +175,7 @@ database/*.db-journal
 
 **ExampleEnvironment helper override**: The Senzing SDK's `ExampleEnvironment` helper class creates SQLite databases in `/tmp/` by default (e.g., `/tmp/senzing_test_*.db`). When using `ExampleEnvironment` or any MCP-generated scaffold code, always override the database path to `database/G2C.db`. If the generated code uses `ExampleEnvironment`, replace it with explicit engine configuration pointing to `database/G2C.db`.
 
-**Module 1 demo code**: All code generated during Module 1 (Quick Demo) goes in `src/quickstart_demo/`. Demo scripts use the naming convention `demo_[dataset_name].[ext]` and sample data uses `sample_data_[dataset_name].jsonl`. This keeps demo code separate from production code in `src/transform/`, `src/load/`, and `src/query/`.
+**Module 3 demo code**: All code generated during Module 3 (Quick Demo) goes in `src/quickstart_demo/`. Demo scripts use the naming convention `demo_[dataset_name].[ext]` and sample data uses `sample_data_[dataset_name].jsonl`. This keeps demo code separate from production code in `src/transform/`, `src/load/`, and `src/query/`.
 
 ### Configuration Files
 

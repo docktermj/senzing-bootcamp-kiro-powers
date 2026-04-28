@@ -10,7 +10,7 @@ author: "Senzing"
 
 ## Overview
 
-This power provides a guided bootcamp for learning Senzing entity resolution through a structured 12-module curriculum (Modules 0-11). It connects to the Senzing MCP server to provide interactive, tool-assisted workflows covering data mapping, SDK installation, record loading, and entity resolution exploration.
+This power provides a guided bootcamp for learning Senzing entity resolution through a structured 12-module curriculum (Modules 1-12). It connects to the Senzing MCP server to provide interactive, tool-assisted workflows covering data mapping, SDK installation, record loading, and entity resolution exploration.
 
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
@@ -18,7 +18,10 @@ This power works best with Claude Opus 4.6 or similar.
 
 ## What's New in 0.10.0
 
-- Interactive entity graph visualization — the agent guides bootcampers through building their own D3.js force-directed graph with entity detail panels, clustering, and search. Load `steering/visualization-guide.md` during Module 7.
+- Data source registry — `config/data_sources.yaml` tracks every source's quality score, mapping status, and load status across Modules 4–7. The agent maintains it automatically; view it with `data_sources.py` or in `status.py` output.
+- Team bootcamp mode — `config/team.yaml` enables multi-user sessions with per-member progress tracking, a team dashboard (`team_dashboard.py`), and consolidated feedback reports (`merge_feedback.py`). Supports both co-located (shared repo) and distributed (separate repos) setups. See `docs/guides/COLLABORATION_GUIDE.md` for details.
+- Context budget tracking — `file_metadata` in `steering-index.yaml` provides per-file token counts and size categories so the agent can manage context window pressure. Use `measure_steering.py` to keep counts up to date.
+- Interactive entity graph visualization — the agent guides bootcampers through building their own D3.js force-directed graph with entity detail panels, clustering, and search. Load `steering/visualization-guide.md` during Module 8.
 - Progress repair tool (`scripts/repair_progress.py`) — reconstructs `bootcamp_progress.json` from project artifacts when state is corrupted.
 - Steering file index (`steering/steering-index.yaml`) — machine-readable mapping for faster agent file selection.
 - CI validation via GitHub Actions for power integrity, CommonMark, and tests.
@@ -33,37 +36,39 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 
 | Module                                  | What It Does                                                              | Why It Matters                                                                                                   |
 |-----------------------------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| 0 — SDK Setup                           | Installs and configures the Senzing SDK on your machine                   | Everything else depends on a working SDK installation                                                            |
-| 1 — Quick Demo                          | Runs entity resolution on sample data so you can see it work              | Validates your entire setup end-to-end; the result is trivial on purpose — the point is proving the system works |
-| 2 — Business Problem                    | Defines what you're trying to solve and which data sources matter         | Focuses the rest of the bootcamp on your actual use case                                                         |
-| 3 — Data Collection Policy              | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
-| 4 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Entity Specification (SGES) format | Identifies issues before they cause bad matches, and gets data into the format Senzing needs                     |
-| 5 — Single Source Loading               | Loads your first data source into Senzing and validates results           | Your first real entity resolution run with your own data, including match validation                             |
-| 6 — Multi-Source Orchestration          | Loads and coordinates multiple data sources with cross-source validation  | Cross-source matching and validation is where entity resolution really shines                                    |
-| 7 — Query & Visualize                   | Builds query programs and visualizations for your resolved entities       | Proves the system answers your business questions                                                                |
-| 8 — Performance Testing & Benchmarking  | Benchmarks and optimizes for your data volume                             | Ensures the system handles production-scale data                                                                 |
-| 9 — Security Hardening                  | Implements access controls and data protection                            | Required for production with sensitive data                                                                      |
-| 10 — Monitoring & Observability         | Sets up dashboards, alerts, and health checks                             | Keeps the system running reliably in production                                                                  |
-| 11 — Package & Deploy                   | Packages everything for production deployment                             | Gets your solution out of the bootcamp and into the real world                                                   |
+| 1 — Business Problem                    | Defines what you're trying to solve and which data sources matter         | Focuses the rest of the bootcamp on your actual use case                                                         |
+| 2 — SDK Setup                           | Installs and configures the Senzing SDK on your machine                   | Everything else depends on a working SDK installation                                                            |
+| 3 — Quick Demo                          | Runs entity resolution on sample data so you can see it work              | Validates your entire setup end-to-end; the result is trivial on purpose — the point is proving the system works |
+| 4 — Data Collection Policy              | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
+| 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Entity Specification (SGES) format | Identifies issues before they cause bad matches, and gets data into the format Senzing needs                     |
+| 6 — Single Source Loading               | Loads your first data source into Senzing and validates results           | Your first real entity resolution run with your own data, including match validation                             |
+| 7 — Multi-Source Orchestration          | Loads and coordinates multiple data sources with cross-source validation  | Cross-source matching and validation is where entity resolution really shines                                    |
+| 8 — Query & Visualize                   | Builds query programs and visualizations for your resolved entities       | Proves the system answers your business questions                                                                |
+| 9 — Performance Testing & Benchmarking  | Benchmarks and optimizes for your data volume                             | Ensures the system handles production-scale data                                                                 |
+| 10 — Security Hardening                 | Implements access controls and data protection                            | Required for production with sensitive data                                                                      |
+| 11 — Monitoring & Observability         | Sets up dashboards, alerts, and health checks                             | Keeps the system running reliably in production                                                                  |
+| 12 — Package & Deploy                   | Packages everything for production deployment                             | Gets your solution out of the bootcamp and into the real world                                                   |
 
 **Don't have data handy?** No problem — mock data can be generated at any point. Senzing also provides three ready-made sample datasets you can use throughout the bootcamp: Las Vegas, London, and Moscow. Use `get_sample_data` to download them.
 
-**Licensing:** Senzing includes a built-in evaluation license that allows 500 records, which is enough for the bootcamp. If you have your own license (or need more capacity), you can configure it during Module 0.
+**Licensing:** Senzing includes a built-in evaluation license that allows 500 records, which is enough for the bootcamp. If you have your own license (or need more capacity), you can configure it during Module 2.
 
 ## Quick Start
 
 **New users:** Say "start the bootcamp" to begin. Choose your track:
 
-- **A) Quick Demo** — Modules 0 → 1. See entity resolution in action with sample data. Done in one session. Choose this if you want to verify the technology works before investing more time.
-- **B) Fast Track** — Modules 4 → 5 → 7. For users who already have Senzing-ready Entity Specification data. Choose this if you've already mapped your data and want to get straight to loading and querying.
-- **C) Complete Beginner** — Modules 2 → 3 → 4 → 5 → 7. Full learning track from defining the problem through validating results. Choose this if you're starting from scratch with raw data and want guided help through the entire process.
-- **D) Full Production** — All modules 0-11, including performance testing, security, monitoring, and deployment. Choose this if you're building something that needs to run in production.
+- **A) Quick Demo** — Modules 2 → 3. See entity resolution in action with sample data. Done in one session. Choose this if you want to verify the technology works before investing more time.
+- **B) Fast Track** — Modules 5 → 6 → 8. For users who already have Senzing-ready Entity Specification data. Choose this if you've already mapped your data and want to get straight to loading and querying.
+- **C) Complete Beginner** — Modules 1 → 4 → 5 → 6 → 8. Full learning track from defining the problem through validating results. Choose this if you're starting from scratch with raw data and want guided help through the entire process.
+- **D) Full Production** — All modules 1-12, including performance testing, security, monitoring, and deployment. Choose this if you're building something that needs to run in production.
 
 Tracks are not mutually exclusive — you can start with one and jump to another at any time. For example, start with Track A to see a quick demo, then switch to Track C to work with your own data. All completed modules carry forward.
 
-Module 0 (SDK Setup) is inserted automatically before any module that needs it.
+Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 
-**Experienced users:** Skip to Module 4 (have Entity Specification data), Module 5 (SDK + data ready), or Module 7 (data loaded).
+After completing any track, the agent offers a **graduation workflow** that transitions your bootcamp project into a production-ready codebase — clean directory structure, production configs, CI/CD pipeline, and a migration checklist. Say "run graduation" or "graduate" at any time to start it manually.
+
+**Experienced users:** Skip to Module 5 (have Entity Specification data), Module 6 (SDK + data ready), or Module 8 (data loaded).
 
 ## Relationship to Senzing Power
 
@@ -71,40 +76,46 @@ This bootcamp complements the optional **senzing** Kiro Power. Both connect to t
 
 ## Available Steering Files
 
-Load these on-demand when needed:
+Load these on-demand when needed. Each file in `steering-index.yaml` includes a `token_count` and `size_category` (`small`, `medium`, or `large`) so the agent can assess context cost before loading.
+
+**Context budget thresholds:**
+
+- **60% warn (120k tokens loaded):** The agent loads only files directly relevant to the current module or user question. Supplementary files are deferred.
+- **80% critical (160k tokens loaded):** The agent unloads non-essential files before loading new ones, following the retention priority: agent-instructions → current module → language file → troubleshooting → everything else.
 
 **Module Workflows (load the one you need):**
 
-- `module-00-sdk-setup.md` — Module 0: SDK Setup
-- `module-01-quick-demo.md` — Module 1: Quick Demo (Optional)
-- `module-02-business-problem.md` — Module 2: Business Problem
-- `module-03-data-collection.md` — Module 3: Data Collection
-- `module-04-data-quality-mapping.md` — Module 4: Data Quality & Mapping
-- `module-05-single-source.md` — Module 5: Single Source Loading
-- `module-06-multi-source.md` — Module 6: Multi-Source Orchestration
-- `module-07-query-validation.md` — Module 7: Query and Visualize
-- `module-08-performance.md` — Module 8: Performance Testing
-- `module-09-security.md` — Module 9: Security Hardening
-- `module-10-monitoring.md` — Module 10: Monitoring
-- `module-11-deployment.md` — Module 11: Deployment
+- `module-01-business-problem.md` — Module 1: Business Problem
+- `module-02-sdk-setup.md` — Module 2: SDK Setup
+- `module-03-quick-demo.md` — Module 3: Quick Demo (Optional)
+- `module-04-data-collection.md` — Module 4: Data Collection
+- `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping
+- `module-06-single-source.md` — Module 6: Single Source Loading
+- `module-07-multi-source.md` — Module 7: Multi-Source Orchestration
+- `module-08-query-validation.md` — Module 8: Query and Visualize
+- `module-09-performance.md` — Module 9: Performance Testing
+- `module-10-security.md` — Module 10: Security Hardening
+- `module-11-monitoring.md` — Module 11: Monitoring
+- `module-12-deployment.md` — Module 12: Deployment
 
 **Agent Behavior:**
 
-- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~59 lines)
+- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~74 lines)
 - `session-resume.md` — Restores full context when resuming a previous bootcamp session
 - `onboarding-flow.md` — Full onboarding sequence: directory creation, language selection, prerequisite checks, track selection, validation gates
-- `cloud-provider-setup.md` — Cloud provider selection at the 7→8 gate (AWS, Azure, GCP, on-premises, local)
+- `cloud-provider-setup.md` — Cloud provider selection at the 8→9 gate (AWS, Azure, GCP, on-premises, local)
 - `feedback-workflow.md` — Feedback collection workflow
 
 **Auto-included (Kiro loads when relevant to the conversation):**
 
-- `security-privacy.md` — Data privacy and PII protection (always loaded)
-- `project-structure.md` — Directory structure and setup commands (auto-included when creating files)
-- `module-transitions.md` — Journey map, before/after framing, and step-level progress rules (auto-included during module work)
+- `security-privacy.md` — Data privacy and PII protection (`inclusion: always` — loaded in every conversation)
+- `project-structure.md` — Directory structure and setup commands (`inclusion: auto` — Kiro decides based on relevance)
+- `module-transitions.md` — Journey map, before/after framing, and step-level progress rules (`inclusion: fileMatch` on `config/bootcamp_progress.json`)
 
 **Module Completion (load after completing any module):**
 
 - `module-completion.md` — Journal entries, reflection questions, next-step options, and track completion celebration
+- `graduation.md` — Post-track graduation workflow — transitions bootcamp project to production structure
 
 **Language-Specific (loaded automatically when editing matching files):**
 
@@ -140,7 +151,7 @@ Load these on-demand when needed:
 - `deployment-azure.md` — Azure deployment reference
 - `deployment-gcp.md` — GCP/Google Cloud deployment reference
 - `deployment-kubernetes.md` — Kubernetes/Helm deployment reference
-- `module-06-reference.md` — Multi-source ordering, conflict resolution, and troubleshooting reference
+- `module-07-reference.md` — Multi-source ordering, conflict resolution, and troubleshooting reference
 
 ## MCP Server Configuration
 
@@ -218,20 +229,20 @@ explain_error_code(error_code='0023')
 
 | Module | Topic                                          |
 |--------|------------------------------------------------|
-| 0      | Set Up SDK                                     |
-| 1      | Quick Demo (Optional)                          |
-| 2      | Understand Business Problem                    |
-| 3      | Data Collection Policy                         |
-| 4      | Data Quality & Mapping                         |
-| 5      | Load Single Data Source                        |
-| 6      | Multi-Source Orchestration                     |
-| 7      | Query and Visualize                            |
-| 8      | Performance Testing and Benchmarking           |
-| 9      | Security Hardening                             |
-| 10     | Monitoring and Observability                   |
-| 11     | Package and Deploy                             |
+| 1      | Understand Business Problem                    |
+| 2      | Set Up SDK                                     |
+| 3      | Quick Demo (Optional)                          |
+| 4      | Data Collection Policy                         |
+| 5      | Data Quality & Mapping                         |
+| 6      | Load Single Data Source                        |
+| 7      | Multi-Source Orchestration                     |
+| 8      | Query and Visualize                            |
+| 9      | Performance Testing and Benchmarking           |
+| 10     | Security Hardening                             |
+| 11     | Monitoring and Observability                   |
+| 12     | Package and Deploy                             |
 
-Modules are progressive but iterative. Skip ahead options: have Entity Specification data (skip to 5), single source (skip 6), not deploying to production (skip 8-11). Modules 8-11 are production-focused and optional for learning/evaluation.
+Modules are progressive but iterative. Skip ahead options: have Entity Specification data (skip to 6), single source (skip 7), not deploying to production (skip 9-12). Modules 9-12 are production-focused and optional for learning/evaluation.
 
 The goal is for you to finish the bootcamp with running code that is the basis of your real-world use of Senzing.
 
@@ -253,11 +264,11 @@ python senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: Code Style Check (`code-style-check`) ⭐, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory` ⭐, `summarize-on-stop`, `verify-generated-code`, `offer-visualization`, `capture-feedback` ⭐, `module11-phase-gate`, `enforce-visualization-offers` ⭐.
+Available: Code Style Check (`code-style-check`) ⭐, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory` ⭐, `summarize-on-stop`, `verify-generated-code`, `offer-visualization`, `capture-feedback` ⭐, `module12-phase-gate`, `enforce-visualization-offers` ⭐, `enforce-feedback-path`.
 
 ## Project Directory Structure
 
-The agent creates an organized directory structure at bootcamp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `logs/`, `monitoring/`. Load `project-structure.md` for details.
+The agent creates an organized directory structure at bootcamp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `logs/`, `monitoring/`. The `config/` directory includes `data_sources.yaml` — a registry tracking each data source's quality, mapping, and load status across modules. Load `project-structure.md` for details.
 
 ## Entity Resolution Design Patterns
 
@@ -284,18 +295,37 @@ Say "power feedback" or "bootcamp feedback" at any time to document issues or su
 All scripts are cross-platform Python and live in `senzing-bootcamp/scripts/`. Run them from your project root after the agent copies them during setup, or reference them directly from the power directory:
 
 ```text
-python3 senzing-bootcamp/scripts/status.py              # Check progress
-python3 senzing-bootcamp/scripts/status.py --sync       # Sync progress to PROGRESS_TRACKER.md
-python3 senzing-bootcamp/scripts/check_prerequisites.py # Validate prerequisites
-python3 senzing-bootcamp/scripts/validate_module.py     # Validate current module completion
-python3 senzing-bootcamp/scripts/validate_module.py --next 6  # Check if ready for module 6
-python3 senzing-bootcamp/scripts/install_hooks.py       # Install hooks
-python3 senzing-bootcamp/scripts/backup_project.py      # Backup project
-python3 senzing-bootcamp/scripts/restore_project.py     # Restore from backup
-python3 senzing-bootcamp/scripts/preflight_check.py     # Pre-demo environment check
+python3 senzing-bootcamp/scripts/preflight.py            # Environment verification (primary)
+python3 senzing-bootcamp/scripts/preflight.py --json     # Environment verification (JSON output)
+python3 senzing-bootcamp/scripts/preflight.py --fix      # Environment verification with auto-fix
+python3 senzing-bootcamp/scripts/status.py               # Check progress
+python3 senzing-bootcamp/scripts/status.py --sync        # Sync progress to PROGRESS_TRACKER.md
+python3 senzing-bootcamp/scripts/validate_module.py      # Validate current module completion
+python3 senzing-bootcamp/scripts/validate_module.py --next 7  # Check if ready for module 7
+python3 senzing-bootcamp/scripts/install_hooks.py        # Install hooks
+python3 senzing-bootcamp/scripts/backup_project.py       # Backup project
+python3 senzing-bootcamp/scripts/restore_project.py      # Restore from backup
 python3 senzing-bootcamp/scripts/validate_commonmark.py  # Validate Markdown formatting
 python3 senzing-bootcamp/scripts/validate_power.py       # Validate power integrity (cross-references, hooks, steering)
+python3 senzing-bootcamp/scripts/measure_steering.py     # Update steering file token counts in steering-index.yaml
+python3 senzing-bootcamp/scripts/measure_steering.py --check  # Verify stored token counts are within 10% of actual (CI mode)
 python3 senzing-bootcamp/scripts/repair_progress.py      # Repair corrupted bootcamp_progress.json
+python3 senzing-bootcamp/scripts/team_dashboard.py                    # Generate team progress dashboard (requires config/team.yaml)
+python3 senzing-bootcamp/scripts/team_dashboard.py --output report.html  # Generate dashboard to custom path
+python3 senzing-bootcamp/scripts/merge_feedback.py                    # Merge team feedback into one report
+python3 senzing-bootcamp/scripts/merge_feedback.py --output report.md    # Merge feedback to custom path
+python3 senzing-bootcamp/scripts/export_results.py                    # Export HTML report
+python3 senzing-bootcamp/scripts/export_results.py --format zip       # Export ZIP with all artifacts
+python3 senzing-bootcamp/scripts/export_results.py --modules 1,2,3    # Export specific modules only
+python3 senzing-bootcamp/scripts/data_sources.py                     # View data source registry (table)
+python3 senzing-bootcamp/scripts/data_sources.py --detail CUSTOMERS  # Show all fields for one source
+python3 senzing-bootcamp/scripts/data_sources.py --summary           # Aggregate registry statistics
+python3 senzing-bootcamp/scripts/rollback_module.py --module N           # Roll back a specific module
+python3 senzing-bootcamp/scripts/rollback_module.py --module N --dry-run # Preview rollback without changes
+python3 senzing-bootcamp/scripts/progress_utils.py       # Internal: progress tracking utilities (used by other scripts)
+python3 senzing-bootcamp/scripts/team_config_validator.py # Internal: validate config/team.yaml structure (used during onboarding)
+python3 senzing-bootcamp/scripts/check_prerequisites.py  # DEPRECATED — use preflight.py instead
+python3 senzing-bootcamp/scripts/preflight_check.py      # DEPRECATED — use preflight.py instead
 ```
 
 Use `python` instead of `python3` on Windows.

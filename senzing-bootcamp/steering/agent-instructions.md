@@ -34,36 +34,41 @@ Retry once. If still failing, load `mcp-offline-fallback.md` for what's blocked 
 
 ## Module Steering
 
-Load per-module steering file when user starts that module (0→`module-00-sdk-setup.md` through 11→`module-11-deployment.md`). After Module 2: `complexity-estimator.md`. At 7→8 gate: `cloud-provider-setup.md`. At track end: `lessons-learned.md`. On errors: `common-pitfalls.md`.
+Load per-module steering file when user starts that module (1→`module-01-business-problem.md` through 12→`module-12-deployment.md`). After Module 1: `complexity-estimator.md`. At 8→9 gate: `cloud-provider-setup.md`. At track end: `lessons-learned.md`. On errors: `common-pitfalls.md`.
 
 **At every module start:** Read `config/bootcamp_progress.json` first (this triggers `module-transitions.md` loading), then display the module start banner, journey map, and before/after framing BEFORE doing any module-specific work. Never skip these — they orient the user.
 
-Module 11 platform files: load `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target. Module 6 reference: load `module-06-reference.md` for ordering examples, conflict resolution, and troubleshooting.
+Module 12 platform files: load `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target. Module 7 reference: load `module-07-reference.md` for ordering examples, conflict resolution, and troubleshooting.
 
 **Multi-language projects:** If the bootcamper uses different languages for different components (e.g., Python for data transformation, TypeScript for a frontend), load the language steering file for whichever language is currently being edited. Don't force a single language across all components.
 
 ## State & Progress
 
-- `mapping_workflow`: pass exact `state`, never modify. Save checkpoints to `config/mapping_state_[datasource].json` per `module-04-data-quality-mapping.md`.
+- `mapping_workflow`: pass exact `state`, never modify. Save checkpoints to `config/mapping_state_[datasource].json` per `module-05-data-quality-mapping.md`.
 - Progress: `config/bootcamp_progress.json`. Preferences: `config/bootcamp_preferences.yaml`.
 - Corrupted? Run `python senzing-bootcamp/scripts/validate_module.py`.
+- **Step-level checkpointing:** After completing each numbered step in any module steering file, write a checkpoint to `config/bootcamp_progress.json`: read the file, set `current_step` to the completed step number, set `step_history["<module_number>"]` to `{ "last_completed_step": <step>, "updated_at": "<ISO 8601 now>" }`, and write the file back. On module completion, set `current_step` to `null` (retain the `step_history` entry).
 
 ## Communication
 
-- One question at a time, wait for response
-- **Input-required marker:** When asking the bootcamper a question that requires their input, prefix it with **"👉"** so they can clearly see when a response is needed vs. when you're just providing information. Example: "👉 Which language would you like to use?" vs. "I've created the project directory structure." Apply this in ALL modules, not just onboarding — every WAIT-marked question in every steering file should use 👉.
-- **Goldilocks check:** Every 3 modules (after Modules 3, 6, and 9), ask: "👉 Quick check — is the level of detail I'm providing too much, too little, or just right? I can adjust." If they want less detail, be more concise in explanations. If they want more, add context and examples. Remember their preference in `config/bootcamp_preferences.yaml` as `detail_level: more|less|default`.
-- **First-term explanations:** The first time a Senzing-specific term appears in conversation (entity resolution, Entity Specification, DATA_SOURCE, RECORD_ID, features, redo queue, etc.), briefly define it inline (one sentence) and mention `docs/guides/GLOSSARY.md` for more detail. Don't re-explain on subsequent uses.
-- Before each step: what you're doing and why. During: status updates (never bare "Working..."). After: what changed, files produced with paths.
-- **Data visualization:** When presenting data results to the bootcamper (entity resolution results, quality analysis, match explanations, statistics), ask: "👉 Would you like me to visualize this data as a web page?" If yes, ask what interactive features they'd like. Generate accordingly — use the SDK's query capabilities to power interactive features. Save to `docs/` or `data/temp/`.
-- At module completion: summary of accomplishments, all files, why it matters for next module
-- At module start/completion: follow `module-transitions.md` rules (conditionally loaded when `config/bootcamp_progress.json` is accessed, not auto-included). After completing any module: load `module-completion.md` for journal and track-completion workflow.
-- On feedback trigger phrases ("bootcamp feedback", "power feedback", etc.): the `capture-feedback` hook handles this automatically — do not manually load `feedback-workflow.md`
+- One question at a time, wait for response. Prefix input-required questions with **"👉"** in ALL modules.
+- **Goldilocks check:** After Modules 3, 6, 9 ask if detail level is right. Store preference in `config/bootcamp_preferences.yaml` as `detail_level`.
+- **First-term explanations:** Define Senzing terms inline on first use, reference `docs/guides/GLOSSARY.md`. Don't re-explain.
+- Before each step: what and why. During: status updates (never bare "Working..."). After: what changed, files with paths.
+- **Data visualization:** Offer to visualize data results as a web page. Save to `docs/` or `data/temp/`.
+- At module completion: summary, all files, why it matters for next module. Follow `module-transitions.md` rules. Load `module-completion.md` for journal and track-completion.
+- Feedback trigger phrases: handled by `capture-feedback` hook — do not manually load `feedback-workflow.md`.
 
 ## Hooks
 
-Create hooks using the `createHook` tool with definitions from the Hook Registry in `onboarding-flow.md`. Critical hooks are created during onboarding. Module hooks are created when the relevant module starts — check the Hook Registry for module associations and create any missing hooks before beginning module work.
+Create hooks using the `createHook` tool with definitions from `hook-registry.md`. Critical hooks during onboarding, module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if absent, create Critical Hooks.
 
-The `capture-feedback` hook is critical — it guarantees feedback is captured when bootcampers use trigger phrases. Verify it is installed.
+## Context Budget
 
-On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed`. If present, skip hook creation. If absent, create Critical Hooks from the Hook Registry.
+Before loading any steering file, check `steering-index.yaml` `file_metadata` for `token_count` and `size_category`. Track cumulative tokens throughout the session. Prefer `small`/`medium` files over `large`.
+
+- **Warn (120k tokens):** Load only files relevant to current module/question. Defer supplementary files.
+- **Critical (160k tokens):** Unload non-essential files before loading new ones.
+- **Retention priority:** `agent-instructions.md` > current module > language file > troubleshooting > everything else.
+
+When loading a `large` file, announce the token cost to the user.

@@ -12,7 +12,7 @@ This directory contains policy documents that define coding standards and organi
 
 **Covers**:
 
-- Source code → `src/` (including Module 1 demo code in `src/quickstart_demo/`)
+- Source code → `src/` (including Module 3 demo code in `src/quickstart_demo/`)
 - Shell scripts → `scripts/`
 - Data files → `data/`
 - Database files → `database/G2C.db` (project-relative, never `/tmp/sqlite`)
@@ -44,7 +44,7 @@ This directory contains policy documents that define coding standards and organi
 
 **Why It Matters**: Ensures reproducible builds and clear dependency management
 
-**Applies To**: All projects (Modules 5, 0, 6, 7, 8, 9, 10, 11, 12)
+**Applies To**: All projects (Modules 2, 6, 7, 8, 9, 10, 11, 12)
 
 ---
 
@@ -63,7 +63,7 @@ This directory contains policy documents that define coding standards and organi
 
 **Why It Matters**: Training data may be outdated or inaccurate; the MCP server provides authoritative, version-correct information
 
-**Applies To**: All modules (0–12)
+**Applies To**: All modules (1–12)
 
 ---
 
@@ -92,7 +92,7 @@ This directory contains policy documents that define coding standards and organi
 | File Storage        | Various                | All files           | All modules            |
 | Code Quality        | N/A (standards)        | Source code         | All code modules       |
 | Dependencies        | Project root           | Language-specific   | All projects           |
-| Senzing Information | N/A (agent behavior)   | All                 | All modules (0–12)     |
+| Senzing Information | N/A (agent behavior)   | All                 | All modules (1–12)     |
 
 ## File Organization Overview
 
@@ -102,7 +102,7 @@ project-root/
 │   ├── G2C.db                # Main Senzing database
 │   └── .gitkeep              # Keep directory in git
 ├── src/                      # All source code
-│   ├── quickstart_demo/      # Module 1 demo code
+│   ├── quickstart_demo/      # Module 3 demo code
 │   ├── transform/            # Transformation programs
 │   ├── load/                 # Loading programs
 │   ├── query/                # Query programs

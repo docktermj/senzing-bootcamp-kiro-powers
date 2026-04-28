@@ -29,8 +29,8 @@
 │  • contacts.xlsx │
 └────────┬─────────┘
          │
-         │ Module 3: Collection
-         │ Module 4: Quality Check
+         │ Module 4: Collection
+         │ Module 5: Quality Check
          ▼
 ┌──────────────────┐
 │  TRANSFORMATION  │
@@ -41,7 +41,7 @@
 │  • Validate      │
 └────────┬─────────┘
          │
-         │ Module 4: Mapping
+         │ Module 5: Mapping
          ▼
 ┌──────────────────┐
 │data/transformed/ │
@@ -54,7 +54,7 @@
 │  • orders.jsonl  │
 └────────┬─────────┘
          │
-         │ Module 5: Loading
+         │ Module 6: Loading
          ▼
 ┌──────────────────┐
 │  SENZING ENGINE  │
@@ -65,7 +65,7 @@
 │  • Resolve       │
 └────────┬─────────┘
          │
-         │ Module 7: Querying
+         │ Module 8: Querying
          ▼
 ┌──────────────────┐
 │  RESOLVED DATA   │
@@ -75,7 +75,7 @@
 │  • Networks      │
 └────────┬─────────┘
          │
-         │ Module 11: Deployment
+         │ Module 12: Deployment
          ▼
 ┌──────────────────┐
 │   APPLICATIONS   │
@@ -207,7 +207,7 @@ SOURCE 1: CRM          SOURCE 2: Orders       SOURCE 3: Support
 └──────┬───────┘      └──────┬───────┘      └──────┬───────┘
        │                     │                     │
        │ Load                │ Load                │ Load
-       │ (Module 5)          │ (Module 6)          │ (Module 6)
+       │ (Module 6)          │ (Module 7)          │ (Module 7)
        └─────────────────────┴─────────────────────┘
                              │
                              ▼

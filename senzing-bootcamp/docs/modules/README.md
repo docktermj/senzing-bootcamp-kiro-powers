@@ -4,43 +4,9 @@ This directory contains detailed documentation for each bootcamp module.
 
 ## Available Modules
 
-### Module 0: Set Up SDK
+### Module 1: Understand Business Problem
 
-**File**: [MODULE_0_SDK_SETUP.md](MODULE_0_SDK_SETUP.md)
-
-**Purpose**: Install and configure the Senzing SDK natively on your machine
-
-**Key Topics**:
-
-- Platform-specific installation
-- Database configuration (SQLite or PostgreSQL)
-- Installation verification
-- Project directory structure creation
-
-**When to Use**: First technical module — start here
-
----
-
-### Module 1: Quick Demo (Optional)
-
-**File**: [MODULE_1_QUICK_DEMO.md](MODULE_1_QUICK_DEMO.md)
-
-**Purpose**: See Senzing entity resolution in action with sample data
-
-**Key Topics**:
-
-- Sample dataset selection (Las Vegas, London, Moscow)
-- Live SDK demo with real entity resolution
-- Match explanations and confidence scores
-- Before/after comparison
-
-**When to Use**: Optional — for first-time users who want to see ER working
-
----
-
-### Module 2: Understand Business Problem
-
-**File**: [MODULE_2_BUSINESS_PROBLEM.md](MODULE_2_BUSINESS_PROBLEM.md)
+**File**: [MODULE_1_BUSINESS_PROBLEM.md](MODULE_1_BUSINESS_PROBLEM.md)
 
 **Purpose**: Define the business problem that entity resolution will solve
 
@@ -55,9 +21,43 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 3: Data Collection Policy
+### Module 2: Set Up SDK
 
-**File**: [MODULE_3_DATA_COLLECTION.md](MODULE_3_DATA_COLLECTION.md)
+**File**: [MODULE_2_SDK_SETUP.md](MODULE_2_SDK_SETUP.md)
+
+**Purpose**: Install and configure the Senzing SDK natively on your machine
+
+**Key Topics**:
+
+- Platform-specific installation
+- Database configuration (SQLite or PostgreSQL)
+- Installation verification
+- Project directory structure creation
+
+**When to Use**: First technical module — start here
+
+---
+
+### Module 3: Quick Demo (Optional)
+
+**File**: [MODULE_3_QUICK_DEMO.md](MODULE_3_QUICK_DEMO.md)
+
+**Purpose**: See Senzing entity resolution in action with sample data
+
+**Key Topics**:
+
+- Sample dataset selection (Las Vegas, London, Moscow)
+- Live SDK demo with real entity resolution
+- Match explanations and confidence scores
+- Before/after comparison
+
+**When to Use**: Optional — for first-time users who want to see ER working
+
+---
+
+### Module 4: Data Collection Policy
+
+**File**: [MODULE_4_DATA_COLLECTION.md](MODULE_4_DATA_COLLECTION.md)
 
 **Purpose**: Collect data from identified sources and store in project structure
 
@@ -69,13 +69,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Sample data creation
 - Documentation requirements
 
-**When to Use**: After Module 2 (business problem defined)
+**When to Use**: After Module 1 (business problem defined)
 
 ---
 
-### Module 4: Data Quality & Mapping
+### Module 5: Data Quality & Mapping
 
-**File**: [MODULE_4_DATA_QUALITY_AND_MAPPING.md](MODULE_4_DATA_QUALITY_AND_MAPPING.md)
+**File**: [MODULE_5_DATA_QUALITY_AND_MAPPING.md](MODULE_5_DATA_QUALITY_AND_MAPPING.md)
 
 **Purpose**: Automated quality assessment and data mapping into Senzing format
 
@@ -93,13 +93,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Data quality validation with `analyze_record`
 - Transformation lineage tracking
 
-**When to Use**: After Module 3 (data collected)
+**When to Use**: After Module 4 (data collected)
 
 ---
 
-### Module 5: Load Single Data Source
+### Module 6: Load Single Data Source
 
-**File**: [MODULE_5_SINGLE_SOURCE_LOADING.md](MODULE_5_SINGLE_SOURCE_LOADING.md)
+**File**: [MODULE_6_SINGLE_SOURCE_LOADING.md](MODULE_6_SINGLE_SOURCE_LOADING.md)
 
 **Purpose**: Load one data source and verify results
 
@@ -113,13 +113,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Backup procedures
 - Single-source results validation
 
-**When to Use**: After Module 0 (SDK installed)
+**When to Use**: After Module 2 (SDK installed)
 
 ---
 
-### Module 6: Multi-Source Orchestration
+### Module 7: Multi-Source Orchestration
 
-**File**: [MODULE_6_MULTI_SOURCE_ORCHESTRATION.md](MODULE_6_MULTI_SOURCE_ORCHESTRATION.md)
+**File**: [MODULE_7_MULTI_SOURCE_ORCHESTRATION.md](MODULE_7_MULTI_SOURCE_ORCHESTRATION.md)
 
 **Purpose**: Orchestrate loading of multiple data sources with dependencies
 
@@ -133,13 +133,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Cross-source results validation and UAT
 - Stakeholder sign-off
 
-**When to Use**: After Module 5 (first source loaded successfully)
+**When to Use**: After Module 6 (first source loaded successfully)
 
 ---
 
-### Module 7: Query and Visualize
+### Module 8: Query and Visualize
 
-**File**: [MODULE_7_QUERY_VALIDATION.md](MODULE_7_QUERY_VALIDATION.md)
+**File**: [MODULE_8_QUERY_VALIDATION.md](MODULE_8_QUERY_VALIDATION.md)
 
 **Purpose**: Create query programs, overlap reports, and visualizations
 
@@ -151,13 +151,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Entity visualization
 - Query specifications documentation
 
-**When to Use**: After Module 6 (all sources loaded)
+**When to Use**: After Module 7 (all sources loaded)
 
 ---
 
-### Module 8: Performance Testing and Benchmarking
+### Module 9: Performance Testing and Benchmarking
 
-**File**: [MODULE_8_PERFORMANCE_TESTING.md](MODULE_8_PERFORMANCE_TESTING.md)
+**File**: [MODULE_9_PERFORMANCE_TESTING.md](MODULE_9_PERFORMANCE_TESTING.md)
 
 **Purpose**: Benchmark and optimize for production performance
 
@@ -171,13 +171,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Scalability testing
 - Performance report generation
 
-**When to Use**: After Module 7 (queries working)
+**When to Use**: After Module 8 (queries working)
 
 ---
 
-### Module 9: Security Hardening
+### Module 10: Security Hardening
 
-**File**: [MODULE_9_SECURITY_HARDENING.md](MODULE_9_SECURITY_HARDENING.md)
+**File**: [MODULE_10_SECURITY_HARDENING.md](MODULE_10_SECURITY_HARDENING.md)
 
 **Purpose**: Implement production-grade security measures
 
@@ -191,13 +191,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Security scanning (safety, bandit, trivy)
 - Security audit documentation
 
-**When to Use**: After Module 8 (performance validated)
+**When to Use**: After Module 9 (performance validated)
 
 ---
 
-### Module 10: Monitoring and Observability
+### Module 11: Monitoring and Observability
 
-**File**: [MODULE_10_MONITORING_OBSERVABILITY.md](MODULE_10_MONITORING_OBSERVABILITY.md)
+**File**: [MODULE_11_MONITORING_OBSERVABILITY.md](MODULE_11_MONITORING_OBSERVABILITY.md)
 
 **Purpose**: Set up comprehensive monitoring for production operations
 
@@ -212,13 +212,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Monitoring dashboards
 - Runbook creation
 
-**When to Use**: After Module 9 (security hardened)
+**When to Use**: After Module 10 (security hardened)
 
 ---
 
-### Module 11: Package and Deploy
+### Module 12: Package and Deploy
 
-**File**: [MODULE_11_DEPLOYMENT_PACKAGING.md](MODULE_11_DEPLOYMENT_PACKAGING.md)
+**File**: [MODULE_12_DEPLOYMENT_PACKAGING.md](MODULE_12_DEPLOYMENT_PACKAGING.md)
 
 **Purpose**: Package code and deploy to production
 
@@ -230,48 +230,48 @@ This directory contains detailed documentation for each bootcamp module.
 - Deployment documentation
 - Deployment artifacts (CI/CD, Kubernetes)
 - Production validation
-- Integration with Modules 8, 9, 10
+- Integration with Modules 9, 10, 11
 
-**When to Use**: After Module 10 (monitoring configured)
+**When to Use**: After Module 11 (monitoring configured)
 
 ---
 
 ## Module Dependencies
 
 ```text
-Module 2 → Module 3 → Module 4
+Module 1 → Module 4 → Module 5
                          ↓
-Module 0 ──────────→ Module 5 (requires Module 0 + Module 4)
+Module 2 ──────────→ Module 6 (requires Module 2 + Module 5)
                          ↓
-                    Module 6 (if multiple sources)
+                    Module 7 (if multiple sources)
                          ↓
-                    Module 7
-                         ↓
-                    Module 8 (for production)
+                    Module 8
                          ↓
                     Module 9 (for production)
                          ↓
                     Module 10 (for production)
                          ↓
                     Module 11 (for production)
+                         ↓
+                    Module 12 (for production)
 ```
 
 ## Quick Reference
 
 | Module | Required For           |
 |--------|------------------------|
-| 0      | All projects           |
-| 1      | Optional               |
+| 1      | All projects           |
 | 2      | All projects           |
-| 3      | All projects           |
+| 3      | Optional               |
 | 4      | All projects           |
 | 5      | All projects           |
-| 6      | Multi-source projects  |
-| 7      | All projects           |
-| 8      | Production deployments |
+| 6      | All projects           |
+| 7      | Multi-source projects  |
+| 8      | All projects           |
 | 9      | Production deployments |
 | 10     | Production deployments |
 | 11     | Production deployments |
+| 12     | Production deployments |
 
 ## Related Documentation
 

@@ -67,39 +67,39 @@ def load_preferences():
     return prefs
 
 
-def validate_module_0():
-    """Module 0: SDK Setup — prerequisites for Module 1."""
+def validate_module_1():
+    """Module 1: Business Problem — prerequisites for Module 2."""
+    return [
+        check_file_not_empty("docs/business_problem.md", "Business problem documented"),
+    ]
+
+
+def validate_module_2():
+    """Module 2: SDK Setup — prerequisites for Module 3."""
     return [
         check_path("database/G2C.db", "SQLite database exists"),
         check_path("config/bootcamp_preferences.yaml", "Preferences file exists"),
     ]
 
 
-def validate_module_1():
-    """Module 1: Quick Demo — prerequisites for Module 2."""
+def validate_module_3():
+    """Module 3: Quick Demo — prerequisites for Module 4."""
     return [
         check_dir_has_files("src/quickstart_demo", "demo_*.*", "Demo script created"),
         check_dir_has_files("src/quickstart_demo", "sample_data_*.*", "Sample data saved"),
     ]
 
 
-def validate_module_2():
-    """Module 2: Business Problem — prerequisites for Module 3."""
-    return [
-        check_file_not_empty("docs/business_problem.md", "Business problem documented"),
-    ]
-
-
-def validate_module_3():
-    """Module 3: Data Collection — prerequisites for Module 4."""
+def validate_module_4():
+    """Module 4: Data Collection — prerequisites for Module 5."""
     return [
         check_dir_has_files("data/raw", "*.*", "Data files collected in data/raw/"),
         check_path("docs/data_source_locations.md", "Data source locations documented"),
     ]
 
 
-def validate_module_4():
-    """Module 4: Data Quality & Mapping — prerequisites for Module 5."""
+def validate_module_5():
+    """Module 5: Data Quality & Mapping — prerequisites for Module 6."""
     return [
         check_file_not_empty(
             "docs/data_source_evaluation.md", "Data source evaluation report created"
@@ -111,33 +111,33 @@ def validate_module_4():
     ]
 
 
-def validate_module_5():
-    """Module 5: Single Source Loading — prerequisites for Module 6."""
+def validate_module_6():
+    """Module 6: Single Source Loading — prerequisites for Module 7."""
     return [
         check_dir_has_files("src/load", "*.*", "Loading program(s) created"),
         check_path("database/G2C.db", "Database exists with loaded data"),
     ]
 
 
-def validate_module_6():
-    """Module 6: Multi-Source Orchestration — prerequisites for Module 7."""
-    results = validate_module_5()
+def validate_module_7():
+    """Module 7: Multi-Source Orchestration — prerequisites for Module 8."""
+    results = validate_module_6()
     results.append(
         check_path("docs/loading_strategy.md", "Loading strategy documented")
     )
     return results
 
 
-def validate_module_7():
-    """Module 7: Query and Validation — prerequisites for Module 8."""
+def validate_module_8():
+    """Module 8: Query and Validation — prerequisites for Module 9."""
     return [
         check_dir_has_files("src/query", "*.*", "Query program(s) created"),
         check_path("docs/results_validation.md", "Results validation documented"),
     ]
 
 
-def validate_module_8():
-    """Module 8: Performance Testing — prerequisites for Module 9."""
+def validate_module_9():
+    """Module 9: Performance Testing — prerequisites for Module 10."""
     return [
         check_path("docs/performance_requirements.md", "Performance requirements defined"),
         check_path("docs/performance_report.md", "Performance report created"),
@@ -147,29 +147,28 @@ def validate_module_8():
     ]
 
 
-def validate_module_9():
-    """Module 9: Security Hardening — prerequisites for Module 10."""
+def validate_module_10():
+    """Module 10: Security Hardening — prerequisites for Module 11."""
     return [
         check_path("docs/security_checklist.md", "Security checklist completed"),
     ]
 
 
-def validate_module_10():
-    """Module 10: Monitoring — prerequisites for Module 11."""
+def validate_module_11():
+    """Module 11: Monitoring — prerequisites for Module 12."""
     return [
         check_path("docs/monitoring_setup.md", "Monitoring setup documented"),
     ]
 
 
-def validate_module_11():
-    """Module 11: Deployment — bootcamp complete."""
+def validate_module_12():
+    """Module 12: Deployment — bootcamp complete."""
     return [
         check_path("docs/deployment_plan.md", "Deployment plan documented"),
     ]
 
 
 VALIDATORS = {
-    0: validate_module_0,
     1: validate_module_1,
     2: validate_module_2,
     3: validate_module_3,
@@ -181,21 +180,22 @@ VALIDATORS = {
     9: validate_module_9,
     10: validate_module_10,
     11: validate_module_11,
+    12: validate_module_12,
 }
 
 MODULE_NAMES = {
-    0: "SDK Setup",
-    1: "Quick Demo",
-    2: "Business Problem",
-    3: "Data Collection",
-    4: "Data Quality & Mapping",
-    5: "Single Source Loading",
-    6: "Multi-Source Orchestration",
-    7: "Query and Validation",
-    8: "Performance Testing",
-    9: "Security Hardening",
-    10: "Monitoring",
-    11: "Deployment",
+    1: "Business Problem",
+    2: "SDK Setup",
+    3: "Quick Demo",
+    4: "Data Collection",
+    5: "Data Quality & Mapping",
+    6: "Single Source Loading",
+    7: "Multi-Source Orchestration",
+    8: "Query and Validation",
+    9: "Performance Testing",
+    10: "Security Hardening",
+    11: "Monitoring",
+    12: "Deployment",
 }
 
 
@@ -234,19 +234,19 @@ def main():
     )
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
-        "--module", type=int, choices=range(0, 12), metavar="N",
-        help="Validate that module N is complete (0-11)",
+        "--module", type=int, choices=range(1, 13), metavar="N",
+        help="Validate that module N is complete (1-12)",
     )
     group.add_argument(
-        "--next", type=int, choices=range(0, 12), metavar="N",
+        "--next", type=int, choices=range(1, 13), metavar="N",
         help="Check if ready to start module N (validates the previous module)",
     )
     args = parser.parse_args()
 
     if args.next is not None:
         # Validate the module before the requested one
-        if args.next == 0:
-            print("\nModule 0 has no prerequisites — you can start anytime.\n")
+        if args.next == 1:
+            print("\nModule 1 has no prerequisites — you can start anytime.\n")
             sys.exit(0)
         module_num = args.next - 1
         print(f"\nChecking if ready to start Module {args.next}...")
@@ -255,14 +255,14 @@ def main():
     else:
         # Default: check current module from progress file
         progress = load_progress()
-        module_num = progress.get("current_module", 0)
+        module_num = progress.get("current_module", 1)
         completed = progress.get("modules_completed", [])
         if module_num in completed:
             print(f"\nModule {module_num} is already marked complete in progress file.")
             print(f"Validating Module {module_num} artifacts...\n")
         elif not progress:
-            print("\nNo progress file found. Checking Module 0 prerequisites...\n")
-            module_num = 0
+            print("\nNo progress file found. Checking Module 1 prerequisites...\n")
+            module_num = 1
 
     if module_num not in VALIDATORS:
         print(f"\nNo validator for Module {module_num}.\n")

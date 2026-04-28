@@ -250,10 +250,10 @@ docs/
 │   ├── system-architecture.md # SDK, database, and program architecture
 │   └── module-prerequisites.md # Module dependency graph
 ├── modules/                   # Module documentation
-│   ├── MODULE_0_SDK_SETUP.md
-│   ├── MODULE_1_QUICK_DEMO.md
-│   ├── MODULE_2_BUSINESS_PROBLEM.md
-│   └── ... (Modules 2-12)
+│   ├── MODULE_1_BUSINESS_PROBLEM.md
+│   ├── MODULE_2_SDK_SETUP.md
+│   ├── MODULE_3_QUICK_DEMO.md
+│   └── ... (Modules 3-12)
 ├── policies/                  # Policy documents
 │   ├── FILE_STORAGE_POLICY.md
 │   ├── CODE_QUALITY_STANDARDS.md
@@ -302,8 +302,8 @@ Found an issue or have a suggestion?
 ## Quick Links
 
 - [Bootcamp Overview](../../POWER.md)
-- [Module 1: Quick Demo](../modules/MODULE_1_QUICK_DEMO.md)
-- [Module 2: Business Problem](../modules/MODULE_2_BUSINESS_PROBLEM.md)
+- [Module 1: Business Problem](../modules/MODULE_1_BUSINESS_PROBLEM.md)
+- [Module 3: Quick Demo](../modules/MODULE_3_QUICK_DEMO.md)
 - [File Storage Policy](../policies/FILE_STORAGE_POLICY.md)
 - [Code Quality Standards](../policies/CODE_QUALITY_STANDARDS.md)
 

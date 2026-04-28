@@ -1,0 +1,58 @@
+# Team Configuration for Senzing Bootcamp
+#
+# Place this file at config/team.yaml in your project root.
+# The bootcamp will detect it automatically during onboarding
+# and activate team mode.
+#
+# Two modes are supported:
+#   colocated   — all members share one repository
+#   distributed — each member works in their own repo clone
+
+# ──────────────────────────────────────────────
+# Example 1: Co-located mode
+# ──────────────────────────────────────────────
+# All members work in the same repo. Progress files are stored
+# with member-ID suffixes (e.g., config/progress_alice.json).
+
+team_name: "Acme ER Team"
+mode: colocated
+
+# Optional: data sources the team shares across members
+shared_data_sources:
+  - customers
+  - vendors
+
+members:
+  - id: alice
+    name: "Alice Johnson"
+  - id: bob
+    name: "Bob Smith"
+  - id: carol
+    name: "Carol Davis"
+
+# ──────────────────────────────────────────────
+# Example 2: Distributed mode
+# ──────────────────────────────────────────────
+# Each member has their own repo clone. The team lead keeps
+# this config in a coordinator repo and runs team scripts
+# from there. Every member MUST have a repo_path.
+#
+# Uncomment the block below (and comment out the block above)
+# to use distributed mode.
+#
+# team_name: "Acme ER Team"
+# mode: distributed
+#
+# shared_data_sources:
+#   - customers
+#
+# members:
+#   - id: alice
+#     name: "Alice Johnson"
+#     repo_path: /home/alice/senzing-bootcamp
+#   - id: bob
+#     name: "Bob Smith"
+#     repo_path: /home/bob/senzing-bootcamp
+#   - id: carol
+#     name: "Carol Davis"
+#     repo_path: C:\Users\carol\senzing-bootcamp

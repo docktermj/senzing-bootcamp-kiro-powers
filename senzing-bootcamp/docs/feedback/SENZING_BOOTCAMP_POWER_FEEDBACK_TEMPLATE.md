@@ -50,7 +50,7 @@ Copy this template for each improvement suggestion:
 ## Improvement: [Brief descriptive title]
 
 **Date**: YYYY-MM-DD
-**Module**: [Which module: 0-12]
+**Module**: [Which module: 1-12]
 **Priority**: High / Medium / Low
 **Category**: Documentation / Workflow / Tools / UX / Bug / Performance / Security
 

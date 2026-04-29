@@ -32,7 +32,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    If not, ask: "Would you like me to initialize a git repository for version control?"
 
-   WAIT for response. If yes, initialize. If no or already a repo, proceed.
+   If yes, initialize. If no or already a repo, proceed.
 
    **Checkpoint:** Write step 1 to `config/bootcamp_progress.json`.
 
@@ -45,8 +45,6 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 3. **Offer design pattern gallery** (separate question — do NOT combine with the privacy reminder):
 
    "Would you like to see examples of common business problems that entity resolution can solve? I can show you a gallery of entity resolution design patterns with real-world use cases."
-
-   WAIT for response.
 
    **Checkpoint:** Write step 3 to `config/bootcamp_progress.json`.
 
@@ -74,8 +72,6 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    If the user selected a design pattern in Step 4:
 
    "You picked [pattern name]. Tell me how that applies to your situation — what data do you have, where does it come from, and what would success look like?"
-
-   WAIT for the user's full response. Do NOT interrupt with follow-up questions until they've finished describing their situation.
 
    **Checkpoint:** Write step 5 to `config/bootcamp_progress.json`.
 
@@ -139,8 +135,6 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    - **Desired outcome:** [format/frequency, or 'not yet determined']
 
    Does that sound right? Anything I missed or got wrong?"
-
-   WAIT for confirmation or corrections.
 
    After confirmation, ask ONLY about items marked "not yet determined":
 

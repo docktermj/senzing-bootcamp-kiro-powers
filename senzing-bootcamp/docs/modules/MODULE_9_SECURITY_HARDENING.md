@@ -1,20 +1,20 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 10: SECURITY HARDENING  🚀🚀🚀
+🚀🚀🚀  MODULE 9: SECURITY HARDENING  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 10: Security Hardening
+# Module 9: Security Hardening
 
-> **Agent workflow:** The agent follows `steering/module-10-security.md` for this module's step-by-step workflow.
+> **Agent workflow:** The agent follows `steering/module-09-security.md` for this module's step-by-step workflow.
 
 ## Overview
 
-Module 10 focuses on securing your entity resolution application for production deployment. This module ensures your solution follows security best practices.
+Module 9 focuses on securing your entity resolution application for production deployment. This module ensures your solution follows security best practices.
 
 ## Purpose
 
-After performance testing in Module 9, Module 10 helps you:
+After performance testing in Module 8, Module 9 helps you:
 
 1. **Implement secrets management** (no hardcoded credentials)
 2. **Configure API authentication/authorization**
@@ -274,7 +274,7 @@ curl -H "X-API-Key: invalid" https://api.example.com/search
 
 ## Agent Behavior
 
-When a user is in Module 10, the agent should:
+When a user is in Module 9, the agent should:
 
 1. **Review current security posture**
 2. **Identify hardcoded credentials** and move to secrets manager
@@ -291,7 +291,7 @@ When a user is in Module 10, the agent should:
 
 ## Validation Gates
 
-Before completing Module 10:
+Before completing Module 9:
 
 - [ ] Security checklist complete
 - [ ] No hardcoded secrets
@@ -304,7 +304,7 @@ Before completing Module 10:
 
 ## Success Indicators
 
-Module 10 is complete when:
+Module 9 is complete when:
 
 - All security checklist items addressed
 - Security scans pass with no critical issues
@@ -323,11 +323,11 @@ Module 10 is complete when:
 
 ## Related Documentation
 
-- `POWER.md` - Module 10 overview
-- `steering/module-10-security.md` - Module 10 workflow
+- `POWER.md` - Module 9 overview
+- `steering/module-09-security.md` - Module 9 workflow
 - `steering/security-privacy.md` - Security best practices
 
 ## Version History
 
-- **v3.0.0** (2026-03-17): Module 10 created for security hardening
-- **v4.0.0** (2026-04-17): Renumbered from Module 10 to Module 10 (merge of old Modules 4+5)
+- **v3.0.0** (2026-03-17): Module 9 created for security hardening
+- **v4.0.0** (2026-04-17): Renumbered from Module 10 to Module 9 (merge of old Modules 6+7)

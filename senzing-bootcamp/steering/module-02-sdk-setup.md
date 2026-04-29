@@ -49,8 +49,6 @@ Tell the user: "Senzing SDK is not installed yet. Let's set it up — this is a 
 
 Ask: "What platform are you using? Linux, macOS, or Windows?"
 
-WAIT for response before proceeding.
-
 Use `sdk_guide` with `topic='install'` and the user's platform to get current installation commands. Pass the bootcamper's chosen language as the `language` parameter. The MCP server always has the latest instructions.
 
 **Platform options for `sdk_guide`:**
@@ -91,9 +89,19 @@ If verification fails, use `explain_error_code` for any SENZ error codes and `se
 
 Senzing checks for licenses in this order: project-local `licenses/g2.lic` → `SENZING_LICENSE_PATH` env var → system CONFIGPATH → built-in evaluation (500 records).
 
-Check all three locations before asking the user. If found, confirm: "I found a license at [location]. Use this one?" WAIT for response.
+Check all three locations. Then always present the following license information as content:
 
-If no license found, ask: "Do you have a Senzing license file or BASE64 key? If not, the SDK works with evaluation limits (500 records)." WAIT for response.
+**If a license was found**, tell the bootcamper where it was found and what it means (e.g., "Found a license at `licenses/g2.lic`" or "Found a license via `SENZING_LICENSE_PATH`").
+
+**If no license was found**, tell the bootcamper that no license file was detected in any of the checked locations.
+
+**Regardless of the check results**, always present these license options as informational content:
+
+- **Evaluation license:** The SDK works with a built-in evaluation license limited to 500 records. No license file is needed — the SDK uses this automatically when no custom license is present.
+- **Custom license:** To use a custom license, place a license file at `licenses/g2.lic` or decode a BASE64 key to that location (see command below). The bootcamper may already have a license file or BASE64 key from Senzing.
+- **License acquisition:** To obtain an evaluation license, contact support@senzing.com (typically 1-2 days, 30-90 day validity). For a production license, contact sales@senzing.com. See `licenses/README.md` for details.
+
+Present this information and stop — the `ask-bootcamper` hook will generate the contextual closing question about the bootcamper's license choice.
 
 **🚨 NEVER ask the user to paste a license key into chat.** Direct them to decode to `licenses/g2.lic`:
 
@@ -124,8 +132,6 @@ After creation, inform the user: "I've set up the project directory structure. A
 ## Step 7: Configure Database
 
 Ask: "Which database would you like to use? SQLite is recommended for learning and evaluation. PostgreSQL is better for production."
-
-WAIT for response.
 
 **For SQLite** (recommended for bootcamp):
 

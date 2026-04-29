@@ -141,7 +141,7 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 - **Skipping performance testing** → Complete Module 9 before production
 - **No security hardening** → Complete Module 10 checklist
 - **No monitoring** → Complete Module 11 setup
-- **No disaster recovery plan** → Complete Module 12 DR planning and test backups
+- **No disaster recovery plan** → Complete Module 11 DR planning and test backups
 
 <a id="general-pitfalls"></a>
 

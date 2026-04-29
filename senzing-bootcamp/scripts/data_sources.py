@@ -20,6 +20,7 @@ from dataclasses import dataclass
 VALID_FORMATS = {"csv", "json", "jsonl", "xlsx", "parquet", "xml", "other"}
 VALID_MAPPING_STATUSES = {"pending", "in_progress", "complete"}
 VALID_LOAD_STATUSES = {"not_loaded", "loading", "loaded", "failed"}
+VALID_TEST_LOAD_STATUSES = {"complete", "skipped"}
 REQUIRED_ENTRY_FIELDS = {
     "name", "file_path", "format", "record_count", "quality_score",
     "mapping_status", "load_status", "added_at", "updated_at",
@@ -46,6 +47,8 @@ class RegistryEntry:
     load_status: str
     added_at: str
     updated_at: str
+    test_load_status: str | None = None
+    test_entity_count: int | None = None
     issues: list[str] | None = None
 
 
@@ -267,7 +270,8 @@ def serialize_registry_yaml(data: dict) -> str:
             field_order = [
                 "name", "file_path", "format", "record_count",
                 "file_size_bytes", "quality_score", "mapping_status",
-                "load_status", "added_at", "updated_at",
+                "load_status", "test_load_status", "test_entity_count",
+                "added_at", "updated_at",
             ]
             for fk in field_order:
                 if fk in entry:
@@ -385,6 +389,13 @@ def validate_registry(raw: dict) -> list[str]:
                 f"must be one of {sorted(VALID_LOAD_STATUSES)}"
             )
 
+        tls = entry.get("test_load_status")
+        if tls is not None and tls not in VALID_TEST_LOAD_STATUSES:
+            errors.append(
+                f"{key}: invalid test_load_status {tls!r}, "
+                f"must be one of {sorted(VALID_TEST_LOAD_STATUSES)}"
+            )
+
     return errors
 
 
@@ -409,6 +420,8 @@ def _dict_to_registry(raw: dict) -> Registry:
             load_status=str(entry.get("load_status", "")),
             added_at=str(entry.get("added_at", "")),
             updated_at=str(entry.get("updated_at", "")),
+            test_load_status=entry.get("test_load_status"),
+            test_entity_count=entry.get("test_entity_count"),
             issues=issues,
         ))
     return Registry(version=str(raw.get("version", "")), sources=entries)
@@ -430,6 +443,10 @@ def _registry_to_dict(registry: Registry) -> dict:
             "added_at": entry.added_at,
             "updated_at": entry.updated_at,
         }
+        if entry.test_load_status is not None:
+            d["test_load_status"] = entry.test_load_status
+        if entry.test_entity_count is not None:
+            d["test_entity_count"] = entry.test_entity_count
         if entry.issues is not None:
             d["issues"] = entry.issues
         sources[entry.data_source] = d
@@ -502,6 +519,10 @@ def render_detail(entry: RegistryEntry) -> str:
     lines.append(f"  Quality Score:  {qs}")
     lines.append(f"  Mapping Status: {entry.mapping_status}")
     lines.append(f"  Load Status:    {entry.load_status}")
+    tls = entry.test_load_status if entry.test_load_status is not None else "-"
+    lines.append(f"  Test Load:      {tls}")
+    tec = f"{entry.test_entity_count:,}" if entry.test_entity_count is not None else "-"
+    lines.append(f"  Test Entities:  {tec}")
     lines.append(f"  Added:          {entry.added_at}")
     lines.append(f"  Updated:        {entry.updated_at}")
     if entry.issues:

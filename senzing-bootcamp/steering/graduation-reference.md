@@ -186,7 +186,7 @@ Generate `production/MIGRATION_CHECKLIST.md` with six sections (Database, Securi
 
 - **Security**: Add `- [ ] Review and update security hardening from Module 10 (check src/ for security artifacts)`
 - **Performance**: Add `- [ ] Review performance benchmarks from Module 9 and validate against production targets`
-- **Deployment**: Add `- [ ] Review deployment packaging from Module 12 (check deployment artifacts)`
+- **Deployment**: Add `- [ ] Review deployment packaging from Module 11 (check deployment artifacts)`
 - Add note at top: "✅ You completed the full production track (Modules 10–12). Items below reference artifacts you already produced."
 
 **If Modules 10–12 are NOT all completed:**

@@ -53,27 +53,27 @@ ARTIFACT_CREATORS = {
         lambda r: _write(r / "src" / "load" / "loader.py", "x"),
         lambda r: _write(r / "database" / "G2C.db", "data"),
     ],
-    7: [
+    6: [
         lambda r: _write(r / "src" / "load" / "loader.py", "x"),
         lambda r: _write(r / "database" / "G2C.db", "data"),
         lambda r: _write(r / "docs" / "loading_strategy.md", "x"),
     ],
-    8: [
+    7: [
         lambda r: _write(r / "src" / "query" / "query.py", "x"),
         lambda r: _write(r / "docs" / "results_validation.md", "x"),
     ],
-    9: [
+    8: [
         lambda r: _write(r / "docs" / "performance_requirements.md", "x"),
         lambda r: _write(r / "docs" / "performance_report.md", "x"),
         lambda r: _write(r / "tests" / "performance" / "bench.py", "x"),
     ],
-    10: [
+    9: [
         lambda r: _write(r / "docs" / "security_checklist.md", "x"),
     ],
-    11: [
+    10: [
         lambda r: _write(r / "docs" / "monitoring_setup.md", "x"),
     ],
-    12: [
+    11: [
         lambda r: _write(r / "docs" / "deployment_plan.md", "x"),
     ],
 }
@@ -97,11 +97,11 @@ def _create_all_artifacts(root, module_num):
 
 
 class TestValidatorsDict:
-    """Requirement 4.5 — VALIDATORS has keys 1-12."""
+    """Requirement 4.5 — VALIDATORS has keys 1-11."""
 
-    def test_validators_has_all_12_keys(self, project_root):
+    def test_validators_has_all_11_keys(self, project_root):
         mod = _load_validate_module()
-        assert set(mod.VALIDATORS.keys()) == set(range(1, 13))
+        assert set(mod.VALIDATORS.keys()) == set(range(1, 12))
 
 
 class TestCheckFileNotEmpty:
@@ -194,13 +194,13 @@ class TestProperty5ValidatorPassesOnCompleteArtifacts:
 
     **Validates: Requirements 4.1**
 
-    For any module 1-12 with all artifacts present,
+    For any module 1-11 with all artifacts present,
     all results have ok=True.
     """
 
     # Feature: script-test-suite, Property 5: Module validator passes on complete artifacts
 
-    @given(module_num=st.integers(min_value=1, max_value=12))
+    @given(module_num=st.integers(min_value=1, max_value=11))
     @settings(max_examples=100)
     def test_all_pass_when_artifacts_present(self, module_num):
         td = tempfile.mkdtemp()
@@ -228,13 +228,13 @@ class TestProperty6ValidatorFailsOnMissingArtifacts:
 
     **Validates: Requirements 4.2**
 
-    For any module 1-12 with artifacts absent,
+    For any module 1-11 with artifacts absent,
     at least one result has ok=False.
     """
 
     # Feature: script-test-suite, Property 6: Module validator fails on missing artifacts
 
-    @given(module_num=st.integers(min_value=1, max_value=12))
+    @given(module_num=st.integers(min_value=1, max_value=11))
     @settings(max_examples=100)
     def test_at_least_one_fails_when_artifacts_absent(self, module_num):
         td = tempfile.mkdtemp()

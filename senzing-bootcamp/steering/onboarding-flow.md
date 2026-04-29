@@ -111,7 +111,7 @@ Present the overview before track selection. Cover all points naturally:
 
 - This bootcamp is a **guided discovery** of how to use Senzing. It's not a race — feel free to take it slow, read what the bootcamp is telling you, and ask questions at any point to help with your understanding. Be curious. The bootcamp is here to help you learn, not just to produce code.
 - Goal: comfortable generating Senzing SDK code. Finish with running code as foundation for real use.
-- Module overview table (1-12): what each does and why it matters
+- Module overview table (1-11): what each does and why it matters
 - Mock data available anytime. Three sample datasets: Las Vegas, London, Moscow
 - Built-in 500-record eval license; bring your own for more
 - Tracks let you skip to what matters
@@ -119,29 +119,12 @@ Present the overview before track selection. Cover all points naturally:
 
 ## 5. Track Selection
 
-Display this quick-reference module table before presenting the tracks so the bootcamper can cross-reference module numbers:
-
-| Module | Title                                |
-|--------|--------------------------------------|
-| 1      | Understand Business Problem          |
-| 2      | Set Up SDK                           |
-| 3      | Quick Demo (Optional)                |
-| 4      | Data Collection Policy               |
-| 5      | Data Quality & Mapping               |
-| 6      | Load Single Data Source              |
-| 7      | Multi-Source Orchestration           |
-| 8      | Query and Visualize                  |
-| 9      | Performance Testing and Benchmarking |
-| 10     | Security Hardening                   |
-| 11     | Monitoring and Observability         |
-| 12     | Package and Deploy                   |
-
 Present tracks — not mutually exclusive, all completed modules carry forward:
 
 - **A) Quick Demo** — 2→3. Verify technology works. One session.
-- **B) Fast Track** — 5→6→8. Have Entity Specification data. Straight to loading/querying.
-- **C) Complete Beginner** — 1→4→5→6→8. From scratch with raw data.
-- **D) Full Production** — All 1-12. Building for production.
+- **B) Fast Track** — 5→6→7. Have Entity Specification data. Straight to loading/querying.
+- **C) Complete Beginner** — 1→4→5→6→7. From scratch with raw data.
+- **D) Full Production** — All 1-11. Building for production.
 
 Module 2 inserted automatically before any module needing SDK.
 
@@ -169,11 +152,10 @@ Gate checks:
 | 4→5    | Sources collected, files in `data/raw/`                                            |
 | 5→6    | Sources evaluated, mapped, programs tested, quality >70%                           |
 | 6→7    | Sources loaded, no critical errors                                                 |
-| 7→8    | All sources orchestrated (or single source)                                        |
-| 8→9    | Queries answer business problem. Load `cloud-provider-setup.md`                    |
-| 9→10   | Baselines captured, bottlenecks documented                                         |
-| 10→11  | Security checklist complete, no critical vulns                                     |
-| 11→12  | Monitoring configured, health checks passing                                       |
+| 7→8    | Queries answer business problem. Load `cloud-provider-setup.md`                    |
+| 8→9    | Baselines captured, bottlenecks documented                                         |
+| 9→10   | Security checklist complete, no critical vulns                                     |
+| 10→11  | Monitoring configured, health checks passing                                       |
 
 ## Hook Registry
 

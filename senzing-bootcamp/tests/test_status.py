@@ -144,7 +144,7 @@ class TestStatusEmptyCompleted:
 
         out = capsys.readouterr().out
         # With empty completed list, percentage should be 0
-        assert "0%" in out or "0/12" in out
+        assert "0%" in out or "0/11" in out
 
 
 class TestStatusNoColor:
@@ -180,9 +180,9 @@ from hypothesis import given, settings
 import hypothesis.strategies as st
 
 
-# Strategy: any subset of {1..12}
+# Strategy: any subset of {1..11}
 module_subsets = st.lists(
-    st.integers(min_value=1, max_value=12), unique=True, max_size=12
+    st.integers(min_value=1, max_value=11), unique=True, max_size=11
 ).map(sorted)
 
 
@@ -191,8 +191,8 @@ class TestProperty1StatusComputation:
 
     **Validates: Requirements 2.1**
 
-    For any subset of {1..12} as completed modules, verify
-    percentage = len(completed)*100//12 and correct status label.
+    For any subset of {1..11} as completed modules, verify
+    percentage = len(completed)*100//11 and correct status label.
     """
 
     # Feature: script-test-suite, Property 1: Status computation correctness
@@ -208,7 +208,7 @@ class TestProperty1StatusComputation:
             # Write progress file
             cfg = Path(td) / "config"
             cfg.mkdir(parents=True, exist_ok=True)
-            current = min(max(completed) + 1, 12) if completed else 1
+            current = min(max(completed) + 1, 11) if completed else 1
             data = {
                 "modules_completed": completed,
                 "current_module": current,
@@ -233,18 +233,18 @@ class TestProperty1StatusComputation:
                         status_mod.main()
 
             out = captured.getvalue()
-            expected_pct = len(completed) * 100 // 12
+            expected_pct = len(completed) * 100 // 11
 
             # Verify percentage appears in output
             assert f"{expected_pct}%" in out
 
             # Verify status label
             if len(completed) == 0:
-                assert "0/12" in out
-            elif len(completed) == 12:
+                assert "0/11" in out
+            elif len(completed) == 11:
                 assert "Bootcamp Complete" in out
             else:
-                assert f"{len(completed)}/12" in out
+                assert f"{len(completed)}/11" in out
         finally:
             os.chdir(orig)
             shutil.rmtree(td, ignore_errors=True)
@@ -263,7 +263,7 @@ class TestProperty2SyncTrackerReflectsProgress:
 
     @given(
         completed=module_subsets,
-        current=st.integers(min_value=1, max_value=12),
+        current=st.integers(min_value=1, max_value=11),
     )
     @settings(max_examples=100)
     def test_sync_markers(self, completed, current):
@@ -279,7 +279,7 @@ class TestProperty2SyncTrackerReflectsProgress:
             assert tracker.exists()
             content = tracker.read_text(encoding="utf-8")
 
-            for m in range(1, 13):
+            for m in range(1, 12):
                 if m in completed:
                     assert f"✅ Module {m}:" in content, f"Module {m} should be ✅"
                 elif m == current:

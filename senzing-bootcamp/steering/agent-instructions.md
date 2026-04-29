@@ -34,11 +34,11 @@ Retry once. If still failing, load `mcp-offline-fallback.md` for what's blocked 
 
 ## Module Steering
 
-Load per-module steering file when user starts that module (1→`module-01-business-problem.md` through 12→`module-12-deployment.md`). After Module 1: `complexity-estimator.md`. At 8→9 gate: `cloud-provider-setup.md`. At track end: `lessons-learned.md`. On errors: `common-pitfalls.md`.
+Load per-module steering file when user starts that module (1→`module-01-business-problem.md` through 11→`module-11-deployment.md`). After Module 1: `complexity-estimator.md`. At 7→8 gate: `cloud-provider-setup.md`. At track end: `lessons-learned.md`. On errors: `common-pitfalls.md`.
 
 **At every module start:** Read `config/bootcamp_progress.json` first (this triggers `module-transitions.md` loading), then display the module start banner, journey map, and before/after framing BEFORE doing any module-specific work. Never skip these — they orient the user.
 
-Module 12 platform files: load `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target. Module 7 reference: load `module-07-reference.md` for ordering examples, conflict resolution, and troubleshooting.
+Module 11 platform files: load `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target.
 
 **Multi-language projects:** If the bootcamper uses different languages for different components (e.g., Python for data transformation, TypeScript for a frontend), load the language steering file for whichever language is currently being edited. Don't force a single language across all components.
 
@@ -63,6 +63,8 @@ Module 12 platform files: load `deployment-onpremises.md`, `deployment-azure.md`
 ## Hooks
 
 Create hooks using the `createHook` tool with definitions from `hook-registry.md`. Critical hooks during onboarding, module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if absent, create Critical Hooks.
+
+When a hook check passes with no action needed, produce no output. Do not acknowledge the check, do not explain your reasoning, do not print any status message. Only produce output when the hook requires corrective action.
 
 ## Context Budget
 

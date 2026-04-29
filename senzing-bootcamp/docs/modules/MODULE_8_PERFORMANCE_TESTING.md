@@ -1,20 +1,20 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 9: PERFORMANCE TESTING AND BENCHMARKING  🚀🚀🚀
+🚀🚀🚀  MODULE 8: PERFORMANCE TESTING AND BENCHMARKING  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 9: Performance Testing and Benchmarking
+# Module 8: Performance Testing and Benchmarking
 
-> **Agent workflow:** The agent follows `steering/module-09-performance.md` for this module's step-by-step workflow.
+> **Agent workflow:** The agent follows `steering/module-08-performance.md` for this module's step-by-step workflow.
 
 ## Overview
 
-Module 9 focuses on testing performance and scalability before production deployment. This module ensures your entity resolution solution can handle expected workloads.
+Module 8 focuses on testing performance and scalability before production deployment. This module ensures your entity resolution solution can handle expected workloads.
 
 ## Purpose
 
-After building query programs and visualizations in Module 8, Module 9 helps you:
+After building query programs and visualizations in Module 7, Module 8 helps you:
 
 1. **Benchmark transformation speed** (records/second)
 2. **Benchmark loading performance** (records/second)
@@ -291,7 +291,7 @@ main():
 
 ## Agent Behavior
 
-When a user is in Module 9, the agent should:
+When a user is in Module 8, the agent should:
 
 1. **Create performance testing script** in `src/testing/performance_test.[ext]`
 2. **Run transformation benchmarks**
@@ -305,7 +305,7 @@ When a user is in Module 9, the agent should:
 
 ## Validation Gates
 
-Before completing Module 9:
+Before completing Module 8:
 
 - [ ] Transformation benchmarked
 - [ ] Loading benchmarked
@@ -318,7 +318,7 @@ Before completing Module 9:
 
 ## Success Indicators
 
-Module 9 is complete when:
+Module 8 is complete when:
 
 - Performance meets requirements
 - Bottlenecks identified and addressed
@@ -336,8 +336,8 @@ Module 9 is complete when:
 
 ## Related Documentation
 
-- `POWER.md` - Module 9 overview
-- `steering/module-09-performance.md` - Module 9 workflow
+- `POWER.md` - Module 8 overview
+- `steering/module-08-performance.md` - Module 8 workflow
 - Use MCP: `reporting_guide(topic="reports")` for SQL analytics queries on entity resolution results
 - Use MCP: `reporting_guide(topic="data_mart")` for analytical schema and incremental update patterns
 - Use MCP: `search_docs(query="performance monitoring", category="performance")` for ongoing monitoring
@@ -345,5 +345,5 @@ Module 9 is complete when:
 ## Version History
 
 - **v4.0.0** (2026-04-01): Rewritten to be language-agnostic; replaced Python code with pseudocode and agent scaffold instructions
-- **v3.0.0** (2026-03-17): Module 9 created for performance testing
-- **v5.0.0** (2026-04-17): Renumbered from Module 9 to Module 9 (merge of old Modules 4+5)
+- **v3.0.0** (2026-03-17): Module 8 created for performance testing
+- **v5.0.0** (2026-04-17): Renumbered from Module 9 to Module 8 (merge of old Modules 6+7)

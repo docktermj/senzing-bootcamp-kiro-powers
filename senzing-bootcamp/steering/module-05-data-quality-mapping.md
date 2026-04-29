@@ -134,8 +134,6 @@ After presenting the quality assessment, guide the user's decision:
 - **Quality 70-79%:** "Your data quality is acceptable but has some gaps. You can continue to mapping now — or if you'd like to improve the weakest fields first, we can work on that. See `docs/guides/QUALITY_SCORING_METHODOLOGY.md` for details on what each dimension means. What would you prefer?"
 - **Quality <70%:** "Your data quality needs attention before mapping will produce good results. I'd recommend focusing on [specific issues — e.g., filling missing phone numbers, standardizing address formats]. See `docs/guides/QUALITY_SCORING_METHODOLOGY.md` for a full breakdown of how scores are calculated and what to improve. Would you like to work on improving the data, or proceed anyway knowing the results may be limited?"
 
-WAIT for response before proceeding.
-
 **Success indicator**: ✅ All data sources categorized + `docs/data_source_evaluation.md` created
 
 **Checkpoint:** Write step 7 to `config/bootcamp_progress.json`.
@@ -164,11 +162,11 @@ WAIT for response before proceeding.
 
    **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
 
-3. **Plan:** Identify entity type (person/org/both), structure (flat/nested), relationships. Advance with `action='entity_plan'`. **Tell user:** Explain entity type decision, which fields map vs. skip and why. WAIT for confirmation.
+3. **Plan:** Identify entity type (person/org/both), structure (flat/nested), relationships. Advance with `action='entity_plan'`. **Tell user:** Explain entity type decision, which fields map vs. skip and why.
 
    **Checkpoint:** Write step 10 to `config/bootcamp_progress.json`.
 
-4. **Map:** Map fields to Senzing attributes via `mapping_workflow(action='schema_mappings')`. Never guess attribute names. For non-Latin data: `search_docs(query="globalization")`. **Tell user:** Show mapping table with reasoning for each decision and confidence score. WAIT for confirmation.
+4. **Map:** Map fields to Senzing attributes via `mapping_workflow(action='schema_mappings')`. Never guess attribute names. For non-Latin data: `search_docs(query="globalization")`. **Tell user:** Show mapping table with reasoning for each decision and confidence score.
 
    **Checkpoint:** Write step 11 to `config/bootcamp_progress.json`.
 
@@ -196,7 +194,6 @@ WAIT for response before proceeding.
    - **Quality ≥80% and all critical fields mapped:** "Quality looks strong. Ready to proceed to loading (Module 6)."
    - **Quality 70-79%:** "Quality is acceptable. You can proceed to loading now, or iterate to improve [specific weak areas]. What would you prefer?"
    - **Quality <70%:** "Quality needs improvement before loading will produce meaningful results. I'd recommend going back to [Step 2/3/4] to address [specific issues]. Would you like to iterate, or proceed knowing results may be limited?"
-   WAIT for response.
 
    **Checkpoint:** Write step 16 to `config/bootcamp_progress.json`.
 
@@ -245,6 +242,58 @@ WAIT for response before proceeding.
 
     **Checkpoint:** Write step 20 to `config/bootcamp_progress.json`.
 
+---
+
+## Phase 3 — Test Load and Validate (Optional)
+
+> **This phase is optional.** Bootcampers who prefer to write custom loading programs can skip Phase 3 and proceed directly to Module 6. Phase 3 uses `mapping_workflow` steps 5–8 to give immediate feedback on entity resolution quality without leaving Module 5.
+
+**Before starting Phase 3:** The Senzing SDK must be installed and configured (Module 2). If the SDK is not yet set up, inform the bootcamper: "Phase 3 requires the Senzing SDK (Module 2). You can skip Phase 3 and proceed to Module 6, or complete Module 2 first and return here." If the bootcamper chooses to skip, update the Data Source Registry with `test_load_status: skipped` for each source and proceed to Module 6.
+
+### Workflow (per data source that completed Phase 2)
+
+21. **SDK environment detection:** Call `mapping_workflow(action='advance')` to advance to step 5 (SDK environment detection). The workflow checks whether the Senzing SDK is installed and a database is configured. If detection fails, offer to skip Phase 3 or return to Module 2.
+
+    **Checkpoint:** Write step 21 to `config/bootcamp_progress.json`.
+
+22. **Test data loading:** Advance through `mapping_workflow` step 6 — load test data into a fresh SQLite database. This uses the transformation output from Phase 2 and loads a representative sample to verify the mapping produces valid Senzing records.
+
+    **Checkpoint:** Write step 22 to `config/bootcamp_progress.json`.
+
+23. **Validation report generation:** Advance through `mapping_workflow` step 7 — generate a validation report covering record counts, feature coverage, and data quality metrics for the test load.
+
+    **Checkpoint:** Write step 23 to `config/bootcamp_progress.json`.
+
+24. **Entity resolution evaluation:** Advance through `mapping_workflow` step 8 — evaluate entity resolution results from the test load. Present match counts, entity counts, and quality assessment to the bootcamper. Explain what the numbers mean: how many records resolved into how many entities, what the deduplication rate suggests about data quality, and whether the mapping is producing good results.
+
+    **Checkpoint:** Write step 24 to `config/bootcamp_progress.json`.
+
+25. **Present results and decision gate:** Present the Phase 3 results summary for this data source. Include: records loaded, entities created, deduplication rate, quality assessment, and any issues found. Ask the bootcamper to review the results before proceeding.
+
+    > **Agent instruction — Data Source Registry:** Update the source's `test_load_status` to `complete` and `test_entity_count` to the entity count from the test load in `config/data_sources.yaml`. Set `updated_at`.
+
+    **Checkpoint:** Write step 25 to `config/bootcamp_progress.json`.
+
+26. **Shortcut path decision:** After all sources have completed (or skipped) Phase 3, present the decision gate:
+
+    - **Shortcut path (→ Module 7):** For simple use cases — single data source, small dataset (≤1000 records), no production requirements — the Phase 3 test load results may be sufficient. The bootcamper can proceed directly to Module 7 (Query & Visualize) and skip Module 6.
+    - **Full path (→ Module 6):** For production requirements, multiple data sources, datasets exceeding 1000 records, or when the bootcamper wants to learn production-quality loading patterns — recommend the full Module 6 path.
+
+    > **Agent instruction:** When the bootcamper chooses the shortcut path, update `config/bootcamp_progress.json` to mark Module 6 as skipped with reason `shortcut_path`:
+    > ```json
+    > {
+    >   "modules_skipped": {
+    >     "6": { "reason": "shortcut_path", "skipped_at": "<timestamp>" }
+    >   }
+    > }
+    > ```
+
+    > **Agent instruction — Data Source Registry:** If Phase 3 was skipped for any source, update that source's `test_load_status` to `skipped` in `config/data_sources.yaml`. Set `updated_at`.
+
+    **Checkpoint:** Write step 26 to `config/bootcamp_progress.json`.
+
+---
+
 ## Mapping State Checkpointing
 
 Save checkpoint to `config/mapping_state_[datasource].json` after each step:
@@ -254,6 +303,8 @@ Save checkpoint to `config/mapping_state_[datasource].json` after each step:
 ```
 
 On session resume: read checkpoint, show user where they left off, restart `mapping_workflow`, fast-track through decided steps, resume from first incomplete step. Delete checkpoint when mapping complete.
+
+**Phase 3 session resume:** On session resume during Phase 3, read both the mapping state checkpoint (`config/mapping_state_[datasource].json`) and `config/bootcamp_progress.json` to determine which Phase 3 steps (21–26) have been completed. Restart `mapping_workflow` and fast-track through completed steps (5–8). If the test load (step 22) completed but evaluation (step 24) did not, the agent can re-run evaluation without reloading. If the session was interrupted before the decision gate (step 26), present the Phase 3 results again and resume from the decision gate.
 
 ## Rules
 

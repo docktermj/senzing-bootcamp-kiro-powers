@@ -265,10 +265,10 @@ Before optimizing, profile to identify the actual bottleneck. Senzing native SDK
 
 ## Related Documentation
 
-- [Module 9: Performance Testing](../modules/MODULE_9_PERFORMANCE_TESTING.md) — Hands-on benchmarking workflow
+- [Module 8: Performance Testing](../modules/MODULE_8_PERFORMANCE_TESTING.md) — Hands-on benchmarking workflow
 - [After the Bootcamp](AFTER_BOOTCAMP.md) — Production maintenance and scaling guidance
 - [Design Patterns](DESIGN_PATTERNS.md) — Entity resolution patterns that affect performance
-- `steering/module-09-performance.md` — Agent workflow for Module 9
+- `steering/module-08-performance.md` — Agent workflow for Module 8
 - [Quality Scoring Methodology](QUALITY_SCORING_METHODOLOGY.md) — How data quality scores are calculated
 - [Offline Mode](OFFLINE_MODE.md) — What works when MCP is unavailable
 - [Common Mistakes](COMMON_MISTAKES.md) — Common performance mistakes and how to avoid them

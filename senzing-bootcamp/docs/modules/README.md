@@ -97,49 +97,29 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 6: Load Single Data Source
+### Module 6: Load Data
 
-**File**: [MODULE_6_SINGLE_SOURCE_LOADING.md](MODULE_6_SINGLE_SOURCE_LOADING.md)
+**File**: [MODULE_6_LOAD_DATA.md](MODULE_6_LOAD_DATA.md)
 
-**Purpose**: Load one data source and verify results
+**Purpose**: Load all data sources, process redo records, and validate entity resolution results
 
 **Key Topics**:
 
 - Loading program creation
-- Incremental loading patterns
-- Delta/CDC strategies
-- Progress tracking
-- Statistics generation
-- Backup procedures
-- Single-source results validation
+- Sequential source loading
+- Redo queue processing
+- Single-source and cross-source validation
+- Multi-source orchestration (conditional)
+- Error handling and recovery
+- UAT and stakeholder sign-off
 
-**When to Use**: After Module 2 (SDK installed)
-
----
-
-### Module 7: Multi-Source Orchestration
-
-**File**: [MODULE_7_MULTI_SOURCE_ORCHESTRATION.md](MODULE_7_MULTI_SOURCE_ORCHESTRATION.md)
-
-**Purpose**: Orchestrate loading of multiple data sources with dependencies
-
-**Key Topics**:
-
-- Dependency management
-- Load order optimization
-- Parallel vs sequential loading
-- Error handling per source
-- Progress tracking across sources
-- Cross-source results validation and UAT
-- Stakeholder sign-off
-
-**When to Use**: After Module 6 (first source loaded successfully)
+**When to Use**: After Module 2 (SDK installed) and Module 5 (data mapped)
 
 ---
 
-### Module 8: Query and Visualize
+### Module 7: Query and Visualize
 
-**File**: [MODULE_8_QUERY_VALIDATION.md](MODULE_8_QUERY_VALIDATION.md)
+**File**: [MODULE_7_QUERY_VALIDATION.md](MODULE_7_QUERY_VALIDATION.md)
 
 **Purpose**: Create query programs, overlap reports, and visualizations
 
@@ -151,13 +131,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Entity visualization
 - Query specifications documentation
 
-**When to Use**: After Module 7 (all sources loaded)
+**When to Use**: After Module 6 (all sources loaded)
 
 ---
 
-### Module 9: Performance Testing and Benchmarking
+### Module 8: Performance Testing and Benchmarking
 
-**File**: [MODULE_9_PERFORMANCE_TESTING.md](MODULE_9_PERFORMANCE_TESTING.md)
+**File**: [MODULE_8_PERFORMANCE_TESTING.md](MODULE_8_PERFORMANCE_TESTING.md)
 
 **Purpose**: Benchmark and optimize for production performance
 
@@ -171,13 +151,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Scalability testing
 - Performance report generation
 
-**When to Use**: After Module 8 (queries working)
+**When to Use**: After Module 7 (queries working)
 
 ---
 
-### Module 10: Security Hardening
+### Module 9: Security Hardening
 
-**File**: [MODULE_10_SECURITY_HARDENING.md](MODULE_10_SECURITY_HARDENING.md)
+**File**: [MODULE_9_SECURITY_HARDENING.md](MODULE_9_SECURITY_HARDENING.md)
 
 **Purpose**: Implement production-grade security measures
 
@@ -191,13 +171,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Security scanning (safety, bandit, trivy)
 - Security audit documentation
 
-**When to Use**: After Module 9 (performance validated)
+**When to Use**: After Module 8 (performance validated)
 
 ---
 
-### Module 11: Monitoring and Observability
+### Module 10: Monitoring and Observability
 
-**File**: [MODULE_11_MONITORING_OBSERVABILITY.md](MODULE_11_MONITORING_OBSERVABILITY.md)
+**File**: [MODULE_10_MONITORING_OBSERVABILITY.md](MODULE_10_MONITORING_OBSERVABILITY.md)
 
 **Purpose**: Set up comprehensive monitoring for production operations
 
@@ -212,13 +192,13 @@ This directory contains detailed documentation for each bootcamp module.
 - Monitoring dashboards
 - Runbook creation
 
-**When to Use**: After Module 10 (security hardened)
+**When to Use**: After Module 9 (security hardened)
 
 ---
 
-### Module 12: Package and Deploy
+### Module 11: Package and Deploy
 
-**File**: [MODULE_12_DEPLOYMENT_PACKAGING.md](MODULE_12_DEPLOYMENT_PACKAGING.md)
+**File**: [MODULE_11_DEPLOYMENT_PACKAGING.md](MODULE_11_DEPLOYMENT_PACKAGING.md)
 
 **Purpose**: Package code and deploy to production
 
@@ -230,9 +210,9 @@ This directory contains detailed documentation for each bootcamp module.
 - Deployment documentation
 - Deployment artifacts (CI/CD, Kubernetes)
 - Production validation
-- Integration with Modules 9, 10, 11
+- Integration with Modules 8, 9, 10
 
-**When to Use**: After Module 11 (monitoring configured)
+**When to Use**: After Module 10 (monitoring configured)
 
 ---
 
@@ -243,17 +223,15 @@ Module 1 → Module 4 → Module 5
                          ↓
 Module 2 ──────────→ Module 6 (requires Module 2 + Module 5)
                          ↓
-                    Module 7 (if multiple sources)
+                    Module 7
                          ↓
-                    Module 8
+                    Module 8 (for production)
                          ↓
                     Module 9 (for production)
                          ↓
                     Module 10 (for production)
                          ↓
                     Module 11 (for production)
-                         ↓
-                    Module 12 (for production)
 ```
 
 ## Quick Reference
@@ -266,12 +244,11 @@ Module 2 ──────────→ Module 6 (requires Module 2 + Module 
 | 4      | All projects           |
 | 5      | All projects           |
 | 6      | All projects           |
-| 7      | Multi-source projects  |
-| 8      | All projects           |
+| 7      | All projects           |
+| 8      | Production deployments |
 | 9      | Production deployments |
 | 10     | Production deployments |
 | 11     | Production deployments |
-| 12     | Production deployments |
 
 ## Related Documentation
 

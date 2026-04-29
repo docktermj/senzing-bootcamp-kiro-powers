@@ -2,15 +2,15 @@
 inclusion: manual
 ---
 
-# Module 12: Deployment and Packaging
+# Module 11: Deployment and Packaging
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
-> **User reference:** See `docs/modules/MODULE_12_DEPLOYMENT_PACKAGING.md` for background.
+> **User reference:** See `docs/modules/MODULE_11_DEPLOYMENT_PACKAGING.md` for background.
 
 Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` if already set.
 
-**Prerequisites:** Module 11 complete, all tests passing.
+**Prerequisites:** Module 10 complete, all tests passing.
 
 **Before/After:** Everything works locally. After this module, your entity resolution system is packaged and ready for deployment — and optionally deployed to your target environment.
 
@@ -19,7 +19,7 @@ Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcam
 1. **Packaging** (Steps 2-11): Containerization, configuration, CI/CD, documentation. Everyone does this.
 2. **Deployment** (Steps 12-15): Actually deploying. Optional — only if the bootcamper wants to deploy now.
 
-Tell the user: "Module 12 has two phases. First we'll package your code. I need to know your deployment target first because it shapes what we build. Once packaging is complete, I'll ask if you want to deploy now or later."
+Tell the user: "Module 11 has two phases. First we'll package your code. I need to know your deployment target first because it shapes what we build. Once packaging is complete, I'll ask if you want to deploy now or later."
 
 Before starting: call `search_docs(query='deployment', category='anti_patterns', version='current')`.
 
@@ -27,9 +27,9 @@ Before starting: call `search_docs(query='deployment', category='anti_patterns',
 
 ## Step 1: Deployment Target and Method — ASK FIRST
 
-**Check `config/bootcamp_preferences.yaml` first.** If `cloud_provider` is set, confirm: "You chose [cloud_provider]. Still your target?" WAIT for response.
+**Check `config/bootcamp_preferences.yaml` first.** If `cloud_provider` is set, confirm: "You chose [cloud_provider]. Still your target?"
 
-**If not set**, ask (one at a time, WAIT for each):
+**If not set**, ask (one at a time):
 
 1. "Where do you plan to deploy? AWS, Azure, Google Cloud, on-premises, or local Docker?"
 2. Ask about deployment method per platform:
@@ -125,7 +125,7 @@ Save to `.github/workflows/` or equivalent.
 
 If the project needs an API: generate via `generate_scaffold` or `find_examples(query='REST API')`.
 
-Endpoints: `GET /health`, `GET /entity/{id}`, `POST /search`, `POST /load` (authenticated). Include JWT auth from Module 10, Prometheus metrics from Module 11.
+Endpoints: `GET /health`, `GET /entity/{id}`, `POST /search`, `POST /load` (authenticated). Include JWT auth from Module 9, Prometheus metrics from Module 10.
 
 Save to `src/api/`.
 
@@ -153,7 +153,7 @@ Create scripts for: deploy, rollback, health check, database backup/restore. Sav
 
 ## Step 11: Pre-Deployment Checklist
 
-Verify: all tests passing, security scan clean (Module 10), monitoring configured (Module 11), secrets in secrets manager, database backed up, rollback plan documented, stakeholder sign-off.
+Verify: all tests passing, security scan clean (Module 9), monitoring configured (Module 10), secrets in secrets manager, database backed up, rollback plan documented, stakeholder sign-off.
 
 Tell the user the checklist results with ✅/⬜ status for each item. If all pass: "Ready to deploy to staging!" If any fail: "[X] items need attention first."
 
@@ -169,13 +169,13 @@ Document in `docs/rollback_plan.md`: how to revert to previous version, database
 
 ## ⛔ PHASE GATE — PACKAGING COMPLETE, DEPLOYMENT DECISION REQUIRED
 
-> **🛑 MANDATORY STOP.** Packaging (Steps 2–11) is complete. **WAIT for the bootcamper's explicit decision.**
+Packaging (Steps 2–11) is complete. Present the deployment decision below.
 
 Display: "📦 Packaging phase complete — code containerized, multi-env config set, CI/CD configured, checklist verified, rollback plan documented. Nothing has been deployed yet — it's safe to stop here."
 
-Ask: "Would you like to deploy now, or stop here and deploy later on your own?"
+Present the deployment decision: deploy now, or stop here and deploy later on their own.
 
-- **Stop here** → Mark Module 12 complete (packaging only). Do NOT proceed to Step 13.
+- **Stop here** → Mark Module 11 complete (packaging only). Do NOT proceed to Step 13.
 - **Deploy now** → Proceed to Phase 2 (Steps 13–15).
 - **Unsure** → Reassure that stopping is fine; they can deploy later using the scripts and docs.
 
@@ -193,7 +193,7 @@ Deploy to staging environment using the chosen method. Run smoke tests. Verify m
 
 ## Step 14: Deploy to Production
 
-Deploy to production. Monitor closely for first 24 hours. Verify health checks pass, alerts are quiet, performance matches Module 9 baselines.
+Deploy to production. Monitor closely for first 24 hours. Verify health checks pass, alerts are quiet, performance matches Module 8 baselines.
 
 Tell the user: deployment summary (target, method, version, timestamp, health check status, monitoring status), plus first-24-hour watch items (loading error rate <1%, query latency, redo queue depth, disk usage). Reference `docs/rollback_plan.md` for issues.
 
@@ -214,13 +214,13 @@ The operations guide MUST include a disaster recovery section:
 
 > **Agent instruction:** Use `search_docs(query='backup disaster recovery', version='current')` for Senzing DR guidance.
 
-👉 "What are your recovery objectives? How long can the system be down (RTO), and how much data can you afford to lose (RPO)?" WAIT for response.
+Ask the bootcamper about their recovery objectives: how long the system can be down (RTO) and how much data they can afford to lose (RPO).
 
 Offer stakeholder summary: "Would you like me to create a one-page executive summary of this deployment to share with your team? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
 
 #[[file:senzing-bootcamp/templates/stakeholder_summary.md]]
 
-If yes, follow the **MODULE 12** guidance block in the template to fill each placeholder with Module 12 context (deployment status, production metrics, operational readiness, architecture summary). Save the filled summary to `docs/stakeholder_summary_module12.md`.
+If yes, follow the **MODULE 11** guidance block in the template to fill each placeholder with Module 11 context (deployment status, production metrics, operational readiness, architecture summary). Save the filled summary to `docs/stakeholder_summary_module11.md`.
 
 Remind user about bootcamp feedback: "You've completed the full bootcamp! Say 'bootcamp feedback' to document your experience."
 

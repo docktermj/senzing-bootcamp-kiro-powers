@@ -20,7 +20,7 @@ inclusion: always
 
 ## When User Mentions Compliance
 
-If GDPR, CCPA, HIPAA, PCI-DSS, or similar comes up: load Module 10 (`module-10-security.md`) for the full security hardening workflow. Create `docs/security_compliance.md` to document requirements.
+If GDPR, CCPA, HIPAA, PCI-DSS, or similar comes up: load Module 9 (`module-09-security.md`) for the full security hardening workflow. Create `docs/security_compliance.md` to document requirements.
 
 ## Anonymization for Samples
 

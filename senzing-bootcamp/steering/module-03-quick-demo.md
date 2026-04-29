@@ -67,7 +67,20 @@ inclusion: manual
 
    **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
 
-5. **Offer visualization:** "Would you like me to create a web page showing these results?" If yes, ask: "Would you like any interactive features? For example: (a) 'how' entity explanations, (b) 'why' match analysis, (c) search by attributes, (d) find paths between entities — or just a static summary?" Generate accordingly and save to `src/quickstart_demo/demo_results.html`.
+5. **Offer visualization:** "Would you like me to create a web page showing these results?"
+
+   If yes, present the Visualization Prompt before generating anything:
+
+   👉 "Before I generate this visualization, would you like it as:
+   1. **Static HTML file** — a self-contained file you can open directly in your browser, no server needed
+   2. **Web service** — a localhost server with live SDK queries, data refresh, and interactive entity details
+
+   Which would you prefer?"
+
+   WAIT for response.
+
+   - If the bootcamper chooses **Static HTML file**: Ask: "Would you like any interactive features? For example: (a) 'how' entity explanations, (b) 'why' match analysis, (c) search by attributes, (d) find paths between entities — or just a static summary?" Generate accordingly and save to `src/quickstart_demo/demo_results.html`.
+   - If the bootcamper chooses **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section to generate a localhost web service.
 
    **This step MUST complete before closing the module. Do not skip to module-completion.md until the user has responded to the visualization offer.**
 

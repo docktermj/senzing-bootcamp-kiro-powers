@@ -552,6 +552,45 @@ Track how data flows through transformations:
 
 ---
 
+## Phase 3: Test Load and Validate (Optional)
+
+Phase 3 uses `mapping_workflow` steps 5–8 to give you immediate feedback on entity resolution quality — without leaving Module 5 or writing custom loading programs. This phase is optional: you can skip it and proceed directly to Module 6 if you prefer to write your own loading programs.
+
+**Prerequisites:** Phase 2 complete for at least one data source, Senzing SDK installed (Module 2)
+
+### Learning Objectives
+
+By the end of Phase 3, you will:
+
+- Verify that your mapping produces valid Senzing records through test loading
+- Observe entity resolution results on your mapped data (match counts, entity counts, deduplication rate)
+- Identify mapping issues before investing time in production loading programs
+
+### What You'll Do
+
+1. **SDK environment detection** — The `mapping_workflow` checks that the Senzing SDK is installed and a database is configured (step 5)
+2. **Test data loading** — Load your transformed data into a fresh SQLite database to verify the mapping works end-to-end (step 6)
+3. **Validation report** — Generate a report covering record counts, feature coverage, and data quality metrics (step 7)
+4. **Entity resolution evaluation** — Review match counts, entity counts, and quality assessment to confirm the mapping produces good results (step 8)
+5. **Decision gate** — Choose the shortcut path (→ Module 8) or the full path (→ Module 6)
+
+### Output Files
+
+- Validation report from `mapping_workflow` step 7
+- Test SQLite database with loaded records
+- Entity resolution evaluation results from step 8
+
+### Shortcut Path
+
+After completing Phase 3, a decision gate helps you choose the most efficient path forward:
+
+- **Shortcut path (→ Module 8):** If you have a simple use case — single data source, small dataset (≤1000 records), no production requirements — the Phase 3 test load results may be sufficient. You can skip Modules 6–7 and proceed directly to Module 8 (Query & Visualize).
+- **Full path (→ Module 6):** If you have production requirements, multiple data sources, or larger datasets, the full Module 6–7 path teaches production-quality loading patterns (error handling, throughput optimization, redo processing, incremental loading, multi-source orchestration).
+
+The shortcut path is designed for bootcampers who want to see entity resolution results quickly without building production infrastructure. You can always return to Modules 6–7 later if your needs grow.
+
+---
+
 ## Success Criteria
 
 ### Phase 1 — Quality Assessment
@@ -569,6 +608,14 @@ Track how data flows through transformations:
 ✅ Transformed data files generated
 ✅ Mapping documentation complete
 ✅ Lineage tracked
+
+### Phase 3 — Test Load and Validate (Optional)
+
+✅ SDK environment detected (or Phase 3 skipped)
+✅ Test data loaded into fresh SQLite database
+✅ Validation report generated
+✅ Entity resolution evaluation reviewed
+✅ Decision gate completed (full path or shortcut path chosen)
 
 ## Common Issues
 
@@ -627,8 +674,9 @@ Track how data flows through transformations:
 
 After completing this module:
 
-- **Proceed to Module 2:** Set Up Senzing SDK (if not already done)
-- **Or proceed to Module 6:** Single Source Loading (if SDK already installed)
+- **Completed Phase 3 with shortcut path:** Proceed to Module 8 (Query & Visualize)
+- **Completed Phase 3 with full path:** Proceed to Module 6 (Production-Quality Loading)
+- **Skipped Phase 3:** Proceed to Module 2 (Set Up Senzing SDK) if not already done, then Module 6
 
 ## Related Documentation
 

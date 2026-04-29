@@ -24,6 +24,7 @@ from data_sources import (
     VALID_FORMATS,
     VALID_LOAD_STATUSES,
     VALID_MAPPING_STATUSES,
+    VALID_TEST_LOAD_STATUSES,
     Registry,
     RegistryEntry,
     _dict_to_registry,
@@ -93,6 +94,11 @@ def _iso_timestamps():
     )
 
 
+def _test_load_status_values():
+    """Strategy producing valid test_load_status values (including None)."""
+    return st.one_of(st.none(), st.sampled_from(sorted(VALID_TEST_LOAD_STATUSES)))
+
+
 def _registry_entries(key_strategy=None):
     """Strategy producing valid RegistryEntry instances."""
     if key_strategy is None:
@@ -113,6 +119,8 @@ def _registry_entries(key_strategy=None):
         load_status=_load_status_values(),
         added_at=_iso_timestamps(),
         updated_at=_iso_timestamps(),
+        test_load_status=_test_load_status_values(),
+        test_entity_count=st.one_of(st.none(), st.integers(min_value=0, max_value=1_000_000)),
         issues=st.one_of(
             st.none(),
             st.lists(_safe_text(), min_size=0, max_size=3),
@@ -248,10 +256,63 @@ class TestProperty1YAMLRoundTrip:
             assert rest.load_status == orig.load_status
             assert rest.added_at == orig.added_at
             assert rest.updated_at == orig.updated_at
+            assert rest.test_load_status == orig.test_load_status
+            assert rest.test_entity_count == orig.test_entity_count
             # Issues: None vs empty list both mean "no issues"
             orig_issues = orig.issues if orig.issues else []
             rest_issues = rest.issues if rest.issues else []
             assert rest_issues == orig_issues
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Task 1.2 — Property: Registry schema round-trip with test_load_status
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class TestPropertyTestLoadStatusRoundTrip:
+    """Feature: mapping-workflow-integration, Property 1: Registry schema round-trip with test_load_status
+
+    For any valid data source registry entry that includes a test_load_status
+    field (one of complete, skipped, or None) and an optional test_entity_count
+    field (non-negative integer or None), serializing the registry to YAML and
+    parsing it back SHALL produce an equivalent registry with the
+    test_load_status and test_entity_count values preserved.
+
+    **Validates: Requirements 8.1**
+    """
+
+    @given(registry=_registries(min_sources=1, max_sources=8))
+    @settings(max_examples=100)
+    def test_round_trip_preserves_test_load_status(self, registry):
+        """Feature: mapping-workflow-integration, Property 1: Registry schema round-trip with test_load_status"""
+        # Registry → dict → YAML → dict → Registry
+        original_dict = _registry_to_dict(registry)
+        yaml_str = serialize_registry_yaml(original_dict)
+        parsed_dict = parse_registry_yaml(yaml_str)
+        restored = _dict_to_registry(parsed_dict)
+
+        # Same number of sources
+        assert len(restored.sources) == len(registry.sources)
+
+        # Build lookup by data_source key
+        orig_by_key = {e.data_source: e for e in registry.sources}
+        rest_by_key = {e.data_source: e for e in restored.sources}
+
+        assert set(orig_by_key.keys()) == set(rest_by_key.keys())
+
+        for key in orig_by_key:
+            orig = orig_by_key[key]
+            rest = rest_by_key[key]
+            # Verify test_load_status round-trips correctly
+            assert rest.test_load_status == orig.test_load_status, (
+                f"{key}: test_load_status mismatch: "
+                f"{rest.test_load_status!r} != {orig.test_load_status!r}"
+            )
+            # Verify test_entity_count round-trips correctly
+            assert rest.test_entity_count == orig.test_entity_count, (
+                f"{key}: test_entity_count mismatch: "
+                f"{rest.test_entity_count!r} != {orig.test_entity_count!r}"
+            )
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -823,3 +884,118 @@ class TestDefaultEntryValues:
         )
         output = render_detail(entry)
         assert "Issues:" not in output
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Task 1.3 — Unit tests: registry validation with test_load_status fields
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class TestRegistryValidationTestLoadStatus:
+    """Unit tests for registry validation with test_load_status and test_entity_count fields.
+
+    **Validates: Requirements 8.1**
+    """
+
+    def _make_valid_entry(self, **overrides):
+        """Helper: create a valid source entry dict with optional overrides."""
+        entry = {
+            "name": "Test Source",
+            "file_path": "data/raw/test.csv",
+            "format": "csv",
+            "record_count": 1000,
+            "quality_score": 85,
+            "mapping_status": "complete",
+            "load_status": "loaded",
+            "added_at": "2025-07-01T10:00:00Z",
+            "updated_at": "2025-07-01T10:00:00Z",
+        }
+        entry.update(overrides)
+        return entry
+
+    def test_valid_test_load_status_complete(self):
+        """validate_registry accepts test_load_status='complete'."""
+        raw = {
+            "version": "1",
+            "sources": {
+                "TEST": self._make_valid_entry(test_load_status="complete", test_entity_count=950),
+            },
+        }
+        errors = validate_registry(raw)
+        assert errors == []
+
+    def test_valid_test_load_status_skipped(self):
+        """validate_registry accepts test_load_status='skipped'."""
+        raw = {
+            "version": "1",
+            "sources": {
+                "TEST": self._make_valid_entry(test_load_status="skipped"),
+            },
+        }
+        errors = validate_registry(raw)
+        assert errors == []
+
+    def test_no_test_load_status_backward_compatible(self):
+        """validate_registry accepts entries without test_load_status (backward compatible)."""
+        raw = {
+            "version": "1",
+            "sources": {
+                "TEST": self._make_valid_entry(),
+            },
+        }
+        errors = validate_registry(raw)
+        assert errors == []
+
+    def test_invalid_test_load_status_rejected(self):
+        """validate_registry rejects invalid test_load_status values."""
+        raw = {
+            "version": "1",
+            "sources": {
+                "TEST": self._make_valid_entry(test_load_status="invalid_status"),
+            },
+        }
+        errors = validate_registry(raw)
+        assert len(errors) == 1
+        assert "test_load_status" in errors[0]
+        assert "invalid_status" in errors[0]
+
+    def test_render_detail_shows_test_load_status(self):
+        """render_detail displays test_load_status when present."""
+        entry = RegistryEntry(
+            data_source="TEST",
+            name="Test Source",
+            file_path="data/raw/test.csv",
+            format="csv",
+            record_count=1000,
+            file_size_bytes=50000,
+            quality_score=85,
+            mapping_status="complete",
+            load_status="loaded",
+            added_at="2025-07-01T10:00:00Z",
+            updated_at="2025-07-01T10:00:00Z",
+            test_load_status="complete",
+            test_entity_count=950,
+        )
+        output = render_detail(entry)
+        assert "Test Load:" in output
+        assert "complete" in output
+        assert "Test Entities:" in output
+        assert "950" in output
+
+    def test_render_detail_shows_dash_when_test_fields_absent(self):
+        """render_detail displays '-' for test_load_status and test_entity_count when None."""
+        entry = RegistryEntry(
+            data_source="TEST",
+            name="Test Source",
+            file_path="data/raw/test.csv",
+            format="csv",
+            record_count=1000,
+            file_size_bytes=50000,
+            quality_score=85,
+            mapping_status="complete",
+            load_status="loaded",
+            added_at="2025-07-01T10:00:00Z",
+            updated_at="2025-07-01T10:00:00Z",
+        )
+        output = render_detail(entry)
+        assert "Test Load:      -" in output
+        assert "Test Entities:  -" in output

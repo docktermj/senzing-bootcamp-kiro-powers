@@ -52,9 +52,9 @@ def cyan(t): return c("0;36", t)
 MODULE_NAMES = {
     1: "Business Problem", 2: "SDK Setup", 3: "Quick Demo",
     4: "Data Collection", 5: "Data Quality & Mapping",
-    6: "Single Source Loading", 7: "Multi-Source Orchestration",
-    8: "Query, Visualize & Validate", 9: "Performance Testing",
-    10: "Security Hardening", 11: "Monitoring", 12: "Deployment",
+    6: "Load Data", 7: "Query & Visualize",
+    8: "Performance Testing", 9: "Security Hardening",
+    10: "Monitoring", 11: "Deployment",
 }
 
 NEXT_STEPS = {
@@ -63,13 +63,12 @@ NEXT_STEPS = {
     3:  ("Start Module 3: Quick Demo", "See entity resolution in action with sample data"),
     4:  ("Start Module 4: Data Collection", "Upload or link to data source files"),
     5:  ("Start Module 5: Data Quality & Mapping", "Evaluate data quality and create transformation programs"),
-    6:  ("Start Module 6: Single Source Loading", "Load your first data source"),
-    7:  ("Start Module 7: Multi-Source Orchestration", "Manage dependencies between sources"),
-    8:  ("Start Module 8: Query, Visualize & Validate", "Create query programs, visualize results, and validate"),
-    9:  ("Start Module 9: Performance Testing", "Benchmark and optimize performance"),
-    10: ("Start Module 10: Security Hardening", "Implement security best practices"),
-    11: ("Start Module 11: Monitoring", "Set up monitoring and observability"),
-    12: ("Start Module 12: Deployment", "Package and deploy to production"),
+    6:  ("Start Module 6: Load Data", "Load your data sources and validate results"),
+    7:  ("Start Module 7: Query & Visualize", "Create query programs and visualize results"),
+    8:  ("Start Module 8: Performance Testing", "Benchmark and optimize performance"),
+    9:  ("Start Module 9: Security Hardening", "Implement security best practices"),
+    10: ("Start Module 10: Monitoring", "Set up monitoring and observability"),
+    11: ("Start Module 11: Deployment", "Package and deploy to production"),
 }
 
 
@@ -171,7 +170,7 @@ class DashboardDataCollector:
         """Gather all data sources and return a populated DashboardData."""
         completed, current, status, language, current_step, raw_data = self._load_progress()
         has_progress = len(completed) > 0 or status != "Not Started"
-        completion_pct = len(completed) * 100 // 12
+        completion_pct = len(completed) * 100 // 11
         timestamps = self._load_completion_timestamps(raw_data)
         quality = self._scan_quality_scores()
         perf = self._scan_performance_metrics()
@@ -220,7 +219,7 @@ class DashboardDataCollector:
                     if current > last:
                         status = "Ready to Start"
                     elif current in completed:
-                        status = "Complete" if last >= 12 else "Ready to Start"
+                        status = "Complete" if last >= 11 else "Ready to Start"
                     else:
                         status = "In Progress"
             except (json.JSONDecodeError, KeyError):
@@ -270,7 +269,7 @@ class DashboardDataCollector:
                         mod_num = int(m.group(1))
                     else:
                         continue
-                if 1 <= mod_num <= 12:
+                if 1 <= mod_num <= 11:
                     ts = None
                     if isinstance(entry, dict):
                         ts = entry.get("updated_at") or entry.get("completed_at") or entry.get("timestamp")
@@ -520,7 +519,7 @@ footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top
         return f"""<header>
 <h1>Senzing Bootcamp Dashboard</h1>
 <div class="status-badge">{_esc(data.status)}</div>
-<div style="font-size:.95rem;margin-top:6px">{len(data.modules_completed)} / 12 modules</div>
+<div style="font-size:.95rem;margin-top:6px">{len(data.modules_completed)} / 11 modules</div>
 {lang_line}
 </header>"""
 
@@ -531,14 +530,14 @@ footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top
         return f"""<section id="progress">
 <h2>Overall Progress</h2>
 <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:{pct}%"></div></div>
-<div class="progress-label">{pct}% complete &mdash; {len(data.modules_completed)} / 12 modules</div>
+<div class="progress-label">{pct}% complete &mdash; {len(data.modules_completed)} / 11 modules</div>
 </section>"""
 
     # -- 3.4 _render_module_cards ------------------------------------------
 
     def _render_module_cards(self, data: DashboardData) -> str:
         cards = []
-        for num in range(1, 13):
+        for num in range(1, 12):
             name = MODULE_NAMES.get(num, "?")
             if num in data.modules_completed:
                 cls = "completed"
@@ -725,7 +724,7 @@ def sync_progress_tracker(completed, current, language, current_step=None):
     lines.append("Source of truth: `config/bootcamp_progress.json`.")
     lines.append("")
 
-    total = 12
+    total = 11
     pct = len(completed) * 100 // total
     bar_w = 26
     filled = pct * bar_w // 100
@@ -733,7 +732,7 @@ def sync_progress_tracker(completed, current, language, current_step=None):
     lines.append(f"Progress: [{bar}] {len(completed)}/{total}")
     lines.append("")
 
-    for m in range(1, 13):
+    for m in range(1, 12):
         name = MODULE_NAMES.get(m, "?")
         if m in completed:
             icon = "✅"
@@ -791,7 +790,7 @@ def _show_member_status(member, data):
     current = data.get("current_module", 1)
     language = data.get("language")
     current_step = data.get("current_step")
-    total_modules = 12
+    total_modules = 11
     pct = len(completed) * 100 // total_modules
 
     module_display = f"Module {current}"
@@ -828,17 +827,17 @@ def _show_team_summary(config, resolver):
         else:
             completed = data.get("modules_completed", [])
             current = data.get("current_module", 1)
-            pct = len(completed) * 100 // 12
+            pct = len(completed) * 100 // 11
             print(
                 f"  {member.name} ({member.id}): "
-                f"Module {current}, {len(completed)}/12 ({pct}%)"
+                f"Module {current}, {len(completed)}/11 ({pct}%)"
             )
             all_completed_counts.append(len(completed))
 
     print()
     total = sum(all_completed_counts)
-    avg = sum(c / 12 * 100 for c in all_completed_counts) / len(all_completed_counts) if all_completed_counts else 0
-    fully = sum(1 for c in all_completed_counts if c >= 12)
+    avg = sum(c / 11 * 100 for c in all_completed_counts) / len(all_completed_counts) if all_completed_counts else 0
+    fully = sum(1 for c in all_completed_counts if c >= 11)
     print(cyan("Team Statistics:"))
     print(f"  Total modules completed: {total}")
     print(f"  Average completion: {avg:.0f}%")
@@ -901,7 +900,7 @@ def _show_terminal_status(args):
                 if current > last:
                     status = "Ready to Start"
                 elif current in completed:
-                    status = "Complete" if last >= 12 else "Ready to Start"
+                    status = "Complete" if last >= 11 else "Ready to Start"
                 else:
                     status = "In Progress"
         except (json.JSONDecodeError, KeyError):
@@ -925,14 +924,14 @@ def _show_terminal_status(args):
             status = "In Progress"
         else:
             last = max(completed)
-            current = min(last + 1, 12)
-            status = "Complete" if last >= 12 else "Ready to Start"
+            current = min(last + 1, 11)
+            status = "Complete" if last >= 11 else "Ready to Start"
     else:
         print(yellow("⚠ No progress data found"))
         print("Start the bootcamp to begin tracking progress.")
         print()
 
-    total_modules = 12
+    total_modules = 11
     pct = len(completed) * 100 // total_modules
 
     module_display = f"Module {current}"
@@ -958,7 +957,7 @@ def _show_terminal_status(args):
         print(f"  Tip: Use {yellow('python scripts/rollback_module.py --module N')} to undo a module")
         print()
 
-    if current <= 12 and status != "Complete":
+    if current <= 11 and status != "Complete":
         print(cyan("→ Next Steps:"))
         step = NEXT_STEPS.get(current)
         if step:

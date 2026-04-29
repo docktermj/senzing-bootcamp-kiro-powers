@@ -50,21 +50,20 @@ ARTIFACT_MANIFEST = {
     3:  ModuleArtifacts(files=[], directories=["src/quickstart_demo"], modifies_database=False),
     4:  ModuleArtifacts(files=["docs/data_source_locations.md"], directories=["data/raw"], modifies_database=False),
     5:  ModuleArtifacts(files=["docs/data_source_evaluation.md", "docs/data_quality_report.md"], directories=["src/transform", "data/transformed"], modifies_database=False),
-    6:  ModuleArtifacts(files=[], directories=["src/load"], modifies_database=True),
-    7:  ModuleArtifacts(files=["docs/loading_strategy.md"], directories=[], modifies_database=True),
-    8:  ModuleArtifacts(files=["docs/results_validation.md"], directories=["src/query"], modifies_database=False),
-    9:  ModuleArtifacts(files=["docs/performance_requirements.md", "docs/performance_report.md"], directories=["tests/performance"], modifies_database=False),
-    10: ModuleArtifacts(files=["docs/security_checklist.md"], directories=[], modifies_database=False),
-    11: ModuleArtifacts(files=["docs/monitoring_setup.md"], directories=["monitoring"], modifies_database=False),
-    12: ModuleArtifacts(files=["docs/deployment_plan.md"], directories=[], modifies_database=False),
+    6:  ModuleArtifacts(files=["docs/loading_strategy.md"], directories=["src/load"], modifies_database=True),
+    7:  ModuleArtifacts(files=["docs/results_validation.md"], directories=["src/query"], modifies_database=False),
+    8:  ModuleArtifacts(files=["docs/performance_requirements.md", "docs/performance_report.md"], directories=["tests/performance"], modifies_database=False),
+    9:  ModuleArtifacts(files=["docs/security_checklist.md"], directories=[], modifies_database=False),
+    10: ModuleArtifacts(files=["docs/monitoring_setup.md"], directories=["monitoring"], modifies_database=False),
+    11: ModuleArtifacts(files=["docs/deployment_plan.md"], directories=[], modifies_database=False),
 }
 
 MODULE_NAMES = {
     1: "Business Problem", 2: "SDK Setup", 3: "Quick Demo",
     4: "Data Collection", 5: "Data Quality & Mapping",
-    6: "Single Source Loading", 7: "Multi-Source Orchestration",
-    8: "Query, Visualize & Validate", 9: "Performance Testing",
-    10: "Security Hardening", 11: "Monitoring", 12: "Deployment",
+    6: "Load Data", 7: "Query & Visualize",
+    8: "Performance Testing", 9: "Security Hardening",
+    10: "Monitoring", 11: "Deployment",
 }
 PREREQUISITES = {
     3:  [2],
@@ -72,11 +71,10 @@ PREREQUISITES = {
     5:  [4],
     6:  [2, 5],
     7:  [6],
-    8:  [6, 7],
+    8:  [7],
     9:  [8],
     10: [9],
     11: [10],
-    12: [11],
 }
 
 
@@ -107,7 +105,7 @@ def parse_args(argv=None):
     )
     parser.add_argument(
         "--module", type=int, required=True,
-        help="Module number (1-12) to roll back",
+        help="Module number (1-11) to roll back",
     )
     parser.add_argument(
         "--dry-run", action="store_true",
@@ -118,8 +116,8 @@ def parse_args(argv=None):
         help="Skip confirmation prompts",
     )
     args = parser.parse_args(argv)
-    if args.module < 1 or args.module > 12:
-        parser.error(f"Module must be between 1 and 12, got {args.module}")
+    if args.module < 1 or args.module > 11:
+        parser.error(f"Module must be between 1 and 11, got {args.module}")
     return args
 
 # -- Progress file operations -----------------------------------------------

@@ -272,22 +272,11 @@ _STEP_4_KEY_CONTENT = [
 ]
 
 _STEP_5_KEY_CONTENT = [
-    "Understand Business Problem",
-    "Set Up SDK",
-    "Quick Demo (Optional)",
-    "Data Collection Policy",
-    "Data Quality & Mapping",
-    "Load Single Data Source",
-    "Multi-Source Orchestration",
-    "Query and Visualize",
-    "Performance Testing and Benchmarking",
-    "Security Hardening",
-    "Monitoring and Observability",
-    "Package and Deploy",
     "A) Quick Demo",
     "B) Fast Track",
     "C) Complete Beginner",
     "D) Full Production",
+    "All 1-11",
 ]
 
 

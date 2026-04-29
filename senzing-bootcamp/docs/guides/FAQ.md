@@ -16,7 +16,7 @@ Yes. Have Senzing Entity Specification (SGES) data? Skip Module 5. SDK installed
 
 ### What's the difference between senzing-bootcamp and senzing powers?
 
-senzing-bootcamp is a structured 12-module curriculum (Modules 1-12). The senzing power is a quick reference. Both use the same MCP server.
+senzing-bootcamp is a structured 11-module curriculum (Modules 1-11). The senzing power is a quick reference. Both use the same MCP server.
 
 ### Where can I find definitions for Senzing terms?
 

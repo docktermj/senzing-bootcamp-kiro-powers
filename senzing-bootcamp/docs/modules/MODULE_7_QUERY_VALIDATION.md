@@ -1,22 +1,22 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 8: QUERY AND VISUALIZE  🚀🚀🚀
+🚀🚀🚀  MODULE 7: QUERY AND VISUALIZE  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 8: Query and Visualize
+# Module 7: Query and Visualize
 
-> **Agent workflow:** The agent follows `steering/module-08-query-validation.md` for this module's step-by-step workflow.
+> **Agent workflow:** The agent follows `steering/module-07-query-validation.md` for this module's step-by-step workflow.
 
 ## Overview
 
-Module 8 focuses on creating query programs, search programs, overlap reports, and visualizations to explore entity resolution results.
+Module 7 focuses on creating query programs, search programs, overlap reports, and visualizations to explore entity resolution results.
 
 **Focus:** Query resolved entities and visualize results.
 
 ## Prerequisites
 
-- ✅ Module 7 complete (all sources loaded) OR Module 6 complete (single source loaded)
+- ✅ Module 6 complete (all sources loaded, single or multi-source)
 - ✅ No critical loading errors
 - ✅ Loading statistics reviewed
 - ✅ Business requirements from Module 1 available
@@ -135,7 +135,7 @@ Common query patterns (use MCP tools to generate current code):
 
 ## Validation Gates
 
-Before proceeding to Module 9, verify:
+Before proceeding to Module 8, verify:
 
 - [ ] Query programs generated and tested
 - [ ] All query types work correctly
@@ -143,11 +143,11 @@ Before proceeding to Module 9, verify:
 
 ## Success Indicators
 
-Module 8 is complete when:
+Module 7 is complete when:
 
 - Query programs work correctly
 - Visualizations created for entity resolution results
-- Ready for performance testing (Module 9) or production (if skipping 9-12)
+- Ready for performance testing (Module 8) or production (if skipping 8-11)
 
 ## Common Issues
 
@@ -182,11 +182,10 @@ Module 8 is complete when:
 
 ## Integration with Other Modules
 
-- **From Module 7:** Queries loaded data from all sources
-- **From Module 6:** Queries loaded data from single source
+- **From Module 6:** Queries loaded data from all sources (single or multi-source)
 - **From Module 1:** Validates against business requirements
-- **To Module 9:** Performance testing uses query programs
-- **To Module 12:** Query programs included in deployment package
+- **To Module 8:** Performance testing uses query programs
+- **To Module 11:** Query programs included in deployment package
 
 ## File Locations
 
@@ -203,7 +202,7 @@ project/
 
 ## Agent Behavior
 
-When a user is in Module 8:
+When a user is in Module 7:
 
 1. **Review business requirements:** Load Module 1 business problem
 2. **Define query requirements:** What queries are needed?
@@ -215,9 +214,9 @@ When a user is in Module 8:
 
 ## Related Documentation
 
-- `POWER.md` - Module 8 overview
-- `steering/module-08-query-validation.md` - Module 8 workflow
-- `steering/agent-instructions.md` - Agent behavior for Module 8
+- `POWER.md` - Module 7 overview
+- `steering/module-07-query-validation.md` - Module 7 workflow
+- `steering/agent-instructions.md` - Agent behavior for Module 7
 - Use MCP: `reporting_guide(topic="evaluation")` for the 4-point ER evaluation framework
 - Use MCP: `reporting_guide(topic="quality")` for precision/recall, split/merge detection, and review queues
 - Use MCP: `reporting_guide(topic="export")` for SDK data extraction patterns
@@ -225,5 +224,5 @@ When a user is in Module 8:
 
 ## Version History
 
-- **v3.0.0** (2026-03-17): Module 8 refocused on query and validation with UAT framework enhancement
-- **v4.0.0** (2026-04-17): Renumbered from Module 8 to Module 8 (merge of old Modules 4+5)
+- **v3.0.0** (2026-03-17): Module 7 refocused on query and validation with UAT framework enhancement
+- **v4.0.0** (2026-04-17): Renumbered from Module 8 to Module 7 (merge of old Modules 6+7)

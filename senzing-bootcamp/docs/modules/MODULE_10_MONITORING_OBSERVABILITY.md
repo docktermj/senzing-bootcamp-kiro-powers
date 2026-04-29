@@ -1,20 +1,20 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 11: MONITORING AND OBSERVABILITY  🚀🚀🚀
+🚀🚀🚀  MODULE 10: MONITORING AND OBSERVABILITY  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 11: Monitoring and Observability
+# Module 10: Monitoring and Observability
 
-> **Agent workflow:** The agent follows `steering/module-11-monitoring.md` for this module's step-by-step workflow.
+> **Agent workflow:** The agent follows `steering/module-10-monitoring.md` for this module's step-by-step workflow.
 
 ## Overview
 
-Module 11 focuses on setting up comprehensive monitoring, logging, and alerting for production operations.
+Module 10 focuses on setting up comprehensive monitoring, logging, and alerting for production operations.
 
 ## Purpose
 
-After security hardening in Module 10, Module 11 helps you:
+After security hardening in Module 9, Module 10 helps you:
 
 1. **Set up distributed tracing** (request flow visibility)
 2. **Configure structured logging** (searchable, analyzable logs)
@@ -339,7 +339,7 @@ Usage:
 
 ## Agent Behavior
 
-When a user is in Module 11, the agent should:
+When a user is in Module 10, the agent should:
 
 1. **Choose monitoring stack** (Prometheus/Grafana, ELK, Cloud, APM)
 2. **Implement metrics collection**
@@ -354,7 +354,7 @@ When a user is in Module 11, the agent should:
 
 ## Validation Gates
 
-Before completing Module 11:
+Before completing Module 10:
 
 - [ ] Monitoring stack deployed
 - [ ] Metrics being collected
@@ -368,7 +368,7 @@ Before completing Module 11:
 
 ## Success Indicators
 
-Module 11 is complete when:
+Module 10 is complete when:
 
 - All metrics being collected
 - Logs searchable and analyzable
@@ -388,11 +388,11 @@ Module 11 is complete when:
 
 ## Related Documentation
 
-- `POWER.md` - Module 11 overview
-- `steering/module-11-monitoring.md` - Module 11 workflow
+- `POWER.md` - Module 10 overview
+- `steering/module-10-monitoring.md` - Module 10 workflow
 - Use MCP: `search_docs(query="performance monitoring", category="performance")` for performance monitoring details
 
 ## Version History
 
-- **v3.0.0** (2026-03-17): Module 11 created for monitoring and observability
-- **v4.0.0** (2026-04-17): Renumbered from Module 11 to Module 11 (merge of old Modules 4+5)
+- **v3.0.0** (2026-03-17): Module 10 created for monitoring and observability
+- **v4.0.0** (2026-04-17): Renumbered from Module 11 to Module 10 (merge of old Modules 6+7)

@@ -2,11 +2,11 @@
 inclusion: manual
 ---
 
-# Module 8: Query and Visualize
+# Module 7: Query and Visualize
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_8_QUERY_VALIDATION.md`.
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_7_QUERY_VALIDATION.md`.
 
 **Purpose:** Create query programs and visualizations.
 
@@ -14,7 +14,7 @@ inclusion: manual
 
 **Prerequisites:**
 
-- ✅ Module 7 complete (all sources loaded) OR Module 6 complete (single source)
+- ✅ Module 6 complete (all sources loaded, single or multi-source)
 - ✅ No critical loading errors
 
 **Agent Workflow:**
@@ -29,8 +29,6 @@ inclusion: manual
    - Search for specific entities
    - Get entity 360 view
    - Retrieve and format resolved entities
-
-   WAIT for response.
 
    **Checkpoint:** Write step 1 to `config/bootcamp_progress.json`.
 
@@ -64,28 +62,46 @@ inclusion: manual
 
    > **⛔ MANDATORY VISUALIZATION OFFER — ENTITY GRAPH**
    >
-   > **🛑 DO NOT SKIP THIS STEP. You MUST offer the entity graph visualization and WAIT for the user's response before proceeding.**
+   > **🛑 DO NOT SKIP THIS STEP. You MUST offer the entity graph visualization before proceeding.**
 
-   👉 **Ask the bootcamper:** "Would you like me to help you build an interactive entity graph? It shows resolved entities as a force-directed network graph with clustering by data source or match strength, search/filter, and detail panels. I can create a self-contained HTML file you can open in any browser."
+   Offer to help the bootcamper build an interactive entity graph — a force-directed network graph with clustering by data source or match strength, search/filter, and detail panels.
 
-   > **⚠️ WAIT — Do NOT proceed until the bootcamper responds.**
-   >
-   > - If they say **yes**: Load `visualization-guide.md` and follow its workflow.
-   > - If they say **no** or **not now**: Acknowledge and continue.
+   If they say **yes**, present the Visualization Prompt before generating anything:
+
+   👉 "Before I generate this visualization, would you like it as:
+   1. **Static HTML file** — a self-contained file you can open directly in your browser, no server needed
+   2. **Web service** — a localhost server with live SDK queries, data refresh, and interactive entity details
+
+   Which would you prefer?"
+
+   WAIT for response.
+
+   > - If they choose **Static HTML file**: Load `visualization-guide.md` and follow its static HTML workflow.
+   > - If they choose **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section.
+   > - If they say **no** or **not now** to the entity graph offer: Acknowledge and continue.
    > - If they are **unsure**: Briefly explain the value, then wait for their decision.
 
    ---
 
    > **⛔ MANDATORY VISUALIZATION OFFER — RESULTS DASHBOARD**
    >
-   > **🛑 DO NOT SKIP THIS STEP. You MUST offer the results dashboard visualization and WAIT for the user's response before proceeding.**
+   > **🛑 DO NOT SKIP THIS STEP. You MUST offer the results dashboard visualization before proceeding.**
 
-   👉 **Ask the bootcamper:** "Would you like me to create a web page showing the query results? It'll have entity tables, match explanations, and query output — saved as `docs/results_dashboard.html`."
+   Offer to create a web page showing the query results — with entity tables, match explanations, and query output.
 
-   > **⚠️ WAIT — Do NOT proceed until the bootcamper responds.**
-   >
-   > - If they say **yes**: Generate the HTML dashboard and save to `docs/results_dashboard.html`.
-   > - If they say **no** or **not now**: Acknowledge and proceed.
+   If they say **yes**, present the Visualization Prompt before generating anything:
+
+   👉 "Before I generate this visualization, would you like it as:
+   1. **Static HTML file** — a self-contained file you can open directly in your browser, no server needed
+   2. **Web service** — a localhost server with live SDK queries, data refresh, and interactive entity details
+
+   Which would you prefer?"
+
+   WAIT for response.
+
+   > - If they choose **Static HTML file**: Generate the HTML dashboard and save to `docs/results_dashboard.html`.
+   > - If they choose **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section.
+   > - If they say **no** or **not now** to the results dashboard offer: Acknowledge and proceed.
    > - If they are **unsure**: Briefly explain the value, then wait for their decision.
 
    ---
@@ -106,12 +122,14 @@ Before wrapping up this module, confirm:
 1. **Query programs created and tested?** — At least one query program runs successfully against the resolved data.
 2. **Visualizations offered?** — Both the entity graph and results dashboard were offered to the bootcamper.
 3. **Ready to proceed?**
-   - **Path A (full bootcamp):** Proceed to Module 9 (Performance Testing).
+   - **Path A (full bootcamp):** Proceed to Module 8 (Performance Testing).
    - **Path B/C (shorter paths):** This is a natural stopping point. The bootcamper has working query programs and can stop here.
 
-👉 "Your query programs are working and visualizations have been offered. Would you like to continue to Module 9 (Performance Testing), or is this a good stopping point for your project?"
+Present the query completion status and path options to the bootcamper:
+   - **Path A (full bootcamp):** Proceed to Module 8 (Performance Testing).
+   - **Path B/C (shorter paths):** This is a natural stopping point. The bootcamper has working query programs and can stop here.
 
-WAIT for response before proceeding.
+The bootcamper can continue to Module 8 (Performance Testing) or stop here if this is a good stopping point for their project.
 
 ## Integration Patterns
 
@@ -130,4 +148,4 @@ After running queries, the bootcamper may ask "how do I use these results in my 
 
 **Key implementation principle:** Query programs should iterate over loaded records using `get_entity_by_record_id(data_source, record_id)` — never iterate over a guessed range of entity IDs. The caller knows the record IDs and data source codes they loaded; entity IDs are internal to Senzing.
 
-👉 "Would you like to build an integration for your results? I can help with batch reports, a REST API, streaming events, database sync, or duplicate detection — which fits your use case?" WAIT for response.
+Present the integration options and help the bootcamper choose the pattern that fits their use case: batch reports, a REST API, streaming events, database sync, or duplicate detection.

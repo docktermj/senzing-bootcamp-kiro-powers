@@ -5,13 +5,12 @@ modules:
   3: module-03-quick-demo.md
   4: module-04-data-collection.md
   5: module-05-data-quality-mapping.md
-  6: module-06-single-source.md
-  7: module-07-multi-source.md
-  8: module-08-query-validation.md
-  9: module-09-performance.md
-  10: module-10-security.md
-  11: module-11-monitoring.md
-  12: module-12-deployment.md
+  6: module-06-load-data.md
+  7: module-07-query-validation.md
+  8: module-08-performance.md
+  9: module-09-security.md
+  10: module-10-monitoring.md
+  11: module-11-deployment.md
 
 keywords:
   error: common-pitfalls.md
@@ -56,12 +55,9 @@ deployment:
   gcp: deployment-gcp.md
   kubernetes: deployment-kubernetes.md
 
-references:
-  module-07: module-07-reference.md
-
 file_metadata:
   agent-instructions.md:
-    token_count: 1445
+    token_count: 1528
     size_category: medium
   cloud-provider-setup.md:
     token_count: 784
@@ -103,7 +99,7 @@ file_metadata:
     token_count: 1487
     size_category: medium
   hook-registry.md:
-    token_count: 3308
+    token_count: 3430
     size_category: large
   lang-csharp.md:
     token_count: 828
@@ -127,55 +123,49 @@ file_metadata:
     token_count: 1919
     size_category: medium
   module-01-business-problem.md:
-    token_count: 2825
+    token_count: 2771
     size_category: large
   module-02-sdk-setup.md:
-    token_count: 2582
+    token_count: 2814
     size_category: large
   module-03-quick-demo.md:
-    token_count: 1754
+    token_count: 1907
     size_category: medium
   module-04-data-collection.md:
-    token_count: 2567
+    token_count: 2561
     size_category: large
   module-05-data-quality-mapping.md:
-    token_count: 4241
+    token_count: 5355
     size_category: large
-  module-06-single-source.md:
-    token_count: 2780
+  module-06-load-data.md:
+    token_count: 9176
     size_category: large
-  module-07-multi-source.md:
-    token_count: 2443
+  module-07-query-validation.md:
+    token_count: 2143
     size_category: large
-  module-07-reference.md:
-    token_count: 2340
-    size_category: large
-  module-08-query-validation.md:
-    token_count: 1924
-    size_category: medium
-  module-09-performance.md:
+  module-08-performance.md:
     token_count: 1596
     size_category: medium
-  module-10-security.md:
-    token_count: 1873
+  module-09-security.md:
+    token_count: 1872
     size_category: medium
-  module-11-monitoring.md:
+  module-10-monitoring.md:
     token_count: 1247
     size_category: medium
-  module-12-deployment.md:
-    token_count: 3073
+  module-11-deployment.md:
+    token_count: 3056
     size_category: large
   module-completion.md:
-    token_count: 890
+    token_count: 881
     size_category: medium
   module-prerequisites.md:
-    token_count: 1130
+    token_count: 1064
     size_category: medium
   module-transitions.md:
     token_count: 699
     size_category: medium
   onboarding-flow.md:
-    token_count: 2852
+    token_count: 2486
     size_category: large
   project-structure.md:
     token_count: 399
@@ -196,11 +186,11 @@ file_metadata:
     token_count: 576
     size_category: medium
   visualization-guide.md:
-    token_count: 1970
-    size_category: medium
+    token_count: 3618
+    size_category: large
 
 budget:
-  total_tokens: 70060
+  total_tokens: 74725
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

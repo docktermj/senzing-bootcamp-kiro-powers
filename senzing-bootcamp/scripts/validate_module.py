@@ -112,32 +112,24 @@ def validate_module_5():
 
 
 def validate_module_6():
-    """Module 6: Single Source Loading — prerequisites for Module 7."""
+    """Module 6: Load Data — prerequisites for Module 7."""
     return [
         check_dir_has_files("src/load", "*.*", "Loading program(s) created"),
         check_path("database/G2C.db", "Database exists with loaded data"),
+        check_path("docs/loading_strategy.md", "Loading strategy documented"),
     ]
 
 
 def validate_module_7():
-    """Module 7: Multi-Source Orchestration — prerequisites for Module 8."""
-    results = validate_module_6()
-    results.append(
-        check_path("docs/loading_strategy.md", "Loading strategy documented")
-    )
-    return results
-
-
-def validate_module_8():
-    """Module 8: Query and Validation — prerequisites for Module 9."""
+    """Module 7: Query and Validation — prerequisites for Module 8."""
     return [
         check_dir_has_files("src/query", "*.*", "Query program(s) created"),
         check_path("docs/results_validation.md", "Results validation documented"),
     ]
 
 
-def validate_module_9():
-    """Module 9: Performance Testing — prerequisites for Module 10."""
+def validate_module_8():
+    """Module 8: Performance Testing — prerequisites for Module 9."""
     return [
         check_path("docs/performance_requirements.md", "Performance requirements defined"),
         check_path("docs/performance_report.md", "Performance report created"),
@@ -147,22 +139,22 @@ def validate_module_9():
     ]
 
 
-def validate_module_10():
-    """Module 10: Security Hardening — prerequisites for Module 11."""
+def validate_module_9():
+    """Module 9: Security Hardening — prerequisites for Module 10."""
     return [
         check_path("docs/security_checklist.md", "Security checklist completed"),
     ]
 
 
-def validate_module_11():
-    """Module 11: Monitoring — prerequisites for Module 12."""
+def validate_module_10():
+    """Module 10: Monitoring — prerequisites for Module 11."""
     return [
         check_path("docs/monitoring_setup.md", "Monitoring setup documented"),
     ]
 
 
-def validate_module_12():
-    """Module 12: Deployment — bootcamp complete."""
+def validate_module_11():
+    """Module 11: Deployment — bootcamp complete."""
     return [
         check_path("docs/deployment_plan.md", "Deployment plan documented"),
     ]
@@ -180,7 +172,6 @@ VALIDATORS = {
     9: validate_module_9,
     10: validate_module_10,
     11: validate_module_11,
-    12: validate_module_12,
 }
 
 MODULE_NAMES = {
@@ -189,13 +180,12 @@ MODULE_NAMES = {
     3: "Quick Demo",
     4: "Data Collection",
     5: "Data Quality & Mapping",
-    6: "Single Source Loading",
-    7: "Multi-Source Orchestration",
-    8: "Query and Validation",
-    9: "Performance Testing",
-    10: "Security Hardening",
-    11: "Monitoring",
-    12: "Deployment",
+    6: "Load Data",
+    7: "Query & Visualize",
+    8: "Performance Testing",
+    9: "Security Hardening",
+    10: "Monitoring",
+    11: "Deployment",
 }
 
 
@@ -234,11 +224,11 @@ def main():
     )
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
-        "--module", type=int, choices=range(1, 13), metavar="N",
-        help="Validate that module N is complete (1-12)",
+        "--module", type=int, choices=range(1, 12), metavar="N",
+        help="Validate that module N is complete (1-11)",
     )
     group.add_argument(
-        "--next", type=int, choices=range(1, 13), metavar="N",
+        "--next", type=int, choices=range(1, 12), metavar="N",
         help="Check if ready to start module N (validates the previous module)",
     )
     args = parser.parse_args()

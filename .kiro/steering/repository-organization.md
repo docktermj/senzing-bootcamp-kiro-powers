@@ -1,5 +1,6 @@
 ---
 inclusion: auto
+description: "File placement rules and directory conventions for the senzing-bootcamp power"
 ---
 
 # Repository Organization

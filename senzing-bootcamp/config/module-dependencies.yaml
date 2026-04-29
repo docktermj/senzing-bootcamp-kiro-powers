@@ -56,11 +56,11 @@ tracks:
   fast_track:
     name: "Fast Track"
     description: "Skip to loading and querying data"
-    modules: [1, 2, 6, 7]
+    modules: [2, 5, 6, 7]
   complete_beginner:
     name: "Complete Beginner"
-    description: "Full guided path through all modules"
-    modules: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    description: "Full learning track from problem definition through validation"
+    modules: [1, 2, 4, 5, 6, 7]
   full_production:
     name: "Full Production"
     description: "Complete path including deployment"

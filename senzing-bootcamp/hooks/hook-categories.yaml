@@ -20,11 +20,11 @@ modules:
     - backup-before-load
     - run-tests-after-change
     - verify-generated-code
-  8:
+  7:
     - enforce-visualization-offers
     - offer-visualization
   11:
-    - module12-phase-gate
+    - deployment-phase-gate
   any:
     - backup-project-on-request
     - git-commit-reminder

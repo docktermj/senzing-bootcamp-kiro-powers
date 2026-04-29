@@ -138,7 +138,7 @@ file_metadata:
     token_count: 1487
     size_category: medium
   hook-registry.md:
-    token_count: 3869
+    token_count: 3874
     size_category: large
   lang-csharp.md:
     token_count: 828
@@ -250,7 +250,7 @@ file_metadata:
     size_category: large
 
 budget:
-  total_tokens: 77269
+  total_tokens: 77274
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

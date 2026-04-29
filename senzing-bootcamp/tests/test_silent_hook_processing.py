@@ -343,7 +343,7 @@ _NON_AFFECTED_HOOK_IDS: list[str] = [
     "verify-generated-code",
     "offer-visualization",
     "enforce-visualization-offers",
-    "module12-phase-gate",
+    "deployment-phase-gate",
     "backup-project-on-request",
     "git-commit-reminder",
 ]

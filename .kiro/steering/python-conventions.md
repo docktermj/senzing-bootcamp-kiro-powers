@@ -1,6 +1,7 @@
 ---
-inclusion: conditional
+inclusion: fileMatch
 fileMatchPattern: "**/*.py"
+description: "Python script and test conventions for the senzing-bootcamp power"
 ---
 
 # Python Conventions

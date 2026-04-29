@@ -56,8 +56,8 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 
 **New users:** Say "start the bootcamp" to begin. Choose your track:
 
-- **A) Quick Demo** — Modules 2 → 3. See entity resolution in action with sample data. Done in one session. Choose this if you want to verify the technology works before investing more time.
-- **B) Fast Track** — Modules 5 → 6 → 7. For users who already have Senzing-ready Entity Specification data. Choose this if you've already mapped your data and want to get straight to loading and querying. If you complete Module 5's optional Phase 3 (test load and validate) and have a simple use case, you can take the shortcut path directly to Module 7.
+- **A) Quick Demo** — Modules 1 → 2 → 3. See entity resolution in action with sample data. Done in one session. Choose this if you want to verify the technology works before investing more time.
+- **B) Fast Track** — Modules 5 → 6 → 7 (Module 2 inserted automatically). For users who already have Senzing-ready Entity Specification data. Choose this if you've already mapped your data and want to get straight to loading and querying. If you complete Module 5's optional Phase 3 (test load and validate) and have a simple use case, you can take the shortcut path directly to Module 7.
 - **C) Complete Beginner** — Modules 1 → 4 → 5 → 6 → 7. Full learning track from defining the problem through validating results. Choose this if you're starting from scratch with raw data and want guided help through the entire process. Simple use cases can take the Phase 3 shortcut path from Module 5 directly to Module 7, skipping Module 6.
 - **D) Full Production** — All modules 1-11, including performance testing, security, monitoring, and deployment. Choose this if you're building something that needs to run in production.
 
@@ -133,6 +133,10 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 
 - `environment-setup.md` — Version control, language-specific environment setup
 
+**Visualization:**
+
+- `visualization-guide.md` — Interactive entity graph and results dashboard generation workflow
+
 **Troubleshooting:**
 
 - `common-pitfalls.md` — Common mistakes and solutions (load on errors or when user is stuck)
@@ -140,6 +144,11 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 - `mcp-offline-fallback.md` — MCP server offline: blocked/continuable operations, fallback instructions, reconnection
 - `troubleshooting-commands.md` — Diagnostic commands, system checks, escalation procedures
 - `lessons-learned.md` — Post-project retrospective template
+
+**Reference (loaded indirectly via `#[[file:]]` directives):**
+
+- `graduation-reference.md` — Detailed tables and templates used by `graduation.md`
+- `hook-registry.md` — Canonical hook definitions used by `onboarding-flow.md`
 
 **Advanced Topics:**
 
@@ -260,7 +269,7 @@ python senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: Code Style Check (`code-style-check`) ⭐, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory` ⭐, `summarize-on-stop`, `verify-generated-code`, `offer-visualization`, `capture-feedback` ⭐, `module12-phase-gate`, `enforce-visualization-offers` ⭐, `enforce-feedback-path`.
+Available: Code Style Check (`code-style-check`) ⭐, `ask-bootcamper`, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory` ⭐, `verify-generated-code`, `offer-visualization`, `capture-feedback` ⭐, `deployment-phase-gate`, `enforce-visualization-offers` ⭐, `enforce-feedback-path`.
 
 ## Project Directory Structure
 

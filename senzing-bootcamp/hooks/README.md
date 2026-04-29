@@ -74,11 +74,12 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 **Use case:** Enforces the file storage policy automatically — prevents MCP-generated code from placing files in system temp directories
 **Recommended:** Install for all modules
 
-### 12. Summarize Progress on Stop (`summarize-on-stop.kiro.hook`)
+### 12. Ask Bootcamper (`ask-bootcamper.kiro.hook`) ⭐
 
 **Trigger:** When the agent finishes working (agentStop)
-**Action:** Prompts the agent to summarize what it accomplished, which files changed, and what the next step is
-**Use case:** Ensures the bootcamper always knows what happened during an agent interaction
+**Action:** Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question
+**Use case:** Ensures the bootcamper always knows what happened during an agent interaction and has a clear next step
+**Recommended:** Install for all modules
 
 ### 13. Verify Generated Code (`verify-generated-code.kiro.hook`)
 
@@ -90,8 +91,8 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 
 **Trigger:** When new files are created in `src/query/`
 **Action:** Prompts the agent to offer generating an interactive entity graph visualization
-**Use case:** Ensures bootcampers are offered the visualization feature during Module 8
-**Note:** Works in conjunction with the Enforce Module 8 Visualization Offers hook (#17) — this hook catches query program creation proactively, while the agentStop hook catches missed offers before the agent closes the conversation
+**Use case:** Ensures bootcampers are offered the visualization feature during Module 7
+**Note:** Works in conjunction with the Enforce Visualization Offers hook (#17) — this hook catches query program creation proactively, while the agentStop hook catches missed offers before the agent closes the conversation
 
 ### 15. Capture Bootcamp Feedback (`capture-feedback.kiro.hook`) ⭐
 
@@ -100,18 +101,18 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 **Use case:** Guarantees feedback is always captured when a bootcamper says "bootcamp feedback" — deterministic, not probabilistic
 **Recommended:** Install for all modules
 
-### 16. Module 12 Phase Gate (`module12-phase-gate.kiro.hook`)
+### 16. Deployment Phase Gate (`deployment-phase-gate.kiro.hook`)
 
 **Trigger:** After task execution completes (postTaskExecution)
-**Action:** Checks if current module is 12, then displays packaging-complete summary and asks whether to proceed to deployment
+**Action:** Checks if current module is 11 (deployment), then displays packaging-complete summary and asks whether to proceed to deployment or stop
 **Use case:** Enforces the packaging-to-deployment phase gate — prevents the agent from blending packaging and deployment phases together
 
-### 17. Enforce Module 8 Visualization Offers (`enforce-visualization-offers.kiro.hook`) ⭐
+### 17. Enforce Visualization Offers (`enforce-visualization-offers.kiro.hook`) ⭐
 
 **Trigger:** When the agent finishes working (agentStop)
-**Action:** Checks if current module is 8, then verifies both visualization offers (entity graph and results dashboard) were made during the interaction
-**Use case:** Safety net for Module 8 — catches missed visualization offers before the agent closes the conversation
-**Recommended:** Install for Module 8
+**Action:** Checks if current module is 7, then verifies both visualization offers (entity graph and results dashboard) were made during the interaction
+**Use case:** Safety net for Module 7 — catches missed visualization offers before the agent closes the conversation
+**Recommended:** Install for Module 7
 
 ### 18. Enforce Feedback File Path (`enforce-feedback-path.kiro.hook`)
 
@@ -196,14 +197,14 @@ You can customize any hook by editing the JSON file:
 - ✅ Code Style Check
 - ✅ Backup Before Load
 
-### Module 8 (Query Programs)
+### Module 7 (Query & Visualize)
 
 - ✅ Code Style Check
-- ✅ Enforce Module 8 Visualization Offers
+- ✅ Enforce Visualization Offers
 
-### Module 12 (Deployment)
+### Module 11 (Deployment)
 
-- ✅ Module 12 Phase Gate
+- ✅ Deployment Phase Gate
 
 ## Troubleshooting
 

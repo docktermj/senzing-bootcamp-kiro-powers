@@ -1,5 +1,6 @@
 ---
 inclusion: manual
+description: "Step-by-step workflow for adding a new Python script to the power"
 ---
 
 # Workflow: Add a New Script

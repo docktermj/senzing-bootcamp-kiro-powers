@@ -124,11 +124,11 @@ Prompt: "A new bootcamp source file was created. Before moving to the next step,
 - name: `Verify Generated Code Runs`
 - description: `When bootcamp source code is created, prompts the agent to run it on sample data and report results before moving on.`
 
-**enforce-visualization-offers** — Module 8 (agentStop → askAgent)
+**enforce-visualization-offers** — Module 7 (agentStop → askAgent)
 
-Prompt: "First, read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 8, do nothing — let the conversation end normally.
+Prompt: "First, read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 7, do nothing — let the conversation end normally.
 
-If the current module IS 8, review the conversation history and check whether you offered BOTH of these visualizations during this interaction:
+If the current module IS 7, review the conversation history and check whether you offered BOTH of these visualizations during this interaction:
 
 1. **Entity graph visualization** — an interactive force-directed network graph of resolved entities (offered after exploratory queries in step 3)
 2. **Results dashboard** — an HTML page showing query results and validation metrics (offered after documenting findings in step 7)
@@ -139,7 +139,7 @@ If EITHER visualization was NOT offered, display this message:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📊  MODULE 8 VISUALIZATION CHECK
+📊  MODULE 7 VISUALIZATION CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -151,20 +151,20 @@ Then, for each visualization that was NOT offered, ask the bootcamper:
 WAIT for the bootcamper's response before finishing. They may accept or decline — both are fine."
 
 - id: `enforce-visualization-offers`
-- name: `Enforce Module 8 Visualization Offers`
-- description: `When the agent stops during Module 8, checks whether both visualization offers (entity graph and results dashboard) were made. If either was missed, prompts the agent to offer it before closing.`
+- name: `Enforce Visualization Offers`
+- description: `When the agent stops during Module 7, checks whether both visualization offers (entity graph and results dashboard) were made. If either was missed, prompts the agent to offer it before closing.`
 
-**offer-visualization** — Module 8 (fileCreated → askAgent, filePatterns: `src/query/*`)
+**offer-visualization** — Module 7 (fileCreated → askAgent, filePatterns: `src/query/*`)
 
-Prompt: "A query program was just created. If the bootcamper is in Module 8 and hasn't been offered the entity graph visualization yet, offer it: 'Would you like me to help you build an interactive entity graph visualization? It shows resolved entities as a force-directed network graph with clustering, search, and detail panels. I can create a self-contained HTML file you can open in any browser.' If they accept, load steering file visualization-guide.md and follow its workflow."
+Prompt: "A query program was just created. If the bootcamper is in Module 7 and hasn't been offered the entity graph visualization yet, offer it: 'Would you like me to help you build an interactive entity graph visualization? It shows resolved entities as a force-directed network graph with clustering, search, and detail panels. I can create a self-contained HTML file you can open in any browser.' If they accept, load steering file visualization-guide.md and follow its workflow."
 
 - id: `offer-visualization`
 - name: `Offer Entity Graph Visualization`
-- description: `After query programs are created in Module 8, prompts the agent to offer generating an interactive entity graph visualization.`
+- description: `After query programs are created in Module 7, prompts the agent to offer generating an interactive entity graph visualization.`
 
-**module12-phase-gate** — Module 11 (postTaskExecution → askAgent)
+**deployment-phase-gate** — Module 11 (postTaskExecution → askAgent)
 
-Prompt: "First, read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 12, do nothing — let the conversation continue normally. If the current module IS 12, do the following:
+Prompt: "First, read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 11 and NOT 12, do nothing — let the conversation continue normally. If the current module IS 11 or 12, do the following:
 
 Display a clear packaging-complete summary:
 
@@ -190,9 +190,9 @@ Then ask: "Ready to deploy now, or prefer to stop here and deploy later on your 
 
 WAIT for the bootcamper's response. Do NOT proceed to any deployment steps (Steps 12–15) until the bootcamper explicitly says they want to deploy."
 
-- id: `module12-phase-gate`
-- name: `Module 12 Phase Gate`
-- description: `After packaging tasks complete in Module 12, displays a phase gate prompt asking the bootcamper whether to proceed to deployment or stop. Checks config/bootcamp_progress.json to confirm the current module is 12 before acting.`
+- id: `deployment-phase-gate`
+- name: `Deployment Phase Gate`
+- description: `After packaging tasks complete in Module 11, displays a phase gate prompt asking the bootcamper whether to proceed to deployment or stop. Checks config/bootcamp_progress.json to confirm the current module is 11 or 12 before acting.`
 
 **backup-project-on-request** — any module (userTriggered → askAgent)
 

@@ -1,5 +1,6 @@
 ---
 inclusion: manual
+description: "Step-by-step workflow for adding a new bootcamp module"
 ---
 
 # Workflow: Add a New Bootcamp Module

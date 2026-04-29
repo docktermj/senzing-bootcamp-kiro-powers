@@ -1,7 +1,7 @@
 """
 Preservation property tests for bootcamp UX steering files.
 
-These tests capture the baseline content of UNFIXED steering files.
+These tests capture the baseline content of steering files.
 They MUST pass on both unfixed and fixed code — any failure after the fix
 indicates a regression in content that should have been preserved.
 
@@ -23,19 +23,19 @@ def _read(filename: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# module-01-quick-demo.md — Preservation of module close & Module 2 transition
+# module-03-quick-demo.md — Preservation of module close & Module 1 transition
 # ---------------------------------------------------------------------------
 
-class TestModule01Preservation:
-    """Preserve module close statement and Module 2 transition questions."""
+class TestModule03Preservation:
+    """Preserve module close statement and Module 1 transition questions."""
 
     @pytest.fixture(autouse=True)
     def load_content(self):
-        self.content = _read("module-01-quick-demo.md")
+        self.content = _read("module-03-quick-demo.md")
 
     def test_explicit_module_close_statement(self):
-        """Module close text 'That's Module 1 complete!' must survive the fix."""
-        assert "That's Module 1 complete!" in self.content
+        """Module close text 'That's Module 3 complete!' must survive the fix."""
+        assert "That's Module 3 complete!" in self.content
 
     def test_purpose_summary(self):
         """Purpose summary about verifying end-to-end system must survive."""
@@ -48,11 +48,10 @@ class TestModule01Preservation:
         """Reference to module-completion.md workflow must survive."""
         assert "module-completion.md" in self.content
 
-
-    def test_module2_transition_contrast(self):
-        """Module 2 transition contrast statement must survive."""
+    def test_module1_transition_contrast(self):
+        """Module 1 transition contrast statement must survive."""
         assert (
-            "Starting with Module 2, we shift to YOUR use case"
+            "Starting with Module 1, we shift to YOUR use case"
             in self.content
         )
 
@@ -78,7 +77,7 @@ class TestModule01Preservation:
         )
 
     def test_open_ended_preview(self):
-        """Module 2 open-ended approach preview must be present in transition."""
+        """Module 1 open-ended approach preview must be present in transition."""
         assert (
             "describe the problem you're trying to solve in your own words"
             in self.content
@@ -157,14 +156,14 @@ class TestModuleCompletionPreservation:
         assert "**Bootcamper's takeaway:**" in self.content
 
     # Reflection question
-    def test_reflection_question_emoji(self):
-        """Reflection question must retain 👉 emoji."""
-        assert "👉" in self.content
+    def test_reflection_question_section(self):
+        """Reflection Question section must exist."""
+        assert "## Reflection Question" in self.content
 
     def test_reflection_question_text(self):
-        """Reflection question text must survive."""
+        """Reflection question text about main takeaway must survive."""
         assert (
-            "What's your main takeaway from this module"
+            "main takeaway from the module"
             in self.content
         )
 

@@ -19,8 +19,15 @@ import pytest
 _POWER_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 
 _MODULE_5_STEERING = _POWER_ROOT / "steering" / "module-05-data-quality-mapping.md"
+_MODULE_5_PHASE3 = _POWER_ROOT / "steering" / "module-05-phase3-test-load.md"
 _MODULE_5_DOCS = _POWER_ROOT / "docs" / "modules" / "MODULE_5_DATA_QUALITY_AND_MAPPING.md"
 _MODULE_6_STEERING = _POWER_ROOT / "steering" / "module-06-load-data.md"
+_MODULE_6_PHASE_FILES = [
+    _POWER_ROOT / "steering" / "module-06-phaseA-build-loading.md",
+    _POWER_ROOT / "steering" / "module-06-phaseB-load-first-source.md",
+    _POWER_ROOT / "steering" / "module-06-phaseC-multi-source.md",
+    _POWER_ROOT / "steering" / "module-06-phaseD-validation.md",
+]
 _MODULE_6_DOCS = _POWER_ROOT / "docs" / "modules" / "MODULE_6_LOAD_DATA.md"
 _MODULE_7_STEERING = _POWER_ROOT / "steering" / "module-07-query-validation.md"
 _MODULE_7_DOCS = _POWER_ROOT / "docs" / "modules" / "MODULE_7_QUERY_VALIDATION.md"
@@ -30,6 +37,15 @@ _POWER_MD = _POWER_ROOT / "POWER.md"
 def _read(path: Path) -> str:
     """Read a file and return its content as a string."""
     return path.read_text(encoding="utf-8")
+
+
+def _read_module6_all() -> str:
+    """Read the Module 6 parent file plus all phase sub-files."""
+    parts = [_read(_MODULE_6_STEERING)]
+    for f in _MODULE_6_PHASE_FILES:
+        if f.exists():
+            parts.append(_read(f))
+    return "\n".join(parts)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -44,7 +60,8 @@ class TestModule5SteeringPhase3:
 
     @pytest.fixture(autouse=True)
     def _load(self):
-        self.content = _read(_MODULE_5_STEERING)
+        # Phase 3 content is in the sub-file; combine parent + sub-file
+        self.content = _read(_MODULE_5_STEERING) + "\n" + _read(_MODULE_5_PHASE3)
 
     def test_phase3_section_exists(self):
         """Phase 3 section exists with 'Test Load and Validate' title."""
@@ -168,7 +185,7 @@ class TestModule6ProductionFocus:
 
     @pytest.fixture(autouse=True)
     def _load(self):
-        self.steering = _read(_MODULE_6_STEERING)
+        self.steering = _read_module6_all()
         self.docs = _read(_MODULE_6_DOCS)
 
     # --- Steering file checks ---
@@ -231,7 +248,7 @@ class TestModule7ProductionFocus:
 
     @pytest.fixture(autouse=True)
     def _load(self):
-        self.steering = _read(_MODULE_6_STEERING)
+        self.steering = _read_module6_all()
         self.docs = _read(_MODULE_6_DOCS)
 
     # --- Steering file checks ---

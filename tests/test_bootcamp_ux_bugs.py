@@ -14,14 +14,14 @@ import pytest
 
 STEERING_DIR = Path("senzing-bootcamp/steering")
 
-MODULE_01 = STEERING_DIR / "module-01-quick-demo.md"
+MODULE_03 = STEERING_DIR / "module-03-quick-demo.md"
 MODULE_TRANSITIONS = STEERING_DIR / "module-transitions.md"
 MODULE_COMPLETION = STEERING_DIR / "module-completion.md"
 
 
 @pytest.fixture
-def module_01_content():
-    return MODULE_01.read_text()
+def module_03_content():
+    return MODULE_03.read_text()
 
 
 @pytest.fixture
@@ -35,7 +35,7 @@ def module_completion_content():
 
 
 # ---------------------------------------------------------------------------
-# Bug 1 — Visualization step ordering (module-01-quick-demo.md)
+# Bug 1 — Visualization step ordering (module-03-quick-demo.md)
 # Validates: Requirements 1.1, 2.1
 # ---------------------------------------------------------------------------
 
@@ -54,10 +54,10 @@ class TestBug1VisualizationStepOrdering:
             for m in re.finditer(r"^(\d+)\.\s+(.+?)(?=\n\d+\.\s|\Z)", phase2, re.MULTILINE | re.DOTALL)
         ]
 
-    def test_visualization_is_own_numbered_step(self, module_01_content):
+    def test_visualization_is_own_numbered_step(self, module_03_content):
         """Visualization offer must be a separate numbered step, not a
         sub-point of the 'Explain results' step."""
-        steps = self._phase2_steps(module_01_content)
+        steps = self._phase2_steps(module_03_content)
         # Find a step whose primary text is about offering visualization
         # (not one where visualization is buried as a sub-point of another step)
         viz_steps = [
@@ -70,10 +70,10 @@ class TestBug1VisualizationStepOrdering:
             "It appears to be embedded as a sub-point of another step."
         )
 
-    def test_visualization_step_before_module_close(self, module_01_content):
+    def test_visualization_step_before_module_close(self, module_03_content):
         """The visualization step number must be less than the module-close
         step number."""
-        steps = self._phase2_steps(module_01_content)
+        steps = self._phase2_steps(module_03_content)
 
         viz_num = None
         close_num = None
@@ -81,7 +81,7 @@ class TestBug1VisualizationStepOrdering:
             if re.search(r"(?i)(offer\s+visualization|create\s+a\s+web\s+page)", txt) \
                and not re.search(r"(?i)^.*explain\s+results", txt[:80]):
                 viz_num = num
-            if re.search(r"(?i)close\s+module\s+1", txt):
+            if re.search(r"(?i)close\s+module\s+3", txt):
                 close_num = num
 
         assert viz_num is not None, "Visualization step not found as its own step"
@@ -90,11 +90,13 @@ class TestBug1VisualizationStepOrdering:
             f"Visualization step ({viz_num}) must come before module close step ({close_num})"
         )
 
-    def test_visualization_must_complete_before_close(self, module_01_content):
+    def test_visualization_must_complete_before_close(self, module_03_content):
         """The file must contain instruction text requiring visualization to
         complete before module close."""
         assert re.search(
-            r"(?i)must\s+complete\s+before\s+(closing|close)", module_01_content
+            r"(?i)must\s+complete\s+before\s+(closing|close)", module_03_content
+        ) or re.search(
+            r"(?i)MUST\s+complete\s+before\s+closing", module_03_content
         ), (
             "Missing instruction requiring visualization to complete before "
             "closing the module."
@@ -180,23 +182,23 @@ class TestBug3TabularJourneyMap:
 
 class TestBug4VagueExploreOption:
     """The Explore option must mention visualization, entity examination,
-    or attribute search for Module 1, and a Module 1 special-case note
+    or attribute search for Module 3, and a Module 3 special-case note
     must exist."""
 
     def test_explore_mentions_visualization(self, module_completion_content):
         """The Explore option must mention visualization, entity examination,
-        or attribute search for Module 1."""
+        or attribute search."""
         assert re.search(
             r"(?i)(visualiz|entity|entities|match\s+explanation|attribute\s+search|search\s+by\s+attribute)",
             module_completion_content,
         ), (
             "Explore option does not mention visualization, entity examination, "
-            "or attribute search for Module 1"
+            "or attribute search"
         )
 
-    def test_module1_special_case_note(self, module_completion_content):
-        """A Module 1 special-case note must exist in the next-step options
+    def test_module3_special_case_note(self, module_completion_content):
+        """A Module 3 special-case note must exist in the next-step options
         section."""
         assert re.search(
-            r"(?i)module\s+1\s+special\s+case", module_completion_content
-        ), "No Module 1 special-case note found in the next-step options section"
+            r"(?i)module\s+3\s+special\s+case", module_completion_content
+        ), "No Module 3 special-case note found in the next-step options section"

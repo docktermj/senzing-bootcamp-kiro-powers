@@ -63,6 +63,82 @@ inclusion: manual
 
    Regenerate affected components using the same MCP tools. When done, return to `module-07-query-validation.md`. WAIT for response.
 
+## Offline vs Online
+
+The visualization feature offers two delivery modes: **Static HTML** (offline) and **Web Service** (online). Static HTML produces a self-contained file you can open in any browser with no server, SDK, or network required. Web Service launches a localhost server backed by live Senzing SDK queries, enabling real-time search, entity detail fetching, and data refresh. Choose the mode that fits your environment and goals — the decision matrix below maps common scenarios to the recommended option.
+
+### Decision Matrix
+
+| Scenario | Recommended Mode | Rationale |
+|----------|-----------------|-----------|
+| Sharing results with stakeholders who lack SDK access | Static HTML | Self-contained file, no server needed |
+| Interactive exploration with live SDK queries | Web Service | Real-time entity detail and search |
+| Working without persistent network access | Static HTML | No server or database required |
+| Real-time entity search by attributes | Web Service | Requires live SDK queries |
+| Quick snapshot for documentation purposes | Static HTML | Single file, easy to embed or attach |
+| Iterating on data quality with frequent reloads | Web Service | `/refresh` endpoint avoids re-running extraction |
+
+### Static HTML Capabilities
+
+The following features are fully available in Static HTML mode without any running server or SDK:
+
+- Force-directed graph layout with interactive pan/zoom
+- Cluster highlighting and color coding
+- Local search and filter (within inline data)
+- Detail panel (from inline JSON data)
+- Statistics display (entity count, relationship count)
+
+### Web Service Capabilities
+
+The following features require a running Senzing SDK and database (Web Service mode only):
+
+- Live entity detail fetching via `/entity/{entityId}`
+- Real-time search by attributes via `/search`
+- Data refresh via the `/refresh` endpoint
+
+### Static HTML Limitations
+
+Static HTML mode has the following limitations:
+
+- No live entity detail fetching
+- No real-time search by attributes
+- No data refresh without re-running the extraction script
+- Data size limited by browser memory for inline JSON
+- Recommended maximum: **500 entities** (consistent with the existing warning threshold — see Error Handling Guidance)
+
+### Static HTML Feature Parity
+
+Despite the limitations above, Static HTML retains full feature parity for:
+
+- Force layout (D3.js v7 force simulation with drag, zoom, pan)
+- Cluster highlighting (data source coloring, match strength coloring)
+- Local search and filter (text input filtering by name or record ID)
+- Detail panel (from inline JSON data)
+- Statistics display (entity count, relationship count, cross-source match rate)
+
+### Data Staleness and Refresh
+
+- **Static HTML:** Data becomes stale after generation. To update the visualization with new or changed data, re-run the extraction script and regenerate the HTML file.
+- **Web Service:** Provides live data refresh via the `/refresh` endpoint. Click the refresh button to re-query the SDK and update the displayed data without re-running extraction or reloading the page.
+
+### Web Service Prerequisites
+
+To use Web Service mode, your environment must meet these prerequisites:
+
+1. **Senzing SDK installed and configured** — Module 2 complete
+2. **Database populated with data** — Module 6 complete
+3. **Available port on localhost** — default 8080
+
+The server process must remain running for the duration of the visualization session. See the [Lifecycle Management](#lifecycle-management) section for start, stop, and troubleshooting instructions.
+
+> **Agent guidance:** If the bootcamper's environment lacks any Web Service prerequisite, recommend Static HTML mode and explain which prerequisite is missing. For example: "Your environment doesn't have the Senzing SDK configured yet (Module 2). I recommend using Static HTML mode for now — it produces a self-contained file that works without the SDK."
+
+### MCP Offline Fallback
+
+For general guidance on what operations work without MCP connectivity, see [`mcp-offline-fallback.md`](mcp-offline-fallback.md).
+
+> **Agent guidance — MCP unavailable:** When the MCP server is unavailable, recommend Static HTML mode. Web Service mode requires SDK connectivity, which depends on MCP for code generation and SDK reference lookups. Explain to the bootcamper: "The MCP server isn't available right now, so Web Service mode can't be set up. I recommend Static HTML mode — it produces a self-contained visualization file that works without any server or SDK connection."
+
 ## Graph Data Model Schema
 
 Top-level: `{ "metadata": {...}, "nodes": [EntityNode], "edges": [RelationshipEdge] }`

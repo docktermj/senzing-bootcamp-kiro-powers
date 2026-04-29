@@ -36,6 +36,17 @@ Retry once. If still failing, load `mcp-offline-fallback.md` for what's blocked 
 
 Load per-module steering file when user starts that module (1→`module-01-business-problem.md` through 11→`module-11-deployment.md`). After Module 1: `complexity-estimator.md`. At 7→8 gate: `cloud-provider-setup.md`. At track end: `lessons-learned.md`. On errors: `common-pitfalls.md`.
 
+**Phase-level loading for split modules:** Some large modules (currently 5 and 6) are split into phase-level sub-files. When entering a split module:
+
+1. Check `steering-index.yaml` — if the module entry has a `root` and `phases` map (instead of a simple filename), it is a split module.
+2. Load the root file first (contains preamble, prerequisites, and phase manifest).
+3. Read `current_step` from `config/bootcamp_progress.json` and find the phase whose `step_range` in `steering-index.yaml` contains that step.
+4. Load only the sub-file for the current phase.
+5. On phase transition (when `current_step` crosses a phase boundary), unload the previous phase's sub-file before loading the next phase's sub-file.
+6. If a sub-file cannot be found at the expected path, fall back to loading the root file and log a warning that the sub-file is missing.
+
+**Session resume with split modules:** When resuming a session mid-module via `session-resume.md`, the agent reads `current_step` from `bootcamp_progress.json` (Step 1). If the current module has a `phases` entry in `steering-index.yaml`, use `current_step` to determine the phase and load only that sub-file instead of the full module. If `current_step` is absent or doesn't fall within any phase's `step_range`, load the root file only.
+
 **At every module start:** Read `config/bootcamp_progress.json` first (this triggers `module-transitions.md` loading), then display the module start banner, journey map, and before/after framing BEFORE doing any module-specific work. Never skip these — they orient the user.
 
 Module 11 platform files: load `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target.
@@ -69,6 +80,8 @@ When a hook check passes with no action needed, produce no output. Do not acknow
 ## Context Budget
 
 Before loading any steering file, check `steering-index.yaml` `file_metadata` for `token_count` and `size_category`. Track cumulative tokens throughout the session. Prefer `small`/`medium` files over `large`.
+
+**Phase-level token costs for split modules:** For modules with a `phases` entry in `steering-index.yaml`, use the phase-level `token_count` from the `phases` map instead of the monolithic file count. The root file token count is always loaded when entering the module; the phase sub-file token count is additive. This means the total cost for a split module at any point is: root file tokens + current phase sub-file tokens.
 
 - **Warn (120k tokens):** Load only files relevant to current module/question. Defer supplementary files.
 - **Critical (160k tokens):** Unload non-essential files before loading new ones.

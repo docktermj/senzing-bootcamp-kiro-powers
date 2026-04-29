@@ -23,6 +23,12 @@ jobs:
         run: python senzing-bootcamp/scripts/measure_steering.py --check
       - name: Validate CommonMark
         run: python senzing-bootcamp/scripts/validate_commonmark.py
+      - name: Verify hook registry is in sync
+        run: |
+          python senzing-bootcamp/scripts/sync_hook_registry.py --verify || {
+            echo "::error::Hook registry is out of sync. Run: python senzing-bootcamp/scripts/sync_hook_registry.py --write"
+            exit 1
+          }
       - name: Run tests
         run: |
           pip install pytest hypothesis

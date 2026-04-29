@@ -1,0 +1,103 @@
+metadata:
+  version: "1.0.0"
+  last_updated: "2025-07-15"
+
+modules:
+  1:
+    name: "Business Problem"
+    requires: []
+    skip_if: null
+  2:
+    name: "SDK Setup"
+    requires: []
+    skip_if: "SDK already installed and configured"
+  3:
+    name: "Quick Demo"
+    requires: [2]
+    skip_if: "Already familiar with Senzing"
+  4:
+    name: "Data Collection"
+    requires: [1]
+    skip_if: null
+  5:
+    name: "Data Quality & Mapping"
+    requires: [4]
+    skip_if: "All sources Entity Specification-compliant"
+  6:
+    name: "Load Data"
+    requires: [2, 5]
+    skip_if: "Data already loaded"
+  7:
+    name: "Query & Visualize"
+    requires: [6]
+    skip_if: "Already validated"
+  8:
+    name: "Performance"
+    requires: [7]
+    skip_if: "Not needed for POC"
+  9:
+    name: "Security"
+    requires: [8]
+    skip_if: "Internal-only with no sensitive data"
+  10:
+    name: "Monitoring"
+    requires: [9]
+    skip_if: "Not deploying to production"
+  11:
+    name: "Deployment"
+    requires: [10]
+    skip_if: "Not deploying to production"
+
+tracks:
+  quick_demo:
+    name: "Quick Demo"
+    description: "Fastest path to see Senzing in action"
+    modules: [1, 2, 3]
+  fast_track:
+    name: "Fast Track"
+    description: "Skip to loading and querying data"
+    modules: [1, 2, 6, 7]
+  complete_beginner:
+    name: "Complete Beginner"
+    description: "Full guided path through all modules"
+    modules: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  full_production:
+    name: "Full Production"
+    description: "Complete path including deployment"
+    modules: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+gates:
+  "1->2":
+    requires:
+      - "Problem documented, sources identified, criteria defined"
+  "2->3":
+    requires:
+      - "SDK installed, DB configured, test passes"
+  "3->4":
+    requires:
+      - "Demo completed or skipped"
+  "4->5":
+    requires:
+      - "Sources collected, files in data/raw/"
+  "5->6":
+    requires:
+      - "Sources evaluated, mapped, programs tested, quality >70%"
+  "6->7":
+    requires:
+      - "Sources loaded, no critical errors"
+  "7->8":
+    requires:
+      - "Queries answer business problem"
+  "8->9":
+    requires:
+      - "Baselines captured, bottlenecks documented"
+  "9->10":
+    requires:
+      - "Security checklist complete, no critical vulns"
+  "10->11":
+    requires:
+      - "Monitoring configured, health checks passing"
+
+# Implicit rule: Module 2 (SDK Setup) is automatically inserted before
+# any module that requires the SDK. This is encoded in the module
+# prerequisites — modules 3, 6 (and transitively 7-11) require Module 2.

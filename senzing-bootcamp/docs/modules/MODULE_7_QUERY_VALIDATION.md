@@ -31,6 +31,8 @@ By the end of this module, you will:
 4. Create overlap reports to analyze cross-source matching
 5. Build visualizations of entity resolution results
 
+> **Offline vs Online Visualization:** Static HTML visualizations work fully offline — no server or SDK needed at view time. The web service mode requires a running Senzing SDK and database. See the "Offline vs Online" section in [`steering/visualization-guide.md`](../../steering/visualization-guide.md) for a decision matrix, capabilities comparison, and prerequisites.
+
 ## Key Concepts
 
 ### Query Types

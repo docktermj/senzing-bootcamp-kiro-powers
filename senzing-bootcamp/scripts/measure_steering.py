@@ -114,9 +114,14 @@ def update_index(index_path, file_metadata, total_tokens):
     Uses string manipulation (no PyYAML) to keep existing YAML byte-identical.
     """
     index_path = Path(index_path)
+    split_threshold = None
 
     if index_path.exists():
         content = load_yaml_content(index_path)
+        # Check for split_threshold_tokens before truncating
+        threshold_match = re.search(r"split_threshold_tokens:\s*(\d+)", content)
+        if threshold_match:
+            split_threshold = threshold_match.group(1)
         # Find where file_metadata starts (if it already exists) and truncate there
         fm_pos = _find_section_start(content, "file_metadata")
         if fm_pos >= 0:
@@ -143,6 +148,11 @@ def update_index(index_path, file_metadata, total_tokens):
     lines.append("  reference_window: 200000")
     lines.append("  warn_threshold_pct: 60")
     lines.append("  critical_threshold_pct: 80")
+
+    # Preserve split_threshold_tokens if it existed in the original content
+    if split_threshold is not None:
+        lines.append(f"  split_threshold_tokens: {split_threshold}")
+
     lines.append("")
 
     new_content = preserved + "\n".join(lines)

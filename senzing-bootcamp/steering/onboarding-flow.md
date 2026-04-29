@@ -119,6 +119,10 @@ Present the overview before track selection. Cover all points naturally:
 
 ## 5. Track Selection
 
+> **Authoritative source:** Track definitions are derived from
+> `config/module-dependencies.yaml`. To update tracks, edit the dependency graph
+> first, then run `python scripts/validate_dependencies.py` to verify consistency.
+
 Present tracks — not mutually exclusive, all completed modules carry forward:
 
 - **A) Quick Demo** — 2→3. Verify technology works. One session.
@@ -139,6 +143,11 @@ All completed modules carry forward. Read the appropriate progress file — in t
 Update preferences. Warn: existing code in `src/` must be regenerated. Data/docs/config unaffected. Don't mix languages.
 
 ## Validation Gates
+
+> **Authoritative source:** Gate conditions are derived from
+> `config/module-dependencies.yaml`. To update gate conditions, edit the
+> dependency graph first, then run `python scripts/validate_dependencies.py` to
+> verify consistency.
 
 Run `validate_module.py --module N` before proceeding. Update `bootcamp_progress.json` and `bootcamp_preferences.yaml`. Every 3 modules: progress bar.
 

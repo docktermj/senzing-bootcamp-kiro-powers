@@ -4,8 +4,47 @@ modules:
   2: module-02-sdk-setup.md
   3: module-03-quick-demo.md
   4: module-04-data-collection.md
-  5: module-05-data-quality-mapping.md
-  6: module-06-load-data.md
+  5:
+    root: module-05-data-quality-mapping.md
+    phases:
+      phase1-quality-assessment:
+        file: module-05-phase1-quality-assessment.md
+        token_count: 1684
+        size_category: medium
+        step_range: [1, 7]
+      phase2-data-mapping:
+        file: module-05-phase2-data-mapping.md
+        token_count: 1769
+        size_category: medium
+        step_range: [8, 20]
+      phase3-test-load-validate:
+        file: module-05-phase3-test-load.md
+        token_count: 1676
+        size_category: medium
+        step_range: [21, 26]
+  6:
+    root: module-06-load-data.md
+    phases:
+      phaseA-build-loading-program:
+        file: module-06-phaseA-build-loading.md
+        token_count: 662
+        size_category: medium
+        step_range: [1, 3]
+      phaseB-load-first-source:
+        file: module-06-phaseB-load-first-source.md
+        token_count: 1194
+        size_category: medium
+        step_range: [4, 10]
+      phaseC-multi-source-orchestration:
+        file: module-06-phaseC-multi-source.md
+        token_count: 1428
+        size_category: medium
+        step_range: [11, 19]
+      phaseD-validation:
+        file: module-06-phaseD-validation.md
+        token_count: 5160
+        size_category: large
+        step_range: [20, 27]
   7: module-07-query-validation.md
   8: module-08-performance.md
   9: module-09-security.md
@@ -57,7 +96,7 @@ deployment:
 
 file_metadata:
   agent-instructions.md:
-    token_count: 1528
+    token_count: 1958
     size_category: medium
   cloud-provider-setup.md:
     token_count: 784
@@ -99,7 +138,7 @@ file_metadata:
     token_count: 1487
     size_category: medium
   hook-registry.md:
-    token_count: 3430
+    token_count: 3869
     size_category: large
   lang-csharp.md:
     token_count: 828
@@ -120,13 +159,13 @@ file_metadata:
     token_count: 434
     size_category: small
   mcp-offline-fallback.md:
-    token_count: 1919
-    size_category: medium
+    token_count: 2063
+    size_category: large
   module-01-business-problem.md:
     token_count: 2771
     size_category: large
   module-02-sdk-setup.md:
-    token_count: 2814
+    token_count: 2816
     size_category: large
   module-03-quick-demo.md:
     token_count: 1907
@@ -135,10 +174,31 @@ file_metadata:
     token_count: 2561
     size_category: large
   module-05-data-quality-mapping.md:
-    token_count: 5355
-    size_category: large
+    token_count: 317
+    size_category: small
+  module-05-phase1-quality-assessment.md:
+    token_count: 1684
+    size_category: medium
+  module-05-phase2-data-mapping.md:
+    token_count: 1769
+    size_category: medium
+  module-05-phase3-test-load.md:
+    token_count: 1676
+    size_category: medium
   module-06-load-data.md:
-    token_count: 9176
+    token_count: 858
+    size_category: medium
+  module-06-phaseA-build-loading.md:
+    token_count: 662
+    size_category: medium
+  module-06-phaseB-load-first-source.md:
+    token_count: 1194
+    size_category: medium
+  module-06-phaseC-multi-source.md:
+    token_count: 1428
+    size_category: medium
+  module-06-phaseD-validation.md:
+    token_count: 5160
     size_category: large
   module-07-query-validation.md:
     token_count: 2143
@@ -159,13 +219,13 @@ file_metadata:
     token_count: 881
     size_category: medium
   module-prerequisites.md:
-    token_count: 1064
+    token_count: 1127
     size_category: medium
   module-transitions.md:
     token_count: 699
     size_category: medium
   onboarding-flow.md:
-    token_count: 2486
+    token_count: 2602
     size_category: large
   project-structure.md:
     token_count: 399
@@ -186,11 +246,12 @@ file_metadata:
     token_count: 576
     size_category: medium
   visualization-guide.md:
-    token_count: 3618
+    token_count: 4751
     size_category: large
 
 budget:
-  total_tokens: 74725
+  total_tokens: 77269
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80
+  split_threshold_tokens: 5000

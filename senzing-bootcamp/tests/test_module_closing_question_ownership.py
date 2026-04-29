@@ -419,55 +419,14 @@ _HEADINGS_MODULE_04 = [
 
 _HEADINGS_MODULE_05 = [
     "# Module 5: Data Quality & Mapping",
-    "## Phase 1 \u2014 Quality Assessment",
-    "### Workflow: Verify Data Sources Against the Entity Specification",
-    "### Quality Gate \u2014 Iterate vs. Proceed",
-    "## Phase 2 \u2014 Data Mapping",
-    "### Workflow (per data source)",
-    "## Phase 3 \u2014 Test Load and Validate (Optional)",
-    "### Workflow (per data source that completed Phase 2)",
-    "## Mapping State Checkpointing",
-    "## Rules",
-    "## Interpreting `analyze_record` Results",
-    "## Encoding",
-    "## Workflow: Install Senzing Bootcamp Hooks",
+    "## Phase Sub-Files",
 ]
 
 _HEADINGS_MODULE_06 = [
     "# Module 6: Load Data",
     "## Conditional Workflow: Check Phase 3 Status",
     "## Agent Workflow",
-    "## Phase A: Build Loading Program",
-    "## Phase B: Load First Source",
-    "## Phase C: Multi-Source Orchestration (Conditional \u2014 2+ Data Sources)",
-    "## Phase D: Validation",
-    "### Single-Source Validation (Always)",
-    "### Cross-Source Validation (Conditional \u2014 2+ Sources Loaded)",
-    "### Document Results and Complete (Always)",
-    "## Recovery from Failed Load",
-    "### Multi-Source Recovery (Phase C)",
-    "## Iterate vs. Proceed Decision Gate",
-    "## Stakeholder Summary",
-    "## Reference Material",
-    "### Source Ordering Heuristics",
-    "### Source Ordering Examples",
-    "#### Customer 360 (Quality-First)",
-    "#### Compliance Screening (Reference-First)",
-    "### Orchestration Patterns",
-    "#### Pattern 1: Sequential Loading",
-    "#### Pattern 2: Parallel Loading (Independent Sources)",
-    "#### Pattern 3: Dependency-Aware Loading",
-    "#### Pattern 4: Pipeline Loading",
-    "### Error Handling Strategies",
-    "### Conflict Resolution",
-    "### Troubleshooting Quick Reference",
-    "### Performance Benchmarks",
-    "### Common Issues",
-    "### Pre-Load Validation Checklist",
-    "### Per-Source Failure Isolation",
-    "### Common Error Scenarios",
-    "## Success Criteria",
-    "### Additional criteria when 2+ sources loaded:",
+    "## Phase Sub-Files",
 ]
 
 _HEADINGS_MODULE_07 = [
@@ -560,25 +519,25 @@ _KEY_CONTENT_MODULE_04: list[str] = [
 ]
 
 _KEY_CONTENT_MODULE_05: list[str] = [
-    "mapping_workflow",
-    "quality_score",
-    "Entity Specification",
-    "analyze_record",
-    "data_sources.yaml",
-    "transformation_lineage",
-    "mapping_state",
-    "Quality Gate",
+    "Quality Assessment",
+    "Data Mapping",
+    "Phase 3",
+    "Test Load and Validate",
+    "module-05-phase1",
+    "module-05-phase2",
+    "module-05-phase3",
+    "Quality Scoring Methodology",
 ]
 
 _KEY_CONTENT_MODULE_06: list[str] = [
-    "generate_scaffold",
-    "add_records",
+    "production",
     "redo",
-    "database/G2C.db",
     "data_sources.yaml",
-    "results_dashboard.html",
-    "Recovery from Failed Load",
-    "get_entity_by_record_id",
+    "test_load_status",
+    "error handling",
+    "progress tracking",
+    "throughput",
+    "incremental",
 ]
 
 _KEY_CONTENT_MODULE_07: list[str] = [
@@ -639,8 +598,8 @@ _HASH_UNAFFECTED: dict[str, str] = {
 }
 
 _HASH_HOOK = "9a2a78de288bce14c5c5ae1846c9d342eed0b962dad0338e6f034d085247374f"
-_HASH_AGENT_INSTRUCTIONS = "ff48ab3cf8517b7107908c44ec58eee4f19221c991555519e45c61cd95b2f527"
-_HASH_ONBOARDING_FLOW = "8b71caf29c327ab0a6a45607d42bdf5c8e2529cfccc45ccb965ebcc2791b74ba"
+_HASH_AGENT_INSTRUCTIONS = "e6a07261f6820c53e7d110b1beb49e16d82066f0e087db83d6e0b57e55ca4868"
+_HASH_ONBOARDING_FLOW = "ef4287702e4595ef4c6713f700901b1c0dcc977b5c6ec66e32cbf17112fbd9d7"
 
 
 # ---------------------------------------------------------------------------

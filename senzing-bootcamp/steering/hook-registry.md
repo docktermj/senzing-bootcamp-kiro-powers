@@ -8,6 +8,14 @@ All 18 bootcamp hooks are defined below. The agent reads these definitions and c
 
 ## Critical Hooks (created during onboarding)
 
+**ask-bootcamper** (agentStop → askAgent)
+
+Prompt: "If your previous output already ends with a 👉 question, do nothing. Otherwise, if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
+
+- id: `ask-bootcamper`
+- name: `Ask Bootcamper`
+- description: `Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question.`
+
 **capture-feedback** (promptSubmit → askAgent)
 
 Prompt: "Check if the bootcamper's message contains any of these feedback trigger phrases (case-insensitive): "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue". If NONE of these phrases appear in the message, produce no output at all — do not acknowledge, do not explain, do not print anything. If a trigger phrase IS found, immediately do the following: (1) Read config/bootcamp_progress.json to get the current module number and completed modules. If the file doesn't exist, record module as "Unknown". (2) Note what the bootcamper was doing in the recent conversation. (3) Note which files are open in the editor. (4) Load steering file feedback-workflow.md and follow its complete workflow, pre-filling the context fields with what you just captured. Do NOT ask the bootcamper to re-explain their context — you already have it."
@@ -15,6 +23,32 @@ Prompt: "Check if the bootcamper's message contains any of these feedback trigge
 - id: `capture-feedback`
 - name: `Capture Bootcamp Feedback`
 - description: `Fires on every message submission. Checks for feedback trigger phrases and initiates the feedback workflow with automatic context capture.`
+
+**code-style-check** (fileEdited → askAgent, filePatterns: `*.py, *.java, *.cs, *.rs, *.ts, *.js`)
+
+Prompt: "A source code file was just edited. Check it for language-appropriate coding standards (Python: PEP-8 with max line length 100; Java: standard conventions; C#: .NET conventions; Rust: rustfmt/clippy; TypeScript: ESLint conventions). If violations are found, suggest specific fixes. If compliant, acknowledge briefly and continue."
+
+- id: `code-style-check`
+- name: `Code Style Check`
+- description: `Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions.`
+
+**commonmark-validation** (fileEdited → askAgent, filePatterns: `**/*.md`)
+
+Prompt: "The markdown file that was just edited should be validated for CommonMark compliance. Please check for:
+
+1. MD022: Headings should be surrounded by blank lines
+2. MD040: Fenced code blocks should have a language specified
+3. Bold text followed by colons should use format: **Label:** (with space before colon)
+4. MD031: Fenced code blocks should be surrounded by blank lines
+5. MD032: Lists should be surrounded by blank lines
+
+EXCEPTION: If the file is CHANGELOG.md, ignore MD024 (duplicate headings) — repeated ### Added, ### Changed, ### Fixed, ### Removed headings under different version sections are standard Keep a Changelog format and should not be flagged.
+
+If any issues are found, fix them automatically to maintain CommonMark compliance across all documentation."
+
+- id: `commonmark-validation`
+- name: `CommonMark Validation`
+- description: `Validates that all Markdown files conform to CommonMark standards when edited`
 
 **enforce-feedback-path** (preToolUse → askAgent, toolTypes: write)
 
@@ -40,47 +74,7 @@ Prompt: "If the file contains no Senzing-specific content, or all Senzing conten
 - name: `Verify Senzing Facts Before Writing`
 - description: `Reminds the agent to verify Senzing-specific facts via MCP tools before writing code or documentation that contains Senzing attribute names, SDK method calls, or configuration values.`
 
-**code-style-check** (fileEdited → askAgent, filePatterns: `*.py, *.java, *.cs, *.rs, *.ts, *.js`)
-
-Prompt: "A source code file was just edited. Check it for language-appropriate coding standards (Python: PEP-8 with max line length 100; Java: standard conventions; C#: .NET conventions; Rust: rustfmt/clippy; TypeScript: ESLint conventions). If violations are found, suggest specific fixes. If compliant, acknowledge briefly and continue."
-
-- id: `code-style-check`
-- name: `Code Style Check`
-- description: `Automatically checks source code files for language-appropriate coding standards when edited.`
-
-**ask-bootcamper** (agentStop → askAgent)
-
-Prompt: "If your previous output already ends with a 👉 question, do nothing. Otherwise, if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
-
-- id: `ask-bootcamper`
-- name: `Ask Bootcamper`
-- description: `Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question.`
-
-**commonmark-validation** (fileEdited → askAgent, filePatterns: `**/*.md`)
-
-Prompt: "The markdown file that was just edited should be validated for CommonMark compliance. Please check for: 1. MD022: Headings should be surrounded by blank lines. 2. MD040: Fenced code blocks should have a language specified. 3. Bold text followed by colons should use format: **Label:** (with space before colon). 4. MD031: Fenced code blocks should be surrounded by blank lines. 5. MD032: Lists should be surrounded by blank lines. EXCEPTION: If the file is CHANGELOG.md, ignore MD024 (duplicate headings). If any issues are found, fix them automatically."
-
-- id: `commonmark-validation`
-- name: `CommonMark Validation`
-- description: `Validates that all Markdown files conform to CommonMark standards when edited.`
-
 ## Module Hooks (created when module starts)
-
-**data-quality-check** — Module 5 (fileEdited → askAgent, filePatterns: `src/transform/*.*`)
-
-Prompt: "The transformation program was just updated. Please review the changes and suggest running data quality validation tests to ensure the output still meets quality standards (>70% attribute coverage)."
-
-- id: `data-quality-check`
-- name: `Senzing Data Quality Check`
-- description: `Automatically check data quality when transformation programs are saved.`
-
-**validate-senzing-json** — Module 5 (fileEdited → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
-
-Prompt: "Senzing JSON output was modified. Please use the analyze_record MCP tool to validate a sample of records from this file to ensure they conform to the Senzing Generic Entity Specification."
-
-- id: `validate-senzing-json`
-- name: `Validate Senzing JSON Output`
-- description: `Validate Senzing JSON format when transformation output files are created or modified.`
 
 **analyze-after-mapping** — Module 5 (fileCreated → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
 
@@ -90,13 +84,29 @@ Prompt: "A new Senzing JSON file was created in data/transformed/. Before procee
 - name: `Analyze After Mapping`
 - description: `After completing a mapping task, reminds the agent to validate the transformation output using analyze_record before proceeding to loading.`
 
+**data-quality-check** — Module 5 (fileEdited → askAgent, filePatterns: `src/transform/*.*`)
+
+Prompt: "The transformation program was just updated. Please review the changes and suggest running data quality validation tests to ensure the output still meets quality standards (>70% attribute coverage)."
+
+- id: `data-quality-check`
+- name: `Senzing Data Quality Check`
+- description: `Automatically check data quality when transformation programs are saved`
+
+**validate-senzing-json** — Module 5 (fileEdited → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
+
+Prompt: "Senzing JSON output was modified. Please use the analyze_record MCP tool to validate a sample of records from this file to ensure they conform to the Senzing Generic Entity Specification."
+
+- id: `validate-senzing-json`
+- name: `Validate Senzing JSON Output`
+- description: `Validate Senzing JSON format when transformation output files are created or modified`
+
 **backup-before-load** — Module 6 (fileEdited → askAgent, filePatterns: `src/load/*.*`)
 
 Prompt: "A loading program was modified. Before running this in production, remind the user to backup the database using: python scripts/backup_project.py"
 
 - id: `backup-before-load`
 - name: `Backup Database Before Loading`
-- description: `Remind to backup database before running loading programs.`
+- description: `Remind to backup database before running loading programs`
 
 **run-tests-after-change** — Module 6 (fileEdited → askAgent, filePatterns: `src/load/*.*, src/query/*.*, src/transform/*.*`)
 
@@ -114,6 +124,36 @@ Prompt: "A new bootcamp source file was created. Before moving to the next step,
 - name: `Verify Generated Code Runs`
 - description: `When bootcamp source code is created, prompts the agent to run it on sample data and report results before moving on.`
 
+**enforce-visualization-offers** — Module 8 (agentStop → askAgent)
+
+Prompt: "First, read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 8, do nothing — let the conversation end normally.
+
+If the current module IS 8, review the conversation history and check whether you offered BOTH of these visualizations during this interaction:
+
+1. **Entity graph visualization** — an interactive force-directed network graph of resolved entities (offered after exploratory queries in step 3)
+2. **Results dashboard** — an HTML page showing query results and validation metrics (offered after documenting findings in step 7)
+
+If BOTH were offered (regardless of whether the bootcamper accepted or declined), do nothing — the requirement is satisfied.
+
+If EITHER visualization was NOT offered, display this message:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊  MODULE 8 VISUALIZATION CHECK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Then, for each visualization that was NOT offered, ask the bootcamper:
+
+- If the entity graph was not offered: "Before we wrap up — would you like me to help you build an interactive entity graph? It shows resolved entities as a force-directed network with clustering, search, and detail panels."
+- If the results dashboard was not offered: "Before we wrap up — would you like me to create a web page showing your query results and validation metrics?"
+
+WAIT for the bootcamper's response before finishing. They may accept or decline — both are fine."
+
+- id: `enforce-visualization-offers`
+- name: `Enforce Module 8 Visualization Offers`
+- description: `When the agent stops during Module 8, checks whether both visualization offers (entity graph and results dashboard) were made. If either was missed, prompts the agent to offer it before closing.`
+
 **offer-visualization** — Module 8 (fileCreated → askAgent, filePatterns: `src/query/*`)
 
 Prompt: "A query program was just created. If the bootcamper is in Module 8 and hasn't been offered the entity graph visualization yet, offer it: 'Would you like me to help you build an interactive entity graph visualization? It shows resolved entities as a force-directed network graph with clustering, search, and detail panels. I can create a self-contained HTML file you can open in any browser.' If they accept, load steering file visualization-guide.md and follow its workflow."
@@ -122,21 +162,37 @@ Prompt: "A query program was just created. If the bootcamper is in Module 8 and 
 - name: `Offer Entity Graph Visualization`
 - description: `After query programs are created in Module 8, prompts the agent to offer generating an interactive entity graph visualization.`
 
-**enforce-visualization-offers** — Module 8 (agentStop → askAgent)
-
-Prompt: "First, read config/bootcamp_progress.json and check the current_module field. If the current module is NOT 8, do nothing — let the conversation end normally. If the current module IS 8, review the conversation history and check whether you offered BOTH of these visualizations during this interaction: 1. Entity graph visualization — an interactive force-directed network graph of resolved entities (offered after exploratory queries in step 3). 2. Results dashboard — an HTML page showing query results and summary metrics (offered after documenting findings). If BOTH were offered (regardless of whether the bootcamper accepted or declined), do nothing. If EITHER was NOT offered, ask the bootcamper if they would like that visualization before wrapping up. WAIT for the bootcamper's response before finishing."
-
-- id: `enforce-visualization-offers`
-- name: `Enforce Module 8 Visualization Offers`
-- description: `When the agent stops during Module 8, checks whether both visualization offers were made. If either was missed, prompts the agent to offer it before closing.`
-
 **module12-phase-gate** — Module 11 (postTaskExecution → askAgent)
 
-Prompt: "First, read config/bootcamp_progress.json and check the current_module field. If the current module is NOT 12, do nothing. If the current module IS 12, display a packaging-complete summary showing all packaging steps are done (containerized, multi-env config, CI/CD, checklist, rollback plan) and note that nothing has been deployed yet — it is safe to stop here. Then ask: "Would you like to actually deploy this now, or would you prefer to stop here and deploy later on your own?" WAIT for the bootcamper's response. Do NOT proceed to deployment steps until the bootcamper explicitly says they want to deploy."
+Prompt: "First, read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 12, do nothing — let the conversation continue normally. If the current module IS 12, do the following:
+
+Display a clear packaging-complete summary:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦  PACKAGING PHASE COMPLETE — PHASE GATE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Everything from the packaging phase is done:
+✅ Code containerized (Dockerfile + docker-compose.yml)
+✅ Multi-environment config (dev/staging/prod)
+✅ CI/CD pipeline configured
+✅ Pre-deployment checklist verified
+✅ Rollback plan documented
+
+⚠️  Nothing has been deployed. No changes were made to any
+    target environment. Everything so far was local
+    preparation work. It is completely safe to stop here.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Then ask: "Ready to deploy now, or prefer to stop here and deploy later on your own?"
+
+WAIT for the bootcamper's response. Do NOT proceed to any deployment steps (Steps 12–15) until the bootcamper explicitly says they want to deploy."
 
 - id: `module12-phase-gate`
-- name: `Module 11 Phase Gate`
-- description: `After packaging tasks complete in Module 11, displays a phase gate prompt asking the bootcamper whether to proceed to deployment or stop.`
+- name: `Module 12 Phase Gate`
+- description: `After packaging tasks complete in Module 12, displays a phase gate prompt asking the bootcamper whether to proceed to deployment or stop. Checks config/bootcamp_progress.json to confirm the current module is 12 before acting.`
 
 **backup-project-on-request** — any module (userTriggered → askAgent)
 
@@ -144,7 +200,7 @@ Prompt: "The user wants to back up their project. Run the backup script: python3
 
 - id: `backup-project-on-request`
 - name: `Backup Project on Request`
-- description: `Run project backup when user clicks the hook button.`
+- description: `Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead.`
 
 **git-commit-reminder** — any module (userTriggered → askAgent)
 

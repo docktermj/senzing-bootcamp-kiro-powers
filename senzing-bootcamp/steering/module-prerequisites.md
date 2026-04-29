@@ -6,6 +6,11 @@ inclusion: manual
 
 ## Quick Reference: Dependencies
 
+> **Authoritative source:** The prerequisite data in this table is derived from
+> `config/module-dependencies.yaml`. To update prerequisites, edit the dependency
+> graph first, then run `python scripts/validate_dependencies.py` to verify
+> consistency.
+
 | Module                       | Requires                                                     | Skip if                                          |
 |------------------------------|--------------------------------------------------------------|--------------------------------------------------|
 | 1 — Business Problem         | None                                                         | —                                                |

@@ -334,6 +334,8 @@ Module 8 is complete when:
 - `docs/performance_report.md` - Summary and recommendations
 - `docs/performance_dashboard.html` - Visual dashboard
 
+> **Offline viewing note:** Performance dashboards generated as static HTML (`performance_dashboard.html`) are viewable offline in any browser. However, static dashboards reflect a point-in-time snapshot and do not display live performance data. To see updated metrics, re-run the performance tests and regenerate the dashboard. See the "Offline vs Online" section in [`steering/visualization-guide.md`](../../steering/visualization-guide.md) for more on offline vs online visualization tradeoffs.
+
 ## Related Documentation
 
 - `POWER.md` - Module 8 overview

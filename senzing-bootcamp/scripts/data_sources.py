@@ -17,6 +17,7 @@ from dataclasses import dataclass
 
 # ── Constants ─────────────────────────────────────────────────────────────
 
+CURRENT_SCHEMA_VERSION: str = "2"
 VALID_FORMATS = {"csv", "json", "jsonl", "xlsx", "parquet", "xml", "other"}
 VALID_MAPPING_STATUSES = {"pending", "in_progress", "complete"}
 VALID_LOAD_STATUSES = {"not_loaded", "loading", "loaded", "failed"}
@@ -319,6 +320,73 @@ def _serialize_scalar(value) -> str:
     return str(value)
 
 
+# ── Migration Functions ────────────────────────────────────────────────────
+
+
+def migrate_v1_to_v2(raw: dict) -> dict:
+    """Migrate a version '1' registry dict to version '2'.
+
+    For each source entry:
+      - Adds 'test_load_status': None if missing
+      - Adds 'test_entity_count': None if missing
+      - Preserves all existing fields (including 'issues')
+    Sets version to '2'.
+
+    Args:
+        raw: Registry dict with version '1'.
+
+    Returns:
+        Registry dict with version '2' and backfilled fields.
+    """
+    sources = raw.get("sources", {})
+    if isinstance(sources, dict):
+        for _key, entry in sources.items():
+            if not isinstance(entry, dict):
+                continue
+            if "test_load_status" not in entry:
+                entry["test_load_status"] = None
+            if "test_entity_count" not in entry:
+                entry["test_entity_count"] = None
+    raw["version"] = "2"
+    return raw
+
+
+# ── Migration Chain ───────────────────────────────────────────────────────
+
+
+MIGRATION_CHAIN: dict[str, object] = {
+    "1": migrate_v1_to_v2,
+}
+
+
+def apply_migrations(raw: dict) -> dict:
+    """Apply the migration chain to bring a registry to CURRENT_SCHEMA_VERSION.
+
+    Args:
+        raw: Registry dict at any known version.
+
+    Returns:
+        Registry dict at CURRENT_SCHEMA_VERSION.
+
+    Raises:
+        ValueError: If the version is unrecognized (not in chain and not current).
+    """
+    version = str(raw.get("version", ""))
+    if version == CURRENT_SCHEMA_VERSION:
+        return raw
+    if version not in MIGRATION_CHAIN:
+        raise ValueError(
+            f"Unrecognized schema version {version!r}. "
+            f"Known versions: {sorted(MIGRATION_CHAIN.keys())} "
+            f"and current version {CURRENT_SCHEMA_VERSION!r}."
+        )
+    while version != CURRENT_SCHEMA_VERSION:
+        migrate_fn = MIGRATION_CHAIN[version]
+        raw = migrate_fn(raw)
+        version = str(raw.get("version", ""))
+    return raw
+
+
 # ── Validator ─────────────────────────────────────────────────────────────
 
 
@@ -338,8 +406,11 @@ def validate_registry(raw: dict) -> list[str]:
     version = raw.get("version")
     if version is None:
         errors.append("Missing required field: 'version'")
-    elif str(version) != "1":
-        errors.append(f"'version' must be \"1\", got {version!r}")
+    elif str(version) not in ("1", CURRENT_SCHEMA_VERSION):
+        errors.append(
+            f"'version' must be \"1\" or \"{CURRENT_SCHEMA_VERSION}\", "
+            f"got {version!r}"
+        )
 
     # Sources check
     sources = raw.get("sources")
@@ -395,6 +466,14 @@ def validate_registry(raw: dict) -> list[str]:
                 f"{key}: invalid test_load_status {tls!r}, "
                 f"must be one of {sorted(VALID_TEST_LOAD_STATUSES)}"
             )
+
+        tec = entry.get("test_entity_count")
+        if tec is not None:
+            if not isinstance(tec, int) or isinstance(tec, bool) or tec < 0:
+                errors.append(
+                    f"{key}: invalid test_entity_count {tec!r}, "
+                    f"must be a non-negative integer or null"
+                )
 
     return errors
 
@@ -644,6 +723,10 @@ def render_data_sources_section(
         return None
 
     raw = parse_registry_yaml(content)
+    try:
+        raw = apply_migrations(raw)
+    except ValueError:
+        return None
     errors = validate_registry(raw)
     if errors:
         return None
@@ -698,6 +781,11 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Show aggregate statistics",
     )
+    parser.add_argument(
+        "--migrate",
+        action="store_true",
+        help="Write migrated registry back to disk",
+    )
     args = parser.parse_args(argv)
 
     registry_path = os.path.join("config", "data_sources.yaml")
@@ -721,6 +809,13 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Error: failed to parse {registry_path}: {exc}", file=sys.stderr)
         return 1
 
+    # Migrate
+    try:
+        raw = apply_migrations(raw)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+
     # Validate
     errors = validate_registry(raw)
     if errors:
@@ -730,6 +825,16 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     registry = _dict_to_registry(raw)
+
+    # Write migrated registry back to disk if --migrate flag is passed
+    if args.migrate:
+        try:
+            serialized = serialize_registry_yaml(raw)
+            with open(registry_path, "w", encoding="utf-8") as f:
+                f.write(serialized)
+        except OSError as exc:
+            print(f"Error: cannot write {registry_path}: {exc}", file=sys.stderr)
+            return 1
 
     # Detail view
     if args.detail:

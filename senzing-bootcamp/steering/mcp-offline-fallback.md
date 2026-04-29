@@ -38,6 +38,12 @@ These operations rely on local files, existing artifacts, or general knowledge â
 | Review/edit existing code| Any     | Fix bugs, refactor, add comments, improve error handling                               |
 | Check progress           | Any     | `python scripts/status.py`, `python scripts/validate_module.py`                        |
 
+### Visualization
+
+| Activity                 | Modules | What to do                                                                             |
+| ------------------------ | ------- | -------------------------------------------------------------------------------------- |
+| View static HTML visualizations | 7 | Previously generated static HTML files (`docs/entity_graph.html`) open in any browser with no MCP connection required. See the "Offline vs Online" section in [`visualization-guide.md`](visualization-guide.md) for details on offline vs online mode tradeoffs. |
+
 ### Code & Infrastructure Maintenance
 
 | Activity                 | Modules | What to do                                                                             |

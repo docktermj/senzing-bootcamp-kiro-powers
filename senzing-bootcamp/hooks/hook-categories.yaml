@@ -1,0 +1,30 @@
+# Hook category mapping for sync_hook_registry.py
+# Critical hooks are created during onboarding (Step 1).
+# Module hooks are created when the bootcamper starts the associated module.
+
+critical:
+  - ask-bootcamper
+  - capture-feedback
+  - code-style-check
+  - commonmark-validation
+  - enforce-feedback-path
+  - enforce-working-directory
+  - verify-senzing-facts
+
+modules:
+  5:
+    - analyze-after-mapping
+    - data-quality-check
+    - validate-senzing-json
+  6:
+    - backup-before-load
+    - run-tests-after-change
+    - verify-generated-code
+  8:
+    - enforce-visualization-offers
+    - offer-visualization
+  11:
+    - module12-phase-gate
+  any:
+    - backup-project-on-request
+    - git-commit-reminder

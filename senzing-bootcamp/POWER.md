@@ -318,6 +318,19 @@ python3 senzing-bootcamp/scripts/data_sources.py --detail CUSTOMERS  # Show all 
 python3 senzing-bootcamp/scripts/data_sources.py --summary           # Aggregate registry statistics
 python3 senzing-bootcamp/scripts/rollback_module.py --module N           # Roll back a specific module
 python3 senzing-bootcamp/scripts/rollback_module.py --module N --dry-run # Preview rollback without changes
+python3 senzing-bootcamp/scripts/sync_hook_registry.py --write        # Regenerate hook-registry.md from .kiro.hook files
+python3 senzing-bootcamp/scripts/sync_hook_registry.py --verify       # Verify hook registry matches hook files (CI mode)
+python3 senzing-bootcamp/scripts/validate_dependencies.py             # Validate module dependency graph consistency
+python3 senzing-bootcamp/scripts/lint_steering.py                     # Lint steering files for structural issues
+python3 senzing-bootcamp/scripts/lint_steering.py --warnings-as-errors # Lint with warnings treated as errors
+python3 senzing-bootcamp/scripts/lint_steering.py --skip-template     # Lint without template conformance checks
+python3 senzing-bootcamp/scripts/split_steering.py --module 5         # Split large steering file into phase sub-files
+python3 senzing-bootcamp/scripts/session_logger.py                    # Internal: append structured events to session log
+python3 senzing-bootcamp/scripts/analyze_sessions.py config/session_log.jsonl          # Analyze session log (text table)
+python3 senzing-bootcamp/scripts/analyze_sessions.py config/session_log.jsonl --format json  # Analyze session log (JSON)
+python3 senzing-bootcamp/scripts/analyze_sessions.py config/session_log.jsonl --pretty       # Pretty-print log entries
+python3 senzing-bootcamp/scripts/triage_feedback.py docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md  # Parse feedback into spec skeletons
+python3 senzing-bootcamp/scripts/triage_feedback.py --dry-run         # Preview triage without creating files
 python3 senzing-bootcamp/scripts/progress_utils.py       # Internal: progress tracking utilities (used by other scripts)
 python3 senzing-bootcamp/scripts/team_config_validator.py # Internal: validate config/team.yaml structure (used during onboarding)
 python3 senzing-bootcamp/scripts/check_prerequisites.py  # DEPRECATED — use preflight.py instead

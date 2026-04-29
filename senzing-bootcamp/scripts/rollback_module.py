@@ -39,6 +39,12 @@ def yellow(t): return c("1;33", t)
 # -- Data models & constants ------------------------------------------------
 
 @dataclasses.dataclass
+class VerificationResult:
+    status: object   # "passed", "failed", or None
+    leftover_checks: list  # descriptions of checks that still pass (ok=True)
+
+
+@dataclasses.dataclass
 class ModuleArtifacts:
     files: list
     directories: list
@@ -251,9 +257,12 @@ class RollbackLogEntry:
     database_restored: object  # bool or None
     backup_used: object        # str or None
     warnings: list
+    verification: object       # "passed", "failed", or None
+    leftover_checks: list      # descriptions of still-passing checks
 
 
-def build_log_entry(module, removal_result, database_restored, backup_used, warnings):
+def build_log_entry(module, removal_result, database_restored, backup_used, warnings,
+                    verification=None, leftover_checks=None):
     """Construct a log entry from rollback results. Pure function."""
     return RollbackLogEntry(
         timestamp=datetime.now(timezone.utc).isoformat(),
@@ -265,6 +274,8 @@ def build_log_entry(module, removal_result, database_restored, backup_used, warn
         database_restored=database_restored,
         backup_used=backup_used,
         warnings=list(warnings),
+        verification=verification,
+        leftover_checks=list(leftover_checks) if leftover_checks else [],
     )
 
 
@@ -352,6 +363,37 @@ def _classify_artifacts(artifacts, project_root):
     missing = ([f for f in artifacts.files if not (root / f).exists()]
                + [d for d in artifacts.directories if not (root / d).exists()])
     return existing_files, existing_dirs, missing
+
+# -- Post-rollback verification ---------------------------------------------
+
+def verify_rollback(module):
+    """Run the module validator and check that all checks return ok=False.
+
+    Args:
+        module: The module number that was rolled back (1-11).
+
+    Returns:
+        VerificationResult with:
+          - status="passed" if all checks return ok=False
+          - status="failed" if any check returns ok=True
+          - status=None if the validator raises an exception or module has no validator
+        leftover_checks contains the description strings of any checks where ok=True.
+    """
+    from validate_module import VALIDATORS
+
+    validator = VALIDATORS.get(module)
+    if validator is None:
+        return VerificationResult(status=None, leftover_checks=[])
+
+    try:
+        checks = validator()
+    except Exception:
+        return VerificationResult(status=None, leftover_checks=[])
+
+    leftover = [desc for ok, desc, _detail in checks if ok]
+    if leftover:
+        return VerificationResult(status="failed", leftover_checks=leftover)
+    return VerificationResult(status="passed", leftover_checks=[])
 
 # -- Main orchestration -----------------------------------------------------
 
@@ -475,8 +517,19 @@ def main(argv=None):
         if not Path(progress_path).exists():
             print(yellow("Warning: Progress file not found. Skipping progress update."))
         warnings.append("Progress file not updated")
+    # --- Verification ---
+    vr = verify_rollback(module)
+    if vr.status == "passed":
+        print(green(f"  ✅ Verification passed: Module {module} is back to 'not started' state."))
+    elif vr.status == "failed":
+        print(yellow(f"  ⚠ Verification warning: {len(vr.leftover_checks)} check(s) still passing after rollback:"))
+        for desc in vr.leftover_checks:
+            print(yellow(f"    - {desc}"))
+    else:
+        print(yellow("  ⚠ Verification could not be completed. Rollback was still performed."))
     # --- Log ---
-    entry = build_log_entry(module, removal_result, database_restored, backup_used, warnings)
+    entry = build_log_entry(module, removal_result, database_restored, backup_used, warnings,
+                            verification=vr.status, leftover_checks=vr.leftover_checks)
     entry_line = serialize_log_entry(entry)
     append_log_entry(log_path, entry_line)
     # --- Summary ---

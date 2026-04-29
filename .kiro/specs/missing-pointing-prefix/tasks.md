@@ -1,0 +1,82 @@
+# Implementation Plan
+
+- [x] 1. Write bug condition exploration test
+  - **Property 1: Bug Condition** - Inline Closing Questions and WAITs in Onboarding Steps
+  - **CRITICAL**: This test MUST FAIL on unfixed code — failure confirms the bug exists
+  - **DO NOT attempt to fix the test or the code when it fails**
+  - **NOTE**: This test encodes the expected behavior — it will validate the fix when it passes after implementation
+  - **GOAL**: Surface counterexamples that demonstrate the bug exists in `senzing-bootcamp/steering/onboarding-flow.md`
+  - **Scoped PBT Approach**: Scope the property to the concrete failing steps: 1b, 2, 4, and 5
+  - Parse `senzing-bootcamp/steering/onboarding-flow.md` and extract sections for steps 1b, 2, 4, and 5
+  - For each affected step, assert the step does NOT contain an inline 👉 closing question followed by a WAIT instruction
+  - Specifically check:
+    - Step 1b does NOT contain `"👉 Which team member are you?"` with `WAIT for response`
+    - Step 2 does NOT contain `"👉 Which language would you like to use?"` with `WAIT for response`
+    - Step 4 does NOT contain `"👉 Does this outline make sense?"` with `WAIT for response`
+    - Step 5 does NOT contain `"👉 Which track sounds right for you?"`
+  - Also assert the preamble does NOT contain the `🚨 STRICT RULE` paragraph mandating inline questions with WAITs
+  - `isBugCondition(step)`: step.content CONTAINS inline 👉 closing question AND step.content CONTAINS WAIT instruction AND ask-bootcamper hook IS active
+  - Run test on UNFIXED code
+  - **EXPECTED OUTCOME**: Test FAILS (this is correct — it proves the bug exists in steps 1b, 2, 4, 5 and the preamble)
+  - Document counterexamples found (e.g., "Step 1b contains '👉 Which team member are you?' followed by 'WAIT for response.'")
+  - Mark task complete when test is written, run, and failure is documented
+  - _Requirements: 1.1, 1.2, 1.3, 2.1_
+
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
+  - **Property 2: Preservation** - Informational Content, Step Sequence, and Untouched Files
+  - **IMPORTANT**: Follow observation-first methodology
+  - **Step 1 — Observe on UNFIXED code:**
+    - Parse `senzing-bootcamp/steering/onboarding-flow.md` and extract all step headings; record the step sequence (0, 1, 1b, 2, 3, 4, 5)
+    - Extract informational content from each affected step (1b, 2, 4, 5) excluding inline 👉 closing questions and WAIT instructions
+    - For step 1b: team detection logic, member list template, validation instructions, co-located/distributed mode instructions
+    - For step 2: platform detection, MCP query instructions, language list presentation, preference persistence logic
+    - For step 4: welcome banners (standard and team mode), overview bullet points, module overview table reference
+    - For step 5: module quick-reference table, track descriptions (A/B/C/D), response interpretation logic
+    - Record content of non-affected steps (0, 1, 3) in full
+    - Record content of `senzing-bootcamp/hooks/ask-bootcamper.kiro.hook`
+    - Record content of `senzing-bootcamp/steering/agent-instructions.md`
+  - **Step 2 — Write property-based tests asserting observed behavior is preserved:**
+    - Property: for all step headings in the fixed file, the sequence matches the observed sequence (0, 1, 1b, 2, 3, 4, 5, plus Switching Tracks, Changing Language, Validation Gates, Hook Registry)
+    - Property: for all non-affected steps (0, 1, 3), content is identical between unfixed and fixed versions
+    - Property: for all affected steps (1b, 2, 4, 5), informational content (excluding inline 👉 questions and WAIT lines) is preserved in the fixed version
+    - Property: `senzing-bootcamp/hooks/ask-bootcamper.kiro.hook` content is identical to the observed baseline
+    - Property: `senzing-bootcamp/steering/agent-instructions.md` content is identical to the observed baseline
+  - Run tests on UNFIXED code
+  - **EXPECTED OUTCOME**: Tests PASS (this confirms baseline behavior to preserve)
+  - Mark task complete when tests are written, run, and passing on unfixed code
+  - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+
+- [x] 3. Fix for inline closing questions and WAITs in onboarding-flow.md
+
+  - [x] 3.1 Implement the fix in `senzing-bootcamp/steering/onboarding-flow.md`
+    - Remove the `🚨 STRICT RULE` preamble paragraph that mandates inline questions with WAITs; replace with a note that the `ask-bootcamper` hook handles all closing questions
+    - Step 1b: Remove the inline `"👉 Which team member are you?"` closing question and `WAIT for response.` instruction; keep the member list presentation and all team detection logic
+    - Step 2: Remove the `Ask: "👉 Which language would you like to use?" WAIT for response.` line; keep platform detection, MCP query, language list, warning relay, and preference persistence logic
+    - Step 4: Remove the `Ask: "👉 Does this outline make sense?..." WAIT for response.` line; keep welcome banners, overview content, module table reference, and all bullet points
+    - Step 5: Remove the `Present tracks with: "👉 Which track sounds right for you?"` line; keep module table, track descriptions (A/B/C/D), response interpretation logic
+    - Do NOT modify `senzing-bootcamp/hooks/ask-bootcamper.kiro.hook`
+    - Do NOT modify `senzing-bootcamp/steering/agent-instructions.md`
+    - _Bug_Condition: isBugCondition(step) where step ∈ {1b, 2, 4, 5} contains inline 👉 closing question AND WAIT instruction_
+    - _Expected_Behavior: Steps present information and stop cleanly; ask-bootcamper hook generates the single contextual 👉 closing question_
+    - _Preservation: Informational content, step sequence, non-affected steps, hook file, and agent-instructions unchanged_
+    - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 3.4, 3.5_
+
+  - [x] 3.2 Verify bug condition exploration test now passes
+    - **Property 1: Expected Behavior** - Inline Closing Questions and WAITs Removed
+    - **IMPORTANT**: Re-run the SAME test from task 1 — do NOT write a new test
+    - The test from task 1 encodes the expected behavior (no inline 👉 questions or WAITs in steps 1b, 2, 4, 5)
+    - When this test passes, it confirms the expected behavior is satisfied
+    - Run bug condition exploration test from step 1
+    - **EXPECTED OUTCOME**: Test PASSES (confirms bug is fixed)
+    - _Requirements: 2.1, 2.2, 2.3_
+
+  - [x] 3.3 Verify preservation tests still pass
+    - **Property 2: Preservation** - Informational Content, Step Sequence, and Untouched Files
+    - **IMPORTANT**: Re-run the SAME tests from task 2 — do NOT write new tests
+    - Run preservation property tests from step 2
+    - **EXPECTED OUTCOME**: Tests PASS (confirms no regressions)
+    - Confirm all tests still pass after fix (no regressions)
+
+- [x] 4. Checkpoint - Ensure all tests pass
+  - Run the full test suite (bug condition + preservation tests)
+  - Ensure all tests pass, ask the user if questions arise

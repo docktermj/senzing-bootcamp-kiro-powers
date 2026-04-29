@@ -124,6 +124,8 @@ def _rollback_log_entries():
         database_restored=st.one_of(st.none(), st.booleans()),
         backup_used=st.one_of(st.none(), path_strat),
         warnings=st.lists(st.text(min_size=0, max_size=50), max_size=3),
+        verification=st.one_of(st.none(), st.sampled_from(["passed", "failed"])),
+        leftover_checks=st.lists(st.text(min_size=1, max_size=50), max_size=3),
     )
 
 

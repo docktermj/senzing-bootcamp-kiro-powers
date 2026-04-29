@@ -186,11 +186,13 @@ class TestPointingQuestionInstructions:
             term in prompt_lower
             for term in [
                 "already ends with",
+                "already contains",
                 "do nothing",
                 "already ended with",
                 "don't add a second",
                 "do not add",
                 "already present",
+                "produce no output",
             ]
         )
         assert has_duplicate_detection, (

@@ -5,10 +5,18 @@ explicit "produce no output" instruction for the no-action-needed case.
 Also checks that hook-registry.md mirrors the same prompts and that
 agent-instructions.md does NOT yet contain a silent-processing rule.
 
-**Validates: Requirements 1.1, 1.2, 1.3, 1.4, 1.5, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6**
+Extended tests verify STRONGER guardrail language identified in the design:
+- ask-bootcamper: explicit prohibitions, STOP instruction, broader detection
+- preToolUse hooks: STOP/return instructions, redundant emphasis
+- hook-registry.md: same strong language as hook files
+- agent-instructions.md: explicit prohibitions against narrating evaluation
+
+**Validates: Requirements 1.1, 1.2, 1.3, 1.4, 1.5, 1.6,
+             2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7**
 
 EXPECTED OUTCOME on UNFIXED code:
-- Bug condition tests FAIL (confirming the bug — prompts lack explicit silent instructions)
+- Original bug condition tests PASS (hooks already have "produce no output")
+- Extended bug condition tests FAIL (proving stronger guardrails are missing)
 """
 
 from __future__ import annotations
@@ -29,10 +37,24 @@ _HOOKS_DIR = Path(__file__).resolve().parent.parent / "hooks"
 _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 
 _AFFECTED_HOOK_FILES: dict[str, Path] = {
+    "ask-bootcamper": _HOOKS_DIR / "ask-bootcamper.kiro.hook",
     "capture-feedback": _HOOKS_DIR / "capture-feedback.kiro.hook",
     "enforce-feedback-path": _HOOKS_DIR / "enforce-feedback-path.kiro.hook",
-    "enforce-working-directory": _HOOKS_DIR / "enforce-working-directory.kiro.hook",
+    "enforce-working-directory": (
+        _HOOKS_DIR / "enforce-working-directory.kiro.hook"
+    ),
     "verify-senzing-facts": _HOOKS_DIR / "verify-senzing-facts.kiro.hook",
+}
+
+_ASK_BOOTCAMPER_HOOK_FILE = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+
+# preToolUse hooks that need STOP instructions
+_PRE_TOOL_USE_HOOKS: dict[str, Path] = {
+    "verify-senzing-facts": _HOOKS_DIR / "verify-senzing-facts.kiro.hook",
+    "enforce-working-directory": (
+        _HOOKS_DIR / "enforce-working-directory.kiro.hook"
+    ),
+    "enforce-feedback-path": _HOOKS_DIR / "enforce-feedback-path.kiro.hook",
 }
 
 _HOOK_REGISTRY = _STEERING_DIR / "hook-registry.md"
@@ -40,6 +62,15 @@ _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 
 # The phrase that must appear in fixed prompts for the no-action case
 _SILENT_INSTRUCTION = "produce no output"
+
+# Strong guardrail phrases expected in fixed prompts
+_STOP_PHRASES = ["stop", "return immediately", "return nothing"]
+_ZERO_TOKEN_PHRASES = ["zero tokens", "zero characters", "completely empty"]
+_ASK_BOOTCAMPER_PROHIBITIONS = [
+    "do not answer",
+    "do not role-play",
+    "do not generate",
+]
 
 
 # ---------------------------------------------------------------------------
@@ -78,6 +109,36 @@ def _extract_registry_prompt(registry_text: str, hook_id: str) -> str:
 def _prompt_has_silent_instruction(prompt: str) -> bool:
     """Check if a prompt contains an explicit 'produce no output' instruction."""
     return _SILENT_INSTRUCTION.lower() in prompt.lower()
+
+
+def _prompt_has_stop_instruction(prompt: str) -> bool:
+    """Check if a prompt contains a STOP/return instruction."""
+    lower = prompt.lower()
+    return any(phrase in lower for phrase in _STOP_PHRASES)
+
+
+def _prompt_has_zero_token_emphasis(prompt: str) -> bool:
+    """Check if a prompt contains redundant zero-token emphasis."""
+    lower = prompt.lower()
+    return any(phrase in lower for phrase in _ZERO_TOKEN_PHRASES)
+
+
+def _prompt_has_explicit_prohibitions(prompt: str) -> bool:
+    """Check if a prompt contains explicit prohibitions (do NOT X)."""
+    lower = prompt.lower()
+    return any(phrase in lower for phrase in _ASK_BOOTCAMPER_PROHIBITIONS)
+
+
+def _prompt_has_broad_pointing_detection(prompt: str) -> bool:
+    """Check if a prompt detects 👉 anywhere, not just at the end."""
+    lower = prompt.lower()
+    has_anywhere = any(
+        phrase in lower
+        for phrase in ["contains a 👉", "anywhere"]
+    )
+    # Should NOT be limited to "ends with"
+    has_ends_with_only = "ends with" in lower and "anywhere" not in lower
+    return has_anywhere and not has_ends_with_only
 
 
 # ---------------------------------------------------------------------------
@@ -270,6 +331,348 @@ class TestBugConditionProperty:
 
 
 # ===========================================================================
+# Extended Bug Condition Tests (Task 1 — stronger guardrails)
+#
+# These tests check for the STRONGER guardrail language identified in the
+# design document. The existing tests above check for "produce no output"
+# which already exists. These tests check for ADDITIONAL language that is
+# MISSING from the unfixed code.
+#
+# EXPECTED OUTCOME on UNFIXED code: These tests FAIL
+# (proving the stronger guardrails are missing)
+#
+# **Validates: Requirements 1.1, 1.2, 1.3, 1.4, 1.5, 1.6,
+#              2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7**
+# ===========================================================================
+
+_PRE_TOOL_USE_HOOK_KEYS = list(_PRE_TOOL_USE_HOOKS.keys())
+
+
+# ---------------------------------------------------------------------------
+# Bug Condition: ask-bootcamper lacks strong guardrails
+# ---------------------------------------------------------------------------
+
+
+class TestBugConditionAskBootcamperGuardrails:
+    """Assert that ask-bootcamper prompt contains explicit prohibitions
+    beyond the weak 'do nothing' language.
+
+    On unfixed code these assertions FAIL because the prompt only says
+    'do nothing' without explicit prohibitions, STOP instruction, or
+    broader 👉 detection.
+
+    **Validates: Requirements 1.1, 1.2, 2.1, 2.2**
+    """
+
+    def test_ask_bootcamper_has_explicit_prohibitions(self) -> None:
+        """ask-bootcamper prompt must contain explicit prohibitions.
+
+        The prompt should say 'do NOT answer', 'do NOT role-play',
+        'do NOT generate' — not just 'do nothing'.
+
+        **Validates: Requirements 1.2, 2.2**"""
+        prompt = _read_hook_prompt(_ASK_BOOTCAMPER_HOOK_FILE)
+        assert _prompt_has_explicit_prohibitions(prompt), (
+            "ask-bootcamper prompt lacks explicit prohibitions.\n"
+            "Expected phrases like 'do NOT answer', "
+            "'do NOT role-play', 'do NOT generate'.\n"
+            f"Prompt: {prompt[:300]}..."
+        )
+
+    def test_ask_bootcamper_has_stop_instruction(self) -> None:
+        """ask-bootcamper prompt must contain a STOP instruction.
+
+        **Validates: Requirements 2.1, 2.2**"""
+        prompt = _read_hook_prompt(_ASK_BOOTCAMPER_HOOK_FILE)
+        assert _prompt_has_stop_instruction(prompt), (
+            "ask-bootcamper prompt lacks STOP/return instruction.\n"
+            "Expected 'STOP' or 'return immediately' or "
+            "'return nothing'.\n"
+            f"Prompt: {prompt[:300]}..."
+        )
+
+    def test_ask_bootcamper_has_broad_pointing_detection(self) -> None:
+        """ask-bootcamper prompt must detect 👉 anywhere, not just at end.
+
+        The current prompt says 'already ends with a 👉 question'
+        but should detect 👉 anywhere in the text.
+
+        **Validates: Requirements 1.1, 2.1**"""
+        prompt = _read_hook_prompt(_ASK_BOOTCAMPER_HOOK_FILE)
+        assert _prompt_has_broad_pointing_detection(prompt), (
+            "ask-bootcamper prompt only checks for 👉 at end.\n"
+            "Should detect 👉 'anywhere' in the text, not just "
+            "'ends with'.\n"
+            f"Prompt: {prompt[:300]}..."
+        )
+
+
+# ---------------------------------------------------------------------------
+# Bug Condition: preToolUse hooks lack STOP instructions
+# ---------------------------------------------------------------------------
+
+
+class TestBugConditionPreToolUseStopInstructions:
+    """Assert that each preToolUse hook prompt contains a STOP/return
+    instruction in the silent-pass branch.
+
+    On unfixed code these assertions FAIL because the prompts say
+    'produce no output' but lack an explicit STOP instruction.
+
+    **Validates: Requirements 1.3, 1.4, 1.5, 2.3, 2.4, 2.5**
+    """
+
+    def test_verify_senzing_facts_has_stop_instruction(self) -> None:
+        """verify-senzing-facts prompt must have STOP instruction.
+
+        **Validates: Requirements 1.3, 2.3**"""
+        prompt = _read_hook_prompt(
+            _PRE_TOOL_USE_HOOKS["verify-senzing-facts"]
+        )
+        assert _prompt_has_stop_instruction(prompt), (
+            "verify-senzing-facts prompt lacks STOP instruction.\n"
+            "Has 'produce no output' but no 'STOP' or "
+            "'return immediately'.\n"
+            f"Prompt: {prompt[:300]}..."
+        )
+
+    def test_enforce_working_directory_has_stop_instruction(self) -> None:
+        """enforce-working-directory prompt must have STOP instruction.
+
+        **Validates: Requirements 1.4, 2.4**"""
+        prompt = _read_hook_prompt(
+            _PRE_TOOL_USE_HOOKS["enforce-working-directory"]
+        )
+        assert _prompt_has_stop_instruction(prompt), (
+            "enforce-working-directory prompt lacks STOP instruction.\n"
+            "Has 'produce no output' but no 'STOP' or "
+            "'return immediately'.\n"
+            f"Prompt: {prompt[:300]}..."
+        )
+
+    def test_enforce_feedback_path_has_stop_instruction(self) -> None:
+        """enforce-feedback-path silent-pass branch must have STOP.
+
+        The prompt has 'STOP and redirect' in the action branch, but
+        the silent-pass branch (not in feedback workflow) needs its
+        own STOP instruction.
+
+        **Validates: Requirements 1.5, 2.5**"""
+        prompt = _read_hook_prompt(
+            _PRE_TOOL_USE_HOOKS["enforce-feedback-path"]
+        )
+        # Find the silent-pass branch text (before "If you ARE")
+        lower = prompt.lower()
+        are_idx = lower.find("if you are writing")
+        if are_idx == -1:
+            are_idx = lower.find("if you are")
+        silent_branch = lower[:are_idx] if are_idx > 0 else lower
+        has_stop_in_silent = any(
+            phrase in silent_branch
+            for phrase in _STOP_PHRASES
+        )
+        assert has_stop_in_silent, (
+            "enforce-feedback-path silent-pass branch lacks STOP.\n"
+            "Has 'STOP and redirect' in action branch but no STOP "
+            "in the silent-pass branch.\n"
+            f"Silent branch: {silent_branch[:300]}..."
+        )
+
+
+class TestBugConditionPreToolUseEmphasis:
+    """Assert that each preToolUse hook prompt contains redundant
+    emphasis language ('zero tokens' or similar).
+
+    On unfixed code these assertions FAIL because the prompts lack
+    redundant emphasis.
+
+    **Validates: Requirements 2.3, 2.4, 2.5**
+    """
+
+    def test_verify_senzing_facts_has_zero_token_emphasis(self) -> None:
+        """verify-senzing-facts prompt must have zero-token emphasis.
+
+        **Validates: Requirements 2.3**"""
+        prompt = _read_hook_prompt(
+            _PRE_TOOL_USE_HOOKS["verify-senzing-facts"]
+        )
+        assert _prompt_has_zero_token_emphasis(prompt), (
+            "verify-senzing-facts prompt lacks zero-token emphasis.\n"
+            "Expected 'zero tokens' or 'zero characters' or "
+            "'completely empty'.\n"
+            f"Prompt: {prompt[:300]}..."
+        )
+
+    def test_enforce_working_directory_has_zero_token_emphasis(
+        self,
+    ) -> None:
+        """enforce-working-directory prompt must have zero-token emphasis.
+
+        **Validates: Requirements 2.4**"""
+        prompt = _read_hook_prompt(
+            _PRE_TOOL_USE_HOOKS["enforce-working-directory"]
+        )
+        assert _prompt_has_zero_token_emphasis(prompt), (
+            "enforce-working-directory prompt lacks zero-token "
+            "emphasis.\n"
+            "Expected 'zero tokens' or 'zero characters' or "
+            "'completely empty'.\n"
+            f"Prompt: {prompt[:300]}..."
+        )
+
+    def test_enforce_feedback_path_has_zero_token_emphasis(self) -> None:
+        """enforce-feedback-path prompt must have zero-token emphasis.
+
+        **Validates: Requirements 2.5**"""
+        prompt = _read_hook_prompt(
+            _PRE_TOOL_USE_HOOKS["enforce-feedback-path"]
+        )
+        assert _prompt_has_zero_token_emphasis(prompt), (
+            "enforce-feedback-path prompt lacks zero-token emphasis.\n"
+            "Expected 'zero tokens' or 'zero characters' or "
+            "'completely empty'.\n"
+            f"Prompt: {prompt[:300]}..."
+        )
+
+
+# ---------------------------------------------------------------------------
+# Bug Condition: hook-registry.md lacks strong language
+# ---------------------------------------------------------------------------
+
+
+class TestBugConditionRegistryStrongLanguage:
+    """Assert that hook-registry.md prompts contain the same strong
+    guardrail language as the hook files (STOP instructions, etc.).
+
+    On unfixed code these assertions FAIL because the registry mirrors
+    the weak prompt language.
+
+    **Validates: Requirements 1.6, 2.6**
+    """
+
+    @pytest.fixture(autouse=True)
+    def _load_registry(self) -> None:
+        self._registry_text = _HOOK_REGISTRY.read_text(
+            encoding="utf-8"
+        )
+
+    def test_registry_ask_bootcamper_has_prohibitions(self) -> None:
+        """Registry ask-bootcamper prompt must have prohibitions.
+
+        **Validates: Requirements 1.6, 2.6**"""
+        prompt = _extract_registry_prompt(
+            self._registry_text, "ask-bootcamper"
+        )
+        assert prompt, (
+            "Could not extract ask-bootcamper prompt from registry"
+        )
+        assert _prompt_has_explicit_prohibitions(prompt), (
+            "Registry ask-bootcamper prompt lacks prohibitions.\n"
+            "Expected 'do NOT answer', 'do NOT role-play', "
+            "'do NOT generate'.\n"
+            f"Prompt: {prompt[:300]}..."
+        )
+
+    def test_registry_pretooluse_hooks_have_stop(self) -> None:
+        """Registry preToolUse prompts must have STOP instructions.
+
+        **Validates: Requirements 1.6, 2.6**"""
+        for hook_id in _PRE_TOOL_USE_HOOK_KEYS:
+            prompt = _extract_registry_prompt(
+                self._registry_text, hook_id
+            )
+            assert prompt, (
+                f"Could not extract {hook_id} prompt from registry"
+            )
+            assert _prompt_has_stop_instruction(prompt), (
+                f"Registry {hook_id} prompt lacks STOP instruction.\n"
+                f"Prompt: {prompt[:300]}..."
+            )
+
+
+# ---------------------------------------------------------------------------
+# Bug Condition: agent-instructions.md lacks explicit prohibitions
+# ---------------------------------------------------------------------------
+
+
+class TestBugConditionAgentInstructionsStrong:
+    """Assert that agent-instructions.md Hooks section contains explicit
+    prohibitions against narrating evaluation — not just 'produce no
+    output' but also 'do not narrate', 'do not explain', etc.
+
+    On unfixed code this assertion FAILS because the Hooks section has
+    only a minimal silent-processing rule.
+
+    **Validates: Requirements 2.7**
+    """
+
+    def test_agent_instructions_has_narration_prohibition(self) -> None:
+        """Hooks section must have emphatic zero-output enforcement.
+
+        The current rule says 'do not explain your reasoning' which
+        is good but not emphatic enough. The fix should add 'do not
+        narrate' AND 'zero tokens' for redundant emphasis.
+
+        **Validates: Requirements 2.7**"""
+        content = _AGENT_INSTRUCTIONS.read_text(encoding="utf-8")
+        hooks_match = re.search(
+            r"^## Hooks\s*\n(.*?)(?=^## |\Z)",
+            content,
+            re.MULTILINE | re.DOTALL,
+        )
+        assert hooks_match, (
+            "Could not find ## Hooks section in agent-instructions.md"
+        )
+        hooks_section = hooks_match.group(1).lower()
+        # Must have BOTH narration prohibition AND zero-token emphasis
+        has_narrate = "do not narrate" in hooks_section
+        has_zero_tokens = "zero tokens" in hooks_section
+        assert has_narrate and has_zero_tokens, (
+            "agent-instructions.md Hooks section lacks emphatic "
+            "silent-processing enforcement.\n"
+            f"  Has 'do not narrate': {has_narrate}\n"
+            f"  Has 'zero tokens': {has_zero_tokens}\n"
+            "Expected both for redundant emphasis.\n"
+            f"Hooks section excerpt: {hooks_section[:400]}..."
+        )
+
+
+# ---------------------------------------------------------------------------
+# PBT — Extended Bug Condition across preToolUse hooks
+# ---------------------------------------------------------------------------
+
+
+class TestBugConditionPreToolUseProperty:
+    """Property-based test: for any randomly selected preToolUse hook,
+    the hook file prompt must contain both a STOP instruction and
+    zero-token emphasis.
+
+    On unfixed code this property FAILS, surfacing counterexamples.
+
+    **Validates: Requirements 1.3, 1.4, 1.5, 2.3, 2.4, 2.5**
+    """
+
+    @given(hook_key=st.sampled_from(_PRE_TOOL_USE_HOOK_KEYS))
+    @settings(max_examples=100)
+    def test_pretooluse_hooks_have_strong_guardrails(
+        self, hook_key: str
+    ) -> None:
+        """**Validates: Requirements 1.3, 1.4, 1.5, 2.3, 2.4, 2.5**
+
+        For any preToolUse hook, the prompt must contain a STOP
+        instruction and zero-token emphasis."""
+        prompt = _read_hook_prompt(_PRE_TOOL_USE_HOOKS[hook_key])
+        has_stop = _prompt_has_stop_instruction(prompt)
+        has_emphasis = _prompt_has_zero_token_emphasis(prompt)
+        assert has_stop and has_emphasis, (
+            f"Weak guardrails in {hook_key}:\n"
+            f"  Has STOP instruction: {has_stop}\n"
+            f"  Has zero-token emphasis: {has_emphasis}\n"
+            f"  Prompt excerpt: {prompt[:200]}..."
+        )
+
+
+# ===========================================================================
 # Preservation Property Tests (Task 2)
 #
 # These tests verify that action-required branches in affected hooks are
@@ -322,8 +725,19 @@ _VERIFY_SENZING_FACTS_ACTION_KEYWORDS: list[str] = [
     "SENZING_INFORMATION_POLICY",
 ]
 
+# ask-bootcamper: recap and skip-recap keywords
+_ASK_BOOTCAMPER_ACTION_KEYWORDS: list[str] = [
+    "accomplished",
+    "files created or modified",
+    "👉 question",
+    "skip the recap",
+    "no files changed",
+    "no substantive",
+]
+
 # Map hook id → action-required keywords
 _ACTION_REQUIRED_KEYWORDS: dict[str, list[str]] = {
+    "ask-bootcamper": _ASK_BOOTCAMPER_ACTION_KEYWORDS,
     "capture-feedback": _CAPTURE_FEEDBACK_ACTION_KEYWORDS,
     "enforce-feedback-path": _ENFORCE_FEEDBACK_PATH_ACTION_KEYWORDS,
     "enforce-working-directory": _ENFORCE_WORKING_DIR_ACTION_KEYWORDS,
@@ -333,7 +747,6 @@ _ACTION_REQUIRED_KEYWORDS: dict[str, list[str]] = {
 # Non-affected hook ids in hook-registry.md (all hooks except the 4 affected)
 _NON_AFFECTED_HOOK_IDS: list[str] = [
     "code-style-check",
-    "ask-bootcamper",
     "commonmark-validation",
     "data-quality-check",
     "validate-senzing-json",
@@ -372,11 +785,6 @@ def _snapshot_registry_non_affected() -> dict[str, str]:
     return snapshots
 
 
-def _snapshot_ask_bootcamper() -> str:
-    """Return the full content of ask-bootcamper.kiro.hook."""
-    return _ASK_BOOTCAMPER_HOOK.read_text(encoding="utf-8")
-
-
 def _snapshot_agent_instructions() -> str:
     """Return the full content of agent-instructions.md."""
     return _AGENT_INSTRUCTIONS.read_text(encoding="utf-8")
@@ -384,7 +792,6 @@ def _snapshot_agent_instructions() -> str:
 
 # Capture baselines at module load time (before any fix is applied)
 _BASELINE_REGISTRY_NON_AFFECTED = _snapshot_registry_non_affected()
-_BASELINE_ASK_BOOTCAMPER = _snapshot_ask_bootcamper()
 _BASELINE_AGENT_INSTRUCTIONS = _snapshot_agent_instructions()
 
 
@@ -416,6 +823,20 @@ class TestPreservationActionBranches:
 
     **Validates: Requirements 3.1, 3.2, 3.3, 3.4**
     """
+
+    def test_ask_bootcamper_preserves_recap_branch(self) -> None:
+        """ask-bootcamper preserves recap and skip-recap keywords.
+
+        **Validates: Requirements 3.1, 3.2**"""
+        prompt = _read_hook_prompt(
+            _AFFECTED_HOOK_FILES["ask-bootcamper"]
+        )
+        for keyword in _ASK_BOOTCAMPER_ACTION_KEYWORDS:
+            assert keyword in prompt, (
+                f"ask-bootcamper prompt missing action-required "
+                f"keyword: '{keyword}'\n"
+                f"Prompt: {prompt[:300]}..."
+            )
 
     def test_capture_feedback_preserves_feedback_workflow(self) -> None:
         """capture-feedback preserves feedback workflow initiation text.
@@ -499,26 +920,31 @@ class TestPreservationNonAffectedHooks:
 
 
 # ---------------------------------------------------------------------------
-# Unit Tests — ask-bootcamper.kiro.hook unchanged
+# Unit Tests — ask-bootcamper action-required keywords preserved
 # ---------------------------------------------------------------------------
 
 
-class TestPreservationAskBootcamper:
-    """Verify ask-bootcamper.kiro.hook content matches baseline.
+class TestPreservationAskBootcamperKeywords:
+    """Verify ask-bootcamper prompt preserves recap and skip-recap keywords.
 
-    **Validates: Requirements 3.5**
+    Since we ARE modifying ask-bootcamper in this bugfix, we check that
+    action-required keywords (recap, skip-recap, 👉 question) are
+    preserved rather than checking exact file content.
+
+    **Validates: Requirements 3.1, 3.2**
     """
 
-    def test_ask_bootcamper_hook_unchanged(self) -> None:
-        """ask-bootcamper.kiro.hook content matches baseline.
+    def test_ask_bootcamper_preserves_recap_keywords(self) -> None:
+        """ask-bootcamper prompt preserves recap action keywords.
 
-        **Validates: Requirements 3.5**"""
-        current = _ASK_BOOTCAMPER_HOOK.read_text(encoding="utf-8")
-        assert current == _BASELINE_ASK_BOOTCAMPER, (
-            "ask-bootcamper.kiro.hook content changed!\n"
-            f"Expected length: {len(_BASELINE_ASK_BOOTCAMPER)}\n"
-            f"Got length: {len(current)}"
-        )
+        **Validates: Requirements 3.1, 3.2**"""
+        prompt = _read_hook_prompt(_ASK_BOOTCAMPER_HOOK_FILE)
+        for keyword in _ASK_BOOTCAMPER_ACTION_KEYWORDS:
+            assert keyword in prompt, (
+                f"ask-bootcamper prompt missing action-required "
+                f"keyword: '{keyword}'\n"
+                f"Prompt: {prompt[:300]}..."
+            )
 
 
 # ---------------------------------------------------------------------------

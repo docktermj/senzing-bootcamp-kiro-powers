@@ -10,7 +10,7 @@ All 18 bootcamp hooks are defined below. The agent reads these definitions and c
 
 **ask-bootcamper** (agentStop → askAgent)
 
-Prompt: "If your previous output already ends with a 👉 question, do nothing. Otherwise, if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
+Prompt: "If your previous output already contains a 👉 character anywhere in the text, produce no output at all — STOP immediately and return nothing. Do not answer the question. Do not role-play as the bootcamper. Do not generate any content. Do not invent use-case descriptions, record counts, or system names. Otherwise, if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
 
 - id: `ask-bootcamper`
 - name: `Ask Bootcamper`
@@ -52,7 +52,7 @@ If any issues are found, fix them automatically to maintain CommonMark complianc
 
 **enforce-feedback-path** (preToolUse → askAgent, toolTypes: write)
 
-Prompt: "Check if you are currently in the feedback collection workflow (i.e., the bootcamper said 'bootcamp feedback', 'power feedback', or similar, and you are writing a feedback entry). If you are NOT in the feedback workflow, produce no output at all — do not acknowledge, do not explain, do not print anything. If you ARE writing feedback content (an improvement entry with Date, Module, Priority, Category, What Happened, Why It's a Problem sections), verify the target file path is exactly 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'. If the path is different, STOP and redirect the write to 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md' instead. Do NOT write feedback to any other file. Do NOT submit feedback to any external service."
+Prompt: "Check if you are currently in the feedback collection workflow (i.e., the bootcamper said 'bootcamp feedback', 'power feedback', or similar, and you are writing a feedback entry). If you are NOT in the feedback workflow, produce no output at all — do not acknowledge, do not explain, do not print anything. STOP immediately and return nothing. Your response must be completely empty — zero tokens, zero characters. If you ARE writing feedback content (an improvement entry with Date, Module, Priority, Category, What Happened, Why It's a Problem sections), verify the target file path is exactly 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'. If the path is different, STOP and redirect the write to 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md' instead. Do NOT write feedback to any other file. Do NOT submit feedback to any external service."
 
 - id: `enforce-feedback-path`
 - name: `Enforce Feedback File Path`
@@ -60,7 +60,7 @@ Prompt: "Check if you are currently in the feedback collection workflow (i.e., t
 
 **enforce-working-directory** (preToolUse → askAgent, toolTypes: write)
 
-Prompt: "Before writing this file, verify: Does the file path or any path in the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If all paths are within the working directory, produce no output at all — do not acknowledge, do not explain, do not print anything. If so, replace those paths with project-relative equivalents (database/G2C.db for databases, data/temp/ for temporary files, src/ for source code). Do NOT proceed with the write if it would place files outside the working directory."
+Prompt: "Before writing this file, verify: Does the file path or any path in the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If all paths are within the working directory, produce no output at all — do not acknowledge, do not explain, do not print anything. STOP immediately and return nothing. Your response must be completely empty — zero tokens, zero characters. If so, replace those paths with project-relative equivalents (database/G2C.db for databases, data/temp/ for temporary files, src/ for source code). Do NOT proceed with the write if it would place files outside the working directory."
 
 - id: `enforce-working-directory`
 - name: `Enforce Working Directory Paths`
@@ -68,7 +68,7 @@ Prompt: "Before writing this file, verify: Does the file path or any path in the
 
 **verify-senzing-facts** (preToolUse → askAgent, toolTypes: write)
 
-Prompt: "If the file contains no Senzing-specific content, or all Senzing content was already verified via MCP tools, produce no output at all — do not acknowledge, do not explain, do not print anything. Before writing this file, verify that any Senzing-specific content (attribute names, SDK method signatures, configuration values, error code explanations) was retrieved from the Senzing MCP server tools (mapping_workflow, generate_scaffold, get_sdk_reference, search_docs, explain_error_code, sdk_guide) and not stated from training data. Per SENZING_INFORMATION_POLICY.md, all Senzing facts must come from MCP tools."
+Prompt: "If the file contains no Senzing-specific content, or all Senzing content was already verified via MCP tools, produce no output at all — do not acknowledge, do not explain, do not print anything. STOP immediately and return nothing. Your response must be completely empty — zero tokens, zero characters. Before writing this file, verify that any Senzing-specific content (attribute names, SDK method signatures, configuration values, error code explanations) was retrieved from the Senzing MCP server tools (mapping_workflow, generate_scaffold, get_sdk_reference, search_docs, explain_error_code, sdk_guide) and not stated from training data. Per SENZING_INFORMATION_POLICY.md, all Senzing facts must come from MCP tools."
 
 - id: `verify-senzing-facts`
 - name: `Verify Senzing Facts Before Writing`
@@ -137,7 +137,7 @@ If BOTH were offered (regardless of whether the bootcamper accepted or declined)
 
 If EITHER visualization was NOT offered, display this message:
 
-```
+```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📊  MODULE 7 VISUALIZATION CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -168,7 +168,7 @@ Prompt: "First, read `config/bootcamp_progress.json` and check the `current_modu
 
 Display a clear packaging-complete summary:
 
-```
+```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📦  PACKAGING PHASE COMPLETE — PHASE GATE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

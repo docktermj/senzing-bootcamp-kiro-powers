@@ -75,7 +75,7 @@ Module 11 platform files: load `deployment-onpremises.md`, `deployment-azure.md`
 
 Create hooks using the `createHook` tool with definitions from `hook-registry.md`. Critical hooks during onboarding, module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if absent, create Critical Hooks.
 
-When a hook check passes with no action needed, produce no output. Do not acknowledge the check, do not explain your reasoning, do not print any status message. Only produce output when the hook requires corrective action.
+When a hook check passes with no action needed, produce no output. Do not acknowledge the check, do not explain your reasoning, do not print any status message. Do not narrate your evaluation. Do not explain why no action is needed. Your response must be completely empty — zero tokens. Only produce output when the hook requires corrective action.
 
 ## Context Budget
 

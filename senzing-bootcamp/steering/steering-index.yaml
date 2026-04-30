@@ -162,7 +162,7 @@ file_metadata:
     token_count: 2063
     size_category: large
   module-01-business-problem.md:
-    token_count: 2802
+    token_count: 3196
     size_category: large
   module-02-sdk-setup.md:
     token_count: 2816
@@ -250,7 +250,7 @@ file_metadata:
     size_category: large
 
 budget:
-  total_tokens: 78007
+  total_tokens: 78401
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

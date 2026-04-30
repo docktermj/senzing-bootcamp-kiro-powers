@@ -118,8 +118,16 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    Look for signals:
    - Output format: "master list", "golden record", "API", "report", "export"
    - Frequency: "one-time cleanup", "ongoing", "real-time"
-   - Integration: mentions of downstream systems
+   - Integration: mentions of downstream systems (CRM, search engine, data warehouse, API)
    - If unclear: default to "not yet determined"
+
+   **F. INTEGRATION TARGETS**
+
+   Look for signals:
+   - Mentions of specific software: Elasticsearch, Salesforce, Snowflake, Kafka, etc.
+   - Phrases like "feed into", "sync with", "push to", "integrate with", "connect to"
+   - Architecture mentions: "microservices", "data pipeline", "ETL", "API layer"
+   - If unclear: will be asked explicitly in Step 8
 
    **Checkpoint:** Write step 6 to `config/bootcamp_progress.json`.
 
@@ -146,15 +154,23 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **Checkpoint:** Write step 7 to `config/bootcamp_progress.json`.
 
-8. **Encourage visual explanations**: Ask for diagrams showing data architecture, data flows, or example records. If images contain placeholders like [variable], ask them to specify what each represents.
+8. **Ask about software integration** (separate question — do NOT combine with gap-filling):
+
+   "Will the entity resolution results need to interface with other software — for example, a CRM, search engine, data warehouse, API gateway, or downstream application? If so, which systems?"
+
+   Record the answer. If the bootcamper mentions specific systems (e.g., Elasticsearch, Salesforce, a data lake), note them for the problem statement and the solution approach in Step 13. If no integration is needed (standalone use), note that too.
 
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 
-9. **Identify the scenario**: Categorize as Customer 360, Fraud Detection, Data Migration, Compliance, or Marketing scenario. If they selected a pattern, this is already identified.
+9. **Encourage visual explanations**: Ask for diagrams showing data architecture, data flows, or example records. If images contain placeholders like [variable], ask them to specify what each represents.
 
    **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
 
-10. **Create problem statement document**: Save to `docs/business_problem.md`:
+10. **Identify the scenario**: Categorize as Customer 360, Fraud Detection, Data Migration, Compliance, or Marketing scenario. If they selected a pattern, this is already identified.
+
+    **Checkpoint:** Write step 10 to `config/bootcamp_progress.json`.
+
+11. **Create problem statement document**: Save to `docs/business_problem.md`:
 
    ```markdown
    # Business Problem Statement
@@ -204,6 +220,11 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    **Use case**: [One-time / Ongoing / Real-time]
    **Integration**: [Standalone / Integrated with [systems]]
 
+   ## Integration Requirements
+   **Downstream systems**: [List systems the results need to feed into, or "None — standalone"]
+   **Integration method**: [API / Database sync / File export / Message queue / Not applicable]
+   **Systems mentioned**: [Specific systems from Step 8, e.g., Elasticsearch, Salesforce, data warehouse]
+
    ## Timeline
    **Target completion**: [Date]
    **Key milestones**: [List]
@@ -212,30 +233,32 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    [Any additional context, constraints, or considerations]
    ```
 
-   **Checkpoint:** Write step 10 to `config/bootcamp_progress.json`.
+   **Checkpoint:** Write step 11 to `config/bootcamp_progress.json`.
 
-11. **Update README.md**: Fill in the Overview and Business Problem sections with the information gathered. If a design pattern was selected, mention it in the overview.
-
-    **Checkpoint:** Write step 11 to `config/bootcamp_progress.json`.
-
-12. **Propose solution approach**: Explain how Senzing can solve this and which modules will be most relevant. If they selected a pattern, reference how the bootcamp will implement that pattern.
-
-    **If the user's problem involves search or lookup** (e.g., "find a customer by name", "search across systems"): Load `design-patterns.md` and present the "Where Senzing Fits in Your Architecture" section. Clarify the correct layering: Senzing first for entity resolution, then a search index (Elasticsearch/OpenSearch) for fast retrieval against resolved entities. This prevents a common architectural mistake.
+12. **Update README.md**: Fill in the Overview and Business Problem sections with the information gathered. If a design pattern was selected, mention it in the overview.
 
     **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
 
-13. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
+13. **Propose solution approach**: Explain how Senzing can solve this and which modules will be most relevant. If they selected a pattern, reference how the bootcamp will implement that pattern.
+
+    **If the user's problem involves search or lookup** (e.g., "find a customer by name", "search across systems"): Load `design-patterns.md` and present the "Where Senzing Fits in Your Architecture" section. Clarify the correct layering: Senzing first for entity resolution, then a search index (Elasticsearch/OpenSearch) for fast retrieval against resolved entities. This prevents a common architectural mistake.
+
+    **If the bootcamper identified integration targets in Step 8**, reference them here and explain how Senzing fits into that architecture. Use `search_docs` to get Senzing's guidance on integrating with the specific systems mentioned.
 
     **Checkpoint:** Write step 13 to `config/bootcamp_progress.json`.
 
-14. **Offer stakeholder summary**: Ask: "Would you like me to create a one-page executive summary you can share with your team or manager? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
-
-    If yes, read the template: #[[file:senzing-bootcamp/templates/stakeholder_summary.md]] Follow the **MODULE 1** guidance block in the template to fill each placeholder with Module 1 context (problem definition from `docs/business_problem.md`, identified data sources, planned approach, expected outcomes). Save the filled summary to `docs/stakeholder_summary_module1.md`.
+14. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
 
     **Checkpoint:** Write step 14 to `config/bootcamp_progress.json`.
 
-15. **Transition to Module 4**: "Module 1 complete. Ready to collect your data sources?"
+15. **Offer stakeholder summary**: Ask: "Would you like me to create a one-page executive summary you can share with your team or manager? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
+
+    If yes, read the template: #[[file:senzing-bootcamp/templates/stakeholder_summary.md]] Follow the **MODULE 1** guidance block in the template to fill each placeholder with Module 1 context (problem definition from `docs/business_problem.md`, identified data sources, planned approach, expected outcomes). Save the filled summary to `docs/stakeholder_summary_module1.md`.
 
     **Checkpoint:** Write step 15 to `config/bootcamp_progress.json`.
+
+16. **Transition to Module 4**: "Module 1 complete. Ready to collect your data sources?"
+
+    **Checkpoint:** Write step 16 to `config/bootcamp_progress.json`.
 
 **Success indicator**: ✅ Clear problem statement + identified data sources + defined success metrics + user confirmation + `docs/business_problem.md` created

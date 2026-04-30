@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-All 17 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
+All 18 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
 
 ## Critical Hooks (created during onboarding)
 
@@ -16,7 +16,7 @@ Prompt: "FIRST — scan the ENTIRE conversation history for the most recent assi
 - name: `Ask Bootcamper`
 - description: `Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question. Suppresses output entirely when a question is already pending.`
 
-**code-style-check** (fileEdited → askAgent, filePatterns: `*.py, *.java, *.cs, *.rs, *.ts, *.js`)
+**code-style-check** (fileEdited → askAgent, filePatterns: `src/**/*.py, src/**/*.java, src/**/*.cs, src/**/*.rs, src/**/*.ts, src/**/*.js`)
 
 Prompt: "A source code file was just edited. Check it for language-appropriate coding standards (Python: PEP-8 with max line length 100; Java: standard conventions; C#: .NET conventions; Rust: rustfmt/clippy; TypeScript: ESLint conventions). If violations are found, suggest specific fixes. If compliant, acknowledge briefly and continue."
 
@@ -76,6 +76,14 @@ Prompt: "If the file contains no Senzing-specific content, or all Senzing conten
 
 ## Module Hooks (created when module starts)
 
+**validate-data-files** — Module 4 (fileCreated → askAgent, filePatterns: `data/raw/*.*`)
+
+Prompt: "A new data file was added to data/raw/. Before proceeding, do a quick sanity check: (1) Can the file be read without encoding errors? Try reading the first 10 lines. (2) Is the format recognizable (CSV, JSON, JSONL, XML, TSV)? (3) Does it contain at least a few records? (4) Are there obvious issues like binary content, empty file, or corrupted data? Report what you find to the bootcamper. If the file looks good, say so briefly. If there are issues, explain what's wrong and suggest how to fix it."
+
+- id: `validate-data-files`
+- name: `Validate Data Files`
+- description: `When new data files are added to data/raw/, checks file format, encoding, and basic readability to catch issues early.`
+
 **analyze-after-mapping** — Module 5 (fileCreated → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
 
 Prompt: "A new Senzing JSON file was created in data/transformed/. Before proceeding to loading (Module 6), use the analyze_record MCP tool to validate a sample of records from this file. Check feature distribution, attribute coverage, and data quality. Quality score should be >70% before loading. Also verify that records conform to the Senzing Generic Entity Specification."
@@ -94,7 +102,7 @@ Prompt: "The transformation program was just updated. Please review the changes 
 
 **backup-before-load** — Module 6 (fileEdited → askAgent, filePatterns: `src/load/*.*`)
 
-Prompt: "A loading program was modified. Before running this in production, remind the user to backup the database using: python scripts/backup_project.py"
+Prompt: "A loading program was modified. Before running this in production, remind the user to backup the database using: python3 scripts/backup_project.py (on Linux/macOS) or python scripts/backup_project.py (on Windows)"
 
 - id: `backup-before-load`
 - name: `Backup Database Before Loading`

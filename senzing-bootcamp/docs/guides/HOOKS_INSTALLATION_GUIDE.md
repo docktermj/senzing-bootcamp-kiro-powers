@@ -44,7 +44,7 @@ The agent will read the Hook Registry from `onboarding-flow.md` and recreate all
 | Verify Generated Code | New source file created (fileCreated) | Run code on sample data |
 | Offer Entity Graph Visualization | New query file (fileCreated) | Offer interactive visualization |
 | Enforce Visualization Offers | Agent stops (agentStop) | Catch missed Module 8 offers |
-| Module 12 Phase Gate | After task (postTaskExecution) | Packaging-to-deployment gate |
+| Module 11 Phase Gate | After task (postTaskExecution) | Packaging-to-deployment gate |
 | Backup Project on Request | Manual trigger (userTriggered) | Run project backup script |
 | Git Commit Reminder | Manual trigger (userTriggered) | Suggest descriptive commit |
 

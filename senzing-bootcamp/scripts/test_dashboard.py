@@ -596,8 +596,8 @@ class TestCLIArgumentParsing:
         parser.add_argument("--html", action="store_true")
         parser.add_argument("--output", type=str, default=None)
         parser.add_argument("--no-open", action="store_true")
-        args = parser.parse_args(["--html", "--output", "/tmp/my_dash.html"])
-        assert args.output == "/tmp/my_dash.html"
+        args = parser.parse_args(["--html", "--output", os.path.join(tempfile.gettempdir(), "my_dash.html")])
+        assert args.output == os.path.join(tempfile.gettempdir(), "my_dash.html")
 
     def test_no_open_flag(self):
         """--no-open flag is recognized."""

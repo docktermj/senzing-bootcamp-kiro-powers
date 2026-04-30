@@ -51,7 +51,7 @@ See `docs/policies/FILE_STORAGE_POLICY.md`.
 
 ### How do I know which module I'm on?
 
-Run `python scripts/status.py`.
+Run `python3 scripts/status.py`.
 
 ### Can I go back to a previous module?
 
@@ -77,18 +77,18 @@ The bootcamp applies language-appropriate coding standards based on your chosen 
 
 ### Which hooks should I install?
 
-Hooks are installed automatically when you start the bootcamp. To reinstall or add hooks later, run `python scripts/install_hooks.py`.
+Hooks are installed automatically when you start the bootcamp. To reinstall or add hooks later, run `python3 scripts/install_hooks.py`.
 
 ## Backup and Recovery
 
 ### How do I backup?
 
-Say "backup my project" (with hook installed), or run `python scripts/backup_project.py`.
+Say "backup my project" (with hook installed), or run `python3 scripts/backup_project.py`.
 
 ### How do I restore?
 
 ```text
-python scripts/restore_project.py backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip
+python3 scripts/restore_project.py backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip
 ```
 
 ## Troubleshooting

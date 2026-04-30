@@ -31,7 +31,7 @@ After the journal entry and reflection, present 3-4 concrete options based on th
 - **Proceed:** "Ready to move on to Module [N] ([name])?"
 - **Iterate:** "Would you like to improve anything from this module first?"
 - **Explore:** "Would you like to explore further — visualize entities, examine match explanations, or search by attributes? (For other modules: dig deeper into what we just produced.)"
-- **Undo:** "Roll back this module's work with `python scripts/rollback_module.py --module N`"
+- **Undo:** "Roll back this module's work with `python3 scripts/rollback_module.py --module N`"
 - **Share:** "Would you like to prepare a summary to share with your team?"
 
 Present these as a single list for the bootcamper to choose from.
@@ -58,7 +58,7 @@ When path is complete, present:
 - Where everything lives (src/, data/transformed/, docs/, config/, database/)
 - Reference to `docs/bootcamp_journal.md`
 - Next options: switch to longer path (modules carry forward), harden for production, or start using the code
-- Export option: "Would you like to export a shareable report of your bootcamp results?" — when accepted, run `python scripts/export_results.py` and present the output path to the bootcamper. This option appears only at track completion, not after every module.
+- Export option: "Would you like to export a shareable report of your bootcamp results?" — when accepted, run `python3 scripts/export_results.py` and present the output path to the bootcamper. This option appears only at track completion, not after every module.
 - Graduation offer (after the export offer, before the feedback reminder):
   1. Read `skip_graduation` from `config/bootcamp_preferences.yaml`. If `skip_graduation` is `true`, skip the graduation offer entirely.
   2. If not skipped, present: "🎓 Would you like to run the graduation workflow? It will help you turn your bootcamp project into a production-ready codebase — clean structure, production configs, CI/CD pipeline, and a migration checklist."

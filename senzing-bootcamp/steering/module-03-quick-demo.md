@@ -63,6 +63,13 @@ inclusion: manual
 
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 
+   **Verification gate:** Before proceeding, confirm the demo produced meaningful results:
+   - At least 2 entities were created (records were matched, not just loaded as singletons)
+   - Match explanations show feature-based matching (names, addresses, phones — not just RECORD_ID)
+   - No SDK errors or exceptions occurred during loading or querying
+
+   If the demo produced only singletons (every record is its own entity), something went wrong — likely a data format issue or missing DATA_SOURCE/RECORD_ID fields. Diagnose before continuing: check the sample data format, verify fields are mapped correctly, and re-run if needed.
+
 4. **Explain results:** Walk through one entity — which features drove the match, what confidence scores mean, how Senzing handled format variations automatically.
 
    **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.

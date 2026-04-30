@@ -569,7 +569,7 @@ class TestLegacyScriptsDeprecation:
 
     def test_check_prerequisites_deprecation(self):
         import subprocess as sp
-        scripts_dir = os.path.join(os.path.dirname(__file__))
+        scripts_dir = os.path.join(os.path.dirname(__file__), os.pardir, "scripts")
         result = sp.run(
             [sys.executable, os.path.join(scripts_dir, "check_prerequisites.py"), "--help"],
             capture_output=True,
@@ -580,7 +580,7 @@ class TestLegacyScriptsDeprecation:
 
     def test_preflight_check_deprecation(self):
         import subprocess as sp
-        scripts_dir = os.path.join(os.path.dirname(__file__))
+        scripts_dir = os.path.join(os.path.dirname(__file__), os.pardir, "scripts")
         result = sp.run(
             [sys.executable, os.path.join(scripts_dir, "preflight_check.py"), "--help"],
             capture_output=True,

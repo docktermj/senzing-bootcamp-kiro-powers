@@ -39,7 +39,7 @@ This shows how the pieces you build during the bootcamp fit together at runtime.
 │  ┌──────────────────────────────────────────────────────────────┐  │
 │  │                    OPTIONAL LAYERS                            │  │
 │  │                                                              │  │
-│  │  REST API (Module 12)     Search Index (Elasticsearch)       │  │
+│  │  REST API (Module 11)     Search Index (Elasticsearch)       │  │
 │  │  ┌─────────────────┐     ┌─────────────────────────┐        │  │
 │  │  │ /health          │     │ Resolved entities →     │        │  │
 │  │  │ /entity/{id}     │     │ indexed for fast lookup │        │  │
@@ -88,6 +88,5 @@ Module 7:  Multi-source orchestration scripts
 Module 8:  src/query/ + docs/results_validation.md
 Module 9:  tests/performance/ + docs/performance_report.md
 Module 10: src/security/ + docs/security_checklist.md
-Module 11: src/monitoring/ + monitoring/dashboards/
-Module 12: Dockerfile + CI/CD + deployment/scripts/
+Module 11: Dockerfile + CI/CD + deployment/scripts/
 ```

@@ -52,6 +52,8 @@ HOOKS = [
      "Reminds to run tests after code changes"),
     ("git-commit-reminder.kiro.hook", "Git Commit Reminder",
      "Reminds to commit progress after completing a module"),
+    ("validate-data-files.kiro.hook", "Validate Data Files",
+     "Checks data file format and readability when added to data/raw/"),
 ]
 
 ESSENTIAL = {

@@ -80,7 +80,7 @@ Call `get_capabilities` to re-establish the MCP session. This is required at the
 
 If `bootcamp_progress.json` exists but seems wrong (e.g., claims Module 8 is complete but `src/query/` is empty):
 
-1. Run `python scripts/validate_module.py` to check actual artifact state
+1. Run `python3 scripts/validate_module.py` to check actual artifact state
 2. Show the user any discrepancies
 3. Offer to correct the progress file based on what actually exists
 4. Proceed from the last verifiably complete module

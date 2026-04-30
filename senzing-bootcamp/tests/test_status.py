@@ -78,12 +78,12 @@ class TestStatusCorruptedJSON:
 
 
 class TestStatusAllComplete:
-    """Requirement 2.5 — all 12 modules complete → 'Bootcamp Complete'."""
+    """Requirement 2.5 — all 11 modules complete → 'Bootcamp Complete'."""
 
-    def test_all_12_complete(self, project_root, write_progress_file, capsys, sample_progress_data):
+    def test_all_11_complete(self, project_root, write_progress_file, capsys, sample_progress_data):
         data = sample_progress_data(
-            modules_completed=list(range(1, 13)),
-            current_module=12,
+            modules_completed=list(range(1, 12)),
+            current_module=11,
         )
         write_progress_file(data)
 

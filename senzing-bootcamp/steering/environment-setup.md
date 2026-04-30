@@ -67,6 +67,33 @@ set /p SENZING_ENGINE_CONFIG_JSON=<config\engine_config.json
 set SENZING_DATABASE_URL=sqlite3://na:na@database/G2C.db
 ```
 
+### How to Use
+
+**Linux/macOS:**
+
+```bash
+source scripts/senzing-env.sh
+```
+
+**Windows (Command Prompt):**
+
+```bat
+call scripts\senzing-env.bat
+```
+
+**Windows (PowerShell):**
+
+```powershell
+# PowerShell cannot run .bat files directly for env vars.
+# Create scripts/senzing-env.ps1 instead:
+$env:SENZING_ROOT = "C:\opt\senzing"
+$env:SENZING_ENGINE_CONFIG_JSON = Get-Content config\engine_config.json -Raw
+$env:SENZING_DATABASE_URL = "sqlite3://na:na@database/G2C.db"
+# Then run: . .\scripts\senzing-env.ps1
+```
+
+Run the appropriate command in your terminal before executing bootcamp scripts that need Senzing environment variables.
+
 Create `.env.example` as a template for any additional variables. Copy to `.env` and fill in actual values (never commit `.env`).
 
 ## Language Setup

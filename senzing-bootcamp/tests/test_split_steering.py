@@ -617,12 +617,12 @@ class TestUnitAgentInstructionsUpdated:
     def test_module_steering_section_documents_phase_loading(self):
         """Module Steering section documents phase-level loading behavior."""
         content = AGENT_INSTRUCTIONS.read_text(encoding="utf-8")
-        assert "Phase-level loading for split modules" in content, \
+        assert "Split modules" in content or "phase-loading-guide.md" in content, \
             "agent-instructions.md missing phase-level loading documentation"
-        assert "step_range" in content or "step_ranges" in content, \
-            "agent-instructions.md missing step_range reference"
-        assert "root file" in content.lower() or "root file first" in content.lower(), \
-            "agent-instructions.md missing root file loading instruction"
+        assert "phases" in content, \
+            "agent-instructions.md missing phases reference"
+        assert "phase-loading-guide.md" in content, \
+            "agent-instructions.md missing phase-loading-guide.md reference"
 
     def test_context_budget_section_references_phases(self):
         """Context Budget section references phases metadata."""

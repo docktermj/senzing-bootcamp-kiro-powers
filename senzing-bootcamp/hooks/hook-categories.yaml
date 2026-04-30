@@ -12,6 +12,8 @@ critical:
   - verify-senzing-facts
 
 modules:
+  4:
+    - validate-data-files
   5:
     - analyze-after-mapping
     - data-quality-check

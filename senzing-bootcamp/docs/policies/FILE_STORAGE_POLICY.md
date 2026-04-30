@@ -346,7 +346,7 @@ backups/senzing-bootcamp-backup_20260325_091500.zip
 **Creating Backups**:
 
 ```text
-python scripts/backup_project.py
+python3 scripts/backup_project.py
 ```
 
 Creates: `backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip`
@@ -355,10 +355,10 @@ Creates: `backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip`
 
 ```text
 # Restore to current location
-python scripts/restore_project.py backups/senzing-bootcamp-backup_20260326_143022.zip
+python3 scripts/restore_project.py backups/senzing-bootcamp-backup_20260326_143022.zip
 
 # Restore to new location
-python scripts/restore_project.py backups/senzing-bootcamp-backup_20260326_143022.zip ~/new-project
+python3 scripts/restore_project.py backups/senzing-bootcamp-backup_20260326_143022.zip ~/new-project
 ```
 
 **Note**: Add `backups/*.zip` to `.gitignore` to exclude backup files from version control:

@@ -69,7 +69,7 @@ Loading failing?
 │   ├─→ SQLite slow for >100K records → Switch to PostgreSQL
 │   └─→ Check system resources (CPU, memory, disk I/O)
 ├─→ Database corruption?
-│   └─→ Restore: python scripts/restore_project.py <backup-file>
+│   └─→ Restore: python3 scripts/restore_project.py <backup-file>
 └─→ Partial load failure?
     └─→ Check failed records → Fix data → Restore from backup → Reload
 ```

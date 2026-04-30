@@ -408,7 +408,7 @@ A: Yes, it's optional. Skip to Module 1 if you're ready to start with your data.
 Run the pre-flight check script:
 
 ```text
-python scripts/preflight_check.py
+python3 scripts/preflight_check.py
 ```
 
 This will check:

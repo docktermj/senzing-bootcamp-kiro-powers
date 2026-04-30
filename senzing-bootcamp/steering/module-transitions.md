@@ -1,7 +1,5 @@
 ---
-inclusion: fileMatch
-fileMatchPattern: "config/bootcamp_progress.json"
-description: "Module boundary guidance: start banners, journey maps, before/after framing, step-level progress, and completion summaries. Loaded when bootcamp progress is read or written."
+inclusion: always
 ---
 
 # Module Transitions

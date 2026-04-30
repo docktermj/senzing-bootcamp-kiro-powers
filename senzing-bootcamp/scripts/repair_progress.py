@@ -16,7 +16,7 @@ NAMES = {1: "Business Problem", 2: "SDK Setup", 3: "Quick Demo",
          4: "Data Collection", 5: "Data Quality & Mapping",
          6: "Single Source Loading", 7: "Multi-Source Orchestration",
          8: "Query & Validation", 9: "Performance Testing",
-         10: "Security Hardening", 11: "Monitoring", 12: "Deployment"}
+         10: "Security Hardening", 11: "Deployment"}
 
 
 def _c(code, t):
@@ -56,8 +56,8 @@ def detect():
          7: _multi, 8: lambda: _has("src/query", "*.*"),
          9: lambda: _has("docs", "performance*"),
          10: lambda: _has("docs", "security*"),
-         11: Path("monitoring").is_dir,
-         12: lambda: (any(Path(".").glob("*deploy*")) or (
+         11: lambda: (Path("monitoring").is_dir()
+                     or any(Path(".").glob("*deploy*")) or (
              Path("config").exists()
              and any(Path("config").glob("*deploy*"))))}
     out = set()
@@ -121,9 +121,9 @@ def detect_steps():
     if Path("docs/security_checklist.md").exists():
         steps[10] = 6
 
-    # Module 12: Dockerfile or docker-compose.yml → step 5
+    # Module 11: Dockerfile or docker-compose.yml → step 5
     if Path("Dockerfile").exists() or Path("docker-compose.yml").exists():
-        steps[12] = 5
+        steps[11] = 5
 
     return steps
 
@@ -141,7 +141,7 @@ def main():
     det = detect()
     step_map = detect_steps()
     print(f"Scanned artifacts — {len(det)} module(s) found:\n")
-    for m in range(1, 13):
+    for m in range(1, 12):
         mk = green("✓") if m in det else yellow("·")
         step_info = f" (Step ~{step_map[m]})" if m in step_map else ""
         print(f"  {mk} Module {m}: {NAMES[m]}{step_info}")
@@ -164,7 +164,7 @@ def main():
     if not fix:
         print(f"\n{cyan('Run with --fix to update.')}")
         return
-    cur = min(max(det) + 1, 12) if det else 1
+    cur = min(max(det) + 1, 11) if det else 1
     prog = ex or {}
     prog["modules_completed"] = sorted(det)
     prog["current_module"] = cur

@@ -4,7 +4,7 @@
   "description": "Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions.",
   "when": {
     "type": "fileEdited",
-    "patterns": ["*.py", "*.java", "*.cs", "*.rs", "*.ts", "*.js"]
+    "patterns": ["src/**/*.py", "src/**/*.java", "src/**/*.cs", "src/**/*.rs", "src/**/*.ts", "src/**/*.js"]
   },
   "then": {
     "type": "askAgent",

@@ -387,7 +387,7 @@ class TestPreservation:
         content = _read_agent_instructions()
         assert "Closing-question ownership" in content
         assert "ask-bootcamper" in content
-        assert "Never end your turn with a closing question" in content
+        assert "never end your turn with a closing question" in content
 
     def test_agent_instructions_contains_core_sections(self) -> None:
         """agent-instructions.md contains all expected core sections."""

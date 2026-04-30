@@ -40,7 +40,7 @@ For teams working on a Senzing Bootcamp project together. For coding standards, 
 ## Onboarding New Team Members
 
 1. Grant repo access and communication channels
-2. Run `python scripts/preflight.py`
+2. Run `python3 scripts/preflight.py`
 3. Complete Module 3 (Quick Demo) to see entity resolution in action
 4. Review `docs/business_problem.md` and existing code in `src/`
 5. Pair with a team member on their first task
@@ -124,8 +124,8 @@ If `config/team.yaml` does not exist, onboarding proceeds in standard single-use
 Generate an HTML dashboard showing all members' progress:
 
 ```bash
-python senzing-bootcamp/scripts/team_dashboard.py
-python senzing-bootcamp/scripts/team_dashboard.py --output reports/dashboard.html
+python3 senzing-bootcamp/scripts/team_dashboard.py
+python3 senzing-bootcamp/scripts/team_dashboard.py --output reports/dashboard.html
 ```
 
 The dashboard includes:
@@ -143,8 +143,8 @@ Output defaults to `exports/team_dashboard.html`. The HTML is self-contained wit
 Consolidate all members' feedback into a single team report:
 
 ```bash
-python senzing-bootcamp/scripts/merge_feedback.py
-python senzing-bootcamp/scripts/merge_feedback.py --output reports/feedback.md
+python3 senzing-bootcamp/scripts/merge_feedback.py
+python3 senzing-bootcamp/scripts/merge_feedback.py --output reports/feedback.md
 ```
 
 The report includes:
@@ -160,8 +160,8 @@ Output defaults to `docs/feedback/TEAM_FEEDBACK_REPORT.md`.
 The existing `status.py` script is team-aware:
 
 ```bash
-python senzing-bootcamp/scripts/status.py              # Team summary (when team.yaml exists)
-python senzing-bootcamp/scripts/status.py --member alice  # Individual member progress
+python3 senzing-bootcamp/scripts/status.py              # Team summary (when team.yaml exists)
+python3 senzing-bootcamp/scripts/status.py --member alice  # Individual member progress
 ```
 
 Without `--member`, it shows each member's current module and completion count plus overall team statistics.
@@ -195,4 +195,4 @@ Review code at these key points:
 - After Module 5: Review transformation logic before loading data
 - After Module 6: Review loading programs before multi-source orchestration
 - After Module 8: Review query programs and UAT results before production
-- After Module 12: Review deployment configuration before going live
+- After Module 11: Review deployment configuration before going live

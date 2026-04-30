@@ -52,7 +52,7 @@ What to do: Stay under 1,000 records on SQLite. Migrate to PostgreSQL for larger
 
 If a load goes wrong, you need to restore. Without a backup, you start from scratch.
 
-What to do: Run `python scripts/backup_project.py` before every load operation.
+What to do: Run `python3 scripts/backup_project.py` before every load operation.
 
 ### Not processing the redo queue
 
@@ -92,7 +92,7 @@ What to do: Complete Module 9 (Performance Testing) before production. See `docs
 
 Data loss without backups means reloading everything from scratch — which can take hours or days at production scale.
 
-What to do: Follow the DR guidance in Module 12 Step 15. Implement the 3-2-1 backup rule.
+What to do: Follow the DR guidance in Module 11 Step 15. Implement the 3-2-1 backup rule.
 
 ---
 

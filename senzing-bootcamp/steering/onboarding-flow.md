@@ -72,7 +72,7 @@ Load language steering file immediately after confirmation (`lang-python.md`, `l
 Run the consolidated preflight script to verify the environment before proceeding:
 
 ```bash
-python senzing-bootcamp/scripts/preflight.py
+python3 senzing-bootcamp/scripts/preflight.py
 ```
 
 Present the full report to the bootcamper. Then act on the verdict:
@@ -123,7 +123,7 @@ Present the overview before track selection. Cover all points naturally:
 
 > **Authoritative source:** Track definitions are derived from
 > `config/module-dependencies.yaml`. To update tracks, edit the dependency graph
-> first, then run `python scripts/validate_dependencies.py` to verify consistency.
+> first, then run `python3 scripts/validate_dependencies.py` to verify consistency.
 
 Present tracks — not mutually exclusive, all completed modules carry forward:
 
@@ -150,7 +150,7 @@ Update preferences. Warn: existing code in `src/` must be regenerated. Data/docs
 
 > **Authoritative source:** Gate conditions are derived from
 > `config/module-dependencies.yaml`. To update gate conditions, edit the
-> dependency graph first, then run `python scripts/validate_dependencies.py` to
+> dependency graph first, then run `python3 scripts/validate_dependencies.py` to
 > verify consistency.
 
 Run `validate_module.py --module N` before proceeding. Update `bootcamp_progress.json` and `bootcamp_preferences.yaml`. Every 3 modules: progress bar.

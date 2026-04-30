@@ -274,7 +274,7 @@ Output: docs/stakeholder_summary_module11.md
   - Alert rules configured for error rate, latency, and disk usage
 
 [next_steps]
-  1. Proceed to deployment packaging (Module 12)
+  1. Proceed to deployment packaging (Module 11)
   2. Monitor production performance for 30 days after deployment
   3. Tune alert thresholds based on production traffic patterns
   4. Schedule quarterly monitoring review
@@ -286,12 +286,12 @@ Output: docs/stakeholder_summary_module11.md
   unnoticed, protecting the ROI of the entity resolution investment."
 
 =============================================================================
-MODULE 12 — Deployment and Packaging
-Output: docs/stakeholder_summary_module12.md
+MODULE 11 — Deployment and Packaging
+Output: docs/stakeholder_summary_module11.md
 =============================================================================
 
 [status]        → "Deployed to [environment]" or "Packaged and deployment-ready"
-[module_number] → "12"
+[module_number] → "11"
 [module_name]   → "Deployment and Packaging"
 
 [problem_statement]

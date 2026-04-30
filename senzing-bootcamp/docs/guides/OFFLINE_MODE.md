@@ -51,9 +51,9 @@ Regardless of which module you are on, these activities never require MCP:
 - **Review and edit existing code** — fix bugs, refactor, add comments, improve error handling
 - **Run existing programs** — transformation, loading, and query programs that are already written still work
 - **Manage your project** — create directories, configure files, set up `config/` and `data/` layout
-- **Back up and restore** — `python scripts/backup_project.py` and `python scripts/restore_project.py`
+- **Back up and restore** — `python3 scripts/backup_project.py` and `python3 scripts/restore_project.py`
 - **Use git** — commit, branch, review diffs
-- **Check progress** — `python scripts/status.py`, `python scripts/validate_module.py`
+- **Check progress** — `python3 scripts/status.py`, `python3 scripts/validate_module.py`
 
 ## Reconnecting to MCP
 

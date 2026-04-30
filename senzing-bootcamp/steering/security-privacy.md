@@ -1,5 +1,5 @@
 ---
-inclusion: always
+inclusion: auto
 ---
 
 # Data Privacy — Bootcamp-Specific Rules

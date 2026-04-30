@@ -74,7 +74,7 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 **Status Command** ⭐ NEW!
 
 ```text
-python scripts/status.py
+python3 scripts/status.py
 ```
 
 - Shows current module
@@ -125,7 +125,7 @@ For Senzing error codes, use the MCP `explain_error_code` tool. For Senzing conc
 **Hook Installer** ⭐ NEW!
 
 ```text
-python scripts/install_hooks.py
+python3 scripts/install_hooks.py
 ```
 
 - Interactive installation
@@ -174,7 +174,7 @@ python scripts/install_hooks.py
 ### Track Progress
 
 1. Use [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md) manually
-2. Or run `python scripts/status.py` for automated status
+2. Or run `python3 scripts/status.py` for automated status
 
 ### Visual Learner?
 
@@ -189,7 +189,7 @@ All scripts are cross-platform Python (Linux, macOS, Windows).
 ### Check Prerequisites
 
 ```text
-python scripts/check_prerequisites.py
+python3 scripts/check_prerequisites.py
 ```
 
 Validates your environment before starting.
@@ -197,7 +197,7 @@ Validates your environment before starting.
 ### Check Status
 
 ```text
-python scripts/status.py
+python3 scripts/status.py
 ```
 
 Shows current module, progress, and next steps.
@@ -205,7 +205,7 @@ Shows current module, progress, and next steps.
 ### Install Hooks
 
 ```text
-python scripts/install_hooks.py
+python3 scripts/install_hooks.py
 ```
 
 Interactive hook installation.
@@ -213,7 +213,7 @@ Interactive hook installation.
 ### Backup Project
 
 ```text
-python scripts/backup_project.py
+python3 scripts/backup_project.py
 ```
 
 Or say: "backup my project"
@@ -221,7 +221,7 @@ Or say: "backup my project"
 ### Restore Project
 
 ```text
-python scripts/restore_project.py <backup-file>
+python3 scripts/restore_project.py <backup-file>
 ```
 
 ## Documentation Structure

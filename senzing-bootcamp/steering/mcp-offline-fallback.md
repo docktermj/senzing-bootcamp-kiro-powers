@@ -36,7 +36,7 @@ These operations rely on local files, existing artifacts, or general knowledge â
 | ------------------------ | ------- | -------------------------------------------------------------------------------------- |
 | Write documentation      | Any     | Update `docs/`, write journal entries, create runbooks                                 |
 | Review/edit existing code| Any     | Fix bugs, refactor, add comments, improve error handling                               |
-| Check progress           | Any     | `python scripts/status.py`, `python scripts/validate_module.py`                        |
+| Check progress           | Any     | `python3 scripts/status.py`, `python3 scripts/validate_module.py`                      |
 
 ### Visualization
 
@@ -50,7 +50,7 @@ These operations rely on local files, existing artifacts, or general knowledge â
 | ------------------------ | ------- | -------------------------------------------------------------------------------------- |
 | Project structure setup  | Any     | Create directories, configure files, set up `config/` and `data/` layout               |
 | Run existing programs    | 5-8     | Transformation, loading, and query programs that are already written still run          |
-| Backup/restore           | Any     | `python scripts/backup_project.py` / `restore_project.py`                              |
+| Backup/restore           | Any     | `python3 scripts/backup_project.py` / `restore_project.py`                             |
 | Git operations           | Any     | Commit, branch, review diffs                                                           |
 
 ## Fallback Instructions by Operation

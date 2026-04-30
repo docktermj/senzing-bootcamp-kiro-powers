@@ -20,7 +20,7 @@ from hypothesis import given, settings, assume
 from hypothesis import strategies as st
 
 # Ensure scripts dir is on sys.path so we can import rollback_module
-_scripts_dir = str(Path(__file__).resolve().parent)
+_scripts_dir = str(Path(__file__).resolve().parent.parent / "scripts")
 if _scripts_dir not in sys.path:
     sys.path.insert(0, _scripts_dir)
 
@@ -52,8 +52,8 @@ from rollback_module import (
 
 
 def _valid_module_numbers():
-    """Strategy producing valid module numbers 1-12."""
-    return st.integers(min_value=1, max_value=12)
+    """Strategy producing valid module numbers 1-11."""
+    return st.integers(min_value=1, max_value=11)
 
 
 def _any_module_numbers():
@@ -62,9 +62,9 @@ def _any_module_numbers():
 
 
 def _modules_completed_lists():
-    """Strategy producing sorted unique subsets of modules 1-12."""
+    """Strategy producing sorted unique subsets of modules 1-11."""
     return st.lists(
-        st.integers(min_value=1, max_value=12), unique=True, max_size=12
+        st.integers(min_value=1, max_value=11), unique=True, max_size=11
     ).map(sorted)
 
 
@@ -72,10 +72,10 @@ def _progress_states():
     """Strategy producing valid progress dicts with all expected fields."""
     return st.fixed_dictionaries({
         "modules_completed": _modules_completed_lists(),
-        "current_module": st.integers(min_value=1, max_value=12),
+        "current_module": st.integers(min_value=1, max_value=11),
         "current_step": st.one_of(st.none(), st.integers(min_value=1, max_value=20)),
         "step_history": st.dictionaries(
-            st.sampled_from([str(i) for i in range(1, 13)]),
+            st.sampled_from([str(i) for i in range(1, 12)]),
             st.fixed_dictionaries({
                 "last_completed_step": st.integers(min_value=1, max_value=20),
                 "updated_at": st.just("2026-05-12T09:15:00+00:00"),
@@ -155,12 +155,12 @@ class TestProperty1ModuleNumberValidation:
     """Feature: module-rollback, Property 1: Module number validation
 
     For any integer, the CLI argument parser SHALL accept it if and only if
-    it is in the range 1-12.
+    it is in the range 1-11.
 
     **Validates: Requirements 1.2, 11.2**
     """
 
-    @given(n=st.integers(min_value=1, max_value=12))
+    @given(n=st.integers(min_value=1, max_value=11))
     @settings(max_examples=100)
     def test_valid_modules_accepted(self, n):
         """Feature: module-rollback, Property 1: Module number validation — valid range"""
@@ -185,7 +185,7 @@ class TestProperty1ModuleNumberValidation:
 class TestProperty2ManifestCompleteness:
     """Feature: module-rollback, Property 2: Manifest completeness
 
-    For any module 1-12, ARTIFACT_MANIFEST contains valid ModuleArtifacts
+    For any module 1-11, ARTIFACT_MANIFEST contains valid ModuleArtifacts
     with correct modifies_database flag.
 
     **Validates: Requirements 2.1, 2.7, 2.8**
@@ -880,11 +880,6 @@ class TestManifestContent:
         assert "monitoring" in a.directories
         assert a.modifies_database is False
 
-    def test_module_12_manifest(self):
-        a = ARTIFACT_MANIFEST[12]
-        assert "docs/deployment_plan.md" in a.files
-        assert a.modifies_database is False
-
 
 # ---------------------------------------------------------------------------
 # Task 8.2: Dependency map matches prerequisites
@@ -904,7 +899,6 @@ class TestDependencyMap:
         assert PREREQUISITES[9] == [8]
         assert PREREQUISITES[10] == [9]
         assert PREREQUISITES[11] == [10]
-        assert PREREQUISITES[12] == [11]
 
     def test_modules_1_2_have_no_prerequisites(self):
         assert 1 not in PREREQUISITES
@@ -920,8 +914,8 @@ class TestDependencyMap:
         assert 4 in ds
         assert 5 in ds
 
-    def test_downstream_of_module_12(self):
-        ds = get_downstream_modules(12)
+    def test_downstream_of_module_11(self):
+        ds = get_downstream_modules(11)
         assert ds == []
 
 

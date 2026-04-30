@@ -119,18 +119,12 @@
            ▼
 ┌──────────────────────┐
 │     MODULE 11        │
-│     Monitoring       │
+│  Monitoring &        │
+│  Deployment          │
 │                      │
 │  • Logging           │
 │  • Metrics           │
 │  • Alerting          │
-└──────────┬───────────┘
-           │
-           ▼
-┌──────────────────────┐
-│     MODULE 12        │
-│     Deployment       │
-│                      │
 │  • Package code      │
 │  • Multi-env config  │
 │  • Deploy artifacts  │
@@ -173,7 +167,7 @@ Module 2 → Module 6 → Module 8 → Done
 ```text
 Module 1 → Module 2 → Module 3 → Module 4 → Module 5 →
 Module 6 → Module 7 → Module 8 → Module 9 →
-Module 10 → Module 11 → Module 12 → Done
+Module 10 → Module 11 → Done
 ```
 
 ## Module Dependencies
@@ -190,7 +184,6 @@ Module 8: Requires Module 6 or 7
 Module 9: Requires Module 8 (optional)
 Module 10: Requires Module 9 (optional)
 Module 11: Requires Module 10 (optional)
-Module 12: Requires Module 11 (optional)
 ```
 
 ## Skip Conditions
@@ -211,7 +204,6 @@ Module 12: Requires Module 11 (optional)
 │ Module 9: Yes (if not production or perf not critical)  │
 │ Module 10: Yes (if internal use only)                   │
 │ Module 11: Yes (if basic monitoring sufficient)         │
-│ Module 12: Yes (if not deploying to production)         │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -228,8 +220,7 @@ Module 7  → Multi-source orchestration scripts
 Module 8  → src/query/* programs, visualizations
 Module 9  → Performance benchmarks, optimization recommendations
 Module 10 → Security configuration, compliance documentation
-Module 11 → Monitoring dashboards, alerting rules
-Module 12 → Deployment artifacts, runbooks
+Module 11 → Monitoring dashboards, alerting rules, deployment artifacts, runbooks
 ```
 
 ## Progress Tracking
@@ -237,7 +228,7 @@ Module 12 → Deployment artifacts, runbooks
 Check your progress:
 
 ```text
-python scripts/status.py
+python3 scripts/status.py
 ```
 
 View detailed progress:

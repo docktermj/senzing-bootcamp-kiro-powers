@@ -757,6 +757,7 @@ _NON_AFFECTED_HOOK_IDS: list[str] = [
     "analyze-after-mapping",
     "backup-before-load",
     "run-tests-after-change",
+    "validate-data-files",
     "verify-generated-code",
     "offer-visualization",
     "enforce-visualization-offers",

@@ -22,11 +22,11 @@ Each step requires bootcamper confirmation before proceeding. Do not skip ahead.
 
 Before starting any steps, gather the bootcamper's context:
 
-1. **Read preferences**: Load `config/bootcamp_preferences.yaml` and extract: `language`, `track`, `platform`, `data_sources`, `database_type`.
+1. **Read preferences:** Load `config/bootcamp_preferences.yaml` and extract: `language`, `track`, `platform`, `data_sources`, `database_type`.
 
-2. **Read progress**: Load `config/bootcamp_progress.json` and extract: `modules_completed`, `current_module`.
+2. **Read progress:** Load `config/bootcamp_progress.json` and extract: `modules_completed`, `current_module`.
 
-3. **Fallback if files are missing**: Inform the bootcamper, prompt for **language** and **database type**, use sensible defaults for everything else (track: unknown, platform: GitHub Actions, data_sources: []).
+3. **Fallback if files are missing:** Inform the bootcamper, prompt for **language** and **database type**, use sensible defaults for everything else (track: unknown, platform: GitHub Actions, data_sources: []).
 
 Store these values for use throughout the workflow. Proceed to Step 1.
 
@@ -60,7 +60,7 @@ Show the generated README to the bootcamper for review. WAIT for confirmation or
 
 ## Step 4: Migration Checklist
 
-Generate `production/MIGRATION_CHECKLIST.md` with six sections (Database, Security, Licensing, Performance, Data, Deployment) using `- [ ]` checkboxes. Apply conditional logic based on whether Modules 10–12 were completed — see the reference file for base items and conditional rules.
+Generate `production/MIGRATION_CHECKLIST.md` with six sections (Database, Security, Licensing, Performance, Data, Deployment) using `- [ ]` checkboxes. Apply conditional logic based on whether Modules 9–11 were completed — see the reference file for base items and conditional rules.
 
 #[[file:senzing-bootcamp/steering/graduation-reference.md]]
 
@@ -70,9 +70,9 @@ Ask: "Migration checklist generated. Ready to proceed to Step 5 (Git initializat
 
 Ask: "Would you like me to initialize a new git repository in the `production/` directory?" WAIT for response.
 
-**If accepted**: Check `git --version`. If unavailable, inform and skip. If available, run `git init`, `git add .`, and `git commit -m "Initial production project from Senzing Bootcamp graduation"`. If any command fails, inform and continue.
+**If accepted:** Check `git --version`. If unavailable, inform and skip. If available, run `git init`, `git add .`, and `git commit -m "Initial production project from Senzing Bootcamp graduation"`. If any command fails, inform and continue.
 
-**If declined**: Skip to the graduation report.
+**If declined:** Skip to the graduation report.
 
 ## Graduation Report
 
@@ -89,8 +89,6 @@ Present completion:
 > Check `production/GRADUATION_REPORT.md` for a full summary, and work through `production/MIGRATION_CHECKLIST.md` to prepare for deployment.
 >
 > Say "bootcamp feedback" if you'd like to share your experience.
-
-
 
 <!-- 
   ## Export-Results Integration Contract

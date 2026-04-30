@@ -85,6 +85,7 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 **Module Workflows (load the one you need):**
 
 - `module-01-business-problem.md` — Module 1: Business Problem
+- `module-01-business-problem.md` — Module 1: Business Problem (split: `module-01-phase2-document-confirm.md`)
 - `module-02-sdk-setup.md` — Module 2: SDK Setup
 - `module-03-quick-demo.md` — Module 3: Quick Demo (Optional)
 - `module-04-data-collection.md` — Module 4: Data Collection
@@ -94,11 +95,12 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 - `module-08-performance.md` — Module 8: Performance Testing
 - `module-09-security.md` — Module 9: Security Hardening
 - `module-10-monitoring.md` — Module 10: Monitoring
-- `module-11-deployment.md` — Module 11: Deployment
+- `module-11-deployment.md` — Module 11: Deployment (split: `module-11-phase2-deploy.md`)
 
 **Agent Behavior:**
 
-- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~74 lines)
+- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~79 lines)
+- `module-transitions.md` — Journey map, before/after framing, and step-level progress rules (always loaded, ~59 lines)
 - `session-resume.md` — Restores full context when resuming a previous bootcamp session
 - `onboarding-flow.md` — Full onboarding sequence: directory creation, language selection, prerequisite checks, track selection, validation gates
 - `cloud-provider-setup.md` — Cloud provider selection at the 8→9 gate (AWS, Azure, GCP, on-premises, local)
@@ -106,9 +108,8 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 
 **Auto-included (Kiro loads when relevant to the conversation):**
 
-- `security-privacy.md` — Data privacy and PII protection (`inclusion: always` — loaded in every conversation)
+- `security-privacy.md` — Data privacy and PII protection (`inclusion: auto` — Kiro decides based on relevance)
 - `project-structure.md` — Directory structure and setup commands (`inclusion: auto` — Kiro decides based on relevance)
-- `module-transitions.md` — Journey map, before/after framing, and step-level progress rules (`inclusion: fileMatch` on `config/bootcamp_progress.json`)
 
 **Module Completion (load after completing any module):**
 
@@ -136,6 +137,12 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 **Visualization:**
 
 - `visualization-guide.md` — Interactive entity graph and results dashboard generation workflow
+- `visualization-web-service.md` — Web service delivery mode: endpoints, framework selection, lifecycle management
+
+**Recovery and Phase Loading:**
+
+- `recovery-from-mistakes.md` — How to undo or redo a step: MCP workflow resets, file cleanup, database recovery
+- `phase-loading-guide.md` — Detailed rules for loading split-module phase sub-files
 
 **Troubleshooting:**
 
@@ -264,12 +271,12 @@ All generated code follows language-appropriate coding standards based on the bo
 Install pre-configured hooks for automated quality checks:
 
 ```console
-python senzing-bootcamp/scripts/install_hooks.py
+python3 senzing-bootcamp/scripts/install_hooks.py
 ```
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: Code Style Check (`code-style-check`) ⭐, `ask-bootcamper`, `data-quality-check`, `backup-before-load`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory` ⭐, `verify-generated-code`, `offer-visualization`, `review-bootcamper-input` ⭐, `deployment-phase-gate`, `enforce-visualization-offers` ⭐, `enforce-feedback-path`.
+Available: Code Style Check (`code-style-check`) ⭐, `ask-bootcamper`, `data-quality-check`, `backup-before-load`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory` ⭐, `verify-generated-code`, `offer-visualization`, `review-bootcamper-input` ⭐, `deployment-phase-gate`, `enforce-visualization-offers` ⭐, `enforce-feedback-path`, `validate-data-files`.
 
 ## Project Directory Structure
 
@@ -297,56 +304,19 @@ Say "power feedback" or "bootcamp feedback" at any time to document issues or su
 
 ## Useful Commands
 
-All scripts are cross-platform Python and live in `senzing-bootcamp/scripts/`. Run them from your project root after the agent copies them during setup, or reference them directly from the power directory:
+Common commands (run from project root):
 
 ```text
-python3 senzing-bootcamp/scripts/preflight.py            # Environment verification (primary)
-python3 senzing-bootcamp/scripts/preflight.py --json     # Environment verification (JSON output)
-python3 senzing-bootcamp/scripts/preflight.py --fix      # Environment verification with auto-fix
 python3 senzing-bootcamp/scripts/status.py               # Check progress
-python3 senzing-bootcamp/scripts/status.py --sync        # Sync progress to PROGRESS_TRACKER.md
-python3 senzing-bootcamp/scripts/validate_module.py      # Validate current module completion
-python3 senzing-bootcamp/scripts/validate_module.py --next 7  # Check if ready for module 7
-python3 senzing-bootcamp/scripts/install_hooks.py        # Install hooks
-python3 senzing-bootcamp/scripts/backup_project.py       # Backup project
-python3 senzing-bootcamp/scripts/restore_project.py      # Restore from backup
-python3 senzing-bootcamp/scripts/validate_commonmark.py  # Validate Markdown formatting
-python3 senzing-bootcamp/scripts/validate_power.py       # Validate power integrity (cross-references, hooks, steering)
-python3 senzing-bootcamp/scripts/measure_steering.py     # Update steering file token counts in steering-index.yaml
-python3 senzing-bootcamp/scripts/measure_steering.py --check  # Verify stored token counts are within 10% of actual (CI mode)
-python3 senzing-bootcamp/scripts/repair_progress.py      # Repair corrupted bootcamp_progress.json
-python3 senzing-bootcamp/scripts/team_dashboard.py                    # Generate team progress dashboard (requires config/team.yaml)
-python3 senzing-bootcamp/scripts/team_dashboard.py --output report.html  # Generate dashboard to custom path
-python3 senzing-bootcamp/scripts/merge_feedback.py                    # Merge team feedback into one report
-python3 senzing-bootcamp/scripts/merge_feedback.py --output report.md    # Merge feedback to custom path
-python3 senzing-bootcamp/scripts/export_results.py                    # Export HTML report
-python3 senzing-bootcamp/scripts/export_results.py --format zip       # Export ZIP with all artifacts
-python3 senzing-bootcamp/scripts/export_results.py --modules 1,2,3    # Export specific modules only
-python3 senzing-bootcamp/scripts/data_sources.py                     # View data source registry (table)
-python3 senzing-bootcamp/scripts/data_sources.py --detail CUSTOMERS  # Show all fields for one source
-python3 senzing-bootcamp/scripts/data_sources.py --summary           # Aggregate registry statistics
-python3 senzing-bootcamp/scripts/rollback_module.py --module N           # Roll back a specific module
-python3 senzing-bootcamp/scripts/rollback_module.py --module N --dry-run # Preview rollback without changes
-python3 senzing-bootcamp/scripts/sync_hook_registry.py --write        # Regenerate hook-registry.md from .kiro.hook files
-python3 senzing-bootcamp/scripts/sync_hook_registry.py --verify       # Verify hook registry matches hook files (CI mode)
-python3 senzing-bootcamp/scripts/validate_dependencies.py             # Validate module dependency graph consistency
-python3 senzing-bootcamp/scripts/lint_steering.py                     # Lint steering files for structural issues
-python3 senzing-bootcamp/scripts/lint_steering.py --warnings-as-errors # Lint with warnings treated as errors
-python3 senzing-bootcamp/scripts/lint_steering.py --skip-template     # Lint without template conformance checks
-python3 senzing-bootcamp/scripts/split_steering.py --module 5         # Split large steering file into phase sub-files
-python3 senzing-bootcamp/scripts/session_logger.py                    # Internal: append structured events to session log
-python3 senzing-bootcamp/scripts/analyze_sessions.py config/session_log.jsonl          # Analyze session log (text table)
-python3 senzing-bootcamp/scripts/analyze_sessions.py config/session_log.jsonl --format json  # Analyze session log (JSON)
-python3 senzing-bootcamp/scripts/analyze_sessions.py config/session_log.jsonl --pretty       # Pretty-print log entries
-python3 senzing-bootcamp/scripts/triage_feedback.py docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md  # Parse feedback into spec skeletons
-python3 senzing-bootcamp/scripts/triage_feedback.py --dry-run         # Preview triage without creating files
-python3 senzing-bootcamp/scripts/progress_utils.py       # Internal: progress tracking utilities (used by other scripts)
-python3 senzing-bootcamp/scripts/team_config_validator.py # Internal: validate config/team.yaml structure (used during onboarding)
-python3 senzing-bootcamp/scripts/check_prerequisites.py  # DEPRECATED — use preflight.py instead
-python3 senzing-bootcamp/scripts/preflight_check.py      # DEPRECATED — use preflight.py instead
+python3 senzing-bootcamp/scripts/preflight.py             # Environment verification
+python3 senzing-bootcamp/scripts/install_hooks.py         # Install hooks
+python3 senzing-bootcamp/scripts/backup_project.py        # Backup project
+python3 senzing-bootcamp/scripts/validate_power.py        # Validate power integrity
 ```
 
 Use `python` instead of `python3` on Windows.
+
+For the complete script reference with all flags and options, see `docs/guides/SCRIPT_REFERENCE.md`.
 
 ## Additional Resources
 

@@ -19,7 +19,7 @@ import pytest
 
 def _get_repair_module(tmp_path, monkeypatch):
     """Import (or reload) repair_progress with cwd set to tmp_path."""
-    scripts_dir = str(Path(__file__).resolve().parent)
+    scripts_dir = str(Path(__file__).resolve().parent.parent / "scripts")
     monkeypatch.syspath_prepend(scripts_dir)
     monkeypatch.chdir(tmp_path)
 
@@ -148,19 +148,19 @@ class TestDetectSteps:
         steps = rp.detect_steps()
         assert steps[10] == 6
 
-    def test_module12_dockerfile(self, tmp_path, monkeypatch):
-        """Dockerfile → module 12 step 5."""
+    def test_module11_dockerfile(self, tmp_path, monkeypatch):
+        """Dockerfile → module 11 step 5."""
         _create_artifact(tmp_path, "Dockerfile")
         rp = _get_repair_module(tmp_path, monkeypatch)
         steps = rp.detect_steps()
-        assert steps[12] == 5
+        assert steps[11] == 5
 
-    def test_module12_docker_compose(self, tmp_path, monkeypatch):
-        """docker-compose.yml → module 12 step 5."""
+    def test_module11_docker_compose(self, tmp_path, monkeypatch):
+        """docker-compose.yml → module 11 step 5."""
         _create_artifact(tmp_path, "docker-compose.yml")
         rp = _get_repair_module(tmp_path, monkeypatch)
         steps = rp.detect_steps()
-        assert steps[12] == 5
+        assert steps[11] == 5
 
     def test_multiple_modules_detected(self, tmp_path, monkeypatch):
         """Multiple artifacts → multiple modules in result."""
@@ -261,7 +261,7 @@ class TestMainFixStepData:
             (tmp_path / "config" / "bootcamp_progress.json").read_text()
         )
         # current_module = 5 (modules 1-4 detected, but module 5 also detected
-        # so current = min(5+1, 12) = 6)
+        # so current = min(5+1, 11) = 6)
         # Module 5 has step 7 in step_map, and module 6 has no artifacts
         # So current_module = 6, current_step should be omitted
         # Actually: det = {1,2,3,4,5}, max=5, cur=6

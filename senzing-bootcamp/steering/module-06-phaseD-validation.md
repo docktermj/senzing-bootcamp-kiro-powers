@@ -96,7 +96,7 @@ If loading fails partway through (crash, error, disk full, etc.):
 
 1. **Check what loaded** — query a few known RECORD_IDs using `get_entity_by_record_id` to see if they exist. The loading program's progress counter tells you approximately how far it got.
 2. **Decide — wipe and restart vs. resume:**
-   - **Wipe and restart** (simpler): Restore the database from the backup created before loading (use `python scripts/restore_project.py`), fix the issue, and re-run the loading program from the beginning.
+   - **Wipe and restart** (simpler): Restore the database from the backup created before loading (use `python3 scripts/restore_project.py`), fix the issue, and re-run the loading program from the beginning.
    - **Resume from where it stopped** (faster for large loads): Modify the loading program to skip records that are already loaded. The simplest approach is to track the last successfully loaded RECORD_ID and start from the next one.
 3. **If the database is corrupted** — restore from backup. This is why the `backup-before-load` hook exists. If no backup exists, delete `database/G2C.db` and re-run Module 2's database configuration step, then reload.
 4. **Common causes of mid-load failure:**
@@ -111,7 +111,7 @@ IF a source fails during orchestration, THEN present these three options:
 
 1. **Skip and continue**: Mark the source as failed, continue loading remaining sources. Come back to the failed source after fixing the issue. Best when other sources are independent.
 2. **Retry after fix**: Pause orchestration, fix the issue (e.g., repair transformation), retry the failed source. Best when the fix is quick and obvious.
-3. **Restore and restart**: Restore the database from backup (`python scripts/restore_project.py`), fix the issue, restart orchestration from the beginning. Best when the failure may have corrupted data.
+3. **Restore and restart**: Restore the database from backup (`python3 scripts/restore_project.py`), fix the issue, restart orchestration from the beginning. Best when the failure may have corrupted data.
 
 Present the recovery options to the bootcamper: skip and continue with remaining sources, fix the issue and retry, or restore from backup and start over. Include the source name and error details.
 
@@ -310,7 +310,7 @@ Run this checklist before starting orchestration:
 2. ✅ Every record has `DATA_SOURCE` and `RECORD_ID` fields
 3. ✅ DATA_SOURCE names match the Senzing engine configuration (from Module 2)
 4. ✅ RECORD_IDs are unique within each DATA_SOURCE
-5. ✅ Database backup exists (`python scripts/backup_project.py`)
+5. ✅ Database backup exists (`python3 scripts/backup_project.py`)
 6. ✅ No JSONL files contain records with mismatched DATA_SOURCE values
 
 ### Per-Source Failure Isolation

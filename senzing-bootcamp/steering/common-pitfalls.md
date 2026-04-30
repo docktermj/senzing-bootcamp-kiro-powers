@@ -8,7 +8,7 @@ Load on errors, when user is stuck, or preventively at module start. For visual 
 
 ## Quick Navigation
 
-Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8](#module-8) · [9–12](#modules-9-12) | [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
+Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8](#module-8) · [8–11](#modules-8-11) | [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
 
 ## Guided Troubleshooting — Ask Before Scanning
 
@@ -34,9 +34,9 @@ Then jump to the relevant section and present only the matching pitfall/fix — 
 
 ### SQLite → PostgreSQL Migration
 
-When to migrate: >100K records and slow, need multi-threading, preparing for Modules 9-12.
+When to migrate: >100K records and slow, need multi-threading, preparing for Modules 8-11.
 
-Steps: Install PostgreSQL (Linux: `apt install postgresql`, macOS: `brew install postgresql`, Windows: download from postgresql.org) → `sdk_guide(topic='configure')` for new config → Reload data from JSONL (SQLite data doesn't transfer) → Update `bootcamp_preferences.yaml` → Re-validate queries.
+Steps: Install PostgreSQL (Linux: `apt install postgresql`, macOS: `brew install postgresql`, Windows: download the installer from postgresql.org/download/windows/ or use `winget install PostgreSQL.PostgreSQL`) → `sdk_guide(topic='configure')` for new config → Reload data from JSONL (SQLite data doesn't transfer) → Update `bootcamp_preferences.yaml` → Re-validate queries.
 
 What carries forward: all code, transformed data, docs, config. What doesn't: the SQLite DB file.
 
@@ -134,9 +134,9 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | Expecting perfect results immediately        | Iterate: adjust mappings, confidence scores, add attributes                                                              |
 | Skipping UAT                                 | Always conduct UAT with business users before production (see Modules 6/7)                                   |
 
-<a id="modules-9-12"></a>
+<a id="modules-8-11"></a>
 
-## Modules 9–12: Production Readiness
+## Modules 8–11: Production Readiness
 
 - **Skipping performance testing** → Complete Module 9 before production
 - **No security hardening** → Complete Module 10 checklist
@@ -162,11 +162,12 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 ## MCP Server Unavailable
 
 Load `mcp-offline-fallback.md` for detailed blocked/continuable operation tables, per-operation fallback instructions, reconnection procedures, and connectivity troubleshooting.
+
 <a id="recovery"></a>
 
 ## Recovery Quick Reference
 
-- **Loaded wrong data** → `python scripts/restore_project.py backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip`
+- **Loaded wrong data** → `python3 scripts/restore_project.py backups/senzing-bootcamp-backup_YYYYMMDD_HHMMSS.zip`
 - **Wrong transformation** → Delete bad output, fix program, re-run on sample, validate with `analyze_record`
 - **Lost mapping state** → Restart workflow, reuse artifacts from `docs/` and `src/transform/`
 - **Corrupted git file** → `git checkout HEAD -- src/transform/program.[ext]`

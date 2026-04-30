@@ -20,6 +20,7 @@ import pytest
 _POWER_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 
 _VIZ_GUIDE = _POWER_ROOT / "steering" / "visualization-guide.md"
+_VIZ_WEB_SERVICE = _POWER_ROOT / "steering" / "visualization-web-service.md"
 _MODULE_03 = _POWER_ROOT / "steering" / "module-03-quick-demo.md"
 _MODULE_07 = _POWER_ROOT / "steering" / "module-07-query-validation.md"
 
@@ -93,7 +94,7 @@ class TestVizGuideEndpoints:
 
     @pytest.fixture(autouse=True)
     def _load(self):
-        self.content = _read(_VIZ_GUIDE)
+        self.content = _read(_VIZ_WEB_SERVICE)
 
     def test_get_root_endpoint(self):
         """GET / endpoint is documented."""
@@ -169,7 +170,7 @@ class TestVizGuideCodeGenAndLifecycle:
 
     @pytest.fixture(autouse=True)
     def _load(self):
-        self.content = _read(_VIZ_GUIDE)
+        self.content = _read(_VIZ_WEB_SERVICE)
 
     def test_framework_python_flask(self):
         """Framework table maps Python to Flask."""
@@ -250,7 +251,7 @@ class TestVizGuideFeatureParity:
 
     @pytest.fixture(autouse=True)
     def _load(self):
-        self.content = _read(_VIZ_GUIDE)
+        self.content = _read(_VIZ_WEB_SERVICE)
 
     def test_feature_parity_force_layout(self):
         """Feature parity lists force layout."""

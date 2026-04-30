@@ -17,8 +17,7 @@ graph TD
 
     M8 --> M9[Module 9: Performance Testing & Benchmarking]
     M9 --> M10[Module 10: Security Hardening]
-    M10 --> M11[Module 11: Monitoring & Observability]
-    M11 --> M12[Module 12: Package & Deploy]
+    M10 --> M11[Module 11: Monitoring, Package & Deploy]
 
     style M1 fill:#fff3e0
     style M2 fill:#e1f5fe
@@ -31,7 +30,6 @@ graph TD
     style M9 fill:#fce4ec
     style M10 fill:#fce4ec
     style M11 fill:#fce4ec
-    style M12 fill:#fce4ec
 ```
 
 ## Learning Paths
@@ -41,7 +39,7 @@ graph TD
 | A — Quick Demo | 2 → 3 | Blue → Green |
 | B — Fast Track | 5 → 6 → 8 | Orange → Green |
 | C — Complete Beginner | 1 → 4 → 5 → 6 → 8 | Orange → Green |
-| D — Full Production | 1 → 2 → 3 → ... → 12 | All |
+| D — Full Production | 1 → 2 → 3 → ... → 11 | All |
 
 Module 2 (SDK Setup) is auto-inserted before any module that needs the SDK.
 

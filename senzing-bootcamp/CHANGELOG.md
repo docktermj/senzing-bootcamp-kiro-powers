@@ -19,11 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Troubleshooting commands steering file (`steering/troubleshooting-commands.md`) — extracted from troubleshooting-decision-tree.md
 
 - Review Bootcamper Input hook (`review-bootcamper-input.kiro.hook`) — deterministic feedback capture via promptSubmit trigger with automatic context capture
-- Module 12 Phase Gate hook (`module12-phase-gate.kiro.hook`) — enforces packaging-to-deployment decision gate in Module 12
+- Module 11 Phase Gate hook (`deployment-phase-gate.kiro.hook`) — enforces packaging-to-deployment decision gate in Module 11
 - Enforce Module 8 Visualization Offers hook (`enforce-visualization-offers.kiro.hook`) — catches missed visualization offers before Module 8 closes
 - Feedback workflow rewritten with Step 0 (automatic context capture) and Step 7 (return to previous activity)
 - Module 8 steering file updated with mandatory ⛔ WAIT blocks for both visualization offers
-- Module 12 steering file updated with prominent ⛔ PHASE GATE section between packaging and deployment
+- Module 11 steering file updated with prominent ⛔ PHASE GATE section between packaging and deployment
 
 ### Changed in 0.10.0
 
@@ -50,11 +50,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Stakeholder summary template at `templates/stakeholder_summary.md` with module-aware placeholder guidance for Modules 1, 8, and 12
 - Performance baselines guide at `docs/guides/PERFORMANCE_BASELINES.md` with throughput tables, hardware requirements, SQLite vs PostgreSQL comparison, and profiling tools
 - UAT test case template at `templates/uat_test_cases.md` with functional, performance, and data quality test sections
-- Module 12 deployment expanded with on-premises, Azure, GCP, and Kubernetes platform reference sections
+- Module 11 deployment expanded with on-premises, Azure, GCP, and Kubernetes platform reference sections
 - Offline mode guide at `docs/guides/OFFLINE_MODE.md` with per-module offline capability and reconnection steps
 - Transformation lineage template at `templates/transformation_lineage.md` with field mappings, format changes, filters, and quality improvements
 - Integration patterns section in Module 8 steering file with 6 patterns (batch report, REST API, streaming, database sync, duplicate detection, watchlist screening)
-- Disaster recovery subsection in Module 12 Step 15 with RTO/RPO, 3-2-1 backup rule, DR scenarios, and backup scripts
+- Disaster recovery subsection in Module 11 Step 15 with RTO/RPO, 3-2-1 backup rule, DR scenarios, and backup scripts
 - Concrete SQLite pragma and PostgreSQL config snippets in performance baselines guide
 - Profiling and monitoring section in performance baselines guide with bottleneck patterns and language-specific tools
 - Common mistakes guide at `docs/guides/COMMON_MISTAKES.md`
@@ -74,11 +74,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cross-references added between related guides (quality scoring ↔ performance baselines ↔ offline mode)
 - Template references added to module docs (Module 4, 5, 8)
 - POWER.md updated with references to new guides, templates, and offline mode
-- Module 12 split into main workflow (296 lines) + 4 separate platform steering files (`deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, `deployment-kubernetes.md`) per Kiro steering best practices
+- Module 11 split into main workflow (296 lines) + 4 separate platform steering files (`deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, `deployment-kubernetes.md`) per Kiro steering best practices
 - Module 7 split into main workflow (205 lines) + `module-07-reference.md` (130 lines) for ordering examples, conflict resolution, and troubleshooting
 - Module 2 Step 5 (license) condensed from ~80 to ~20 prescriptive lines
 - Generic language standards removed from all 5 language steering files — kept only Senzing SDK-specific content
-- `agent-instructions.md` updated with Module 12 platform file references and Module 7 reference guidance
+- `agent-instructions.md` updated with Module 11 platform file references and Module 7 reference guidance
 - POWER.md Advanced Topics section updated with 5 new steering file references
 - Repository organization steering file simplified after development directory removal
 - `docs/development.md` simplified after development directory removal
@@ -101,7 +101,7 @@ Added one-question-at-a-time rule, license discovery in Module 2, interactive vi
 
 ### [0.6.0] - 2026-04-16
 
-Added glossary reference in onboarding, iterate-vs-proceed decision gates, system architecture diagram, next-step options after every module, guided troubleshooting in common-pitfalls.md, stakeholder summary templates, data visualization triggers, and validate_power.py script. Restructured Module 12 into Phase 1 (Packaging) and Phase 2 (Deployment). Made language selection MCP-driven and rewrote onboarding-flow.md from 333 to 85 lines.
+Added glossary reference in onboarding, iterate-vs-proceed decision gates, system architecture diagram, next-step options after every module, guided troubleshooting in common-pitfalls.md, stakeholder summary templates, data visualization triggers, and validate_power.py script. Restructured Module 11 into Phase 1 (Packaging) and Phase 2 (Deployment). Made language selection MCP-driven and rewrote onboarding-flow.md from 333 to 85 lines.
 
 ### [0.5.0] - 2026-04-14
 
@@ -113,7 +113,7 @@ Streamlined onboarding to two user-visible questions (language and path). Added 
 
 ### [0.3.0] - 2026-04-08
 
-Split agent-instructions.md into always-loaded core + manual onboarding-flow.md. Trimmed Modules 9-12 from 1,100-1,500 lines each to 78-119 lines. Added 5 language-specific steering files (Python, Java, C#, Rust, TypeScript), cloud-provider-setup.md, and foundational steering file generation during onboarding. Removed templates/ directory (replaced by MCP dynamic generation).
+Split agent-instructions.md into always-loaded core + manual onboarding-flow.md. Trimmed Modules 8-11 from 1,100-1,500 lines each to 78-119 lines. Added 5 language-specific steering files (Python, Java, C#, Rust, TypeScript), cloud-provider-setup.md, and foundational steering file generation during onboarding. Removed templates/ directory (replaced by MCP dynamic generation).
 
 ### [0.2.0] - 2026-04-06
 

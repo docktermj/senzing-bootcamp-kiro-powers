@@ -76,11 +76,11 @@ If you started with SQLite for evaluation, consider migrating to PostgreSQL when
 - You need concurrent access (multiple loaders or query processes)
 - You're moving toward production deployment
 
-Module 2 covers database setup. Re-run it with PostgreSQL as your target. If you're deploying to a cloud provider, Module 12 can provision a managed database (e.g., RDS/Aurora for AWS via CDK).
+Module 2 covers database setup. Re-run it with PostgreSQL as your target. If you're deploying to a cloud provider, Module 11 can provision a managed database (e.g., RDS/Aurora for AWS via CDK).
 
 ### Deployment and Redeployment
 
-Module 12 separates **packaging** (containerization, config, CI/CD — always done) from **deployment** (actually deploying to a target — optional). If you packaged during the bootcamp but didn't deploy, you can return to Module 12 Phase 2 at any time. Your deployment target (AWS, Azure, GCP, on-premises, local) shapes what artifacts are produced — if you change targets, re-run Module 12 from Step 1.
+Module 11 separates **packaging** (containerization, config, CI/CD — always done) from **deployment** (actually deploying to a target — optional). If you packaged during the bootcamp but didn't deploy, you can return to Module 11 Phase 2 at any time. Your deployment target (AWS, Azure, GCP, on-premises, local) shapes what artifacts are produced — if you change targets, re-run Module 11 from Step 1.
 
 ---
 

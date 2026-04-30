@@ -114,6 +114,12 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 **Action:** Checks if the agent is writing feedback content and ensures it goes to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 **Use case:** Prevents feedback from being written to the wrong file or submitted externally
 
+### 18. Validate Data Files (`validate-data-files.kiro.hook`)
+
+**Trigger:** When new files are created in `data/raw/`
+**Action:** Checks file format, encoding, and basic readability
+**Use case:** Catches bad data files early in Module 4 before they cause mapping or loading failures
+
 ## Installation
 
 **Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.
@@ -178,6 +184,10 @@ You can customize any hook by editing the JSON file:
 - ✅ **Code Style Check** (ensures code quality for the chosen language)
 - ✅ **Review Bootcamper Input** (guarantees feedback is always captured)
 - ✅ **Backup Project on Request** (quick backups via voice commands)
+
+### Module 4 (Data Collection)
+
+- ✅ Validate Data Files
 
 ### Module 5 (Data Quality & Mapping)
 

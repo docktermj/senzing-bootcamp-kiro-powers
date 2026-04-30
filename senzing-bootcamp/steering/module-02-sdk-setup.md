@@ -73,6 +73,8 @@ Follow the platform-specific instructions from `sdk_guide`. The typical flow:
 
 **TypeScript/Node.js warning:** The TypeScript SDK (`sz-napi`) may require building from source if prebuilt binaries are not available for the user's platform. This involves installing the Rust toolchain, cloning `sz-rust-sdk` and `sz-rust-sdk-configtool` as Cargo dependencies, and building the native addon with `napi-rs`. Warn the user upfront: "The TypeScript SDK setup is more involved than other languages — it may require building native bindings from source, which needs the Rust toolchain. If you'd prefer a faster setup, Java or C# typically have simpler install paths." If they proceed with TypeScript, guide them through the full build sequence in one go rather than letting them discover steps through trial and error.
 
+**Windows-specific:** Building the TypeScript SDK from source on Windows requires Visual Studio Build Tools (not the full IDE) with the "Desktop development with C++" workload. Install via `winget install Microsoft.VisualStudio.2022.BuildTools` or download from visualstudio.microsoft.com. The Rust toolchain installer (`rustup-init.exe`) will detect the build tools automatically.
+
 **🚨 NEVER modify the user's global shell configuration** (`~/.zshrc`, `~/.bashrc`, `~/.profile`, etc.) to set Senzing environment variables. Instead, create a project-local environment script at `scripts/senzing-env.sh` (or `.bat` for Windows) that sets `SENZING_ROOT`, library paths, and any other Senzing-specific variables. The agent should source this script before running bootcamp tasks. This keeps the bootcamp self-contained and avoids side effects on the user's system.
 
 **Checkpoint:** Write step 3 to `config/bootcamp_progress.json`.
@@ -186,7 +188,7 @@ Once the SDK is installed and verified, proceed to:
 - Platform not supported? Use `search_docs` for alternative installation methods
 - Database errors? Check `docs/policies/FILE_STORAGE_POLICY.md` for path requirements
 - Permission issues? Ensure you have admin/sudo access for installation
-- Missing dependencies? Run `python senzing-bootcamp/scripts/preflight.py`
+- Missing dependencies? Run `python3 senzing-bootcamp/scripts/preflight.py`
 
 ## Agent Behavior
 

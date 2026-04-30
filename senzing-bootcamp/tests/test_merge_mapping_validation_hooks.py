@@ -1,7 +1,7 @@
 """Property-based and example-based tests for the merge-mapping-validation-hooks spec.
 
 Validates that the merge of validate-senzing-json into analyze-after-mapping
-was applied correctly: all 17 preserved hooks retain their category and registry
+was applied correctly: all 18 preserved hooks retain their category and registry
 entries, README numbering is sequential, and validate-senzing-json is fully absent.
 
 Feature: merge-mapping-validation-hooks
@@ -37,7 +37,7 @@ _README_PATH = _HOOKS_DIR / "README.md"
 _INSTALL_SCRIPT_PATH = Path(__file__).resolve().parent.parent / "scripts" / "install_hooks.py"
 _POWER_MD_PATH = Path(__file__).resolve().parent.parent / "POWER.md"
 
-# The 17 hook IDs preserved after both merges (validate-senzing-json and
+# The 18 hook IDs preserved after both merges (validate-senzing-json and
 # enforce-wait-after-question were removed).
 PRESERVED_HOOK_IDS: list[str] = sorted([
     "analyze-after-mapping",
@@ -55,6 +55,7 @@ PRESERVED_HOOK_IDS: list[str] = sorted([
     "git-commit-reminder",
     "offer-visualization",
     "run-tests-after-change",
+    "validate-data-files",
     "verify-generated-code",
     "verify-senzing-facts",
 ])
@@ -218,12 +219,12 @@ class TestReadmeNumbering:
     """
 
     def test_section_numbers_are_sequential(self) -> None:
-        """README ### N. headers must form 1, 2, 3, ..., 17 with no gaps."""
+        """README ### N. headers must form 1, 2, 3, ..., 18 with no gaps."""
         numbers = _parse_readme_section_numbers(_README_PATH)
-        assert len(numbers) == 17, (
-            f"Expected 17 hook sections in README, got {len(numbers)}: {numbers}"
+        assert len(numbers) == 18, (
+            f"Expected 18 hook sections in README, got {len(numbers)}: {numbers}"
         )
-        expected = list(range(1, 18))
+        expected = list(range(1, 19))
         assert numbers == expected, (
             f"README section numbers are not sequential.\n"
             f"Expected: {expected}\n"

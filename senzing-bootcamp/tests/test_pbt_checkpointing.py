@@ -275,7 +275,7 @@ class TestProperty5StepDisplayInStatusOutput:
             (tmp / "scripts").mkdir(parents=True, exist_ok=True)
             fake_script = str(tmp / "scripts" / "status.py")
 
-            scripts_dir = str(Path(__file__).resolve().parent)
+            scripts_dir = str(Path(__file__).resolve().parent.parent / "scripts")
             if scripts_dir not in sys.path:
                 sys.path.insert(0, scripts_dir)
 

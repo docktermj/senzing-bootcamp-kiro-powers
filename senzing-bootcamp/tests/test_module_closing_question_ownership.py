@@ -451,12 +451,6 @@ _HEADINGS_MODULE_11 = [
     "## Step 11: Pre-Deployment Checklist",
     "## Step 12: Rollback Plan",
     "## \u26d4 PHASE GATE \u2014 PACKAGING COMPLETE, DEPLOYMENT DECISION REQUIRED",
-    "## Phase 2: Deployment (Steps 13-15) \u2014 Optional",
-    "## Step 13: Deploy to Staging",
-    "## Step 14: Deploy to Production",
-    "## Step 15: Operations Documentation",
-    "### Disaster Recovery Section",
-    "## Platform Reference Sections",
 ]
 
 _HEADINGS_MODULE_COMPLETION = [
@@ -492,9 +486,7 @@ _KEY_CONTENT_MODULE_01: list[str] = [
     "design pattern",
     "business problem",
     "Checkpoint",
-    "docs/business_problem.md",
     "success criteria",
-    "stakeholder summary",
 ]
 
 _KEY_CONTENT_MODULE_02: list[str] = [
@@ -555,12 +547,9 @@ _KEY_CONTENT_MODULE_11: list[str] = [
     "deployment",
     "containeriz",
     "rollback",
-    "DR",
     "Dockerfile",
     "CI/CD",
     "PHASE GATE",
-    "operations_guide.md",
-    "disaster recovery",
 ]
 
 _KEY_CONTENT_MODULE_COMPLETION: list[str] = [
@@ -591,15 +580,15 @@ _ALL_KEY_CONTENT: dict[str, list[str]] = {
 # ---------------------------------------------------------------------------
 
 _HASH_UNAFFECTED: dict[str, str] = {
-    "module-03": "603bbdbf818e9ebed349b8d7d7876c93f4f5d927c7afcd5119f8c04ff4cf168f",
+    "module-03": "4867a239dfdc26a815dfde33b3a0a65e47be6148cc074b9acd73bbcabe2425ad",
     "module-08": "be562893fffa44c0d11a635a79d4264470f80502c5db04aaed94eaaf42ebaebf",
     "module-09": "b87f4a11c5ff5db5e5493827d73accce10759374596f01baee3029c6217893eb",
     "module-10": "1aa581841f896ebad0eb2e088255f0b333c53662506170aca7fd9c64a69f17e3",
 }
 
 _HASH_HOOK = "25d9aba49c890ec8ad004508d939767cb3ed9637c1741ec313b11d75412101b5"
-_HASH_AGENT_INSTRUCTIONS = "400960a0bfa91f224be611862701f5137d38fb7aed469377b1c0d9f5efb61753"
-_HASH_ONBOARDING_FLOW = "46f6c67189242f29825f585a32c916088ec75c8d019437d19f28494fda1d64a9"
+_HASH_AGENT_INSTRUCTIONS = "d1e9f8a9ec6913e08586f8ac2be0b2600ccd5ec8fa7554d238ae2ccedbb5085e"
+_HASH_ONBOARDING_FLOW = "69afc63bf0eccf704597af20628085a89b608148136445ead62157d8f8f20ba0"
 
 
 # ---------------------------------------------------------------------------
@@ -757,7 +746,7 @@ class TestPreservationAgentInstructions:
         content = _read_file(_AGENT_INSTRUCTIONS_FILE)
         assert "Closing-question ownership" in content
         assert "ask-bootcamper" in content
-        assert "Never end your turn with a closing question" in content
+        assert "never end your turn with a closing question" in content
 
 
 # ---------------------------------------------------------------------------

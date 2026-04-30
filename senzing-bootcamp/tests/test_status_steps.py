@@ -30,7 +30,7 @@ def _write_progress(tmp_path, data):
 def _capture_status_main(tmp_path, monkeypatch):
     """Run status.py main() with cwd set to tmp_path and capture stdout."""
     # Ensure the scripts directory is on sys.path so status can be imported
-    scripts_dir = str(Path(__file__).resolve().parent)
+    scripts_dir = str(Path(__file__).resolve().parent.parent / "scripts")
     monkeypatch.syspath_prepend(scripts_dir)
 
     # status.py's main() calls os.chdir(project_root) where project_root is
@@ -140,7 +140,7 @@ class TestSyncProgressTracker:
 
     def test_tracker_contains_step_when_set(self, tmp_path, monkeypatch):
         """sync_progress_tracker with current_step writes step info to tracker."""
-        scripts_dir = str(Path(__file__).resolve().parent)
+        scripts_dir = str(Path(__file__).resolve().parent.parent / "scripts")
         monkeypatch.syspath_prepend(scripts_dir)
 
         import importlib
@@ -166,7 +166,7 @@ class TestSyncProgressTracker:
 
     def test_tracker_no_step_when_not_set(self, tmp_path, monkeypatch):
         """sync_progress_tracker without current_step writes no step info."""
-        scripts_dir = str(Path(__file__).resolve().parent)
+        scripts_dir = str(Path(__file__).resolve().parent.parent / "scripts")
         monkeypatch.syspath_prepend(scripts_dir)
 
         import importlib

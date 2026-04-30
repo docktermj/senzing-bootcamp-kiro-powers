@@ -7,6 +7,6 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "If your previous output already contains a 👉 character anywhere in the text, produce no output at all — STOP immediately and return nothing. Do not answer the question. Do not role-play as the bootcamper. Do not generate any content. Do not invent use-case descriptions, record counts, or system names. Otherwise, if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
+    "prompt": "If your previous output already contains a 👉 character anywhere in the text, produce no output at all — STOP immediately and return nothing. Do not answer the question. NEVER fabricate user input — do not generate 'Human:' messages, simulate user responses, or assume user choices. Do not generate any content. Do not invent use-case descriptions, record counts, or system names. Otherwise, if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
   }
 }

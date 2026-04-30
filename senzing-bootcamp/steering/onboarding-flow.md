@@ -6,7 +6,7 @@ inclusion: manual
 
 Load when starting a fresh bootcamp. Sequence: directory creation → language selection → prerequisites → introduction → track selection.
 
-**Note:** The `ask-bootcamper` hook fires on every `agentStop` and generates a contextual 👉 closing question. Do NOT include inline closing questions or WAIT instructions at the end of steps — present the information and stop.
+**Note:** The `ask-bootcamper` hook fires on every `agentStop` and generates a contextual 👉 closing question. Do NOT include inline closing questions or WAIT instructions at the end of steps — present the information and stop. **Exception — Mandatory gates:** Steps marked with ⛔ are mandatory gates where the agent MUST stop and MUST NOT proceed without real user input. These are the only steps where an explicit stop instruction overrides the general rule.
 
 ## 0. Setup Preamble
 
@@ -64,6 +64,8 @@ Present the MCP-returned language list to the bootcamper. **If the MCP server fl
 Persist the selection to `config/bootcamp_preferences.yaml`.
 
 Load language steering file immediately after confirmation (`lang-python.md`, `lang-java.md`, etc.).
+
+> ⛔ **MANDATORY GATE** — Language selection requires the bootcamper's actual choice. Do NOT assume or fabricate a language preference. MUST stop and wait for real input.
 
 ## 3. Prerequisite Check (Mandatory Gate)
 
@@ -133,6 +135,8 @@ Present tracks — not mutually exclusive, all completed modules carry forward:
 Module 2 inserted automatically before any module needing SDK.
 
 Interpreting responses: "A"/"demo"→Module 3, "B"/"fast"→Module 5, "C"/"beginner"→Module 1, "D"/"full"→Module 1. Bare number→clarify letter vs module.
+
+> ⛔ **MANDATORY GATE — STOP HERE.** After presenting the track options above, you MUST stop. Do NOT proceed to any module. Do NOT fabricate a user response. Do NOT assume a track choice. Do NOT generate text like "Human: A" or "I'll go with Track A for you." The bootcamper MUST provide their own choice. The `ask-bootcamper` hook will fire and prompt them. Wait for their real response before continuing.
 
 ## Switching Tracks
 

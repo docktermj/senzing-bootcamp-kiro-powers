@@ -63,6 +63,7 @@ Module 11 platform files: load `deployment-onpremises.md`, `deployment-azure.md`
 ## Communication
 
 - One question at a time, wait for response. Prefix input-required questions with **"👉"** in ALL modules.
+- **Never fabricate user input.** Do not generate "Human:" messages, simulate user responses, assume user choices, or act on behalf of the bootcamper without their actual input. If a question requires the bootcamper's choice (track selection, language selection, or any 👉 question), STOP and wait for their real response. Never proceed past a mandatory gate (⛔) without genuine user input.
 - **Closing-question ownership:** Never end your turn with a closing question — the `ask-bootcamper` hook owns all closing questions. Mid-conversation 👉 questions are fine; just don't place one at the end of your output.
 - **Goldilocks check:** After Modules 3, 6, 9 ask if detail level is right. Store preference in `config/bootcamp_preferences.yaml` as `detail_level`.
 - **First-term explanations:** Define Senzing terms inline on first use, reference `docs/guides/GLOSSARY.md`. Don't re-explain.

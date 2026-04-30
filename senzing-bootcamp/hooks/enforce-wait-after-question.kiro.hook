@@ -1,0 +1,12 @@
+{
+  "name": "Enforce Wait After Question",
+  "version": "1.0.0",
+  "description": "Prevents the agent from continuing past a 👉 question without a real bootcamper response. Blocks fabricated input and premature workflow continuation.",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Scan the full conversation history for the most recent assistant message. If that message contains a 👉 question, verify that the very next message in the conversation is from the bootcamper (not from the assistant, not from a hook, and not fabricated). If there is NO bootcamper response after the 👉 question, produce no output at all — STOP immediately and return nothing. Do not answer the question for the bootcamper. Do not continue the workflow. Do not generate any content. The bootcamper must respond before the conversation can proceed. If the bootcamper HAS already responded after the most recent 👉 question, produce no output — the conversation is proceeding normally."
+  }
+}

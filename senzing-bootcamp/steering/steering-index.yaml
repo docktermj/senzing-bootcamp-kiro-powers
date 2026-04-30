@@ -96,8 +96,8 @@ deployment:
 
 file_metadata:
   agent-instructions.md:
-    token_count: 1958
-    size_category: medium
+    token_count: 2162
+    size_category: large
   cloud-provider-setup.md:
     token_count: 784
     size_category: medium
@@ -138,7 +138,7 @@ file_metadata:
     token_count: 1487
     size_category: medium
   hook-registry.md:
-    token_count: 3874
+    token_count: 4394
     size_category: large
   lang-csharp.md:
     token_count: 828
@@ -225,7 +225,7 @@ file_metadata:
     token_count: 699
     size_category: medium
   onboarding-flow.md:
-    token_count: 2602
+    token_count: 2805
     size_category: large
   project-structure.md:
     token_count: 399
@@ -250,7 +250,7 @@ file_metadata:
     size_category: large
 
 budget:
-  total_tokens: 77274
+  total_tokens: 78201
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -1,12 +1,12 @@
 {
   "name": "Ask Bootcamper",
-  "version": "1.0.0",
-  "description": "Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question.",
+  "version": "2.0.0",
+  "description": "Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question. Suppresses output entirely when a question is already pending.",
   "when": {
     "type": "agentStop"
   },
   "then": {
     "type": "askAgent",
-    "prompt": "If your previous output already contains a 👉 character anywhere in the text, produce no output at all — STOP immediately and return nothing. Do not answer the question. NEVER fabricate user input — do not generate 'Human:' messages, simulate user responses, or assume user choices. Do not generate any content. Do not invent use-case descriptions, record counts, or system names. Otherwise, if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
+    "prompt": "FIRST — scan the ENTIRE conversation history for the most recent assistant message. If that message contains the 👉 character ANYWHERE, you MUST produce absolutely no output. Return nothing. Do not recap. Do not ask a question. Do not acknowledge. Zero tokens. The bootcamper was asked a question and you are waiting for their answer. NEVER answer a 👉 question on the bootcamper's behalf — do not answer the question, do not role-play the bootcamper, do not generate a fake response, do not fabricate responses, invent business details, generate 'Human:' messages, simulate user choices, or assume what the bootcamper would say. If the last assistant message asked ANY question (with or without 👉), produce no output. SECOND — if you reach this point (no recent question was pending): if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
   }
 }

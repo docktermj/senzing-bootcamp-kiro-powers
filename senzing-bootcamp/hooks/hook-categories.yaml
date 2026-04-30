@@ -8,6 +8,7 @@ critical:
   - code-style-check
   - commonmark-validation
   - enforce-feedback-path
+  - enforce-wait-after-question
   - enforce-working-directory
   - verify-senzing-facts
 

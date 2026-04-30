@@ -11,6 +11,7 @@ EXPECTED OUTCOME on UNFIXED code: tests FAIL (confirming the bug exists).
 
 from __future__ import annotations
 
+import hashlib
 import re
 from pathlib import Path
 
@@ -216,26 +217,7 @@ _EXPECTED_HEADINGS = [
 ]
 
 # Baseline content for hook file
-_HOOK_BASELINE = (
-    '{\n'
-    '  "name": "Ask Bootcamper",\n'
-    '  "version": "1.0.0",\n'
-    '  "description": "Recaps what was accomplished and which files changed, '
-    'then asks the bootcamper what to do next with a contextual 👉 question.",\n'
-    '  "when": {\n'
-    '    "type": "agentStop"\n'
-    '  },\n'
-    '  "then": {\n'
-    '    "type": "askAgent",\n'
-    '    "prompt": "If your previous output already ends with a 👉 question, '
-    'do nothing. Otherwise, if no files changed and no substantive work was done, '
-    'skip the recap and just ask a contextual 👉 question about what the bootcamper '
-    'wants to do next. Otherwise, recap: (1) what you accomplished, (2) files '
-    'created or modified (with paths). Then end with a contextual 👉 question '
-    'asking the bootcamper what to do next. Keep it concise."\n'
-    '  }\n'
-    '}\n'
-)
+_HOOK_BASELINE_HASH = "25d9aba49c890ec8ad004508d939767cb3ed9637c1741ec313b11d75412101b5"
 
 # Key informational phrases that MUST be preserved in affected steps
 # (these are NOT inline 👉 questions or WAIT lines)
@@ -389,12 +371,13 @@ class TestPreservation:
     # -- 4. Hook file preservation --
 
     def test_hook_file_matches_baseline(self) -> None:
-        """ask-bootcamper.kiro.hook content matches the observed baseline."""
+        """ask-bootcamper.kiro.hook content matches the observed baseline hash."""
         content = _read_hook()
-        assert content == _HOOK_BASELINE, (
-            "ask-bootcamper.kiro.hook content differs from baseline.\n"
-            f"Expected length: {len(_HOOK_BASELINE)}\n"
-            f"Actual length:   {len(content)}"
+        actual_hash = hashlib.sha256(content.encode()).hexdigest()
+        assert actual_hash == _HOOK_BASELINE_HASH, (
+            "ask-bootcamper.kiro.hook content has changed.\n"
+            f"Expected hash: {_HOOK_BASELINE_HASH}\n"
+            f"Actual hash:   {actual_hash}"
         )
 
     # -- 5. Agent instructions preservation --

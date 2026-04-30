@@ -4,17 +4,17 @@ inclusion: manual
 
 # Hook Registry
 
-All 18 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
+All 19 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
 
 ## Critical Hooks (created during onboarding)
 
 **ask-bootcamper** (agentStop → askAgent)
 
-Prompt: "If your previous output already contains a 👉 character anywhere in the text, produce no output at all — STOP immediately and return nothing. Do not answer the question. NEVER fabricate user input — do not generate 'Human:' messages, simulate user responses, or assume user choices. Do not generate any content. Do not invent use-case descriptions, record counts, or system names. Otherwise, if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
+Prompt: "FIRST — scan the ENTIRE conversation history for the most recent assistant message. If that message contains the 👉 character ANYWHERE, you MUST produce absolutely no output. Return nothing. Do not recap. Do not ask a question. Do not acknowledge. Zero tokens. The bootcamper was asked a question and you are waiting for their answer. NEVER answer a 👉 question on the bootcamper's behalf — do not answer the question, do not role-play the bootcamper, do not generate a fake response, do not fabricate responses, invent business details, generate 'Human:' messages, simulate user choices, or assume what the bootcamper would say. If the last assistant message asked ANY question (with or without 👉), produce no output. SECOND — if you reach this point (no recent question was pending): if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
 
 - id: `ask-bootcamper`
 - name: `Ask Bootcamper`
-- description: `Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question.`
+- description: `Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question. Suppresses output entirely when a question is already pending.`
 
 **capture-feedback** (promptSubmit → askAgent)
 
@@ -57,6 +57,14 @@ Prompt: "Check if you are currently in the feedback collection workflow (i.e., t
 - id: `enforce-feedback-path`
 - name: `Enforce Feedback File Path`
 - description: `Before any write operation, checks if the agent is writing feedback content. If so, ensures it goes to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md and nowhere else.`
+
+**enforce-wait-after-question** (agentStop → askAgent)
+
+Prompt: "Scan the full conversation history for the most recent assistant message. If that message contains a 👉 question, verify that the very next message in the conversation is from the bootcamper (not from the assistant, not from a hook, and not fabricated). If there is NO bootcamper response after the 👉 question, produce no output at all — STOP immediately and return nothing. Do not answer the question for the bootcamper. Do not continue the workflow. Do not generate any content. The bootcamper must respond before the conversation can proceed. If the bootcamper HAS already responded after the most recent 👉 question, produce no output — the conversation is proceeding normally."
+
+- id: `enforce-wait-after-question`
+- name: `Enforce Wait After Question`
+- description: `Prevents the agent from continuing past a 👉 question without a real bootcamper response. Blocks fabricated input and premature workflow continuation.`
 
 **enforce-working-directory** (preToolUse → askAgent, toolTypes: write)
 
@@ -168,7 +176,7 @@ Prompt: "First, read `config/bootcamp_progress.json` and check the `current_modu
 
 Display a clear packaging-complete summary:
 
-```text
+```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📦  PACKAGING PHASE COMPLETE — PHASE GATE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

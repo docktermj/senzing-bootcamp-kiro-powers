@@ -26,6 +26,7 @@ my-senzing-project/
 - SQLite DB at `database/G2C.db` — never `/tmp/` or system-wide
 - Dependency file in project root (requirements.txt, pom.xml, .csproj, Cargo.toml, package.json)
 - See `docs/policies/FILE_STORAGE_POLICY.md` for complete policy
+- All Markdown documentation files (`*.md`) belong in `docs/` or a subdirectory of `docs/`. The `scripts/` directory is reserved for executable code only — no `.md` files.
 
 ## Create Structure (execute before any other action)
 

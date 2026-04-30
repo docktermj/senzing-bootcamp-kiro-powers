@@ -8,14 +8,16 @@ On session start: check `config/bootcamp_progress.json`. If exists, load `sessio
 
 ## File Placement
 
-| Content     | Location   | Content    | Location     |
-| ----------- | ---------- | ---------- | ------------ |
-| Source code | `src/`     | SQLite DB  | `database/`  |
-| Scripts     | `scripts/` | Config     | `config/`    |
-| Docs        | `docs/`    | Temp files | `data/temp/` |
-| Data        | `data/`    |            |              |
+| Content       | Location   | Content       | Location     |
+| ------------- | ---------- | ------------- | ------------ |
+| Source code   | `src/`     | SQLite DB     | `database/`  |
+| Scripts       | `scripts/` | Config        | `config/`    |
+| Docs          | `docs/`    | Temp files    | `data/temp/` |
+| Data          | `data/`    | Markdown docs | `docs/`      |
 
 🚨 ALL files within working directory only. Never `/tmp`, `%TEMP%`, `~/Downloads`. Override MCP-generated paths (`/tmp/`, `ExampleEnvironment`) to project-relative equivalents. Never modify global shell config.
+
+If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 
 ## MCP Rules
 
@@ -70,13 +72,13 @@ Module 11 platform files: load `deployment-onpremises.md`, `deployment-azure.md`
 - Before each step: what and why. During: status updates (never bare "Working..."). After: what changed, files with paths.
 - **Data visualization:** Offer to visualize data results as a web page. Save to `docs/` or `data/temp/`.
 - At module completion: summary, all files, why it matters for next module. Follow `module-transitions.md` rules. Load `module-completion.md` for journal and track-completion.
-- Feedback trigger phrases: handled by `capture-feedback` hook — do not manually load `feedback-workflow.md`.
+- Feedback trigger phrases: handled by `review-bootcamper-input` hook — do not manually load `feedback-workflow.md`.
 
 ## Hooks
 
 Create hooks using the `createHook` tool with definitions from `hook-registry.md`. Critical hooks during onboarding, module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if absent, create Critical Hooks.
 
-When a hook check passes with no action needed, produce no output. Do not acknowledge the check, do not explain your reasoning, do not print any status message. Do not narrate your evaluation. Do not explain why no action is needed. Your response must be completely empty — zero tokens. Only produce output when the hook requires corrective action.
+**🔇 Hook silence rule:** When a hook check passes with no action needed, produce absolutely no output — zero tokens, zero characters. Do not acknowledge the check, do not explain your reasoning, do not print any status message, do not narrate your evaluation, do not explain why no action is needed. Your response must be completely empty. Only produce output when the hook identifies a problem requiring corrective action. This applies to ALL hooks — preToolUse, agentStop, fileEdited, fileCreated, and any other hook type.
 
 ## Context Budget
 

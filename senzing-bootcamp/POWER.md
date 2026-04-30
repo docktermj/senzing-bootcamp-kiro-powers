@@ -269,7 +269,7 @@ python senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: Code Style Check (`code-style-check`) ⭐, `ask-bootcamper`, `data-quality-check`, `backup-before-load`, `validate-senzing-json`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory` ⭐, `verify-generated-code`, `offer-visualization`, `capture-feedback` ⭐, `deployment-phase-gate`, `enforce-visualization-offers` ⭐, `enforce-feedback-path`.
+Available: Code Style Check (`code-style-check`) ⭐, `ask-bootcamper`, `data-quality-check`, `backup-before-load`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory` ⭐, `verify-generated-code`, `offer-visualization`, `review-bootcamper-input` ⭐, `deployment-phase-gate`, `enforce-visualization-offers` ⭐, `enforce-feedback-path`.
 
 ## Project Directory Structure
 

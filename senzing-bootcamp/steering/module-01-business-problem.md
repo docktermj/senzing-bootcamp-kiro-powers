@@ -142,7 +142,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    - If source count unknown: "How many distinct data sources or systems will we be working with?"
    - If desired outcome unknown: "What does the end result look like for you — a clean master list, an API, reports, or something else?"
 
-   Ask these as a single grouped question, not one at a time. Do NOT ask about items the user already covered.
+   Ask about only one undetermined item per turn. After the bootcamper responds, ask about the next undetermined item in a subsequent turn. Do NOT ask about items the user already covered. Queue remaining questions for subsequent turns.
 
    **Checkpoint:** Write step 7 to `config/bootcamp_progress.json`.
 

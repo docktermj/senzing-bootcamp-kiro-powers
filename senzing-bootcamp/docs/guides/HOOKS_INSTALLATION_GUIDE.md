@@ -29,7 +29,7 @@ The agent will read the Hook Registry from `onboarding-flow.md` and recreate all
 
 | Hook | Trigger | Purpose |
 | ---- | ------- | ------- |
-| Capture Bootcamp Feedback | Every message (promptSubmit) | Detect feedback trigger phrases |
+| Review Bootcamper Input | Every message (promptSubmit) | Detect feedback trigger phrases |
 | Enforce Feedback File Path | Before write (preToolUse) | Ensure feedback goes to correct file |
 | Enforce Working Directory | Before write (preToolUse) | Block /tmp and external paths |
 | Verify Senzing Facts | Before write (preToolUse) | Verify facts via MCP tools |

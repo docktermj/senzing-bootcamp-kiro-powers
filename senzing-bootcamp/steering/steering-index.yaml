@@ -96,7 +96,7 @@ deployment:
 
 file_metadata:
   agent-instructions.md:
-    token_count: 2162
+    token_count: 2234
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -129,7 +129,7 @@ file_metadata:
     token_count: 456
     size_category: small
   feedback-workflow.md:
-    token_count: 1060
+    token_count: 1062
     size_category: medium
   graduation-reference.md:
     token_count: 2540
@@ -138,7 +138,7 @@ file_metadata:
     token_count: 1487
     size_category: medium
   hook-registry.md:
-    token_count: 4394
+    token_count: 4055
     size_category: large
   lang-csharp.md:
     token_count: 828
@@ -162,7 +162,7 @@ file_metadata:
     token_count: 2063
     size_category: large
   module-01-business-problem.md:
-    token_count: 2771
+    token_count: 2802
     size_category: large
   module-02-sdk-setup.md:
     token_count: 2816
@@ -180,7 +180,7 @@ file_metadata:
     token_count: 1684
     size_category: medium
   module-05-phase2-data-mapping.md:
-    token_count: 1769
+    token_count: 1766
     size_category: medium
   module-05-phase3-test-load.md:
     token_count: 1676
@@ -228,7 +228,7 @@ file_metadata:
     token_count: 2805
     size_category: large
   project-structure.md:
-    token_count: 399
+    token_count: 442
     size_category: small
   security-privacy.md:
     token_count: 278
@@ -250,7 +250,7 @@ file_metadata:
     size_category: large
 
 budget:
-  total_tokens: 78201
+  total_tokens: 78007
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

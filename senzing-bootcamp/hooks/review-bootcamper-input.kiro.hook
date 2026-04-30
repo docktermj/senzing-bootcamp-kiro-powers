@@ -1,7 +1,7 @@
 {
-  "name": "Capture Bootcamp Feedback",
+  "name": "Review Bootcamper Input",
   "version": "1.0.0",
-  "description": "Fires on every message submission. Checks for feedback trigger phrases and initiates the feedback workflow with automatic context capture.",
+  "description": "Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture.",
   "when": {
     "type": "promptSubmit"
   },

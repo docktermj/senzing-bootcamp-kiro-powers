@@ -8,7 +8,7 @@ This steering file provides the complete feedback collection workflow for the Se
 
 ## Trigger Phrases
 
-When user says any of these, the feedback workflow starts automatically via the `capture-feedback` hook:
+When user says any of these, the feedback workflow starts automatically via the `review-bootcamper-input` hook:
 
 - "bootcamp feedback"
 - "power feedback"

@@ -4,11 +4,10 @@
 
 critical:
   - ask-bootcamper
-  - capture-feedback
+  - review-bootcamper-input
   - code-style-check
   - commonmark-validation
   - enforce-feedback-path
-  - enforce-wait-after-question
   - enforce-working-directory
   - verify-senzing-facts
 
@@ -16,7 +15,6 @@ modules:
   5:
     - analyze-after-mapping
     - data-quality-check
-    - validate-senzing-json
   6:
     - backup-before-load
     - run-tests-after-change

@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-All 19 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
+All 17 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
 
 ## Critical Hooks (created during onboarding)
 
@@ -15,14 +15,6 @@ Prompt: "FIRST — scan the ENTIRE conversation history for the most recent assi
 - id: `ask-bootcamper`
 - name: `Ask Bootcamper`
 - description: `Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question. Suppresses output entirely when a question is already pending.`
-
-**capture-feedback** (promptSubmit → askAgent)
-
-Prompt: "Check if the bootcamper's message contains any of these feedback trigger phrases (case-insensitive): "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue". If NONE of these phrases appear in the message, produce no output at all — do not acknowledge, do not explain, do not print anything. If a trigger phrase IS found, immediately do the following: (1) Read config/bootcamp_progress.json to get the current module number and completed modules. If the file doesn't exist, record module as "Unknown". (2) Note what the bootcamper was doing in the recent conversation. (3) Note which files are open in the editor. (4) Load steering file feedback-workflow.md and follow its complete workflow, pre-filling the context fields with what you just captured. Do NOT ask the bootcamper to re-explain their context — you already have it."
-
-- id: `capture-feedback`
-- name: `Capture Bootcamp Feedback`
-- description: `Fires on every message submission. Checks for feedback trigger phrases and initiates the feedback workflow with automatic context capture.`
 
 **code-style-check** (fileEdited → askAgent, filePatterns: `*.py, *.java, *.cs, *.rs, *.ts, *.js`)
 
@@ -58,14 +50,6 @@ Prompt: "Check if you are currently in the feedback collection workflow (i.e., t
 - name: `Enforce Feedback File Path`
 - description: `Before any write operation, checks if the agent is writing feedback content. If so, ensures it goes to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md and nowhere else.`
 
-**enforce-wait-after-question** (agentStop → askAgent)
-
-Prompt: "Scan the full conversation history for the most recent assistant message. If that message contains a 👉 question, verify that the very next message in the conversation is from the bootcamper (not from the assistant, not from a hook, and not fabricated). If there is NO bootcamper response after the 👉 question, produce no output at all — STOP immediately and return nothing. Do not answer the question for the bootcamper. Do not continue the workflow. Do not generate any content. The bootcamper must respond before the conversation can proceed. If the bootcamper HAS already responded after the most recent 👉 question, produce no output — the conversation is proceeding normally."
-
-- id: `enforce-wait-after-question`
-- name: `Enforce Wait After Question`
-- description: `Prevents the agent from continuing past a 👉 question without a real bootcamper response. Blocks fabricated input and premature workflow continuation.`
-
 **enforce-working-directory** (preToolUse → askAgent, toolTypes: write)
 
 Prompt: "Before writing this file, verify: Does the file path or any path in the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If all paths are within the working directory, produce no output at all — do not acknowledge, do not explain, do not print anything. STOP immediately and return nothing. Your response must be completely empty — zero tokens, zero characters. If so, replace those paths with project-relative equivalents (database/G2C.db for databases, data/temp/ for temporary files, src/ for source code). Do NOT proceed with the write if it would place files outside the working directory."
@@ -73,6 +57,14 @@ Prompt: "Before writing this file, verify: Does the file path or any path in the
 - id: `enforce-working-directory`
 - name: `Enforce Working Directory Paths`
 - description: `Checks that file write operations do not use /tmp, %TEMP%, or any path outside the working directory. Enforces the file storage policy automatically.`
+
+**review-bootcamper-input** (promptSubmit → askAgent)
+
+Prompt: "Check if the bootcamper's message contains any of these feedback trigger phrases (case-insensitive): "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue". If NONE of these phrases appear in the message, produce no output at all — do not acknowledge, do not explain, do not print anything. If a trigger phrase IS found, immediately do the following: (1) Read config/bootcamp_progress.json to get the current module number and completed modules. If the file doesn't exist, record module as "Unknown". (2) Note what the bootcamper was doing in the recent conversation. (3) Note which files are open in the editor. (4) Load steering file feedback-workflow.md and follow its complete workflow, pre-filling the context fields with what you just captured. Do NOT ask the bootcamper to re-explain their context — you already have it."
+
+- id: `review-bootcamper-input`
+- name: `Review Bootcamper Input`
+- description: `Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture.`
 
 **verify-senzing-facts** (preToolUse → askAgent, toolTypes: write)
 
@@ -86,11 +78,11 @@ Prompt: "If the file contains no Senzing-specific content, or all Senzing conten
 
 **analyze-after-mapping** — Module 5 (fileCreated → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
 
-Prompt: "A new Senzing JSON file was created in data/transformed/. Before proceeding to loading (Module 6), use the analyze_record MCP tool to validate a sample of records from this file. Check feature distribution, attribute coverage, and data quality. Quality score should be >70% before loading."
+Prompt: "A new Senzing JSON file was created in data/transformed/. Before proceeding to loading (Module 6), use the analyze_record MCP tool to validate a sample of records from this file. Check feature distribution, attribute coverage, and data quality. Quality score should be >70% before loading. Also verify that records conform to the Senzing Generic Entity Specification."
 
 - id: `analyze-after-mapping`
 - name: `Analyze After Mapping`
-- description: `After completing a mapping task, reminds the agent to validate the transformation output using analyze_record before proceeding to loading.`
+- description: `After completing a mapping task, validates the transformation output using analyze_record for quality metrics and Senzing Generic Entity Specification conformance before proceeding to loading.`
 
 **data-quality-check** — Module 5 (fileEdited → askAgent, filePatterns: `src/transform/*.*`)
 
@@ -99,14 +91,6 @@ Prompt: "The transformation program was just updated. Please review the changes 
 - id: `data-quality-check`
 - name: `Senzing Data Quality Check`
 - description: `Automatically check data quality when transformation programs are saved`
-
-**validate-senzing-json** — Module 5 (fileEdited → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
-
-Prompt: "Senzing JSON output was modified. Please use the analyze_record MCP tool to validate a sample of records from this file to ensure they conform to the Senzing Generic Entity Specification."
-
-- id: `validate-senzing-json`
-- name: `Validate Senzing JSON Output`
-- description: `Validate Senzing JSON format when transformation output files are created or modified`
 
 **backup-before-load** — Module 6 (fileEdited → askAgent, filePatterns: `src/load/*.*`)
 
@@ -145,7 +129,7 @@ If BOTH were offered (regardless of whether the bootcamper accepted or declined)
 
 If EITHER visualization was NOT offered, display this message:
 
-```text
+```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📊  MODULE 7 VISUALIZATION CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

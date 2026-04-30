@@ -38,7 +38,7 @@ _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 
 _AFFECTED_HOOK_FILES: dict[str, Path] = {
     "ask-bootcamper": _HOOKS_DIR / "ask-bootcamper.kiro.hook",
-    "capture-feedback": _HOOKS_DIR / "capture-feedback.kiro.hook",
+    "review-bootcamper-input": _HOOKS_DIR / "review-bootcamper-input.kiro.hook",
     "enforce-feedback-path": _HOOKS_DIR / "enforce-feedback-path.kiro.hook",
     "enforce-working-directory": (
         _HOOKS_DIR / "enforce-working-directory.kiro.hook"
@@ -156,13 +156,13 @@ class TestBugConditionHookFiles:
     **Validates: Requirements 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4**
     """
 
-    def test_capture_feedback_has_silent_instruction(self) -> None:
-        """capture-feedback prompt should contain 'produce no output'.
+    def test_review_bootcamper_input_has_silent_instruction(self) -> None:
+        """review-bootcamper-input prompt should contain 'produce no output'.
 
         **Validates: Requirements 1.1, 2.1**"""
-        prompt = _read_hook_prompt(_AFFECTED_HOOK_FILES["capture-feedback"])
+        prompt = _read_hook_prompt(_AFFECTED_HOOK_FILES["review-bootcamper-input"])
         assert _prompt_has_silent_instruction(prompt), (
-            f"capture-feedback prompt lacks explicit silent instruction.\n"
+            f"review-bootcamper-input prompt lacks explicit silent instruction.\n"
             f"Prompt uses 'do nothing' without 'produce no output'.\n"
             f"Prompt: {prompt[:200]}..."
         )
@@ -214,14 +214,14 @@ class TestBugConditionHookRegistry:
     def _load_registry(self) -> None:
         self._registry_text = _HOOK_REGISTRY.read_text(encoding="utf-8")
 
-    def test_registry_capture_feedback_has_silent_instruction(self) -> None:
-        """hook-registry capture-feedback prompt should contain 'produce no output'.
+    def test_registry_review_bootcamper_input_has_silent_instruction(self) -> None:
+        """hook-registry review-bootcamper-input prompt should contain 'produce no output'.
 
         **Validates: Requirements 1.5, 2.5**"""
-        prompt = _extract_registry_prompt(self._registry_text, "capture-feedback")
-        assert prompt, "Could not extract capture-feedback prompt from hook-registry.md"
+        prompt = _extract_registry_prompt(self._registry_text, "review-bootcamper-input")
+        assert prompt, "Could not extract review-bootcamper-input prompt from hook-registry.md"
         assert _prompt_has_silent_instruction(prompt), (
-            f"hook-registry capture-feedback prompt lacks 'produce no output'.\n"
+            f"hook-registry review-bootcamper-input prompt lacks 'produce no output'.\n"
             f"Prompt: {prompt[:200]}..."
         )
 
@@ -280,8 +280,13 @@ class TestBugConditionAgentInstructions:
             re.MULTILINE | re.DOTALL,
         )
         assert hooks_match, "Could not find ## Hooks section in agent-instructions.md"
-        hooks_section = hooks_match.group(1)
-        assert _SILENT_INSTRUCTION.lower() in hooks_section.lower(), (
+        hooks_section = hooks_match.group(1).lower()
+        # Accept both original and strengthened phrasing
+        has_silent = (
+            _SILENT_INSTRUCTION.lower() in hooks_section
+            or "produce absolutely no output" in hooks_section
+        )
+        assert has_silent, (
             "agent-instructions.md Hooks section lacks a silent-processing rule.\n"
             f"Hooks section content:\n{hooks_section}"
         )
@@ -688,8 +693,8 @@ class TestBugConditionPreToolUseProperty:
 # Baseline constants — action-required content that MUST be preserved
 # ---------------------------------------------------------------------------
 
-# capture-feedback: feedback workflow initiation keywords
-_CAPTURE_FEEDBACK_ACTION_KEYWORDS: list[str] = [
+# review-bootcamper-input: feedback workflow initiation keywords
+_REVIEW_BOOTCAMPER_INPUT_ACTION_KEYWORDS: list[str] = [
     "bootcamp feedback",
     "power feedback",
     "submit feedback",
@@ -738,7 +743,7 @@ _ASK_BOOTCAMPER_ACTION_KEYWORDS: list[str] = [
 # Map hook id → action-required keywords
 _ACTION_REQUIRED_KEYWORDS: dict[str, list[str]] = {
     "ask-bootcamper": _ASK_BOOTCAMPER_ACTION_KEYWORDS,
-    "capture-feedback": _CAPTURE_FEEDBACK_ACTION_KEYWORDS,
+    "review-bootcamper-input": _REVIEW_BOOTCAMPER_INPUT_ACTION_KEYWORDS,
     "enforce-feedback-path": _ENFORCE_FEEDBACK_PATH_ACTION_KEYWORDS,
     "enforce-working-directory": _ENFORCE_WORKING_DIR_ACTION_KEYWORDS,
     "verify-senzing-facts": _VERIFY_SENZING_FACTS_ACTION_KEYWORDS,
@@ -749,7 +754,6 @@ _NON_AFFECTED_HOOK_IDS: list[str] = [
     "code-style-check",
     "commonmark-validation",
     "data-quality-check",
-    "validate-senzing-json",
     "analyze-after-mapping",
     "backup-before-load",
     "run-tests-after-change",
@@ -838,14 +842,14 @@ class TestPreservationActionBranches:
                 f"Prompt: {prompt[:300]}..."
             )
 
-    def test_capture_feedback_preserves_feedback_workflow(self) -> None:
-        """capture-feedback preserves feedback workflow initiation text.
+    def test_review_bootcamper_input_preserves_feedback_workflow(self) -> None:
+        """review-bootcamper-input preserves feedback workflow initiation text.
 
         **Validates: Requirements 3.1**"""
-        prompt = _read_hook_prompt(_AFFECTED_HOOK_FILES["capture-feedback"])
-        for keyword in _CAPTURE_FEEDBACK_ACTION_KEYWORDS:
+        prompt = _read_hook_prompt(_AFFECTED_HOOK_FILES["review-bootcamper-input"])
+        for keyword in _REVIEW_BOOTCAMPER_INPUT_ACTION_KEYWORDS:
             assert keyword in prompt, (
-                f"capture-feedback prompt missing action-required keyword: "
+                f"review-bootcamper-input prompt missing action-required keyword: "
                 f"'{keyword}'\nPrompt: {prompt[:300]}..."
             )
 

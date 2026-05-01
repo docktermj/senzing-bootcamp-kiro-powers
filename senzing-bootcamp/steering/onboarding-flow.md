@@ -119,6 +119,47 @@ Present the overview before track selection. Cover all points naturally:
 - Tracks let you skip to what matters
 - If you encounter unfamiliar terms (like Senzing Entity Specification (SGES), DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
 
+### 4b. Verbosity Preference
+
+After presenting the overview, ask the bootcamper how much detail they want in the bootcamp output. Present the three presets:
+
+- **concise** — Minimal explanations, no code walkthroughs, brief recaps. Best for experienced developers.
+- **standard** *(recommended)* — Balanced "what and why" explanations, block-level code summaries, before/after framing. Good for most learners.
+- **detailed** — Full explanations with workflow connections, line-by-line code walkthroughs, SDK internals. Best for deep learners.
+
+Persist the selection to the `verbosity` key in the preferences file (`config/bootcamp_preferences.yaml`, or `config/preferences_{member_id}.yaml` in team mode) using this format:
+
+```yaml
+verbosity:
+  preset: standard
+  categories:
+    explanations: 2
+    code_walkthroughs: 2
+    step_recaps: 2
+    technical_details: 2
+    code_execution_framing: 2
+```
+
+After the bootcamper selects a preset, confirm the choice and tell them:
+
+"You can change your verbosity level at any time by saying 'change verbosity' or by fine-tuning specific categories like 'I want more code walkthroughs'."
+
+If the bootcamper skips without answering, apply the `standard` preset as the default and inform them: "I've set your verbosity to **standard** (balanced detail). You can change this anytime."
+
+This is NOT a mandatory gate (⛔) — the bootcamper can skip it.
+
+### 4c. Comprehension Check
+
+Before moving on to track selection, give the bootcamper a moment to absorb everything from the overview. Present a warm, conversational check-in — this is an invitation, not a quiz:
+
+"That was a lot of ground to cover. Does everything so far makes sense? Do you have any questions about the modules, the data, licensing, or anything else before we move on to choosing a track?"
+
+**Acknowledgment handling:** If the bootcamper responds with an acknowledgment — phrases like "looks good," "makes sense," "no questions," "let's go," "ready," "all clear," or "got it" — proceed directly to Step 5 (Track Selection). Do not ask follow-up questions about the overview.
+
+**Clarification handling:** If the bootcamper asks a clarification question, answer it using the bootcamper's current verbosity settings from the preferences file. After answering, check whether the bootcamper has any more questions before proceeding to Step 5. Repeat this cycle — answer, then check for additional questions — until the bootcamper signals they are ready to move on.
+
+**Note:** This step is NOT a gate — it is not mandatory, and the bootcamper can skip it or acknowledge quickly. The `ask-bootcamper` hook handles the closing question on `agentStop`, so do not include inline closing questions here.
+
 ## 5. Track Selection
 
 > **Authoritative source:** Track definitions are derived from

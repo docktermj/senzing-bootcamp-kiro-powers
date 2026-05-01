@@ -49,16 +49,28 @@ def _extract_section(markdown: str, heading: str) -> str:
 def _parse_onboarding_steps(markdown: str) -> dict[str, str]:
     """Parse onboarding-flow.md into a dict of step-id → section content.
 
+    Handles both ``## N.`` and ``### Nb.`` style headings so that each
+    step/sub-step gets its own section (matching ``_parse_numbered_steps``
+    in ``test_comprehension_check.py``).
+
     Returns:
-        Dict like ``{"0": "## 0. Setup …", "5": "## 5. Track …"}``.
+        Dict like ``{"0": "## 0. Setup …", "4b": "### 4b. Verbosity …"}``.
     """
     steps: dict[str, str] = {}
-    step_pattern = re.compile(r"^## (\d+[a-z]?)\.\s", re.MULTILINE)
+    step_pattern = re.compile(r"^(#{2,3})\s+(\d+[a-z]?)\.\s", re.MULTILINE)
     matches = list(step_pattern.finditer(markdown))
     for i, m in enumerate(matches):
-        step_id = m.group(1)
+        step_id = m.group(2)
         start = m.start()
+        # End at the very next numbered step heading (any level)
         end = matches[i + 1].start() if i + 1 < len(matches) else len(markdown)
+        # Also check for non-numbered ## headings after this step
+        rest = markdown[m.end():]
+        non_numbered = re.search(r"^#{2}\s+(?!\d+[a-z]?\.\s)", rest, re.MULTILINE)
+        if non_numbered:
+            candidate = m.end() + non_numbered.start()
+            if candidate < end:
+                end = candidate
         steps[step_id] = markdown[start:end]
     return steps
 
@@ -93,7 +105,7 @@ _GATE_KEYWORDS = re.compile(
 )
 
 # Non-gate steps that should never contain gate instructions
-_NON_GATE_STEP_IDS = ["0", "1", "1b", "4"]
+_NON_GATE_STEP_IDS = ["0", "1", "1b", "4", "4c"]
 
 
 # ---------------------------------------------------------------------------
@@ -399,7 +411,7 @@ class TestHookRegistryEntryFormat:
 
 @st.composite
 def st_non_gate_step(draw: st.DrawFn) -> str:
-    """Generate a non-gate step identifier from Steps 0, 1, 1b, 4.
+    """Generate a non-gate step identifier from Steps 0, 1, 1b, 4, 4c.
 
     These steps should never contain mandatory gate instructions.
     """

@@ -436,7 +436,7 @@ _HEADINGS_MODULE_07 = [
 ]
 
 _HEADINGS_MODULE_11 = [
-    "# Module 11: Deployment and Packaging",
+    "# Module 11: Packaging and Deployment",
     "## Step 1: Deployment Target and Method \u2014 ASK FIRST",
     "## Phase 1: Packaging (Steps 2-11)",
     "## Step 2: Packaging Requirements",

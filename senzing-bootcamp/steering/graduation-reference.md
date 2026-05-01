@@ -186,14 +186,14 @@ Generate `production/MIGRATION_CHECKLIST.md` with six sections (Database, Securi
 
 - **Security**: Add `- [ ] Review and update security hardening from Module 10 (check src/ for security artifacts)`
 - **Performance**: Add `- [ ] Review performance benchmarks from Module 9 and validate against production targets`
-- **Deployment**: Add `- [ ] Review deployment packaging from Module 11 (check deployment artifacts)`
+- **Deployment**: Add `- [ ] Review packaging and deployment from Module 11 (check deployment artifacts)`
 - Add note at top: "✅ You completed the full production track (Modules 9–11). Items below reference artifacts you already produced."
 
 **If Modules 9–11 are NOT all completed:**
 
 - **Security**: Add `- [ ] ⚠️ Security hardening was not covered during the bootcamp — review these items carefully`
 - **Performance** (if Module 9 not completed): Add `- [ ] ⚠️ Performance testing was not covered — benchmark before going to production`
-- **Deployment**: Add `- [ ] ⚠️ Deployment packaging was not covered during the bootcamp — complete these items before deploying`
+- **Deployment**: Add `- [ ] ⚠️ Packaging and deployment was not covered during the bootcamp — complete these items before deploying`
 - Add note at top: "⚠️ Some production topics (security, monitoring, deployment) were not covered in your track. Items marked with ⚠️ need extra attention."
 
 ## Graduation Report Template

@@ -20,7 +20,7 @@ Module-specific documentation files. Each module has detailed documentation abou
 - `MODULE_8_PERFORMANCE_TESTING.md` - Performance testing and benchmarking
 - `MODULE_9_SECURITY_HARDENING.md` - Security hardening for production
 - `MODULE_10_MONITORING_OBSERVABILITY.md` - Monitoring and observability
-- `MODULE_11_DEPLOYMENT_PACKAGING.md` - Deployment packaging
+- `MODULE_11_PACKAGING_DEPLOYMENT.md` - Packaging and deployment
 
 ### `/policies/`
 

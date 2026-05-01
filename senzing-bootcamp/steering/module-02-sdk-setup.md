@@ -62,14 +62,31 @@ Use `sdk_guide` with `topic='install'` and the user's platform to get current in
 
 ## Step 3: Install Senzing SDK
 
-Follow the platform-specific instructions from `sdk_guide`. The typical flow:
+Follow the platform-specific instructions from `sdk_guide`. The installation has three phases:
+
+**Before recommending any approach**, call `search_docs` with `category='anti_patterns'` to check for known pitfalls on the user's platform.
+
+**Phase 1 — Install the SDK package (execute without stopping):**
 
 1. Add the Senzing package repository
 2. Install the Senzing SDK package
-3. Accept the EULA
-4. Install the language-specific SDK bindings (e.g., `pip install senzing` for Python, or the equivalent for your chosen language)
 
-**Before recommending any approach**, call `search_docs` with `category='anti_patterns'` to check for known pitfalls on the user's platform.
+**Phase 2 — EULA acceptance (requires bootcamper input):**
+
+The Senzing SDK requires EULA acceptance before use. Present the EULA question:
+
+👉 "Do you accept the Senzing End User License Agreement (EULA)? You can review it at https://senzing.com/end-user-license-agreement/. Please respond yes or no."
+
+**STOP and wait for the bootcamper's response.** Do not proceed until the bootcamper answers.
+
+Once the bootcamper responds, act on their answer:
+
+- **If the bootcamper accepts the EULA:** Proceed to Phase 3 below to install language-specific SDK bindings.
+- **If the bootcamper declines the EULA:** Stop the installation process. Explain to the bootcamper: "The Senzing SDK cannot be used without EULA acceptance. The remaining installation steps and subsequent bootcamp modules require the SDK." Do not install language bindings and do not write the checkpoint. Stop here.
+
+**Phase 3 — Install language bindings (only after EULA acceptance):**
+
+3. Install the language-specific SDK bindings (e.g., `pip install senzing` for Python, or the equivalent for your chosen language)
 
 **TypeScript/Node.js warning:** The TypeScript SDK (`sz-napi`) may require building from source if prebuilt binaries are not available for the user's platform. This involves installing the Rust toolchain, cloning `sz-rust-sdk` and `sz-rust-sdk-configtool` as Cargo dependencies, and building the native addon with `napi-rs`. Warn the user upfront: "The TypeScript SDK setup is more involved than other languages — it may require building native bindings from source, which needs the Rust toolchain. If you'd prefer a faster setup, Java or C# typically have simpler install paths." If they proceed with TypeScript, guide them through the full build sequence in one go rather than letting them discover steps through trial and error.
 

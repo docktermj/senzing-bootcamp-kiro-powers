@@ -2,11 +2,11 @@
 inclusion: manual
 ---
 
-# Module 11: Deployment and Packaging
+# Module 11: Packaging and Deployment
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
-> **User reference:** See `docs/modules/MODULE_11_DEPLOYMENT_PACKAGING.md` for background.
+> **User reference:** See `docs/modules/MODULE_11_PACKAGING_DEPLOYMENT.md` for background.
 
 Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` if already set.
 
@@ -27,9 +27,13 @@ Before starting: call `search_docs(query='deployment', category='anti_patterns',
 
 ## Step 1: Deployment Target and Method — ASK FIRST
 
-**Check `config/bootcamp_preferences.yaml` first.** If `cloud_provider` is set, confirm: "You chose [cloud_provider]. Still your target?"
+**Check `config/bootcamp_preferences.yaml` first for `deployment_target`.** If `deployment_target` is set and not `undecided`, confirm: "You indicated [deployment_target]. Still your target?" If confirmed, proceed to deployment method below.
 
-**If not set**, ask (one at a time):
+**If `deployment_target` is `undecided` or not set**, fall through to the full question below.
+
+**Also check `cloud_provider`** in `config/bootcamp_preferences.yaml`. If `cloud_provider` is set, confirm: "You chose [cloud_provider]. Still your target?"
+
+**If neither is set**, ask (one at a time):
 
 1. "Where do you plan to deploy? AWS, Azure, Google Cloud, on-premises, or local Docker?"
 2. Ask about deployment method per platform:

@@ -30,9 +30,19 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    git rev-parse --git-dir 2>$null
    ```
 
-   If not, ask: "Would you like me to initialize a git repository for version control?"
+   **If already a repo:** Skip the question, write the checkpoint, and proceed to Step 2.
 
-   If yes, initialize. If no or already a repo, proceed.
+   **If not a repo:** Ask the bootcamper:
+
+   👉 "Would you like me to initialize a git repository for version control?"
+
+   **STOP and wait for the bootcamper's response.** Do not proceed until the bootcamper answers.
+
+   Once the bootcamper responds, act on their answer:
+   - If yes, initialize the git repository.
+   - If no, skip initialization.
+
+   After the bootcamper responds and you act on the response, write the checkpoint and proceed.
 
    **Checkpoint:** Write step 1 to `config/bootcamp_progress.json`.
 
@@ -162,4 +172,36 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 
-**Phase 2 (Steps 9–16):** Loaded from `module-01-phase2-document-confirm.md` via the phase system.
+9. **Ask about deployment target** (separate question — do NOT combine with the integration question):
+
+   "Where do you plan to deploy the final entity resolution solution? Here are some common options:
+
+   **Cloud hyperscalers:**
+   - AWS
+   - Azure
+   - GCP
+
+   **Container platforms:**
+   - Kubernetes
+   - Docker Swarm
+
+   **Local / on-premises:**
+   - Current machine
+   - Other internal infrastructure
+
+   Or if you're **not sure yet**, that's perfectly fine too."
+
+   **STOP and wait for the bootcamper's response.** Do not proceed until the bootcamper answers.
+
+   Reassure the bootcamper: "No matter what you choose, we'll develop everything locally first. Deployment-specific code and configuration will be created later in Module 11 — so there's no pressure to commit right now."
+
+   Once the bootcamper responds, persist their choice to `config/bootcamp_preferences.yaml` as `deployment_target`:
+
+   - **Cloud hyperscaler selected** (AWS, Azure, or GCP): persist `deployment_target` with the value (`aws`, `azure`, or `gcp`). Also persist `cloud_provider` in `config/bootcamp_preferences.yaml` using the same value format as `cloud-provider-setup.md` — `aws` for AWS, `azure` for Azure, `gcp` for GCP.
+   - **Container platform selected** (Kubernetes or Docker Swarm): persist `deployment_target` as `kubernetes` or `docker_swarm`.
+   - **Local / on-premises selected**: persist `deployment_target` as `local` or `on_premises`.
+   - **"Not sure yet" selected**: persist `deployment_target: undecided` in `config/bootcamp_preferences.yaml` and reassure the bootcamper that the choice can be revisited later in Module 11.
+
+   **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
+
+**Phase 2 (Steps 10–18):** Loaded from `module-01-phase2-document-confirm.md` via the phase system.

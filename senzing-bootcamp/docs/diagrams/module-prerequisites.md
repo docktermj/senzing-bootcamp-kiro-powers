@@ -17,7 +17,7 @@ graph TD
 
     M8 --> M9[Module 9: Performance Testing & Benchmarking]
     M9 --> M10[Module 10: Security Hardening]
-    M10 --> M11[Module 11: Monitoring, Package & Deploy]
+    M10 --> M11[Module 11: Package & Deploy]
 
     style M1 fill:#fff3e0
     style M2 fill:#e1f5fe

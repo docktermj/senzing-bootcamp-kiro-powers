@@ -198,7 +198,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ### Module 11: Package and Deploy
 
-**File**: [MODULE_11_DEPLOYMENT_PACKAGING.md](MODULE_11_DEPLOYMENT_PACKAGING.md)
+**File**: [MODULE_11_PACKAGING_DEPLOYMENT.md](MODULE_11_PACKAGING_DEPLOYMENT.md)
 
 **Purpose**: Package code and deploy to production
 

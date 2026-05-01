@@ -8,7 +8,7 @@ inclusion: manual
 
 > **User reference:** See `docs/modules/MODULE_8_PERFORMANCE_TESTING.md` for background.
 
-Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` — if AWS, tailor to RDS/Aurora and EC2 instance types.
+Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcamp_preferences.yaml` — if AWS, tailor to RDS/Aurora and EC2 instance types. Also read `deployment_target` from `config/bootcamp_preferences.yaml`. When `deployment_target` is set but `cloud_provider` is not (e.g., container platform or local target), use the deployment target to inform performance target guidance — container platform targets (Kubernetes, Docker Swarm) differ from bare-metal or local targets in resource constraints, networking overhead, and scaling characteristics.
 
 **Prerequisites:** Module 7 (Query and Visualize) complete, representative data loaded, cloud provider set at 7→8 gate.
 

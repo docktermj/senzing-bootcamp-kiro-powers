@@ -1,0 +1,83 @@
+# Implementation Plan
+
+- [x] 1. Write bug condition exploration test
+  - **Property 1: Bug Condition** - EULA Question Missing 👉 Marker and STOP Instruction
+  - **CRITICAL**: This test MUST FAIL on unfixed code — failure confirms the bug exists
+  - **DO NOT attempt to fix the test or the code when it fails**
+  - **NOTE**: This test encodes the expected behavior — it will validate the fix when it passes after implementation
+  - **GOAL**: Surface counterexamples that demonstrate the bug exists in `module-02-sdk-setup.md` Step 3
+  - **Scoped PBT Approach**: Scope the property to Step 3 of the steering file — the concrete section where the EULA question lives
+  - Create test file `senzing-bootcamp/tests/test_eula_answer_skipped_bug.py` using pytest + Hypothesis
+  - Parse `senzing-bootcamp/steering/module-02-sdk-setup.md`, extract the `## Step 3: Install Senzing SDK` section
+  - Follow the existing pattern from `test_git_question_bug.py` — use `_extract_step_by_heading()` helper to extract Step 3 by its `## Step N:` heading
+  - Define helpers: `_POINTING_MARKER = "👉"`, `_STOP_KEYWORDS` regex (STOP, stop and wait, wait for bootcamper, do not proceed, must stop, stop here), `_EULA_QUESTION_KEYWORDS` regex (accept.*EULA, EULA.*accept)
+  - **Test 1 — Missing 👉 Marker**: Extract Step 3, find the EULA question text, assert it contains the 👉 marker prefix (will FAIL on unfixed code — confirms bug)
+  - **Test 2 — Missing STOP Instruction**: Extract Step 3, find the EULA question text, assert a STOP/wait instruction follows the EULA question (will FAIL on unfixed code — confirms bug)
+  - **Test 3 — Missing Decline Handling**: Extract Step 3, assert it contains EULA decline handling logic (decline, cannot be used, without EULA acceptance) (will FAIL on unfixed code — confirms bug)
+  - **Test 4 — Unconditional Checkpoint**: Extract Step 3, assert the checkpoint is deferred until after EULA acceptance — not placed unconditionally after the question (will FAIL on unfixed code — confirms bug)
+  - **PBT Test — Bug Condition Identification**: Use Hypothesis to generate step numbers from {1..9} via `st.sampled_from`, verify that only Step 3 contains the EULA question, and that Step 3 has the 👉 marker (will FAIL on unfixed code for Step 3)
+  - Run tests on UNFIXED code
+  - **EXPECTED OUTCOME**: Tests FAIL (this is correct — it proves the bug exists)
+  - Document counterexamples found: Step 3 lists "3. Accept the EULA" in a continuous numbered list with no 👉 marker, no STOP instruction, no decline handling, and an unconditional checkpoint
+  - Mark task complete when test is written, run, and failure is documented
+  - _Requirements: 1.1, 1.2, 1.3, 1.4_
+
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
+  - **Property 2: Preservation** - Non-Step-3 Content and Hook File Unchanged
+  - **IMPORTANT**: Follow observation-first methodology — observe UNFIXED code behavior first, then write tests
+  - Create test file `senzing-bootcamp/tests/test_eula_answer_skipped_preservation.py` using pytest + Hypothesis
+  - Parse `senzing-bootcamp/steering/module-02-sdk-setup.md` and snapshot all content
+  - Follow the existing pattern from `test_git_question_preservation.py`
+  - **Observation phase**: Read the UNFIXED steering file and snapshot:
+    - Each step section (Steps 1-2, 4-9) by `## Step N:` heading
+    - The `ask-bootcamper.kiro.hook` file bytes
+    - The YAML frontmatter (`inclusion: manual`)
+    - The total `**Checkpoint:**` count (should be 9 — one per step)
+    - Pre-EULA sub-steps within Step 3 (add repo, install package content)
+  - **Test 1 — Steps 1-2, 4-9 Content Preservation**: Snapshot each non-Step-3 step from the unfixed file and assert the current file matches (class `TestNonStep3StepsContentPreservation`)
+  - **Test 2 — Hook File Unchanged**: Assert `senzing-bootcamp/hooks/ask-bootcamper.kiro.hook` is byte-identical to the snapshotted original (class `TestHookFileUnchanged`)
+  - **Test 3 — YAML Frontmatter Preservation**: Assert the file starts with `---` and contains `inclusion: manual` (class `TestYAMLFrontmatterPreservation`)
+  - **Test 4 — Checkpoint Count Preservation**: Assert the total number of `**Checkpoint:**` lines is unchanged from the baseline (class `TestCheckpointCountPreservation`)
+  - **Test 5 — Pre-EULA Sub-Steps Preservation**: Assert the add-repo and install-package instructions, TypeScript/Node.js warning, Windows-specific instructions, anti-patterns check, and shell configuration warning are preserved within Step 3 (class `TestPreEULASubStepsPreservation`)
+  - **PBT Test — Non-Step-3 Steps Unchanged**: Use Hypothesis with `st.sampled_from([1, 2, 4, 5, 6, 7, 8, 9])` to generate step numbers and verify each step's content is identical to the unfixed baseline (class `TestNonStep3StepsUnchangedPBT`)
+  - Run tests on UNFIXED code
+  - **EXPECTED OUTCOME**: Tests PASS (this confirms baseline behavior to preserve)
+  - Mark task complete when tests are written, run, and passing on unfixed code
+  - _Requirements: 3.1, 3.2, 3.3, 3.4_
+
+- [x] 3. Fix for EULA answer skipped in Module 2 Step 3
+
+  - [x] 3.1 Rewrite Step 3 in `senzing-bootcamp/steering/module-02-sdk-setup.md`
+    - Split the Step 3 installation flow into three phases:
+      - **Pre-EULA phase**: Add the Senzing package repository, install the Senzing SDK package (sub-steps 1-2 from the original list, execute without stopping)
+      - **EULA question phase**: Present the EULA acceptance question with the 👉 marker prefix and an explicit STOP instruction telling the agent to wait for the bootcamper's response
+      - **Post-EULA phase**: Install language-specific SDK bindings (only after explicit acceptance)
+    - Add EULA decline handling: if the bootcamper declines, stop the installation process and explain the Senzing SDK cannot be used without EULA acceptance — do not install language bindings or write the checkpoint
+    - Defer the `**Checkpoint:**` line so it only applies after the full Step 3 completes (EULA accepted + bindings installed)
+    - Preserve all existing non-EULA content in Step 3: TypeScript/Node.js warning, Windows-specific instructions, `search_docs` anti-patterns check, shell configuration warning (`🚨 NEVER modify the user's global shell configuration`)
+    - The `ask-bootcamper.kiro.hook` file does NOT need changes — it already correctly detects 👉 markers
+    - _Bug_Condition: isBugCondition(input) where Step 3 contains EULA question without 👉 marker and without STOP instruction_
+    - _Expected_Behavior: Step 3 presents EULA question with 👉 marker, STOPs, handles accept/decline paths, defers checkpoint_
+    - _Preservation: Steps 1-2, 4-9 unchanged; hook file unchanged; frontmatter unchanged; checkpoint count unchanged; pre-EULA sub-steps unchanged_
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4_
+
+  - [x] 3.2 Verify bug condition exploration test now passes
+    - **Property 1: Expected Behavior** - EULA Question Has 👉 Marker and STOP Instruction
+    - **IMPORTANT**: Re-run the SAME test from task 1 (`test_eula_answer_skipped_bug.py`) — do NOT write a new test
+    - The test from task 1 encodes the expected behavior (👉 marker, STOP instruction, decline handling, deferred checkpoint)
+    - When this test passes, it confirms the expected behavior is satisfied
+    - Run: `python -m pytest senzing-bootcamp/tests/test_eula_answer_skipped_bug.py -v`
+    - **EXPECTED OUTCOME**: Test PASSES (confirms bug is fixed)
+    - _Requirements: 2.1, 2.2, 2.3, 2.4_
+
+  - [x] 3.3 Verify preservation tests still pass
+    - **Property 2: Preservation** - Non-Step-3 Content and Hook File Unchanged
+    - **IMPORTANT**: Re-run the SAME tests from task 2 (`test_eula_answer_skipped_preservation.py`) — do NOT write new tests
+    - Run: `python -m pytest senzing-bootcamp/tests/test_eula_answer_skipped_preservation.py -v`
+    - **EXPECTED OUTCOME**: Tests PASS (confirms no regressions)
+    - Confirm all preservation tests still pass after fix (no regressions)
+    - _Requirements: 3.1, 3.2, 3.3, 3.4_
+
+- [x] 4. Checkpoint - Ensure all tests pass
+  - Run the full test suite for this bugfix: `python -m pytest senzing-bootcamp/tests/test_eula_answer_skipped_bug.py senzing-bootcamp/tests/test_eula_answer_skipped_preservation.py -v`
+  - Ensure all tests pass, ask the user if questions arise.

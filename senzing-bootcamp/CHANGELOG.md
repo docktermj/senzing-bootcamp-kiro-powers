@@ -28,6 +28,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extracted "What Is Entity Resolution?" section from `onboarding-flow.md` into `entity-resolution-intro.md` via `#[[file:]]`
 - Changed `common-pitfalls.md`, `module-prerequisites.md`, `design-patterns.md` from `inclusion: manual` to `inclusion: auto`
 - Trimmed `hook-registry.md` from 235 to ~105 lines by removing duplicated prompt text (prompts live in `.kiro.hook` files)
+- Added Windows-specific pitfalls section to `common-pitfalls.md` (python3 vs python, PowerShell execution policy, npm.cmd, VS Build Tools, DLL PATH, Unicode, source command)
+- Added PowerShell execution policy and dot-sourcing guidance to `environment-setup.md`
+- Added Visual Studio Build Tools check and npm.cmd detection to `preflight.py` for Windows
+- Added Windows `PATH` / DLL guidance to `lang-python.md` and `lang-java.md` platform notes
+- Added `pyenv-win` mention to `lang-python.md` for Windows version management
+- Added macOS `DYLD_LIBRARY_PATH` guidance to `lang-java.md`
+- Added Windows section to `QUICK_START.md` (python command, Windows Terminal, VS Build Tools)
+- Added Windows Terminal recommendation to `POWER.md` Useful Commands section
+- Fixed onboarding failure impact table — added missing `review-bootcamper-input` and `feedback-submission-reminder` hooks (was 7/9 critical hooks, now 9/9)
+- Fixed Track A definition in `onboarding-flow.md` — was "2→3", now "1→2→3" to match POWER.md and module-dependencies.yaml
+- Fixed `#[[file:]]` path in `verbosity-control.md` — was relative, now full path consistent with all other references
+- Added "What's New (Unreleased)" section to POWER.md summarizing changes since 0.10.0
 
 ## [0.10.0] - 2026-04-22
 

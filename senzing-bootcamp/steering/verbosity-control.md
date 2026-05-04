@@ -68,5 +68,5 @@ On session start, read the `verbosity` key from the preferences file:
 
 ## Reference
 
-#[[file:verbosity-control-reference.md]]
+#[[file:senzing-bootcamp/steering/verbosity-control-reference.md]]
 Load the reference file when applying level-specific content rules or framing patterns for the first time in a session.

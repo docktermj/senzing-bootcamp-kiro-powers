@@ -83,13 +83,24 @@ call scripts\senzing-env.bat
 
 **Windows (PowerShell):**
 
+PowerShell blocks script execution by default. Enable it first (one-time):
+
 ```powershell
-# PowerShell cannot run .bat files directly for env vars.
-# Create scripts/senzing-env.ps1 instead:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+Create `scripts/senzing-env.ps1`:
+
+```powershell
 $env:SENZING_ROOT = "C:\opt\senzing"
 $env:SENZING_ENGINE_CONFIG_JSON = Get-Content config\engine_config.json -Raw
 $env:SENZING_DATABASE_URL = "sqlite3://na:na@database/G2C.db"
-# Then run: . .\scripts\senzing-env.ps1
+```
+
+Then dot-source it to load the variables into your current session:
+
+```powershell
+. .\scripts\senzing-env.ps1
 ```
 
 Run the appropriate command in your terminal before executing bootcamp scripts that need Senzing environment variables.

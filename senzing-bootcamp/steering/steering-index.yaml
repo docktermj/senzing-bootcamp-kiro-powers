@@ -142,7 +142,7 @@ file_metadata:
     token_count: 784
     size_category: medium
   common-pitfalls.md:
-    token_count: 3457
+    token_count: 3775
     size_category: large
   complexity-estimator.md:
     token_count: 606
@@ -169,7 +169,7 @@ file_metadata:
     token_count: 635
     size_category: medium
   environment-setup.md:
-    token_count: 614
+    token_count: 658
     size_category: medium
   feedback-workflow.md:
     token_count: 1062
@@ -187,10 +187,10 @@ file_metadata:
     token_count: 828
     size_category: medium
   lang-java.md:
-    token_count: 802
+    token_count: 860
     size_category: medium
   lang-python.md:
-    token_count: 877
+    token_count: 912
     size_category: medium
   lang-rust.md:
     token_count: 854
@@ -201,6 +201,9 @@ file_metadata:
   lessons-learned.md:
     token_count: 434
     size_category: small
+  load-data-reference.md:
+    token_count: 1172
+    size_category: medium
   mcp-offline-fallback.md:
     token_count: 2063
     size_category: large
@@ -249,9 +252,6 @@ file_metadata:
   module-06-phaseD-validation.md:
     token_count: 1951
     size_category: medium
-  module-06-reference.md:
-    token_count: 1172
-    size_category: medium
   module-07-query-validation.md:
     token_count: 2784
     size_category: large
@@ -280,7 +280,7 @@ file_metadata:
     token_count: 838
     size_category: medium
   onboarding-flow.md:
-    token_count: 3958
+    token_count: 4020
     size_category: large
   phase-loading-guide.md:
     token_count: 460
@@ -310,7 +310,7 @@ file_metadata:
     token_count: 3126
     size_category: large
   verbosity-control.md:
-    token_count: 1000
+    token_count: 1007
     size_category: medium
   visualization-guide.md:
     token_count: 1045
@@ -323,7 +323,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 89969
+  total_tokens: 90493
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

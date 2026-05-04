@@ -19,11 +19,11 @@ fileMatchPattern: "**/*.py"
 
 ## Common Pitfalls
 
-- **Forgetting engine cleanup**: Always pair `init()` with `destroy()` — use a context manager wrapper or `try/finally` to guarantee cleanup
-- **GIL blocking on CPU-bound ER**: Python threads share the GIL — use `multiprocessing` or `concurrent.futures.ProcessPoolExecutor` for parallel loading, not `threading`
-- **Silent encoding errors**: Use `encoding='utf-8'` explicitly when opening data files — default encoding varies by platform and can corrupt names/addresses
-- **Catching bare `Exception`**: Catch the specific Senzing exception class so SDK errors are distinguishable from bugs in your code
-- **Mutable default arguments**: Never use `def load_records(records=[])` — use `None` and assign inside the function
+- **Forgetting engine cleanup:** Always pair `init()` with `destroy()` — use a context manager wrapper or `try/finally` to guarantee cleanup
+- **GIL blocking on CPU-bound ER:** Python threads share the GIL — use `multiprocessing` or `concurrent.futures.ProcessPoolExecutor` for parallel loading, not `threading`
+- **Silent encoding errors:** Use `encoding='utf-8'` explicitly when opening data files — default encoding varies by platform and can corrupt names/addresses
+- **Catching bare `Exception`:** Catch the specific Senzing exception class so SDK errors are distinguishable from bugs in your code
+- **Mutable default arguments:** Never use `def load_records(records=[])` — use `None` and assign inside the function
 
 ## Performance Considerations
 
@@ -45,7 +45,7 @@ fileMatchPattern: "**/*.py"
 ## Platform Notes
 
 - Linux: use `python3` and `pip3` commands — `python` may point to Python 2 on older distributions
-- Windows: use `python` and `pip` — ensure Python is on `PATH` via installer checkbox
+- Windows: use `python` and `pip` — ensure Python is on `PATH` via installer checkbox. Use `pyenv-win` for version management if needed
 - macOS: use `python3` — system Python is outdated; recommend `brew install python` or `pyenv`
-- Virtual environments: always create with `python3 -m venv .venv` and activate before installing dependencies
-- Senzing native libraries: path varies by OS — follow `sdk_guide` output exactly for `LD_LIBRARY_PATH` (Linux) or `DYLD_LIBRARY_PATH` (macOS)
+- Virtual environments: always create with `python3 -m venv .venv` (or `python -m venv .venv` on Windows) and activate before installing dependencies
+- Senzing native libraries: path varies by OS — follow `sdk_guide` output exactly for `LD_LIBRARY_PATH` (Linux), `DYLD_LIBRARY_PATH` (macOS), or `PATH` (Windows — add Senzing `lib` directory)

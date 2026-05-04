@@ -41,7 +41,8 @@ fileMatchPattern: "**/*.java"
 
 ## Platform Notes
 
-- Senzing native libraries require `LD_LIBRARY_PATH` (Linux) or `PATH` additions (Windows) — follow `sdk_guide` output exactly
+- Senzing native libraries require `LD_LIBRARY_PATH` (Linux), `DYLD_LIBRARY_PATH` (macOS), or `PATH` additions (Windows) — follow `sdk_guide` output exactly
 - JVM version: use Java 11+ — verify with `java -version` before running
 - On Linux, ensure the Senzing SDK shared libraries (`.so` files) are accessible — set paths in shell profile or launch script
-- On Windows, Senzing DLLs must be on `PATH` — the installer typically handles this, but verify if running from IDE
+- On macOS, set `DYLD_LIBRARY_PATH` to include the Senzing `lib` directory — follow `sdk_guide` output
+- On Windows, Senzing DLLs must be on `PATH` — the installer typically handles this, but verify if running from IDE. If missing, add the Senzing `lib` directory to `PATH` in your environment script or system settings

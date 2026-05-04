@@ -39,6 +39,8 @@ Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 - A supported language runtime (Python, Java, C#, Rust, or TypeScript/Node.js)
 - Prerequisites are checked automatically at startup
 
+**Windows users:** Use `python` instead of `python3` for all commands. We recommend Windows Terminal or PowerShell 7 for proper Unicode support (the bootcamp uses emoji in banners). Install with `winget install Microsoft.WindowsTerminal`. If using TypeScript, you'll also need Visual Studio Build Tools for native addon compilation.
+
 ## Skip Ahead
 
 - Have Entity Specification data? → Skip to Module 5 mapping phase

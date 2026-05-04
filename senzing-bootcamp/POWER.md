@@ -16,6 +16,12 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 This power works best with Claude Opus 4.6 or similar.
 
+## What's New (Unreleased)
+
+- Windows support improvements — Visual Studio Build Tools check in `preflight.py`, Windows-specific pitfalls section in `common-pitfalls.md`, PowerShell execution policy guidance, Windows Terminal recommendation
+- Steering best practices alignment — `agent-instructions.md` trimmed to 82 lines, `verbosity-control.md` changed to auto-inclusion, large files split via `#[[file:]]` references, `common-pitfalls.md`/`design-patterns.md`/`module-prerequisites.md` changed to auto-inclusion
+- 28 orphaned specs removed, module numbering fixed across all files
+
 ## What's New in 0.10.0
 
 - Data source registry — `config/data_sources.yaml` tracks every source's quality score, mapping status, and load status across Modules 4–6. The agent maintains it automatically; view it with `data_sources.py` or in `status.py` output.
@@ -319,7 +325,7 @@ python3 senzing-bootcamp/scripts/backup_project.py        # Backup project
 python3 senzing-bootcamp/scripts/validate_power.py        # Validate power integrity
 ```
 
-Use `python` instead of `python3` on Windows.
+Use `python` instead of `python3` on Windows. For best results on Windows, use Windows Terminal or PowerShell 7 (`winget install Microsoft.WindowsTerminal`).
 
 For the complete script reference with all flags and options, see `docs/guides/SCRIPT_REFERENCE.md`.
 

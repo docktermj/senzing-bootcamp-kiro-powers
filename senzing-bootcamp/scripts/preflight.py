@@ -293,6 +293,30 @@ def check_language_runtimes() -> list[CheckResult]:
                 fix="Install pip: https://pip.pypa.io/en/stable/installation/",
             ))
 
+    # npm check when Node.js is present
+    if shutil.which("node"):
+        npm_candidates = ["npm.cmd", "npm"] if sys.platform == "win32" else ["npm"]
+        npm_cmd = None
+        for c in npm_candidates:
+            if shutil.which(c):
+                npm_cmd = c
+                break
+        if npm_cmd:
+            results.append(CheckResult(
+                name="npm",
+                category=cat,
+                status="pass",
+                message="npm available",
+            ))
+        else:
+            results.append(CheckResult(
+                name="npm",
+                category=cat,
+                status="warn",
+                message="npm not found (needed for TypeScript/Node.js projects)",
+                fix="npm is bundled with Node.js — reinstall Node.js from https://nodejs.org",
+            ))
+
     return results
 
 
@@ -506,6 +530,52 @@ def check_required_tools() -> list[CheckResult]:
                 status="fail",
                 message=f"{tool} not found",
                 fix=f"Install {tool}: {install_url}",
+            ))
+
+    # Windows: check for Visual Studio Build Tools (needed for TypeScript native addons)
+    if sys.platform == "win32":
+        vswhere = os.path.join(
+            os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)"),
+            "Microsoft Visual Studio", "Installer", "vswhere.exe",
+        )
+        if os.path.isfile(vswhere):
+            try:
+                proc = subprocess.run(
+                    [vswhere, "-products", "*", "-requires",
+                     "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+                     "-property", "installationPath"],
+                    capture_output=True, text=True, timeout=10,
+                )
+                if proc.stdout.strip():
+                    results.append(CheckResult(
+                        name="VS Build Tools",
+                        category=cat,
+                        status="pass",
+                        message="Visual Studio Build Tools found",
+                    ))
+                else:
+                    results.append(CheckResult(
+                        name="VS Build Tools",
+                        category=cat,
+                        status="warn",
+                        message="Visual Studio Build Tools not found (needed for TypeScript native addons)",
+                        fix='Install: winget install Microsoft.VisualStudio.2022.BuildTools --override "--add Microsoft.VisualStudio.Workload.VCTools"',
+                    ))
+            except Exception:
+                results.append(CheckResult(
+                    name="VS Build Tools",
+                    category=cat,
+                    status="warn",
+                    message="Could not check for Visual Studio Build Tools",
+                    fix='Install: winget install Microsoft.VisualStudio.2022.BuildTools --override "--add Microsoft.VisualStudio.Workload.VCTools"',
+                ))
+        else:
+            results.append(CheckResult(
+                name="VS Build Tools",
+                category=cat,
+                status="warn",
+                message="vswhere not found — cannot verify Visual Studio Build Tools",
+                fix='Install: winget install Microsoft.VisualStudio.2022.BuildTools --override "--add Microsoft.VisualStudio.Workload.VCTools"',
             ))
 
     return results

@@ -25,13 +25,15 @@ Execute these setup actions in order. Do not narrate the details to the user.
 
    | Hook | Impact Message |
    | ---- | -------------- |
+   | ask-bootcamper | "Session summaries and closing questions will not be automatically generated when the agent stops." |
    | capture-feedback | "Feedback trigger phrases will not be automatically detected. Use the feedback workflow manually." |
+   | code-style-check | "Code style will not be automatically checked on save." |
+   | commonmark-validation | "Markdown files will not be automatically checked for CommonMark compliance." |
    | enforce-feedback-path | "Feedback may be written to incorrect file locations." |
    | enforce-working-directory | "File writes to /tmp or external paths will not be automatically blocked." |
+   | feedback-submission-reminder | "You will not be reminded to share saved feedback after track completion." |
+   | review-bootcamper-input | "Feedback trigger phrases will not be detected on message submission (backup to capture-feedback)." |
    | verify-senzing-facts | "Senzing facts will not be automatically verified against MCP tools before writing." |
-   | code-style-check | "Code style will not be automatically checked on save." |
-   | ask-bootcamper | "Session summaries and closing questions will not be automatically generated when the agent stops." |
-   | commonmark-validation | "Markdown files will not be automatically checked for CommonMark compliance." |
 
    **Verify hooks:** Check that each Critical Hook exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.
 
@@ -191,14 +193,14 @@ Before moving on to track selection, give the bootcamper a moment to absorb ever
 
 Present tracks — not mutually exclusive, all completed modules carry forward:
 
-- **A) Quick Demo** — 2→3. Verify technology works. One session.
+- **A) Quick Demo** — 1→2→3. Verify technology works. One session.
 - **B) Fast Track** — 5→6→7. Have Entity Specification data. Straight to loading/querying.
 - **C) Complete Beginner** — 1→4→5→6→7. From scratch with raw data.
 - **D) Full Production** — All 1-11. Building for production.
 
 Module 2 inserted automatically before any module needing SDK.
 
-Interpreting responses: "A"/"demo"→Module 3, "B"/"fast"→Module 5, "C"/"beginner"→Module 1, "D"/"full"→Module 1. Bare number→clarify letter vs module.
+Interpreting responses: "A"/"demo"→Module 1, "B"/"fast"→Module 5, "C"/"beginner"→Module 1, "D"/"full"→Module 1. Bare number→clarify letter vs module.
 
 > ⛔ **MANDATORY GATE — STOP HERE.** After presenting the track options above, you MUST stop. Do NOT proceed to any module. Do NOT fabricate a user response. Do NOT assume a track choice. Do NOT generate text like "Human: A" or "I'll go with Track A for you." The bootcamper MUST provide their own choice. The `ask-bootcamper` hook will fire and prompt them. Wait for their real response before continuing.
 >

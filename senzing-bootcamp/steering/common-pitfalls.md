@@ -9,7 +9,7 @@ Load on errors, when user is stuck, or preventively at module start. For visual 
 
 ## Quick Navigation
 
-[Symptoms](#troubleshooting-by-symptom) · Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8–11](#modules-8-11) | [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
+[Symptoms](#troubleshooting-by-symptom) · Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8–11](#modules-8-11) | [Windows](#windows-pitfalls) · [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
 
 ## Guided Troubleshooting — Ask Before Scanning
 
@@ -154,6 +154,7 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 
 | Pitfall                              | Fix                                                                                                      |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `python3` not found (Windows)        | Use `python` instead of `python3` on Windows. Ensure Python is on `PATH` via the installer checkbox      |
 | Corporate proxy blocking MCP         | Allowlist `mcp.senzing.com:443`. Set `HTTPS_PROXY` if behind proxy. Modules 1-4 work without MCP         |
 | Not reading error messages           | Read carefully, use `explain_error_code`                                                                 |
 | Guessing instead of searching docs   | Use `search_docs` liberally                                                                              |
@@ -163,6 +164,20 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | Rushing through modules              | Complete each module fully before proceeding                                                             |
 
 <a id="mcp-unavailable"></a>
+
+<a id="windows-pitfalls"></a>
+
+## Windows-Specific Pitfalls
+
+| Pitfall | Fix |
+| ------- | --- |
+| `python3` not recognized | Use `python` on Windows. Ensure "Add Python to PATH" was checked during installation |
+| PowerShell blocks script execution | Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` once |
+| `npm` not found in scripts | Windows uses `npm.cmd` — if running scripts manually, use `npm.cmd` or run from PowerShell/Windows Terminal |
+| TypeScript SDK build fails (native addons) | Install Visual Studio Build Tools: `winget install Microsoft.VisualStudio.2022.BuildTools --override "--add Microsoft.VisualStudio.Workload.VCTools"` |
+| Senzing DLLs not found at runtime | Add Senzing `lib` directory to `PATH` — check `sdk_guide` output for the exact path |
+| Emoji/Unicode garbled in terminal | Use Windows Terminal or PowerShell 7 instead of `cmd.exe`. Install: `winget install Microsoft.WindowsTerminal` |
+| `source` command not found | `source` is bash-only. Use `. .\scripts\senzing-env.ps1` (PowerShell) or `call scripts\senzing-env.bat` (cmd) |
 
 ## MCP Server Unavailable
 

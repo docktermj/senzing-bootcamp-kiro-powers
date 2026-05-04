@@ -6,7 +6,7 @@ Replace the probabilistic feedback capture (agent voluntarily loading `feedback-
 
 ## Tasks
 
-- [ ] 1. Create the capture-feedback hook file
+- [x] 1. Create the capture-feedback hook file
   - [x] 1.1 Create `senzing-bootcamp/hooks/capture-feedback.kiro.hook` with the hook JSON
     - Use `promptSubmit` event type in `when.type`
     - Use `askAgent` in `then.type`
@@ -15,7 +15,7 @@ Replace the probabilistic feedback capture (agent voluntarily loading `feedback-
     - Set `then.prompt` to the exact prompt text from the design: instruct the agent to check for all six trigger phrases (case-insensitive), do nothing if none found, load `feedback-workflow.md` if found, and auto-capture context from `config/bootcamp_progress.json`, recent conversation, and open files
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 2. Update the feedback-workflow steering file
+- [x] 2. Update the feedback-workflow steering file
   - [x] 2.1 Add Step 0 (Automatic Context Capture) to `senzing-bootcamp/steering/feedback-workflow.md`
     - Insert a new "Step 0: Automatic Context Capture" before the current Step 1
     - Include instructions to: read `config/bootcamp_progress.json` for current module, capture recent conversation context, identify open editor files
@@ -32,7 +32,7 @@ Replace the probabilistic feedback capture (agent voluntarily loading `feedback-
     - Renumber all steps to accommodate Step 0 at the beginning and the new return step
     - _Requirements: 5.1, 5.2, 5.3, 6.5_
 
-- [ ] 3. Update agent-instructions steering file
+- [x] 3. Update agent-instructions steering file
   - [x] 3.1 Replace manual feedback-workflow loading with hook reference in `senzing-bootcamp/steering/agent-instructions.md`
     - In the Communication section, replace `On "power feedback" / "bootcamp feedback": load feedback-workflow.md` with a line referencing the capture-feedback hook: `On feedback trigger phrases: the capture-feedback hook handles this automatically — do not manually load feedback-workflow.md`
     - _Requirements: 7.1, 7.2_
@@ -48,7 +48,7 @@ Replace the probabilistic feedback capture (agent voluntarily loading `feedback-
   - Ensure agent-instructions.md no longer instructs manual loading for feedback trigger phrases
   - Ask the user if questions arise
 
-- [ ] 5. Update hooks README and steering index
+- [x] 5. Update hooks README and steering index
   - [x] 5.1 Add entry #15 for capture-feedback hook to `senzing-bootcamp/hooks/README.md`
     - Follow the existing format: heading, trigger, action, use case description
     - Place after entry #14 (Offer Entity Graph Visualization)

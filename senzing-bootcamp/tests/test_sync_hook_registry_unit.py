@@ -63,17 +63,17 @@ class TestParseRealHookFile:
 
 
 # ---------------------------------------------------------------------------
-# 8.2 Parse all 18 real hook files without errors (Req 1.1)
+# 8.2 Parse all 19 real hook files without errors (Req 1.1)
 # ---------------------------------------------------------------------------
 
 
 class TestParseAllRealHooks:
     """Validates: Requirement 1.1"""
 
-    def test_all_18_hooks_parse_without_errors(self):
+    def test_all_19_hooks_parse_without_errors(self):
         entries, errors = parse_all_hooks(_HOOKS_DIR)
         assert len(errors) == 0, f"Parse errors: {errors}"
-        assert len(entries) == 18, f"Expected 18 hooks, got {len(entries)}"
+        assert len(entries) == 20, f"Expected 20 hooks, got {len(entries)}"
 
 
 # ---------------------------------------------------------------------------
@@ -123,8 +123,8 @@ class TestCategoryMappingLoads:
     def test_load_real_categories(self):
         mapping = load_category_mapping(_CATEGORIES_PATH)
 
-        # Should have all 18 hooks mapped
-        assert len(mapping) == 18, f"Expected 18 mappings, got {len(mapping)}"
+        # Should have all 20 hooks mapped
+        assert len(mapping) == 20, f"Expected 20 mappings, got {len(mapping)}"
 
         # Check some known critical hooks
         assert mapping["ask-bootcamper"].category == "critical"

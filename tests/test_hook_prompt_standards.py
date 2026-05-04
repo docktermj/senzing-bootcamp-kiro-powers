@@ -18,7 +18,7 @@ import pytest
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry.md")
 
-EXPECTED_HOOK_COUNT = 18
+EXPECTED_HOOK_COUNT = 20
 
 VALID_EVENT_TYPES = {
     "promptSubmit",
@@ -420,14 +420,14 @@ class TestHookCount:
     """Validate the expected number of hooks."""
 
     def test_hook_file_count(self):
-        """Exactly 18 .kiro.hook files exist (Req 5.1, 5.3)."""
+        """Exactly 20 .kiro.hook files exist (Req 5.1, 5.3)."""
         actual = len(get_hook_files())
         assert actual == EXPECTED_HOOK_COUNT, (
             f"Expected {EXPECTED_HOOK_COUNT} hook files, found {actual}"
         )
 
     def test_registry_entry_count(self):
-        """Exactly 18 registry entries exist (Req 5.2, 5.3)."""
+        """Exactly 20 registry entries exist (Req 5.2, 5.3)."""
 
         entries = parse_registry()
         actual = len(entries)
@@ -471,8 +471,8 @@ class TestEventTypeValidation:
 class TestRealHookFiles:
     """Example-based unit tests that validate real hook file data."""
 
-    def test_all_18_hook_files_parse_as_valid_json(self):
-        """All 18 real hook files parse as valid JSON (Req 1.1)."""
+    def test_all_20_hook_files_parse_as_valid_json(self):
+        """All 20 real hook files parse as valid JSON (Req 1.1)."""
         hook_files = get_hook_files()
         assert len(hook_files) == EXPECTED_HOOK_COUNT
         for path in hook_files:
@@ -480,13 +480,13 @@ class TestRealHookFiles:
                 data = json.load(f)
             assert isinstance(data, dict), f"{path.name} did not parse as a JSON object"
 
-    def test_hook_file_count_is_18(self):
-        """Hook file count is exactly 18 (Req 5.1)."""
-        assert len(get_hook_files()) == 18
+    def test_hook_file_count_is_20(self):
+        """Hook file count is exactly 20 (Req 5.1)."""
+        assert len(get_hook_files()) == 20
 
-    def test_registry_entry_count_is_18(self):
-        """Registry entry count is exactly 18 (Req 5.2)."""
-        assert len(parse_registry()) == 18
+    def test_registry_entry_count_is_20(self):
+        """Registry entry count is exactly 20 (Req 5.2)."""
+        assert len(parse_registry()) == 20
 
     def test_valid_event_types_has_10_entries(self):
         """VALID_EVENT_TYPES constant contains all 10 expected event type strings (Req 7.1)."""
@@ -525,7 +525,7 @@ class TestRealHookFiles:
             )
 
     def test_registry_names_match_file_names(self):
-        """Registry names match file names for all 18 hooks (Req 4.4)."""
+        """Registry names match file names for all 20 hooks (Req 4.4)."""
         for hook_id in _common_ids:
             file_name = _hook_data_by_id[hook_id]["name"]
             registry_name = _registry_by_id[hook_id].name
@@ -534,7 +534,7 @@ class TestRealHookFiles:
             )
 
     def test_registry_descriptions_match_file_descriptions(self):
-        """Registry descriptions match file descriptions for all 18 hooks (Req 4.5)."""
+        """Registry descriptions match file descriptions for all 20 hooks (Req 4.5)."""
         for hook_id in _common_ids:
             file_desc = _hook_data_by_id[hook_id]["description"]
             registry_desc = _registry_by_id[hook_id].description

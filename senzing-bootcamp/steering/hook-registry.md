@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-All 19 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
+All 20 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
 
 ## Critical Hooks (created during onboarding)
 
@@ -15,6 +15,14 @@ Prompt: "FIRST — scan the ENTIRE conversation history for the most recent assi
 - id: `ask-bootcamper`
 - name: `Ask Bootcamper`
 - description: `Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question. Suppresses output entirely when a question is already pending.`
+
+**capture-feedback** (promptSubmit → askAgent)
+
+Prompt: "Check if the bootcamper's message contains any of these feedback trigger phrases (case-insensitive): "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue". If NONE of these phrases appear in the message, do nothing — let the conversation continue normally. If a trigger phrase IS found, load the steering file feedback-workflow.md and follow its complete workflow. Start by automatically capturing context: read config/bootcamp_progress.json for the current module, note what the bootcamper was doing in the recent conversation, and identify which files are open in the editor. Do NOT ask the bootcamper to re-explain their context."
+
+- id: `capture-feedback`
+- name: `Capture Bootcamp Feedback`
+- description: `Fires on every message submission. Instructs the agent to check for feedback trigger phrases and, if found, initiate the feedback workflow with automatic context capture.`
 
 **code-style-check** (fileEdited → askAgent, filePatterns: `src/**/*.py, src/**/*.java, src/**/*.cs, src/**/*.rs, src/**/*.ts, src/**/*.js`)
 

@@ -114,6 +114,7 @@ inclusion: manual
 
    WAIT for response.
 
+   - If the bootcamper chooses **Static HTML file**: Continue to step 5b to offer interactive features and generate `demo_results.html`.
    - If the bootcamper chooses **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section to generate a localhost web service. Skip step 5b.
 
    **Checkpoint:** Write step 10a to `config/bootcamp_progress.json`.

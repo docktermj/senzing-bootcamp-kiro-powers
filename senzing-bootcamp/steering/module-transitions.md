@@ -34,7 +34,7 @@ Example with step info:
 |--------|------|--------|
 | 2 | SDK Setup | ✅ Complete |
 | → 5 | Data Quality & Mapping | 🔄 Current — Step 3/12 |
-| 6 | Single Source Loading | ⬜ Upcoming |
+| 6 | Load Data | ⬜ Upcoming |
 
 ## Before/After Framing (at module start)
 

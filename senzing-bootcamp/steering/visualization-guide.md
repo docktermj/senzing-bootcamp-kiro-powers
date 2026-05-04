@@ -31,15 +31,7 @@ inclusion: manual
    - If the bootcamper chooses **Static HTML file** → continue with step 2 below (existing static workflow).
    - If the bootcamper chooses **Web service** → skip to the **Web Server Guidance** section below and follow that workflow instead.
 
-2. **Confirm intent**
-
-   👉 "Would you like me to help you build an interactive entity graph? It shows resolved entities as a force-directed network with clustering, search, and detail panels."
-
-   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
-
-   If declined, return to `module-07-query-validation.md`. WAIT for response.
-
-3. **Gather requirements**
+2. **Gather requirements**
 
    👉 "Which data source(s) should the graph include? And which features: force layout, detail panel, cluster highlighting, search/filter, summary statistics?"
 
@@ -47,7 +39,7 @@ inclusion: manual
 
    WAIT for response.
 
-4. **Generate data extraction code**
+3. **Generate data extraction code**
 
    > **Agent instruction:** Read Chosen_Language from `config/bootcamp_preferences.yaml`. Load the appropriate language steering file. Use `get_sdk_reference` for SDK signatures. Use `generate_scaffold` with `workflow='query'`. Use `find_examples` for query patterns.
 
@@ -59,7 +51,7 @@ inclusion: manual
 
    WAIT for response.
 
-5. **Generate HTML visualization**
+4. **Generate HTML visualization**
 
    > **Agent instruction:** Generate a single self-contained HTML file (D3.js v7, CSS, data inline). Include only selected features per guidance below. Wrap D3.js init in try/catch with user-friendly error display.
 
@@ -71,7 +63,7 @@ inclusion: manual
 
    WAIT for response.
 
-6. **Iterate and refine**
+5. **Iterate and refine**
 
    👉 "Want any changes to the graph, features, or extraction?"
 
@@ -204,7 +196,199 @@ Cluster node coloring by average match level: ≤1.5 → green, ≤2.5 → orang
 
 ## Web Server Guidance
 
-#[[file:senzing-bootcamp/steering/visualization-web-service.md]]
+### Endpoint Specifications
+
+| Endpoint | Method | Purpose | Response |
+|----------|--------|---------|----------|
+| `/` | GET | Serve visualization HTML page | HTML |
+| `/health` | GET | Health check with last refresh time | `{ "status": "ok", "lastRefresh": "<ISO 8601>" }` |
+| `/refresh` | POST | Re-query SDK, return updated graph/dashboard data | Graph/dashboard JSON (see Graph Data Model Schema) |
+| `/entity/{entityId}` | GET | Fetch full resolved entity details from SDK | Full resolved entity JSON via `get_entity_by_entity_id` |
+| `/search` | GET | Search entities by attributes | `{ "results": [...], "query": {...} }` |
+
+**Health Check Response (`GET /health`):**
+
+```json
+{
+  "status": "ok",
+  "lastRefresh": "2026-04-14T12:30:00Z"
+}
+```
+
+**Entity Detail Response (`GET /entity/{entityId}`):**
+The response is the full resolved entity JSON as returned by the Senzing SDK's `get_entity_by_entity_id` method. The server passes through the SDK response without transformation.
+
+**Search Response (`GET /search`):**
+Query parameters: `name`, `address`, `phone`, `email` — at least one required. Calls SDK `search_by_attributes` and returns matching entities.
+
+```json
+{
+  "results": [
+    {
+      "entityId": 1,
+      "primaryName": "John Smith",
+      "recordCount": 3,
+      "dataSources": ["CUSTOMERS", "CRM"],
+      "matchScore": 95
+    }
+  ],
+  "query": {
+    "name": "John Smith",
+    "address": null,
+    "phone": null,
+    "email": null
+  }
+}
+```
+
+**Refresh Response (`POST /refresh`):**
+Returns the full graph data JSON following the Graph Data Model Schema defined above (metadata, nodes, edges).
+
+**Error Response (all endpoints):**
+
+```json
+{
+  "error": "Entity not found",
+  "code": 404,
+  "detail": "No entity exists with ID 99999"
+}
+```
+
+### HTTP Error Status Codes
+
+| Status Code | Meaning |
+|-------------|---------|
+| `400` | Invalid request — missing required parameters, invalid entity ID format |
+| `404` | Entity not found |
+| `500` | SDK error or internal server error |
+| `503` | SDK not initialized or database not found |
+
+### Server Binding
+
+The web service binds to `localhost` on a configurable port (default `8080`). If the configured port is already in use, the server reports a clear error message identifying the port conflict and suggests an alternative port or killing the process occupying the port.
+
+### Framework Selection
+
+> **Agent instruction:** Read `Chosen_Language` from `config/bootcamp_preferences.yaml` to determine which framework and dependency file to use. Do not ask the bootcamper to choose a framework — use the mapping below automatically.
+
+| Chosen_Language | Framework | Rationale |
+|-----------------|-----------|-----------|
+| Python | Flask | Lightweight, well-known, minimal boilerplate |
+| TypeScript | Express | De facto standard for Node.js HTTP servers |
+| Java | Javalin | Lightweight, minimal config, Kotlin-friendly |
+| Rust | Actix-web | High performance, well-documented, async |
+| C# | ASP.NET Minimal APIs | Built-in, no extra dependencies, concise |
+
+### Code Generation Instructions
+
+**Output directory:** All generated server source files go in `src/server/`. This includes the server entry point (`server.[ext]`) and any supporting modules. The visualization HTML served by the web service also lives in `src/server/` (e.g., `src/server/index.html` or `src/server/static/index.html`).
+
+**Dependency file generation:** Generate a dependency file at the project root listing all packages required by the web service. Use the standard format for the Chosen_Language:
+
+| Chosen_Language | Dependency File | Example Entry |
+|-----------------|-----------------|---------------|
+| Python | `requirements.txt` | `flask>=3.0` |
+| TypeScript | `package.json` | `"express": "^4.18"` in `dependencies` |
+| Java | `pom.xml` | `<dependency>` block for `io.javalin:javalin` |
+| Rust | `Cargo.toml` | `actix-web = "4"` under `[dependencies]` |
+| C# | `WebService.csproj` | `<PackageReference Include="Microsoft.AspNetCore.App" />` |
+
+If a dependency file already exists at the project root, merge the new dependencies into it rather than overwriting.
+
+**Inline code comments:** All generated server code MUST include inline comments explaining key sections. At minimum, comment:
+
+- SDK initialization and configuration
+- Each endpoint handler (purpose, expected request, response format)
+- Error handling logic
+- Port binding and server startup
+
+Comments should be concise and help the bootcamper understand the code as a learning resource.
+
+### Lifecycle Management
+
+#### ⛔ Prohibition: Do Not Start the Server as a Background Process
+
+> **Agent instruction — MANDATORY:** The agent SHALL NOT start the web service as a background process, use `controlBashProcess`, or run the server command on behalf of the bootcamper. The agent MUST provide the start command and instruct the bootcamper to run it manually in their own terminal. If the bootcamper asks the agent to start the server, the agent refuses and provides the command instead.
+
+#### Start Commands
+
+After generating the web service code and dependency file, provide the bootcamper with the exact start command for their language:
+
+| Chosen_Language | Start Command |
+|-----------------|---------------|
+| Python | `python src/server/server.py` |
+| TypeScript | `npx ts-node src/server/server.ts` |
+| Java | `mvn exec:java -Dexec.mainClass="server.Server"` or `java -jar target/server.jar` |
+| Rust | `cargo run --bin server` |
+| C# | `dotnet run --project src/server/` |
+
+> **Agent instruction:** After providing the start command, tell the bootcamper:
+>
+> "Run the command above in your terminal. Once the server starts, open <http://localhost:8080> in your browser to see the visualization."
+
+#### Stopping the Server
+
+Instruct the bootcamper to stop the server by pressing **Ctrl+C** in the terminal where the server is running. Example message:
+
+> "When you're done, press **Ctrl+C** in the terminal to stop the server."
+
+#### Troubleshooting
+
+If the web service fails to start or the bootcamper reports issues, diagnose the problem and suggest corrective steps. Use the table below:
+
+| Scenario | Agent Behavior |
+|----------|---------------|
+| **Missing dependencies** | Suggest installing dependencies: `pip install -r requirements.txt` (Python), `npm install` (TypeScript), `mvn install` (Java), `cargo build` (Rust), `dotnet restore` (C#) |
+| **Port conflict** (port 8080 already in use) | Suggest an alternative port (e.g., 8081) or identify and stop the process using the port. Example: "Port 8080 is already in use. Try changing the port to 8081 in the server code, or stop the other process using that port." |
+| **SDK not found** | Verify the Senzing SDK is installed and configured. Suggest completing Module 2 if not done. |
+| **Database not found** | Verify `database/G2C.db` exists. Suggest completing Module 5/6 to load data if the database is missing. |
+| **Server crashes during use** | Suggest restarting the server with the same start command. Check the terminal output for error details and address the root cause. |
+| **Bootcamper can't access URL** | Verify the server is still running in the terminal. Check the port number matches the URL. Suggest trying `http://127.0.0.1:8080` if `http://localhost:8080` does not work. |
+| **Agent asked to start server** | Refuse — provide the start command and instruct the bootcamper to run it manually in their terminal. |
+
+### Web Service Visualization Features
+
+#### Feature Parity with Static HTML
+
+The Web Service visualization MUST include all features available in the Static HTML file version. When generating the web-served visualization HTML, include every feature listed below:
+
+- **Force layout** — D3.js v7 force simulation with drag, zoom, and pan
+- **Detail panel** — click a node to display entity details in a side panel
+- **Cluster highlighting** — data source coloring and match strength coloring with legend
+- **Search and filter** — text input filtering by name or record ID (case-insensitive substring)
+- **Statistics** — total entities, records, relationships, unique data source count, cross-source match rate
+
+The web service mode does not remove or reduce any static HTML feature. It adds capabilities on top of the full feature set.
+
+#### Live Entity Detail Fetching
+
+When the bootcamper clicks an entity node in the graph or a row in the dashboard, the visualization fetches the full resolved entity details from the web service in real time:
+
+- Clicking a node or row triggers `fetch('/entity/{entityId}')` where `{entityId}` is the selected entity's ID
+- The response (full resolved entity JSON from the SDK) is displayed in the detail panel
+- This replaces the static inline JSON lookup used in Static HTML mode with a live SDK query
+- If the fetch fails, display an error message in the detail panel (do not crash the visualization)
+
+#### Refresh Button
+
+The web-served visualization includes a refresh button that re-queries the SDK and updates the displayed data without a full page reload:
+
+- The refresh button calls `POST /refresh` via JavaScript `fetch()`
+- On success, the visualization updates the graph/dashboard with the new data returned by the endpoint
+- The page does not reload — only the data and rendered elements are updated in place
+- During the refresh, display a loading indicator to signal that data is being fetched
+
+#### HTML Generation for Web Service Mode
+
+> **Agent instruction — MANDATORY:** When the bootcamper selects Web Service mode, generate the visualization HTML with JavaScript `fetch()` calls to the server endpoints instead of embedding data inline. The HTML page must:
+>
+> - On page load, call `fetch('/refresh')` to retrieve the initial graph/dashboard data and render it
+> - On entity click (node or row), call `fetch('/entity/{entityId}')` to fetch live entity details and display them in the detail panel
+> - On refresh button click, call `fetch('/refresh')` to re-query the SDK and update the displayed data without reloading the page
+> - On search input, call `fetch('/search?name=...')` (or other query parameters) to search entities via the SDK
+> - Handle fetch errors gracefully — display user-friendly error messages in the UI rather than failing silently or crashing
+>
+> Do NOT embed inline JSON data in the HTML when Web Service mode is selected. All data must come from the server endpoints via `fetch()`.
 
 ## Error Handling Guidance
 

@@ -13,6 +13,7 @@
 Module 6 covers the complete data loading lifecycle — from building production-quality loading programs through cross-source validation. Whether you have one data source or many, this module walks you through loading all your data into Senzing with robust error handling, progress tracking, redo processing, and result validation.
 
 The module adapts to your situation:
+
 - **Single source:** Build a loading program, load your data, process redo records, validate results, and proceed to Module 7 (Query & Visualize).
 - **Multiple sources:** After loading the first source, the module adds dependency analysis, load order optimization, orchestration strategy selection, cross-source validation, UAT with business users, and stakeholder sign-off.
 
@@ -70,6 +71,7 @@ Senzing's deferred re-evaluation queue. After loading records, some entity resol
 ### Orchestration Patterns (Multi-Source)
 
 When loading multiple sources, you choose an orchestration strategy:
+
 - **Sequential:** Load one source at a time. Safer, easier to debug.
 - **Parallel:** Load independent sources concurrently. Faster, requires more resources.
 - **Dependency-Aware:** Respects dependencies between sources (e.g., load customers before orders).
@@ -101,6 +103,7 @@ If you have two or more data sources:
 ### Phase 3 Shortcut (mapping-workflow-integration)
 
 If the `mapping-workflow-integration` spec has been implemented and you completed Phase 3 (Test Load and Validate) in Module 5:
+
 - The agent reads `test_load_status` from `config/data_sources.yaml`
 - If `test_load_status: complete`, the basic test loading step is skipped — you proceed directly to production loading
 - If `test_load_status: skipped` or missing, the module includes a brief test load (10–100 records) before production loading
@@ -345,7 +348,7 @@ Module 6 is complete when:
 - Match accuracy reviewed and results validated
 - Ready to query results (Module 7)
 
-### Additional indicators for multi-source:
+### Additional Indicators for Multi-Source
 
 - All data sources loaded successfully (or failures documented)
 - Dependencies respected

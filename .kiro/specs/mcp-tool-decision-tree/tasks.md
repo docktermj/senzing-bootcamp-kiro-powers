@@ -87,7 +87,7 @@ Create a dedicated decision tree steering file that maps bootcamp tasks to the c
     - Keep the existing one-liner as a quick-reference summary
     - _Requirements: 7.1, 7.2, 7.3_
 
-- [ ] 4. Measure token count and update budget
+- [x] 4. Measure token count and update budget
   - [x] 4.1 Run `measure_steering.py` and update `steering-index.yaml` with accurate token count
     - Run `python3 senzing-bootcamp/scripts/measure_steering.py` to measure the actual token count of the new file
     - Update the `file_metadata` entry with the measured `token_count` and correct `size_category`

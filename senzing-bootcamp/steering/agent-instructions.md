@@ -70,7 +70,7 @@ When a steering file step contains multiple independent 👉 questions, split it
 - Goldilocks check: after Modules 3, 6, 9 ask if detail level is right. Store as `detail_level` in preferences. First-term explanations: define Senzing terms inline on first use via `docs/guides/GLOSSARY.md`.
 - Before each step: what and why. During: status updates (never bare "Working..."). After: what changed, files with paths. Offer to visualize data results as a web page — save to `docs/` or `data/temp/`.
 - At module completion: summary, all files, why it matters for next module. Follow `module-transitions.md` rules. Load `module-completion.md` for journal and track-completion.
-- Feedback trigger phrases: handled by `review-bootcamper-input` hook — do not manually load `feedback-workflow.md`.
+- Feedback trigger phrases: the capture-feedback hook handles this automatically — do not manually load feedback-workflow.md.
 
 ### Question Stop Protocol
 
@@ -88,7 +88,11 @@ Treat every 👉 question and ⛔ gate as an end-of-turn boundary. Your response
 
 ## Hooks
 
-Create hooks using the `createHook` tool with definitions from `hook-registry.md`. Critical hooks during onboarding, module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if absent, create Critical Hooks.
+Create hooks using the `createHook` tool with definitions from the Hook Registry in `onboarding-flow.md`. Critical hooks are created during onboarding. Module hooks are created when the relevant module starts — check the Hook Registry for module associations and create any missing hooks for the current module before beginning module work.
+
+The `capture-feedback` hook is critical — it guarantees feedback is captured when bootcampers use trigger phrases. Verify it is installed.
+
+On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed`. If present and populated, skip hook creation. If absent, create Critical Hooks from the Hook Registry.
 
 **🔇 Hook silence rule:** When a hook check passes with no action needed, produce absolutely no output — zero tokens, zero characters. Do not acknowledge the check, do not explain your reasoning, do not print any status message, do not narrate your evaluation, do not explain why no action is needed. Your response must be completely empty. Only produce output when the hook identifies a problem requiring corrective action. This applies to ALL hooks — preToolUse, agentStop, fileEdited, fileCreated, and any other hook type.
 

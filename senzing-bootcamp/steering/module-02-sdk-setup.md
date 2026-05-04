@@ -106,37 +106,80 @@ If verification fails, use `explain_error_code` for any SENZ error codes and `se
 
 ## Step 5: Configure License
 
-Senzing checks for licenses in this order: project-local `licenses/g2.lic` → `SENZING_LICENSE_PATH` env var → system CONFIGPATH → built-in evaluation (500 records).
+> **License check order:** Senzing checks for licenses in this order: project-local `licenses/g2.lic` → `SENZING_LICENSE_PATH` env var → system CONFIGPATH → built-in evaluation (500 records).
 
-Check all three locations. Then always present the following license information as content:
+### 5a. Explain the built-in evaluation license
 
-**If a license was found**, tell the bootcamper where it was found and what it means (e.g., "Found a license at `licenses/g2.lic`" or "Found a license via `SENZING_LICENSE_PATH`").
+Before checking for license files or asking the bootcamper anything, proactively present this information:
 
-**If no license was found**, tell the bootcamper that no license file was detected in any of the checked locations.
+"Here's what you need to know about Senzing licensing before we continue. Senzing includes a **built-in evaluation license limited to 500 records**. No license file is needed — the SDK uses this automatically when no custom license is present. This is enough for the bootcamp's demo modules and small datasets.
 
-**Regardless of the check results**, always present these license options as informational content:
+If you load more than 500 records, the SDK returns a **SENZ9000 error at record 501**. For larger datasets, you need a custom license file placed at `licenses/g2.lic`."
 
-- **Evaluation license:** The SDK works with a built-in evaluation license limited to 500 records. No license file is needed — the SDK uses this automatically when no custom license is present.
-- **Custom license:** To use a custom license, place a license file at `licenses/g2.lic` or decode a BASE64 key to that location (see command below). The bootcamper may already have a license file or BASE64 key from Senzing.
-- **License acquisition:** To obtain an evaluation license, contact support@senzing.com (typically 1-2 days, 30-90 day validity). For a production license, contact sales@senzing.com. See `licenses/README.md` for details.
+### 5b. Ask about the bootcamper's license situation
 
-Present this information and stop — the `ask-bootcamper` hook will generate the contextual closing question about the bootcamper's license choice.
+👉 Ask: **"Do you have a Senzing license file (.lic) or a Base64-encoded license key?"**
 
-**🚨 NEVER ask the user to paste a license key into chat.** Direct them to decode to `licenses/g2.lic`:
+**STOP and wait for the bootcamper's response.** Do not proceed until the bootcamper answers.
+
+### 5c. Handle the response
+
+**IF the bootcamper has a Base64-encoded license string:**
+
+**🚨 NEVER ask the user to paste a license key into chat.** Direct them to decode the string to `licenses/g2.lic` using the command for their platform:
+
+**Linux / macOS:**
 
 ```bash
-echo 'YOUR_BASE64_KEY' | base64 --decode > licenses/g2.lic
+echo '<BASE64_STRING>' | base64 --decode > licenses/g2.lic
 ```
 
-When a project-local license exists, add `LICENSEFILE` to the engine config PIPELINE section:
+**Windows (PowerShell):**
+
+```powershell
+[System.Convert]::FromBase64String('<BASE64_STRING>') |
+  Set-Content -Path licenses\g2.lic -AsByteStream
+```
+
+After decoding, verify the file is binary (not leftover text):
+
+```bash
+file licenses/g2.lic
+```
+
+The output should indicate a binary/data file, not ASCII text. If it shows text, the Base64 string may have been copied incorrectly.
+
+Confirm: "License decoded and saved to `licenses/g2.lic`."
+
+**IF the bootcamper has a `.lic` file directly:**
+
+Guide them to copy it into the project:
+
+```bash
+cp /path/to/g2.lic licenses/g2.lic
+```
+
+Confirm: "License file placed at `licenses/g2.lic`."
+
+**IF the bootcamper has no license:**
+
+Confirm: "No problem — the built-in 500-record evaluation license is active automatically. That's enough for the bootcamp demo modules."
+
+Mention: "If you need a free evaluation license for larger datasets later, contact <support@senzing.com> (typically 1–2 business days, 30–90 day validity). For production licenses, contact <sales@senzing.com>. See `licenses/README.md` for details."
+
+Record in `config/bootcamp_preferences.yaml`: `license: evaluation`.
+
+### 5d. Configure LICENSEFILE in engine config
+
+When a project-local license exists at `licenses/g2.lic`, add `LICENSEFILE` to the engine config PIPELINE section:
 
 ```json
 "PIPELINE": { "LICENSEFILE": "licenses/g2.lic" }
 ```
 
-Record in `config/bootcamp_preferences.yaml`: `license: custom` or `license: evaluation`.
+Record in `config/bootcamp_preferences.yaml`: `license: custom`.
 
-For license acquisition: evaluation → support@senzing.com (1-2 days, 30-90 day validity); production → sales@senzing.com. See `licenses/README.md` for details.
+If no custom license was placed, skip this — the SDK uses the built-in evaluation license automatically.
 
 **Checkpoint:** Write step 5 to `config/bootcamp_progress.json`.
 

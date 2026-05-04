@@ -136,7 +136,7 @@ deployment:
 
 file_metadata:
   agent-instructions.md:
-    token_count: 2216
+    token_count: 2315
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -178,7 +178,7 @@ file_metadata:
     token_count: 1919
     size_category: medium
   hook-registry.md:
-    token_count: 4690
+    token_count: 4941
     size_category: large
   lang-csharp.md:
     token_count: 828
@@ -211,10 +211,10 @@ file_metadata:
     token_count: 1772
     size_category: medium
   module-02-sdk-setup.md:
-    token_count: 3334
+    token_count: 3560
     size_category: large
   module-03-quick-demo.md:
-    token_count: 3367
+    token_count: 3418
     size_category: large
   module-04-data-collection.md:
     token_count: 2962
@@ -247,7 +247,7 @@ file_metadata:
     token_count: 5160
     size_category: large
   module-07-query-validation.md:
-    token_count: 2782
+    token_count: 2784
     size_category: large
   module-08-performance.md:
     token_count: 2246
@@ -259,7 +259,7 @@ file_metadata:
     token_count: 1543
     size_category: medium
   module-11-deployment.md:
-    token_count: 2616
+    token_count: 2989
     size_category: large
   module-11-phase2-deploy.md:
     token_count: 850
@@ -271,10 +271,10 @@ file_metadata:
     token_count: 1127
     size_category: medium
   module-transitions.md:
-    token_count: 720
+    token_count: 717
     size_category: medium
   onboarding-flow.md:
-    token_count: 4684
+    token_count: 4994
     size_category: large
   phase-loading-guide.md:
     token_count: 460
@@ -289,7 +289,7 @@ file_metadata:
     token_count: 278
     size_category: small
   session-resume.md:
-    token_count: 1490
+    token_count: 1620
     size_category: medium
   troubleshooting-commands.md:
     token_count: 658
@@ -307,14 +307,14 @@ file_metadata:
     token_count: 976
     size_category: medium
   visualization-guide.md:
-    token_count: 3405
+    token_count: 5874
     size_category: large
   visualization-web-service.md:
     token_count: 1649
     size_category: medium
 
 budget:
-  total_tokens: 96272
+  total_tokens: 100180
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

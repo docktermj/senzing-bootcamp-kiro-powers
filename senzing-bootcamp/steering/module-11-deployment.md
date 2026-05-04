@@ -175,25 +175,49 @@ Tell the user the checklist results with ✅/⬜ status for each item. If all pa
 
 **Checkpoint:** Write step 11 to `config/bootcamp_progress.json`.
 
+---
+
+## ⛔ PHASE GATE — PACKAGING COMPLETE, DEPLOYMENT DECISION REQUIRED
+
+> **🛑 MANDATORY STOP — DO NOT SKIP THIS SECTION**
+>
+> The packaging phase (Steps 2–11) is now complete. **You MUST stop here and wait for the bootcamper's explicit decision** before proceeding to any deployment steps.
+
+**Display this summary to the bootcamper:**
+
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦  PACKAGING PHASE COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Everything from the packaging phase is done:
+✅ Code containerized (Dockerfile + docker-compose.yml)
+✅ Multi-environment config (dev/staging/prod)
+✅ CI/CD pipeline configured
+✅ Pre-deployment checklist verified
+✅ Rollback plan documented
+
+⚠️  Nothing has been deployed. No changes were made to any
+    target environment. Everything so far was local
+    preparation work. It is completely safe to stop here.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Then ask:** "Would you like to actually deploy this now, or would you prefer to stop here and deploy later on your own?"
+
+> **⚠️ WAIT — Do NOT proceed past this point until the bootcamper responds.**
+>
+> - If they want to **stop here**: Mark Module 11 complete (packaging only). Do NOT proceed to Step 12.
+> - If they want to **deploy now**: Proceed to Phase 2 (Steps 12–15).
+> - If they are **unsure**: Reassure them that stopping is perfectly fine and they can deploy later on their own using the scripts and documentation created during packaging.
+
+---
+
 ## Step 12: Rollback Plan
 
 Document in `docs/rollback_plan.md`: how to revert to previous version, database rollback procedure, communication plan for failed deployments.
 
 **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
-
----
-
-## ⛔ PHASE GATE — PACKAGING COMPLETE, DEPLOYMENT DECISION REQUIRED
-
-Packaging (Steps 2–11) is complete. Present the deployment decision below.
-
-Display: "📦 Packaging phase complete — code containerized, multi-env config set, CI/CD configured, checklist verified, rollback plan documented. Nothing has been deployed yet — it's safe to stop here."
-
-Present the deployment decision: deploy now, or stop here and deploy later on their own.
-
-- **Stop here** → Mark Module 11 complete (packaging only). Do NOT proceed to Step 13.
-- **Deploy now** → Proceed to Phase 2 (Steps 13–15).
-- **Unsure** → Reassure that stopping is fine; they can deploy later using the scripts and docs.
 
 ---
 

@@ -164,7 +164,7 @@ def _invalid_registry_dicts():
         base = draw(_valid_registry_dicts())
 
         if kind == "bad_version":
-            base["version"] = draw(st.sampled_from(["2", "0", "abc", ""]))
+            base["version"] = draw(st.sampled_from(["0", "99", "abc", ""]))
         elif kind == "missing_version":
             base.pop("version", None)
         elif kind == "bad_key":
@@ -514,8 +514,10 @@ class TestProperty6Recommendations:
             ordered = sorted(scored, key=lambda e: e.quality_score, reverse=True)
             for entry in ordered:
                 assert entry.data_source in order_line
-            # Verify ordering: each source appears before the next lower-quality one
-            positions = [order_line.index(e.data_source) for e in ordered]
+            # Verify ordering: use full "NAME (score%)" tokens to avoid
+            # substring collisions (e.g. "A" matching inside "A0").
+            tokens = [f"{e.data_source} ({e.quality_score}%)" for e in ordered]
+            positions = [order_line.index(tok) for tok in tokens]
             assert positions == sorted(positions), "Load order not sorted by quality descending"
 
 
@@ -674,6 +676,14 @@ class TestCLIArgumentParsing:
             assert "Total sources:" in output
             assert "2" in output
 
+    def test_detail_no_argument_exits_nonzero(self):
+        """--detail with no argument → argparse error, exit non-zero."""
+        err_buf = StringIO()
+        with mock.patch.object(sys, "stderr", err_buf), \
+             pytest.raises(SystemExit) as exc_info:
+            main(["--detail"])
+        assert exc_info.value.code != 0
+
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Task 8.2 — Unit test: missing registry file
@@ -697,7 +707,7 @@ class TestMissingRegistry:
                 rc = main([])
             assert rc == 0
             output = buf.getvalue()
-            assert "No data sources registered" in output
+            assert "No data sources have been registered yet" in output
 
     def test_status_integration_missing_registry_returns_none(self):
         """render_data_sources_section returns None when file missing."""
@@ -716,12 +726,12 @@ class TestMissingRegistry:
 
 
 INVALID_YAML = """\
-version: "99"
+version: "1"
 sources:
   BAD:
     name: Bad
     file_path: x
-    format: csv
+    format: invalid_fmt
     record_count: null
     quality_score: null
     mapping_status: pending
@@ -743,7 +753,7 @@ class TestValidationErrorAndEmptySources:
     """
 
     def test_validation_error_exit_1(self):
-        """Validation error → descriptive message to stderr + exit 1."""
+        """Validation error (bad format) → descriptive message to stderr + exit 1."""
         with tempfile.TemporaryDirectory() as td:
             tmp = Path(td)
             _write_registry_file(tmp, INVALID_YAML)
@@ -754,7 +764,44 @@ class TestValidationErrorAndEmptySources:
             assert rc == 1
             err_output = err_buf.getvalue()
             assert "Validation errors" in err_output
-            assert "version" in err_output.lower()
+            assert "invalid" in err_output.lower()
+
+    def test_validation_error_bad_version_exit_1(self):
+        """Validation error (unrecognized version) → error to stderr + exit 1."""
+        bad_version_yaml = 'version: "99"\nsources:\n'
+        with tempfile.TemporaryDirectory() as td:
+            tmp = Path(td)
+            _write_registry_file(tmp, bad_version_yaml)
+            err_buf = StringIO()
+            with mock.patch.object(sys, "stderr", err_buf), \
+                 mock.patch("os.path.join", return_value=str(tmp / "config" / "data_sources.yaml")):
+                rc = main([])
+            assert rc == 1
+            err_output = err_buf.getvalue()
+            assert "99" in err_output
+
+    def test_validation_error_missing_field_exit_1(self):
+        """Validation error (missing required field) → identifies entry + field, exit 1."""
+        missing_field_yaml = (
+            'version: "1"\n'
+            "sources:\n"
+            "  BROKEN:\n"
+            "    name: Broken\n"
+            "    file_path: x\n"
+            "    format: csv\n"
+        )
+        with tempfile.TemporaryDirectory() as td:
+            tmp = Path(td)
+            _write_registry_file(tmp, missing_field_yaml)
+            err_buf = StringIO()
+            with mock.patch.object(sys, "stderr", err_buf), \
+                 mock.patch("os.path.join", return_value=str(tmp / "config" / "data_sources.yaml")):
+                rc = main([])
+            assert rc == 1
+            err_output = err_buf.getvalue()
+            assert "Validation errors" in err_output
+            assert "BROKEN" in err_output
+            assert "missing" in err_output.lower()
 
     def test_empty_sources_table(self):
         """Empty sources → table with header but no data rows."""
@@ -882,6 +929,58 @@ class TestDefaultEntryValues:
             updated_at="2025-01-01T00:00:00Z",
             issues=[],
         )
+        output = render_detail(entry)
+        assert "Issues:" not in output
+
+    def test_yaml_parse_default_entry_values(self):
+        """Parsing a YAML entry with null quality, pending mapping, not_loaded produces correct defaults."""
+        yaml_content = (
+            'version: "2"\n'
+            "sources:\n"
+            "  NEW_SOURCE:\n"
+            "    name: New Source\n"
+            "    file_path: data/raw/new.csv\n"
+            "    format: csv\n"
+            "    record_count: 500\n"
+            "    file_size_bytes: 25000\n"
+            "    quality_score: null\n"
+            "    mapping_status: pending\n"
+            "    load_status: not_loaded\n"
+            '    added_at: "2025-07-01T10:00:00Z"\n'
+            '    updated_at: "2025-07-01T10:00:00Z"\n'
+        )
+        raw = parse_registry_yaml(yaml_content)
+        registry = _dict_to_registry(raw)
+        assert len(registry.sources) == 1
+        entry = registry.sources[0]
+        assert entry.quality_score is None
+        assert entry.mapping_status == "pending"
+        assert entry.load_status == "not_loaded"
+
+    def test_yaml_parse_absent_issues_field(self):
+        """Parsing a YAML entry without the issues field produces a RegistryEntry with issues as None."""
+        yaml_content = (
+            'version: "2"\n'
+            "sources:\n"
+            "  NO_ISSUES:\n"
+            "    name: No Issues Source\n"
+            "    file_path: data/raw/clean.csv\n"
+            "    format: csv\n"
+            "    record_count: 1000\n"
+            "    file_size_bytes: 50000\n"
+            "    quality_score: 90\n"
+            "    mapping_status: complete\n"
+            "    load_status: loaded\n"
+            '    added_at: "2025-07-01T10:00:00Z"\n'
+            '    updated_at: "2025-07-01T10:00:00Z"\n'
+        )
+        raw = parse_registry_yaml(yaml_content)
+        registry = _dict_to_registry(raw)
+        assert len(registry.sources) == 1
+        entry = registry.sources[0]
+        # issues field absent → treated as None (no crash)
+        assert entry.issues is None
+        # Detail rendering should not crash and should not show Issues section
         output = render_detail(entry)
         assert "Issues:" not in output
 

@@ -120,6 +120,12 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 **Action:** Checks file format, encoding, and basic readability
 **Use case:** Catches bad data files early in Module 4 before they cause mapping or loading failures
 
+### 19. Capture Bootcamp Feedback (`capture-feedback.kiro.hook`)
+
+**Trigger:** On every message submission (promptSubmit)
+**Action:** Checks for feedback trigger phrases and initiates the feedback workflow with automatic context capture
+**Use case:** Deterministic feedback capture — guarantees the feedback workflow runs whenever a bootcamper says "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", or "report an issue"
+
 ## Installation
 
 **Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.

@@ -91,25 +91,25 @@ Merge two overlapping Module 5 hooks into one: enhance `analyze-after-mapping` (
     - Define constants for hooks directory, categories path, registry path, and README path
     - Define the set of hook IDs that should be preserved (all 18 non-removed hooks)
     - _Requirements: 3.3, 4.3, 5.4_
-  - [ ]* 7.2 Write property test for category preservation (Property 1)
+  - [x] 7.2 Write property test for category preservation (Property 1)
     - **Property 1: Category preservation for non-removed hooks**
     - For any hook ID that existed in `hook-categories.yaml` before the merge and is not `validate-senzing-json`, that hook ID is still present with the same category and module assignment
     - Use `@given(hook_id=st.sampled_from(preserved_hook_ids))` with `@settings(max_examples=100)`
     - Parse `hook-categories.yaml` and verify the sampled hook retains its category (`critical` or `module`) and module number
     - **Validates: Requirements 3.3**
-  - [ ]* 7.3 Write property test for registry preservation (Property 2)
+  - [x] 7.3 Write property test for registry preservation (Property 2)
     - **Property 2: Registry entry preservation for non-removed hooks**
     - For any hook ID that existed in `hook-registry.md` before the merge and is not `validate-senzing-json`, that hook's registry section is present and contains the expected id, name, and description
     - Use `@given(hook_id=st.sampled_from(preserved_hook_ids))` with `@settings(max_examples=100)`
     - Parse `hook-registry.md` and verify the sampled hook's entry exists with correct metadata
     - **Validates: Requirements 4.3**
-  - [ ]* 7.4 Write example-based test for sequential README numbering (Property 3)
+  - [x] 7.4 Write example-based test for sequential README numbering (Property 3)
     - **Property 3: README hook numbering is sequential**
     - Parse all `### N.` section headers from `hooks/README.md`
     - Verify the numbers form a contiguous sequence from 1 to N with no gaps
     - Verify N equals the total number of hook sections (17 after removal)
     - **Validates: Requirements 5.4**
-  - [ ]* 7.5 Write example-based tests for validate-senzing-json absence
+  - [x] 7.5 Write example-based tests for validate-senzing-json absence
     - Verify `validate-senzing-json.kiro.hook` file does not exist
     - Verify `hook-categories.yaml` does not contain `validate-senzing-json`
     - Verify `hook-registry.md` does not contain `validate-senzing-json`

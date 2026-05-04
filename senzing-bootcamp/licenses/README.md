@@ -74,6 +74,35 @@ You can always add a license later by placing it in `licenses/g2.lic`.
    - This allows different projects to use different licenses
    - Useful for separating evaluation and production environments
 
+## Decoding a Base64-Encoded License
+
+Sometimes you receive your Senzing license as a Base64-encoded string rather than a binary file — for example, pasted into an email body or copied from a licensing portal. You need to decode it to a binary file before the SDK can use it.
+
+### Decode the String
+
+Replace `<BASE64_STRING>` with the string you received:
+
+```bash
+# Linux / macOS
+echo '<BASE64_STRING>' | base64 --decode > licenses/g2.lic
+```
+
+```powershell
+# Windows (PowerShell)
+[System.Convert]::FromBase64String('<BASE64_STRING>') |
+  Set-Content -Path licenses\g2.lic -AsByteStream
+```
+
+### Verify the Decoded File
+
+Confirm the result is a binary file, not ASCII text:
+
+```bash
+file licenses/g2.lic
+```
+
+The output should show `data` or `binary`. If it shows `ASCII text`, the file was not decoded correctly — double-check that you copied the full Base64 string without extra whitespace or line breaks.
+
 ## License File Placement
 
 ### Correct Location ✅

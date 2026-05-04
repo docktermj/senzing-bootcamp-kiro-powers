@@ -825,8 +825,7 @@ def main(argv: list[str] | None = None) -> int:
         with open(registry_path, encoding="utf-8") as f:
             content = f.read()
     except FileNotFoundError:
-        print("No data sources registered yet.")
-        print(f"The registry file ({registry_path}) does not exist.")
+        print("No data sources have been registered yet.")
         return 0
     except UnicodeDecodeError as exc:
         print(f"Error: cannot read {registry_path}: {exc}", file=sys.stderr)

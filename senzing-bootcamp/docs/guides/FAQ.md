@@ -34,7 +34,30 @@ Required: Python 3 (for the power's utility scripts), a supported language runti
 
 ### Do I need a Senzing license?
 
-The agent asks about your license early in the workflow. The SDK includes built-in evaluation limits (500 records) that work for the bootcamp. For a full evaluation license (no limits), email <support@senzing.com> (1-2 business days). **Never paste a license key into the chat** — save it to `licenses/g2.lic` instead (the license file is binary; decode from BASE64 first). See `licenses/README.md`.
+Here's what you need to know: the Senzing SDK includes a built-in evaluation license limited to **500 records** — no license file required. This is enough for the bootcamp's demo modules and small datasets. If you load more than 500 records, the SDK returns a **SENZ9000** error at record 501.
+
+For larger datasets, you need a custom license file. Email <support@senzing.com> to request a free evaluation license (typically 1–2 business days, 30–90 day validity). For production licenses, contact <sales@senzing.com>.
+
+**If you receive a Base64-encoded license key**, decode it before placing it as `licenses/g2.lic`:
+
+```bash
+# Linux / macOS
+echo '<BASE64_STRING>' | base64 --decode > licenses/g2.lic
+```
+
+```powershell
+# Windows (PowerShell)
+[System.Convert]::FromBase64String('<BASE64_STRING>') |
+  Set-Content -Path licenses\g2.lic -AsByteStream
+```
+
+Verify the decoded file is binary (not text):
+
+```bash
+file licenses/g2.lic
+```
+
+**Never paste a license key into the chat** — always save it to `licenses/g2.lic`. See `licenses/README.md` for full details on license types, placement, and troubleshooting.
 
 ### Where should I put my files?
 

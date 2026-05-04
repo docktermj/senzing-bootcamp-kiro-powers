@@ -5,7 +5,7 @@
 - [x] 1.1 Create `senzing-bootcamp/scripts/data_sources.py` with `RegistryEntry` and `Registry` dataclasses, including `by_load_status()`, `by_mapping_status()`, `low_quality_sources()`, `average_quality()`, and `total_records()` methods
 - [x] 1.2 Implement `parse_registry_yaml(content: str) -> dict` that parses the restricted YAML subset (version string, sources mapping with nested scalar fields and optional issues list) into a Python dict
 - [x] 1.3 Implement `serialize_registry_yaml(data: dict) -> str` that serializes a registry dict back to valid YAML string preserving field order and null representation
-- [ ] 1.4 Implement `validate_registry(raw: dict) -> list[str]` that checks version is `"1"`, sources keys match `^[A-Z][A-Z0-9_]*$`, each entry has all required fields, and enum fields (`format`, `mapping_status`, `load_status`) contain only valid values — returning a list of specific error strings
+- [x] 1.4 Implement `validate_registry(raw: dict) -> list[str]` that checks version is `"1"`, sources keys match `^[A-Z][A-Z0-9_]*$`, each entry has all required fields, and enum fields (`format`, `mapping_status`, `load_status`) contain only valid values — returning a list of specific error strings
 
 ## Task 2: Implement rendering functions
 
@@ -21,7 +21,7 @@
 
 ## Task 4: Implement CLI entry point
 
-- [ ] 4.1 Implement `main(argv)` in `data_sources.py` with argparse supporting no-args (table view), `--detail <DATA_SOURCE>`, and `--summary` — handling missing registry (exit 0 with message), validation errors (exit 1), and unknown DATA_SOURCE (exit 1 listing available names)
+- [x] 4.1 Implement `main(argv)` in `data_sources.py` with argparse supporting no-args (table view), `--detail <DATA_SOURCE>`, and `--summary` — handling missing registry (exit 0 with message), validation errors (exit 1), and unknown DATA_SOURCE (exit 1 listing available names)
 
 ## Task 5: Update steering files for registry maintenance
 
@@ -39,17 +39,17 @@
 ## Task 7: Property-based tests
 
 - [x] 7.1 Create `senzing-bootcamp/scripts/test_data_sources.py` with Hypothesis strategies for `RegistryEntry`, `Registry`, valid/invalid registry dicts, DATA_SOURCE key strings, and enum field values
-- [ ] 7.2 PBT: Property 1 — YAML round-trip preserves registry data (Req 1.1, 1.2, 1.3, 1.4)
-- [ ] 7.3 PBT: Property 2 — Registry validation accepts valid registries and rejects invalid ones (Req 1.2, 1.3, 1.4, 1.6, 11.1, 11.2, 11.3, 11.4)
-- [ ] 7.4 PBT: Property 3 — Table rendering contains all source data (Req 6.1, 7.2)
-- [ ] 7.5 PBT: Property 4 — Detail rendering contains all entry fields (Req 7.3)
-- [ ] 7.6 PBT: Property 5 — Summary statistics are correctly computed (Req 7.4)
-- [ ] 7.7 PBT: Property 6 — Recommendations correctly identify issues and load order (Req 6.2, 6.3, 6.4)
-- [ ] 7.8 PBT: Property 7 — Status integration section contains correct counts and warnings (Req 8.1, 8.2)
+- [x] 7.2 PBT: Property 1 — YAML round-trip preserves registry data (Req 1.1, 1.2, 1.3, 1.4)
+- [x] 7.3 PBT: Property 2 — Registry validation accepts valid registries and rejects invalid ones (Req 1.2, 1.3, 1.4, 1.6, 11.1, 11.2, 11.3, 11.4)
+- [x] 7.4 PBT: Property 3 — Table rendering contains all source data (Req 6.1, 7.2)
+- [x] 7.5 PBT: Property 4 — Detail rendering contains all entry fields (Req 7.3)
+- [x] 7.6 PBT: Property 5 — Summary statistics are correctly computed (Req 7.4)
+- [x] 7.7 PBT: Property 6 — Recommendations correctly identify issues and load order (Req 6.2, 6.3, 6.4)
+- [x] 7.8 PBT: Property 7 — Status integration section contains correct counts and warnings (Req 8.1, 8.2)
 
 ## Task 8: Unit tests for edge cases and integration points
 
-- [ ] 8.1 Unit test: CLI argument parsing — no args, --detail with valid/invalid source, --summary, --detail with no argument (Req 7.1–7.6)
-- [ ] 8.2 Unit test: missing registry file → message + exit 0; missing registry in status.py → no section (Req 7.5, 8.3)
-- [ ] 8.3 Unit test: validation error → descriptive message + exit 1; empty sources → empty table / zero summary (Req 11.4)
-- [ ] 8.4 Unit test: default entry values (null quality, pending mapping, not_loaded); issues field absent treated as empty (Req 1.5)
+- [x] 8.1 Unit test: CLI argument parsing — no args, --detail with valid/invalid source, --summary, --detail with no argument (Req 7.1–7.6)
+- [x] 8.2 Unit test: missing registry file → message + exit 0; missing registry in status.py → no section (Req 7.5, 8.3)
+- [x] 8.3 Unit test: validation error → descriptive message + exit 1; empty sources → empty table / zero summary (Req 11.4)
+- [x] 8.4 Unit test: default entry values (null quality, pending mapping, not_loaded); issues field absent treated as empty (Req 1.5)

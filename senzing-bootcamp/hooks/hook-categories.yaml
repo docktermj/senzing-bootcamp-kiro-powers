@@ -4,6 +4,7 @@
 
 critical:
   - ask-bootcamper
+  - capture-feedback
   - review-bootcamper-input
   - code-style-check
   - commonmark-validation

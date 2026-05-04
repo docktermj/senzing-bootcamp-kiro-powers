@@ -46,7 +46,11 @@ If Senzing is found:
 
 ## Senzing License Requirements
 
-The Senzing SDK includes built-in evaluation limits that work for the bootcamp. If you have a license or want to remove limits, configure it now.
+Here's what you need to know about licensing before you start loading data.
+
+The Senzing SDK includes a **built-in evaluation license limited to 500 records**. No license file is needed — the SDK uses this automatically when no custom license is present. This is enough for the bootcamp's demo modules and small datasets.
+
+If you load more than 500 records, the SDK returns a **SENZ9000** error at record 501. For larger datasets, you need a custom license file placed at `licenses/g2.lic`.
 
 > **Note:** The agent asks about your license during the bootcamp setup (before Module 2). If you've already configured your license, you can skip this section.
 
@@ -64,7 +68,9 @@ The Senzing SDK includes built-in evaluation limits that work for the bootcamp. 
 - Email: <sales@senzing.com>
 - Pricing based on data source records (DSRs)
 
-**Install License:**
+### Installing a License File
+
+If you have a `.lic` file, copy it into the project:
 
 ```bash
 # Linux / macOS
@@ -77,7 +83,34 @@ chmod 644 licenses/g2.lic
 Copy-Item C:\path\to\downloaded\g2.lic licenses\g2.lic
 ```
 
-Senzing checks licenses in order: `licenses/g2.lic` → `SENZING_LICENSE_PATH` env var → `/etc/opt/senzing/g2.lic`
+### Decoding a Base64-Encoded License
+
+If you received a Base64-encoded license string (for example, pasted into an email body or copied from a licensing portal), decode it to a binary file before the SDK can use it.
+
+Replace `<BASE64_STRING>` with the string you received:
+
+```bash
+# Linux / macOS
+echo '<BASE64_STRING>' | base64 --decode > licenses/g2.lic
+```
+
+```powershell
+# Windows (PowerShell)
+[System.Convert]::FromBase64String('<BASE64_STRING>') |
+  Set-Content -Path licenses\g2.lic -AsByteStream
+```
+
+Verify the decoded file is binary (not text):
+
+```bash
+file licenses/g2.lic
+```
+
+The output should show `data` or `binary`. If it shows `ASCII text`, the Base64 string may have been copied incorrectly.
+
+### License Check Order
+
+Senzing checks for licenses in this order: project-local `licenses/g2.lic` → `SENZING_LICENSE_PATH` env var → system `/etc/opt/senzing/g2.lic` → built-in evaluation (500 records).
 
 See `licenses/README.md` for complete licensing information.
 

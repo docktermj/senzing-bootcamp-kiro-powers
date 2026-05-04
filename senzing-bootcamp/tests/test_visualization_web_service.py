@@ -48,8 +48,8 @@ class TestVizGuidePromptAndBranching:
         # The prompt step should come before any other numbered step
         workflow_start = self.content.index("## Agent Workflow")
         prompt_pos = self.content.index("Visualization Prompt", workflow_start)
-        # Step 2 (Confirm intent) should come after the prompt
-        step2_pos = self.content.index("Confirm intent", workflow_start)
+        # Step 2 (Gather requirements) should come after the prompt
+        step2_pos = self.content.index("Gather requirements", workflow_start)
         assert prompt_pos < step2_pos
 
     def test_prompt_offers_static_html(self):

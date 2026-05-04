@@ -55,6 +55,7 @@ MODULE_NAMES = {
     6: "Load Data", 7: "Query & Visualize",
     8: "Performance Testing", 9: "Security Hardening",
     10: "Monitoring", 11: "Deployment",
+    12: "Production Readiness",
 }
 
 NEXT_STEPS = {
@@ -69,6 +70,7 @@ NEXT_STEPS = {
     9:  ("Start Module 9: Security Hardening", "Implement security best practices"),
     10: ("Start Module 10: Monitoring", "Set up monitoring and observability"),
     11: ("Start Module 11: Deployment", "Package and deploy to production"),
+    12: ("Start Module 12: Production Readiness", "Validate production readiness and go live"),
 }
 
 
@@ -170,7 +172,7 @@ class DashboardDataCollector:
         """Gather all data sources and return a populated DashboardData."""
         completed, current, status, language, current_step, raw_data = self._load_progress()
         has_progress = len(completed) > 0 or status != "Not Started"
-        completion_pct = len(completed) * 100 // 11
+        completion_pct = len(completed) * 100 // 12
         timestamps = self._load_completion_timestamps(raw_data)
         quality = self._scan_quality_scores()
         perf = self._scan_performance_metrics()
@@ -247,8 +249,8 @@ class DashboardDataCollector:
                 status = "In Progress"
             else:
                 last = max(completed)
-                current = min(last + 1, 12)
-                status = "Complete" if last >= 12 else "Ready to Start"
+                current = min(last + 1, 11)
+                status = "Complete" if last >= 11 else "Ready to Start"
 
         return completed, current, status, language, current_step, raw_data
 
@@ -269,7 +271,7 @@ class DashboardDataCollector:
                         mod_num = int(m.group(1))
                     else:
                         continue
-                if 1 <= mod_num <= 11:
+                if 1 <= mod_num <= 12:
                     ts = None
                     if isinstance(entry, dict):
                         ts = entry.get("updated_at") or entry.get("completed_at") or entry.get("timestamp")
@@ -519,7 +521,7 @@ footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top
         return f"""<header>
 <h1>Senzing Bootcamp Dashboard</h1>
 <div class="status-badge">{_esc(data.status)}</div>
-<div style="font-size:.95rem;margin-top:6px">{len(data.modules_completed)} / 11 modules</div>
+<div style="font-size:.95rem;margin-top:6px">{len(data.modules_completed)} / 12 modules</div>
 {lang_line}
 </header>"""
 
@@ -530,14 +532,14 @@ footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top
         return f"""<section id="progress">
 <h2>Overall Progress</h2>
 <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:{pct}%"></div></div>
-<div class="progress-label">{pct}% complete &mdash; {len(data.modules_completed)} / 11 modules</div>
+<div class="progress-label">{pct}% complete &mdash; {len(data.modules_completed)} / 12 modules</div>
 </section>"""
 
     # -- 3.4 _render_module_cards ------------------------------------------
 
     def _render_module_cards(self, data: DashboardData) -> str:
         cards = []
-        for num in range(1, 12):
+        for num in range(1, 13):
             name = MODULE_NAMES.get(num, "?")
             if num in data.modules_completed:
                 cls = "completed"

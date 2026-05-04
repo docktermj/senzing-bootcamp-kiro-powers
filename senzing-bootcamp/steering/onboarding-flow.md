@@ -19,7 +19,22 @@ Before doing any setup work, tell the user:
 Execute these setup actions in order. Do not narrate the details to the user.
 
 1. Check if `src/`, `data/`, `docs/` exist. If not, load `project-structure.md` and create.
-2. **Create Critical Hooks:** For each hook in the Hook Registry's "Critical Hooks" section below, call the `createHook` tool with the specified parameters. Create `.kiro/hooks/` directory first if needed. If a createHook call fails, log the failure and continue with remaining hooks. After all attempts, report any failures to the bootcamper with affected functionality. Record installed hooks in `config/bootcamp_preferences.yaml` under `hooks_installed` with timestamp.
+2. **Install Critical Hooks:** For each hook in the Hook Registry's "Critical Hooks" section below, call the `createHook` tool with the specified parameters. Create `.kiro/hooks/` directory first if needed. If a `createHook` call fails, log the failure and continue with the remaining hooks. After all attempts, report any failures to the bootcamper with the affected functionality using the impact messages below. If all Critical Hook creations fail, warn the bootcamper that hooks are unavailable and suggest restarting onboarding.
+
+   **Failure impact messages** — when a critical hook fails, report the corresponding message:
+
+   | Hook | Impact Message |
+   | ---- | -------------- |
+   | capture-feedback | "Feedback trigger phrases will not be automatically detected. Use the feedback workflow manually." |
+   | enforce-feedback-path | "Feedback may be written to incorrect file locations." |
+   | enforce-working-directory | "File writes to /tmp or external paths will not be automatically blocked." |
+   | verify-senzing-facts | "Senzing facts will not be automatically verified against MCP tools before writing." |
+   | code-style-check | "Code style will not be automatically checked on save." |
+   | summarize-on-stop | "Session summaries will not be automatically generated when the agent stops." |
+   | commonmark-validation | "Markdown files will not be automatically checked for CommonMark compliance." |
+
+   **Verify hooks:** Check that each Critical Hook exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.
+
 3. **Copy glossary:** copy `senzing-bootcamp/docs/guides/GLOSSARY.md` to `docs/guides/GLOSSARY.md`. This MUST happen before Step 4 (Introduction) references it.
 4. Generate foundational steering files (`product.md`, `tech.md`, `structure.md`) at `.kiro/steering/`. Each MUST include `inclusion` and `description` in the YAML frontmatter. Use `auto` for `structure.md`, `always` for the others.
 

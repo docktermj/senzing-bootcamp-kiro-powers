@@ -202,8 +202,8 @@ class TestProperty2ManifestCompleteness:
         assert isinstance(entry.directories, list)
         assert isinstance(entry.modifies_database, bool)
 
-        # Modules 6 and 7 modify database; others do not
-        if module in (6, 7):
+        # Only module 6 (Load Data) modifies the database
+        if module == 6:
             assert entry.modifies_database is True
         else:
             assert entry.modifies_database is False
@@ -853,31 +853,31 @@ class TestManifestContent:
 
     def test_module_7_manifest(self):
         a = ARTIFACT_MANIFEST[7]
-        assert "docs/loading_strategy.md" in a.files
-        assert a.modifies_database is True
-
-    def test_module_8_manifest(self):
-        a = ARTIFACT_MANIFEST[8]
         assert "docs/results_validation.md" in a.files
         assert "src/query" in a.directories
         assert a.modifies_database is False
 
-    def test_module_9_manifest(self):
-        a = ARTIFACT_MANIFEST[9]
+    def test_module_8_manifest(self):
+        a = ARTIFACT_MANIFEST[8]
         assert "docs/performance_requirements.md" in a.files
         assert "docs/performance_report.md" in a.files
         assert "tests/performance" in a.directories
         assert a.modifies_database is False
 
+    def test_module_9_manifest(self):
+        a = ARTIFACT_MANIFEST[9]
+        assert "docs/security_checklist.md" in a.files
+        assert a.modifies_database is False
+
     def test_module_10_manifest(self):
         a = ARTIFACT_MANIFEST[10]
-        assert "docs/security_checklist.md" in a.files
+        assert "docs/monitoring_setup.md" in a.files
+        assert "monitoring" in a.directories
         assert a.modifies_database is False
 
     def test_module_11_manifest(self):
         a = ARTIFACT_MANIFEST[11]
-        assert "docs/monitoring_setup.md" in a.files
-        assert "monitoring" in a.directories
+        assert "docs/deployment_plan.md" in a.files
         assert a.modifies_database is False
 
 
@@ -895,7 +895,7 @@ class TestDependencyMap:
         assert PREREQUISITES[5] == [4]
         assert set(PREREQUISITES[6]) == {2, 5}
         assert PREREQUISITES[7] == [6]
-        assert set(PREREQUISITES[8]) == {6, 7}
+        assert PREREQUISITES[8] == [7]
         assert PREREQUISITES[9] == [8]
         assert PREREQUISITES[10] == [9]
         assert PREREQUISITES[11] == [10]

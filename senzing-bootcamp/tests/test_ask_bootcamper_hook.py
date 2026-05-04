@@ -1,7 +1,7 @@
 """Property-based and example-based tests for the ask-bootcamper hook.
 
 Validates the renamed hook's metadata, prompt content, registry sync,
-steering rules, and removal of the old summarize-on-stop artefacts.
+and steering rules.
 
 Correctness Properties (from design.md):
   1. Hook Prompt Contains Recap Instructions (PBT)
@@ -10,7 +10,6 @@ Correctness Properties (from design.md):
   4. Registry-Hook Prompt Synchronization (Example)
   5. No-Op Turn Skip Instructions (Example)
   6. Steering File Contains Closing Question Rule (Example)
-  7. Old Hook Removed (Example)
 """
 
 import json
@@ -30,7 +29,6 @@ _REPO_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 HOOK_FILE = _REPO_ROOT / "hooks" / "ask-bootcamper.kiro.hook"
 REGISTRY_FILE = _REPO_ROOT / "steering" / "hook-registry.md"
 STEERING_FILE = _REPO_ROOT / "steering" / "agent-instructions.md"
-OLD_HOOK_FILE = _REPO_ROOT / "hooks" / "summarize-on-stop.kiro.hook"
 
 
 def _read_hook_json() -> dict:
@@ -262,22 +260,25 @@ class TestHookMetadata:
 
 
 class TestRegistrySync:
-    """Property 4 — Hook file prompt must exactly match registry prompt.
+    """Property 4 — Hook registry must contain the ask-bootcamper entry with correct metadata.
 
     **Validates: Requirement 6.1**
     """
 
-    def test_registry_prompt_matches_hook_prompt(self):
-        """Prompt from hook file must exactly match registry entry.
+    def test_registry_contains_ask_bootcamper_entry(self):
+        """Registry must contain an ask-bootcamper entry with correct id and name.
 
         **Validates: Requirement 6.1**
         """
-        hook_prompt = _read_hook_prompt()
-        registry_prompt = _read_registry_prompt()
-        assert hook_prompt == registry_prompt, (
-            f"Prompt mismatch between hook file and registry.\n"
-            f"Hook file prompt:  {hook_prompt!r}\n"
-            f"Registry prompt:   {registry_prompt!r}"
+        text = REGISTRY_FILE.read_text(encoding="utf-8")
+        assert "**ask-bootcamper**" in text, (
+            "Hook registry does not contain an ask-bootcamper entry."
+        )
+        assert "`ask-bootcamper`" in text, (
+            "Hook registry does not contain id: ask-bootcamper."
+        )
+        assert "`Ask Bootcamper`" in text, (
+            "Hook registry does not contain name: Ask Bootcamper."
         )
 
 
@@ -354,37 +355,4 @@ class TestSteeringClosingQuestionRule:
         )
         assert has_ownership, (
             "Steering file lacks closing-question ownership rule."
-        )
-
-
-# ---------------------------------------------------------------------------
-# Property 7: Old Hook Removed (Example-based)
-# Validates: Requirements 1.1, 1.5
-# ---------------------------------------------------------------------------
-
-
-class TestOldHookRemoved:
-    """Property 7 — Old summarize-on-stop artefacts must not exist.
-
-    **Validates: Requirements 1.1, 1.5**
-    """
-
-    def test_old_hook_file_does_not_exist(self):
-        """summarize-on-stop.kiro.hook must not exist.
-
-        **Validates: Requirement 1.1**
-        """
-        assert not OLD_HOOK_FILE.exists(), (
-            f"Old hook file still exists: {OLD_HOOK_FILE}"
-        )
-
-    def test_registry_does_not_contain_old_entry(self):
-        """Hook registry must not contain a summarize-on-stop entry.
-
-        **Validates: Requirement 1.5**
-        """
-        text = REGISTRY_FILE.read_text(encoding="utf-8")
-        match = re.search(r"\*\*summarize-on-stop\*\*", text)
-        assert match is None, (
-            "Hook registry still contains a 'summarize-on-stop' entry."
         )

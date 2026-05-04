@@ -5,6 +5,30 @@ All notable changes to the Senzing Bootcamp power will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Removed 28 orphaned specs from `.kiro/specs/` that referenced old module numbering, renamed hooks, or deleted files
+- Fixed module numbering in `common-pitfalls.md` — merged old Module 6/7 sections into Module 6 (Load Data), renumbered Module 8 to Module 7
+- Fixed `onboarding-flow.md` failure impact table referencing `summarize-on-stop` (renamed to `ask-bootcamper`)
+- Fixed `POWER.md` MCP JSON block showing empty `disabledTools` instead of `["submit_feedback"]`
+- Fixed `POWER.md` duplicate listing of `module-01-business-problem.md`
+- Fixed `agent-instructions.md` stale "triggers loading" language for `module-transitions.md`
+- Changed `security-privacy.md` from `inclusion: auto` to `inclusion: always` (27 lines, negligible context cost)
+- Dropped unused "(SGES)" abbreviation from `POWER.md` and `onboarding-flow.md`
+- Updated `POWER.md` Recommended Hooks to list all 20 hooks (was missing `capture-feedback` and `feedback-submission-reminder`)
+- Removed stale `examples/` row from repository-organization steering
+- Added steering file cross-references to `docs/modules/README.md`
+- Removed ghost-artifact absence assertions from test files
+- Trimmed `agent-instructions.md` from 109 to ~80 lines: moved Sub-Step Convention to `module-transitions.md`, collapsed Question Stop Protocol
+- Changed `verbosity-control.md` from `inclusion: always` to `inclusion: auto` — saves ~71 lines of context on lightweight interactions
+- Split `visualization-guide.md` (414 lines) into workflow root (~85 lines) + `visualization-reference.md` (~90 lines) via `#[[file:]]`
+- Split `module-06-phaseD-validation.md` (355 lines) into validation steps (~150 lines) + `module-06-reference.md` (~110 lines) via `#[[file:]]`
+- Extracted "What Is Entity Resolution?" section from `onboarding-flow.md` into `entity-resolution-intro.md` via `#[[file:]]`
+- Changed `common-pitfalls.md`, `module-prerequisites.md`, `design-patterns.md` from `inclusion: manual` to `inclusion: auto`
+- Trimmed `hook-registry.md` from 235 to ~105 lines by removing duplicated prompt text (prompts live in `.kiro.hook` files)
+
 ## [0.10.0] - 2026-04-22
 
 ### Added in 0.10.0

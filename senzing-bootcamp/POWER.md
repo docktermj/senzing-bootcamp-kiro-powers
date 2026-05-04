@@ -40,7 +40,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 | 2 — SDK Setup                           | Installs and configures the Senzing SDK on your machine                   | Everything else depends on a working SDK installation                                                            |
 | 3 — Quick Demo                          | Runs entity resolution on sample data so you can see it work              | Validates your entire setup end-to-end; the result is trivial on purpose — the point is proving the system works |
 | 4 — Data Collection Policy              | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
-| 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Entity Specification (SGES) format. Optional Phase 3 test-loads and evaluates results using `mapping_workflow` steps 5–8 | Identifies issues before they cause bad matches, gets data into the format Senzing needs, and optionally validates entity resolution quality before production loading |
+| 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Entity Specification format. Optional Phase 3 test-loads and evaluates results using `mapping_workflow` steps 5–8 | Identifies issues before they cause bad matches, gets data into the format Senzing needs, and optionally validates entity resolution quality before production loading |
 | 6 — Load Data                           | Loads all data sources, processes redo records, and validates entity resolution results | Your data is loaded and entity resolution is running — duplicates matched, cross-source connections found |
 | 7 — Query & Visualize                   | Builds query programs and visualizations for your resolved entities       | Proves the system answers your business questions                                                                |
 | 8 — Performance Testing & Benchmarking  | Benchmarks and optimizes for your data volume                             | Ensures the system handles production-scale data                                                                 |
@@ -84,7 +84,6 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 
 **Module Workflows (load the one you need):**
 
-- `module-01-business-problem.md` — Module 1: Business Problem
 - `module-01-business-problem.md` — Module 1: Business Problem (split: `module-01-phase2-document-confirm.md`)
 - `module-02-sdk-setup.md` — Module 2: SDK Setup
 - `module-03-quick-demo.md` — Module 3: Quick Demo (Optional)
@@ -106,10 +105,16 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 - `cloud-provider-setup.md` — Cloud provider selection at the 8→9 gate (AWS, Azure, GCP, on-premises, local)
 - `feedback-workflow.md` — Feedback collection workflow
 
+**Always loaded (core rules):**
+
+- `agent-instructions.md` — Core agent rules and MCP usage (always loaded)
+- `module-transitions.md` — Journey map, before/after framing, step-level progress, and sub-step convention (always loaded)
+- `security-privacy.md` — Data privacy and PII protection (always loaded, ~27 lines)
+
 **Auto-included (Kiro loads when relevant to the conversation):**
 
-- `security-privacy.md` — Data privacy and PII protection (`inclusion: auto` — Kiro decides based on relevance)
-- `project-structure.md` — Directory structure and setup commands (`inclusion: auto` — Kiro decides based on relevance)
+- `project-structure.md` — Directory structure and setup commands
+- `verbosity-control.md` — Output verbosity presets, categories, and adjustment instructions
 
 **Module Completion (load after completing any module):**
 
@@ -177,7 +182,7 @@ Connects to the Senzing MCP server (no API keys required):
       "url": "https://mcp.senzing.com/mcp",
       "disabled": false,
       "autoApprove": [],
-      "disabledTools": []
+      "disabledTools": ["submit_feedback"]
     }
   }
 }
@@ -276,7 +281,7 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: Code Style Check (`code-style-check`) ⭐, `ask-bootcamper`, `data-quality-check`, `backup-before-load`, `backup-project-on-request`, `commonmark-validation`, `verify-senzing-facts`, `analyze-after-mapping`, `run-tests-after-change`, `git-commit-reminder`, `enforce-working-directory` ⭐, `verify-generated-code`, `offer-visualization`, `review-bootcamper-input` ⭐, `deployment-phase-gate`, `enforce-visualization-offers` ⭐, `enforce-feedback-path`, `validate-data-files`.
+Available: `ask-bootcamper` ⭐, `capture-feedback` ⭐, `review-bootcamper-input` ⭐, Code Style Check (`code-style-check`) ⭐, `commonmark-validation`, `enforce-feedback-path`, `enforce-working-directory` ⭐, `enforce-visualization-offers` ⭐, `feedback-submission-reminder`, `verify-senzing-facts`, `data-quality-check`, `analyze-after-mapping`, `validate-data-files`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `offer-visualization`, `deployment-phase-gate`, `backup-project-on-request`, `git-commit-reminder`.
 
 ## Project Directory Structure
 

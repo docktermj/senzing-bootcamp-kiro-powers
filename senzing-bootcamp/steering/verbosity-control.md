@@ -1,5 +1,6 @@
 ---
-inclusion: always
+inclusion: auto
+description: "Verbosity control system — output categories, presets, and adjustment instructions"
 ---
 
 # Verbosity Control

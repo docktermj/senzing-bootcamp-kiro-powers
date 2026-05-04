@@ -55,3 +55,12 @@ Every step within a module, communicate three things:
 Provide a clear summary: what was accomplished, all files produced with paths, why it matters for the next module.
 
 Then follow the journal and path-completion rules in `module-completion.md`.
+
+## Sub-Step Convention
+
+When a step contains multiple independent 👉 questions, split into lettered sub-steps (one question each):
+
+- **Naming**: `{step}{letter}` — `7a`, `7b`, `7c`. Letters start at `a`.
+- **One question per sub-step** with its own checkpoint (e.g., "Write step 7a").
+- **No-question steps stay whole** — don't split steps with zero questions.
+- **Mutually exclusive conditionals share a sub-step** — only independent sequential questions get their own sub-steps.

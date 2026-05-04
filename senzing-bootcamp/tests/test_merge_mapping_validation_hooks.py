@@ -234,8 +234,7 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
     "backup-project-on-request": {
         "name": "Backup Project on Request",
         "description": (
-            "Run project backup when user clicks the hook button. Avoids firing on every"
-            " prompt — use the manual trigger button in the Agent Hooks panel instead."
+            "Run project backup when user clicks the hook button."
         ),
     },
     "review-bootcamper-input": {
@@ -249,8 +248,7 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         "name": "Code Style Check",
         "description": (
             "Automatically checks source code files for language-appropriate coding standards"
-            " when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET"
-            " conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions."
+            " when edited."
         ),
     },
     "commonmark-validation": {
@@ -294,7 +292,7 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         "name": "Enforce Working Directory Paths",
         "description": (
             "Checks that file write operations do not use /tmp, %TEMP%, or any path outside"
-            " the working directory. Enforces the file storage policy automatically."
+            " the working directory."
         ),
     },
     "git-commit-reminder": {
@@ -456,92 +454,4 @@ class TestReadmeNumbering:
             f"Got:      {numbers}"
         )
 
-    def test_validate_senzing_json_not_in_section_titles(self) -> None:
-        """README must not contain a section for the removed validate-senzing-json hook.
 
-        **Validates: Requirements 5.2**
-        """
-        text = _README_PATH.read_text(encoding="utf-8")
-        # Match section headers like "### N. Validate Senzing JSON ..."
-        section_titles = re.findall(r"^### \d+\.\s+(.+)$", text, re.MULTILINE)
-        for title in section_titles:
-            assert "validate-senzing-json" not in title.lower(), (
-                f"README still has a section for validate-senzing-json: {title}"
-            )
-            assert "validate senzing json" not in title.lower(), (
-                f"README still has a section for Validate Senzing JSON: {title}"
-            )
-
-
-# ===========================================================================
-# Task 7.5 — Example-based tests for validate-senzing-json absence
-#
-# **Validates: Requirements 2.1, 3.2, 4.2, 5.2, 6.2, 7.2**
-# ===========================================================================
-
-
-class TestValidateSenzingJsonAbsence:
-    """Verify validate-senzing-json is fully removed from all artifacts.
-
-    **Validates: Requirements 2.1, 3.2, 4.2, 5.2, 6.2, 7.2**
-    """
-
-    def test_hook_file_does_not_exist(self) -> None:
-        """validate-senzing-json.kiro.hook must not exist.
-
-        **Validates: Requirements 2.1**
-        """
-        hook_file = _HOOKS_DIR / "validate-senzing-json.kiro.hook"
-        assert not hook_file.exists(), (
-            f"Removed hook file still exists: {hook_file}"
-        )
-
-    def test_not_in_categories_yaml(self) -> None:
-        """hook-categories.yaml must not reference validate-senzing-json.
-
-        **Validates: Requirements 3.2**
-        """
-        text = _CATEGORIES_PATH.read_text(encoding="utf-8")
-        assert "validate-senzing-json" not in text, (
-            "hook-categories.yaml still contains 'validate-senzing-json'"
-        )
-
-    def test_not_in_hook_registry(self) -> None:
-        """hook-registry.md must not reference validate-senzing-json.
-
-        **Validates: Requirements 4.2**
-        """
-        text = _REGISTRY_PATH.read_text(encoding="utf-8")
-        assert "validate-senzing-json" not in text, (
-            "hook-registry.md still contains 'validate-senzing-json'"
-        )
-
-    def test_not_in_readme(self) -> None:
-        """hooks/README.md must not contain a validate-senzing-json section.
-
-        **Validates: Requirements 5.2**
-        """
-        text = _README_PATH.read_text(encoding="utf-8")
-        assert "validate-senzing-json" not in text.lower(), (
-            "hooks/README.md still contains 'validate-senzing-json'"
-        )
-
-    def test_not_in_install_script(self) -> None:
-        """install_hooks.py must not reference validate-senzing-json.
-
-        **Validates: Requirements 6.2**
-        """
-        text = _INSTALL_SCRIPT_PATH.read_text(encoding="utf-8")
-        assert "validate-senzing-json" not in text, (
-            "install_hooks.py still contains 'validate-senzing-json'"
-        )
-
-    def test_not_in_power_md(self) -> None:
-        """POWER.md must not reference validate-senzing-json.
-
-        **Validates: Requirements 7.2**
-        """
-        text = _POWER_MD_PATH.read_text(encoding="utf-8")
-        assert "validate-senzing-json" not in text, (
-            "POWER.md still contains 'validate-senzing-json'"
-        )

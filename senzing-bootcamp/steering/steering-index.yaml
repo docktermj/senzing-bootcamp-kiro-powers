@@ -136,13 +136,13 @@ deployment:
 
 file_metadata:
   agent-instructions.md:
-    token_count: 2315
-    size_category: large
+    token_count: 1560
+    size_category: medium
   cloud-provider-setup.md:
     token_count: 784
     size_category: medium
   common-pitfalls.md:
-    token_count: 3524
+    token_count: 3457
     size_category: large
   complexity-estimator.md:
     token_count: 606
@@ -163,7 +163,10 @@ file_metadata:
     token_count: 962
     size_category: medium
   design-patterns.md:
-    token_count: 980
+    token_count: 1010
+    size_category: medium
+  entity-resolution-intro.md:
+    token_count: 635
     size_category: medium
   environment-setup.md:
     token_count: 614
@@ -178,8 +181,8 @@ file_metadata:
     token_count: 1919
     size_category: medium
   hook-registry.md:
-    token_count: 4941
-    size_category: large
+    token_count: 1616
+    size_category: medium
   lang-csharp.md:
     token_count: 828
     size_category: medium
@@ -244,8 +247,11 @@ file_metadata:
     token_count: 1428
     size_category: medium
   module-06-phaseD-validation.md:
-    token_count: 5160
-    size_category: large
+    token_count: 1951
+    size_category: medium
+  module-06-reference.md:
+    token_count: 1172
+    size_category: medium
   module-07-query-validation.md:
     token_count: 2784
     size_category: large
@@ -268,13 +274,13 @@ file_metadata:
     token_count: 1269
     size_category: medium
   module-prerequisites.md:
-    token_count: 1127
+    token_count: 1151
     size_category: medium
   module-transitions.md:
-    token_count: 717
+    token_count: 838
     size_category: medium
   onboarding-flow.md:
-    token_count: 4994
+    token_count: 3958
     size_category: large
   phase-loading-guide.md:
     token_count: 460
@@ -304,17 +310,20 @@ file_metadata:
     token_count: 3126
     size_category: large
   verbosity-control.md:
-    token_count: 976
+    token_count: 1000
     size_category: medium
   visualization-guide.md:
-    token_count: 5874
-    size_category: large
+    token_count: 1045
+    size_category: medium
+  visualization-reference.md:
+    token_count: 1004
+    size_category: medium
   visualization-web-service.md:
     token_count: 1649
     size_category: medium
 
 budget:
-  total_tokens: 100180
+  total_tokens: 89969
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

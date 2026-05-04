@@ -30,7 +30,7 @@ Execute these setup actions in order. Do not narrate the details to the user.
    | enforce-working-directory | "File writes to /tmp or external paths will not be automatically blocked." |
    | verify-senzing-facts | "Senzing facts will not be automatically verified against MCP tools before writing." |
    | code-style-check | "Code style will not be automatically checked on save." |
-   | summarize-on-stop | "Session summaries will not be automatically generated when the agent stops." |
+   | ask-bootcamper | "Session summaries and closing questions will not be automatically generated when the agent stops." |
    | commonmark-validation | "Markdown files will not be automatically checked for CommonMark compliance." |
 
    **Verify hooks:** Check that each Critical Hook exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.
@@ -134,57 +134,11 @@ Present the overview before track selection. Cover all points naturally:
 - Mock data available anytime. Three sample datasets: Las Vegas, London, Moscow
 - Built-in 500-record eval license; bring your own for more
 - Tracks let you skip to what matters
-- If you encounter unfamiliar terms (like Senzing Entity Specification (SGES), DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
+- If you encounter unfamiliar terms (like Senzing Entity Specification, DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
 
 ### 4a. What Is Entity Resolution?
 
-<!-- AGENT INSTRUCTION — not shown to the bootcamper.
-Before presenting this section, call `search_docs` from the Senzing MCP server
-to retrieve authoritative content:
-
-1. search_docs("Senzing principle-based entity resolution approach")
-2. search_docs("entity resolution outputs matched entities relationships deduplication")
-
-Use the retrieved content to fill in Senzing-specific claims below. If the MCP
-server is unavailable, present the static content in this section as-is and tell
-the bootcamper: "I'll verify these details against the latest Senzing
-documentation once the server is available." See mcp-offline-fallback.md for
-the general offline pattern.
--->
-
-#### Why matching records is hard
-
-When the same person or organization exists in multiple systems, their records almost never look identical. Here is why:
-
-- **Name variations.** One system has "John Smith," another has "J. Smith," a third has "Jonathan Smith." All three may be the same person — or three different people.
-- **Address changes over time.** People move. A customer's address in your CRM may be two apartments ago compared to what a background-check provider has on file.
-- **Format inconsistencies across systems.** One database stores phone numbers as `(555) 867-5309`, another as `5558675309`, another as `+1-555-867-5309`. Dates, postal codes, and identifiers all vary the same way.
-- **Data entry errors.** Typos, transposed digits, and abbreviations ("St" vs "Street," "Rob" vs "Robert") creep into every dataset.
-- **The false-positive problem.** Similar records do not always mean the same entity. A father and son can share the same name and live at the same address — matching them together would be wrong. Simple fuzzy matching cannot tell the difference.
-
-These challenges compound across millions of records and dozens of sources. Getting matches right — and avoiding wrong ones — is what makes entity resolution a hard problem.
-
-#### How Senzing handles it
-
-Senzing uses **principle-based matching** rather than hand-coded rules or machine learning models that need training data. The principles are built on three observable behaviors of data attributes:
-
-- **Frequency** — How many entities share a given value? A common name like "John Smith" appears frequently, so a name match alone is weak evidence. A rare name carries more weight.
-- **Exclusivity** — Does an entity typically have one value of this type, or many? A Social Security Number (SSN) is exclusive — one person, one SSN. A phone number is less exclusive — people share phones, change numbers, and have multiple lines.
-- **Stability** — Does the value change over an entity's lifetime? A date of birth is highly stable (it never changes), while an address is unstable (people move).
-
-These principles let Senzing weigh evidence automatically. An SSN match is strong because SSNs are exclusive and stable. A date-of-birth match alone is weak because millions of people share any given birthday (high frequency). Senzing combines signals across all available features — names, addresses, identifiers, phones, dates — to make a resolution decision.
-
-Senzing comes preconfigured for people and organizations. You can load data and start resolving without writing matching rules or training a model.
-
-#### What entity resolution produces
-
-Entity resolution gives you three things, each with direct business value:
-
-- **Matched entities.** Records from different sources that refer to the same real-world person or organization are grouped together, giving you a single consolidated view of each entity — sometimes called a "golden record" or "360-degree view."
-- **Cross-source relationships.** Connections discovered between entities across data sources. For example, you might discover that a vendor in your procurement system is the same company as a supplier in your ERP — a relationship invisible when the systems are siloed.
-- **Deduplication.** Duplicate records within and across sources are identified and consolidated. Instead of three slightly different records for the same customer, you get one entity with all the evidence linked together.
-
-These outputs are what the bootcamp modules will teach you to produce, query, and put into production.
+#[[file:senzing-bootcamp/steering/entity-resolution-intro.md]]
 
 ### 4b. Verbosity Preference
 

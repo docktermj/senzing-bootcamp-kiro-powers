@@ -17,7 +17,6 @@ All files belong in `senzing-bootcamp/` — the distributed power directory.
 | Agent steering | `senzing-bootcamp/steering/` | Agents |
 | Agent policies | `senzing-bootcamp/docs/policies/` | Agents |
 | Code templates | `senzing-bootcamp/templates/` | Users |
-| Example projects | `senzing-bootcamp/examples/` | Users |
 | Hooks | `senzing-bootcamp/hooks/` | Agents |
 | Scripts | `senzing-bootcamp/scripts/` | Both |
 | Tests | `senzing-bootcamp/tests/` | Developers |

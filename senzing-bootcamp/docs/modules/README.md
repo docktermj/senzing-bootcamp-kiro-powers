@@ -7,6 +7,7 @@ This directory contains detailed documentation for each bootcamp module.
 ### Module 1: Understand Business Problem
 
 **File**: [MODULE_1_BUSINESS_PROBLEM.md](MODULE_1_BUSINESS_PROBLEM.md)
+**Steering**: `steering/module-01-business-problem.md` (+ `module-01-phase2-document-confirm.md`)
 
 **Purpose**: Define the business problem that entity resolution will solve
 
@@ -24,6 +25,7 @@ This directory contains detailed documentation for each bootcamp module.
 ### Module 2: Set Up SDK
 
 **File**: [MODULE_2_SDK_SETUP.md](MODULE_2_SDK_SETUP.md)
+**Steering**: `steering/module-02-sdk-setup.md`
 
 **Purpose**: Install and configure the Senzing SDK natively on your machine
 
@@ -41,6 +43,7 @@ This directory contains detailed documentation for each bootcamp module.
 ### Module 3: Quick Demo (Optional)
 
 **File**: [MODULE_3_QUICK_DEMO.md](MODULE_3_QUICK_DEMO.md)
+**Steering**: `steering/module-03-quick-demo.md`
 
 **Purpose**: See Senzing entity resolution in action with sample data
 
@@ -58,6 +61,7 @@ This directory contains detailed documentation for each bootcamp module.
 ### Module 4: Data Collection Policy
 
 **File**: [MODULE_4_DATA_COLLECTION.md](MODULE_4_DATA_COLLECTION.md)
+**Steering**: `steering/module-04-data-collection.md`
 
 **Purpose**: Collect data from identified sources and store in project structure
 
@@ -76,6 +80,7 @@ This directory contains detailed documentation for each bootcamp module.
 ### Module 5: Data Quality & Mapping
 
 **File**: [MODULE_5_DATA_QUALITY_AND_MAPPING.md](MODULE_5_DATA_QUALITY_AND_MAPPING.md)
+**Steering**: `steering/module-05-data-quality-mapping.md` (phases: `module-05-phase1-quality-assessment.md`, `module-05-phase2-data-mapping.md`, `module-05-phase3-test-load.md`)
 
 **Purpose**: Automated quality assessment and data mapping into Senzing format
 
@@ -100,6 +105,7 @@ This directory contains detailed documentation for each bootcamp module.
 ### Module 6: Load Data
 
 **File**: [MODULE_6_LOAD_DATA.md](MODULE_6_LOAD_DATA.md)
+**Steering**: `steering/module-06-load-data.md` (phases: `module-06-phaseA-build-loading.md`, `module-06-phaseB-load-first-source.md`, `module-06-phaseC-multi-source.md`, `module-06-phaseD-validation.md`)
 
 **Purpose**: Load all data sources, process redo records, and validate entity resolution results
 
@@ -120,6 +126,7 @@ This directory contains detailed documentation for each bootcamp module.
 ### Module 7: Query and Visualize
 
 **File**: [MODULE_7_QUERY_VALIDATION.md](MODULE_7_QUERY_VALIDATION.md)
+**Steering**: `steering/module-07-query-validation.md`
 
 **Purpose**: Create query programs, overlap reports, and visualizations
 
@@ -138,6 +145,7 @@ This directory contains detailed documentation for each bootcamp module.
 ### Module 8: Performance Testing and Benchmarking
 
 **File**: [MODULE_8_PERFORMANCE_TESTING.md](MODULE_8_PERFORMANCE_TESTING.md)
+**Steering**: `steering/module-08-performance.md`
 
 **Purpose**: Benchmark and optimize for production performance
 
@@ -158,6 +166,7 @@ This directory contains detailed documentation for each bootcamp module.
 ### Module 9: Security Hardening
 
 **File**: [MODULE_9_SECURITY_HARDENING.md](MODULE_9_SECURITY_HARDENING.md)
+**Steering**: `steering/module-09-security.md`
 
 **Purpose**: Implement production-grade security measures
 
@@ -178,6 +187,7 @@ This directory contains detailed documentation for each bootcamp module.
 ### Module 10: Monitoring and Observability
 
 **File**: [MODULE_10_MONITORING_OBSERVABILITY.md](MODULE_10_MONITORING_OBSERVABILITY.md)
+**Steering**: `steering/module-10-monitoring.md`
 
 **Purpose**: Set up comprehensive monitoring for production operations
 
@@ -199,6 +209,7 @@ This directory contains detailed documentation for each bootcamp module.
 ### Module 11: Package and Deploy
 
 **File**: [MODULE_11_PACKAGING_DEPLOYMENT.md](MODULE_11_PACKAGING_DEPLOYMENT.md)
+**Steering**: `steering/module-11-deployment.md` (+ `module-11-phase2-deploy.md`)
 
 **Purpose**: Package code and deploy to production
 

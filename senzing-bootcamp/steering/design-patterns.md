@@ -1,5 +1,6 @@
 ---
-inclusion: manual
+inclusion: auto
+description: "10 entity resolution design patterns with use cases — load during Module 1 or when discussing patterns"
 ---
 
 # Entity Resolution Design Pattern Gallery

@@ -1,5 +1,6 @@
 ---
-inclusion: manual
+inclusion: auto
+description: "Common mistakes and solutions by module — load on errors or when user is stuck"
 ---
 
 # Common Pitfalls Quick Reference
@@ -8,7 +9,7 @@ Load on errors, when user is stuck, or preventively at module start. For visual 
 
 ## Quick Navigation
 
-[Symptoms](#troubleshooting-by-symptom) · Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8](#module-8) · [8–11](#modules-8-11) | [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
+[Symptoms](#troubleshooting-by-symptom) · Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8–11](#modules-8-11) | [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
 
 ## Guided Troubleshooting — Ask Before Scanning
 
@@ -110,7 +111,7 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 
 <a id="module-6"></a>
 
-## Module 6: Single Source Loading
+## Module 6: Load Data
 
 | Pitfall                                          | Fix                                                                          |
 | ------------------------------------------------ | ---------------------------------------------------------------------------- |
@@ -122,21 +123,13 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | Duplicate RECORD_IDs                             | Ensure unique within each DATA_SOURCE. Append sequence number if needed      |
 | Poor DATA_SOURCE naming (`file1`, `data`)        | Use descriptive uppercase: `CUSTOMERS_CRM`, `VENDORS_ERP`                    |
 | No progress monitoring                           | Add progress logging to loading programs                                     |
-| Manual multi-source loading                      | Use Module 7 orchestration instead                                           |
+| Wrong load order (multi-source)                  | Define order based on dependencies and data quality                          |
+| No per-source error handling (multi-source)      | Implement per-source error handling, continue on failure                     |
+| Not tracking multi-source progress               | Use orchestration dashboard or logging                                       |
 
 <a id="module-7"></a>
 
-## Module 7: Multi-Source Orchestration
-
-| Pitfall                                  | Fix                                                          |
-| ---------------------------------------- | ------------------------------------------------------------ |
-| Wrong load order                         | Define order based on dependencies                           |
-| No per-source error handling             | Implement per-source error handling, continue on failure     |
-| Not tracking multi-source progress       | Use orchestration dashboard or logging                       |
-
-<a id="module-8"></a>
-
-## Module 8: Query and Visualize
+## Module 7: Query and Visualize
 
 | Pitfall                                      | Fix                                                                                                                      |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -144,15 +137,15 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | Wrong query flags                            | Use `get_sdk_reference(topic='flags')`                                                                                   |
 | "These shouldn't have matched"               | Use SDK "why" method via `get_sdk_reference` for match details                                                           |
 | Expecting perfect results immediately        | Iterate: adjust mappings, confidence scores, add attributes                                                              |
-| Skipping UAT                                 | Always conduct UAT with business users before production (see Modules 6/7)                                   |
+| Skipping UAT                                 | Always conduct UAT with business users before production (see Module 6)                                              |
 
 <a id="modules-8-11"></a>
 
 ## Modules 8–11: Production Readiness
 
-- **Skipping performance testing** → Complete Module 9 before production
-- **No security hardening** → Complete Module 10 checklist
-- **No monitoring** → Complete Module 11 setup
+- **Skipping performance testing** → Complete Module 8 before production
+- **No security hardening** → Complete Module 9 checklist
+- **No monitoring** → Complete Module 10 setup
 - **No disaster recovery plan** → Complete Module 11 DR planning and test backups
 
 <a id="general-pitfalls"></a>

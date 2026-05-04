@@ -223,7 +223,7 @@ class TestExistingStepPreservation:
         text = _read_onboarding()
         section = _extract_section(text, r"1\.\s+Directory Structure")
         assert "project-structure.md" in section
-        assert "Create Critical Hooks" in section
+        assert "Install Critical Hooks" in section
         assert "GLOSSARY.md" in section
 
     def test_step_1_steering_files(self) -> None:

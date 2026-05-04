@@ -36,31 +36,20 @@ Retry once. If still failing, load `mcp-offline-fallback.md` for what's blocked 
 
 ## Module Steering
 
-Load per-module steering file when user starts that module (1→`module-01-business-problem.md` through 11→`module-11-deployment.md`). After Module 1: `complexity-estimator.md`. At 7→8 gate: `cloud-provider-setup.md`. At track end: `lessons-learned.md`. On errors: `common-pitfalls.md`.
+Load per-module steering file when user starts that module (1→`module-01-business-problem.md` through 11→`module-11-deployment.md`). After Module 1: `complexity-estimator.md`. At 7→8 gate: `cloud-provider-setup.md`. At track end: `lessons-learned.md`.
 
 - Split modules (1, 5, 6, 11): check `steering-index.yaml` for `phases` map. Load `phase-loading-guide.md` for detailed loading rules.
 
-**At every module start:** Read `config/bootcamp_progress.json` first (this triggers `module-transitions.md` loading), then display the module start banner, journey map, and before/after framing BEFORE doing any module-specific work. Never skip these — they orient the user. Module 11 platform files: load `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target.
+**At every module start:** Read `config/bootcamp_progress.json` first, then display the module start banner, journey map, and before/after framing (per `module-transitions.md`, which is always loaded) BEFORE doing any module-specific work. Never skip these — they orient the user. Module 11 platform files: load `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target.
 
-**Multi-language projects:** If the bootcamper uses different languages for different components (e.g., Python for data transformation, TypeScript for a frontend), load the language steering file for whichever language is currently being edited. Don't force a single language across all components.
+**Multi-language projects:** Load the language steering file for whichever language is currently being edited. Don't force a single language across all components.
 
 ## State & Progress
 
-- `mapping_workflow`: pass exact `state`, never modify. Write a checkpoint to `config/mapping_state_[datasource].json` after **each** mapping step, not only at workflow completion. When the full mapping workflow completes for a data source, delete the corresponding checkpoint file.
+- `mapping_workflow`: pass exact `state`, never modify. Checkpoint to `config/mapping_state_[datasource].json` after **each** step. Delete checkpoint when workflow completes for a source.
 - Progress: `config/bootcamp_progress.json`. Preferences: `config/bootcamp_preferences.yaml`. Corrupted? Run `python3 senzing-bootcamp/scripts/validate_module.py`.
-- Step-level checkpointing: after each numbered step, update `config/bootcamp_progress.json` — set `current_step` to the step number or sub-step identifier, set `step_history["<module_number>"]` to `{ "last_completed_step": <step>, "updated_at": "<ISO 8601>" }`. `current_step` accepts integer values for whole steps (e.g., `5`) and string sub-step identifiers in dotted (`"5.3"`) or lettered (`"7a"`) notation. On module completion, set `current_step` to `null`.
-- Sub-step checkpointing: after completing each sub-step within a multi-part step, write a sub-step checkpoint using the sub-step identifier format defined in the module steering file (dotted or lettered notation).
+- Step-level checkpointing: after each numbered step or sub-step, update `config/bootcamp_progress.json` — set `current_step` (integer for whole steps, string like `"5.3"` or `"7a"` for sub-steps), set `step_history["<module_number>"]` to `{ "last_completed_step": <step>, "updated_at": "<ISO 8601>" }`. On module completion, set `current_step` to `null`.
 - Recovery from mistakes: load `recovery-from-mistakes.md` when a bootcamper needs to undo or redo a step.
-
-### Sub-Step Convention
-
-When a steering file step contains multiple independent 👉 questions, split it into lettered sub-steps so each sub-step holds at most one question. Follow these rules:
-
-- **Naming**: sub-steps use `{step_number}{letter}` format — `7a`, `7b`, `7c`, etc. Letters start at `a` and increment alphabetically within the parent step.
-- **One question per sub-step**: each sub-step contains at most one 👉 question and one 🛑 STOP instruction.
-- **Checkpoint per sub-step**: each sub-step has its own checkpoint instruction referencing its identifier (e.g., "Write step 7a to `config/bootcamp_progress.json`"). The parent step does not get a checkpoint when all content is distributed into sub-steps.
-- **No-question steps stay whole**: steps with zero questions remain as single numbered steps — do not split them into sub-steps.
-- **Mutually exclusive conditionals may share a sub-step**: when conditional questions are mutually exclusive (only one fires based on runtime state), they stay in a single sub-step with the conditional logic preserved. Only independent questions that could fire sequentially get their own sub-steps.
 
 ## Communication
 
@@ -68,42 +57,26 @@ When a steering file step contains multiple independent 👉 questions, split it
 - Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to agentStop hooks — zero output when a 👉 question is pending.
 - Closing-question ownership: never end your turn with a closing question — the `ask-bootcamper` hook owns those.
 - Goldilocks check: after Modules 3, 6, 9 ask if detail level is right. Store as `detail_level` in preferences. First-term explanations: define Senzing terms inline on first use via `docs/guides/GLOSSARY.md`.
-- Before each step: what and why. During: status updates (never bare "Working..."). After: what changed, files with paths. Offer to visualize data results as a web page — save to `docs/` or `data/temp/`.
-- At module completion: summary, all files, why it matters for next module. Follow `module-transitions.md` rules. Load `module-completion.md` for journal and track-completion.
+- Before each step: what and why. During: status updates. After: what changed, files with paths. Offer to visualize data results as a web page.
+- At module completion: summary, all files, why it matters for next module. Follow `module-transitions.md` rules. Load `module-completion.md`.
 - Feedback trigger phrases: the capture-feedback hook handles this automatically — do not manually load feedback-workflow.md.
 
 ### Question Stop Protocol
 
-Treat every 👉 question and ⛔ gate as an end-of-turn boundary. Your response **MUST** end after the question text. Produce no further tokens.
-
-**End your response immediately** after any 👉 question or ⛔ mandatory gate. Do not generate any content beyond the question itself.
-
-**Prohibited behaviors after a question or gate:**
-
-- Do not answer the question.
-- Do not assume a response.
-- Do not say "I'll go with X."
-- Do not proceed to the next step.
-- Do not write checkpoints for the current step.
+Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question text — produce no further tokens. Do not answer, assume a response, proceed to the next step, or write checkpoints.
 
 ## Hooks
 
-Create hooks using the `createHook` tool with definitions from the Hook Registry in `onboarding-flow.md`. Critical hooks are created during onboarding. Module hooks are created when the relevant module starts — check the Hook Registry for module associations and create any missing hooks for the current module before beginning module work.
+Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks.
 
-The `capture-feedback` hook is critical — it guarantees feedback is captured when bootcampers use trigger phrases. Verify it is installed.
-
-On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed`. If present and populated, skip hook creation. If absent, create Critical Hooks from the Hook Registry.
-
-**🔇 Hook silence rule:** When a hook check passes with no action needed, produce absolutely no output — zero tokens, zero characters. Do not acknowledge the check, do not explain your reasoning, do not print any status message, do not narrate your evaluation, do not explain why no action is needed. Your response must be completely empty. Only produce output when the hook identifies a problem requiring corrective action. This applies to ALL hooks — preToolUse, agentStop, fileEdited, fileCreated, and any other hook type.
+**🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero output — no acknowledgment, no reasoning, no status. Only produce output when the hook identifies a problem. Applies to ALL hook types.
 
 ## Context Budget
 
-Before loading any steering file, check `steering-index.yaml` `file_metadata` for `token_count` and `size_category`. Track cumulative tokens throughout the session. Prefer `small`/`medium` files over `large`.
+Check `steering-index.yaml` `file_metadata` for `token_count` and `size_category` before loading. For split modules, use phase-level `token_count` from the `phases` map. Track cumulative tokens.
 
-Phase-level token costs for split modules: use the phase-level `token_count` from the `phases` map instead of the monolithic file count. Total cost = root file tokens + current phase sub-file tokens.
-
-- **Warn (120k tokens):** Load only files relevant to current module/question. Defer supplementary files.
-- **Critical (160k tokens):** Unload non-essential files before loading new ones.
+- **Warn (120k):** Load only files relevant to current module/question.
+- **Critical (160k):** Unload non-essential files first.
 - **Retention priority:** `agent-instructions.md` > current module > language file > troubleshooting > everything else.
 
-When loading a `large` file, announce the token cost to the user.
+When loading a `large` file, announce the token cost.

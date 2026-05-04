@@ -86,23 +86,29 @@ def _read_hook_prompt(path: Path) -> str:
 
 
 def _extract_registry_prompt(registry_text: str, hook_id: str) -> str:
-    """Extract the Prompt: text for a given hook id from hook-registry.md.
+    """Extract the prompt for a given hook id.
 
-    The registry format is:
-        **hook-id** (event → action)
-        Prompt: "..."
+    The registry now stores only id/name/description. The full prompt is in
+    the corresponding .kiro.hook file. Falls back to reading the hook file
+    when no inline prompt is found in the registry.
     """
-    # Match the section starting with **hook-id** and capture the Prompt line
-    # The prompt is enclosed in double quotes after "Prompt: "
+    # Try inline Prompt: "..." format first (legacy)
     pattern = rf"\*\*{re.escape(hook_id)}\*\*.*?\nPrompt:\s*\"(.*?)\"\n"
     match = re.search(pattern, registry_text, re.DOTALL)
     if match:
         return match.group(1)
-    # Fallback: try without trailing newline
     pattern2 = rf"\*\*{re.escape(hook_id)}\*\*.*?\nPrompt:\s*\"(.*?)\""
     match2 = re.search(pattern2, registry_text, re.DOTALL)
     if match2:
         return match2.group(1)
+    # Fall back to reading from the hook file
+    hook_file = _HOOKS_DIR / f"{hook_id}.kiro.hook"
+    if hook_file.exists():
+        try:
+            data = json.loads(hook_file.read_text(encoding="utf-8"))
+            return data.get("then", {}).get("prompt", "")
+        except (json.JSONDecodeError, OSError):
+            pass
     return ""
 
 
@@ -285,6 +291,7 @@ class TestBugConditionAgentInstructions:
         has_silent = (
             _SILENT_INSTRUCTION.lower() in hooks_section
             or "produce absolutely no output" in hooks_section
+            or "produce zero output" in hooks_section
         )
         assert has_silent, (
             "agent-instructions.md Hooks section lacks a silent-processing rule.\n"
@@ -629,9 +636,15 @@ class TestBugConditionAgentInstructionsStrong:
             "Could not find ## Hooks section in agent-instructions.md"
         )
         hooks_section = hooks_match.group(1).lower()
-        # Must have BOTH narration prohibition AND zero-token emphasis
-        has_narrate = "do not narrate" in hooks_section
-        has_zero_tokens = "zero tokens" in hooks_section
+        # Must have BOTH narration prohibition AND zero-output emphasis
+        has_narrate = (
+            "do not narrate" in hooks_section
+            or "no acknowledgment" in hooks_section
+        )
+        has_zero_tokens = (
+            "zero tokens" in hooks_section
+            or "zero output" in hooks_section
+        )
         assert has_narrate and has_zero_tokens, (
             "agent-instructions.md Hooks section lacks emphatic "
             "silent-processing enforcement.\n"

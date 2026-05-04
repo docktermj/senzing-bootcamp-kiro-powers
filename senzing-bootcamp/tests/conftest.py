@@ -20,6 +20,28 @@ if _SCRIPTS_DIR not in sys.path:
 # ---------------------------------------------------------------------------
 
 
+_PROJECT_ROOT = str(Path(__file__).resolve().parent.parent.parent)
+
+
+@pytest.fixture(autouse=True)
+def _recover_stale_cwd():
+    """Recover from a stale cwd before every test.
+
+    Some tests use raw ``os.chdir`` in try/finally blocks. If the
+    restored directory was a temp dir that got cleaned up, the cwd
+    becomes invalid and subsequent ``monkeypatch.chdir`` calls fail.
+    Also restores to the project root if cwd was changed to a temp dir.
+    """
+    try:
+        cwd = os.getcwd()
+    except (FileNotFoundError, OSError):
+        os.chdir(_PROJECT_ROOT)
+        return
+    # If cwd is inside /tmp (left over from a previous test), restore to project root
+    if cwd.startswith("/tmp") or cwd.startswith("/var"):
+        os.chdir(_PROJECT_ROOT)
+
+
 @pytest.fixture()
 def project_root(tmp_path, monkeypatch):
     """Create an isolated project root and chdir into it."""

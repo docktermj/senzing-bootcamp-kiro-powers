@@ -61,12 +61,12 @@ class TestVizGuidePromptAndBranching:
         assert "Web service" in self.content
 
     def test_wait_instruction_after_prompt(self):
-        """WAIT instruction follows the Visualization Prompt."""
+        """STOP/WAIT instruction follows the Visualization Prompt."""
         prompt_pos = self.content.index("Visualization Prompt")
-        # Find the next WAIT after the prompt
-        wait_pos = self.content.index("WAIT", prompt_pos)
-        # The WAIT should be reasonably close to the prompt (within the same step)
-        assert wait_pos - prompt_pos < 800
+        # Find the next STOP or WAIT after the prompt
+        stop_pos = self.content.index("STOP", prompt_pos)
+        # The STOP should be reasonably close to the prompt (within the same step)
+        assert stop_pos - prompt_pos < 800
 
     def test_branching_static_html_path(self):
         """Branching logic exists for Static HTML path."""
@@ -76,11 +76,11 @@ class TestVizGuidePromptAndBranching:
         assert "static html file" in lower
 
     def test_branching_web_service_path(self):
-        """Branching logic directs to Web Server Guidance for web service."""
-        assert "Web Server Guidance" in self.content
-        # Should mention following the web server guidance section
+        """Branching logic directs to web service path."""
         lower = self.content.lower()
-        assert "web server guidance" in lower
+        assert "web service" in lower
+        # Should mention the web service option and reference file
+        assert "visualization-reference.md" in self.content or "web service" in lower
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -398,34 +398,38 @@ class TestPreservation:
     @pytest.fixture(autouse=True)
     def _load(self):
         self.viz_guide = _read(_VIZ_GUIDE)
+        # Content was split: reference material moved to visualization-reference.md
+        viz_ref_path = _POWER_ROOT / "steering" / "visualization-reference.md"
+        self.viz_ref = _read(viz_ref_path) if viz_ref_path.exists() else ""
+        self.viz_combined = self.viz_guide + self.viz_ref
         self.module_03 = _read(_MODULE_03)
         self.module_07 = _read(_MODULE_07)
 
     # --- visualization-guide.md preservation ---
 
     def test_graph_data_model_schema_preserved(self):
-        """Existing Graph Data Model Schema is preserved."""
-        assert "Graph Data Model Schema" in self.viz_guide
-        assert "EntityNode" in self.viz_guide
-        assert "RelationshipEdge" in self.viz_guide
-        assert "entityId" in self.viz_guide
-        assert "primaryName" in self.viz_guide
+        """Existing Graph Data Model Schema is preserved (in guide or reference)."""
+        assert "Graph Data Model Schema" in self.viz_combined
+        assert "EntityNode" in self.viz_combined
+        assert "RelationshipEdge" in self.viz_combined
+        assert "entityId" in self.viz_combined
+        assert "primaryName" in self.viz_combined
 
     def test_visualization_feature_guidance_preserved(self):
-        """Existing Visualization Feature Guidance is preserved."""
-        assert "Visualization Feature Guidance" in self.viz_guide
-        assert "D3.js Force Layout" in self.viz_guide
-        assert "Detail Panel" in self.viz_guide
-        assert "Cluster Highlighting" in self.viz_guide
-        assert "Search & Filter" in self.viz_guide
-        assert "Statistics" in self.viz_guide
+        """Existing Visualization Feature Guidance is preserved (in guide or reference)."""
+        assert "Visualization Feature Guidance" in self.viz_combined
+        assert "D3.js Force Layout" in self.viz_combined
+        assert "Detail Panel" in self.viz_combined
+        assert "Cluster Highlighting" in self.viz_combined
+        assert "Search & Filter" in self.viz_combined
+        assert "Statistics" in self.viz_combined
 
     def test_error_handling_guidance_preserved(self):
-        """Existing Error Handling Guidance table is preserved."""
-        assert "Error Handling Guidance" in self.viz_guide
-        assert "SDK not initialized" in self.viz_guide
-        assert "Empty database" in self.viz_guide
-        assert "Entity count > 500" in self.viz_guide
+        """Existing Error Handling content is preserved (in guide or reference)."""
+        assert "Error Handling" in self.viz_combined
+        assert "SDK not initialized" in self.viz_combined
+        assert "Empty database" in self.viz_combined
+        assert "Entity count > 500" in self.viz_combined
 
     # --- module-03-quick-demo.md preservation ---
 

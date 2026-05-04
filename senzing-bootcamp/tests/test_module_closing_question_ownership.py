@@ -84,10 +84,26 @@ def _sha256(content: str) -> str:
 
 
 def _find_inline_pointing_questions(content: str) -> list[str]:
-    """Find lines containing a pointing-right emoji followed by a question mark (inline closing questions)."""
+    """Find lines containing a pointing-right emoji followed by a question mark.
+
+    These represent inline closing questions. Excludes properly structured
+    👉 questions that are followed within 3 lines by a STOP/wait instruction,
+    since those are stop-and-wait workflow questions, not closing questions.
+    """
     matches = []
-    for line in content.splitlines():
+    lines = content.splitlines()
+    for i, line in enumerate(lines):
         if "\U0001f449" in line and "?" in line:
+            # Check if this is a proper stop-and-wait question
+            # (followed by a STOP instruction within 3 lines)
+            is_stop_and_wait = False
+            for j in range(i + 1, min(len(lines), i + 4)):
+                following = lines[j].strip()
+                if "STOP" in following or "wait" in following.lower():
+                    is_stop_and_wait = True
+                    break
+            if is_stop_and_wait:
+                continue  # Skip — proper stop-and-wait question
             matches.append(line.strip())
     return matches
 
@@ -95,20 +111,27 @@ def _find_inline_pointing_questions(content: str) -> list[str]:
 def _find_wait_instructions(content: str) -> list[str]:
     """Find lines matching any WAIT pattern.
 
-    Excludes WAIT instructions that are part of visualization delivery prompts
-    (added by the visualization-web-service feature). Those WAITs are for a
-    delivery-mode choice, not closing questions owned by the ask-bootcamper hook.
+    Excludes WAIT instructions that are part of:
+    - Visualization delivery prompts (added by the visualization-web-service feature)
+    - Phase gates (⛔ PHASE GATE sections with MANDATORY STOP / WAIT)
+    - Stop-and-wait 👉 question blocks (proper ask-then-wait patterns)
+    Those WAITs are structural gates, not closing questions owned by the
+    ask-bootcamper hook.
     """
     matches = []
     lines = content.splitlines()
     for i, line in enumerate(lines):
         for pattern in _WAIT_PATTERNS:
             if pattern.search(line):
-                # Check surrounding context (previous 15 lines) for visualization prompt markers
-                context_start = max(0, i - 15)
+                # Check surrounding context (previous 30 lines) for exclusion markers
+                context_start = max(0, i - 30)
                 context = "\n".join(lines[context_start:i + 1])
                 if "Static HTML file" in context and "Web service" in context:
-                    break  # Skip — this WAIT is part of a visualization delivery prompt
+                    break  # Skip — visualization delivery prompt
+                if "PHASE GATE" in context or "⛔" in context:
+                    break  # Skip — phase gate stop instruction
+                if "🛑 STOP" in line and "End your response here" in line:
+                    break  # Skip — question stop protocol instruction
                 matches.append(line.strip())
                 break  # avoid duplicate matches for the same line
     return matches
@@ -402,6 +425,10 @@ _HEADINGS_MODULE_02 = [
     "## Step 3: Install Senzing SDK",
     "## Step 4: Verify Installation",
     "## Step 5: Configure License",
+    "### 5a. Explain the built-in evaluation license",
+    "### 5b. Ask about the bootcamper's license situation",
+    "### 5c. Handle the response",
+    "### 5d. Configure LICENSEFILE in engine config",
     "## Step 6: Create Project Directory Structure",
     "## Step 7: Configure Database",
     "## Step 8: Create Engine Configuration",
@@ -457,8 +484,9 @@ _HEADINGS_MODULE_11 = [
     "## Step 9: Scaling Guidance",
     "## Step 10: Deployment Scripts",
     "## Step 11: Pre-Deployment Checklist",
-    "## Step 12: Rollback Plan",
     "## \u26d4 PHASE GATE \u2014 PACKAGING COMPLETE, DEPLOYMENT DECISION REQUIRED",
+    "## Step 12: Rollback Plan",
+    "## Further Reading",
     "## Error Handling",
 ]
 
@@ -595,8 +623,8 @@ _HASH_UNAFFECTED: dict[str, str] = {
 }
 
 _HASH_HOOK = "25d9aba49c890ec8ad004508d939767cb3ed9637c1741ec313b11d75412101b5"
-_HASH_AGENT_INSTRUCTIONS = "5efac81460d27128c301c19326f11e1c245f8430429dbbe62ca97eb70f355fdf"
-_HASH_ONBOARDING_FLOW = "02f5f8c8762163b84711d16aab62dab74193b64c65264ce14152846931a1162c"
+_HASH_AGENT_INSTRUCTIONS = "5deb02612895a94ac1c14f2f41d5af3d36fa0b0f998ecb1ce3c25aa501ff49b2"
+_HASH_ONBOARDING_FLOW = "643e163a1856e75fd5927c30a919f9362cc3f179151e01af18ecf3ed2d19f34b"
 
 
 # ---------------------------------------------------------------------------

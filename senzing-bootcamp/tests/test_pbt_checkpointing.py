@@ -133,7 +133,7 @@ class TestProperty2ModuleCompletionClearsStep:
             progress_path = str(Path(td) / "progress.json")
 
             # Write a checkpoint first so there is step data
-            write_checkpoint(module_number=module, step_number=step, progress_path=progress_path)
+            write_checkpoint(module_number=module, step=step, progress_path=progress_path)
 
             # Simulate module completion by clearing the step
             clear_step(progress_path=progress_path)
@@ -174,7 +174,7 @@ class TestProperty3CheckpointWriteConsistency:
             progress_path = str(Path(td) / "progress.json")
             before = datetime.datetime.now(datetime.timezone.utc)
 
-            write_checkpoint(module_number=module, step_number=step, progress_path=progress_path)
+            write_checkpoint(module_number=module, step=step, progress_path=progress_path)
 
             data = json.loads(Path(progress_path).read_text(encoding="utf-8"))
 

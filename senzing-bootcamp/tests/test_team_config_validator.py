@@ -43,7 +43,7 @@ repo_path_strategy = st.text(
     alphabet=string.ascii_lowercase + string.digits + "/_-",
     min_size=1,
     max_size=50,
-).filter(lambda s: len(s.strip()) > 0)
+).filter(lambda s: len(s.strip()) > 0 and "//" not in s)
 
 mode_strategy = st.sampled_from(["colocated", "distributed"])
 

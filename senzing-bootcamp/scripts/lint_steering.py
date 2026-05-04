@@ -530,6 +530,33 @@ def _find_workflow_end(lines: list, frontmatter_end: int) -> int:
     return len(lines)
 
 
+def _is_in_non_workflow_section(lines: list, line_idx: int) -> bool:
+    """Check if a line falls inside a non-workflow section.
+
+    Non-workflow sections are headed by ## headings like "Error Handling",
+    "Troubleshooting", "Success Criteria", or "Agent Rules" that contain
+    numbered lists which are NOT workflow steps.
+
+    Args:
+        lines: List of file lines.
+        line_idx: 0-based index of the line to check.
+
+    Returns:
+        True if the line is inside a non-workflow section.
+    """
+    non_workflow_headings = {
+        "error handling", "troubleshooting", "success criteria",
+        "agent rules", "references", "appendix",
+    }
+    # Walk backwards to find the nearest ## heading
+    for i in range(line_idx, -1, -1):
+        stripped = lines[i].strip()
+        if stripped.startswith("## "):
+            heading_text = stripped[3:].strip().lower()
+            return heading_text in non_workflow_headings
+    return False
+
+
 def check_checkpoints(steering_dir: Path) -> list:
     """Rule 4: Detect numbered steps missing checkpoint instructions."""
     violations = []
@@ -562,7 +589,9 @@ def check_checkpoints(steering_dir: Path) -> list:
                 heading_steps.append((line_idx, int(hm.group(1))))
             nm = RE_NUMBERED_STEP.match(line)
             if nm:
-                numbered_steps.append((line_idx, int(nm.group(1))))
+                # Skip numbered items inside non-workflow sections
+                if not _is_in_non_workflow_section(lines, line_idx):
+                    numbered_steps.append((line_idx, int(nm.group(1))))
 
         # Use heading steps if available (scan entire file for these)
         # For numbered steps, restrict to the main workflow section to

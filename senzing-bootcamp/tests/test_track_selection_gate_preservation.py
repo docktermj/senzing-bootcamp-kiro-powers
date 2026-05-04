@@ -226,12 +226,12 @@ class TestTrackMappingPreserved:
             "Step 5 missing 'Interpreting responses' text"
         )
 
-    def test_step5_maps_a_to_module3(self) -> None:
-        """Assert track A maps to Module 3."""
+    def test_step5_maps_a_to_module1(self) -> None:
+        """Assert track A maps to Module 1."""
         content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
         step5 = _extract_section(content, "5. Track Selection")
-        assert re.search(r'"A".*Module 3|"demo".*Module 3', step5), (
-            "Step 5 missing A→Module 3 mapping"
+        assert re.search(r'"A".*Module 1|"demo".*Module 1', step5), (
+            "Step 5 missing A→Module 1 mapping"
         )
 
     def test_step5_maps_b_to_module5(self) -> None:

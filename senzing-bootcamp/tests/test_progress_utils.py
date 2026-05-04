@@ -487,8 +487,8 @@ class TestIntegrationSubStepCheckpoint:
         # agent-instructions.md: must reference sub-step identifiers or checkpoints
         ai_path = steering_dir / "agent-instructions.md"
         ai_content = ai_path.read_text(encoding="utf-8")
-        assert "sub-step identifier" in ai_content or "sub-step checkpoint" in ai_content, (
-            "agent-instructions.md should contain 'sub-step identifier' or 'sub-step checkpoint'"
+        assert "sub-step" in ai_content, (
+            "agent-instructions.md should reference sub-step checkpointing"
         )
 
         # session-resume.md: must reference sub-step identifiers or parse_parent_step

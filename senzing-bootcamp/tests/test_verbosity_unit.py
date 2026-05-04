@@ -360,10 +360,10 @@ class TestSteeringFileSmokeTests:
         path = self._power_root() / "steering" / "verbosity-control.md"
         assert path.is_file(), f"Missing: {path}"
 
-    def test_frontmatter_contains_inclusion_always(self):
-        """Frontmatter contains 'inclusion: always'."""
+    def test_frontmatter_contains_inclusion_auto(self):
+        """Frontmatter contains 'inclusion: auto'."""
         content = self._read_steering_file()
-        assert "inclusion: always" in content
+        assert "inclusion: auto" in content
 
     def test_all_five_category_names_present(self):
         """All five category names appear in the steering file."""

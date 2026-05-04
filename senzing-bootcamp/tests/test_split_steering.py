@@ -536,6 +536,7 @@ class TestProperty7FallbackBehavior:
 STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 INDEX_PATH = STEERING_DIR / "steering-index.yaml"
 AGENT_INSTRUCTIONS = STEERING_DIR / "agent-instructions.md"
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 class TestUnitModule5SubFileNames:
@@ -674,6 +675,7 @@ class TestIntegrationModule5EndToEnd:
             ["python3", "senzing-bootcamp/scripts/measure_steering.py", "--check"],
             capture_output=True,
             text=True,
+            cwd=str(_PROJECT_ROOT),
         )
         assert result.returncode == 0, \
             f"measure_steering.py --check failed: {result.stdout}\n{result.stderr}"
@@ -712,6 +714,7 @@ class TestIntegrationModule6EndToEnd:
             ["python3", "senzing-bootcamp/scripts/measure_steering.py", "--check"],
             capture_output=True,
             text=True,
+            cwd=str(_PROJECT_ROOT),
         )
         assert result.returncode == 0, \
             f"measure_steering.py --check failed: {result.stdout}\n{result.stderr}"
@@ -726,6 +729,7 @@ class TestIntegrationSteeringIndexConsistency:
             ["python3", "senzing-bootcamp/scripts/measure_steering.py", "--check"],
             capture_output=True,
             text=True,
+            cwd=str(_PROJECT_ROOT),
         )
         assert result.returncode == 0, \
             f"measure_steering.py --check failed: {result.stdout}\n{result.stderr}"

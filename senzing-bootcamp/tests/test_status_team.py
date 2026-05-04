@@ -135,7 +135,7 @@ class TestShowMemberStatus:
         out = capsys.readouterr().out
         assert "Alice" in out
         assert "alice" in out
-        assert "3/12" in out
+        assert "3/11" in out
 
     def test_with_no_data(self, capsys):
         """Shows warning when no data available."""

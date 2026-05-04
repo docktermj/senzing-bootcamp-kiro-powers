@@ -72,7 +72,10 @@ def st_entry_dict(draw):
 
 @st.composite
 def st_invalid_line(draw):
-    """Generate a string that is NOT valid JSON and contains no newlines."""
+    """Generate a string that is NOT valid JSON and contains no newlines.
+
+    Excludes whitespace-only strings since parse_log skips blank lines.
+    """
     base = draw(
         st.text(
             alphabet=st.characters(
@@ -80,7 +83,7 @@ def st_invalid_line(draw):
             ),
             min_size=1,
             max_size=100,
-        )
+        ).filter(lambda s: s.strip())
     )
     # Ensure it's not valid JSON
     try:

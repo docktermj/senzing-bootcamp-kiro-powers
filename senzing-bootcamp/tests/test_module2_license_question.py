@@ -65,12 +65,21 @@ def _extract_step5(content: str) -> str:
 
 
 def _find_inline_questions(content: str) -> list[str]:
-    """Find lines matching inline question patterns specific to Step 5."""
+    """Find lines matching inline question patterns specific to Step 5.
+
+    Excludes properly structured 👉 questions that are in their own sub-step
+    with STOP instructions — those are the correct pattern, not inline gates.
+    """
     matches = []
     for line in content.splitlines():
+        stripped = line.strip()
+        # Skip properly structured 👉 questions — these are stop-and-wait
+        # questions in their own sub-step, not inline conditional gates.
+        if stripped.startswith("👉"):
+            continue
         for pattern in _INLINE_QUESTION_PATTERNS:
             if pattern.search(line):
-                matches.append(line.strip())
+                matches.append(stripped)
                 break
     return matches
 
@@ -112,11 +121,15 @@ class TestBugConditionStep5:
     def test_step5_no_inline_question_do_you_have(self) -> None:
         """**Validates: Requirements 1.1, 1.2**
 
-        Step 5 should NOT contain 'Do you have a Senzing license' inline question."""
+        Step 5 should NOT contain 'Do you have a Senzing license' as an inline
+        conditional gate. Properly structured 👉 questions are allowed."""
         content = _read_file(_MODULE_02_FILE)
         step5 = _extract_step5(content)
         pattern = re.compile(r"Do you have a Senzing license", re.IGNORECASE)
-        matches = [line.strip() for line in step5.splitlines() if pattern.search(line)]
+        matches = [
+            line.strip() for line in step5.splitlines()
+            if pattern.search(line) and not line.strip().startswith("👉")
+        ]
         assert len(matches) == 0, (
             f"Step 5 contains inline question 'Do you have a Senzing license':\n"
             + "\n".join(f"  - {m}" for m in matches)
@@ -138,7 +151,8 @@ class TestBugConditionStep5:
     def test_step5_no_inline_questions_combined(self) -> None:
         """**Validates: Requirements 1.1, 1.2, 1.3, 2.2**
 
-        Step 5 should NOT contain any inline question patterns."""
+        Step 5 should NOT contain any inline question patterns as conditional
+        gates. Properly structured 👉 questions are allowed."""
         content = _read_file(_MODULE_02_FILE)
         step5 = _extract_step5(content)
         questions = _find_inline_questions(step5)
@@ -292,7 +306,7 @@ import hashlib
 _STEP_HASHES: dict[str, str] = {
     "Step 1": "32e777457a1e706c4b46aed05fd48016211a61456696ab4149d804863642c4bd",
     "Step 2": "d699ce64d2b9f6f8f834466b7886611343554f5d3e7f1bf89c39ad7d58cf92a0",
-    "Step 3": "d7c960e5ed8453dfda7120d9c0731f78deefea81409a87f616246486359ab800",
+    "Step 3": "17378b9a07377b9309244b9c4f932a6dd4c2a80a796aba021de5e2bb31a2dd31",
     "Step 4": "5ee5168b5bfe301fcf7f6841ef78f3ab334dfc1b413e7440cc598fc72d69e6be",
     "Step 6": "67f0d91f31c40a0ef08336845a0a001ab959d4dc38c8ef5864e7a0141df4837f",
     "Step 7": "e70acaae1640b0259e3cc5927f5ea27c88a98b3625cc2d5a6eca36ca367bb7a2",
@@ -301,7 +315,7 @@ _STEP_HASHES: dict[str, str] = {
 }
 
 _PREAMBLE_HASH = "d7645bfe51464bd2b52d7515a462879ff8d1398148326688fe98d4049602024f"
-_POST_STEP9_HASH = "4b2fe895f0b163de379485f2e311d37273e6fd359d35efdc13d72f45341590aa"
+_POST_STEP9_HASH = "e66dcbc4ce1861e5684362dae5553fca2db35bef51fa63d65b8c8719b8d8dcd8"
 
 _EXPECTED_HEADINGS = [
     "# Module 2: SDK Installation and Configuration",
@@ -310,6 +324,10 @@ _EXPECTED_HEADINGS = [
     "## Step 3: Install Senzing SDK",
     "## Step 4: Verify Installation",
     "## Step 5: Configure License",
+    "### 5a. Explain the built-in evaluation license",
+    "### 5b. Ask about the bootcamper's license situation",
+    "### 5c. Handle the response",
+    "### 5d. Configure LICENSEFILE in engine config",
     "## Step 6: Create Project Directory Structure",
     "## Step 7: Configure Database",
     "## Step 8: Create Engine Configuration",

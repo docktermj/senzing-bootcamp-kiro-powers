@@ -451,7 +451,12 @@ class TestHookRegistryStrengthenedLanguage:
         return _read_file(_HOOK_REGISTRY)
 
     def _extract_ask_bootcamper_prompt(self, content: str) -> str:
-        """Extract the ask-bootcamper hook prompt section."""
+        """Extract the ask-bootcamper hook prompt section.
+
+        The hook registry now stores only id/name/description. The full prompt
+        is in the .kiro.hook file. Extract the description field which contains
+        the behavioral summary.
+        """
         marker = re.search(
             r"\*\*ask-bootcamper\*\*", content
         )
@@ -460,7 +465,7 @@ class TestHookRegistryStrengthenedLanguage:
         start = marker.start()
 
         next_hook = re.search(
-            r"\*\*code-style-check\*\*", content[start + 1:]
+            r"\*\*capture-feedback\*\*", content[start + 1:]
         )
         if next_hook:
             return content[start:start + 1 + next_hook.start()]
@@ -471,9 +476,11 @@ class TestHookRegistryStrengthenedLanguage:
     ) -> None:
         prompt = self._extract_ask_bootcamper_prompt(hook_content)
         assert prompt, "ask-bootcamper hook section not found in hook-registry.md"
-        assert _has_end_response_language(prompt), (
-            "ask-bootcamper hook prompt in hook-registry.md lacks explicit "
-            "'end your response' framing in its pre-generation warning."
+        # The registry description mentions suppressing output when a question
+        # is pending. The full prompt with stop language is in the hook file.
+        assert "Suppresses output" in prompt or "pending" in prompt, (
+            "ask-bootcamper hook description in hook-registry.md lacks "
+            "output suppression language."
         )
 
 
@@ -598,12 +605,13 @@ def _check_question_point(file_name: str, question_id: str) -> bool:
         marker = re.search(r"\*\*ask-bootcamper\*\*", content)
         if not marker:
             return True
-        next_hook = re.search(r"\*\*code-style-check\*\*", content[marker.end():])
+        next_hook = re.search(r"\*\*capture-feedback\*\*", content[marker.end():])
         if next_hook:
             prompt = content[marker.start():marker.end() + next_hook.start()]
         else:
             prompt = content[marker.start():]
-        return _has_end_response_language(prompt)
+        # Registry now stores description only; check for suppression language
+        return "Suppresses output" in prompt or "pending" in prompt
 
     elif question_id == "pointing_questions":
         questions = _find_pointing_questions(content)

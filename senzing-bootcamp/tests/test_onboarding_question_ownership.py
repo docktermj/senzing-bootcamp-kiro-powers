@@ -306,7 +306,7 @@ class TestPreservation:
         text = _read_onboarding()
         section = _extract_section(text, r"## 1\. ")
         assert "project-structure.md" in section
-        assert "Create Critical Hooks" in section
+        assert "Install Critical Hooks" in section
         assert "GLOSSARY.md" in section
         assert "product.md" in section
         assert "tech.md" in section
@@ -419,4 +419,4 @@ class TestPreservation:
         assert "bootcamp_progress.json" in content
         assert "step-level checkpointing" in content.lower() or "Step-level checkpointing" in content
         # End marker
-        assert "announce the token cost to the user" in content
+        assert "announce the token cost" in content

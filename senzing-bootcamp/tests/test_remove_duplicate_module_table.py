@@ -283,7 +283,7 @@ class TestPreservationStep5InterpretationRules:
     """
 
     _INTERPRETATION_FRAGMENTS = [
-        '"A"/"demo"→Module 3',
+        '"A"/"demo"→Module 1',
         '"B"/"fast"→Module 5',
         '"C"/"beginner"→Module 1',
         '"D"/"full"→Module 1',

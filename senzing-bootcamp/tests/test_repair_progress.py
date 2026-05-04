@@ -37,7 +37,6 @@ ARTIFACT_CREATORS = {
     9: lambda r: (r / "docs" / "performance_report.md").write_text("x", encoding="utf-8"),
     10: lambda r: (r / "docs" / "security_checklist.md").write_text("x", encoding="utf-8"),
     11: lambda r: (r / "monitoring").mkdir(parents=True, exist_ok=True),
-    12: lambda r: (r / "deploy.sh").write_text("#!/bin/bash", encoding="utf-8"),
 }
 
 

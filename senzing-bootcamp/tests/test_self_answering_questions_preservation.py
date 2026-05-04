@@ -225,33 +225,34 @@ _UNFIXED_HOOK_REGISTRY = _read_file(_HOOK_REGISTRY)
 
 
 def _extract_ask_bootcamper_second_branch(content: str) -> str:
-    """Extract the SECOND branch text from the ask-bootcamper prompt.
+    """Extract the SECOND branch text from the ask-bootcamper hook prompt.
 
     The SECOND branch starts with 'SECOND' and runs to the end of
-    the prompt section.
+    the prompt. Searches in the hook file content (JSON prompt field)
+    or in the registry if the prompt is inline.
     """
-    marker = re.search(r"\*\*ask-bootcamper\*\*", content)
-    if not marker:
-        return ""
-    start = marker.start()
-
-    next_hook = re.search(
-        r"\*\*code-style-check\*\*", content[start + 1:]
-    )
-    if next_hook:
-        prompt_section = content[start:start + 1 + next_hook.start()]
-    else:
-        prompt_section = content[start:]
-
-    second_match = re.search(r"SECOND\s*—", prompt_section)
+    # First try: look for SECOND in the content directly
+    second_match = re.search(r"SECOND\s*—", content)
     if not second_match:
+        # Try reading from the hook file
+        hook_file = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+        if hook_file.exists():
+            import json
+            try:
+                hook_data = json.loads(hook_file.read_text(encoding="utf-8"))
+                prompt = hook_data.get("then", {}).get("prompt", "")
+                second_match = re.search(r"SECOND\s*—", prompt)
+                if second_match:
+                    return prompt[second_match.start():]
+            except (json.JSONDecodeError, OSError):
+                pass
         return ""
 
     # Find the closing quote of the prompt
-    closing = prompt_section.rfind('"')
+    closing = content.rfind('"')
     if closing > second_match.start():
-        return prompt_section[second_match.start():closing]
-    return prompt_section[second_match.start():]
+        return content[second_match.start():closing]
+    return content[second_match.start():]
 
 
 _UNFIXED_SECOND_BRANCH = _extract_ask_bootcamper_second_branch(

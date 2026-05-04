@@ -235,6 +235,8 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         "name": "Backup Project on Request",
         "description": (
             "Run project backup when user clicks the hook button."
+            " Avoids firing on every prompt \u2014 use the manual trigger"
+            " button in the Agent Hooks panel instead."
         ),
     },
     "review-bootcamper-input": {
@@ -248,7 +250,8 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         "name": "Code Style Check",
         "description": (
             "Automatically checks source code files for language-appropriate coding standards"
-            " when edited."
+            " when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET"
+            " conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions."
         ),
     },
     "commonmark-validation": {
@@ -292,7 +295,7 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         "name": "Enforce Working Directory Paths",
         "description": (
             "Checks that file write operations do not use /tmp, %TEMP%, or any path outside"
-            " the working directory."
+            " the working directory. Enforces the file storage policy automatically."
         ),
     },
     "git-commit-reminder": {

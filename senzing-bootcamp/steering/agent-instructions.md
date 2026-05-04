@@ -23,6 +23,7 @@ If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 
 - All Senzing facts from MCP tools — never training data. Call `get_capabilities` first each session.
 - Attribute names → `mapping_workflow` | SDK code → `generate_scaffold`/`sdk_guide` | Signatures → `get_sdk_reference` | Errors → `explain_error_code` | Docs → `search_docs` | Examples → `find_examples`
+- Uncertain which tool? Load `mcp-tool-decision-tree.md` for the full decision tree with anti-patterns and call examples.
 - Never hand-code Senzing JSON mappings or SDK method names
 - Third-party software: consult Senzing MCP (`search_docs`) before recommending tools in a Senzing integration context.
 - Production-scale code only. Reject `exportJSONEntityReport()`/`export_report` — use per-entity queries.
@@ -45,10 +46,21 @@ Load per-module steering file when user starts that module (1→`module-01-busin
 
 ## State & Progress
 
-- `mapping_workflow`: pass exact `state`, never modify. Save checkpoints to `config/mapping_state_[datasource].json`.
+- `mapping_workflow`: pass exact `state`, never modify. Write a checkpoint to `config/mapping_state_[datasource].json` after **each** mapping step, not only at workflow completion. When the full mapping workflow completes for a data source, delete the corresponding checkpoint file.
 - Progress: `config/bootcamp_progress.json`. Preferences: `config/bootcamp_preferences.yaml`. Corrupted? Run `python3 senzing-bootcamp/scripts/validate_module.py`.
-- Step-level checkpointing: after each numbered step, update `config/bootcamp_progress.json` — set `current_step` to the step number, set `step_history["<module_number>"]` to `{ "last_completed_step": <step>, "updated_at": "<ISO 8601>" }`. On module completion, set `current_step` to `null`.
+- Step-level checkpointing: after each numbered step, update `config/bootcamp_progress.json` — set `current_step` to the step number or sub-step identifier, set `step_history["<module_number>"]` to `{ "last_completed_step": <step>, "updated_at": "<ISO 8601>" }`. `current_step` accepts integer values for whole steps (e.g., `5`) and string sub-step identifiers in dotted (`"5.3"`) or lettered (`"7a"`) notation. On module completion, set `current_step` to `null`.
+- Sub-step checkpointing: after completing each sub-step within a multi-part step, write a sub-step checkpoint using the sub-step identifier format defined in the module steering file (dotted or lettered notation).
 - Recovery from mistakes: load `recovery-from-mistakes.md` when a bootcamper needs to undo or redo a step.
+
+### Sub-Step Convention
+
+When a steering file step contains multiple independent 👉 questions, split it into lettered sub-steps so each sub-step holds at most one question. Follow these rules:
+
+- **Naming**: sub-steps use `{step_number}{letter}` format — `7a`, `7b`, `7c`, etc. Letters start at `a` and increment alphabetically within the parent step.
+- **One question per sub-step**: each sub-step contains at most one 👉 question and one 🛑 STOP instruction.
+- **Checkpoint per sub-step**: each sub-step has its own checkpoint instruction referencing its identifier (e.g., "Write step 7a to `config/bootcamp_progress.json`"). The parent step does not get a checkpoint when all content is distributed into sub-steps.
+- **No-question steps stay whole**: steps with zero questions remain as single numbered steps — do not split them into sub-steps.
+- **Mutually exclusive conditionals may share a sub-step**: when conditional questions are mutually exclusive (only one fires based on runtime state), they stay in a single sub-step with the conditional logic preserved. Only independent questions that could fire sequentially get their own sub-steps.
 
 ## Communication
 
@@ -59,6 +71,20 @@ Load per-module steering file when user starts that module (1→`module-01-busin
 - Before each step: what and why. During: status updates (never bare "Working..."). After: what changed, files with paths. Offer to visualize data results as a web page — save to `docs/` or `data/temp/`.
 - At module completion: summary, all files, why it matters for next module. Follow `module-transitions.md` rules. Load `module-completion.md` for journal and track-completion.
 - Feedback trigger phrases: handled by `review-bootcamper-input` hook — do not manually load `feedback-workflow.md`.
+
+### Question Stop Protocol
+
+Treat every 👉 question and ⛔ gate as an end-of-turn boundary. Your response **MUST** end after the question text. Produce no further tokens.
+
+**End your response immediately** after any 👉 question or ⛔ mandatory gate. Do not generate any content beyond the question itself.
+
+**Prohibited behaviors after a question or gate:**
+
+- Do not answer the question.
+- Do not assume a response.
+- Do not say "I'll go with X."
+- Do not proceed to the next step.
+- Do not write checkpoints for the current step.
 
 ## Hooks
 

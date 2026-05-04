@@ -82,7 +82,7 @@ _UNFIXED_HOOK_BYTES = _HOOK_FILE.read_bytes()
 
 # Phase 2 reference line
 _PHASE2_LINE = (
-    "**Phase 2 (Steps 9–16):** Loaded from "
+    "**Phase 2 (Steps 10\u201318):** Loaded from "
     "`module-01-phase2-document-confirm.md` via the phase system."
 )
 
@@ -202,14 +202,21 @@ class TestStepCountPreservation:
     """
 
     def test_exactly_8_numbered_steps(self) -> None:
-        """Assert the file contains exactly 8 top-level numbered steps."""
+        """Assert the file contains the expected top-level numbered workflow steps.
+
+        Steps 1-9 are workflow steps. The Error Handling section also has
+        numbered items (1-3) but those are not workflow steps. Sub-steps
+        (7a, 7b, etc.) are not matched by this pattern.
+        """
         content = _read_module_01()
         # Match top-level numbered steps: "N. **..."
         step_pattern = re.compile(r"^(\d+)\.\s+\*\*", re.MULTILINE)
         matches = step_pattern.findall(content)
         step_numbers = [int(m) for m in matches]
-        assert step_numbers == list(range(1, 9)), (
-            f"Expected steps 1–8, found: {step_numbers}"
+        # Workflow steps are 1-9; Error Handling section has 1-3
+        # Check that the first 9 entries are the workflow steps
+        assert step_numbers[:9] == list(range(1, 10)), (
+            f"Expected workflow steps 1\u20139, found: {step_numbers}"
         )
 
     def test_phase2_reference_also_present(self) -> None:
@@ -301,11 +308,16 @@ class TestCheckpointCountPreservation:
         )
 
     def test_checkpoint_count_is_8(self) -> None:
-        """Assert there are exactly 8 checkpoints (one per step)."""
+        """Assert there are checkpoints for all steps including sub-steps.
+
+        Steps 1-6 and 8-9 have one checkpoint each (8 total).
+        Step 7 was split into sub-steps 7a-7d, each with a checkpoint (4 total).
+        Total: 12 checkpoints.
+        """
         content = _read_module_01()
         count = len(_CHECKPOINT_RE.findall(content))
-        assert count == 8, (
-            f"Expected 8 checkpoints (one per step), found {count}."
+        assert count == 12, (
+            f"Expected 12 checkpoints (steps 1-6, 7a-7d, 8-9), found {count}."
         )
 
 

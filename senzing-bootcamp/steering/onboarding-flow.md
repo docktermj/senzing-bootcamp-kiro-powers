@@ -66,6 +66,8 @@ Persist the selection to `config/bootcamp_preferences.yaml`.
 Load language steering file immediately after confirmation (`lang-python.md`, `lang-java.md`, etc.).
 
 > ⛔ **MANDATORY GATE** — Language selection requires the bootcamper's actual choice. Do NOT assume or fabricate a language preference. MUST stop and wait for real input.
+>
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not say "I'll go with X." Do not proceed to the next step. Wait for the bootcamper's real input.
 
 ## 3. Prerequisite Check (Mandatory Gate)
 
@@ -119,6 +121,56 @@ Present the overview before track selection. Cover all points naturally:
 - Tracks let you skip to what matters
 - If you encounter unfamiliar terms (like Senzing Entity Specification (SGES), DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
 
+### 4a. What Is Entity Resolution?
+
+<!-- AGENT INSTRUCTION — not shown to the bootcamper.
+Before presenting this section, call `search_docs` from the Senzing MCP server
+to retrieve authoritative content:
+
+1. search_docs("Senzing principle-based entity resolution approach")
+2. search_docs("entity resolution outputs matched entities relationships deduplication")
+
+Use the retrieved content to fill in Senzing-specific claims below. If the MCP
+server is unavailable, present the static content in this section as-is and tell
+the bootcamper: "I'll verify these details against the latest Senzing
+documentation once the server is available." See mcp-offline-fallback.md for
+the general offline pattern.
+-->
+
+#### Why matching records is hard
+
+When the same person or organization exists in multiple systems, their records almost never look identical. Here is why:
+
+- **Name variations.** One system has "John Smith," another has "J. Smith," a third has "Jonathan Smith." All three may be the same person — or three different people.
+- **Address changes over time.** People move. A customer's address in your CRM may be two apartments ago compared to what a background-check provider has on file.
+- **Format inconsistencies across systems.** One database stores phone numbers as `(555) 867-5309`, another as `5558675309`, another as `+1-555-867-5309`. Dates, postal codes, and identifiers all vary the same way.
+- **Data entry errors.** Typos, transposed digits, and abbreviations ("St" vs "Street," "Rob" vs "Robert") creep into every dataset.
+- **The false-positive problem.** Similar records do not always mean the same entity. A father and son can share the same name and live at the same address — matching them together would be wrong. Simple fuzzy matching cannot tell the difference.
+
+These challenges compound across millions of records and dozens of sources. Getting matches right — and avoiding wrong ones — is what makes entity resolution a hard problem.
+
+#### How Senzing handles it
+
+Senzing uses **principle-based matching** rather than hand-coded rules or machine learning models that need training data. The principles are built on three observable behaviors of data attributes:
+
+- **Frequency** — How many entities share a given value? A common name like "John Smith" appears frequently, so a name match alone is weak evidence. A rare name carries more weight.
+- **Exclusivity** — Does an entity typically have one value of this type, or many? A Social Security Number (SSN) is exclusive — one person, one SSN. A phone number is less exclusive — people share phones, change numbers, and have multiple lines.
+- **Stability** — Does the value change over an entity's lifetime? A date of birth is highly stable (it never changes), while an address is unstable (people move).
+
+These principles let Senzing weigh evidence automatically. An SSN match is strong because SSNs are exclusive and stable. A date-of-birth match alone is weak because millions of people share any given birthday (high frequency). Senzing combines signals across all available features — names, addresses, identifiers, phones, dates — to make a resolution decision.
+
+Senzing comes preconfigured for people and organizations. You can load data and start resolving without writing matching rules or training a model.
+
+#### What entity resolution produces
+
+Entity resolution gives you three things, each with direct business value:
+
+- **Matched entities.** Records from different sources that refer to the same real-world person or organization are grouped together, giving you a single consolidated view of each entity — sometimes called a "golden record" or "360-degree view."
+- **Cross-source relationships.** Connections discovered between entities across data sources. For example, you might discover that a vendor in your procurement system is the same company as a supplier in your ERP — a relationship invisible when the systems are siloed.
+- **Deduplication.** Duplicate records within and across sources are identified and consolidated. Instead of three slightly different records for the same customer, you get one entity with all the evidence linked together.
+
+These outputs are what the bootcamp modules will teach you to produce, query, and put into production.
+
 ### 4b. Verbosity Preference
 
 After presenting the overview, ask the bootcamper how much detail they want in the bootcamp output. Present the three presets:
@@ -147,6 +199,8 @@ After the bootcamper selects a preset, confirm the choice and tell them:
 If the bootcamper skips without answering, apply the `standard` preset as the default and inform them: "I've set your verbosity to **standard** (balanced detail). You can change this anytime."
 
 This is NOT a mandatory gate (⛔) — the bootcamper can skip it.
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
 ### 4c. Comprehension Check
 
@@ -178,6 +232,8 @@ Module 2 inserted automatically before any module needing SDK.
 Interpreting responses: "A"/"demo"→Module 3, "B"/"fast"→Module 5, "C"/"beginner"→Module 1, "D"/"full"→Module 1. Bare number→clarify letter vs module.
 
 > ⛔ **MANDATORY GATE — STOP HERE.** After presenting the track options above, you MUST stop. Do NOT proceed to any module. Do NOT fabricate a user response. Do NOT assume a track choice. Do NOT generate text like "Human: A" or "I'll go with Track A for you." The bootcamper MUST provide their own choice. The `ask-bootcamper` hook will fire and prompt them. Wait for their real response before continuing.
+>
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not say "I'll go with X." Do not proceed to the next step. Wait for the bootcamper's real input.
 
 ## Switching Tracks
 

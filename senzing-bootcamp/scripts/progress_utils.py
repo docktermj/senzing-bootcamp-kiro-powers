@@ -9,7 +9,11 @@ Cross-platform: works on Linux, macOS, and Windows.
 
 import datetime
 import json
+import re
 from pathlib import Path
+
+_DOTTED_SUB_STEP_RE = re.compile(r"^\d+\.\d+$")
+_LETTERED_SUB_STEP_RE = re.compile(r"^\d+[a-zA-Z]$")
 
 
 def _read_progress(progress_path: str) -> dict:
@@ -29,21 +33,27 @@ def _write_progress(progress_path: str, data: dict) -> None:
 
 def write_checkpoint(
     module_number: int,
-    step_number: int,
+    step: int | str,
     progress_path: str = "config/bootcamp_progress.json",
 ) -> None:
     """Write a step-level checkpoint to the progress file.
 
-    Updates ``current_step`` to *step_number* and sets the
-    ``step_history`` entry for *module_number* with the step number
-    and an ISO 8601 UTC timestamp.
+    Updates ``current_step`` to *step* and sets the ``step_history``
+    entry for *module_number* with the step value and an ISO 8601 UTC
+    timestamp.
+
+    Args:
+        module_number: The module number (1-12).
+        step: The step identifier — an integer for whole steps (e.g., ``5``)
+            or a string for sub-steps (e.g., ``"5.3"``, ``"7a"``).
+        progress_path: Path to the progress JSON file.
     """
     data = _read_progress(progress_path)
-    data["current_step"] = step_number
+    data["current_step"] = step
 
     step_history = data.setdefault("step_history", {})
     step_history[str(module_number)] = {
-        "last_completed_step": step_number,
+        "last_completed_step": step,
         "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     }
 
@@ -71,15 +81,48 @@ def _is_valid_iso8601(value: str) -> bool:
         return False
 
 
+def _is_valid_sub_step_identifier(value: str) -> bool:
+    """Return True if *value* matches a recognized sub-step format.
+
+    Recognized formats:
+    - Dotted notation: ``<digits>.<digits>`` (e.g., ``"5.3"``, ``"12.1"``)
+    - Lettered notation: ``<digits><letter>`` (e.g., ``"7a"``, ``"3B"``)
+    """
+    return bool(_DOTTED_SUB_STEP_RE.match(value) or _LETTERED_SUB_STEP_RE.match(value))
+
+
+def parse_parent_step(step: int | str | None) -> int | None:
+    """Extract the parent step number from a step identifier.
+
+    Args:
+        step: A step identifier — ``None``, an ``int`` (e.g., ``5``),
+            a dotted sub-step string (e.g., ``"5.3"``), or a lettered
+            sub-step string (e.g., ``"7a"``).
+
+    Returns:
+        The parent step as an ``int``, or ``None`` when *step* is ``None``.
+    """
+    if step is None:
+        return None
+    if isinstance(step, int):
+        return step
+    m = re.match(r"^\d+", step)
+    if m:
+        return int(m.group())
+    return None
+
+
 def validate_progress_schema(data: dict) -> list[str]:
     """Validate a progress dict against the extended schema.
 
     Checks:
-    - ``current_step`` (if present): must be ``int`` or ``None``.
+    - ``current_step`` (if present): must be ``int``, ``None``, or a ``str``
+      matching a recognized sub-step format (dotted ``<digits>.<digits>`` or
+      lettered ``<digits><letter>``).
     - ``step_history`` (if present): must be a dict whose keys are
       string representations of integers 1-12 and whose values each
-      contain ``last_completed_step`` (int) and ``updated_at``
-      (valid ISO 8601 string).
+      contain ``last_completed_step`` (``int`` or valid sub-step ``str``)
+      and ``updated_at`` (valid ISO 8601 string).
 
     Legacy files that lack these fields pass validation (backward
     compatible).
@@ -92,9 +135,17 @@ def validate_progress_schema(data: dict) -> list[str]:
     # --- current_step ---
     if "current_step" in data:
         cs = data["current_step"]
-        if cs is not None and not isinstance(cs, int):
+        if cs is None or isinstance(cs, int):
+            pass  # valid
+        elif isinstance(cs, str):
+            if not _is_valid_sub_step_identifier(cs):
+                errors.append(
+                    f"current_step string '{cs}' does not match any recognized "
+                    "sub-step format (expected '<digits>.<digits>' or '<digits><letter>')"
+                )
+        else:
             errors.append(
-                f"current_step must be an int or null, got {type(cs).__name__}"
+                f"current_step must be an int, str, or null, got {type(cs).__name__}"
             )
 
     # --- step_history ---
@@ -130,11 +181,22 @@ def validate_progress_schema(data: dict) -> list[str]:
                     errors.append(
                         f"step_history['{key}'] missing 'last_completed_step'"
                     )
-                elif not isinstance(entry["last_completed_step"], int):
-                    errors.append(
-                        f"step_history['{key}'].last_completed_step must be an int, "
-                        f"got {type(entry['last_completed_step']).__name__}"
-                    )
+                else:
+                    lcs = entry["last_completed_step"]
+                    if isinstance(lcs, int):
+                        pass  # valid
+                    elif isinstance(lcs, str):
+                        if not _is_valid_sub_step_identifier(lcs):
+                            errors.append(
+                                f"step_history['{key}'].last_completed_step string '{lcs}' "
+                                "does not match any recognized sub-step format "
+                                "(expected '<digits>.<digits>' or '<digits><letter>')"
+                            )
+                    else:
+                        errors.append(
+                            f"step_history['{key}'].last_completed_step must be an int or str, "
+                            f"got {type(lcs).__name__}"
+                        )
 
                 if "updated_at" not in entry:
                     errors.append(

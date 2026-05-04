@@ -16,7 +16,11 @@ Before packaging for Azure deployment, verify:
 - Azure Container Registry (ACR) provisioned for storing container images
 - Familiarity with the chosen deployment method (ARM templates, Bicep, Terraform, or Azure Portal)
 
-👉 "Do you have an Azure subscription and the Azure CLI installed? Have you already created a resource group for this deployment?" WAIT for response.
+👉 "Do you have an Azure subscription and the Azure CLI installed? Have you already created a resource group for this deployment?"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+WAIT for response.
 
 ## Architecture Overview
 

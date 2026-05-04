@@ -46,7 +46,6 @@ _AFFECTED_FILES: dict[str, Path] = {
 
 # Unaffected module files -- these should PASS (no bug patterns present)
 _UNAFFECTED_FILES: dict[str, Path] = {
-    "module-03": _STEERING_DIR / "module-03-quick-demo.md",
     "module-08": _STEERING_DIR / "module-08-performance.md",
     "module-09": _STEERING_DIR / "module-09-security.md",
     "module-10": _STEERING_DIR / "module-10-monitoring.md",
@@ -393,6 +392,7 @@ class TestBugConditionProperty:
 _HEADINGS_MODULE_01 = [
     "# Module 1: Discover the Business Problem",
     "## Workflow: Discover the Business Problem (Module 1)",
+    "## Error Handling",
 ]
 
 _HEADINGS_MODULE_02 = [
@@ -409,16 +409,19 @@ _HEADINGS_MODULE_02 = [
     "## Success Criteria",
     "## Transition",
     "## Troubleshooting",
+    "## Error Handling",
     "## Agent Behavior",
 ]
 
 _HEADINGS_MODULE_04 = [
     "# Module 4: Identify and Collect Data Sources",
     "## Workflow: Identify and Collect Data Sources (Module 4)",
+    "## Error Handling",
 ]
 
 _HEADINGS_MODULE_05 = [
     "# Module 5: Data Quality & Mapping",
+    "## Error Handling",
     "## Phase Sub-Files",
 ]
 
@@ -426,18 +429,23 @@ _HEADINGS_MODULE_06 = [
     "# Module 6: Load Data",
     "## Conditional Workflow: Check Phase 3 Status",
     "## Agent Workflow",
+    "## Error Handling",
     "## Phase Sub-Files",
+    "## Advanced Reading",
 ]
 
 _HEADINGS_MODULE_07 = [
     "# Module 7: Query and Visualize",
     "## Query Completeness Gate",
+    "## Error Handling",
     "## Integration Patterns",
 ]
 
 _HEADINGS_MODULE_11 = [
     "# Module 11: Packaging and Deployment",
     "## Step 1: Deployment Target and Method \u2014 ASK FIRST",
+    "### Step 1a: Deployment Target",
+    "### Step 1b: Deployment Method",
     "## Phase 1: Packaging (Steps 2-11)",
     "## Step 2: Packaging Requirements",
     "## Step 3: Package Code",
@@ -451,6 +459,7 @@ _HEADINGS_MODULE_11 = [
     "## Step 11: Pre-Deployment Checklist",
     "## Step 12: Rollback Plan",
     "## \u26d4 PHASE GATE \u2014 PACKAGING COMPLETE, DEPLOYMENT DECISION REQUIRED",
+    "## Error Handling",
 ]
 
 _HEADINGS_MODULE_COMPLETION = [
@@ -580,15 +589,14 @@ _ALL_KEY_CONTENT: dict[str, list[str]] = {
 # ---------------------------------------------------------------------------
 
 _HASH_UNAFFECTED: dict[str, str] = {
-    "module-03": "4867a239dfdc26a815dfde33b3a0a65e47be6148cc074b9acd73bbcabe2425ad",
-    "module-08": "be562893fffa44c0d11a635a79d4264470f80502c5db04aaed94eaaf42ebaebf",
-    "module-09": "b87f4a11c5ff5db5e5493827d73accce10759374596f01baee3029c6217893eb",
-    "module-10": "1aa581841f896ebad0eb2e088255f0b333c53662506170aca7fd9c64a69f17e3",
+    "module-08": "597a36b27086f63b0e7893350550cae8b9f1d6008e978b2bd087594a3f6fc38b",
+    "module-09": "d1c6edd0f4ef456f644233a3a7e7a794fc71949e775e1c34b22b380ee5af6ddd",
+    "module-10": "0c5de4e564ba6735d434360464e3dc9908570b5ad506303480585296fac2a935",
 }
 
 _HASH_HOOK = "25d9aba49c890ec8ad004508d939767cb3ed9637c1741ec313b11d75412101b5"
-_HASH_AGENT_INSTRUCTIONS = "d1e9f8a9ec6913e08586f8ac2be0b2600ccd5ec8fa7554d238ae2ccedbb5085e"
-_HASH_ONBOARDING_FLOW = "69afc63bf0eccf704597af20628085a89b608148136445ead62157d8f8f20ba0"
+_HASH_AGENT_INSTRUCTIONS = "5efac81460d27128c301c19326f11e1c245f8430429dbbe62ca97eb70f355fdf"
+_HASH_ONBOARDING_FLOW = "02f5f8c8762163b84711d16aab62dab74193b64c65264ce14152846931a1162c"
 
 
 # ---------------------------------------------------------------------------

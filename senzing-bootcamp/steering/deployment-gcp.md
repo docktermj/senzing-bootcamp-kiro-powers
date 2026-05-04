@@ -16,7 +16,11 @@ Before packaging for GCP deployment, verify:
 - IAM service account with appropriate roles for compute, database, and secrets access
 - Call `search_docs(query='GCP deployment', version='current')` for current Senzing GCP guidance
 
-👉 "Do you have a GCP project set up with the gcloud CLI installed? Have you created an Artifact Registry repository for container images?" WAIT for response.
+👉 "Do you have a GCP project set up with the gcloud CLI installed? Have you created an Artifact Registry repository for container images?"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+WAIT for response.
 
 ## Architecture Overview
 

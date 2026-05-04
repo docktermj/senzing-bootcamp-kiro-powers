@@ -18,13 +18,27 @@ Before starting: call `search_docs(query='security best practices', version='cur
 
 ## Step 1: Assess Security Requirements
 
-Ask about compliance requirements (SOC 2, GDPR, CCPA, HIPAA, PCI-DSS, etc.). Categorize:
+Categorize the bootcamper's compliance level based on their answers:
 
 - **Minimal:** No regulations → general best practices
 - **Standard:** SOC 2/ISO 27001 → documented controls, audit logging, encryption
 - **Strict:** GDPR/HIPAA/PCI → field-level encryption, retention policies, right-to-erasure
 
-Ask about security stakeholders. Document in `docs/security_compliance.md`.
+### Step 1a: Compliance Requirements
+
+"Do you have any compliance requirements? (e.g., SOC 2, GDPR, CCPA, HIPAA, PCI-DSS, or none)"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
+
+**Checkpoint:** Write step 1a to `config/bootcamp_progress.json`.
+
+### Step 1b: Security Stakeholders
+
+"Who are the security stakeholders for this project? (e.g., security team, compliance officer, or just you)"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
+
+After both answers: apply the categorization logic above (Minimal/Standard/Strict) and document in `docs/security_compliance.md`.
 
 **Tell the user what was assessed:**
 
@@ -47,7 +61,7 @@ Stakeholders who should review the security checklist: [names/roles]
 I've documented this in docs/security_compliance.md. Next, let's secure your credentials.
 ```
 
-**Checkpoint:** Write step 1 to `config/bootcamp_progress.json`.
+**Checkpoint:** Write step 1b to `config/bootcamp_progress.json`.
 
 ## Step 2: Secrets Management
 
@@ -180,6 +194,17 @@ Overall: [X/Y] items passing. [list any blockers]
 ```
 
 **Checkpoint:** Write step 11 to `config/bootcamp_progress.json`.
+
+## Error Handling
+
+When the bootcamper encounters an error during this module:
+
+1. **Check for SENZ error code** — if the error message contains a code matching `SENZ` followed by digits (e.g., `SENZ2027`):
+   - Call `explain_error_code(error_code="<code>", version="current")`
+   - Present the explanation and recommended fix to the bootcamper
+   - If `explain_error_code` returns no result, continue to step 2
+2. **Load `common-pitfalls.md`** — navigate to this module's section and present only the matching pitfall and fix
+3. **Check cross-module resources** — if no match in the module section, check the Troubleshooting by Symptom table and General Pitfalls section
 
 ## Step 12: Security Review
 

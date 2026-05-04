@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-All 18 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
+All 19 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
 
 ## Critical Hooks (created during onboarding)
 
@@ -57,6 +57,22 @@ Prompt: "Before writing this file, verify: Does the file path or any path in the
 - id: `enforce-working-directory`
 - name: `Enforce Working Directory Paths`
 - description: `Checks that file write operations do not use /tmp, %TEMP%, or any path outside the working directory. Enforces the file storage policy automatically.`
+
+**feedback-submission-reminder** (agentStop → askAgent)
+
+Prompt: "First, scan the conversation history for evidence that a track completion just occurred. Look for path completion celebration messages (e.g., congratulations on completing a track path, path completion banners) or graduation completion messages (e.g., '🎓 Graduation complete!'). If no track completion or graduation completion is detected in the conversation, produce no output — return nothing, zero tokens.
+
+If track completion or graduation completion IS detected, check whether a feedback reminder was already presented in this conversation. Scan recent conversation history for the 📋 character. If the 📋 marker is found in any recent assistant message, produce no output — the reminder was already shown.
+
+If no prior reminder was found, check if the file `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists. If it does not exist, produce no output. If it exists, read the file and look for at least one `## Improvement:` heading that appears below the `## Your Feedback` section (outside of fenced code blocks). If no such heading is found, produce no output — there are no feedback entries to remind about.
+
+If the file exists and contains at least one `## Improvement:` heading below `## Your Feedback`, emit exactly this message:
+
+📋 Reminder: You have bootcamp feedback saved. Say 'share feedback' to send it to the power author."
+
+- id: `feedback-submission-reminder`
+- name: `Feedback Submission Reminder`
+- description: `After track completion or graduation, checks for saved feedback and reminds the bootcamper to share it with the power author.`
 
 **review-bootcamper-input** (promptSubmit → askAgent)
 

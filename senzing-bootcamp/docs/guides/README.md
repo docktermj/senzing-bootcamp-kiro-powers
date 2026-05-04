@@ -54,6 +54,43 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - Threshold bands and recommended actions (≥80% proceed, 70-79% warn, <70% fix)
 - Examples of high, medium, and low quality data with sample scores
 
+**[DATA_UPDATES_AND_DELETIONS.md](DATA_UPDATES_AND_DELETIONS.md)**
+
+- Record updates using replace semantics (same DATA_SOURCE + RECORD_ID replaces old data)
+- Record deletions and their impact on entity composition
+- Entity re-evaluation after updates and deletions (merges, splits, removals)
+- Redo processing implications and the recommended check-process-drain pattern
+
+**[INCREMENTAL_LOADING.md](INCREMENTAL_LOADING.md)**
+
+- Incremental loading patterns for adding new records to an existing Senzing database
+- Redo processing after incremental loads: scheduling, queue monitoring, and drain verification
+- Pipeline health monitoring: throughput, error rates, redo queue depth, and entity count trends
+
+**[MULTI_LANGUAGE_DATA.md](MULTI_LANGUAGE_DATA.md)**
+
+- Non-Latin character support and how Senzing handles names in Chinese, Arabic, Cyrillic, and other scripts
+- UTF-8 encoding requirements, common encoding problems, and verification checklist
+- Cross-script name matching, transliteration, and multi-language data quality best practices
+
+**[PROGRESS_FILE_SCHEMA.md](PROGRESS_FILE_SCHEMA.md)**
+
+- Field definitions, types, and valid values for `config/bootcamp_progress.json`
+- Step history structure, validation rules, and a complete example
+- Lists which scripts and steering files read and write the progress file
+
+**[DATA_SOURCE_REGISTRY.md](DATA_SOURCE_REGISTRY.md)**
+
+- Field definitions, types, and valid values for `config/data_sources.yaml`
+- Enum values for format, mapping status, load status, and test load status
+- Schema migration from version 1 to version 2, plus read/write script references
+
+**[STEERING_INDEX.md](STEERING_INDEX.md)**
+
+- Structure and field definitions for `steering/steering-index.yaml`
+- Module entry formats (simple and split), keyword mappings, language and deployment mappings
+- File metadata token counts, context budget thresholds, and read/write script references
+
 ### After the Bootcamp
 
 **[AFTER_BOOTCAMP.md](AFTER_BOOTCAMP.md)**
@@ -62,6 +99,12 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - Production maintenance cadence (daily/weekly/monthly/quarterly)
 - Scaling, adding new data sources, staying updated
 - Advanced topics and community resources
+
+**[STREAMING_INTEGRATION.md](STREAMING_INTEGRATION.md)** — **Streaming Integration**
+
+- Real-time streaming patterns for consuming records from message queues (Apache Kafka, RabbitMQ, Amazon SQS) and processing them through Senzing entity resolution in real time
+- Backpressure handling strategies for when inbound message rates exceed processing capacity, including consumer-side rate limiting, queue-level buffering, and horizontal scaling
+- Error management for streaming pipelines: retry with exponential backoff, dead letter queue patterns, and monitoring to detect systemic issues
 
 ### Progress and Tracking
 
@@ -235,15 +278,22 @@ docs/
 │   ├── FAQ.md
 │   ├── COLLABORATION_GUIDE.md
 │   ├── COMMON_MISTAKES.md
+│   ├── DATA_SOURCE_REGISTRY.md
+│   ├── DATA_UPDATES_AND_DELETIONS.md
 │   ├── DESIGN_PATTERNS.md
 │   ├── GETTING_HELP.md
-│   ├── PROGRESS_TRACKER.md
-│   ├── AFTER_BOOTCAMP.md
 │   ├── GLOSSARY.md
 │   ├── HOOKS_INSTALLATION_GUIDE.md
+│   ├── INCREMENTAL_LOADING.md
+│   ├── MULTI_LANGUAGE_DATA.md
 │   ├── OFFLINE_MODE.md
 │   ├── PERFORMANCE_BASELINES.md
-│   └── QUALITY_SCORING_METHODOLOGY.md
+│   ├── PROGRESS_FILE_SCHEMA.md
+│   ├── PROGRESS_TRACKER.md
+│   ├── AFTER_BOOTCAMP.md
+│   ├── QUALITY_SCORING_METHODOLOGY.md
+│   ├── STEERING_INDEX.md
+│   └── STREAMING_INTEGRATION.md
 ├── diagrams/                  # ⭐ NEW! Visual docs
 │   ├── module-flow.md        # Module diagrams
 │   ├── data-flow.md          # Data pipeline diagrams

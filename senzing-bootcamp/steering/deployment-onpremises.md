@@ -16,7 +16,11 @@ Before packaging for on-premises deployment, verify:
 - Sufficient hardware resources — call `search_docs(query='hardware sizing requirements', version='current')` for current Senzing sizing guidance
 - Senzing SDK installed on target hosts — call `sdk_guide(topic='install', platform='linux', language='<chosen_language>', version='current')` for installation steps
 
-👉 "Do you have Docker and Docker Compose installed on your target deployment host(s)? And is PostgreSQL already running, or do we need to set that up too?" WAIT for response.
+👉 "Do you have Docker and Docker Compose installed on your target deployment host(s)? And is PostgreSQL already running, or do we need to set that up too?"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+WAIT for response.
 
 ## Architecture Overview
 

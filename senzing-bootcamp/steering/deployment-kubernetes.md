@@ -16,7 +16,11 @@ Before packaging for Kubernetes deployment, verify:
 - Namespace created for Senzing workloads (e.g., `kubectl create namespace senzing`)
 - Call `search_docs(query='Kubernetes deployment', version='current')` for current Senzing Kubernetes guidance
 
-👉 "What Kubernetes cluster are you targeting — a managed service (EKS, AKS, GKE), an on-premises cluster, or a local cluster (minikube, kind)? And do you have Helm v3 installed?" WAIT for response.
+👉 "What Kubernetes cluster are you targeting — a managed service (EKS, AKS, GKE), an on-premises cluster, or a local cluster (minikube, kind)? And do you have Helm v3 installed?"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+WAIT for response.
 
 ## Architecture Overview
 

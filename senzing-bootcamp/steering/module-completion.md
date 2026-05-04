@@ -64,6 +64,20 @@ When path is complete, present:
   2. If not skipped, present: "🎓 Would you like to run the graduation workflow? It will help you turn your bootcamp project into a production-ready codebase — clean structure, production configs, CI/CD pipeline, and a migration checklist."
   3. If accepted: load `steering/graduation.md` and begin the workflow.
   4. If declined: ask "Would you like me to remember this choice so I don't ask again?" If the bootcamper confirms, set `skip_graduation: true` in `config/bootcamp_preferences.yaml`. Then continue with the remaining post-completion options.
-- Remind: "Say 'bootcamp feedback' to share your experience"
+- Feedback Submission Reminder (after the graduation offer sequence, before the retrospective):
+  1. Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists.
+  2. If it exists, read the file and check for at least one `## Improvement:` heading below the `## Your Feedback` section (headings outside fenced code blocks count as real entries; the template block inside a fenced code block does not).
+  3. If feedback entries exist, display: "📋 You have feedback saved in `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`. Would you like to share it with the power author?"
+  4. If the bootcamper accepts, present the sharing options:
+
+     **How would you like to share your feedback?**
+
+     1. **Email** — Send to <support@senzing.com> with subject "Senzing Bootcamp Power Feedback". I can format the content for easy copy-paste.
+     2. **GitHub Issue** — Create an issue on the senzing-bootcamp power repository. I can format it as a markdown-ready issue body.
+     3. **Copy path** — I'll show you the full file path so you can share it however you prefer.
+
+     Do not automatically send emails or create GitHub issues — wait for explicit bootcamper confirmation before taking any external action.
+  5. If the bootcamper declines (says "no", "skip", "not now", or any declining response), proceed to the next step without re-prompting about feedback. Do not ask about feedback sharing again during this track completion sequence.
+  6. If the feedback file does not exist or contains no entries beyond the template header, display the fallback: "Say 'bootcamp feedback' to share your experience"
 
 Load `lessons-learned.md` and offer the retrospective.

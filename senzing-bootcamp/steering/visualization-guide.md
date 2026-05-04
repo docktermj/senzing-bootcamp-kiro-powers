@@ -24,6 +24,8 @@ inclusion: manual
 
    Which would you prefer?"
 
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
    The agent MUST wait for a response. If no response, the agent waits — it does not default to either option. WAIT for response.
 
    - If the bootcamper chooses **Static HTML file** → continue with step 2 below (existing static workflow).
@@ -33,11 +35,15 @@ inclusion: manual
 
    👉 "Would you like me to help you build an interactive entity graph? It shows resolved entities as a force-directed network with clustering, search, and detail panels."
 
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
    If declined, return to `module-07-query-validation.md`. WAIT for response.
 
 3. **Gather requirements**
 
    👉 "Which data source(s) should the graph include? And which features: force layout, detail panel, cluster highlighting, search/filter, summary statistics?"
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
    WAIT for response.
 
@@ -47,7 +53,11 @@ inclusion: manual
 
    Extraction code must: iterate over loaded records via `get_entity_by_record_id` (never guessed entity ID ranges), deduplicate entities, use `get_entity_by_entity_id` with relationship flags for edges, classify match strength per table below, warn if >500 entities, log per-entity/per-relationship SDK errors and continue, write JSON matching the Graph Data Model schema. Save to `src/query/extract_graph_data.[ext]`.
 
-   👉 "Run the extraction and confirm the output JSON looks good." WAIT for response.
+   👉 "Run the extraction and confirm the output JSON looks good."
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+   WAIT for response.
 
 5. **Generate HTML visualization**
 
@@ -55,11 +65,17 @@ inclusion: manual
 
    Save to `docs/entity_graph.html`.
 
-   👉 "Open the HTML file — does it look right? Want changes?" WAIT for response.
+   👉 "Open the HTML file — does it look right? Want changes?"
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+   WAIT for response.
 
 6. **Iterate and refine**
 
    👉 "Want any changes to the graph, features, or extraction?"
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
    Regenerate affected components using the same MCP tools. When done, return to `module-07-query-validation.md`. WAIT for response.
 

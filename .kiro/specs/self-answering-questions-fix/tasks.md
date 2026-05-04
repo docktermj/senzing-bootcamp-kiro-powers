@@ -1,0 +1,136 @@
+# Implementation Plan
+
+- [x] 1. Write bug condition exploration test
+  - **Property 1: Bug Condition** - Question Points Lack Hard-Stop Blocks
+  - **CRITICAL**: This test MUST FAIL on unfixed code — failure confirms the bug exists
+  - **DO NOT attempt to fix the test or the code when it fails**
+  - **NOTE**: This test encodes the expected behavior — it will validate the fix when it passes after implementation
+  - **GOAL**: Surface counterexamples that demonstrate steering file question points lack structurally enforced hard-stop blocks
+  - **Scoped PBT Approach**: Use Hypothesis to generate question point identifiers across all affected steering files and assert each has a hard-stop block with explicit "end your response" language
+  - Create test file `senzing-bootcamp/tests/test_self_answering_questions_bug.py`
+  - Parse `module-01-business-problem.md` and extract question points at Steps 1, 5, 7, 8, 9 — assert each has a hard-stop block (`🛑 STOP`) with "end your response" language after the question (will fail on unfixed code)
+  - Parse `module-01-phase2-document-confirm.md` and extract Steps 16, 17 — assert each has a hard-stop block (will fail on unfixed code)
+  - Parse `onboarding-flow.md` and extract mandatory gates at Steps 2, 4b, 5 — assert each has a structurally upgraded hard-stop block with explicit "end your response" and prohibited behavior language (will fail on unfixed code)
+  - Parse `agent-instructions.md` Communication section — assert it contains a dedicated `### Question Stop Protocol` subsection with explicit prohibited behaviors (will fail on unfixed code)
+  - Parse `hook-registry.md` ask-bootcamper prompt — assert it contains strengthened pre-generation warning language with "end your response" framing (will fail on unfixed code)
+  - Parse other module files (`module-03-quick-demo.md`, `module-07-query-validation.md`, `visualization-guide.md`, `deployment-azure.md`, `deployment-gcp.md`, `deployment-onpremises.md`, `deployment-kubernetes.md`) — assert each 👉 question point has a hard-stop block (will fail on unfixed code)
+  - Use `@given()` with `@settings(max_examples=100)` and `st.sampled_from()` to generate random question point identifiers from the full set of affected files and steps
+  - Run test on UNFIXED code
+  - **EXPECTED OUTCOME**: Test FAILS (this is correct — it proves the bug exists)
+  - Document counterexamples found: question points missing hard-stop blocks, Communication section lacking dedicated stop protocol, hook prompt lacking pre-generation warning
+  - Mark task complete when test is written, run, and failure is documented
+  - _Requirements: 1.1, 1.2, 1.3, 1.4_
+
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
+  - **Property 2: Preservation** - Non-Question Content Unchanged
+  - **IMPORTANT**: Follow observation-first methodology
+  - Create test file `senzing-bootcamp/tests/test_self_answering_questions_preservation.py`
+  - Observe on UNFIXED code: Module 1 non-question steps (Steps 2, 3, 4, 6) content is unchanged — snapshot baselines
+  - Observe on UNFIXED code: Module 1 Phase 2 non-question steps (Steps 10, 11, 12, 13, 14, 15, 18) content is unchanged — snapshot baselines
+  - Observe on UNFIXED code: Onboarding non-question steps (Steps 0, 1, 1b, 3, 4, 4c) content is unchanged — snapshot baselines
+  - Observe on UNFIXED code: ask-bootcamper hook SECOND branch (recap + closing question logic) is functionally preserved
+  - Observe on UNFIXED code: YAML frontmatter in all affected files is preserved (`inclusion: manual` or `inclusion: always`)
+  - Observe on UNFIXED code: Step numbering and checkpoint counts remain unchanged in all affected files
+  - Observe on UNFIXED code: Hook `.kiro.hook` JSON files are byte-identical (only `hook-registry.md` prompt text changes, not hook files)
+  - Write property-based tests using Hypothesis: generate random non-question step numbers from each file and verify content matches baseline snapshot
+  - Write property-based test: for all affected steering files, YAML frontmatter is preserved
+  - Write property-based test: for all non-question steps across all affected files, no hard-stop block (`🛑 STOP`) has been added
+  - Verify tests PASS on UNFIXED code
+  - **EXPECTED OUTCOME**: Tests PASS (this confirms baseline behavior to preserve)
+  - Mark task complete when tests are written, run, and passing on unfixed code
+  - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+
+- [x] 3. Fix for self-answering questions at steering file question points
+
+  - [x] 3.1 Add Question Stop Protocol to agent-instructions.md
+    - Add a dedicated `### Question Stop Protocol` subsection under the Communication section
+    - Include explicit "end your response immediately" language: "Treat every 👉 question and ⛔ gate as an end-of-turn boundary. Your response MUST end after the question text. Produce no further tokens."
+    - Add prohibited behavior examples: "Do not answer the question. Do not assume a response. Do not say 'I'll go with X.' Do not proceed to the next step. Do not write checkpoints for the current step."
+    - Preserve all existing Communication rules unchanged — only add the new subsection
+    - _Bug_Condition: isBugCondition(input) where input.isQuestionPoint == true AND NOT hasRepeatedStopDirective(input)_
+    - _Expected_Behavior: Communication section contains dedicated stop protocol subsection with explicit prohibited behaviors_
+    - _Preservation: All existing Communication bullet points remain unchanged_
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 3.1, 3.2_
+
+  - [x] 3.2 Strengthen ask-bootcamper hook prompt in hook-registry.md
+    - Add pre-generation warning language at the start of the FIRST branch: "If the previous turn ended with a question, the bootcamper has not yet answered. You MUST NOT generate any content."
+    - Add structural emphasis to the "produce no output" directive with explicit "end your response" framing
+    - Strengthen "NEVER answer on behalf of the bootcamper" language
+    - Preserve the SECOND branch (recap + closing question) logic functionally identical
+    - Do NOT modify any `.kiro.hook` JSON files — only the prompt text in `hook-registry.md`
+    - _Bug_Condition: isBugCondition(input) where NOT hasRepeatedStopDirective(input) at hook level_
+    - _Expected_Behavior: Hook prompt contains strengthened pre-generation warning and structural emphasis_
+    - _Preservation: SECOND branch recap/closing-question logic unchanged; hook .kiro.hook files unchanged_
+    - _Requirements: 2.2, 2.4, 3.3, 3.5_
+
+  - [x] 3.3 Add hard-stop blocks to module-01-business-problem.md question points
+    - Add `> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.` after each question point
+    - Step 1: Add hard-stop block after the 👉 git initialization question (strengthen existing "STOP and wait" to the upgraded pattern)
+    - Step 5: Add hard-stop block after the open-ended discovery prompt question
+    - Step 7: Add hard-stop block after the gap-filling question instructions ("Ask about only one undetermined item per turn")
+    - Step 8: Add hard-stop block after the software integration question
+    - Step 9: Strengthen existing "STOP and wait" to the upgraded hard-stop block pattern
+    - Preserve all non-question steps (2, 3, 4, 6) completely unchanged
+    - Preserve YAML frontmatter, step numbering, checkpoint counts, and Phase 2 reference unchanged
+    - _Bug_Condition: isBugCondition(input) where input.isQuestionPoint == true AND NOT hasHardStopBlock(input)_
+    - _Expected_Behavior: Each question point has a visually distinct hard-stop block with "end your response" language_
+    - _Preservation: Non-question steps, frontmatter, step counts, checkpoints unchanged_
+    - _Requirements: 2.1, 2.2, 2.4, 3.1, 3.2, 3.4_
+
+  - [x] 3.4 Add hard-stop blocks to module-01-phase2-document-confirm.md question points
+    - Step 16 ("Get confirmation"): Add hard-stop block after the confirmation question
+    - Step 17 ("Offer stakeholder summary"): Add hard-stop block after the stakeholder summary offer question
+    - Preserve all non-question steps (10, 11, 12, 13, 14, 15, 18) completely unchanged
+    - Preserve YAML frontmatter, step numbering, and checkpoint counts unchanged
+    - _Bug_Condition: isBugCondition(input) where Steps 16, 17 lack hard-stop blocks_
+    - _Expected_Behavior: Steps 16, 17 have hard-stop blocks after their questions_
+    - _Preservation: Non-question steps, frontmatter, step counts unchanged_
+    - _Requirements: 2.1, 2.2, 2.4, 3.1, 3.4_
+
+  - [x] 3.5 Strengthen mandatory gate stop blocks in onboarding-flow.md
+    - Step 2 (Language Selection): Strengthen the ⛔ mandatory gate with explicit "end your response" and prohibited behavior language
+    - Step 4b (Verbosity Preference): Add hard-stop block after the verbosity question (note: this is NOT a mandatory gate but still a question requiring input)
+    - Step 5 (Track Selection): Strengthen the ⛔ mandatory gate with explicit "end your response" and prohibited behavior language
+    - Preserve all non-question steps (0, 1, 1b, 3, 4, 4c) completely unchanged
+    - Preserve YAML frontmatter, step numbering, and all non-gate content unchanged
+    - _Bug_Condition: isBugCondition(input) where mandatory gates lack structural hard-stop pattern_
+    - _Expected_Behavior: Each mandatory gate and question point has upgraded hard-stop block with prohibited behaviors_
+    - _Preservation: Non-question steps, frontmatter, non-gate content unchanged_
+    - _Requirements: 2.3, 2.4, 3.1, 3.2, 3.4_
+
+  - [x] 3.6 Add hard-stop blocks to other module steering files with 👉 questions
+    - `module-03-quick-demo.md`: Add hard-stop block after the 👉 visualization prompt question
+    - `module-07-query-validation.md`: Add hard-stop blocks after both 👉 visualization prompt questions
+    - `visualization-guide.md`: Add hard-stop blocks after all 6 👉 question points (visualization choice, confirm intent, gather requirements, extraction confirmation, HTML review, iterate/refine)
+    - `deployment-azure.md`: Add hard-stop block after the 👉 Azure prerequisites question
+    - `deployment-gcp.md`: Add hard-stop block after the 👉 GCP prerequisites question
+    - `deployment-onpremises.md`: Add hard-stop block after the 👉 on-premises prerequisites question
+    - `deployment-kubernetes.md`: Add hard-stop block after the 👉 Kubernetes prerequisites question
+    - Preserve all non-question content, YAML frontmatter, and file structure in each file
+    - _Bug_Condition: isBugCondition(input) where 👉 questions in other modules lack hard-stop blocks_
+    - _Expected_Behavior: Every 👉 question point across all steering files has a consistent hard-stop block_
+    - _Preservation: Non-question content, frontmatter, file structure unchanged_
+    - _Requirements: 2.1, 2.2, 2.4, 3.1, 3.4_
+
+  - [x] 3.7 Verify bug condition exploration test now passes
+    - **Property 1: Expected Behavior** - Question Points Have Hard-Stop Blocks
+    - **IMPORTANT**: Re-run the SAME test from task 1 — do NOT write a new test
+    - The test from task 1 encodes the expected behavior (hard-stop blocks at all question points)
+    - When this test passes, it confirms the expected behavior is satisfied
+    - Run `pytest senzing-bootcamp/tests/test_self_answering_questions_bug.py -v`
+    - **EXPECTED OUTCOME**: Test PASSES (confirms bug is fixed — all question points now have hard-stop blocks)
+    - _Requirements: 2.1, 2.2, 2.3, 2.4_
+
+  - [x] 3.8 Verify preservation tests still pass
+    - **Property 2: Preservation** - Non-Question Content Unchanged
+    - **IMPORTANT**: Re-run the SAME tests from task 2 — do NOT write new tests
+    - Run `pytest senzing-bootcamp/tests/test_self_answering_questions_preservation.py -v`
+    - **EXPECTED OUTCOME**: Tests PASS (confirms no regressions — non-question content unchanged)
+    - Confirm all preservation tests still pass after fix (no regressions)
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+
+- [x] 4. Checkpoint - Ensure all tests pass
+  - Run full test suite: `pytest senzing-bootcamp/tests/test_self_answering_questions_bug.py senzing-bootcamp/tests/test_self_answering_questions_preservation.py -v`
+  - Ensure all bug condition tests pass (confirming the fix works)
+  - Ensure all preservation tests pass (confirming no regressions)
+  - Ask the user if questions arise

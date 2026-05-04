@@ -270,8 +270,11 @@ class TestRealModuleCheckpoints:
     def test_real_root_modules_with_simple_steps_have_checkpoints(self):
         """Root module files with simple step numbering have checkpoints."""
         violations = check_checkpoint_completeness(STEERING_DIR)
-        # Only check modules 01 and 04 which have straightforward numbering
-        simple_modules = ["module-01-", "module-04-"]
+        # Only check module-04 which has straightforward numbering.
+        # Module-01 now uses sub-step checkpoints (7a, 7b, etc.) and has
+        # an Error Handling section with numbered items that are not
+        # workflow steps, so it is excluded from this simple check.
+        simple_modules = ["module-04-"]
         simple_violations = [
             v for v in violations
             if any(sm in v.file for sm in simple_modules)

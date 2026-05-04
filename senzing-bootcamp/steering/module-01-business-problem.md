@@ -36,7 +36,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    👉 "Would you like me to initialize a git repository for version control?"
 
-   **STOP and wait for the bootcamper's response.** Do not proceed until the bootcamper answers.
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
    Once the bootcamper responds, act on their answer:
    - If yes, initialize the git repository.
@@ -82,6 +82,8 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    If the user selected a design pattern in Step 4:
 
    "You picked [pattern name]. Tell me how that applies to your situation — what data do you have, where does it come from, and what would success look like?"
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
    **Checkpoint:** Write step 5 to `config/bootcamp_progress.json`.
 
@@ -143,9 +145,14 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
 7. **Confirm inferred details and fill gaps**:
 
+   Ask about only one undetermined item per turn. After the bootcamper responds, ask about the next undetermined item in a subsequent turn. Do NOT ask about items the user already covered. Queue remaining questions for subsequent turns.
+
+7a. **Present summary and ask for confirmation**:
+
    Present what was inferred in a concise summary:
 
    "Based on what you've described, here's what I'm picking up:
+
    - **Problem:** [inferred category / description]
    - **Record types:** [people / organizations / both / not yet determined]
    - **Data sources:** [count and names, or 'not yet determined']
@@ -154,21 +161,43 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    Does that sound right? Anything I missed or got wrong?"
 
-   After confirmation, ask ONLY about items marked "not yet determined":
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
-   - If record types unknown: "Are you working with people records, organization records, or both?"
-   - If source count unknown: "How many distinct data sources or systems will we be working with?"
-   - If desired outcome unknown: "What does the end result look like for you — a clean master list, an API, reports, or something else?"
+   **Checkpoint:** Write step 7a to `config/bootcamp_progress.json`.
 
-   Ask about only one undetermined item per turn. After the bootcamper responds, ask about the next undetermined item in a subsequent turn. Do NOT ask about items the user already covered. Queue remaining questions for subsequent turns.
+7b. **Ask about record types** (if undetermined):
 
-   **Checkpoint:** Write step 7 to `config/bootcamp_progress.json`.
+   After confirmation, ask ONLY about items marked "not yet determined".
+
+   If record types unknown: "Are you working with people records, organization records, or both?"
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+   **Checkpoint:** Write step 7b to `config/bootcamp_progress.json`.
+
+7c. **Ask about source count** (if undetermined):
+
+   If source count unknown: "How many distinct data sources or systems will we be working with?"
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+   **Checkpoint:** Write step 7c to `config/bootcamp_progress.json`.
+
+7d. **Ask about desired outcome** (if undetermined):
+
+   If desired outcome unknown: "What does the end result look like for you — a clean master list, an API, reports, or something else?"
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+   **Checkpoint:** Write step 7d to `config/bootcamp_progress.json`.
 
 8. **Ask about software integration** (separate question — do NOT combine with gap-filling):
 
    "Will the entity resolution results need to interface with other software — for example, a CRM, search engine, data warehouse, API gateway, or downstream application? If so, which systems?"
 
    Record the answer. If the bootcamper mentions specific systems (e.g., Elasticsearch, Salesforce, a data lake), note them for the problem statement and the solution approach in Step 13. If no integration is needed (standalone use), note that too.
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 
@@ -191,7 +220,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    Or if you're **not sure yet**, that's perfectly fine too."
 
-   **STOP and wait for the bootcamper's response.** Do not proceed until the bootcamper answers.
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
    Reassure the bootcamper: "No matter what you choose, we'll develop everything locally first. Deployment-specific code and configuration will be created later in Module 11 — so there's no pressure to commit right now."
 
@@ -203,5 +232,16 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    - **"Not sure yet" selected**: persist `deployment_target: undecided` in `config/bootcamp_preferences.yaml` and reassure the bootcamper that the choice can be revisited later in Module 11.
 
    **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
+
+## Error Handling
+
+When the bootcamper encounters an error during this module:
+
+1. **Check for SENZ error code** — if the error message contains a code matching `SENZ` followed by digits (e.g., `SENZ2027`):
+   - Call `explain_error_code(error_code="<code>", version="current")`
+   - Present the explanation and recommended fix to the bootcamper
+   - If `explain_error_code` returns no result, continue to step 2
+2. **Load `common-pitfalls.md`** — navigate to this module's section and present only the matching pitfall and fix
+3. **Check cross-module resources** — if no match in the module section, check the Troubleshooting by Symptom table and General Pitfalls section
 
 **Phase 2 (Steps 10–18):** Loaded from `module-01-phase2-document-confirm.md` via the phase system.

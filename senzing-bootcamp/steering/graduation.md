@@ -87,7 +87,27 @@ Present completion:
 > 🎓 **Graduation complete!** Your production project is ready in `production/`.
 >
 > Check `production/GRADUATION_REPORT.md` for a full summary, and work through `production/MIGRATION_CHECKLIST.md` to prepare for deployment.
->
+
+### Feedback Submission Reminder
+
+Before showing the fallback feedback prompt, check for saved feedback:
+
+1. Check conversation history for the `📋` marker. If it already appears (meaning a feedback reminder was shown during track completion earlier in this session), skip this reminder entirely and go straight to the fallback line below.
+2. If no prior reminder was shown, check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists.
+3. If it exists, read the file and check for at least one `## Improvement:` heading below the `## Your Feedback` section (headings outside fenced code blocks count as real entries; the template block inside a fenced code block does not).
+4. If feedback entries exist, display: "📋 You have feedback saved in `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`. Would you like to share it with the power author?"
+5. If the bootcamper accepts, present the sharing options:
+
+   **How would you like to share your feedback?**
+
+   1. **Email** — Send to support@senzing.com with subject "Senzing Bootcamp Power Feedback". I can format the content for easy copy-paste.
+   2. **GitHub Issue** — Create an issue on the senzing-bootcamp power repository. I can format it as a markdown-ready issue body.
+   3. **Copy path** — I'll show you the full file path so you can share it however you prefer.
+
+   Do not automatically send emails or create GitHub issues — wait for explicit bootcamper confirmation before taking any external action.
+6. If the bootcamper declines (says "no", "skip", "not now", or any declining response), proceed without re-prompting about feedback.
+7. If the feedback file does not exist, contains no entries, or the reminder was already shown, fall through to the line below.
+
 > Say "bootcamp feedback" if you'd like to share your experience.
 
 <!-- 

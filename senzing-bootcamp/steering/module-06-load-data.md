@@ -35,6 +35,17 @@ inclusion: manual
 
 ---
 
+## Error Handling
+
+When the bootcamper encounters an error during this module:
+
+1. **Check for SENZ error code** — if the error message contains a code matching `SENZ` followed by digits (e.g., `SENZ2027`):
+   - Call `explain_error_code(error_code="<code>", version="current")`
+   - Present the explanation and recommended fix to the bootcamper
+   - If `explain_error_code` returns no result, continue to step 2
+2. **Load `common-pitfalls.md`** — navigate to this module's section and present only the matching pitfall and fix
+3. **Check cross-module resources** — if no match in the module section, check the Troubleshooting by Symptom table and General Pitfalls section
+
 ## Phase Sub-Files
 
 - **Phase A: Build Loading Program** (steps 1–3): `module-06-phaseA-build-loading.md`
@@ -42,3 +53,8 @@ inclusion: manual
 - **Phase C: Multi-Source Orchestration (Conditional — 2+ Data Sources)** (steps 11–19): `module-06-phaseC-multi-source.md`
 - **Phase D: Validation** (steps 20–27): `module-06-phaseD-validation.md`
 
+## Advanced Reading
+
+> **After completing Module 6**, see `docs/guides/DATA_UPDATES_AND_DELETIONS.md` for guidance on record updates, deletions, entity re-evaluation, and redo processing implications — relevant for production systems where source data changes over time.
+
+> For production systems that receive ongoing data, see `docs/guides/INCREMENTAL_LOADING.md` for incremental loading patterns — adding new records to an existing database, processing redo records after incremental loads, and monitoring pipeline health over time.

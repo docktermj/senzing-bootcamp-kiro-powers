@@ -207,6 +207,17 @@ Once the SDK is installed and verified, proceed to:
 - Permission issues? Ensure you have admin/sudo access for installation
 - Missing dependencies? Run `python3 senzing-bootcamp/scripts/preflight.py`
 
+## Error Handling
+
+When the bootcamper encounters an error during this module:
+
+1. **Check for SENZ error code** — if the error message contains a code matching `SENZ` followed by digits (e.g., `SENZ2027`):
+   - Call `explain_error_code(error_code="<code>", version="current")`
+   - Present the explanation and recommended fix to the bootcamper
+   - If `explain_error_code` returns no result, continue to step 2
+2. **Load `common-pitfalls.md`** — navigate to this module's section and present only the matching pitfall and fix
+3. **Check cross-module resources** — if no match in the module section, check the Troubleshooting by Symptom table and General Pitfalls section
+
 ## Agent Behavior
 
 - Always check for existing installation first — if SDK is present and V4.0+, do NOT reinstall. Skip to verification.

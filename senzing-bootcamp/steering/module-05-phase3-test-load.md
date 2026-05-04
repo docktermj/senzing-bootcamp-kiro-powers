@@ -70,6 +70,12 @@ On session resume: read checkpoint, show user where they left off, restart `mapp
 - NEVER save to `/tmp/` — all files project-relative per `docs/policies/FILE_STORAGE_POLICY.md`
 - Always validate with `analyze_record` before loading
 
+## Success Criteria
+
+- ✅ Test load completed for each data source (or explicitly skipped)
+- ✅ Entity resolution results reviewed (deduplication rate, quality assessment)
+- ✅ Decision gate completed (shortcut path or proceed to Module 6)
+
 ## Interpreting `analyze_record` Results
 
 If `analyze_record` returns structural errors (e.g., flat format instead of FEATURES array, missing required fields), it may also show an empty Feature Analysis table with headers but no rows. This is not a bug — feature analysis is skipped when structural errors prevent feature extraction. Tell the user: "The Feature Analysis table is empty because there are structural issues with the record format — let's fix those first, then the feature analysis will populate." Focus on the structural errors listed above the table, fix the transformation program, and re-validate.

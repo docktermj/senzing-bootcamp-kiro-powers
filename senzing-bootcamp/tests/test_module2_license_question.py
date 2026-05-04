@@ -317,6 +317,7 @@ _EXPECTED_HEADINGS = [
     "## Success Criteria",
     "## Transition",
     "## Troubleshooting",
+    "## Error Handling",
     "## Agent Behavior",
 ]
 

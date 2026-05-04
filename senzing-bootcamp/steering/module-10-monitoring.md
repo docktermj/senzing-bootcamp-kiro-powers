@@ -16,11 +16,23 @@ Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcam
 
 ## Step 1: Assess Monitoring Landscape
 
-Ask: what monitoring tools do you already use? (Prometheus, Datadog, CloudWatch, Grafana, ELK, etc.) What alerting channels? (Email, Slack, PagerDuty, SNS)
+### Step 1a: Monitoring Tools
+
+"What monitoring tools are you currently using? (e.g., Prometheus, Grafana, CloudWatch, Datadog, or none)"
 
 If none: recommend Prometheus + Grafana for local, CloudWatch for AWS.
 
-**Checkpoint:** Write step 1 to `config/bootcamp_progress.json`.
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
+
+**Checkpoint:** Write step 1a to `config/bootcamp_progress.json`.
+
+### Step 1b: Alerting Channels
+
+"What alerting channels do you want to use? (e.g., email, Slack, PagerDuty, or none)"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
+
+**Checkpoint:** Write step 1b to `config/bootcamp_progress.json`.
 
 ## Step 2: Senzing-Specific Metrics
 
@@ -108,6 +120,17 @@ Create operational runbooks in `docs/runbooks/`:
 Simulate failure scenarios: kill a loader, fill disk, spike query load. Verify alerts fire, dashboards update, runbooks are actionable.
 
 **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
+
+## Error Handling
+
+When the bootcamper encounters an error during this module:
+
+1. **Check for SENZ error code** — if the error message contains a code matching `SENZ` followed by digits (e.g., `SENZ2027`):
+   - Call `explain_error_code(error_code="<code>", version="current")`
+   - Present the explanation and recommended fix to the bootcamper
+   - If `explain_error_code` returns no result, continue to step 2
+2. **Load `common-pitfalls.md`** — navigate to this module's section and present only the matching pitfall and fix
+3. **Check cross-module resources** — if no match in the module section, check the Troubleshooting by Symptom table and General Pitfalls section
 
 ## Step 10: Document
 

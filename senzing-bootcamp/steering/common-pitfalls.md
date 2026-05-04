@@ -8,7 +8,7 @@ Load on errors, when user is stuck, or preventively at module start. For visual 
 
 ## Quick Navigation
 
-Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8](#module-8) · [8–11](#modules-8-11) | [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
+[Symptoms](#troubleshooting-by-symptom) · Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8](#module-8) · [8–11](#modules-8-11) | [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
 
 ## Guided Troubleshooting — Ask Before Scanning
 
@@ -19,6 +19,18 @@ When the user says "I'm stuck" or reports an error, ask these diagnostic questio
 3. "Did you see an error message? If so, what did it say?" (if SENZ error → use `explain_error_code`; if other → check the pitfall tables)
 
 Then jump to the relevant section and present only the matching pitfall/fix — not the entire table. Do not present pitfalls from other modules.
+
+<a id="troubleshooting-by-symptom"></a>
+
+## Troubleshooting by Symptom
+
+| Symptom | Likely Cause | Diagnostic Steps |
+| ------- | ------------ | ---------------- |
+| Zero entities created | Incorrect data format, missing `DATA_SOURCE` or `RECORD_ID` fields, or loading program not processing records | Check input file format, verify `DATA_SOURCE` and `RECORD_ID` fields exist in every record, review loading program output, use `search_docs` to verify required fields |
+| Loading hangs | Large record count with SQLite, threading misconfiguration, or insufficient system resources | Check record count and database type (SQLite vs PostgreSQL), review threading configuration, monitor system resources, use `search_docs` for performance tuning |
+| Query returns no results | Invalid entity IDs, data not yet loaded, or incorrect query flags | Verify entity IDs exist, confirm data was loaded successfully, use `get_sdk_reference(topic='flags')` to check correct query flags |
+| SDK initialization fails | Invalid `SENZING_ENGINE_CONFIGURATION_JSON`, incorrect CONFIGPATH/RESOURCEPATH/SUPPORTPATH, or missing Senzing installation | Verify `SENZING_ENGINE_CONFIGURATION_JSON` is valid JSON, check paths exist, use `explain_error_code` for the specific SENZ code |
+| Database connection fails | Database file doesn't exist, incorrect connection string, permission issues, or PostgreSQL service not running | Check database file existence, verify connection string format, check file permissions, verify PostgreSQL service status |
 
 <a id="module-2"></a>
 

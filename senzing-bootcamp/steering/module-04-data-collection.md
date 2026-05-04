@@ -73,6 +73,14 @@ inclusion: manual
 
    > **Agent instruction — Data Source Registry:** After collecting each data source file, create or update `config/data_sources.yaml` with a Registry_Entry for that source. If the file doesn't exist, create it with `version: "1"` and an empty `sources:` mapping first. Set fields: `name`, `file_path`, `format`, `record_count` (if known, else null), `file_size_bytes`, `quality_score: null`, `mapping_status: pending`, `load_status: not_loaded`, `added_at` and `updated_at` to the current ISO 8601 timestamp. If an entry already exists for that DATA_SOURCE key, update it and set `updated_at`.
 
+   > **Agent instruction — Data File Validation:** After each file is saved to `data/raw/`, run the validator to sanity-check the file and update the registry with the results:
+   >
+   > ```bash
+   > python senzing-bootcamp/scripts/validate_data_files.py <file_path> --update-registry
+   > ```
+   >
+   > Present the Validation_Report to the bootcamper. If all checks pass, confirm the file is ready and move on to the next data source. If any check fails, show the failure details and remediation guidance, then help the bootcamper resolve the issue (re-upload, convert format, fix encoding, etc.) before proceeding to the next data source. Re-run the validator after each fix attempt until the file passes.
+
    **Checkpoint:** Write step 2 to `config/bootcamp_progress.json`.
 
 3. **Verify data was received**:
@@ -176,10 +184,7 @@ inclusion: manual
 
 7. **Verify data quality at a glance**:
 
-   - Check file sizes are reasonable
-   - Verify files are not empty
-   - Check file formats are as expected
-   - Look for obvious issues (corrupted files, wrong format, etc.)
+   Each file was already validated in step 2 and the results are stored in the registry. Review `config/data_sources.yaml` and check the `validation_status` and `validation_checks` fields for each data source entry. Confirm every source shows `validation_status: passed`. If any source shows `validation_status: failed`, revisit that data source and resolve the failing checks before proceeding.
 
    **Checkpoint:** Write step 7 to `config/bootcamp_progress.json`.
 
@@ -209,3 +214,14 @@ inclusion: manual
 - Verify files are accessible before proceeding
 - Document everything in `docs/data_source_locations.md`
 - **If user doesn't have data or asks about free data sources**, first offer `get_sample_data` MCP tool for CORD datasets (Las Vegas, London, Moscow), then recommend <https://github.com/docktermj/senzing-bootcamp-free-data> for raw samples and additional sources
+
+## Error Handling
+
+When the bootcamper encounters an error during this module:
+
+1. **Check for SENZ error code** — if the error message contains a code matching `SENZ` followed by digits (e.g., `SENZ2027`):
+   - Call `explain_error_code(error_code="<code>", version="current")`
+   - Present the explanation and recommended fix to the bootcamper
+   - If `explain_error_code` returns no result, continue to step 2
+2. **Load `common-pitfalls.md`** — navigate to this module's section and present only the matching pitfall and fix
+3. **Check cross-module resources** — if no match in the module section, check the Troubleshooting by Symptom table and General Pitfalls section

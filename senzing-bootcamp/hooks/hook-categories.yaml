@@ -9,6 +9,7 @@ critical:
   - commonmark-validation
   - enforce-feedback-path
   - enforce-working-directory
+  - feedback-submission-reminder
   - verify-senzing-facts
 
 modules:

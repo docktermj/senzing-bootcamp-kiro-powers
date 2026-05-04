@@ -36,7 +36,7 @@ Based on the `language` field from preferences, load the corresponding language 
 🎓 Welcome back to the Senzing Bootcamp!
 ```
 
-Present a concise summary to the user. If `current_step` is present in the progress file, include the step number and total steps for the module (count numbered steps in the module steering file):
+Present a concise summary to the user. If `current_step` is present in the progress file, include the step number and total steps for the module (count numbered steps in the module steering file). `current_step` can be either an integer (whole step) or a string sub-step identifier (dotted notation like `"5.3"` or lettered notation like `"7a"`). When it is a string, display it directly (e.g., "Step 5.3 of 12" or "Step 7a of 10"). When it is an integer, display the existing format (e.g., "Step 5 of 12"):
 
 ```text
 Welcome back! Here's where you left off:
@@ -55,7 +55,7 @@ If `current_step` is absent, omit the step detail and display only:
   Current: Module [N] — [module name]
 ```
 
-**If mapping checkpoints exist** (`config/mapping_state_*.json`), also mention: "You were in the middle of mapping [data source name] — we completed steps [list] last time. I can pick up where we left off."
+**If mapping checkpoints exist** (`config/mapping_state_*.json`), include the data source name and completed mapping steps in the summary. For each checkpoint, mention: "You were in the middle of mapping [data source name] — we completed steps [list of completed_steps] last time. I can pick up where we left off." If multiple mapping checkpoints exist, list each one.
 
 ```text
 👉 Ready to continue with Module [N], or would you like to do something else?
@@ -67,7 +67,12 @@ WAIT for their response.
 
 Based on the user's response:
 
-- If they want to continue → load the steering file for `current_module` from the Module Steering table in `agent-instructions.md`. **If `current_step` is present**, skip to step `current_step + 1` in the module steering file (all steps up to and including `current_step` are already complete). **If `current_step` references a step number that does not exist in the module steering file** (e.g., exceeds the total number of steps, is zero, or is negative), log a warning and fall back to artifact scanning to determine the correct resume point. **If `current_step` is absent**, fall back to the existing artifact-scanning behavior to infer position.
+- If they want to continue → load the steering file for `current_module` from the Module Steering table in `agent-instructions.md`. **If `current_step` is present**, determine the resume point based on its type:
+  - **Integer `current_step`**: skip to step `current_step + 1` in the module steering file (all steps up to and including `current_step` are already complete).
+  - **Sub-step identifier string** (dotted like `"5.3"` or lettered like `"7a"`): skip to the next sub-step after the recorded position in the module steering file (not the next whole step). For example, if `current_step` is `"5.3"`, resume at sub-step `5.4` (or the next defined sub-step after `5.3`). If the sub-step identifier is not found in the module steering file, log a warning and fall back to resuming at the parent step number (extract the parent step using `parse_parent_step` logic — e.g., `"5.3"` → step 5, `"7a"` → step 7).
+  - **If `current_step` references a step number that does not exist in the module steering file** (e.g., exceeds the total number of steps, is zero, or is negative), log a warning and fall back to artifact scanning to determine the correct resume point.
+  - **If mapping checkpoints exist** (`config/mapping_state_*.json`), restart `mapping_workflow` for each data source with a checkpoint and fast-track through the completed mapping steps (listed in `completed_steps`) before resuming from the first incomplete mapping step. If a mapping checkpoint file contains invalid JSON or is missing required fields (`data_source`, `current_step`, `completed_steps`), log a warning, skip that checkpoint, and inform the bootcamper that the mapping for that data source will need to restart from the beginning.
+  **If `current_step` is absent**, fall back to the existing artifact-scanning behavior to infer position.
 - If they want to switch modules → verify prerequisites via `module-prerequisites.md`, then load the requested module steering
 - If they want to switch tracks → follow the "Switching Tracks" section in `onboarding-flow.md`
 - If they want to start over → confirm, then load `onboarding-flow.md`

@@ -13,6 +13,9 @@ A potential match identified during the scoring phase of entity resolution. Senz
 **CORD (Collections Of Relatable Data)**
 Sample datasets provided by Senzing for testing and evaluation. Available datasets include Las Vegas, London, and Moscow, each containing real-world data from multiple sources useful for exploring entity resolution behavior.
 
+**Confidence score**
+A numeric indicator of match strength produced by Senzing during entity resolution. The score reflects how many features (NAME, ADDRESS, PHONE, etc.) agree between records — higher scores mean more corroborating evidence that the records refer to the same entity. Confidence scores are relative indicators of match strength, not absolute probabilities.
+
 **Cross-source match**
 When records from different data sources resolve to the same entity. For example, a record from `CUSTOMERS_CRM` and a record from `VENDORS_ERP` resolving together because they represent the same person.
 

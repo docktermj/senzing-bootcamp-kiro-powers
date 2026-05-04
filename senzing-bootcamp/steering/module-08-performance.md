@@ -18,11 +18,49 @@ Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcam
 
 **Before setting targets**, direct the user to review `docs/guides/PERFORMANCE_BASELINES.md` for reference throughput, hardware requirements, and database comparison data at different data volumes. This helps them set realistic targets.
 
-Ask ONE AT A TIME: loading throughput target, query latency target, concurrent users, data volume/growth, database choice (SQLite vs PostgreSQL).
-
 Call `search_docs(query='performance benchmarks', version='current')` for current expectations. Document in `docs/performance_requirements.md`.
 
-**Checkpoint:** Write step 1 to `config/bootcamp_progress.json`.
+Ask ONE AT A TIME:
+
+### Step 1a: Loading Throughput Target
+
+"What loading throughput do you need? (records per second)"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
+
+**Checkpoint:** Write step 1a to `config/bootcamp_progress.json`.
+
+### Step 1b: Query Latency Target
+
+"What query latency target do you need? (milliseconds per query)"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
+
+**Checkpoint:** Write step 1b to `config/bootcamp_progress.json`.
+
+### Step 1c: Concurrent Users
+
+"How many concurrent users or processes will query the system?"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
+
+**Checkpoint:** Write step 1c to `config/bootcamp_progress.json`.
+
+### Step 1d: Data Volume and Growth
+
+"What's your expected data volume and growth rate?"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
+
+**Checkpoint:** Write step 1d to `config/bootcamp_progress.json`.
+
+### Step 1e: Database Choice
+
+"Would you like to use SQLite (simpler, single-file) or PostgreSQL (better for production scale)?"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
+
+**Checkpoint:** Write step 1e to `config/bootcamp_progress.json`.
 
 ## Step 2: Check Anti-Patterns
 
@@ -101,6 +139,17 @@ Compare benchmarks against Step 1 requirements. Common optimizations: multi-thre
 Apply one optimization at a time. Re-run the relevant benchmark after each change. Document before/after in `docs/optimization_results.md`.
 
 **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
+
+## Error Handling
+
+When the bootcamper encounters an error during this module:
+
+1. **Check for SENZ error code** — if the error message contains a code matching `SENZ` followed by digits (e.g., `SENZ2027`):
+   - Call `explain_error_code(error_code="<code>", version="current")`
+   - Present the explanation and recommended fix to the bootcamper
+   - If `explain_error_code` returns no result, continue to step 2
+2. **Load `common-pitfalls.md`** — navigate to this module's section and present only the matching pitfall and fix
+3. **Check cross-module resources** — if no match in the module section, check the Troubleshooting by Symptom table and General Pitfalls section
 
 ## Step 13: Performance Report
 

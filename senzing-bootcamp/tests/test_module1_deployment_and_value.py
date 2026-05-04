@@ -291,19 +291,30 @@ class TestProperty1Phase1StepCheckpoints:
         suppress_health_check=[HealthCheck.too_slow],
     )
     def test_phase1_step_has_checkpoint(self, step_num: int) -> None:
-        """For any step 1–9, a matching checkpoint instruction exists."""
+        """For any step 1–9, a matching checkpoint instruction exists.
+
+        Steps that have been split into sub-steps (e.g., 7a, 7b, 7c, 7d)
+        use sub-step checkpoint identifiers instead of the parent step number.
+        """
         content = _read_phase1()
         step_text = _extract_step(content, step_num)
         assert step_text, (
             f"Phase 1 Step {step_num} not found in file"
         )
 
+        # Check for either a direct step checkpoint or sub-step checkpoints
         checkpoint = (
             f"Write step {step_num} to `config/bootcamp_progress.json`"
         )
-        assert checkpoint in step_text, (
+        # Sub-step checkpoint pattern: "Write step 7a to ..."
+        sub_step_pattern = re.compile(
+            rf"Write step {step_num}[a-z] to `config/bootcamp_progress\.json`"
+        )
+        has_direct = checkpoint in step_text
+        has_sub_step = bool(sub_step_pattern.search(step_text))
+        assert has_direct or has_sub_step, (
             f"Phase 1 Step {step_num} is missing checkpoint "
-            f"instruction: {checkpoint!r}\n"
+            f"instruction: {checkpoint!r} (or sub-step variant)\n"
             f"Step text (first 400 chars):\n{step_text[:400]}"
         )
 

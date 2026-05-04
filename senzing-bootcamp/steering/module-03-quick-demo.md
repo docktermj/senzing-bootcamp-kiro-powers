@@ -10,6 +10,8 @@ inclusion: manual
 
 **Language:** Use the bootcamper's chosen language for all code generation.
 
+**Prerequisites:** Module 2 complete (SDK installed and configured)
+
 **Before/After:** SDK installed but untested. After: you've seen Senzing match duplicate records across sources — and understand why it's useful.
 
 **IMPORTANT:** Must actually run the Senzing SDK. The goal is an "aha moment," not a description.
@@ -70,28 +72,63 @@ inclusion: manual
 
    If the demo produced only singletons (every record is its own entity), something went wrong — likely a data format issue or missing DATA_SOURCE/RECORD_ID fields. Diagnose before continuing: check the sample data format, verify fields are mapped correctly, and re-run if needed.
 
+   **How Senzing Matches Records**
+
+   > **Agent instruction — MCP retrieval:** Before presenting this explanation, call `search_docs` twice:
+   >
+   > 1. `search_docs(query="Senzing feature types matching behavior")` — to retrieve authoritative content about how Senzing extracts and compares features (NAME, ADDRESS, PHONE, etc.) and their type-specific matching behavior
+   > 2. `search_docs(query="Senzing confidence scoring match levels")` — to retrieve authoritative content about how Senzing calculates confidence scores and distinguishes match levels (resolved, possibly same, possibly related, name-only)
+   >
+   > Use the retrieved content — not training data — as the basis for the explanation below. If the MCP server is unavailable (connection error, timeout, or empty results), present the explanation using the structural guidance below and tell the bootcamper: "I'm using general guidance for this explanation — I'll verify the details against Senzing's documentation when the server is available."
+
+   Present a brief explanation of how Senzing matched the demo records. Keep it concise — short paragraphs or bullet points, under two minutes of reading. Use plain language throughout. Cover these three topics in order:
+
+   **Features:** Explain that Senzing extracts categories of identifying information — called features — from each record (such as NAME, ADDRESS, PHONE, EMAIL, DOB, SSN). Each feature type has its own matching behavior: for example, NAME matching handles nicknames and abbreviations, ADDRESS matching normalizes street formats, and PHONE matching ignores formatting differences. Explain how to read a match key string: `+NAME+ADDRESS+PHONE` means all three feature types contributed to the match decision. Reference at least three feature types that appear in the bootcamper's demo results, using the actual values from the loaded records to illustrate how features work.
+
+   **Confidence scores:** Explain that a confidence score reflects the strength of evidence supporting a match — higher scores mean more features agreed across records. Describe how to interpret score ranges in practical terms: which scores indicate strong matches with multiple corroborating features, which indicate moderate matches worth reviewing, and which indicate weak matches based on limited evidence. Use the score ranges and thresholds from the `search_docs` results — do not hardcode specific numbers. Show at least one concrete example from the bootcamper's demo output, pairing the score with the features that produced it. Clarify that scores are relative indicators of match strength, not absolute probabilities — a score is not a percentage likelihood.
+
+   **Cross-source connections:** Explain that a cross-source connection occurs when records from different data sources resolve to the same entity — revealing that the same person or organization exists in multiple systems. Distinguish this from within-source deduplication: deduplication finds duplicates inside one system, while cross-source matching links records across systems. Explain the business value with a concrete scenario (for example, discovering that a customer in the CRM is the same person as a support ticket contact, enabling a unified view). If the bootcamper's demo data contains records from multiple data sources, point out specific cross-source connections in the demo results to illustrate the concept.
+
+   > **Agent instruction — use actual results:** Throughout this explanation, reference the bootcamper's actual demo output — specific entities, match keys, scores, and data sources from the run. Do not rely solely on hypothetical examples. If the demo data came from a single source and has no cross-source connections, explain the concept using a hypothetical scenario instead.
+
 4. **Explain results:** Walk through one entity — which features drove the match, what confidence scores mean, how Senzing handled format variations automatically.
 
    **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
 
 5. **Offer visualization:** "Would you like me to create a web page showing these results?"
 
-   If yes, present the Visualization Prompt before generating anything:
+   If yes, present the Visualization Prompt before generating anything.
+
+   **This step MUST complete before closing the module. Do not skip to module-completion.md until the user has responded to the visualization offer.**
+
+5a. **Visualization format offer**:
 
    👉 "Before I generate this visualization, would you like it as:
+
    1. **Static HTML file** — a self-contained file you can open directly in your browser, no server needed
    2. **Web service** — a localhost server with live SDK queries, data refresh, and interactive entity details
 
    Which would you prefer?"
 
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
    WAIT for response.
 
-   - If the bootcamper chooses **Static HTML file**: Ask: "Would you like any interactive features? For example: (a) 'how' entity explanations, (b) 'why' match analysis, (c) search by attributes, (d) find paths between entities — or just a static summary?" Generate accordingly and save to `src/quickstart_demo/demo_results.html`.
-   - If the bootcamper chooses **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section to generate a localhost web service.
+   - If the bootcamper chooses **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section to generate a localhost web service. Skip step 5b.
 
-   **This step MUST complete before closing the module. Do not skip to module-completion.md until the user has responded to the visualization offer.**
+   **Checkpoint:** Write step 10a to `config/bootcamp_progress.json`.
 
-   **Checkpoint:** Write step 10 to `config/bootcamp_progress.json`.
+5b. **Interactive features** (if static HTML chosen):
+
+   👉 "Would you like any interactive features? For example: (a) 'how' entity explanations, (b) 'why' match analysis, (c) search by attributes, (d) find paths between entities — or just a static summary?"
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+   WAIT for response.
+
+   Generate accordingly and save to `src/quickstart_demo/demo_results.html`.
+
+   **Checkpoint:** Write step 10b to `config/bootcamp_progress.json`.
 
 6. **Close Module 3 explicitly.** Before asking any use-case questions, mark the module as done and state its purpose:
 
@@ -112,6 +149,24 @@ inclusion: manual
    If the user has no specific use case: "The bootcamp works great with sample data too — we'll figure out the best path for you in Module 1."
 
    **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
+
+## Error Handling
+
+When the bootcamper encounters an error during this module:
+
+1. **Check for SENZ error code** — if the error message contains a code matching `SENZ` followed by digits (e.g., `SENZ2027`):
+   - Call `explain_error_code(error_code="<code>", version="current")`
+   - Present the explanation and recommended fix to the bootcamper
+   - If `explain_error_code` returns no result, continue to step 2
+2. **Load `common-pitfalls.md`** — navigate to this module's section and present only the matching pitfall and fix
+3. **Check cross-module resources** — if no match in the module section, check the Troubleshooting by Symptom table and General Pitfalls section
+
+## Success Criteria
+
+- ✅ Sample data loaded into Senzing via SDK
+- ✅ Entity resolution results observed (duplicates matched)
+- ✅ Bootcamper has seen the "aha moment" of cross-source matching
+- ✅ Module closed via `module-completion.md` workflow
 
 ## Agent Rules
 

@@ -33,19 +33,31 @@ Before starting: call `search_docs(query='deployment', category='anti_patterns',
 
 **Also check `cloud_provider`** in `config/bootcamp_preferences.yaml`. If `cloud_provider` is set, confirm: "You chose [cloud_provider]. Still your target?"
 
-**If neither is set**, ask (one at a time):
+### Step 1a: Deployment Target
 
-1. "Where do you plan to deploy? AWS, Azure, Google Cloud, on-premises, or local Docker?"
-2. Ask about deployment method per platform:
-   - **AWS:** Recommend AWS CDK; alternatives: CloudFormation, Console, Terraform. If CDK, recommend the CDK Kiro Power.
-   - **Azure:** Azure CLI, ARM templates, Bicep, Terraform, or Portal.
-   - **Google Cloud:** gcloud CLI, Terraform, Deployment Manager, or Console.
-   - **On-premises:** Docker Compose, Kubernetes (Helm), or bare metal scripts.
-   - **Local Docker:** Docker Compose.
+"Where do you plan to deploy? AWS, Azure, Google Cloud, on-premises, or local Docker?"
 
-Persist as `deployment_target` and `deployment_method` in `config/bootcamp_preferences.yaml`.
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
 
-**Checkpoint:** Write step 1 to `config/bootcamp_progress.json`.
+Persist `deployment_target` to `config/bootcamp_preferences.yaml`.
+
+**Checkpoint:** Write step 1a to `config/bootcamp_progress.json`.
+
+### Step 1b: Deployment Method
+
+Ask about deployment method per platform:
+
+- **AWS:** Recommend AWS CDK; alternatives: CloudFormation, Console, Terraform. If CDK, recommend the CDK Kiro Power.
+- **Azure:** Azure CLI, ARM templates, Bicep, Terraform, or Portal.
+- **Google Cloud:** gcloud CLI, Terraform, Deployment Manager, or Console.
+- **On-premises:** Docker Compose, Kubernetes (Helm), or bare metal scripts.
+- **Local Docker:** Docker Compose.
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+Persist `deployment_method` to `config/bootcamp_preferences.yaml`.
+
+**Checkpoint:** Write step 1b to `config/bootcamp_progress.json`.
 
 > **Agent instruction:** Call `search_docs(query='deployment <selected_platform>', version='current')`, then load the corresponding platform steering file (`deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md`). For AWS, use the "If AWS:" blocks in each step.
 
@@ -184,5 +196,24 @@ Present the deployment decision: deploy now, or stop here and deploy later on th
 - **Unsure** → Reassure that stopping is fine; they can deploy later using the scripts and docs.
 
 ---
+
+## Further Reading
+
+The following guide covers advanced topics for production deployments that go beyond the packaging and deployment workflow in this module:
+
+- **[Streaming Integration](../../docs/guides/STREAMING_INTEGRATION.md)** — Real-time streaming patterns for event-driven architectures using message queues (Apache Kafka, RabbitMQ, Amazon SQS). Covers consuming records from queues, processing them through Senzing in real time, handling backpressure when inbound rates exceed processing capacity, and managing errors in streaming pipelines. This is optional advanced reading for bootcampers planning event-driven production deployments.
+
+---
+
+## Error Handling
+
+When the bootcamper encounters an error during this module:
+
+1. **Check for SENZ error code** — if the error message contains a code matching `SENZ` followed by digits (e.g., `SENZ2027`):
+   - Call `explain_error_code(error_code="<code>", version="current")`
+   - Present the explanation and recommended fix to the bootcamper
+   - If `explain_error_code` returns no result, continue to step 2
+2. **Load `common-pitfalls.md`** — navigate to this module's section and present only the matching pitfall and fix
+3. **Check cross-module resources** — if no match in the module section, check the Troubleshooting by Symptom table and General Pitfalls section
 
 **Phase 2 (Steps 13–15) and Platform Reference:** Loaded from `module-11-phase2-deploy.md` via the phase system.

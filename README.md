@@ -1,4 +1,4 @@
-# Senzing Kiro Power
+# Senzing Bootcamp Kiro Power
 
 This repository contains the Senzing Bootcamp Kiro Power and its development documentation.
 
@@ -43,6 +43,14 @@ Start the bootcamp
 ```
 
 Kiro's agentic chat will guide you through the Bootcamp.
+
+## Tips
+
+1. During "Administrative setup", simply hitting "Run" is all that's needed.
+1. Questions posed to the Bootcamper are usually prefaced with "👉"
+1. You can ignore text from "...hook..."  There's no way to turn that off.
+
+## Helpful prompts
 
 Helpful prompts that can be entered any time:
 

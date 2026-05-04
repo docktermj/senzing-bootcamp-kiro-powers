@@ -223,6 +223,31 @@ def parse_registry_yaml(content: str) -> dict:
                                     else:
                                         break
                                 entry["issues"] = issues_list
+                            elif not fval or fval.startswith("#"):
+                                # No inline value — could be a nested mapping
+                                idx += 1
+                                nested: dict = {}
+                                while idx < len(lines):
+                                    nline = lines[idx]
+                                    nstripped = nline.strip()
+                                    if not nstripped or nstripped.startswith("#"):
+                                        idx += 1
+                                        continue
+                                    n_indent = re.match(r"^(\s+)", nline)
+                                    if not n_indent or len(n_indent.group(1)) < 6:
+                                        break
+                                    nk_match = re.match(r"^\s{6,}(\w[\w_]*):\s*(.*)", nline)
+                                    if nk_match:
+                                        nested[nk_match.group(1)] = _parse_scalar(
+                                            nk_match.group(2)
+                                        )
+                                        idx += 1
+                                    else:
+                                        break
+                                if nested:
+                                    entry[fkey] = nested
+                                else:
+                                    entry[fkey] = None
                             else:
                                 entry[fkey] = _parse_scalar(fval)
                                 idx += 1
@@ -291,7 +316,12 @@ def serialize_registry_yaml(data: dict) -> str:
             # Any remaining fields not in field_order or issues
             for fk, fv in entry.items():
                 if fk not in field_order and fk != "issues":
-                    lines.append(f"    {fk}: {_serialize_scalar(fv)}")
+                    if isinstance(fv, dict):
+                        lines.append(f"    {fk}:")
+                        for mk, mv in fv.items():
+                            lines.append(f"      {mk}: {_serialize_scalar(mv)}")
+                    else:
+                        lines.append(f"    {fk}: {_serialize_scalar(fv)}")
 
     return "\n".join(lines) + "\n"
 

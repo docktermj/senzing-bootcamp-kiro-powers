@@ -56,9 +56,25 @@ inclusion: manual
 
    Execute queries to understand results. Use the appropriate run command for the chosen language.
 
+3a. **Present query results and matching concepts**:
+
    **If entity resolution found zero or very few matches:** This is a valid result — don't assume something is broken. Tell the user: "Entity resolution found very few matches. This could mean: (a) your records are genuinely distinct with no duplicates, (b) the matching criteria need adjustment — perhaps key fields weren't mapped or data quality is too low, or (c) you're working with a single source that has no internal duplicates. Let's investigate which one." Check: are name/address/phone fields populated? Were they mapped correctly in Module 5? Is the data quality score from Module 5 above 70%? If the data genuinely has no duplicates, that's a valid finding — document it.
 
-   ---
+   **Matching concepts reminder:**
+
+   > **Agent instruction:** When presenting query results, include a brief reminder of the matching concepts the bootcamper learned in Module 3. Cover these three points concisely — a sentence or two each, not a full re-explanation:
+   >
+   > - **Features** — the categories of identifying information (NAME, ADDRESS, PHONE, etc.) that Senzing extracts and compares, and how to read match key strings like `+NAME+ADDRESS+PHONE`
+   > - **Confidence scores** — numeric indicators of match strength reflecting how many features agreed between records (higher means more evidence), not absolute probabilities
+   > - **Cross-source connections** — matches between records from different data sources, revealing the same entity exists in multiple systems
+   >
+   > Adapt these reminders to the bootcamper's own data context — reference the feature types, scores, and data sources present in their current query results, not the Module 3 sample data. If the bootcamper's data involves different feature types or sources than the demo, use those instead.
+   >
+   > After the reminder, tell the bootcamper: "If you'd like a deeper refresher on how Senzing matching works — features, scoring, or cross-source connections — just ask and I'll walk through it again."
+
+   **Checkpoint:** Write step 3a to `config/bootcamp_progress.json`.
+
+3b. **Entity graph visualization offer**:
 
    > **⛔ MANDATORY VISUALIZATION OFFER — ENTITY GRAPH**
    >
@@ -69,10 +85,13 @@ inclusion: manual
    If they say **yes**, present the Visualization Prompt before generating anything:
 
    👉 "Before I generate this visualization, would you like it as:
+
    1. **Static HTML file** — a self-contained file you can open directly in your browser, no server needed
    2. **Web service** — a localhost server with live SDK queries, data refresh, and interactive entity details
 
    Which would you prefer?"
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
    WAIT for response.
 
@@ -81,7 +100,9 @@ inclusion: manual
    > - If they say **no** or **not now** to the entity graph offer: Acknowledge and continue.
    > - If they are **unsure**: Briefly explain the value, then wait for their decision.
 
-   ---
+   **Checkpoint:** Write step 3b to `config/bootcamp_progress.json`.
+
+3c. **Results dashboard visualization offer**:
 
    > **⛔ MANDATORY VISUALIZATION OFFER — RESULTS DASHBOARD**
    >
@@ -92,10 +113,13 @@ inclusion: manual
    If they say **yes**, present the Visualization Prompt before generating anything:
 
    👉 "Before I generate this visualization, would you like it as:
+
    1. **Static HTML file** — a self-contained file you can open directly in your browser, no server needed
    2. **Web service** — a localhost server with live SDK queries, data refresh, and interactive entity details
 
    Which would you prefer?"
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
    WAIT for response.
 
@@ -104,11 +128,7 @@ inclusion: manual
    > - If they say **no** or **not now** to the results dashboard offer: Acknowledge and proceed.
    > - If they are **unsure**: Briefly explain the value, then wait for their decision.
 
-   ---
-
-   **Checkpoint:** Write step 3 to `config/bootcamp_progress.json`.
-
-   ---
+   **Checkpoint:** Write step 3c to `config/bootcamp_progress.json`.
 
 **Success Criteria:**
 
@@ -126,10 +146,22 @@ Before wrapping up this module, confirm:
    - **Path B/C (shorter paths):** This is a natural stopping point. The bootcamper has working query programs and can stop here.
 
 Present the query completion status and path options to the bootcamper:
+
    - **Path A (full bootcamp):** Proceed to Module 8 (Performance Testing).
    - **Path B/C (shorter paths):** This is a natural stopping point. The bootcamper has working query programs and can stop here.
 
 The bootcamper can continue to Module 8 (Performance Testing) or stop here if this is a good stopping point for their project.
+
+## Error Handling
+
+When the bootcamper encounters an error during this module:
+
+1. **Check for SENZ error code** — if the error message contains a code matching `SENZ` followed by digits (e.g., `SENZ2027`):
+   - Call `explain_error_code(error_code="<code>", version="current")`
+   - Present the explanation and recommended fix to the bootcamper
+   - If `explain_error_code` returns no result, continue to step 2
+2. **Load `common-pitfalls.md`** — navigate to this module's section and present only the matching pitfall and fix
+3. **Check cross-module resources** — if no match in the module section, check the Troubleshooting by Symptom table and General Pitfalls section
 
 ## Integration Patterns
 

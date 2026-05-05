@@ -48,79 +48,85 @@ This directory contains pre-configured Kiro hooks to support the Senzing Bootcam
 **Action:** Reminds agent to run `analyze_record` before proceeding to loading
 **Use case:** Catches bad mappings early — validates quality score >70% and Entity Spec conformance before Module 6
 
-### 8. Run Tests After Change (`run-tests-after-change.kiro.hook`)
+### 8. Enforce Mapping Specification (`enforce-mapping-spec.kiro.hook`)
+
+**Trigger:** When new files are created in `data/transformed/`
+**Action:** Checks if the corresponding `docs/{source_name}_mapper.md` exists; if missing, blocks progression until it is created
+**Use case:** Guarantees every mapped data source has a per-source mapping specification markdown — prevents skipping documentation
+
+### 9. Run Tests After Change (`run-tests-after-change.kiro.hook`)
 
 **Trigger:** When source code files are modified in `src/load/`, `src/query/`, or `src/transform/`
 **Action:** Reminds agent to run the test suite to verify the change
 **Use case:** Catches regressions after code changes in Modules 6-8
 
-### 9. Git Commit Reminder (`git-commit-reminder.kiro.hook`)
+### 10. Git Commit Reminder (`git-commit-reminder.kiro.hook`)
 
 **Trigger:** Manual — click the hook button in the Agent Hooks panel
 **Action:** Suggests a descriptive git commit based on the current module
 **Use case:** Reminds users to commit progress after completing a module
 **How to use:** Click the "Git Commit Reminder" button in the Kiro Agent Hooks explorer view
 
-### 10. Enforce Working Directory Paths (`enforce-working-directory.kiro.hook`) ⭐
+### 11. Enforce Working Directory Paths (`enforce-working-directory.kiro.hook`) ⭐
 
 **Trigger:** Before any file write operation (preToolUse)
 **Action:** Checks that file paths don't reference `/tmp`, `%TEMP%`, or any location outside the working directory
 **Use case:** Enforces the file storage policy automatically — prevents MCP-generated code from placing files in system temp directories
 **Recommended:** Install for all modules
 
-### 11. Ask Bootcamper (`ask-bootcamper.kiro.hook`) ⭐
+### 12. Ask Bootcamper (`ask-bootcamper.kiro.hook`) ⭐
 
 **Trigger:** When the agent finishes working (agentStop)
 **Action:** Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question
 **Use case:** Ensures the bootcamper always knows what happened during an agent interaction and has a clear next step
 **Recommended:** Install for all modules
 
-### 12. Verify Generated Code (`verify-generated-code.kiro.hook`)
+### 13. Verify Generated Code (`verify-generated-code.kiro.hook`)
 
 **Trigger:** When new source files are created in `src/transform/`, `src/load/`, or `src/query/`
 **Action:** Prompts the agent to run the new code on sample data and verify it works before moving on
 **Use case:** Catches broken code before the user tries to run it manually
 
-### 13. Offer Entity Graph Visualization (`offer-visualization.kiro.hook`)
+### 14. Offer Entity Graph Visualization (`offer-visualization.kiro.hook`)
 
 **Trigger:** When new files are created in `src/query/`
 **Action:** Prompts the agent to offer generating an interactive entity graph visualization
 **Use case:** Ensures bootcampers are offered the visualization feature during Module 7
 **Note:** Works in conjunction with the Enforce Visualization Offers hook (#16) — this hook catches query program creation proactively, while the agentStop hook catches missed offers before the agent closes the conversation
 
-### 14. Review Bootcamper Input (`review-bootcamper-input.kiro.hook`) ⭐
+### 15. Review Bootcamper Input (`review-bootcamper-input.kiro.hook`) ⭐
 
 **Trigger:** On every message submission (promptSubmit)
 **Action:** Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture
 **Use case:** Guarantees feedback is always captured when a bootcamper says "bootcamp feedback" — deterministic, not probabilistic
 **Recommended:** Install for all modules
 
-### 15. Deployment Phase Gate (`deployment-phase-gate.kiro.hook`)
+### 16. Deployment Phase Gate (`deployment-phase-gate.kiro.hook`)
 
 **Trigger:** After task execution completes (postTaskExecution)
 **Action:** Checks if current module is 11 (deployment), then displays packaging-complete summary and asks whether to proceed to deployment or stop
 **Use case:** Enforces the packaging-to-deployment phase gate — prevents the agent from blending packaging and deployment phases together
 
-### 16. Enforce Visualization Offers (`enforce-visualization-offers.kiro.hook`) ⭐
+### 17. Enforce Visualization Offers (`enforce-visualization-offers.kiro.hook`) ⭐
 
 **Trigger:** When the agent finishes working (agentStop)
 **Action:** Checks if current module is 7, then verifies both visualization offers (entity graph and results dashboard) were made during the interaction
 **Use case:** Safety net for Module 7 — catches missed visualization offers before the agent closes the conversation
 **Recommended:** Install for Module 7
 
-### 17. Enforce Feedback File Path (`enforce-feedback-path.kiro.hook`)
+### 18. Enforce Feedback File Path (`enforce-feedback-path.kiro.hook`)
 
 **Trigger:** Before any write operation (preToolUse, write)
 **Action:** Checks if the agent is writing feedback content and ensures it goes to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
 **Use case:** Prevents feedback from being written to the wrong file or submitted externally
 
-### 18. Validate Data Files (`validate-data-files.kiro.hook`)
+### 19. Validate Data Files (`validate-data-files.kiro.hook`)
 
 **Trigger:** When new files are created in `data/raw/`
 **Action:** Checks file format, encoding, and basic readability
 **Use case:** Catches bad data files early in Module 4 before they cause mapping or loading failures
 
-### 19. Capture Bootcamp Feedback (`capture-feedback.kiro.hook`)
+### 20. Capture Bootcamp Feedback (`capture-feedback.kiro.hook`)
 
 **Trigger:** On every message submission (promptSubmit)
 **Action:** Checks for feedback trigger phrases and initiates the feedback workflow with automatic context capture
@@ -200,6 +206,7 @@ You can customize any hook by editing the JSON file:
 - ✅ Code Style Check
 - ✅ Data Quality Check
 - ✅ Analyze After Mapping
+- ✅ Enforce Mapping Specification
 
 ### Module 6 (Data Loading)
 

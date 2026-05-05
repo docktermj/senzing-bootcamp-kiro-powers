@@ -10,11 +10,28 @@ All 20 bootcamp hooks are defined below. The agent reads these definitions and c
 
 **ask-bootcamper** (agentStop → askAgent)
 
-Prompt: "FIRST — scan the ENTIRE conversation history for the most recent assistant message. If that message contains the 👉 character ANYWHERE, you MUST produce absolutely no output. Return nothing. Do not recap. Do not ask a question. Do not acknowledge. Zero tokens. The bootcamper was asked a question and you are waiting for their answer. NEVER answer a 👉 question on the bootcamper's behalf — do not answer the question, do not role-play the bootcamper, do not generate a fake response, do not fabricate responses, invent business details, generate 'Human:' messages, simulate user choices, or assume what the bootcamper would say. If the last assistant message asked ANY question (with or without 👉), produce no output. SECOND — if you reach this point (no recent question was pending): if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
+Prompt: "PRODUCE NOTHING. YOUR OUTPUT IS EMPTY. ZERO TOKENS. DO NOT GENERATE ANY TEXT.
+
+---
+
+EXCEPTION (read ONLY if you are certain no question is pending):
+
+Before producing ANY output, verify ALL of these conditions:
+1. The file config/.question_pending does NOT exist
+2. The most recent assistant message does NOT contain the 👉 character
+3. The most recent assistant message does NOT end with a question directed at the bootcamper
+
+If ANY condition fails: PRODUCE NOTHING. STOP. ZERO TOKENS.
+
+If ALL conditions pass: You may provide a brief recap of work done and a contextual 👉 closing question. Keep it to 2-3 sentences maximum.
+
+Additionally, if the bootcamper has completed or is on the final step of their current track, append a brief 📋 feedback reminder: 'By the way, if you have feedback about the bootcamp experience, just say "bootcamp feedback" anytime.' Otherwise, do NOT mention feedback.
+
+CRITICAL: If you are uncertain about ANY condition, default to SILENCE. Silence is always safe."
 
 - id: `ask-bootcamper`
 - name: `Ask Bootcamper`
-- description: `Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question. Suppresses output entirely when a question is already pending.`
+- description: `Silence-first agentStop hook with dual responsibility: (1) default is zero output, only produces a recap + closing question when verified that no question is already pending; (2) conditionally appends a feedback reminder when the bootcamper is near track completion.`
 
 **capture-feedback** (promptSubmit → askAgent)
 
@@ -66,22 +83,6 @@ Prompt: "Before writing this file, verify: Does the file path or any path in the
 - name: `Enforce Working Directory Paths`
 - description: `Checks that file write operations do not use /tmp, %TEMP%, or any path outside the working directory. Enforces the file storage policy automatically.`
 
-**feedback-submission-reminder** (agentStop → askAgent)
-
-Prompt: "First, scan the conversation history for evidence that a track completion just occurred. Look for path completion celebration messages (e.g., congratulations on completing a track path, path completion banners) or graduation completion messages (e.g., '🎓 Graduation complete!'). If no track completion or graduation completion is detected in the conversation, produce no output — return nothing, zero tokens.
-
-If track completion or graduation completion IS detected, check whether a feedback reminder was already presented in this conversation. Scan recent conversation history for the 📋 character. If the 📋 marker is found in any recent assistant message, produce no output — the reminder was already shown.
-
-If no prior reminder was found, check if the file `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists. If it does not exist, produce no output. If it exists, read the file and look for at least one `## Improvement:` heading that appears below the `## Your Feedback` section (outside of fenced code blocks). If no such heading is found, produce no output — there are no feedback entries to remind about.
-
-If the file exists and contains at least one `## Improvement:` heading below `## Your Feedback`, emit exactly this message:
-
-📋 Reminder: You have bootcamp feedback saved. Say 'share feedback' to send it to the power author."
-
-- id: `feedback-submission-reminder`
-- name: `Feedback Submission Reminder`
-- description: `After track completion or graduation, checks for saved feedback and reminds the bootcamper to share it with the power author.`
-
 **review-bootcamper-input** (promptSubmit → askAgent)
 
 Prompt: "Check if the bootcamper's message contains any of these feedback trigger phrases (case-insensitive): "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue". If NONE of these phrases appear in the message, produce no output at all — do not acknowledge, do not explain, do not print anything. If a trigger phrase IS found, immediately do the following: (1) Read config/bootcamp_progress.json to get the current module number and completed modules. If the file doesn't exist, record module as "Unknown". (2) Note what the bootcamper was doing in the recent conversation. (3) Note which files are open in the editor. (4) Load steering file feedback-workflow.md and follow its complete workflow, pre-filling the context fields with what you just captured. Do NOT ask the bootcamper to re-explain their context — you already have it."
@@ -110,7 +111,9 @@ Prompt: "A new data file was added to data/raw/. Before proceeding, do a quick s
 
 **analyze-after-mapping** — Module 5 (fileCreated → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
 
-Prompt: "A new Senzing JSON file was created in data/transformed/. Before proceeding to loading (Module 6), use the analyze_record MCP tool to validate a sample of records from this file. Check feature distribution, attribute coverage, and data quality. Quality score should be >70% before loading. Also verify that records conform to the Senzing Generic Entity Specification."
+Prompt: "A new Senzing JSON file was created in data/transformed/. Before proceeding to loading (Module 6), use the analyze_record MCP tool to validate a sample of records from this file. Check feature distribution, attribute coverage, and data quality. Quality score should be >70% before loading. Also verify that records conform to the Senzing Generic Entity Specification.
+
+ADDITIONALLY: Verify that docs/{source_name}_mapper.md exists (extract source name from the transformed filename, e.g., "customers" from "customers.jsonl"). If it does not exist, state: 'The per-source mapping specification is missing. Create docs/{source_name}_mapper.md before proceeding to the next source or to loading.'"
 
 - id: `analyze-after-mapping`
 - name: `Analyze After Mapping`
@@ -123,6 +126,49 @@ Prompt: "The transformation program was just updated. Please review the changes 
 - id: `data-quality-check`
 - name: `Senzing Data Quality Check`
 - description: `Automatically check data quality when transformation programs are saved`
+
+**enforce-mapping-spec** — Module 5 (fileCreated → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
+
+Prompt: "A transformed data file was just created in data/transformed/.
+
+REQUIRED CHECK: Extract the source name from the filename (e.g., "customers" from "customers.jsonl"). Check if the file docs/{source_name}_mapper.md exists.
+
+If docs/{source_name}_mapper.md ALREADY EXISTS:
+  Produce no output. STOP. Zero tokens. The mapping spec is in place.
+
+If docs/{source_name}_mapper.md DOES NOT EXIST:
+  You MUST create it NOW before doing any other work. Do not proceed to the next data source. Do not proceed to quality validation. Do not proceed to Module 6.
+
+  Create docs/{source_name}_mapper.md with this structure:
+
+  # Mapping Specification: {SOURCE_NAME}
+
+  **Source file:** data/raw/{source_file}
+  **Data source name:** {DATA_SOURCE}
+  **Entity type:** Person / Organization / Both
+  **Generated by:** mapping_workflow
+
+  ## Field Mappings
+
+  | Source Field | Senzing Attribute | Transformation | Notes |
+  |---|---|---|---|
+  | (fill from the mapping workflow results) |
+
+  ## Mapping Decisions
+
+  - (key decisions made during mapping)
+
+  ## Quality Notes
+
+  - (quality observations specific to this source)
+
+  Fill in the actual field mappings from the mapping workflow you just completed. This file must be self-contained — a developer reading only this file should be able to recreate the transformation program in any language.
+
+  Do not proceed to the next data source or any other work until this file is created."
+
+- id: `enforce-mapping-spec`
+- name: `Enforce Mapping Specification`
+- description: `When transformed data is created, verifies that a per-source mapping specification markdown exists in docs/. Blocks progression until the mapping spec is created.`
 
 **backup-before-load** — Module 6 (fileEdited → askAgent, filePatterns: `src/load/*.*`)
 

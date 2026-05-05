@@ -36,6 +36,8 @@ After the journal entry and reflection, present 3-4 concrete options based on th
 
 Present these as a single list for the bootcamper to choose from.
 
+**On affirmative response to "Ready to move on to Module [N]?":** Upon receiving an affirmative response, immediately execute the next module's startup sequence: (1) Display module banner, (2) Show journey map, (3) Begin Step 1. Do not produce any intermediate acknowledgment.
+
 **Module 3 special case:** The visualization offer (web page with interactive features) should already have been presented before reaching this workflow. If the user declined, the Explore option above gives them another chance.
 
 ## Path Completion Detection

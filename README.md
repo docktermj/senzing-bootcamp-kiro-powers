@@ -2,6 +2,9 @@
 
 This repository contains the Senzing Bootcamp Kiro Power and its development documentation.
 
+The goal of this bootcamp is that you can say to yourself,
+"I can do this!"
+
 ## Prerequisites
 
 1. [Install Kiro](docs/install-kiro.md)
@@ -46,9 +49,54 @@ Kiro's agentic chat will guide you through the Bootcamp.
 
 ## Tips
 
+1. **Caveat:** At times, the Bootcamp may seem boring.
+   If it wasn't boring, you'd have to do the work.
+   Your job is to steer the AI to create what you want.
+   Let the AI do the work.
 1. During "Administrative setup", simply hitting "Run" is all that's needed.
+1. Each topic is called a "module". There are "tracks" which is an ordered set of modules.
 1. Questions posed to the Bootcamper are usually prefaced with "👉"
-1. You can ignore text from "...hook..."  There's no way to turn that off.
+
+## Peccadillos
+
+- The "Roomba effect".
+  The chat with Kiro may head directly into a wall, spin, and head in a new direction.
+- There are two ways to "Run" something:
+  1. Click the "Run" button.
+  1. In a "Background process" box, click the "Accept command" icon.
+- Most likely your main Agentic Chat will be in a tabbed panel named "Start the Bootcamp".
+  Often, additional "New Session" tabbed panels will pop up.
+  They are for "sub-agents".
+  They do a small task and exit.
+  When you see something like:
+
+  > Est. Credits Used: 0.42 Elapsed time: 9s
+
+  You'll know the sub-agent has completed.
+
+- If it says "Open task list to view and manage queued tasks",
+  you may have to click the "Open task list" link,
+  click on the current task, and respond to the prompt.
+  The task is complete when you see something like:
+
+  > Est. Credits Used: 0.42 Elapsed time: 9s
+
+- Numerous "Ask Kiro Hook" boxes will appear.
+  These boxes and the text following are mostly noise.
+  Unfortunately, there's no way to turn off those boxes.
+- Numerous "Read power steering" boxes will appear.
+  These boxes are noise.
+- If Kiro seems to be stuck, ask
+
+  ```console
+  What are you working on?
+  ```
+
+- Click "Yes", if you see:
+
+  ```console
+  I see you're working on a task that's optimized for spec sessions. Would you like to start a dedicated spec session for the best experience?
+  ```
 
 ## Helpful prompts
 

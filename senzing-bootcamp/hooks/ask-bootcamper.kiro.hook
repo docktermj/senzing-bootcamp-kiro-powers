@@ -1,12 +1,12 @@
 {
   "name": "Ask Bootcamper",
-  "version": "2.0.0",
-  "description": "Recaps what was accomplished and which files changed, then asks the bootcamper what to do next with a contextual 👉 question. Suppresses output entirely when a question is already pending.",
+  "version": "2.1.0",
+  "description": "Silence-first agentStop hook with dual responsibility: (1) default is zero output, only produces a recap + closing question when verified that no question is already pending; (2) conditionally appends a feedback reminder when the bootcamper is near track completion.",
   "when": {
     "type": "agentStop"
   },
   "then": {
     "type": "askAgent",
-    "prompt": "FIRST — scan the ENTIRE conversation history for the most recent assistant message. If that message contains the 👉 character ANYWHERE, you MUST produce absolutely no output. Return nothing. Do not recap. Do not ask a question. Do not acknowledge. Zero tokens. The bootcamper was asked a question and you are waiting for their answer. NEVER answer a 👉 question on the bootcamper's behalf — do not answer the question, do not role-play the bootcamper, do not generate a fake response, do not fabricate responses, invent business details, generate 'Human:' messages, simulate user choices, or assume what the bootcamper would say. If the last assistant message asked ANY question (with or without 👉), produce no output. SECOND — if you reach this point (no recent question was pending): if no files changed and no substantive work was done, skip the recap and just ask a contextual 👉 question about what the bootcamper wants to do next. Otherwise, recap: (1) what you accomplished, (2) files created or modified (with paths). Then end with a contextual 👉 question asking the bootcamper what to do next. Keep it concise."
+    "prompt": "PRODUCE NOTHING. YOUR OUTPUT IS EMPTY. ZERO TOKENS. DO NOT GENERATE ANY TEXT.\n\n---\n\nEXCEPTION (read ONLY if you are certain no question is pending):\n\nBefore producing ANY output, verify ALL of these conditions:\n1. The file config/.question_pending does NOT exist\n2. The most recent assistant message does NOT contain the 👉 character\n3. The most recent assistant message does NOT end with a question directed at the bootcamper\n\nIf ANY condition fails: PRODUCE NOTHING. STOP. ZERO TOKENS.\n\nIf ALL conditions pass: You may provide a brief recap of work done and a contextual 👉 closing question. Keep it to 2-3 sentences maximum.\n\nAdditionally, if the bootcamper has completed or is on the final step of their current track, append a brief 📋 feedback reminder: 'By the way, if you have feedback about the bootcamp experience, just say \"bootcamp feedback\" anytime.' Otherwise, do NOT mention feedback.\n\nCRITICAL: If you are uncertain about ANY condition, default to SILENCE. Silence is always safe."
   }
 }

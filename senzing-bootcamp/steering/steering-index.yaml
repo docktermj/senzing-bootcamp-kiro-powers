@@ -136,7 +136,7 @@ deployment:
 
 file_metadata:
   agent-instructions.md:
-    token_count: 1560
+    token_count: 1946
     size_category: medium
   cloud-provider-setup.md:
     token_count: 784
@@ -181,7 +181,7 @@ file_metadata:
     token_count: 1919
     size_category: medium
   hook-registry.md:
-    token_count: 4941
+    token_count: 5055
     size_category: large
   lang-csharp.md:
     token_count: 828
@@ -211,7 +211,7 @@ file_metadata:
     token_count: 1275
     size_category: medium
   module-01-business-problem.md:
-    token_count: 3050
+    token_count: 3068
     size_category: large
   module-01-phase2-document-confirm.md:
     token_count: 1772
@@ -232,7 +232,7 @@ file_metadata:
     token_count: 1684
     size_category: medium
   module-05-phase2-data-mapping.md:
-    token_count: 1766
+    token_count: 1894
     size_category: medium
   module-05-phase3-test-load.md:
     token_count: 1736
@@ -253,25 +253,25 @@ file_metadata:
     token_count: 1951
     size_category: medium
   module-07-query-validation.md:
-    token_count: 2784
+    token_count: 2878
     size_category: large
   module-08-performance.md:
-    token_count: 2246
+    token_count: 2930
     size_category: large
   module-09-security.md:
-    token_count: 2222
+    token_count: 2428
     size_category: large
   module-10-monitoring.md:
     token_count: 1543
     size_category: medium
   module-11-deployment.md:
-    token_count: 2989
+    token_count: 3196
     size_category: large
   module-11-phase2-deploy.md:
     token_count: 850
     size_category: medium
   module-completion.md:
-    token_count: 1269
+    token_count: 1339
     size_category: medium
   module-prerequisites.md:
     token_count: 1151
@@ -313,7 +313,7 @@ file_metadata:
     token_count: 1007
     size_category: medium
   visualization-guide.md:
-    token_count: 1045
+    token_count: 1244
     size_category: medium
   visualization-reference.md:
     token_count: 1004
@@ -323,7 +323,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 93818
+  total_tokens: 95924
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

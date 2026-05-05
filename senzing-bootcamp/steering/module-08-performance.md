@@ -68,6 +68,68 @@ Call `search_docs(query='loading performance', category='anti_patterns', version
 
 **Checkpoint:** Write step 2 to `config/bootcamp_progress.json`.
 
+## Hardware Clarification (On-Premises Only)
+
+**Condition:** `deployment_target == "on_premises"` AND `hardware_target` is NOT already stored in `config/bootcamp_preferences.yaml`.
+
+If both conditions are true, ask the following question before proceeding to benchmarking:
+
+👉 "Will you deploy to this machine, or a different on-premises server? If different, what are the specs (CPU cores, RAM, storage type, database server)?"
+
+> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+**After receiving the answer**, process the response as follows:
+
+### Response: "This machine"
+
+If the bootcamper indicates they will deploy to the current dev machine:
+
+1. Store in `config/bootcamp_preferences.yaml`:
+
+   ```yaml
+   hardware_target: "current_machine"
+   ```
+
+2. Proceed with the current machine's specs for all benchmarking and recommendations in Steps 3–13.
+
+### Response: Different server with specs provided
+
+If the bootcamper says they will deploy to a different server AND provides hardware details:
+
+1. Store in `config/bootcamp_preferences.yaml`:
+
+   ```yaml
+   hardware_target: "different_server"
+   production_specs:
+     cpu_cores: <provided value>
+     ram_gb: <provided value>
+     storage_type: "<provided value>"
+     database: "<provided value>"
+   ```
+
+2. Use the provided `production_specs` when making performance recommendations and sizing guidance in Steps 3–13.
+3. When presenting benchmark results, clearly note: "Benchmarks were run on your dev machine; recommendations target your production hardware (`<cpu_cores>` cores, `<ram_gb>` GB RAM, `<storage_type>`, `<database>`)."
+4. If benchmark results on the dev machine differ significantly from what the production hardware would achieve, call that out and explain the expected difference.
+
+### Response: Different server but specs unknown or incomplete
+
+If the bootcamper says they will deploy to a different server but does NOT provide specs (or provides only partial specs), ask a follow-up:
+
+👉 "To give you accurate performance recommendations, I need a few details about your production server:
+
+- CPU cores (e.g., 8, 16, 32)?
+- RAM in GB (e.g., 32, 64, 128)?
+- Storage type (HDD, SATA SSD, NVMe SSD)?
+- Database server (PostgreSQL version, or SQLite)?"
+
+> **🛑 STOP — End your response here.** Wait for the bootcamper to provide the missing details before continuing.
+
+Once the missing details are provided, store them as described in the "Different server with specs provided" section above and proceed.
+
+---
+
+If `deployment_target` is NOT "on_premises", or `hardware_target` is already stored, skip this entire Hardware Clarification section.
+
 ## Step 3: Baseline Environment
 
 Capture system info (CPU, RAM, disk, OS, SDK version, DB version). Back up current database. Save to `docs/benchmark_environment.md`.

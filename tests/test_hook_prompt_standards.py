@@ -18,7 +18,7 @@ import pytest
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry.md")
 
-EXPECTED_HOOK_COUNT = 20
+EXPECTED_HOOK_COUNT = 21
 
 VALID_EVENT_TYPES = {
     "promptSubmit",
@@ -481,12 +481,12 @@ class TestRealHookFiles:
             assert isinstance(data, dict), f"{path.name} did not parse as a JSON object"
 
     def test_hook_file_count_is_20(self):
-        """Hook file count is exactly 20 (Req 5.1)."""
-        assert len(get_hook_files()) == 20
+        """Hook file count is exactly 21 (Req 5.1)."""
+        assert len(get_hook_files()) == EXPECTED_HOOK_COUNT
 
     def test_registry_entry_count_is_20(self):
-        """Registry entry count is exactly 20 (Req 5.2)."""
-        assert len(parse_registry()) == 20
+        """Registry entry count is exactly 21 (Req 5.2)."""
+        assert len(parse_registry()) == EXPECTED_HOOK_COUNT
 
     def test_valid_event_types_has_10_entries(self):
         """VALID_EVENT_TYPES constant contains all 10 expected event type strings (Req 7.1)."""

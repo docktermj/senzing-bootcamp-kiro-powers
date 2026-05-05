@@ -96,7 +96,7 @@ inclusion: manual
    WAIT for response.
 
    > - If they choose **Static HTML file**: Load `visualization-guide.md` and follow its static HTML workflow.
-   > - If they choose **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section.
+   > - If they choose **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section. **You MUST follow the Web Service Delivery Sequence** (start command → expected output → URL → stop instructions). Never present a localhost URL without first providing the start command.
    > - If they say **no** or **not now** to the entity graph offer: Acknowledge and continue.
    > - If they are **unsure**: Briefly explain the value, then wait for their decision.
 
@@ -124,7 +124,7 @@ inclusion: manual
    WAIT for response.
 
    > - If they choose **Static HTML file**: Generate the HTML dashboard and save to `docs/results_dashboard.html`.
-   > - If they choose **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section.
+   > - If they choose **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section. **You MUST follow the Web Service Delivery Sequence** (start command → expected output → URL → stop instructions). Never present a localhost URL without first providing the start command.
    > - If they say **no** or **not now** to the results dashboard offer: Acknowledge and proceed.
    > - If they are **unsure**: Briefly explain the value, then wait for their decision.
 

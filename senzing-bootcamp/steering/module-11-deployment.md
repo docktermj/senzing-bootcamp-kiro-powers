@@ -23,6 +23,19 @@ Tell the user: "Module 11 has two phases. First we'll package your code. I need 
 
 Before starting: call `search_docs(query='deployment', category='anti_patterns', version='current')`.
 
+## Hardware Target (On-Premises Only)
+
+**Condition:** `deployment_target == "on_premises"` (read from `config/bootcamp_preferences.yaml`).
+
+If the condition is true, read `hardware_target` from `config/bootcamp_preferences.yaml`:
+
+- **If `hardware_target` is "different_server":** Use `production_specs` from `config/bootcamp_preferences.yaml` for all hardware-dependent deployment recommendations (resource allocation, scaling configuration, infrastructure sizing). Note: "Benchmarks were run on your dev machine; recommendations target your production hardware."
+- **If `hardware_target` is "current_machine":** Use the current machine's specs for deployment recommendations.
+
+Do NOT re-ask the hardware question — it was already answered in Module 8.
+
+If `deployment_target` is NOT "on_premises", skip this section entirely.
+
 ---
 
 ## Step 1: Deployment Target and Method — ASK FIRST

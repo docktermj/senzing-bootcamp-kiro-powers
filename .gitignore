@@ -4,3 +4,6 @@ mdpdf.log
 node_modules/
 package-lock.json
 package.json
+
+# Transient sentinel file for self-answering prevention
+config/.question_pending

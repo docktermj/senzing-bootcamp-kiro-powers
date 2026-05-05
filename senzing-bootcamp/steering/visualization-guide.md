@@ -63,6 +63,19 @@ inclusion: manual
 
    Regenerate affected components using the same MCP tools. When done, return to `module-07-query-validation.md`.
 
+## Web Service Delivery Sequence
+
+When presenting a completed web service to the bootcamper, ALWAYS follow this exact sequence:
+
+1. **Present the start command:** "Run this command to start the server: `<command>`"
+2. **Describe expected output:** "You should see output like: `Server running on http://localhost:<port>`"
+3. **Only AFTER steps 1-2, present the URL:** "Then open `http://localhost:<port>` in your browser"
+4. **Provide stop instructions:** "When you're done, press Ctrl+C in the terminal to stop the server"
+
+**NEVER present a localhost URL as if it's already accessible. The server must be started first.**
+
+This sequence applies to ALL web service visualizations regardless of module. Static HTML file visualizations are not affected — those are opened directly without a server.
+
 ## Offline vs Online Decision Matrix
 
 | Scenario | Recommended | Rationale |

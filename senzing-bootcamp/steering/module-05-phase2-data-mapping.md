@@ -95,6 +95,10 @@ inclusion: manual
 
 12. **Repeat** for remaining data sources. Each gets its own transformation program.
 
+    > **🚫 MANDATORY GATE — Do NOT Write Module Completion Checkpoint Until This Passes:**
+    >
+    > **BEFORE writing the module completion checkpoint:** List ALL files in `data/transformed/` and verify that EACH has a corresponding `docs/{source_name}_mapper.md`. If any are missing, create them NOW. Do NOT write the module completion checkpoint until all mapping specs exist. This is a hard requirement — the module is not complete without per-source mapping specifications for every transformed data source.
+
     **Per-source completion checkpoint:** Before marking a source as complete, verify that `docs/{source_name}_mapper.md` exists for that source. Do not proceed to the next source or mark the current source as done until its mapping specification markdown is saved. When all sources are mapped, confirm that every completed source has its own `docs/{source_name}_mapper.md` file.
 
     **Checkpoint:** Write step 19 to `config/bootcamp_progress.json`.

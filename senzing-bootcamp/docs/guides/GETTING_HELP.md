@@ -7,6 +7,7 @@ When you run into issues during the bootcamp, here's where to look — in order 
 The bootcamp agent is your first line of support. It has access to all steering files, MCP tools, and your project context. Just describe what's happening.
 
 Good prompts:
+
 - "I'm getting error code 0023 when loading records"
 - "My quality score is 45% — how do I improve it?"
 - "The demo didn't find any matches — what's wrong?"
@@ -39,8 +40,8 @@ Visit [docs.senzing.com](https://docs.senzing.com) for the official Senzing docu
 
 ## 6. Contact Senzing Support
 
-- Support: support@senzing.com
-- Sales: sales@senzing.com
+- Support: <support@senzing.com>
+- Sales: <sales@senzing.com>
 - Website: [senzing.com/support](https://senzing.com/support/)
 
 ---

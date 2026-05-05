@@ -5,6 +5,7 @@
 critical:
   - ask-bootcamper
   - capture-feedback
+  - feedback-submission-reminder
   - review-bootcamper-input
   - code-style-check
   - commonmark-validation
@@ -13,6 +14,8 @@ critical:
   - verify-senzing-facts
 
 modules:
+  2:
+    - verify-sdk-setup
   4:
     - validate-data-files
   5:
@@ -26,6 +29,12 @@ modules:
   7:
     - enforce-visualization-offers
     - offer-visualization
+  8:
+    - validate-benchmark-results
+  9:
+    - security-scan-on-save
+  10:
+    - validate-alert-config
   11:
     - deployment-phase-gate
   any:

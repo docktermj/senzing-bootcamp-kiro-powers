@@ -9,6 +9,7 @@ inclusion: manual
 ## Source Ordering Heuristics
 
 Apply in priority order:
+
 1. **Reference before transactional** — Load reference data (watchlists, catalogs) before transactional data
 2. **Quality-first** — Highest-quality source first for a strong entity baseline
 3. **Attribute-density-first** — Sources with more matching attributes create better initial entities

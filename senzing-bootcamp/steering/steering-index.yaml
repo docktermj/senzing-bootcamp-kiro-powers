@@ -58,9 +58,50 @@ modules:
         size_category: large
         step_range: [20, 27]
   7: module-07-query-validation.md
-  8: module-08-performance.md
-  9: module-09-security.md
-  10: module-10-monitoring.md
+  8:
+    root: module-08-performance.md
+    phases:
+      phaseA-requirements:
+        file: module-08-phaseA-requirements.md
+        token_count: 1850
+        size_category: medium
+        step_range: [1, 3]
+      phaseB-benchmarking:
+        file: module-08-phaseB-benchmarking.md
+        token_count: 680
+        size_category: small
+        step_range: [4, 7]
+      phaseC-optimization:
+        file: module-08-phaseC-optimization.md
+        token_count: 1420
+        size_category: medium
+        step_range: [8, 13]
+  9:
+    root: module-09-security.md
+    phases:
+      phaseA-assessment:
+        file: module-09-phaseA-assessment.md
+        token_count: 1680
+        size_category: medium
+        step_range: [1, 4]
+      phaseB-hardening:
+        file: module-09-phaseB-hardening.md
+        token_count: 1520
+        size_category: medium
+        step_range: [5, 12]
+  10:
+    root: module-10-monitoring.md
+    phases:
+      phaseA-setup:
+        file: module-10-phaseA-setup.md
+        token_count: 1100
+        size_category: medium
+        step_range: [1, 5]
+      phaseB-operations:
+        file: module-10-phaseB-operations.md
+        token_count: 920
+        size_category: medium
+        step_range: [6, 10]
   11:
     root: module-11-deployment.md
     phases:
@@ -119,6 +160,9 @@ keywords:
   verbosity levels: verbosity-control-reference.md
   content rules: verbosity-control-reference.md
   decision tree: mcp-tool-decision-tree.md
+  skip step: skip-step-protocol.md
+  skip: skip-step-protocol.md
+  stuck on step: skip-step-protocol.md
 
 languages:
   python: lang-python.md
@@ -128,6 +172,7 @@ languages:
   typescript: lang-typescript.md
 
 deployment:
+  aws: deployment-aws.md
   onpremises: deployment-onpremises.md
   docker: deployment-onpremises.md
   azure: deployment-azure.md
@@ -136,7 +181,7 @@ deployment:
 
 file_metadata:
   agent-instructions.md:
-    token_count: 1946
+    token_count: 1676
     size_category: medium
   cloud-provider-setup.md:
     token_count: 784
@@ -147,8 +192,14 @@ file_metadata:
   complexity-estimator.md:
     token_count: 606
     size_category: medium
+  conversation-protocol.md:
+    token_count: 515
+    size_category: medium
   data-lineage.md:
     token_count: 603
+    size_category: medium
+  deployment-aws.md:
+    token_count: 1328
     size_category: medium
   deployment-azure.md:
     token_count: 969
@@ -178,10 +229,10 @@ file_metadata:
     token_count: 2542
     size_category: large
   graduation.md:
-    token_count: 1919
+    token_count: 1920
     size_category: medium
   hook-registry.md:
-    token_count: 5055
+    token_count: 6400
     size_category: large
   lang-csharp.md:
     token_count: 828
@@ -205,7 +256,7 @@ file_metadata:
     token_count: 1172
     size_category: medium
   mcp-offline-fallback.md:
-    token_count: 2063
+    token_count: 2064
     size_category: large
   mcp-tool-decision-tree.md:
     token_count: 1275
@@ -226,10 +277,10 @@ file_metadata:
     token_count: 2962
     size_category: large
   module-05-data-quality-mapping.md:
-    token_count: 557
+    token_count: 556
     size_category: medium
   module-05-phase1-quality-assessment.md:
-    token_count: 1684
+    token_count: 1683
     size_category: medium
   module-05-phase2-data-mapping.md:
     token_count: 1894
@@ -244,7 +295,7 @@ file_metadata:
     token_count: 662
     size_category: medium
   module-06-phaseB-load-first-source.md:
-    token_count: 1194
+    token_count: 1193
     size_category: medium
   module-06-phaseC-multi-source.md:
     token_count: 1428
@@ -256,14 +307,35 @@ file_metadata:
     token_count: 2878
     size_category: large
   module-08-performance.md:
-    token_count: 2930
-    size_category: large
-  module-09-security.md:
-    token_count: 2428
-    size_category: large
-  module-10-monitoring.md:
-    token_count: 1543
+    token_count: 555
     size_category: medium
+  module-08-phaseA-requirements.md:
+    token_count: 1508
+    size_category: medium
+  module-08-phaseB-benchmarking.md:
+    token_count: 426
+    size_category: small
+  module-08-phaseC-optimization.md:
+    token_count: 721
+    size_category: medium
+  module-09-phaseA-assessment.md:
+    token_count: 1220
+    size_category: medium
+  module-09-phaseB-hardening.md:
+    token_count: 928
+    size_category: medium
+  module-09-security.md:
+    token_count: 459
+    size_category: small
+  module-10-monitoring.md:
+    token_count: 455
+    size_category: small
+  module-10-phaseA-setup.md:
+    token_count: 808
+    size_category: medium
+  module-10-phaseB-operations.md:
+    token_count: 451
+    size_category: small
   module-11-deployment.md:
     token_count: 3196
     size_category: large
@@ -297,6 +369,9 @@ file_metadata:
   session-resume.md:
     token_count: 1620
     size_category: medium
+  skip-step-protocol.md:
+    token_count: 613
+    size_category: medium
   troubleshooting-commands.md:
     token_count: 658
     size_category: medium
@@ -310,10 +385,10 @@ file_metadata:
     token_count: 3126
     size_category: large
   verbosity-control.md:
-    token_count: 1007
+    token_count: 1008
     size_category: medium
   visualization-guide.md:
-    token_count: 1244
+    token_count: 1245
     size_category: medium
   visualization-reference.md:
     token_count: 1004
@@ -323,7 +398,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 95924
+  total_tokens: 100086
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

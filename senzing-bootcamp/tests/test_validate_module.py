@@ -64,16 +64,22 @@ ARTIFACT_CREATORS = {
     ],
     8: [
         lambda r: _write(r / "docs" / "performance_requirements.md", "x"),
+        lambda r: _write(r / "docs" / "benchmark_environment.md", "x"),
         lambda r: _write(r / "docs" / "performance_report.md", "x"),
         lambda r: _write(r / "tests" / "performance" / "bench.py", "x"),
     ],
     9: [
+        lambda r: _write(r / "docs" / "security_compliance.md", "x"),
+        lambda r: _write(r / "src" / "security" / "secrets_manager.py", "x"),
         lambda r: _write(r / "docs" / "security_checklist.md", "x"),
     ],
     10: [
+        lambda r: _write(r / "src" / "monitoring" / "metrics_collector.py", "x"),
+        lambda r: _write(r / "docs" / "runbooks" / "high_error_rate.md", "x"),
         lambda r: _write(r / "docs" / "monitoring_setup.md", "x"),
     ],
     11: [
+        lambda r: _write(r / "Dockerfile", "FROM python:3.11"),
         lambda r: _write(r / "docs" / "deployment_plan.md", "x"),
     ],
 }

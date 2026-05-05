@@ -7,39 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- AWS deployment reference steering file (`deployment-aws.md`) — dedicated guidance for ECS/Fargate, RDS, Secrets Manager, CloudWatch, IAM best practices, and cost optimization
+- Skip Step Protocol (`skip-step-protocol.md`) — escape hatch for stuck bootcampers with step-level skip tracking, consequence assessment, and revisit workflow
+- Module 8 phase-split into 3 phases: A (requirements/baselines), B (benchmarking), C (optimization/reporting)
+- Module 9 phase-split into 2 phases: A (assessment/secrets), B (hardening/validation)
+- Module 10 phase-split into 2 phases: A (monitoring setup), B (operations/validation)
+- New hooks for Modules 2, 8, 9, 10: `verify-sdk-setup`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`
+- Missing `feedback-submission-reminder.kiro.hook` file (was referenced but not present)
+- Integration test (`test_module_flow_integration.py`) validating multi-module state transitions across all tracks
+- Enhanced `validate_module.py` checks for Modules 8–11 (benchmark environment, security utilities, monitoring utilities, runbooks, Dockerfile)
+
 ### Changed
 
-- Removed 28 orphaned specs from `.kiro/specs/` that referenced old module numbering, renamed hooks, or deleted files
-- Fixed module numbering in `common-pitfalls.md` — merged old Module 6/7 sections into Module 6 (Load Data), renumbered Module 8 to Module 7
-- Fixed `onboarding-flow.md` failure impact table referencing `summarize-on-stop` (renamed to `ask-bootcamper`)
-- Fixed `POWER.md` MCP JSON block showing empty `disabledTools` instead of `["submit_feedback"]`
-- Fixed `POWER.md` duplicate listing of `module-01-business-problem.md`
-- Fixed `agent-instructions.md` stale "triggers loading" language for `module-transitions.md`
-- Changed `security-privacy.md` from `inclusion: auto` to `inclusion: always` (27 lines, negligible context cost)
-- Dropped unused "(SGES)" abbreviation from `POWER.md` and `onboarding-flow.md`
-- Updated `POWER.md` Recommended Hooks to list all 20 hooks (was missing `capture-feedback` and `feedback-submission-reminder`)
-- Removed stale `examples/` row from repository-organization steering
-- Added steering file cross-references to `docs/modules/README.md`
-- Removed ghost-artifact absence assertions from test files
-- Trimmed `agent-instructions.md` from 109 to ~80 lines: moved Sub-Step Convention to `module-transitions.md`, collapsed Question Stop Protocol
-- Changed `verbosity-control.md` from `inclusion: always` to `inclusion: auto` — saves ~71 lines of context on lightweight interactions
-- Split `visualization-guide.md` (414 lines) into workflow root (~85 lines) + `visualization-reference.md` (~90 lines) via `#[[file:]]`
-- Split `module-06-phaseD-validation.md` (355 lines) into validation steps (~150 lines) + `module-06-reference.md` (~110 lines) via `#[[file:]]`
-- Extracted "What Is Entity Resolution?" section from `onboarding-flow.md` into `entity-resolution-intro.md` via `#[[file:]]`
-- Changed `common-pitfalls.md`, `module-prerequisites.md`, `design-patterns.md` from `inclusion: manual` to `inclusion: auto`
-- Trimmed `hook-registry.md` from 235 to ~105 lines by removing duplicated prompt text (prompts live in `.kiro.hook` files)
-- Added Windows-specific pitfalls section to `common-pitfalls.md` (python3 vs python, PowerShell execution policy, npm.cmd, VS Build Tools, DLL PATH, Unicode, source command)
-- Added PowerShell execution policy and dot-sourcing guidance to `environment-setup.md`
-- Added Visual Studio Build Tools check and npm.cmd detection to `preflight.py` for Windows
-- Added Windows `PATH` / DLL guidance to `lang-python.md` and `lang-java.md` platform notes
-- Added `pyenv-win` mention to `lang-python.md` for Windows version management
-- Added macOS `DYLD_LIBRARY_PATH` guidance to `lang-java.md`
-- Added Windows section to `QUICK_START.md` (python command, Windows Terminal, VS Build Tools)
-- Added Windows Terminal recommendation to `POWER.md` Useful Commands section
-- Fixed onboarding failure impact table — added missing `review-bootcamper-input` and `feedback-submission-reminder` hooks (was 7/9 critical hooks, now 9/9)
-- Fixed Track A definition in `onboarding-flow.md` — was "2→3", now "1→2→3" to match POWER.md and module-dependencies.yaml
-- Fixed `#[[file:]]` path in `verbosity-control.md` — was relative, now full path consistent with all other references
-- Added "What's New (Unreleased)" section to POWER.md summarizing changes since 0.10.0
+- `steering-index.yaml` now includes full phase maps with `token_count` and `size_category` for Modules 7–10 (previously bare strings)
+- `steering-index.yaml` deployment section now includes `aws` key
+- `hook-categories.yaml` now includes hooks for Modules 2, 8, 9, 10
+- `.gitignore` now covers `.hypothesis/` and `.pytest_cache/` directories
+- Removed stale `__pycache__/`, `.hypothesis/`, `.pytest_cache/` directories from `scripts/` and `tests/`
+
+### Removed
+
+- Deprecated `preflight_check.py` script (was a thin wrapper around `preflight.py`)
 
 ## [0.10.0] - 2026-04-22
 
@@ -53,7 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Offer Entity Graph Visualization hook (`offer-visualization.kiro.hook`) — prompts visualization offer when query files are created in Module 8
 - MCP offline fallback steering file (`steering/mcp-offline-fallback.md`) — extracted from common-pitfalls.md for leaner context loading
 - Troubleshooting commands steering file (`steering/troubleshooting-commands.md`) — extracted from troubleshooting-decision-tree.md
-
 - Review Bootcamper Input hook (`review-bootcamper-input.kiro.hook`) — deterministic feedback capture via promptSubmit trigger with automatic context capture
 - Module 11 Phase Gate hook (`deployment-phase-gate.kiro.hook`) — enforces packaging-to-deployment decision gate in Module 11
 - Enforce Module 8 Visualization Offers hook (`enforce-visualization-offers.kiro.hook`) — catches missed visualization offers before Module 8 closes

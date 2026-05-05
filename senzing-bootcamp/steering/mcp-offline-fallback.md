@@ -14,7 +14,7 @@ These operations depend on a specific MCP tool and cannot proceed without a work
 | -------------------------- | -------------------- | ---------------- | ----------------------------------------------------------------- |
 | Attribute mapping          | `mapping_workflow`   | 5, 7             | Refer to docs.senzing.com entity specification; check `docs/mapping_*.md` |
 | Code generation            | `generate_scaffold`  | 0, 1, 6, 8      | Check `src/` for existing scaffold code to adapt                  |
-| Error diagnosis            | `explain_error_code` | Any              | Note error code; check docs.senzing.com; email support@senzing.com |
+| Error diagnosis            | `explain_error_code` | Any              | Note error code; check docs.senzing.com; email <support@senzing.com> |
 | SDK reference lookup       | `get_sdk_reference`  | 0, 6, 8          | Browse docs.senzing.com SDK docs; check `src/` for usage patterns |
 | Documentation search       | `search_docs`        | Any              | Browse docs.senzing.com directly in browser                       |
 

@@ -1,0 +1,13 @@
+{
+  "name": "Verify SDK Setup",
+  "version": "1.0.0",
+  "description": "After config or environment files change during Module 2, re-verifies that the Senzing SDK setup is still valid.",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["config/senzing_config.*", "config/bootcamp_preferences.yaml", "database/*.*"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A configuration or database file was modified. If the bootcamper is in Module 2 (SDK Setup), run a quick verification: check that database/G2C.db exists and is accessible, and that the Senzing engine can initialize with the current config. If not in Module 2, produce no output. If verification fails, present the error and suggest running: python3 senzing-bootcamp/scripts/preflight.py"
+  }
+}

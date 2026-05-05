@@ -65,7 +65,7 @@ SQS also supports a built-in dead letter queue mechanism. You configure a redriv
 
 The messages your consumer reads from a queue are rarely in the format Senzing expects. Source systems produce records in their own schemas — a CRM might send customer objects with `first_name` and `last_name` fields, a watchlist feed might use `fullName` and `address_line_1`, and a transaction system might embed person data inside a nested `parties` array. Before calling `add_record`, your consumer must transform each raw message into a Senzing-compatible JSON record with three essential components: `DATA_SOURCE`, `RECORD_ID`, and mapped attributes.
 
-**Assigning DATA_SOURCE**
+### Assigning DATA_SOURCE
 
 Every record submitted to Senzing needs a `DATA_SOURCE` value that identifies where the record came from. In a streaming pipeline, the data source is typically determined by the queue or topic the message arrived on, or by a field within the message itself. Common approaches:
 
@@ -75,7 +75,7 @@ Every record submitted to Senzing needs a `DATA_SOURCE` value that identifies wh
 
 The key requirement is consistency: every record from the same source system must use the same `DATA_SOURCE` value across all loads, whether batch or streaming. Senzing uses the combination of `DATA_SOURCE` and `RECORD_ID` to uniquely identify a record, so changing the data source name would cause Senzing to treat existing records as new entries.
 
-**Deriving RECORD_ID**
+### Deriving RECORD_ID
 
 Each record also needs a `RECORD_ID` that is unique within its data source. The record ID is how Senzing tracks whether a record is new (add) or an update (replace). In a streaming context, the record ID usually comes from one of these sources:
 
@@ -85,7 +85,7 @@ Each record also needs a `RECORD_ID` that is unique within its data source. The 
 
 Whatever strategy you choose, the record ID must be stable — the same source record should always produce the same `RECORD_ID`. If the ID changes between loads, Senzing treats the record as a new entry rather than an update to the existing one.
 
-**Mapping Source Fields to Senzing Attributes**
+### Mapping Source Fields to Senzing Attributes
 
 After assigning `DATA_SOURCE` and `RECORD_ID`, the consumer maps the remaining source fields to Senzing entity attributes. Senzing uses a defined set of attribute names for entity resolution — `NAME_FULL`, `ADDR_FULL`, `PHONE_NUMBER`, `EMAIL_ADDRESS`, `DATE_OF_BIRTH`, and others. Your transformation logic must translate the source schema into these attribute names.
 
@@ -137,7 +137,7 @@ The trade-offs for exactly-once delivery:
 - **Lower throughput.** Transactional guarantees require additional round trips and synchronization between components. This reduces the maximum message processing rate compared to at-least-once delivery.
 - **Stronger correctness.** Each message is processed once and only once, which matters for systems where duplicate processing causes incorrect or irreversible side effects.
 
-**How delivery semantics affect Senzing**
+### How delivery semantics affect Senzing
 
 For Senzing pipelines, at-least-once delivery is the practical choice — and in most cases, the better one. The reason is Senzing's built-in handling of duplicate records: when you call `add_record` with a `DATA_SOURCE` and `RECORD_ID` that already exist, Senzing replaces the existing record rather than creating a duplicate entity. This replace-on-reload behavior makes `add_record` idempotent with respect to the same record content. If a consumer crashes and the queue redelivers a message, the consumer calls `add_record` again with the same `RECORD_ID`, and Senzing simply overwrites the previous version. The end result is identical to processing the message once.
 
@@ -157,19 +157,19 @@ Once your consumer has read a message from the queue and transformed it into a S
 
 Every record that flows through your streaming pipeline follows the same lifecycle, regardless of which queue technology delivered it. The lifecycle has three phases: ingestion, resolution, and redo generation.
 
-**Ingestion via `add_record`**
+### Ingestion via `add_record`
 
 The consumer calls `add_record` with the transformed record — the same function used in batch loading (Module 6) and incremental loading. Senzing receives the record's `DATA_SOURCE`, `RECORD_ID`, and mapped attributes, and stores it in the repository. If a record with the same `DATA_SOURCE` and `RECORD_ID` already exists, Senzing replaces it — this is the same replace-on-reload behavior that makes at-least-once delivery safe for Senzing pipelines, as discussed in the Delivery Semantics section above.
 
 In a streaming context, `add_record` is called once per message. The consumer reads a message, transforms it, calls `add_record`, and then acknowledges the message back to the queue. This tight loop — transform, ingest, acknowledge — is the heartbeat of the streaming pipeline.
 
-**Entity resolution**
+### Entity resolution
 
 After Senzing stores the record, it immediately resolves the new record against all existing records in the repository. This resolution determines whether the new record creates a new entity, joins an existing entity, or causes two or more existing entities to merge. The resolution happens synchronously within the `add_record` call — when `add_record` returns, the new record has been fully resolved against the current state of the repository.
 
 This synchronous resolution is what makes streaming integration powerful: every record is resolved the moment it arrives, so your entity resolution results are always as current as the latest message your consumer has processed. There is no separate resolution step to schedule or trigger — it happens inline as part of ingestion.
 
-**Redo record generation**
+### Redo record generation
 
 Resolving a new record can change the relationships between existing entities. When Senzing merges entities or re-evaluates relationships as a result of the new record, it may determine that other records in the repository need to be re-evaluated too. These deferred re-evaluations are written to the redo queue as redo records — the same mechanism you encountered in batch and incremental loading.
 
@@ -205,7 +205,7 @@ There are two main approaches: processing redo records inline within the same co
 
 > **Agent instruction:** Call `search_docs(query="redo record processing get_redo_record process_redo_record streaming", version="current")` to retrieve the latest Senzing documentation on redo processing APIs and recommended patterns. Use the returned content to confirm the current function names and any behavioral details that supplement the explanations below.
 
-**Inline redo processing**
+### Inline redo processing
 
 In this approach, the streaming consumer handles redo records as part of its main loop. After calling `add_record` for each message (or after a small batch of messages), the consumer checks the redo queue and processes any pending redo records before moving on to the next message. The conceptual pattern looks like this:
 
@@ -251,7 +251,7 @@ The trade-offs of inline redo processing:
 
 Inline processing works well when inbound message rates are moderate and the data is not heavily interconnected — meaning each `add_record` generates few redo records on average. It is also a good starting point for pipelines where operational simplicity matters more than peak throughput.
 
-**Dedicated redo consumer**
+### Dedicated redo consumer
 
 In this approach, the streaming consumer that calls `add_record` does not touch the redo queue at all. Instead, a separate process or thread runs independently, polling the redo queue and processing redo records on its own schedule. The two components share the same Senzing repository but operate on different workloads:
 
@@ -282,7 +282,7 @@ The trade-offs of a dedicated redo consumer:
 
 A dedicated redo consumer is the better choice when ingestion throughput is the priority and you can tolerate a short delay before redo records are resolved. It is also the natural fit when you are already running multiple ingestion consumer instances (covered in the concurrency section below) — adding a separate redo consumer keeps the architecture clean rather than having every ingestion instance compete to drain the same redo queue.
 
-**Choosing an approach**
+### Choosing an approach
 
 The decision comes down to two questions: how fast do records arrive, and how current do entity resolution results need to be?
 
@@ -298,7 +298,7 @@ The examples above show a single consumer processing records one at a time. That
 
 > **Agent instruction:** Call `find_examples(query="streaming consumer parallel concurrency", version="current")` to locate working code from indexed Senzing repositories that demonstrate multi-threaded or multi-instance streaming consumer patterns.
 
-**Why PostgreSQL is required for multi-instance concurrency**
+### Why PostgreSQL is required for multi-instance concurrency
 
 Senzing stores its entity resolution repository in a database. The two supported options are SQLite and PostgreSQL, and they have fundamentally different concurrency characteristics:
 
@@ -307,7 +307,7 @@ Senzing stores its entity resolution repository in a database. The two supported
 
 If your streaming pipeline needs to process records concurrently — whether through multiple threads in one process or multiple consumer instances across different machines — PostgreSQL is the required database backend. Attempting to scale concurrency on SQLite will not produce the throughput gains you expect.
 
-**Multiple consumer threads within a single process**
+### Multiple consumer threads within a single process
 
 The simplest form of concurrency is running several threads inside one consumer process, each pulling messages from the queue and calling `add_record` independently. The conceptual pattern looks like this:
 
@@ -330,7 +330,7 @@ Each thread maintains its own Senzing engine context and database connection. Th
 
 The practical limit on thread count depends on the machine's CPU and memory, the PostgreSQL connection pool size, and the complexity of the entity resolution workload. Adding threads improves throughput up to a point, after which contention on shared resources (CPU, database connections, Senzing internal locks) causes diminishing returns.
 
-**Multiple consumer instances across separate processes or machines**
+### Multiple consumer instances across separate processes or machines
 
 For higher throughput or fault tolerance, you can run multiple consumer instances as separate processes — potentially on different machines — all pointing at the same PostgreSQL-backed Senzing repository. Each instance is an independent consumer that reads from the queue, transforms messages, and calls `add_record` against the shared database.
 
@@ -342,13 +342,13 @@ This is where queue-level parallelism becomes important:
 
 In all three cases, the queue technology handles message distribution so that each record is processed by exactly one consumer instance. The consumer instances do not need to coordinate with each other — they each maintain their own connection to the PostgreSQL database and call `add_record` independently.
 
-**How Senzing handles concurrent writes to the same entity**
+### How Senzing handles concurrent writes to the same entity
 
 When multiple consumer threads or instances process records in parallel, two records that resolve to the same entity can arrive at roughly the same time. Senzing handles this through internal locking at the entity level within the database. If two `add_record` calls affect the same entity simultaneously, one completes first and the other waits briefly for the lock, then proceeds with the updated entity state. The result is the same as if the two records had been processed sequentially — no data is lost or corrupted.
 
 This entity-level locking means concurrency works correctly without any application-side coordination. You do not need to partition records by entity, route related records to the same consumer, or implement your own locking. Senzing and PostgreSQL handle the serialization of conflicting writes transparently. The only observable effect is that heavily overlapping entities — where many incoming records resolve to the same entity — may see reduced parallelism for those specific records as threads wait for entity locks. In practice, this is rarely a bottleneck because most incoming records resolve to different entities and proceed without contention.
 
-**Scaling guidelines**
+### Scaling guidelines
 
 A few practical considerations when scaling consumer concurrency:
 
@@ -425,7 +425,7 @@ Horizontal scaling works best in combination with the other two strategies. Rate
 
 The strategies above — rate limiting, queue buffering, and horizontal scaling — are responses to backpressure. But before you can respond, you need to know backpressure is happening. A pipeline under backpressure does not raise an exception or print a warning. It degrades quietly: entity resolution results fall further behind reality, queues grow, and by the time someone notices, the gap between produced and consumed messages may be hours or days wide. Detecting backpressure early requires watching three observable metrics that together give you a complete picture of where the pipeline is falling behind and how fast the problem is growing.
 
-**Consumer lag**
+### Consumer lag
 
 Consumer lag is the difference between the latest message produced to the queue and the latest message the consumer has processed. In Kafka, this is the offset gap — the distance between the log-end offset (the most recent message written to a partition) and the consumer group's committed offset (the most recent message the consumer has acknowledged). RabbitMQ exposes a similar concept through the number of ready messages in a queue — messages that have been published but not yet delivered to or acknowledged by a consumer. In SQS, the `ApproximateNumberOfMessagesVisible` metric shows how many messages are waiting to be received.
 
@@ -433,7 +433,7 @@ Consumer lag tells you whether the consumer is keeping up with the producer. A l
 
 Watch for two patterns: sustained growth (lag increases continuously, indicating a persistent throughput deficit) and sudden spikes (lag jumps sharply, indicating a burst of upstream traffic or a temporary consumer stall such as a garbage collection pause or a database connection timeout). Sustained growth requires a capacity change. Spikes usually resolve on their own if the queue has sufficient retention, but repeated spikes suggest the pipeline is operating too close to its throughput ceiling.
 
-**Processing latency**
+### Processing latency
 
 Processing latency measures the time from when a message arrives at the consumer to when the corresponding `add_record` call completes successfully. This includes message deserialization, the transformation step that maps source fields to Senzing attributes, the `add_record` call itself (which includes entity resolution), and any redo processing if you are using the inline approach.
 
@@ -443,7 +443,7 @@ Track both the median and the tail latency (such as the 95th or 99th percentile)
 
 Rising processing latency is an early warning sign. It often appears before consumer lag becomes visible, because the consumer is still processing every message — just taking longer to do it. If latency continues to climb, the consumer eventually cannot finish processing one message before the next one arrives, and lag begins to grow. Catching the latency increase early gives you time to investigate and respond before the pipeline falls visibly behind.
 
-**Queue depth**
+### Queue depth
 
 Queue depth is the total number of messages currently sitting in the queue waiting to be consumed. It overlaps with consumer lag but provides a different perspective: where lag measures the gap between production and consumption positions, queue depth measures the absolute volume of buffered work. In Kafka, queue depth is the sum of unconsumed messages across all partitions of a topic. In RabbitMQ, it is the queue length — the count of ready plus unacknowledged messages. In SQS, it is the sum of `ApproximateNumberOfMessagesVisible` and `ApproximateNumberOfMessagesNotVisible`.
 
@@ -451,7 +451,7 @@ Queue depth is the most intuitive backpressure indicator because it directly rep
 
 Queue depth is also the metric that connects backpressure detection to the retention policies described earlier. If your Kafka topic has a 48-hour retention period and the queue depth represents 36 hours of unconsumed messages, you are 12 hours away from the oldest messages being deleted before the consumer reads them — a data loss scenario. Monitoring queue depth against your retention configuration lets you set alerts that fire well before messages start expiring.
 
-**Using the metrics together**
+### Using the metrics together
 
 No single metric tells the full story. Consumer lag can grow because the producer sped up, not because the consumer slowed down. Processing latency can spike temporarily due to a database maintenance window without causing lasting lag. Queue depth can be high simply because the consumer was offline for planned maintenance and has not yet caught up.
 
@@ -468,13 +468,13 @@ Treat these metrics as the foundation of your pipeline's health monitoring. You 
 
 The earlier sections on horizontal scaling and backpressure detection describe when to add consumer instances and how to tell whether the pipeline is keeping up. This section addresses a deeper question: what actually happens inside Senzing when you increase consumer parallelism, and why the relationship between consumer count and throughput is not linear.
 
-**Why entity resolution is expensive**
+### Why entity resolution is expensive
 
 Every call to `add_record` does more than insert a row. Senzing compares the incoming record's features (names, addresses, dates of birth, identifiers) against features already stored in the repository to determine whether the new record matches an existing entity, should form a new entity, or should trigger a merge of previously separate entities. This comparison work is both CPU-intensive (feature hashing, scoring, and threshold evaluation) and I/O-intensive (reading candidate records from the PostgreSQL database, writing updated entity structures back). The cost of processing a single record depends on how many candidate matches Senzing needs to evaluate, which in turn depends on the size and interconnectedness of the data already in the repository.
 
 This means that entity resolution throughput is not a fixed number. A fresh repository processes records quickly because there are few candidates to compare against. As the repository grows and entities accumulate more records, the average cost per `add_record` call increases. Two records that share a common name or address may each trigger comparisons against thousands of candidates in a mature repository, while the same records in an empty repository would resolve almost instantly.
 
-**How parallelism interacts with entity resolution**
+### How parallelism interacts with entity resolution
 
 When you run multiple consumer instances, each instance calls `add_record` concurrently. Senzing and the underlying PostgreSQL database handle this concurrency, but the work is not independent. Multiple consumers may be resolving records that affect the same entities — two consumers processing records for "John Smith" at the same time will both need to read and potentially update the same entity structure. This creates contention at several levels:
 
@@ -484,7 +484,7 @@ When you run multiple consumer instances, each instance calls `add_record` concu
 
 - **CPU contention:** Entity resolution scoring is CPU-bound work. If all consumer instances run on the same host, they compete for CPU cycles. Even when consumers are distributed across multiple hosts, the database server's CPU becomes the shared bottleneck — it must handle the query and write load from all consumers simultaneously.
 
-**Diminishing returns and the throughput curve**
+### Diminishing returns and the throughput curve
 
 The relationship between consumer count and pipeline throughput follows a pattern of diminishing returns. Conceptually, it looks like this:
 
@@ -508,7 +508,7 @@ With one consumer, throughput is limited by the serial processing speed of a sin
 
 As you continue adding consumers, each additional instance contributes less incremental throughput. The gains shrink because contention grows: more consumers means more concurrent entity locks, more database connections competing for resources, and more CPU pressure on the database server. At some point — the exact number depends on your hardware, dataset characteristics, and entity distribution — adding another consumer produces no measurable throughput improvement. Beyond that point, throughput can actually decrease as the overhead of contention exceeds the benefit of additional parallelism.
 
-**Throughput-bound vs. resolution-bound pipelines**
+### Throughput-bound vs. resolution-bound pipelines
 
 When diagnosing whether adding consumers will help, it is useful to distinguish between two types of bottlenecks:
 
@@ -521,7 +521,7 @@ You can distinguish between these two cases by examining the metrics described i
 - **Low processing latency + growing lag** → throughput-bound. Each record resolves quickly, but there are not enough consumers to keep up with the inbound rate. Adding consumers will help.
 - **High processing latency + growing lag** → resolution-bound. Each record takes a long time to resolve, and the bottleneck is downstream of the consumer. Adding consumers will increase database load without proportionally increasing throughput. Instead, investigate what is making resolution expensive: check whether specific entities are growing very large, whether the database needs resource scaling (more CPU, faster storage, connection pool tuning), or whether the data contains features that generate an unusually high number of candidate comparisons.
 
-**Finding the optimal consumer count**
+### Finding the optimal consumer count
 
 There is no formula that predicts the right number of consumer instances for a given deployment. The optimal count depends on too many variables: the hardware running Senzing and PostgreSQL, the characteristics of the incoming data, the size and shape of the existing entity repository, and the specific features (names, addresses, identifiers) present in the records. The only reliable approach is incremental scaling with measurement.
 
@@ -573,7 +573,7 @@ Not every error means the record is bad. Many failures in a streaming pipeline a
 
 The defining characteristic of a transient error is that the same operation, with the same input, will succeed if you try again after a short wait. This makes transient errors ideal candidates for automatic retry — the consumer can handle them without human intervention, without losing the record, and without stopping the pipeline.
 
-**Configurable retry counts**
+### Configurable retry counts
 
 The first decision is how many times to retry before giving up. A single retry catches most transient errors — a brief network blip or a momentary connection pool exhaustion. But some transient conditions last longer: a database failover might take 10 to 30 seconds, during which multiple retry attempts fail before the database comes back. Too few retries and you route recoverable records to the dead letter queue unnecessarily. Too many retries and you waste time on records that are genuinely unprocessable, delaying everything behind them in the queue.
 
@@ -581,7 +581,7 @@ The solution is a configurable `max_retries` parameter that you can tune for you
 
 The retry count should be configurable at deployment time — not hardcoded in the consumer logic. This lets you adjust the behavior without redeploying the consumer when you learn more about your environment's failure patterns. Expose it as a configuration parameter (such as an environment variable or a configuration file entry) alongside other tunable values like the consumer's polling interval and batch size.
 
-**Exponential backoff**
+### Exponential backoff
 
 Retrying immediately after a failure is rarely the right approach. If the database is temporarily unavailable, hammering it with retry attempts every few milliseconds adds load to a system that is already struggling and may delay its recovery. Instead, the consumer should wait before each retry, and the wait should get longer with each successive attempt. This is exponential backoff: the delay between retries doubles (or increases by some multiplier) after each failed attempt, giving the downstream system progressively more time to recover.
 
@@ -608,7 +608,7 @@ You should also set a maximum delay cap to prevent the backoff from growing unbo
 
 The initial delay, the multiplier, and the cap are all tunable parameters. The values above are reasonable defaults, but the right settings depend on the kinds of transient errors your environment produces and how long they typically last.
 
-**Adding jitter to prevent thundering herd**
+### Adding jitter to prevent thundering herd
 
 Exponential backoff solves the problem of overwhelming a recovering system with retries, but it introduces a subtler issue when multiple consumers are involved. If several consumer instances hit the same transient error at the same time — a database failover that affects all consumers simultaneously, for example — they all start their retry sequences at the same moment. With pure exponential backoff, every consumer retries at exactly the same intervals: all retry after 100ms, all retry again after 200ms, all retry again after 400ms. This synchronized retry storm can overwhelm the database the instant it comes back online, potentially causing it to fail again.
 
@@ -624,7 +624,7 @@ Full jitter — where the delay is randomized between zero and the calculated ba
 
 Jitter matters most in deployments with many consumer instances. A pipeline with two consumers is unlikely to cause a thundering herd. A pipeline with 20 consumers all retrying against the same database at the same millisecond can absolutely cause one. If you are running more than a handful of consumer instances, jitter is not optional — it is a necessary part of the retry strategy.
 
-**When to stop retrying**
+### When to stop retrying
 
 After exhausting all retry attempts, the consumer must make a decision: the record has failed `max_retries` times, and continuing to retry is unlikely to produce a different result. At this point, the record should be routed to the dead letter queue for later inspection and manual remediation. The consumer logs the failure (including the error details, the retry count, and the record's `DATA_SOURCE` and `RECORD_ID`), sends the record to the dead letter queue with its metadata, and moves on to the next message in the queue.
 
@@ -632,7 +632,7 @@ This is the critical boundary between automatic recovery and human intervention.
 
 A good heuristic: if the total retry time (including all backoff delays) exceeds the time it would take to process several hundred normal records, the retry count is probably too high. The dead letter queue exists precisely for this situation — it is better to route one record there and keep the pipeline moving than to stall the entire stream trying to force a single record through.
 
-**Putting it together**
+### Putting it together
 
 The complete retry strategy combines configurable retry counts, exponential backoff, jitter, and dead letter routing into a single processing loop. Here is the pattern in pseudocode:
 
@@ -680,7 +680,7 @@ The retry strategy above handles transient errors — temporary conditions where
 
 A dead letter queue (DLQ) is a secondary queue where records that cannot be processed are placed for later inspection and manual remediation. Instead of retrying indefinitely or silently dropping the record, the consumer routes it to the DLQ with enough metadata to diagnose the problem, fix the underlying cause, and replay the corrected record through the pipeline. The DLQ is the safety net that ensures no data is lost even when the consumer cannot process it — the record is preserved, the failure is documented, and the pipeline keeps moving.
 
-**What metadata to capture**
+### What metadata to capture
 
 When routing a record to the dead letter queue, the consumer should capture enough context to diagnose the failure without needing to reproduce it. The metadata attached to each DLQ entry is what makes the difference between a useful remediation workflow and a pile of opaque failed records that no one can act on. At a minimum, each DLQ entry should include:
 
@@ -727,7 +727,7 @@ The `original_message` field is the most important. It preserves the exact bytes
 
 The `DATA_SOURCE` and `RECORD_ID` fields are conditional — they are only available if the transformation step succeeded before the error occurred. If the record failed during transformation (for example, the raw message was not valid JSON and could not be parsed at all), these fields will be absent. The DLQ entry should handle this gracefully by omitting them or setting them to a sentinel value rather than failing to write the DLQ entry itself.
 
-**Routing validation failures directly to the DLQ**
+### Routing validation failures directly to the DLQ
 
 The retry strategy section established that only transient errors should trigger retries. Validation failures — errors caused by problems in the data itself — should bypass the retry loop entirely and go straight to the dead letter queue on the first attempt. This is a critical distinction that the consumer must make for every failed record: is this error transient (retry) or permanent (DLQ immediately)?
 
@@ -756,7 +756,7 @@ catch error:
 
 This classification is the single most important decision in the error handling flow. Getting it wrong in either direction has consequences: classifying a transient error as permanent sends a recoverable record to the DLQ unnecessarily, creating manual work that the retry loop would have handled automatically. Classifying a permanent error as transient wastes retry attempts on a record that will never succeed, delaying every record behind it in the queue. When in doubt, err on the side of retrying — a record that exhausts its retries and lands in the DLQ after a few seconds of backoff is a small cost compared to routing a recoverable record to the DLQ and requiring manual intervention.
 
-**DLQ remediation workflow**
+### DLQ remediation workflow
 
 Records in the dead letter queue are not resolved — they represent gaps in your entity resolution results. Every record sitting in the DLQ is a record that Senzing has not processed, which means entities that should have been created, merged, or updated based on that record are in an incomplete state. The longer records sit in the DLQ without remediation, the more your entity resolution results diverge from reality.
 
@@ -772,7 +772,7 @@ The remediation workflow for DLQ records follows a consistent pattern:
 
 Establish a regular cadence for reviewing the DLQ — daily for high-volume pipelines, weekly for lower-volume ones. Do not let the DLQ become a graveyard of unexamined records. If the DLQ is growing faster than your team can remediate, that is a signal that something systemic is wrong: a source system is sending consistently bad data, the transformation logic has a bug that affects a broad class of records, or the retry strategy is too aggressive in classifying errors as permanent.
 
-**Queue-native DLQ support**
+### Queue-native DLQ support
 
 The DLQ pattern described above is implemented at the application level — the consumer code decides when to route a record to the DLQ and what metadata to attach. Most queue technologies also provide built-in DLQ mechanisms that operate at the infrastructure level, and these can complement or simplify your application-level routing.
 
@@ -788,7 +788,7 @@ The retry strategy and dead letter queue pattern handle individual record failur
 
 Monitoring error rates and setting alerting thresholds turns your pipeline from a system that handles failures into a system that detects problems. The goal is to distinguish between the baseline noise of occasional record failures and the signal of a systemic issue that requires human attention.
 
-**Key metrics to track**
+### Key metrics to track
 
 Effective monitoring starts with collecting the right metrics. Not every error is equally informative — what matters is how errors behave over time, how they distribute across sources and types, and how they correlate with the pipeline's overall throughput. The following metrics give you the visibility needed to detect systemic issues early.
 
@@ -800,7 +800,7 @@ Effective monitoring starts with collecting the right metrics. Not every error i
 
 *Error distribution by type* breaks down errors into categories: transient versus validation, by specific error code, and by source queue or topic. This distribution is what turns a generic "error rate is high" alert into an actionable diagnosis. If 90% of errors are transient connection timeouts, the problem is likely infrastructure. If 90% of errors are validation failures from a single source topic, the problem is likely a schema change in that source system. Tracking distribution by source is especially important in pipelines that consume from multiple queues or topics — it isolates which upstream system is causing the problem.
 
-**Setting alerting thresholds**
+### Setting alerting thresholds
 
 Collecting metrics is only useful if you act on them. Alerting thresholds define the boundary between normal operation and a condition that requires human attention. Setting thresholds too low produces alert fatigue — your team learns to ignore alerts because they fire during routine operation. Setting thresholds too high means systemic issues go undetected until the DLQ is overflowing and entity resolution results are days behind.
 
@@ -816,7 +816,7 @@ With a baseline established, set alert thresholds relative to it:
 
 - **Gradual degradation versus sudden spikes.** Not all systemic issues announce themselves with a dramatic spike. Some manifest as a slow, steady increase in error rate over hours or days — a source system gradually producing lower-quality data, a database slowly running out of disk space, or a memory leak in the consumer that causes increasingly frequent timeouts. Set a secondary threshold that detects sustained elevation: alert if the error rate stays above 1.5x baseline for more than 30 minutes, even if it never reaches the 2x or 3x spike threshold. This catches the slow-burn problems that a spike-only alert would miss.
 
-**Common systemic issues detected through monitoring**
+### Common systemic issues detected through monitoring
 
 The value of monitoring becomes concrete when you see the patterns that different systemic issues produce. Each type of problem leaves a distinct signature in your error metrics, and recognizing these signatures accelerates diagnosis.
 
@@ -828,7 +828,7 @@ The value of monitoring becomes concrete when you see the patterns that differen
 
 *Source data quality degradation* is the subtlest pattern. Unlike a schema change (which causes an immediate spike), data quality degradation manifests as a gradual increase in validation failures from one data source over days or weeks. The source system is still sending records in the expected format, but the content is increasingly problematic — more missing fields, more invalid values, more records that fail Senzing validation. The monitoring signature is a slow upward trend in validation errors from a specific source, without a clear start time. This pattern is easy to miss without trend-based alerting that detects sustained elevation above baseline.
 
-**Practical recommendations**
+### Practical recommendations
 
 Building effective monitoring into your streaming pipeline does not require a specific monitoring platform or toolchain. The principles apply regardless of whether you use a managed observability service, an open-source metrics stack, or simple log aggregation. What matters is how you structure the data and how you use it.
 

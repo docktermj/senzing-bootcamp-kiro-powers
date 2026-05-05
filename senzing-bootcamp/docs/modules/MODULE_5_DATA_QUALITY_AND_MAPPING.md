@@ -475,7 +475,6 @@ Create `docs/mapping_customers.md`:
 - Records processed: 500,000
 - Records with errors: 127 (0.025%)
 - Average quality score: 82/100
-```
 
 ### File Locations
 

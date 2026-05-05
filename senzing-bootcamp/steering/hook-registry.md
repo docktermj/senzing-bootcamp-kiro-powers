@@ -4,13 +4,13 @@ inclusion: manual
 
 # Hook Registry
 
-All 20 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
+All 25 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
 
 ## Critical Hooks (created during onboarding)
 
 **ask-bootcamper** (agentStop → askAgent)
 
-Prompt: "PRODUCE NOTHING. YOUR OUTPUT IS EMPTY. ZERO TOKENS. DO NOT GENERATE ANY TEXT.
+Prompt: "PRODUCE NO OUTPUT. YOUR OUTPUT IS EMPTY. ZERO TOKENS. DO NOT GENERATE ANY TEXT.
 
 ---
 
@@ -18,16 +18,18 @@ EXCEPTION (read ONLY if you are certain no question is pending):
 
 Before producing ANY output, verify ALL of these conditions:
 1. The file config/.question_pending does NOT exist
-2. The most recent assistant message does NOT contain the 👉 character
+2. The most recent assistant message does NOT contain a 👉 character anywhere — if it already contains a 👉, do not add a second one
 3. The most recent assistant message does NOT end with a question directed at the bootcamper
 
-If ANY condition fails: PRODUCE NOTHING. STOP. ZERO TOKENS.
+If ANY condition fails: PRODUCE NO OUTPUT. STOP. ZERO TOKENS.
 
-If ALL conditions pass: You may provide a brief recap of work done and a contextual 👉 closing question. Keep it to 2-3 sentences maximum.
+FIRST — Check for no-op: If ALL conditions pass AND no files changed (no substantive work was done — e.g., only a hook fired or a trivial acknowledgment occurred): skip the recap entirely. PRODUCE NO OUTPUT.
+
+SECOND — Recap and closing question: If ALL conditions pass AND work was accomplished: You may provide a brief recap of what was accomplished and which files created or modified, then end with a contextual 👉 question (a closing question for the bootcamper). Keep it to 2-3 sentences maximum.
 
 Additionally, if the bootcamper has completed or is on the final step of their current track, append a brief 📋 feedback reminder: 'By the way, if you have feedback about the bootcamp experience, just say "bootcamp feedback" anytime.' Otherwise, do NOT mention feedback.
 
-CRITICAL: If you are uncertain about ANY condition, default to SILENCE. Silence is always safe."
+CRITICAL: If you are uncertain about ANY condition, default to SILENCE. Silence is always safe. Do not fabricate user responses or assume a choice on the bootcamper's behalf."
 
 - id: `ask-bootcamper`
 - name: `Ask Bootcamper`
@@ -83,6 +85,29 @@ Prompt: "Before writing this file, verify: Does the file path or any path in the
 - name: `Enforce Working Directory Paths`
 - description: `Checks that file write operations do not use /tmp, %TEMP%, or any path outside the working directory. Enforces the file storage policy automatically.`
 
+**feedback-submission-reminder** (agentStop → askAgent)
+
+Prompt: "PRODUCE NOTHING unless ALL of the following conditions are met.
+
+Condition 1 — Track completion detected: Read config/bootcamp_progress.json. Check if the bootcamper has just completed their chosen track (all modules in the track are now in modules_completed) or if graduation was just completed. If no track completion or graduation detected, produce no output. STOP.
+
+Condition 2 — Deduplication: Check the conversation history for the 📋 emoji marker. If 📋 already appears in a previous assistant message in this session, the reminder was already shown — produce no output. STOP.
+
+Condition 3 — Feedback exists: Check if docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md exists AND contains at least one '## Improvement:' heading (indicating real feedback entries, not just the template). If the file does not exist or contains no ## Improvement: headings, produce no output. STOP.
+
+If ALL three conditions pass, display:
+
+📋 You have saved feedback in docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md. To share it with the Senzing team, you can:
+- Email it to support@senzing.com with subject 'Senzing Bootcamp Power Feedback'
+- Open a GitHub issue with the feedback content
+- Copy the file path and attach it to your preferred channel
+
+Do not automatically send email or create GitHub issues — wait for explicit bootcamper confirmation. If the bootcamper declines (no, skip, not now), accept without re-prompting about feedback sharing again."
+
+- id: `feedback-submission-reminder`
+- name: `Feedback Submission Reminder`
+- description: `After track completion or graduation, checks for saved feedback and reminds the bootcamper to share it with the power author.`
+
 **review-bootcamper-input** (promptSubmit → askAgent)
 
 Prompt: "Check if the bootcamper's message contains any of these feedback trigger phrases (case-insensitive): "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue". If NONE of these phrases appear in the message, produce no output at all — do not acknowledge, do not explain, do not print anything. If a trigger phrase IS found, immediately do the following: (1) Read config/bootcamp_progress.json to get the current module number and completed modules. If the file doesn't exist, record module as "Unknown". (2) Note what the bootcamper was doing in the recent conversation. (3) Note which files are open in the editor. (4) Load steering file feedback-workflow.md and follow its complete workflow, pre-filling the context fields with what you just captured. Do NOT ask the bootcamper to re-explain their context — you already have it."
@@ -100,6 +125,14 @@ Prompt: "If the file contains no Senzing-specific content, or all Senzing conten
 - description: `Reminds the agent to verify Senzing-specific facts via MCP tools before writing code or documentation that contains Senzing attribute names, SDK method calls, or configuration values.`
 
 ## Module Hooks (created when module starts)
+
+**verify-sdk-setup** — Module 2 (fileEdited → askAgent, filePatterns: `config/senzing_config.*, config/bootcamp_preferences.yaml, database/*.*`)
+
+Prompt: "A configuration or database file was modified. If the bootcamper is in Module 2 (SDK Setup), run a quick verification: check that database/G2C.db exists and is accessible, and that the Senzing engine can initialize with the current config. If not in Module 2, produce no output. If verification fails, present the error and suggest running: python3 senzing-bootcamp/scripts/preflight.py"
+
+- id: `verify-sdk-setup`
+- name: `Verify SDK Setup`
+- description: `After config or environment files change during Module 2, re-verifies that the Senzing SDK setup is still valid.`
 
 **validate-data-files** — Module 4 (fileCreated → askAgent, filePatterns: `data/raw/*.*`)
 
@@ -231,6 +264,30 @@ Prompt: "A query program was just created. If the bootcamper is in Module 7 and 
 - id: `offer-visualization`
 - name: `Offer Entity Graph Visualization`
 - description: `After query programs are created in Module 7, prompts the agent to offer generating an interactive entity graph visualization.`
+
+**validate-benchmark-results** — Module 8 (fileEdited → askAgent, filePatterns: `tests/performance/*.*`)
+
+Prompt: "A benchmark script in tests/performance/ was just modified. Before recording results, verify: (1) The script runs without errors on a small sample. (2) Output includes required metrics: records/sec for loading benchmarks, or p50/p95/p99 latency for query benchmarks. (3) Results are written to a structured format (JSON or markdown table) that can be compared across runs. If the script fails or produces unparseable output, suggest fixes before the bootcamper records baselines."
+
+- id: `validate-benchmark-results`
+- name: `Validate Benchmark Results`
+- description: `When benchmark scripts are created or modified in tests/performance/, validates that they produce parseable output with required metrics (records/sec, latency percentiles).`
+
+**security-scan-on-save** — Module 9 (fileEdited → askAgent, filePatterns: `src/security/*.*, config/*credentials*, config/*secret*, .env*`)
+
+Prompt: "A security-related file was just modified. If the bootcamper is in Module 9 (Security Hardening), remind them to re-run the appropriate vulnerability scanner for their language (Python: bandit; Java: spotbugs; C#: dotnet list package --vulnerable; Rust: cargo audit; TypeScript: npm audit) to verify no new vulnerabilities were introduced. If not in Module 9, produce no output."
+
+- id: `security-scan-on-save`
+- name: `Security Scan on Save`
+- description: `When security-related files are modified during Module 9, reminds the agent to re-run vulnerability scanning to catch regressions.`
+
+**validate-alert-config** — Module 10 (fileCreated → askAgent, filePatterns: `monitoring/alerts/*.*, monitoring/dashboards/*.*`)
+
+Prompt: "A monitoring configuration file was just created. Validate: (1) Alert rules have required fields: name, condition, severity, and action. (2) Severity levels are one of: Critical, Warning, Info. (3) Thresholds are numeric and reasonable (e.g., error rate percentages between 0-100, latency in milliseconds). (4) Dashboard configs reference metrics that are actually collected by the metrics_collector. Report any issues to the bootcamper with suggested fixes."
+
+- id: `validate-alert-config`
+- name: `Validate Alert Configuration`
+- description: `When monitoring configuration files are created or modified during Module 10, validates alert rule syntax and completeness.`
 
 **deployment-phase-gate** — Module 11 (postTaskExecution → askAgent)
 

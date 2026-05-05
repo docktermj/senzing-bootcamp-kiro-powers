@@ -38,9 +38,9 @@ Retry once. If still failing, load `mcp-offline-fallback.md` for what's blocked 
 
 Load per-module steering file when user starts that module (1→`module-01-business-problem.md` through 11→`module-11-deployment.md`). After Module 1: `complexity-estimator.md`. At 7→8 gate: `cloud-provider-setup.md`. At track end: `lessons-learned.md`.
 
-- Split modules (1, 5, 6, 11): check `steering-index.yaml` for `phases` map. Load `phase-loading-guide.md` for detailed loading rules.
+- Split modules (1, 5, 6, 8, 9, 10, 11): check `steering-index.yaml` for `phases` map. Load `phase-loading-guide.md` for detailed loading rules.
 
-**At every module start:** Read `config/bootcamp_progress.json` first, then display the module start banner, journey map, and before/after framing (per `module-transitions.md`, which is always loaded) BEFORE doing any module-specific work. Never skip these — they orient the user. Module 11 platform files: load `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target.
+**At every module start:** Read `config/bootcamp_progress.json` first, then display the module start banner, journey map, and before/after framing (per `module-transitions.md`, which is always loaded) BEFORE doing any module-specific work. Never skip these — they orient the user. Module 11 platform files: load `deployment-aws.md`, `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target.
 
 **Multi-language projects:** Load the language steering file for whichever language is currently being edited. Don't force a single language across all components.
 
@@ -50,6 +50,7 @@ Load per-module steering file when user starts that module (1→`module-01-busin
 - Progress: `config/bootcamp_progress.json`. Preferences: `config/bootcamp_preferences.yaml`. Corrupted? Run `python3 senzing-bootcamp/scripts/validate_module.py`.
 - Step-level checkpointing: after each numbered step or sub-step, update `config/bootcamp_progress.json` — set `current_step` (integer for whole steps, string like `"5.3"` or `"7a"` for sub-steps), set `step_history["<module_number>"]` to `{ "last_completed_step": <step>, "updated_at": "<ISO 8601>" }`. On module completion, set `current_step` to `null`.
 - Recovery from mistakes: load `recovery-from-mistakes.md` when a bootcamper needs to undo or redo a step.
+- Skip steps: `skip-step-protocol.md` handles "I'm stuck" / "skip this" requests with consequence tracking. Load it via `#skip-step-protocol` or when keyword routing triggers.
 
 ## Communication
 
@@ -59,49 +60,17 @@ Load per-module steering file when user starts that module (1→`module-01-busin
 - Before each step: what and why. During: status updates. After: what changed, files with paths. Offer to visualize data results as a web page.
 - At module completion: summary, all files, why it matters for next module. Follow `module-transitions.md` rules. Load `module-completion.md`.
 - Feedback trigger phrases: the capture-feedback hook handles this automatically — do not manually load feedback-workflow.md.
-
-### End-of-Turn Protocol
-
-When you complete work that does NOT end with a 👉 question:
-
-- Briefly recap what you accomplished and which files changed
-- End with a contextual 👉 closing question asking what the bootcamper wants to do next
-- This is YOUR responsibility — do not rely on hooks to provide the closing question
-
-When you DO end with a 👉 question:
-
-- Write the file `config/.question_pending` containing the question text
-- The ask-bootcamper hook will fire but produce no output (this is correct)
-
-When processing the bootcamper's next message:
-
-- Delete `config/.question_pending` before doing anything else
-
-The ask-bootcamper hook is a safety net only — do not rely on it for closing questions.
+- Turn-taking, closing question ownership, and question protocols: see `conversation-protocol.md` (auto-loaded during active modules). Closing-question ownership: the `ask-bootcamper` hook is the primary owner; agent-instructions provides the inline stop protocol as reinforcement.
 
 ### Question Stop Protocol
 
-Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question text — produce no further tokens. Do not answer, assume a response, proceed to the next step, or write checkpoints.
-
-After asking a 👉 question, write the file `config/.question_pending` with the question text before ending your turn.
-
-At the start of every turn where you process bootcamper input, check for and delete `config/.question_pending` if it exists.
-
-### No Dead-End Responses
-
-Never end a turn with only an acknowledgment (e.g., "Understood.", "Got it.", "I see."). Every turn must advance the conversation by: (a) asking a 👉 follow-up question, (b) summarizing what was captured and stating what comes next, or (c) proceeding to the next step in the module workflow.
-
-If you acknowledge input, always append a next action in the same response.
-
-### Module Transition Protocol
-
-When you ask 'Ready for Module X?' and the bootcamper responds affirmatively (yes, sure, let's go, ready, etc.), immediately begin that module in the same turn. Display the module banner, journey map, and start Step 1. Never acknowledge without acting at a module transition.
+Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question — do not answer, do not assume a response, do not proceed to the next step.
 
 ## Hooks
 
 Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks.
 
-**🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero output — no acknowledgment, no reasoning, no status. Only produce output when the hook identifies a problem. Applies to ALL hook types.
+**🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero output — no acknowledgment, no reasoning, no status. Only produce output when the hook identifies a problem. Applies to ALL hook types. The `ask-bootcamper` hook owns all closing questions — never end your turn with a closing question yourself; the hook handles it.
 
 ## Context Budget
 

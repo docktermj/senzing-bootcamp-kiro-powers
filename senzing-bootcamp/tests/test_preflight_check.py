@@ -1,4 +1,8 @@
-"""Tests for senzing-bootcamp/scripts/preflight.py."""
+"""Tests for senzing-bootcamp/scripts/preflight.py.
+
+Note: This file was previously named test_preflight_check.py but tests
+the current preflight.py script (preflight_check.py was deprecated and removed).
+"""
 
 import importlib
 import io

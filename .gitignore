@@ -5,5 +5,11 @@ node_modules/
 package-lock.json
 package.json
 
+# Hypothesis property-based testing artifacts
+.hypothesis/
+
+# pytest cache
+.pytest_cache/
+
 # Transient sentinel file for self-answering prevention
 config/.question_pending

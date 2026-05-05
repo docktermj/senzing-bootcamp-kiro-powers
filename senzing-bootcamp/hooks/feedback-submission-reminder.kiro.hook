@@ -1,0 +1,12 @@
+{
+  "name": "Feedback Submission Reminder",
+  "version": "1.0.0",
+  "description": "After track completion or graduation, checks for saved feedback and reminds the bootcamper to share it with the power author.",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "PRODUCE NOTHING unless ALL of the following conditions are met.\n\nCondition 1 — Track completion detected: Read config/bootcamp_progress.json. Check if the bootcamper has just completed their chosen track (all modules in the track are now in modules_completed) or if graduation was just completed. If no track completion or graduation detected, produce no output. STOP.\n\nCondition 2 — Deduplication: Check the conversation history for the 📋 emoji marker. If 📋 already appears in a previous assistant message in this session, the reminder was already shown — produce no output. STOP.\n\nCondition 3 — Feedback exists: Check if docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md exists AND contains at least one '## Improvement:' heading (indicating real feedback entries, not just the template). If the file does not exist or contains no ## Improvement: headings, produce no output. STOP.\n\nIf ALL three conditions pass, display:\n\n📋 You have saved feedback in docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md. To share it with the Senzing team, you can:\n- Email it to support@senzing.com with subject 'Senzing Bootcamp Power Feedback'\n- Open a GitHub issue with the feedback content\n- Copy the file path and attach it to your preferred channel\n\nDo not automatically send email or create GitHub issues — wait for explicit bootcamper confirmation. If the bootcamper declines (no, skip, not now), accept without re-prompting about feedback sharing again."
+  }
+}

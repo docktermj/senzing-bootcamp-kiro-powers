@@ -470,6 +470,7 @@ _HEADINGS_MODULE_07 = [
 
 _HEADINGS_MODULE_11 = [
     "# Module 11: Packaging and Deployment",
+    "## Hardware Target (On-Premises Only)",
     "## Step 1: Deployment Target and Method \u2014 ASK FIRST",
     "### Step 1a: Deployment Target",
     "### Step 1b: Deployment Method",
@@ -617,14 +618,14 @@ _ALL_KEY_CONTENT: dict[str, list[str]] = {
 # ---------------------------------------------------------------------------
 
 _HASH_UNAFFECTED: dict[str, str] = {
-    "module-08": "597a36b27086f63b0e7893350550cae8b9f1d6008e978b2bd087594a3f6fc38b",
-    "module-09": "d1c6edd0f4ef456f644233a3a7e7a794fc71949e775e1c34b22b380ee5af6ddd",
-    "module-10": "0c5de4e564ba6735d434360464e3dc9908570b5ad506303480585296fac2a935",
+    "module-08": "a4dcd41c947f15642ee0d8675adc334cb3e873d5f6c7e6704cde828fa3e0a66c",
+    "module-09": "759f8481b22e7a076c2cf410e18c6b43de2f2c427811997b8359c8ec9f5e2440",
+    "module-10": "b74cb6967758e481ed5fffb8bdab3fe2d10fd07b07e3bf345641a9a9a1844e92",
 }
 
-_HASH_HOOK = "25d9aba49c890ec8ad004508d939767cb3ed9637c1741ec313b11d75412101b5"
-_HASH_AGENT_INSTRUCTIONS = "5deb02612895a94ac1c14f2f41d5af3d36fa0b0f998ecb1ce3c25aa501ff49b2"
-_HASH_ONBOARDING_FLOW = "643e163a1856e75fd5927c30a919f9362cc3f179151e01af18ecf3ed2d19f34b"
+_HASH_HOOK = "7efa2588e0557c92186bade0e85750556e56d31006c1b384dc7d4c38e0b6abac"
+_HASH_AGENT_INSTRUCTIONS = "ea839798f9209ad94b531d9b82a61df71d6690efad45a5db7b64ddbb9c1db287"
+_HASH_ONBOARDING_FLOW = "fa4e7a9ee61cac6593d84b4fd989a6ee140825b2d57955f4acaf15cba72b56af"
 
 
 # ---------------------------------------------------------------------------

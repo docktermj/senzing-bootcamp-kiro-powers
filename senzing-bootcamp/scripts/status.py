@@ -70,7 +70,6 @@ NEXT_STEPS = {
     9:  ("Start Module 9: Security Hardening", "Implement security best practices"),
     10: ("Start Module 10: Monitoring", "Set up monitoring and observability"),
     11: ("Start Module 11: Deployment", "Package and deploy to production"),
-    12: ("Start Module 12: Production Readiness", "Validate production readiness and go live"),
 }
 
 

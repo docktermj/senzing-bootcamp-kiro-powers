@@ -132,31 +132,53 @@ def validate_module_8():
     """Module 8: Performance Testing — prerequisites for Module 9."""
     return [
         check_path("docs/performance_requirements.md", "Performance requirements defined"),
-        check_path("docs/performance_report.md", "Performance report created"),
+        check_file_not_empty(
+            "docs/benchmark_environment.md", "Benchmark environment documented"
+        ),
         check_dir_has_files(
             "tests/performance", "*.*", "Benchmark scripts saved"
         ),
+        check_path("docs/performance_report.md", "Performance report created"),
     ]
 
 
 def validate_module_9():
     """Module 9: Security Hardening — prerequisites for Module 10."""
     return [
-        check_path("docs/security_checklist.md", "Security checklist completed"),
+        check_file_not_empty(
+            "docs/security_compliance.md", "Security compliance assessment documented"
+        ),
+        check_dir_has_files(
+            "src/security", "*.*", "Security utilities created (secrets, auth, or audit)"
+        ),
+        check_file_not_empty(
+            "docs/security_checklist.md", "Security checklist completed"
+        ),
     ]
 
 
 def validate_module_10():
     """Module 10: Monitoring — prerequisites for Module 11."""
     return [
-        check_path("docs/monitoring_setup.md", "Monitoring setup documented"),
+        check_dir_has_files(
+            "src/monitoring", "*.*", "Monitoring utilities created (metrics, health check)"
+        ),
+        check_dir_has_files(
+            "docs/runbooks", "*.md", "Operational runbooks created"
+        ),
+        check_file_not_empty(
+            "docs/monitoring_setup.md", "Monitoring setup documented"
+        ),
     ]
 
 
 def validate_module_11():
     """Module 11: Deployment — bootcamp complete."""
     return [
-        check_path("docs/deployment_plan.md", "Deployment plan documented"),
+        check_path("Dockerfile", "Dockerfile created for containerization"),
+        check_file_not_empty(
+            "docs/deployment_plan.md", "Deployment plan documented"
+        ),
     ]
 
 

@@ -39,7 +39,7 @@ Ask the bootcamper about their recovery objectives: how long the system can be d
 
 Offer stakeholder summary: "Would you like me to create a one-page executive summary of this deployment to share with your team? It covers the problem, approach, data sources, key findings, next steps, and ROI considerations."
 
-#[[file:senzing-bootcamp/templates/stakeholder_summary.md]]
+# [[file:senzing-bootcamp/templates/stakeholder_summary.md]]
 
 If yes, follow the **MODULE 11** guidance block in the template to fill each placeholder with Module 11 context (deployment status, production metrics, operational readiness, architecture summary). Save the filled summary to `docs/stakeholder_summary_module11.md`.
 

@@ -35,4 +35,3 @@ When the bootcamper encounters an error during this module:
 - **Phase 1 — Quality Assessment** (steps 1–7): `module-05-phase1-quality-assessment.md`
 - **Phase 2 — Data Mapping** (steps 8–20): `module-05-phase2-data-mapping.md`
 - **Phase 3 — Test Load and Validate (Optional)** (steps 21–26): `module-05-phase3-test-load.md`
-

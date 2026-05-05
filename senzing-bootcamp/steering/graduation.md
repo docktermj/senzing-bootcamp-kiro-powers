@@ -36,7 +36,7 @@ If `production/` already exists, ask the bootcamper: Overwrite, Merge, or Abort.
 
 Create `production/` and copy production-relevant files per the file copy table. Exclude bootcamp scaffolding per the exclusion table.
 
-#[[file:senzing-bootcamp/steering/graduation-reference.md]]
+# [[file:senzing-bootcamp/steering/graduation-reference.md]]
 
 Present a summary of files copied, excluded, and directories created. Ask: "Does this look right? Ready to proceed to Step 2?" WAIT for confirmation.
 
@@ -44,7 +44,7 @@ Present a summary of files copied, excluded, and directories created. Ask: "Does
 
 Generate the following files in `production/` using the language and database type from pre-checks. See the reference file for templates and details for each file.
 
-#[[file:senzing-bootcamp/steering/graduation-reference.md]]
+# [[file:senzing-bootcamp/steering/graduation-reference.md]]
 
 Generate: `.env.production` (placeholders only), `.env.example` (safe example values), `docker-compose.yml` (parameterized by database type), CI/CD pipeline (ask bootcamper which platform — WAIT for response), and `.gitignore` (language-appropriate).
 
@@ -62,7 +62,7 @@ Show the generated README to the bootcamper for review. WAIT for confirmation or
 
 Generate `production/MIGRATION_CHECKLIST.md` with six sections (Database, Security, Licensing, Performance, Data, Deployment) using `- [ ]` checkboxes. Apply conditional logic based on whether Modules 9–11 were completed — see the reference file for base items and conditional rules.
 
-#[[file:senzing-bootcamp/steering/graduation-reference.md]]
+# [[file:senzing-bootcamp/steering/graduation-reference.md]]
 
 Ask: "Migration checklist generated. Ready to proceed to Step 5 (Git initialization)?" WAIT for confirmation.
 
@@ -78,7 +78,7 @@ Ask: "Would you like me to initialize a new git repository in the `production/` 
 
 **Always generate this file**, regardless of whether individual steps encountered errors. See the reference file for the full report template.
 
-#[[file:senzing-bootcamp/steering/graduation-reference.md]]
+# [[file:senzing-bootcamp/steering/graduation-reference.md]]
 
 If any step encountered errors, add a "⚠️ Issues Encountered" section.
 
@@ -100,7 +100,7 @@ Before showing the fallback feedback prompt, check for saved feedback:
 
    **How would you like to share your feedback?**
 
-   1. **Email** — Send to support@senzing.com with subject "Senzing Bootcamp Power Feedback". I can format the content for easy copy-paste.
+   1. **Email** — Send to <support@senzing.com> with subject "Senzing Bootcamp Power Feedback". I can format the content for easy copy-paste.
    2. **GitHub Issue** — Create an issue on the senzing-bootcamp power repository. I can format it as a markdown-ready issue body.
    3. **Copy path** — I'll show you the full file path so you can share it however you prefer.
 

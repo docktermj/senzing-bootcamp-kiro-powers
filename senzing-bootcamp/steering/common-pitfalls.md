@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: manual
 description: "Common mistakes and solutions by module — load on errors or when user is stuck"
 ---
 

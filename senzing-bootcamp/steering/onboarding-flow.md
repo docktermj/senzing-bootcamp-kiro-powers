@@ -140,7 +140,7 @@ Present the overview before track selection. Cover all points naturally:
 
 ### 4a. What Is Entity Resolution?
 
-#[[file:senzing-bootcamp/steering/entity-resolution-intro.md]]
+# [[file:senzing-bootcamp/steering/entity-resolution-intro.md]]
 
 ### 4b. Verbosity Preference
 
@@ -240,4 +240,4 @@ Gate checks:
 
 ## Hook Registry
 
-#[[file:senzing-bootcamp/steering/hook-registry.md]]
+# [[file:senzing-bootcamp/steering/hook-registry.md]]

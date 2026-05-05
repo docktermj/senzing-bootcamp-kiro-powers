@@ -222,9 +222,10 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
     "ask-bootcamper": {
         "name": "Ask Bootcamper",
         "description": (
-            "Recaps what was accomplished and which files changed, then asks the bootcamper"
-            " what to do next with a contextual 👉 question. Suppresses output entirely when"
-            " a question is already pending."
+            "Silence-first agentStop hook with dual responsibility: (1) default is zero output,"
+            " only produces a recap + closing question when verified that no question is already"
+            " pending; (2) conditionally appends a feedback reminder when the bootcamper is near"
+            " track completion."
         ),
     },
     "backup-before-load": {

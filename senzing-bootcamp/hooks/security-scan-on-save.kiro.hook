@@ -1,0 +1,13 @@
+{
+  "name": "Security Scan on Save",
+  "version": "1.0.0",
+  "description": "When security-related files are modified during Module 9, reminds the agent to re-run vulnerability scanning to catch regressions.",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["src/security/*.*", "config/*credentials*", "config/*secret*", ".env*"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A security-related file was just modified. If the bootcamper is in Module 9 (Security Hardening), remind them to re-run the appropriate vulnerability scanner for their language (Python: bandit; Java: spotbugs; C#: dotnet list package --vulnerable; Rust: cargo audit; TypeScript: npm audit) to verify no new vulnerabilities were introduced. If not in Module 9, produce no output."
+  }
+}

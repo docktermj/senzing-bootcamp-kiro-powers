@@ -124,4 +124,3 @@ After presenting the quality assessment, guide the user's decision:
 **Checkpoint:** Write step 7 to `config/bootcamp_progress.json`.
 
 ---
-

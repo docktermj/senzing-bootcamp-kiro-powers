@@ -25,6 +25,7 @@ inclusion: manual
 > Also check for anti-patterns before starting: `search_docs(query="loading", category="anti_patterns", version="current")`.
 
 > **Agent instruction — Phase 3 Results Integration:** Read `config/data_sources.yaml` and check `test_load_status` and `test_entity_count` for each source. If Phase 3 was completed for multiple sources, reference the test load results when planning load order and dependency management:
+>
 > - Use `test_entity_count` values to estimate total entity volume and plan resource allocation
 > - Use quality assessments from Phase 3 to inform which sources to load first (higher quality → stronger entity baseline)
 > - Note any issues discovered during Phase 3 test loading that may affect production orchestration

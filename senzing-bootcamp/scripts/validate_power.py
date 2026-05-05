@@ -118,7 +118,7 @@ def check_scripts():
     expected = [
         "status.py", "validate_module.py", "check_prerequisites.py",
         "install_hooks.py", "backup_project.py", "restore_project.py",
-        "preflight_check.py", "validate_commonmark.py",
+        "preflight.py", "validate_commonmark.py",
         "validate_power.py",
     ]
     for script in expected:

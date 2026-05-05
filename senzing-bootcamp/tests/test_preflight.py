@@ -579,15 +579,11 @@ class TestLegacyScriptsDeprecation:
         assert "deprecated" in result.stderr.lower()
 
     def test_preflight_check_deprecation(self):
-        import subprocess as sp
+        """preflight_check.py has been removed (was deprecated)."""
         scripts_dir = os.path.join(os.path.dirname(__file__), os.pardir, "scripts")
-        result = sp.run(
-            [sys.executable, os.path.join(scripts_dir, "preflight_check.py"), "--help"],
-            capture_output=True,
-            text=True,
-            timeout=30,
+        assert not os.path.exists(os.path.join(scripts_dir, "preflight_check.py")), (
+            "preflight_check.py should have been removed (deprecated)"
         )
-        assert "deprecated" in result.stderr.lower()
 
 
 class TestDiskUsageException:

@@ -37,6 +37,7 @@ inclusion: manual
     - **Full path (→ Module 6):** For production requirements, multiple data sources, datasets exceeding 1000 records, or when the bootcamper wants to learn production-quality loading patterns — recommend the full Module 6 path.
 
     > **Agent instruction:** When the bootcamper chooses the shortcut path, update `config/bootcamp_progress.json` to mark Module 6 as skipped with reason `shortcut_path`:
+>
     > ```json
     > {
     >   "modules_skipped": {
@@ -89,4 +90,3 @@ If `analyze_record` returns structural errors (e.g., flat format instead of FEAT
 ## Workflow: Install Senzing Bootcamp Hooks
 
 **Note**: Hooks are installed automatically during onboarding — no user action needed. The agent copies all `.kiro.hook` files from `senzing-bootcamp/hooks/` to `.kiro/hooks/` when the bootcamp starts. Hooks can also be reinstalled at any time by saying "install hooks" or running `python3 scripts/install_hooks.py`.
-

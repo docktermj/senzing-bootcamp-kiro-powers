@@ -75,7 +75,7 @@ Follow the platform-specific instructions from `sdk_guide`. The installation has
 
 The Senzing SDK requires EULA acceptance before use. Present the EULA question:
 
-👉 "Do you accept the Senzing End User License Agreement (EULA)? You can review it at https://senzing.com/end-user-license-agreement/. Please respond yes or no."
+👉 "Do you accept the Senzing End User License Agreement (EULA)? You can review it at <https://senzing.com/end-user-license-agreement/>. Please respond yes or no."
 
 **STOP and wait for the bootcamper's response.** Do not proceed until the bootcamper answers.
 

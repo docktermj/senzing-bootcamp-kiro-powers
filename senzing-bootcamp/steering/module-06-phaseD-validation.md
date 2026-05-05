@@ -137,7 +137,7 @@ If yes, read the template: #[[file:senzing-bootcamp/templates/stakeholder_summar
 - ✅ Results validation documented in `docs/results_validation.md`
 - ✅ Loading program saved in `src/load/`
 
-### Additional criteria when 2+ sources loaded:
+### Additional criteria when 2+ sources loaded
 
 - ✅ All sources loaded (or failures documented) with error rate < 1% per source
 - ✅ Dependencies respected, cross-source matches reviewed
@@ -150,4 +150,4 @@ If yes, read the template: #[[file:senzing-bootcamp/templates/stakeholder_summar
 
 For multi-source reference (source ordering, orchestration patterns, conflict resolution, troubleshooting, performance benchmarks), load:
 
-#[[file:senzing-bootcamp/steering/load-data-reference.md]]
+# [[file:senzing-bootcamp/steering/load-data-reference.md]]

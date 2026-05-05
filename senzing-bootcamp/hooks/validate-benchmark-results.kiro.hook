@@ -1,0 +1,13 @@
+{
+  "name": "Validate Benchmark Results",
+  "version": "1.0.0",
+  "description": "When benchmark scripts are created or modified in tests/performance/, validates that they produce parseable output with required metrics (records/sec, latency percentiles).",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["tests/performance/*.*"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A benchmark script in tests/performance/ was just modified. Before recording results, verify: (1) The script runs without errors on a small sample. (2) Output includes required metrics: records/sec for loading benchmarks, or p50/p95/p99 latency for query benchmarks. (3) Results are written to a structured format (JSON or markdown table) that can be compared across runs. If the script fails or produces unparseable output, suggest fixes before the bootcamper records baselines."
+  }
+}

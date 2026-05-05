@@ -133,11 +133,11 @@ Your data has significant quality problems. The agent will list the specific dim
 
 | customer_id | full_name      | email                | phone          | address                  |
 |-------------|----------------|----------------------|----------------|--------------------------|
-| C001        | Alice Johnson  | alice@example.com    | (555) 123-4567 | 100 Main St, Austin, TX  |
-| C002        | Bob Williams   | bob.w@example.com    | (555) 234-5678 | 200 Oak Ave, Austin, TX  |
-| C003        | Carol Davis    | carol.d@example.com  | (555) 345-6789 | 300 Pine Rd, Dallas, TX  |
-| C004        | David Brown    | david.b@example.com  | (555) 456-7890 | 400 Elm St, Houston, TX  |
-| C005        | Eva Martinez   | eva.m@example.com    | (555) 567-8901 | 500 Cedar Ln, Austin, TX |
+| C001        | Alice Johnson  | <alice@example.com>    | (555) 123-4567 | 100 Main St, Austin, TX  |
+| C002        | Bob Williams   | <bob.w@example.com>    | (555) 234-5678 | 200 Oak Ave, Austin, TX  |
+| C003        | Carol Davis    | <carol.d@example.com>  | (555) 345-6789 | 300 Pine Rd, Dallas, TX  |
+| C004        | David Brown    | <david.b@example.com>  | (555) 456-7890 | 400 Elm St, Houston, TX  |
+| C005        | Eva Martinez   | <eva.m@example.com>    | (555) 567-8901 | 500 Cedar Ln, Austin, TX |
 
 **Sub-scores:**
 
@@ -162,10 +162,10 @@ Quality Score = (95 × 0.40) + (92 × 0.30) + (90 × 0.20) + (100 × 0.10)
 
 | vendor_id | name            | email               | phone        | city       |
 |-----------|-----------------|---------------------|--------------|------------|
-| V001      | Acme Corp       | contact@acme.com    | 555-111-2222 | Austin     |
+| V001      | Acme Corp       | <contact@acme.com>    | 555-111-2222 | Austin     |
 | V002      | GLOBEX INC      |                     | 5552223333   | dallas     |
-| V003      | Initech         | info@initech.com    | (555)333-444 | Houston    |
-| V004      | acme corp       | sales@acme.com      | 555.444.5555 | Austin     |
+| V003      | Initech         | <info@initech.com>    | (555)333-444 | Houston    |
+| V004      | acme corp       | <sales@acme.com>      | 555.444.5555 | Austin     |
 | V005      | Umbrella LLC    | bad-email           | +15555556666 |            |
 
 **Sub-scores:**

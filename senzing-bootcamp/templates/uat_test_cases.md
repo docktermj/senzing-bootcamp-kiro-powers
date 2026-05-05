@@ -30,9 +30,9 @@ Records that should resolve to the same entity.
 
 | Test ID | Category | Description | Input | Expected Result | Actual Result | Pass/Fail |
 | --- | --- | --- | --- | --- | --- | --- |
-| FN-001 | Known Match | Exact duplicate detection | Record A: "John Smith, 123 Main St, john@email.com" / Record B: "John Smith, 123 Main St, john@email.com" | Both records resolve to the same entity | | |
+| FN-001 | Known Match | Exact duplicate detection | Record A: "John Smith, 123 Main St, <john@email.com>" / Record B: "John Smith, 123 Main St, <john@email.com>" | Both records resolve to the same entity | | |
 | FN-002 | Known Match | Name variation with same address | Record A: "John Smith, 123 Main St" / Record B: "J. Smith, 123 Main Street" | Both records resolve to the same entity | | |
-| FN-003 | Known Match | Cross-source match on email | Source A: "John Smith, john@email.com" / Source B: "Jonathan Smith, john@email.com" | Both records resolve to the same entity | | |
+| FN-003 | Known Match | Cross-source match on email | Source A: "John Smith, <john@email.com>" / Source B: "Jonathan Smith, <john@email.com>" | Both records resolve to the same entity | | |
 | *(add row)* | | | | | | |
 
 ### Known Non-Matches
@@ -42,7 +42,7 @@ Records that should remain as separate entities.
 | Test ID | Category | Description | Input | Expected Result | Actual Result | Pass/Fail |
 | --- | --- | --- | --- | --- | --- | --- |
 | FN-010 | Known Non-Match | Same name, different address and DOB | Record A: "John Smith, 123 Main St, DOB 1980-01-15" / Record B: "John Smith, 456 Oak Ave, DOB 1995-07-22" | Records remain as separate entities | | |
-| FN-011 | Known Non-Match | Similar name, different identifiers | Record A: "Robert Johnson, SSN ***-**-1234" / Record B: "Robert Johnson, SSN ***-**-5678" | Records remain as separate entities | | |
+| FN-011 | Known Non-Match | Similar name, different identifiers | Record A: "Robert Johnson, SSN ***-**-1234" / Record B: "Robert Johnson, SSN***-**-5678" | Records remain as separate entities | | |
 | *(add row)* | | | | | | |
 
 ### Edge Cases

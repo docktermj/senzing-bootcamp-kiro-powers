@@ -67,4 +67,3 @@ inclusion: manual
     **Checkpoint:** Write step 10 to `config/bootcamp_progress.json`.
 
 ---
-

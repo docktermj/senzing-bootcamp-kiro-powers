@@ -18,9 +18,18 @@ This power works best with Claude Opus 4.6 or similar.
 
 ## What's New (Unreleased)
 
+- AWS deployment reference (`deployment-aws.md`) — dedicated guidance for ECS/Fargate, RDS, Secrets Manager, CloudWatch, IAM, and cost optimization
+- Skip Step Protocol (`skip-step-protocol.md`) — escape hatch for stuck bootcampers with step-level skip tracking and consequence assessment
+- Phase-splitting for Modules 8, 9, 10 — reduces context pressure by loading only the current phase
+- New hooks for Modules 2, 8, 9, 10: `verify-sdk-setup`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`
+- Conversation protocol extracted to `conversation-protocol.md` (auto-included) — keeps `agent-instructions.md` under 80 lines
+- Integration test (`test_module_flow_integration.py`) validating multi-module state transitions across all tracks
+- Enhanced `validate_module.py` checks for Modules 8–11 (benchmark environment, security utilities, runbooks, Dockerfile)
+- Missing `feedback-submission-reminder.kiro.hook` file created (was referenced but absent)
 - Windows support improvements — Visual Studio Build Tools check in `preflight.py`, Windows-specific pitfalls section in `common-pitfalls.md`, PowerShell execution policy guidance, Windows Terminal recommendation
-- Steering best practices alignment — `agent-instructions.md` trimmed to 82 lines, `verbosity-control.md` changed to auto-inclusion, large files split via `#[[file:]]` references, `common-pitfalls.md`/`design-patterns.md`/`module-prerequisites.md` changed to auto-inclusion
+- Steering best practices alignment — `agent-instructions.md` trimmed to 79 lines, `common-pitfalls.md` changed to manual inclusion, context budget guidelines followed
 - 28 orphaned specs removed, module numbering fixed across all files
+- Deprecated `preflight_check.py` removed
 
 ## What's New in 0.10.0
 
@@ -45,7 +54,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 | 1 — Business Problem                    | Defines what you're trying to solve and which data sources matter         | Focuses the rest of the bootcamp on your actual use case                                                         |
 | 2 — SDK Setup                           | Installs and configures the Senzing SDK on your machine                   | Everything else depends on a working SDK installation                                                            |
 | 3 — Quick Demo                          | Runs entity resolution on sample data so you can see it work              | Validates your entire setup end-to-end; the result is trivial on purpose — the point is proving the system works |
-| 4 — Data Collection Policy              | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
+| 4 — Data Collection                     | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
 | 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Entity Specification format. Optional Phase 3 test-loads and evaluates results using `mapping_workflow` steps 5–8 | Identifies issues before they cause bad matches, gets data into the format Senzing needs, and optionally validates entity resolution quality before production loading |
 | 6 — Load Data                           | Loads all data sources, processes redo records, and validates entity resolution results | Your data is loaded and entity resolution is running — duplicates matched, cross-source connections found |
 | 7 — Query & Visualize                   | Builds query programs and visualizations for your resolved entities       | Proves the system answers your business questions                                                                |
@@ -121,6 +130,9 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 
 - `project-structure.md` — Directory structure and setup commands
 - `verbosity-control.md` — Output verbosity presets, categories, and adjustment instructions
+- `conversation-protocol.md` — Turn-taking, question handling, and module transition protocols
+- `design-patterns.md` — Entity resolution design pattern gallery
+- `module-prerequisites.md` — Module prerequisite reference
 
 **Module Completion (load after completing any module):**
 
@@ -153,6 +165,7 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 **Recovery and Phase Loading:**
 
 - `recovery-from-mistakes.md` — How to undo or redo a step: MCP workflow resets, file cleanup, database recovery
+- `skip-step-protocol.md` — Protocol for skipping steps: trigger phrases, consequence assessment, revisit workflow
 - `phase-loading-guide.md` — Detailed rules for loading split-module phase sub-files
 
 **Troubleshooting:**
@@ -173,6 +186,7 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 - `data-lineage.md` — Track data transformations and lineage
 - `uat-framework.md` — User acceptance testing framework
 - `deployment-onpremises.md` — On-premises/Docker Compose deployment reference
+- `deployment-aws.md` — AWS deployment reference (ECS/Fargate, RDS, Secrets Manager, CloudWatch, IAM)
 - `deployment-azure.md` — Azure deployment reference
 - `deployment-gcp.md` — GCP/Google Cloud deployment reference
 - `deployment-kubernetes.md` — Kubernetes/Helm deployment reference
@@ -287,7 +301,7 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: `ask-bootcamper` ⭐, `capture-feedback` ⭐, `review-bootcamper-input` ⭐, Code Style Check (`code-style-check`) ⭐, `commonmark-validation`, `enforce-feedback-path`, `enforce-working-directory` ⭐, `enforce-visualization-offers` ⭐, `feedback-submission-reminder`, `verify-senzing-facts`, `data-quality-check`, `analyze-after-mapping`, `validate-data-files`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `offer-visualization`, `deployment-phase-gate`, `backup-project-on-request`, `git-commit-reminder`.
+Available: `ask-bootcamper` ⭐, `capture-feedback` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation`, `enforce-feedback-path`, `enforce-working-directory` ⭐, `enforce-visualization-offers` ⭐, `feedback-submission-reminder`, `verify-senzing-facts`, `verify-sdk-setup`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `validate-data-files`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `offer-visualization`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `git-commit-reminder`.
 
 ## Project Directory Structure
 

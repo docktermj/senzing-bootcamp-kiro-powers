@@ -89,4 +89,3 @@ inclusion: manual
     **Checkpoint:** Write step 19 to `config/bootcamp_progress.json`.
 
 ---
-

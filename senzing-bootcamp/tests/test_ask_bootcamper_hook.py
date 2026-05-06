@@ -356,3 +356,70 @@ class TestSteeringClosingQuestionRule:
         assert has_ownership, (
             "Steering file lacks closing-question ownership rule."
         )
+
+
+# ---------------------------------------------------------------------------
+# Property 7: Feedback Submission Reminder Logic in Consolidated Hook
+# Validates: Requirements 1.1, 1.3, 7.1, 7.2
+# ---------------------------------------------------------------------------
+
+
+class TestFeedbackSubmissionReminderLogic:
+    """Verify the ask-bootcamper prompt contains merged feedback-submission-reminder logic.
+
+    **Validates: Requirements 1.1, 1.3, 7.1, 7.2**
+    """
+
+    def test_prompt_contains_track_completion_detection(self):
+        """Prompt must instruct checking for track completion.
+
+        **Validates: Requirement 1.3**
+        """
+        prompt = _read_hook_prompt()
+        prompt_lower = prompt.lower()
+        has_track_completion = any(
+            term in prompt_lower
+            for term in [
+                "track completion",
+                "completed their chosen track",
+                "modules_completed",
+            ]
+        )
+        assert has_track_completion, (
+            "Prompt lacks track completion detection instructions."
+        )
+
+    def test_prompt_contains_clipboard_deduplication(self):
+        """Prompt must reference the 📋 emoji for deduplication.
+
+        **Validates: Requirement 7.2**
+        """
+        prompt = _read_hook_prompt()
+        assert "📋" in prompt, (
+            "Prompt does not contain the 📋 deduplication marker"
+        )
+        prompt_lower = prompt.lower()
+        has_dedup = any(
+            term in prompt_lower
+            for term in [
+                "already appears",
+                "already shown",
+                "deduplication",
+            ]
+        )
+        assert has_dedup, (
+            "Prompt lacks deduplication logic for the 📋 marker."
+        )
+
+    def test_prompt_contains_feedback_file_existence_check(self):
+        """Prompt must check for feedback file existence with ## Improvement: headings.
+
+        **Validates: Requirement 7.1**
+        """
+        prompt = _read_hook_prompt()
+        assert "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md" in prompt, (
+            "Prompt does not reference the feedback file path"
+        )
+        assert "## Improvement:" in prompt, (
+            "Prompt does not reference the '## Improvement:' heading pattern"
+        )

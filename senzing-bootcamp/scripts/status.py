@@ -1024,7 +1024,9 @@ def _show_terminal_status(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Senzing Bootcamp - Project Status")
+    parser = argparse.ArgumentParser(description="Senzing Bootcamp - Project Status",
+                                     epilog="See Also: analyze_sessions.py (historical analytics),"
+                                            " preflight.py (environment checks)")
     parser.add_argument("--html", action="store_true", help="Generate HTML dashboard")
     parser.add_argument("--output", type=str, default=None,
                         help="Dashboard output path (default: docs/dashboard.html)")
@@ -1033,6 +1035,7 @@ def main():
     parser.add_argument("--sync", action="store_true", help="Sync progress tracker")
     parser.add_argument("--member", type=str, default=None,
                         help="Show specific team member status")
+    parser.add_argument("--graph", action="store_true", help="Show module dependency graph")
     args = parser.parse_args()
 
     project_root = Path(__file__).resolve().parent.parent
@@ -1040,6 +1043,20 @@ def main():
 
     if args.html:
         generate_dashboard(args.output, args.no_open)
+    elif args.graph:
+        try:
+            from visualize_dependencies import (
+                load_modules, load_progress, load_tracks, load_preferences, render_text,
+            )
+        except ImportError:
+            from scripts.visualize_dependencies import (
+                load_modules, load_progress, load_tracks, load_preferences, render_text,
+            )
+        modules = load_modules()
+        progress = load_progress()
+        tracks = load_tracks()
+        preferences = load_preferences()
+        print(render_text(modules, progress, tracks, preferences))
     else:
         _show_terminal_status(args)
 

@@ -6,9 +6,12 @@ counts (characters / 4), and writes file_metadata + budget sections into
 steering-index.yaml while preserving all existing content.
 
 Usage:
-    python senzing-bootcamp/scripts/measure_steering.py          # update mode
-    python senzing-bootcamp/scripts/measure_steering.py --check  # validation mode
+    python senzing-bootcamp/scripts/measure_steering.py              # update mode
+    python senzing-bootcamp/scripts/measure_steering.py --check      # validation mode
+    python senzing-bootcamp/scripts/measure_steering.py --simulate   # simulation mode
 """
+
+from __future__ import annotations
 
 import argparse
 import re
@@ -239,6 +242,107 @@ def check_counts(index_path, calculated):
     return mismatches
 
 
+def _parse_modules_section(content: str) -> dict[int, list[str]]:
+    """Parse the modules section to get module-to-steering-file mappings.
+
+    Returns:
+        dict mapping module number to list of steering filenames for that module.
+    """
+    modules: dict[int, list[str]] = {}
+    # Match simple entries like "  1: module-01-business-problem.md"
+    simple_pattern = re.compile(r"^\s+(\d+):\s+([\w.-]+\.md)\s*$", re.MULTILINE)
+    for match in simple_pattern.finditer(content):
+        mod_num = int(match.group(1))
+        modules.setdefault(mod_num, []).append(match.group(2))
+
+    # Match root entries in split modules like "    root: module-01-business-problem.md"
+    root_pattern = re.compile(r"^\s+root:\s+([\w.-]+\.md)\s*$", re.MULTILINE)
+    # Match phase file entries like "      file: module-01-phase1-discovery.md"
+    phase_pattern = re.compile(r"^\s+file:\s+([\w.-]+\.md)\s*$", re.MULTILINE)
+
+    # For split modules, find the module number context
+    split_pattern = re.compile(
+        r"^\s+(\d+):\s*\n((?:\s{4,}.*\n)*)", re.MULTILINE
+    )
+    for match in split_pattern.finditer(content):
+        mod_num = int(match.group(1))
+        block = match.group(2)
+        for root_match in root_pattern.finditer(block):
+            modules.setdefault(mod_num, []).append(root_match.group(1))
+        for phase_match in phase_pattern.finditer(block):
+            modules.setdefault(mod_num, []).append(phase_match.group(1))
+
+    return modules
+
+
+def simulate_context_load(index_path: Path, file_metadata: dict) -> None:
+    """Simulate per-module context load and show token usage with/without unloading.
+
+    Args:
+        index_path: Path to steering-index.yaml
+        file_metadata: dict from scan_steering_files()
+    """
+    content = load_yaml_content(index_path)
+
+    # Parse reference_window from budget section
+    rw_match = re.search(r"reference_window:\s*(\d+)", content)
+    reference_window = int(rw_match.group(1)) if rw_match else 200000
+
+    # Always-loaded files
+    always_loaded = ["agent-instructions.md", "conversation-protocol.md", "module-transitions.md"]
+    always_tokens = sum(
+        file_metadata.get(f, {}).get("token_count", 0) for f in always_loaded
+    )
+
+    # Assume a representative language file (~1800 tokens)
+    lang_file = "lang-python.md"
+    lang_tokens = file_metadata.get(lang_file, {}).get("token_count", 1800)
+
+    # Parse module-to-file mappings
+    modules_map = _parse_modules_section(content)
+
+    # Simulate progression through modules 1-11
+    completed_tokens = 0
+    peak_without_unload = 0
+    peak_with_unload = 0
+
+    print(f"Context Load Simulation (reference_window: {reference_window:,} tokens)")
+    print("=" * 72)
+    print(f"{'Module':<10} {'Always':>8} {'Lang':>6} {'Module':>8} "
+          f"{'Completed':>10} {'Total':>8} {'% Used':>7}")
+    print("-" * 72)
+
+    for mod_num in range(1, 12):
+        # Get this module's steering file tokens
+        mod_files = modules_map.get(mod_num, [])
+        mod_tokens = sum(
+            file_metadata.get(f, {}).get("token_count", 0) for f in mod_files
+        )
+
+        # Without unloading: accumulate all completed module tokens
+        total_without = always_tokens + lang_tokens + mod_tokens + completed_tokens
+        pct_without = total_without / reference_window * 100
+
+        # With unloading: only current module + always + lang
+        total_with = always_tokens + lang_tokens + mod_tokens
+
+        peak_without_unload = max(peak_without_unload, total_without)
+        peak_with_unload = max(peak_with_unload, total_with)
+
+        print(f"Module {mod_num:<4} {always_tokens:>8,} {lang_tokens:>6,} "
+              f"{mod_tokens:>8,} {completed_tokens:>10,} "
+              f"{total_without:>8,} {pct_without:>6.1f}%")
+
+        # After this module, its tokens become "completed"
+        completed_tokens += mod_tokens
+
+    print("-" * 72)
+    print(f"\nPeak without unloading: {peak_without_unload:,} tokens "
+          f"({peak_without_unload / reference_window * 100:.1f}% of {reference_window:,})")
+    print(f"Peak with unloading:    {peak_with_unload:,} tokens "
+          f"({peak_with_unload / reference_window * 100:.1f}% of {reference_window:,})")
+
+
 def main():
     """Parse args and dispatch to update or check mode."""
     parser = argparse.ArgumentParser(
@@ -248,6 +352,11 @@ def main():
         "--check",
         action="store_true",
         help="Validate stored counts against calculated (exit non-zero on mismatch)",
+    )
+    parser.add_argument(
+        "--simulate",
+        action="store_true",
+        help="Show simulated token load per module with and without unloading",
     )
     parser.add_argument(
         "--steering-dir",
@@ -266,7 +375,9 @@ def main():
     file_metadata = scan_steering_files(args.steering_dir)
     total_tokens = sum(m["token_count"] for m in file_metadata.values())
 
-    if args.check:
+    if args.simulate:
+        simulate_context_load(args.index_path, file_metadata)
+    elif args.check:
         mismatches = check_counts(args.index_path, file_metadata)
         if mismatches:
             print("Token count mismatches (>10% difference):")

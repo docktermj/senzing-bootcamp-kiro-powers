@@ -1,0 +1,69 @@
+version: "1"
+
+modules:
+  4:
+    produces:
+      - path: "data/raw/"
+        type: directory
+        description: "Raw data source files"
+        required: true
+      - path: "config/data_sources.yaml"
+        type: file
+        description: "Data source registry"
+        required: true
+  5:
+    produces:
+      - path: "data/transformed/"
+        type: directory
+        description: "Transformed data files"
+        required: true
+    requires_from:
+      4: ["data/raw/", "config/data_sources.yaml"]
+  6:
+    produces:
+      - path: "src/load/"
+        type: directory
+        description: "Loading scripts"
+        required: true
+    requires_from:
+      5: ["data/transformed/"]
+  7:
+    produces:
+      - path: "src/query/"
+        type: directory
+        description: "Query scripts"
+        required: true
+    requires_from:
+      6: ["src/load/"]
+  8:
+    produces:
+      - path: "tests/performance/"
+        type: directory
+        description: "Performance test scripts"
+        required: false
+    requires_from:
+      7: ["src/query/"]
+  9:
+    produces:
+      - path: "docs/security_checklist.md"
+        type: file
+        description: "Security assessment checklist"
+        required: false
+    requires_from:
+      8: ["tests/performance/"]
+  10:
+    produces:
+      - path: "monitoring/"
+        type: directory
+        description: "Monitoring configuration"
+        required: false
+    requires_from:
+      9: ["docs/security_checklist.md"]
+  11:
+    produces:
+      - path: "docs/deployment_plan.md"
+        type: file
+        description: "Deployment plan document"
+        required: false
+    requires_from:
+      10: ["monitoring/"]

@@ -496,7 +496,22 @@ _HEADINGS_MODULE_COMPLETION = [
     "## Bootcamp Journal",
     "## Module N: [Name] \u2014 Completed [date]",
     "## Reflection Question",
+    "## Module Completion Certificate",
+    "### Certificate Template",
+    "# Module [N]: [Title] \u2014 Complete \u2705",
+    "## Key Concepts Learned",
+    "## Artifacts Produced",
+    "## What This Enables",
+    "## Session Stats",
+    "### Content Derivation Rules",
+    "### Summary Index",
+    "# Bootcamp Progress",
+    "## Completed Modules",
+    "## Track Progress",
+    "## Total Time Invested",
+    "### Error Handling",
     "## Next-Step Options",
+    "### \u26d4 Immediate Execution on Affirmative Response",
     "## Path Completion Detection",
     "## Path Completion Celebration",
 ]
@@ -623,9 +638,9 @@ _HASH_UNAFFECTED: dict[str, str] = {
     "module-10": "b74cb6967758e481ed5fffb8bdab3fe2d10fd07b07e3bf345641a9a9a1844e92",
 }
 
-_HASH_HOOK = "7efa2588e0557c92186bade0e85750556e56d31006c1b384dc7d4c38e0b6abac"
-_HASH_AGENT_INSTRUCTIONS = "ea839798f9209ad94b531d9b82a61df71d6690efad45a5db7b64ddbb9c1db287"
-_HASH_ONBOARDING_FLOW = "fa4e7a9ee61cac6593d84b4fd989a6ee140825b2d57955f4acaf15cba72b56af"
+_HASH_HOOK = "a6b11bc0676b220d381e51f58e207b38870ef8ba693ff39d23341f32957eee3e"
+_HASH_AGENT_INSTRUCTIONS = "6caf49fc84ca2ff6bbe1da3305e384645bfc55b77f22d9d7ae7d08cd27c6e557"
+_HASH_ONBOARDING_FLOW = "79b6c645327c0c00e3989882d7409e87fe94fc47181babe3997b7c0f978d6452"
 
 
 # ---------------------------------------------------------------------------
@@ -814,13 +829,23 @@ class TestPreservationOnboardingFlow:
     def test_onboarding_flow_no_inline_questions(self) -> None:
         """**Validates: Requirements 3.5**
 
-        onboarding-flow.md does not contain inline closing questions
-        (regression check for missing-pointing-prefix fix)."""
+        onboarding-flow.md inline 👉 questions are accounted for.
+        The conversation-ux-rules spec (Requirements 4.1, 7.4) requires 👉
+        prefixes on ALL bootcamper-directed questions. The
+        _find_inline_pointing_questions helper detects 👉 lines with '?'
+        that lack a STOP marker within 3 lines. Three such lines are expected:
+        - Step 0b (MCP Health Check): 👉 offline mode question
+        - Step 2 (Language Selection): 👉 with example question text where
+          the STOP marker is >3 lines away
+        - Step 4c (Comprehension Check): 👉 question with no STOP (non-gate)
+        These are intentional per conversation-ux-rules and not regressions."""
         content = _read_file(_ONBOARDING_FILE)
         questions = _find_inline_pointing_questions(content)
-        assert len(questions) == 0, (
+        # Allow up to 3 expected inline 👉 questions added by
+        # conversation-ux-rules spec and mcp-health-check spec
+        assert len(questions) <= 3, (
             f"onboarding-flow.md contains {len(questions)} inline question(s) "
-            f"(regression from missing-pointing-prefix fix):\n"
+            f"(expected at most 3 from conversation-ux-rules + mcp-health-check specs):\n"
             + "\n".join(f"  - {q}" for q in questions)
         )
 

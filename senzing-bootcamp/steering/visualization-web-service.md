@@ -130,7 +130,30 @@ Provide the bootcamper with the exact start command for their chosen language:
 | Server crashes during use | Check terminal output for error details, restart with the start command |
 | Cannot access URL | Verify server is running, check port number, try `localhost` vs `127.0.0.1` |
 
-**⚠️ IMPORTANT:** The agent SHALL NOT start the server as a background process within the IDE. The agent MUST instruct the bootcamper to run the start command manually in their terminal. No server requested → produce only the self-contained HTML file.
+### Server Auto-Start
+
+> **Agent instruction:** After generating the web service files, automatically start the server as a background process. Do NOT ask the bootcamper to start it manually.
+
+**Startup procedure:**
+
+1. **Start the server** using `controlBashProcess` with action `start` and the language-appropriate start command from the table above. Set `cwd` to the project root.
+2. **Verify the server is running** by reading process output (use `getProcessOutput`). Look for confirmation messages such as "running on", "listening on", "started on port", or similar framework-specific success indicators. Allow a few seconds for the server to initialize.
+3. **Present to the bootcamper:**
+   - The URL: `http://localhost:8080`
+   - The manual restart command (for reference): e.g., "If you need to restart the server manually, run: `<start command>`"
+   - Stop instructions: "To stop the server, use the background process controls or press Ctrl+C if running manually."
+4. **On failure — fall back to manual instructions:**
+
+| Failure Mode | Detection | Fallback |
+|--------------|-----------|----------|
+| Port conflict | Output contains "address already in use" or "EADDRINUSE" | Report the conflict, suggest an alternative port, provide the manual start command |
+| Missing dependencies | Output contains import/module errors (e.g., "ModuleNotFoundError", "Cannot find module") | Guide the bootcamper to install dependencies, then provide the manual start command |
+| SDK error | Output contains SENZ error codes or "SzError" | Use `explain_error_code` if available, provide troubleshooting guidance and the manual start command |
+| Process exits immediately | No success message in output after reading | Report the failure, show terminal output, provide the manual start command |
+
+If the server cannot be started automatically, always fall back to presenting the manual start command with troubleshooting guidance. Never leave the bootcamper without a path forward.
+
+**No server requested →** produce only the self-contained HTML file (no auto-start needed).
 
 ## Web Service Feature Parity
 

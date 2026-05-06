@@ -17,30 +17,35 @@ senzing-bootcamp/                    # The distributed power root
 ├── CHANGELOG.md                     # Version history (Keep a Changelog format)
 ├── config/
 │   ├── module-dependencies.yaml     # Module dependency graph and skip conditions
+│   ├── module-artifacts.yaml        # Cross-module artifact dependency manifest
 │   └── data_sources.yaml            # Data source registry (quality, mapping, load status)
 ├── docs/
 │   ├── modules/                     # MODULE_N_*.md companion documentation
-│   ├── guides/                      # 23 user guides (FAQ, glossary, quick start, etc.)
+│   ├── guides/                      # 24 user guides (FAQ, glossary, quick start, etc.)
 │   ├── feedback/                    # Feedback templates
 │   ├── policies/                    # Agent policies (code quality, file storage, Senzing info)
 │   └── diagrams/                    # Architecture and flow diagrams (Mermaid + ASCII)
-├── hooks/                           # 25 .kiro.hook JSON files + hook-categories.yaml
-├── scripts/                         # 28 Python CLI tools (stdlib only)
-├── steering/                        # 72 steering files + steering-index.yaml
-│   ├── agent-instructions.md        # Always-on core rules (79 lines)
-│   ├── module-transitions.md        # Always-on transition protocol (66 lines)
+├── hooks/                           # 23 .kiro.hook JSON files + hook-categories.yaml
+├── scripts/                         # 30 Python CLI tools (stdlib only)
+├── steering/                        # 75 steering files + steering-index.yaml
+│   ├── agent-instructions.md        # Always-on core rules (89 lines)
+│   ├── module-transitions.md        # Always-on transition protocol (71 lines)
 │   ├── security-privacy.md          # Always-on PII policy (27 lines)
+│   ├── agent-context-management.md  # Auto: context budget + adaptive pacing
 │   ├── conversation-protocol.md     # Auto: turn-taking protocols
 │   ├── design-patterns.md           # Auto: ER pattern gallery
 │   ├── module-prerequisites.md      # Auto: prerequisite reference
 │   ├── project-structure.md         # Auto: directory layout
+│   ├── session-resume.md            # Auto: session resume workflow
 │   ├── verbosity-control.md         # Auto: output level management
 │   ├── lang-*.md                    # FileMatch: 5 language files
 │   ├── module-*-*.md               # Manual: 11 root + phase files
 │   ├── deployment-*.md              # Manual: 5 platform files
+│   ├── inline-status.md             # Manual: "Where Am I?" response format
+│   ├── whats-new.md                 # Manual: What's New notification format
 │   └── ...                          # Manual: workflows, troubleshooting, etc.
 ├── templates/                       # User templates (checklists, lineage, UAT)
-└── tests/                           # pytest + Hypothesis test suites
+└── tests/                           # pytest + Hypothesis test suites (98 files)
 ```
 
 ### Steering Architecture
@@ -49,12 +54,12 @@ The steering system follows the "Steering Kiro: Best Practices" guidelines:
 
 | Inclusion Mode | Files | Max Lines | Purpose |
 |---|---|---|---|
-| always | 3 | 79 each | Universal rules (file placement, MCP, communication) |
-| auto | 5 | 72 each | Context loaded when relevant (conversation protocol, patterns) |
-| fileMatch | 5 | 51 each | Language-specific SDK guidance |
-| manual | 59 | varies | Module workflows, deployment, troubleshooting |
+| always | 3 | 89 each | Universal rules (file placement, MCP, communication) |
+| auto | 7 | 284 max | Context loaded when relevant (budget management, conversation protocol, session resume) |
+| fileMatch | 5 | 107 each | Language-specific SDK guidance + troubleshooting |
+| manual | 61 | varies | Module workflows, deployment, troubleshooting, inline status |
 
-**Context budget:** Total steering token budget tracked in `steering-index.yaml`. Warn at 60% (120k tokens loaded), critical at 80% (160k). Phase-splitting keeps individual loads small.
+**Context budget:** Total steering token budget tracked in `steering-index.yaml`. Warn at 60%, critical at 80% (percentage-based, derived from `reference_window`). Phase-splitting keeps individual loads small. Detailed unloading rules in `agent-context-management.md`.
 
 ### Module Phase Architecture
 
@@ -71,15 +76,13 @@ The root file is loaded at module start. Phase files are loaded on-demand based 
 
 ### Hook Architecture
 
-25 hooks organized by lifecycle:
+23 hooks organized by lifecycle:
 
-- **Critical (9):** Created during onboarding. Cover feedback capture, code quality, working directory enforcement, Senzing fact verification, and conversation management.
-- **Module-specific (12):** Created when the relevant module starts. Cover data validation, mapping enforcement, benchmark validation, security scanning, alert config validation, visualization offers, and deployment gating.
+- **Critical (7):** Created during onboarding. Cover code quality, working directory enforcement, Senzing fact verification, conversation management (ask-bootcamper with silence-first default, review-bootcamper-input with feedback + status trigger detection), and feedback path enforcement.
+- **Module-specific (14):** Created when the relevant module starts. Cover SDK verification, data validation, mapping enforcement, benchmark validation, security scanning, alert config validation, visualization offers, and deployment gating.
 - **Any-time (2):** User-triggered (backup, git commit).
-- **Track-completion (1):** Feedback submission reminder on agentStop.
-- **Silence-first (1):** ask-bootcamper produces zero output by default.
 
-Hook registry sync is enforced by `sync_hook_registry.py --verify` in CI.
+Hook registry sync is enforced by `sync_hook_registry.py --verify` in CI. Structural validation available via `test_hooks.py`.
 
 ### MCP Integration
 
@@ -102,13 +105,16 @@ The agent never fabricates Senzing information. If MCP is unavailable, `mcp-offl
 ```text
 config/
 ├── bootcamp_progress.json       # Module state, step history, skipped steps
-├── bootcamp_preferences.yaml    # Language, verbosity, cloud provider, hooks
+├── bootcamp_preferences.yaml    # Language, verbosity, cloud provider, hooks, pacing_overrides
 ├── mapping_state_*.json         # Per-source mapping workflow checkpoints
 ├── data_sources.yaml            # Data source registry
-└── .question_pending            # Transient: prevents self-answering
+├── module-artifacts.yaml        # Artifact dependency manifest (what each module produces/requires)
+├── .question_pending            # Transient: prevents self-answering
+├── .mcp_status                  # Transient: MCP health check result (gitignored)
+└── session_log.jsonl            # Session analytics (turns, corrections, time per module)
 ```
 
-Progress is checkpointed after every step. `repair_progress.py` reconstructs state from artifacts if corrupted.
+Progress is checkpointed after every step. `repair_progress.py` reconstructs state from artifacts if corrupted. Session analytics feed adaptive pacing (via `classify_pacing()` in `analyze_sessions.py`).
 
 ### Validation and CI
 
@@ -117,7 +123,7 @@ GitHub Actions pipeline (`validate-power.yml`):
 2. `measure_steering.py --check` — Token counts within budget
 3. `validate_commonmark.py` — Markdown compliance
 4. `sync_hook_registry.py --verify` — Hook registry in sync
-5. `pytest` — 78 test files with property-based testing (Hypothesis)
+5. `pytest` — 98 test files with property-based testing (Hypothesis)
 
 ### Team Mode
 
@@ -133,3 +139,6 @@ Optional `config/team.yaml` enables multi-user sessions:
 - No static code templates — all SDK code generated dynamically by MCP.
 - Steering files follow the "Steering Kiro: Best Practices" article guidelines for inclusion modes and line budgets.
 - Hook prompts must pass `test_hook_prompt_standards.py` (valid JSON, required fields, no inline closing questions, silent processing for pass-through hooks, registry sync).
+- Hook files must pass `test_hooks.py` structural validation (event types, patterns, toolTypes, registry consistency).
+- Always-on steering total: 3 files, ≤90 lines each, 187 lines combined.
+- Context budget thresholds are percentage-based (60%/80% of `reference_window`) — never hardcoded absolute values.

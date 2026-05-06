@@ -158,6 +158,17 @@ keywords:
   verbosity: verbosity-control.md
   verbosity reference: verbosity-control-reference.md
   verbosity levels: verbosity-control-reference.md
+  where am I: inline-status.md
+  status: inline-status.md
+  what step am I on: inline-status.md
+  show progress: inline-status.md
+  how far along am I: inline-status.md
+  what's new: whats-new.md
+  changelog: whats-new.md
+  updates: whats-new.md
+  context budget: agent-context-management.md
+  pacing: agent-context-management.md
+  unload: agent-context-management.md
   content rules: verbosity-control-reference.md
   decision tree: mcp-tool-decision-tree.md
   skip step: skip-step-protocol.md
@@ -180,9 +191,12 @@ deployment:
   kubernetes: deployment-kubernetes.md
 
 file_metadata:
-  agent-instructions.md:
-    token_count: 1676
+  agent-context-management.md:
+    token_count: 704
     size_category: medium
+  agent-instructions.md:
+    token_count: 2019
+    size_category: large
   cloud-provider-setup.md:
     token_count: 784
     size_category: medium
@@ -193,7 +207,7 @@ file_metadata:
     token_count: 606
     size_category: medium
   conversation-protocol.md:
-    token_count: 515
+    token_count: 1288
     size_category: medium
   data-lineage.md:
     token_count: 603
@@ -223,7 +237,7 @@ file_metadata:
     token_count: 658
     size_category: medium
   feedback-workflow.md:
-    token_count: 1062
+    token_count: 1199
     size_category: medium
   graduation-reference.md:
     token_count: 2542
@@ -232,22 +246,25 @@ file_metadata:
     token_count: 1920
     size_category: medium
   hook-registry.md:
-    token_count: 6400
+    token_count: 6242
     size_category: large
+  inline-status.md:
+    token_count: 478
+    size_category: small
   lang-csharp.md:
-    token_count: 828
+    token_count: 1568
     size_category: medium
   lang-java.md:
-    token_count: 860
+    token_count: 1610
     size_category: medium
   lang-python.md:
-    token_count: 912
+    token_count: 1600
     size_category: medium
   lang-rust.md:
-    token_count: 854
+    token_count: 1658
     size_category: medium
   lang-typescript.md:
-    token_count: 898
+    token_count: 1712
     size_category: medium
   lessons-learned.md:
     token_count: 434
@@ -268,7 +285,7 @@ file_metadata:
     token_count: 1772
     size_category: medium
   module-02-sdk-setup.md:
-    token_count: 3560
+    token_count: 3667
     size_category: large
   module-03-quick-demo.md:
     token_count: 3418
@@ -319,7 +336,7 @@ file_metadata:
     token_count: 721
     size_category: medium
   module-09-phaseA-assessment.md:
-    token_count: 1220
+    token_count: 1221
     size_category: medium
   module-09-phaseB-hardening.md:
     token_count: 928
@@ -343,16 +360,16 @@ file_metadata:
     token_count: 850
     size_category: medium
   module-completion.md:
-    token_count: 1339
-    size_category: medium
+    token_count: 2183
+    size_category: large
   module-prerequisites.md:
     token_count: 1151
     size_category: medium
   module-transitions.md:
-    token_count: 838
+    token_count: 925
     size_category: medium
   onboarding-flow.md:
-    token_count: 4020
+    token_count: 4492
     size_category: large
   phase-loading-guide.md:
     token_count: 460
@@ -367,8 +384,8 @@ file_metadata:
     token_count: 278
     size_category: small
   session-resume.md:
-    token_count: 1620
-    size_category: medium
+    token_count: 4011
+    size_category: large
   skip-step-protocol.md:
     token_count: 613
     size_category: medium
@@ -385,20 +402,23 @@ file_metadata:
     token_count: 3126
     size_category: large
   verbosity-control.md:
-    token_count: 1008
+    token_count: 1243
     size_category: medium
   visualization-guide.md:
-    token_count: 1245
+    token_count: 1505
     size_category: medium
   visualization-reference.md:
     token_count: 1004
     size_category: medium
   visualization-web-service.md:
-    token_count: 1649
+    token_count: 2104
+    size_category: large
+  whats-new.md:
+    token_count: 602
     size_category: medium
 
 budget:
-  total_tokens: 100086
+  total_tokens: 111613
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

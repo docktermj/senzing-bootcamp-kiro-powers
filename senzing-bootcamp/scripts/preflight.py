@@ -716,6 +716,65 @@ class CheckRunner:
 
 
 # ---------------------------------------------------------------------------
+# MCP info (--mcp flag)
+# ---------------------------------------------------------------------------
+
+_MCP_JSON_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), os.pardir, "mcp.json"
+)
+
+
+def _mcp_info() -> int:
+    """Display MCP server info from mcp.json.
+
+    Full MCP health verification requires the agent (CLI scripts cannot call
+    MCP tools directly). This reports the configured server name and URL.
+
+    Returns:
+        Always 0 (informational only from CLI).
+    """
+    mcp_path = _MCP_JSON_PATH
+    if not os.path.isfile(mcp_path):
+        print(_yellow("⚠ mcp.json not found — cannot determine MCP server configuration."))
+        print(f"  Expected at: {mcp_path}")
+        return 0
+
+    try:
+        with open(mcp_path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError) as exc:
+        print(_red(f"❌ Failed to read mcp.json: {exc}"))
+        return 0
+
+    servers = data.get("mcpServers", {})
+    if not servers:
+        print(_yellow("⚠ No MCP servers configured in mcp.json."))
+        return 0
+
+    print("")
+    print(_blue("═" * 60))
+    print(_blue("  Senzing Bootcamp — MCP Server Info"))
+    print(_blue("═" * 60))
+    print("")
+
+    for name, config in servers.items():
+        url = config.get("url", "unknown")
+        disabled = config.get("disabled", False)
+        status_str = _red("disabled") if disabled else _green("configured")
+        print(f"  Server: {name}")
+        print(f"  URL:    {url}")
+        print(f"  Status: {status_str}")
+        print("")
+
+    print(
+        "  Note: Full MCP health verification requires the agent.\n"
+        "  CLI scripts cannot call MCP tools directly.\n"
+        "  The agent performs a search_docs() probe at session start.\n"
+    )
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # CLI entry point  (Task 1.4)
 # ---------------------------------------------------------------------------
 
@@ -735,7 +794,15 @@ def main(argv: Optional[list[str]] = None) -> int:
         action="store_true",
         help="Attempt auto-fix for simple issues (e.g. missing directories)",
     )
+    parser.add_argument(
+        "--mcp",
+        action="store_true",
+        help="Show MCP server info from mcp.json (full health check requires the agent)",
+    )
     args = parser.parse_args(argv)
+
+    if args.mcp:
+        return _mcp_info()
 
     runner = CheckRunner()
     report = runner.run(fix=args.fix)

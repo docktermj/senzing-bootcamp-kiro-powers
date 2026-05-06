@@ -504,14 +504,15 @@ class TestStep4cContentMarkers:
 
 
 class TestStep4cNonGate:
-    """Assert Step 4c contains no gate markers or inline question markers.
+    """Assert Step 4c contains no gate markers and respects question limits.
 
     **Validates: Requirements 1.3, 2.4**
 
     Step 4c (Comprehension Check) is explicitly NOT a mandatory gate.
     Its section must not contain any gate keywords (⛔, "MUST stop",
-    "mandatory gate", "MUST NOT proceed") and must not contain inline
-    👉 closing questions or WAIT instructions.
+    "mandatory gate", "MUST NOT proceed") or WAIT instructions.
+    Per conversation-ux-rules spec (Requirements 4.1, 7.4), a 👉 prefix
+    IS expected on the bootcamper-directed question.
     """
 
     # -- Gate keyword absence --
@@ -555,12 +556,21 @@ class TestStep4cNonGate:
     # -- Inline question / WAIT marker absence --
 
     def test_no_inline_closing_question_marker(self) -> None:
-        """Step 4c must not contain inline 👉 closing questions."""
+        """Step 4c may contain a 👉 prefix (per conversation-ux-rules spec).
+
+        The conversation-ux-rules spec (Requirements 4.1, 7.4) requires 👉
+        prefixes on ALL bootcamper-directed questions, including non-gate
+        steps. This supersedes the older module-closing-question-ownership
+        assertion that non-gate steps must not have 👉.
+        """
         text = _read_onboarding()
         section = _extract_section(text, r"4c\.\s+Comprehension Check")
-        assert "👉" not in section, (
-            "Step 4c contains inline 👉 closing question marker "
-            "but the ask-bootcamper hook handles closing questions"
+        # 👉 is now expected per conversation-ux-rules spec.
+        # Verify it appears at most once (one-question-per-turn rule).
+        count = section.count("👉")
+        assert count <= 1, (
+            f"Step 4c contains {count} 👉 markers but should have at most 1 "
+            "(one-question-per-turn rule)"
         )
 
     def test_no_wait_instruction(self) -> None:
@@ -584,8 +594,11 @@ _INLINE_QUESTION_MARKERS = ("👉",)
 _WAIT_KEYWORDS = ("WAIT",)
 
 # Non-gate step identifiers — these steps must never contain gate
-# markers, inline 👉 questions, or WAIT instructions.
-_NON_GATE_STEP_IDS: list[str] = ["0", "1", "1b", "4", "4c"]
+# markers or WAIT instructions.
+# Note: 4c is excluded because the conversation-ux-rules spec (Requirements
+# 4.1, 7.4) requires 👉 prefixes on ALL bootcamper-directed questions,
+# including non-gate steps like 4c.
+_NON_GATE_STEP_IDS: list[str] = ["0", "1", "1b", "4"]
 
 
 @st.composite
@@ -638,14 +651,21 @@ def _extract_own_section(text: str, step_id: str) -> str | None:
 
 
 class TestNonGateStepContractProperty:
-    """PBT — Non-gate steps contain no gate markers or inline questions.
+    """PBT — Non-gate steps contain no gate markers, inline questions, or WAIT.
 
     **Validates: Requirements 1.3, 2.4**
 
-    For any non-gate onboarding step, the section content SHALL contain
+    For any non-gate onboarding step (excluding 4c which has a legitimate
+    👉 per conversation-ux-rules spec), the section content SHALL contain
     no mandatory gate markers (⛔, "MUST stop", "mandatory gate",
     "MUST NOT proceed") AND no inline 👉 closing questions or WAIT
     instructions.
+
+    Note: Step 4c is excluded from the inline-question property test because
+    the conversation-ux-rules spec (Requirements 4.1, 7.4) explicitly requires
+    👉 prefixes on ALL bootcamper-directed questions, including non-gate steps.
+    Step 4c's gate-marker and WAIT-instruction absence is still verified by
+    the TestStep4cNonGate unit tests.
 
     Tag: Feature: onboarding-comprehension-check,
          Property 1: Non-gate step contract

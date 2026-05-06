@@ -56,6 +56,11 @@ Provide a clear summary: what was accomplished, all files produced with paths, w
 
 Then follow the journal and path-completion rules in `module-completion.md`.
 
+## Transition Integrity
+
+- Module transition questions are commitments: asking the question means the agent is prepared to execute the transition if confirmed.
+- If context limits may prevent completing the next module, do NOT ask the transition question. Instead, transparently inform the bootcamper about the limitation and offer to save progress.
+
 ## Sub-Step Convention
 
 When a step contains multiple independent 👉 questions, split into lettered sub-steps (one question each):

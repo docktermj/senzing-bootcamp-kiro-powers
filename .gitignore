@@ -13,3 +13,6 @@ package.json
 
 # Transient sentinel file for self-answering prevention
 config/.question_pending
+
+# MCP health check status (transient, written by agent at session start)
+config/.mcp_status

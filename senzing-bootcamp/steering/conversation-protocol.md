@@ -38,6 +38,86 @@ Never end a turn with only an acknowledgment (e.g., "Understood.", "Got it.", "I
 
 If you acknowledge input, always append a next action in the same response.
 
+## One Question Rule
+
+Each turn contains at most one 👉 question. Multi-question patterns — questions joined by conjunctions (and, or, also, but first) — are violations. When you need multiple pieces of information, ask the first question, stop, wait for the response, then ask the next question in a separate turn.
+
+The phrase "But first" followed by a question is a violation — never redirect to a different question within the same turn.
+
+## Violation Examples
+
+### Multi-Question (WRONG)
+
+> 👉 What language do you want? Also, which track interests you?
+
+### Multi-Question (CORRECT)
+
+> 👉 What language do you want?
+> 🛑 STOP
+> [wait for response, then in next turn:]
+> 👉 Which track interests you?
+
+### Not-Waiting (WRONG)
+
+> 👉 Are you ready to continue?
+> Great, let's move on to the next step.
+
+### Not-Waiting (CORRECT)
+
+> 👉 Are you ready to continue?
+> 🛑 STOP
+
+### Dead-End (WRONG)
+
+> Got it.
+
+### Dead-End (CORRECT)
+
+> Got it. Next I'll set up your project structure.
+
+### Missing-Prefix (WRONG)
+
+> What language would you like to use?
+
+### Missing-Prefix (CORRECT)
+
+> 👉 What language would you like to use?
+
+### Self-Answering (WRONG)
+
+> 👉 Who will be working on this project?
+> I'll assume it's just you for now.
+
+### Self-Answering (CORRECT)
+
+> 👉 Who will be working on this project?
+> 🛑 STOP
+
+## Rule Priority
+
+Conversation UX rules take precedence over content generation. Never sacrifice turn-taking correctness to deliver more information in a single turn. If following a rule means splitting content across multiple turns, split it.
+
+## Self-Check
+
+Before ending any turn, verify:
+
+1. Does this turn contain more than one 👉 question?
+2. Does any 👉 question lack the 👉 prefix?
+3. Is there content after a 👉 question?
+4. Am I answering my own question?
+
+If any answer is yes, revise the turn before sending.
+
+## Mandatory question_pending
+
+Writing `config/.question_pending` is mandatory for every 👉 question — not optional, not best-effort. If you output a 👉 question and do not write the file, you have violated the protocol. The file enforces the wait: while it exists, you must not generate response content until the bootcamper provides input and the file is deleted.
+
 ## Module Transition Protocol
 
-When you ask 'Ready for Module X?' and the bootcamper responds affirmatively (yes, sure, let's go, ready, etc.), immediately begin that module in the same turn. Display the module banner, journey map, and start Step 1. Never acknowledge without acting at a module transition.
+When you ask 'Ready for Module X' and the bootcamper responds affirmatively (yes, sure, let's go, ready, etc.), immediately begin that module in the same turn. Display the module banner, journey map, and start Step 1. Never acknowledge without acting at a module transition.
+
+**⛔ PROHIBITED:** Saving progress and ending the session is PROHIBITED as a response to an affirmative answer to a module transition question. Do not save progress, do not offer to pause, do not end the session. The only valid action is to start the module.
+
+**🔒 COMMITMENT RULE:** Once a "Ready for Module X" transition question has been asked, the only valid response to an affirmative answer is to start Module X — never to save progress, pause, or end the session. Asking the transition question is a commitment to execute the transition if confirmed.
+
+**⚠️ CONTEXT-LIMIT GUIDANCE:** If context limits are a concern, address them BEFORE asking the transition question, not after receiving the affirmative response. If you cannot guarantee you can start the next module, do not ask the transition question — instead, transparently inform the bootcamper about the limitation and offer to save progress.

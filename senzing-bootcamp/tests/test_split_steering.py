@@ -755,8 +755,10 @@ class TestIntegrationSteeringIndexConsistency:
         """budget.total_tokens equals sum of all file_metadata token counts."""
         content = INDEX_PATH.read_text(encoding="utf-8")
 
-        fm_start = content.find("file_metadata:")
-        budget_start = content.find("budget:")
+        fm_start = content.find("\nfile_metadata:")
+        # Find top-level budget: (at start of line, not indented)
+        budget_match = re.search(r"^budget:", content, re.MULTILINE)
+        budget_start = budget_match.start() if budget_match else content.find("budget:")
         fm_block = content[fm_start:budget_start]
         counts = re.findall(r"token_count:\s*(\d+)", fm_block)
         calculated_total = sum(int(c) for c in counts)

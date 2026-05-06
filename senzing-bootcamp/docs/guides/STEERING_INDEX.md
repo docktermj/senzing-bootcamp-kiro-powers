@@ -164,7 +164,7 @@ budget:
   split_threshold_tokens: 5000
 ```
 
-When the agent's loaded token count reaches `warn_threshold_pct` of `reference_window` (60% of 200,000 = 120,000 tokens), it begins deferring non-essential file loads. At `critical_threshold_pct` (80% = 160,000 tokens), it actively unloads non-essential files. Files whose `token_count` exceeds `split_threshold_tokens` (5,000) are candidates for splitting into phases via `split_steering.py`.
+When the agent's loaded token count reaches `warn_threshold_pct` of `reference_window` (60% of 200,000 = 120,000 tokens), it begins deferring non-essential file loads. At `critical_threshold_pct` (80% = 160,000 tokens), it actively unloads non-essential files. The percentage fields are authoritative — absolute thresholds are derived as `reference_window × (pct / 100)`. If `reference_window` changes, the absolute thresholds adjust automatically. Files whose `token_count` exceeds `split_threshold_tokens` (5,000) are candidates for splitting into phases via `split_steering.py`.
 
 ## Complete Example
 

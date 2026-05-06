@@ -64,6 +64,15 @@ If the bootcamper's term does not match any entry, list the five categories with
 
 When any individual category adjustment causes levels to diverge from all three named presets, the active preset becomes `custom`. This is not an error. If the bootcamper later selects a named preset, all categories reset to that preset's levels.
 
+### Conversation Style Sync
+
+Whenever the bootcamper requests a style change, update the `conversation_style` key in the preferences file alongside the `verbosity` block:
+
+- **Verbosity preset change** → update `conversation_style.verbosity_preset` to the new preset name. If the preset is `custom`, also update `conversation_style.category_levels` with the per-category values.
+- **Tone feedback** (e.g., "be more concise", "more detail please") → update `conversation_style.tone` to the matching descriptor (`concise`, `conversational`, or `detailed`).
+- **Pacing feedback** (e.g., "one thing at a time", "you can group things") → update `conversation_style.pacing` to the matching value (`one_concept_per_turn` or `grouped_concepts`).
+- **Question framing feedback** (e.g., "shorter questions", "more context before questions") → update `conversation_style.question_framing` to the matching value (`minimal`, `moderate`, or `full`).
+
 ### Session Start
 
 On session start, read the `verbosity` key from the preferences file:

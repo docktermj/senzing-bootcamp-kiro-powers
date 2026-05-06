@@ -204,6 +204,7 @@ def _strip_inline_questions_and_waits(section: str) -> str:
 # Expected step heading sequence in onboarding-flow.md
 _EXPECTED_HEADINGS = [
     "0. Setup Preamble",
+    "0b. MCP Health Check",
     "1. Directory Structure",
     "1b. Team Detection",
     "2. Language Selection",
@@ -217,7 +218,7 @@ _EXPECTED_HEADINGS = [
 ]
 
 # Baseline content for hook file
-_HOOK_BASELINE_HASH = "7efa2588e0557c92186bade0e85750556e56d31006c1b384dc7d4c38e0b6abac"
+_HOOK_BASELINE_HASH = "a6b11bc0676b220d381e51f58e207b38870ef8ba693ff39d23341f32957eee3e"
 
 # Key informational phrases that MUST be preserved in affected steps
 # (these are NOT inline 👉 questions or WAIT lines)

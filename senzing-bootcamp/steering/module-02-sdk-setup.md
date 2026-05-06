@@ -28,8 +28,12 @@ Tell the user: "Senzing SDK is already installed (version [X]). No need to reins
 
 - Skip Steps 2 and 3 entirely
 - Jump to Step 4 (verify installation) to confirm it works with the chosen language
-- If Step 4 passes, jump to Step 5 (license) then Step 7 (database) — only configure what's not already configured
+- If Step 4 passes, proceed to Step 5 (Configure License) — this step is MANDATORY and must always be executed regardless of SDK installation status. After Step 5, proceed to Step 7 (database).
 - Mark Module 2 as complete once verification passes
+
+> **Required Stops:** The following steps are NEVER skipped, even when the SDK is already installed:
+> - **Step 4** (Verify Installation) — confirms the SDK works with the chosen language
+> - **Step 5** (Configure License) — license configuration is always required
 
 **If the SDK is found but version is incompatible (<V4.0):**
 
@@ -105,6 +109,8 @@ If verification fails, use `explain_error_code` for any SENZ error codes and `se
 **Checkpoint:** Write step 4 to `config/bootcamp_progress.json`.
 
 ## Step 5: Configure License
+
+⛔ MANDATORY GATE — Never skip this step, even if the SDK is already installed.
 
 > **License check order:** Senzing checks for licenses in this order: project-local `licenses/g2.lic` → `SENZING_LICENSE_PATH` env var → system CONFIGPATH → built-in evaluation (500 records).
 

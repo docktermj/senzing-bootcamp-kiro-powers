@@ -46,3 +46,60 @@ fileMatchPattern: "**/*.rs"
 - Verify Rust SDK support status via MCP before generating code — relay any platform warnings to the bootcamper
 - Use `cfg` attributes for platform-specific code paths: `#[cfg(target_os = "linux")]` vs `#[cfg(target_os = "windows")]`
 - On Windows, ensure Senzing DLLs are discoverable — set `PATH` or use `build.rs` to configure linker search paths
+
+## Common Environment Issues
+
+### Senzing Sys Crate Build Failures
+
+**Symptom**: `error: failed to run custom build command for senzing-sys` with messages about missing `cc`, `pkg-config`, or header files
+**Cause**: The sys crate requires a C compiler and pkg-config to link against Senzing native libraries, and these build tools are not installed
+**Fix**:
+
+1. On Linux: `sudo apt install build-essential pkg-config` (Debian/Ubuntu) or `sudo dnf install gcc pkg-config` (Fedora)
+2. On macOS: `xcode-select --install` (installs Clang and build tools)
+3. On Windows: install Visual Studio Build Tools with "Desktop development with C++" workload
+4. Verify with: `cc --version && pkg-config --version`
+
+### Linking Errors for Native Libraries
+
+**Symptom**: `error: linking with cc failed` or `ld: cannot find -lSz` during `cargo build`
+**Cause**: The linker cannot find Senzing shared libraries because `LD_LIBRARY_PATH` or `LIBRARY_PATH` is not set
+**Fix**:
+
+1. Set library search path: `export LIBRARY_PATH=/opt/senzing/lib:$LIBRARY_PATH`
+2. Set runtime path: `export LD_LIBRARY_PATH=/opt/senzing/lib:$LD_LIBRARY_PATH`
+3. Alternatively, add a `build.rs` with `println!("cargo:rustc-link-search=/opt/senzing/lib")`
+4. Verify with: `cargo build 2>&1 | grep -i "linking"` — should complete without errors
+
+### Cargo Feature Flag Configuration
+
+**Symptom**: `unresolved import` or `no method named` errors for Senzing SDK functions that should exist
+**Cause**: The Senzing crate requires specific feature flags to enable optional API modules, and they are not activated in `Cargo.toml`
+**Fix**:
+
+1. Check available features: `cargo doc --open` or review the crate's `Cargo.toml`
+2. Enable required features in your `Cargo.toml`: `senzing = { version = "x.y", features = ["full"] }`
+3. For specific modules only: `features = ["engine", "config", "diagnostic"]`
+4. Verify with: `cargo check` — should compile without unresolved import errors
+
+### MSVC vs GNU Toolchain Issues on Windows
+
+**Symptom**: `link.exe not found` or ABI mismatch errors when building on Windows
+**Cause**: Rust defaults to the MSVC toolchain on Windows, but the Senzing libraries may be built with a different ABI, or MSVC build tools are not installed
+**Fix**:
+
+1. Check current toolchain: `rustup show`
+2. Install MSVC build tools: download Visual Studio Build Tools, select "Desktop development with C++"
+3. If Senzing requires GNU ABI: `rustup default stable-x86_64-pc-windows-gnu`
+4. Verify with: `cargo build --target x86_64-pc-windows-msvc` (or `-gnu` depending on Senzing build)
+
+### Lifetime and Borrow Checker Patterns for Senzing FFI
+
+**Symptom**: `borrowed value does not live long enough` or `cannot move out of` errors when passing data to/from Senzing engine
+**Cause**: Senzing FFI wrappers return data tied to the engine's lifetime, and Rust's borrow checker enforces these constraints strictly
+**Fix**:
+
+1. Clone response strings immediately: `let result = engine.get_entity(id)?.to_owned()`
+2. Use `Arc<Engine>` for shared ownership across threads instead of passing references
+3. For callbacks, use `'static` bounds and move closures: `move |data| { ... }`
+4. Verify with: `cargo check` — should compile without lifetime errors

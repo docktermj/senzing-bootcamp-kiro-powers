@@ -46,3 +46,60 @@ fileMatchPattern: "**/*.cs"
 - On Windows, Senzing DLLs are typically on `PATH` after installation — verify if running from IDE or CI
 - Target `net6.0` or later in `.csproj` — earlier frameworks have limited cross-platform support
 - Use `dotnet publish -r linux-x64` (or `win-x64`) for self-contained deployments that bundle the runtime
+
+## Common Environment Issues
+
+### .NET SDK Version Conflicts
+
+**Symptom**: `The current .NET SDK does not support targeting .NET 6.0` or `NETSDK1045` error during build
+**Cause**: The installed .NET SDK is older than 6.0, which is the minimum required for Senzing bootcamp projects
+**Fix**:
+
+1. Check current version: `dotnet --list-sdks`
+2. Download and install .NET 6.0+ SDK from <https://dotnet.microsoft.com/download>
+3. If multiple SDKs installed, pin the version with a `global.json` file: `{ "sdk": { "version": "6.0.0", "rollForward": "latestMajor" } }`
+4. Verify with: `dotnet --version` — should show 6.0 or higher
+
+### NuGet Package Restore Failures
+
+**Symptom**: `Unable to resolve package` or `NU1101: Unable to find package Senzing.Sdk` during restore
+**Cause**: The NuGet package source for Senzing is not configured, or network access to the feed is blocked
+**Fix**:
+
+1. Check configured sources: `dotnet nuget list source`
+2. Add the Senzing NuGet source if missing: `dotnet nuget add source <url> --name senzing`
+3. Clear the NuGet cache and retry: `dotnet nuget locals all --clear && dotnet restore`
+4. Verify with: `dotnet restore --verbosity normal`
+
+### Runtime Identifier (RID) Mismatches
+
+**Symptom**: `System.DllNotFoundException` or publish fails with "no RID-specific assets" warnings
+**Cause**: The runtime identifier in the project or publish command does not match the target platform's native libraries
+**Fix**:
+
+1. Check your platform RID: `dotnet --info` (look for "RID" in the output)
+2. Set the correct RID in `.csproj`: `<RuntimeIdentifier>linux-x64</RuntimeIdentifier>` (or `win-x64`, `osx-x64`)
+3. For publish: `dotnet publish -r linux-x64 --self-contained`
+4. Verify with: `dotnet run --runtime linux-x64` — should start without DLL errors
+
+### DLL Loading Failures for Native Senzing Libraries
+
+**Symptom**: `System.DllNotFoundException: Unable to load shared library 'Sz'` or `libSz.so not found`
+**Cause**: The Senzing native libraries are not in a directory the .NET runtime searches for platform-specific binaries
+**Fix**:
+
+1. On Linux: `export LD_LIBRARY_PATH=/opt/senzing/lib:$LD_LIBRARY_PATH`
+2. On macOS: `export DYLD_LIBRARY_PATH=/opt/senzing/lib:$DYLD_LIBRARY_PATH`
+3. On Windows: add the Senzing `lib` directory to the system `PATH`
+4. Verify with: `dotnet run` — should execute without DllNotFoundException
+
+### Project File Configuration Issues
+
+**Symptom**: `error MSB4019: The imported project was not found` or PackageReference warnings during build
+**Cause**: The `.csproj` file uses an incompatible format or is missing required SDK-style project elements
+**Fix**:
+
+1. Ensure the project uses SDK-style format: `<Project Sdk="Microsoft.NET.Sdk">`
+2. Set target framework: `<TargetFramework>net6.0</TargetFramework>` (or `net7.0`, `net8.0`)
+3. Use PackageReference format for dependencies (not `packages.config`)
+4. Verify with: `dotnet build --verbosity minimal` — should complete without MSB errors

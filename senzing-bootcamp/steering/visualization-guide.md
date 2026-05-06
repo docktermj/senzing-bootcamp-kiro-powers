@@ -65,14 +65,20 @@ inclusion: manual
 
 ## Web Service Delivery Sequence
 
-When presenting a completed web service to the bootcamper, ALWAYS follow this exact sequence:
+When presenting a completed web service to the bootcamper, the server is started automatically as a background process. ALWAYS follow this exact sequence:
 
-1. **Present the start command:** "Run this command to start the server: `<command>`"
-2. **Describe expected output:** "You should see output like: `Server running on http://localhost:<port>`"
-3. **Only AFTER steps 1-2, present the URL:** "Then open `http://localhost:<port>` in your browser"
-4. **Provide stop instructions:** "When you're done, press Ctrl+C in the terminal to stop the server"
+1. **Start the server automatically:** Use `controlBashProcess` with action `start` and the language-appropriate start command (e.g., `python src/web/app.py`, `dotnet run`, `cargo run`, `npx ts-node src/web/app.ts`) to launch the server as a background process.
+2. **Verify the server is running:** Read the process output using `getProcessOutput` and confirm the server started successfully — look for messages like "running on", "listening on", or "started on port". Wait briefly if output is not yet available.
+3. **Present URL, manual restart command, and stop instructions:** Once verified:
+   - Present the URL: "Your server is running — open `http://localhost:<port>` in your browser"
+   - Provide the manual restart command for reference: "If you need to restart the server later, run: `<command>`"
+   - Provide stop instructions: "To stop the server, I can stop the background process for you, or if you restarted it manually, press Ctrl+C in that terminal"
+4. **Fallback on failure:** If the server fails to start (port conflict, missing dependencies, SDK error, or no "running on" message after a reasonable wait):
+   - Report the error to the bootcamper with any relevant output
+   - Provide troubleshooting guidance (e.g., check if the port is in use, verify dependencies are installed)
+   - Fall back to manual instructions: "Run this command to start the server: `<command>`"
 
-**NEVER present a localhost URL as if it's already accessible. The server must be started first.**
+**NEVER present a localhost URL before confirming the server is actually running.**
 
 This sequence applies to ALL web service visualizations regardless of module. Static HTML file visualizations are not affected — those are opened directly without a server.
 

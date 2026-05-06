@@ -108,11 +108,12 @@ The power is installed into Kiro IDE and connects to the Senzing MCP server (`mc
 #### Acceptance Criteria
 
 1. THE `steering-index.yaml` SHALL track `token_count` and `size_category` for every steering file.
-2. ALWAYS-on steering files SHALL total no more than 3 files, each under 80 lines.
-3. AUTO-included files SHALL be under 120 lines each.
-4. THE Agent SHALL warn at 60% context usage (120k tokens) and enter critical mode at 80% (160k tokens).
-5. RETENTION priority SHALL be: agent-instructions > current module > language file > troubleshooting > everything else.
+2. ALWAYS-on steering files SHALL total no more than 3 files, each under 90 lines.
+3. AUTO-included files SHALL be moderate in length (under 150 lines each, with session-resume as a one-time-load exception).
+4. THE Agent SHALL warn at 60% context usage and enter critical mode at 80% (percentage-based, derived from `reference_window`).
+5. RETENTION priority SHALL be: agent-instructions > current module > language file > conversation-protocol > troubleshooting > completed modules.
 6. PHASE-split modules SHALL allow loading only the current phase rather than the entire module.
+7. DETAILED context budget management rules SHALL live in `agent-context-management.md` (auto inclusion) to keep `agent-instructions.md` lean.
 
 ### Requirement 7: Hook-Based Automation
 
@@ -120,11 +121,12 @@ The power is installed into Kiro IDE and connects to the Senzing MCP server (`mc
 
 #### Acceptance Criteria
 
-1. THE Power SHALL provide 25 hooks organized into critical (created during onboarding) and module-specific (created when the module starts) categories.
-2. CRITICAL hooks SHALL include: ask-bootcamper, capture-feedback, feedback-submission-reminder, review-bootcamper-input, code-style-check, commonmark-validation, enforce-feedback-path, enforce-working-directory, verify-senzing-facts.
+1. THE Power SHALL provide 23 hooks organized into critical (created during onboarding) and module-specific (created when the module starts) categories.
+2. CRITICAL hooks SHALL include: ask-bootcamper, review-bootcamper-input, code-style-check, commonmark-validation, enforce-feedback-path, enforce-working-directory, verify-senzing-facts.
 3. MODULE hooks SHALL cover: Module 2 (verify-sdk-setup), Module 4 (validate-data-files), Module 5 (analyze-after-mapping, data-quality-check, enforce-mapping-spec), Module 6 (backup-before-load, run-tests-after-change, verify-generated-code), Module 7 (enforce-visualization-offers, offer-visualization), Module 8 (validate-benchmark-results), Module 9 (security-scan-on-save), Module 10 (validate-alert-config), Module 11 (deployment-phase-gate).
 4. ANY-TIME hooks SHALL include: backup-project-on-request, git-commit-reminder.
 5. THE hook registry (`hook-categories.yaml` and `hook-registry.md`) SHALL stay in sync with `.kiro.hook` files — verified by `sync_hook_registry.py --verify`.
+6. THE `test_hooks.py` script SHALL provide structural validation of all hook files (JSON validity, required fields, event types, patterns, toolTypes, registry consistency).
 
 ### Requirement 8: Onboarding Flow
 

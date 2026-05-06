@@ -42,12 +42,15 @@ Load per-module steering file when user starts that module (1→`module-01-busin
 
 **At every module start:** Read `config/bootcamp_progress.json` first, then display the module start banner, journey map, and before/after framing (per `module-transitions.md`, which is always loaded) BEFORE doing any module-specific work. Never skip these — they orient the user. Module 11 platform files: load `deployment-aws.md`, `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target.
 
+**Artifact readiness check (Modules 4-11):** Before displaying the module banner, read `config/module-artifacts.yaml` and check that all `requires_from` artifacts for the current module exist on disk. If all present, proceed silently. If any are missing, report which files are missing and from which module, then offer: (a) go back to complete the prerequisite, (b) skip the check and proceed anyway, (c) run rollback. The check is advisory — the bootcamper can always skip.
+
 **Multi-language projects:** Load the language steering file for whichever language is currently being edited. Don't force a single language across all components.
 
 ## State & Progress
 
 - `mapping_workflow`: pass exact `state`, never modify. Checkpoint to `config/mapping_state_[datasource].json` after **each** step. Delete checkpoint when workflow completes for a source.
 - Progress: `config/bootcamp_progress.json`. Preferences: `config/bootcamp_preferences.yaml`. Corrupted? Run `python3 senzing-bootcamp/scripts/validate_module.py`.
+- Conversation style persistence: after onboarding completes and the first module interaction establishes a baseline style, write a `conversation_style` profile to `config/bootcamp_preferences.yaml`. Schema — `verbosity_preset` (string: concise | standard | detailed | custom), `question_framing` (string: minimal | moderate | full), `tone` (string: concise | conversational | detailed), `pacing` (string: one_concept_per_turn | grouped_concepts).
 - Step-level checkpointing: after each numbered step or sub-step, update `config/bootcamp_progress.json` — set `current_step` (integer for whole steps, string like `"5.3"` or `"7a"` for sub-steps), set `step_history["<module_number>"]` to `{ "last_completed_step": <step>, "updated_at": "<ISO 8601>" }`. On module completion, set `current_step` to `null`.
 - Recovery from mistakes: load `recovery-from-mistakes.md` when a bootcamper needs to undo or redo a step.
 - Skip steps: `skip-step-protocol.md` handles "I'm stuck" / "skip this" requests with consequence tracking. Load it via `#skip-step-protocol` or when keyword routing triggers.
@@ -55,11 +58,14 @@ Load per-module steering file when user starts that module (1→`module-01-busin
 ## Communication
 
 - One question at a time, wait for response. Prefix input-required questions with "👉" in ALL modules.
+  - Never combine questions with conjunctions (and, or, also, but first) — each is a separate turn.
+  - A question without the 👉 prefix is a formatting violation.
+  - These rules apply in ALL contexts — onboarding, feedback workflow, module steps, and session resume. See conversation-protocol.md for the full rule set.
 - Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to agentStop hooks — zero output when a 👉 question is pending.
 - Goldilocks check: after Modules 3, 6, 9 ask if detail level is right. Store as `detail_level` in preferences. First-term explanations: define Senzing terms inline on first use via `docs/guides/GLOSSARY.md`.
 - Before each step: what and why. During: status updates. After: what changed, files with paths. Offer to visualize data results as a web page.
 - At module completion: summary, all files, why it matters for next module. Follow `module-transitions.md` rules. Load `module-completion.md`.
-- Feedback trigger phrases: the capture-feedback hook handles this automatically — do not manually load feedback-workflow.md.
+- Feedback trigger phrases: the `review-bootcamper-input` hook handles this automatically — do not manually load feedback-workflow.md.
 - Turn-taking, closing question ownership, and question protocols: see `conversation-protocol.md` (auto-loaded during active modules). Closing-question ownership: the `ask-bootcamper` hook is the primary owner; agent-instructions provides the inline stop protocol as reinforcement.
 
 ### Question Stop Protocol
@@ -76,8 +82,8 @@ Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:
 
 Check `steering-index.yaml` `file_metadata` for `token_count` and `size_category` before loading. For split modules, use phase-level `token_count` from the `phases` map. Track cumulative tokens.
 
-- **Warn (120k):** Load only files relevant to current module/question.
-- **Critical (160k):** Unload non-essential files first.
+- **Warn (60% of context budget):** Load only files relevant to current module/question.
+- **Critical (80% of context budget):** Unload non-essential files first.
 - **Retention priority:** `agent-instructions.md` > current module > language file > troubleshooting > everything else.
 
-When loading a `large` file, announce the token cost.
+When loading a `large` file, announce the token cost. See `agent-context-management.md` for detailed unloading rules and adaptive pacing.

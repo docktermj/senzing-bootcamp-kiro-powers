@@ -25,7 +25,7 @@ This power works best with Claude Opus 4.6 or similar.
 - Conversation protocol extracted to `conversation-protocol.md` (auto-included) — keeps `agent-instructions.md` under 80 lines
 - Integration test (`test_module_flow_integration.py`) validating multi-module state transitions across all tracks
 - Enhanced `validate_module.py` checks for Modules 8–11 (benchmark environment, security utilities, runbooks, Dockerfile)
-- Missing `feedback-submission-reminder.kiro.hook` file created (was referenced but absent)
+- Hook consolidation — `feedback-submission-reminder` and `capture-feedback` merged into `ask-bootcamper` and `review-bootcamper-input` respectively (23 hooks total)
 - Windows support improvements — Visual Studio Build Tools check in `preflight.py`, Windows-specific pitfalls section in `common-pitfalls.md`, PowerShell execution policy guidance, Windows Terminal recommendation
 - Steering best practices alignment — `agent-instructions.md` trimmed to 79 lines, `common-pitfalls.md` changed to manual inclusion, context budget guidelines followed
 - 28 orphaned specs removed, module numbering fixed across all files
@@ -301,7 +301,7 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: `ask-bootcamper` ⭐, `capture-feedback` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation`, `enforce-feedback-path`, `enforce-working-directory` ⭐, `enforce-visualization-offers` ⭐, `feedback-submission-reminder`, `verify-senzing-facts`, `verify-sdk-setup`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `validate-data-files`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `offer-visualization`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `git-commit-reminder`.
+Available: `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation`, `enforce-feedback-path`, `enforce-working-directory` ⭐, `enforce-visualization-offers` ⭐, `verify-senzing-facts`, `verify-sdk-setup`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `validate-data-files`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `offer-visualization`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `git-commit-reminder`.
 
 ## Project Directory Structure
 

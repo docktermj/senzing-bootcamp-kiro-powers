@@ -47,3 +47,61 @@ fileMatchPattern: "**/*.{ts,tsx,js,jsx}"
 - On Linux, set `LD_LIBRARY_PATH` for Senzing shared libraries before running `node` or `ts-node`
 - On Windows, ensure Senzing DLLs are on `PATH` — native addon loading depends on OS library search paths
 - Verify TypeScript/Node.js SDK support status via MCP before generating code — relay any platform warnings to the bootcamper
+
+## Common Environment Issues
+
+### Node.js Version Conflicts
+
+**Symptom**: `SyntaxError: Unexpected token` on modern syntax, or `ERR_UNSUPPORTED_ESM_URL_SCHEME` errors
+**Cause**: The installed Node.js version is older than 18, which is the minimum required for Senzing bootcamp exercises
+**Fix**:
+
+1. Check current version: `node --version`
+2. Install Node.js 18+ via nvm: `nvm install 18 && nvm use 18` (or download from nodejs.org)
+3. If using system Node.js: update via package manager (`brew upgrade node`, `sudo apt install nodejs`)
+4. Verify with: `node --version` — should show v18 or higher
+
+### Native Addon Build Failures (node-gyp)
+
+**Symptom**: `gyp ERR! build error` or `Cannot find module '../build/Release/senzing.node'` during install
+**Cause**: node-gyp requires Python 3 and a C++ compiler to build native addons, and these are missing or misconfigured
+**Fix**:
+
+1. Install build prerequisites: `npm install -g node-gyp` and ensure Python 3 is available
+2. On Linux: `sudo apt install build-essential python3`
+3. On macOS: `xcode-select --install`
+4. On Windows: `npm install -g windows-build-tools` or install Visual Studio Build Tools
+5. Verify with: `node-gyp configure` — should complete without errors
+
+### ESM vs CommonJS Module Resolution
+
+**Symptom**: `ERR_REQUIRE_ESM` when importing Senzing, or `SyntaxError: Cannot use import statement outside a module`
+**Cause**: Mismatch between the project's module system (ESM vs CJS) and how the Senzing package exports its bindings
+**Fix**:
+
+1. For ESM projects: ensure `"type": "module"` is in `package.json` and use `import` syntax
+2. For CJS projects: use `require()` or dynamic `import()` for ESM-only packages
+3. In `tsconfig.json`: set `"module": "ESNext"` and `"moduleResolution": "bundler"` (or `"node16"`)
+4. Verify with: `npx ts-node --esm src/index.ts` or `node --loader ts-node/esm src/index.ts`
+
+### TypeScript Strict Mode Type Errors
+
+**Symptom**: `TS2322: Type 'X | undefined' is not assignable to type 'X'` or `TS7053: Element implicitly has an 'any' type`
+**Cause**: TypeScript strict mode (`strict: true` in tsconfig) catches nullable and untyped values that Senzing API responses may return
+**Fix**:
+
+1. Use optional chaining and nullish coalescing: `const name = entity?.resolvedEntity?.entityName ?? "unknown"`
+2. Add type guards before accessing properties: `if (result !== undefined) { ... }`
+3. Create typed interfaces for Senzing responses and use type assertions where the API contract is known
+4. Verify with: `npx tsc --noEmit` — should compile without type errors
+
+### Package Manager Conflicts
+
+**Symptom**: `ERESOLVE unable to resolve dependency tree` or lockfile conflicts between npm, yarn, and pnpm
+**Cause**: Multiple package managers have been used in the same project, creating conflicting lockfiles and node_modules structures
+**Fix**:
+
+1. Choose one package manager and remove others' lockfiles: keep only `package-lock.json` (npm), `yarn.lock` (yarn), or `pnpm-lock.yaml` (pnpm)
+2. Delete `node_modules` and reinstall: `rm -rf node_modules && npm install` (or equivalent)
+3. Add other lockfiles to `.gitignore` to prevent accidental commits
+4. Verify with: `npm ls` (or `yarn list`, `pnpm list`) — should show clean dependency tree without errors

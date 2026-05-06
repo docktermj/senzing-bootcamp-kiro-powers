@@ -428,7 +428,8 @@ _HTML_TEMPLATE = """\
 def main() -> None:
     """CLI entry point: load config, collect data, render, write file."""
     parser = argparse.ArgumentParser(
-        description="Generate team bootcamp dashboard"
+        description="Generate team bootcamp dashboard",
+        epilog="See Also: status.py (individual progress), analyze_sessions.py (historical analytics)",
     )
     parser.add_argument(
         "--output",

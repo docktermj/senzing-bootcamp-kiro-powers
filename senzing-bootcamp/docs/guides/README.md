@@ -91,6 +91,13 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - Module entry formats (simple and split), keyword mappings, language and deployment mappings
 - File metadata token counts, context budget thresholds, and read/write script references
 
+**[MODULE_ARTIFACTS.md](MODULE_ARTIFACTS.md)**
+
+- Schema documentation for `config/module-artifacts.yaml`
+- Field definitions for version, modules, produces, and requires\_from
+- Validation rules and a complete example showing Modules 4-7
+- CLI usage and agent behavior on missing artifacts
+
 ### After the Bootcamp
 
 **[AFTER_BOOTCAMP.md](AFTER_BOOTCAMP.md)**
@@ -293,6 +300,7 @@ docs/
 │   ├── AFTER_BOOTCAMP.md
 │   ├── QUALITY_SCORING_METHODOLOGY.md
 │   ├── STEERING_INDEX.md
+│   ├── MODULE_ARTIFACTS.md
 │   └── STREAMING_INTEGRATION.md
 ├── diagrams/                  # ⭐ NEW! Visual docs
 │   ├── module-flow.md        # Module diagrams

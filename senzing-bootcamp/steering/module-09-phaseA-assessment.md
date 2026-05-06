@@ -31,7 +31,7 @@ Categorize the bootcamper's compliance level based on their answers:
 
 ### Step 1a: Compliance Requirements
 
-"Do you have any compliance requirements? (e.g., SOC 2, GDPR, CCPA, HIPAA, PCI-DSS, or none)"
+👉 "Do you have any compliance requirements? (e.g., SOC 2, GDPR, CCPA, HIPAA, PCI-DSS, or none)"
 
 > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
 
@@ -39,7 +39,7 @@ Categorize the bootcamper's compliance level based on their answers:
 
 ### Step 1b: Security Stakeholders
 
-"Who are the security stakeholders for this project? (e.g., security team, compliance officer, or just you)"
+👉 "Who are the security stakeholders for this project? (e.g., security team, compliance officer, or just you)"
 
 > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next sub-step. Wait for the bootcamper's real input.
 

@@ -108,17 +108,19 @@ def parse_args(argv=None):
     """Parse command-line arguments. Returns namespace or exits on error."""
     parser = argparse.ArgumentParser(
         description="Roll back a specific bootcamp module's artifacts.",
+        epilog="See Also: restore_project.py (full backup restore),"
+               " backup_project.py (create backups)",
     )
     parser.add_argument(
         "--module", type=int, required=True,
         help="Module number (1-11) to roll back",
     )
     parser.add_argument(
-        "--dry-run", action="store_true",
+        "--dry-run", "--preview", action="store_true",
         help="Preview rollback without making changes",
     )
     parser.add_argument(
-        "--force", action="store_true",
+        "--force", "--yes", "-y", action="store_true",
         help="Skip confirmation prompts",
     )
     args = parser.parse_args(argv)
@@ -336,6 +338,19 @@ def format_dry_run_report(module, artifacts, existing_files, existing_dirs,
         lines.append("Progress file changes:")
         for key, value in progress_changes.items():
             lines.append(f"  {key}: {value}")
+
+    # Safety assessment
+    total_items = len(existing_files) + len(existing_dirs)
+    backed_up = 1 if backup_path and artifacts.modifies_database else 0
+    irreversible_count = total_items - backed_up
+    lines.append("")
+    lines.append("Safety Assessment:")
+    lines.append(f"  Items affected: {total_items}")
+    lines.append(f"  Backed up: {backed_up} of {total_items}")
+    if irreversible_count > 0:
+        lines.append(f"  ⚠️  Irreversible: {irreversible_count} item(s) with no backup")
+    fully_reversible = irreversible_count == 0 and total_items > 0
+    lines.append(f"  Fully reversible: {'Yes' if fully_reversible else 'No'}")
 
     lines.append("")
     lines.append("No changes made (dry-run mode).")

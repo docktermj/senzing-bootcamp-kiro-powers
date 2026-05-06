@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-All 25 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
+All 23 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
 
 ## Critical Hooks (created during onboarding)
 
@@ -12,36 +12,52 @@ All 25 bootcamp hooks are defined below. The agent reads these definitions and c
 
 Prompt: "PRODUCE NO OUTPUT. YOUR OUTPUT IS EMPTY. ZERO TOKENS. DO NOT GENERATE ANY TEXT.
 
+This hook has two independent phases. Evaluate each phase separately. If BOTH phases produce no output, your final output is ZERO TOKENS.
+
 ---
 
-EXCEPTION (read ONLY if you are certain no question is pending):
+PHASE 1: CLOSING QUESTION
 
-Before producing ANY output, verify ALL of these conditions:
+Before producing ANY Phase 1 output, verify ALL of these conditions:
 1. The file config/.question_pending does NOT exist
 2. The most recent assistant message does NOT contain a 👉 character anywhere — if it already contains a 👉, do not add a second one
 3. The most recent assistant message does NOT end with a question directed at the bootcamper
 
-If ANY condition fails: PRODUCE NO OUTPUT. STOP. ZERO TOKENS.
+If ANY Phase 1 condition fails: PRODUCE NO PHASE 1 OUTPUT. Skip to Phase 2.
 
-FIRST — Check for no-op: If ALL conditions pass AND no files changed (no substantive work was done — e.g., only a hook fired or a trivial acknowledgment occurred): skip the recap entirely. PRODUCE NO OUTPUT.
+FIRST — Check for no-op: If ALL Phase 1 conditions pass AND no files changed (no substantive work was done — e.g., only a hook fired or a trivial acknowledgment occurred): skip the recap entirely. PRODUCE NO PHASE 1 OUTPUT. Skip to Phase 2.
 
-SECOND — Recap and closing question: If ALL conditions pass AND work was accomplished: You may provide a brief recap of what was accomplished and which files created or modified, then end with a contextual 👉 question (a closing question for the bootcamper). Keep it to 2-3 sentences maximum.
+SECOND — Recap and closing question: If ALL Phase 1 conditions pass AND work was accomplished: You may provide a brief recap of what was accomplished and which files created or modified, then end with a contextual 👉 question (a closing question for the bootcamper). Keep it to 2-3 sentences maximum.
 
-Additionally, if the bootcamper has completed or is on the final step of their current track, append a brief 📋 feedback reminder: 'By the way, if you have feedback about the bootcamp experience, just say "bootcamp feedback" anytime.' Otherwise, do NOT mention feedback.
+Additionally, if the bootcamper has completed or is on the final step of their current track, append a brief nudge: 'By the way, if you have feedback about the bootcamp experience, just say "bootcamp feedback" anytime.' Otherwise, do NOT mention feedback in Phase 1.
 
-CRITICAL: If you are uncertain about ANY condition, default to SILENCE. Silence is always safe. Do not fabricate user responses or assume a choice on the bootcamper's behalf."
+---
+
+PHASE 2: FEEDBACK SUBMISSION REMINDER
+
+Phase 2 operates independently of Phase 1. Even if Phase 1 was silenced, evaluate Phase 2 on its own.
+
+Before producing ANY Phase 2 output, verify ALL of these conditions:
+1. Track completion detected: Read config/bootcamp_progress.json. Check if the bootcamper has completed their chosen track (all modules in the track are now in modules_completed) or if graduation was completed. If no track completion or graduation detected, produce no Phase 2 output. STOP.
+2. Deduplication: Check the conversation history for the 📋 emoji marker. If 📋 already appears in a previous assistant message in this session, the reminder was already shown — produce no Phase 2 output. STOP.
+3. Feedback exists: Check if docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md exists AND contains at least one '## Improvement:' heading (indicating real feedback entries, not just the template). If the file does not exist or contains no ## Improvement: headings, produce no Phase 2 output. STOP.
+
+If ALL three Phase 2 conditions pass, append:
+
+📋 You have saved feedback in docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md. To share it with the Senzing team, you can:
+- Email it to support@senzing.com with subject 'Senzing Bootcamp Power Feedback'
+- Open a GitHub issue with the feedback content
+- Copy the file path and attach it to your preferred channel
+
+Do not automatically send email or create GitHub issues — wait for explicit bootcamper confirmation. If the bootcamper declines (no, skip, not now), accept without re-prompting about feedback sharing again.
+
+---
+
+CRITICAL: If you are uncertain about ANY condition in either phase, default to SILENCE for that phase. Silence is always safe. Do not fabricate user responses or assume a choice on the bootcamper's behalf."
 
 - id: `ask-bootcamper`
 - name: `Ask Bootcamper`
-- description: `Silence-first agentStop hook with dual responsibility: (1) default is zero output, only produces a recap + closing question when verified that no question is already pending; (2) conditionally appends a feedback reminder when the bootcamper is near track completion.`
-
-**capture-feedback** (promptSubmit → askAgent)
-
-Prompt: "Check if the bootcamper's message contains any of these feedback trigger phrases (case-insensitive): "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue". If NONE of these phrases appear in the message, do nothing — let the conversation continue normally. If a trigger phrase IS found, load the steering file feedback-workflow.md and follow its complete workflow. Start by automatically capturing context: read config/bootcamp_progress.json for the current module, note what the bootcamper was doing in the recent conversation, and identify which files are open in the editor. Do NOT ask the bootcamper to re-explain their context."
-
-- id: `capture-feedback`
-- name: `Capture Bootcamp Feedback`
-- description: `Fires on every message submission. Instructs the agent to check for feedback trigger phrases and, if found, initiate the feedback workflow with automatic context capture.`
+- description: `Silence-first agentStop hook with dual responsibility: (1) Phase 1 produces a recap + closing question only when no question is already pending, with a near-completion feedback nudge; (2) Phase 2 independently reminds the bootcamper to share saved feedback after track completion.`
 
 **code-style-check** (fileEdited → askAgent, filePatterns: `src/**/*.py, src/**/*.java, src/**/*.cs, src/**/*.rs, src/**/*.ts, src/**/*.js`)
 
@@ -85,32 +101,9 @@ Prompt: "Before writing this file, verify: Does the file path or any path in the
 - name: `Enforce Working Directory Paths`
 - description: `Checks that file write operations do not use /tmp, %TEMP%, or any path outside the working directory. Enforces the file storage policy automatically.`
 
-**feedback-submission-reminder** (agentStop → askAgent)
-
-Prompt: "PRODUCE NOTHING unless ALL of the following conditions are met.
-
-Condition 1 — Track completion detected: Read config/bootcamp_progress.json. Check if the bootcamper has just completed their chosen track (all modules in the track are now in modules_completed) or if graduation was just completed. If no track completion or graduation detected, produce no output. STOP.
-
-Condition 2 — Deduplication: Check the conversation history for the 📋 emoji marker. If 📋 already appears in a previous assistant message in this session, the reminder was already shown — produce no output. STOP.
-
-Condition 3 — Feedback exists: Check if docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md exists AND contains at least one '## Improvement:' heading (indicating real feedback entries, not just the template). If the file does not exist or contains no ## Improvement: headings, produce no output. STOP.
-
-If ALL three conditions pass, display:
-
-📋 You have saved feedback in docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md. To share it with the Senzing team, you can:
-- Email it to support@senzing.com with subject 'Senzing Bootcamp Power Feedback'
-- Open a GitHub issue with the feedback content
-- Copy the file path and attach it to your preferred channel
-
-Do not automatically send email or create GitHub issues — wait for explicit bootcamper confirmation. If the bootcamper declines (no, skip, not now), accept without re-prompting about feedback sharing again."
-
-- id: `feedback-submission-reminder`
-- name: `Feedback Submission Reminder`
-- description: `After track completion or graduation, checks for saved feedback and reminds the bootcamper to share it with the power author.`
-
 **review-bootcamper-input** (promptSubmit → askAgent)
 
-Prompt: "Check if the bootcamper's message contains any of these feedback trigger phrases (case-insensitive): "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue". If NONE of these phrases appear in the message, produce no output at all — do not acknowledge, do not explain, do not print anything. If a trigger phrase IS found, immediately do the following: (1) Read config/bootcamp_progress.json to get the current module number and completed modules. If the file doesn't exist, record module as "Unknown". (2) Note what the bootcamper was doing in the recent conversation. (3) Note which files are open in the editor. (4) Load steering file feedback-workflow.md and follow its complete workflow, pre-filling the context fields with what you just captured. Do NOT ask the bootcamper to re-explain their context — you already have it."
+Prompt: "Check if the bootcamper's message contains any of these feedback trigger phrases (case-insensitive): "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue". Also check for status trigger phrases (case-insensitive): "where am I", "status", "what step am I on", "show progress", "how far along am I". If NONE of these phrases appear in the message, produce no output at all — do not acknowledge, do not explain, do not print anything. If a STATUS trigger phrase IS found, output exactly: STATUS_TRIGGER_DETECTED — the agent should respond with the inline status format from inline-status.md. If a FEEDBACK trigger phrase IS found, immediately do the following: (1) Read config/bootcamp_progress.json to get the current module number and completed modules. If the file doesn't exist, record module as "Unknown". (2) Note what the bootcamper was doing in the recent conversation. (3) Note which files are open in the editor. (4) Load steering file feedback-workflow.md and follow its complete workflow, pre-filling the context fields with what you just captured. Do NOT ask the bootcamper to re-explain their context — you already have it."
 
 - id: `review-bootcamper-input`
 - name: `Review Bootcamper Input`

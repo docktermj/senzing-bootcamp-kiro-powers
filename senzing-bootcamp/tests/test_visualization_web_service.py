@@ -235,9 +235,11 @@ class TestVizGuideCodeGenAndLifecycle:
         assert "troubleshooting" in lower or "problem" in lower
 
     def test_no_background_process_prohibition(self):
-        """Explicit prohibition against starting server as background process."""
+        """Old prohibition removed; auto-start instruction exists instead."""
         lower = self.content.lower()
-        assert "shall not start the server as a background process" in lower
+        assert "shall not start the server as a background process" not in lower
+        assert "controlBashProcess" in self.content
+        assert "Server Auto-Start" in self.content
 
 
 # ═══════════════════════════════════════════════════════════════════════════

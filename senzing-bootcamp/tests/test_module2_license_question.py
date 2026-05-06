@@ -304,7 +304,7 @@ class TestBugConditionProperty:
 import hashlib
 
 _STEP_HASHES: dict[str, str] = {
-    "Step 1": "32e777457a1e706c4b46aed05fd48016211a61456696ab4149d804863642c4bd",
+    "Step 1": "4de97430a0303ea6d5c1683fdbd9c480cf98245999aac5f53c7992bbf14c8ed1",
     "Step 2": "d699ce64d2b9f6f8f834466b7886611343554f5d3e7f1bf89c39ad7d58cf92a0",
     "Step 3": "3591982547aded6cd5da8870c3c6d8ffa6476f92fa00ea21c9fa1299f6cf4088",
     "Step 4": "5ee5168b5bfe301fcf7f6841ef78f3ab334dfc1b413e7440cc598fc72d69e6be",

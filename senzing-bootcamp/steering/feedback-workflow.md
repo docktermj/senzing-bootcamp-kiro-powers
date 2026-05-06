@@ -17,6 +17,13 @@ When user says any of these, the feedback workflow starts automatically via the 
 - "I have feedback"
 - "report an issue"
 
+## Conversation Rules
+
+- One question per turn — never combine two questions in a single response.
+- Use the 👉 prefix on every question directed at the bootcamper.
+- 🛑 STOP after each question — end your response immediately.
+- Do not combine confirmation questions and priority questions in the same turn.
+
 ## Feedback Workflow Steps
 
 ### Step 0: Automatic Context Capture
@@ -38,12 +45,29 @@ Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists in the projec
 
 ### Step 2: Gather Feedback (One Question at a Time)
 
-1. "What would you like to provide feedback about?" (present categories)
-2. "Which module is this related to?" (0-12, or general) — pre-fill from captured context
-3. "What happened or what issue did you encounter?"
-4. "Why is this a problem? What was the impact?"
-5. "Do you have a suggested fix or improvement?"
-6. "What priority would you assign?" (High/Medium/Low)
+1. 👉 "What would you like to provide feedback about?" (present categories)
+
+   🛑 STOP — End your response here.
+
+2. 👉 "Which module is this related to?" (0-12, or general) — pre-fill from captured context
+
+   🛑 STOP — End your response here.
+
+3. 👉 "What happened or what issue did you encounter?"
+
+   🛑 STOP — End your response here.
+
+4. 👉 "Why is this a problem? What was the impact?"
+
+   🛑 STOP — End your response here.
+
+5. 👉 "Do you have a suggested fix or improvement?"
+
+   🛑 STOP — End your response here.
+
+6. 👉 "What priority would you assign?" (High/Medium/Low)
+
+   🛑 STOP — End your response here.
 
 ### Step 3: Format Feedback Entry
 

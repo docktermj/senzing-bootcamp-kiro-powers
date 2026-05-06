@@ -14,6 +14,67 @@ Before doing any setup work, tell the user:
 
 "I'm going to do some quick administrative setup — creating your project directory, installing hooks, and checking your environment. You'll see me working for a moment. When I'm done, you'll see a big **WELCOME TO THE SENZING BOOTCAMP** banner — that's when the bootcamp officially starts and I'll begin asking you questions."
 
+## 0b. MCP Health Check
+
+Before starting the bootcamp, verify that the Senzing MCP server is reachable. The MCP server powers the bootcamp's interactive features — it generates SDK code in your chosen language, looks up Senzing facts and configuration details, and provides working examples on demand. Without it, the bootcamp can still function in a limited offline mode.
+
+### Probe
+
+Attempt a lightweight MCP tool call with a 10-second timeout:
+
+```text
+search_docs(query="health check", version="current")
+```
+
+### Success Path
+
+If the call returns any response (even empty results) within 10 seconds:
+
+1. Proceed silently — do not display anything to the bootcamper.
+2. Write `config/.mcp_status` with:
+
+```json
+{"last_check": "<ISO 8601 timestamp>", "status": "healthy", "error_message": null}
+```
+
+### Failure Path
+
+If the call times out or errors after 10 seconds:
+
+1. Write `config/.mcp_status` with:
+
+```json
+{"last_check": "<ISO 8601 timestamp>", "status": "unreachable", "error_message": "<error details>"}
+```
+
+2. Display the following warning to the bootcamper:
+
+```text
+⚠️ The Senzing MCP server is currently unreachable.
+
+The MCP server is what lets me generate working Senzing code, look up accurate
+SDK details, and pull real examples for you. Without it, some features are limited.
+
+**What's unavailable**: Code generation, fact lookup, example search
+**What you can still do**: Review existing artifacts, work on documentation, plan next steps
+
+For detailed offline capabilities, see docs/guides/OFFLINE_MODE.md
+```
+
+3. Ask:
+
+```text
+👉 Would you like to continue in offline mode, or try again later?
+```
+
+### Mid-Session Recovery
+
+Before any step that requires MCP tools, check `config/.mcp_status`. If `status` is `"unreachable"`:
+
+1. Re-attempt the `search_docs(query="health check", version="current")` probe with a 10-second timeout.
+2. If successful, update `config/.mcp_status` to `"healthy"` and display: "✅ MCP server is back online — full functionality restored."
+3. If still unreachable, inform the bootcamper that MCP remains unavailable and offer alternatives.
+
 ## 1. Directory Structure
 
 Execute these setup actions in order. Do not narrate the details to the user.
@@ -25,14 +86,12 @@ Execute these setup actions in order. Do not narrate the details to the user.
 
    | Hook | Impact Message |
    | ---- | -------------- |
-   | ask-bootcamper | "Session summaries and closing questions will not be automatically generated when the agent stops." |
-   | capture-feedback | "Feedback trigger phrases will not be automatically detected. Use the feedback workflow manually." |
+   | ask-bootcamper | "Session summaries, closing questions, and post-completion feedback reminders will not be automatically generated when the agent stops." |
    | code-style-check | "Code style will not be automatically checked on save." |
    | commonmark-validation | "Markdown files will not be automatically checked for CommonMark compliance." |
    | enforce-feedback-path | "Feedback may be written to incorrect file locations." |
    | enforce-working-directory | "File writes to /tmp or external paths will not be automatically blocked." |
-   | feedback-submission-reminder | "You will not be reminded to share saved feedback after track completion." |
-   | review-bootcamper-input | "Feedback trigger phrases will not be detected on message submission (backup to capture-feedback)." |
+   | review-bootcamper-input | "Feedback trigger phrases will not be automatically detected on message submission." |
    | verify-senzing-facts | "Senzing facts will not be automatically verified against MCP tools before writing." |
 
    **Verify hooks:** Check that each Critical Hook exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.
@@ -76,7 +135,7 @@ Team: {team_name} ({member_count} members)
 
 **Detect the user's platform first** (`platform.system()`), then query the Senzing MCP server (`get_capabilities` or `sdk_guide`) for which languages are supported on that platform. The MCP server is the authoritative source — do not hardcode language/platform assumptions.
 
-Present the MCP-returned language list to the bootcamper. **If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly to the bootcamper** and suggest alternatives. For example, if MCP discourages Python on macOS, tell them: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
+👉 Present the MCP-returned language list to the bootcamper. **If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly to the bootcamper** and suggest alternatives. For example, if MCP discourages Python on macOS, tell them: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
 
 Persist the selection to `config/bootcamp_preferences.yaml`.
 
@@ -144,7 +203,7 @@ Present the overview before track selection. Cover all points naturally:
 
 ### 4b. Verbosity Preference
 
-After presenting the overview, ask the bootcamper how much detail they want in the bootcamp output. Present the three presets:
+👉 After presenting the overview, ask the bootcamper how much detail they want in the bootcamp output. Present the three presets:
 
 - **concise** — Minimal explanations, no code walkthroughs, brief recaps. Best for experienced developers.
 - **standard** *(recommended)* — Balanced "what and why" explanations, block-level code summaries, before/after framing. Good for most learners.
@@ -177,7 +236,7 @@ This is NOT a mandatory gate (⛔) — the bootcamper can skip it.
 
 Before moving on to track selection, give the bootcamper a moment to absorb everything from the overview. Present a warm, conversational check-in — this is an invitation, not a quiz:
 
-"That was a lot of ground to cover. Does everything so far makes sense? Do you have any questions about the modules, the data, licensing, or anything else before we move on to choosing a track?"
+👉 "That was a lot of ground to cover. Does everything so far makes sense? Do you have any questions about the modules, the data, licensing, or anything else before we move on to choosing a track?"
 
 **Acknowledgment handling:** If the bootcamper responds with an acknowledgment — phrases like "looks good," "makes sense," "no questions," "let's go," "ready," "all clear," or "got it" — proceed directly to Step 5 (Track Selection). Do not ask follow-up questions about the overview.
 
@@ -191,7 +250,7 @@ Before moving on to track selection, give the bootcamper a moment to absorb ever
 > `config/module-dependencies.yaml`. To update tracks, edit the dependency graph
 > first, then run `python3 scripts/validate_dependencies.py` to verify consistency.
 
-Present tracks — not mutually exclusive, all completed modules carry forward:
+👉 Present tracks — not mutually exclusive, all completed modules carry forward:
 
 - **A) Quick Demo** — 1→2→3. Verify technology works. One session.
 - **B) Fast Track** — 5→6→7. Have Entity Specification data. Straight to loading/querying.

@@ -162,6 +162,95 @@ def compute_summary(entries: list[dict]) -> SummaryReport:
 
 
 # ---------------------------------------------------------------------------
+# Pacing Classification
+# ---------------------------------------------------------------------------
+
+
+def classify_pacing(entries: list[dict]) -> dict[int, str]:
+    """Classify completed modules into pacing categories based on session analytics.
+
+    Categories:
+      - "struggled": correction_density > 0.3 OR time > 2× median
+      - "comfortable": correction_density < 0.1 AND time < median
+      - "normal": everything else
+
+    Args:
+        entries: List of session log entry dicts.
+
+    Returns:
+        Dict mapping module number to pacing category string.
+        Empty dict if no entries or no modules with turns.
+    """
+    if not entries:
+        return {}
+
+    # Compute per-module metrics
+    turns_by_mod: dict[int, int] = defaultdict(int)
+    corrections_by_mod: dict[int, int] = defaultdict(int)
+    seconds_by_mod: dict[int, float] = defaultdict(float)
+
+    for entry in entries:
+        mod = entry.get("module")
+        if mod is None:
+            continue
+        turns_by_mod[mod] += 1
+        if entry.get("event") == "correction":
+            corrections_by_mod[mod] += 1
+        seconds_by_mod[mod] += float(entry.get("duration_seconds", 0))
+
+    # Filter to modules with non-zero turns
+    active_modules = [m for m in turns_by_mod if turns_by_mod[m] > 0]
+    if not active_modules:
+        return {}
+
+    # Compute median time (need at least 2 modules for meaningful comparison)
+    times = sorted(seconds_by_mod[m] for m in active_modules)
+    if len(times) < 2:
+        # Single module — can't compute median comparison, return "normal"
+        return {active_modules[0]: "normal"}
+
+    median_time = times[len(times) // 2]
+
+    # Classify each module
+    result: dict[int, str] = {}
+    for mod in active_modules:
+        turns = turns_by_mod[mod]
+        corrections = corrections_by_mod[mod]
+        total_seconds = seconds_by_mod[mod]
+        density = corrections / turns if turns > 0 else 0.0
+
+        if density > 0.3 or total_seconds > 2 * median_time:
+            result[mod] = "struggled"
+        elif density < 0.1 and total_seconds < median_time:
+            result[mod] = "comfortable"
+        else:
+            result[mod] = "normal"
+
+    return result
+
+
+def merge_with_overrides(
+    computed: dict[int, str], overrides: dict[int, str]
+) -> dict[int, str]:
+    """Merge computed pacing classifications with manual overrides.
+
+    Manual overrides take precedence over computed values.
+
+    Args:
+        computed: Dict from classify_pacing().
+        overrides: Dict from bootcamp_preferences.yaml pacing_overrides.
+
+    Returns:
+        Merged dict with overrides applied.
+    """
+    merged = dict(computed)
+    for mod, category in overrides.items():
+        if category in ("struggled", "comfortable", "normal"):
+            merged[mod] = category
+    return merged
+
+
+# ---------------------------------------------------------------------------
 # Formatting
 # ---------------------------------------------------------------------------
 
@@ -263,6 +352,7 @@ def main(argv: list[str] | None = None) -> int:
     """
     parser = argparse.ArgumentParser(
         description="Analyse Senzing Bootcamp session logs.",
+        epilog="See Also: status.py (current state), session_logger.py (log entry library)",
     )
     parser.add_argument(
         "file_path",

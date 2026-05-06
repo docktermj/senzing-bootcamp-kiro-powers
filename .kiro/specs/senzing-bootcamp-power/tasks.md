@@ -28,16 +28,17 @@ This spec documents the power as-built. All tasks reflect implemented state.
 
 ## Task 3: Steering System
 
-- [x] 3.1 Always-on files: agent-instructions (79 lines), module-transitions (66 lines), security-privacy (27 lines)
-- [x] 3.2 Auto files: conversation-protocol, design-patterns, module-prerequisites, project-structure, verbosity-control (all ≤72 lines)
-- [x] 3.3 FileMatch files: 5 language steering files (≤51 lines each)
-- [x] 3.4 Manual files: 59 module workflows, deployment, troubleshooting, etc.
+- [x] 3.1 Always-on files: agent-instructions (89 lines), module-transitions (71 lines), security-privacy (27 lines)
+- [x] 3.2 Auto files: agent-context-management, conversation-protocol, design-patterns, module-prerequisites, project-structure, session-resume, verbosity-control (7 files)
+- [x] 3.3 FileMatch files: 5 language steering files with troubleshooting sections (≤107 lines each)
+- [x] 3.4 Manual files: 61 module workflows, deployment, troubleshooting, inline-status, whats-new, etc.
 - [x] 3.5 steering-index.yaml with token counts, size categories, phase maps, keyword routing, deployment mapping
-- [x] 3.6 Context budget tracking with 60%/80% thresholds and retention priority
+- [x] 3.6 Context budget tracking with percentage-based 60%/80% thresholds and 6-tier retention priority (in agent-context-management.md)
+- [x] 3.7 Adaptive pacing: classify_pacing() in analyze_sessions.py, pacing_overrides in preferences, steering instructions in agent-context-management.md
 
-## Task 4: Hook System (25 hooks)
+## Task 4: Hook System (23 hooks)
 
-- [x] 4.1 9 critical hooks created during onboarding
+- [x] 4.1 7 critical hooks created during onboarding
 - [x] 4.2 Module 2 hook: verify-sdk-setup
 - [x] 4.3 Module 4 hook: validate-data-files
 - [x] 4.4 Module 5 hooks: analyze-after-mapping, data-quality-check, enforce-mapping-spec
@@ -49,6 +50,7 @@ This spec documents the power as-built. All tasks reflect implemented state.
 - [x] 4.10 Module 11 hook: deployment-phase-gate
 - [x] 4.11 Any-time hooks: backup-project-on-request, git-commit-reminder
 - [x] 4.12 hook-categories.yaml and hook-registry.md kept in sync via sync_hook_registry.py
+- [x] 4.13 test_hooks.py structural validation script (JSON validity, required fields, event types, patterns, registry consistency)
 
 ## Task 5: Platform and Language Support
 
@@ -67,30 +69,33 @@ This spec documents the power as-built. All tasks reflect implemented state.
 - [x] 6.4 deployment-kubernetes.md: Helm charts, StatefulSets, ConfigMaps, Ingress
 - [x] 6.5 deployment-onpremises.md: Docker Compose, systemd, bare-metal PostgreSQL
 
-## Task 7: Automation Scripts (28)
+## Task 7: Automation Scripts (30)
 
-- [x] 7.1 Core: status.py, validate_module.py, preflight.py, install_hooks.py
-- [x] 7.2 Backup/restore: backup_project.py, restore_project.py, rollback_module.py
+- [x] 7.1 Core: status.py (with --graph flag), validate_module.py (with --artifacts flag), preflight.py (with --mcp flag), install_hooks.py
+- [x] 7.2 Backup/restore: backup_project.py, restore_project.py, rollback_module.py (with --preview/--yes flags)
 - [x] 7.3 Validation: validate_power.py, validate_commonmark.py, validate_data_files.py, validate_dependencies.py
-- [x] 7.4 Steering: measure_steering.py, lint_steering.py, split_steering.py, sync_hook_registry.py
+- [x] 7.4 Steering: measure_steering.py (with --simulate flag), lint_steering.py, split_steering.py, sync_hook_registry.py
 - [x] 7.5 Team: team_dashboard.py, team_config_validator.py, merge_feedback.py
-- [x] 7.6 Analytics: session_logger.py, analyze_sessions.py, triage_feedback.py
-- [x] 7.7 Utilities: data_sources.py, export_results.py, repair_progress.py, verbosity.py
+- [x] 7.6 Analytics: session_logger.py, analyze_sessions.py (with classify_pacing), triage_feedback.py
+- [x] 7.7 Utilities: data_sources.py, export_results.py (with achievements section), repair_progress.py, verbosity.py, check_prerequisites.py
+- [x] 7.8 New tools: test_hooks.py (hook structural validation), visualize_dependencies.py (ASCII + Mermaid dependency graph)
 
-## Task 8: Testing (78 test files)
+## Task 8: Testing (98 test files)
 
-- [x] 8.1 Property-based tests (Hypothesis) for scripts: validate_module, steering structure, hook prompts, data validation, checkpointing
+- [x] 8.1 Property-based tests (Hypothesis) for scripts: validate_module, steering structure, hook prompts, data validation, checkpointing, adaptive pacing, session analytics
 - [x] 8.2 Unit tests for all scripts
 - [x] 8.3 Integration test for module flow across all tracks (test_module_flow_integration.py)
 - [x] 8.4 Hook prompt standards tests (JSON structure, registry sync, silent processing, no closing questions)
 - [x] 8.5 Repo-level tests in `tests/` for hook file validation
 - [x] 8.6 CI pipeline: validate_power.py + measure_steering.py + validate_commonmark.py + sync_hook_registry.py + pytest
+- [x] 8.7 Feature-specific tests: adaptive pacing, context budget, hook self-test, rollback preview, where-am-i status, feedback loop closure, module completion certificates, MCP health check, language troubleshooting, module dependency visualization, artifact dependency tracking
 
 ## Task 9: Documentation
 
 - [x] 9.1 POWER.md with full module table, track descriptions, MCP tool reference, useful commands
 - [x] 9.2 CHANGELOG.md in Keep a Changelog format
-- [x] 9.3 23 user guides in docs/guides/
+- [x] 9.3 24 user guides in docs/guides/ (including MODULE_ARTIFACTS.md, INCREMENTAL_LOADING.md)
 - [x] 9.4 5 policy documents in docs/policies/
 - [x] 9.5 Architecture diagrams in docs/diagrams/
 - [x] 9.6 Templates in templates/ (data collection checklist, stakeholder summary, transformation lineage, UAT test cases, lessons learned)
+- [x] 9.7 SCRIPT_REFERENCE.md with categorized script inventory, validation hierarchy, See Also cross-references, and library markers

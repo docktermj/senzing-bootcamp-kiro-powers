@@ -544,6 +544,10 @@ class HTMLRenderer:
             sections.append(("entity-stats", "Entity Resolution Statistics", self._render_entity_stats_section(metrics.entity_stats)))
         if journal_html:
             sections.append(("journal", "Bootcamp Journal", self._render_journal_section(journal_html)))
+        # Achievements (module completion certificates)
+        achievements_html = self._render_achievements_section()
+        if achievements_html:
+            sections.append(("achievements", "Achievements", achievements_html))
         viz = manifest.by_type("visualization")
         if viz:
             sections.append(("visualizations", "Visualizations", self._render_visualizations_section(viz)))
@@ -660,6 +664,28 @@ class HTMLRenderer:
     def _render_journal_section(self, journal_html: str) -> str:
         return f"<div class=\"journal\">{journal_html}</div>"
 
+    def _render_achievements_section(self) -> str | None:
+        """Render module completion certificates if docs/progress/ exists."""
+        progress_dir = Path("docs/progress")
+        if not progress_dir.is_dir():
+            return None
+        certs = sorted(progress_dir.glob("MODULE_*_COMPLETE.md"))
+        if not certs:
+            return None
+        items: list[str] = []
+        for cert in certs:
+            try:
+                content = cert.read_text(encoding="utf-8")
+                # Extract the first heading as the title
+                first_line = content.strip().splitlines()[0] if content.strip() else cert.name
+                title = first_line.lstrip("# ").strip()
+                items.append(f"<li><strong>{title}</strong></li>")
+            except OSError:
+                continue
+        if not items:
+            return None
+        return "<ul>\n" + "\n".join(items) + "\n</ul>"
+
     def _render_visualizations_section(self, viz_artifacts: list[ArtifactEntry]) -> str:
         items = "".join(
             f"<li><strong>{Path(a.path).name}</strong> — {a.description}</li>" for a in viz_artifacts
@@ -748,6 +774,17 @@ class ZIPAssembler:
                     zf.writestr(arc_name, data)
                 except (OSError, IOError):
                     continue
+            # Include module completion certificates if they exist
+            progress_dir = Path("docs/progress")
+            if progress_dir.is_dir():
+                for cert_file in sorted(progress_dir.glob("*.md")):
+                    try:
+                        data = cert_file.read_bytes()
+                        zf.writestr(
+                            f"artifacts/progress/{cert_file.name}", data
+                        )
+                    except (OSError, IOError):
+                        continue
         archive_bytes = buf.getvalue()
         out = Path(output_path)
         out.parent.mkdir(parents=True, exist_ok=True)

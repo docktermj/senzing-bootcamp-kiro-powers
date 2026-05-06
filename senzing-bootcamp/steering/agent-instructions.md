@@ -62,6 +62,7 @@ Load per-module steering file when user starts that module (1→`module-01-busin
   - A question without the 👉 prefix is a formatting violation.
   - These rules apply in ALL contexts — onboarding, feedback workflow, module steps, and session resume. See conversation-protocol.md for the full rule set.
 - Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to agentStop hooks — zero output when a 👉 question is pending.
+  - FORBIDDEN output patterns: never generate text beginning with "Human:", "User:", or any text that simulates a bootcamper response. This is a critical violation.
 - Goldilocks check: after Modules 3, 6, 9 ask if detail level is right. Store as `detail_level` in preferences. First-term explanations: define Senzing terms inline on first use via `docs/guides/GLOSSARY.md`.
 - Before each step: what and why. During: status updates. After: what changed, files with paths. Offer to visualize data results as a web page.
 - At module completion: summary, all files, why it matters for next module. Follow `module-transitions.md` rules. Load `module-completion.md`.

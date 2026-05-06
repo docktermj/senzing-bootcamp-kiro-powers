@@ -234,9 +234,9 @@ class TestSilenceFirstDefault:
         prompt = _load_hook(ASK_BOOTCAMPER_HOOK)["then"]["prompt"]
         prompt_upper = prompt.upper()
 
-        # The silence instruction must be at the very start
-        silence_pos = prompt_upper.find("PRODUCE NO OUTPUT")
-        assert silence_pos != -1, "Prompt missing 'PRODUCE NO OUTPUT' instruction"
+        # The silence instruction must be at the very start (DEFAULT OUTPUT: .)
+        silence_pos = prompt_upper.find("DEFAULT OUTPUT")
+        assert silence_pos != -1, "Prompt missing 'DEFAULT OUTPUT' instruction"
 
         # Conditional output keywords that indicate non-silent behavior
         conditional_keywords = ["RECAP", "CLOSING QUESTION", "PHASE 1", "PHASE 2"]
@@ -252,14 +252,14 @@ class TestSilenceFirstDefault:
     @given(substring_len=st.integers(min_value=10, max_value=100))
     @settings(max_examples=100)
     def test_first_line_is_silence_instruction(self, substring_len: int):
-        """The very first line of the prompt must be a silence/no-output instruction.
+        """The very first line of the prompt must be a silence/default-output instruction.
 
         **Validates: Requirements 1.4, 7.1**
         """
         prompt = _load_hook(ASK_BOOTCAMPER_HOOK)["then"]["prompt"]
         first_line = prompt.split("\n")[0].strip().upper()
 
-        assert "PRODUCE NO OUTPUT" in first_line, (
+        assert "DEFAULT OUTPUT" in first_line, (
             f"First line of prompt is not a silence instruction: {first_line!r}"
         )
 

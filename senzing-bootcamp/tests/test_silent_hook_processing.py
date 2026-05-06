@@ -62,14 +62,15 @@ _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 
 # The phrase that must appear in fixed prompts for the no-action case
 _SILENT_INSTRUCTION = "produce no output"
+_SILENT_INSTRUCTION_ALT = "default output"
 
 # Strong guardrail phrases expected in fixed prompts
-_STOP_PHRASES = ["stop", "return immediately", "return nothing"]
+_STOP_PHRASES = ["stop", "return immediately", "return nothing", "output only: ."]
 _ZERO_TOKEN_PHRASES = ["zero tokens", "zero characters", "completely empty"]
 _ASK_BOOTCAMPER_PROHIBITIONS = [
-    "do not answer",
-    "do not role-play",
-    "do not generate",
+    "do not explain",
+    "do not describe",
+    "never generate text",
 ]
 
 
@@ -113,8 +114,9 @@ def _extract_registry_prompt(registry_text: str, hook_id: str) -> str:
 
 
 def _prompt_has_silent_instruction(prompt: str) -> bool:
-    """Check if a prompt contains an explicit 'produce no output' instruction."""
-    return _SILENT_INSTRUCTION.lower() in prompt.lower()
+    """Check if a prompt contains an explicit silence instruction."""
+    lower = prompt.lower()
+    return _SILENT_INSTRUCTION.lower() in lower or _SILENT_INSTRUCTION_ALT.lower() in lower
 
 
 def _prompt_has_stop_instruction(prompt: str) -> bool:
@@ -748,7 +750,7 @@ _ASK_BOOTCAMPER_ACTION_KEYWORDS: list[str] = [
     "accomplished",
     "files created or modified",
     "👉 question",
-    "skip the recap",
+    "Skip to Phase 2",
     "no files changed",
     "no substantive",
 ]

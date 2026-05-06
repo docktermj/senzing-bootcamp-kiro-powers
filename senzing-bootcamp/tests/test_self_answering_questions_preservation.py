@@ -187,7 +187,7 @@ _UNFIXED_PHASE2_STEPS: dict[int, str] = {
 
 # Onboarding non-question steps: 0, 1, 1b, 3, 4, 4c
 _UNFIXED_ONBOARDING = _read_file(_ONBOARDING)
-_ONBOARDING_NON_QUESTION_STEP_IDS = ["0", "1", "1b", "3", "4", "4c"]
+_ONBOARDING_NON_QUESTION_STEP_IDS = ["0", "1", "1b", "3", "4"]
 _UNFIXED_ONBOARDING_STEPS: dict[str, str] = {
     sid: _extract_onboarding_step(_UNFIXED_ONBOARDING, sid)
     for sid in _ONBOARDING_NON_QUESTION_STEP_IDS
@@ -496,17 +496,7 @@ class TestOnboardingNonQuestionStepsPreserved:
             f"Got: {current[:300]}"
         )
 
-    def test_step4c_content_unchanged(self) -> None:
-        """Step 4c (comprehension check) is unchanged."""
-        content = _read_file(_ONBOARDING)
-        current = _extract_onboarding_step(content, "4c")
-        baseline = _UNFIXED_ONBOARDING_STEPS["4c"]
-        assert baseline, "Baseline for Step 4c is empty"
-        assert current == baseline, (
-            f"Step 4c content changed.\n"
-            f"Expected: {baseline[:300]}\n"
-            f"Got: {current[:300]}"
-        )
+    # Step 4c removed from non-question steps — it now has a 👉 question with 🛑 STOP
 
 
 # ---------------------------------------------------------------------------

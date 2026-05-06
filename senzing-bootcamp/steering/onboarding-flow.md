@@ -67,6 +67,8 @@ For detailed offline capabilities, see docs/guides/OFFLINE_MODE.md
 👉 Would you like to continue in offline mode, or try again later?
 ```
 
+🛑 STOP — Wait for bootcamper response.
+
 ### Mid-Session Recovery
 
 Before any step that requires MCP tools, check `config/.mcp_status`. If `status` is `"unreachable"`:
@@ -209,6 +211,8 @@ Present the overview before track selection. Cover all points naturally:
 - **standard** *(recommended)* — Balanced "what and why" explanations, block-level code summaries, before/after framing. Good for most learners.
 - **detailed** — Full explanations with workflow connections, line-by-line code walkthroughs, SDK internals. Best for deep learners.
 
+🛑 STOP — Wait for bootcamper response before persisting the selection.
+
 Persist the selection to the `verbosity` key in the preferences file (`config/bootcamp_preferences.yaml`, or `config/preferences_{member_id}.yaml` in team mode) using this format:
 
 ```yaml
@@ -237,6 +241,8 @@ This is NOT a mandatory gate (⛔) — the bootcamper can skip it.
 Before moving on to track selection, give the bootcamper a moment to absorb everything from the overview. Present a warm, conversational check-in — this is an invitation, not a quiz:
 
 👉 "That was a lot of ground to cover. Does everything so far makes sense? Do you have any questions about the modules, the data, licensing, or anything else before we move on to choosing a track?"
+
+🛑 STOP — Wait for bootcamper response.
 
 **Acknowledgment handling:** If the bootcamper responds with an acknowledgment — phrases like "looks good," "makes sense," "no questions," "let's go," "ready," "all clear," or "got it" — proceed directly to Step 5 (Track Selection). Do not ask follow-up questions about the overview.
 

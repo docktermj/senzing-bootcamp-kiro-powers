@@ -10,9 +10,13 @@ All 23 bootcamp hooks are defined below. The agent reads these definitions and c
 
 **ask-bootcamper** (agentStop → askAgent)
 
-Prompt: "PRODUCE NO OUTPUT. YOUR OUTPUT IS EMPTY. ZERO TOKENS. DO NOT GENERATE ANY TEXT.
+Prompt: "DEFAULT OUTPUT: .
+If BOTH phases below produce no output, your COMPLETE response is a single period character: .
+Do NOT explain your reasoning. Do NOT describe condition checks. Do NOT output phrases like 'Phase 1 silenced' or 'No output needed'. Just output: .
 
-This hook has two independent phases. Evaluate each phase separately. If BOTH phases produce no output, your final output is ZERO TOKENS.
+CRITICAL: NEVER generate text beginning with 'Human:' or any text that represents what the bootcamper might say. If you detect yourself about to fabricate a user response, output only: .
+
+This hook has two independent phases. Evaluate each phase separately.
 
 ---
 
@@ -23,9 +27,9 @@ Before producing ANY Phase 1 output, verify ALL of these conditions:
 2. The most recent assistant message does NOT contain a 👉 character anywhere — if it already contains a 👉, do not add a second one
 3. The most recent assistant message does NOT end with a question directed at the bootcamper
 
-If ANY Phase 1 condition fails: PRODUCE NO PHASE 1 OUTPUT. Skip to Phase 2.
+If ANY Phase 1 condition fails: Phase 1 output is none. Skip to Phase 2.
 
-FIRST — Check for no-op: If ALL Phase 1 conditions pass AND no files changed (no substantive work was done — e.g., only a hook fired or a trivial acknowledgment occurred): skip the recap entirely. PRODUCE NO PHASE 1 OUTPUT. Skip to Phase 2.
+FIRST — Check for no-op: If ALL Phase 1 conditions pass AND no files changed (no substantive work was done — e.g., only a hook fired or a trivial acknowledgment occurred): Phase 1 output is none. Skip to Phase 2.
 
 SECOND — Recap and closing question: If ALL Phase 1 conditions pass AND work was accomplished: You may provide a brief recap of what was accomplished and which files created or modified, then end with a contextual 👉 question (a closing question for the bootcamper). Keep it to 2-3 sentences maximum.
 
@@ -35,12 +39,12 @@ Additionally, if the bootcamper has completed or is on the final step of their c
 
 PHASE 2: FEEDBACK SUBMISSION REMINDER
 
-Phase 2 operates independently of Phase 1. Even if Phase 1 was silenced, evaluate Phase 2 on its own.
+Phase 2 operates independently of Phase 1. Even if Phase 1 produced no output, evaluate Phase 2 on its own.
 
 Before producing ANY Phase 2 output, verify ALL of these conditions:
-1. Track completion detected: Read config/bootcamp_progress.json. Check if the bootcamper has completed their chosen track (all modules in the track are now in modules_completed) or if graduation was completed. If no track completion or graduation detected, produce no Phase 2 output. STOP.
-2. Deduplication: Check the conversation history for the 📋 emoji marker. If 📋 already appears in a previous assistant message in this session, the reminder was already shown — produce no Phase 2 output. STOP.
-3. Feedback exists: Check if docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md exists AND contains at least one '## Improvement:' heading (indicating real feedback entries, not just the template). If the file does not exist or contains no ## Improvement: headings, produce no Phase 2 output. STOP.
+1. Track completion detected: Read config/bootcamp_progress.json. Check if the bootcamper has completed their chosen track (all modules in the track are now in modules_completed) or if graduation was completed. If no track completion or graduation detected, Phase 2 output is none.
+2. Deduplication: Check the conversation history for the 📋 emoji marker. If 📋 already appears in a previous assistant message in this session, the reminder was already shown — Phase 2 output is none.
+3. Feedback exists: Check if docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md exists AND contains at least one '## Improvement:' heading (indicating real feedback entries, not just the template). If the file does not exist or contains no ## Improvement: headings, Phase 2 output is none.
 
 If ALL three Phase 2 conditions pass, append:
 
@@ -53,7 +57,7 @@ Do not automatically send email or create GitHub issues — wait for explicit bo
 
 ---
 
-CRITICAL: If you are uncertain about ANY condition in either phase, default to SILENCE for that phase. Silence is always safe. Do not fabricate user responses or assume a choice on the bootcamper's behalf."
+REMEMBER: If both phases produced no output, your COMPLETE response is: ."
 
 - id: `ask-bootcamper`
 - name: `Ask Bootcamper`

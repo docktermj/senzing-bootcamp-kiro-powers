@@ -17,6 +17,8 @@ inclusion: manual
 
 **Prerequisites:** ✅ Module 4 complete (data sources collected, files in `data/raw/`)
 
+**Success indicator**: ✅ Each data source evaluated (sources evaluated, mapped) + transformation programs tested + output validated with quality >70%
+
 ---
 
 ## Error Handling

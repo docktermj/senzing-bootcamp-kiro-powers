@@ -23,6 +23,8 @@ This module is split into two phases. Load the phase file matching the bootcampe
 
 Load Phase A to begin.
 
+**Success indicator**: ✅ Monitoring configured (dashboards, alerts, logging) + health checks passing + runbooks created + monitoring tested end-to-end
+
 ## Error Handling
 
 When the bootcamper encounters an error during this module:

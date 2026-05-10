@@ -63,7 +63,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 | 10 — Monitoring & Observability         | Sets up dashboards, alerts, and health checks                             | Keeps the system running reliably in production                                                                  |
 | 11 — Package & Deploy                   | Packages everything for production deployment                             | Gets your solution out of the bootcamp and into the real world                                                   |
 
-**Don't have data handy?** No problem — mock data can be generated at any point. Senzing also provides three ready-made sample datasets you can use throughout the bootcamp: Las Vegas, London, and Moscow. Use `get_sample_data` to download them.
+**Don't have data handy?** No problem — test data can be generated at any point. Senzing also provides three ready-made sample datasets you can use throughout the bootcamp: Las Vegas, London, and Moscow. Use `get_sample_data` to download them.
 
 **Licensing:** Senzing includes a built-in evaluation license that allows 500 records, which is enough for the bootcamp. If you have your own license (or need more capacity), you can configure it during Module 2.
 
@@ -71,12 +71,11 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 
 **New users:** Say "start the bootcamp" to begin. Choose your track:
 
-- **A) Quick Demo** — Modules 1 → 2 → 3. See entity resolution in action with sample data. Done in one session. Choose this if you want to verify the technology works before investing more time.
-- **B) Fast Track** — Modules 5 → 6 → 7 (Module 2 inserted automatically). For users who already have Senzing-ready Entity Specification data. Choose this if you've already mapped your data and want to get straight to loading and querying. If you complete Module 5's optional Phase 3 (test load and validate) and have a simple use case, you can take the shortcut path directly to Module 7.
-- **C) Complete Beginner** — Modules 1 → 4 → 5 → 6 → 7. Full learning track from defining the problem through validating results. Choose this if you're starting from scratch with raw data and want guided help through the entire process. Simple use cases can take the Phase 3 shortcut path from Module 5 directly to Module 7, skipping Module 6.
-- **D) Full Production** — All modules 1-11, including performance testing, security, monitoring, and deployment. Choose this if you're building something that needs to run in production.
+- **Quick Demo** — Modules 2, 3. Fastest path to see Senzing in action. Done in one session.
+- **Core Bootcamp** *(recommended)* — Modules 1, 2, 3, 4, 5, 6, 7. Recommended foundation covering problem definition through query/visualize.
+- **Advanced Topics** *(not recommended for bootcamp)* — Modules 1–11. Adds production-readiness topics (performance, security hardening, monitoring, and packaging/deployment) as advanced add-ons layered on top of the core bootcamp.
 
-Tracks are not mutually exclusive — you can start with one and jump to another at any time. For example, start with Track A to see a quick demo, then switch to Track C to work with your own data. All completed modules carry forward.
+Tracks are not mutually exclusive — you can start with one and extend to another at any time. All completed modules carry forward.
 
 Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 
@@ -105,7 +104,7 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 - `module-04-data-collection.md` — Module 4: Data Collection
 - `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping
 - `module-06-load-data.md` — Module 6: Load Data
-- `module-07-query-validation.md` — Module 7: Query and Visualize
+- `module-07-query-validation.md` — Module 7: Query & Visualize
 - `module-08-performance.md` — Module 8: Performance Testing
 - `module-09-security.md` — Module 9: Security Hardening
 - `module-10-monitoring.md` — Module 10: Monitoring
@@ -273,11 +272,11 @@ explain_error_code(error_code='0023')
 | 4      | Data Collection Policy                         |
 | 5      | Data Quality & Mapping (with optional test load)  |
 | 6      | Load Data                                      |
-| 7      | Query and Visualize                            |
+| 7      | Query & Visualize                              |
 | 8      | Performance Testing and Benchmarking           |
 | 9      | Security Hardening                             |
 | 10     | Monitoring and Observability                   |
-| 11     | Package and Deploy                             |
+| 11     | Package & Deploy                               |
 
 Modules are progressive but iterative. Skip ahead options: have Entity Specification data (skip to 6), not deploying to production (skip 8-11). Modules 8-11 are production-focused and optional for learning/evaluation.
 

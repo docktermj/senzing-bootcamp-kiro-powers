@@ -203,7 +203,7 @@ inclusion: manual
 
    **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
 
-**Success indicator**: ✅ All data sources have files in `data/raw/` OR documented locations + `docs/data_source_locations.md` created + data collection status tracked
+**Success indicator**: ✅ Sources collected + files in data/raw/ OR documented locations + `docs/data_source_locations.md` created + data collection status tracked
 
 **Agent behavior**:
 

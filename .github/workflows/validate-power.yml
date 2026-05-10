@@ -29,6 +29,10 @@ jobs:
             echo "::error::Hook registry is out of sync. Run: python senzing-bootcamp/scripts/sync_hook_registry.py --write"
             exit 1
           }
+      - name: Validate module prerequisites
+        run: python senzing-bootcamp/scripts/validate_prerequisites.py
+      - name: Validate progress schema
+        run: python senzing-bootcamp/scripts/validate_progress_ci.py
       - name: Run tests
         run: |
           pip install pytest hypothesis

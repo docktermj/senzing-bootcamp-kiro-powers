@@ -12,22 +12,28 @@ critical:
   - verify-senzing-facts
 
 modules:
+  1:
+    - validate-business-problem
   2:
     - verify-sdk-setup
+  3:
+    - enforce-visualization-offers
+    - verify-demo-results
   4:
     - validate-data-files
   5:
     - analyze-after-mapping
     - data-quality-check
     - enforce-mapping-spec
+    - enforce-visualization-offers
   6:
     - backup-before-load
     - run-tests-after-change
     - verify-generated-code
   7:
     - enforce-visualization-offers
-    - offer-visualization
   8:
+    - enforce-visualization-offers
     - validate-benchmark-results
   9:
     - security-scan-on-save
@@ -37,4 +43,6 @@ modules:
     - deployment-phase-gate
   any:
     - backup-project-on-request
+    - error-recovery-context
     - git-commit-reminder
+    - module-completion-celebration

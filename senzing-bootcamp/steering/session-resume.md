@@ -232,7 +232,7 @@ Present a concise summary to the user. If `current_step` is present in the progr
 ```text
 Welcome back! Here's where you left off:
 
-  Track: [track letter]
+  Track: [track display name]
   Language: [language]
   Completed: Modules [list]
   Current: Module [N] — [module name], Step [S] of [T]

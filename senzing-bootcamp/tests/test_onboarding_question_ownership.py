@@ -255,11 +255,10 @@ _STEP_4_KEY_CONTENT = [
 ]
 
 _STEP_5_KEY_CONTENT = [
-    "A) Quick Demo",
-    "B) Fast Track",
-    "C) Complete Beginner",
-    "D) Full Production",
-    "All 1-11",
+    "Quick Demo",
+    "Core Bootcamp",
+    "Advanced Topics",
+    "Modules 1–11",
 ]
 
 

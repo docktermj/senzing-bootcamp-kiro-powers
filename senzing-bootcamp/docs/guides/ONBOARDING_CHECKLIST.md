@@ -15,7 +15,7 @@ The bootcamp handles most setup automatically — just say "start the bootcamp" 
 - [ ] Sample data extracted (100-1000 records) if using your own data
 - [ ] Data privacy requirements understood (GDPR, HIPAA, etc.)
 
-If you don't have data ready, the bootcamp provides three sample datasets (Las Vegas, London, Moscow) and can generate mock data at any point.
+If you don't have data ready, the bootcamp provides three sample datasets (Las Vegas, London, Moscow) and can generate test data at any point.
 
 ## What the Agent Does for You
 

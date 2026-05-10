@@ -7,10 +7,53 @@ config/bootcamp_progress.json.
 Cross-platform: works on Linux, macOS, and Windows.
 """
 
+from __future__ import annotations
+
 import datetime
 import json
 import re
+from dataclasses import dataclass
 from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Schema constants
+# ---------------------------------------------------------------------------
+
+VALID_TRACKS = ("quick_demo", "core_bootcamp", "advanced_topics")
+MODULE_RANGE = range(1, 12)  # 1–11 inclusive
+STEP_HISTORY_KEY_RANGE = range(1, 13)  # 1–12 inclusive
+
+
+# ---------------------------------------------------------------------------
+# Schema dataclass
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class ProgressSchema:
+    """Canonical schema for bootcamp_progress.json.
+
+    Defines the expected structure and types for all fields in the progress
+    file. Required fields have no default; optional fields default to None.
+
+    This dataclass serves as documentation and as the basis for the Hypothesis
+    strategy. It does NOT enforce validation itself — that remains in
+    ``validate_progress_schema()``.
+    """
+
+    current_module: int  # 1–11
+    modules_completed: list[int]  # each 1–11
+    data_sources: list[str]
+    database_type: str
+    # Optional fields (backward-compatible)
+    current_step: int | str | None = None
+    track: str | None = None  # quick_demo | core_bootcamp | advanced_topics
+    preferences: dict[str, str | bool] | None = None
+    session_id: str | None = None
+    started_at: str | None = None  # ISO 8601
+    last_activity: str | None = None  # ISO 8601
+    step_history: dict[str, dict] | None = None
+
 
 _DOTTED_SUB_STEP_RE = re.compile(r"^\d+\.\d+$")
 _LETTERED_SUB_STEP_RE = re.compile(r"^\d+[a-zA-Z]$")
@@ -113,24 +156,150 @@ def parse_parent_step(step: int | str | None) -> int | None:
 
 
 def validate_progress_schema(data: dict) -> list[str]:
-    """Validate a progress dict against the extended schema.
+    """Validate a progress dict against the full schema.
 
-    Checks:
-    - ``current_step`` (if present): must be ``int``, ``None``, or a ``str``
-      matching a recognized sub-step format (dotted ``<digits>.<digits>`` or
-      lettered ``<digits><letter>``).
-    - ``step_history`` (if present): must be a dict whose keys are
-      string representations of integers 1-12 and whose values each
-      contain ``last_completed_step`` (``int`` or valid sub-step ``str``)
-      and ``updated_at`` (valid ISO 8601 string).
+    Checks all fields defined in ProgressSchema:
+    - ``current_module`` (if present): must be int in range 1–11.
+    - ``modules_completed`` (if present): must be list of ints each in 1–11.
+    - ``track`` (if present): must be one of VALID_TRACKS.
+    - ``preferences`` (if present): must be dict with str keys and str|bool values.
+    - ``session_id`` (if present): must be a non-empty string.
+    - ``started_at`` (if present): must be valid ISO 8601.
+    - ``last_activity`` (if present): must be valid ISO 8601.
+    - ``data_sources`` (if present): must be list of strings.
+    - ``database_type`` (if present): must be a string.
+    - ``current_step`` (if present): must be int, None, or a str matching a
+      recognized sub-step format (dotted or lettered).
+    - ``step_history`` (if present): must be a dict whose keys are string
+      representations of integers 1–12 and whose values each contain
+      ``last_completed_step`` and ``updated_at``.
 
-    Legacy files that lack these fields pass validation (backward
-    compatible).
+    All fields are optional — legacy files that lack fields pass validation
+    (backward compatible). The validator never short-circuits; all fields are
+    checked and all errors collected.
 
-    Returns an empty list when the data is valid, or a list of
-    human-readable error strings describing each violation.
+    Returns:
+        An empty list when the data is valid, or a list of human-readable
+        error strings describing each violation.
     """
     errors: list[str] = []
+
+    # --- current_module ---
+    if "current_module" in data:
+        cm = data["current_module"]
+        if not isinstance(cm, int):
+            errors.append(
+                f"current_module must be an int, got {type(cm).__name__}"
+            )
+        elif cm not in MODULE_RANGE:
+            errors.append(
+                f"current_module value {cm} is out of range 1-11"
+            )
+
+    # --- modules_completed ---
+    if "modules_completed" in data:
+        mc = data["modules_completed"]
+        if not isinstance(mc, list):
+            errors.append(
+                f"modules_completed must be a list, got {type(mc).__name__}"
+            )
+        else:
+            for i, elem in enumerate(mc):
+                if not isinstance(elem, int):
+                    errors.append(
+                        f"modules_completed contains non-int element at index {i}: "
+                        f"got {type(elem).__name__}"
+                    )
+                elif elem not in MODULE_RANGE:
+                    errors.append(
+                        f"modules_completed contains value {elem} which is out of range 1-11"
+                    )
+
+    # --- track ---
+    if "track" in data:
+        tr = data["track"]
+        if tr not in VALID_TRACKS:
+            errors.append(
+                f"track must be one of {VALID_TRACKS}, got {tr!r}"
+            )
+
+    # --- preferences ---
+    if "preferences" in data:
+        pref = data["preferences"]
+        if not isinstance(pref, dict):
+            errors.append(
+                f"preferences must be a dict, got {type(pref).__name__}"
+            )
+        else:
+            for key, val in pref.items():
+                if not isinstance(key, str):
+                    errors.append(
+                        f"preferences key {key!r} must be a string"
+                    )
+                if not isinstance(val, (str, bool)):
+                    errors.append(
+                        f"preferences value for key {key!r} must be str or bool, "
+                        f"got {type(val).__name__}"
+                    )
+
+    # --- session_id ---
+    if "session_id" in data:
+        sid = data["session_id"]
+        if not isinstance(sid, str):
+            errors.append(
+                f"session_id must be a non-empty string, got {type(sid).__name__}"
+            )
+        elif sid == "":
+            errors.append(
+                "session_id must be a non-empty string, got ''"
+            )
+
+    # --- started_at ---
+    if "started_at" in data:
+        sa = data["started_at"]
+        if not isinstance(sa, str):
+            errors.append(
+                f"started_at must be a string, got {type(sa).__name__}"
+            )
+        elif not _is_valid_iso8601(sa):
+            errors.append(
+                f"started_at is not valid ISO 8601: {sa!r}"
+            )
+
+    # --- last_activity ---
+    if "last_activity" in data:
+        la = data["last_activity"]
+        if not isinstance(la, str):
+            errors.append(
+                f"last_activity must be a string, got {type(la).__name__}"
+            )
+        elif not _is_valid_iso8601(la):
+            errors.append(
+                f"last_activity is not valid ISO 8601: {la!r}"
+            )
+
+    # --- data_sources ---
+    if "data_sources" in data:
+        ds = data["data_sources"]
+        if not isinstance(ds, list):
+            errors.append(
+                f"data_sources must be a list, got {type(ds).__name__}"
+            )
+        else:
+            for i, elem in enumerate(ds):
+                if not isinstance(elem, str):
+                    errors.append(
+                        f"data_sources contains non-string element at index {i}: "
+                        f"got {type(elem).__name__}"
+                    )
+
+    # --- database_type ---
+    if "database_type" in data:
+        dt = data["database_type"]
+        if not isinstance(dt, str):
+            errors.append(
+                f"database_type must be a string, got {type(dt).__name__}"
+            )
 
     # --- current_step ---
     if "current_step" in data:

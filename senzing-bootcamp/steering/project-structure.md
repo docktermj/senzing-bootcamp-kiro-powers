@@ -30,6 +30,10 @@ my-senzing-project/
 
 ## Create Structure (execute before any other action)
 
+Detect the operating system first. Use the platform-specific command below that matches the detected OS.
+
+### Preferred (all platforms)
+
 ```python
 import os
 for d in [
@@ -40,8 +44,14 @@ for d in [
     os.makedirs(d, exist_ok=True)
 ```
 
+### On Linux / macOS
+
 Linux/macOS: `mkdir -p data/{raw,transformed,samples,backups,temp} database licenses src/{transform,load,query,utils} tests backups docs/feedback config logs monitoring scripts`
 
-Windows (PowerShell): `'data/raw','data/transformed','data/samples','data/backups','data/temp','database','licenses','src/transform','src/load','src/query','src/utils','tests','backups','docs/feedback','config','logs','monitoring','scripts' | ForEach-Object { New-Item -ItemType Directory -Force -Path $_ | Out-Null }`
+### On Windows (PowerShell)
+
+`'data/raw','data/transformed','data/samples','data/backups','data/temp','database','licenses','src/transform','src/load','src/query','src/utils','tests','backups','docs/feedback','config','logs','monitoring','scripts' | ForEach-Object { New-Item -ItemType Directory -Force -Path $_ | Out-Null }`
+
+NEVER use `mkdir path1 path2 path3` on Windows — PowerShell's mkdir does not accept multiple positional arguments.
 
 Also create: `.gitignore`, `.env.example`, `README.md`

@@ -85,6 +85,13 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - Enum values for format, mapping status, load status, and test load status
 - Schema migration from version 1 to version 2, plus read/write script references
 
+**[ARCHITECTURE.md](ARCHITECTURE.md)**
+
+- Comprehensive architecture overview of the senzing-bootcamp power
+- Component relationships, data flow, module lifecycle, hook architecture
+- Configuration dependencies, MCP integration, context budget management
+- ASCII diagrams for all major subsystems
+
 **[STEERING_INDEX.md](STEERING_INDEX.md)**
 
 - Structure and field definitions for `steering/steering-index.yaml`
@@ -298,6 +305,7 @@ docs/
 │   ├── PROGRESS_FILE_SCHEMA.md
 │   ├── PROGRESS_TRACKER.md
 │   ├── AFTER_BOOTCAMP.md
+│   ├── ARCHITECTURE.md
 │   ├── QUALITY_SCORING_METHODOLOGY.md
 │   ├── STEERING_INDEX.md
 │   ├── MODULE_ARTIFACTS.md

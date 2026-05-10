@@ -52,6 +52,7 @@ User guides and installation instructions.
 - `PERFORMANCE_BASELINES.md` - Reference throughput and hardware requirements
 - `PROGRESS_TRACKER.md` - Module completion tracking
 - `QUALITY_SCORING_METHODOLOGY.md` - How quality scores are calculated
+- `ARCHITECTURE.md` - System architecture overview (components, data flow, hooks, MCP, context budget)
 - `QUICK_START.md` - Three fast paths to get started
 
 ## Root Level Files

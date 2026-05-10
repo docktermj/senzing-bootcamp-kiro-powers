@@ -52,19 +52,18 @@ tracks:
   quick_demo:
     name: "Quick Demo"
     description: "Fastest path to see Senzing in action"
-    modules: [1, 2, 3]
-  fast_track:
-    name: "Fast Track"
-    description: "Skip to loading and querying data"
-    modules: [2, 5, 6, 7]
-  complete_beginner:
-    name: "Complete Beginner"
-    description: "Full learning track from problem definition through validation"
-    modules: [1, 2, 4, 5, 6, 7]
-  full_production:
-    name: "Full Production"
-    description: "Complete path including deployment"
+    modules: [2, 3]
+    recommendation: "neutral"
+  core_bootcamp:
+    name: "Core Bootcamp"
+    description: "Recommended foundation covering problem definition through query/visualize"
+    modules: [1, 2, 3, 4, 5, 6, 7]
+    recommendation: "recommended"
+  advanced_topics:
+    name: "Advanced Topics"
+    description: "Adds production-readiness (performance, security, monitoring, deployment) on top of core bootcamp — not recommended for bootcamp"
     modules: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    recommendation: "not_recommended"
 
 gates:
   "1->2":

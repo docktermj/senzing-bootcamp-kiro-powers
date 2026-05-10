@@ -351,7 +351,7 @@ class TestPowerMdUpdates:
         assert "load" in lower
         assert "entity resolution" in lower or "redo" in lower
 
-    def test_track_descriptions_mention_shortcut_path(self):
-        """Track descriptions mention Phase 3 shortcut path."""
+    def test_track_descriptions_mention_skip_ahead(self):
+        """Track descriptions mention skip-ahead options for experienced users."""
         lower = self.content.lower()
-        assert "shortcut path" in lower or "shortcut" in lower
+        assert "skip" in lower or "experienced" in lower

@@ -95,41 +95,12 @@ inclusion: manual
 
    **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
 
-5. **Offer visualization:** "Would you like me to create a web page showing these results?"
-
-   If yes, present the Visualization Prompt before generating anything.
+5. **Visualization checkpoint:** Follow the Visualization Protocol.
+   Load `visualization-protocol.md` and execute the offer for checkpoint `m3_demo_results`.
 
    **This step MUST complete before closing the module. Do not skip to module-completion.md until the user has responded to the visualization offer.**
 
-5a. **Visualization format offer**:
-
-   👉 "Before I generate this visualization, would you like it as:
-
-   1. **Static HTML file** — a self-contained file you can open directly in your browser, no server needed
-   2. **Web service** — a localhost server with live SDK queries, data refresh, and interactive entity details
-
-   Which would you prefer?"
-
-   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
-
-   WAIT for response.
-
-   - If the bootcamper chooses **Static HTML file**: Continue to step 5b to offer interactive features and generate `demo_results.html`.
-   - If the bootcamper chooses **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section to generate a localhost web service. Skip step 5b.
-
-   **Checkpoint:** Write step 10a to `config/bootcamp_progress.json`.
-
-5b. **Interactive features** (if static HTML chosen):
-
-   👉 "Would you like any interactive features? For example: (a) 'how' entity explanations, (b) 'why' match analysis, (c) search by attributes, (d) find paths between entities — or just a static summary?"
-
-   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
-
-   WAIT for response.
-
-   Generate accordingly and save to `src/quickstart_demo/demo_results.html`.
-
-   **Checkpoint:** Write step 10b to `config/bootcamp_progress.json`.
+   **Checkpoint:** Write step 10 to `config/bootcamp_progress.json`.
 
 6. **Close Module 3 explicitly.** Before asking any use-case questions, mark the module as done and state its purpose:
 
@@ -150,6 +121,8 @@ inclusion: manual
    If the user has no specific use case: "The bootcamp works great with sample data too — we'll figure out the best path for you in Module 1."
 
    **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
+
+**Success indicator**: ✅ Demo completed or skipped + entity resolution results observed (duplicates matched) + Module 3 closed via `module-completion.md`
 
 ## Error Handling
 

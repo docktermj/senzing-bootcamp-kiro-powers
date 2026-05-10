@@ -182,12 +182,12 @@ Generate `production/MIGRATION_CHECKLIST.md` with six sections (Database, Securi
 
 ### Conditional items (check `modules_completed` from pre-checks)
 
-**If Modules 9, 10, and 11 are all completed (Path D):**
+**If Modules 9, 10, and 11 are all completed (`advanced_topics` track):**
 
 - **Security**: Add `- [ ] Review and update security hardening from Module 10 (check src/ for security artifacts)`
 - **Performance**: Add `- [ ] Review performance benchmarks from Module 9 and validate against production targets`
 - **Deployment**: Add `- [ ] Review packaging and deployment from Module 11 (check deployment artifacts)`
-- Add note at top: "✅ You completed the full production track (Modules 9–11). Items below reference artifacts you already produced."
+- Add note at top: "✅ You completed the advanced topics track (Modules 9–11). Items below reference artifacts you already produced."
 
 **If Modules 9–11 are NOT all completed:**
 
@@ -209,7 +209,7 @@ Generated: [ISO 8601 timestamp]
 
 ## Summary
 
-- **Track completed:** [Path letter and name, e.g., "Path C — Complete Beginner"]
+- **Track completed:** [Track display name, e.g., "Core Bootcamp"]
 - **Modules finished:** [list of module numbers and names]
 - **Language:** [chosen language]
 - **Database type:** [SQLite or PostgreSQL]

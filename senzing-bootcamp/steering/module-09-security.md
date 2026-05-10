@@ -23,6 +23,8 @@ This module is split into two phases. Load the phase file matching the bootcampe
 
 Load Phase A to begin.
 
+**Success indicator**: ✅ Security checklist complete + no critical vulns + secrets managed + audit logging active + stakeholder sign-off documented
+
 ## Error Handling
 
 When the bootcamper encounters an error during this module:

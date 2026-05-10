@@ -57,10 +57,10 @@ class TestRealGraphParsing:
         graph = load_dependency_graph(_GRAPH_PATH)
         assert len(graph["modules"]) == 11
 
-    def test_graph_has_4_tracks(self):
-        """(c) Real graph has 4 tracks."""
+    def test_graph_has_3_tracks(self):
+        """(c) Real graph has 3 tracks."""
         graph = load_dependency_graph(_GRAPH_PATH)
-        assert len(graph["tracks"]) == 4
+        assert len(graph["tracks"]) == 3
 
     def test_graph_has_10_gates(self):
         """(d) Real graph has 10 gates."""

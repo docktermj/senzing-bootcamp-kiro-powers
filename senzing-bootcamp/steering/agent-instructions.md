@@ -46,6 +46,18 @@ Load per-module steering file when user starts that module (1→`module-01-busin
 
 **Multi-language projects:** Load the language steering file for whichever language is currently being edited. Don't force a single language across all components.
 
+## Track Switching
+
+When the bootcamper says any of these trigger phrases, load `track-switching.md`:
+
+- "switch track"
+- "change track"
+- "move to core"
+- "upgrade to advanced"
+- "go back to quick demo"
+
+The steering file handles confirmation, preview, and application. Do not compute track switches inline — always invoke the `track_switcher.py` script as instructed by the steering file.
+
 ## State & Progress
 
 - `mapping_workflow`: pass exact `state`, never modify. Checkpoint to `config/mapping_state_[datasource].json` after **each** step. Delete checkpoint when workflow completes for a source.

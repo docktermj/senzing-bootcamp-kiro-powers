@@ -73,6 +73,9 @@ inclusion: manual
 
    **Checkpoint:** Write step 6 to `config/bootcamp_progress.json`.
 
+   **Visualization checkpoint:** Follow the Visualization Protocol.
+   Load `visualization-protocol.md` and execute the offer for checkpoint `m5_quality_assessment`.
+
 7. **Summarize findings and save evaluation report**: Create `docs/data_source_evaluation.md`:
 
    ```markdown

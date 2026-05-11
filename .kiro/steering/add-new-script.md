@@ -3,6 +3,8 @@ inclusion: manual
 description: "Step-by-step workflow for adding a new Python script to the power"
 ---
 
+#[[file:.kiro/steering/python-conventions.md]]
+
 # Workflow: Add a New Script
 
 1. Create `senzing-bootcamp/scripts/<script_name>.py` following the script pattern in `python-conventions.md`.

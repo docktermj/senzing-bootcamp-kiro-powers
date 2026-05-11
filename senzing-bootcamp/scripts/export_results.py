@@ -51,6 +51,14 @@ SUBDIR_MODULE: dict[str, int] = {
 
 VIZ_MARKERS = re.compile(r"\b(d3|force|graph|dashboard|entity|svg)\b", re.IGNORECASE)
 
+TRACK_DISPLAY_NAMES = {
+    "quick_demo": "Quick Demo",
+    "core_bootcamp": "Core Bootcamp",
+    "advanced_topics": "Advanced Topics",
+}
+
+VALID_TRACK_IDENTIFIERS = {"quick_demo", "core_bootcamp", "advanced_topics"}
+
 # ---------------------------------------------------------------------------
 # Data Models  (Tasks 1.1 – 1.3)
 # ---------------------------------------------------------------------------
@@ -140,6 +148,14 @@ class ProgressData:
     language: str | None = None
     data_sources: list[str] = dataclasses.field(default_factory=list)
     track: str | None = None
+
+    def __post_init__(self) -> None:
+        """Validate track field against allowed identifiers."""
+        if self.track is not None and self.track not in VALID_TRACK_IDENTIFIERS:
+            raise ValueError(
+                f"Unrecognized track identifier: {self.track!r}. "
+                f"Valid tracks: {sorted(VALID_TRACK_IDENTIFIERS)}"
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -484,7 +500,11 @@ class SummaryGenerator:
         parts: list[str] = []
         # Track and module count
         n = len(progress.modules_completed)
-        track_str = f"Track {progress.track}" if progress.track else "the bootcamp"
+        if progress.track:
+            display_name = TRACK_DISPLAY_NAMES.get(progress.track, progress.track)
+            track_str = display_name
+        else:
+            track_str = "the bootcamp"
         parts.append(f"This report summarises work completed during {track_str}.")
         parts.append(f"{n} of 12 modules have been completed.")
         # Quality bands

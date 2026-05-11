@@ -149,7 +149,7 @@ class TestStep4ContentMarkers:
     **Validates: Requirements 3.2**
 
     Step 4 (Bootcamp Introduction) must contain the guided discovery
-    framing, module overview, mock data mention, eval license info,
+    framing, module overview, test data mention, eval license info,
     and glossary reference.
     """
 
@@ -171,13 +171,13 @@ class TestStep4ContentMarkers:
             "Step 4 missing 'module overview' content marker"
         )
 
-    def test_step4_contains_mock_data(self) -> None:
-        """Assert Step 4 mentions mock data."""
+    def test_step4_contains_test_data(self) -> None:
+        """Assert Step 4 mentions test data or sample data."""
         content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
         step4 = _extract_section(content, "4. Bootcamp Introduction")
         assert step4, "Step 4 section not found"
-        assert re.search(r"[Mm]ock data", step4, re.IGNORECASE), (
-            "Step 4 missing 'mock data' content marker"
+        assert re.search(r"[Tt]est data|[Ss]ample data", step4, re.IGNORECASE), (
+            "Step 4 missing 'test data' or 'sample data' content marker"
         )
 
     def test_step4_contains_eval_license_info(self) -> None:
@@ -226,36 +226,36 @@ class TestTrackMappingPreserved:
             "Step 5 missing 'Interpreting responses' text"
         )
 
-    def test_step5_maps_a_to_module1(self) -> None:
-        """Assert track A maps to Module 1."""
+    def test_step5_maps_demo_to_module2_via_interpreting(self) -> None:
+        """Assert Step 5 interpreting responses maps demo to Module 2."""
         content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
         step5 = _extract_section(content, "5. Track Selection")
-        assert re.search(r'"A".*Module 1|"demo".*Module 1', step5), (
-            "Step 5 missing A→Module 1 mapping"
+        assert re.search(r'"demo".*Module 2|"quick_demo".*Module 2', step5), (
+            "Step 5 missing demo→Module 2 mapping in interpreting responses"
         )
 
-    def test_step5_maps_b_to_module5(self) -> None:
-        """Assert track B maps to Module 5."""
+    def test_step5_maps_demo_to_module2(self) -> None:
+        """Assert demo/quick_demo maps to Module 2."""
         content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
         step5 = _extract_section(content, "5. Track Selection")
-        assert re.search(r'"B".*Module 5|"fast".*Module 5', step5), (
-            "Step 5 missing B→Module 5 mapping"
+        assert re.search(r'"demo".*Module 2|"quick_demo".*Module 2', step5), (
+            "Step 5 missing demo→Module 2 mapping"
         )
 
-    def test_step5_maps_c_to_module1(self) -> None:
-        """Assert track C maps to Module 1."""
+    def test_step5_maps_core_to_module1(self) -> None:
+        """Assert core/core_bootcamp maps to Module 1."""
         content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
         step5 = _extract_section(content, "5. Track Selection")
-        assert re.search(r'"C".*Module 1|"beginner".*Module 1', step5), (
-            "Step 5 missing C→Module 1 mapping"
+        assert re.search(r'"core".*Module 1|"core_bootcamp".*Module 1', step5), (
+            "Step 5 missing core→Module 1 mapping"
         )
 
-    def test_step5_maps_d_to_module1(self) -> None:
-        """Assert track D maps to Module 1."""
+    def test_step5_maps_advanced_to_module1(self) -> None:
+        """Assert advanced/advanced_topics maps to Module 1."""
         content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
         step5 = _extract_section(content, "5. Track Selection")
-        assert re.search(r'"D".*Module 1|"full".*Module 1', step5), (
-            "Step 5 missing D→Module 1 mapping"
+        assert re.search(r'"advanced".*Module 1|"advanced_topics".*Module 1', step5), (
+            "Step 5 missing advanced→Module 1 mapping"
         )
 
 

@@ -290,10 +290,13 @@ class TestExistingStepPreservation:
         section = _extract_section(text, r"4\.\s+Bootcamp Introduction")
         assert "guided discovery" in section
 
-    def test_step_4_mock_data_and_license(self) -> None:
-        """Step 4 mentions mock data cities and eval license."""
+    def test_step_4_test_data_and_license(self) -> None:
+        """Step 4 mentions test data / sample data cities and eval license."""
         text = _read_onboarding()
         section = _extract_section(text, r"4\.\s+Bootcamp Introduction")
+        assert "test data" in section.lower() or "sample data" in section.lower(), (
+            "Step 4 missing 'test data' or 'sample data' terminology"
+        )
         assert "Las Vegas, London, Moscow" in section
         assert "500-record eval license" in section
 
@@ -329,20 +332,21 @@ class TestExistingStepPreservation:
     # -- Step 5: Track Selection (mandatory gate) --
 
     def test_step_5_track_descriptions(self) -> None:
-        """Step 5 contains all four track descriptions."""
+        """Step 5 contains all three track descriptions."""
         text = _read_onboarding()
         section = _extract_section(text, r"5\.\s+Track Selection")
-        for track in ("A) Quick Demo", "B) Fast Track",
-                      "C) Complete Beginner", "D) Full Production"):
+        for track in ("Quick Demo", "Core Bootcamp", "Advanced Topics"):
             assert track in section, (
                 f"Step 5 missing track description '{track}'"
             )
 
     def test_step_5_all_modules_track(self) -> None:
-        """Step 5 mentions the All 1-11 module range."""
+        """Step 5 mentions the Modules 1-11 range for advanced_topics."""
         text = _read_onboarding()
         section = _extract_section(text, r"5\.\s+Track Selection")
-        assert "All 1-11" in section
+        assert "1–11" in section or "1-11" in section, (
+            "Step 5 missing the modules 1-11 range for advanced_topics track"
+        )
 
     def test_step_5_gate_marker(self) -> None:
         """Step 5 contains the mandatory gate marker ⛔."""

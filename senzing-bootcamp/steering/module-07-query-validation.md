@@ -74,59 +74,17 @@ inclusion: manual
 
    **Checkpoint:** Write step 3a to `config/bootcamp_progress.json`.
 
-3b. **Entity graph visualization offer**:
+3b. **Entity graph visualization checkpoint:**
 
-   > **⛔ MANDATORY VISUALIZATION OFFER — ENTITY GRAPH**
-   >
-   > **🛑 DO NOT SKIP THIS STEP. You MUST offer the entity graph visualization before proceeding.**
-
-   Offer to help the bootcamper build an interactive entity graph — a force-directed network graph with clustering by data source or match strength, search/filter, and detail panels.
-
-   If they say **yes**, present the Visualization Prompt before generating anything:
-
-   👉 "Before I generate this visualization, would you like it as:
-
-   1. **Static HTML file** — a self-contained file you can open directly in your browser, no server needed
-   2. **Web service** — a localhost server with live SDK queries, data refresh, and interactive entity details
-
-   Which would you prefer?"
-
-   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
-
-   WAIT for response.
-
-   > - If they choose **Static HTML file**: Load `visualization-guide.md` and follow its static HTML workflow.
-   > - If they choose **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section. **You MUST follow the Web Service Delivery Sequence** (start command → expected output → URL → stop instructions). Never present a localhost URL without first providing the start command.
-   > - If they say **no** or **not now** to the entity graph offer: Acknowledge and continue.
-   > - If they are **unsure**: Briefly explain the value, then wait for their decision.
+   **Visualization checkpoint:** Follow the Visualization Protocol.
+   Load `visualization-protocol.md` and execute the offer for checkpoint `m7_exploratory_queries`.
 
    **Checkpoint:** Write step 3b to `config/bootcamp_progress.json`.
 
-3c. **Results dashboard visualization offer**:
+3c. **Results dashboard visualization checkpoint:**
 
-   > **⛔ MANDATORY VISUALIZATION OFFER — RESULTS DASHBOARD**
-   >
-   > **🛑 DO NOT SKIP THIS STEP. You MUST offer the results dashboard visualization before proceeding.**
-
-   Offer to create a web page showing the query results — with entity tables, match explanations, and query output.
-
-   If they say **yes**, present the Visualization Prompt before generating anything:
-
-   👉 "Before I generate this visualization, would you like it as:
-
-   1. **Static HTML file** — a self-contained file you can open directly in your browser, no server needed
-   2. **Web service** — a localhost server with live SDK queries, data refresh, and interactive entity details
-
-   Which would you prefer?"
-
-   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
-
-   WAIT for response.
-
-   > - If they choose **Static HTML file**: Generate the HTML dashboard and save to `docs/results_dashboard.html`.
-   > - If they choose **Web service**: Load `visualization-guide.md` and follow the Web Server Guidance section. **You MUST follow the Web Service Delivery Sequence** (start command → expected output → URL → stop instructions). Never present a localhost URL without first providing the start command.
-   > - If they say **no** or **not now** to the results dashboard offer: Acknowledge and proceed.
-   > - If they are **unsure**: Briefly explain the value, then wait for their decision.
+   **Visualization checkpoint:** Follow the Visualization Protocol.
+   Load `visualization-protocol.md` and execute the offer for checkpoint `m7_findings_documented`.
 
    **Checkpoint:** Write step 3c to `config/bootcamp_progress.json`.
 
@@ -151,6 +109,8 @@ Present the query completion status and path options to the bootcamper:
    - **Path B/C (shorter paths):** This is a natural stopping point. The bootcamper has working query programs and can stop here.
 
 The bootcamper can continue to Module 8 (Performance Testing) or stop here if this is a good stopping point for their project.
+
+**Success indicator**: ✅ Query programs created and tested + queries answer business problem + visualizations offered (entity graph and results dashboard)
 
 ## Error Handling
 

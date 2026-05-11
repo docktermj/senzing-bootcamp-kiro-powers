@@ -34,12 +34,11 @@ graph TD
 
 ## Learning Paths
 
-| Path | Modules | Color |
-|------|---------|-------|
-| A — Quick Demo | 2 → 3 | Blue → Green |
-| B — Fast Track | 5 → 6 → 8 | Orange → Green |
-| C — Complete Beginner | 1 → 4 → 5 → 6 → 8 | Orange → Green |
-| D — Full Production | 1 → 2 → 3 → ... → 11 | All |
+| Track | Modules | Color |
+|-------|---------|-------|
+| Quick Demo | 2 → 3 | Blue → Green |
+| Core Bootcamp (recommended) | 1 → 2 → 3 → 4 → 5 → 6 → 7 | Orange → Blue → Green |
+| Advanced Topics (not recommended for bootcamp) | 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 | All |
 
 Module 2 (SDK Setup) is auto-inserted before any module that needs the SDK.
 

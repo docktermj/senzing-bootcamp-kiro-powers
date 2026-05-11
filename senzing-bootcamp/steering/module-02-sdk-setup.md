@@ -222,6 +222,30 @@ Ask: "Which database would you like to use? SQLite is recommended for learning a
 
 Use `sdk_guide` with `topic='configure'` to generate the correct engine configuration JSON for the user's platform and database choice. Save the MCP-returned JSON directly to `config/engine_config.json` — do not modify the paths.
 
+**On Windows — verify SUPPORTPATH exists before saving the configuration:**
+
+After receiving the MCP-returned JSON, check that the SUPPORTPATH directory actually exists on the filesystem. This is a targeted path verification, not manual JSON construction — the MCP-returned JSON remains the starting point.
+
+1. Extract the SUPPORTPATH value from the MCP-returned configuration JSON
+2. Use `Test-Path` in PowerShell to confirm the SUPPORTPATH directory exists:
+
+   ```powershell
+   Test-Path -Path "$SENZING_DIR\data"
+   ```
+
+3. If `$SENZING_DIR\data` does not exist, check `$SENZING_DIR\..\data` (one level up from the `er` directory):
+
+   ```powershell
+   Test-Path -Path "$SENZING_DIR\..\data"
+   ```
+
+4. If the parent-level path exists, update SUPPORTPATH in the configuration JSON to use `$SENZING_DIR\..\data` before saving to `config/engine_config.json`
+5. If neither path exists, report the error clearly to the bootcamper: "SUPPORTPATH directory not found at either `$SENZING_DIR\data` or `$SENZING_DIR\..\data`. Please verify your Senzing installation."
+
+> **Why the Scoop layout differs:** The unofficial Windows Scoop package places `SENZING_DIR` at the `er` subdirectory within the Scoop app folder (e.g., `C:\Users\<user>\scoop\apps\senzing\current\er`). The `data` directory containing `g2SifterRules.ibm` and other GNR support files is at the Scoop app version root — one level above `er` — rather than inside it. This is why the fallback to `$SENZING_DIR\..\data` is needed for Scoop installs.
+
+This SUPPORTPATH verification applies to Windows only. On Linux and macOS, use the MCP-returned paths without modification.
+
 **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 
 ## Step 9: Test Database Connection
@@ -232,6 +256,8 @@ Use `sdk_guide` with `topic='configure'` to generate the correct engine configur
 Use the MCP-generated initialization code to verify the database connection works.
 
 **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
+
+**Success indicator**: ✅ SDK installed + DB configured + test passes + engine initializes and connects without errors
 
 ## Success Criteria
 

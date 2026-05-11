@@ -356,7 +356,7 @@ class TestFallbackBehavior:
         """When file exists but conversation_style key is absent, defaults apply."""
         preferences_data = {
             "language": "python",
-            "track": "A",
+            "track": "core_bootcamp",
             "verbosity": "standard",
         }
         result = _apply_defaults_for_missing_style(preferences_data)

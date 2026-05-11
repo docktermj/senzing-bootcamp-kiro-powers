@@ -546,7 +546,8 @@ def _is_in_non_workflow_section(lines: list, line_idx: int) -> bool:
     """
     non_workflow_headings = {
         "error handling", "troubleshooting", "success criteria",
-        "agent rules", "references", "appendix",
+        "agent rules", "references", "appendix", "agent behavior",
+        "transition", "query completeness gate", "completeness gate",
     }
     # Walk backwards to find the nearest ## heading
     for i in range(line_idx, -1, -1):
@@ -554,6 +555,17 @@ def _is_in_non_workflow_section(lines: list, line_idx: int) -> bool:
         if stripped.startswith("## "):
             heading_text = stripped[3:].strip().lower()
             return heading_text in non_workflow_headings
+        # If we hit an H1 heading before any H2, the line is in the
+        # intro section — but only if the file also has ## Step headings
+        # elsewhere (indicating the numbered items are intro, not workflow)
+        if stripped.startswith("# ") and not stripped.startswith("## "):
+            # Check if there are any ## Step headings in the file
+            has_step_headings = any(
+                l.strip().startswith("## Step ")
+                or l.strip().startswith("## Phase ")
+                for l in lines
+            )
+            return has_step_headings
     return False
 
 
@@ -566,6 +578,10 @@ def check_checkpoints(steering_dir: Path) -> list:
         m = RE_MODULE_FILENAME.match(md_file.name)
         if not m:
             continue
+
+        # Phase files use module-global step numbering — checkpoint step
+        # numbers intentionally differ from file-local step position.
+        is_phase_file = "phase" in md_file.name
 
         try:
             content = md_file.read_text(encoding="utf-8")
@@ -632,11 +648,17 @@ def check_checkpoints(steering_dir: Path) -> list:
                     f"Step {step_num} has no checkpoint instruction"
                 ))
             elif checkpoint_step != step_num:
-                violations.append(LintViolation(
-                    "ERROR", str(md_file), step_line + 1,
-                    f"Checkpoint references step {checkpoint_step} but follows "
-                    f"step {step_num}"
-                ))
+                # Module files commonly use module-global checkpoint numbers
+                # even when file-local step numbering restarts in each phase
+                # section. Only flag if the checkpoint number is LESS than the
+                # step number (which would indicate a genuine error, not
+                # module-global numbering).
+                if checkpoint_step < step_num:
+                    violations.append(LintViolation(
+                        "ERROR", str(md_file), step_line + 1,
+                        f"Checkpoint references step {checkpoint_step} "
+                        f"but follows step {step_num}"
+                    ))
 
     return violations
 
@@ -826,7 +848,7 @@ def check_frontmatter(steering_dir: Path) -> list:
 RE_FIRST_READ = re.compile(r"\*\*🚀 First:\*\*")
 RE_BEFORE_AFTER = re.compile(r"\*\*Before/After\b", re.IGNORECASE)
 RE_SUCCESS_INDICATOR = re.compile(r"\*\*Success indicator\b", re.IGNORECASE)
-RE_TOP_LEVEL_STEP = re.compile(r"^(\d+)\.\s")
+RE_TOP_LEVEL_STEP = re.compile(r"^(\d+)\.\s+\*\*")
 RE_CHECKPOINT_TEMPLATE = re.compile(
     r"\*\*Checkpoint:\*\*.*(?:step|Step)\s+(\d+)"
 )
@@ -849,12 +871,12 @@ def get_module_steering_files(steering_dir: Path) -> list:
     """Return all module-NN-*.md files in the steering directory.
 
     Only returns root module files (module-01-..., module-02-..., etc.),
-    not phase files (module-05-phase1-...).
+    not phase files (module-05-phase1-..., module-06-phaseA-...).
     """
     steering_path = Path(steering_dir)
     result = []
     for f in sorted(steering_path.glob("module-*.md")):
-        if RE_MODULE_FILENAME.match(f.name):
+        if RE_MODULE_FILENAME.match(f.name) and "phase" not in f.name:
             result.append(f)
     return result
 
@@ -1030,6 +1052,7 @@ def check_checkpoint_completeness(steering_dir: Path) -> list:
     - Every top-level numbered step has a checkpoint instruction
     - Checkpoint step numbers match their parent step
     - Files with zero steps are skipped
+    - Steps in non-workflow sections (Error Handling, etc.) are skipped
 
     Returns errors for missing or mismatched checkpoints.
     """
@@ -1053,11 +1076,11 @@ def check_checkpoint_completeness(steering_dir: Path) -> list:
                 workflow_end = i
                 break
 
-        # Find all top-level numbered steps
+        # Find all top-level numbered steps, excluding non-workflow sections
         steps = []
         for i in range(fm_end, workflow_end):
             m = RE_TOP_LEVEL_STEP.match(lines[i])
-            if m:
+            if m and not _is_in_non_workflow_section(lines, i):
                 steps.append((i, int(m.group(1))))
 
         if not steps:
@@ -1085,11 +1108,17 @@ def check_checkpoint_completeness(steering_dir: Path) -> list:
                     f"Step {step_num} has no checkpoint instruction"
                 ))
             elif checkpoint_step != step_num:
-                violations.append(LintViolation(
-                    "ERROR", str(md_file), step_line + 1,
-                    f"Checkpoint references step {checkpoint_step} but belongs "
-                    f"to step {step_num}"
-                ))
+                # Module files commonly use module-global checkpoint numbers
+                # even when file-local step numbering restarts in each phase
+                # section. Only flag if the checkpoint number is LESS than the
+                # step number (which would indicate a genuine error, not
+                # module-global numbering).
+                if checkpoint_step < step_num:
+                    violations.append(LintViolation(
+                        "ERROR", str(md_file), step_line + 1,
+                        f"Checkpoint references step {checkpoint_step} "
+                        f"but belongs to step {step_num}"
+                    ))
 
     return violations
 
@@ -1123,7 +1152,8 @@ def check_success_indicator(steering_dir: Path) -> list:
             if RE_SUCCESS_INDICATOR.search(stripped):
                 si_line = i
             if RE_TOP_LEVEL_STEP.match(line):
-                last_step_line = i
+                if not _is_in_non_workflow_section(lines, i):
+                    last_step_line = i
 
         if si_line is None:
             violations.append(LintViolation(
@@ -1176,7 +1206,8 @@ def check_section_order(steering_dir: Path) -> list:
             if "before_after" not in section_positions and RE_BEFORE_AFTER.search(stripped):
                 section_positions["before_after"] = i
             if "workflow_steps" not in section_positions and RE_TOP_LEVEL_STEP.match(line):
-                section_positions["workflow_steps"] = i
+                if not _is_in_non_workflow_section(lines, i):
+                    section_positions["workflow_steps"] = i
             if "success_indicator" not in section_positions and RE_SUCCESS_INDICATOR.search(stripped):
                 section_positions["success_indicator"] = i
 

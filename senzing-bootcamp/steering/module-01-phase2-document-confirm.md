@@ -70,16 +70,26 @@ Steps 10–18 of Module 1. Continues from Phase 1 (discovery and gap-filling).
    **Systems mentioned**: [Specific systems from Step 8, e.g., Elasticsearch, Salesforce, data warehouse]
 
    ## Deployment Target
+
+   **Read** `config/bootcamp_preferences.yaml` and check whether `deployment_target` exists.
+
+   **IF `deployment_target` IS present in `config/bootcamp_preferences.yaml`:**
+
+   Use the following template (select the appropriate variant based on the value):
+
    **Platform**: [Selected deployment target]
    **Category**: [Cloud / Container Platform / Local / Undecided]
    **Note**: Development will proceed locally first; deployment infrastructure will be configured in Module 11.
 
    If the bootcamper selected "not sure yet" for deployment target, use this instead:
 
-   ## Deployment Target
    **Platform**: To be determined
    **Category**: Undecided
    **Note**: Development will proceed locally first; deployment target can be chosen later.
+
+   **IF `deployment_target` is NOT present in `config/bootcamp_preferences.yaml`:**
+
+   Not applicable — current track does not include Module 11 (Deployment).
 
    ## Timeline
    **Target completion**: [Date]

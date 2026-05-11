@@ -201,7 +201,13 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 
-9. **Ask about deployment target** (separate question — do NOT combine with the integration question):
+9. **Ask about deployment target** (conditional — Advanced Topics track only):
+
+   **Read** `config/bootcamp_preferences.yaml` and check the `track` value.
+
+   **IF `track` is `advanced_topics`:**
+
+   Ask the bootcamper (separate question — do NOT combine with the integration question):
 
    "Where do you plan to deploy the final entity resolution solution? Here are some common options:
 
@@ -231,7 +237,17 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    - **Local / on-premises selected**: persist `deployment_target` as `local` or `on_premises`.
    - **"Not sure yet" selected**: persist `deployment_target: undecided` in `config/bootcamp_preferences.yaml` and reassure the bootcamper that the choice can be revisited later in Module 11.
 
-   **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
+   **Checkpoint:** Write step 9 to `config/bootcamp_progress.json` with status "completed".
+
+   **IF `track` is NOT `advanced_topics` (or `track` is not set):**
+
+   Skip this question — deployment is not part of the current track. Do NOT persist any `deployment_target` value to `config/bootcamp_preferences.yaml`.
+
+   **Checkpoint:** Write step 9 to `config/bootcamp_progress.json` with status "skipped_not_applicable" and reason "Track does not include Module 11 (Deployment)".
+
+   Proceed to Phase 2.
+
+**Success indicator:** ✅ Business problem documented in `docs/business_problem.md` + data sources identified + success criteria defined
 
 ## Error Handling
 

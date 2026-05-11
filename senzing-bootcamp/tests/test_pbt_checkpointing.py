@@ -50,9 +50,9 @@ def _valid_progress_states():
     """Strategy producing fully valid progress dicts with step fields."""
     return st.fixed_dictionaries({
         "modules_completed": st.lists(
-            st.integers(min_value=1, max_value=12), unique=True, max_size=11,
+            st.integers(min_value=1, max_value=11), unique=True, max_size=11,
         ).map(sorted),
-        "current_module": st.integers(min_value=1, max_value=12),
+        "current_module": st.integers(min_value=1, max_value=11),
         "current_step": st.one_of(st.none(), st.integers(min_value=1, max_value=20)),
         "step_history": _step_history(),
         "data_sources": st.just([]),
@@ -64,9 +64,9 @@ def _legacy_progress_states():
     """Strategy producing legacy progress dicts WITHOUT step fields."""
     return st.fixed_dictionaries({
         "modules_completed": st.lists(
-            st.integers(min_value=1, max_value=12), unique=True, max_size=11,
+            st.integers(min_value=1, max_value=11), unique=True, max_size=11,
         ).map(sorted),
-        "current_module": st.integers(min_value=1, max_value=12),
+        "current_module": st.integers(min_value=1, max_value=11),
         "data_sources": st.just([]),
         "database_type": st.sampled_from(["sqlite", "postgresql"]),
     })

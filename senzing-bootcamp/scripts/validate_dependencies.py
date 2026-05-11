@@ -481,25 +481,41 @@ def validate_onboarding_flow(graph: dict, onboarding_path: Path) -> list[Violati
         return violations
 
     # Parse track definitions from the bullet list in section 5
-    # Format: "- **A) Quick Demo** — 2→3."
-    # We extract the track name and module sequence
+    # New format: "- **Quick Demo** — Modules 2, 3." or "- **Core Bootcamp** *(recommended)* — ..."
     track_pattern = re.compile(
-        r"\*\*[A-D]\)\s+(.+?)\*\*\s*[—–-]\s*(.+?)\.?\s*(?:\.|$)", re.MULTILINE
+        r"\*\*(.+?)\*\*\s*(?:\*\([^)]*\)\*\s*)?[—–-]\s*(.+?)\.?\s*(?:\.|$)", re.MULTILINE
     )
+
+    # Map display names to track keys for comparison
+    display_to_key: dict[str, str] = {}
+    for track_key, track_data in tracks.items():
+        if isinstance(track_data, dict):
+            display_to_key[track_data.get("name", "")] = track_key
 
     file_tracks: dict[str, list[int]] = {}
     for match in track_pattern.finditer(content):
         track_name = match.group(1).strip()
         modules_text = match.group(2).strip()
-        # Parse module numbers from "2→3" or "5→6→7" or "1→4→5→6→7" or "All 1-11"
-        if "all" in modules_text.lower():
-            mod_list = list(range(1, 12))
+        # Only process if this matches a known track display name
+        if track_name not in display_to_key:
+            continue
+        # Parse module numbers from "Modules 2, 3" or "Modules 1–11" or "Modules 1, 2, 3, 4, 5, 6, 7"
+        if "–" in modules_text or "-" in modules_text:
+            # Range format: "Modules 1–11"
+            range_match = re.search(r"(\d+)\s*[–-]\s*(\d+)", modules_text)
+            if range_match:
+                start = int(range_match.group(1))
+                end = int(range_match.group(2))
+                mod_list = list(range(start, end + 1))
+            else:
+                mod_nums = re.findall(r"(\d+)", modules_text)
+                mod_list = [int(m) for m in mod_nums]
         else:
             mod_nums = re.findall(r"(\d+)", modules_text)
             mod_list = [int(m) for m in mod_nums]
         file_tracks[track_name] = mod_list
 
-    # Map graph track keys to names for comparison
+    # Compare with graph
     for track_key, track_data in tracks.items():
         if not isinstance(track_data, dict):
             continue
@@ -513,6 +529,91 @@ def validate_onboarding_flow(graph: dict, onboarding_path: Path) -> list[Violati
                 Violation(
                     "ERROR",
                     f"Track '{track_name}' exists in graph but not found in onboarding-flow.md",
+                )
+            )
+
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# Legacy identifier detection
+# ---------------------------------------------------------------------------
+
+LEGACY_TRACK_IDENTIFIERS = {
+    "fast_track", "complete_beginner", "full_production",
+    "A", "B", "C", "D",
+}
+
+LEGACY_TRACK_PHRASES = [
+    "Path A", "Path B", "Path C", "Path D",
+    "Track A", "Track B", "Track C", "Track D",
+]
+
+
+def validate_no_legacy_identifiers(graph: dict, onboarding_path: Path) -> list[Violation]:
+    """Detect legacy track identifiers in the Track_Registry and onboarding flow."""
+    violations: list[Violation] = []
+
+    # Check Track_Registry for legacy identifiers as track keys
+    tracks = graph.get("tracks")
+    if isinstance(tracks, dict):
+        for track_key in tracks:
+            if track_key in LEGACY_TRACK_IDENTIFIERS:
+                violations.append(
+                    Violation(
+                        "ERROR",
+                        f"Legacy track identifier '{track_key}' found in Track_Registry",
+                    )
+                )
+            # Also check track names for legacy references
+            track_data = tracks[track_key]
+            if isinstance(track_data, dict):
+                track_name = track_data.get("name", "")
+                for phrase in LEGACY_TRACK_PHRASES:
+                    if phrase in track_name:
+                        violations.append(
+                            Violation(
+                                "ERROR",
+                                f"Legacy track phrase '{phrase}' found in track name for '{track_key}'",
+                            )
+                        )
+
+    # Check onboarding flow for legacy identifiers
+    if onboarding_path.exists():
+        try:
+            content = onboarding_path.read_text(encoding="utf-8")
+        except OSError:
+            return violations
+
+        # Check for standalone legacy single-letter identifiers as track references
+        # Match patterns like "Track A", "Path B", or standalone A/B/C/D used as track refs
+        for phrase in LEGACY_TRACK_PHRASES:
+            if phrase in content:
+                violations.append(
+                    Violation(
+                        "ERROR",
+                        f"Legacy track phrase '{phrase}' found in onboarding-flow.md",
+                    )
+                )
+
+        # Check for legacy snake_case identifiers
+        for legacy_id in ("fast_track", "complete_beginner", "full_production"):
+            pattern = re.compile(r"\b" + re.escape(legacy_id) + r"\b")
+            if pattern.search(content):
+                violations.append(
+                    Violation(
+                        "ERROR",
+                        f"Legacy track identifier '{legacy_id}' found in onboarding-flow.md",
+                    )
+                )
+
+        # Check for the old **[A-D]) pattern
+        old_pattern = re.compile(r"\*\*[A-D]\)")
+        if old_pattern.search(content):
+            violations.append(
+                Violation(
+                    "ERROR",
+                    "Legacy letter-label track pattern '**X)' found in onboarding-flow.md",
                 )
             )
 
@@ -542,6 +643,9 @@ def run_all_checks(
     )
     violations.extend(
         validate_onboarding_flow(graph, steering_dir / "onboarding-flow.md")
+    )
+    violations.extend(
+        validate_no_legacy_identifiers(graph, steering_dir / "onboarding-flow.md")
     )
 
     error_count = sum(1 for v in violations if v.level == "ERROR")

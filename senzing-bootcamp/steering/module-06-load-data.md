@@ -34,6 +34,8 @@ inclusion: manual
 
 > **Agent instruction:** Before starting, call `search_docs(query="loading", category="anti_patterns", version="current")`. Key pitfalls: bulk loading issues, threading problems, redo processing, load order dependencies.
 
+**Success indicator**: ✅ All data sources loaded into Senzing + redo records processed + no critical errors + entity resolution results validated
+
 ---
 
 ## Error Handling

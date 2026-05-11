@@ -21,7 +21,7 @@ Paths are not mutually exclusive — you can start with one and jump to another 
 
 Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 
-**Don't have data?** Mock data can be generated at any point.
+**Don't have data?** Test data can be generated at any point.
 
 **Licensing:** Senzing includes a built-in evaluation license for 500 records. Bring your own license for more capacity.
 

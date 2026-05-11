@@ -19,7 +19,7 @@ When the bootcamper asks for status using any of these trigger phrases: "where a
 ```
 📍 **Module [N]: [Title]** — Step [S] of [Total]
 
-Track: [Track Name] ([Letter]) — [X]% complete
+Track: [Track Display Name] — [X]% complete
 Data sources: [count] registered ([names])
 Next milestone: [what completing current step unlocks]
 
@@ -46,10 +46,9 @@ Track completion uses partial credit for the current module:
 Percentage = (completed steps across track modules / total steps across track modules) × 100
 
 Track module lists:
-- Quick Demo (A): Modules 1, 2, 3
-- Fast Track (B): Modules 5, 6, 7
-- Complete Beginner (C): Modules 1, 4, 5, 6, 7
-- Full Production (D): Modules 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+- Quick Demo: Modules 2, 3
+- Core Bootcamp: Modules 1, 2, 3, 4, 5, 6, 7
+- Advanced Topics: Modules 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 
 ## Edge Cases
 

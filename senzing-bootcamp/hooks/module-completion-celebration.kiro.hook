@@ -1,0 +1,12 @@
+{
+  "name": "Module Completion Celebration",
+  "version": "1.0.0",
+  "description": "Detects module completion boundaries and displays a brief celebration with next-step guidance.",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "You are checking whether the bootcamper just completed a module. Follow these steps exactly:\n\n1. BOUNDARY DETECTION: Read `config/bootcamp_progress.json` and examine the `modules_completed` array. If `modules_completed` has not changed (no new module number was added since the previous state), produce no output at all — do nothing, do not acknowledge, do not explain, do not print any message. Let the conversation continue normally.\n\n2. IDENTIFY COMPLETED MODULE: If a new module number appears in `modules_completed`, identify that module number. Read `config/module-dependencies.yaml` and find the module name corresponding to that number.\n\n3. CELEBRATION MESSAGE: Display a congratulatory banner that includes the completed module number and name. Provide a one-sentence summary of what the bootcamper built or accomplished in that module.\n\n4. NEXT MODULE: Read `config/bootcamp_preferences.yaml` to determine the bootcamper's selected track. Then consult `config/module-dependencies.yaml` for the track definition to find the next module in sequence. If more modules remain in the track, display the next module's number and name and offer to begin it immediately. If all modules in the track are complete, display a graduation acknowledgment congratulating the bootcamper on finishing the entire track.\n\n5. FULL WORKFLOW MENTION: Let the bootcamper know they can say \"completion\" or \"journal\" to access the full completion workflow including journal entry, certificate, and reflection.\n\nCONSTRAINTS:\n- Do NOT write any files.\n- Do NOT run any scripts or commands.\n- Do NOT perform file-system scans or directory listings.\n- ONLY read these three config files: `config/bootcamp_progress.json`, `config/module-dependencies.yaml`, and `config/bootcamp_preferences.yaml`.\n- Keep the celebration concise: one banner line, one summary sentence, and the next-step information.\n- Do NOT perform journal entries, generate certificates, or ask reflection questions — those belong to the full completion workflow."
+  }
+}

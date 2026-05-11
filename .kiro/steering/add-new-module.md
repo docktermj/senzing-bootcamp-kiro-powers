@@ -3,6 +3,9 @@ inclusion: manual
 description: "Step-by-step workflow for adding a new bootcamp module"
 ---
 
+#[[file:senzing-bootcamp/config/module-dependencies.yaml]]
+#[[file:senzing-bootcamp/steering/module-prerequisites.md]]
+
 # Workflow: Add a New Bootcamp Module
 
 1. Choose the module number N (zero-padded: `NN`). Check `senzing-bootcamp/config/module-dependencies.yaml` for the next available number.

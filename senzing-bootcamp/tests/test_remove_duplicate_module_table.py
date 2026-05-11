@@ -230,16 +230,15 @@ class TestPreservationStep4:
 
 
 class TestPreservationStep5TrackOptions:
-    """Verify Step 5 preserves all four track options (A-D).
+    """Verify Step 5 preserves all three track options.
 
     **Validates: Requirements 3.2**
     """
 
     _TRACK_MARKERS = [
-        "**A) Quick Demo**",
-        "**B) Fast Track**",
-        "**C) Complete Beginner**",
-        "**D) Full Production**",
+        "**Quick Demo**",
+        "**Core Bootcamp**",
+        "**Advanced Topics**",
     ]
 
     @pytest.fixture(autouse=True)
@@ -265,12 +264,12 @@ class TestPreservationStep5Module2Note:
     """
 
     def test_step5_contains_module2_note(self) -> None:
-        """Step 5 should contain 'Module 2 inserted automatically'.
+        """Step 5 should contain 'Module 2 is automatically inserted'.
 
         **Validates: Requirements 3.3**"""
         content = _read_onboarding_flow()
         step5 = _extract_step5(content)
-        assert "Module 2 inserted automatically" in step5, (
+        assert "Module 2 is automatically inserted" in step5, (
             "Step 5 is missing the Module 2 auto-insertion note.\n"
             f"Step 5 content:\n{step5[:500]}..."
         )
@@ -283,10 +282,9 @@ class TestPreservationStep5InterpretationRules:
     """
 
     _INTERPRETATION_FRAGMENTS = [
-        '"A"/"demo"→Module 1',
-        '"B"/"fast"→Module 5',
-        '"C"/"beginner"→Module 1',
-        '"D"/"full"→Module 1',
+        '"demo"/"quick_demo"→start at Module 2',
+        '"core"/"core_bootcamp"→start at Module 1',
+        '"advanced"/"advanced_topics"→start at Module 1',
     ]
 
     @pytest.fixture(autouse=True)
@@ -314,12 +312,11 @@ class TestPreservationProperty:
     """
 
     _ALL_PRESERVED_CONTENT = [
-        "**A) Quick Demo**",
-        "**B) Fast Track**",
-        "**C) Complete Beginner**",
-        "**D) Full Production**",
-        "Module 2 inserted automatically before any module needing SDK.",
-        "Bare number→clarify letter vs module.",
+        "**Quick Demo**",
+        "**Core Bootcamp**",
+        "**Advanced Topics**",
+        "Module 2 is automatically inserted before any module that needs the SDK.",
+        "Bare number→clarify track vs module.",
     ]
 
     @given(content_item=st.sampled_from(_ALL_PRESERVED_CONTENT))

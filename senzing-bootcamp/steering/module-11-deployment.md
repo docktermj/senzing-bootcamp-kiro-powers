@@ -232,13 +232,15 @@ Document in `docs/rollback_plan.md`: how to revert to previous version, database
 
 **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
 
+**Success indicator**: ✅ Code packaged (containerized, multi-environment config, CI/CD) + deployment complete (or deferred by bootcamper) + rollback plan documented + all tests passing
+
 ---
 
 ## Further Reading
 
 The following guide covers advanced topics for production deployments that go beyond the packaging and deployment workflow in this module:
 
-- **[Streaming Integration](../../docs/guides/STREAMING_INTEGRATION.md)** — Real-time streaming patterns for event-driven architectures using message queues (Apache Kafka, RabbitMQ, Amazon SQS). Covers consuming records from queues, processing them through Senzing in real time, handling backpressure when inbound rates exceed processing capacity, and managing errors in streaming pipelines. This is optional advanced reading for bootcampers planning event-driven production deployments.
+- **[Streaming Integration](../docs/guides/STREAMING_INTEGRATION.md)** — Real-time streaming patterns for event-driven architectures using message queues (Apache Kafka, RabbitMQ, Amazon SQS). Covers consuming records from queues, processing them through Senzing in real time, handling backpressure when inbound rates exceed processing capacity, and managing errors in streaming pipelines. This is optional advanced reading for bootcampers planning event-driven production deployments.
 
 ---
 

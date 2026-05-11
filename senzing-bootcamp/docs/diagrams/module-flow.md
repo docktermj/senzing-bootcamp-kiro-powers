@@ -142,27 +142,20 @@
 
 ## Learning Paths
 
-### Path A: Quick Demo
+### Quick Demo
 
 ```text
-Module 3 → Done
+Module 2 → Module 3 → Done
 ```
 
-### Path B: Fast Track
+### Core Bootcamp (recommended)
 
 ```text
-Module 2 → Module 5 → Module 6 → Module 8 → Done
-(For users with Senzing Entity Specification (SGES)-compliant data)
+Module 1 → Module 2 → Module 3 → Module 4 → Module 5 →
+Module 6 → Module 7 → Done
 ```
 
-### Path C: Complete Beginner
-
-```text
-Module 1 → Module 4 → Module 5 →
-Module 2 → Module 6 → Module 8 → Done
-```
-
-### Path D: Full Production
+### Advanced Topics (not recommended for bootcamp)
 
 ```text
 Module 1 → Module 2 → Module 3 → Module 4 → Module 5 →

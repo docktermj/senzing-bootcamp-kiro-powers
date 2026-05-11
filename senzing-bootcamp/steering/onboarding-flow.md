@@ -165,6 +165,175 @@ Present the full report to the bootcamper. Then act on the verdict:
 
 **Note:** This step replaces the previous inline `shutil.which()` checks. All environment verification is now handled by `preflight.py`.
 
+### 3a. Windows Prerequisite Installation Offers
+
+**Condition:** The bootcamper's platform is Windows AND the preflight report contains a "Package Manager" check with status "warn" (Scoop not found).
+
+If this condition is met, present the following offer to the bootcamper:
+
+---
+
+**Scoop is not installed.** Scoop is a command-line installer for Windows that the bootcamp uses to install prerequisites like Java, .NET SDK, Rust, Node.js, and the Senzing SDK. Without it, you'll need to install these tools manually later in Module 2.
+
+👉 Would you like to install Scoop now?
+
+- **Install Scoop now** — I'll run the official installer and verify it works.
+- **Skip for later** — Module 2 will walk you through installation when needed.
+
+---
+
+⛔ **MUST NOT install without explicit bootcamper confirmation.** Wait for a clear acceptance before executing any installation command.
+
+**If the bootcamper accepts ("Install Scoop now"):**
+
+1. Execute the official Scoop installation command in PowerShell:
+
+   ```powershell
+   irm get.scoop.sh | iex
+   ```
+
+2. After the command completes, verify the installation:
+
+   ```powershell
+   scoop --version
+   ```
+
+3. **If verification succeeds:** Report the installed version to the bootcamper (e.g., "✅ Scoop installed successfully — version X.Y.Z"). Proceed to check whether the chosen runtime also needs installation (see Step 3b if applicable).
+
+4. **If verification fails or the installation command returns an error:**
+   - Display the error output to the bootcamper.
+   - Suggest manual installation steps:
+
+     ```text
+     ⚠️ Scoop installation failed. You can try installing manually:
+     1. Open PowerShell as your normal user (not Admin)
+     2. Run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+     3. Run: irm get.scoop.sh | iex
+     4. Restart your terminal and verify with: scoop --version
+
+     If issues persist, see https://scoop.sh for troubleshooting.
+     ```
+
+   - Proceed with the existing WARN behavior — do NOT block onboarding. Note that Module 2 will handle Scoop installation.
+
+**If the bootcamper declines ("Skip for later"):**
+
+Proceed with the existing WARN behavior. Inform the bootcamper: "No problem — Module 2 will guide you through Scoop installation when it's needed."
+
+🛑 STOP — Wait for the bootcamper's response before proceeding to runtime installation.
+
+### 3b. Windows Runtime Installation via Scoop
+
+**Condition:** The bootcamper's platform is Windows AND Scoop is available (either already installed or just installed in Step 3a) AND the bootcamper's chosen language runtime check has status "warn" (runtime not found).
+
+**If Scoop is NOT available** (bootcamper declined Scoop installation in Step 3a): Skip this section entirely. Defer runtime installation to Module 2.
+
+If the condition is met, present the following offer to the bootcamper:
+
+---
+
+**Your chosen runtime is not installed.** I can install it now using Scoop so your environment is ready before we begin.
+
+👉 Would you like to install the runtime now?
+
+- **Install [runtime] now** — I'll run the Scoop installer and verify it works.
+- **Skip for later** — Module 2 will walk you through installation when needed.
+
+---
+
+⛔ **MUST NOT install without explicit bootcamper confirmation.** Wait for a clear acceptance before executing any installation command.
+
+**Installation commands** — Reference the `SCOOP_RUNTIME_COMMANDS` mapping in `senzing-bootcamp/scripts/preflight.py` for the correct commands per runtime:
+
+| Runtime | Bucket Command          | Install Command                      | Verify Command    |
+|---------|-------------------------|--------------------------------------|-------------------|
+| Java    | `scoop bucket add java` | `scoop install java/temurin-lts-jdk` | `java --version`  |
+| .NET    | *(none)*                | `scoop install dotnet-sdk`           | `dotnet --version`|
+| Rust    | *(none)*                | `scoop install rustup`               | `rustc --version` |
+| Node.js | *(none)*                | `scoop install nodejs-lts`           | `node --version`  |
+
+**If the bootcamper accepts ("Install [runtime] now"):**
+
+1. **For Java only** — First add the required Scoop bucket:
+
+   ```powershell
+   scoop bucket add java
+   ```
+
+   - If the bucket addition succeeds (or the bucket already exists), proceed to step 2.
+   - If the bucket addition fails, display the error and suggest the Adoptium website as an alternative:
+
+     ```text
+     ⚠️ Could not add the Java bucket to Scoop. You can install Java manually from:
+     https://adoptium.net
+
+     Download and install Temurin JDK (LTS), then restart your terminal.
+     ```
+
+     Proceed without blocking — do NOT escalate to FAIL.
+
+2. Execute the appropriate Scoop install command for the chosen runtime (from the table above).
+
+3. After the command completes, verify the installation using the runtime's verify command (from the table above).
+
+4. **If verification succeeds:** Report the installed version to the bootcamper (e.g., "✅ [Runtime] installed successfully — version X.Y.Z"). Record the installation in preferences (see Step 5).
+
+5. **If verification fails or the installation command returns an error:**
+   - Display the error output to the bootcamper.
+   - Suggest alternative installation methods:
+
+     ```text
+     ⚠️ [Runtime] installation via Scoop failed. Alternative installation methods:
+     - Java: Download from https://adoptium.net
+     - .NET SDK: Download from https://dotnet.microsoft.com/download
+     - Rust: Run `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+     - Node.js: Download from https://nodejs.org
+     ```
+
+   - Proceed with the existing WARN behavior — do NOT block onboarding. Note that Module 2 will handle runtime installation.
+
+**If the bootcamper declines ("Skip for later"):**
+
+Proceed with the existing WARN behavior. Inform the bootcamper: "No problem — Module 2 will guide you through runtime installation when it's needed."
+
+### 3c. Re-run Preflight After Installation
+
+**After any successful installation** (Scoop in Step 3a or runtime in Step 3b), re-run the preflight script to update the report:
+
+```bash
+python3 senzing-bootcamp/scripts/preflight.py
+```
+
+Present the updated report to the bootcamper before proceeding to Step 4. This confirms the installation was successful and shows the improved environment status.
+
+### 3d. Record Installation Preferences
+
+After completing Steps 3a–3c, record the installation outcomes in `config/bootcamp_preferences.yaml`. Do NOT overwrite existing content — append or merge new keys.
+
+**After successful Scoop installation:**
+
+```yaml
+scoop_installed_during_onboarding: true
+```
+
+**After successful runtime installation:**
+
+```yaml
+runtimes_installed_during_onboarding:
+  - name: java        # or dotnet, rust, nodejs
+    version: "21.0.3" # actual version from verify command
+```
+
+**When the bootcamper declines any installation offer:**
+
+```yaml
+prerequisite_installation_deferred: true
+```
+
+**Important:** If the preferences file does not exist yet, create it with only the new keys. If it already exists, merge the new keys without removing existing content.
+
+**Module 2 integration:** When Module 2 begins, the agent SHOULD check `config/bootcamp_preferences.yaml` for `scoop_installed_during_onboarding` and `runtimes_installed_during_onboarding` keys. If these indicate that Scoop or a runtime was already installed during onboarding, Module 2 should skip re-installation of those items.
+
 ## 4. Bootcamp Introduction
 
 **Display the welcome banner — make it impossible to miss.**
@@ -194,7 +363,7 @@ Present the overview before track selection. Cover all points naturally:
 - This bootcamp is a **guided discovery** of how to use Senzing. It's not a race — feel free to take it slow, read what the bootcamp is telling you, and ask questions at any point to help with your understanding. Be curious. The bootcamp is here to help you learn, not just to produce code.
 - Goal: comfortable generating Senzing SDK code. Finish with running code as foundation for real use.
 - Module overview table (1-11): what each does and why it matters
-- Mock data available anytime. Three sample datasets: Las Vegas, London, Moscow
+- Test data available anytime. Three sample datasets: Las Vegas, London, Moscow
 - Built-in 500-record eval license; bring your own for more
 - Tracks let you skip to what matters
 - If you encounter unfamiliar terms (like Senzing Entity Specification, DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
@@ -258,16 +427,15 @@ Before moving on to track selection, give the bootcamper a moment to absorb ever
 
 👉 Present tracks — not mutually exclusive, all completed modules carry forward:
 
-- **A) Quick Demo** — 1→2→3. Verify technology works. One session.
-- **B) Fast Track** — 5→6→7. Have Entity Specification data. Straight to loading/querying.
-- **C) Complete Beginner** — 1→4→5→6→7. From scratch with raw data.
-- **D) Full Production** — All 1-11. Building for production.
+- **Quick Demo** — Modules 2, 3. Fastest path to see Senzing in action. One session.
+- **Core Bootcamp** *(recommended)* — Modules 1, 2, 3, 4, 5, 6, 7. Recommended foundation covering problem definition through query/visualize.
+- **Advanced Topics** *(not recommended for bootcamp)* — Modules 1–11. Adds production-readiness topics (performance, security hardening, monitoring, and packaging/deployment) as advanced add-ons layered on top of the core bootcamp.
 
-Module 2 inserted automatically before any module needing SDK.
+Module 2 is automatically inserted before any module that needs the SDK.
 
-Interpreting responses: "A"/"demo"→Module 1, "B"/"fast"→Module 5, "C"/"beginner"→Module 1, "D"/"full"→Module 1. Bare number→clarify letter vs module.
+Interpreting responses: "demo"/"quick_demo"→start at Module 2, "core"/"core_bootcamp"→start at Module 1, "advanced"/"advanced_topics"→start at Module 1. Bare number→clarify track vs module.
 
-> ⛔ **MANDATORY GATE — STOP HERE.** After presenting the track options above, you MUST stop. Do NOT proceed to any module. Do NOT fabricate a user response. Do NOT assume a track choice. Do NOT generate text like "Human: A" or "I'll go with Track A for you." The bootcamper MUST provide their own choice. The `ask-bootcamper` hook will fire and prompt them. Wait for their real response before continuing.
+> ⛔ **MANDATORY GATE — STOP HERE.** After presenting the track options above, you MUST stop. Do NOT proceed to any module. Do NOT fabricate a user response. Do NOT assume a track choice. Do NOT generate text like "I'll go with Core Bootcamp for you." The bootcamper MUST provide their own choice. The `ask-bootcamper` hook will fire and prompt them. Wait for their real response before continuing.
 >
 > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not say "I'll go with X." Do not proceed to the next step. Wait for the bootcamper's real input.
 

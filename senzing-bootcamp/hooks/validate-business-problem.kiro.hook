@@ -1,0 +1,12 @@
+{
+  "name": "Validate Business Problem",
+  "version": "1.0.0",
+  "description": "After Module 1 tasks complete, validates that the bootcamper has identified data sources, defined matching criteria, and documented success metrics before proceeding to Module 2.",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 1, produce no output at all — do not acknowledge, do not explain, do not print anything. If the current module IS 1, validate the business problem definition by checking these three fields in the progress file:\n\n1. **Data sources identified** — At least one data source must be listed (the records the bootcamper wants to resolve).\n2. **Matching criteria defined** — The attributes to match on must be specified (e.g., name, address, date of birth).\n3. **Success metrics documented** — The bootcamper must have described what successful entity resolution looks like for their use case.\n\nIf any of these fields are missing or empty, report which fields are incomplete and suggest the bootcamper address them before moving on. For example: \"Your problem statement is missing matching criteria — please specify which attributes (name, address, etc.) you want Senzing to match on.\"\n\nIf all three fields are present and non-empty, confirm readiness: \"Your business problem is fully defined. You have data sources identified, matching criteria set, and success metrics documented. Ready to proceed to Module 2.\""
+  }
+}

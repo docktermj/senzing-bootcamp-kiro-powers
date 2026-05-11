@@ -1,0 +1,12 @@
+{
+  "name": "Verify Demo Results",
+  "version": "1.0.0",
+  "description": "After Module 3 tasks complete, verifies that the quick demo produced entity resolution results with actual matches before marking the module complete.",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 3, produce no output at all — do not acknowledge, do not explain, do not print anything. If the current module IS 3, verify the demo results by checking:\n\n1. **Entities were resolved** — Confirm that the demo produced more than zero resolved entities from the loaded records.\n2. **Matches were found** — Confirm that at least two records were resolved to the same entity (i.e., the engine found genuine matches, not just singletons).\n\nIf the demo produced only singletons (every record became its own entity with no matches), report this: \"The demo ran but produced only singletons — no records were matched together. This usually means the sample data lacks overlapping attributes. Check that your demo data contains records that share names, addresses, or other identifying attributes so Senzing can find matches.\"\n\nIf the demo produced valid matches (at least one entity contains two or more records), confirm success: \"Demo complete — entities were resolved and matches were found. You have seen entity resolution in action. Ready to proceed to Module 4.\""
+  }
+}

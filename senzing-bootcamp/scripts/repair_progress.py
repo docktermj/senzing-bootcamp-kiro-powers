@@ -9,6 +9,12 @@ import datetime
 import json, sys  # noqa: E401
 from pathlib import Path
 
+_SCRIPTS_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
+
+from progress_utils import validate_progress_schema  # noqa: E402
+
 PROGRESS = Path("config/bootcamp_progress.json")
 PREFS = Path("config/bootcamp_preferences.yaml")
 D_EXT = ("*.csv", "*.json", "*.jsonl", "*.tsv", "*.xlsx")
@@ -185,6 +191,14 @@ def main():
         prog["current_step"] = step_map[cur]
     else:
         prog.pop("current_step", None)
+    # Validate before writing
+    validation_errors = validate_progress_schema(prog)
+    if validation_errors:
+        print(red("✗") + " Repair aborted: reconstructed progress file fails schema validation",
+              file=sys.stderr)
+        for err in validation_errors:
+            print(f"  {err}", file=sys.stderr)
+        sys.exit(1)
     PROGRESS.parent.mkdir(parents=True, exist_ok=True)
     PROGRESS.write_text(
         json.dumps(prog, indent=2) + "\n", encoding="utf-8")

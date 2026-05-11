@@ -108,6 +108,39 @@ class PreflightReport:
         return "PASS"
 
 
+@dataclasses.dataclass
+class ScoopInstallInfo:
+    """Installation metadata for a runtime via Scoop."""
+
+    bucket_add: str | None  # Command to add required bucket, or None
+    install_cmd: str        # The scoop install command
+    verify_cmd: str         # Command to verify successful installation
+
+
+SCOOP_RUNTIME_COMMANDS: dict[str, ScoopInstallInfo] = {
+    "java": ScoopInstallInfo(
+        bucket_add="scoop bucket add java",
+        install_cmd="scoop install java/temurin-lts-jdk",
+        verify_cmd="java --version",
+    ),
+    "dotnet": ScoopInstallInfo(
+        bucket_add=None,
+        install_cmd="scoop install dotnet-sdk",
+        verify_cmd="dotnet --version",
+    ),
+    "rust": ScoopInstallInfo(
+        bucket_add=None,
+        install_cmd="scoop install rustup",
+        verify_cmd="rustc --version",
+    ),
+    "nodejs": ScoopInstallInfo(
+        bucket_add=None,
+        install_cmd="scoop install nodejs-lts",
+        verify_cmd="node --version",
+    ),
+}
+
+
 # ---------------------------------------------------------------------------
 # Output formatting  (Tasks 1.2, 1.3)
 # ---------------------------------------------------------------------------
@@ -216,6 +249,49 @@ def _get_version(cmd: str, args: Optional[list[str]] = None) -> str:
 # ---------------------------------------------------------------------------
 # Check functions  (Task 2)
 # ---------------------------------------------------------------------------
+
+# -- Scoop detection --------------------------------------------------------
+
+def check_scoop() -> list[CheckResult]:
+    """Detect Scoop package manager on Windows.
+
+    Returns an empty list on non-Windows platforms.
+    On Windows, returns a single CheckResult:
+      - pass with version if scoop is found
+      - warn with fix message if scoop is not found
+    """
+    if sys.platform != "win32":
+        return []
+
+    cat = "Package Manager"
+    try:
+        if shutil.which("scoop"):
+            ver = _get_version("scoop", ["--version"])
+            if ver == "unknown":
+                ver = "version unknown"
+            return [CheckResult(
+                name="Scoop",
+                category=cat,
+                status="pass",
+                message=f"Scoop {ver}",
+            )]
+        else:
+            return [CheckResult(
+                name="Scoop",
+                category=cat,
+                status="warn",
+                message="Scoop package manager not found",
+                fix="Install Scoop: irm get.scoop.sh | iex (run in PowerShell)",
+            )]
+    except Exception:
+        return [CheckResult(
+            name="Scoop",
+            category=cat,
+            status="warn",
+            message="Could not check for Scoop",
+            fix="Install Scoop: irm get.scoop.sh | iex (run in PowerShell)",
+        )]
+
 
 # -- Task 2.1 --------------------------------------------------------------
 
@@ -681,6 +757,7 @@ class CheckRunner:
     # Ordered list of (category_label, check_function) — determines report order
     CHECK_SEQUENCE = [
         ("Core Tools", check_required_tools),
+        ("Package Manager", check_scoop),
         ("Language Runtimes", check_language_runtimes),
         ("Disk Space", check_disk_space),
         ("Network", check_network),

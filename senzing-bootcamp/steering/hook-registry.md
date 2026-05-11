@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-All 23 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
+All 26 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
 
 ## Critical Hooks (created during onboarding)
 
@@ -123,6 +123,22 @@ Prompt: "If the file contains no Senzing-specific content, or all Senzing conten
 
 ## Module Hooks (created when module starts)
 
+**validate-business-problem** — Module 1 (postTaskExecution → askAgent)
+
+Prompt: "Read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 1, produce no output at all — do not acknowledge, do not explain, do not print anything. If the current module IS 1, validate the business problem definition by checking these three fields in the progress file:
+
+1. **Data sources identified** — At least one data source must be listed (the records the bootcamper wants to resolve).
+2. **Matching criteria defined** — The attributes to match on must be specified (e.g., name, address, date of birth).
+3. **Success metrics documented** — The bootcamper must have described what successful entity resolution looks like for their use case.
+
+If any of these fields are missing or empty, report which fields are incomplete and suggest the bootcamper address them before moving on. For example: "Your problem statement is missing matching criteria — please specify which attributes (name, address, etc.) you want Senzing to match on."
+
+If all three fields are present and non-empty, confirm readiness: "Your business problem is fully defined. You have data sources identified, matching criteria set, and success metrics documented. Ready to proceed to Module 2.""
+
+- id: `validate-business-problem`
+- name: `Validate Business Problem`
+- description: `After Module 1 tasks complete, validates that the bootcamper has identified data sources, defined matching criteria, and documented success metrics before proceeding to Module 2.`
+
 **verify-sdk-setup** — Module 2 (fileEdited → askAgent, filePatterns: `config/senzing_config.*, config/bootcamp_preferences.yaml, database/*.*`)
 
 Prompt: "A configuration or database file was modified. If the bootcamper is in Module 2 (SDK Setup), run a quick verification: check that database/G2C.db exists and is accessible, and that the Senzing engine can initialize with the current config. If not in Module 2, produce no output. If verification fails, present the error and suggest running: python3 senzing-bootcamp/scripts/preflight.py"
@@ -130,6 +146,21 @@ Prompt: "A configuration or database file was modified. If the bootcamper is in 
 - id: `verify-sdk-setup`
 - name: `Verify SDK Setup`
 - description: `After config or environment files change during Module 2, re-verifies that the Senzing SDK setup is still valid.`
+
+**verify-demo-results** — Module 3 (postTaskExecution → askAgent)
+
+Prompt: "Read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 3, produce no output at all — do not acknowledge, do not explain, do not print anything. If the current module IS 3, verify the demo results by checking:
+
+1. **Entities were resolved** — Confirm that the demo produced more than zero resolved entities from the loaded records.
+2. **Matches were found** — Confirm that at least two records were resolved to the same entity (i.e., the engine found genuine matches, not just singletons).
+
+If the demo produced only singletons (every record became its own entity with no matches), report this: "The demo ran but produced only singletons — no records were matched together. This usually means the sample data lacks overlapping attributes. Check that your demo data contains records that share names, addresses, or other identifying attributes so Senzing can find matches."
+
+If the demo produced valid matches (at least one entity contains two or more records), confirm success: "Demo complete — entities were resolved and matches were found. You have seen entity resolution in action. Ready to proceed to Module 4.""
+
+- id: `verify-demo-results`
+- name: `Verify Demo Results`
+- description: `After Module 3 tasks complete, verifies that the quick demo produced entity resolution results with actual matches before marking the module complete.`
 
 **validate-data-files** — Module 4 (fileCreated → askAgent, filePatterns: `data/raw/*.*`)
 
@@ -224,43 +255,29 @@ Prompt: "A new bootcamp source file was created. Before moving to the next step,
 - name: `Verify Generated Code Runs`
 - description: `When bootcamp source code is created, prompts the agent to run it on sample data and report results before moving on.`
 
-**enforce-visualization-offers** — Module 7 (agentStop → askAgent)
+**enforce-visualization-offers** — Module 8 (agentStop → askAgent)
 
-Prompt: "First, read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT 7, do nothing — let the conversation end normally.
+Prompt: "Read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT in {3, 5, 7, 8}, do nothing — let the conversation end normally.
 
-If the current module IS 7, review the conversation history and check whether you offered BOTH of these visualizations during this interaction:
+If the current module IS in {3, 5, 7, 8}, load `visualization-protocol.md` and read the Checkpoint Map section. Identify all checkpoints defined for the current module.
 
-1. **Entity graph visualization** — an interactive force-directed network graph of resolved entities (offered after exploratory queries in step 3)
-2. **Results dashboard** — an HTML page showing query results and validation metrics (offered after documenting findings in step 7)
+Next, read `config/visualization_tracker.json`. For each checkpoint in the current module's checkpoint map, check whether a tracker entry with that `checkpoint_id` exists.
 
-If BOTH were offered (regardless of whether the bootcamper accepted or declined), do nothing — the requirement is satisfied.
+If ALL checkpoints for the current module have tracker entries (regardless of status — offered, accepted, declined, or generated), do nothing — all offers were made.
 
-If EITHER visualization was NOT offered, display this message:
+If ANY checkpoint is missing a tracker entry, offer the missed visualization(s) before the conversation ends. For each missing checkpoint, use the Visualization Protocol's offer template:
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📊  MODULE 7 VISUALIZATION CHECK
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Would you like me to create a visualization of {context}?
 
-Then, for each visualization that was NOT offered, ask the bootcamper:
+Present only the types listed for that checkpoint in the checkpoint map, using the standard numbered list format with bold names and one-line descriptions. End with the STOP directive and wait for the bootcamper's response.
 
-- If the entity graph was not offered: "Before we wrap up — would you like me to help you build an interactive entity graph? It shows resolved entities as a force-directed network with clustering, search, and detail panels."
-- If the results dashboard was not offered: "Before we wrap up — would you like me to create a web page showing your query results and validation metrics?"
+After the bootcamper responds (accept or decline), update `config/visualization_tracker.json` accordingly following the Tracker Instructions in the protocol.
 
-WAIT for the bootcamper's response before finishing. They may accept or decline — both are fine."
+Process missed checkpoints one at a time. Do not batch multiple offers into a single message."
 
 - id: `enforce-visualization-offers`
 - name: `Enforce Visualization Offers`
-- description: `When the agent stops during Module 7, checks whether both visualization offers (entity graph and results dashboard) were made. If either was missed, prompts the agent to offer it before closing.`
-
-**offer-visualization** — Module 7 (fileCreated → askAgent, filePatterns: `src/query/*`)
-
-Prompt: "A query program was just created. If the bootcamper is in Module 7 and hasn't been offered the entity graph visualization yet, offer it: 'Would you like me to help you build an interactive entity graph visualization? It shows resolved entities as a force-directed network graph with clustering, search, and detail panels. I can create a self-contained HTML file you can open in any browser.' If they accept, load steering file visualization-guide.md and follow its workflow."
-
-- id: `offer-visualization`
-- name: `Offer Entity Graph Visualization`
-- description: `After query programs are created in Module 7, prompts the agent to offer generating an interactive entity graph visualization.`
+- description: `When the agent stops during a visualization-capable module (3, 5, 7, 8), checks the visualization tracker to verify all required offers were made. Prompts for missed offers.`
 
 **validate-benchmark-results** — Module 8 (fileEdited → askAgent, filePatterns: `tests/performance/*.*`)
 
@@ -326,6 +343,32 @@ Prompt: "The user wants to back up their project. Run the backup script: python3
 - name: `Backup Project on Request`
 - description: `Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead.`
 
+**error-recovery-context** — any module (postToolUse → askAgent, toolTypes: shell)
+
+Prompt: "If the shell command exited with code zero, produce no output at all — do not acknowledge, do not explain, do not print anything. STOP immediately and return nothing.
+
+If the exit code is non-zero, check whether `config/bootcamp_progress.json` exists. If it does not exist, produce no output at all — STOP immediately and return nothing.
+
+For non-zero exit codes with a valid bootcamp session:
+
+1. Extract the error message, exit code, and command context from the tool execution result.
+
+2. Read `senzing-bootcamp/steering/common-pitfalls.md` and `senzing-bootcamp/steering/recovery-from-mistakes.md`.
+
+3. Read `config/bootcamp_progress.json` to determine the current module number. Scope your pitfall lookup to the current module section first. If no match is found in the module-specific section, fall back to the General Pitfalls section and the Troubleshooting by Symptom section.
+
+4. If the error message contains a SENZ error code prefix (e.g., SENZ0001, SENZ2034), use `explain_error_code` from the Senzing MCP server to get the official explanation and include it in your response.
+
+5. When a known solution is found: present only the matching fix. Cite the source section (e.g., "From common-pitfalls.md § Module 3 — Docker Issues"). Include the specific command or action needed to resolve the issue. Do not dump the entire pitfalls file.
+
+6. When multiple pitfalls could apply, present the most specific match based on the current module context. Prefer module-scoped matches over general matches.
+
+7. When no known solution matches the error, fall back to normal troubleshooting. Do not claim a known solution exists when none was found in the pitfalls or recovery files."
+
+- id: `error-recovery-context`
+- name: `Auto-Load Error Recovery Context`
+- description: `Detects shell command failures and consults common-pitfalls.md and recovery-from-mistakes.md to provide targeted error recovery guidance during bootcamp modules.`
+
 **git-commit-reminder** — any module (userTriggered → askAgent)
 
 Prompt: "The user wants to commit their bootcamp progress. Check config/bootcamp_progress.json for the current module number and list of completed modules. Then suggest a git commit with a descriptive message like: git add . && git commit -m "Complete Module [N]: [Module Name]". Show the user the command and ask if they'd like you to run it."
@@ -333,3 +376,29 @@ Prompt: "The user wants to commit their bootcamp progress. Check config/bootcamp
 - id: `git-commit-reminder`
 - name: `Git Commit Reminder`
 - description: `Reminds the user to commit their work after completing a module. Triggered manually via button click.`
+
+**module-completion-celebration** — any module (postTaskExecution → askAgent)
+
+Prompt: "You are checking whether the bootcamper just completed a module. Follow these steps exactly:
+
+1. BOUNDARY DETECTION: Read `config/bootcamp_progress.json` and examine the `modules_completed` array. If `modules_completed` has not changed (no new module number was added since the previous state), produce no output at all — do nothing, do not acknowledge, do not explain, do not print any message. Let the conversation continue normally.
+
+2. IDENTIFY COMPLETED MODULE: If a new module number appears in `modules_completed`, identify that module number. Read `config/module-dependencies.yaml` and find the module name corresponding to that number.
+
+3. CELEBRATION MESSAGE: Display a congratulatory banner that includes the completed module number and name. Provide a one-sentence summary of what the bootcamper built or accomplished in that module.
+
+4. NEXT MODULE: Read `config/bootcamp_preferences.yaml` to determine the bootcamper's selected track. Then consult `config/module-dependencies.yaml` for the track definition to find the next module in sequence. If more modules remain in the track, display the next module's number and name and offer to begin it immediately. If all modules in the track are complete, display a graduation acknowledgment congratulating the bootcamper on finishing the entire track.
+
+5. FULL WORKFLOW MENTION: Let the bootcamper know they can say "completion" or "journal" to access the full completion workflow including journal entry, certificate, and reflection.
+
+CONSTRAINTS:
+- Do NOT write any files.
+- Do NOT run any scripts or commands.
+- Do NOT perform file-system scans or directory listings.
+- ONLY read these three config files: `config/bootcamp_progress.json`, `config/module-dependencies.yaml`, and `config/bootcamp_preferences.yaml`.
+- Keep the celebration concise: one banner line, one summary sentence, and the next-step information.
+- Do NOT perform journal entries, generate certificates, or ask reflection questions — those belong to the full completion workflow."
+
+- id: `module-completion-celebration`
+- name: `Module Completion Celebration`
+- description: `Detects module completion boundaries and displays a brief celebration with next-step guidance.`

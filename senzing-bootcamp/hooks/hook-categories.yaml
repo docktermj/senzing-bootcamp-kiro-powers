@@ -7,8 +7,7 @@ critical:
   - review-bootcamper-input
   - code-style-check
   - commonmark-validation
-  - enforce-feedback-path
-  - enforce-working-directory
+  - enforce-file-path-policies
   - verify-senzing-facts
 
 modules:

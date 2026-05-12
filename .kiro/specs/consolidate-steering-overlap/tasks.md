@@ -31,7 +31,7 @@ Replace two overlapping auto-included steering files (`structure.md` and `reposi
     - Confirm repo-level directories are included
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7_
 
-- [ ] 4. Final checkpoint
+- [x] 4. Final checkpoint
   - Ensure the consolidated file passes any existing CI linting, ask the user if questions arise.
 
 ## Notes

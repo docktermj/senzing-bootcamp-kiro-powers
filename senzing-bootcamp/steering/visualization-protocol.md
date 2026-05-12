@@ -62,14 +62,30 @@ After presenting the options, end your response with:
 
 Do NOT continue past this point. Wait for the bootcamper to choose an option or decline.
 
+## Delivery-Mode Selection
+
+After the bootcamper selects a visualization type, present the delivery-mode choice. This determines how the visualization is served.
+
+**Skip condition:** If the checkpoint's available types list contains ONLY `Static_HTML_Report` (e.g., Module 5), skip this question entirely and default to static delivery. Do not present the choice.
+
+For all other checkpoints, present:
+
+> Now that you've chosen **{chosen_type}**, how would you like it delivered?
+>
+> 1. **Static HTML** — Self-contained file with data baked in. Open directly in your browser, no server needed. Does not update with new data.
+> 2. **Web service + HTML** — A small localhost HTTP service with live SDK queries. Data refreshes on reload. Requires a running local process.
+
+🛑 STOP — End your response here. Wait for the bootcamper's input before proceeding.
+
 ## Dispatch Rules
 
-After the bootcamper selects a visualization type:
+After the bootcamper selects both a visualization type and a delivery mode:
 
-- **Interactive_D3_Graph or Web_Service_Dashboard:** Load `visualization-guide.md` and follow its workflow. That file is the authoritative source for generation logic — do not duplicate its content here.
-- **Static_HTML_Report:** Generate the visualization inline following the current module's existing generation logic. No additional steering file is needed.
+- **Web service delivery mode (any type):** Load `visualization-web-service.md` for scaffolding and lifecycle management. That file is the authoritative source for endpoint specs, framework selection, code generation, and server lifecycle — regardless of the chosen visualization type.
+- **Static HTML delivery mode (Static_HTML_Report type):** Generate the visualization inline following the current module's existing generation logic. Do NOT load `visualization-web-service.md`. No additional steering file is needed.
+- **Static HTML delivery mode (Interactive_D3_Graph or Web_Service_Dashboard type):** Load `visualization-guide.md` for generation logic only (graph layout, data binding, template structure). Do NOT load `visualization-web-service.md` — no server scaffolding is applied.
 
-If `visualization-guide.md` includes additional sub-choices (such as feature selection), present those after the initial type selection following the guide's own STOP directives.
+If `visualization-guide.md` includes additional sub-choices (such as feature selection), present those after the delivery-mode selection following the guide's own STOP directives.
 
 ## Decline Handling
 
@@ -88,7 +104,7 @@ The visualization tracker lives at `config/visualization_tracker.json`. Use it t
 
 ```json
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "offers": [
     {
       "module": 7,
@@ -96,6 +112,7 @@ The visualization tracker lives at `config/visualization_tracker.json`. Use it t
       "timestamp": "2025-07-15T10:30:00Z",
       "status": "offered",
       "chosen_type": null,
+      "delivery_mode": null,
       "output_path": null
     }
   ]
@@ -111,25 +128,26 @@ Each entry has these fields:
 | timestamp | string (ISO 8601) | When the event occurred |
 | status | string | One of: `offered`, `accepted`, `declined`, `generated` |
 | chosen_type | string or null | Set on accept (Static_HTML_Report, Interactive_D3_Graph, or Web_Service_Dashboard) |
+| delivery_mode | string or null | Set on accept: `"static"` or `"web_service"`. Null when status is `offered`. Defaults to `"static"` for Module 5 (static-only checkpoint). |
 | output_path | string or null | Set on generate (relative path to the output file) |
 
 ### Valid State Transitions
 
-- `offered` → `accepted` (bootcamper chooses a type)
-- `offered` → `declined` (bootcamper says no)
-- `accepted` → `generated` (visualization file created)
+- `offered` → `accepted`: Set `chosen_type` AND `delivery_mode`
+- `offered` → `declined`: Leave `delivery_mode` as `null`
+- `accepted` → `generated`: Set `output_path`
 
 No other transitions are valid.
 
 ### Read/Write Instructions
 
 1. **Before offering:** Read `config/visualization_tracker.json`. Check if an entry with the current `checkpoint_id` already exists. If yes, skip the offer — do not prompt again.
-2. **On offer:** Write a new entry with `status: "offered"`, the current module number, checkpoint_id, and timestamp. Set `chosen_type` and `output_path` to null.
-3. **On accept:** Update the existing entry's `status` to `"accepted"` and set `chosen_type` to the selected type.
-4. **On decline:** Update the existing entry's `status` to `"declined"`.
+2. **On offer:** Write a new entry with `status: "offered"`, the current module number, checkpoint_id, and timestamp. Set `chosen_type`, `delivery_mode`, and `output_path` to null.
+3. **On accept:** Update the existing entry's `status` to `"accepted"`, set `chosen_type` to the selected type, and set `delivery_mode` to the bootcamper's delivery choice (`"static"` or `"web_service"`). For static-only checkpoints (Module 5), set `delivery_mode` to `"static"` automatically.
+4. **On decline:** Update the existing entry's `status` to `"declined"`. Leave `delivery_mode` as `null`.
 5. **On generate:** Update the existing entry's `status` to `"generated"` and set `output_path` to the relative path of the created file.
 
-If `config/visualization_tracker.json` does not exist, create it with `{"version": "1.0.0", "offers": []}` before writing the first entry.
+If `config/visualization_tracker.json` does not exist, create it with `{"version": "1.1.0", "offers": []}` before writing the first entry.
 
 ## Explicit-Request Override
 

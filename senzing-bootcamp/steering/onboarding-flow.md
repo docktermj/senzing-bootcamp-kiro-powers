@@ -363,9 +363,9 @@ Present the overview before track selection. Cover all points naturally:
 - This bootcamp is a **guided discovery** of how to use Senzing. It's not a race — feel free to take it slow, read what the bootcamp is telling you, and ask questions at any point to help with your understanding. Be curious. The bootcamp is here to help you learn, not just to produce code.
 - Goal: comfortable generating Senzing SDK code. Finish with running code as foundation for real use.
 - Module overview table (1-11): what each does and why it matters
-- Test data available anytime. Three sample datasets: Las Vegas, London, Moscow
-- Built-in 500-record eval license; bring your own for more
 - Tracks let you skip to what matters
+- Built-in 500-record eval license; bring your own for more
+- Test data available anytime. Three sample datasets: Las Vegas, London, Moscow
 - If you encounter unfamiliar terms (like Senzing Entity Specification, DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
 
 ### 4a. What Is Entity Resolution?

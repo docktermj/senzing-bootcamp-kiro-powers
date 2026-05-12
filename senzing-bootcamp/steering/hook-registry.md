@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-All 26 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
+All 25 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
 
 ## Critical Hooks (created during onboarding)
 
@@ -89,21 +89,13 @@ If any issues are found, fix them automatically to maintain CommonMark complianc
 - name: `CommonMark Validation`
 - description: `Validates that all Markdown files conform to CommonMark standards when edited`
 
-**enforce-feedback-path** (preToolUse → askAgent, toolTypes: write)
+**enforce-file-path-policies** (preToolUse → askAgent, toolTypes: write)
 
-Prompt: "Check if you are currently in the feedback collection workflow (i.e., the bootcamper said 'bootcamp feedback', 'power feedback', or similar, and you are writing a feedback entry). If you are NOT in the feedback workflow, produce no output at all — do not acknowledge, do not explain, do not print anything. STOP immediately and return nothing. Your response must be completely empty — zero tokens, zero characters. If you ARE writing feedback content (an improvement entry with Date, Module, Priority, Category, What Happened, Why It's a Problem sections), verify the target file path is exactly 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'. If the path is different, STOP and redirect the write to 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md' instead. Do NOT write feedback to any other file. Do NOT submit feedback to any external service."
+Prompt: "Before writing this file, check two path policies. (1) FEEDBACK PATH: If you are in the feedback collection workflow (bootcamper said 'bootcamp feedback' or 'power feedback' and you are writing a feedback entry with Date/Module/Priority/Category/What Happened/Why It's a Problem sections), verify the target path is exactly 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'. If the path is different, STOP and redirect to that file. Do NOT write feedback to any other file or submit to external services. (2) WORKING DIRECTORY: Does the file path or any path in the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If so, replace with project-relative equivalents (database/G2C.db for databases, data/temp/ for temporary files, src/ for source code). Do NOT proceed if it would place files outside the working directory. If neither policy is violated, produce no output at all — zero tokens, zero characters."
 
-- id: `enforce-feedback-path`
-- name: `Enforce Feedback File Path`
-- description: `Before any write operation, checks if the agent is writing feedback content. If so, ensures it goes to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md and nowhere else.`
-
-**enforce-working-directory** (preToolUse → askAgent, toolTypes: write)
-
-Prompt: "Before writing this file, verify: Does the file path or any path in the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If all paths are within the working directory, produce no output at all — do not acknowledge, do not explain, do not print anything. STOP immediately and return nothing. Your response must be completely empty — zero tokens, zero characters. If so, replace those paths with project-relative equivalents (database/G2C.db for databases, data/temp/ for temporary files, src/ for source code). Do NOT proceed with the write if it would place files outside the working directory."
-
-- id: `enforce-working-directory`
-- name: `Enforce Working Directory Paths`
-- description: `Checks that file write operations do not use /tmp, %TEMP%, or any path outside the working directory. Enforces the file storage policy automatically.`
+- id: `enforce-file-path-policies`
+- name: `I will make sure the file is in the project directory`
+- description: `Before any write operation, enforces two path policies: (1) feedback content must go to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md, and (2) no files may be written outside the working directory.`
 
 **review-bootcamper-input** (promptSubmit → askAgent)
 

@@ -192,14 +192,14 @@ class TestStep4ContentMarkers:
         )
 
     def test_step4_contains_glossary_reference(self) -> None:
-        """Assert Step 4 references the glossary."""
+        """Assert Step 4 provides term-definition guidance."""
         content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
         step4 = _extract_section(content, "4. Bootcamp Introduction")
         assert step4, "Step 4 section not found"
+        has_terms = re.search(r"unfamiliar terms", step4, re.IGNORECASE)
         has_glossary = re.search(r"glossary", step4, re.IGNORECASE)
-        has_file = re.search(r"GLOSSARY\.md", step4)
-        assert has_glossary or has_file, (
-            "Step 4 missing glossary / GLOSSARY.md content marker"
+        assert has_terms or has_glossary, (
+            "Step 4 missing term-definition guidance"
         )
 
 

@@ -13,8 +13,7 @@ Before presenting this section, call `search_docs` from the Senzing MCP server:
 3. search_docs("entity resolution ambiguous match possible match")
 4. search_docs("Senzing differentiators real-time explainability attribution")
 5. search_docs("entity resolution pipeline standardization blocking scoring clustering")
-Use retrieved content to fill in Senzing-specific claims. If MCP unavailable,
-present static content as-is and note you'll verify later. See mcp-offline-fallback.md.
+Use retrieved content to fill in Senzing-specific claims dynamically.
 -->
 
 ## What entity resolution is
@@ -48,33 +47,30 @@ The most capable engines go one step further: each inbound record is compared ag
 
 ## How Senzing handles it
 
-Senzing uses principle-based matching — not hand-coded rules, not trained ML. The engine reasons about three attribute behaviors:
-
-- **Frequency** — how common the value is. Two "John Smith" records are weak evidence; two rare-name matches are strong.
-- **Exclusivity** — whether one value belongs to one entity. A Social Security number does; a phone number gets shared and reassigned.
-- **Stability** — whether the value changes over time. Date of birth never moves; an address changes often.
-
-Senzing ships preconfigured for people and organizations — no rules to write, no model to train.
-
-Differentiators worth flagging:
-
-- **Real-time and continuous**, not batch-only.
-- **No training, fine-tuning, or ER experts** required to onboard a source.
-- **Full attribution and explainability** — every resolved record traces to source system and record ID, with "why matched" / "why not matched" on demand.
-- **Scales from laptop to billions of records** on the same engine.
-
-Send Bootcampers to docs.senzing.com or MCP `search_docs` for current figures; don't hardcode numerics here.
+<!-- AGENT INSTRUCTION — not shown to the bootcamper.
+Call `search_docs("Senzing principle-based entity resolution approach")` and
+`search_docs("Senzing differentiators real-time explainability attribution")`
+to retrieve current Senzing-specific claims. Present the retrieved content to
+the bootcamper covering:
+- Senzing's principle-based matching approach (frequency, exclusivity, stability)
+- Pre-configured for people and organizations
+- Key differentiators (real-time, no training required, explainability, scalability)
+Do NOT present hardcoded facts from training data. All Senzing claims must come
+from the MCP search_docs results.
+-->
 
 ## Relationships and ambiguous matches
 
+<!-- AGENT INSTRUCTION — not shown to the bootcamper.
+Call `search_docs("entity resolution relationships disclosed discovered")` and
+`search_docs("entity resolution ambiguous match possible match")` to retrieve
+current content. Present the retrieved content covering:
+- Disclosed vs discovered relationships
+- Ambiguous matches and possible-match handling
+Do NOT present hardcoded Senzing facts from training data.
+-->
+
 Matching records is half the job. Relationship awareness — tracking how resolved entities connect to one another — turns the match graph into something investigators, compliance analysts, and KYC workflows can reason over.
-
-Two flavors show up:
-
-- **Disclosed relationships** are stated in the source data — "Person A is CEO of Company B," a listed beneficial owner, a next-of-kin field.
-- **Discovered relationships** surface through shared attributes — two entities share an address, or a phone number threads them together.
-
-An **ambiguous match** is a record that could legitimately belong to more than one entity — think two people with the same name in the same household. Resolving it arbitrarily is an invisible false positive: the record looks resolved but is quietly wrong. A well-designed engine flags the case as "possible match" and waits for a distinguishing attribute rather than forcing a merge.
 
 ## What entity resolution produces
 
@@ -88,7 +84,8 @@ Those outputs underpin use cases like fraud detection, compliance and KYC, custo
 
 ## Sources
 
-- Senzing, *What Is Entity Resolution?* — <https://senzing.com/what-is-entity-resolution/>
-- Senzing MCP documentation (`search_docs` tool on `mcp.senzing.com`) —
-  queried at authoring time for principle-based matching, relationship
-  awareness, ambiguous matches, and Senzing differentiators.
+<!-- AGENT INSTRUCTION — not shown to the bootcamper.
+All Senzing-specific claims in this file are retrieved dynamically via
+`search_docs` from the Senzing MCP server at presentation time.
+Cite "Senzing documentation via MCP" when the bootcamper asks for sources.
+-->

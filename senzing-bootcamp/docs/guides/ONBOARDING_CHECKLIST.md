@@ -45,4 +45,4 @@ python3 -c "import shutil; u=shutil.disk_usage('.'); print(f'{u.free/(1024**3):.
 
 ## Ready?
 
-Say "start the bootcamp" — the agent guides you from there. See `QUICK_START.md` for path options, or `GLOSSARY.md` if you encounter unfamiliar terms.
+Say "start the bootcamp" — the agent guides you from there. See `QUICK_START.md` for path options, or ask the agent to explain any unfamiliar terms.

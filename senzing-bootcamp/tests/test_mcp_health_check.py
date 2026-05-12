@@ -88,10 +88,6 @@ class TestSessionResumeMCPSection:
         """session-resume.md references the search_docs probe call."""
         assert 'search_docs(query="health check", version="current")' in session_resume_content
 
-    def test_contains_mcp_status_file_reference(self, session_resume_content: str):
-        """session-resume.md references config/.mcp_status."""
-        assert "config/.mcp_status" in session_resume_content
-
     def test_contains_timeout_specification(self, session_resume_content: str):
         """session-resume.md specifies a 10-second timeout."""
         assert "10-second timeout" in session_resume_content or "10 seconds" in session_resume_content
@@ -135,35 +131,23 @@ class TestOnboardingFlowMCPSection:
         )
 
 
-class TestWarningMessageTemplate:
-    """Unit test: warning message in session-resume.md contains required elements."""
+class TestHardGateErrorMessage:
+    """Unit test: hard gate error in session-resume.md contains required elements."""
 
     @pytest.fixture()
     def session_resume_content(self) -> str:
         path = _STEERING_DIR / "session-resume.md"
         return path.read_text(encoding="utf-8")
 
-    def test_contains_offline_mode_reference(self, session_resume_content: str):
-        """Warning message references docs/guides/OFFLINE_MODE.md."""
-        assert "docs/guides/OFFLINE_MODE.md" in session_resume_content
+    def test_contains_blocking_error(self, session_resume_content: str):
+        """Hard gate displays blocking error when MCP is unreachable."""
+        assert "MCP server is unreachable" in session_resume_content
 
-    def test_contains_unavailable_features(self, session_resume_content: str):
-        """Warning message lists unavailable features."""
-        assert "Code generation" in session_resume_content
-        assert "fact lookup" in session_resume_content
-        assert "example search" in session_resume_content
+    def test_contains_mcp_required_statement(self, session_resume_content: str):
+        """Hard gate states MCP is required for the bootcamp."""
+        assert "cannot proceed without it" in session_resume_content
 
-    def test_contains_available_alternatives(self, session_resume_content: str):
-        """Warning message lists what the bootcamper can still do."""
-        assert "Review existing artifacts" in session_resume_content
-        assert "documentation" in session_resume_content
-        assert "plan" in session_resume_content.lower()
-
-    def test_contains_offline_mode_question(self, session_resume_content: str):
-        """Warning message asks about continuing in offline mode."""
-        assert "continue in offline mode" in session_resume_content
-
-    def test_contains_mid_session_recovery(self, session_resume_content: str):
-        """session-resume.md includes mid-session recovery instructions."""
-        assert "Mid-Session Recovery" in session_resume_content
-        assert "MCP server is back online" in session_resume_content
+    def test_contains_troubleshooting_steps(self, session_resume_content: str):
+        """Hard gate includes connectivity troubleshooting steps."""
+        assert "Troubleshooting steps" in session_resume_content
+        assert "mcp.senzing.com" in session_resume_content

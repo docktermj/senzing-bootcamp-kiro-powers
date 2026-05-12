@@ -249,7 +249,7 @@ _STEP_4_KEY_CONTENT = [
     "Senzing SDK code",
     "Las Vegas, London, Moscow",
     "500-record eval license",
-    "GLOSSARY.md",
+    "unfamiliar terms",
     "team_name",
     "member_count",
 ]
@@ -307,7 +307,6 @@ class TestPreservation:
         section = _extract_section(text, r"## 1\. ")
         assert "project-structure.md" in section
         assert "Install Critical Hooks" in section
-        assert "GLOSSARY.md" in section
         assert "product.md" in section
         assert "tech.md" in section
         assert "structure.md" in section

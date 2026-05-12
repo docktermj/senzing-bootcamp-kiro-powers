@@ -46,41 +46,13 @@ A running Senzing deployment needs regular attention. Here's a practical schedul
 
 ## Scaling Your Deployment
 
-### Signs You've Outgrown Your Current Setup
+For current guidance on scaling, performance tuning, database migration, and deployment options, ask the agent:
 
-Watch for these indicators:
+```text
+search_docs(query="performance tuning")
+```
 
-- **Loading throughput dropping** — records per second declining over time
-- **Query latency increasing** — searches taking noticeably longer
-- **Disk filling up** — database storage approaching capacity
-- **Memory pressure** — out-of-memory errors or excessive swapping
-- **Redo queue growing** — redo records accumulating faster than they're processed
-
-### How to Scale
-
-Start with the easiest wins and work up:
-
-1. **Database tuning** — PostgreSQL shared_buffers, work_mem, effective_cache_size
-2. **Multi-threaded loading** — increase loader thread count for higher throughput
-3. **Connection pooling** — reduce database connection overhead
-4. **Read replicas** — offload query traffic from the primary database
-5. **Horizontal scaling** — distribute loading across multiple processes or machines
-
-Use `search_docs(query='performance tuning', version='current')` for current best practices and specific configuration recommendations.
-
-### When to Move from SQLite to PostgreSQL
-
-If you started with SQLite for evaluation, consider migrating to PostgreSQL when:
-
-- Your dataset exceeds 100K records
-- You need concurrent access (multiple loaders or query processes)
-- You're moving toward production deployment
-
-Module 2 covers database setup. Re-run it with PostgreSQL as your target. If you're deploying to a cloud provider, Module 11 can provision a managed database (e.g., RDS/Aurora for AWS via CDK).
-
-### Deployment and Redeployment
-
-Module 11 separates **packaging** (containerization, config, CI/CD — always done) from **deployment** (actually deploying to a target — optional). If you packaged during the bootcamp but didn't deploy, you can return to Module 11 Phase 2 at any time. Your deployment target (AWS, Azure, GCP, on-premises, local) shapes what artifacts are produced — if you change targets, re-run Module 11 from Step 1.
+The MCP server provides up-to-date recommendations for database tuning, multi-threaded loading, connection pooling, horizontal scaling, and SQLite-to-PostgreSQL migration.
 
 ---
 
@@ -108,72 +80,30 @@ When new data becomes available, follow the same proven workflow from the bootca
 
 ## Keeping Senzing Updated
 
-### Check for Updates
+For current migration guidance, version changes, and upgrade procedures, ask the agent:
 
-Use `get_capabilities` to see the current Senzing version and available tools. Compare against your installed version.
+```text
+get_sdk_reference(topic='migration')
+search_docs(query="release notes")
+```
 
-### Migration Between Major Versions
-
-Use `get_sdk_reference(topic='migration')` for detailed V3→V4 migration guidance, including:
-
-- Renamed functions and methods
-- Changed flags and parameters
-- Removed APIs and their replacements
-- Breaking changes to watch for
-
-### Upgrade Safely
-
-1. **Read the release notes** — use `search_docs(query='release notes', version='current')`
-2. **Test in staging first** — never upgrade production without testing
-3. **Back up your database** before upgrading
-4. **Run your validation queries** (Module 8) after upgrading to confirm results are consistent
-5. **Update your code** for any API changes flagged by the migration guide
+The MCP server provides up-to-date information on renamed functions, changed parameters, breaking changes, and step-by-step upgrade procedures.
 
 ---
 
 ## Advanced Topics to Explore
 
-Once you're comfortable with the basics, there's a lot more to dig into.
+For current information on advanced Senzing topics, ask the agent using `search_docs`:
 
-### Custom Matching Rules and Thresholds
+```text
+search_docs(query="matching configuration")    — custom matching rules and thresholds
+search_docs(query="stream loading")            — real-time streaming ingestion
+search_docs(query="REST API")                  — REST API patterns
+search_docs(query="data mart")                 — reporting and dashboards
+search_docs(query="semantic search")           — embeddings-based candidate generation
+```
 
-Senzing's default matching works well for most cases, but you can tune it:
-
-- Adjust match thresholds for your specific data quality
-- Configure custom features for domain-specific identifiers
-- Use `search_docs(query='matching configuration', version='current')` for details
-
-### Real-Time Streaming Ingestion
-
-Move beyond batch loading to continuous data integration:
-
-- RabbitMQ consumers for message-driven loading
-- SQS consumers for AWS-native pipelines
-- Kafka integration for high-throughput streaming
-- Use `find_examples(query='stream loading consumer')` for working code
-
-### REST API Patterns
-
-Expose entity resolution as a service:
-
-- REST API wrappers for search and query operations
-- Batch API endpoints for bulk operations
-- Use `find_examples(query='REST API entity resolution')` for examples
-
-### Data Mart and Reporting Dashboards
-
-Build analytics on top of your resolved entities:
-
-- Export resolved data to reporting databases
-- Create dashboards for entity resolution metrics
-- Track resolution quality over time
-- Use `reporting_guide(topic='data_mart')` and `reporting_guide(topic='dashboard')` for patterns
-
-### Semantic Search
-
-Explore embeddings-based candidate generation for fuzzy matching scenarios where traditional blocking may miss candidates.
-
-- Use `search_docs(query='semantic search', version='current')` to check current support
+The MCP server always returns the latest documentation, so you get current guidance regardless of when you completed the bootcamp.
 
 ---
 

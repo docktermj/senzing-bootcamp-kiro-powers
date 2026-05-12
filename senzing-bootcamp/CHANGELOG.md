@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI workflow (`.github/workflows/validate-power.yml`) for power integrity, CommonMark validation, and test execution
 - "What's New in 0.10.0" section in POWER.md for quick orientation
 - Offer Entity Graph Visualization hook (`offer-visualization.kiro.hook`) — prompts visualization offer when query files are created in Module 8
-- MCP offline fallback steering file (`steering/mcp-offline-fallback.md`) — extracted from common-pitfalls.md for leaner context loading
+- MCP offline fallback steering file (removed in 0.12.0 — MCP is now required)
 - Troubleshooting commands steering file (`steering/troubleshooting-commands.md`) — extracted from troubleshooting-decision-tree.md
 - Review Bootcamper Input hook (`review-bootcamper-input.kiro.hook`) — deterministic feedback capture via promptSubmit trigger with automatic context capture
 - Module 11 Phase Gate hook (`deployment-phase-gate.kiro.hook`) — enforces packaging-to-deployment decision gate in Module 11
@@ -76,7 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Performance baselines guide at `docs/guides/PERFORMANCE_BASELINES.md` with throughput tables, hardware requirements, SQLite vs PostgreSQL comparison, and profiling tools
 - UAT test case template at `templates/uat_test_cases.md` with functional, performance, and data quality test sections
 - Module 11 deployment expanded with on-premises, Azure, GCP, and Kubernetes platform reference sections
-- Offline mode guide at `docs/guides/OFFLINE_MODE.md` with per-module offline capability and reconnection steps
+- Offline mode guide (removed in 0.12.0 — MCP is now required)
 - Transformation lineage template at `templates/transformation_lineage.md` with field mappings, format changes, filters, and quality improvements
 - Integration patterns section in Module 8 steering file with 6 patterns (batch report, REST API, streaming, database sync, duplicate detection, watchlist screening)
 - Disaster recovery subsection in Module 11 Step 15 with RTO/RPO, 3-2-1 backup rule, DR scenarios, and backup scripts

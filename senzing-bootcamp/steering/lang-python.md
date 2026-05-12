@@ -11,15 +11,15 @@ fileMatchPattern: "**/*.py"
 ## Senzing SDK Best Practices
 
 - Always obtain SDK method signatures from the MCP server (`get_sdk_reference`) — never guess method names or parameters
-- Use context managers (`with` statements) for Senzing engine lifecycle — ensures `destroy()` is called on exit and exceptions
+- Use context managers (`with` statements) for Senzing engine lifecycle — call `get_sdk_reference` for the correct initialization and cleanup method names
 - Load engine configuration from JSON files using `json.load()` — never hardcode configuration strings
 - Use `json.dumps()` with `ensure_ascii=False` for record payloads containing international characters
-- Wrap all SDK calls in try/except blocks catching the Senzing-specific exception type — use `explain_error_code` for diagnosis
+- Wrap all SDK calls in try/except blocks catching the Senzing-specific exception type (call `get_sdk_reference` for the current exception class name) — use `explain_error_code` for diagnosis
 - Initialize the engine once and reuse — do not create/destroy per record
 
 ## Common Pitfalls
 
-- **Forgetting engine cleanup:** Always pair `init()` with `destroy()` — use a context manager wrapper or `try/finally` to guarantee cleanup
+- **Forgetting engine cleanup:** Always pair initialization with cleanup — use a context manager wrapper or `try/finally` to guarantee cleanup (call `get_sdk_reference` for current lifecycle method names)
 - **GIL blocking on CPU-bound ER:** Python threads share the GIL — use `multiprocessing` or `concurrent.futures.ProcessPoolExecutor` for parallel loading, not `threading`
 - **Silent encoding errors:** Use `encoding='utf-8'` explicitly when opening data files — default encoding varies by platform and can corrupt names/addresses
 - **Catching bare `Exception`:** Catch the specific Senzing exception class so SDK errors are distinguishable from bugs in your code
@@ -104,4 +104,4 @@ fileMatchPattern: "**/*.py"
 1. On Linux: `export LD_LIBRARY_PATH=/opt/senzing/lib:$LD_LIBRARY_PATH`
 2. On macOS: `export DYLD_LIBRARY_PATH=/opt/senzing/lib:$DYLD_LIBRARY_PATH`
 3. On Windows: add the Senzing `lib` directory to `PATH` in System Environment Variables
-4. Verify with: `python -c "from senzing import SzEngine; print('OK')"`
+4. Verify with: `python -c "import senzing; print('OK')"` (call `get_sdk_reference` for the current module and class names to import)

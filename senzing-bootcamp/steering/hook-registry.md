@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-All 25 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
+All 24 bootcamp hooks are defined below. The agent reads these definitions and calls the `createHook` tool with the specified parameters. Critical Hooks are created during onboarding (Step 1). Module Hooks are created when the bootcamper starts the associated module.
 
 ## Critical Hooks (created during onboarding)
 
@@ -104,14 +104,6 @@ Prompt: "Check if the bootcamper's message contains any of these feedback trigge
 - id: `review-bootcamper-input`
 - name: `Review Bootcamper Input`
 - description: `Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture.`
-
-**verify-senzing-facts** (preToolUse → askAgent, toolTypes: write)
-
-Prompt: "If the file contains no Senzing-specific content, or all Senzing content was already verified via MCP tools, produce no output at all — do not acknowledge, do not explain, do not print anything. STOP immediately and return nothing. Your response must be completely empty — zero tokens, zero characters. Before writing this file, verify that any Senzing-specific content (attribute names, SDK method signatures, configuration values, error code explanations) was retrieved from the Senzing MCP server tools (mapping_workflow, generate_scaffold, get_sdk_reference, search_docs, explain_error_code, sdk_guide) and not stated from training data. Per SENZING_INFORMATION_POLICY.md, all Senzing facts must come from MCP tools."
-
-- id: `verify-senzing-facts`
-- name: `Verify Senzing Facts Before Writing`
-- description: `Reminds the agent to verify Senzing-specific facts via MCP tools before writing code or documentation that contains Senzing attribute names, SDK method calls, or configuration values.`
 
 ## Module Hooks (created when module starts)
 
@@ -345,17 +337,15 @@ For non-zero exit codes with a valid bootcamp session:
 
 1. Extract the error message, exit code, and command context from the tool execution result.
 
-2. Read `senzing-bootcamp/steering/common-pitfalls.md` and `senzing-bootcamp/steering/recovery-from-mistakes.md`.
+2. If the error message contains a SENZ error code prefix (e.g., SENZ0001, SENZ2034), call `explain_error_code` directly to get the official explanation and include it in your response.
 
-3. Read `config/bootcamp_progress.json` to determine the current module number. Scope your pitfall lookup to the current module section first. If no match is found in the module-specific section, fall back to the General Pitfalls section and the Troubleshooting by Symptom section.
+3. For non-SENZ errors: Read `senzing-bootcamp/steering/common-pitfalls.md` and `senzing-bootcamp/steering/recovery-from-mistakes.md`. Read `config/bootcamp_progress.json` to determine the current module number. Scope your pitfall lookup to the current module section first. If no match is found in the module-specific section, fall back to the General Pitfalls section and the Troubleshooting by Symptom section.
 
-4. If the error message contains a SENZ error code prefix (e.g., SENZ0001, SENZ2034), use `explain_error_code` from the Senzing MCP server to get the official explanation and include it in your response.
+4. When a known solution is found: present only the matching fix. Cite the source section (e.g., "From common-pitfalls.md § Module 3 — Docker Issues"). Include the specific command or action needed to resolve the issue. Do not dump the entire pitfalls file.
 
-5. When a known solution is found: present only the matching fix. Cite the source section (e.g., "From common-pitfalls.md § Module 3 — Docker Issues"). Include the specific command or action needed to resolve the issue. Do not dump the entire pitfalls file.
+5. When multiple pitfalls could apply, present the most specific match based on the current module context. Prefer module-scoped matches over general matches.
 
-6. When multiple pitfalls could apply, present the most specific match based on the current module context. Prefer module-scoped matches over general matches.
-
-7. When no known solution matches the error, fall back to normal troubleshooting. Do not claim a known solution exists when none was found in the pitfalls or recovery files."
+6. When no known solution matches the error, fall back to normal troubleshooting. Do not claim a known solution exists when none was found in the pitfalls or recovery files."
 
 - id: `error-recovery-context`
 - name: `Auto-Load Error Recovery Context`

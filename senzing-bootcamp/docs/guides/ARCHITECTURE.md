@@ -187,7 +187,7 @@ from which steering file is loaded.
 
 1. **Setup preamble** — Agent announces administrative setup is starting.
 2. **MCP health check** — Probe `search_docs` with a 10-second timeout.
-   Write result to `config/.mcp_status`.
+   If the probe fails, block with troubleshooting steps until resolved.
 3. **Directory creation** — Create `src/`, `data/`, `docs/` if missing.
 4. **Hook installation** — Create critical hooks via `createHook`. Record
    installed hooks and timestamp in `config/bootcamp_preferences.yaml`
@@ -215,8 +215,8 @@ from which steering file is loaded.
    persisted `language` preference.
 4. **Conversation style restore** — Apply `conversation_style` parameters
    from preferences (verbosity, tone, pacing, question framing).
-5. **MCP health check** — Same probe as onboarding. Write to
-   `config/.mcp_status`.
+5. **MCP health check** — Same probe as onboarding. If the probe fails,
+   block with troubleshooting steps until resolved.
 6. **What's New check** — Compare last session timestamp from
    `config/session_log.jsonl` against `CHANGELOG.md` entries.
 7. **Welcome-back summary** — Display track, language, completed modules,
@@ -248,7 +248,6 @@ follows a repeating cycle until the track is complete:
 |-------|------|-----------|
 | Session start (decision) | `bootcamp_progress.json` | Read (existence check) |
 | Onboarding: setup | `bootcamp_preferences.yaml` | Write (create) |
-| Onboarding: setup | `.mcp_status` | Write (create) |
 | Onboarding: language | `bootcamp_preferences.yaml` | Write (language) |
 | Onboarding: track | `bootcamp_preferences.yaml` | Write (track) |
 | Onboarding: first module | `bootcamp_progress.json` | Write (create) |
@@ -744,7 +743,6 @@ agent:
 | `bootcamp_preferences.yaml` | `config/` | Language, track, verbosity, style, hooks, pacing |
 | `data_sources.yaml` | `config/` | Data source registry (quality, mapping, load status) |
 | `session_log.jsonl` | `config/` | Session events log (append-only) |
-| `.mcp_status` | `config/` | MCP health check result |
 
 Read-only assets define the rules. Mutable state records where the user is and
 what they have chosen. The agent reads both categories but only writes to
@@ -880,10 +878,9 @@ This rule exists because:
 3. **Verifiability** — MCP responses can be traced to their source
    documentation. Training data cannot.
 
-The rule is enforced by the `verify-senzing-facts` critical hook, which
-fires on every agent response and checks whether Senzing-specific claims
-(method names, attribute names, error codes, configuration values) were
-sourced from an MCP tool call in the current conversation.
+The rule is enforced by agent instructions that direct the agent to always
+use MCP tools for Senzing-specific claims rather than relying on training
+data.
 
 **What counts as a "Senzing fact":**
 
@@ -944,49 +941,12 @@ categories:
 | `explain_error_code` | Diagnose Senzing error codes (456 codes covered) |
 | `submit_feedback` | Report issues or suggestions (disabled by default) |
 
-### MCP Failure and Offline Fallback
+### MCP Requirement
 
-The bootcamp handles MCP unavailability gracefully through a structured
-fallback system. Network outages, corporate proxies, and server maintenance
-should not halt bootcamp progress entirely.
-
-#### Health Check Probe
-
-At every session start (both onboarding and resume), the agent probes the
-MCP server by calling `search_docs` with a 10-second timeout. The result
-is written to `config/.mcp_status`:
-
-- **Success** — Normal operation. All MCP tools available.
-- **Failure** — The agent retries once. If the retry fails, the agent
-  enters offline mode.
-
-#### Offline Mode
-
-When MCP is unavailable, operations split into two categories:
-
-**Blocked** (require MCP, cannot proceed):
-
-- Attribute mapping (`mapping_workflow`)
-- Code generation (`generate_scaffold`)
-- Error diagnosis (`explain_error_code`)
-- SDK reference lookup (`get_sdk_reference`)
-- Documentation search (`search_docs`)
-
-**Continuable** (no MCP needed):
-
-- Business problem definition (Module 1)
-- Data collection and file management (Module 4)
-- Running previously generated code (Modules 5–8)
-- Documentation, review, and git operations
-- Project structure setup and backup/restore
-- Viewing previously generated visualizations
-
-#### Reconnection
-
-The agent attempts MCP reconnection approximately every 10 minutes or when
-the bootcamper explicitly requests a retry. On successful reconnection, the
-agent calls `get_capabilities` to confirm full functionality, then resumes
-any previously blocked operations.
+The Senzing MCP server is required for the bootcamp to function. The health
+check at session start (both onboarding and resume) is a hard gate — if MCP
+is unreachable, the bootcamp blocks with troubleshooting steps until the
+connection is fixed. There is no offline mode or fallback path.
 
 ### Local vs Remote Boundary
 
@@ -1049,9 +1009,6 @@ KEY BOUNDARY RULES:
 • Data mapping → MCP (mapping_workflow, analyze_record)
 • Data file management → local (copy, profile, organize)
 ```
-
-For detailed offline fallback instructions, see
-[OFFLINE_MODE.md](OFFLINE_MODE.md).
 
 ## Context Budget Management
 

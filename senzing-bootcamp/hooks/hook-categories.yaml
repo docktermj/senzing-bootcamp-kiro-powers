@@ -8,7 +8,6 @@ critical:
   - code-style-check
   - commonmark-validation
   - enforce-file-path-policies
-  - verify-senzing-facts
 
 modules:
   1:

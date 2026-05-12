@@ -31,16 +31,6 @@ inclusion: manual
    - Ask user preference, default to Las Vegas. **Use 50-200 records** (not just 5-10) to produce interesting entity clusters, relationship paths, and meaningful search results. Stay under the 500-record evaluation limit. Download a subset from the full CORD dataset via `get_sample_data`.
    - Present `download_url` for full dataset. Don't dump raw records into chat.
 
-   **MCP fallback:** If `get_sample_data` fails, use the inline 5-record dataset below as a minimal fallback. Tell the user: "I couldn't reach the Senzing sample data server, so I'm using a small built-in dataset. The demo will work but with fewer records — we can try again with more data later." Save to `src/quickstart_demo/sample_data_fallback.jsonl`:
-
-   ```json
-   {"DATA_SOURCE":"CRM_SYSTEM","RECORD_ID":"DEMO-001","NAME_FULL":"John Smith","ADDR_FULL":"123 Main St, Las Vegas, NV 89101","PHONE_NUMBER":"555-123-4567","EMAIL_ADDRESS":"john.smith@example.com"}
-   {"DATA_SOURCE":"SUPPORT_SYSTEM","RECORD_ID":"DEMO-002","NAME_FULL":"J. Smith","ADDR_FULL":"123 Main Street, Las Vegas, NV 89101","PHONE_NUMBER":"5551234567","EMAIL_ADDRESS":"jsmith@example.com"}
-   {"DATA_SOURCE":"SALES_SYSTEM","RECORD_ID":"DEMO-003","NAME_FULL":"John R Smith","ADDR_FULL":"123 Main St Apt 1, Las Vegas, NV 89101","PHONE_NUMBER":"(555) 123-4567","EMAIL_ADDRESS":"john.smith@example.com"}
-   {"DATA_SOURCE":"CRM_SYSTEM","RECORD_ID":"DEMO-004","NAME_FULL":"Jane Doe","ADDR_FULL":"456 Oak Ave, Las Vegas, NV 89102","PHONE_NUMBER":"555-987-6543","EMAIL_ADDRESS":"jane.doe@example.com"}
-   {"DATA_SOURCE":"SUPPORT_SYSTEM","RECORD_ID":"DEMO-005","NAME_FULL":"Jane M. Doe","ADDR_FULL":"456 Oak Avenue, Las Vegas, NV 89102","PHONE_NUMBER":"5559876543","EMAIL_ADDRESS":"j.doe@example.com"}
-   ```
-
    **Checkpoint:** Write step 3 to `config/bootcamp_progress.json`.
 
 4. **Generate demo script** via `generate_scaffold(workflow='full_pipeline')`. Must include: SDK init with `database/G2C.db` (never `/tmp/`), record loading with progress, entity querying, match explanations (`why_entity`/`how_entity`), before/after comparison. Save to `src/quickstart_demo/demo_[dataset].[ext]`.

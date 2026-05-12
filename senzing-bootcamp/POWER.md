@@ -12,6 +12,8 @@ author: "Senzing"
 
 This power provides a guided bootcamp for learning Senzing entity resolution through a structured 11-module curriculum (Modules 1-11). It connects to the Senzing MCP server to provide interactive, tool-assisted workflows covering data mapping, SDK installation, record loading, and entity resolution exploration.
 
+**The Senzing MCP server is required for the bootcamp to function.** The server generates SDK code, looks up Senzing facts, provides working examples, and powers interactive mapping workflows. The bootcamp cannot proceed without an active MCP connection.
+
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
 This power works best with Claude Opus 4.6 or similar.
@@ -171,7 +173,6 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 
 - `common-pitfalls.md` — Common mistakes and solutions (load on errors or when user is stuck)
 - `troubleshooting-decision-tree.md` — Visual diagnostic flowchart
-- `mcp-offline-fallback.md` — MCP server offline: blocked/continuable operations, fallback instructions, reconnection
 - `troubleshooting-commands.md` — Diagnostic commands, system checks, escalation procedures
 - `lessons-learned.md` — Post-project retrospective template
 
@@ -317,7 +318,12 @@ The agent creates an organized directory structure at bootcamp start. Key direct
 - Wrong attribute names? Use `mapping_workflow` (never guess)
 - Wrong method signatures? Use `generate_scaffold` or `sdk_guide`
 - MCP connection issues? Check internet/firewall for `mcp.senzing.com:443`
-- MCP down? See `docs/guides/OFFLINE_MODE.md` for what works offline and reconnection steps
+- MCP unreachable? Try these steps:
+  1. Verify internet connectivity
+  2. Test endpoint: `curl -s -o /dev/null -w "%{http_code}" https://mcp.senzing.com:443`
+  3. If behind a corporate proxy, allowlist `mcp.senzing.com:443`
+  4. Check DNS: `nslookup mcp.senzing.com`
+  5. Restart the MCP connection in the Kiro Powers panel
 - Visual diagnostic? Load `troubleshooting-decision-tree.md`
 
 Additional resources: `docs/guides/FAQ.md`. For Senzing terminology and error codes, use MCP tools `search_docs` and `explain_error_code`.
@@ -350,7 +356,6 @@ For the complete script reference with all flags and options, see `docs/guides/S
 - Module Flow Diagram: `docs/diagrams/module-flow.md` (text-based; use a Mermaid preview extension or paste into [mermaid.live](https://mermaid.live) to render)
 - Data Flow Diagram: `docs/diagrams/data-flow.md` (text-based ASCII art, viewable in any editor)
 - System Architecture: `docs/diagrams/system-architecture.md` (shows how SDK, database, programs, and optional layers fit together)
-- Offline Mode Guide: `docs/guides/OFFLINE_MODE.md`
 - Quality Scoring Methodology: `docs/guides/QUALITY_SCORING_METHODOLOGY.md`
 - Performance Baselines: `docs/guides/PERFORMANCE_BASELINES.md`
 - Templates: `templates/data_collection_checklist.md`, `templates/stakeholder_summary.md`, `templates/transformation_lineage.md`, `templates/uat_test_cases.md`

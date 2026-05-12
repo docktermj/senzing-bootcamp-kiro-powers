@@ -32,7 +32,7 @@ _TEST_DATA_BULLET = (
 
 # Preamble and glossary markers
 _PREAMBLE_MARKER = "guided discovery"
-_GLOSSARY_MARKER = "glossary"
+_GLOSSARY_MARKER = "unfamiliar terms"
 
 
 def _get_step4_bullets() -> list[str]:
@@ -121,7 +121,7 @@ class TestOnboardingBulletOrder:
             _TRACKS_BULLET,
             _LICENSE_BULLET,
             _TEST_DATA_BULLET,
-            "glossary at `docs/guides/GLOSSARY.md`",
+            "unfamiliar terms",
         ]
 
         for fragment in expected_fragments:
@@ -143,14 +143,14 @@ class TestOnboardingBulletOrder:
         )
 
     def test_glossary_reference_is_last_bullet(self) -> None:
-        """Verify glossary reference is the last bullet.
+        """Verify term-definition guidance is the last bullet.
 
         Validates: Requirement 1.3
         """
         bullets = _get_step4_bullets()
         assert len(bullets) > 0, "No bullets found in Step 4"
         assert _GLOSSARY_MARKER in bullets[-1].lower(), (
-            f"Last bullet must be the glossary reference.\n"
+            f"Last bullet must be the term-definition guidance.\n"
             f"Got: {bullets[-1]}"
         )
 

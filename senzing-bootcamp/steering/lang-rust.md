@@ -8,7 +8,7 @@ fileMatchPattern: "**/*.rs"
 ## Senzing SDK Best Practices
 
 - Always check MCP server (`get_sdk_reference`) for current Rust SDK availability — Rust bindings may be community-maintained or experimental
-- Use RAII patterns for engine lifecycle — wrap the engine in a struct that calls `destroy()` in its `Drop` implementation
+- Use RAII patterns for engine lifecycle — wrap the engine in a struct that calls the cleanup method in its `Drop` implementation (call `get_sdk_reference` for the current method name)
 - Load engine configuration from JSON files using `std::fs::read_to_string` — deserialize with `serde_json`
 - Use `Result<T, E>` for all SDK operations — propagate errors with `?` operator rather than `unwrap()`
 - Define a custom error enum (using `thiserror`) that wraps Senzing error codes alongside I/O and serialization errors
@@ -51,7 +51,7 @@ fileMatchPattern: "**/*.rs"
 
 ### Senzing Sys Crate Build Failures
 
-**Symptom**: `error: failed to run custom build command for senzing-sys` with messages about missing `cc`, `pkg-config`, or header files
+**Symptom**: `error: failed to run custom build command for` the Senzing sys crate with messages about missing `cc`, `pkg-config`, or header files
 **Cause**: The sys crate requires a C compiler and pkg-config to link against Senzing native libraries, and these build tools are not installed
 **Fix**:
 
@@ -78,8 +78,8 @@ fileMatchPattern: "**/*.rs"
 **Fix**:
 
 1. Check available features: `cargo doc --open` or review the crate's `Cargo.toml`
-2. Enable required features in your `Cargo.toml`: `senzing = { version = "x.y", features = ["full"] }`
-3. For specific modules only: `features = ["engine", "config", "diagnostic"]`
+2. Enable required features in your `Cargo.toml` (call `get_sdk_reference` for current crate name and available features)
+3. For specific modules only: enable individual feature flags as documented by the crate
 4. Verify with: `cargo check` — should compile without unresolved import errors
 
 ### MSVC vs GNU Toolchain Issues on Windows
@@ -99,7 +99,7 @@ fileMatchPattern: "**/*.rs"
 **Cause**: Senzing FFI wrappers return data tied to the engine's lifetime, and Rust's borrow checker enforces these constraints strictly
 **Fix**:
 
-1. Clone response strings immediately: `let result = engine.get_entity(id)?.to_owned()`
+1. Clone response strings immediately: `let result = engine.call_sdk_method(id)?.to_owned()` (call `get_sdk_reference` for the actual method name)
 2. Use `Arc<Engine>` for shared ownership across threads instead of passing references
 3. For callbacks, use `'static` bounds and move closures: `move |data| { ... }`
 4. Verify with: `cargo check` — should compile without lifetime errors

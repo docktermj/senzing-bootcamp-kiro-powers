@@ -301,7 +301,7 @@ After completing Module 1:
 - `POWER.md` - Bootcamp overview
 - `steering/module-01-business-problem.md` - Module 1 workflow
 - Use MCP `search_docs` with query "pricing" for current Senzing pricing
-- `docs/guides/DESIGN_PATTERNS.md` - Design pattern details
+- Use MCP `search_docs` with query "entity resolution design patterns" for current pattern details
 
 ## Troubleshooting
 

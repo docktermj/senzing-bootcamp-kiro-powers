@@ -23,7 +23,7 @@ from hypothesis import strategies as st
 _STEERING_FILE: Path = (
     Path(__file__).resolve().parent.parent
     / "steering"
-    / "module-07-query-validation.md"
+    / "visualization-protocol.md"
 )
 
 _HOOKS_DIR: Path = (
@@ -39,29 +39,29 @@ _README_FILE: Path = (
 # ---------------------------------------------------------------------------
 
 _RE_MANDATORY_HEADING = re.compile(
-    r"⛔\s*MANDATORY\s+VISUALIZATION\s+OFFER",
+    r"🛑\s*STOP",
     re.IGNORECASE,
 )
 
 
 def _extract_wait_blocks(content: str) -> list[str]:
-    """Extract mandatory WAIT block sections from steering file content.
+    """Extract STOP block sections from the visualization protocol file.
 
-    A mandatory WAIT block starts at a line containing the
-    ``⛔ MANDATORY VISUALIZATION OFFER`` pattern and extends until the
-    next numbered step heading (``N. **`` or ``Na. **``) or end of file.
+    A STOP block starts at a line containing the ``🛑 STOP`` pattern and
+    extends until the next section heading (``##``) or the next ``🛑 STOP``
+    or end of file.
 
     Args:
         content: Full text of the steering file.
 
     Returns:
-        List of block text strings, one per mandatory WAIT block found.
+        List of block text strings, one per STOP block found.
     """
     lines = content.splitlines()
     blocks: list[str] = []
     current_block_lines: list[str] | None = None
 
-    re_step = re.compile(r"^\d+[a-z]?\.\s+\*\*")
+    re_section = re.compile(r"^##\s+")
 
     for line in lines:
         if _RE_MANDATORY_HEADING.search(line):
@@ -70,8 +70,8 @@ def _extract_wait_blocks(content: str) -> list[str]:
                 blocks.append("\n".join(current_block_lines))
             current_block_lines = [line]
         elif current_block_lines is not None:
-            # End block at the next numbered step heading
-            if re_step.match(line):
+            # End block at the next section heading
+            if re_section.match(line):
                 blocks.append("\n".join(current_block_lines))
                 current_block_lines = None
             else:
@@ -182,11 +182,10 @@ def st_readme_entry() -> st.SearchStrategy[str]:
 
 
 class TestWaitBlockFormattingConsistency:
-    """Feature: module8-visualization-enforcement, Property 1: Mandatory WAIT block formatting consistency
+    """Feature: module8-visualization-enforcement, Property 1: STOP block formatting consistency
 
-    For any mandatory WAIT block in the steering file, the block uses the
-    same visual formatting pattern: a ⛔ emoji in the heading, a 🛑 bold
-    stop instruction, and block quote formatting.
+    For any STOP block in the visualization protocol file, the block uses
+    the same visual formatting pattern: a 🛑 emoji and a "STOP" instruction.
 
     Validates: Requirements 1.2, 1.4
     """
@@ -199,32 +198,28 @@ class TestWaitBlockFormattingConsistency:
     def test_wait_block_has_consistent_formatting(
         self, block_idx: int
     ) -> None:
-        """Each mandatory WAIT block uses ⛔, 🛑, and block quote formatting.
+        """Each STOP block uses 🛑 and contains a STOP instruction.
 
         Args:
-            block_idx: Index into the list of extracted WAIT blocks.
+            block_idx: Index into the list of extracted STOP blocks.
         """
         block = _WAIT_BLOCKS[block_idx]
         violations: list[str] = []
 
-        # ⛔ emoji in heading
-        if "⛔" not in block:
-            violations.append("missing ⛔ emoji in heading")
-
-        # 🛑 bold stop instruction
+        # 🛑 emoji in the block
         if "🛑" not in block:
-            violations.append("missing 🛑 bold stop instruction")
+            violations.append("missing 🛑 emoji")
 
-        # Block quote formatting (lines starting with >)
-        has_blockquote = any(
-            line.strip().startswith(">")
-            for line in block.splitlines()
-        )
-        if not has_blockquote:
-            violations.append("missing block quote formatting (> prefix)")
+        # STOP instruction
+        if "STOP" not in block:
+            violations.append("missing STOP instruction")
+
+        # Wait instruction (tells agent to wait for input)
+        if "Wait" not in block and "wait" not in block:
+            violations.append("missing wait instruction")
 
         assert violations == [], (
-            f"WAIT block {block_idx} formatting violations: {violations}"
+            f"STOP block {block_idx} formatting violations: {violations}"
         )
 
 
@@ -234,12 +229,11 @@ class TestWaitBlockFormattingConsistency:
 
 
 class TestWaitBlockBehavioralCompleteness:
-    """Feature: module8-visualization-enforcement, Property 2: Mandatory WAIT block behavioral completeness
+    """Feature: module8-visualization-enforcement, Property 2: STOP block behavioral completeness
 
-    For any mandatory WAIT block in the steering file, the block contains
-    (a) an explicit "WAIT" instruction telling the agent not to proceed,
-    and (b) a decline/no path that allows the bootcamper to skip the
-    visualization and continue.
+    For any STOP block in the visualization protocol file, the block contains
+    an explicit "STOP" instruction telling the agent not to proceed and
+    a "Wait" instruction for the bootcamper's input.
 
     Validates: Requirements 1.5, 1.7
     """
@@ -252,30 +246,27 @@ class TestWaitBlockBehavioralCompleteness:
     def test_wait_block_has_behavioral_completeness(
         self, block_idx: int
     ) -> None:
-        """Each mandatory WAIT block has a WAIT instruction and decline path.
+        """Each STOP block has a STOP instruction and wait-for-input directive.
 
         Args:
-            block_idx: Index into the list of extracted WAIT blocks.
+            block_idx: Index into the list of extracted STOP blocks.
         """
         block = _WAIT_BLOCKS[block_idx]
         violations: list[str] = []
 
-        # (a) Explicit WAIT instruction
-        re_wait = re.compile(r"\bWAIT\b", re.IGNORECASE)
-        if not re_wait.search(block):
-            violations.append("missing explicit WAIT instruction")
+        # (a) Explicit STOP instruction
+        if "STOP" not in block:
+            violations.append("missing explicit STOP instruction")
 
-        # (b) Decline/no path — look for "no" or "not now" or "decline"
-        re_decline = re.compile(
-            r"\b(no\b|not now|decline)", re.IGNORECASE
-        )
-        if not re_decline.search(block):
+        # (b) Wait-for-input directive
+        re_wait = re.compile(r"\b[Ww]ait\b")
+        if not re_wait.search(block):
             violations.append(
-                "missing decline/no path for skipping visualization"
+                "missing wait-for-input directive"
             )
 
         assert violations == [], (
-            f"WAIT block {block_idx} behavioral completeness "
+            f"STOP block {block_idx} behavioral completeness "
             f"violations: {violations}"
         )
 

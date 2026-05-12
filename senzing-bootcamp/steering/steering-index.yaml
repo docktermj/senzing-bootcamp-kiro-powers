@@ -151,7 +151,6 @@ keywords:
   recovery: recovery-from-mistakes.md
   mistake: recovery-from-mistakes.md
   phase loading: phase-loading-guide.md
-  offline: mcp-offline-fallback.md
   output level: verbosity-control.md
   diagnostic: troubleshooting-commands.md
   verbose: verbosity-control.md
@@ -195,13 +194,13 @@ file_metadata:
     token_count: 704
     size_category: medium
   agent-instructions.md:
-    token_count: 2158
+    token_count: 2199
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
     size_category: medium
   common-pitfalls.md:
-    token_count: 3775
+    token_count: 3660
     size_category: large
   complexity-estimator.md:
     token_count: 606
@@ -228,10 +227,10 @@ file_metadata:
     token_count: 962
     size_category: medium
   design-patterns.md:
-    token_count: 1010
+    token_count: 746
     size_category: medium
   entity-resolution-intro.md:
-    token_count: 1680
+    token_count: 1472
     size_category: medium
   environment-setup.md:
     token_count: 658
@@ -246,25 +245,25 @@ file_metadata:
     token_count: 1920
     size_category: medium
   hook-registry.md:
-    token_count: 7888
+    token_count: 7418
     size_category: large
   inline-status.md:
     token_count: 466
     size_category: small
   lang-csharp.md:
-    token_count: 1568
+    token_count: 1604
     size_category: medium
   lang-java.md:
-    token_count: 1610
+    token_count: 1688
     size_category: medium
   lang-python.md:
-    token_count: 1600
+    token_count: 1655
     size_category: medium
   lang-rust.md:
-    token_count: 1658
+    token_count: 1698
     size_category: medium
   lang-typescript.md:
-    token_count: 1712
+    token_count: 1770
     size_category: medium
   lessons-learned.md:
     token_count: 434
@@ -272,29 +271,26 @@ file_metadata:
   load-data-reference.md:
     token_count: 1172
     size_category: medium
-  mcp-offline-fallback.md:
-    token_count: 2064
-    size_category: large
   mcp-tool-decision-tree.md:
     token_count: 1275
     size_category: medium
   module-01-business-problem.md:
-    token_count: 3223
+    token_count: 3257
     size_category: large
   module-01-phase2-document-confirm.md:
     token_count: 1871
     size_category: medium
   module-02-sdk-setup.md:
-    token_count: 4076
+    token_count: 4106
     size_category: large
   module-03-quick-demo.md:
-    token_count: 3053
+    token_count: 2748
     size_category: large
   module-04-data-collection.md:
-    token_count: 2962
+    token_count: 2960
     size_category: large
   module-05-data-quality-mapping.md:
-    token_count: 556
+    token_count: 614
     size_category: medium
   module-05-phase1-quality-assessment.md:
     token_count: 1725
@@ -306,7 +302,7 @@ file_metadata:
     token_count: 1736
     size_category: medium
   module-06-load-data.md:
-    token_count: 1160
+    token_count: 1220
     size_category: medium
   module-06-phaseA-build-loading.md:
     token_count: 662
@@ -321,10 +317,10 @@ file_metadata:
     token_count: 1951
     size_category: medium
   module-07-query-validation.md:
-    token_count: 2209
+    token_count: 2248
     size_category: large
   module-08-performance.md:
-    token_count: 1238
+    token_count: 1277
     size_category: medium
   module-08-phaseA-requirements.md:
     token_count: 1508
@@ -342,10 +338,10 @@ file_metadata:
     token_count: 928
     size_category: medium
   module-09-security.md:
-    token_count: 459
+    token_count: 496
     size_category: small
   module-10-monitoring.md:
-    token_count: 455
+    token_count: 493
     size_category: small
   module-10-phaseA-setup.md:
     token_count: 808
@@ -354,7 +350,7 @@ file_metadata:
     token_count: 451
     size_category: small
   module-11-deployment.md:
-    token_count: 3196
+    token_count: 3214
     size_category: large
   module-11-phase2-deploy.md:
     token_count: 850
@@ -369,7 +365,7 @@ file_metadata:
     token_count: 925
     size_category: medium
   onboarding-flow.md:
-    token_count: 6453
+    token_count: 6195
     size_category: large
   phase-loading-guide.md:
     token_count: 460
@@ -384,7 +380,7 @@ file_metadata:
     token_count: 278
     size_category: small
   session-resume.md:
-    token_count: 4013
+    token_count: 3926
     size_category: large
   skip-step-protocol.md:
     token_count: 613
@@ -408,10 +404,10 @@ file_metadata:
     token_count: 1243
     size_category: medium
   visualization-guide.md:
-    token_count: 1505
+    token_count: 1478
     size_category: medium
   visualization-protocol.md:
-    token_count: 1555
+    token_count: 1994
     size_category: medium
   visualization-reference.md:
     token_count: 1004
@@ -424,7 +420,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 119024
+  total_tokens: 116324
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

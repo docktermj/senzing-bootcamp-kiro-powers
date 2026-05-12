@@ -16,7 +16,7 @@ Before doing any setup work, tell the user:
 
 ## 0b. MCP Health Check
 
-Before starting the bootcamp, verify that the Senzing MCP server is reachable. The MCP server powers the bootcamp's interactive features — it generates SDK code in your chosen language, looks up Senzing facts and configuration details, and provides working examples on demand. Without it, the bootcamp can still function in a limited offline mode.
+Before starting the bootcamp, verify that the Senzing MCP server is reachable. The MCP server is required for the bootcamp — it generates SDK code in your chosen language, looks up Senzing facts and configuration details, and provides working examples on demand.
 
 ### Probe
 
@@ -31,51 +31,32 @@ search_docs(query="health check", version="current")
 If the call returns any response (even empty results) within 10 seconds:
 
 1. Proceed silently — do not display anything to the bootcamper.
-2. Write `config/.mcp_status` with:
-
-```json
-{"last_check": "<ISO 8601 timestamp>", "status": "healthy", "error_message": null}
-```
 
 ### Failure Path
 
 If the call times out or errors after 10 seconds:
 
-1. Write `config/.mcp_status` with:
-
-```json
-{"last_check": "<ISO 8601 timestamp>", "status": "unreachable", "error_message": "<error details>"}
-```
-
-2. Display the following warning to the bootcamper:
+1. Display the following blocking error:
 
 ```text
-⚠️ The Senzing MCP server is currently unreachable.
+⛔ The Senzing MCP server is unreachable.
 
-The MCP server is what lets me generate working Senzing code, look up accurate
-SDK details, and pull real examples for you. Without it, some features are limited.
+The MCP server is required for the bootcamp — it generates SDK code,
+looks up Senzing facts, and provides working examples. The bootcamp
+cannot proceed without it.
 
-**What's unavailable**: Code generation, fact lookup, example search
-**What you can still do**: Review existing artifacts, work on documentation, plan next steps
+**Troubleshooting steps:**
+1. Verify internet connectivity (can you load any website?)
+2. Test the endpoint: curl -s -o /dev/null -w "%{http_code}" https://mcp.senzing.com:443
+3. If behind a corporate proxy, allowlist mcp.senzing.com:443
+4. Restart the MCP connection in the Kiro Powers panel
+5. Verify DNS: nslookup mcp.senzing.com
 
-For detailed offline capabilities, see docs/guides/OFFLINE_MODE.md
+After fixing the connection, say "retry" to try again.
 ```
 
-3. Ask:
-
-```text
-👉 Would you like to continue in offline mode, or try again later?
-```
-
-🛑 STOP — Wait for bootcamper response.
-
-### Mid-Session Recovery
-
-Before any step that requires MCP tools, check `config/.mcp_status`. If `status` is `"unreachable"`:
-
-1. Re-attempt the `search_docs(query="health check", version="current")` probe with a 10-second timeout.
-2. If successful, update `config/.mcp_status` to `"healthy"` and display: "✅ MCP server is back online — full functionality restored."
-3. If still unreachable, inform the bootcamper that MCP remains unavailable and offer alternatives.
+2. 🛑 STOP — Do NOT proceed to any subsequent step. Wait for the
+   bootcamper to fix the connection and request a retry.
 
 ## 1. Directory Structure
 
@@ -94,12 +75,10 @@ Execute these setup actions in order. Do not narrate the details to the user.
    | enforce-feedback-path | "Feedback may be written to incorrect file locations." |
    | enforce-working-directory | "File writes to /tmp or external paths will not be automatically blocked." |
    | review-bootcamper-input | "Feedback trigger phrases will not be automatically detected on message submission." |
-   | verify-senzing-facts | "Senzing facts will not be automatically verified against MCP tools before writing." |
 
    **Verify hooks:** Check that each Critical Hook exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.
 
-3. **Copy glossary:** copy `senzing-bootcamp/docs/guides/GLOSSARY.md` to `docs/guides/GLOSSARY.md`. This MUST happen before Step 4 (Introduction) references it.
-4. Generate foundational steering files (`product.md`, `tech.md`, `structure.md`) at `.kiro/steering/`. Each MUST include `inclusion` and `description` in the YAML frontmatter. Use `auto` for `structure.md`, `always` for the others.
+3. Generate foundational steering files (`product.md`, `tech.md`, `structure.md`) at `.kiro/steering/`. Each MUST include `inclusion` and `description` in the YAML frontmatter. Use `auto` for `structure.md`, `always` for the others.
 
 ## 1b. Team Detection
 
@@ -135,9 +114,9 @@ Team: {team_name} ({member_count} members)
 
 ## 2. Language Selection
 
-**Detect the user's platform first** (`platform.system()`), then query the Senzing MCP server (`get_capabilities` or `sdk_guide`) for which languages are supported on that platform. The MCP server is the authoritative source — do not hardcode language/platform assumptions.
+Detect the user's platform (`platform.system()`), then call `get_capabilities` or `sdk_guide` on the Senzing MCP server for the supported languages on that platform. The hard gate in Step 0b guarantees MCP is available — call the tool directly and present the returned language list to the bootcamper.
 
-👉 Present the MCP-returned language list to the bootcamper. **If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly to the bootcamper** and suggest alternatives. For example, if MCP discourages Python on macOS, tell them: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
+👉 Present the MCP-returned language list. If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly and suggest alternatives. For example: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
 
 Persist the selection to `config/bootcamp_preferences.yaml`.
 
@@ -366,7 +345,7 @@ Present the overview before track selection. Cover all points naturally:
 - Tracks let you skip to what matters
 - Built-in 500-record eval license; bring your own for more
 - Test data available anytime. Three sample datasets: Las Vegas, London, Moscow
-- If you encounter unfamiliar terms (like Senzing Entity Specification, DATA_SOURCE, entity resolution), there's a glossary at `docs/guides/GLOSSARY.md` — and you can always ask me to explain anything
+- If you encounter unfamiliar terms (like Senzing Entity Specification, DATA_SOURCE, entity resolution), just ask me to explain — I'll look up the current definition from the Senzing documentation on demand
 
 ### 4a. What Is Entity Resolution?
 

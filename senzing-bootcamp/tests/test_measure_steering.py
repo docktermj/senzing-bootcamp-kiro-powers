@@ -141,7 +141,10 @@ class TestProperty3TokenCountFormula:
 
             mod = _load_measure_steering()
             result = mod.calculate_token_count(filepath)
-            expected = round(len(content) / 4)
+            # read_text in text mode normalizes \r\n to \n on write,
+            # so use the actual file content length for the expected value
+            actual_content = filepath.read_text(encoding="utf-8")
+            expected = round(len(actual_content) / 4)
             assert result == expected
         finally:
             shutil.rmtree(td, ignore_errors=True)

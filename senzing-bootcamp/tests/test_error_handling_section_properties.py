@@ -111,7 +111,9 @@ def parse_symptom_table(content: str) -> list[dict]:
     """Parse a Markdown pipe-delimited table into a list of row dicts.
 
     Skips the header row and separator row.  Each returned dict has keys
-    ``symptom``, ``likely_cause``, and ``diagnostic_steps``.
+    ``symptom`` and ``diagnostic_action``. For backward compatibility,
+    ``likely_cause`` and ``diagnostic_steps`` are also populated from
+    the diagnostic_action column.
 
     Args:
         content: The raw Markdown text containing the table.
@@ -131,11 +133,13 @@ def parse_symptom_table(content: str) -> list[dict]:
     # Skip header (index 0) and separator (index 1)
     for line in table_lines[2:]:
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
-        if len(cells) >= 3:
+        if len(cells) >= 2:
             rows.append({
                 "symptom": cells[0],
+                "diagnostic_action": cells[1],
+                # Backward compat: map to old column names
                 "likely_cause": cells[1],
-                "diagnostic_steps": cells[2],
+                "diagnostic_steps": cells[1],
             })
 
     return rows

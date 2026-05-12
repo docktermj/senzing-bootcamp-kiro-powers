@@ -240,7 +240,7 @@ Document in `docs/rollback_plan.md`: how to revert to previous version, database
 
 The following guide covers advanced topics for production deployments that go beyond the packaging and deployment workflow in this module:
 
-- **[Streaming Integration](../docs/guides/STREAMING_INTEGRATION.md)** — Real-time streaming patterns for event-driven architectures using message queues (Apache Kafka, RabbitMQ, Amazon SQS). Covers consuming records from queues, processing them through Senzing in real time, handling backpressure when inbound rates exceed processing capacity, and managing errors in streaming pipelines. This is optional advanced reading for bootcampers planning event-driven production deployments.
+- **Streaming Integration** — For real-time streaming patterns (Apache Kafka, RabbitMQ, Amazon SQS), ask the agent to use `search_docs(query="streaming integration")` and `find_examples(topic="streaming")` for current guidance on consuming records from queues, processing them through Senzing in real time, handling backpressure, and managing errors in streaming pipelines.
 
 ---
 

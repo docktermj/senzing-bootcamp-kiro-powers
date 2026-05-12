@@ -8,23 +8,23 @@ fileMatchPattern: "**/*.java"
 ## Senzing SDK Best Practices
 
 - Always obtain SDK method signatures from the MCP server (`get_sdk_reference`) — never guess class names or method parameters
-- Use try-with-resources or explicit `try/finally` to guarantee engine `destroy()` is called on shutdown and exceptions
+- Use try-with-resources or explicit `try/finally` to guarantee engine cleanup is called on shutdown and exceptions (call `get_sdk_reference` for the current cleanup method name)
 - Load engine configuration from a JSON file using `Files.readString(Path)` — never hardcode configuration
-- Catch `SzException` (or the SDK-specific exception hierarchy) separately from general exceptions for clear error diagnosis
+- Catch the Senzing-specific exception type (call `get_sdk_reference` for the current exception class name) separately from general exceptions for clear error diagnosis
 - Initialize the Senzing engine once at application startup and reuse the instance — do not create/destroy per record
 - Use `explain_error_code` via MCP for any Senzing error codes encountered at runtime
 
 ## Common Pitfalls
 
-- **Unclosed engine instances**: Forgetting `destroy()` leaks native resources — always use try-with-resources or a shutdown hook (`Runtime.addShutdownHook`)
+- **Unclosed engine instances**: Forgetting engine cleanup leaks native resources — always use try-with-resources or a shutdown hook (`Runtime.addShutdownHook`); call `get_sdk_reference` for the correct cleanup method
 - **Classpath misconfiguration**: Senzing JARs must be on the classpath — verify with `java -cp` or Maven/Gradle dependency declarations
 - **String encoding assumptions**: Always use `StandardCharsets.UTF_8` when converting between `String` and `byte[]` for record payloads
-- **Swallowing exceptions**: Never catch and ignore `SzException` — log the error code and message, then use `explain_error_code` for diagnosis
+- **Swallowing exceptions**: Never catch and ignore Senzing exceptions — log the error code and message, then use `explain_error_code` for diagnosis
 - **Thread-unsafe engine sharing**: The Senzing engine is thread-safe for concurrent calls, but configuration and initialization are not — init once, then share
 
 ## Performance Considerations
 
-- Use `ExecutorService` with a fixed thread pool for parallel record loading — Senzing engine handles concurrent `addRecord` calls
+- Use `ExecutorService` with a fixed thread pool for parallel record loading — Senzing engine handles concurrent record-add calls (call `get_sdk_reference` for the current method name)
 - Size the thread pool to match available CPU cores (start with `Runtime.getRuntime().availableProcessors()`)
 - Process records in batches of 100-1000 — read a batch, submit to the pool, then read the next
 - Tune JVM heap with `-Xmx` (e.g., `-Xmx4g`) for large datasets — Senzing native memory is separate from JVM heap
@@ -37,7 +37,7 @@ fileMatchPattern: "**/*.java"
 - One public class per file — match filename to class name
 - Use `java.util.logging` or SLF4J for logging — never `System.out.println` in production code
 - Store Senzing configuration in `src/main/resources/` or a `config/` directory — load via classpath or file path
-- Define a custom exception class wrapping `SzException` if the project needs application-specific error context
+- Define a custom exception class wrapping the Senzing exception type (call `get_sdk_reference` for the current class name) if the project needs application-specific error context
 
 ## Platform Notes
 
@@ -66,14 +66,14 @@ fileMatchPattern: "**/*.java"
 **Cause**: The Senzing SDK JAR file is not on the Java classpath
 **Fix**:
 
-1. Locate the Senzing JAR: typically in `/opt/senzing/lib/` (Linux) or the Senzing installation `lib` directory
-2. For direct compilation: `javac -cp /opt/senzing/lib/sz-sdk.jar:. MyApp.java`
+1. Locate the Senzing JAR: call `get_sdk_reference` for the current JAR name and typical installation path
+2. For direct compilation: `javac -cp /opt/senzing/lib/<jar-name>:. MyApp.java` (use the JAR name from `get_sdk_reference`)
 3. For Maven/Gradle: add the dependency to your build file (see dependency resolution entry below)
-4. Verify with: `java -cp /opt/senzing/lib/sz-sdk.jar:. -verbose:class MyApp 2>&1 | grep -i senzing`
+4. Verify with: `java -cp /opt/senzing/lib/<jar-name>:. -verbose:class MyApp 2>&1 | grep -i senzing`
 
 ### Maven/Gradle Dependency Resolution Failures
 
-**Symptom**: `Could not resolve dependencies` or `Could not find artifact com.senzing:sz-sdk` during build
+**Symptom**: `Could not resolve dependencies` or build cannot find the Senzing SDK artifact
 **Cause**: The Senzing SDK artifact is not in Maven Central or the repository URL is misconfigured
 **Fix**:
 

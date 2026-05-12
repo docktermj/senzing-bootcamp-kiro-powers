@@ -32,7 +32,7 @@ If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 
 ## MCP Failure
 
-Retry once. If still failing, load `mcp-offline-fallback.md` for what's blocked vs. what can continue. Never fabricate.
+Retry once. If still failing, tell the bootcamper the MCP server is unreachable and they must fix their connection before continuing. Never fabricate Senzing facts. All Senzing facts must come from MCP tools, never from training data.
 
 ## Module Steering
 
@@ -75,7 +75,7 @@ The steering file handles confirmation, preview, and application. Do not compute
   - These rules apply in ALL contexts — onboarding, feedback workflow, module steps, and session resume. See conversation-protocol.md for the full rule set.
 - Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to agentStop hooks — zero output when a 👉 question is pending.
   - FORBIDDEN output patterns: never generate text beginning with "Human:", "User:", or any text that simulates a bootcamper response. This is a critical violation.
-- Goldilocks check: after Modules 3, 6, 9 ask if detail level is right. Store as `detail_level` in preferences. First-term explanations: define Senzing terms inline on first use via `docs/guides/GLOSSARY.md`.
+- Goldilocks check: after Modules 3, 6, 9 ask if detail level is right. Store as `detail_level` in preferences. First-term explanations: define Senzing terms inline on first use by calling `search_docs` from the MCP server to retrieve current definitions.
 - Before each step: what and why. During: status updates. After: what changed, files with paths. Offer to visualize data results as a web page.
 - At module completion: summary, all files, why it matters for next module. Follow `module-transitions.md` rules. Load `module-completion.md`.
 - Feedback trigger phrases: the `review-bootcamper-input` hook handles this automatically — do not manually load feedback-workflow.md.

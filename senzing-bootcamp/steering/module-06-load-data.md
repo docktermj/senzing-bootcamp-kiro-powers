@@ -58,6 +58,6 @@ When the bootcamper encounters an error during this module:
 
 ## Advanced Reading
 
-> **After completing Module 6**, see `docs/guides/DATA_UPDATES_AND_DELETIONS.md` for guidance on record updates, deletions, entity re-evaluation, and redo processing implications — relevant for production systems where source data changes over time.
+> **After completing Module 6**, ask the agent about record updates, deletions, entity re-evaluation, and redo processing — the agent will use `search_docs` and `get_sdk_reference` to provide current guidance relevant for production systems where source data changes over time.
 
-> For production systems that receive ongoing data, see `docs/guides/INCREMENTAL_LOADING.md` for incremental loading patterns — adding new records to an existing database, processing redo records after incremental loads, and monitoring pipeline health over time.
+> For production systems that receive ongoing data, ask the agent about incremental loading patterns — the agent will use `search_docs` and `generate_scaffold` to provide current guidance on adding new records to an existing database, processing redo records after incremental loads, and monitoring pipeline health over time.

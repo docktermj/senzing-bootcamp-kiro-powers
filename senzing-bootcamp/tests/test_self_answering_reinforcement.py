@@ -41,15 +41,6 @@ class TestOnboardingStopMarkers:
     def onboarding(self) -> str:
         return (_STEERING_DIR / "onboarding-flow.md").read_text(encoding="utf-8")
 
-    def test_stop_after_offline_mode_question(self, onboarding: str) -> None:
-        """🛑 STOP exists after the MCP offline mode 👉 question."""
-        # Find the offline mode question
-        idx = onboarding.find("continue in offline mode")
-        assert idx != -1
-        # Check for STOP within next 200 chars
-        after = onboarding[idx:idx + 200]
-        assert "🛑" in after
-
     def test_stop_after_verbosity_question(self, onboarding: str) -> None:
         """🛑 STOP exists after the verbosity preference 👉 question."""
         idx = onboarding.find("how much detail they want")

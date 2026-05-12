@@ -224,7 +224,6 @@ class TestExistingStepPreservation:
         section = _extract_section(text, r"1\.\s+Directory Structure")
         assert "project-structure.md" in section
         assert "Install Critical Hooks" in section
-        assert "GLOSSARY.md" in section
 
     def test_step_1_steering_files(self) -> None:
         """Step 1 references foundational steering files."""
@@ -301,10 +300,10 @@ class TestExistingStepPreservation:
         assert "500-record eval license" in section
 
     def test_step_4_glossary_reference(self) -> None:
-        """Step 4 references the glossary."""
+        """Step 4 provides term-definition guidance (ask the agent)."""
         text = _read_onboarding()
         section = _extract_section(text, r"4\.\s+Bootcamp Introduction")
-        assert "GLOSSARY.md" in section
+        assert "unfamiliar terms" in section
 
     # -- Step 4b: Verbosity Preference --
 

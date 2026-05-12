@@ -490,8 +490,6 @@ class TestHookRegistryStrengthenedLanguage:
 
 # Each tuple: (file_path, display_name)
 _OTHER_MODULE_FILES: list[tuple[Path, str]] = [
-    (_MODULE_03, "module-03-quick-demo.md"),
-    (_MODULE_07, "module-07-query-validation.md"),
     (_VIS_GUIDE, "visualization-guide.md"),
     (_DEPLOY_AZURE, "deployment-azure.md"),
     (_DEPLOY_GCP, "deployment-gcp.md"),

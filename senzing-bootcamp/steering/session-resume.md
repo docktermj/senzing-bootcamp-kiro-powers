@@ -153,7 +153,7 @@ When loading a new module steering file during the session, re-read the `convers
 
 ## Step 2d: MCP Health Check
 
-Before proceeding, verify that the Senzing MCP server is reachable. This ensures MCP-dependent features (code generation, fact lookup, example search) are available for the session.
+Before proceeding, verify that the Senzing MCP server is reachable. The MCP server is required for the bootcamp — it generates SDK code in your chosen language, looks up Senzing facts and configuration details, and provides working examples on demand.
 
 ### Probe
 
@@ -168,46 +168,32 @@ search_docs(query="health check", version="current")
 If the call returns any response (even empty results) within 10 seconds:
 
 1. Proceed silently — do not display anything to the bootcamper.
-2. Write `config/.mcp_status` with:
-
-```json
-{"last_check": "<ISO 8601 timestamp>", "status": "healthy", "error_message": null}
-```
 
 ### Failure Path
 
 If the call times out or errors after 10 seconds:
 
-1. Write `config/.mcp_status` with:
-
-```json
-{"last_check": "<ISO 8601 timestamp>", "status": "unreachable", "error_message": "<error details>"}
-```
-
-2. Display the following warning to the bootcamper:
+1. Display the following blocking error:
 
 ```text
-⚠️ The Senzing MCP server is currently unreachable.
+⛔ The Senzing MCP server is unreachable.
 
-**What's unavailable:** Code generation, fact lookup, example search
-**What you can still do:** Review existing artifacts, work on documentation, plan next steps
+The MCP server is required for the bootcamp — it generates SDK code,
+looks up Senzing facts, and provides working examples. The bootcamp
+cannot proceed without it.
 
-For detailed offline capabilities, see docs/guides/OFFLINE_MODE.md
+**Troubleshooting steps:**
+1. Verify internet connectivity (can you load any website?)
+2. Test the endpoint: curl -s -o /dev/null -w "%{http_code}" https://mcp.senzing.com:443
+3. If behind a corporate proxy, allowlist mcp.senzing.com:443
+4. Restart the MCP connection in the Kiro Powers panel
+5. Verify DNS: nslookup mcp.senzing.com
+
+After fixing the connection, say "retry" to try again.
 ```
 
-3. Ask:
-
-```text
-👉 Would you like to continue in offline mode, or try again later?
-```
-
-### Mid-Session Recovery
-
-Before any step that requires MCP tools, check `config/.mcp_status`. If `status` is `"unreachable"`:
-
-1. Re-attempt the `search_docs(query="health check", version="current")` probe with a 10-second timeout.
-2. If successful, update `config/.mcp_status` to `"healthy"` and display: "✅ MCP server is back online — full functionality restored."
-3. If still unreachable, inform the bootcamper that MCP remains unavailable and offer alternatives.
+2. 🛑 STOP — Do NOT proceed to any subsequent step. Wait for the
+   bootcamper to fix the connection and request a retry.
 
 ## Step 2e: What's New Notification
 

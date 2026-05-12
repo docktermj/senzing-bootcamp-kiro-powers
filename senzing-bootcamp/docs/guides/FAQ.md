@@ -20,7 +20,7 @@ senzing-bootcamp is a structured 11-module curriculum (Modules 1-11). The senzin
 
 ### Where can I find definitions for Senzing terms?
 
-See `docs/guides/GLOSSARY.md` for terms like Entity Specification, DATA_SOURCE, RECORD_ID, entity resolution, features, and more. You can also ask the agent to explain any term at any time.
+Ask the agent to explain any Senzing term at any time. The agent uses the MCP `search_docs` tool to provide current, authoritative definitions on demand.
 
 ## Getting Started
 
@@ -34,30 +34,7 @@ Required: Python 3 (for the power's utility scripts), a supported language runti
 
 ### Do I need a Senzing license?
 
-Here's what you need to know: the Senzing SDK includes a built-in evaluation license limited to **500 records** — no license file required. This is enough for the bootcamp's demo modules and small datasets. If you load more than 500 records, the SDK returns a **SENZ9000** error at record 501.
-
-For larger datasets, you need a custom license file. Email <support@senzing.com> to request a free evaluation license (typically 1–2 business days, 30–90 day validity). For production licenses, contact <sales@senzing.com>.
-
-**If you receive a Base64-encoded license key**, decode it before placing it as `licenses/g2.lic`:
-
-```bash
-# Linux / macOS
-echo '<BASE64_STRING>' | base64 --decode > licenses/g2.lic
-```
-
-```powershell
-# Windows (PowerShell)
-[System.Convert]::FromBase64String('<BASE64_STRING>') |
-  Set-Content -Path licenses\g2.lic -AsByteStream
-```
-
-Verify the decoded file is binary (not text):
-
-```bash
-file licenses/g2.lic
-```
-
-**Never paste a license key into the chat** — always save it to `licenses/g2.lic`. See `licenses/README.md` for full details on license types, placement, and troubleshooting.
+Ask the agent for current licensing details. The agent will use MCP tools to provide up-to-date information about evaluation licenses, record limits, and how to obtain license files for larger datasets.
 
 ### Where should I put my files?
 
@@ -122,7 +99,7 @@ Check internet, verify firewall allows `mcp.senzing.com:443`, check `senzing-boo
 
 ### Getting a SENZ error code?
 
-Use the MCP tool: `explain_error_code("SENZ0005")`. It covers 456 error codes with causes and resolutions.
+Ask the agent — it will use the MCP `explain_error_code` tool to provide the cause and resolution for any SENZ error code.
 
 ### Files created in wrong location?
 
@@ -138,15 +115,11 @@ Yes. Each project has its own directory with its own `database/G2C.db`, `config/
 
 ### What if my data has non-English names?
 
-Senzing handles non-Latin characters (Cyrillic, CJK, Arabic, etc.) natively. During Module 5 (Data Quality & Mapping), the agent will use `search_docs(query="globalization")` for character set guidance. Make sure your source files are UTF-8 encoded — see the encoding guidance in `steering/module-05-data-quality-mapping.md`.
-
-### What if my internet connection drops during an MCP call?
-
-The agent will retry once automatically. If it still fails, you'll be told the MCP server isn't responding. You can continue working on non-MCP tasks (documentation, data collection, code review) and retry when connectivity returns. See the MCP Failure Recovery section in `steering/agent-instructions.md`.
+Ask the agent for guidance on non-Latin character support. The agent will use MCP tools to provide current information about character set handling, UTF-8 encoding requirements, and cross-script matching capabilities.
 
 ### For Senzing-specific questions
 
-Use the MCP `search_docs` tool — it searches indexed Senzing documentation and always has current information.
+Ask the agent — it uses the MCP `search_docs` tool to search indexed Senzing documentation and always has current information.
 
 ## Feedback
 

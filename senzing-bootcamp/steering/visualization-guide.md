@@ -91,8 +91,6 @@ This sequence applies to ALL web service visualizations regardless of module. St
 | No persistent network access | Static HTML | No server or database required |
 | Iterating on data quality with frequent reloads | Web Service | `/refresh` avoids re-running extraction |
 
-> **Agent guidance — MCP unavailable:** Recommend Static HTML mode. Web Service requires SDK connectivity.
-
 ## Reference
 
 For detailed schemas, feature specifications, match strength classification, error handling, and file placement rules, load:

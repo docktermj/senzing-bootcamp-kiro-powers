@@ -37,8 +37,9 @@ _README_PATH = _HOOKS_DIR / "README.md"
 _INSTALL_SCRIPT_PATH = Path(__file__).resolve().parent.parent / "scripts" / "install_hooks.py"
 _POWER_MD_PATH = Path(__file__).resolve().parent.parent / "POWER.md"
 
-# The 19 hook IDs preserved after both merges (validate-senzing-json and
-# enforce-wait-after-question were removed, review-bootcamper-input was added).
+# The hook IDs preserved after merges and the require-mcp-server cleanup
+# (verify-senzing-facts, enforce-feedback-path, enforce-working-directory,
+# offer-visualization were removed).
 PRESERVED_HOOK_IDS: list[str] = sorted([
     "analyze-after-mapping",
     "ask-bootcamper",
@@ -49,15 +50,11 @@ PRESERVED_HOOK_IDS: list[str] = sorted([
     "commonmark-validation",
     "data-quality-check",
     "deployment-phase-gate",
-    "enforce-feedback-path",
     "enforce-visualization-offers",
-    "enforce-working-directory",
     "git-commit-reminder",
-    "offer-visualization",
     "run-tests-after-change",
     "validate-data-files",
     "verify-generated-code",
-    "verify-senzing-facts",
 ])
 
 
@@ -143,17 +140,13 @@ EXPECTED_CATEGORIES: dict[str, str] = {
     "review-bootcamper-input": "critical",
     "code-style-check": "critical",
     "commonmark-validation": "critical",
-    "enforce-feedback-path": "critical",
-    "enforce-working-directory": "critical",
-    "verify-senzing-facts": "critical",
     "validate-data-files": "module-4",
     "analyze-after-mapping": "module-5",
     "data-quality-check": "module-5",
     "backup-before-load": "module-6",
     "run-tests-after-change": "module-6",
     "verify-generated-code": "module-6",
-    "enforce-visualization-offers": "module-7",
-    "offer-visualization": "module-7",
+    "enforce-visualization-offers": "module-8",
     "deployment-phase-gate": "module-11",
     "backup-project-on-request": "module-any",
     "git-commit-reminder": "module-any",
@@ -276,27 +269,12 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
             " acting."
         ),
     },
-    "enforce-feedback-path": {
-        "name": "Enforce Feedback File Path",
-        "description": (
-            "Before any write operation, checks if the agent is writing feedback content. If"
-            " so, ensures it goes to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md and"
-            " nowhere else."
-        ),
-    },
     "enforce-visualization-offers": {
         "name": "Enforce Visualization Offers",
         "description": (
-            "When the agent stops during Module 7, checks whether both visualization offers"
-            " (entity graph and results dashboard) were made. If either was missed, prompts"
-            " the agent to offer it before closing."
-        ),
-    },
-    "enforce-working-directory": {
-        "name": "Enforce Working Directory Paths",
-        "description": (
-            "Checks that file write operations do not use /tmp, %TEMP%, or any path outside"
-            " the working directory. Enforces the file storage policy automatically."
+            "When the agent stops during a visualization-capable module (3, 5, 7, 8), checks"
+            " the visualization tracker to verify all required offers were made. Prompts for"
+            " missed offers."
         ),
     },
     "git-commit-reminder": {
@@ -304,13 +282,6 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         "description": (
             "Reminds the user to commit their work after completing a module. Triggered"
             " manually via button click."
-        ),
-    },
-    "offer-visualization": {
-        "name": "Offer Entity Graph Visualization",
-        "description": (
-            "After query programs are created in Module 7, prompts the agent to offer"
-            " generating an interactive entity graph visualization."
         ),
     },
     "run-tests-after-change": {
@@ -332,14 +303,6 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         "description": (
             "When bootcamp source code is created, prompts the agent to run it on sample data"
             " and report results before moving on."
-        ),
-    },
-    "verify-senzing-facts": {
-        "name": "Verify Senzing Facts Before Writing",
-        "description": (
-            "Reminds the agent to verify Senzing-specific facts via MCP tools before writing"
-            " code or documentation that contains Senzing attribute names, SDK method calls,"
-            " or configuration values."
         ),
     },
 }

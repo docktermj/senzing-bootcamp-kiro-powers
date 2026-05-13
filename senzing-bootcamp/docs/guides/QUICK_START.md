@@ -6,18 +6,16 @@ The bootcamp makes you comfortable generating code — with Kiro's help — that
 
 ## Start
 
-Say "start the bootcamp". The agent sets up your project, asks your language, gives you an overview of the modules, checks prerequisites, and presents four paths.
+Say "start the bootcamp". The agent sets up your project, asks your language, gives you an overview of the modules, checks prerequisites, and presents two tracks.
 
-## Choose Your Path
+## Choose Your Track
 
-Paths are not mutually exclusive — you can start with one and jump to another at any time. All completed modules carry forward.
+Tracks are not mutually exclusive — you can start with one and switch at any time. All completed modules carry forward.
 
-| Path | For | Modules | Why Choose This |
-| ---- | --- | ------- | --------------- |
-| A) Quick Demo | First-time users — see entity resolution in action | 2 → 3 | Verify the technology works before investing more time |
-| B) Fast Track | Have Senzing Entity Specification (SGES) data | 5 → 6 → 8 | Get straight to loading and querying |
-| C) Complete Beginner | New users with raw data | 1 → 4 → 5 → 6 → 8 | Guided help through the entire process |
-| D) Full Production | All modules through deployment | 1 → 2 → 3 → ... → 11 | Building something for production |
+| Track | For | Modules | Why Choose This |
+| ----- | --- | ------- | --------------- |
+| Core Bootcamp | New users building an entity resolution solution | 1, 2, 3, 4, 5, 6, 7 | Recommended foundation covering problem definition through query/visualize |
+| Advanced Topics | Users who need production-readiness | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 | Adds performance, security, monitoring, and deployment on top of core |
 
 Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 
@@ -28,10 +26,9 @@ Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 ## Quick Commands
 
 ```text
-"Let's run the Senzing quick demo"          → Path A
-"I have Entity Specification data ready, let's load it"     → Path B
-"I want to start the bootcamp"              → Path C
-"Show me the full bootcamp"                 → Path D
+"I want to start the bootcamp"              → Core Bootcamp
+"Let's run the Senzing quick demo"          → Core Bootcamp, Module 3
+"Show me the full bootcamp"                 → Advanced Topics
 ```
 
 ## What You Need
@@ -48,12 +45,10 @@ Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 - Single source? → Skip Module 7
 - Not deploying to production? → Skip Modules 8-11
 
-## After Your Path
+## After Your Track
 
-- **After A**: Decide if ER fits your use case, then try Path B or C with your data
-- **After B**: Validate results, add more sources (Modules 4-5, 7), consider production (9-11)
-- **After C**: Validate with stakeholders, plan production deployment
-- **After D**: You're production-ready
+- **After Core Bootcamp**: Validate with stakeholders, plan production deployment via Advanced Topics
+- **After Advanced Topics**: You're production-ready
 
 ## Getting Help
 

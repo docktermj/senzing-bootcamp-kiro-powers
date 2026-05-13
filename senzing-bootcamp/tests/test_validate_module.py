@@ -4,6 +4,7 @@ import importlib
 import io
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -259,3 +260,33 @@ class TestProperty6ValidatorFailsOnMissingArtifacts:
         finally:
             os.chdir(orig)
             shutil.rmtree(td, ignore_errors=True)
+
+
+# ---------------------------------------------------------------------------
+# Integration test — validate_dependencies.py passes with updated files
+# ---------------------------------------------------------------------------
+
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+class TestValidateDependenciesIntegration:
+    """Integration test: validate_dependencies.py exits 0 with updated files.
+
+    _Requirements: 7.1_
+    """
+
+    def test_validate_dependencies_exits_zero(self):
+        """validate_dependencies.py passes against the current project files."""
+        script = _REPO_ROOT / "scripts" / "validate_dependencies.py"
+        result = subprocess.run(
+            [sys.executable, str(script)],
+            capture_output=True,
+            text=True,
+            cwd=str(_REPO_ROOT),
+            timeout=30,
+        )
+        assert result.returncode == 0, (
+            f"validate_dependencies.py failed with exit code {result.returncode}.\n"
+            f"stdout: {result.stdout}\n"
+            f"stderr: {result.stderr}"
+        )

@@ -93,7 +93,7 @@ def st_progress_file(draw):
     # Optional: track
     if draw(st.booleans()):
         result["track"] = draw(
-            st.sampled_from(["quick_demo", "core_bootcamp", "advanced_topics"])
+            st.sampled_from(["core_bootcamp", "advanced_topics"])
         )
 
     # Optional: preferences
@@ -236,7 +236,7 @@ def st_corrupted_progress_file(draw):
                 min_size=1,
                 max_size=10,
                 alphabet=st.characters(whitelist_categories=("L",)),
-            ).filter(lambda x: x not in ("quick_demo", "core_bootcamp", "advanced_topics"))
+            ).filter(lambda x: x not in ("core_bootcamp", "advanced_topics"))
         )
 
     elif field_to_corrupt == "preferences":
@@ -303,6 +303,50 @@ class TestProgressSchemaProperties:
 
     Validates: Requirements 2.1, 2.7, 3.1, 3.2, 5.1, 5.2, 5.3
     """
+
+    # ------------------------------------------------------------------
+    # Property 1 (remove-verification-track): Invalid track rejection
+    # ------------------------------------------------------------------
+
+    @given(
+        invalid_track=st.text(min_size=1, max_size=50).filter(
+            lambda x: x not in ("core_bootcamp", "advanced_topics")
+        )
+    )
+    @settings(max_examples=100)
+    def test_invalid_track_rejection_produces_descriptive_error(self, invalid_track):
+        """Property 1: Invalid track rejection produces descriptive error.
+
+        For any string not in ("core_bootcamp", "advanced_topics") — including
+        "quick_demo" — when used as the track field in a progress record,
+        validate_progress_schema() SHALL return a non-empty error list
+        containing both the invalid value and the tuple of accepted tracks.
+
+        **Validates: Requirements 3.2, 3.3**
+        """
+        progress = {
+            "current_module": 1,
+            "modules_completed": [],
+            "data_sources": [],
+            "database_type": "sqlite",
+            "track": invalid_track,
+        }
+        errors = validate_progress_schema(progress)
+        assert len(errors) > 0, (
+            f"Expected non-empty error list for invalid track {invalid_track!r}, "
+            f"got no errors"
+        )
+        error_text = " ".join(errors)
+        # The error message uses repr() for the invalid value
+        assert repr(invalid_track) in error_text, (
+            f"Expected error to contain the invalid value {invalid_track!r}, "
+            f"got: {errors}"
+        )
+        valid_tracks_repr = repr(("core_bootcamp", "advanced_topics"))
+        assert valid_tracks_repr in error_text, (
+            f"Expected error to contain valid tracks tuple {valid_tracks_repr}, "
+            f"got: {errors}"
+        )
 
     @given(progress=st_progress_file())
     @settings(max_examples=100)

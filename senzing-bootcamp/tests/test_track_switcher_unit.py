@@ -32,7 +32,6 @@ from track_switcher import (
 # ---------------------------------------------------------------------------
 
 TRACK_DEFINITIONS: dict[str, list[int]] = {
-    "quick_demo": [2, 3],
     "core_bootcamp": [1, 2, 3, 4, 5, 6, 7],
     "advanced_topics": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
 }
@@ -53,65 +52,31 @@ MODULE_NAMES: dict[int, str] = {
 
 
 # ---------------------------------------------------------------------------
-# Task 6.2: Test advanced_topics → quick_demo with modules 1–7 completed
+# Test core_bootcamp → advanced_topics switching
 # ---------------------------------------------------------------------------
 
 
-class TestAdvancedToQuickDemo:
-    """Validates Requirement 4.3: switching from advanced_topics to quick_demo
-    with modules 1-7 completed."""
+class TestCoreToAdvanced:
+    """Validates switching from core_bootcamp to advanced_topics."""
 
-    def test_extra_modules(self):
-        """Extra should be [1, 4, 5, 6, 7] — completed modules NOT in quick_demo."""
+    def test_remaining_modules(self):
+        """Remaining should be [8, 9, 10, 11] — advanced modules not in core."""
         result = compute_switch(
-            current_track="advanced_topics",
-            target_track="quick_demo",
+            current_track="core_bootcamp",
+            target_track="advanced_topics",
             modules_completed=[1, 2, 3, 4, 5, 6, 7],
             track_definitions=TRACK_DEFINITIONS,
             module_names=MODULE_NAMES,
         )
 
-        assert result.extra_modules == [1, 4, 5, 6, 7]
-
-    def test_remaining_modules(self):
-        """Remaining should be [] — both quick_demo modules (2, 3) are completed."""
-        result = compute_switch(
-            current_track="advanced_topics",
-            target_track="quick_demo",
-            modules_completed=[1, 2, 3, 4, 5, 6, 7],
-            track_definitions=TRACK_DEFINITIONS,
-            module_names=MODULE_NAMES,
-        )
-
-        assert result.remaining_modules == []
-
-
-# ---------------------------------------------------------------------------
-# Task 6.3: Test quick_demo → core_bootcamp with modules 2, 3 completed
-# ---------------------------------------------------------------------------
-
-
-class TestQuickDemoToCoreBootcamp:
-    """Test switching from quick_demo to core_bootcamp with modules 2, 3 completed."""
-
-    def test_remaining_modules(self):
-        """Remaining should be [1, 4, 5, 6, 7] — core_bootcamp modules not yet done."""
-        result = compute_switch(
-            current_track="quick_demo",
-            target_track="core_bootcamp",
-            modules_completed=[2, 3],
-            track_definitions=TRACK_DEFINITIONS,
-            module_names=MODULE_NAMES,
-        )
-
-        assert result.remaining_modules == [1, 4, 5, 6, 7]
+        assert result.remaining_modules == [8, 9, 10, 11]
 
     def test_extra_modules(self):
-        """Extra should be [] — modules 2, 3 are both in core_bootcamp."""
+        """Extra should be [] — all core modules are in advanced_topics."""
         result = compute_switch(
-            current_track="quick_demo",
-            target_track="core_bootcamp",
-            modules_completed=[2, 3],
+            current_track="core_bootcamp",
+            target_track="advanced_topics",
+            modules_completed=[1, 2, 3, 4, 5, 6, 7],
             track_definitions=TRACK_DEFINITIONS,
             module_names=MODULE_NAMES,
         )
@@ -120,7 +85,40 @@ class TestQuickDemoToCoreBootcamp:
 
 
 # ---------------------------------------------------------------------------
-# Task 6.4: Test edge cases
+# Test advanced_topics → core_bootcamp switching
+# ---------------------------------------------------------------------------
+
+
+class TestAdvancedToCore:
+    """Validates switching from advanced_topics to core_bootcamp."""
+
+    def test_remaining_modules(self):
+        """Remaining should be [] — all core modules already completed."""
+        result = compute_switch(
+            current_track="advanced_topics",
+            target_track="core_bootcamp",
+            modules_completed=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+            track_definitions=TRACK_DEFINITIONS,
+            module_names=MODULE_NAMES,
+        )
+
+        assert result.remaining_modules == []
+
+    def test_extra_modules(self):
+        """Extra should be [8, 9, 10, 11] — completed modules NOT in core_bootcamp."""
+        result = compute_switch(
+            current_track="advanced_topics",
+            target_track="core_bootcamp",
+            modules_completed=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+            track_definitions=TRACK_DEFINITIONS,
+            module_names=MODULE_NAMES,
+        )
+
+        assert result.extra_modules == [8, 9, 10, 11]
+
+
+# ---------------------------------------------------------------------------
+# Test edge cases
 # ---------------------------------------------------------------------------
 
 
@@ -130,22 +128,22 @@ class TestEdgeCases:
     def test_empty_modules_completed(self):
         """Empty modules_completed → remaining = all target modules."""
         result = compute_switch(
-            current_track="quick_demo",
-            target_track="core_bootcamp",
+            current_track="core_bootcamp",
+            target_track="advanced_topics",
             modules_completed=[],
             track_definitions=TRACK_DEFINITIONS,
             module_names=MODULE_NAMES,
         )
 
-        assert result.remaining_modules == [1, 2, 3, 4, 5, 6, 7]
+        assert result.remaining_modules == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
         assert result.extra_modules == []
 
     def test_all_target_modules_completed(self):
         """All target modules already completed → remaining=[], is_noop=False."""
         result = compute_switch(
             current_track="advanced_topics",
-            target_track="quick_demo",
-            modules_completed=[2, 3],
+            target_track="core_bootcamp",
+            modules_completed=[1, 2, 3, 4, 5, 6, 7],
             track_definitions=TRACK_DEFINITIONS,
             module_names=MODULE_NAMES,
         )
@@ -155,7 +153,78 @@ class TestEdgeCases:
 
 
 # ---------------------------------------------------------------------------
-# Task 6.5: Test CLI dry-run JSON output and --apply behavior
+# Test CLI rejects quick_demo with exit code 1 and stderr message
+# ---------------------------------------------------------------------------
+
+
+class TestQuickDemoRejection:
+    """Validates Requirement 7.4, 7.5: CLI rejects quick_demo with exit code 1."""
+
+    def test_cli_rejects_quick_demo_as_source(self, tmp_path, capsys):
+        """CLI exits with code 1 and stderr message when quick_demo is --from."""
+        progress_file = tmp_path / "progress.json"
+        progress_file.write_text(
+            json.dumps({
+                "track": "core_bootcamp",
+                "modules_completed": [1, 2],
+                "current_module": 3,
+                "current_step": None,
+                "last_activity": "2025-07-15T10:00:00+00:00",
+            }),
+            encoding="utf-8",
+        )
+
+        yaml_path = (
+            Path(__file__).resolve().parent.parent / "config" / "module-dependencies.yaml"
+        )
+
+        with pytest.raises(SystemExit) as exc_info:
+            main([
+                "--from", "quick_demo",
+                "--to", "core_bootcamp",
+                "--progress", str(progress_file),
+                "--yaml", str(yaml_path),
+            ])
+
+        assert exc_info.value.code == 1
+        captured = capsys.readouterr()
+        assert "quick_demo" in captured.err
+        assert "Invalid track name" in captured.err or "invalid" in captured.err.lower()
+
+    def test_cli_rejects_quick_demo_as_target(self, tmp_path, capsys):
+        """CLI exits with code 1 and stderr message when quick_demo is --to."""
+        progress_file = tmp_path / "progress.json"
+        progress_file.write_text(
+            json.dumps({
+                "track": "core_bootcamp",
+                "modules_completed": [1, 2],
+                "current_module": 3,
+                "current_step": None,
+                "last_activity": "2025-07-15T10:00:00+00:00",
+            }),
+            encoding="utf-8",
+        )
+
+        yaml_path = (
+            Path(__file__).resolve().parent.parent / "config" / "module-dependencies.yaml"
+        )
+
+        with pytest.raises(SystemExit) as exc_info:
+            main([
+                "--from", "core_bootcamp",
+                "--to", "quick_demo",
+                "--progress", str(progress_file),
+                "--yaml", str(yaml_path),
+            ])
+
+        assert exc_info.value.code == 1
+        captured = capsys.readouterr()
+        assert "quick_demo" in captured.err
+        assert "Invalid track name" in captured.err or "invalid" in captured.err.lower()
+
+
+# ---------------------------------------------------------------------------
+# Test CLI dry-run JSON output and --apply behavior
 # ---------------------------------------------------------------------------
 
 
@@ -167,20 +236,22 @@ class TestCLI:
         progress_file = tmp_path / "progress.json"
         progress_file.write_text(
             json.dumps({
-                "track": "quick_demo",
-                "modules_completed": [2, 3],
-                "current_module": None,
+                "track": "core_bootcamp",
+                "modules_completed": [1, 2, 3],
+                "current_module": 4,
                 "current_step": None,
                 "last_activity": "2025-07-15T10:00:00+00:00",
             }),
             encoding="utf-8",
         )
 
-        yaml_path = Path(__file__).resolve().parent.parent / "config" / "module-dependencies.yaml"
+        yaml_path = (
+            Path(__file__).resolve().parent.parent / "config" / "module-dependencies.yaml"
+        )
 
         main([
-            "--from", "quick_demo",
-            "--to", "core_bootcamp",
+            "--from", "core_bootcamp",
+            "--to", "advanced_topics",
             "--progress", str(progress_file),
             "--yaml", str(yaml_path),
         ])
@@ -188,12 +259,12 @@ class TestCLI:
         captured = capsys.readouterr()
         output = json.loads(captured.out)
 
-        assert output["current_track"] == "quick_demo"
-        assert output["target_track"] == "core_bootcamp"
+        assert output["current_track"] == "core_bootcamp"
+        assert output["target_track"] == "advanced_topics"
         assert output["is_noop"] is False
-        assert output["remaining_modules"] == [1, 4, 5, 6, 7]
+        assert output["remaining_modules"] == [4, 5, 6, 7, 8, 9, 10, 11]
         assert output["extra_modules"] == []
-        assert output["modules_completed"] == [2, 3]
+        assert output["modules_completed"] == [1, 2, 3]
         assert "remaining_module_names" in output
         assert "extra_module_names" in output
 
@@ -202,8 +273,8 @@ class TestCLI:
         progress_file = tmp_path / "progress.json"
         progress_file.write_text(
             json.dumps({
-                "track": "quick_demo",
-                "modules_completed": [2, 3],
+                "track": "core_bootcamp",
+                "modules_completed": [1, 2, 3, 4, 5, 6, 7],
                 "current_module": None,
                 "current_step": None,
                 "step_history": {},
@@ -212,11 +283,13 @@ class TestCLI:
             encoding="utf-8",
         )
 
-        yaml_path = Path(__file__).resolve().parent.parent / "config" / "module-dependencies.yaml"
+        yaml_path = (
+            Path(__file__).resolve().parent.parent / "config" / "module-dependencies.yaml"
+        )
 
         main([
-            "--from", "quick_demo",
-            "--to", "core_bootcamp",
+            "--from", "core_bootcamp",
+            "--to", "advanced_topics",
             "--progress", str(progress_file),
             "--yaml", str(yaml_path),
             "--apply",
@@ -224,14 +297,14 @@ class TestCLI:
 
         updated = json.loads(progress_file.read_text(encoding="utf-8"))
 
-        assert updated["track"] == "core_bootcamp"
-        assert updated["current_module"] == 1
+        assert updated["track"] == "advanced_topics"
+        assert updated["current_module"] == 8
         assert updated["current_step"] is None
         assert "last_activity" in updated
 
 
 # ---------------------------------------------------------------------------
-# Task 6.6: Test error handling
+# Test error handling
 # ---------------------------------------------------------------------------
 
 
@@ -242,9 +315,9 @@ class TestErrorHandling:
         """Mock os.replace to raise OSError → verify original file is untouched."""
         progress_file = tmp_path / "progress.json"
         original_data = {
-            "track": "quick_demo",
-            "modules_completed": [2, 3],
-            "current_module": None,
+            "track": "core_bootcamp",
+            "modules_completed": [1, 2, 3],
+            "current_module": 4,
             "current_step": None,
             "step_history": {},
             "last_activity": "2025-07-15T10:00:00+00:00",
@@ -252,9 +325,9 @@ class TestErrorHandling:
         progress_file.write_text(json.dumps(original_data), encoding="utf-8")
 
         result = compute_switch(
-            current_track="quick_demo",
-            target_track="core_bootcamp",
-            modules_completed=[2, 3],
+            current_track="core_bootcamp",
+            target_track="advanced_topics",
+            modules_completed=[1, 2, 3],
             track_definitions=TRACK_DEFINITIONS,
             module_names=MODULE_NAMES,
         )
@@ -270,12 +343,14 @@ class TestErrorHandling:
     def test_missing_progress_file_with_apply(self, tmp_path):
         """Missing progress file with --apply → exit code 1."""
         progress_file = tmp_path / "nonexistent.json"
-        yaml_path = Path(__file__).resolve().parent.parent / "config" / "module-dependencies.yaml"
+        yaml_path = (
+            Path(__file__).resolve().parent.parent / "config" / "module-dependencies.yaml"
+        )
 
         with pytest.raises(SystemExit) as exc_info:
             main([
-                "--from", "quick_demo",
-                "--to", "core_bootcamp",
+                "--from", "core_bootcamp",
+                "--to", "advanced_topics",
                 "--progress", str(progress_file),
                 "--yaml", str(yaml_path),
                 "--apply",
@@ -288,12 +363,14 @@ class TestErrorHandling:
         progress_file = tmp_path / "progress.json"
         progress_file.write_text("{ not valid json !!!", encoding="utf-8")
 
-        yaml_path = Path(__file__).resolve().parent.parent / "config" / "module-dependencies.yaml"
+        yaml_path = (
+            Path(__file__).resolve().parent.parent / "config" / "module-dependencies.yaml"
+        )
 
         with pytest.raises(SystemExit) as exc_info:
             main([
-                "--from", "quick_demo",
-                "--to", "core_bootcamp",
+                "--from", "core_bootcamp",
+                "--to", "advanced_topics",
                 "--progress", str(progress_file),
                 "--yaml", str(yaml_path),
             ])
@@ -302,7 +379,7 @@ class TestErrorHandling:
 
 
 # ---------------------------------------------------------------------------
-# Task 6.7: Test steering file structure
+# Test steering file structure
 # ---------------------------------------------------------------------------
 
 
@@ -334,7 +411,7 @@ class TestSteeringFileStructure:
 
 
 # ---------------------------------------------------------------------------
-# Task 6.8: Test agent-instructions.md
+# Test agent-instructions.md
 # ---------------------------------------------------------------------------
 
 
@@ -354,7 +431,6 @@ class TestAgentInstructions:
             "change track",
             "move to core",
             "upgrade to advanced",
-            "go back to quick demo",
         ]
         for phrase in trigger_phrases:
             assert phrase in instructions_content, (

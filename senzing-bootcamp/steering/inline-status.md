@@ -46,7 +46,6 @@ Track completion uses partial credit for the current module:
 Percentage = (completed steps across track modules / total steps across track modules) × 100
 
 Track module lists:
-- Quick Demo: Modules 2, 3
 - Core Bootcamp: Modules 1, 2, 3, 4, 5, 6, 7
 - Advanced Topics: Modules 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 

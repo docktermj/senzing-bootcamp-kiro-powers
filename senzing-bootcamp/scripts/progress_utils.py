@@ -19,7 +19,7 @@ from pathlib import Path
 # Schema constants
 # ---------------------------------------------------------------------------
 
-VALID_TRACKS = ("quick_demo", "core_bootcamp", "advanced_topics")
+VALID_TRACKS = ("core_bootcamp", "advanced_topics")
 MODULE_RANGE = range(1, 12)  # 1–11 inclusive
 STEP_HISTORY_KEY_RANGE = range(1, 13)  # 1–12 inclusive
 
@@ -47,7 +47,7 @@ class ProgressSchema:
     database_type: str
     # Optional fields (backward-compatible)
     current_step: int | str | None = None
-    track: str | None = None  # quick_demo | core_bootcamp | advanced_topics
+    track: str | None = None  # core_bootcamp | advanced_topics
     preferences: dict[str, str | bool] | None = None
     session_id: str | None = None
     started_at: str | None = None  # ISO 8601

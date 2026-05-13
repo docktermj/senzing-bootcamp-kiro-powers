@@ -142,12 +142,6 @@
 
 ## Learning Paths
 
-### Quick Demo
-
-```text
-Module 2 → Module 3 → Done
-```
-
 ### Core Bootcamp (recommended)
 
 ```text

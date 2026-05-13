@@ -541,12 +541,15 @@ def validate_onboarding_flow(graph: dict, onboarding_path: Path) -> list[Violati
 
 LEGACY_TRACK_IDENTIFIERS = {
     "fast_track", "complete_beginner", "full_production",
+    "quick_demo",
     "A", "B", "C", "D",
 }
 
 LEGACY_TRACK_PHRASES = [
     "Path A", "Path B", "Path C", "Path D",
     "Track A", "Track B", "Track C", "Track D",
+    "Quick Demo",
+    "System Verification",
 ]
 
 
@@ -597,7 +600,7 @@ def validate_no_legacy_identifiers(graph: dict, onboarding_path: Path) -> list[V
                 )
 
         # Check for legacy snake_case identifiers
-        for legacy_id in ("fast_track", "complete_beginner", "full_production"):
+        for legacy_id in ("fast_track", "complete_beginner", "full_production", "quick_demo"):
             pattern = re.compile(r"\b" + re.escape(legacy_id) + r"\b")
             if pattern.search(content):
                 violations.append(

@@ -236,7 +236,6 @@ class TestPreservationStep5TrackOptions:
     """
 
     _TRACK_MARKERS = [
-        "**Quick Demo**",
         "**Core Bootcamp**",
         "**Advanced Topics**",
     ]
@@ -282,7 +281,6 @@ class TestPreservationStep5InterpretationRules:
     """
 
     _INTERPRETATION_FRAGMENTS = [
-        '"demo"/"quick_demo"→start at Module 2',
         '"core"/"core_bootcamp"→start at Module 1',
         '"advanced"/"advanced_topics"→start at Module 1',
     ]
@@ -312,7 +310,6 @@ class TestPreservationProperty:
     """
 
     _ALL_PRESERVED_CONTENT = [
-        "**Quick Demo**",
         "**Core Bootcamp**",
         "**Advanced Topics**",
         "Module 2 is automatically inserted before any module that needs the SDK.",

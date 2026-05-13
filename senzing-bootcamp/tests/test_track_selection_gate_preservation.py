@@ -226,20 +226,12 @@ class TestTrackMappingPreserved:
             "Step 5 missing 'Interpreting responses' text"
         )
 
-    def test_step5_maps_demo_to_module2_via_interpreting(self) -> None:
-        """Assert Step 5 interpreting responses maps demo to Module 2."""
+    def test_step5_maps_core_to_module1_via_interpreting(self) -> None:
+        """Assert Step 5 interpreting responses maps core to Module 1."""
         content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
         step5 = _extract_section(content, "5. Track Selection")
-        assert re.search(r'"demo".*Module 2|"quick_demo".*Module 2', step5), (
-            "Step 5 missing demo→Module 2 mapping in interpreting responses"
-        )
-
-    def test_step5_maps_demo_to_module2(self) -> None:
-        """Assert demo/quick_demo maps to Module 2."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
-        step5 = _extract_section(content, "5. Track Selection")
-        assert re.search(r'"demo".*Module 2|"quick_demo".*Module 2', step5), (
-            "Step 5 missing demo→Module 2 mapping"
+        assert re.search(r'"core".*Module 1|"core_bootcamp".*Module 1', step5), (
+            "Step 5 missing core→Module 1 mapping in interpreting responses"
         )
 
     def test_step5_maps_core_to_module1(self) -> None:

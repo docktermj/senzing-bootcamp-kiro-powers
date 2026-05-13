@@ -187,7 +187,7 @@ class TestProperty1NonAdvancedTracksGate:
 
     @given(
         track=st.one_of(
-            st.sampled_from(["quick_demo", "core_bootcamp"]),
+            st.sampled_from(["core_bootcamp"]),
             st.text(),
         )
     )

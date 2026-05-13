@@ -23,6 +23,7 @@ if _SCRIPTS_DIR not in sys.path:
 from track_switcher import (
     compute_switch,
     apply_switch,
+    main,
     SwitchResult,
     load_track_definitions,
     load_module_names,
@@ -33,10 +34,9 @@ from track_switcher import (
 # Constants (from module-dependencies.yaml)
 # ---------------------------------------------------------------------------
 
-VALID_TRACKS = {"quick_demo", "core_bootcamp", "advanced_topics"}
+VALID_TRACKS = {"core_bootcamp", "advanced_topics"}
 
 TRACK_DEFINITIONS: dict[str, list[int]] = {
-    "quick_demo": [2, 3],
     "core_bootcamp": [1, 2, 3, 4, 5, 6, 7],
     "advanced_topics": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
 }
@@ -65,8 +65,8 @@ ALL_MODULES = list(range(1, 12))
 
 @st.composite
 def st_track_name(draw) -> str:
-    """Sample from the three valid track names."""
-    return draw(st.sampled_from(sorted(VALID_TRACKS)))
+    """Sample from the two valid track names."""
+    return draw(st.sampled_from(("core_bootcamp", "advanced_topics")))
 
 
 @st.composite
@@ -149,7 +149,7 @@ class TestTrackSwitcherProperties:
         @settings(max_examples=100)
         def test_partition_equals_target(self, target_track, modules_completed):
             """remaining ∪ (completed ∩ target) = target modules."""
-            current_track = "quick_demo"  # arbitrary valid current track
+            current_track = "core_bootcamp"  # arbitrary valid current track
 
             result = compute_switch(
                 current_track=current_track,
@@ -180,7 +180,7 @@ class TestTrackSwitcherProperties:
         @settings(max_examples=100)
         def test_remaining_preserves_target_ordering(self, target_track, modules_completed):
             """remaining_modules preserves the ordering defined in the target track."""
-            current_track = "quick_demo"
+            current_track = "core_bootcamp"
 
             result = compute_switch(
                 current_track=current_track,
@@ -204,6 +204,73 @@ class TestTrackSwitcherProperties:
                 f"target ordering {target_modules}"
             )
 
+    class TestValidTrackSwitchingSucceeds:
+        """Property 2 — Valid track switching succeeds for all module states.
+
+        **Validates: Requirements 4.1**
+
+        Feature: remove-verification-track, Property 2: Valid track switching succeeds
+        for all module states
+
+        For any pair of tracks from {"core_bootcamp", "advanced_topics"} and any subset
+        of modules 1–11 as modules_completed, compute_switch() SHALL return a SwitchResult
+        without raising, and remaining_modules ∪ (modules_completed ∩ target modules)
+        SHALL equal the target track's module set.
+        """
+
+        @given(
+            current_track=st_track_name(),
+            target_track=st_track_name(),
+            modules_completed=st_modules_completed(),
+        )
+        @settings(max_examples=100)
+        def test_valid_switch_returns_without_raising(
+            self, current_track, target_track, modules_completed
+        ):
+            """compute_switch() returns a SwitchResult for all valid track pairs."""
+            result = compute_switch(
+                current_track=current_track,
+                target_track=target_track,
+                modules_completed=modules_completed,
+                track_definitions=TRACK_DEFINITIONS,
+                module_names=MODULE_NAMES,
+            )
+
+            assert isinstance(result, SwitchResult), (
+                f"Expected SwitchResult, got {type(result)}"
+            )
+
+        @given(
+            current_track=st_track_name(),
+            target_track=st_track_name(),
+            modules_completed=st_modules_completed(),
+        )
+        @settings(max_examples=100)
+        def test_partition_covers_target_modules(
+            self, current_track, target_track, modules_completed
+        ):
+            """remaining ∪ (completed ∩ target) = target track's module set."""
+            result = compute_switch(
+                current_track=current_track,
+                target_track=target_track,
+                modules_completed=modules_completed,
+                track_definitions=TRACK_DEFINITIONS,
+                module_names=MODULE_NAMES,
+            )
+
+            target_modules = set(TRACK_DEFINITIONS[target_track])
+            completed_set = set(modules_completed)
+            remaining_set = set(result.remaining_modules)
+            completed_in_target = completed_set & target_modules
+
+            union = remaining_set | completed_in_target
+
+            assert union == target_modules, (
+                f"Partition mismatch for {current_track}->{target_track}: "
+                f"remaining={remaining_set}, completed∩target={completed_in_target}, "
+                f"union={union}, expected={target_modules}"
+            )
+
     class TestExtraModulesSetDifference:
         """Property 2 — Extra Modules Set Difference.
 
@@ -220,7 +287,7 @@ class TestTrackSwitcherProperties:
         @settings(max_examples=100)
         def test_extra_equals_completed_minus_target(self, target_track, modules_completed):
             """extra_modules = modules_completed - target track modules."""
-            current_track = "quick_demo"
+            current_track = "core_bootcamp"
 
             result = compute_switch(
                 current_track=current_track,
@@ -246,7 +313,7 @@ class TestTrackSwitcherProperties:
         @settings(max_examples=100)
         def test_extra_modules_have_names(self, target_track, modules_completed):
             """Each extra module has its name included in extra_module_names."""
-            current_track = "quick_demo"
+            current_track = "core_bootcamp"
 
             result = compute_switch(
                 current_track=current_track,
@@ -296,7 +363,7 @@ class TestTrackSwitcherProperties:
 
         **Validates: Requirements 1.4**
 
-        For any string not in {quick_demo, core_bootcamp, advanced_topics},
+        For any string not in {core_bootcamp, advanced_topics},
         compute_switch raises ValueError containing the invalid name.
         """
 
@@ -306,7 +373,7 @@ class TestTrackSwitcherProperties:
             """Invalid target track raises ValueError with the name in message."""
             with pytest.raises(ValueError) as exc_info:
                 compute_switch(
-                    current_track="quick_demo",
+                    current_track="core_bootcamp",
                     target_track=invalid_name,
                     modules_completed=[],
                     track_definitions=TRACK_DEFINITIONS,
@@ -453,4 +520,94 @@ class TestTrackSwitcherProperties:
             assert before_apply <= parsed_ts <= after_apply, (
                 f"last_activity {last_activity} not between "
                 f"{before_apply.isoformat()} and {after_apply.isoformat()}"
+            )
+
+
+    class TestSideEffectFreeRejection:
+        """Property 3 (Feature: remove-verification-track) — Invalid track switch is
+        side-effect-free.
+
+        **Validates: Requirements 4.2, 4.3**
+
+        For any string not in {"core_bootcamp", "advanced_topics"}, when provided as
+        source or target to the track switcher CLI with --apply, the progress file
+        SHALL remain byte-for-byte identical.
+        """
+
+        _YAML_PATH = str(
+            Path(__file__).resolve().parent.parent / "config" / "module-dependencies.yaml"
+        )
+
+        @given(invalid_name=st_invalid_track_name())
+        @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+        def test_invalid_target_leaves_progress_unchanged(self, invalid_name, tmp_path):
+            """Progress file is byte-for-byte identical after invalid target track."""
+            # Filter out strings that confuse argparse (start with -)
+            assume(not invalid_name.startswith("-"))
+
+            progress_data = {
+                "track": "core_bootcamp",
+                "modules_completed": [1, 2],
+                "step_history": {},
+                "current_module": 3,
+                "current_step": 1,
+                "last_activity": "2025-07-15T10:00:00+00:00",
+            }
+            progress_path = tmp_path / f"progress_{uuid.uuid4().hex}.json"
+            content_before = json.dumps(progress_data, indent=2) + "\n"
+            progress_path.write_text(content_before, encoding="utf-8")
+
+            with pytest.raises(SystemExit) as exc_info:
+                main([
+                    "--from", "core_bootcamp",
+                    "--to", invalid_name,
+                    "--progress", str(progress_path),
+                    "--apply",
+                    "--yaml", self._YAML_PATH,
+                ])
+
+            assert exc_info.value.code != 0, (
+                f"Expected non-zero exit for invalid target '{invalid_name}'"
+            )
+
+            content_after = progress_path.read_text(encoding="utf-8")
+            assert content_after == content_before, (
+                f"Progress file was modified after invalid target '{invalid_name}'"
+            )
+
+        @given(invalid_name=st_invalid_track_name())
+        @settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+        def test_invalid_source_leaves_progress_unchanged(self, invalid_name, tmp_path):
+            """Progress file is byte-for-byte identical after invalid source track."""
+            # Filter out strings that confuse argparse (start with -)
+            assume(not invalid_name.startswith("-"))
+
+            progress_data = {
+                "track": "core_bootcamp",
+                "modules_completed": [1, 2],
+                "step_history": {},
+                "current_module": 3,
+                "current_step": 1,
+                "last_activity": "2025-07-15T10:00:00+00:00",
+            }
+            progress_path = tmp_path / f"progress_{uuid.uuid4().hex}.json"
+            content_before = json.dumps(progress_data, indent=2) + "\n"
+            progress_path.write_text(content_before, encoding="utf-8")
+
+            with pytest.raises(SystemExit) as exc_info:
+                main([
+                    "--from", invalid_name,
+                    "--to", "core_bootcamp",
+                    "--progress", str(progress_path),
+                    "--apply",
+                    "--yaml", self._YAML_PATH,
+                ])
+
+            assert exc_info.value.code != 0, (
+                f"Expected non-zero exit for invalid source '{invalid_name}'"
+            )
+
+            content_after = progress_path.read_text(encoding="utf-8")
+            assert content_after == content_before, (
+                f"Progress file was modified after invalid source '{invalid_name}'"
             )

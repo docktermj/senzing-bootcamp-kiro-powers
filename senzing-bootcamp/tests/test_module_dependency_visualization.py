@@ -327,5 +327,5 @@ class TestYAMLParser:
             pytest.skip("module-dependencies.yaml not found")
         text = yaml_path.read_text(encoding="utf-8")
         tracks = _parse_yaml_tracks(text)
-        assert "quick_demo" in tracks
-        assert tracks["quick_demo"]["modules"] == [2, 3]
+        assert "core_bootcamp" in tracks
+        assert tracks["core_bootcamp"]["modules"] == [1, 2, 3, 4, 5, 6, 7]

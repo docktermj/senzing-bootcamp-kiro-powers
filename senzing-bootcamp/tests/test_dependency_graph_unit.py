@@ -57,10 +57,23 @@ class TestRealGraphParsing:
         graph = load_dependency_graph(_GRAPH_PATH)
         assert len(graph["modules"]) == 11
 
-    def test_graph_has_3_tracks(self):
-        """(c) Real graph has 3 tracks."""
+    def test_graph_has_2_tracks(self):
+        """(c) Real graph has exactly 2 tracks."""
         graph = load_dependency_graph(_GRAPH_PATH)
-        assert len(graph["tracks"]) == 3
+        assert len(graph["tracks"]) == 2
+
+    def test_quick_demo_absent_from_tracks(self):
+        """quick_demo track is not present in the dependency graph."""
+        graph = load_dependency_graph(_GRAPH_PATH)
+        assert "quick_demo" not in graph["tracks"]
+
+    def test_core_bootcamp_properties_preserved(self):
+        """Core Bootcamp track retains expected name, modules, and recommendation."""
+        graph = load_dependency_graph(_GRAPH_PATH)
+        core = graph["tracks"]["core_bootcamp"]
+        assert core["name"] == "Core Bootcamp"
+        assert core["modules"] == [1, 2, 3, 4, 5, 6, 7]
+        assert core["recommendation"] == "recommended"
 
     def test_graph_has_10_gates(self):
         """(d) Real graph has 10 gates."""

@@ -36,7 +36,6 @@ graph TD
 
 | Track | Modules | Color |
 |-------|---------|-------|
-| Quick Demo | 2 → 3 | Blue → Green |
 | Core Bootcamp (recommended) | 1 → 2 → 3 → 4 → 5 → 6 → 7 | Orange → Blue → Green |
 | Advanced Topics (not recommended for bootcamp) | 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 | All |
 

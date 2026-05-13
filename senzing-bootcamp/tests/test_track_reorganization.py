@@ -1,11 +1,11 @@
 """Property-based and unit tests for track reorganization.
 
-Validates that the three-track model (quick_demo, core_bootcamp, advanced_topics)
+Validates that the two-track model (core_bootcamp, advanced_topics)
 is correctly implemented and that all legacy track identifiers have been removed
 from the bootcamp codebase.
 
 Uses Hypothesis for property-based testing across 5 correctness properties,
-plus one unit test asserting the Track_Registry structure.
+plus unit tests asserting the Track_Registry structure and POWER.md content.
 """
 
 from __future__ import annotations
@@ -45,7 +45,7 @@ from validate_dependencies import (
 
 _BOOTCAMP_ROOT = Path(__file__).resolve().parent.parent
 
-_VALID_TRACK_IDS = {"quick_demo", "core_bootcamp", "advanced_topics"}
+_VALID_TRACK_IDS = {"core_bootcamp", "advanced_topics"}
 
 _LEGACY_TRACK_IDS = {
     "fast_track", "complete_beginner", "full_production",
@@ -293,24 +293,24 @@ class TestProperty5ValidationDetectsLegacy:
 
 
 # ===========================================================================
-# Task 8.7 — Unit test: Track_Registry contains exactly three new identifiers
+# Task 8.7 — Unit test: Track_Registry contains exactly two identifiers
 # ===========================================================================
 
 
 class TestTrackRegistryStructure:
-    """Unit tests asserting the Track_Registry has exactly three tracks with correct structure.
+    """Unit tests asserting the Track_Registry has exactly two tracks with correct structure.
 
-    **Validates: Requirements 1.1, 1.2, 1.3, 1.4, 1.5, 1.6**
+    **Validates: Requirements 1.1, 1.2, 1.3, 1.4**
     """
 
-    def test_registry_has_exactly_three_tracks(self) -> None:
-        """Track_Registry contains exactly quick_demo, core_bootcamp, advanced_topics."""
+    def test_registry_has_exactly_two_tracks(self) -> None:
+        """Track_Registry contains exactly core_bootcamp and advanced_topics."""
         yaml_path = _BOOTCAMP_ROOT / "config" / "module-dependencies.yaml"
         with open(yaml_path, "r", encoding="utf-8") as fh:
             graph = yaml.safe_load(fh)
 
         tracks = graph["tracks"]
-        assert set(tracks.keys()) == {"quick_demo", "core_bootcamp", "advanced_topics"}
+        assert set(tracks.keys()) == {"core_bootcamp", "advanced_topics"}
 
     def test_each_track_has_required_fields(self) -> None:
         """Each track has name, description, modules, and recommendation fields."""
@@ -327,13 +327,13 @@ class TestTrackRegistryStructure:
                     f"Track {track_id!r} missing required field {field!r}"
                 )
 
-    def test_quick_demo_modules(self) -> None:
-        """quick_demo track has modules [2, 3]."""
+    def test_quick_demo_absent_from_registry(self) -> None:
+        """quick_demo track is not present in the Track_Registry."""
         yaml_path = _BOOTCAMP_ROOT / "config" / "module-dependencies.yaml"
         with open(yaml_path, "r", encoding="utf-8") as fh:
             graph = yaml.safe_load(fh)
 
-        assert graph["tracks"]["quick_demo"]["modules"] == [2, 3]
+        assert "quick_demo" not in graph["tracks"]
 
     def test_core_bootcamp_modules(self) -> None:
         """core_bootcamp track has modules [1, 2, 3, 4, 5, 6, 7]."""
@@ -360,7 +360,6 @@ class TestTrackRegistryStructure:
             graph = yaml.safe_load(fh)
 
         tracks = graph["tracks"]
-        assert tracks["quick_demo"]["recommendation"] == "neutral"
         assert tracks["core_bootcamp"]["recommendation"] == "recommended"
         assert tracks["advanced_topics"]["recommendation"] == "not_recommended"
 
@@ -375,3 +374,93 @@ class TestTrackRegistryStructure:
             assert legacy_id not in tracks, (
                 f"Legacy identifier {legacy_id!r} found as track key"
             )
+
+
+# ===========================================================================
+# Task 7.5 — Unit tests: POWER.md lists exactly 2 tracks, Module 3 retained
+# ===========================================================================
+
+
+class TestPowerMdTrackContent:
+    """Unit tests asserting POWER.md lists exactly 2 tracks and retains Module 3.
+
+    **Validates: Requirements 7.1, 7.6**
+    """
+
+    def test_power_md_lists_exactly_two_tracks(self) -> None:
+        """POWER.md Quick Start section lists exactly 2 track bullets."""
+        power_md_path = _BOOTCAMP_ROOT / "POWER.md"
+        content = power_md_path.read_text(encoding="utf-8")
+
+        # Extract the Quick Start section
+        qs_match = re.search(
+            r"## Quick Start\s*\n(.*?)(?=\n## |\Z)", content, re.DOTALL
+        )
+        assert qs_match is not None, "Quick Start section not found in POWER.md"
+        qs_section = qs_match.group(1)
+
+        # Count track bullet lines (lines starting with "- **" that describe tracks)
+        track_bullets = re.findall(r"^- \*\*[^*]+\*\*", qs_section, re.MULTILINE)
+        assert len(track_bullets) == 2, (
+            f"Expected exactly 2 track bullets in Quick Start, "
+            f"got {len(track_bullets)}: {track_bullets}"
+        )
+
+    def test_power_md_no_quick_demo_track_bullet(self) -> None:
+        """POWER.md Quick Start section does not list a Quick Demo track."""
+        power_md_path = _BOOTCAMP_ROOT / "POWER.md"
+        content = power_md_path.read_text(encoding="utf-8")
+
+        # Extract the Quick Start section
+        qs_match = re.search(
+            r"## Quick Start\s*\n(.*?)(?=\n## |\Z)", content, re.DOTALL
+        )
+        assert qs_match is not None, "Quick Start section not found in POWER.md"
+        qs_section = qs_match.group(1)
+
+        # Ensure no "Quick Demo" track bullet exists
+        assert "Quick Demo" not in qs_section, (
+            "Quick Demo track bullet still present in POWER.md Quick Start section"
+        )
+
+    def test_power_md_module_3_in_bootcamp_modules_table(self) -> None:
+        """POWER.md Bootcamp Modules table retains Module 3 (Quick Demo)."""
+        power_md_path = _BOOTCAMP_ROOT / "POWER.md"
+        content = power_md_path.read_text(encoding="utf-8")
+
+        # Look for Module 3 row in the Bootcamp Modules table
+        # The table has format: | 3      | Quick Demo ...
+        module_3_pattern = re.compile(r"^\|\s*3\s*\|.*Quick Demo", re.MULTILINE)
+        assert module_3_pattern.search(content) is not None, (
+            "Module 3 (Quick Demo) not found in POWER.md Bootcamp Modules table"
+        )
+
+    def test_power_md_has_core_bootcamp_track(self) -> None:
+        """POWER.md Quick Start section lists Core Bootcamp track."""
+        power_md_path = _BOOTCAMP_ROOT / "POWER.md"
+        content = power_md_path.read_text(encoding="utf-8")
+
+        qs_match = re.search(
+            r"## Quick Start\s*\n(.*?)(?=\n## |\Z)", content, re.DOTALL
+        )
+        assert qs_match is not None
+        qs_section = qs_match.group(1)
+
+        assert "Core Bootcamp" in qs_section, (
+            "Core Bootcamp track not found in POWER.md Quick Start section"
+        )
+
+    def test_power_md_has_advanced_topics_track(self) -> None:
+        """POWER.md Quick Start section lists Advanced Topics track."""
+        power_md_path = _BOOTCAMP_ROOT / "POWER.md"
+        content = power_md_path.read_text(encoding="utf-8")
+
+        qs_match = re.search(
+            r"## Quick Start\s*\n(.*?)(?=\n## |\Z)", content, re.DOTALL
+        )
+        assert qs_match is not None
+        qs_section = qs_match.group(1)
+
+        assert "Advanced Topics" in qs_section, (
+            "Advanced Topics track not found in POWER.md Quick Start section"
+        )

@@ -45,7 +45,7 @@ from export_results import (
 
 _ARTIFACT_TYPES = sorted(VALID_ARTIFACT_TYPES)
 _LANGUAGES = ["python", "java", "csharp", "rust", "typescript", None]
-_TRACKS = ["quick_demo", "core_bootcamp", "advanced_topics", None]
+_TRACKS = ["core_bootcamp", "advanced_topics", None]
 
 
 def st_artifact_entry() -> st.SearchStrategy[ArtifactEntry]:
@@ -784,7 +784,7 @@ class TestJournalHandling:
     def test_journal_preserves_headings(self):
         """Journal with multi-module structure preserves headings."""
         journal_html = "<h2>Module 1</h2><p>Completed setup</p><h2>Module 2</h2><p>Loaded data</p>"
-        progress = ProgressData(modules_completed=[1, 2], track="quick_demo")
+        progress = ProgressData(modules_completed=[1, 2], track="core_bootcamp")
         metrics = ExportMetrics(quality_scores=[])
         manifest = ArtifactManifest(artifacts=[], scan_timestamp="2025-01-15T10:00:00Z")
 
@@ -799,7 +799,7 @@ class TestJournalHandling:
 
     def test_journal_absent_omits_section(self):
         """When journal is None, the journal section is omitted."""
-        progress = ProgressData(modules_completed=[1], track="quick_demo")
+        progress = ProgressData(modules_completed=[1], track="core_bootcamp")
         metrics = ExportMetrics(quality_scores=[])
         manifest = ArtifactManifest(artifacts=[], scan_timestamp="2025-01-15T10:00:00Z")
 
@@ -822,7 +822,7 @@ class TestVisualizationsAndSemanticHTML:
 
     def test_no_visualizations_omits_section(self):
         """When no visualization artifacts exist, the section is omitted."""
-        progress = ProgressData(modules_completed=[1], track="quick_demo")
+        progress = ProgressData(modules_completed=[1], track="core_bootcamp")
         metrics = ExportMetrics(quality_scores=[])
         manifest = ArtifactManifest(artifacts=[], scan_timestamp="2025-01-15T10:00:00Z")
 
@@ -860,7 +860,7 @@ class TestTOCAndFooter:
 
     def test_toc_contains_anchor_links(self):
         """TOC contains anchor links for each section."""
-        progress = ProgressData(modules_completed=[1], track="quick_demo")
+        progress = ProgressData(modules_completed=[1], track="core_bootcamp")
         metrics = ExportMetrics(
             quality_scores=[QualityScore(source_name="test", overall=85.0)],
         )

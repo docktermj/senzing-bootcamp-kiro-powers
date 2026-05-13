@@ -49,11 +49,6 @@ modules:
     skip_if: "Not deploying to production"
 
 tracks:
-  quick_demo:
-    name: "Quick Demo"
-    description: "Fastest path to see Senzing in action"
-    modules: [2, 3]
-    recommendation: "neutral"
   core_bootcamp:
     name: "Core Bootcamp"
     description: "Recommended foundation covering problem definition through query/visualize"

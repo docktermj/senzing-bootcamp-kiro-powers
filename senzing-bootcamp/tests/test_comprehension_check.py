@@ -331,10 +331,10 @@ class TestExistingStepPreservation:
     # -- Step 5: Track Selection (mandatory gate) --
 
     def test_step_5_track_descriptions(self) -> None:
-        """Step 5 contains all three track descriptions."""
+        """Step 5 contains both track descriptions."""
         text = _read_onboarding()
         section = _extract_section(text, r"5\.\s+Track Selection")
-        for track in ("Quick Demo", "Core Bootcamp", "Advanced Topics"):
+        for track in ("Core Bootcamp", "Advanced Topics"):
             assert track in section, (
                 f"Step 5 missing track description '{track}'"
             )

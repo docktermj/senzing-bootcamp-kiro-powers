@@ -221,17 +221,18 @@ class TestSystemVerificationUnit:
         )
 
     def test_onboarding_flow_references_updated(self) -> None:
-        """Onboarding flow uses 'System Verification' name.
+        """Onboarding flow uses 'System verification' in gates table.
 
         Validates: Requirement 11.1
         """
         content = _read_onboarding_flow()
 
-        assert "System Verification" in content, (
-            "Onboarding flow should reference 'System Verification'"
+        # "System verification" appears in the gates table (gate 3→4)
+        # The quick_demo track bullet was removed, but the gate reference remains
+        assert "System verification" in content or "System Verification" in content, (
+            "Onboarding flow should reference 'System verification' in gates table"
         )
-        # The old name should not appear as a track name
-        # (it may appear in other contexts, so check the track section)
+        # Module 3 should not be referenced as 'Quick Demo' in track context
         lines = content.splitlines()
         track_lines = [
             line for line in lines

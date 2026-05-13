@@ -73,7 +73,6 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 
 **New users:** Say "start the bootcamp" to begin. Choose your track:
 
-- **Quick Demo** — Modules 2, 3. Fastest path to see Senzing in action. Done in one session.
 - **Core Bootcamp** *(recommended)* — Modules 1, 2, 3, 4, 5, 6, 7. Recommended foundation covering problem definition through query/visualize.
 - **Advanced Topics** *(not recommended for bootcamp)* — Modules 1–11. Adds production-readiness topics (performance, security hardening, monitoring, and packaging/deployment) as advanced add-ons layered on top of the core bootcamp.
 

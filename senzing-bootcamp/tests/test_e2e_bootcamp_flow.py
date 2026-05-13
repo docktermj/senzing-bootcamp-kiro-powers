@@ -1110,15 +1110,6 @@ class TestTrackFlowIntegration:
         final_state = mgr.read()
         assert set(final_state["modules_completed"]) == set(track.modules)
 
-    def test_quick_demo_track(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
-        """Walk modules 2, 3 in the Quick Demo track.
-
-        Validates: Requirements 1.1
-        """
-        self._walk_track(tmp_path, monkeypatch, "quick_demo")
-
     def test_core_bootcamp_track(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
@@ -1148,7 +1139,7 @@ class TestConfigParsing:
     def test_module_dependencies_parsed(self) -> None:
         """Verify module-dependencies.yaml was parsed successfully."""
         assert len(CONFIG.modules) == 11
-        assert len(CONFIG.tracks) == 3
+        assert len(CONFIG.tracks) == 2
         assert len(CONFIG.gates) == 10
 
     def test_steering_index_parsed(self) -> None:

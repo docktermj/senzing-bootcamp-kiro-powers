@@ -24,13 +24,21 @@ inclusion: manual
 
    First, ask: "How would you like to provide the data for [datasource_name]? You can upload a file, provide a URL/file path, connect to a database, or use an API endpoint."
 
-   **If the user doesn't have their own data** or wants free data to practice with, proactively mention:
+   **If the user doesn't have their own data** or wants free data to practice with, recommend CORD data as the primary alternative:
 
-   > "You have two options for sample data:
-   > 1. **MCP sample data**: I can pull real data from CORD datasets (Las Vegas, London, Moscow) using the `get_sample_data` tool — these are ready-to-use Senzing JSONL files.
-   > 2. **Free raw data**: There's a curated collection of 35+ free data sources at <https://github.com/docktermj/senzing-bootcamp-free-data> — these include raw samples (great for practicing mapping) and pre-mapped files."
+   > "Senzing provides **CORD (Collections Of Relatable Data)** — curated, real-world-like datasets designed specifically for entity resolution evaluation. These are the best option for learning with realistic data patterns.
+   >
+   > I can pull CORD datasets (Las Vegas, London, Moscow) using the `get_sample_data` tool — these are ready-to-use Senzing JSONL files.
+   >
+   > Learn more about CORD: <https://senzing.com/senzing-ready-data-collections-cord/>"
 
    Use `get_sample_data(dataset='list')` to show available CORD datasets. Present the `download_url` from the response so the user can download the full JSONL file.
+
+   **If the user declines CORD data** or needs something different, offer secondary options:
+
+   > "If CORD doesn't meet your needs, there are other options:
+   > - **Free raw data**: A curated collection of 35+ free data sources at <https://github.com/docktermj/senzing-bootcamp-free-data> — these include raw samples (great for practicing mapping) and pre-mapped files.
+   > - **Synthesized test data**: I can generate custom test data tailored to your specific scenario."
 
    Then proceed with the appropriate option:
 
@@ -213,7 +221,7 @@ inclusion: manual
 - Remind about data privacy and security
 - Verify files are accessible before proceeding
 - Document everything in `docs/data_source_locations.md`
-- **If user doesn't have data or asks about free data sources**, first offer `get_sample_data` MCP tool for CORD datasets (Las Vegas, London, Moscow), then recommend <https://github.com/docktermj/senzing-bootcamp-free-data> for raw samples and additional sources
+- **If user doesn't have data or asks about free data sources**, follow the data recommendation hierarchy: (1) recommend CORD data first via the `get_sample_data` MCP tool (Las Vegas, London, Moscow datasets) with reference to <https://senzing.com/senzing-ready-data-collections-cord/>, (2) if CORD is declined, recommend <https://github.com/docktermj/senzing-bootcamp-free-data> for raw samples and additional sources, (3) offer synthesized test data generation only as a last resort after CORD and free-data options are declined
 
 ## Error Handling
 

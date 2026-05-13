@@ -21,7 +21,7 @@ Paths are not mutually exclusive — you can start with one and jump to another 
 
 Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 
-**Don't have data?** Test data can be generated at any point.
+**Don't have data?** Senzing provides [CORD (Collections Of Relatable Data)](https://senzing.com/senzing-ready-data-collections-cord/) — curated, real-world-like datasets designed for entity resolution evaluation. Use the `get_sample_data` tool to download a CORD dataset (Las Vegas, London, or Moscow). If CORD data doesn't meet your specific needs, test data can be generated as a fallback.
 
 **Licensing:** Senzing includes a built-in evaluation license for 500 records. Bring your own license for more capacity.
 

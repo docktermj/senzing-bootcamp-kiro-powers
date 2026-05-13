@@ -344,7 +344,7 @@ Present the overview before track selection. Cover all points naturally:
 - Module overview table (1-11): what each does and why it matters
 - Tracks let you skip to what matters
 - Built-in 500-record eval license; bring your own for more
-- Test data available anytime. Three sample datasets: Las Vegas, London, Moscow
+- Senzing provides CORD (Collections Of Relatable Data) — curated data collections designed for entity resolution evaluation. Three CORD datasets are available: Las Vegas, London, Moscow. Learn more: <https://senzing.com/senzing-ready-data-collections-cord/>. If CORD data doesn't meet your specific needs, test data can also be generated.
 - If you encounter unfamiliar terms (like Senzing Entity Specification, DATA_SOURCE, entity resolution), just ask me to explain — I'll look up the current definition from the Senzing documentation on demand
 
 ### 4a. What Is Entity Resolution?

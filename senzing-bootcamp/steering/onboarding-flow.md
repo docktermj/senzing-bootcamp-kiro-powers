@@ -58,6 +58,24 @@ After fixing the connection, say "retry" to try again.
 2. 🛑 STOP — Do NOT proceed to any subsequent step. Wait for the
    bootcamper to fix the connection and request a retry.
 
+## 0c. Version Display
+
+Read the power version from `senzing-bootcamp/VERSION` using the `version.py` script's logic and display it to the bootcamper:
+
+```text
+Senzing Bootcamp Power v0.1.0
+```
+
+This is automatic — no user interaction is required. Display the version as the first onboarding output before proceeding.
+
+If the version file cannot be read or contains an invalid version, display:
+
+```text
+⚠️ Could not determine power version.
+```
+
+Then continue with the onboarding sequence — do NOT block on version errors.
+
 ## 1. Directory Structure
 
 Execute these setup actions in order. Do not narrate the details to the user.

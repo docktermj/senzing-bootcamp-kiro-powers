@@ -14,6 +14,13 @@ import re
 import sys
 from pathlib import Path
 
+# Allow importing sibling scripts (scripts aren't packages)
+_SCRIPTS_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
+
+from version import VersionError, validate_version
+
 
 def color(code, text):
     if hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
@@ -236,6 +243,33 @@ def check_diagrams():
         check((diagrams_dir / diagram).exists(), f"{diagram} exists")
 
 
+def check_version_file():
+    """Read senzing-bootcamp/VERSION and validate its format."""
+    print("\n=== Version File ===")
+    version_file = POWER_DIR / "VERSION"
+    if not version_file.exists():
+        check(False, f"VERSION file exists at {version_file}")
+        return
+
+    check(True, f"VERSION file exists at {version_file}")
+
+    try:
+        content = version_file.read_text(encoding="utf-8").strip()
+    except OSError as exc:
+        check(False, f"VERSION file is readable — {exc}")
+        return
+
+    if not content:
+        check(False, "VERSION file is not empty")
+        return
+
+    try:
+        validate_version(content)
+        check(True, f"VERSION file contains valid semver: {content}")
+    except VersionError as exc:
+        check(False, f"VERSION file contains valid semver — {exc.message}")
+
+
 def main():
     print(f"Validating Senzing Bootcamp power at: {POWER_DIR.resolve()}")
 
@@ -251,6 +285,7 @@ def main():
     check_policies()
     check_diagrams()
     check_steering_index_metadata()
+    check_version_file()
 
     print(f"\n{'=' * 50}")
     if errors:

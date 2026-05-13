@@ -14,8 +14,8 @@ inclusion: manual
 checkpoints:
   module_3:
     - id: "m3_demo_results"
-      trigger: "Demo results displayed successfully"
-      context: "these entity resolution demo results"
+      trigger: "Verification results displayed successfully"
+      context: "these system verification results"
       types: [Static_HTML_Report, Web_Service_Dashboard]
   module_5:
     - id: "m5_quality_assessment"

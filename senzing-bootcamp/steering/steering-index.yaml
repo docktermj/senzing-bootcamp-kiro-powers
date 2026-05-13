@@ -14,7 +14,7 @@ modules:
         size_category: medium
         step_range: [10, 18]
   2: module-02-sdk-setup.md
-  3: module-03-quick-demo.md
+  3: module-03-system-verification.md
   4: module-04-data-collection.md
   5:
     root: module-05-data-quality-mapping.md
@@ -283,8 +283,8 @@ file_metadata:
   module-02-sdk-setup.md:
     token_count: 4106
     size_category: large
-  module-03-quick-demo.md:
-    token_count: 2748
+  module-03-system-verification.md:
+    token_count: 3840
     size_category: large
   module-04-data-collection.md:
     token_count: 2960

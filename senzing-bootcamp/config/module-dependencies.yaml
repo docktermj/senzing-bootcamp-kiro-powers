@@ -12,9 +12,9 @@ modules:
     requires: []
     skip_if: "SDK already installed and configured"
   3:
-    name: "Quick Demo"
+    name: "System Verification"
     requires: [2]
-    skip_if: "Already familiar with Senzing"
+    skip_if: "Already familiar with Senzing and system verified"
   4:
     name: "Data Collection"
     requires: [1]
@@ -74,7 +74,7 @@ gates:
       - "SDK installed, DB configured, test passes"
   "3->4":
     requires:
-      - "Demo completed or skipped"
+      - "System verification passed or skipped"
   "4->5":
     requires:
       - "Sources collected, files in data/raw/"

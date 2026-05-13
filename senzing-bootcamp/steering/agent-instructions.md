@@ -26,7 +26,6 @@ If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 - Uncertain which tool? Load `mcp-tool-decision-tree.md` for the full decision tree with anti-patterns and call examples.
 - Never hand-code Senzing JSON mappings or SDK method names
 - Third-party software: consult Senzing MCP (`search_docs`) before recommending tools in a Senzing integration context.
-- Production-scale code only. Reject `exportJSONEntityReport()`/`export_report` — use per-entity queries.
 - Reuse MCP responses within a module; re-query across module boundaries. No answer? Say so, suggest <https://docs.senzing.com> / <support@senzing.com> — never fabricate.
 - MCP skepticism: flag data mart tables (`sz_dm_report`), beta features, or non-core SDK references
 

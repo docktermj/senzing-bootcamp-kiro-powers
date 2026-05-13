@@ -164,12 +164,15 @@ class TestHookCount:
     """Verify the expected number of .kiro.hook files exist."""
 
     def test_hook_file_count_matches_categories(self):
-        """Hook file count matches the total entries in hook-categories.yaml (Req 2.8)."""
+        """Hook file count matches unique hook IDs in hook-categories.yaml (Req 2.8)."""
         from hook_test_helpers import parse_categories_yaml
         categories = parse_categories_yaml()
-        expected_count = sum(len(ids) for ids in categories.values())
+        unique_hook_ids: set[str] = set()
+        for ids in categories.values():
+            unique_hook_ids.update(ids)
+        expected_count = len(unique_hook_ids)
         hook_files = get_hook_files()
         assert len(hook_files) == expected_count, (
-            f"Expected {expected_count} hook files (from categories YAML), "
+            f"Expected {expected_count} hook files (unique IDs in categories YAML), "
             f"found {len(hook_files)}: {[p.name for p in hook_files]}"
         )

@@ -31,9 +31,9 @@
            ▼
 ┌──────────────────────┐
 │   MODULE 3 (Optional)│
-│    Quick Demo        │
+│  System Verification │
 │                      │
-│  • Sample data       │
+│  • TruthSet data     │
 │  • Live resolution   │
 │  • See results       │
 └──────────┬───────────┘

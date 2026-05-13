@@ -21,7 +21,7 @@ MUST use this exact table format. Only show modules in the user's selected path 
 | Module | Name | Status |
 |--------|------|--------|
 | 2 | SDK Setup | ✅ Complete |
-| → 3 | Quick Demo | 🔄 Current |
+| → 3 | System Verification | 🔄 Current |
 | 1 | Business Problem | ⬜ Upcoming |
 
 Use ✅ for completed modules, 🔄 for the current module (prefix module number with →), ⬜ for upcoming modules. Include one-line "why" for each.

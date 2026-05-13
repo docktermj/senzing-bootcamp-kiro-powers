@@ -16,7 +16,7 @@ description: "Module prerequisites and dependencies — load when checking readi
 |------------------------------|--------------------------------------------------------------|--------------------------------------------------|
 | 1 — Business Problem         | None                                                         | —                                                |
 | 2 — SDK Setup                | None (first technical module)                                | SDK already installed (verify with import check) |
-| 3 — Quick Demo               | Module 2                                                     | Already familiar with Senzing                    |
+| 3 — System Verification      | Module 2                                                     | Already familiar with Senzing and system verified |
 | 4 — Data Collection          | Module 1                                                     | —                                                |
 | 5 — Data Quality & Mapping   | Module 4, files in `data/raw/`                               | All sources Entity Specification-compliant → Module 6 |
 | 6 — Load Data                | Module 2 + Module 5, transformed data in `data/transformed/` | Data already loaded → Module 7                   |

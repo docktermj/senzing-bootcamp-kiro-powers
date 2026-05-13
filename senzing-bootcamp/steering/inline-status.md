@@ -16,7 +16,7 @@ When the bootcamper asks for status using any of these trigger phrases: "where a
 
 ## Response Template
 
-```
+```text
 📍 **Module [N]: [Title]** — Step [S] of [Total]
 
 Track: [Track Display Name] — [X]% complete
@@ -46,12 +46,13 @@ Track completion uses partial credit for the current module:
 Percentage = (completed steps across track modules / total steps across track modules) × 100
 
 Track module lists:
+
 - Core Bootcamp: Modules 1, 2, 3, 4, 5, 6, 7
 - Advanced Topics: Modules 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 
 ## Edge Cases
 
-- **No progress file**: Respond with "You haven't started yet — would you like to begin onboarding?"
+- **No progress file:** Respond with "You haven't started yet — would you like to begin onboarding?"
 - **Between modules** (current_module is null): Show last completed module and next available module
-- **Track not selected**: Omit the track line, show module progress only
-- **No data sources registered**: Omit the data sources line
+- **Track not selected:** Omit the track line, show module progress only
+- **No data sources registered:** Omit the data sources line

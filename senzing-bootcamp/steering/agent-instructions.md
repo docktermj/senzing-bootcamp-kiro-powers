@@ -53,7 +53,7 @@ When the bootcamper says any of these trigger phrases, load `track-switching.md`
 - "change track"
 - "move to core"
 - "upgrade to advanced"
-- "go back to quick demo"
+- "go back to system verification"
 
 The steering file handles confirmation, preview, and application. Do not compute track switches inline — always invoke the `track_switcher.py` script as instructed by the steering file.
 

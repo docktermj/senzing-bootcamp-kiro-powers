@@ -424,15 +424,15 @@ class TestPowerMdTrackContent:
         )
 
     def test_power_md_module_3_in_bootcamp_modules_table(self) -> None:
-        """POWER.md Bootcamp Modules table retains Module 3 (Quick Demo)."""
+        """POWER.md Bootcamp Modules table retains Module 3 (System Verification)."""
         power_md_path = _BOOTCAMP_ROOT / "POWER.md"
         content = power_md_path.read_text(encoding="utf-8")
 
         # Look for Module 3 row in the Bootcamp Modules table
-        # The table has format: | 3      | Quick Demo ...
-        module_3_pattern = re.compile(r"^\|\s*3\s*\|.*Quick Demo", re.MULTILINE)
+        # The table has format: | 3      | System Verification ...
+        module_3_pattern = re.compile(r"^\|\s*3\s*\|.*System Verification", re.MULTILINE)
         assert module_3_pattern.search(content) is not None, (
-            "Module 3 (Quick Demo) not found in POWER.md Bootcamp Modules table"
+            "Module 3 (System Verification) not found in POWER.md Bootcamp Modules table"
         )
 
     def test_power_md_has_core_bootcamp_track(self) -> None:

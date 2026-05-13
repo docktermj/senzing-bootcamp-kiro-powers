@@ -194,13 +194,13 @@ file_metadata:
     token_count: 704
     size_category: medium
   agent-instructions.md:
-    token_count: 2172
+    token_count: 2174
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
     size_category: medium
   common-pitfalls.md:
-    token_count: 3660
+    token_count: 3716
     size_category: large
   complexity-estimator.md:
     token_count: 606
@@ -242,13 +242,13 @@ file_metadata:
     token_count: 2542
     size_category: large
   graduation.md:
-    token_count: 1920
+    token_count: 1919
     size_category: medium
   hook-registry.md:
-    token_count: 7418
+    token_count: 7601
     size_category: large
   inline-status.md:
-    token_count: 459
+    token_count: 460
     size_category: small
   lang-csharp.md:
     token_count: 1604
@@ -281,10 +281,10 @@ file_metadata:
     token_count: 1871
     size_category: medium
   module-02-sdk-setup.md:
-    token_count: 4106
+    token_count: 4114
     size_category: large
   module-03-system-verification.md:
-    token_count: 5533
+    token_count: 5452
     size_category: large
   module-04-data-collection.md:
     token_count: 3157
@@ -314,13 +314,13 @@ file_metadata:
     token_count: 1428
     size_category: medium
   module-06-phaseD-validation.md:
-    token_count: 1951
+    token_count: 1950
     size_category: medium
   module-07-query-validation.md:
     token_count: 2193
     size_category: large
   module-08-performance.md:
-    token_count: 1277
+    token_count: 1278
     size_category: medium
   module-08-phaseA-requirements.md:
     token_count: 1508
@@ -362,10 +362,10 @@ file_metadata:
     token_count: 1151
     size_category: medium
   module-transitions.md:
-    token_count: 925
+    token_count: 928
     size_category: medium
   onboarding-flow.md:
-    token_count: 6229
+    token_count: 6353
     size_category: large
   phase-loading-guide.md:
     token_count: 460
@@ -420,7 +420,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 119253
+  total_tokens: 119548
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

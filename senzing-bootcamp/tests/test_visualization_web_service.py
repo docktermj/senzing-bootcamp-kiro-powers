@@ -21,7 +21,7 @@ _POWER_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 
 _VIZ_GUIDE = _POWER_ROOT / "steering" / "visualization-guide.md"
 _VIZ_WEB_SERVICE = _POWER_ROOT / "steering" / "visualization-web-service.md"
-_MODULE_03 = _POWER_ROOT / "steering" / "module-03-quick-demo.md"
+_MODULE_03 = _POWER_ROOT / "steering" / "module-03-system-verification.md"
 _MODULE_07 = _POWER_ROOT / "steering" / "module-07-query-validation.md"
 
 
@@ -299,37 +299,27 @@ class TestVizGuideFeatureParity:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 4.5 — module-03-quick-demo.md Visualization Protocol Reference
+# 4.5 — module-03-system-verification.md Visualization Protocol Reference
 # Validates: Requirements 5.2
 # ═══════════════════════════════════════════════════════════════════════════
 
 
 class TestModule03VisualizationPrompt:
-    """Verify module-03-quick-demo.md references the Visualization Protocol in Phase 2 Step 5."""
+    """Module 3 was redesigned as TruthSet System Verification. It no
+    longer follows the Visualization Protocol pattern used in the old
+    Quick Demo; the `enforce-visualization-offers` hook handles
+    visualization offers during Module 3 instead. This test class is
+    retained as a placeholder — its assertions are no longer relevant.
+    """
 
-    @pytest.fixture(autouse=True)
-    def _load(self):
-        self.content = _read(_MODULE_03)
-
-    def test_prompt_in_phase2_step5(self):
-        """Visualization checkpoint appears in Phase 2 Step 5."""
-        # Step 5 references the Visualization Protocol
-        step5_pos = self.content.index("Visualization checkpoint")
-        # The protocol reference should be within step 5 content
-        protocol_pos = self.content.index("visualization-protocol.md", step5_pos)
-        assert protocol_pos > step5_pos
-
-    def test_prompt_references_protocol(self):
-        """Step 5 loads visualization-protocol.md."""
-        assert "visualization-protocol.md" in self.content
-
-    def test_prompt_references_m3_checkpoint(self):
-        """Step 5 references the m3_demo_results checkpoint."""
-        assert "m3_demo_results" in self.content
-
-    def test_must_complete_before_closing(self):
-        """Step must complete before closing the module."""
-        assert "MUST complete before closing the module" in self.content
+    def test_module03_uses_truthset_not_visualization_protocol(self):
+        """Module 3 (System Verification) does not embed a visualization
+        protocol reference — visualization is handled by the hook layer.
+        """
+        content = _read(_MODULE_03)
+        # The file should describe System Verification, not a Quick Demo
+        assert "System Verification" in content
+        assert "TruthSet" in content
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -424,25 +414,18 @@ class TestPreservation:
         assert "Empty database" in self.viz_combined
         assert "Entity count > 500" in self.viz_combined
 
-    # --- module-03-quick-demo.md preservation ---
+    # --- module-03-system-verification.md preservation ---
+    #
+    # NOTE: Module 3 was redesigned from "Quick Demo" (Phase 1: Setup,
+    # Phase 2: Demo) to "System Verification" (Phase 1: Verification
+    # Pipeline, Phase 2: Report & Close) using the Senzing TruthSet
+    # deterministically. The old phase-structure preservation tests no
+    # longer apply and have been removed.
 
-    def test_module03_phase1_preserved(self):
-        """Module 3 Phase 1 content is unchanged."""
-        assert "Phase 1: Setup" in self.module_03
-        assert "Create project structure" in self.module_03
-        assert "Verify SDK" in self.module_03
-        assert "Choose sample dataset" in self.module_03
-        assert "Generate demo script" in self.module_03
-
-    def test_module03_phase2_other_steps_preserved(self):
-        """Module 3 Phase 2 content (other than Step 5) is unchanged."""
-        assert "Phase 2: Demo" in self.module_03
-        assert "Show records BEFORE resolution" in self.module_03
-        assert "Run the demo" in self.module_03
-        assert "Display results" in self.module_03
-        assert "Explain results" in self.module_03
-        assert "Close Module 3 explicitly" in self.module_03
-        assert "Transition to Module 1" in self.module_03
+    def test_module03_is_system_verification(self):
+        """Module 3 is the System Verification workflow."""
+        assert "System Verification" in self.module_03
+        assert "TruthSet" in self.module_03
 
     # --- module-07-query-validation.md preservation ---
 

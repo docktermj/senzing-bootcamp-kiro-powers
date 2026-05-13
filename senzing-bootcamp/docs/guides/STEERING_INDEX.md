@@ -28,7 +28,7 @@ A simple entry maps a module number directly to a steering filename string:
 ```yaml
 modules:
   2: module-02-sdk-setup.md
-  3: module-03-quick-demo.md
+  3: module-03-system-verification.md
 ```
 
 The agent loads the single file when the bootcamper enters that module.
@@ -186,7 +186,7 @@ modules:
         size_category: medium
         step_range: [10, 18]
   2: module-02-sdk-setup.md
-  3: module-03-quick-demo.md
+  3: module-03-system-verification.md
 
 keywords:
   error: common-pitfalls.md
@@ -229,4 +229,4 @@ budget:
 
 ---
 
-**Last Updated**: 2026-04-17
+**Last Updated:** 2026-04-17

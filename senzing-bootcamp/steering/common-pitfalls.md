@@ -55,11 +55,12 @@ What carries forward: all code, transformed data, docs, config. What doesn't: th
 
 <a id="module-3"></a>
 
-## Module 3: Quick Demo
+## Module 3: System Verification
 
 | Pitfall                                  | Fix                                                                              |
 | ---------------------------------------- | -------------------------------------------------------------------------------- |
 | Confusing per-process stats with totals  | Use a counter during loading for record counts. Call `get_sdk_reference` for current stats method behavior |
+| Entity counts don't match TruthSet expectations | Check SDK config paths (CONFIGPATH, SUPPORTPATH), verify database was freshly initialized, call `search_docs(query="truthset")` for current expected results |
 
 <a id="module-1"></a>
 

@@ -26,9 +26,7 @@ _ONBOARDING_FLOW: Path = _STEERING_DIR / "onboarding-flow.md"
 # The expected bullet substrings in order for the three reordered bullets.
 _TRACKS_BULLET = "Tracks let you skip to what matters"
 _LICENSE_BULLET = "Built-in 500-record eval license; bring your own for more"
-_TEST_DATA_BULLET = (
-    "Test data available anytime. Three sample datasets: Las Vegas, London, Moscow"
-)
+_TEST_DATA_BULLET = "CORD"
 
 # Preamble and glossary markers
 _PREAMBLE_MARKER = "guided discovery"

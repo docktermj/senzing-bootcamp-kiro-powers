@@ -633,14 +633,14 @@ _ALL_KEY_CONTENT: dict[str, list[str]] = {
 # ---------------------------------------------------------------------------
 
 _HASH_UNAFFECTED: dict[str, str] = {
-    "module-08": "d34f4e148fd2583c582641305f4403488eaac454b0606313c156f1b56eab0fdf",
+    "module-08": "cbba2a596783b5d7cd4fffcf837c007908c0dbcaca96bd71f97e1e9306f0055e",
     "module-09": "9bf4b4c8e9abdaf601c395016781f3223e4bc0df083f8ebd85393f555055cf1c",
     "module-10": "0dc0f96576e8ef4548fe2401558007e23c36499951c00c9f1fe04c9c456d4117",
 }
 
 _HASH_HOOK = "224540d6b1b90b374f9e43e983eed32ef9e97768f7661ac0061bc0f20a485cae"
-_HASH_AGENT_INSTRUCTIONS = "89c3717d97ec92aaa43c049e6d014b69ead4ef598067e3f26e57a2c5840d054e"
-_HASH_ONBOARDING_FLOW = "30dd930569603856219175cad046915386389cafe1c67ec102a49bb945d621cc"
+_HASH_AGENT_INSTRUCTIONS = "a84f82d69aabd2b34f1cc623f106cd171e041fd8a1a36a12290cf107f2dd305e"
+_HASH_ONBOARDING_FLOW = "36806ae2e53939657991cbdea73ab810b998c99bce3698824c9485a0d62efc8a"
 
 
 # ---------------------------------------------------------------------------

@@ -249,12 +249,12 @@ class TestHookCategoriesRegistration:
 # ===========================================================================
 
 class TestHookCount:
-    """Verify total hook count is 25 after adding two new hooks."""
+    """Verify total hook count is 24."""
 
-    def test_total_hook_file_count_is_25(self):
-        """There are exactly 25 .kiro.hook files."""
+    def test_total_hook_file_count_is_24(self):
+        """There are exactly 24 .kiro.hook files."""
         hook_files = discover_hook_files(HOOKS_DIR)
-        assert len(hook_files) == 27
+        assert len(hook_files) == 24
 
     def test_both_new_hooks_exist(self):
         """Both new hook files exist on disk."""

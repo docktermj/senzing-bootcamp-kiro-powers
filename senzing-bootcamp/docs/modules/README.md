@@ -40,21 +40,21 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 3: Quick Demo (Optional)
+### Module 3: System Verification (Optional)
 
-**File**: [MODULE_3_QUICK_DEMO.md](MODULE_3_QUICK_DEMO.md)
-**Steering**: `steering/module-03-quick-demo.md`
+**File**: [MODULE_3_SYSTEM_VERIFICATION.md](MODULE_3_SYSTEM_VERIFICATION.md)
+**Steering**: `steering/module-03-system-verification.md`
 
-**Purpose**: See Senzing entity resolution in action with sample data
+**Purpose**: Verify your installation end-to-end using the Senzing TruthSet
 
 **Key Topics**:
 
-- Sample dataset selection (Las Vegas, London, Moscow)
-- Live SDK demo with real entity resolution
-- Match explanations and confidence scores
-- Before/after comparison
+- Loading the Senzing TruthSet (a curated reference dataset)
+- Running entity resolution against a known-good input
+- Comparing actual results against the TruthSet expected output
+- Confirming the engine, database, and SDK all work together
 
-**When to Use**: Optional — for first-time users who want to see ER working
+**When to Use**: Optional — run it once after SDK setup to confirm everything is configured correctly before you bring in your own data
 
 ---
 

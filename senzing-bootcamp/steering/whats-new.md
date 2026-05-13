@@ -56,9 +56,11 @@ These improvements were informed by bootcamper feedback — yours included if yo
 ## Suppression
 
 If the bootcamper says "don't show updates", "stop showing what's new", or similar:
+
 - Set `show_whats_new: false` in `config/bootcamp_preferences.yaml`
 - Acknowledge: "Got it — I won't show update notifications. Say 'show updates' if you change your mind."
 
 If the bootcamper says "show updates" or "show what's new again":
+
 - Remove the `show_whats_new: false` entry (or set to `true`)
 - Acknowledge: "Update notifications re-enabled."

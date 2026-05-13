@@ -12,7 +12,7 @@ Module-specific documentation files. Each module has detailed documentation abou
 
 - `MODULE_1_BUSINESS_PROBLEM.md` - Business problem definition
 - `MODULE_2_SDK_SETUP.md` - SDK installation and configuration
-- `MODULE_3_QUICK_DEMO.md` - Quick demo with sample data (optional)
+- `MODULE_3_SYSTEM_VERIFICATION.md` - System verification with the Senzing TruthSet (optional)
 - `MODULE_4_DATA_COLLECTION.md` - Data collection and source management
 - `MODULE_5_DATA_QUALITY_AND_MAPPING.md` - Data quality assessment and mapping
 - `MODULE_6_LOAD_DATA.md` - Data loading, redo processing, and validation

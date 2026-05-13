@@ -51,9 +51,7 @@ CRITICAL_HOOKS: list[str] = [
     "review-bootcamper-input",
     "code-style-check",
     "commonmark-validation",
-    "enforce-feedback-path",
-    "enforce-working-directory",
-    "verify-senzing-facts",
+    "enforce-file-path-policies",
 ]
 
 SEMVER_PATTERN: re.Pattern[str] = re.compile(

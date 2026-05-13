@@ -283,7 +283,14 @@ def categorize_hooks(
 
 
 def format_hook_entry(entry: HookEntry) -> str:
-    """Format a single hook entry as Markdown."""
+    """Format a single hook entry as Markdown.
+
+    The hook prompt is rendered inside a fenced ``text`` code block so that
+    markdown inside the prompt (lists, headings, inline links) does not
+    violate CommonMark rules in the registry document. A four-backtick
+    fence is used so prompts containing their own triple-backtick blocks
+    can be included verbatim without breaking the outer fence.
+    """
     # Build the event flow string
     flow = f"{entry.event_type} → {entry.action_type}"
     if entry.file_patterns:
@@ -296,7 +303,11 @@ def format_hook_entry(entry: HookEntry) -> str:
     lines.append("")
 
     if entry.prompt:
-        lines.append(f"Prompt: \"{entry.prompt}\"")
+        lines.append("Prompt:")
+        lines.append("")
+        lines.append("````text")
+        lines.append(entry.prompt)
+        lines.append("````")
         lines.append("")
 
     lines.append(f"- id: `{entry.hook_id}`")
@@ -373,7 +384,11 @@ def generate_registry(
             entry_lines.append("")
 
             if hook.prompt:
-                entry_lines.append(f"Prompt: \"{hook.prompt}\"")
+                entry_lines.append("Prompt:")
+                entry_lines.append("")
+                entry_lines.append("````text")
+                entry_lines.append(hook.prompt)
+                entry_lines.append("````")
                 entry_lines.append("")
 
             entry_lines.append(f"- id: `{hook.hook_id}`")

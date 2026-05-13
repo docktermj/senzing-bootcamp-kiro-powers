@@ -27,7 +27,7 @@ Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 
 ```text
 "I want to start the bootcamp"              → Core Bootcamp
-"Let's run the Senzing quick demo"          → Core Bootcamp, Module 3
+"Let's run Senzing system verification"     → Core Bootcamp, Module 3
 "Show me the full bootcamp"                 → Advanced Topics
 ```
 

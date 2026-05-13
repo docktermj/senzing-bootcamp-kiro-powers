@@ -25,15 +25,18 @@ Ask the bootcamper:
 "Before we dive into performance testing, I need to know where you plan to deploy the final entity resolution solution. Here are some common options:
 
 **Cloud hyperscalers:**
+
 - AWS
 - Azure
 - GCP
 
 **Container platforms:**
+
 - Kubernetes
 - Docker Swarm
 
 **Local / on-premises:**
+
 - Current machine
 - Other internal infrastructure
 

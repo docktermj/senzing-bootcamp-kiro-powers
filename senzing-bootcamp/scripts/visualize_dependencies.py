@@ -180,7 +180,7 @@ def _default_modules() -> dict[int, dict]:
     return {
         1: {"name": "Business Problem", "requires": []},
         2: {"name": "SDK Setup", "requires": []},
-        3: {"name": "Quick Demo", "requires": [2]},
+        3: {"name": "System Verification", "requires": [2]},
         4: {"name": "Data Collection", "requires": [1]},
         5: {"name": "Data Quality & Mapping", "requires": [4]},
         6: {"name": "Load Data", "requires": [2, 5]},

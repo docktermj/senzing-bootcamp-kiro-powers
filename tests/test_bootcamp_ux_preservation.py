@@ -23,72 +23,14 @@ def _read(filename: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# module-03-quick-demo.md — Preservation of module close & Module 1 transition
+# module-03-system-verification.md — System Verification module (renamed from Quick Demo)
 # ---------------------------------------------------------------------------
-
-class TestModule03Preservation:
-    """Preserve module close statement and Module 1 transition questions."""
-
-    @pytest.fixture(autouse=True)
-    def load_content(self):
-        self.content = _read("module-03-quick-demo.md")
-
-    def test_explicit_module_close_statement(self):
-        """Module close text 'That's Module 3 complete!' must survive the fix."""
-        assert "That's Module 3 complete!" in self.content
-
-    def test_purpose_summary(self):
-        """Purpose summary about verifying end-to-end system must survive."""
-        assert (
-            "The purpose of this demo was to verify that your entire system works end-to-end"
-            in self.content
-        )
-
-    def test_module_completion_reference(self):
-        """Reference to module-completion.md workflow must survive."""
-        assert "module-completion.md" in self.content
-
-    def test_module1_transition_contrast(self):
-        """Module 1 transition contrast statement must survive."""
-        assert (
-            "Starting with Module 1, we shift to YOUR use case"
-            in self.content
-        )
-
-    def test_no_direct_record_type_question(self):
-        """Direct record-type question must NOT appear — replaced by open-ended approach."""
-        assert (
-            "What kind of records do you work with"
-            not in self.content
-        )
-
-    def test_no_direct_source_systems_question(self):
-        """Direct source-systems question must NOT appear — replaced by open-ended approach."""
-        assert (
-            "How many distinct source systems or feeds will you be ingesting from?"
-            not in self.content
-        )
-
-    def test_no_direct_duplicates_question(self):
-        """Direct duplicates question must NOT appear — replaced by open-ended approach."""
-        assert (
-            "What does a 'duplicate' look like in your world?"
-            not in self.content
-        )
-
-    def test_open_ended_preview(self):
-        """Module 1 open-ended approach preview must be present in transition."""
-        assert (
-            "describe the problem you're trying to solve in your own words"
-            in self.content
-        )
-
-    def test_no_use_case_fallback(self):
-        """Fallback for users with no specific use case must be present."""
-        assert (
-            "The bootcamp works great with sample data too"
-            in self.content
-        )
+#
+# NOTE: The original TestModule03Preservation class asserted content
+# specific to the old "Quick Demo" module (use-case questions, open-ended
+# prompts, fallback for users without data). Module 3 was redesigned to
+# run deterministic verification against the Senzing TruthSet. Those
+# preservation assertions no longer apply and have been removed.
 
 
 # ---------------------------------------------------------------------------

@@ -63,7 +63,7 @@ After fixing the connection, say "retry" to try again.
 Read the power version from `senzing-bootcamp/VERSION` using the `version.py` script's logic and display it to the bootcamper:
 
 ```text
-Senzing Bootcamp Power v0.1.0
+Senzing Bootcamp Power v0.11.0
 ```
 
 This is automatic — no user interaction is required. Display the version as the first onboarding output before proceeding.
@@ -90,8 +90,7 @@ Execute these setup actions in order. Do not narrate the details to the user.
    | ask-bootcamper | "Session summaries, closing questions, and post-completion feedback reminders will not be automatically generated when the agent stops." |
    | code-style-check | "Code style will not be automatically checked on save." |
    | commonmark-validation | "Markdown files will not be automatically checked for CommonMark compliance." |
-   | enforce-feedback-path | "Feedback may be written to incorrect file locations." |
-   | enforce-working-directory | "File writes to /tmp or external paths will not be automatically blocked." |
+   | enforce-file-path-policies | "Feedback may be written to incorrect file locations, and file writes to /tmp or external paths will not be automatically blocked." |
    | review-bootcamper-input | "Feedback trigger phrases will not be automatically detected on message submission." |
 
    **Verify hooks:** Check that each Critical Hook exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.
@@ -367,7 +366,7 @@ Present the overview before track selection. Cover all points naturally:
 
 ### 4a. What Is Entity Resolution?
 
-# [[file:senzing-bootcamp/steering/entity-resolution-intro.md]]
+#[[file:senzing-bootcamp/steering/entity-resolution-intro.md]]
 
 ### 4b. Verbosity Preference
 
@@ -469,4 +468,4 @@ Gate checks:
 
 ## Hook Registry
 
-# [[file:senzing-bootcamp/steering/hook-registry.md]]
+#[[file:senzing-bootcamp/steering/hook-registry.md]]

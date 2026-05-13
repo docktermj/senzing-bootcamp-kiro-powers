@@ -9,27 +9,73 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Repo-root `tests/conftest.py` that snaps cwd to the project root before every test — eliminated cross-suite cwd drift that caused 115 collection errors when running both `senzing-bootcamp/tests/` and `tests/` in a single pytest invocation
+
+### Changed
+
+- CommonMark configuration (`.markdownlint.json`) tuned for Kiro's `#[[file:...]]` include syntax — disabled MD018/MD025/MD028/MD046 and scoped MD024 to `siblings_only`
+- `sync_hook_registry.py` now wraps hook prompts in four-backtick ```` ````text ```` fences so prompts containing their own triple-backtick code blocks (e.g. `deployment-phase-gate`) render without breaking the outer fence
+- `lint_steering.py` now recognizes H3-nested step headings (`### Step N:`) used by `module-03-system-verification.md` and accepts any `**Checkpoint:**` marker (not only `**Checkpoint:** Write step N`)
+- `test_hook_categories_sync.py` uniqueness check rewritten to allow a single hook in multiple module sub-categories (e.g. `enforce-visualization-offers` in Modules 3, 5, 7, 8) while still enforcing no crossing of the critical/modules/any top-level boundary
+- `test_hook_structural_validation.py::test_hook_file_count_matches_categories` compares against unique hook IDs rather than total list entries
+- `test_hook_gaps_modules_1_and_3_properties.py::_load_modules_mapping` parses `hook-categories.yaml` directly instead of using `load_category_mapping`, which overwrites multi-module hook entries
+- `test_steering_structure_properties.py` regex broadened to match `#{2,}\s+Step\s+(\d+)` headings and any `**Checkpoint:**` marker
+- `CRITICAL_HOOKS` constant in `tests/hook_test_helpers.py` updated to reflect the 5 current critical hooks (removed stale `verify-senzing-facts`, `enforce-feedback-path`, `enforce-working-directory`)
+- `test_hook_prompt_logic.py` — replaced `TestVerifySenzingFacts`, `TestEnforceWorkingDirectory`, and `TestEnforceFeedbackPath` classes with a single `TestEnforceFilePathPolicies` class matching the consolidated hook
+- `module-03-system-verification.md` — added Step 10/11/12 checkpoint instructions, added success indicator, condensed Error Handling section to fit the 15-line lint budget, added explicit timeout declaration to Step 7
+- Preservation snapshot hashes refreshed in `test_module2_license_question.py` and `test_module_closing_question_ownership.py` for edits made in the Module 3 rename pass
+- Onboarding step sequence baseline updated in `test_onboarding_question_ownership.py` to include `0c. Version Display`
+- `test_merge_mapping_validation_hooks.py` expected description updated to drop the obsolete Module 12 reference
+- `test_cord_data_priority.py` `SYNTHESIZED_DATA_PATTERN` regex updated to match "test data can also be generated"
+- `test_bootcamp_ux_feedback_unit.py` `_TEST_DATA_BULLET` fragment updated to match current CORD-first onboarding copy
+
+### Fixed
+
+- POWER.md `What's New (Unreleased)` bullets reorganized — items actually in 0.11.0 moved to a `What's New in 0.11.0` section; new Unreleased section summarizes the production-readiness pass
+- POWER.md stale `~79 lines` claim for `agent-instructions.md` corrected to `~101 lines` (and `module-transitions.md` from `~59` to `~71`)
+- `docs/guides/ARCHITECTURE.md` Critical Hooks table updated from 7 obsolete hooks (including deleted `verify-senzing-facts`, `enforce-feedback-path`, `enforce-working-directory`) to the 5 current critical hooks; Module Hooks table updated to reflect `enforce-visualization-offers` in Modules 3/5/7/8, `offer-visualization` removed from Module 7, and `module-completion-celebration` added to Any module
+- `steering/onboarding-flow.md` Critical Hook failure-impact table merged `enforce-feedback-path` and `enforce-working-directory` rows into a single `enforce-file-path-policies` row
+- `steering/module-03-system-verification.md` — fixed 96 `lint_steering` errors (missing checkpoints, missing success indicator, overly long Error Handling section)
+- All shipped markdown files now pass `validate_commonmark.py` — fixed MD040 (missing language tags), MD028 (blank lines in blockquotes), MD056 (malformed tables) in `hook-registry.md` and `inline-status.md`
+- Full test suite now at 2,603 passed / 0 failed / 0 errors / 0 collection errors (from 154 failed / 115 errors at the start of this pass)
+
+## [0.11.0] - 2026-05-13
+
+### Added
+
 - AWS deployment reference steering file (`deployment-aws.md`) — dedicated guidance for ECS/Fargate, RDS, Secrets Manager, CloudWatch, IAM best practices, and cost optimization
 - Skip Step Protocol (`skip-step-protocol.md`) — escape hatch for stuck bootcampers with step-level skip tracking, consequence assessment, and revisit workflow
 - Module 8 phase-split into 3 phases: A (requirements/baselines), B (benchmarking), C (optimization/reporting)
 - Module 9 phase-split into 2 phases: A (assessment/secrets), B (hardening/validation)
 - Module 10 phase-split into 2 phases: A (monitoring setup), B (operations/validation)
 - New hooks for Modules 2, 8, 9, 10: `verify-sdk-setup`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`
-- Missing `feedback-submission-reminder.kiro.hook` file (was referenced but not present)
 - Integration test (`test_module_flow_integration.py`) validating multi-module state transitions across all tracks
 - Enhanced `validate_module.py` checks for Modules 8–11 (benchmark environment, security utilities, monitoring utilities, runbooks, Dockerfile)
+- Conversation protocol extracted to `conversation-protocol.md` (auto-included)
+- Windows support improvements — Visual Studio Build Tools check in `preflight.py`, Windows-specific pitfalls section in `common-pitfalls.md`, PowerShell execution policy guidance, Windows Terminal recommendation
 
 ### Changed
 
+- Module 3 renamed from Quick Demo to System Verification — now uses the Senzing TruthSet with MCP-generated verification code and compares results against expected TruthSet output; authoritative steering file is `module-03-system-verification.md` (replaces `module-03-quick-demo.md`); companion doc is `MODULE_3_SYSTEM_VERIFICATION.md`
+- Hook consolidation — `feedback-submission-reminder` and `capture-feedback` merged into `ask-bootcamper` and `review-bootcamper-input` respectively; `enforce-feedback-path` and `enforce-working-directory` consolidated into `enforce-file-path-policies`; `verify-senzing-facts` and `offer-visualization` removed (24 hooks total)
+- `hooks/README.md` regenerated to reflect the current 24-hook set
+- `scripts/install_hooks.py` HOOKS list and ESSENTIAL set regenerated to match the current 24-hook set
+- `deployment-phase-gate.kiro.hook` no longer references Module 12 (collapsed into Module 11)
 - `steering-index.yaml` now includes full phase maps with `token_count` and `size_category` for Modules 7–10 (previously bare strings)
 - `steering-index.yaml` deployment section now includes `aws` key
 - `hook-categories.yaml` now includes hooks for Modules 2, 8, 9, 10
+- `structure.md` steering file changed from `auto` to `always` inclusion
+- `common-pitfalls.md` changed to manual inclusion
 - `.gitignore` now covers `.hypothesis/` and `.pytest_cache/` directories
 - Removed stale `__pycache__/`, `.hypothesis/`, `.pytest_cache/` directories from `scripts/` and `tests/`
+- VERSION bumped from 0.1.0 to 0.11.0 to reconcile with CHANGELOG history
 
 ### Removed
 
 - Deprecated `preflight_check.py` script (was a thin wrapper around `preflight.py`)
+- Stale `MODULE_3_QUICK_DEMO.md` references from `docs/README.md`, `docs/modules/README.md`, `docs/guides/README.md`, and POWER.md
+- Stale references to deleted hooks (`verify-senzing-facts`, `enforce-feedback-path`, `enforce-working-directory`, `offer-visualization`) from POWER.md and `scripts/install_hooks.py`
+- Obsolete "Module 12" references in FAQ, `docs/guides/README.md`, and `deployment-phase-gate.kiro.hook`
 
 ## [0.10.0] - 2026-04-22
 

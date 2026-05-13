@@ -32,6 +32,7 @@ Tell the user: "Senzing SDK is already installed (version [X]). No need to reins
 - Mark Module 2 as complete once verification passes
 
 > **Required Stops:** The following steps are NEVER skipped, even when the SDK is already installed:
+>
 > - **Step 4** (Verify Installation) — confirms the SDK works with the chosen language
 > - **Step 5** (Configure License) — license configuration is always required
 
@@ -271,7 +272,7 @@ Use the MCP-generated initialization code to verify the database connection work
 
 Once the SDK is installed and verified, proceed to:
 
-- **Module 3** (Quick Demo) — see the SDK in action with sample data
+- **Module 3** (System Verification) — verify the full setup end-to-end using the Senzing TruthSet
 - **Module 1** (Business Problem) — start working with your own data
 
 ## Troubleshooting

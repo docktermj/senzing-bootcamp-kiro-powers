@@ -95,4 +95,4 @@ This sequence applies to ALL web service visualizations regardless of module. St
 
 For detailed schemas, feature specifications, match strength classification, error handling, and file placement rules, load:
 
-# [[file:senzing-bootcamp/steering/visualization-reference.md]]
+#[[file:senzing-bootcamp/steering/visualization-reference.md]]

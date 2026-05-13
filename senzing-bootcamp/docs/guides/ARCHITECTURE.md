@@ -198,8 +198,8 @@ from which steering file is loaded.
    runtime installation on Windows if needed.
 7. **Welcome banner** — Display the bootcamp introduction and module
    overview.
-8. **Track selection** — Present Quick Demo, Core Bootcamp, or Advanced
-   Topics. Persist choice to `config/bootcamp_preferences.yaml`.
+8. **Track selection** — Present Core Bootcamp or Advanced Topics. Persist
+   choice to `config/bootcamp_preferences.yaml`.
 9. **First module load** — Load the steering file for the first module in
    the selected track. Create `config/bootcamp_progress.json` with initial
    state.
@@ -390,7 +390,7 @@ When the bootcamper's `current_step` crosses a phase boundary, the agent
 unloads the previous phase file and loads the next one. This keeps context
 usage proportional to the active work rather than the total module size.
 
-Single-file modules (2 SDK Setup, 3 Quick Demo, 4 Data Collection,
+Single-file modules (2 SDK Setup, 3 System Verification, 4 Data Collection,
 7 Query & Visualize) load their entire steering file at once because they
 are small enough to fit within budget without splitting.
 
@@ -407,7 +407,7 @@ must be completed before this module can start. The agent checks the
 | ------ | ------------- |
 | 1 Business Problem | (none) |
 | 2 SDK Setup | (none) |
-| 3 Quick Demo | 2 |
+| 3 System Verification | 2 |
 | 4 Data Collection | 1 |
 | 5 Data Quality | 4 |
 | 6 Load Data | 2, 5 |
@@ -441,7 +441,7 @@ module is marked complete without executing any steps:
 | Module | Skip Condition |
 | ------ | -------------- |
 | 2 SDK Setup | SDK already installed and configured |
-| 3 Quick Demo | Already familiar with Senzing |
+| 3 System Verification | Already familiar with Senzing and system verified |
 | 5 Data Quality | All sources Entity Specification-compliant |
 | 6 Load Data | Data already loaded |
 | 7 Query & Visualize | Already validated |
@@ -581,7 +581,7 @@ declarative — no scripting language, no external runtime.
 The `hooks/hook-categories.yaml` file classifies every hook into one of two
 categories that determine when it is installed.
 
-#### Critical Hooks (7 hooks — installed during onboarding)
+#### Critical Hooks (5 hooks — installed during onboarding)
 
 Critical hooks are created in Step 4 of the onboarding flow via `createHook`.
 They remain active for the entire bootcamp session regardless of which module
@@ -590,12 +590,10 @@ is running. These hooks enforce cross-cutting concerns:
 | Hook | Responsibility |
 | ---- | -------------- |
 | `ask-bootcamper` | Owns all closing questions at step boundaries |
-| `review-bootcamper-input` | Validates bootcamper responses for completeness |
+| `review-bootcamper-input` | Routes feedback and status trigger phrases |
 | `code-style-check` | Enforces language-appropriate coding standards |
 | `commonmark-validation` | Checks Markdown files for CommonMark compliance |
-| `enforce-feedback-path` | Routes feedback to the correct template |
-| `enforce-working-directory` | Keeps file operations in the project tree |
-| `verify-senzing-facts` | Ensures Senzing facts come from MCP, not training data |
+| `enforce-file-path-policies` | Enforces feedback path and working-directory restrictions |
 
 #### Module Hooks (created when the associated module starts)
 
@@ -608,19 +606,22 @@ conditions no longer match the active context).
 | ------ | ----- |
 | 1 Business Problem | `validate-business-problem` |
 | 2 SDK Setup | `verify-sdk-setup` |
-| 3 Quick Demo | `verify-demo-results` |
+| 3 System Verification | `verify-demo-results`, `enforce-visualization-offers` |
 | 4 Data Collection | `validate-data-files` |
-| 5 Data Quality | `analyze-after-mapping`, `data-quality-check`, `enforce-mapping-spec` |
+| 5 Data Quality | `analyze-after-mapping`, `data-quality-check`, `enforce-mapping-spec`, `enforce-visualization-offers` |
 | 6 Load Data | `backup-before-load`, `run-tests-after-change`, `verify-generated-code` |
-| 7 Query & Visualize | `enforce-visualization-offers`, `offer-visualization` |
-| 8 Performance | `validate-benchmark-results` |
+| 7 Query & Visualize | `enforce-visualization-offers` |
+| 8 Performance | `validate-benchmark-results`, `enforce-visualization-offers` |
 | 9 Security | `security-scan-on-save` |
 | 10 Monitoring | `validate-alert-config` |
 | 11 Deployment | `deployment-phase-gate` |
-| Any module | `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder` |
+| Any module | `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration` |
 
 The "any" category contains utility hooks that apply across all modules.
 They are installed during onboarding alongside the critical hooks.
+Note that `enforce-visualization-offers` is a single hook installed once but
+activated in multiple modules (3, 5, 7, 8) based on the current-module check
+in its prompt.
 
 ### The Hook Silence Rule
 

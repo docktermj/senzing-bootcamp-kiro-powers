@@ -32,7 +32,7 @@ VALID_ARTIFACT_TYPES = frozenset({
 })
 
 MODULE_NAMES = {
-    1: "Business Problem", 2: "SDK Setup", 3: "Quick Demo",
+    1: "Business Problem", 2: "SDK Setup", 3: "System Verification",
     4: "Data Collection", 5: "Data Quality & Mapping",
     6: "Single Source Loading", 7: "Multi-Source Orchestration",
     8: "Query, Visualize & Validate", 9: "Performance Testing",
@@ -45,19 +45,18 @@ LANG_EXTENSIONS: dict[str, list[str]] = {
 }
 
 SUBDIR_MODULE: dict[str, int] = {
-    "quickstart_demo": 3, "transform": 5, "load": 6, "query": 8,
-    "performance": 9, "security": 10, "monitoring": 11, "deploy": 12,
+    "quickstart_demo": 3, "transform": 5, "load": 6, "query": 7,
+    "performance": 8, "security": 9, "monitoring": 10, "deploy": 11,
 }
 
 VIZ_MARKERS = re.compile(r"\b(d3|force|graph|dashboard|entity|svg)\b", re.IGNORECASE)
 
 TRACK_DISPLAY_NAMES = {
-    "quick_demo": "Quick Demo",
     "core_bootcamp": "Core Bootcamp",
     "advanced_topics": "Advanced Topics",
 }
 
-VALID_TRACK_IDENTIFIERS = {"quick_demo", "core_bootcamp", "advanced_topics"}
+VALID_TRACK_IDENTIFIERS = {"core_bootcamp", "advanced_topics"}
 
 # ---------------------------------------------------------------------------
 # Data Models  (Tasks 1.1 – 1.3)

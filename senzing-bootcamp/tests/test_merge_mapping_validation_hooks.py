@@ -265,7 +265,7 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         "description": (
             "After packaging tasks complete in Module 11, displays a phase gate prompt asking"
             " the bootcamper whether to proceed to deployment or stop. Checks"
-            " config/bootcamp_progress.json to confirm the current module is 11 or 12 before"
+            " config/bootcamp_progress.json to confirm the current module is 11 before"
             " acting."
         ),
     },

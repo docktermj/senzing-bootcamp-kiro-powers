@@ -12,7 +12,7 @@ It depends on the path you choose and the complexity of your data. There are no 
 
 ### Can I skip modules?
 
-Yes. Have Senzing Entity Specification (SGES) data? Skip Module 5. SDK installed? Skip Module 2. Single source? Skip Module 7. Not deploying to production? Skip 9-12.
+Yes. Have Senzing Entity Specification (SGES) data? Skip Module 5. SDK installed? Skip Module 2. Single source? Skip Module 7. Not deploying to production? Skip Modules 8-11.
 
 ### What's the difference between senzing-bootcamp and senzing powers?
 

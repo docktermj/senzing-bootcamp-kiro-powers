@@ -791,7 +791,7 @@ class TestProgressDataSources:
                 "# Progress\n"
                 "- [x] Module 1: Business Problem\n"
                 "- [x] Module 2: SDK Setup\n"
-                "- [ ] Module 3: Quick Demo\n"
+                "- [ ] Module 3: System Verification\n"
             )
             with open(os.path.join(md_dir, "PROGRESS_TRACKER.md"), "w") as f:
                 f.write(md_content)

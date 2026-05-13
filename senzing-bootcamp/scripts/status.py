@@ -50,7 +50,7 @@ def cyan(t): return c("0;36", t)
 
 
 MODULE_NAMES = {
-    1: "Business Problem", 2: "SDK Setup", 3: "Quick Demo",
+    1: "Business Problem", 2: "SDK Setup", 3: "System Verification",
     4: "Data Collection", 5: "Data Quality & Mapping",
     6: "Load Data", 7: "Query & Visualize",
     8: "Performance Testing", 9: "Security Hardening",
@@ -61,7 +61,7 @@ MODULE_NAMES = {
 NEXT_STEPS = {
     1:  ("Start Module 1: Business Problem", "Define your problem and identify data sources"),
     2:  ("Start Module 2: SDK Setup", "Install and configure Senzing SDK"),
-    3:  ("Start Module 3: Quick Demo", "See entity resolution in action with sample data"),
+    3:  ("Start Module 3: System Verification", "Verify your setup end-to-end using the Senzing TruthSet"),
     4:  ("Start Module 4: Data Collection", "Upload or link to data source files"),
     5:  ("Start Module 5: Data Quality & Mapping", "Evaluate data quality and create transformation programs"),
     6:  ("Start Module 6: Load Data", "Load your data sources and validate results"),

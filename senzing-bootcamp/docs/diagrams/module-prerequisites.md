@@ -4,7 +4,7 @@ This diagram shows which modules depend on which. Use it to understand skip path
 
 ```mermaid
 graph TD
-    M2[Module 2: Set Up SDK] --> M3[Module 3: Quick Demo]
+    M2[Module 2: Set Up SDK] --> M3[Module 3: System Verification]
     M2 --> M6[Module 6: Load Single Data Source]
 
     M1[Module 1: Business Problem] --> M4[Module 4: Data Collection Policy]

@@ -25,8 +25,8 @@ Verify MCP server connectivity before proceeding with code generation operations
 1. Call `search_docs(query="Senzing SDK initialization")` with a 10-second timeout.
 2. **If a response is received** (including empty results): MCP connectivity confirmed. Proceed silently — do not display connectivity status to the bootcamper.
 3. **If the call fails** (timeout or error): Retry `search_docs` once with the same 10-second timeout.
-4. **If the retry succeeds**: Proceed silently.
-5. **If the retry fails**: Display troubleshooting steps:
+4. **If the retry succeeds:** Proceed silently.
+5. **If the retry fails:** Display troubleshooting steps:
    - Verify internet connectivity
    - Test `mcp.senzing.com:443` endpoint
    - Allowlist the endpoint if behind a corporate proxy
@@ -80,9 +80,9 @@ Verify the Senzing SDK initializes correctly and connects to the database.
 1. Generate an SDK initialization script using `generate_scaffold(workflow='initialize')` in the bootcamper's chosen language.
 2. Save the generated code to `src/system_verification/verify_init.[ext]` where `[ext]` matches the chosen language file extension (`.py`, `.java`, `.cs`, `.rs`, `.ts`).
 3. Execute the initialization script with a 30-second timeout.
-4. **If the script exits with code 0 and produces no SENZ error codes**: Report pass — SDK connected to the database at `database/G2C.db`.
-5. **If the script exits with a non-zero exit code or produces a SENZ error code**: Report fail. Call `explain_error_code` for any SENZ codes. Generate a Fix_Instruction referencing Module 2 remediation steps.
-6. **If the script does not complete within 30 seconds**: Terminate the process. Report fail with a Fix_Instruction indicating timeout — advise checking database accessibility and system resources.
+4. **If the script exits with code 0 and produces no SENZ error codes:** Report pass — SDK connected to the database at `database/G2C.db`.
+5. **If the script exits with a non-zero exit code or produces a SENZ error code:** Report fail. Call `explain_error_code` for any SENZ codes. Generate a Fix_Instruction referencing Module 2 remediation steps.
+6. **If the script does not complete within 30 seconds:** Terminate the process. Report fail with a Fix_Instruction indicating timeout — advise checking database accessibility and system resources.
 
 **Checkpoint:** Write to `config/bootcamp_progress.json`:
 
@@ -105,8 +105,8 @@ Verify the MCP server can generate a full pipeline script in the chosen language
 3. **Validate the generated file:**
    - Confirm the file contains at least 1 line of non-whitespace content
    - Confirm the file includes at least one language-appropriate structural element: an import statement, a function definition, or a class declaration
-4. **If validation passes**: Report pass for code generation.
-5. **If the Code_Generator returns an empty response, an error, or does not respond within 30 seconds**: Report fail with a Fix_Instruction advising the bootcamper to check MCP connectivity to `mcp.senzing.com:443` and retry.
+4. **If validation passes:** Report pass for code generation.
+5. **If the Code_Generator returns an empty response, an error, or does not respond within 30 seconds:** Report fail with a Fix_Instruction advising the bootcamper to check MCP connectivity to `mcp.senzing.com:443` and retry.
 
 **Checkpoint:** Write to `config/bootcamp_progress.json`:
 
@@ -135,9 +135,9 @@ Execute the appropriate build command based on the bootcamper's chosen language.
 | TypeScript | `tsc src/system_verification/verify_pipeline.ts --noEmit` |
 
 1. Execute the build command for the chosen language.
-2. **If the build exits with code 0**: Report pass.
+2. **If the build exits with code 0:** Report pass.
 3. **If the build fails** (non-zero exit code): Report fail including the first 50 lines of compiler error output. Generate a Fix_Instruction identifying common causes (missing SDK libraries, incorrect PATH, missing build tools).
-4. **If the build does not complete within 120 seconds**: Terminate the process. Report fail with a Fix_Instruction indicating the build timed out — suggest checking for dependency resolution issues or network-dependent build steps.
+4. **If the build does not complete within 120 seconds:** Terminate the process. Report fail with a Fix_Instruction indicating the build timed out — suggest checking for dependency resolution issues or network-dependent build steps.
 
 **Checkpoint:** Write to `config/bootcamp_progress.json`:
 
@@ -156,12 +156,12 @@ Execute the appropriate build command based on the bootcamper's chosen language.
 Execute the verification script to load TruthSet data into Senzing.
 
 1. Execute the generated `verify_pipeline.[ext]` script with a 120-second timeout.
-2. **While executing**: Display a progress indicator updated at least every 5 seconds showing records processed out of total expected.
-3. **If the script completes with exit code 0**: Confirm the number of records loaded exactly matches the expected TruthSet record count from Step 2.
-4. **If the record count matches**: Report pass with the number of records loaded.
-5. **If the script encounters an error**: Capture error output, call `explain_error_code` for any SENZ codes, and report fail with remediation guidance.
-6. **If fewer records load than expected without error**: Report fail identifying records loaded versus expected. Instruct the bootcamper to check TruthSet data file integrity.
-7. **If the script does not complete within 120 seconds**: Terminate the process. Report fail indicating execution timed out.
+2. **While executing:** Display a progress indicator updated at least every 5 seconds showing records processed out of total expected.
+3. **If the script completes with exit code 0:** Confirm the number of records loaded exactly matches the expected TruthSet record count from Step 2.
+4. **If the record count matches:** Report pass with the number of records loaded.
+5. **If the script encounters an error:** Capture error output, call `explain_error_code` for any SENZ codes, and report fail with remediation guidance.
+6. **If fewer records load than expected without error:** Report fail identifying records loaded versus expected. Instruct the bootcamper to check TruthSet data file integrity.
+7. **If the script does not complete within 120 seconds:** Terminate the process. Report fail indicating execution timed out.
 
 **Checkpoint:** Write to `config/bootcamp_progress.json`:
 
@@ -177,7 +177,7 @@ Execute the verification script to load TruthSet data into Senzing.
 
 ### Step 7: Deterministic Results Validation
 
-Validate that entity resolution produced the expected outcomes from the TruthSet.
+Validate that entity resolution produced the expected outcomes from the TruthSet. Each validation check has a 30-second timeout.
 
 1. Retrieve the Expected_Results for the TruthSet from the MCP server.
 2. Query the resolved entities and perform the following validation checks. Execute ALL checks regardless of whether earlier checks pass or fail:
@@ -191,8 +191,8 @@ Validate that entity resolution produced the expected outcomes from the TruthSet
    **c) Cross-record resolution:**
    - Verify the resolved entity count is strictly less than the total record count loaded, confirming that at least some records merged rather than all loading as singletons.
 
-3. **If all checks pass**: Report pass with entity count and number of matches verified.
-4. **If any check fails**: Report fail listing each failed check with expected versus actual values. Suggest re-running data loading or checking that the TruthSet file was loaded completely.
+3. **If all checks pass:** Report pass with entity count and number of matches verified.
+4. **If any check fails:** Report fail listing each failed check with expected versus actual values. Suggest re-running data loading or checking that the TruthSet file was loaded completely.
 
 **Checkpoint:** Write to `config/bootcamp_progress.json`:
 
@@ -221,8 +221,8 @@ Verify read, write, and search operations against the Senzing database. Each ope
    - Perform a search-by-attributes query using name and address attributes from a known TruthSet record.
    - Confirm the expected entity appears in the search results.
 
-4. **If all operations succeed within 30 seconds each**: Report pass with operations tested.
-5. **If any operation fails or times out**: Report fail identifying which operation failed (write, read, or search), the error received, and a Fix_Instruction referencing database configuration from Module 2.
+4. **If all operations succeed within 30 seconds each:** Report pass with operations tested.
+5. **If any operation fails or times out:** Report fail identifying which operation failed (write, read, or search), the error received, and a Fix_Instruction referencing database configuration from Module 2.
 
 **Checkpoint:** Write to `config/bootcamp_progress.json`:
 
@@ -258,8 +258,8 @@ Generate and verify a web service that serves entity resolution results.
    - Issue an HTTP GET to the configured localhost URL (default `http://localhost:8080/`).
    - Confirm HTTP 200 response within 10 seconds.
 
-6. **If all checks pass**: Report pass with the port number.
-7. **If any check fails**: Report fail with Fix_Instruction identifying the specific failure (service didn't start, port conflict, missing static file, endpoint error).
+6. **If all checks pass:** Report pass with the port number.
+7. **If any check fails:** Report fail with Fix_Instruction identifying the specific failure (service didn't start, port conflict, missing static file, endpoint error).
 
 **Checkpoint:** Write to `config/bootcamp_progress.json`:
 
@@ -287,7 +287,7 @@ Generate a structured summary of all verification checks.
    - Duration in milliseconds (where applicable)
    - Any relevant metadata (record counts, entity counts, file paths, ports)
 
-3. **If ALL checks passed**: Display a success banner:
+3. **If ALL checks passed:** Display a success banner:
 
    ```text
    ╔══════════════════════════════════════════════════════════╗
@@ -298,7 +298,7 @@ Generate a structured summary of all verification checks.
    ╚══════════════════════════════════════════════════════════╝
    ```
 
-4. **If ANY checks failed**: Display a failure summary listing each failed check with its Fix_Instructions:
+4. **If ANY checks failed:** Display a failure summary listing each failed check with its Fix_Instructions:
 
    ```text
    ⚠️  SYSTEM VERIFICATION — FAILURES DETECTED
@@ -338,8 +338,10 @@ Generate a structured summary of all verification checks.
    - The `fix_instructions` array SHALL contain one entry per failed check, each with the check name and remediation text.
    - If verification was interrupted, mark unexecuted checks as `"status": "skipped"`.
 
-6. **If all checks passed**: Proceed to Step 11 (Cleanup).
-7. **If any checks failed**: Do NOT proceed to cleanup. Advise the bootcamper to fix issues and re-run Module 3 from the beginning.
+6. **If all checks passed:** Proceed to Step 11 (Cleanup).
+7. **If any checks failed:** Do NOT proceed to cleanup. Advise the bootcamper to fix issues and re-run Module 3 from the beginning.
+
+**Checkpoint:** Write step 10 to `config/bootcamp_progress.json`.
 
 ### Step 11: Cleanup
 
@@ -365,6 +367,8 @@ Terminate test services and clean up verification data from the database.
 
 4. **Retain verification artifacts:** All generated files in `src/system_verification/` remain in place for reference.
 
+**Checkpoint:** Write step 11 to `config/bootcamp_progress.json`.
+
 ### Step 12: Module Close
 
 Complete the module using the standard module completion workflow.
@@ -383,51 +387,18 @@ Complete the module using the standard module completion workflow.
 
 4. **Transition to Module 4:** Display the module transition message indicating Module 4 is now available. Follow the standard transition pattern from `module-transitions.md`.
 
+**Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
+
+**Success indicator:** ✅ All 10 verification checks passed + database purged of TruthSet data + web service terminated + module 3 completion recorded in progress file.
+
 ## Error Handling
 
-### SENZ Error Codes
+When the bootcamper encounters an error during this module:
 
-When any verification step produces a SENZ error code in its output:
-
-1. Call `explain_error_code` with the SENZ code to retrieve the human-readable explanation and remediation steps.
-2. Include the explanation in the Fix_Instruction for that check.
-3. Reference the specific module where the issue likely originated (e.g., Module 2 for SDK/database issues).
-
-### Common Pitfalls
-
-Refer to `common-pitfalls.md` for known issues and their resolutions, including:
-
-- Port conflicts on 8080 (web service step)
-- Database lock contention (data loading step)
-- Missing language toolchain components (build step)
-- MCP connectivity behind corporate proxies (connectivity check)
-
-### Cross-Module Resources
-
-- **Module 2 remediation**: SDK installation, database configuration, PATH setup
-- **MCP troubleshooting**: Connectivity, endpoint verification, DNS resolution
-- **Language toolchains**: Build tool installation and configuration per language
-
-### Timeout Enforcement
-
-Each step has an explicit timeout. When a timeout is reached:
-
-1. Terminate the running process immediately.
-2. Record a fail status with a timeout-specific Fix_Instruction.
-3. Continue to the next verification step (no short-circuit).
-
-| Step | Timeout |
-|------|---------|
-| MCP Connectivity | 10s |
-| TruthSet Acquisition | 30s |
-| SDK Initialization | 30s |
-| Code Generation | 30s |
-| Build/Compile | 120s |
-| Data Loading | 120s |
-| Results Validation | 30s |
-| Database Operations | 30s per operation |
-| Web Service Health | 10s |
-| Web Page Access | 10s |
+1. **SENZ error codes:** Call `explain_error_code(error_code="<code>", version="current")` and include the explanation in the Fix_Instruction.
+2. **Load `common-pitfalls.md`** for known issues (port conflicts on 8080, database lock contention, missing language toolchains, MCP proxy connectivity).
+3. **Cross-module resources:** SDK install/config issues → Module 2 remediation; MCP issues → connectivity troubleshooting; language toolchains → platform-specific SDK guide.
+4. **Timeouts:** Each step has an explicit timeout (MCP 10s, TruthSet 30s, SDK init 30s, build 120s, data loading 120s, web service 10s per endpoint). On timeout, terminate the process, record a fail with a timeout Fix_Instruction, and continue to the next check (no short-circuit).
 
 ## Success Criteria
 
@@ -445,22 +416,22 @@ Module 3 is considered successfully complete when ALL of the following are true:
 
 The following rules are mandatory for the agent executing this module:
 
-1. **TruthSet only**: The agent MUST use the Senzing TruthSet exclusively. No dataset choice SHALL be offered to the bootcamper. Do not use CORD, Las Vegas, London, Moscow, or any other dataset.
+1. **TruthSet only:** The agent MUST use the Senzing TruthSet exclusively. No dataset choice SHALL be offered to the bootcamper. Do not use CORD, Las Vegas, London, Moscow, or any other dataset.
 
-2. **Database path**: The Senzing database is located at `database/G2C.db`. All SDK initialization and database operations MUST reference this path.
+2. **Database path:** The Senzing database is located at `database/G2C.db`. All SDK initialization and database operations MUST reference this path.
 
-3. **No dataset choice**: The agent SHALL NOT present any dataset selection prompt, menu, or question to the bootcamper. TruthSet is the only dataset used in this module.
+3. **No dataset choice:** The agent SHALL NOT present any dataset selection prompt, menu, or question to the bootcamper. TruthSet is the only dataset used in this module.
 
-4. **All checks execute regardless of failures**: If any verification step fails, the agent MUST continue executing all subsequent steps. No short-circuiting. The Verification Report MUST include the status of every check.
+4. **All checks execute regardless of failures:** If any verification step fails, the agent MUST continue executing all subsequent steps. No short-circuiting. The Verification Report MUST include the status of every check.
 
-5. **Artifact isolation**: All verification artifacts (scripts, data files, web service code) MUST be created within `src/system_verification/`. No verification files SHALL be written outside this directory.
+5. **Artifact isolation:** All verification artifacts (scripts, data files, web service code) MUST be created within `src/system_verification/`. No verification files SHALL be written outside this directory.
 
-6. **Timeouts enforced**: Every verification step MUST enforce its defined timeout. If a process exceeds its timeout, terminate it immediately and record a fail status.
+6. **Timeouts enforced:** Every verification step MUST enforce its defined timeout. If a process exceeds its timeout, terminate it immediately and record a fail status.
 
-7. **MCP as source of truth**: All Senzing facts, expected results, and code generation MUST come from the MCP server tools. Do NOT use training data or hardcoded values for TruthSet expected outcomes.
+7. **MCP as source of truth:** All Senzing facts, expected results, and code generation MUST come from the MCP server tools. Do NOT use training data or hardcoded values for TruthSet expected outcomes.
 
-8. **Overwrite on re-run**: If the module is re-run after a previous attempt, all existing artifacts in `src/system_verification/` SHALL be overwritten. The database cleanup ensures a clean slate for re-verification.
+8. **Overwrite on re-run:** If the module is re-run after a previous attempt, all existing artifacts in `src/system_verification/` SHALL be overwritten. The database cleanup ensures a clean slate for re-verification.
 
-9. **Web service lifecycle**: The web service started in Step 9 MUST be terminated in Step 11. Do not leave orphaned processes.
+9. **Web service lifecycle:** The web service started in Step 9 MUST be terminated in Step 11. Do not leave orphaned processes.
 
-10. **Progress persistence**: Every step MUST write its checkpoint to `config/bootcamp_progress.json` immediately upon completion, before proceeding to the next step.
+10. **Progress persistence:** Every step MUST write its checkpoint to `config/bootcamp_progress.json` immediately upon completion, before proceeding to the next step.

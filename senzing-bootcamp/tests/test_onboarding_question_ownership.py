@@ -205,6 +205,7 @@ def _strip_inline_questions_and_waits(section: str) -> str:
 _EXPECTED_HEADINGS = [
     "0. Setup Preamble",
     "0b. MCP Health Check",
+    "0c. Version Display",
     "1. Directory Structure",
     "1b. Team Detection",
     "2. Language Selection",

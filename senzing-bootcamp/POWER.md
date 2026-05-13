@@ -20,17 +20,25 @@ This power works best with Claude Opus 4.6 or similar.
 
 ## What's New (Unreleased)
 
+- Production-readiness pass: all six CI validation scripts green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `sync_hook_registry --verify`, `validate_dependencies`, `lint_steering`); pytest at 2,603 passed / 0 failed / 0 errors
+- CommonMark compliance across all 491 markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
+- `lint_steering.py` updated to recognize H3-nested step headings (`### Step N:`) and any `**Checkpoint:**` marker
+- Repo-root `tests/conftest.py` snaps cwd to project root before each test — eliminated cross-suite cwd drift that caused 115 collection errors
+- Test-suite reconciliation: hook-count constants aligned to 24, `enforce-visualization-offers` multi-module membership accepted, preservation hashes refreshed for `module-02-sdk-setup.md`, obsolete Quick Demo preservation classes removed
+
+## What's New in 0.11.0
+
 - AWS deployment reference (`deployment-aws.md`) — dedicated guidance for ECS/Fargate, RDS, Secrets Manager, CloudWatch, IAM, and cost optimization
 - Skip Step Protocol (`skip-step-protocol.md`) — escape hatch for stuck bootcampers with step-level skip tracking and consequence assessment
 - Phase-splitting for Modules 8, 9, 10 — reduces context pressure by loading only the current phase
 - New hooks for Modules 2, 8, 9, 10: `verify-sdk-setup`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`
-- Conversation protocol extracted to `conversation-protocol.md` (auto-included) — keeps `agent-instructions.md` under 80 lines
+- Conversation protocol extracted to `conversation-protocol.md` (auto-included) — keeps `agent-instructions.md` focused on core rules
 - Integration test (`test_module_flow_integration.py`) validating multi-module state transitions across all tracks
 - Enhanced `validate_module.py` checks for Modules 8–11 (benchmark environment, security utilities, runbooks, Dockerfile)
-- Hook consolidation — `feedback-submission-reminder` and `capture-feedback` merged into `ask-bootcamper` and `review-bootcamper-input` respectively (23 hooks total)
+- Module 3 renamed from Quick Demo to System Verification — uses TruthSet data with MCP-generated verification code; authoritative steering file is `module-03-system-verification.md`
+- Hook consolidation — `feedback-submission-reminder` and `capture-feedback` merged into `ask-bootcamper` and `review-bootcamper-input` respectively; `enforce-feedback-path` and `enforce-working-directory` merged into `enforce-file-path-policies`; `verify-senzing-facts` and `offer-visualization` removed (24 hooks total)
 - Windows support improvements — Visual Studio Build Tools check in `preflight.py`, Windows-specific pitfalls section in `common-pitfalls.md`, PowerShell execution policy guidance, Windows Terminal recommendation
-- Steering best practices alignment — `agent-instructions.md` trimmed to 79 lines, `common-pitfalls.md` changed to manual inclusion, context budget guidelines followed
-- 28 orphaned specs removed, module numbering fixed across all files
+- Steering best practices alignment — `common-pitfalls.md` changed to manual inclusion, context budget guidelines followed
 - Deprecated `preflight_check.py` removed
 
 ## What's New in 0.10.0
@@ -55,7 +63,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 |-----------------------------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
 | 1 — Business Problem                    | Defines what you're trying to solve and which data sources matter         | Focuses the rest of the bootcamp on your actual use case                                                         |
 | 2 — SDK Setup                           | Installs and configures the Senzing SDK on your machine                   | Everything else depends on a working SDK installation                                                            |
-| 3 — Quick Demo                          | Runs entity resolution on sample data so you can see it work              | Validates your entire setup end-to-end; the result is trivial on purpose — the point is proving the system works |
+| 3 — System Verification                 | Runs entity resolution on Senzing TruthSet data and verifies expected entity counts | Validates your entire setup end-to-end against a known-good reference dataset — proving the system works before you use your own data |
 | 4 — Data Collection                     | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
 | 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Entity Specification format. Optional Phase 3 test-loads and evaluates results using `mapping_workflow` steps 5–8 | Identifies issues before they cause bad matches, gets data into the format Senzing needs, and optionally validates entity resolution quality before production loading |
 | 6 — Load Data                           | Loads all data sources, processes redo records, and validates entity resolution results | Your data is loaded and entity resolution is running — duplicates matched, cross-source connections found |
@@ -101,7 +109,7 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 
 - `module-01-business-problem.md` — Module 1: Business Problem (split: `module-01-phase2-document-confirm.md`)
 - `module-02-sdk-setup.md` — Module 2: SDK Setup
-- `module-03-quick-demo.md` — Module 3: Quick Demo (Optional)
+- `module-03-system-verification.md` — Module 3: System Verification (Optional)
 - `module-04-data-collection.md` — Module 4: Data Collection
 - `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping
 - `module-06-load-data.md` — Module 6: Load Data
@@ -113,8 +121,8 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 
 **Agent Behavior:**
 
-- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~79 lines)
-- `module-transitions.md` — Journey map, before/after framing, and step-level progress rules (always loaded, ~59 lines)
+- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~101 lines)
+- `module-transitions.md` — Journey map, before/after framing, and step-level progress rules (always loaded, ~71 lines)
 - `session-resume.md` — Restores full context when resuming a previous bootcamp session
 - `onboarding-flow.md` — Full onboarding sequence: directory creation, language selection, prerequisite checks, track selection, validation gates
 - `cloud-provider-setup.md` — Cloud provider selection at the 8→9 gate (AWS, Azure, GCP, on-premises, local)
@@ -268,7 +276,7 @@ explain_error_code(error_code='0023')
 |--------|------------------------------------------------|
 | 1      | Understand Business Problem                    |
 | 2      | Set Up SDK                                     |
-| 3      | Quick Demo (Optional)                          |
+| 3      | System Verification (Optional)                 |
 | 4      | Data Collection Policy                         |
 | 5      | Data Quality & Mapping (with optional test load)  |
 | 6      | Load Data                                      |
@@ -300,11 +308,11 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available: `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation`, `enforce-feedback-path`, `enforce-working-directory` ⭐, `enforce-visualization-offers` ⭐, `verify-senzing-facts`, `verify-sdk-setup`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `validate-data-files`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `offer-visualization`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `git-commit-reminder`.
+Available (24 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation`, `enforce-file-path-policies` ⭐, `enforce-visualization-offers` ⭐, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
 
 ## Project Directory Structure
 
-The agent creates an organized directory structure at bootcamp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `logs/`, `monitoring/`. The `config/` directory includes `data_sources.yaml` — a registry tracking each data source's quality, mapping, and load status across modules. Load `project-structure.md` for details.
+The agent creates an organized directory structure in the bootcamper's working directory at bootcamp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `logs/`, `monitoring/`. During Module 4 the agent creates `config/data_sources.yaml` in the bootcamper's project — a registry tracking each data source's quality, mapping, and load status across modules. Load `project-structure.md` for details.
 
 ## Entity Resolution Design Patterns
 

@@ -268,8 +268,8 @@ docs/
 ├── modules/                   # Module documentation
 │   ├── MODULE_1_BUSINESS_PROBLEM.md
 │   ├── MODULE_2_SDK_SETUP.md
-│   ├── MODULE_3_QUICK_DEMO.md
-│   └── ... (Modules 3-12)
+│   ├── MODULE_3_SYSTEM_VERIFICATION.md
+│   └── ... (Modules 3-11)
 ├── policies/                  # Policy documents
 │   ├── FILE_STORAGE_POLICY.md
 │   ├── CODE_QUALITY_STANDARDS.md
@@ -319,7 +319,7 @@ Found an issue or have a suggestion?
 
 - [Bootcamp Overview](../../POWER.md)
 - [Module 1: Business Problem](../modules/MODULE_1_BUSINESS_PROBLEM.md)
-- [Module 3: Quick Demo](../modules/MODULE_3_QUICK_DEMO.md)
+- [Module 3: System Verification](../modules/MODULE_3_SYSTEM_VERIFICATION.md)
 - [File Storage Policy](../policies/FILE_STORAGE_POLICY.md)
 - [Code Quality Standards](../policies/CODE_QUALITY_STANDARDS.md)
 

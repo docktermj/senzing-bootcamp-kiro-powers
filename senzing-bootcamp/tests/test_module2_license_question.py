@@ -304,7 +304,7 @@ class TestBugConditionProperty:
 import hashlib
 
 _STEP_HASHES: dict[str, str] = {
-    "Step 1": "4de97430a0303ea6d5c1683fdbd9c480cf98245999aac5f53c7992bbf14c8ed1",
+    "Step 1": "8fbe4a2f78f5ba311bc907e4c96d7ac404878bc9be13343445faeb77e5b68f34",
     "Step 2": "d699ce64d2b9f6f8f834466b7886611343554f5d3e7f1bf89c39ad7d58cf92a0",
     "Step 3": "3591982547aded6cd5da8870c3c6d8ffa6476f92fa00ea21c9fa1299f6cf4088",
     "Step 4": "5ee5168b5bfe301fcf7f6841ef78f3ab334dfc1b413e7440cc598fc72d69e6be",
@@ -315,7 +315,7 @@ _STEP_HASHES: dict[str, str] = {
 }
 
 _PREAMBLE_HASH = "d7645bfe51464bd2b52d7515a462879ff8d1398148326688fe98d4049602024f"
-_POST_STEP9_HASH = "e66dcbc4ce1861e5684362dae5553fca2db35bef51fa63d65b8c8719b8d8dcd8"
+_POST_STEP9_HASH = "1c91f1e0857159a0162c5161254b71c7fccb9b07f763085742ff4fe2877db3ac"
 
 _EXPECTED_HEADINGS = [
     "# Module 2: SDK Installation and Configuration",

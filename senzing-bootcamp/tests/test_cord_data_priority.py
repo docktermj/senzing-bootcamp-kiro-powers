@@ -41,8 +41,8 @@ CORD_PATTERN = re.compile(
 SYNTHESIZED_DATA_PATTERN = re.compile(
     r"synthesized\s+(?:test\s+)?data"
     r"|generated?\s+(?:test\s+)?data"
-    r"|test\s+data\s+(?:can\s+be\s+)?generat(?:ed|ion)"
-    r"|data\s+(?:can\s+be\s+)?generat(?:ed|ion)",
+    r"|test\s+data\s+(?:can\s+(?:also\s+)?be\s+)?generat(?:ed|ion)"
+    r"|data\s+(?:can\s+(?:also\s+)?be\s+)?generat(?:ed|ion)",
     re.IGNORECASE,
 )
 
@@ -61,9 +61,12 @@ GET_SAMPLE_DATA_PATTERN = re.compile(r"get_sample_data", re.IGNORECASE)
 def collect_markdown_files() -> list[Path]:
     """Collect all Markdown files under the senzing-bootcamp/ directory.
 
+    Excludes CHANGELOG.md since it is a historical record of past changes,
+    not user-facing content that recommends data sources.
+
     Returns:
         Sorted list of Path objects for all .md files, excluding
-        __pycache__ and .pytest_cache directories.
+        __pycache__, .pytest_cache, .hypothesis, and CHANGELOG.md.
     """
     files = list(_BOOTCAMP_DIR.rglob("*.md"))
     files = [
@@ -71,6 +74,7 @@ def collect_markdown_files() -> list[Path]:
         if "__pycache__" not in str(f)
         and ".pytest_cache" not in str(f)
         and ".hypothesis" not in str(f)
+        and f.name != "CHANGELOG.md"
     ]
     return sorted(files)
 

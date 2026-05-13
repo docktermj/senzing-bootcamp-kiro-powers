@@ -175,7 +175,7 @@ database/*.db-journal
 
 **ExampleEnvironment helper override**: The Senzing SDK's `ExampleEnvironment` helper class creates SQLite databases in `/tmp/` by default (e.g., `/tmp/senzing_test_*.db`). When using `ExampleEnvironment` or any MCP-generated scaffold code, always override the database path to `database/G2C.db`. If the generated code uses `ExampleEnvironment`, replace it with explicit engine configuration pointing to `database/G2C.db`.
 
-**Module 3 demo code**: All code generated during Module 3 (Quick Demo) goes in `src/quickstart_demo/`. Demo scripts use the naming convention `demo_[dataset_name].[ext]` and sample data uses `sample_data_[dataset_name].jsonl`. This keeps demo code separate from production code in `src/transform/`, `src/load/`, and `src/query/`.
+**Module 3 verification code**: All code generated during Module 3 (System Verification) goes in `src/quickstart_demo/`. Verification scripts use the naming convention `verify_[dataset_name].[ext]` and the TruthSet sample data retrieved via MCP is stored as `sample_data_[dataset_name].jsonl`. This keeps verification code separate from production code in `src/transform/`, `src/load/`, and `src/query/`.
 
 ### Configuration Files
 

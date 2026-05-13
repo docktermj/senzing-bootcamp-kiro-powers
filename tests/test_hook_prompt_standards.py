@@ -18,7 +18,7 @@ import pytest
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry.md")
 
-EXPECTED_HOOK_COUNT = 26
+EXPECTED_HOOK_COUNT = 24
 
 VALID_EVENT_TYPES = {
     "promptSubmit",
@@ -420,14 +420,14 @@ class TestHookCount:
     """Validate the expected number of hooks."""
 
     def test_hook_file_count(self):
-        """Exactly 20 .kiro.hook files exist (Req 5.1, 5.3)."""
+        """Exactly 24 .kiro.hook files exist (Req 5.1, 5.3)."""
         actual = len(get_hook_files())
         assert actual == EXPECTED_HOOK_COUNT, (
             f"Expected {EXPECTED_HOOK_COUNT} hook files, found {actual}"
         )
 
     def test_registry_entry_count(self):
-        """Exactly 20 registry entries exist (Req 5.2, 5.3)."""
+        """Exactly 24 registry entries exist (Req 5.2, 5.3)."""
 
         entries = parse_registry()
         actual = len(entries)
@@ -471,8 +471,8 @@ class TestEventTypeValidation:
 class TestRealHookFiles:
     """Example-based unit tests that validate real hook file data."""
 
-    def test_all_20_hook_files_parse_as_valid_json(self):
-        """All 20 real hook files parse as valid JSON (Req 1.1)."""
+    def test_all_24_hook_files_parse_as_valid_json(self):
+        """All 24 real hook files parse as valid JSON (Req 1.1)."""
         hook_files = get_hook_files()
         assert len(hook_files) == EXPECTED_HOOK_COUNT
         for path in hook_files:
@@ -480,12 +480,12 @@ class TestRealHookFiles:
                 data = json.load(f)
             assert isinstance(data, dict), f"{path.name} did not parse as a JSON object"
 
-    def test_hook_file_count_is_20(self):
-        """Hook file count is exactly 21 (Req 5.1)."""
+    def test_hook_file_count_is_24(self):
+        """Hook file count is exactly 24 (Req 5.1)."""
         assert len(get_hook_files()) == EXPECTED_HOOK_COUNT
 
-    def test_registry_entry_count_is_20(self):
-        """Registry entry count is exactly 21 (Req 5.2)."""
+    def test_registry_entry_count_is_24(self):
+        """Registry entry count is exactly 24 (Req 5.2)."""
         assert len(parse_registry()) == EXPECTED_HOOK_COUNT
 
     def test_valid_event_types_has_10_entries(self):
@@ -500,9 +500,7 @@ class TestRealHookFiles:
 
     @pytest.mark.parametrize("hook_id", [
         "review-bootcamper-input",
-        "enforce-feedback-path",
-        "enforce-working-directory",
-        "verify-senzing-facts",
+        "enforce-file-path-policies",
     ])
     def test_real_pass_through_hooks_have_silent_processing(self, hook_id: str):
         """Real pass-through hooks contain silent-processing instructions (Req 2.1)."""

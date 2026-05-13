@@ -77,7 +77,7 @@ Output: docs/stakeholder_summary_module1.md
 
 [next_steps]
   1. Set up the Senzing SDK (Module 2)
-  2. Run a quick demo with sample data (Module 3)
+  2. Run system verification with the Senzing TruthSet (Module 3)
   3. Collect and catalog data samples (Module 4)
   4. Evaluate data quality and map to Senzing format (Module 5)
 

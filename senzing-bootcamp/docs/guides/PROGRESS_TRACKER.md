@@ -7,7 +7,7 @@ Progress: [░░░░░░░░░░░░░░░░░░░░░░░
 
 - 🔄 Module 1: Business Problem
 - ⬜ Module 2: SDK Setup
-- ⬜ Module 3: Quick Demo
+- ⬜ Module 3: System Verification
 - ⬜ Module 4: Data Collection
 - ⬜ Module 5: Data Quality & Mapping
 - ⬜ Module 6: Single Source Loading

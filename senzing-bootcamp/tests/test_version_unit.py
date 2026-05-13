@@ -52,7 +52,7 @@ class TestReadVersion:
     def test_read_version_from_default_path(self) -> None:
         """read_version() reads from the default VERSION file without error."""
         version = read_version()
-        assert version == "0.1.0"
+        assert version == "0.11.0"
 
     def test_missing_file_raises_error(self, tmp_path: Path) -> None:
         """read_version raises VersionError when the file does not exist."""
@@ -122,7 +122,7 @@ class TestCli:
             main(["--format", "raw"])
         assert exc_info.value.code == 0
         captured = capsys.readouterr()
-        assert captured.out.strip() == "0.1.0"
+        assert captured.out.strip() == "0.11.0"
 
     def test_cli_display_format(self, capsys: pytest.CaptureFixture[str]) -> None:
         """CLI with --format display outputs the full display string."""
@@ -130,7 +130,7 @@ class TestCli:
             main(["--format", "display"])
         assert exc_info.value.code == 0
         captured = capsys.readouterr()
-        assert captured.out.strip() == "Senzing Bootcamp Power v0.1.0"
+        assert captured.out.strip() == "Senzing Bootcamp Power v0.11.0"
 
     def test_cli_missing_file_exit_code(
         self, tmp_path: Path, capsys: pytest.CaptureFixture[str]

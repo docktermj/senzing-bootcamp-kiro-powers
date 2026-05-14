@@ -1,5 +1,5 @@
 {
-  "name": "Module Completion Celebration",
+  "name": "to celebrate module completion",
   "version": "1.0.0",
   "description": "Detects module completion boundaries and displays a brief celebration with next-step guidance.",
   "when": {

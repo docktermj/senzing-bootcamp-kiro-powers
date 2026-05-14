@@ -52,7 +52,7 @@ class TestParseRealHookFile:
         entry = parse_hook_file(hook_path)
 
         assert entry.hook_id == "ask-bootcamper"
-        assert entry.name == "Ask Bootcamper"
+        assert entry.name == "to wait for your answer"
         assert "bootcamper" in entry.description.lower()
         assert entry.event_type == "agentStop"
         assert entry.action_type == "askAgent"

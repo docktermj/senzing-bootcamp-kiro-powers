@@ -1,5 +1,5 @@
 {
-  "name": "Senzing Data Quality Check",
+  "name": "to check data quality",
   "version": "2.0.0",
   "description": "Automatically check data quality when transformation programs are saved",
   "when": {

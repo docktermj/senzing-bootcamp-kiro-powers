@@ -1146,10 +1146,10 @@ class TestConfigParsing:
         """Verify steering-index.yaml was parsed successfully."""
         assert len(STEERING_INDEX) == 11
         # Single-phase modules
-        for num in [2, 3, 4, 7]:
+        for num in [4, 7]:
             assert isinstance(STEERING_INDEX[num], str)
-        # Multi-phase modules
-        for num in [1, 5, 6, 8, 9, 10, 11]:
+        # Multi-phase modules (including module 2 which uses structured format)
+        for num in [1, 2, 3, 5, 6, 8, 9, 10, 11]:
             assert isinstance(STEERING_INDEX[num], dict)
 
     def test_tracks_contain_valid_modules(self) -> None:

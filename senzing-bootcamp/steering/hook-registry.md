@@ -64,7 +64,7 @@ REMEMBER: If both phases produced no output, your COMPLETE response is: .
 ````
 
 - id: `ask-bootcamper`
-- name: `Ask Bootcamper`
+- name: `to wait for your answer`
 - description: `Silence-first agentStop hook with dual responsibility: (1) Phase 1 produces a recap + closing question only when no question is already pending, with a near-completion feedback nudge; (2) Phase 2 independently reminds the bootcamper to share saved feedback after track completion.`
 
 **code-style-check** (fileEdited → askAgent, filePatterns: `src/**/*.py, src/**/*.java, src/**/*.cs, src/**/*.rs, src/**/*.ts, src/**/*.js`)
@@ -76,7 +76,7 @@ A source code file was just edited. Check it for language-appropriate coding sta
 ````
 
 - id: `code-style-check`
-- name: `Code Style Check`
+- name: `to check code style`
 - description: `Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions.`
 
 **commonmark-validation** (fileEdited → askAgent, filePatterns: `**/*.md`)
@@ -98,7 +98,7 @@ If any issues are found, fix them automatically to maintain CommonMark complianc
 ````
 
 - id: `commonmark-validation`
-- name: `CommonMark Validation`
+- name: `to check Markdown style`
 - description: `Validates that all Markdown files conform to CommonMark standards when edited`
 
 **enforce-file-path-policies** (preToolUse → askAgent, toolTypes: write)
@@ -106,12 +106,26 @@ If any issues are found, fix them automatically to maintain CommonMark complianc
 Prompt:
 
 ````text
-Before writing this file, check two path policies. (1) FEEDBACK PATH: If you are in the feedback collection workflow (bootcamper said 'bootcamp feedback' or 'power feedback' and you are writing a feedback entry with Date/Module/Priority/Category/What Happened/Why It's a Problem sections), verify the target path is exactly 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'. If the path is different, STOP and redirect to that file. Do NOT write feedback to any other file or submit to external services. (2) WORKING DIRECTORY: Does the file path or any path in the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If so, replace with project-relative equivalents (database/G2C.db for databases, data/temp/ for temporary files, src/ for source code). Do NOT proceed if it would place files outside the working directory. If neither policy is violated, produce no output at all — zero tokens, zero characters.
+QUICK CHECK — answer these two questions about the file being written:
+
+Q1: Is the target path inside the working directory? (Not /tmp/, not %TEMP%, not ~/Downloads, not any absolute path outside the project)
+Q2: Is this feedback content (has Date/Module/Priority/Category/What Happened sections) being written to a path OTHER than 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'?
+
+FAST PATH: If Q1 is YES (path is inside working directory) AND Q2 is NO (not misrouted feedback), output exactly:
+policy: pass
+
+Do not check file content for path references in the fast path. Do not explain. Do not acknowledge. Just output: policy: pass
+
+SLOW PATH: If Q1 is NO (path is outside working directory) OR Q2 is YES (feedback going to wrong file):
+- For external paths: STOP. Tell the agent to use project-relative equivalents (database/G2C.db for databases, data/temp/ for temporary files, src/ for source code).
+- For misrouted feedback: STOP. Redirect to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md.
+
+CONTENT CHECK (only if fast path passed): Does the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If YES: STOP and require replacement with project-relative equivalents. If NO: output was already "policy: pass" — do not add anything.
 ````
 
 - id: `enforce-file-path-policies`
-- name: `I will make sure the file is in the project directory`
-- description: `Before any write operation, enforces two path policies: (1) feedback content must go to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md, and (2) no files may be written outside the working directory.`
+- name: `to make sure the file is in the project directory`
+- description: `Before any write operation, enforces two path policies: (1) feedback content must go to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md, and (2) no files may be written outside the working directory. Uses a fast path for project-relative non-feedback writes (outputs 'policy: pass' immediately) and a slow path for violations (outputs corrective instructions).`
 
 **review-bootcamper-input** (promptSubmit → askAgent)
 
@@ -122,7 +136,7 @@ Check if the bootcamper's message contains any of these feedback trigger phrases
 ````
 
 - id: `review-bootcamper-input`
-- name: `Review Bootcamper Input`
+- name: `to review what you said`
 - description: `Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture.`
 
 ## Module Hooks (created when module starts)
@@ -144,7 +158,7 @@ If all three fields are present and non-empty, confirm readiness: "Your business
 ````
 
 - id: `validate-business-problem`
-- name: `Validate Business Problem`
+- name: `to validate your business problem`
 - description: `After Module 1 tasks complete, validates that the bootcamper has identified data sources, defined matching criteria, and documented success metrics before proceeding to Module 2.`
 
 **verify-sdk-setup** — Module 2 (fileEdited → askAgent, filePatterns: `config/senzing_config.*, config/bootcamp_preferences.yaml, database/*.*`)
@@ -156,7 +170,7 @@ A configuration or database file was modified. If the bootcamper is in Module 2 
 ````
 
 - id: `verify-sdk-setup`
-- name: `Verify SDK Setup`
+- name: `to verify SDK setup`
 - description: `After config or environment files change during Module 2, re-verifies that the Senzing SDK setup is still valid.`
 
 **verify-demo-results** — Module 3 (postTaskExecution → askAgent)
@@ -178,7 +192,7 @@ If the results match the TruthSet expectations, confirm success: "System verific
 ````
 
 - id: `verify-demo-results`
-- name: `Verify Demo Results`
+- name: `to verify demo results`
 - description: `After Module 3 tasks complete, verifies that system verification produced entity resolution results matching the Senzing TruthSet expected output before marking the module complete.`
 
 **validate-data-files** — Module 4 (fileCreated → askAgent, filePatterns: `data/raw/*.*`)
@@ -190,7 +204,7 @@ A new data file was added to data/raw/. Before proceeding, do a quick sanity che
 ````
 
 - id: `validate-data-files`
-- name: `Validate Data Files`
+- name: `to validate data files`
 - description: `When new data files are added to data/raw/, checks file format, encoding, and basic readability to catch issues early.`
 
 **analyze-after-mapping** — Module 5 (fileCreated → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
@@ -204,7 +218,7 @@ ADDITIONALLY: Verify that docs/{source_name}_mapper.md exists (extract source na
 ````
 
 - id: `analyze-after-mapping`
-- name: `Analyze After Mapping`
+- name: `to analyze mapped data`
 - description: `After completing a mapping task, validates the transformation output using analyze_record for quality metrics and Senzing Generic Entity Specification conformance before proceeding to loading.`
 
 **data-quality-check** — Module 5 (fileEdited → askAgent, filePatterns: `src/transform/*.*`)
@@ -216,7 +230,7 @@ The transformation program was just updated. Please review the changes and sugge
 ````
 
 - id: `data-quality-check`
-- name: `Senzing Data Quality Check`
+- name: `to check data quality`
 - description: `Automatically check data quality when transformation programs are saved`
 
 **enforce-mapping-spec** — Module 5 (fileCreated → askAgent, filePatterns: `data/transformed/*.jsonl, data/transformed/*.json`)
@@ -263,7 +277,7 @@ If docs/{source_name}_mapper.md DOES NOT EXIST:
 ````
 
 - id: `enforce-mapping-spec`
-- name: `Enforce Mapping Specification`
+- name: `to enforce the mapping specification`
 - description: `When transformed data is created, verifies that a per-source mapping specification markdown exists in docs/. Blocks progression until the mapping spec is created.`
 
 **backup-before-load** — Module 6 (fileEdited → askAgent, filePatterns: `src/load/*.*`)
@@ -275,7 +289,7 @@ A loading program was modified. Before running this in production, remind the us
 ````
 
 - id: `backup-before-load`
-- name: `Backup Database Before Loading`
+- name: `to remind you to back up before loading`
 - description: `Remind to backup database before running loading programs`
 
 **run-tests-after-change** — Module 6 (fileEdited → askAgent, filePatterns: `src/load/*.*, src/query/*.*, src/transform/*.*`)
@@ -287,7 +301,7 @@ Source code was modified. If tests exist in the tests/ directory, remind the use
 ````
 
 - id: `run-tests-after-change`
-- name: `Run Tests After Code Change`
+- name: `to remind you to run tests`
 - description: `Reminds the agent to run the test suite after source code changes in loading, query, or transformation programs.`
 
 **verify-generated-code** — Module 6 (fileCreated → askAgent, filePatterns: `src/transform/*.*, src/load/*.*, src/query/*.*`)
@@ -299,7 +313,7 @@ A new bootcamp source file was created. Before moving to the next step, verify t
 ````
 
 - id: `verify-generated-code`
-- name: `Verify Generated Code Runs`
+- name: `to verify generated code`
 - description: `When bootcamp source code is created, prompts the agent to run it on sample data and report results before moving on.`
 
 **enforce-visualization-offers** — Module 8 (agentStop → askAgent)
@@ -327,7 +341,7 @@ Process missed checkpoints one at a time. Do not batch multiple offers into a si
 ````
 
 - id: `enforce-visualization-offers`
-- name: `Enforce Visualization Offers`
+- name: `to offer visualizations`
 - description: `When the agent stops during a visualization-capable module (3, 5, 7, 8), checks the visualization tracker to verify all required offers were made. Prompts for missed offers.`
 
 **validate-benchmark-results** — Module 8 (fileEdited → askAgent, filePatterns: `tests/performance/*.*`)
@@ -339,7 +353,7 @@ A benchmark script in tests/performance/ was just modified. Before recording res
 ````
 
 - id: `validate-benchmark-results`
-- name: `Validate Benchmark Results`
+- name: `to validate benchmark results`
 - description: `When benchmark scripts are created or modified in tests/performance/, validates that they produce parseable output with required metrics (records/sec, latency percentiles).`
 
 **security-scan-on-save** — Module 9 (fileEdited → askAgent, filePatterns: `src/security/*.*, config/*credentials*, config/*secret*, .env*`)
@@ -351,7 +365,7 @@ A security-related file was just modified. If the bootcamper is in Module 9 (Sec
 ````
 
 - id: `security-scan-on-save`
-- name: `Security Scan on Save`
+- name: `to run a security scan`
 - description: `When security-related files are modified during Module 9, reminds the agent to re-run vulnerability scanning to catch regressions.`
 
 **validate-alert-config** — Module 10 (fileCreated → askAgent, filePatterns: `monitoring/alerts/*.*, monitoring/dashboards/*.*`)
@@ -363,7 +377,7 @@ A monitoring configuration file was just created. Validate: (1) Alert rules have
 ````
 
 - id: `validate-alert-config`
-- name: `Validate Alert Configuration`
+- name: `to validate alert configuration`
 - description: `When monitoring configuration files are created or modified during Module 10, validates alert rule syntax and completeness.`
 
 **deployment-phase-gate** — Module 11 (postTaskExecution → askAgent)
@@ -399,7 +413,7 @@ WAIT for the bootcamper's response. Do NOT proceed to any deployment steps (Step
 ````
 
 - id: `deployment-phase-gate`
-- name: `Deployment Phase Gate`
+- name: `to check the deployment phase gate`
 - description: `After packaging tasks complete in Module 11, displays a phase gate prompt asking the bootcamper whether to proceed to deployment or stop. Checks config/bootcamp_progress.json to confirm the current module is 11 before acting.`
 
 **backup-project-on-request** — any module (userTriggered → askAgent)
@@ -411,7 +425,7 @@ The user wants to back up their project. Run the backup script: python3 scripts/
 ````
 
 - id: `backup-project-on-request`
-- name: `Backup Project on Request`
+- name: `to back up your project`
 - description: `Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead.`
 
 **error-recovery-context** — any module (postToolUse → askAgent, toolTypes: shell)
@@ -439,7 +453,7 @@ For non-zero exit codes with a valid bootcamp session:
 ````
 
 - id: `error-recovery-context`
-- name: `Auto-Load Error Recovery Context`
+- name: `to help recover from errors`
 - description: `Detects shell command failures and consults common-pitfalls.md and recovery-from-mistakes.md to provide targeted error recovery guidance during bootcamp modules.`
 
 **git-commit-reminder** — any module (userTriggered → askAgent)
@@ -451,7 +465,7 @@ The user wants to commit their bootcamp progress. Check config/bootcamp_progress
 ````
 
 - id: `git-commit-reminder`
-- name: `Git Commit Reminder`
+- name: `to remind you to commit`
 - description: `Reminds the user to commit their work after completing a module. Triggered manually via button click.`
 
 **module-completion-celebration** — any module (postTaskExecution → askAgent)
@@ -481,5 +495,5 @@ CONSTRAINTS:
 ````
 
 - id: `module-completion-celebration`
-- name: `Module Completion Celebration`
+- name: `to celebrate module completion`
 - description: `Detects module completion boundaries and displays a brief celebration with next-step guidance.`

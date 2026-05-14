@@ -254,14 +254,14 @@ class TestExistingStepPreservation:
     def test_step_2_language_detection(self) -> None:
         """Step 2 references platform detection and MCP server query."""
         text = _read_onboarding()
-        section = _extract_section(text, r"2\.\s+Language Selection")
+        section = _extract_section(text, r"2\.\s+Programming Language Selection")
         assert "platform.system()" in section
         assert "MCP server" in section
 
     def test_step_2_gate_marker(self) -> None:
         """Step 2 contains the mandatory gate marker ⛔."""
         text = _read_onboarding()
-        section = _extract_section(text, r"2\.\s+Language Selection")
+        section = _extract_section(text, r"2\.\s+Programming Language Selection")
         assert "⛔" in section, "Step 2 missing mandatory gate marker ⛔"
         assert "MANDATORY GATE" in section
 

@@ -1,5 +1,5 @@
 {
-  "name": "Enforce Visualization Offers",
+  "name": "to offer visualizations",
   "version": "2.0.0",
   "description": "When the agent stops during a visualization-capable module (3, 5, 7, 8), checks the visualization tracker to verify all required offers were made. Prompts for missed offers.",
   "when": {

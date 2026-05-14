@@ -1,5 +1,5 @@
 {
-  "name": "Review Bootcamper Input",
+  "name": "to review what you said",
   "version": "1.0.0",
   "description": "Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture.",
   "when": {

@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entity Resolution Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+                Ubuntu, Cantarell, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            padding: 16px 24px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .page-header p {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        /* Summary Banner */
+        .summary-banner {
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 16px 20px;
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .stat-box .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .stat-box .stat-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 4px;
+        }
+
+        .stat-arrow {
+            color: #475569;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            padding: 0 24px;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .tab-button:hover {
+            color: #e2e8f0;
+        }
+
+        .tab-button.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            padding: 24px;
+            min-height: calc(100vh - 280px);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .tab-panel-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        /* Entity Graph Styles */
+        .graph-container {
+            width: 100%;
+            height: calc(100vh - 320px);
+            min-height: 500px;
+            background: #1e293b;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .graph-container svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .graph-container .node {
+            cursor: grab;
+        }
+
+        .graph-container .node:active {
+            cursor: grabbing;
+        }
+
+        .graph-container .link {
+            stroke: #475569;
+            stroke-opacity: 0.6;
+        }
+
+        .graph-container .link-label {
+            font-size: 9px;
+            fill: #94a3b8;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+
+        .graph-container .node-label {
+            font-size: 10px;
+            fill: #e2e8f0;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+
+        .graph-tooltip {
+            position: absolute;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+            z-index: 100;
+            max-width: 280px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .graph-tooltip .tooltip-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 4px;
+            color: #f8fafc;
+        }
+
+        .graph-tooltip .tooltip-detail {
+            color: #94a3b8;
+            margin-bottom: 2px;
+        }
+
+        .graph-tooltip .tooltip-sources {
+            margin-top: 6px;
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .graph-tooltip .source-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .graph-legend {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 0.75rem;
+        }
+
+        .graph-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .graph-legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .graph-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .graph-error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #f87171;
+            font-size: 0.875rem;
+            text-align: center;
+            padding: 24px;
+        }
+
+        /* Record Merges Styles */
+        .merges-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .merge-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .merge-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid #334155;
+            background: #1e293b;
+        }
+
+        .merge-card-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .match-key-chip {
+            display: inline-block;
+            background: #3b82f622;
+            color: #60a5fa;
+            border: 1px solid #3b82f644;
+            border-radius: 12px;
+            padding: 3px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .merge-records-row {
+            display: flex;
+            gap: 1px;
+            background: #334155;
+        }
+
+        .merge-record-card {
+            flex: 1;
+            background: #0f172a;
+            padding: 16px 20px;
+            min-width: 0;
+        }
+
+        .merge-record-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .merge-source-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .merge-record-id {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .merge-feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .merge-feature {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .merge-feature-label {
+            font-size: 0.65rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .merge-feature-value {
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: transparent;
+        }
+
+        .merge-feature-value.highlighted {
+            background: #22c55e15;
+            border: 1px solid #22c55e33;
+            color: #86efac;
+        }
+
+        .merge-feature-value.empty {
+            color: #475569;
+            font-style: italic;
+        }
+
+        .merge-identifiers {
+            margin-top: 4px;
+        }
+
+        .merge-identifier-item {
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: transparent;
+        }
+
+        .merge-identifier-item.highlighted {
+            background: #22c55e15;
+            border: 1px solid #22c55e33;
+            color: #86efac;
+        }
+
+        .merges-error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            color: #f87171;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        .merges-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        /* Merge Statistics Styles */
+        .stats-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .stats-summary {
+            font-size: 1.1rem;
+            color: #e2e8f0;
+            text-align: center;
+            padding: 16px 24px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+        }
+
+        .stats-summary strong {
+            color: #3b82f6;
+            font-weight: 700;
+        }
+
+        .stats-chart-container {
+            width: 100%;
+            max-width: 700px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .stats-chart-container svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .stats-chart-container .bar {
+            fill: #3b82f6;
+        }
+
+        .stats-chart-container .bar:hover {
+            fill: #60a5fa;
+        }
+
+        .stats-chart-container .axis text {
+            fill: #94a3b8;
+            font-size: 12px;
+        }
+
+        .stats-chart-container .axis line,
+        .stats-chart-container .axis path {
+            stroke: #475569;
+        }
+
+        .stats-chart-container .bar-label {
+            fill: #f8fafc;
+            font-size: 13px;
+            font-weight: 600;
+            text-anchor: middle;
+        }
+
+        .stats-chart-container .axis-label {
+            fill: #94a3b8;
+            font-size: 12px;
+        }
+
+        .stats-error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            color: #f87171;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+
+        /* Probe Entities Styles */
+        .probe-container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .probe-buttons-section {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .probe-buttons-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .probe-buttons-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .probe-button {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 10px 16px;
+            color: #e2e8f0;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .probe-button:hover {
+            background: #1e293b;
+            border-color: #3b82f6;
+            color: #f8fafc;
+        }
+
+        .probe-button .probe-button-type {
+            font-size: 0.7rem;
+            color: #64748b;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .probe-search-section {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .probe-search-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .probe-search-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .probe-search-input {
+            flex: 1;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 10px 14px;
+            color: #e2e8f0;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .probe-search-input:focus {
+            border-color: #3b82f6;
+        }
+
+        .probe-search-input::placeholder {
+            color: #64748b;
+        }
+
+        .probe-search-button {
+            background: #3b82f6;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            color: #fff;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .probe-search-button:hover {
+            background: #2563eb;
+        }
+
+        .probe-search-button:disabled {
+            background: #475569;
+            cursor: not-allowed;
+        }
+
+        .probe-results-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .probe-results-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .probe-results-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            color: #64748b;
+            font-size: 0.875rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+        }
+
+        .probe-results-error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            color: #f87171;
+            font-size: 0.875rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+        }
+
+        .probe-result-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .probe-result-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .probe-result-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .probe-result-detail {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .probe-result-sources {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .probe-source-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .probe-result-score {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .probe-result-score-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #22c55e;
+        }
+
+        .probe-result-score-label {
+            font-size: 0.65rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .summary-banner {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .stat-arrow {
+                transform: rotate(90deg);
+            }
+
+            .tab-navigation {
+                overflow-x: auto;
+                padding: 0 12px;
+            }
+
+            .tab-button {
+                padding: 12px 14px;
+                white-space: nowrap;
+                font-size: 0.8rem;
+            }
+
+            .stat-box {
+                min-width: 120px;
+            }
+
+            .merge-records-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <h1>Entity Resolution Visualization</h1>
+        <p>Senzing TruthSet — CUSTOMERS, REFERENCE, WATCHLIST</p>
+    </header>
+
+    <!-- Summary Banner: 5 stats with arrow indicators -->
+    <section class="summary-banner" id="summary-banner">
+        <div class="stat-box">
+            <div class="stat-value" id="stat-records">—</div>
+            <div class="stat-label">Records Loaded</div>
+        </div>
+        <div class="stat-arrow">→</div>
+        <div class="stat-box">
+            <div class="stat-value" id="stat-entities">—</div>
+            <div class="stat-label">Resolved Entities</div>
+        </div>
+        <div class="stat-arrow">→</div>
+        <div class="stat-box">
+            <div class="stat-value" id="stat-multi-record">—</div>
+            <div class="stat-label">Multi-Record Entities</div>
+        </div>
+        <div class="stat-arrow">→</div>
+        <div class="stat-box">
+            <div class="stat-value" id="stat-cross-source">—</div>
+            <div class="stat-label">Cross-Source Matches</div>
+        </div>
+        <div class="stat-arrow">→</div>
+        <div class="stat-box">
+            <div class="stat-value" id="stat-relationships">—</div>
+            <div class="stat-label">Relationships Discovered</div>
+        </div>
+    </section>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-navigation">
+        <button class="tab-button active" data-tab="entity-graph">Entity Graph</button>
+        <button class="tab-button" data-tab="record-merges">Record Merges</button>
+        <button class="tab-button" data-tab="merge-statistics">Merge Statistics</button>
+        <button class="tab-button" data-tab="probe-entities">Probe Entities</button>
+    </nav>
+
+    <!-- Tab Content Panels -->
+    <div class="tab-content">
+        <div class="tab-panel active" id="tab-entity-graph">
+            <div class="graph-container" id="entity-graph-container">
+                <div class="graph-tooltip" id="graph-tooltip"></div>
+                <div class="graph-legend">
+                    <div class="graph-legend-item">
+                        <div class="graph-legend-dot" style="background: #3b82f6;"></div>
+                        <span>CUSTOMERS</span>
+                    </div>
+                    <div class="graph-legend-item">
+                        <div class="graph-legend-dot" style="background: #22c55e;"></div>
+                        <span>REFERENCE</span>
+                    </div>
+                    <div class="graph-legend-item">
+                        <div class="graph-legend-dot" style="background: #f59e0b;"></div>
+                        <span>WATCHLIST</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-panel" id="tab-record-merges">
+            <div class="merges-container" id="merges-container">
+                <div class="tab-panel-placeholder">Loading Record Merges...</div>
+            </div>
+        </div>
+        <div class="tab-panel" id="tab-merge-statistics">
+            <div class="stats-container" id="stats-container">
+                <div class="tab-panel-placeholder">Loading Merge Statistics...</div>
+            </div>
+        </div>
+        <div class="tab-panel" id="tab-probe-entities">
+            <div class="probe-container">
+                <div class="probe-buttons-section">
+                    <h3>Quick Probe — Canonical TruthSet Entities</h3>
+                    <div class="probe-buttons-grid">
+                        <button class="probe-button" data-probe-type="name" data-probe-value="Robert Smith">
+                            Robert Smith
+                            <span class="probe-button-type">name</span>
+                        </button>
+                        <button class="probe-button" data-probe-type="name" data-probe-value="Bob Smith">
+                            Bob Smith
+                            <span class="probe-button-type">name</span>
+                        </button>
+                        <button class="probe-button" data-probe-type="address" data-probe-value="123 Main St">
+                            123 Main St
+                            <span class="probe-button-type">address</span>
+                        </button>
+                        <button class="probe-button" data-probe-type="phone" data-probe-value="555-0100">
+                            555-0100
+                            <span class="probe-button-type">phone</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="probe-search-section">
+                    <h3>Search Entities</h3>
+                    <form class="probe-search-form" id="probe-search-form">
+                        <input type="text" class="probe-search-input" id="probe-search-input" placeholder="Enter name, address, or phone..." />
+                        <button type="submit" class="probe-search-button" id="probe-search-button">Search</button>
+                    </form>
+                </div>
+                <div class="probe-results-section" id="probe-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching logic — show/hide panels without page reload
+        // Supports lazy loading: tabs load data only on first activation
+        (function() {
+            var tabButtons = document.querySelectorAll('.tab-button');
+            var tabPanels = document.querySelectorAll('.tab-panel');
+            var tabLoaded = {};
+
+            tabButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var targetTab = this.getAttribute('data-tab');
+
+                    // Deactivate all tabs
+                    tabButtons.forEach(function(btn) {
+                        btn.classList.remove('active');
+                    });
+                    tabPanels.forEach(function(panel) {
+                        panel.classList.remove('active');
+                    });
+
+                    // Activate selected tab
+                    this.classList.add('active');
+                    document.getElementById('tab-' + targetTab).classList.add('active');
+
+                    // Lazy load tab data on first activation
+                    if (!tabLoaded[targetTab]) {
+                        tabLoaded[targetTab] = true;
+                        if (targetTab === 'record-merges' && typeof loadRecordMerges === 'function') {
+                            loadRecordMerges();
+                        }
+                        if (targetTab === 'merge-statistics' && typeof loadMergeStatistics === 'function') {
+                            loadMergeStatistics();
+                        }
+                    }
+                });
+            });
+        })();
+    </script>
+
+    <!-- Summary Banner: Fetch and populate stats on page load -->
+    <script>
+        (function() {
+            function formatNumber(n) {
+                if (typeof n !== 'number' || isNaN(n)) return '—';
+                return n.toLocaleString();
+            }
+
+            function loadSummaryBanner() {
+                fetch('/api/stats')
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error('Server returned ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        document.getElementById('stat-records').textContent = formatNumber(data.records_total);
+                        document.getElementById('stat-entities').textContent = formatNumber(data.entities_total);
+                        document.getElementById('stat-multi-record').textContent = formatNumber(data.multi_record_entities);
+                        document.getElementById('stat-cross-source').textContent = formatNumber(data.cross_source_entities);
+                        document.getElementById('stat-relationships').textContent = formatNumber(data.relationships_total);
+                    })
+                    .catch(function(err) {
+                        var banner = document.getElementById('summary-banner');
+                        banner.innerHTML = '<div style="color: #f87171; font-size: 0.875rem; text-align: center; padding: 16px; width: 100%;">Could not load data</div>';
+                    });
+            }
+
+            loadSummaryBanner();
+        })();
+    </script>
+
+    <!-- Entity Graph: D3 Force-Directed Layout -->
+    <script>
+        (function() {
+            // Data source color mapping
+            var SOURCE_COLORS = {
+                'CUSTOMERS': '#3b82f6',
+                'REFERENCE': '#22c55e',
+                'WATCHLIST': '#f59e0b'
+            };
+            var DEFAULT_COLOR = '#6b7280';
+
+            // Node sizing: radius = min(max(8 + record_count * 4, 8), 40)
+            function nodeRadius(recordCount) {
+                return Math.min(Math.max(8 + recordCount * 4, 8), 40);
+            }
+
+            // Get primary data source color (first source in the list)
+            function nodeColor(dataSources) {
+                if (!dataSources || dataSources.length === 0) return DEFAULT_COLOR;
+                return SOURCE_COLORS[dataSources[0]] || DEFAULT_COLOR;
+            }
+
+            // Get badge color for a source
+            function sourceBadgeStyle(source) {
+                var color = SOURCE_COLORS[source] || DEFAULT_COLOR;
+                return 'background: ' + color + '22; color: ' + color + '; border: 1px solid ' + color + '44;';
+            }
+
+            function renderEntityGraph(data) {
+                var container = document.getElementById('entity-graph-container');
+                var tooltip = document.getElementById('graph-tooltip');
+                var width = container.clientWidth;
+                var height = container.clientHeight;
+
+                // Clear any existing SVG
+                d3.select('#entity-graph-container svg').remove();
+
+                // Handle empty data
+                if (!data.nodes || data.nodes.length === 0) {
+                    container.innerHTML = '<div class="graph-error">No entity data available. Verify data was loaded.</div>';
+                    return;
+                }
+
+                // Create SVG with viewBox for responsiveness
+                var svg = d3.select('#entity-graph-container')
+                    .append('svg')
+                    .attr('viewBox', '0 0 ' + width + ' ' + height)
+                    .attr('preserveAspectRatio', 'xMidYMid meet');
+
+                // Build node and edge data for D3
+                var nodeMap = {};
+                data.nodes.forEach(function(n) {
+                    nodeMap[n.entity_id] = n;
+                });
+
+                var links = data.edges.map(function(e) {
+                    return {
+                        source: e.source_entity_id,
+                        target: e.target_entity_id,
+                        match_key: e.match_key,
+                        relationship_type: e.relationship_type
+                    };
+                }).filter(function(l) {
+                    return nodeMap[l.source] && nodeMap[l.target];
+                });
+
+                var nodes = data.nodes.map(function(n) {
+                    return {
+                        id: n.entity_id,
+                        entity_name: n.entity_name,
+                        record_count: n.record_count,
+                        data_sources: n.data_sources,
+                        records: n.records
+                    };
+                });
+
+                // D3 force simulation
+                var simulation = d3.forceSimulation(nodes)
+                    .force('link', d3.forceLink(links).id(function(d) { return d.id; }).distance(120))
+                    .force('charge', d3.forceManyBody().strength(-300))
+                    .force('center', d3.forceCenter(width / 2, height / 2))
+                    .force('collision', d3.forceCollide().radius(function(d) { return nodeRadius(d.record_count) + 5; }));
+
+                // Draw edges (links)
+                var link = svg.append('g')
+                    .attr('class', 'links')
+                    .selectAll('line')
+                    .data(links)
+                    .enter()
+                    .append('line')
+                    .attr('class', 'link')
+                    .attr('stroke-width', 1.5);
+
+                // Draw edge labels (match keys)
+                var linkLabel = svg.append('g')
+                    .attr('class', 'link-labels')
+                    .selectAll('text')
+                    .data(links)
+                    .enter()
+                    .append('text')
+                    .attr('class', 'link-label')
+                    .text(function(d) { return d.match_key; });
+
+                // Draw nodes
+                var node = svg.append('g')
+                    .attr('class', 'nodes')
+                    .selectAll('circle')
+                    .data(nodes)
+                    .enter()
+                    .append('circle')
+                    .attr('class', 'node')
+                    .attr('r', function(d) { return nodeRadius(d.record_count); })
+                    .attr('fill', function(d) { return nodeColor(d.data_sources); })
+                    .attr('stroke', '#0f172a')
+                    .attr('stroke-width', 2)
+                    .call(d3.drag()
+                        .on('start', dragStarted)
+                        .on('drag', dragged)
+                        .on('end', dragEnded));
+
+                // Draw node labels (entity names)
+                var nodeLabel = svg.append('g')
+                    .attr('class', 'node-labels')
+                    .selectAll('text')
+                    .data(nodes)
+                    .enter()
+                    .append('text')
+                    .attr('class', 'node-label')
+                    .attr('dy', function(d) { return nodeRadius(d.record_count) + 14; })
+                    .text(function(d) {
+                        var name = d.entity_name || 'Entity ' + d.id;
+                        return name.length > 18 ? name.substring(0, 16) + '…' : name;
+                    });
+
+                // Tooltip on hover
+                node.on('mouseover', function(event, d) {
+                    var sourceBadges = (d.data_sources || []).map(function(src) {
+                        return '<span class="source-badge" style="' + sourceBadgeStyle(src) + '">' + src + '</span>';
+                    }).join('');
+
+                    tooltip.innerHTML =
+                        '<div class="tooltip-name">' + (d.entity_name || 'Unknown') + '</div>' +
+                        '<div class="tooltip-detail">Entity ID: ' + d.id + '</div>' +
+                        '<div class="tooltip-detail">Records: ' + d.record_count + '</div>' +
+                        '<div class="tooltip-sources">' + sourceBadges + '</div>';
+
+                    tooltip.style.opacity = '1';
+                    tooltip.style.left = (event.offsetX + 16) + 'px';
+                    tooltip.style.top = (event.offsetY - 10) + 'px';
+                });
+
+                node.on('mousemove', function(event) {
+                    tooltip.style.left = (event.offsetX + 16) + 'px';
+                    tooltip.style.top = (event.offsetY - 10) + 'px';
+                });
+
+                node.on('mouseout', function() {
+                    tooltip.style.opacity = '0';
+                });
+
+                // Simulation tick — update positions
+                simulation.on('tick', function() {
+                    link
+                        .attr('x1', function(d) { return d.source.x; })
+                        .attr('y1', function(d) { return d.source.y; })
+                        .attr('x2', function(d) { return d.target.x; })
+                        .attr('y2', function(d) { return d.target.y; });
+
+                    linkLabel
+                        .attr('x', function(d) { return (d.source.x + d.target.x) / 2; })
+                        .attr('y', function(d) { return (d.source.y + d.target.y) / 2; });
+
+                    node
+                        .attr('cx', function(d) { return d.x; })
+                        .attr('cy', function(d) { return d.y; });
+
+                    nodeLabel
+                        .attr('x', function(d) { return d.x; })
+                        .attr('y', function(d) { return d.y; });
+                });
+
+                // Drag behavior handlers
+                function dragStarted(event, d) {
+                    if (!event.active) simulation.alphaTarget(0.3).restart();
+                    d.fx = d.x;
+                    d.fy = d.y;
+                }
+
+                function dragged(event, d) {
+                    d.fx = event.x;
+                    d.fy = event.y;
+                }
+
+                function dragEnded(event, d) {
+                    if (!event.active) simulation.alphaTarget(0);
+                    d.fx = null;
+                    d.fy = null;
+                }
+            }
+
+            // Fetch graph data and render
+            function loadEntityGraph() {
+                fetch('/api/graph')
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error('Server returned ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        renderEntityGraph(data);
+                    })
+                    .catch(function(err) {
+                        var container = document.getElementById('entity-graph-container');
+                        var legend = container.querySelector('.graph-legend');
+                        var tooltip = container.querySelector('.graph-tooltip');
+                        container.innerHTML = '<div class="graph-error">Could not load entity graph: ' + err.message + '</div>';
+                        if (legend) container.appendChild(legend);
+                        if (tooltip) container.appendChild(tooltip);
+                    });
+            }
+
+            // Load graph on page ready (Entity Graph is the default tab)
+            loadEntityGraph();
+        })();
+    </script>
+
+    <!-- Record Merges: Card-Based Display -->
+    <script>
+        // Record Merges tab — lazy loaded on first tab activation
+        var loadRecordMerges = (function() {
+            var SOURCE_COLORS = {
+                'CUSTOMERS': '#3b82f6',
+                'REFERENCE': '#22c55e',
+                'WATCHLIST': '#f59e0b'
+            };
+            var DEFAULT_COLOR = '#6b7280';
+
+            function getSourceBadgeStyle(source) {
+                var color = SOURCE_COLORS[source] || DEFAULT_COLOR;
+                return 'background: ' + color + '22; color: ' + color + '; border: 1px solid ' + color + '44;';
+            }
+
+            // Determine which features match across records
+            function findMatchingFeatures(records) {
+                var matching = { name: false, address: false, phone: false, identifiers: {} };
+                if (records.length < 2) return matching;
+
+                // Check name: if any two records have non-null names
+                var names = records.filter(function(r) { return r.name; }).map(function(r) { return r.name; });
+                if (names.length >= 2) matching.name = true;
+
+                // Check address: if any two records have non-null addresses
+                var addresses = records.filter(function(r) { return r.address; }).map(function(r) { return r.address; });
+                if (addresses.length >= 2) matching.address = true;
+
+                // Check phone: if any two records have non-null phones
+                var phones = records.filter(function(r) { return r.phone; }).map(function(r) { return r.phone; });
+                if (phones.length >= 2) matching.phone = true;
+
+                // Check identifiers: find common identifier types across records
+                var idTypes = {};
+                records.forEach(function(r) {
+                    if (r.identifiers) {
+                        Object.keys(r.identifiers).forEach(function(key) {
+                            if (!idTypes[key]) idTypes[key] = 0;
+                            idTypes[key]++;
+                        });
+                    }
+                });
+                Object.keys(idTypes).forEach(function(key) {
+                    if (idTypes[key] >= 2) matching.identifiers[key] = true;
+                });
+
+                return matching;
+            }
+
+            function escapeHtml(str) {
+                if (!str) return '';
+                var div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function renderRecordCard(record, matchingFeatures) {
+                var sourceStyle = getSourceBadgeStyle(record.data_source);
+
+                var nameClass = matchingFeatures.name && record.name ? 'merge-feature-value highlighted' : (record.name ? 'merge-feature-value' : 'merge-feature-value empty');
+                var nameValue = record.name ? escapeHtml(record.name) : '—';
+
+                var addressClass = matchingFeatures.address && record.address ? 'merge-feature-value highlighted' : (record.address ? 'merge-feature-value' : 'merge-feature-value empty');
+                var addressValue = record.address ? escapeHtml(record.address) : '—';
+
+                var phoneClass = matchingFeatures.phone && record.phone ? 'merge-feature-value highlighted' : (record.phone ? 'merge-feature-value' : 'merge-feature-value empty');
+                var phoneValue = record.phone ? escapeHtml(record.phone) : '—';
+
+                var identifiersHtml = '';
+                if (record.identifiers && Object.keys(record.identifiers).length > 0) {
+                    identifiersHtml = '<div class="merge-feature merge-identifiers">' +
+                        '<span class="merge-feature-label">Identifiers</span>';
+                    Object.keys(record.identifiers).forEach(function(key) {
+                        var idClass = matchingFeatures.identifiers[key] ? 'merge-identifier-item highlighted' : 'merge-identifier-item';
+                        identifiersHtml += '<div class="' + idClass + '">' + escapeHtml(key) + ': ' + escapeHtml(record.identifiers[key]) + '</div>';
+                    });
+                    identifiersHtml += '</div>';
+                }
+
+                return '<div class="merge-record-card">' +
+                    '<div class="merge-record-header">' +
+                        '<span class="merge-source-badge" style="' + sourceStyle + '">' + escapeHtml(record.data_source) + '</span>' +
+                        '<span class="merge-record-id">ID: ' + escapeHtml(record.record_id) + '</span>' +
+                    '</div>' +
+                    '<div class="merge-feature-list">' +
+                        '<div class="merge-feature">' +
+                            '<span class="merge-feature-label">Name</span>' +
+                            '<span class="' + nameClass + '">' + nameValue + '</span>' +
+                        '</div>' +
+                        '<div class="merge-feature">' +
+                            '<span class="merge-feature-label">Address</span>' +
+                            '<span class="' + addressClass + '">' + addressValue + '</span>' +
+                        '</div>' +
+                        '<div class="merge-feature">' +
+                            '<span class="merge-feature-label">Phone</span>' +
+                            '<span class="' + phoneClass + '">' + phoneValue + '</span>' +
+                        '</div>' +
+                        identifiersHtml +
+                    '</div>' +
+                '</div>';
+            }
+
+            function renderMergeCard(entity) {
+                var matchingFeatures = findMatchingFeatures(entity.records);
+
+                var recordsHtml = entity.records.map(function(record) {
+                    return renderRecordCard(record, matchingFeatures);
+                }).join('');
+
+                return '<div class="merge-card">' +
+                    '<div class="merge-card-header">' +
+                        '<h3>' + escapeHtml(entity.entity_name) + '</h3>' +
+                        '<span class="match-key-chip">' + escapeHtml(entity.match_key) + '</span>' +
+                    '</div>' +
+                    '<div class="merge-records-row">' + recordsHtml + '</div>' +
+                '</div>';
+            }
+
+            function renderMerges(data) {
+                var container = document.getElementById('merges-container');
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<div class="merges-empty">No multi-record entities found. Verify data was loaded in Step 6.</div>';
+                    return;
+                }
+
+                var html = data.map(function(entity) {
+                    return renderMergeCard(entity);
+                }).join('');
+
+                container.innerHTML = html;
+            }
+
+            function load() {
+                fetch('/api/merges')
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error('Server returned ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        renderMerges(data);
+                    })
+                    .catch(function(err) {
+                        var container = document.getElementById('merges-container');
+                        container.innerHTML = '<div class="merges-error">Could not load record merges: ' + err.message + '</div>';
+                    });
+            }
+
+            return load;
+        })();
+    </script>
+
+    <!-- Merge Statistics: D3 Histogram -->
+    <script>
+        // Merge Statistics tab — lazy loaded on first tab activation
+        var loadMergeStatistics = (function() {
+            function renderHistogram(data) {
+                var container = document.getElementById('stats-container');
+
+                // Build summary statement
+                var summaryHtml = '<div class="stats-summary">' +
+                    '<strong>' + data.records_total + '</strong> records collapsed into ' +
+                    '<strong>' + data.entities_total + '</strong> entities, including ' +
+                    '<strong>' + data.multi_record_entities + '</strong> multi-record entities' +
+                    '</div>';
+
+                // Prepare histogram data
+                var histogram = data.histogram;
+                var buckets = [
+                    { label: '1 record', key: '1', count: histogram['1'] || 0 },
+                    { label: '2 records', key: '2', count: histogram['2'] || 0 },
+                    { label: '3 records', key: '3', count: histogram['3'] || 0 },
+                    { label: '4+ records', key: '4+', count: histogram['4+'] || 0 }
+                ];
+
+                // Chart dimensions
+                var margin = { top: 30, right: 30, bottom: 50, left: 60 };
+                var width = 600 - margin.left - margin.right;
+                var height = 350 - margin.top - margin.bottom;
+
+                // Build chart container HTML
+                container.innerHTML = summaryHtml + '<div class="stats-chart-container" id="stats-chart"></div>';
+
+                // Create SVG
+                var svg = d3.select('#stats-chart')
+                    .append('svg')
+                    .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+                    .attr('preserveAspectRatio', 'xMidYMid meet')
+                    .append('g')
+                    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+                // X scale (band)
+                var x = d3.scaleBand()
+                    .domain(buckets.map(function(d) { return d.label; }))
+                    .range([0, width])
+                    .padding(0.3);
+
+                // Y scale (linear)
+                var maxCount = d3.max(buckets, function(d) { return d.count; }) || 1;
+                var y = d3.scaleLinear()
+                    .domain([0, maxCount * 1.15])
+                    .range([height, 0]);
+
+                // X axis
+                svg.append('g')
+                    .attr('class', 'axis')
+                    .attr('transform', 'translate(0,' + height + ')')
+                    .call(d3.axisBottom(x))
+                    .selectAll('text')
+                    .style('fill', '#94a3b8');
+
+                // Y axis
+                svg.append('g')
+                    .attr('class', 'axis')
+                    .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('d')))
+                    .selectAll('text')
+                    .style('fill', '#94a3b8');
+
+                // X axis label
+                svg.append('text')
+                    .attr('class', 'axis-label')
+                    .attr('x', width / 2)
+                    .attr('y', height + 42)
+                    .attr('text-anchor', 'middle')
+                    .text('Records per Entity');
+
+                // Y axis label
+                svg.append('text')
+                    .attr('class', 'axis-label')
+                    .attr('x', -(height / 2))
+                    .attr('y', -45)
+                    .attr('text-anchor', 'middle')
+                    .attr('transform', 'rotate(-90)')
+                    .text('Number of Entities');
+
+                // Bars
+                svg.selectAll('.bar')
+                    .data(buckets)
+                    .enter()
+                    .append('rect')
+                    .attr('class', 'bar')
+                    .attr('x', function(d) { return x(d.label); })
+                    .attr('y', function(d) { return y(d.count); })
+                    .attr('width', x.bandwidth())
+                    .attr('height', function(d) { return height - y(d.count); })
+                    .attr('rx', 4);
+
+                // Count annotations on top of bars
+                svg.selectAll('.bar-label')
+                    .data(buckets)
+                    .enter()
+                    .append('text')
+                    .attr('class', 'bar-label')
+                    .attr('x', function(d) { return x(d.label) + x.bandwidth() / 2; })
+                    .attr('y', function(d) { return y(d.count) - 8; })
+                    .text(function(d) { return d.count; });
+            }
+
+            function load() {
+                fetch('/api/stats')
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error('Server returned ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        renderHistogram(data);
+                    })
+                    .catch(function(err) {
+                        var container = document.getElementById('stats-container');
+                        container.innerHTML = '<div class="stats-error">Could not load merge statistics: ' + err.message + '</div>';
+                    });
+            }
+
+            return load;
+        })();
+    </script>
+
+    <!-- Probe Entities: Search + Quick Probe Buttons -->
+    <script>
+        (function() {
+            var SOURCE_COLORS = {
+                'CUSTOMERS': '#3b82f6',
+                'REFERENCE': '#22c55e',
+                'WATCHLIST': '#f59e0b'
+            };
+            var DEFAULT_COLOR = '#6b7280';
+
+            function getSourceBadgeStyle(source) {
+                var color = SOURCE_COLORS[source] || DEFAULT_COLOR;
+                return 'background: ' + color + '22; color: ' + color + '; border: 1px solid ' + color + '44;';
+            }
+
+            function escapeHtml(str) {
+                if (!str) return '';
+                var div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function showLoading() {
+                var container = document.getElementById('probe-results');
+                container.innerHTML = '<div class="probe-results-loading">Searching...</div>';
+            }
+
+            function showEmpty() {
+                var container = document.getElementById('probe-results');
+                container.innerHTML = '<div class="probe-results-empty">No matching entities found</div>';
+            }
+
+            function showError(message) {
+                var container = document.getElementById('probe-results');
+                container.innerHTML = '<div class="probe-results-error">Search failed: ' + escapeHtml(message) + '</div>';
+            }
+
+            function renderResults(data) {
+                var container = document.getElementById('probe-results');
+
+                if (!data.results || data.results.length === 0) {
+                    showEmpty();
+                    return;
+                }
+
+                var html = data.results.map(function(entity) {
+                    var sourceBadges = (entity.data_sources || []).map(function(src) {
+                        return '<span class="probe-source-badge" style="' + getSourceBadgeStyle(src) + '">' + escapeHtml(src) + '</span>';
+                    }).join('');
+
+                    var scoreHtml = '';
+                    if (entity.match_score !== undefined && entity.match_score !== null) {
+                        scoreHtml = '<div class="probe-result-score">' +
+                            '<span class="probe-result-score-value">' + entity.match_score + '</span>' +
+                            '<span class="probe-result-score-label">Score</span>' +
+                            '</div>';
+                    }
+
+                    return '<div class="probe-result-card">' +
+                        '<div class="probe-result-info">' +
+                            '<div class="probe-result-name">' + escapeHtml(entity.entity_name) + '</div>' +
+                            '<div class="probe-result-detail">Entity ID: ' + entity.entity_id + ' · Records: ' + entity.record_count + '</div>' +
+                            '<div class="probe-result-sources">' + sourceBadges + '</div>' +
+                        '</div>' +
+                        scoreHtml +
+                    '</div>';
+                }).join('');
+
+                container.innerHTML = html;
+            }
+
+            function performSearch(params) {
+                showLoading();
+
+                var queryParts = [];
+                if (params.name) queryParts.push('name=' + encodeURIComponent(params.name));
+                if (params.address) queryParts.push('address=' + encodeURIComponent(params.address));
+                if (params.phone) queryParts.push('phone=' + encodeURIComponent(params.phone));
+
+                var url = '/api/search?' + queryParts.join('&');
+
+                fetch(url)
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error('Server returned ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        renderResults(data);
+                    })
+                    .catch(function(err) {
+                        showError(err.message);
+                    });
+            }
+
+            // Quick probe buttons
+            var probeButtons = document.querySelectorAll('.probe-button');
+            probeButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var type = this.getAttribute('data-probe-type');
+                    var value = this.getAttribute('data-probe-value');
+                    var params = {};
+                    params[type] = value;
+                    performSearch(params);
+                });
+            });
+
+            // Search form submission
+            var searchForm = document.getElementById('probe-search-form');
+            var searchInput = document.getElementById('probe-search-input');
+
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var query = searchInput.value.trim();
+                if (!query) return;
+
+                // Heuristic: detect if input looks like a phone, address, or name
+                var params = {};
+                if (/^\d{3}[\-\.\s]?\d{4}$/.test(query) || /^\d{3}[\-\.\s]?\d{3}[\-\.\s]?\d{4}$/.test(query)) {
+                    params.phone = query;
+                } else if (/\d+\s+\w+\s+(st|street|ave|avenue|rd|road|dr|drive|ln|lane|blvd|ct|way|pl)/i.test(query)) {
+                    params.address = query;
+                } else {
+                    params.name = query;
+                }
+                performSearch(params);
+            });
+        })();
+    </script>
+</body>
+</html>

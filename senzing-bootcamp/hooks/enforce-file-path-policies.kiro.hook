@@ -1,13 +1,13 @@
 {
-  "name": "I will make sure the file is in the project directory",
-  "version": "1.0.0",
-  "description": "Before any write operation, enforces two path policies: (1) feedback content must go to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md, and (2) no files may be written outside the working directory.",
+  "name": "to make sure the file is in the project directory",
+  "version": "2.0.0",
+  "description": "Before any write operation, enforces two path policies: (1) feedback content must go to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md, and (2) no files may be written outside the working directory. Uses a fast path for project-relative non-feedback writes (outputs 'policy: pass' immediately) and a slow path for violations (outputs corrective instructions).",
   "when": {
     "type": "preToolUse",
     "toolTypes": ["write"]
   },
   "then": {
     "type": "askAgent",
-    "prompt": "Before writing this file, check two path policies. (1) FEEDBACK PATH: If you are in the feedback collection workflow (bootcamper said 'bootcamp feedback' or 'power feedback' and you are writing a feedback entry with Date/Module/Priority/Category/What Happened/Why It's a Problem sections), verify the target path is exactly 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'. If the path is different, STOP and redirect to that file. Do NOT write feedback to any other file or submit to external services. (2) WORKING DIRECTORY: Does the file path or any path in the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If so, replace with project-relative equivalents (database/G2C.db for databases, data/temp/ for temporary files, src/ for source code). Do NOT proceed if it would place files outside the working directory. If neither policy is violated, produce no output at all — zero tokens, zero characters."
+    "prompt": "QUICK CHECK — answer these two questions about the file being written:\n\nQ1: Is the target path inside the working directory? (Not /tmp/, not %TEMP%, not ~/Downloads, not any absolute path outside the project)\nQ2: Is this feedback content (has Date/Module/Priority/Category/What Happened sections) being written to a path OTHER than 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'?\n\nFAST PATH: If Q1 is YES (path is inside working directory) AND Q2 is NO (not misrouted feedback), output exactly:\npolicy: pass\n\nDo not check file content for path references in the fast path. Do not explain. Do not acknowledge. Just output: policy: pass\n\nSLOW PATH: If Q1 is NO (path is outside working directory) OR Q2 is YES (feedback going to wrong file):\n- For external paths: STOP. Tell the agent to use project-relative equivalents (database/G2C.db for databases, data/temp/ for temporary files, src/ for source code).\n- For misrouted feedback: STOP. Redirect to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md.\n\nCONTENT CHECK (only if fast path passed): Does the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If YES: STOP and require replacement with project-relative equivalents. If NO: output was already \"policy: pass\" — do not add anything."
   }
 }

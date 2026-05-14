@@ -236,30 +236,23 @@ Verify read, write, and search operations against the Senzing database. Each ope
 }
 ```
 
-### Step 9: Web Service + Page
+### Step 9: Web Service + Visualization Page
 
-Generate and verify a web service that serves entity resolution results.
+> **Phase file:** Load `module-03-phase2-visualization.md` for the full visualization step — API endpoints, page components, verification checks, and delivery sequence.
 
-1. **Generate web service** using the Code_Generator (e.g., `generate_scaffold(workflow='web_service')`) in the bootcamper's chosen language. Save to `src/system_verification/web_service/`.
+Generate and verify a rich interactive visualization web service demonstrating entity resolution value across the three TruthSet data sources (CUSTOMERS, REFERENCE, WATCHLIST). The visualization includes:
 
-2. **Start the web service** on the configured localhost port.
+- **3 API endpoints:** `/api/stats`, `/api/graph`, `/api/merges` with full response schemas
+- **4 interactive tabs:** Entity Graph, Record Merges, Merge Statistics, Probe Entities
+- **Summary_Banner** with 5 headline numbers (records, entities, multi-record, cross-source, relationships)
+- **Entity_Graph** with source-colored nodes and match-key edges (D3.js force-directed)
+- **Record_Merges_View** with side-by-side cards and match-key chips
+- **Merge_Statistics** histogram with summary statement
+- **Probe_Panel** with one-click TruthSet entities and search
 
-3. **Verify health endpoint:**
-   - Issue an HTTP GET to the health check endpoint.
-   - Confirm HTTP 200 response within 10 seconds of the service process launching.
-   - If no response within 10 seconds: Report fail with Fix_Instruction identifying common causes (port conflict, missing dependencies, firewall).
+**Constraints:** stdlib HTTP server, D3.js CDN, single HTML file, all artifacts in `src/system_verification/web_service/`. Endpoint verification timeout: 10 seconds per endpoint.
 
-4. **Verify entity query endpoint:**
-   - Call the entity query endpoint with a known TruthSet entity identifier.
-   - Confirm HTTP 200 response containing the entity's resolved record data (entity ID and at least one constituent record) within 10 seconds.
-
-5. **Verify HTML page accessible:**
-   - Confirm the HTML page at `src/system_verification/web_service/static/index.html` exists, is non-empty, and contains valid HTML structure (`<html>` root with `<head>` and `<body>`).
-   - Issue an HTTP GET to the configured localhost URL (default `http://localhost:8080/`).
-   - Confirm HTTP 200 response within 10 seconds.
-
-6. **If all checks pass:** Report pass with the port number.
-7. **If any check fails:** Report fail with Fix_Instruction identifying the specific failure (service didn't start, port conflict, missing static file, endpoint error).
+Follow the Web Service Delivery Sequence from `visualization-guide.md`. Maintain compatibility with `visualization-protocol.md` checkpoint map entry `m3_demo_results`.
 
 **Checkpoint:** Write to `config/bootcamp_progress.json`:
 
@@ -267,8 +260,8 @@ Generate and verify a web service that serves entity resolution results.
 {
   "module_3_verification": {
     "checks": {
-      "web_service": {"status": "passed|failed", "port": <port>},
-      "web_page": {"status": "passed|failed", "url": "http://localhost:<port>/"}
+      "web_service": {"status": "passed|failed", "port": 8080},
+      "web_page": {"status": "passed|failed", "url": "http://localhost:8080/"}
     }
   }
 }
@@ -390,6 +383,10 @@ Complete the module using the standard module completion workflow.
 **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
 
 **Success indicator:** ✅ All 10 verification checks passed + database purged of TruthSet data + web service terminated + module 3 completion recorded in progress file.
+
+## Phase Sub-Files
+
+- **Phase 2 — Visualization** (Step 9 detail): `module-03-phase2-visualization.md`
 
 ## Error Handling
 

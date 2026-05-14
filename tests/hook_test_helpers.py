@@ -63,6 +63,7 @@ SILENT_PROCESSING_PATTERNS: list[str] = [
     r"produce no output at all",
     r"do nothing",
     r"do not acknowledge.*do not explain.*do not print",
+    r"policy:\s*pass",
 ]
 
 

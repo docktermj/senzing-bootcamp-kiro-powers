@@ -1,5 +1,5 @@
 {
-  "name": "Ask Bootcamper",
+  "name": "to wait for your answer",
   "version": "3.0.0",
   "description": "Silence-first agentStop hook with dual responsibility: (1) Phase 1 produces a recap + closing question only when no question is already pending, with a near-completion feedback nudge; (2) Phase 2 independently reminds the bootcamper to share saved feedback after track completion.",
   "when": {

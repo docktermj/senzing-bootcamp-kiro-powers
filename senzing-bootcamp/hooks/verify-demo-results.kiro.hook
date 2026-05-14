@@ -1,5 +1,5 @@
 {
-  "name": "Verify Demo Results",
+  "name": "to verify demo results",
   "version": "1.0.0",
   "description": "After Module 3 tasks complete, verifies that system verification produced entity resolution results matching the Senzing TruthSet expected output before marking the module complete.",
   "when": {

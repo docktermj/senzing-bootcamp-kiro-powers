@@ -55,8 +55,8 @@ class TestHookFileStructure:
         assert isinstance(data, dict)
 
     def test_name_field(self, hook_data: dict):
-        """name field equals 'Auto-Load Error Recovery Context'."""
-        assert hook_data["name"] == "Auto-Load Error Recovery Context"
+        """name field equals 'to help recover from errors'."""
+        assert hook_data["name"] == "to help recover from errors"
 
     def test_version_field(self, hook_data: dict):
         """version field equals '1.0.0'."""

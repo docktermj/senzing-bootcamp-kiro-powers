@@ -1,5 +1,5 @@
 {
-  "name": "CommonMark Validation",
+  "name": "to check Markdown style",
   "version": "1.0.0",
   "description": "Validates that all Markdown files conform to CommonMark standards when edited",
   "when": {

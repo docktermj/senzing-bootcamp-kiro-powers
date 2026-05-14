@@ -123,6 +123,62 @@ def format_version_display(version: str) -> str:
     return f"Senzing Bootcamp Power v{version}"
 
 
+def read_version_from_frontmatter(power_md_content: str) -> str:
+    """Extract and validate version from POWER.md frontmatter content.
+
+    Parses YAML frontmatter (delimited by ``---``) from the provided string,
+    extracts the ``version`` field, and validates it as strict semver.
+
+    Args:
+        power_md_content: The full text content of POWER.md.
+
+    Returns:
+        The validated version string (e.g., "0.11.0").
+
+    Raises:
+        VersionError: If frontmatter is missing, has no ``version`` field,
+            or the version string is invalid.
+    """
+    # Split on '---' delimiters to locate frontmatter block
+    parts = power_md_content.split("---")
+    if len(parts) < 3:
+        raise VersionError("POWER.md has no YAML frontmatter (missing --- delimiters)")
+
+    frontmatter_block = parts[1]
+
+    # Parse key-value pairs from frontmatter
+    version_value: str | None = None
+    for line in frontmatter_block.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("version"):
+            # Match 'version:' with optional surrounding whitespace
+            if ":" in stripped:
+                key, _, raw_value = stripped.partition(":")
+                if key.strip() == "version":
+                    # Remove surrounding quotes and whitespace
+                    version_value = raw_value.strip().strip('"').strip("'")
+                    break
+
+    if version_value is None:
+        raise VersionError(
+            "POWER.md frontmatter has no 'version' field"
+        )
+
+    if not version_value:
+        raise VersionError(
+            "POWER.md frontmatter 'version' field is empty",
+            invalid_value="",
+        )
+
+    try:
+        return validate_version(version_value)
+    except VersionError as exc:
+        raise VersionError(
+            f"POWER.md frontmatter version invalid: {exc.message}",
+            invalid_value=exc.invalid_value,
+        )
+
+
 def read_version(version_file: Path | None = None) -> str:
     """Read and validate the version string from the VERSION file.
 

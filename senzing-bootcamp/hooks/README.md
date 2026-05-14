@@ -2,6 +2,15 @@
 
 This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 24 hooks total.
 
+## Hook Name Style Guide
+
+The `name` field is user-facing — the Kiro UI renders it as "Ask Kiro Hook {name}". Every hook's `name` MUST follow the pattern `"to {verb phrase}"` (lowercase, no trailing period) so the full UI string reads as a natural sentence. Examples:
+
+- ✅ `"to check code style"` → "Ask Kiro Hook to check code style"
+- ✅ `"to remind you to run tests"` → "Ask Kiro Hook to remind you to run tests"
+- ❌ `"Code Style Check"` → "Ask Kiro Hook Code Style Check" (jargony)
+- ❌ `"I will check code style"` → "Ask Kiro Hook I will check code style" (first-person)
+
 ## Available Hooks
 
 Hooks marked ⭐ are installed during onboarding as critical hooks; the others are installed when the associated module starts.

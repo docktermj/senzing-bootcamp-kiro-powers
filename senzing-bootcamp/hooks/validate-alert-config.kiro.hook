@@ -1,5 +1,5 @@
 {
-  "name": "Validate Alert Configuration",
+  "name": "to validate alert configuration",
   "version": "1.0.0",
   "description": "When monitoring configuration files are created or modified during Module 10, validates alert rule syntax and completeness.",
   "when": {

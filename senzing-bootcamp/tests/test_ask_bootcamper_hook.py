@@ -243,13 +243,13 @@ class TestHookMetadata:
         )
 
     def test_hook_name_is_ask_bootcamper(self):
-        """name must be 'Ask Bootcamper'.
+        """name must be 'to wait for your answer'.
 
         **Validates: Requirements 5.3**
         """
         data = _read_hook_json()
-        assert data["name"] == "Ask Bootcamper", (
-            f"Expected name='Ask Bootcamper', got {data['name']!r}"
+        assert data["name"] == "to wait for your answer", (
+            f"Expected name='to wait for your answer', got {data['name']!r}"
         )
 
 
@@ -277,8 +277,8 @@ class TestRegistrySync:
         assert "`ask-bootcamper`" in text, (
             "Hook registry does not contain id: ask-bootcamper."
         )
-        assert "`Ask Bootcamper`" in text, (
-            "Hook registry does not contain name: Ask Bootcamper."
+        assert "`to wait for your answer`" in text, (
+            "Hook registry does not contain name: to wait for your answer."
         )
 
 

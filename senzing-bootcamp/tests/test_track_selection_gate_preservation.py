@@ -383,7 +383,7 @@ class TestHookRegistryEntryFormat:
         section = _extract_section(content, "Critical Hooks")
         assert section, "Critical Hooks section not found"
         assert re.search(
-            r"name:\s*`Ask Bootcamper`", section
+            r"name:\s*`to wait for your answer`", section
         ), "Registry missing name field for ask-bootcamper"
 
     def test_registry_has_ask_bootcamper_description(self) -> None:

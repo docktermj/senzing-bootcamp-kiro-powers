@@ -309,7 +309,7 @@ class TestSystemVerificationProperties:
                 "Results Validation"
             ),
             "Step 8: Database Operations": "Database Operations",
-            "Step 9: Web Service + Page": "Web Service",
+            "Step 9: Web Service + Visualization Page": "Web Service",
         }
         # Get the Timeout Enforcement section if it exists
         timeout_table = steering_sections.get(

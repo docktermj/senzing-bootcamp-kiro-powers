@@ -516,9 +516,27 @@ class TestProperty6Recommendations:
                 assert entry.data_source in order_line
             # Verify ordering: use full "NAME (score%)" tokens to avoid
             # substring collisions (e.g. "A" matching inside "A0").
+            # Use rfind with separator awareness to handle cases like
+            # "B (0%)" being a substring of "AB (0%)".
             tokens = [f"{e.data_source} ({e.quality_score}%)" for e in ordered]
-            positions = [order_line.index(tok) for tok in tokens]
-            assert positions == sorted(positions), "Load order not sorted by quality descending"
+            # Verify tokens appear in the correct relative order by checking
+            # each consecutive pair
+            for i in range(len(tokens) - 1):
+                tok_a = tokens[i]
+                tok_b = tokens[i + 1]
+                # Find the position of each token preceded by start-of-line or ", "
+                pos_a = order_line.find(tok_a)
+                pos_b = order_line.find(tok_b, pos_a + len(tok_a))
+                if pos_b == -1:
+                    # tok_b might appear before tok_a due to substring issues;
+                    # fall back to checking the comma-separated list directly
+                    parts = order_line.split(": ", 1)[1] if ": " in order_line else order_line
+                    part_list = [p.strip() for p in parts.split(", ")]
+                    idx_a = part_list.index(tok_a) if tok_a in part_list else -1
+                    idx_b = part_list.index(tok_b) if tok_b in part_list else -1
+                    assert idx_a < idx_b, "Load order not sorted by quality descending"
+                else:
+                    assert pos_a < pos_b, "Load order not sorted by quality descending"
 
 
 # ═══════════════════════════════════════════════════════════════════════════

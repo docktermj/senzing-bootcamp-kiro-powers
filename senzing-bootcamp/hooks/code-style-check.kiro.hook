@@ -1,5 +1,5 @@
 {
-  "name": "Code Style Check",
+  "name": "to check code style",
   "version": "2.0.0",
   "description": "Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions.",
   "when": {

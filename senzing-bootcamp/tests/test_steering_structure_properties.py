@@ -792,15 +792,15 @@ class TestIndexResolution:
     """
 
     def test_simple_entry_resolves_to_single_file(self) -> None:
-        """Module 2 (simple string entry) resolves to one root file.
+        """Module 4 (simple string entry) resolves to one root file.
 
         Verifies that a simple string entry in the steering index
         produces a ModuleFiles with the correct root file, no phase
         files, and exactly one file in all_files.
         """
-        mod = _INDEX[2]
-        assert mod.module_number == 2
-        assert mod.root_file.name == "module-02-sdk-setup.md"
+        mod = _INDEX[4]
+        assert mod.module_number == 4
+        assert mod.root_file.name == "module-04-data-collection.md"
         assert mod.phase_files == []
         assert len(mod.all_files) == 1
 

@@ -1,5 +1,5 @@
 ---
-inclusion: manual
+inclusion: auto
 description: "Step-by-step workflow for running the full CI validation suite locally"
 ---
 

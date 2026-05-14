@@ -74,7 +74,7 @@ class TestHookFileStructure:
 
     def test_validate_hook_name(self, validate_hook_data: dict):
         """validate-business-problem has correct name field."""
-        assert validate_hook_data["name"] == "Validate Business Problem"
+        assert validate_hook_data["name"] == "to validate your business problem"
 
     def test_validate_hook_version(self, validate_hook_data: dict):
         """validate-business-problem has version 1.0.0."""
@@ -98,7 +98,7 @@ class TestHookFileStructure:
 
     def test_verify_hook_name(self, verify_hook_data: dict):
         """verify-demo-results has correct name field."""
-        assert verify_hook_data["name"] == "Verify Demo Results"
+        assert verify_hook_data["name"] == "to verify demo results"
 
     def test_verify_hook_version(self, verify_hook_data: dict):
         """verify-demo-results has version 1.0.0."""

@@ -1,5 +1,5 @@
 {
-  "name": "Auto-Load Error Recovery Context",
+  "name": "to help recover from errors",
   "version": "1.0.0",
   "description": "Detects shell command failures and consults common-pitfalls.md and recovery-from-mistakes.md to provide targeted error recovery guidance during bootcamp modules.",
   "when": {

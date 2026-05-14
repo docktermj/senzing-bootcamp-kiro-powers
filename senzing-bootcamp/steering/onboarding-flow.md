@@ -60,15 +60,15 @@ After fixing the connection, say "retry" to try again.
 
 ## 0c. Version Display
 
-Read the power version from `senzing-bootcamp/VERSION` using the `version.py` script's logic and display it to the bootcamper:
+Extract the power version from the POWER.md frontmatter `version` field (received during power activation) and display it to the bootcamper:
 
 ```text
-Senzing Bootcamp Power v0.11.0
+Senzing Bootcamp Power vX.Y.Z
 ```
 
 This is automatic — no user interaction is required. Display the version as the first onboarding output before proceeding.
 
-If the version file cannot be read or contains an invalid version, display:
+If the version field is not present in the POWER.md frontmatter or cannot be parsed, display:
 
 ```text
 ⚠️ Could not determine power version.
@@ -129,17 +129,21 @@ Team: {team_name} ({member_count} members)
 - Persist the selected member ID to `config/bootcamp_preferences.yaml` (or `config/preferences_{member_id}.yaml` in co-located mode) under a `team_member_id` key.
 - Store the team mode state so subsequent steps (welcome banner, progress tracking) use team-aware paths.
 
-## 2. Language Selection
+## 2. Programming Language Selection
 
-Detect the user's platform (`platform.system()`), then call `get_capabilities` or `sdk_guide` on the Senzing MCP server for the supported languages on that platform. The hard gate in Step 0b guarantees MCP is available — call the tool directly and present the returned language list to the bootcamper.
+Detect the user's platform (`platform.system()`), then call `get_capabilities` or `sdk_guide` on the Senzing MCP server for the supported languages on that platform. The hard gate in Step 0b guarantees MCP is available — call the tool directly and present the returned programming language list to the bootcamper.
 
-👉 Present the MCP-returned language list. If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly and suggest alternatives. For example: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
+When presenting this question, always use the phrase "programming language" — never the bare word "language" alone — to avoid ambiguity with natural/spoken languages.
+
+The agent MUST use the phrase "programming language" (not just "language") when presenting the selection question to the bootcamper.
+
+👉 Present the MCP-returned programming language list. If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly and suggest alternatives. For example: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
 
 Persist the selection to `config/bootcamp_preferences.yaml`.
 
 Load language steering file immediately after confirmation (`lang-python.md`, `lang-java.md`, etc.).
 
-> ⛔ **MANDATORY GATE** — Language selection requires the bootcamper's actual choice. Do NOT assume or fabricate a language preference. MUST stop and wait for real input.
+> ⛔ **MANDATORY GATE** — Programming language selection requires the bootcamper's actual choice. Do NOT assume or fabricate a programming language preference. MUST stop and wait for real input.
 >
 > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not say "I'll go with X." Do not proceed to the next step. Wait for the bootcamper's real input.
 

@@ -205,7 +205,7 @@ class TestCategoryPreservation:
 
 EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
     "analyze-after-mapping": {
-        "name": "Analyze After Mapping",
+        "name": "to analyze mapped data",
         "description": (
             "After completing a mapping task, validates the transformation output using"
             " analyze_record for quality metrics and Senzing Generic Entity Specification"
@@ -213,7 +213,7 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         ),
     },
     "ask-bootcamper": {
-        "name": "Ask Bootcamper",
+        "name": "to wait for your answer",
         "description": (
             "Silence-first agentStop hook with dual responsibility: (1) Phase 1 produces a recap"
             " + closing question only when no question is already pending, with a near-completion"
@@ -222,11 +222,11 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         ),
     },
     "backup-before-load": {
-        "name": "Backup Database Before Loading",
+        "name": "to remind you to back up before loading",
         "description": "Remind to backup database before running loading programs",
     },
     "backup-project-on-request": {
-        "name": "Backup Project on Request",
+        "name": "to back up your project",
         "description": (
             "Run project backup when user clicks the hook button."
             " Avoids firing on every prompt \u2014 use the manual trigger"
@@ -234,14 +234,14 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         ),
     },
     "review-bootcamper-input": {
-        "name": "Review Bootcamper Input",
+        "name": "to review what you said",
         "description": (
             "Reviews each message submission for feedback trigger phrases and initiates the"
             " feedback workflow with automatic context capture."
         ),
     },
     "code-style-check": {
-        "name": "Code Style Check",
+        "name": "to check code style",
         "description": (
             "Automatically checks source code files for language-appropriate coding standards"
             " when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET"
@@ -249,19 +249,19 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         ),
     },
     "commonmark-validation": {
-        "name": "CommonMark Validation",
+        "name": "to check Markdown style",
         "description": (
             "Validates that all Markdown files conform to CommonMark standards when edited"
         ),
     },
     "data-quality-check": {
-        "name": "Senzing Data Quality Check",
+        "name": "to check data quality",
         "description": (
             "Automatically check data quality when transformation programs are saved"
         ),
     },
     "deployment-phase-gate": {
-        "name": "Deployment Phase Gate",
+        "name": "to check the deployment phase gate",
         "description": (
             "After packaging tasks complete in Module 11, displays a phase gate prompt asking"
             " the bootcamper whether to proceed to deployment or stop. Checks"
@@ -270,7 +270,7 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         ),
     },
     "enforce-visualization-offers": {
-        "name": "Enforce Visualization Offers",
+        "name": "to offer visualizations",
         "description": (
             "When the agent stops during a visualization-capable module (3, 5, 7, 8), checks"
             " the visualization tracker to verify all required offers were made. Prompts for"
@@ -278,28 +278,28 @@ EXPECTED_REGISTRY: dict[str, dict[str, str]] = {
         ),
     },
     "git-commit-reminder": {
-        "name": "Git Commit Reminder",
+        "name": "to remind you to commit",
         "description": (
             "Reminds the user to commit their work after completing a module. Triggered"
             " manually via button click."
         ),
     },
     "run-tests-after-change": {
-        "name": "Run Tests After Code Change",
+        "name": "to remind you to run tests",
         "description": (
             "Reminds the agent to run the test suite after source code changes in loading,"
             " query, or transformation programs."
         ),
     },
     "validate-data-files": {
-        "name": "Validate Data Files",
+        "name": "to validate data files",
         "description": (
             "When new data files are added to data/raw/, checks file format, encoding, and"
             " basic readability to catch issues early."
         ),
     },
     "verify-generated-code": {
-        "name": "Verify Generated Code Runs",
+        "name": "to verify generated code",
         "description": (
             "When bootcamp source code is created, prompts the agent to run it on sample data"
             " and report results before moving on."

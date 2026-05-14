@@ -1,6 +1,7 @@
 ---
 name: "senzing-bootcamp"
 displayName: "Senzing Bootcamp"
+version: "0.12.0"
 description: "Guided 11-module bootcamp for learning Senzing entity resolution, from first demo to production deployment."
 keywords: ["senzing", "bootcamp", "entity-resolution", "senzing-bootcamp", "learning-track"]
 author: "Senzing"
@@ -20,7 +21,7 @@ This power works best with Claude Opus 4.6 or similar.
 
 ## What's New (Unreleased)
 
-- Production-readiness pass: all six CI validation scripts green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `sync_hook_registry --verify`, `validate_dependencies`, `lint_steering`); pytest at 2,603 passed / 0 failed / 0 errors
+- Production-readiness pass: all CI validation steps green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `validate_dependencies`, `sync_hook_registry --verify`, `validate_prerequisites`, `validate_progress_ci`); pytest at 2,603 passed / 0 failed / 0 errors
 - CommonMark compliance across all 491 markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
 - `lint_steering.py` updated to recognize H3-nested step headings (`### Step N:`) and any `**Checkpoint:**` marker
 - Repo-root `tests/conftest.py` snaps cwd to project root before each test — eliminated cross-suite cwd drift that caused 115 collection errors
@@ -98,7 +99,7 @@ This bootcamp complements the optional **senzing** Kiro Power. Both connect to t
 
 ## Available Steering Files
 
-Load these on-demand when needed. Each file in `steering-index.yaml` includes a `token_count` and `size_category` (`small`, `medium`, or `large`) so the agent can assess context cost before loading.
+See `steering/steering-index.yaml` for the complete machine-readable index of all steering files with token counts and keyword routing. Key files loaded automatically: `agent-instructions.md`, `module-transitions.md`, `security-privacy.md`.
 
 **Context budget thresholds:**
 
@@ -118,85 +119,6 @@ Load these on-demand when needed. Each file in `steering-index.yaml` includes a 
 - `module-09-security.md` — Module 9: Security Hardening
 - `module-10-monitoring.md` — Module 10: Monitoring
 - `module-11-deployment.md` — Module 11: Deployment (split: `module-11-phase2-deploy.md`)
-
-**Agent Behavior:**
-
-- `agent-instructions.md` — Core agent rules and MCP usage (always loaded, ~101 lines)
-- `module-transitions.md` — Journey map, before/after framing, and step-level progress rules (always loaded, ~71 lines)
-- `session-resume.md` — Restores full context when resuming a previous bootcamp session
-- `onboarding-flow.md` — Full onboarding sequence: directory creation, language selection, prerequisite checks, track selection, validation gates
-- `cloud-provider-setup.md` — Cloud provider selection at the 8→9 gate (AWS, Azure, GCP, on-premises, local)
-- `feedback-workflow.md` — Feedback collection workflow
-
-**Always loaded (core rules):**
-
-- `agent-instructions.md` — Core agent rules and MCP usage (always loaded)
-- `module-transitions.md` — Journey map, before/after framing, step-level progress, and sub-step convention (always loaded)
-- `security-privacy.md` — Data privacy and PII protection (always loaded, ~27 lines)
-
-**Auto-included (Kiro loads when relevant to the conversation):**
-
-- `project-structure.md` — Directory structure and setup commands
-- `verbosity-control.md` — Output verbosity presets, categories, and adjustment instructions
-- `conversation-protocol.md` — Turn-taking, question handling, and module transition protocols
-- `design-patterns.md` — Entity resolution design pattern gallery
-- `module-prerequisites.md` — Module prerequisite reference
-
-**Module Completion (load after completing any module):**
-
-- `module-completion.md` — Journal entries, reflection questions, next-step options, and track completion celebration
-- `graduation.md` — Post-track graduation workflow — transitions bootcamp project to production structure
-
-**Language-Specific (loaded automatically when editing matching files):**
-
-- `lang-python.md` — Python/PEP-8 conventions (loads on `*.py`)
-- `lang-java.md` — Java conventions (loads on `*.java`)
-- `lang-csharp.md` — C#/.NET conventions (loads on `*.cs`)
-- `lang-rust.md` — Rust conventions (loads on `*.rs`)
-- `lang-typescript.md` — TypeScript conventions (loads on `*.ts`, `*.tsx`, `*.js`, `*.jsx`)
-
-**Planning and Design:**
-
-- `design-patterns.md` — 10 entity resolution patterns with use cases
-- `module-prerequisites.md` — Prerequisites and dependencies for each module
-- `complexity-estimator.md` — Time estimation based on data characteristics
-
-**Project Setup:**
-
-- `environment-setup.md` — Version control, language-specific environment setup
-
-**Visualization:**
-
-- `visualization-guide.md` — Interactive entity graph and results dashboard generation workflow
-- `visualization-web-service.md` — Web service delivery mode: endpoints, framework selection, lifecycle management
-
-**Recovery and Phase Loading:**
-
-- `recovery-from-mistakes.md` — How to undo or redo a step: MCP workflow resets, file cleanup, database recovery
-- `skip-step-protocol.md` — Protocol for skipping steps: trigger phrases, consequence assessment, revisit workflow
-- `phase-loading-guide.md` — Detailed rules for loading split-module phase sub-files
-
-**Troubleshooting:**
-
-- `common-pitfalls.md` — Common mistakes and solutions (load on errors or when user is stuck)
-- `troubleshooting-decision-tree.md` — Visual diagnostic flowchart
-- `troubleshooting-commands.md` — Diagnostic commands, system checks, escalation procedures
-- `lessons-learned.md` — Post-project retrospective template
-
-**Reference (loaded indirectly via `#[[file:]]` directives):**
-
-- `graduation-reference.md` — Detailed tables and templates used by `graduation.md`
-- `hook-registry.md` — Canonical hook definitions used by `onboarding-flow.md`
-
-**Advanced Topics:**
-
-- `data-lineage.md` — Track data transformations and lineage
-- `uat-framework.md` — User acceptance testing framework
-- `deployment-onpremises.md` — On-premises/Docker Compose deployment reference
-- `deployment-aws.md` — AWS deployment reference (ECS/Fargate, RDS, Secrets Manager, CloudWatch, IAM)
-- `deployment-azure.md` — Azure deployment reference
-- `deployment-gcp.md` — GCP/Google Cloud deployment reference
-- `deployment-kubernetes.md` — Kubernetes/Helm deployment reference
 
 ## MCP Server Configuration
 
@@ -308,7 +230,7 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available (24 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation`, `enforce-file-path-policies` ⭐, `enforce-visualization-offers` ⭐, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
+Available (24 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-file-path-policies` ⭐, `enforce-visualization-offers`, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
 
 ## Project Directory Structure
 

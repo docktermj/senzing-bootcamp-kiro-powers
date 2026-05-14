@@ -208,7 +208,7 @@ _EXPECTED_HEADINGS = [
     "0c. Version Display",
     "1. Directory Structure",
     "1b. Team Detection",
-    "2. Language Selection",
+    "2. Programming Language Selection",
     "3. Prerequisite Check (Mandatory Gate)",
     "4. Bootcamp Introduction",
     "5. Track Selection",
@@ -219,7 +219,7 @@ _EXPECTED_HEADINGS = [
 ]
 
 # Baseline content for hook file
-_HOOK_BASELINE_HASH = "224540d6b1b90b374f9e43e983eed32ef9e97768f7661ac0061bc0f20a485cae"
+_HOOK_BASELINE_HASH = "5a96fd25fa61eea9ec18b371f20d4cc852451fd0328365598ddd3304e1cc6725"
 
 # Key informational phrases that MUST be preserved in affected steps
 # (these are NOT inline 👉 questions or WAIT lines)

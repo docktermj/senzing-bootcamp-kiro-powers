@@ -57,9 +57,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Module 3 renamed from Quick Demo to System Verification — now uses the Senzing TruthSet with MCP-generated verification code and compares results against expected TruthSet output; authoritative steering file is `module-03-system-verification.md` (replaces `module-03-quick-demo.md`); companion doc is `MODULE_3_SYSTEM_VERIFICATION.md`
-- Hook consolidation — `feedback-submission-reminder` and `capture-feedback` merged into `ask-bootcamper` and `review-bootcamper-input` respectively; `enforce-feedback-path` and `enforce-working-directory` consolidated into `enforce-file-path-policies`; `verify-senzing-facts` and `offer-visualization` removed (24 hooks total)
-- `hooks/README.md` regenerated to reflect the current 24-hook set
-- `scripts/install_hooks.py` HOOKS list and ESSENTIAL set regenerated to match the current 24-hook set
+- Hook consolidation — `feedback-submission-reminder` and `capture-feedback` merged into `ask-bootcamper` and `review-bootcamper-input` respectively; `enforce-feedback-path` and `enforce-working-directory` consolidated into `enforce-file-path-policies`; `verify-senzing-facts` and `offer-visualization` removed (25 hooks total)
+- `hooks/README.md` regenerated to reflect the current 25-hook set
+- `scripts/install_hooks.py` HOOKS list and ESSENTIAL set regenerated to match the current 25-hook set
 - `deployment-phase-gate.kiro.hook` no longer references Module 12 (collapsed into Module 11)
 - `steering-index.yaml` now includes full phase maps with `token_count` and `size_category` for Modules 7–10 (previously bare strings)
 - `steering-index.yaml` deployment section now includes `aws` key
@@ -146,7 +146,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Template references added to module docs (Module 4, 5, 8)
 - POWER.md updated with references to new guides, templates, and offline mode
 - Module 11 split into main workflow (296 lines) + 4 separate platform steering files (`deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, `deployment-kubernetes.md`) per Kiro steering best practices
-- Module 7 split into main workflow (205 lines) + `module-07-reference.md` (130 lines) for ordering examples, conflict resolution, and troubleshooting
+- Module 7 split into main workflow (205 lines) + `load-data-reference.md` (130 lines) for ordering examples, conflict resolution, and troubleshooting
 - Module 2 Step 5 (license) condensed from ~80 to ~20 prescriptive lines
 - Generic language standards removed from all 5 language steering files — kept only Senzing SDK-specific content
 - `agent-instructions.md` updated with Module 11 platform file references and Module 7 reference guidance

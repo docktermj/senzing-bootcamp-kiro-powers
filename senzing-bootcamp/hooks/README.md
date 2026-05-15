@@ -109,7 +109,7 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 **Action:** Prompts the agent to run the new code on sample data and verify it works before moving on
 **Use case:** Catches broken code before the user tries to run it manually
 
-### 16. Enforce Visualization Offers (`enforce-visualization-offers.kiro.hook`) ⭐ — Modules 3, 5, 7, 8
+### 16. Enforce Visualization Offers (`enforce-visualization-offers.kiro.hook`) — Modules 3, 5, 7, 8
 
 **Trigger:** When the agent finishes working (agentStop) during a visualization-capable module
 **Action:** Checks the visualization tracker and surfaces any missed visualization offers before the conversation ends

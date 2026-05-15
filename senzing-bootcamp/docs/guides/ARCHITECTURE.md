@@ -339,8 +339,8 @@ A module transitions through six states in order:
    the module cannot start.
 
 2. **Steering file load** — The agent loads the module's steering file into
-   context. For single-file modules (2, 3, 4, 7), this is one file. For
-   split modules (1, 5, 6, 8, 9, 10, 11), only the current phase file is
+   context. For single-file modules (2, 4, 7), this is one file. For
+   split modules (1, 3, 5, 6, 8, 9, 10, 11), only the current phase file is
    loaded based on the bootcamper's `current_step` position.
 
 3. **Step execution** — The agent works through numbered steps defined in
@@ -379,6 +379,7 @@ The split modules and their phases are:
 | Module | Phases | Steps |
 | ------ | ------ | ----- |
 | 1 Business Problem | discovery (1–9), document-confirm (10–18) | 18 |
+| 3 System Verification | verification (1–8), visualization (9–12) | 12 |
 | 5 Data Quality | quality-assessment (1–7), data-mapping (8–20), test-load (21–26) | 26 |
 | 6 Load Data | build-loading (1–3), load-first (4–10), multi-source (11–19), validation (20–27) | 27 |
 | 8 Performance | requirements (1–3), benchmarking (4–7), optimization (8–13) | 13 |
@@ -390,9 +391,9 @@ When the bootcamper's `current_step` crosses a phase boundary, the agent
 unloads the previous phase file and loads the next one. This keeps context
 usage proportional to the active work rather than the total module size.
 
-Single-file modules (2 SDK Setup, 3 System Verification, 4 Data Collection,
-7 Query & Visualize) load their entire steering file at once because they
-are small enough to fit within budget without splitting.
+Single-file modules (2 SDK Setup, 4 Data Collection, 7 Query & Visualize)
+load their entire steering file at once because they are small enough to
+fit within budget without splitting.
 
 ### Module Dependency Gates
 
@@ -425,7 +426,7 @@ evaluates these conditions against the work completed during the module:
 | ---------- | -------------- |
 | 1 → 2 | Problem documented, sources identified, criteria defined |
 | 2 → 3 | SDK installed, DB configured, test passes |
-| 3 → 4 | Demo completed or skipped |
+| 3 → 4 | System verification passed or explicitly skipped |
 | 4 → 5 | Sources collected, files in data/raw/ |
 | 5 → 6 | Sources evaluated, mapped, programs tested, quality >70% |
 | 6 → 7 | Sources loaded, no critical errors |

@@ -10,7 +10,7 @@ description: "Entity resolution design pattern gallery — load during Module 1 
      current pattern descriptions, use cases, and recommended matching attributes.
      Use the structural framework below to organize the MCP-returned content. -->
 
-Offer this gallery during Module 2 to help users identify their use case.
+Offer this gallery during Module 1 to help users identify their use case.
 
 ## Patterns
 

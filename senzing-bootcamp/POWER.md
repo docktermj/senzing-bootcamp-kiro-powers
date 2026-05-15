@@ -37,7 +37,7 @@ This power works best with Claude Opus 4.6 or similar.
 - Integration test (`test_module_flow_integration.py`) validating multi-module state transitions across all tracks
 - Enhanced `validate_module.py` checks for Modules 8–11 (benchmark environment, security utilities, runbooks, Dockerfile)
 - Module 3 renamed from Quick Demo to System Verification — uses TruthSet data with MCP-generated verification code; authoritative steering file is `module-03-system-verification.md`
-- Hook consolidation — `feedback-submission-reminder` and `capture-feedback` merged into `ask-bootcamper` and `review-bootcamper-input` respectively; `enforce-feedback-path` and `enforce-working-directory` merged into `enforce-file-path-policies`; `verify-senzing-facts` and `offer-visualization` removed (24 hooks total)
+- Hook consolidation — `feedback-submission-reminder` and `capture-feedback` merged into `ask-bootcamper` and `review-bootcamper-input` respectively; `enforce-feedback-path` and `enforce-working-directory` merged into `enforce-file-path-policies`; `verify-senzing-facts` and `offer-visualization` removed (25 hooks total)
 - Windows support improvements — Visual Studio Build Tools check in `preflight.py`, Windows-specific pitfalls section in `common-pitfalls.md`, PowerShell execution policy guidance, Windows Terminal recommendation
 - Steering best practices alignment — `common-pitfalls.md` changed to manual inclusion, context budget guidelines followed
 - Deprecated `preflight_check.py` removed
@@ -232,7 +232,7 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available (25 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-file-path-policies` ⭐, `enforce-visualization-offers`, `gate-module3-visualization`, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
+Available (26 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-file-path-policies` ⭐, `enforce-single-question` ⭐, `enforce-visualization-offers`, `gate-module3-visualization`, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
 
 ## Project Directory Structure
 

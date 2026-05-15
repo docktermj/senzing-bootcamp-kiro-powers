@@ -91,6 +91,7 @@ Execute these setup actions in order. Do not narrate the details to the user.
    | code-style-check | "Code style will not be automatically checked on save." |
    | commonmark-validation | "Markdown files will not be automatically checked for CommonMark compliance." |
    | enforce-file-path-policies | "Feedback may be written to incorrect file locations, and file writes to /tmp or external paths will not be automatically blocked." |
+   | enforce-single-question | "Compound questions (multiple questions in a single prompt) will not be automatically detected and blocked." |
    | review-bootcamper-input | "Feedback trigger phrases will not be automatically detected on message submission." |
 
    **Verify hooks:** Check that each Critical Hook exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.

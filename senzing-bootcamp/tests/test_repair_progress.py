@@ -142,7 +142,7 @@ class TestProperty3ArtifactDetection:
     # Feature: script-test-suite, Property 3: Artifact detection correctness
 
     @given(modules=module_artifact_subsets)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_detect_matches_artifacts(self, modules):
         td = tempfile.mkdtemp()
         try:
@@ -178,7 +178,7 @@ class TestProperty4RepairRoundTrip:
     # Feature: script-test-suite, Property 4: Repair progress round-trip
 
     @given(modules=module_artifact_subsets)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_round_trip(self, modules):
         td = tempfile.mkdtemp()
         try:

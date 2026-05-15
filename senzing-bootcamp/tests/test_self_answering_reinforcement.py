@@ -53,7 +53,7 @@ class TestOnboardingStopMarkers:
 
     def test_stop_after_comprehension_check(self, onboarding: str) -> None:
         """🛑 STOP exists after the comprehension check 👉 question."""
-        idx = onboarding.find("Does everything so far makes sense")
+        idx = onboarding.find("does everything so far make sense")
         assert idx != -1
         after = onboarding[idx:idx + 200]
         assert "🛑" in after

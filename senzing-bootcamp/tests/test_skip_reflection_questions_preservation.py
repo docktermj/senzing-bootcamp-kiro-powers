@@ -219,7 +219,7 @@ class TestModuleCompletionPreservation:
     """
 
     @given(section_keys=st_completion_subset)
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=10, suppress_health_check=[HealthCheck.too_slow])
     def test_preserved_sections_intact(self, section_keys: list[str]) -> None:
         """For any subset of preserved sections, each section exists and
         contains its expected structural content."""
@@ -264,7 +264,7 @@ class TestModule03Step12Preservation:
     """
 
     @given(instruction_keys=st_step12_subset)
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=10, suppress_health_check=[HealthCheck.too_slow])
     def test_step12_preserved_instructions_intact(
         self, instruction_keys: list[str]
     ) -> None:

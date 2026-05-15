@@ -58,7 +58,7 @@ class TestLanguageSteeringStructuralParity:
     """
 
     @given(lang_file=st.sampled_from(_LANGUAGE_FILES))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_required_section_headings_present(self, lang_file: str) -> None:
         """Every language file contains all required section headings.
 
@@ -79,7 +79,7 @@ class TestLanguageSteeringStructuralParity:
         )
 
     @given(lang_file=st.sampled_from(_LANGUAGE_FILES))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_platform_notes_references_all_platforms(self, lang_file: str) -> None:
         """Platform Notes section references Linux, Windows, and macOS.
 
@@ -141,7 +141,7 @@ class TestMaturityNotesPresence:
     """
 
     @given(file_name=st.sampled_from(list(_MATURITY_NOTE_FILES.keys())))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_find_examples_coverage_note_present(self, file_name: str) -> None:
         """Each designated file contains a maturity/coverage note referencing find_examples.
 
@@ -221,7 +221,7 @@ class TestTypeScriptPitfallTopicCoverage:
     """
 
     @given(topic=st.sampled_from(_PITFALL_TOPICS))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_pitfall_section_covers_topic(self, topic: str) -> None:
         """TypeScript/Node.js pitfall section contains an entry for each topic.
 

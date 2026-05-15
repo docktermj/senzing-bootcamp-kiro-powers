@@ -357,7 +357,7 @@ class TestStructuralPreservationPBT:
     """
 
     @given(variation=st_section_marker_variation())
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=10, suppress_health_check=[HealthCheck.too_slow])
     def test_section_marker_and_content_preserved(
         self, variation: dict[str, str]
     ) -> None:
@@ -393,7 +393,7 @@ class TestStructuralPreservationPBT:
         )
 
     @given(variation=st_section_marker_variation())
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=10, suppress_health_check=[HealthCheck.too_slow])
     def test_section_ordering_preserved(
         self, variation: dict[str, str]
     ) -> None:

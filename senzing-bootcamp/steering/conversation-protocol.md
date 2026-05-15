@@ -66,6 +66,20 @@ Simple yes/no questions or questions with a single implied action remain as inli
 
 > 👉 Ready to move on to Module 3?
 
+## Question Disambiguation
+
+Every 👉 question must have exactly one unambiguous meaning for each possible short answer. A "yes" must map to one interpretation. A "no" must map to one interpretation.
+
+**Compound Question anti-pattern:** A prompt that combines a Confirmation Question with a Follow-Up Question. Example: "Does that look right? Anything I missed?" — "yes" could mean "yes it's right" OR "yes you missed something."
+
+**Rule:** When you need both confirmation and correction input:
+
+1. Ask the confirmation question alone: "👉 Does that capture your situation accurately?"
+2. If the bootcamper says yes → proceed to the next step.
+3. If the bootcamper says no → ask "👉 What would you like me to change?" in the next turn.
+
+Never append "or should we adjust anything?" or "Anything I missed?" to a confirmation question. Never combine "Would you like X?" with "Or would you prefer Y?" in prose — use a numbered choice list instead.
+
 ## Violation Examples
 
 ### Multi-Question (WRONG)
@@ -114,6 +128,25 @@ Simple yes/no questions or questions with a single implied action remain as inli
 
 > 👉 Who will be working on this project?
 > 🛑 STOP
+
+### Compound Confirmation (WRONG)
+
+> 👉 Does that summary sound right? Anything I missed or got wrong?
+
+### Compound Confirmation (CORRECT)
+
+> 👉 Does that summary capture your situation accurately?
+
+### Compound Either/Or (WRONG)
+
+> 👉 Would you like me to create a one-page executive summary, or would you prefer to skip that and move on to Module 2?
+
+### Compound Either/Or (CORRECT)
+
+> 👉 What would you like to do next?
+>
+> 1. Create a one-page executive summary
+> 2. Move on to Module 2
 
 ## Rule Priority
 

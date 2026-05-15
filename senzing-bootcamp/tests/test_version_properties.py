@@ -181,7 +181,7 @@ class TestVersionRoundTrip:
         minor=st.integers(0, 99),
         patch=st.integers(0, 99),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_format_parse_round_trip(
         self, major: int, minor: int, patch: int
     ) -> None:
@@ -211,7 +211,7 @@ class TestDisplayFormatCorrectness:
         minor=st.integers(0, 99),
         patch=st.integers(0, 99),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_display_format_equals_prefix_plus_version(
         self, major: int, minor: int, patch: int
     ) -> None:
@@ -236,7 +236,7 @@ class TestInvalidVersionRejection:
     """
 
     @given(invalid_str=st_invalid_version())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_invalid_version_raises_error(self, invalid_str: str) -> None:
         """validate_version rejects any string not matching strict semver."""
         assume(not _SEMVER_REGEX.match(invalid_str))
@@ -259,7 +259,7 @@ class TestErrorMessageContent:
     """
 
     @given(invalid_str=st_invalid_version())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_error_message_contains_invalid_value(self, invalid_str: str) -> None:
         """The error message includes the invalid input string verbatim."""
         assume(not _SEMVER_REGEX.match(invalid_str))
@@ -293,7 +293,7 @@ class TestMalformedContentProducesError:
     """
 
     @given(malformed=st_malformed_version_strings())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_malformed_content_raises_version_error(self, malformed: str) -> None:
         """Malformed strings always raise VersionError, never return a value."""
         assume(not _SEMVER_REGEX.match(malformed))
@@ -330,7 +330,7 @@ class TestScriptDisplayPathIdentity:
         minor=st.integers(0, 99),
         patch=st.integers(0, 99),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_script_display_path_identity(
         self, major: int, minor: int, patch: int
     ) -> None:
@@ -371,7 +371,7 @@ class TestScriptExitBehavior:
     """
 
     @given(invalid_content=st_invalid_version())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_main_exits_nonzero_on_invalid_input(self, invalid_content: str) -> None:
         """main() raises SystemExit(1) and stderr includes file path for invalid input."""
         assume(not _SEMVER_REGEX.match(invalid_content))

@@ -344,7 +344,7 @@ This is NOT a mandatory gate (⛔) — the bootcamper can skip it.
 
 Before moving on to track selection, give the bootcamper a moment to absorb everything from the overview. Present a warm, conversational check-in — this is an invitation, not a quiz:
 
-👉 "That was a lot of ground to cover. Does everything so far makes sense? Do you have any questions about the modules, the data, licensing, or anything else before we move on to choosing a track?"
+👉 "That was a lot of ground to cover — does everything so far make sense?"
 
 🛑 STOP — Wait for bootcamper response.
 

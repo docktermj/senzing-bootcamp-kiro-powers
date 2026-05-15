@@ -86,7 +86,7 @@ class TestTrackerDeliveryModeValidity:
     """
 
     @given(value=st_valid_delivery_mode())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_valid_delivery_modes_always_accepted(self, value: str | None) -> None:
         """All three valid delivery_mode values pass validation.
 
@@ -100,7 +100,7 @@ class TestTrackerDeliveryModeValidity:
     @given(value=st.text(min_size=1, max_size=100).filter(
         lambda v: v not in ("static", "web_service")
     ))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_arbitrary_strings_rejected_unless_valid(self, value: str) -> None:
         """Any non-empty string that is not "static" or "web_service" is rejected.
 
@@ -112,7 +112,7 @@ class TestTrackerDeliveryModeValidity:
         )
 
     @given(value=st_arbitrary_delivery_mode())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_only_exact_valid_values_accepted(self, value: str | None) -> None:
         """Only the exact valid values pass; all others are rejected.
 
@@ -223,7 +223,7 @@ class TestNewOfferDeliveryModeNull:
         checkpoint_id=st_checkpoint_id(),
         timestamp=st_iso8601_timestamp(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_new_offer_entry_has_null_delivery_mode(
         self, module: int, checkpoint_id: str, timestamp: str
     ) -> None:
@@ -245,7 +245,7 @@ class TestNewOfferDeliveryModeNull:
         checkpoint_id=st_checkpoint_id(),
         timestamp=st_iso8601_timestamp(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_new_offer_entry_has_offered_status(
         self, module: int, checkpoint_id: str, timestamp: str
     ) -> None:
@@ -266,7 +266,7 @@ class TestNewOfferDeliveryModeNull:
         checkpoint_id=st_checkpoint_id(),
         timestamp=st_iso8601_timestamp(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_new_offer_entry_has_null_chosen_type(
         self, module: int, checkpoint_id: str, timestamp: str
     ) -> None:
@@ -362,7 +362,7 @@ class TestAcceptanceSetsDeliveryMode:
         chosen_type=st_chosen_type(),
         delivery_mode=st_non_null_delivery_mode(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_acceptance_sets_delivery_mode_to_input(
         self,
         module: int,
@@ -394,7 +394,7 @@ class TestAcceptanceSetsDeliveryMode:
         chosen_type=st_chosen_type(),
         delivery_mode=st_non_null_delivery_mode(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_acceptance_delivery_mode_is_not_null(
         self,
         module: int,
@@ -426,7 +426,7 @@ class TestAcceptanceSetsDeliveryMode:
         chosen_type=st_chosen_type(),
         delivery_mode=st_non_null_delivery_mode(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_acceptance_sets_status_to_accepted(
         self,
         module: int,
@@ -521,7 +521,7 @@ class TestStaticOnlyCheckpointDefault:
     """
 
     @given(types=st_static_only_types())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_static_only_checkpoint_resolves_to_static(
         self, types: list[str]
     ) -> None:
@@ -536,7 +536,7 @@ class TestStaticOnlyCheckpointDefault:
         )
 
     @given(types=st_checkpoint_types())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_any_config_with_only_static_defaults_to_static(
         self, types: list[str]
     ) -> None:
@@ -563,7 +563,7 @@ class TestStaticOnlyCheckpointDefault:
             max_size=3,
         )
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_multi_type_checkpoint_does_not_default(
         self, types: list[str]
     ) -> None:

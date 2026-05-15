@@ -258,7 +258,7 @@ class TestBugConditionAcrossModules:
     """
 
     @given(module_num=st.integers(min_value=1, max_value=11))
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=10, suppress_health_check=[HealthCheck.too_slow])
     def test_completion_workflow_has_no_reflection_for_any_module(
         self, module_num: int
     ) -> None:

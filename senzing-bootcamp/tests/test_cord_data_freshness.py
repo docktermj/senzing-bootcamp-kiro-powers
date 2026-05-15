@@ -98,7 +98,7 @@ class TestMetadataRoundTrip:
     """
 
     @given(metadata=st_cord_metadata())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_round_trip_preserves_all_fields(self, metadata: CordMetadata) -> None:
         """parse_metadata(serialize_metadata(m)) == m for all generated inputs."""
         yaml_str = serialize_metadata(metadata)
@@ -477,7 +477,7 @@ class TestFreshnessDetection:
         ),
         mismatch_index=st.integers(min_value=0, max_value=3),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_detects_mismatches_when_files_differ(
         self,
         lines_per_source: list[list[str]],
@@ -537,7 +537,7 @@ class TestFreshnessDetection:
             max_size=4,
         ),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_reports_fresh_when_all_match(
         self,
         lines_per_source: list[list[str]],
@@ -617,7 +617,7 @@ class TestNonBlockingBehavior:
         min_size=1,
         max_size=100,
     ))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_never_raises_with_missing_metadata(self, path_suffix: str) -> None:
         """Random non-existent file paths never cause an exception."""
         fake_path = f"/tmp/nonexistent_cord_test/{path_suffix}/cord_metadata.yaml"

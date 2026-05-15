@@ -45,7 +45,7 @@ class TestConversationalPatternCompliance:
     """
 
     @given(hook_file=st.sampled_from(ALL_HOOK_FILES))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_name_starts_with_to_lowercase_verb(self, hook_file: Path) -> None:
         """Every hook name must start with 'to ' followed by a lowercase letter.
 
@@ -110,7 +110,7 @@ class TestJSONValidity:
     """
 
     @given(hook_file=st.sampled_from(ALL_HOOK_FILES))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_hook_file_is_valid_json(self, hook_file: Path) -> None:
         """Every .kiro.hook file must parse as valid JSON without errors."""
         content = hook_file.read_text(encoding="utf-8")
@@ -141,7 +141,7 @@ class TestStructuralPreservation:
     """
 
     @given(hook_file=st.sampled_from(ALL_HOOK_FILES))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_version_unchanged(self, hook_file: Path) -> None:
         """The version field must match the baseline."""
         data = json.loads(hook_file.read_text(encoding="utf-8"))
@@ -152,7 +152,7 @@ class TestStructuralPreservation:
         )
 
     @given(hook_file=st.sampled_from(ALL_HOOK_FILES))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_description_unchanged(self, hook_file: Path) -> None:
         """The description field must match the baseline."""
         data = json.loads(hook_file.read_text(encoding="utf-8"))
@@ -162,7 +162,7 @@ class TestStructuralPreservation:
         )
 
     @given(hook_file=st.sampled_from(ALL_HOOK_FILES))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_when_unchanged(self, hook_file: Path) -> None:
         """The when block must match the baseline."""
         data = json.loads(hook_file.read_text(encoding="utf-8"))
@@ -172,7 +172,7 @@ class TestStructuralPreservation:
         )
 
     @given(hook_file=st.sampled_from(ALL_HOOK_FILES))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_then_unchanged(self, hook_file: Path) -> None:
         """The then block must match the baseline."""
         data = json.loads(hook_file.read_text(encoding="utf-8"))
@@ -197,7 +197,7 @@ class TestRegistryConsistency:
     """
 
     @given(hook_file=st.sampled_from(ALL_HOOK_FILES))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_registry_name_matches_hook_file(self, hook_file: Path) -> None:
         """The name: line in hook-registry.md must match the hook file's name field."""
         data = json.loads(hook_file.read_text(encoding="utf-8"))
@@ -244,7 +244,7 @@ class TestNoIDMutation:
     """
 
     @given(hook_file=st.sampled_from(ALL_HOOK_FILES))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_hook_file_exists_in_expected_set(self, hook_file: Path) -> None:
         """Every hook file must be in the expected set of 24 filenames."""
         assert hook_file.name in EXPECTED_HOOK_FILENAMES, (

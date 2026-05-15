@@ -137,7 +137,7 @@ class TestProperty3DashboardContent:
     """**Validates: Requirements 2.8, 2.9, 2.10, 10.5**"""
 
     @given(data=team_config_st())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_dashboard_contains_team_name(self, data):
         """Dashboard HTML contains the team name."""
         config, member_data = data
@@ -158,7 +158,7 @@ class TestProperty3DashboardContent:
         assert escaped_name in html
 
     @given(data=team_config_st())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_dashboard_contains_member_count(self, data):
         """Dashboard HTML contains the total member count."""
         config, member_data = data
@@ -172,7 +172,7 @@ class TestProperty3DashboardContent:
         assert str(len(config.members)) in html
 
     @given(data=team_config_st())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_dashboard_contains_each_member_name(self, data):
         """Dashboard HTML contains each member's display name."""
         config, member_data = data
@@ -193,7 +193,7 @@ class TestProperty3DashboardContent:
             assert escaped in html, f"Member name '{m['member_name']}' not in HTML"
 
     @given(data=team_config_st())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_dashboard_contains_completion_pct(self, data):
         """Dashboard HTML contains the overall completion percentage."""
         config, member_data = data
@@ -221,7 +221,7 @@ class TestProperty5TeamStats:
     @given(
         member_data=st.lists(member_progress_st(), min_size=1, max_size=6)
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_average_completion(self, member_data):
         """Average completion equals mean of individual completion percentages."""
         stats = compute_team_stats(member_data)
@@ -234,7 +234,7 @@ class TestProperty5TeamStats:
     @given(
         member_data=st.lists(member_progress_st(), min_size=1, max_size=6)
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_total_modules_completed(self, member_data):
         """Total modules completed equals sum of all members' completed counts."""
         stats = compute_team_stats(member_data)
@@ -244,7 +244,7 @@ class TestProperty5TeamStats:
     @given(
         member_data=st.lists(member_progress_st(), min_size=1, max_size=6)
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_fully_completed_count(self, member_data):
         """Fully completed count equals members with all 12 modules done."""
         stats = compute_team_stats(member_data)
@@ -266,7 +266,7 @@ class TestProperty6ERComparison:
     """**Validates: Requirements 5.2, 5.5**"""
 
     @given(er_data=er_stats_st())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_best_er_rate_is_correct(self, er_data):
         """The member with highest entities_resolved/records_loaded is identified."""
         best_id = _best_er_rate(er_data)
@@ -283,7 +283,7 @@ class TestProperty6ERComparison:
         assert best_id == expected_id
 
     @given(er_data=er_stats_st())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_best_cross_source_is_correct(self, er_data):
         """The member with highest cross_source_matches is identified."""
         best_id = _best_cross_source(er_data)

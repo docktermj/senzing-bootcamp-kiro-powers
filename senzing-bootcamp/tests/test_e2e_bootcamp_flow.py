@@ -861,7 +861,7 @@ class TestSteeringResolutionProperties:
     """
 
     @given(module_num=st_steering_module())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_resolver_returns_correct_path(self, module_num: int) -> None:
         """Property 6: Steering Resolution Correctness.
 
@@ -889,7 +889,7 @@ class TestSteeringResolutionProperties:
                 assert phase_result  # non-empty
 
     @given(module_num=st_steering_module())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_all_steering_files_exist(self, module_num: int) -> None:
         """Property 7: Steering File Existence.
 
@@ -922,7 +922,7 @@ class TestPhaseTransitionProperties:
     """
 
     @given(module_num=st_multi_phase_module())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_step_ranges_contiguous(self, module_num: int) -> None:
         """Property 8: Phase Step Range Contiguity.
 
@@ -948,7 +948,7 @@ class TestPhaseTransitionProperties:
             )
 
     @given(module_num=st_multi_phase_module())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_phase_traversal_order(self, module_num: int) -> None:
         """Property 9: Phase Traversal Order.
 

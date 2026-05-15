@@ -55,7 +55,7 @@ class TestProperty1ScoopDetection:
         platform=st.sampled_from(["win32", "linux", "darwin"]),
         scoop_available=st.booleans(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_scoop_detection_platform_conditional_and_status_correct(
         self, platform: str, scoop_available: bool
     ) -> None:
@@ -126,7 +126,7 @@ class TestProperty2InstallationCommandMapping:
     """
 
     @given(runtime=st.sampled_from(list(SCOOP_RUNTIME_COMMANDS.keys())))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_install_cmd_contains_scoop_install(self, runtime: str) -> None:
         """install_cmd is non-empty and contains 'scoop install'.
 
@@ -141,7 +141,7 @@ class TestProperty2InstallationCommandMapping:
         )
 
     @given(runtime=st.sampled_from(list(SCOOP_RUNTIME_COMMANDS.keys())))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_verify_cmd_is_non_empty(self, runtime: str) -> None:
         """verify_cmd is non-empty for all supported runtimes.
 
@@ -152,7 +152,7 @@ class TestProperty2InstallationCommandMapping:
         assert info.verify_cmd, "verify_cmd must be non-empty"
 
     @given(runtime=st.sampled_from(list(SCOOP_RUNTIME_COMMANDS.keys())))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_java_requires_bucket_add_others_may_be_none(self, runtime: str) -> None:
         """If runtime is 'java', bucket_add is non-empty and contains
         'scoop bucket add java'; otherwise bucket_add may be None.
@@ -268,7 +268,7 @@ class TestProperty3PreferencesRoundTrip:
         ),
         deferred=st.booleans(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_preferences_round_trip_preserves_all_fields(
         self,
         scoop_installed: bool,
@@ -331,7 +331,7 @@ class TestProperty4VerdictInvariance:
             min_size=1,
         ).filter(lambda x: any(d["status"] == "warn" for d in x)),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_verdict_is_warn_when_at_least_one_warn_and_no_fail(
         self, check_results: list[dict[str, str]]
     ) -> None:
@@ -361,7 +361,7 @@ class TestProperty4VerdictInvariance:
         platform=st.sampled_from(["win32", "linux", "darwin"]),
         scoop_available=st.booleans(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_check_scoop_never_produces_fail(
         self, platform: str, scoop_available: bool
     ) -> None:

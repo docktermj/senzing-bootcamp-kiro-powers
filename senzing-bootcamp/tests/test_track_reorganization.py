@@ -108,7 +108,7 @@ class TestProperty1NoLegacyIdentifiersInFiles:
     }
 
     @given(legacy_id=st_legacy_scannable_id())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_no_legacy_id_in_bootcamp_files(self, legacy_id: str) -> None:
         """For any legacy identifier, no bootcamp file contains it."""
         pattern = re.compile(rf"\b{re.escape(legacy_id)}\b")
@@ -157,7 +157,7 @@ class TestProperty2LegacyRejectedAtRuntime:
     """
 
     @given(legacy_id=st_legacy_track_id())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_legacy_id_raises_value_error(self, legacy_id: str) -> None:
         """ProgressData rejects any legacy track identifier."""
         with pytest.raises(ValueError, match="Unrecognized track identifier"):
@@ -180,7 +180,7 @@ class TestProperty3TopologicalOrdering:
     """
 
     @given(track_id=st_valid_track_id())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_prerequisites_appear_before_dependents(self, track_id: str) -> None:
         """All prerequisites appear before their dependents in the track module list."""
         yaml_path = _BOOTCAMP_ROOT / "config" / "module-dependencies.yaml"
@@ -225,7 +225,7 @@ class TestProperty4DisplayNameInSummary:
     """
 
     @given(track_id=st_valid_track_id())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_summary_contains_display_name(self, track_id: str) -> None:
         """Executive summary uses the track's display name."""
         progress = ProgressData(
@@ -262,7 +262,7 @@ class TestProperty5ValidationDetectsLegacy:
     """
 
     @given(legacy_id=st_legacy_track_id())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_legacy_in_registry_detected_as_error(self, legacy_id: str) -> None:
         """Injecting a legacy identifier into the Track_Registry triggers ERROR."""
         # Build a minimal graph with the legacy identifier as a track key

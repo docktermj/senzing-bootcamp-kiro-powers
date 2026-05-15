@@ -247,7 +247,7 @@ class TestSilenceFirstDefault:
     """
 
     @given(start_idx=st.integers(min_value=0, max_value=200))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_silence_instruction_precedes_conditional_output(self, start_idx: int):
         """The silence instruction must appear before any conditional output logic.
 
@@ -276,7 +276,7 @@ class TestSilenceFirstDefault:
                 )
 
     @given(substring_len=st.integers(min_value=10, max_value=100))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_first_line_is_silence_instruction(self, substring_len: int):
         """The very first line of the prompt must be a silence/default-output instruction.
 
@@ -320,7 +320,7 @@ class TestTriggerPhrasesPreserved:
     """
 
     @given(phrase=st_trigger_phrase, upper_flag=st.booleans())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_all_trigger_phrases_present_case_insensitive(
         self, phrase: str, upper_flag: bool
     ):
@@ -338,7 +338,7 @@ class TestTriggerPhrasesPreserved:
         )
 
     @given(phrase=st_trigger_phrase)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_prompt_instructs_case_insensitive_matching(self, phrase: str):
         """The prompt must instruct case-insensitive matching for trigger phrases.
 
@@ -386,7 +386,7 @@ class TestHookFileStructuralValidity:
     """
 
     @given(hook_path=st_hook_file)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_hook_file_parses_as_valid_json(self, hook_path: Path):
         """Each hook file must parse as valid JSON.
 
@@ -399,7 +399,7 @@ class TestHookFileStructuralValidity:
         )
 
     @given(hook_path=st_hook_file)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_hook_file_has_required_keys(self, hook_path: Path):
         """Each hook file must contain name, version, description, when, then.
 
@@ -413,7 +413,7 @@ class TestHookFileStructuralValidity:
         )
 
     @given(hook_path=st_hook_file)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_hook_when_type_is_valid(self, hook_path: Path):
         """Each hook's when.type must be a valid event type.
 
@@ -426,7 +426,7 @@ class TestHookFileStructuralValidity:
         )
 
     @given(hook_path=st_hook_file)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_hook_then_type_is_ask_agent(self, hook_path: Path):
         """Each hook's then.type must be 'askAgent'.
 

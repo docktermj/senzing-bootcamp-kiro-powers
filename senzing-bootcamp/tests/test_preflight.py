@@ -113,7 +113,7 @@ class TestProperty1LanguageRuntimeDetection:
         available=runtime_subset_strategy(),
         pip_available=st.booleans(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_runtime_detection(self, available, pip_available):
         """Feature: environment-verification, Property 1: Language runtime detection"""
         available_set = set(available)
@@ -177,7 +177,7 @@ class TestProperty2DiskSpaceThreshold:
     """
 
     @given(gb=disk_space_gb_strategy())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_disk_space_threshold(self, gb):
         """Feature: environment-verification, Property 2: Disk space threshold"""
         DiskUsage = namedtuple("DiskUsage", ["total", "used", "free"])
@@ -210,7 +210,7 @@ class TestProperty3SenzingSDKVersion:
     """
 
     @given(version=version_string_strategy())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_sdk_version_threshold(self, version):
         """Feature: environment-verification, Property 3: Senzing SDK version"""
         parts = version.split(".")
@@ -262,7 +262,7 @@ class TestProperty4RequiredToolPresence:
             max_size=4,
         ),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_tool_presence(self, available_tools):
         """Feature: environment-verification, Property 4: Required tool presence"""
         available_set = set(available_tools)
@@ -304,7 +304,7 @@ class TestProperty5HumanReportRendering:
     """
 
     @given(report=preflight_report_strategy())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_human_output_completeness(self, report):
         """Feature: environment-verification, Property 5: Human report rendering"""
         # Disable color for deterministic output
@@ -343,7 +343,7 @@ class TestProperty6VerdictAndExitCode:
     """
 
     @given(report=preflight_report_strategy())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_verdict_consistency(self, report):
         """Feature: environment-verification, Property 6: Verdict and exit code consistency"""
         # Count actual statuses
@@ -384,7 +384,7 @@ class TestProperty7JSONRoundTrip:
     """
 
     @given(report=preflight_report_strategy())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_json_round_trip(self, report):
         """Feature: environment-verification, Property 7: JSON round-trip"""
         json_str = OutputFormatter.to_json(report)

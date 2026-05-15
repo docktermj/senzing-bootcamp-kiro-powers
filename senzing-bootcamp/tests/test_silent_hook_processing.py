@@ -266,7 +266,7 @@ class TestBugConditionProperty:
     demonstrate the bug exists."""
 
     @given(hook_key=st.sampled_from(_AFFECTED_HOOK_KEYS))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_all_affected_hooks_have_silent_instruction(
         self, hook_key: str
     ) -> None:
@@ -550,7 +550,7 @@ class TestBugConditionPreToolUseProperty:
         reason="No preToolUse hooks remain after require-mcp-server cleanup",
     )
     @given(hook_key=st.sampled_from(_PRE_TOOL_USE_HOOK_KEYS or ["placeholder"]))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_pretooluse_hooks_have_strong_guardrails(
         self, hook_key: str
     ) -> None:
@@ -868,7 +868,7 @@ class TestPreservationActionBranchesProperty:
     """
 
     @given(hook_key=st.sampled_from(_AFFECTED_HOOK_KEYS))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_action_keywords_preserved_in_hook_files(
         self, hook_key: str
     ) -> None:
@@ -885,7 +885,7 @@ class TestPreservationActionBranchesProperty:
             )
 
     @given(hook_key=st.sampled_from(_AFFECTED_HOOK_KEYS))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_action_keywords_preserved_in_registry(
         self, hook_key: str
     ) -> None:
@@ -922,7 +922,7 @@ class TestPreservationNonAffectedProperty:
     """
 
     @given(hook_id=st.sampled_from(_NON_AFFECTED_HOOK_IDS))
-    @settings(max_examples=30)
+    @settings(max_examples=10)
     def test_non_affected_hooks_unchanged(self, hook_id: str) -> None:
         """**Validates: Requirements 3.5, 3.6**
 

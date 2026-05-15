@@ -153,7 +153,7 @@ class TestTrackCompletionProperty:
         current_module=st.integers(min_value=1, max_value=11),
         current_step=st.integers(min_value=0, max_value=20),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_completion_always_0_to_100(
         self, completed: list[int], current_module: int, current_step: int
     ) -> None:

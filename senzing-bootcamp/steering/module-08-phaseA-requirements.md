@@ -66,7 +66,7 @@ Call `search_docs(query='loading performance', category='anti_patterns', version
 
 If both conditions are true, ask the following question before proceeding to benchmarking:
 
-👉 "Will you deploy to this machine, or a different on-premises server? If different, what are the specs (CPU cores, RAM, storage type, database server)?"
+👉 "Will you deploy to this machine or a different on-premises server?"
 
 > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 

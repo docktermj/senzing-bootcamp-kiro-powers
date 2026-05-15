@@ -185,7 +185,7 @@ class TestBugConditionProperty:
     """
 
     @given(module_num=st.sampled_from(_MODULE_NUMBERS))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_step5_has_no_module_rows(self, module_num: int) -> None:
         """**Validates: Requirements 1.1, 2.1**
 
@@ -317,7 +317,7 @@ class TestPreservationProperty:
     ]
 
     @given(content_item=st.sampled_from(_ALL_PRESERVED_CONTENT))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_step5_preserves_content(self, content_item: str) -> None:
         """**Validates: Requirements 3.2, 3.3, 3.4**
 

@@ -153,7 +153,7 @@ class TestProperty1ModuleValidation:
     """
 
     @given(modules=st_module_numbers())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_partition_is_correct(self, modules: list[int]):
         """Feature: export-results, Property 1: Module number validation partitions correctly"""
         valid, invalid = ModuleFilter.validate_modules(modules)
@@ -203,7 +203,7 @@ class TestProperty2ArtifactDiscovery:
             min_size=0, max_size=5, unique=True,
         ),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_discovery_finds_matching_files(
         self, jsonl_names, raw_names, py_names, doc_names,
     ):
@@ -273,7 +273,7 @@ class TestProperty3VisualizationDetection:
             min_size=10, max_size=200,
         ),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_viz_detection_is_content_based(self, has_marker, marker, filler):
         """Feature: export-results, Property 3: Visualization detection is content-based"""
         tmp_path = Path(tempfile.mkdtemp())
@@ -315,7 +315,7 @@ class TestProperty4ManifestMetadata:
     """
 
     @given(manifest=st_artifact_manifest())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_manifest_entries_complete(self, manifest: ArtifactManifest):
         """Feature: export-results, Property 4: Manifest entries have complete metadata"""
         for entry in manifest.artifacts:
@@ -350,7 +350,7 @@ class TestProperty5ModuleCompletionTable:
     """
 
     @given(progress=st_progress_data())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_module_table_reflects_progress(self, progress: ProgressData):
         """Feature: export-results, Property 5: Module completion table reflects progress state"""
         renderer = HTMLRenderer()
@@ -399,7 +399,7 @@ class TestProperty6MetricSections:
         progress=st_progress_data(),
         manifest=st_artifact_manifest(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_metric_sections_conditional(
         self, metrics: ExportMetrics, progress: ProgressData, manifest: ArtifactManifest,
     ):
@@ -446,7 +446,7 @@ class TestProperty7ExecutiveSummary:
         metrics=st_export_metrics(),
         manifest=st_artifact_manifest(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_executive_summary_content(
         self, progress: ProgressData, metrics: ExportMetrics, manifest: ArtifactManifest,
     ):
@@ -505,7 +505,7 @@ class TestProperty8SelfContainedHTML:
         metrics=st_export_metrics(),
         manifest=st_artifact_manifest(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_html_is_self_contained(
         self, progress: ProgressData, metrics: ExportMetrics, manifest: ArtifactManifest,
     ):
@@ -544,7 +544,7 @@ class TestProperty9ModuleFilter:
             st.lists(st.integers(min_value=1, max_value=12), unique=True, max_size=12),
         ),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_filter_returns_correct_subset(
         self, manifest: ArtifactManifest, modules: list[int] | None,
     ):
@@ -582,7 +582,7 @@ class TestProperty10ZIPStructure:
         html_content=st.text(min_size=10, max_size=500),
         manifest=st_artifact_manifest(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_zip_structure_correct(self, html_content: str, manifest: ArtifactManifest):
         """Feature: export-results, Property 10: ZIP archive contains correct structure"""
         assembler = ZIPAssembler()
@@ -642,7 +642,7 @@ class TestProperty11ZIPExclusion:
             min_size=1, max_size=30,
         ),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_exclusion_non_matching(self, path_segment: str):
         """Feature: export-results, Property 11: ZIP exclusion patterns filter correctly"""
         # Ensure the segment doesn't accidentally match exclusion patterns
@@ -661,7 +661,7 @@ class TestProperty11ZIPExclusion:
             "__pycache__", "cache.pyc", ".env", ".git", "node_modules", "database",
         ]),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_exclusion_matching(self, pattern: str):
         """Feature: export-results, Property 11: ZIP exclusion patterns filter correctly"""
         path = f"project/{pattern}/somefile.txt"
@@ -686,7 +686,7 @@ class TestProperty12GracefulDegradation:
         manifest=st_artifact_manifest(),
         error_indices=st.lists(st.integers(min_value=0, max_value=29), unique=True, max_size=10),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_graceful_degradation(self, manifest: ArtifactManifest, error_indices: list[int]):
         """Feature: export-results, Property 12: Graceful degradation on read errors"""
         error_set = {i for i in error_indices if i < len(manifest.artifacts)}

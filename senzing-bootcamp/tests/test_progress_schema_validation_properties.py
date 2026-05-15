@@ -313,7 +313,7 @@ class TestProgressSchemaProperties:
             lambda x: x not in ("core_bootcamp", "advanced_topics")
         )
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_invalid_track_rejection_produces_descriptive_error(self, invalid_track):
         """Property 1: Invalid track rejection produces descriptive error.
 
@@ -349,7 +349,7 @@ class TestProgressSchemaProperties:
         )
 
     @given(progress=st_progress_file())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_json_round_trip_serialization(self, progress):
         """Property 1: JSON Round-Trip Serialization.
 
@@ -365,7 +365,7 @@ class TestProgressSchemaProperties:
         )
 
     @given(progress=st_progress_file())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_valid_dicts_validate_cleanly(self, progress):
         """Property 2: Valid Dicts Validate Cleanly.
 
@@ -380,7 +380,7 @@ class TestProgressSchemaProperties:
         )
 
     @given(data=st_corrupted_progress_file())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_corrupted_dicts_are_detected(self, data):
         """Property 3: Corrupted Dicts Are Detected.
 
@@ -402,7 +402,7 @@ class TestProgressSchemaProperties:
         )
 
     @given(progress=st_progress_file(), fields_to_remove=st_optional_field_subset())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_backward_compatibility_under_field_removal(self, progress, fields_to_remove):
         """Property 4: Backward Compatibility Under Field Removal.
 

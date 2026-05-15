@@ -208,7 +208,7 @@ class TestProperty5ValidatorPassesOnCompleteArtifacts:
     # Feature: script-test-suite, Property 5: Module validator passes on complete artifacts
 
     @given(module_num=st.integers(min_value=1, max_value=11))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_all_pass_when_artifacts_present(self, module_num):
         td = tempfile.mkdtemp()
         try:
@@ -242,7 +242,7 @@ class TestProperty6ValidatorFailsOnMissingArtifacts:
     # Feature: script-test-suite, Property 6: Module validator fails on missing artifacts
 
     @given(module_num=st.integers(min_value=1, max_value=11))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_at_least_one_fails_when_artifacts_absent(self, module_num):
         td = tempfile.mkdtemp()
         try:

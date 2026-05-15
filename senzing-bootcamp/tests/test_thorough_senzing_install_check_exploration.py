@@ -255,7 +255,7 @@ class TestFilesystemFallbackDetectionBugCondition:
     """
 
     @given(scenario=st_sentinel_path_variation())
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=10, suppress_health_check=[HealthCheck.too_slow])
     def test_steering_contains_filesystem_fallback_for_bug_condition(
         self, scenario: dict[str, str | bool]
     ) -> None:

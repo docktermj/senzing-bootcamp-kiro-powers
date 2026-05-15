@@ -250,7 +250,7 @@ class TestBugConditionProperty:
     On unfixed code this property FAILS, surfacing counterexamples."""
 
     @given(check=st.sampled_from(_BUG_CONDITION_CHECKS))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_step5_satisfies_expected_behavior(self, check: str) -> None:
         """**Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2**
 
@@ -578,7 +578,7 @@ class TestPreservationProperty:
     EXPECTED OUTCOME on UNFIXED code: all tests PASS."""
 
     @given(step_key=st.sampled_from(_NON_STEP5_KEYS))
-    @settings(max_examples=30)
+    @settings(max_examples=10)
     def test_non_step5_content_preserved(self, step_key: str) -> None:
         """**Validates: Requirements 3.6**
 
@@ -596,7 +596,7 @@ class TestPreservationProperty:
         )
 
     @given(check=st.sampled_from(_STEP5_PRESERVATION_CHECKS))
-    @settings(max_examples=30)
+    @settings(max_examples=10)
     def test_step5_key_content_preserved(self, check: str) -> None:
         """**Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5**
 

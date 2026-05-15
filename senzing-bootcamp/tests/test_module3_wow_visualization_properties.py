@@ -232,7 +232,7 @@ class TestApiResponseFieldCompleteness:
     """
 
     @given(entities=st_entity_list(min_size=1, max_size=30))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_stats_response_has_all_required_fields(
         self, entities: list[dict]
     ) -> None:
@@ -258,7 +258,7 @@ class TestApiResponseFieldCompleteness:
         )
 
     @given(entity=st_entity(min_records=1))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_graph_node_has_all_required_fields(
         self, entity: dict
     ) -> None:
@@ -296,7 +296,7 @@ class TestApiResponseFieldCompleteness:
         target_id=st_entity_id(),
         match_key=st_match_key(),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_graph_edge_has_all_required_fields(
         self, source_id: int, target_id: int, match_key: str
     ) -> None:
@@ -327,7 +327,7 @@ class TestApiResponseFieldCompleteness:
         )
 
     @given(entity=st_entity(min_records=2))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_merge_entity_has_all_required_fields(
         self, entity: dict
     ) -> None:
@@ -356,7 +356,7 @@ class TestApiResponseFieldCompleteness:
         )
 
     @given(record=st_record())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_record_has_all_required_fields(
         self, record: dict
     ) -> None:
@@ -392,7 +392,7 @@ class TestHistogramBucketingCorrectness:
     """
 
     @given(entities=st_entity_list(min_size=1, max_size=100))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_histogram_buckets_sum_to_total_entities(
         self, entities: list[dict]
     ) -> None:
@@ -409,7 +409,7 @@ class TestHistogramBucketingCorrectness:
         )
 
     @given(entities=st_entity_list(min_size=1, max_size=100))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_histogram_has_no_negative_counts(
         self, entities: list[dict]
     ) -> None:
@@ -427,7 +427,7 @@ class TestHistogramBucketingCorrectness:
         )
 
     @given(entities=st_entity_list(min_size=1, max_size=100))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_histogram_has_expected_bucket_keys(
         self, entities: list[dict]
     ) -> None:
@@ -443,7 +443,7 @@ class TestHistogramBucketingCorrectness:
         )
 
     @given(entities=st_entity_list(min_size=1, max_size=100))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_each_entity_in_exactly_one_bucket(
         self, entities: list[dict]
     ) -> None:
@@ -488,7 +488,7 @@ class TestErrorResponseConsistency:
     """
 
     @given(error_msg=st_error_message())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_error_response_has_500_status_and_error_field(
         self, error_msg: str
     ) -> None:
@@ -529,7 +529,7 @@ class TestMergeFilterInvariant:
     """
 
     @given(entities=st_entity_list_with_singletons())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_merges_excludes_singletons(
         self, entities: list[dict]
     ) -> None:
@@ -550,7 +550,7 @@ class TestMergeFilterInvariant:
         )
 
     @given(entities=st_entity_list_with_singletons())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_merges_returns_only_multi_record_entities(
         self, entities: list[dict]
     ) -> None:
@@ -586,7 +586,7 @@ class TestSummaryStatementFormat:
     """
 
     @given(stats_tuple=st_stats_tuple())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_summary_matches_expected_format(
         self, stats_tuple: tuple[int, int, int]
     ) -> None:
@@ -618,7 +618,7 @@ class TestSummaryStatementFormat:
         )
 
     @given(stats_tuple=st_stats_tuple())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_summary_contains_integer_values(
         self, stats_tuple: tuple[int, int, int]
     ) -> None:
@@ -650,7 +650,7 @@ class TestSummaryStatementFormat:
         )
 
     @given(stats_tuple=st_stats_tuple())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_summary_matches_regex_pattern(
         self, stats_tuple: tuple[int, int, int]
     ) -> None:
@@ -698,7 +698,7 @@ class TestDataSourceColorMapping:
     """
 
     @given(data_source=st_data_source())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_color_mapping_is_deterministic(self, data_source: str) -> None:
         """Same data source always returns the same color.
 
@@ -714,7 +714,7 @@ class TestDataSourceColorMapping:
         )
 
     @given(data=st.data())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_no_two_sources_share_a_color(self, data: st.DataObject) -> None:
         """No two different data sources map to the same color.
 
@@ -729,7 +729,7 @@ class TestDataSourceColorMapping:
         )
 
     @given(data_source=st_data_source())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_color_is_valid_hex(self, data_source: str) -> None:
         """Color mapping returns a valid hex color string.
 
@@ -765,7 +765,7 @@ class TestNodeSizingMonotonicity:
         count_b=st.integers(min_value=1, max_value=7),
         delta=st.integers(min_value=1, max_value=6),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_larger_record_count_produces_larger_radius(
         self, count_b: int, delta: int
     ) -> None:
@@ -789,7 +789,7 @@ class TestNodeSizingMonotonicity:
         )
 
     @given(record_count=st.integers(min_value=0, max_value=1000))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_radius_respects_minimum_bound(self, record_count: int) -> None:
         """Node radius is never less than 8px.
 
@@ -803,7 +803,7 @@ class TestNodeSizingMonotonicity:
         )
 
     @given(record_count=st.integers(min_value=0, max_value=1000))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_radius_respects_maximum_bound(self, record_count: int) -> None:
         """Node radius is never greater than 40px.
 

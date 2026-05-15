@@ -16,7 +16,7 @@ Before packaging for AWS deployment, verify:
 - ECR repository created for storing container images
 - Familiarity with the chosen deployment method (CloudFormation, CDK, Terraform, or AWS Console)
 
-👉 "Do you have an AWS account and the AWS CLI installed? Have you already selected a region and created a VPC for this deployment?"
+👉 "Do you have an AWS account with the CLI installed, a region selected, and a VPC ready for this deployment?"
 
 > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 

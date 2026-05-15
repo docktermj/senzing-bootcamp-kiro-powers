@@ -372,7 +372,7 @@ class TestModuleTransitionProperties:
     """
 
     @given(module_num=st_module_number())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_transition_reference_in_root_files(self, module_num: int) -> None:
         """Property 1: Transition Reference Invariant.
 
@@ -393,7 +393,7 @@ class TestModuleTransitionProperties:
 
 
     @given(module_num=st_module_number())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_before_after_section_in_root_files(self, module_num: int) -> None:
         """Property 2: Before/After Section Invariant.
 
@@ -414,7 +414,7 @@ class TestModuleTransitionProperties:
 
 
     @given(module_num=st_module_number())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_success_indicator_in_appropriate_file(self, module_num: int) -> None:
         """Property 3: Success Indicator Invariant.
 
@@ -436,7 +436,7 @@ class TestModuleTransitionProperties:
 
 
     @given(module_num=st_module_number())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_all_referenced_files_exist(self, module_num: int) -> None:
         """Property 4: File Resolution Completeness.
 

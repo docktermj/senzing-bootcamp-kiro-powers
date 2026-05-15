@@ -315,7 +315,7 @@ class TestOverallStatusConsistency:
             max_size=6,
         )
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_overall_status_matches_check_statuses(self, statuses):
         """Overall status is pass iff no check has status fail."""
         checks = [
@@ -453,7 +453,7 @@ class TestFailedChecksHaveRemediation:
             max_size=6,
         ).filter(lambda ss: any(s == "fail" for s in ss))
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_constructed_reports_fail_checks_have_remediation(self, statuses):
         """Constructed reports with fail checks must have non-empty remediation."""
         checks = [

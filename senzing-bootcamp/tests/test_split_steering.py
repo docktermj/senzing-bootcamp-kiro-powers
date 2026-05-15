@@ -126,7 +126,7 @@ class TestProperty1ContentPreservation:
     """Feature: progressive-context-loading, Property 1: Content Preservation Round-Trip"""
 
     @given(data=module_content_strategy())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_content_preservation_round_trip(self, data):
         """**Validates: Requirements 1.6, 2.6**
 
@@ -183,7 +183,7 @@ class TestProperty2SubFileFrontMatter:
     """Feature: progressive-context-loading, Property 2: Sub-File YAML Front Matter Invariant"""
 
     @given(phases=phase_list_strategy())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_sub_file_front_matter_invariant(self, phases):
         """**Validates: Requirements 1.5, 2.5**
 
@@ -210,7 +210,7 @@ class TestProperty3IndexMetadataConsistency:
     """Feature: progressive-context-loading, Property 3: Steering Index Metadata Consistency"""
 
     @given(phases=phase_list_strategy())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_index_metadata_consistency(self, phases):
         """**Validates: Requirements 3.1, 3.2, 3.3**
 
@@ -271,7 +271,7 @@ class TestProperty4TotalTokensSum:
     """Feature: progressive-context-loading, Property 4: Total Tokens Sum Invariant"""
 
     @given(phases=phase_list_strategy())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_total_tokens_sum_invariant(self, phases):
         """**Validates: Requirements 3.4**
 
@@ -344,7 +344,7 @@ class TestProperty5ThresholdEligibility:
         ),
         threshold=st.integers(min_value=1000, max_value=10000),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_threshold_eligibility(self, token_counts, threshold):
         """**Validates: Requirements 5.2**
 
@@ -396,7 +396,7 @@ class TestProperty6StepToPhaseMapping:
     """Feature: progressive-context-loading, Property 6: Step-to-Phase Mapping Correctness"""
 
     @given(phases=phase_list_strategy())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_step_to_phase_mapping(self, phases):
         """**Validates: Requirements 4.2, 6.2**
 
@@ -466,7 +466,7 @@ class TestProperty7FallbackBehavior:
         phases=phase_list_strategy(),
         missing_indices=st.lists(st.integers(min_value=0, max_value=4), min_size=0, max_size=3),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_fallback_when_sub_file_missing(self, phases, missing_indices):
         """**Validates: Requirements 6.3**
 

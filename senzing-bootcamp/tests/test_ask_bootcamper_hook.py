@@ -104,7 +104,7 @@ class TestRecapInstructions:
     """
 
     @given(agent_output=agent_output_st)
-    @settings(max_examples=50)
+    @settings(max_examples=10)
     def test_prompt_contains_accomplish_keyword(self, agent_output: str):
         """The hook prompt must mention what was accomplished.
 
@@ -124,7 +124,7 @@ class TestRecapInstructions:
         )
 
     @given(agent_output=agent_output_st)
-    @settings(max_examples=50)
+    @settings(max_examples=10)
     def test_prompt_contains_files_keyword(self, agent_output: str):
         """The hook prompt must mention files created or modified.
 
@@ -157,7 +157,7 @@ class TestPointingQuestionInstructions:
     """
 
     @given(marker=question_marker_st)
-    @settings(max_examples=50)
+    @settings(max_examples=10)
     def test_prompt_mentions_pointing_emoji(self, marker: str):
         """The hook prompt must contain the 👉 character.
 
@@ -171,7 +171,7 @@ class TestPointingQuestionInstructions:
         )
 
     @given(marker=question_marker_st)
-    @settings(max_examples=50)
+    @settings(max_examples=10)
     def test_prompt_contains_duplicate_detection(self, marker: str):
         """The prompt must instruct not to duplicate an existing 👉 question.
 

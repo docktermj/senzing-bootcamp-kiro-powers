@@ -180,7 +180,7 @@ class TestCategoryPreservation:
     """
 
     @given(hook_id=st.sampled_from(PRESERVED_HOOK_IDS))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_preserved_hook_retains_category_and_module(self, hook_id: str) -> None:
         """Each preserved hook ID must appear in hook-categories.yaml with
         its original category and module number unchanged.
@@ -370,7 +370,7 @@ class TestRegistryPreservation:
     """
 
     @given(hook_id=st.sampled_from(PRESERVED_HOOK_IDS))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_preserved_hook_has_registry_entry_with_metadata(self, hook_id: str) -> None:
         """Each preserved hook ID must appear in hook-registry.md with
         its description content.

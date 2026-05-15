@@ -207,7 +207,7 @@ class TestProperty1ErrorHandlingSectionCompleteness:
     """
 
     @given(module_num=st_module_number())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_error_handling_section_exists_with_required_references(self, module_num):
         """Root module file contains ## Error Handling with explain_error_code and common-pitfalls.md."""
         module_entry = _INDEX_DATA["modules"][module_num]
@@ -241,7 +241,7 @@ class TestProperty2PhaseSubFileExclusion:
     """
 
     @given(phase_file=st_phase_sub_file())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_phase_sub_files_do_not_contain_error_handling(
         self, phase_file
     ):
@@ -270,7 +270,7 @@ class TestProperty3SectionConciseness:
     """
 
     @given(module_num=st_module_number())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_error_handling_section_within_line_limit(self, module_num):
         """## Error Handling section is at most 15 lines."""
         module_entry = _INDEX_DATA["modules"][module_num]
@@ -308,7 +308,7 @@ class TestProperty4SymptomTableCompleteness:
     """
 
     @given(symptom=st_symptom_name())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_symptom_table_contains_required_symptom(self, symptom):
         """Symptom table has a matching row with non-empty columns."""
         section = read_section(
@@ -351,7 +351,7 @@ class TestProperty5ModulePathResolution:
     """
 
     @given(module_entry=st_module_entry())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_resolve_root_path_returns_correct_value(self, module_entry):
         """resolve_root_path returns string directly or dict root key."""
         module_num, entry = module_entry

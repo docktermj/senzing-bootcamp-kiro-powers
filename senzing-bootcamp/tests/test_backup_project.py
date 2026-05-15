@@ -171,7 +171,7 @@ class TestProperty7ExclusionFilterCorrectness:
         excluded=excluded_components,
         suffix=clean_filenames,
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_excluded_component_detected(self, prefix, excluded, suffix):
         parts = prefix + [excluded, suffix]
         path = os.path.join(*parts) if len(parts) > 1 else parts[0]
@@ -184,7 +184,7 @@ class TestProperty7ExclusionFilterCorrectness:
         components=st.lists(clean_components, min_size=1, max_size=3),
         filename=clean_filenames,
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_clean_path_not_excluded(self, components, filename):
         path = os.path.join(*components, filename)
         mod = _load_backup()

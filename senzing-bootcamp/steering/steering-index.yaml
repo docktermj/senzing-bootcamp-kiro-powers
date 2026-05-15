@@ -230,7 +230,7 @@ file_metadata:
     token_count: 704
     size_category: medium
   agent-instructions.md:
-    token_count: 2372
+    token_count: 2448
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -242,25 +242,25 @@ file_metadata:
     token_count: 606
     size_category: medium
   conversation-protocol.md:
-    token_count: 1424
+    token_count: 1782
     size_category: medium
   data-lineage.md:
     token_count: 603
     size_category: medium
   deployment-aws.md:
-    token_count: 1328
+    token_count: 1323
     size_category: medium
   deployment-azure.md:
-    token_count: 969
+    token_count: 965
     size_category: medium
   deployment-gcp.md:
-    token_count: 959
+    token_count: 956
     size_category: medium
   deployment-kubernetes.md:
-    token_count: 1406
+    token_count: 1397
     size_category: medium
   deployment-onpremises.md:
-    token_count: 962
+    token_count: 952
     size_category: medium
   design-patterns.md:
     token_count: 746
@@ -317,7 +317,7 @@ file_metadata:
     token_count: 3257
     size_category: large
   module-01-phase2-document-confirm.md:
-    token_count: 1871
+    token_count: 1853
     size_category: medium
   module-02-sdk-setup.md:
     token_count: 4306
@@ -365,7 +365,7 @@ file_metadata:
     token_count: 1278
     size_category: medium
   module-08-phaseA-requirements.md:
-    token_count: 1508
+    token_count: 1487
     size_category: medium
   module-08-phaseB-benchmarking.md:
     token_count: 426
@@ -407,7 +407,7 @@ file_metadata:
     token_count: 1114
     size_category: medium
   onboarding-flow.md:
-    token_count: 5174
+    token_count: 5143
     size_category: large
   onboarding-phase2-track-setup.md:
     token_count: 990
@@ -449,7 +449,7 @@ file_metadata:
     token_count: 1243
     size_category: medium
   visualization-guide.md:
-    token_count: 1478
+    token_count: 1448
     size_category: medium
   visualization-protocol.md:
     token_count: 1996
@@ -465,7 +465,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 129607
+  total_tokens: 129910
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

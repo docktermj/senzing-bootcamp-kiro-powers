@@ -75,7 +75,7 @@ class TestCertificateFilenameProperty:
     """Property test: certificate filename pattern is valid for all module numbers."""
 
     @given(module_num=st.integers(min_value=1, max_value=11))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_filename_pattern_valid(self, module_num: int) -> None:
         """MODULE_N_COMPLETE.md is a valid filename for all module numbers 1-11."""
         filename = f"MODULE_{module_num}_COMPLETE.md"

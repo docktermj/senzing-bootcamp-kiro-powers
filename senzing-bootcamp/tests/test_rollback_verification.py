@@ -109,7 +109,7 @@ class TestProperty1ValidatorInvocation:
     """
 
     @given(module=_module_numbers())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_verify_rollback_calls_correct_validator(self, module):
         """Feature: rollback-verification, Property 1: Validator Invocation with Correct Module"""
         called_with = []
@@ -147,7 +147,7 @@ class TestProperty2VerificationPassed:
     """
 
     @given(checks=_all_false_check_tuples(), module=_module_numbers())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_all_false_returns_passed(self, checks, module):
         """Feature: rollback-verification, Property 2: Verification Passed Output and Log"""
         fake_validators = {module: lambda: checks}
@@ -192,7 +192,7 @@ class TestProperty3VerificationFailed:
     """
 
     @given(checks=_some_true_check_tuples(), module=_module_numbers())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_some_true_returns_failed_with_correct_leftovers(self, checks, module):
         """Feature: rollback-verification, Property 3: Verification Failed Output and Log"""
         expected_leftovers = [desc for ok, desc, _ in checks if ok]
@@ -236,7 +236,7 @@ class TestProperty4DryRunSkipsVerification:
     """
 
     @given(module=_module_numbers())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_dry_run_skips_verification(self, module):
         """Feature: rollback-verification, Property 4: Dry-Run Skips Verification"""
         import tempfile

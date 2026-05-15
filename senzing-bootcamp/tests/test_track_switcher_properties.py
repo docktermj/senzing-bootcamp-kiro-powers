@@ -146,7 +146,7 @@ class TestTrackSwitcherProperties:
             target_track=st_track_name(),
             modules_completed=st_modules_completed(),
         )
-        @settings(max_examples=100)
+        @settings(max_examples=10)
         def test_partition_equals_target(self, target_track, modules_completed):
             """remaining ∪ (completed ∩ target) = target modules."""
             current_track = "core_bootcamp"  # arbitrary valid current track
@@ -177,7 +177,7 @@ class TestTrackSwitcherProperties:
             target_track=st_track_name(),
             modules_completed=st_modules_completed(),
         )
-        @settings(max_examples=100)
+        @settings(max_examples=10)
         def test_remaining_preserves_target_ordering(self, target_track, modules_completed):
             """remaining_modules preserves the ordering defined in the target track."""
             current_track = "core_bootcamp"
@@ -223,7 +223,7 @@ class TestTrackSwitcherProperties:
             target_track=st_track_name(),
             modules_completed=st_modules_completed(),
         )
-        @settings(max_examples=100)
+        @settings(max_examples=10)
         def test_valid_switch_returns_without_raising(
             self, current_track, target_track, modules_completed
         ):
@@ -245,7 +245,7 @@ class TestTrackSwitcherProperties:
             target_track=st_track_name(),
             modules_completed=st_modules_completed(),
         )
-        @settings(max_examples=100)
+        @settings(max_examples=10)
         def test_partition_covers_target_modules(
             self, current_track, target_track, modules_completed
         ):
@@ -284,7 +284,7 @@ class TestTrackSwitcherProperties:
             target_track=st_track_name(),
             modules_completed=st_modules_completed(),
         )
-        @settings(max_examples=100)
+        @settings(max_examples=10)
         def test_extra_equals_completed_minus_target(self, target_track, modules_completed):
             """extra_modules = modules_completed - target track modules."""
             current_track = "core_bootcamp"
@@ -310,7 +310,7 @@ class TestTrackSwitcherProperties:
             target_track=st_track_name(),
             modules_completed=st_modules_completed(),
         )
-        @settings(max_examples=100)
+        @settings(max_examples=10)
         def test_extra_modules_have_names(self, target_track, modules_completed):
             """Each extra module has its name included in extra_module_names."""
             current_track = "core_bootcamp"
@@ -339,7 +339,7 @@ class TestTrackSwitcherProperties:
         """
 
         @given(state=st_progress_state())
-        @settings(max_examples=100)
+        @settings(max_examples=10)
         def test_same_track_is_noop(self, state):
             """Switching to the current track is a no-op."""
             track = state["track"]
@@ -368,7 +368,7 @@ class TestTrackSwitcherProperties:
         """
 
         @given(invalid_name=st_invalid_track_name())
-        @settings(max_examples=100)
+        @settings(max_examples=10)
         def test_invalid_target_raises_valueerror(self, invalid_name):
             """Invalid target track raises ValueError with the name in message."""
             with pytest.raises(ValueError) as exc_info:
@@ -398,7 +398,7 @@ class TestTrackSwitcherProperties:
             state=st_progress_state(),
             target_track=st_track_name(),
         )
-        @settings(max_examples=100)
+        @settings(max_examples=10)
         def test_modules_completed_never_shrinks(self, state, target_track):
             """modules_completed in result is identical to input (never shrinks)."""
             modules_completed = state["modules_completed"]

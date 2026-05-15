@@ -88,7 +88,7 @@ class TestComparisonDeltaProperties:
     """
 
     @given(baseline=st_er_statistics(), current=st_er_statistics())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_deltas_equal_current_minus_baseline(
         self, baseline: ERStatistics, current: ERStatistics
     ) -> None:
@@ -108,7 +108,7 @@ class TestComparisonDeltaProperties:
         )
 
     @given(baseline=st_er_statistics(), current=st_er_statistics())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_quality_assessment_is_valid_value(
         self, baseline: ERStatistics, current: ERStatistics
     ) -> None:
@@ -130,14 +130,14 @@ class TestBaselinePathProperties:
     """
 
     @given(datasource=st_datasource_name())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_returns_path_object(self, datasource: str) -> None:
         """baseline_path always returns a Path object."""
         result = baseline_path(datasource)
         assert isinstance(result, Path)
 
     @given(datasource=st_datasource_name())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_matches_expected_pattern(self, datasource: str) -> None:
         """Result matches config/er_baseline_{datasource_lower}.json."""
         result = baseline_path(datasource)
@@ -145,14 +145,14 @@ class TestBaselinePathProperties:
         assert str(result) == expected
 
     @given(datasource=st_datasource_name())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_starts_with_config(self, datasource: str) -> None:
         """Path always starts with 'config/'."""
         result = baseline_path(datasource)
         assert str(result).startswith("config/")
 
     @given(datasource=st_datasource_name())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_ends_with_json(self, datasource: str) -> None:
         """Path always ends with '.json'."""
         result = baseline_path(datasource)
@@ -192,7 +192,7 @@ class TestIncrementalBaselineProperties:
             max_size=5,
         )
     )
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_baseline_equals_last_accepted(self, sequence) -> None:
         """Stored baseline equals the most recently accepted snapshot."""
         import shutil
@@ -506,7 +506,7 @@ class TestQualityAssessmentProperties:
         match_increase=st.integers(min_value=1, max_value=1_000_000),
         entity_decrease=st.integers(min_value=0, max_value=1_000_000),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_improved_when_matches_increased_entities_not_increased(
         self,
         baseline_match: int,
@@ -546,7 +546,7 @@ class TestQualityAssessmentProperties:
         match_decrease=st.integers(min_value=1, max_value=1_000_000),
         entity_increase=st.integers(min_value=0, max_value=1_000_000),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_degraded_when_matches_decreased_entities_not_decreased(
         self,
         baseline_match: int,

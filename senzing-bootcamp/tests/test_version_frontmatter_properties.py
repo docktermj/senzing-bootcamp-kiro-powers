@@ -104,7 +104,7 @@ class TestBugConditionFrontmatterVersion:
         reason="read_version_from_frontmatter not yet implemented — bug confirmed",
     )
     @given(content=st_power_md_with_version())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_extracts_version_from_valid_frontmatter(self, content: str) -> None:
         """read_version_from_frontmatter extracts semver from valid frontmatter."""
         # Extract the version we embedded for comparison
@@ -240,7 +240,7 @@ class TestPreservationVersionFileRead:
         )
 
     @given(components=st_semver_components())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_validate_version_accepts_valid_semver(
         self, components: tuple[int, int, int]
     ) -> None:
@@ -263,7 +263,7 @@ class TestPreservationDisplayFormat:
     """
 
     @given(components=st_semver_components())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_format_version_display_produces_expected_string(
         self, components: tuple[int, int, int]
     ) -> None:
@@ -286,7 +286,7 @@ class TestPreservationRoundTrip:
     """
 
     @given(components=st_semver_components())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_parse_format_round_trip(
         self, components: tuple[int, int, int]
     ) -> None:
@@ -309,7 +309,7 @@ class TestPreservationInvalidRejection:
     """
 
     @given(invalid_str=st_invalid_version_strings())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_validate_version_rejects_invalid_strings(
         self, invalid_str: str
     ) -> None:

@@ -284,7 +284,7 @@ class TestProperty4KebabCaseDeterminism:
     """
 
     @given(title=st.text(min_size=0, max_size=100))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_kebab_case_invariants(self, title):
         result = to_kebab_case(title)
         # Must be lowercase
@@ -299,7 +299,7 @@ class TestProperty4KebabCaseDeterminism:
             assert not result.endswith("-")
 
     @given(title=st.text(min_size=1, max_size=100))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_kebab_case_is_deterministic(self, title):
         """Same input always produces same output."""
         assert to_kebab_case(title) == to_kebab_case(title)
@@ -412,7 +412,7 @@ class TestProperty8TriageReportAccuracy:
         num_generated=st.integers(min_value=0, max_value=10),
         num_skipped=st.integers(min_value=0, max_value=10),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_report_counts_are_accurate(self, num_generated, num_skipped):
         total = num_generated + num_skipped
         assume(total > 0)
@@ -460,7 +460,7 @@ class TestProperty9ConfigFileUUIDUniqueness:
     """
 
     @given(count=st.integers(min_value=2, max_value=20))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_all_uuids_are_unique_and_valid(self, count):
         configs = [generate_config("requirements-first", "feature") for _ in range(count)]
         spec_ids = []

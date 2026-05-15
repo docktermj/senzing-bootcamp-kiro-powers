@@ -70,6 +70,7 @@ The steering file handles confirmation, preview, and application. Do not compute
 
 - One question at a time, wait for response. Prefix input-required questions with "👉" in ALL modules.
   - Never combine questions with conjunctions (and, or, also, but first) — each is a separate turn.
+  - Every 👉 question must have one unambiguous meaning for "yes" and one for "no." Never append a follow-up question to a confirmation (see conversation-protocol.md Question Disambiguation). When both confirmation and correction are needed: confirm first, ask for corrections only if the answer is no.
   - A question without the 👉 prefix is a formatting violation.
   - These rules apply in ALL contexts — onboarding, feedback workflow, module steps, and session resume. See conversation-protocol.md for the full rule set.
 - Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to agentStop hooks — zero output when a 👉 question is pending.

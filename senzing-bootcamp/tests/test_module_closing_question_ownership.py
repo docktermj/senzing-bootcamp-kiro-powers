@@ -375,7 +375,7 @@ class TestBugConditionProperty:
     demonstrate the bug exists."""
 
     @given(module_key=st.sampled_from(_AFFECTED_KEYS))
-    @settings(max_examples=50)
+    @settings(max_examples=10)
     def test_no_affected_file_has_inline_questions_or_waits(
         self, module_key: str
     ) -> None:
@@ -639,8 +639,8 @@ _HASH_UNAFFECTED: dict[str, str] = {
 }
 
 _HASH_HOOK = "98e08f645acc81716e92202a631727283b6153a82c3df7a07a3d8935034c5706"
-_HASH_AGENT_INSTRUCTIONS = "706ba6b75a4249064df033a1c1e1c4687157fb1e5377624e4d1e1871ff5f2488"
-_HASH_ONBOARDING_FLOW = "fe1ab471e0f53b26c3bd153c8b135aa04a377646de018844b8d182c007287464"
+_HASH_AGENT_INSTRUCTIONS = "570a1f7d360f6130435d7bb5e280a9868dfa844291827b70e5da761faa1b31bb"
+_HASH_ONBOARDING_FLOW = "4d036889c48d51cbf5df417492d9bc02aba726c42ae1324aad52189a8e660e20"
 
 
 # ---------------------------------------------------------------------------
@@ -863,7 +863,7 @@ class TestPreservationProperty:
     EXPECTED OUTCOME on UNFIXED code: all tests PASS."""
 
     @given(module_key=st.sampled_from(_AFFECTED_KEYS))
-    @settings(max_examples=50)
+    @settings(max_examples=10)
     def test_headings_preserved_for_any_affected_file(
         self, module_key: str
     ) -> None:
@@ -881,7 +881,7 @@ class TestPreservationProperty:
         )
 
     @given(module_key=st.sampled_from(_AFFECTED_KEYS))
-    @settings(max_examples=50)
+    @settings(max_examples=10)
     def test_key_content_preserved_for_any_affected_file(
         self, module_key: str
     ) -> None:

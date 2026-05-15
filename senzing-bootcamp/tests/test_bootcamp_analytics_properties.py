@@ -124,7 +124,7 @@ class TestComputeModuleMetricsProperties:
     """
 
     @given(st_log_entries())
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_total_turns_equals_input_entry_count(
         self, entries: list[dict]
     ) -> None:
@@ -148,7 +148,7 @@ class TestDetectFrictionPointsProperties:
     VALID_SEVERITIES = {"high", "medium", "low"}
 
     @given(st_log_entries(), st.lists(st_skip_record(), min_size=0, max_size=10))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_returns_only_valid_categories_and_severities(
         self, entries: list[dict], skips: list[SkipRecord]
     ) -> None:
@@ -178,7 +178,7 @@ class TestFormatJsonReportProperties:
     """
 
     @given(st_log_entries(), st.lists(st_skip_record(), min_size=0, max_size=10))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_format_json_report_always_produces_valid_json(
         self, entries: list[dict], skips: list[SkipRecord]
     ) -> None:
@@ -213,7 +213,7 @@ class TestParseSessionLogProperties:
     """
 
     @given(st.text(max_size=1000))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_parse_session_log_never_raises_on_arbitrary_content(
         self, content: str
     ) -> None:

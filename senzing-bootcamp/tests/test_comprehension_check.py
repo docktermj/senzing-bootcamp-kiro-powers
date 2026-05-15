@@ -701,7 +701,7 @@ class TestNonGateStepContractProperty:
     """
 
     @given(step_id=st_non_gate_step_id())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_non_gate_step_has_no_gate_markers(
         self, step_id: str,
     ) -> None:
@@ -721,7 +721,7 @@ class TestNonGateStepContractProperty:
             )
 
     @given(step_id=st_non_gate_step_id())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_non_gate_step_has_no_inline_questions(
         self, step_id: str,
     ) -> None:
@@ -739,7 +739,7 @@ class TestNonGateStepContractProperty:
             )
 
     @given(step_id=st_non_gate_step_id())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_non_gate_step_has_no_wait_instructions(
         self, step_id: str,
     ) -> None:

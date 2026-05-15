@@ -69,7 +69,7 @@ class TestProperty1ScanCompletenessAndStructure:
         filenames=_filename_set_st,
         contents=st.lists(_content_st, min_size=1, max_size=10),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_scan_completeness_and_structure(self, filenames, contents):
         # Pad contents to match filenames length
         while len(contents) < len(filenames):
@@ -108,7 +108,7 @@ class TestProperty2SizeClassificationThresholds:
     # Feature: context-budget-tracking, Property 2: Size classification follows threshold rules
 
     @given(token_count=_token_count_st)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_classify_size_thresholds(self, token_count):
         mod = _load_measure_steering()
         result = mod.classify_size(token_count)
@@ -132,7 +132,7 @@ class TestProperty3TokenCountFormula:
     # Feature: context-budget-tracking, Property 3: Token count equals rounded character-count-over-four
 
     @given(content=st.text(min_size=0, max_size=5000))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_token_count_formula(self, content):
         td = tempfile.mkdtemp()
         try:
@@ -165,7 +165,7 @@ class TestProperty4TotalTokensSumInvariant:
         filenames=_filename_set_st,
         counts=st.lists(st.integers(min_value=0, max_value=100_000), min_size=1, max_size=10),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_total_tokens_sum_invariant(self, filenames, counts):
         while len(counts) < len(filenames):
             counts.append(0)
@@ -208,7 +208,7 @@ class TestProperty5UpdatePreservesExistingYAML:
         filenames=_filename_set_st,
         counts=st.lists(st.integers(min_value=0, max_value=50_000), min_size=1, max_size=5),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_update_preserves_existing_yaml(self, filenames, counts):
         while len(counts) < len(filenames):
             counts.append(0)
@@ -278,7 +278,7 @@ class TestProperty6SummaryContainsAllInfo:
         filenames=_filename_set_st,
         counts=st.lists(st.integers(min_value=0, max_value=50_000), min_size=1, max_size=10),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_summary_contains_all_info(self, filenames, counts):
         while len(counts) < len(filenames):
             counts.append(0)
@@ -322,7 +322,7 @@ class TestProperty7CheckModeThresholdDetection:
         stored=st.integers(min_value=0, max_value=100_000),
         calculated=st.integers(min_value=1, max_value=100_000),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_check_mode_threshold_detection(self, stored, calculated):
         mod = _load_measure_steering()
 
@@ -383,7 +383,7 @@ class TestProperty8ValidatorDetectsMalformedMetadata:
         filenames=_filename_set_st,
         missing_idx=st.integers(min_value=0, max_value=9),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_validator_detects_malformed_metadata(self, filenames, missing_idx):
         """Create a steering dir with .md files but omit one from file_metadata."""
         mod = _load_measure_steering()

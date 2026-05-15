@@ -4,7 +4,7 @@ inclusion: manual
 
 # Phase-Level Steering Loading
 
-Some large modules (currently 1, 5, 6, and 11) are split into phase-level sub-files. When entering a split module:
+Some large modules (currently 1, 3, 5, 6, 8, 9, 10, and 11) are split into phase-level sub-files. When entering a split module:
 
 1. Check `steering-index.yaml` — if the module entry has a `root` and `phases` map (instead of a simple filename), it is a split module.
 2. Load the root file first (contains preamble, prerequisites, and phase manifest).

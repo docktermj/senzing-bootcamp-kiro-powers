@@ -413,7 +413,7 @@ file_metadata:
     token_count: 990
     size_category: medium
   phase-loading-guide.md:
-    token_count: 460
+    token_count: 464
     size_category: small
   project-structure.md:
     token_count: 513
@@ -465,7 +465,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 129603
+  total_tokens: 129607
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

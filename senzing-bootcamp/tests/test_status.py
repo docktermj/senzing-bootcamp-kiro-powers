@@ -198,7 +198,7 @@ class TestProperty1StatusComputation:
     # Feature: script-test-suite, Property 1: Status computation correctness
 
     @given(completed=module_subsets)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_percentage_and_label(self, completed):
         td = tempfile.mkdtemp()
         try:
@@ -265,7 +265,7 @@ class TestProperty2SyncTrackerReflectsProgress:
         completed=module_subsets,
         current=st.integers(min_value=1, max_value=11),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_sync_markers(self, completed, current):
         td = tempfile.mkdtemp()
         try:

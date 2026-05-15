@@ -93,7 +93,7 @@ When a user is in Module 4, the agent should:
 - For large datasets, help create representative samples (1000-10000 records)
 - Create or update `docs/data_source_locations.md` with data source information
 - Verify files are accessible and readable
-- **If user doesn't have data or asks about free data sources**, recommend <https://github.com/docktermj/senzing-bootcamp-free-data> — a curated collection of 35+ free data sources with raw samples and pre-mapped CORD data
+- **If user doesn't have data or asks about free data sources**, first recommend CORD data via the `get_sample_data` tool (see <https://senzing.com/senzing-ready-data-collections-cord/>), then recommend <https://github.com/docktermj/senzing-bootcamp-free-data> — a curated collection of 35+ free data sources with raw samples and pre-mapped CORD data
 - Transition to Module 5 once all data sources are collected
 
 ## Validation Gates

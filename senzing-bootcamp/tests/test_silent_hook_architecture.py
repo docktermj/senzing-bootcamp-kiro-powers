@@ -57,8 +57,8 @@ class TestAskBootcamperSilencePattern:
         assert len(data["then"]["prompt"]) > 100
 
     def test_registry_matches_hook_file(self) -> None:
-        """hook-registry.md entry for ask-bootcamper contains DEFAULT OUTPUT."""
-        registry = (_STEERING_DIR / "hook-registry.md").read_text(encoding="utf-8")
+        """hook-registry-detail.md entry for ask-bootcamper contains DEFAULT OUTPUT."""
+        registry = (_STEERING_DIR / "hook-registry-detail.md").read_text(encoding="utf-8")
         # Find the ask-bootcamper section
         start = registry.find("**ask-bootcamper**")
         assert start != -1

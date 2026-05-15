@@ -19,7 +19,7 @@ HOOKS_DIR = Path("senzing-bootcamp/hooks")
 HOOK_PATH = HOOKS_DIR / "error-recovery-context.kiro.hook"
 CATEGORIES_PATH = HOOKS_DIR / "hook-categories.yaml"
 
-EXPECTED_HOOK_COUNT = 27
+EXPECTED_HOOK_COUNT = 26
 
 
 # ---------------------------------------------------------------------------
@@ -55,8 +55,8 @@ class TestHookFileStructure:
         assert isinstance(data, dict)
 
     def test_name_field(self, hook_data: dict):
-        """name field equals 'Auto-Load Error Recovery Context'."""
-        assert hook_data["name"] == "Auto-Load Error Recovery Context"
+        """name field equals 'to help recover from errors'."""
+        assert hook_data["name"] == "to help recover from errors"
 
     def test_version_field(self, hook_data: dict):
         """version field equals '1.0.0'."""
@@ -238,6 +238,6 @@ class TestHookCount:
     """Verify total hook count."""
 
     def test_total_hook_file_count(self):
-        """There are exactly 26 .kiro.hook files in the hooks directory."""
+        """There are exactly 24 .kiro.hook files in the hooks directory."""
         hook_files = list(HOOKS_DIR.glob("*.kiro.hook"))
         assert len(hook_files) == EXPECTED_HOOK_COUNT

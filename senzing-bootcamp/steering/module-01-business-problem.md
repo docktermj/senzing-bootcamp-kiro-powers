@@ -159,7 +159,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
    - **Key attributes:** [matching criteria mentioned, or 'we'll figure this out during data mapping']
    - **Desired outcome:** [format/frequency, or 'not yet determined']
 
-   Does that sound right? Anything I missed or got wrong?"
+   Does that summary capture your situation accurately?"
 
    > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 

@@ -88,12 +88,23 @@ def st_hook_file_path() -> st.SearchStrategy[Path]:
 # ---------------------------------------------------------------------------
 
 def _load_modules_mapping() -> dict[int, list[str]]:
-    """Load hook-categories.yaml and return {module_number: [hook_ids]}."""
-    mapping = load_category_mapping(CATEGORIES_PATH)
+    """Load hook-categories.yaml and return {module_number: [hook_ids]}.
+
+    Reads the YAML directly instead of using ``load_category_mapping``,
+    which flattens multi-module hooks by overwriting earlier module entries.
+    """
+    import yaml
+    data = yaml.safe_load(CATEGORIES_PATH.read_text(encoding="utf-8")) or {}
+    modules_raw = (data.get("modules") or {})
     modules: dict[int, list[str]] = {}
-    for cat in mapping.values():
-        if cat.category == "module" and cat.module_number is not None:
-            modules.setdefault(cat.module_number, []).append(cat.hook_id)
+    for key, hook_ids in modules_raw.items():
+        if key == "any":
+            continue
+        try:
+            mod_num = int(key)
+        except (TypeError, ValueError):
+            continue
+        modules[mod_num] = list(hook_ids or [])
     return modules
 
 

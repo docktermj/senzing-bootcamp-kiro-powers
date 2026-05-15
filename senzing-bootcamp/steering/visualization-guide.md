@@ -31,7 +31,7 @@ inclusion: manual
 
 2. **Gather requirements**
 
-   👉 "Which data source(s) should the graph include? And which features: force layout, detail panel, cluster highlighting, search/filter, summary statistics?"
+   👉 "Which data source(s) should the graph include?"
 
    > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 
@@ -51,7 +51,7 @@ inclusion: manual
 
    Save to `docs/entity_graph.html`.
 
-   👉 "Open the HTML file — does it look right? Want changes?"
+   👉 "Open the HTML file — does it look right?"
 
    > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 
@@ -91,10 +91,8 @@ This sequence applies to ALL web service visualizations regardless of module. St
 | No persistent network access | Static HTML | No server or database required |
 | Iterating on data quality with frequent reloads | Web Service | `/refresh` avoids re-running extraction |
 
-> **Agent guidance — MCP unavailable:** Recommend Static HTML mode. Web Service requires SDK connectivity.
-
 ## Reference
 
 For detailed schemas, feature specifications, match strength classification, error handling, and file placement rules, load:
 
-# [[file:senzing-bootcamp/steering/visualization-reference.md]]
+#[[file:senzing-bootcamp/steering/visualization-reference.md]]

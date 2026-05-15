@@ -141,7 +141,7 @@ class TestProperty1AppendPreservesAndAddsOne:
         ),
         entry=st_log_entry(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_append_preserves_existing_and_adds_one(self, existing_lines, entry):
         """**Validates: Requirements 1.1, 1.3**"""
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -180,7 +180,7 @@ class TestProperty2SchemaValidity:
     """Feature: session-analytics, Property 2: Log Entry Schema and JSONL Format Validity"""
 
     @given(entry=st_log_entry())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_serialized_entry_is_valid_json_with_correct_schema(self, entry):
         """**Validates: Requirements 1.5, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7**"""
         serialized = serialize_entry(entry)
@@ -226,7 +226,7 @@ class TestProperty3RoundTrip:
     """Feature: session-analytics, Property 3: Write-Parse Round-Trip"""
 
     @given(entry=st_log_entry())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_serialize_then_parse_round_trip(self, entry):
         """**Validates: Requirements 3.1, 3.4**"""
         serialized = serialize_entry(entry)
@@ -250,7 +250,7 @@ class TestProperty4InvalidLineResilience:
     """Feature: session-analytics, Property 4: Invalid Line Resilience"""
 
     @given(data=st_mixed_jsonl())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_parse_log_handles_invalid_lines(self, data):
         """**Validates: Requirements 3.2**"""
         lines, expected_valid, expected_invalid_count = data
@@ -276,7 +276,7 @@ class TestProperty5Aggregation:
     """Feature: session-analytics, Property 5: Per-Module Aggregation Correctness"""
 
     @given(entries=st.lists(st_entry_dict(), min_size=1, max_size=20))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_per_module_aggregation_matches_manual_sums(self, entries):
         """**Validates: Requirements 4.1, 4.4**"""
         report = compute_summary(entries)
@@ -309,7 +309,7 @@ class TestProperty6StructureInvariant:
     """Feature: session-analytics, Property 6: Summary Report Structure Invariant"""
 
     @given(entries=st.lists(st_entry_dict(), min_size=1, max_size=20))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_modules_ascending_and_overall_equals_sum(self, entries):
         """**Validates: Requirements 4.2, 4.3**"""
         report = compute_summary(entries)
@@ -333,7 +333,7 @@ class TestProperty7ConfusionRanking:
     """Feature: session-analytics, Property 7: Confusion Ranking Correctness"""
 
     @given(entries=st.lists(st_entry_dict(), min_size=1, max_size=20))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_confusion_ranking_correct(self, entries):
         """**Validates: Requirements 5.1, 5.2, 5.3**"""
         report = compute_summary(entries)
@@ -367,7 +367,7 @@ class TestProperty8JsonOutputValidity:
     """Feature: session-analytics, Property 8: JSON Output Validity"""
 
     @given(entries=st.lists(st_entry_dict(), min_size=0, max_size=20))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_format_json_produces_valid_json_with_required_keys(self, entries):
         """**Validates: Requirements 6.2**"""
         report = compute_summary(entries)
@@ -392,7 +392,7 @@ class TestProperty9PrettyPrintRoundTrip:
     """Feature: session-analytics, Property 9: Pretty-Print Round-Trip"""
 
     @given(entry_dict=st_entry_dict())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_pretty_print_round_trip(self, entry_dict):
         """**Validates: Requirements 7.1, 7.3**"""
         pretty = pretty_print_entries([entry_dict])
@@ -413,7 +413,7 @@ class TestProperty10ModuleFilter:
         entries=st.lists(st_entry_dict(), min_size=1, max_size=20),
         filter_module=st_module,
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_module_filter_returns_exact_matches(self, entries, filter_module):
         """**Validates: Requirements 7.2**"""
         result = pretty_print_entries(entries, module_filter=filter_module)

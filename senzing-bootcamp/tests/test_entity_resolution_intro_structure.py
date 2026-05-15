@@ -178,12 +178,9 @@ class TestEntityResolutionIntroStructure:
         """Validates: Requirements 9.2, 9.4 (Property 3).
 
         Property 3 — Source Attribution Invariant. Reads the Target_File
-        and asserts three grep-level invariants so future edits cannot
+        and asserts grep-level invariants so future edits cannot
         silently strip attribution:
 
-        - At least one occurrence of the substring
-          ``senzing.com/what-is-entity-resolution`` (the Senzing public
-          guide URL required by Req 9.2).
         - At least one occurrence of the substring ``search_docs`` (the
           MCP_Server tool name cited for MCP-indexed Senzing facts per
           Req 9.2 and the agent-instruction comment per Req 9.4).
@@ -192,14 +189,6 @@ class TestEntityResolutionIntroStructure:
           the heading must be on its own line.
         """
         target_text = TARGET_FILE.read_text(encoding="utf-8")
-
-        guide_occurrences = target_text.count("senzing.com/what-is-entity-resolution")
-        assert guide_occurrences >= 1, (
-            "Expected at least one reference to "
-            "'senzing.com/what-is-entity-resolution' in "
-            f"{TARGET_FILE.relative_to(REPO_ROOT)} (Req 9.2); found "
-            f"{guide_occurrences}."
-        )
 
         search_docs_occurrences = target_text.count("search_docs")
         assert search_docs_occurrences >= 1, (

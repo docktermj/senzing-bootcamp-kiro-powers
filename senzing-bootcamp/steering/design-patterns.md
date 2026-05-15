@@ -1,26 +1,33 @@
 ---
 inclusion: auto
-description: "10 entity resolution design patterns with use cases — load during Module 1 or when discussing patterns"
+description: "Entity resolution design pattern gallery — load during Module 1 or when discussing patterns"
 ---
 
 # Entity Resolution Design Pattern Gallery
 
-Offer this gallery during Module 2 to help users identify their use case.
+<!-- Agent instruction: Do NOT present hardcoded pattern details from this file.
+     Call search_docs(query="entity resolution design patterns") to retrieve
+     current pattern descriptions, use cases, and recommended matching attributes.
+     Use the structural framework below to organize the MCP-returned content. -->
+
+Offer this gallery during Module 1 to help users identify their use case.
 
 ## Patterns
 
-| Pattern | Use Case | Key Matching | Typical ROI |
-| ------- | -------- | ------------ | ----------- |
-| Customer 360 | Unified customer view across touchpoints | Names, emails, phones, addresses | Improved service, targeted marketing |
-| Fraud Detection | Identify fraud rings, synthetic identities | Names, addresses, devices, IPs | Loss prevention, faster detection |
-| Data Migration | Merge legacy systems, M&A consolidation | All available identifiers | Reduced storage, simplified ops |
-| Compliance Screening | Watchlist matching for regulatory compliance | Names, DOB, nationalities, IDs | Regulatory compliance, risk mitigation |
-| Marketing Dedup | Eliminate duplicate contacts | Names, addresses, emails | Reduced mailing costs, better metrics |
-| Patient Matching | Unified medical records across facilities | Names, DOB, SSN, MRNs | Patient safety, care coordination |
-| Vendor MDM | Clean vendor master data | Company names, tax IDs, addresses | Better pricing, consolidated spend |
-| Claims Fraud | Detect staged accidents, coordinated claims | Names, vehicles, providers | Reduced fraudulent payouts |
-| KYC/Onboarding | Verify identity during account opening | Names, DOB, SSN, gov IDs | Reduced fraud, compliance |
-| Supply Chain | Unified supplier view across supply chain | Company names, GLNs, tax IDs | Visibility, risk management |
+Before presenting patterns, call `search_docs(query="entity resolution design patterns")` to retrieve the current list of patterns with their descriptions, use cases, key matching attributes, and typical ROI. Present the MCP-returned content in a table format.
+
+The following pattern names serve as a structural index — always use `search_docs` for current details:
+
+- Customer 360
+- Fraud Detection
+- Data Migration
+- Compliance Screening
+- Marketing Dedup
+- Patient Matching
+- Vendor MDM
+- Claims Fraud
+- KYC/Onboarding
+- Supply Chain
 
 ## Which Pattern Fits?
 
@@ -34,24 +41,16 @@ If the user's case spans multiple patterns, start with the one that delivers the
 
 ## Agent Behavior
 
-1. Present the table above
-2. Walk through the 3 questions to narrow down
-3. Use the selected pattern to guide Module 2 problem definition
-4. Recommend key matching attributes for Module 4 data mapping
-5. If multiple patterns apply, help prioritize implementation order
+1. Call `search_docs(query="entity resolution design patterns")` to get current pattern details
+2. Present the patterns in a table with use cases, key matching attributes, and typical ROI
+3. Walk through the 3 questions above to narrow down the user's use case
+4. Use the selected pattern to guide Module 2 problem definition
+5. Call `search_docs` with the selected pattern name (e.g., `search_docs(query="customer 360 pattern")`) for deeper implementation guidance
+6. Recommend key matching attributes for Module 4 data mapping based on MCP-returned content
+7. If multiple patterns apply, help prioritize implementation order
 
 ## Where Senzing Fits in Your Architecture
 
-A common misconception is putting text search (Elasticsearch/OpenSearch) before entity resolution. The correct layering is:
+When discussing how Senzing integrates with search engines, message queues, or other infrastructure, call `search_docs` with the relevant integration topic (e.g., `search_docs(query="elasticsearch integration")`, `search_docs(query="architecture patterns")`) to retrieve current guidance.
 
-```text
-Raw Data → Senzing (entity resolution) → Resolved Entities → Search Index (Elasticsearch/OpenSearch)
-```
-
-**Senzing first:** Senzing performs fuzzy matching, identity intelligence, and entity resolution — it figures out which records refer to the same real-world entity. This is not text search; it's probabilistic identity matching using names, addresses, phones, IDs, and other features.
-
-**Search index second:** After Senzing resolves entities, index the resolved entity IDs and their attributes into Elasticsearch/OpenSearch for fast document retrieval, faceted search, and full-text queries.
-
-**Why this order matters:** If you search first and resolve second, you'll miss matches that Senzing would catch (name variations, address normalization, cross-source linking). Senzing's matching is fundamentally different from text search — it uses entity-centric learning, not keyword matching.
-
-Present this architecture when the user's problem involves search, lookup, or retrieval alongside entity resolution. When discussing Elasticsearch, OpenSearch, or any other third-party integration, always call `search_docs` with the relevant tool name to get Senzing's current guidance on integration. Reference it again in Module 8 (Query & Visualize) when building query programs.
+Present the MCP-returned architecture guidance when the user's problem involves search, lookup, or retrieval alongside entity resolution. Reference it again in Module 8 (Query & Visualize) when building query programs.

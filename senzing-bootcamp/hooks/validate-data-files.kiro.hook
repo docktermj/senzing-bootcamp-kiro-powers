@@ -1,5 +1,5 @@
 {
-  "name": "Validate Data Files",
+  "name": "to validate data files",
   "version": "1.0.0",
   "description": "When new data files are added to data/raw/, checks file format, encoding, and basic readability to catch issues early.",
   "when": {

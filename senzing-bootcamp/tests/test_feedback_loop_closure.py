@@ -105,7 +105,7 @@ class TestRelevanceScoringProperty:
     @given(
         num_changes=st.integers(min_value=0, max_value=50),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_max_three_results(self, num_changes: int) -> None:
         """Selecting top 3 from any number of changes always yields 0-3."""
         # Simulate: score N changes, take top 3

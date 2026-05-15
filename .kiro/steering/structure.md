@@ -1,6 +1,5 @@
 ---
-inclusion: auto
-description: "Project directory layout and naming conventions"
+inclusion: always
 ---
 
 # Project Structure

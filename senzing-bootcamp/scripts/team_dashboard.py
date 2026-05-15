@@ -26,7 +26,7 @@ from team_config_validator import (
 MODULE_NAMES = {
     1: "Business Problem",
     2: "SDK Setup",
-    3: "Quick Demo",
+    3: "System Verification",
     4: "Data Collection",
     5: "Data Quality & Mapping",
     6: "Single Source Loading",

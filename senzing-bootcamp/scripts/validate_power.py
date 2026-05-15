@@ -14,6 +14,13 @@ import re
 import sys
 from pathlib import Path
 
+# Allow importing sibling scripts (scripts aren't packages)
+_SCRIPTS_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
+
+from version import VersionError, read_version, read_version_from_frontmatter, validate_version
+
 
 def color(code, text):
     if hasattr(sys.stdout, "isatty") and sys.stdout.isatty():
@@ -236,6 +243,68 @@ def check_diagrams():
         check((diagrams_dir / diagram).exists(), f"{diagram} exists")
 
 
+def check_version_file():
+    """Read senzing-bootcamp/VERSION and validate its format."""
+    print("\n=== Version File ===")
+    version_file = POWER_DIR / "VERSION"
+    if not version_file.exists():
+        check(False, f"VERSION file exists at {version_file}")
+        return
+
+    check(True, f"VERSION file exists at {version_file}")
+
+    try:
+        content = version_file.read_text(encoding="utf-8").strip()
+    except OSError as exc:
+        check(False, f"VERSION file is readable — {exc}")
+        return
+
+    if not content:
+        check(False, "VERSION file is not empty")
+        return
+
+    try:
+        validate_version(content)
+        check(True, f"VERSION file contains valid semver: {content}")
+    except VersionError as exc:
+        check(False, f"VERSION file contains valid semver — {exc.message}")
+
+
+def check_version_sync():
+    """Verify VERSION file and POWER.md frontmatter version are in sync."""
+    print("\n=== Version Sync (VERSION ↔ POWER.md frontmatter) ===")
+    version_file = POWER_DIR / "VERSION"
+    power_md = POWER_DIR / "POWER.md"
+
+    if not version_file.exists() or not power_md.exists():
+        check(False, "Both VERSION and POWER.md exist for sync check")
+        return
+
+    try:
+        file_version = read_version(version_file)
+    except VersionError as exc:
+        check(False, f"VERSION file readable for sync check — {exc.message}")
+        return
+
+    try:
+        power_md_content = power_md.read_text(encoding="utf-8")
+    except OSError as exc:
+        check(False, f"POWER.md readable for sync check — {exc}")
+        return
+
+    try:
+        frontmatter_version = read_version_from_frontmatter(power_md_content)
+    except VersionError as exc:
+        check(False, f"POWER.md frontmatter has valid version — {exc.message}")
+        return
+
+    versions_match = file_version == frontmatter_version
+    check(
+        versions_match,
+        f"VERSION ({file_version}) matches POWER.md frontmatter ({frontmatter_version})",
+    )
+
+
 def main():
     print(f"Validating Senzing Bootcamp power at: {POWER_DIR.resolve()}")
 
@@ -251,6 +320,8 @@ def main():
     check_policies()
     check_diagrams()
     check_steering_index_metadata()
+    check_version_file()
+    check_version_sync()
 
     print(f"\n{'=' * 50}")
     if errors:

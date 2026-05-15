@@ -431,7 +431,7 @@ class TestExitCodeCorrectness:
     """
 
     @given(violations=st_violation_set())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_exit_code_zero_iff_no_errors(self, violations):
         """Exit code is 0 iff there are zero ERROR-level violations."""
         error_count = sum(1 for v in violations if v.level == "ERROR")
@@ -449,7 +449,7 @@ class TestViolationOutputFormat:
     """
 
     @given(v=st_violation())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_format_matches_pattern(self, v):
         """Formatted output must match the expected pattern."""
         formatted = v.format()

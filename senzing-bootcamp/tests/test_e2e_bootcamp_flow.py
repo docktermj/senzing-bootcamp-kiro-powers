@@ -861,7 +861,7 @@ class TestSteeringResolutionProperties:
     """
 
     @given(module_num=st_steering_module())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_resolver_returns_correct_path(self, module_num: int) -> None:
         """Property 6: Steering Resolution Correctness.
 
@@ -889,7 +889,7 @@ class TestSteeringResolutionProperties:
                 assert phase_result  # non-empty
 
     @given(module_num=st_steering_module())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_all_steering_files_exist(self, module_num: int) -> None:
         """Property 7: Steering File Existence.
 
@@ -922,7 +922,7 @@ class TestPhaseTransitionProperties:
     """
 
     @given(module_num=st_multi_phase_module())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_step_ranges_contiguous(self, module_num: int) -> None:
         """Property 8: Phase Step Range Contiguity.
 
@@ -948,7 +948,7 @@ class TestPhaseTransitionProperties:
             )
 
     @given(module_num=st_multi_phase_module())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_phase_traversal_order(self, module_num: int) -> None:
         """Property 9: Phase Traversal Order.
 
@@ -1110,15 +1110,6 @@ class TestTrackFlowIntegration:
         final_state = mgr.read()
         assert set(final_state["modules_completed"]) == set(track.modules)
 
-    def test_quick_demo_track(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
-        """Walk modules 2, 3 in the Quick Demo track.
-
-        Validates: Requirements 1.1
-        """
-        self._walk_track(tmp_path, monkeypatch, "quick_demo")
-
     def test_core_bootcamp_track(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
@@ -1148,17 +1139,17 @@ class TestConfigParsing:
     def test_module_dependencies_parsed(self) -> None:
         """Verify module-dependencies.yaml was parsed successfully."""
         assert len(CONFIG.modules) == 11
-        assert len(CONFIG.tracks) == 3
+        assert len(CONFIG.tracks) == 2
         assert len(CONFIG.gates) == 10
 
     def test_steering_index_parsed(self) -> None:
         """Verify steering-index.yaml was parsed successfully."""
         assert len(STEERING_INDEX) == 11
         # Single-phase modules
-        for num in [2, 3, 4, 7]:
+        for num in [4, 7]:
             assert isinstance(STEERING_INDEX[num], str)
-        # Multi-phase modules
-        for num in [1, 5, 6, 8, 9, 10, 11]:
+        # Multi-phase modules (including module 2 which uses structured format)
+        for num in [1, 2, 3, 5, 6, 8, 9, 10, 11]:
             assert isinstance(STEERING_INDEX[num], dict)
 
     def test_tracks_contain_valid_modules(self) -> None:

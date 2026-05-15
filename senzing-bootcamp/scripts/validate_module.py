@@ -86,9 +86,9 @@ def validate_module_2():
 
 
 def validate_module_3():
-    """Module 3: Quick Demo — prerequisites for Module 4."""
+    """Module 3: System Verification — prerequisites for Module 4."""
     return [
-        check_dir_has_files("src/quickstart_demo", "demo_*.*", "Demo script created"),
+        check_dir_has_files("src/quickstart_demo", "demo_*.*", "Verification script created"),
         check_dir_has_files("src/quickstart_demo", "sample_data_*.*", "Sample data saved"),
     ]
 
@@ -202,7 +202,7 @@ VALIDATORS = {
 MODULE_NAMES = {
     1: "Business Problem",
     2: "SDK Setup",
-    3: "Quick Demo",
+    3: "System Verification",
     4: "Data Collection",
     5: "Data Quality & Mapping",
     6: "Load Data",

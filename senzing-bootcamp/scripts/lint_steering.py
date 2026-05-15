@@ -51,10 +51,12 @@ RE_POINTING_QUESTION = re.compile(r"👉")
 
 # Rule 4: Numbered steps and checkpoints
 RE_NUMBERED_STEP = re.compile(r"^(\d+)\.\s+\*\*")
-RE_HEADING_STEP = re.compile(r"^##\s+Step\s+(\d+)")
+# Step headings: ## Step N or ### Step N (but not sub-steps like ### Step 1a)
+RE_HEADING_STEP = re.compile(r"^#{2,}\s+Step\s+(\d+)\s*(?::|$)")
 RE_CHECKPOINT = re.compile(
     r"\*\*Checkpoint:\*\*.*(?:step|Step)\s+(\d+)"
 )
+RE_CHECKPOINT_ANY = re.compile(r"\*\*Checkpoint:\*\*")
 
 # Rule 7: Frontmatter
 RE_FRONTMATTER_DELIM = re.compile(r"^---\s*$")
@@ -641,6 +643,12 @@ def check_checkpoints(steering_dir: Path) -> list:
                     found_checkpoint = True
                     checkpoint_step = int(cp_match.group(1))
                     break
+                # Accept checkpoint without explicit "step N" wording
+                # (used in files where each Step has its own checkpoint JSON)
+                if RE_CHECKPOINT_ANY.search(lines[j]):
+                    found_checkpoint = True
+                    checkpoint_step = step_num
+                    break
 
             if not found_checkpoint:
                 violations.append(LintViolation(
@@ -722,7 +730,7 @@ def check_hook_consistency(steering_dir: Path, hooks_dir: Path) -> list:
     violations = []
     steering_path = Path(steering_dir)
     hooks_path = Path(hooks_dir)
-    registry_path = steering_path / "hook-registry.md"
+    registry_path = steering_path / "hook-registry-detail.md"
 
     if not registry_path.exists():
         violations.append(LintViolation(
@@ -1076,12 +1084,20 @@ def check_checkpoint_completeness(steering_dir: Path) -> list:
                 workflow_end = i
                 break
 
-        # Find all top-level numbered steps, excluding non-workflow sections
-        steps = []
+        # Find all top-level numbered steps and heading steps, excluding
+        # non-workflow sections. Prefer heading steps when present.
+        heading_steps = []
+        numbered_steps = []
         for i in range(fm_end, workflow_end):
+            hm = RE_HEADING_STEP.match(lines[i])
+            if hm:
+                heading_steps.append((i, int(hm.group(1))))
+                continue
             m = RE_TOP_LEVEL_STEP.match(lines[i])
             if m and not _is_in_non_workflow_section(lines, i):
-                steps.append((i, int(m.group(1))))
+                numbered_steps.append((i, int(m.group(1))))
+
+        steps = heading_steps if heading_steps else numbered_steps
 
         if not steps:
             continue  # Skip files with zero steps
@@ -1100,6 +1116,11 @@ def check_checkpoint_completeness(steering_dir: Path) -> list:
                 if cp_match:
                     found_checkpoint = True
                     checkpoint_step = int(cp_match.group(1))
+                    break
+                # Accept a generic **Checkpoint:** anywhere in the step body
+                if RE_CHECKPOINT_ANY.search(lines[j]):
+                    found_checkpoint = True
+                    checkpoint_step = step_num
                     break
 
             if not found_checkpoint:

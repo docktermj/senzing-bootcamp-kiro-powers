@@ -21,7 +21,7 @@ MUST use this exact table format. Only show modules in the user's selected path 
 | Module | Name | Status |
 |--------|------|--------|
 | 2 | SDK Setup | ✅ Complete |
-| → 3 | Quick Demo | 🔄 Current |
+| → 3 | System Verification | 🔄 Current |
 | 1 | Business Problem | ⬜ Upcoming |
 
 Use ✅ for completed modules, 🔄 for the current module (prefix module number with →), ⬜ for upcoming modules. Include one-line "why" for each.
@@ -60,6 +60,18 @@ Then follow the journal and path-completion rules in `module-completion.md`.
 
 - Module transition questions are commitments: asking the question means the agent is prepared to execute the transition if confirmed.
 - If context limits may prevent completing the next module, do NOT ask the transition question. Instead, transparently inform the bootcamper about the limitation and offer to save progress.
+
+## Quality Feedback Loop (Module 7 → Module 5)
+
+When entity resolution quality is assessed as marginal or poor in Module 7, the bootcamper may return to Module 5 for mapping refinement. This is a valid backward transition that preserves progress:
+
+- Module 6/7 completion status is retained in `config/bootcamp_progress.json`
+- The database and loaded data are NOT deleted
+- Module 5 is re-entered at Phase 2 (data mapping), not Phase 1
+- After remapping, the bootcamper reloads affected sources (Module 6) and re-evaluates (Module 7)
+- The `quality_iteration` key in progress tracks which sources triggered the loop
+
+This transition does NOT require track switching or rollback — it's an iterative refinement within the normal bootcamp flow.
 
 ## Sub-Step Convention
 

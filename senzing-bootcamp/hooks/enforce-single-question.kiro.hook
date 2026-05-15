@@ -1,0 +1,13 @@
+{
+  "name": "to enforce the single-question rule",
+  "version": "1.0.0",
+  "description": "Validates that any 👉 question being written to .question_pending contains exactly one question with no compound constructions, conjunctions, or appended alternatives. Fires on write operations targeting the question_pending file.",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": ["write"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "SINGLE-QUESTION ENFORCEMENT CHECK\n\nExamine the file being written. If the target path does NOT end with '.question_pending', produce no output at all — do not acknowledge, do not explain, do not print anything. Proceed silently.\n\nIf the target path DOES end with '.question_pending', validate the question content against ALL of these rules:\n\n1. EXACTLY ONE QUESTION: The content must contain exactly one question mark. Two or more question marks means multiple questions — VIOLATION.\n2. NO CONJUNCTIONS JOINING QUESTIONS: The content must not use 'and', 'or', 'also', 'but first', 'alternatively', 'or if you prefer', 'or would you rather' to join separate choices in prose. Exception: 'or' inside a numbered list of options is allowed.\n3. NO APPENDED ALTERNATIVES: The content must not append an alternative action after the main question (e.g., 'Do you want X, or we could skip to Y?' is a violation).\n4. UNAMBIGUOUS YES/NO: If it's a yes/no question, 'yes' must map to exactly one meaning and 'no' must map to exactly one meaning. 'Does that look right? Anything I missed?' is a violation because 'yes' is ambiguous.\n5. NO FOLLOW-UP AFTER CONFIRMATION: The content must not combine a confirmation question with a follow-up (e.g., 'Does that work? What do you want changed?' is a violation).\n\nIf ALL rules pass: Produce no output at all — do not acknowledge, do not explain, do not print anything. Proceed silently.\n\nIf ANY rule is violated: STOP. Output exactly:\n\n⚠️ COMPOUND QUESTION DETECTED — REWRITE REQUIRED\nViolation: [describe which rule was broken]\nOriginal: [the question text]\nFix: Rewrite as a single, unambiguous question. If multiple pieces of information are needed, ask only the first one. If choices exist, use a numbered list format.\n\nDo NOT allow the write to proceed with a compound question. The agent must rewrite the question before continuing."
+  }
+}

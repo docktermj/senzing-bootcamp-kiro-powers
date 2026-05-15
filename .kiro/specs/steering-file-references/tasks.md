@@ -27,7 +27,7 @@ Add `#[[file:]]` references to two manual steering workflow files so the Kiro ag
   - [x] 3.3 Run `python senzing-bootcamp/scripts/measure_steering.py --check` and confirm token budgets are not exceeded
     - _Requirements: 5.1, 5.2, 5.3_
 
-- [ ] 4. Final checkpoint
+- [x] 4. Final checkpoint
   - Ensure all validations pass, ask the user if questions arise.
 
 ## Notes

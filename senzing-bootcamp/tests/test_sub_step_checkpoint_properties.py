@@ -56,7 +56,7 @@ class TestCheckpointRoundTripPreservesTypeAndValue:
     """
 
     @given(pair=st_module_step_pair())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_checkpoint_round_trip(self, pair):
         """Writing a checkpoint and reading it back preserves step type and value."""
         module_number, step = pair

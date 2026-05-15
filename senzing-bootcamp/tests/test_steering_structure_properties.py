@@ -34,8 +34,9 @@ if _SCRIPTS_DIR not in sys.path:
 # Numbered step: "1. **Step title**" or "1. **Check for...**"
 RE_NUMBERED_STEP = re.compile(r"^(\d+)\.\s+\*\*")
 
-# Checkpoint instruction: "**Checkpoint:** Write step N to ..."
-RE_CHECKPOINT = re.compile(r"\*\*Checkpoint:\*\*.*?step\s+(\d+)", re.IGNORECASE)
+# Checkpoint instruction: "**Checkpoint:** Write step N to ..." or
+# "**Checkpoint:** Write to config/bootcamp_progress.json:" (no step number)
+RE_CHECKPOINT = re.compile(r"\*\*Checkpoint:\*\*", re.IGNORECASE)
 
 # Pointing question: line containing 👉 followed by quoted text
 RE_POINTING_QUESTION = re.compile(r"👉")
@@ -237,8 +238,8 @@ def check_step_checkpoint_correspondence(
     """
     lines = content.splitlines()
 
-    # Detect whether the file uses ``## Step N:`` headings
-    re_heading_step = re.compile(r"^## Step (\d+)")
+    # Detect whether the file uses ``## Step N:`` or ``### Step N:`` headings
+    re_heading_step = re.compile(r"^#{2,}\s+Step\s+(\d+)\s*(?::|$)")
     uses_heading_steps = any(
         re_heading_step.match(line) for line in lines
     )
@@ -274,6 +275,14 @@ def check_step_checkpoint_correspondence(
                 if heading_match:
                     steps.append((idx, heading_match.group(1)))
                 continue
+            continue
+
+        # H3 (and deeper) step headings — system-verification uses
+        # `### Step N:` nested under `## Phase N` headings.
+        if uses_heading_steps and line.startswith("### "):
+            heading_match = re_heading_step.match(line)
+            if heading_match:
+                steps.append((idx, heading_match.group(1)))
             continue
 
         if in_non_step_section:
@@ -783,15 +792,15 @@ class TestIndexResolution:
     """
 
     def test_simple_entry_resolves_to_single_file(self) -> None:
-        """Module 2 (simple string entry) resolves to one root file.
+        """Module 4 (simple string entry) resolves to one root file.
 
         Verifies that a simple string entry in the steering index
         produces a ModuleFiles with the correct root file, no phase
         files, and exactly one file in all_files.
         """
-        mod = _INDEX[2]
-        assert mod.module_number == 2
-        assert mod.root_file.name == "module-02-sdk-setup.md"
+        mod = _INDEX[4]
+        assert mod.module_number == 4
+        assert mod.root_file.name == "module-04-data-collection.md"
         assert mod.phase_files == []
         assert len(mod.all_files) == 1
 

@@ -14,7 +14,7 @@ import pytest
 
 STEERING_DIR = Path("senzing-bootcamp/steering")
 
-MODULE_03 = STEERING_DIR / "module-03-quick-demo.md"
+MODULE_03 = STEERING_DIR / "module-03-system-verification.md"
 MODULE_TRANSITIONS = STEERING_DIR / "module-transitions.md"
 MODULE_COMPLETION = STEERING_DIR / "module-completion.md"
 
@@ -35,72 +35,13 @@ def module_completion_content():
 
 
 # ---------------------------------------------------------------------------
-# Bug 1 — Visualization step ordering (module-03-quick-demo.md)
-# Validates: Requirements 1.1, 2.1
+# Bug 1 — Visualization step ordering
+# NOTE: The original TestBug1VisualizationStepOrdering class validated UX
+# behavior specific to the old "Quick Demo" Module 3. The module was
+# redesigned as deterministic TruthSet verification; visualization is now
+# handled by the `enforce-visualization-offers` hook instead of inline
+# workflow steps. These tests no longer apply and have been removed.
 # ---------------------------------------------------------------------------
-
-class TestBug1VisualizationStepOrdering:
-    """The visualization offer must be its own numbered Phase 2 step,
-    sequenced BEFORE the module-close step."""
-
-    def _phase2_steps(self, content: str) -> list[tuple[int, str]]:
-        """Return (step_number, step_text) pairs from Phase 2."""
-        phase2_match = re.search(r"## Phase 2.*?(?=## |$)", content, re.DOTALL)
-        assert phase2_match, "Phase 2 section not found"
-        phase2 = phase2_match.group()
-        # Match numbered steps like "1. **...**" or "1. ..."
-        return [
-            (int(m.group(1)), m.group(2))
-            for m in re.finditer(r"^(\d+)\.\s+(.+?)(?=\n\d+\.\s|\Z)", phase2, re.MULTILINE | re.DOTALL)
-        ]
-
-    def test_visualization_is_own_numbered_step(self, module_03_content):
-        """Visualization offer must be a separate numbered step, not a
-        sub-point of the 'Explain results' step."""
-        steps = self._phase2_steps(module_03_content)
-        # Find a step whose primary text is about offering visualization
-        # (not one where visualization is buried as a sub-point of another step)
-        viz_steps = [
-            (num, txt) for num, txt in steps
-            if re.search(r"(?i)(offer\s+visualization|create\s+a\s+web\s+page)", txt)
-            and not re.search(r"(?i)^.*explain\s+results", txt[:80])
-        ]
-        assert viz_steps, (
-            "No standalone numbered step found for the visualization offer. "
-            "It appears to be embedded as a sub-point of another step."
-        )
-
-    def test_visualization_step_before_module_close(self, module_03_content):
-        """The visualization step number must be less than the module-close
-        step number."""
-        steps = self._phase2_steps(module_03_content)
-
-        viz_num = None
-        close_num = None
-        for num, txt in steps:
-            if re.search(r"(?i)(offer\s+visualization|create\s+a\s+web\s+page)", txt) \
-               and not re.search(r"(?i)^.*explain\s+results", txt[:80]):
-                viz_num = num
-            if re.search(r"(?i)close\s+module\s+3", txt):
-                close_num = num
-
-        assert viz_num is not None, "Visualization step not found as its own step"
-        assert close_num is not None, "Module close step not found"
-        assert viz_num < close_num, (
-            f"Visualization step ({viz_num}) must come before module close step ({close_num})"
-        )
-
-    def test_visualization_must_complete_before_close(self, module_03_content):
-        """The file must contain instruction text requiring visualization to
-        complete before module close."""
-        assert re.search(
-            r"(?i)must\s+complete\s+before\s+(closing|close)", module_03_content
-        ) or re.search(
-            r"(?i)MUST\s+complete\s+before\s+closing", module_03_content
-        ), (
-            "Missing instruction requiring visualization to complete before "
-            "closing the module."
-        )
 
 
 # ---------------------------------------------------------------------------

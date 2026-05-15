@@ -7,11 +7,11 @@ config/bootcamp_progress.json.
 
 Usage:
     # Dry-run (default): compute and print switch effect as JSON
-    python3 scripts/track_switcher.py --from quick_demo --to core_bootcamp \\
+    python3 scripts/track_switcher.py --from core_bootcamp --to advanced_topics \\
         --progress config/bootcamp_progress.json
 
     # Apply: compute and write to progress file
-    python3 scripts/track_switcher.py --from quick_demo --to core_bootcamp \\
+    python3 scripts/track_switcher.py --from core_bootcamp --to advanced_topics \\
         --progress config/bootcamp_progress.json --apply
 """
 
@@ -43,7 +43,7 @@ def load_track_definitions(yaml_path: Path) -> dict[str, list[int]]:
         yaml_path: Path to module-dependencies.yaml.
 
     Returns:
-        Dict mapping track name (e.g., 'quick_demo') to list of module numbers.
+        Dict mapping track name (e.g., 'core_bootcamp') to list of module numbers.
 
     Raises:
         FileNotFoundError: If yaml_path does not exist.

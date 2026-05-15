@@ -14,7 +14,7 @@ Read these files to reconstruct full context:
 2. **`config/bootcamp_preferences.yaml`** — chosen language, track, cloud provider, license info, **detail_level** (if set — honor their preference for more/less/default detail), **conversation_style** (if set — restore tone, pacing, question framing, and verbosity preset for style continuity)
 2b. **Check hooks_installed** in `config/bootcamp_preferences.yaml`:
     - If `hooks_installed` key exists with hook names and timestamp → skip hook creation entirely. Hooks are already installed.
-    - If `hooks_installed` is missing or empty → load the Hook Registry from `onboarding-flow.md` and create Critical Hooks using the `createHook` tool before the welcome-back banner. This handles bootcampers who started before hook distribution was implemented, or whose preferences were reset.
+    - If `hooks_installed` is missing or empty → load the Hook Registry from `onboarding-phase2-track-setup.md` and create Critical Hooks using the `createHook` tool before the welcome-back banner. **Use the exact `name` from each hook's `- name:` line in the registry (e.g., `to wait for your answer`, NOT `Ask Bootcamper`).** This handles bootcampers who started before hook distribution was implemented, or whose preferences were reset.
     - If `config/bootcamp_preferences.yaml` itself is missing or corrupted → treat as no hooks installed and create Critical Hooks from the Hook Registry.
     - If any Critical Hook creation fails during resume, log the failure and continue with the remaining hooks. Report failures after all attempts (see the failure impact messages in the Hook Registry).
 3. **`docs/bootcamp_journal.md`** (if exists) — narrative history of what was done and why
@@ -153,7 +153,7 @@ When loading a new module steering file during the session, re-read the `convers
 
 ## Step 2d: MCP Health Check
 
-Before proceeding, verify that the Senzing MCP server is reachable. This ensures MCP-dependent features (code generation, fact lookup, example search) are available for the session.
+Before proceeding, verify that the Senzing MCP server is reachable. The MCP server is required for the bootcamp — it generates SDK code in your chosen language, looks up Senzing facts and configuration details, and provides working examples on demand.
 
 ### Probe
 
@@ -168,46 +168,32 @@ search_docs(query="health check", version="current")
 If the call returns any response (even empty results) within 10 seconds:
 
 1. Proceed silently — do not display anything to the bootcamper.
-2. Write `config/.mcp_status` with:
-
-```json
-{"last_check": "<ISO 8601 timestamp>", "status": "healthy", "error_message": null}
-```
 
 ### Failure Path
 
 If the call times out or errors after 10 seconds:
 
-1. Write `config/.mcp_status` with:
-
-```json
-{"last_check": "<ISO 8601 timestamp>", "status": "unreachable", "error_message": "<error details>"}
-```
-
-2. Display the following warning to the bootcamper:
+1. Display the following blocking error:
 
 ```text
-⚠️ The Senzing MCP server is currently unreachable.
+⛔ The Senzing MCP server is unreachable.
 
-**What's unavailable:** Code generation, fact lookup, example search
-**What you can still do:** Review existing artifacts, work on documentation, plan next steps
+The MCP server is required for the bootcamp — it generates SDK code,
+looks up Senzing facts, and provides working examples. The bootcamp
+cannot proceed without it.
 
-For detailed offline capabilities, see docs/guides/OFFLINE_MODE.md
+**Troubleshooting steps:**
+1. Verify internet connectivity (can you load any website?)
+2. Test the endpoint: curl -s -o /dev/null -w "%{http_code}" https://mcp.senzing.com:443
+3. If behind a corporate proxy, allowlist mcp.senzing.com:443
+4. Restart the MCP connection in the Kiro Powers panel
+5. Verify DNS: nslookup mcp.senzing.com
+
+After fixing the connection, say "retry" to try again.
 ```
 
-3. Ask:
-
-```text
-👉 Would you like to continue in offline mode, or try again later?
-```
-
-### Mid-Session Recovery
-
-Before any step that requires MCP tools, check `config/.mcp_status`. If `status` is `"unreachable"`:
-
-1. Re-attempt the `search_docs(query="health check", version="current")` probe with a 10-second timeout.
-2. If successful, update `config/.mcp_status` to `"healthy"` and display: "✅ MCP server is back online — full functionality restored."
-3. If still unreachable, inform the bootcamper that MCP remains unavailable and offer alternatives.
+2. 🛑 STOP — Do NOT proceed to any subsequent step. Wait for the
+   bootcamper to fix the connection and request a retry.
 
 ## Step 2e: What's New Notification
 
@@ -248,6 +234,16 @@ If `current_step` is absent, omit the step detail and display only:
 
 **If mapping checkpoints exist** (`config/mapping_state_*.json`), include the data source name and completed mapping steps in the summary. For each checkpoint, mention: "You were in the middle of mapping [data source name] — we completed steps [list of completed_steps] last time. I can pick up where we left off." If multiple mapping checkpoints exist, list each one.
 
+**Mapping resume options:** For each detected mapping checkpoint, after describing the in-progress state, present these options:
+
+- **(a) Resume** — Pick up the mapping from where it left off
+- **(b) Restart** — Delete the checkpoint and start the mapping from scratch
+- **(c) Skip** — Continue with other bootcamp work; the checkpoint stays for later
+
+If only one mapping checkpoint exists, present the options inline. If multiple checkpoints exist, list each data source with its state first, then ask which one(s) to resume.
+
+When the bootcamper chooses **(b) Restart**, delete the corresponding `config/mapping_state_[datasource].json` file before beginning the mapping workflow from scratch.
+
 ```text
 👉 Ready to continue with Module [N], or would you like to do something else?
 ```
@@ -264,10 +260,22 @@ Based on the user's response:
   - **Integer `current_step`**: skip to step `current_step + 1` in the module steering file (all steps up to and including `current_step` are already complete).
   - **Sub-step identifier string** (dotted like `"5.3"` or lettered like `"7a"`): skip to the next sub-step after the recorded position in the module steering file (not the next whole step). For example, if `current_step` is `"5.3"`, resume at sub-step `5.4` (or the next defined sub-step after `5.3`). If the sub-step identifier is not found in the module steering file, log a warning and fall back to resuming at the parent step number (extract the parent step using `parse_parent_step` logic — e.g., `"5.3"` → step 5, `"7a"` → step 7).
   - **If `current_step` references a step number that does not exist in the module steering file** (e.g., exceeds the total number of steps, is zero, or is negative), log a warning and fall back to artifact scanning to determine the correct resume point.
-  - **If mapping checkpoints exist** (`config/mapping_state_*.json`), restart `mapping_workflow` for each data source with a checkpoint and fast-track through the completed mapping steps (listed in `completed_steps`) before resuming from the first incomplete mapping step. If a mapping checkpoint file contains invalid JSON or is missing required fields (`data_source`, `current_step`, `completed_steps`), log a warning, skip that checkpoint, and inform the bootcamper that the mapping for that data source will need to restart from the beginning.
+  - **If mapping checkpoints exist** (`config/mapping_state_*.json`):
+
+    **Checkpoint validation:** Before fast-tracking through completed steps, validate the checkpoint:
+
+    1. Read the checkpoint file. If JSON is invalid or required fields (`data_source`, `current_step`, `completed_steps`) are missing, the checkpoint is corrupted.
+    2. Call `mapping_workflow` with `action='status'` and pass the full checkpoint contents as the `state` parameter.
+    3. If the MCP response confirms the state is valid, proceed with fast-tracking through `completed_steps`.
+    4. If the MCP response indicates the state is invalid (e.g., data source no longer exists, schema changed), inform the bootcamper: "The mapping checkpoint for [data source] appears to be outdated or invalid. Would you like to restart the mapping from scratch?"
+    5. If the checkpoint file has invalid JSON, inform the bootcamper: "The mapping checkpoint for [data source] is corrupted and cannot be read. The mapping will need to restart from the beginning."
+
+    In cases 4 and 5, delete the corrupted/invalid checkpoint file and offer to restart.
+
+    After validation succeeds, restart `mapping_workflow` for each data source with a valid checkpoint and fast-track through the completed mapping steps (listed in `completed_steps`) before resuming from the first incomplete mapping step.
   **If `current_step` is absent**, fall back to the existing artifact-scanning behavior to infer position.
 - If they want to switch modules → verify prerequisites via `module-prerequisites.md`, then load the requested module steering
-- If they want to switch tracks → follow the "Switching Tracks" section in `onboarding-flow.md`
+- If they want to switch tracks → follow the "Switching Tracks" section in `onboarding-phase2-track-setup.md`
 - If they want to start over → confirm, then load `onboarding-flow.md`
 
 ## Step 5: Re-establish MCP Context

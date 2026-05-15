@@ -74,7 +74,7 @@ class TestHookFileStructure:
 
     def test_validate_hook_name(self, validate_hook_data: dict):
         """validate-business-problem has correct name field."""
-        assert validate_hook_data["name"] == "Validate Business Problem"
+        assert validate_hook_data["name"] == "to validate your business problem"
 
     def test_validate_hook_version(self, validate_hook_data: dict):
         """validate-business-problem has version 1.0.0."""
@@ -98,7 +98,7 @@ class TestHookFileStructure:
 
     def test_verify_hook_name(self, verify_hook_data: dict):
         """verify-demo-results has correct name field."""
-        assert verify_hook_data["name"] == "Verify Demo Results"
+        assert verify_hook_data["name"] == "to verify demo results"
 
     def test_verify_hook_version(self, verify_hook_data: dict):
         """verify-demo-results has version 1.0.0."""
@@ -249,12 +249,12 @@ class TestHookCategoriesRegistration:
 # ===========================================================================
 
 class TestHookCount:
-    """Verify total hook count is 25 after adding two new hooks."""
+    """Verify total hook count is 24."""
 
-    def test_total_hook_file_count_is_25(self):
-        """There are exactly 25 .kiro.hook files."""
+    def test_total_hook_file_count_is_24(self):
+        """There are exactly 24 .kiro.hook files."""
         hook_files = discover_hook_files(HOOKS_DIR)
-        assert len(hook_files) == 27
+        assert len(hook_files) == 26
 
     def test_both_new_hooks_exist(self):
         """Both new hook files exist on disk."""

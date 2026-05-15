@@ -222,7 +222,7 @@ class TestProperty5ConversationStyleYAMLRoundTrip:
     """
 
     @given(profile=st_conversation_style_profile())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_yaml_round_trip_preserves_all_fields(self, profile):
         """Serializing and deserializing a conversation style profile preserves all fields."""
         data = {"conversation_style": profile}

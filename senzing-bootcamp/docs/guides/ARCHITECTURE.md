@@ -187,7 +187,7 @@ from which steering file is loaded.
 
 1. **Setup preamble** — Agent announces administrative setup is starting.
 2. **MCP health check** — Probe `search_docs` with a 10-second timeout.
-   Write result to `config/.mcp_status`.
+   If the probe fails, block with troubleshooting steps until resolved.
 3. **Directory creation** — Create `src/`, `data/`, `docs/` if missing.
 4. **Hook installation** — Create critical hooks via `createHook`. Record
    installed hooks and timestamp in `config/bootcamp_preferences.yaml`
@@ -198,8 +198,8 @@ from which steering file is loaded.
    runtime installation on Windows if needed.
 7. **Welcome banner** — Display the bootcamp introduction and module
    overview.
-8. **Track selection** — Present Quick Demo, Core Bootcamp, or Advanced
-   Topics. Persist choice to `config/bootcamp_preferences.yaml`.
+8. **Track selection** — Present Core Bootcamp or Advanced Topics. Persist
+   choice to `config/bootcamp_preferences.yaml`.
 9. **First module load** — Load the steering file for the first module in
    the selected track. Create `config/bootcamp_progress.json` with initial
    state.
@@ -215,8 +215,8 @@ from which steering file is loaded.
    persisted `language` preference.
 4. **Conversation style restore** — Apply `conversation_style` parameters
    from preferences (verbosity, tone, pacing, question framing).
-5. **MCP health check** — Same probe as onboarding. Write to
-   `config/.mcp_status`.
+5. **MCP health check** — Same probe as onboarding. If the probe fails,
+   block with troubleshooting steps until resolved.
 6. **What's New check** — Compare last session timestamp from
    `config/session_log.jsonl` against `CHANGELOG.md` entries.
 7. **Welcome-back summary** — Display track, language, completed modules,
@@ -248,7 +248,6 @@ follows a repeating cycle until the track is complete:
 |-------|------|-----------|
 | Session start (decision) | `bootcamp_progress.json` | Read (existence check) |
 | Onboarding: setup | `bootcamp_preferences.yaml` | Write (create) |
-| Onboarding: setup | `.mcp_status` | Write (create) |
 | Onboarding: language | `bootcamp_preferences.yaml` | Write (language) |
 | Onboarding: track | `bootcamp_preferences.yaml` | Write (track) |
 | Onboarding: first module | `bootcamp_progress.json` | Write (create) |
@@ -340,8 +339,8 @@ A module transitions through six states in order:
    the module cannot start.
 
 2. **Steering file load** — The agent loads the module's steering file into
-   context. For single-file modules (2, 3, 4, 7), this is one file. For
-   split modules (1, 5, 6, 8, 9, 10, 11), only the current phase file is
+   context. For single-file modules (2, 4, 7), this is one file. For
+   split modules (1, 3, 5, 6, 8, 9, 10, 11), only the current phase file is
    loaded based on the bootcamper's `current_step` position.
 
 3. **Step execution** — The agent works through numbered steps defined in
@@ -380,6 +379,7 @@ The split modules and their phases are:
 | Module | Phases | Steps |
 | ------ | ------ | ----- |
 | 1 Business Problem | discovery (1–9), document-confirm (10–18) | 18 |
+| 3 System Verification | verification (1–8), visualization (9–12) | 12 |
 | 5 Data Quality | quality-assessment (1–7), data-mapping (8–20), test-load (21–26) | 26 |
 | 6 Load Data | build-loading (1–3), load-first (4–10), multi-source (11–19), validation (20–27) | 27 |
 | 8 Performance | requirements (1–3), benchmarking (4–7), optimization (8–13) | 13 |
@@ -391,9 +391,9 @@ When the bootcamper's `current_step` crosses a phase boundary, the agent
 unloads the previous phase file and loads the next one. This keeps context
 usage proportional to the active work rather than the total module size.
 
-Single-file modules (2 SDK Setup, 3 Quick Demo, 4 Data Collection,
-7 Query & Visualize) load their entire steering file at once because they
-are small enough to fit within budget without splitting.
+Single-file modules (2 SDK Setup, 4 Data Collection, 7 Query & Visualize)
+load their entire steering file at once because they are small enough to
+fit within budget without splitting.
 
 ### Module Dependency Gates
 
@@ -408,7 +408,7 @@ must be completed before this module can start. The agent checks the
 | ------ | ------------- |
 | 1 Business Problem | (none) |
 | 2 SDK Setup | (none) |
-| 3 Quick Demo | 2 |
+| 3 System Verification | 2 |
 | 4 Data Collection | 1 |
 | 5 Data Quality | 4 |
 | 6 Load Data | 2, 5 |
@@ -426,7 +426,7 @@ evaluates these conditions against the work completed during the module:
 | ---------- | -------------- |
 | 1 → 2 | Problem documented, sources identified, criteria defined |
 | 2 → 3 | SDK installed, DB configured, test passes |
-| 3 → 4 | Demo completed or skipped |
+| 3 → 4 | System verification passed or explicitly skipped |
 | 4 → 5 | Sources collected, files in data/raw/ |
 | 5 → 6 | Sources evaluated, mapped, programs tested, quality >70% |
 | 6 → 7 | Sources loaded, no critical errors |
@@ -442,7 +442,7 @@ module is marked complete without executing any steps:
 | Module | Skip Condition |
 | ------ | -------------- |
 | 2 SDK Setup | SDK already installed and configured |
-| 3 Quick Demo | Already familiar with Senzing |
+| 3 System Verification | Already familiar with Senzing and system verified |
 | 5 Data Quality | All sources Entity Specification-compliant |
 | 6 Load Data | Data already loaded |
 | 7 Query & Visualize | Already validated |
@@ -582,7 +582,7 @@ declarative — no scripting language, no external runtime.
 The `hooks/hook-categories.yaml` file classifies every hook into one of two
 categories that determine when it is installed.
 
-#### Critical Hooks (7 hooks — installed during onboarding)
+#### Critical Hooks (5 hooks — installed during onboarding)
 
 Critical hooks are created in Step 4 of the onboarding flow via `createHook`.
 They remain active for the entire bootcamp session regardless of which module
@@ -591,12 +591,10 @@ is running. These hooks enforce cross-cutting concerns:
 | Hook | Responsibility |
 | ---- | -------------- |
 | `ask-bootcamper` | Owns all closing questions at step boundaries |
-| `review-bootcamper-input` | Validates bootcamper responses for completeness |
+| `review-bootcamper-input` | Routes feedback and status trigger phrases |
 | `code-style-check` | Enforces language-appropriate coding standards |
 | `commonmark-validation` | Checks Markdown files for CommonMark compliance |
-| `enforce-feedback-path` | Routes feedback to the correct template |
-| `enforce-working-directory` | Keeps file operations in the project tree |
-| `verify-senzing-facts` | Ensures Senzing facts come from MCP, not training data |
+| `enforce-file-path-policies` | Enforces feedback path and working-directory restrictions |
 
 #### Module Hooks (created when the associated module starts)
 
@@ -609,19 +607,22 @@ conditions no longer match the active context).
 | ------ | ----- |
 | 1 Business Problem | `validate-business-problem` |
 | 2 SDK Setup | `verify-sdk-setup` |
-| 3 Quick Demo | `verify-demo-results` |
+| 3 System Verification | `verify-demo-results`, `enforce-visualization-offers` |
 | 4 Data Collection | `validate-data-files` |
-| 5 Data Quality | `analyze-after-mapping`, `data-quality-check`, `enforce-mapping-spec` |
+| 5 Data Quality | `analyze-after-mapping`, `data-quality-check`, `enforce-mapping-spec`, `enforce-visualization-offers` |
 | 6 Load Data | `backup-before-load`, `run-tests-after-change`, `verify-generated-code` |
-| 7 Query & Visualize | `enforce-visualization-offers`, `offer-visualization` |
-| 8 Performance | `validate-benchmark-results` |
+| 7 Query & Visualize | `enforce-visualization-offers` |
+| 8 Performance | `validate-benchmark-results`, `enforce-visualization-offers` |
 | 9 Security | `security-scan-on-save` |
 | 10 Monitoring | `validate-alert-config` |
 | 11 Deployment | `deployment-phase-gate` |
-| Any module | `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder` |
+| Any module | `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration` |
 
 The "any" category contains utility hooks that apply across all modules.
 They are installed during onboarding alongside the critical hooks.
+Note that `enforce-visualization-offers` is a single hook installed once but
+activated in multiple modules (3, 5, 7, 8) based on the current-module check
+in its prompt.
 
 ### The Hook Silence Rule
 
@@ -744,7 +745,6 @@ agent:
 | `bootcamp_preferences.yaml` | `config/` | Language, track, verbosity, style, hooks, pacing |
 | `data_sources.yaml` | `config/` | Data source registry (quality, mapping, load status) |
 | `session_log.jsonl` | `config/` | Session events log (append-only) |
-| `.mcp_status` | `config/` | MCP health check result |
 
 Read-only assets define the rules. Mutable state records where the user is and
 what they have chosen. The agent reads both categories but only writes to
@@ -880,10 +880,9 @@ This rule exists because:
 3. **Verifiability** — MCP responses can be traced to their source
    documentation. Training data cannot.
 
-The rule is enforced by the `verify-senzing-facts` critical hook, which
-fires on every agent response and checks whether Senzing-specific claims
-(method names, attribute names, error codes, configuration values) were
-sourced from an MCP tool call in the current conversation.
+The rule is enforced by agent instructions that direct the agent to always
+use MCP tools for Senzing-specific claims rather than relying on training
+data.
 
 **What counts as a "Senzing fact":**
 
@@ -944,49 +943,12 @@ categories:
 | `explain_error_code` | Diagnose Senzing error codes (456 codes covered) |
 | `submit_feedback` | Report issues or suggestions (disabled by default) |
 
-### MCP Failure and Offline Fallback
+### MCP Requirement
 
-The bootcamp handles MCP unavailability gracefully through a structured
-fallback system. Network outages, corporate proxies, and server maintenance
-should not halt bootcamp progress entirely.
-
-#### Health Check Probe
-
-At every session start (both onboarding and resume), the agent probes the
-MCP server by calling `search_docs` with a 10-second timeout. The result
-is written to `config/.mcp_status`:
-
-- **Success** — Normal operation. All MCP tools available.
-- **Failure** — The agent retries once. If the retry fails, the agent
-  enters offline mode.
-
-#### Offline Mode
-
-When MCP is unavailable, operations split into two categories:
-
-**Blocked** (require MCP, cannot proceed):
-
-- Attribute mapping (`mapping_workflow`)
-- Code generation (`generate_scaffold`)
-- Error diagnosis (`explain_error_code`)
-- SDK reference lookup (`get_sdk_reference`)
-- Documentation search (`search_docs`)
-
-**Continuable** (no MCP needed):
-
-- Business problem definition (Module 1)
-- Data collection and file management (Module 4)
-- Running previously generated code (Modules 5–8)
-- Documentation, review, and git operations
-- Project structure setup and backup/restore
-- Viewing previously generated visualizations
-
-#### Reconnection
-
-The agent attempts MCP reconnection approximately every 10 minutes or when
-the bootcamper explicitly requests a retry. On successful reconnection, the
-agent calls `get_capabilities` to confirm full functionality, then resumes
-any previously blocked operations.
+The Senzing MCP server is required for the bootcamp to function. The health
+check at session start (both onboarding and resume) is a hard gate — if MCP
+is unreachable, the bootcamp blocks with troubleshooting steps until the
+connection is fixed. There is no offline mode or fallback path.
 
 ### Local vs Remote Boundary
 
@@ -1049,9 +1011,6 @@ KEY BOUNDARY RULES:
 • Data mapping → MCP (mapping_workflow, analyze_record)
 • Data file management → local (copy, profile, organize)
 ```
-
-For detailed offline fallback instructions, see
-[OFFLINE_MODE.md](OFFLINE_MODE.md).
 
 ## Context Budget Management
 

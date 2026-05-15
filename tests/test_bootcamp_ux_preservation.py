@@ -23,72 +23,14 @@ def _read(filename: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# module-03-quick-demo.md — Preservation of module close & Module 1 transition
+# module-03-system-verification.md — System Verification module (renamed from Quick Demo)
 # ---------------------------------------------------------------------------
-
-class TestModule03Preservation:
-    """Preserve module close statement and Module 1 transition questions."""
-
-    @pytest.fixture(autouse=True)
-    def load_content(self):
-        self.content = _read("module-03-quick-demo.md")
-
-    def test_explicit_module_close_statement(self):
-        """Module close text 'That's Module 3 complete!' must survive the fix."""
-        assert "That's Module 3 complete!" in self.content
-
-    def test_purpose_summary(self):
-        """Purpose summary about verifying end-to-end system must survive."""
-        assert (
-            "The purpose of this demo was to verify that your entire system works end-to-end"
-            in self.content
-        )
-
-    def test_module_completion_reference(self):
-        """Reference to module-completion.md workflow must survive."""
-        assert "module-completion.md" in self.content
-
-    def test_module1_transition_contrast(self):
-        """Module 1 transition contrast statement must survive."""
-        assert (
-            "Starting with Module 1, we shift to YOUR use case"
-            in self.content
-        )
-
-    def test_no_direct_record_type_question(self):
-        """Direct record-type question must NOT appear — replaced by open-ended approach."""
-        assert (
-            "What kind of records do you work with"
-            not in self.content
-        )
-
-    def test_no_direct_source_systems_question(self):
-        """Direct source-systems question must NOT appear — replaced by open-ended approach."""
-        assert (
-            "How many distinct source systems or feeds will you be ingesting from?"
-            not in self.content
-        )
-
-    def test_no_direct_duplicates_question(self):
-        """Direct duplicates question must NOT appear — replaced by open-ended approach."""
-        assert (
-            "What does a 'duplicate' look like in your world?"
-            not in self.content
-        )
-
-    def test_open_ended_preview(self):
-        """Module 1 open-ended approach preview must be present in transition."""
-        assert (
-            "describe the problem you're trying to solve in your own words"
-            in self.content
-        )
-
-    def test_no_use_case_fallback(self):
-        """Fallback for users with no specific use case must be present."""
-        assert (
-            "The bootcamp works great with sample data too"
-            in self.content
-        )
+#
+# NOTE: The original TestModule03Preservation class asserted content
+# specific to the old "Quick Demo" module (use-case questions, open-ended
+# prompts, fallback for users without data). Module 3 was redesigned to
+# run deterministic verification against the Senzing TruthSet. Those
+# preservation assertions no longer apply and have been removed.
 
 
 # ---------------------------------------------------------------------------
@@ -155,17 +97,18 @@ class TestModuleCompletionPreservation:
         """Journal template 'Bootcamper's takeaway' field must survive."""
         assert "**Bootcamper's takeaway:**" in self.content
 
-    # Reflection question
+    # Reflection question — intentionally removed by skip-reflection-questions spec.
+    # The module completion workflow now skips reflection and proceeds directly
+    # from journal entry to certificate.
     def test_reflection_question_section(self):
-        """Reflection Question section must exist."""
-        assert "## Reflection Question" in self.content
+        """Reflection Question section was removed (skip-reflection-questions spec)."""
+        assert "## Reflection Question" not in self.content
 
     def test_reflection_question_text(self):
-        """Reflection question text about main takeaway must survive."""
-        assert (
-            "main takeaway from the module"
-            in self.content
-        )
+        """Reflection question text removed — takeaway field is auto-filled N/A."""
+        # The skip-reflection-questions spec removed the reflection question.
+        # The journal template's takeaway field is now "N/A" by default.
+        assert "**Bootcamper's takeaway:** N/A" in self.content
 
     # Next-step options: Proceed, Iterate, Share must survive
     # (Explore will be enhanced but not removed)
@@ -190,21 +133,13 @@ class TestModuleCompletionPreservation:
         """Path Completion Detection section must survive."""
         assert "## Path Completion Detection" in self.content
 
-    def test_path_a_in_table(self):
-        """Path A row must survive in the table."""
-        assert "| A" in self.content
+    def test_core_bootcamp_in_table(self):
+        """Core Bootcamp row must survive in the table."""
+        assert "| Core Bootcamp" in self.content
 
-    def test_path_b_in_table(self):
-        """Path B row must survive in the table."""
-        assert "| B" in self.content
-
-    def test_path_c_in_table(self):
-        """Path C row must survive in the table."""
-        assert "| C" in self.content
-
-    def test_path_d_in_table(self):
-        """Path D row must survive in the table."""
-        assert "| D" in self.content
+    def test_advanced_topics_in_table(self):
+        """Advanced Topics row must survive in the table."""
+        assert "| Advanced Topics" in self.content
 
     # Path Completion Celebration
     def test_celebration_section(self):

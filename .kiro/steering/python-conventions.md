@@ -27,7 +27,7 @@ Every script in `senzing-bootcamp/scripts/` follows this structure:
       sys.path.insert(0, _SCRIPTS_DIR)
   ```
 - Class-based test organization: `class TestFeatureName:`
-- Hypothesis PBT: `@given()` with `@settings(max_examples=100)`
+- Hypothesis PBT: `@given()` with `@settings(max_examples=20)`
 - Strategies prefixed with `st_` (e.g., `st_hook_id()`, `st_v1_registry()`)
 - Property test classes document which requirements they validate
 

@@ -7,9 +7,8 @@ critical:
   - review-bootcamper-input
   - code-style-check
   - commonmark-validation
-  - enforce-feedback-path
-  - enforce-working-directory
-  - verify-senzing-facts
+  - enforce-file-path-policies
+  - enforce-single-question
 
 modules:
   1:
@@ -18,6 +17,7 @@ modules:
     - verify-sdk-setup
   3:
     - enforce-visualization-offers
+    - gate-module3-visualization
     - verify-demo-results
   4:
     - validate-data-files

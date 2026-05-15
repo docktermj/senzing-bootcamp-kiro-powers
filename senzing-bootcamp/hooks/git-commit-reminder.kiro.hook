@@ -1,5 +1,5 @@
 {
-  "name": "Git Commit Reminder",
+  "name": "to remind you to commit",
   "version": "1.0.0",
   "description": "Reminds the user to commit their work after completing a module. Triggered manually via button click.",
   "when": {

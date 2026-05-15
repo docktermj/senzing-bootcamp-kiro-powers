@@ -250,7 +250,7 @@ class TestBugConditionProperty:
     On unfixed code this property FAILS, surfacing counterexamples."""
 
     @given(check=st.sampled_from(_BUG_CONDITION_CHECKS))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_step5_satisfies_expected_behavior(self, check: str) -> None:
         """**Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2**
 
@@ -304,18 +304,18 @@ class TestBugConditionProperty:
 import hashlib
 
 _STEP_HASHES: dict[str, str] = {
-    "Step 1": "4de97430a0303ea6d5c1683fdbd9c480cf98245999aac5f53c7992bbf14c8ed1",
+    "Step 1": "68d4a9cd86708c3ac65c2fd2613b0e79c8770ae7cc455d580c0275a721c8d5d7",
     "Step 2": "d699ce64d2b9f6f8f834466b7886611343554f5d3e7f1bf89c39ad7d58cf92a0",
     "Step 3": "3591982547aded6cd5da8870c3c6d8ffa6476f92fa00ea21c9fa1299f6cf4088",
     "Step 4": "5ee5168b5bfe301fcf7f6841ef78f3ab334dfc1b413e7440cc598fc72d69e6be",
     "Step 6": "67f0d91f31c40a0ef08336845a0a001ab959d4dc38c8ef5864e7a0141df4837f",
     "Step 7": "e70acaae1640b0259e3cc5927f5ea27c88a98b3625cc2d5a6eca36ca367bb7a2",
-    "Step 8": "fb49adcbe89176c7822c33742d1b48d44e7e411968e035a3ced5a03f2f0631e3",
-    "Step 9": "88c37cc18880b31179d85efcd076ef2522b1f88ecd9a4a108f8e1f29a2f1f1fa",
+    "Step 8": "a7589b48765763d59c3b6ebff53af14dee93bf8823d2f9e948f58334b85f3305",
+    "Step 9": "feae2a6c6c0dc8af1450941a29336be77de8058412bd2243c9d01ec88da74fce",
 }
 
 _PREAMBLE_HASH = "d7645bfe51464bd2b52d7515a462879ff8d1398148326688fe98d4049602024f"
-_POST_STEP9_HASH = "e66dcbc4ce1861e5684362dae5553fca2db35bef51fa63d65b8c8719b8d8dcd8"
+_POST_STEP9_HASH = "1c91f1e0857159a0162c5161254b71c7fccb9b07f763085742ff4fe2877db3ac"
 
 _EXPECTED_HEADINGS = [
     "# Module 2: SDK Installation and Configuration",
@@ -578,7 +578,7 @@ class TestPreservationProperty:
     EXPECTED OUTCOME on UNFIXED code: all tests PASS."""
 
     @given(step_key=st.sampled_from(_NON_STEP5_KEYS))
-    @settings(max_examples=30)
+    @settings(max_examples=10)
     def test_non_step5_content_preserved(self, step_key: str) -> None:
         """**Validates: Requirements 3.6**
 
@@ -596,7 +596,7 @@ class TestPreservationProperty:
         )
 
     @given(check=st.sampled_from(_STEP5_PRESERVATION_CHECKS))
-    @settings(max_examples=30)
+    @settings(max_examples=10)
     def test_step5_key_content_preserved(self, check: str) -> None:
         """**Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5**
 

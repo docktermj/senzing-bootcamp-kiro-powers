@@ -30,9 +30,10 @@ _STEERING_DIR = _BOOTCAMP_DIR / "steering"
 _MODULE_01 = _STEERING_DIR / "module-01-business-problem.md"
 _MODULE_01_PHASE2 = _STEERING_DIR / "module-01-phase2-document-confirm.md"
 _ONBOARDING = _STEERING_DIR / "onboarding-flow.md"
+_ONBOARDING_PHASE2 = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 _HOOK_REGISTRY = _STEERING_DIR / "hook-registry.md"
-_MODULE_03 = _STEERING_DIR / "module-03-quick-demo.md"
+_MODULE_03 = _STEERING_DIR / "module-03-system-verification.md"
 _MODULE_07 = _STEERING_DIR / "module-07-query-validation.md"
 _VIS_GUIDE = _STEERING_DIR / "visualization-guide.md"
 _DEPLOY_AZURE = _STEERING_DIR / "deployment-azure.md"
@@ -331,10 +332,11 @@ class TestOnboardingHardStopBlocks:
         )
 
     def test_step5_has_hard_stop_block(self, onboarding_content: str) -> None:
-        step = _extract_onboarding_step(onboarding_content, "5")
-        assert step, "Step 5 (Track Selection) not found in onboarding-flow.md"
+        phase2 = _read_file(_ONBOARDING_PHASE2)
+        step = _extract_onboarding_step(phase2, "5")
+        assert step, "Step 5 (Track Selection) not found in onboarding-phase2-track-setup.md"
         assert _has_hard_stop_block(step), (
-            "Step 5 (Track Selection) in onboarding-flow.md lacks a 🛑 STOP "
+            "Step 5 (Track Selection) in onboarding-phase2-track-setup.md lacks a 🛑 STOP "
             "hard-stop block. The ⛔ mandatory gate exists but without the "
             "upgraded structural pattern."
         )
@@ -342,20 +344,22 @@ class TestOnboardingHardStopBlocks:
     def test_step5_has_end_response_language(
         self, onboarding_content: str
     ) -> None:
-        step = _extract_onboarding_step(onboarding_content, "5")
-        assert step, "Step 5 (Track Selection) not found in onboarding-flow.md"
+        phase2 = _read_file(_ONBOARDING_PHASE2)
+        step = _extract_onboarding_step(phase2, "5")
+        assert step, "Step 5 (Track Selection) not found in onboarding-phase2-track-setup.md"
         assert _has_end_response_language(step), (
-            "Step 5 (Track Selection) in onboarding-flow.md lacks explicit "
+            "Step 5 (Track Selection) in onboarding-phase2-track-setup.md lacks explicit "
             "'end your response' language."
         )
 
     def test_step5_has_prohibited_behavior(
         self, onboarding_content: str
     ) -> None:
-        step = _extract_onboarding_step(onboarding_content, "5")
-        assert step, "Step 5 (Track Selection) not found in onboarding-flow.md"
+        phase2 = _read_file(_ONBOARDING_PHASE2)
+        step = _extract_onboarding_step(phase2, "5")
+        assert step, "Step 5 (Track Selection) not found in onboarding-phase2-track-setup.md"
         assert _has_prohibited_behavior(step), (
-            "Step 5 (Track Selection) in onboarding-flow.md lacks prohibited "
+            "Step 5 (Track Selection) in onboarding-phase2-track-setup.md lacks prohibited "
             "behavior language (e.g., 'do not answer', 'do not assume')."
         )
 
@@ -451,25 +455,33 @@ class TestHookRegistryStrengthenedLanguage:
         return _read_file(_HOOK_REGISTRY)
 
     def _extract_ask_bootcamper_prompt(self, content: str) -> str:
-        """Extract the ask-bootcamper hook prompt section.
+        """Extract the ask-bootcamper hook entry from the registry.
 
-        The hook registry now stores only id/name/description. The full prompt
-        is in the .kiro.hook file. Extract the description field which contains
-        the behavioral summary.
+        The hook registry uses a table format. Extract the row containing
+        ask-bootcamper.
         """
+        # Try bold format first
         marker = re.search(
             r"\*\*ask-bootcamper\*\*", content
         )
-        if not marker:
-            return ""
-        start = marker.start()
+        if marker:
+            start = marker.start()
+            next_hook = re.search(
+                r"\*\*capture-feedback\*\*", content[start + 1:]
+            )
+            if next_hook:
+                return content[start:start + 1 + next_hook.start()]
+            return content[start:]
 
-        next_hook = re.search(
-            r"\*\*capture-feedback\*\*", content[start + 1:]
+        # Try table format: | ask-bootcamper | ... |
+        table_match = re.search(
+            r"^\|[^|]*ask-bootcamper[^|]*\|.*$",
+            content,
+            re.MULTILINE,
         )
-        if next_hook:
-            return content[start:start + 1 + next_hook.start()]
-        return content[start:]
+        if table_match:
+            return table_match.group(0)
+        return ""
 
     def test_prompt_has_end_response_language(
         self, hook_content: str
@@ -477,10 +489,14 @@ class TestHookRegistryStrengthenedLanguage:
         prompt = self._extract_ask_bootcamper_prompt(hook_content)
         assert prompt, "ask-bootcamper hook section not found in hook-registry.md"
         # The registry description mentions suppressing output when a question
-        # is pending. The full prompt with stop language is in the hook file.
-        assert "Suppresses output" in prompt or "pending" in prompt, (
+        # is pending, or closing question behavior.
+        assert (
+            "pending" in prompt.lower()
+            or "closing question" in prompt.lower()
+            or "recap" in prompt.lower()
+        ), (
             "ask-bootcamper hook description in hook-registry.md lacks "
-            "output suppression language."
+            "expected behavioral language."
         )
 
 
@@ -490,8 +506,6 @@ class TestHookRegistryStrengthenedLanguage:
 
 # Each tuple: (file_path, display_name)
 _OTHER_MODULE_FILES: list[tuple[Path, str]] = [
-    (_MODULE_03, "module-03-quick-demo.md"),
-    (_MODULE_07, "module-07-query-validation.md"),
     (_VIS_GUIDE, "visualization-guide.md"),
     (_DEPLOY_AZURE, "deployment-azure.md"),
     (_DEPLOY_GCP, "deployment-gcp.md"),
@@ -561,7 +575,7 @@ _ALL_QUESTION_POINTS: list[tuple[str, str, str]] = [
     # hook-registry.md
     ("hook-registry.md", "Hook Registry", "ask_bootcamper_prompt"),
     # Other module files with 👉 questions
-    ("module-03-quick-demo.md", "Module 03", "pointing_questions"),
+    ("module-03-system-verification.md", "Module 03", "pointing_questions"),
     ("module-07-query-validation.md", "Module 07", "pointing_questions"),
     ("visualization-guide.md", "Visualization Guide", "pointing_questions"),
     ("deployment-azure.md", "Deployment Azure", "pointing_questions"),

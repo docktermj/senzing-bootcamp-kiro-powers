@@ -1,5 +1,5 @@
 {
-  "name": "Security Scan on Save",
+  "name": "to run a security scan",
   "version": "1.0.0",
   "description": "When security-related files are modified during Module 9, reminds the agent to re-run vulnerability scanning to catch regressions.",
   "when": {

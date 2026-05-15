@@ -25,6 +25,73 @@ inclusion: manual
 
     **Checkpoint:** Write step 24 to `config/bootcamp_progress.json`.
 
+    #### 24a. Capture ER Statistics
+
+    After evaluating entity resolution results, capture the current statistics to a JSON file for comparison tracking. Use the Senzing SDK (via `generate_scaffold` or `find_examples`) to query the following counts:
+
+    - **entity_count** — total resolved entities
+    - **record_count** — total records loaded
+    - **match_count** — number of matches (records that resolved together)
+    - **possible_match_count** — number of possible matches flagged
+    - **relationship_count** — number of disclosed relationships
+
+    Save the statistics to `config/er_current_{datasource}.json` in this format:
+
+    ```json
+    {
+      "datasource": "CUSTOMERS",
+      "entity_count": 847,
+      "record_count": 1000,
+      "match_count": 153,
+      "possible_match_count": 12,
+      "relationship_count": 45,
+      "captured_at": "2026-04-20T14:30:00Z"
+    }
+    ```
+
+    > **Agent instruction:** Use `generate_scaffold` or `find_examples` to produce SDK code that queries these counts from the Senzing engine. Run the generated code and write the results to the JSON file. Use the datasource name (lowercased) in the filename.
+
+    #### 24b. Baseline Detection
+
+    Check whether a baseline file exists at `config/er_baseline_{datasource}.json` (where `{datasource}` is the lowercase datasource name).
+
+    - **If no baseline exists:** This is the first test load for this data source. Save the current statistics as the baseline:
+
+      ```text
+      No baseline found for {DATASOURCE}. Saving current statistics as your first baseline.
+      ```
+
+      Copy `config/er_current_{datasource}.json` to `config/er_baseline_{datasource}.json`. Inform the bootcamper that future test loads will compare against this baseline so they can see how mapping changes affect entity resolution quality.
+
+    - **If a baseline exists:** Proceed to step 24c (comparison).
+
+    #### 24c. Compare Against Baseline
+
+    When a baseline exists, run the comparison script to show the bootcamper how their mapping changes affected entity resolution:
+
+    ```bash
+    python3 senzing-bootcamp/scripts/compare_results.py \
+      --baseline config/er_baseline_{datasource}.json \
+      --current config/er_current_{datasource}.json
+    ```
+
+    Present the diff output to the bootcamper. The report shows per-metric deltas (entities gained/lost, matches gained/lost) and an overall quality assessment (improved, degraded, or unchanged). Explain what the changes mean:
+
+    - **Fewer entities + more matches** → better deduplication, mapping improvement
+    - **More entities + fewer matches** → less deduplication, possible mapping regression
+    - **Unchanged** → mapping change had no measurable impact on ER quality
+
+    #### 24d. Accept or Reject New Baseline
+
+    Ask the bootcamper whether they want to accept the current results as the new baseline:
+
+    > "Your mapping change resulted in [quality_assessment]. Would you like to accept these results as your new baseline for future comparisons, or would you prefer to iterate on the mapping and try again?"
+
+    - **If accepted:** Copy `config/er_current_{datasource}.json` to `config/er_baseline_{datasource}.json`. Confirm: "New baseline saved. Future test loads will compare against these results."
+    - **If rejected:** Keep the existing baseline unchanged. Inform the bootcamper they can return to Phase 2 to adjust their mapping and re-run Phase 3 to see updated results.
+
+    > **Agent instruction:** Only present the accept/reject gate when a prior baseline existed (i.e., this is not the first test load). On the first test load, the baseline is saved automatically in step 24b without asking.
+
 25. **Present results and decision gate:** Present the Phase 3 results summary for this data source. Include: records loaded, entities created, deduplication rate, quality assessment, and any issues found. Ask the bootcamper to review the results before proceeding.
 
     > **Agent instruction — Data Source Registry:** Update the source's `test_load_status` to `complete` and `test_entity_count` to the entity count from the test load in `config/data_sources.yaml`. Set `updated_at`.

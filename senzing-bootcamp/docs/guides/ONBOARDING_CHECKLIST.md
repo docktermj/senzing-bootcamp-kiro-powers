@@ -15,7 +15,7 @@ The bootcamp handles most setup automatically — just say "start the bootcamp" 
 - [ ] Sample data extracted (100-1000 records) if using your own data
 - [ ] Data privacy requirements understood (GDPR, HIPAA, etc.)
 
-If you don't have data ready, the bootcamp provides three sample datasets (Las Vegas, London, Moscow) and can generate test data at any point.
+If you don't have data ready, the bootcamp recommends CORD (Collections Of Relatable Data) — Senzing's curated sample datasets (Las Vegas, London, Moscow) designed for entity resolution evaluation. Learn more at <https://senzing.com/senzing-ready-data-collections-cord/>. If CORD data doesn't meet your needs, test data can be generated as a fallback.
 
 ## What the Agent Does for You
 
@@ -45,4 +45,4 @@ python3 -c "import shutil; u=shutil.disk_usage('.'); print(f'{u.free/(1024**3):.
 
 ## Ready?
 
-Say "start the bootcamp" — the agent guides you from there. See `QUICK_START.md` for path options, or `GLOSSARY.md` if you encounter unfamiliar terms.
+Say "start the bootcamp" — the agent guides you from there. See `QUICK_START.md` for path options, or ask the agent to explain any unfamiliar terms.

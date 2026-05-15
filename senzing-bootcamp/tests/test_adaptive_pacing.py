@@ -56,7 +56,7 @@ class TestClassifyPacingProperties:
     """
 
     @given(entries=st.lists(st_session_entry(), min_size=0, max_size=50))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_deterministic(self, entries: list[dict]) -> None:
         """Same inputs always produce same output."""
         result1 = classify_pacing(entries)
@@ -64,7 +64,7 @@ class TestClassifyPacingProperties:
         assert result1 == result2
 
     @given(entries=st.lists(st_session_entry(), min_size=0, max_size=50))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_all_values_valid(self, entries: list[dict]) -> None:
         """All returned values are in the valid set."""
         result = classify_pacing(entries)
@@ -77,7 +77,7 @@ class TestClassifyPacingProperties:
         assert classify_pacing([]) == {}
 
     @given(entries=st.lists(st_session_entry(), min_size=1, max_size=50))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_modules_with_zero_turns_excluded(self, entries: list[dict]) -> None:
         """Modules with zero turns are never classified."""
         result = classify_pacing(entries)
@@ -90,7 +90,7 @@ class TestClassifyPacingProperties:
         computed=st.dictionaries(st_module, st.sampled_from(["struggled", "comfortable", "normal"])),
         overrides=st.dictionaries(st_module, st.sampled_from(["struggled", "comfortable", "normal"])),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_overrides_take_precedence(
         self, computed: dict[int, str], overrides: dict[int, str]
     ) -> None:

@@ -51,9 +51,8 @@ CRITICAL_HOOKS: list[str] = [
     "review-bootcamper-input",
     "code-style-check",
     "commonmark-validation",
-    "enforce-feedback-path",
-    "enforce-working-directory",
-    "verify-senzing-facts",
+    "enforce-file-path-policies",
+    "enforce-single-question",
 ]
 
 SEMVER_PATTERN: re.Pattern[str] = re.compile(
@@ -65,6 +64,7 @@ SILENT_PROCESSING_PATTERNS: list[str] = [
     r"produce no output at all",
     r"do nothing",
     r"do not acknowledge.*do not explain.*do not print",
+    r"policy:\s*pass",
 ]
 
 

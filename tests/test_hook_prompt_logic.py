@@ -44,65 +44,41 @@ def _load_hook_data(hook_id: str) -> dict:
 
 
 # ===========================================================================
-# TestVerifySenzingFacts — Req 3.1
+# TestEnforceFilePathPolicies — Req 3.2, 3.4 (consolidated hook)
 # ===========================================================================
 
-class TestVerifySenzingFacts:
-    """Verify verify-senzing-facts prompt references at least one MCP tool name."""
-
-    MCP_TOOL_NAMES = [
-        "mapping_workflow",
-        "generate_scaffold",
-        "get_sdk_reference",
-        "search_docs",
-        "explain_error_code",
-        "sdk_guide",
-    ]
-
-    def test_prompt_references_mcp_tool(self):
-        """Prompt references at least one Senzing MCP tool name (Req 3.1)."""
-        prompt = _load_prompt("verify-senzing-facts")
-        found = [tool for tool in self.MCP_TOOL_NAMES if tool in prompt]
-        assert len(found) >= 1, (
-            f"verify-senzing-facts prompt does not reference any MCP tool. "
-            f"Expected at least one of: {self.MCP_TOOL_NAMES}"
-        )
-
-    def test_prompt_references_multiple_mcp_tools(self):
-        """Prompt references multiple MCP tools for comprehensive coverage."""
-        prompt = _load_prompt("verify-senzing-facts")
-        found = [tool for tool in self.MCP_TOOL_NAMES if tool in prompt]
-        assert len(found) >= 3, (
-            f"verify-senzing-facts prompt only references {len(found)} MCP tools: {found}. "
-            f"Expected at least 3 for comprehensive coverage."
-        )
-
-
-# ===========================================================================
-# TestEnforceWorkingDirectory — Req 3.2
-# ===========================================================================
-
-class TestEnforceWorkingDirectory:
-    """Verify enforce-working-directory prompt references forbidden path patterns."""
+class TestEnforceFilePathPolicies:
+    """Verify enforce-file-path-policies prompt covers both path policies:
+    (1) feedback path and (2) working-directory restrictions.
+    """
 
     FORBIDDEN_PATHS = ["/tmp/", "%TEMP%", "~/Downloads"]
+    CANONICAL_FEEDBACK_PATH = "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md"
 
-    def test_prompt_references_forbidden_path(self):
+    def test_prompt_references_forbidden_paths(self):
         """Prompt references at least one forbidden path pattern (Req 3.2)."""
-        prompt = _load_prompt("enforce-working-directory")
+        prompt = _load_prompt("enforce-file-path-policies")
         found = [p for p in self.FORBIDDEN_PATHS if p in prompt]
         assert len(found) >= 1, (
-            f"enforce-working-directory prompt does not reference any forbidden path. "
-            f"Expected at least one of: {self.FORBIDDEN_PATHS}"
+            f"enforce-file-path-policies prompt does not reference any forbidden "
+            f"path. Expected at least one of: {self.FORBIDDEN_PATHS}"
         )
 
     def test_prompt_references_all_forbidden_paths(self):
         """Prompt references all three forbidden path patterns."""
-        prompt = _load_prompt("enforce-working-directory")
+        prompt = _load_prompt("enforce-file-path-policies")
         for path in self.FORBIDDEN_PATHS:
             assert path in prompt, (
-                f"enforce-working-directory prompt missing forbidden path: {path}"
+                f"enforce-file-path-policies prompt missing forbidden path: {path}"
             )
+
+    def test_prompt_contains_canonical_feedback_path(self):
+        """Prompt contains the canonical feedback file path (Req 3.4)."""
+        prompt = _load_prompt("enforce-file-path-policies")
+        assert self.CANONICAL_FEEDBACK_PATH in prompt, (
+            f"enforce-file-path-policies prompt does not contain canonical "
+            f"feedback path: {self.CANONICAL_FEEDBACK_PATH}"
+        )
 
 
 # ===========================================================================
@@ -136,24 +112,6 @@ class TestReviewBootcamperInput:
         missing = [t for t in self.FEEDBACK_TRIGGERS if t.lower() not in prompt]
         assert not missing, (
             f"review-bootcamper-input prompt missing trigger phrases: {missing}"
-        )
-
-
-# ===========================================================================
-# TestEnforceFeedbackPath — Req 3.4
-# ===========================================================================
-
-class TestEnforceFeedbackPath:
-    """Verify enforce-feedback-path prompt contains canonical feedback file path."""
-
-    CANONICAL_PATH = "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md"
-
-    def test_prompt_contains_canonical_path(self):
-        """Prompt contains the canonical feedback file path (Req 3.4)."""
-        prompt = _load_prompt("enforce-feedback-path")
-        assert self.CANONICAL_PATH in prompt, (
-            f"enforce-feedback-path prompt does not contain canonical path: "
-            f"{self.CANONICAL_PATH}"
         )
 
 

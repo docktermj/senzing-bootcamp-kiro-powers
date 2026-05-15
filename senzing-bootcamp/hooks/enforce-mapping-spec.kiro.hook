@@ -1,5 +1,5 @@
 {
-  "name": "Enforce Mapping Specification",
+  "name": "to enforce the mapping specification",
   "version": "1.0.0",
   "description": "When transformed data is created, verifies that a per-source mapping specification markdown exists in docs/. Blocks progression until the mapping spec is created.",
   "when": {

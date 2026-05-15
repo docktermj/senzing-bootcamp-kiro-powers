@@ -1,5 +1,5 @@
 {
-  "name": "Backup Database Before Loading",
+  "name": "to remind you to back up before loading",
   "version": "2.0.0",
   "description": "Remind to backup database before running loading programs",
   "when": {

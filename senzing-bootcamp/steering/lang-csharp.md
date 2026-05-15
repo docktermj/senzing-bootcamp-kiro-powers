@@ -8,15 +8,15 @@ fileMatchPattern: "**/*.cs"
 ## Senzing SDK Best Practices
 
 - Always obtain SDK method signatures from the MCP server (`get_sdk_reference`) — never guess class names or method parameters
-- Use `using` statements or `IDisposable` patterns to guarantee engine cleanup — ensures `Destroy()` is called on exit and exceptions
+- Use `using` statements or `IDisposable` patterns to guarantee engine cleanup — call `get_sdk_reference` for the current cleanup method name
 - Load engine configuration from JSON files using `File.ReadAllText()` with `Encoding.UTF8` — never hardcode configuration
-- Catch the Senzing-specific exception type separately from `System.Exception` for clear error diagnosis
+- Catch the Senzing-specific exception type (call `get_sdk_reference` for the current exception class name) separately from `System.Exception` for clear error diagnosis
 - Initialize the engine once at application startup and reuse — do not create/destroy per record
 - Use `explain_error_code` via MCP for any Senzing error codes encountered at runtime
 
 ## Common Pitfalls
 
-- **Missing Dispose calls**: Senzing engine wraps native resources — always use `using` blocks or implement `IDisposable` on wrapper classes
+- **Missing Dispose calls**: Senzing engine wraps native resources — always use `using` blocks or implement `IDisposable` on wrapper classes to ensure cleanup (call `get_sdk_reference` for the current cleanup method)
 - **Using `async void`**: Never use `async void` except for event handlers — use `async Task` so exceptions propagate correctly
 - **Encoding mismatches**: Always specify `Encoding.UTF8` when reading data files — `File.ReadAllText()` defaults to UTF-8 but `StreamReader` may not on all platforms
 - **Blocking on async code**: Never call `.Result` or `.Wait()` on async SDK calls — use `await` throughout to avoid deadlocks
@@ -43,9 +43,10 @@ fileMatchPattern: "**/*.cs"
 
 - .NET 6+ runs cross-platform — but Senzing native libraries differ per OS; follow `sdk_guide` output for library paths
 - On Linux, set `LD_LIBRARY_PATH` to include Senzing shared library directory before running `dotnet run`
+- On macOS, set `DYLD_LIBRARY_PATH` to include the Senzing `lib` directory — native library resolution requires this for .NET P/Invoke calls
 - On Windows, Senzing DLLs are typically on `PATH` after installation — verify if running from IDE or CI
 - Target `net6.0` or later in `.csproj` — earlier frameworks have limited cross-platform support
-- Use `dotnet publish -r linux-x64` (or `win-x64`) for self-contained deployments that bundle the runtime
+- Use `dotnet publish -r linux-x64` (or `win-x64`, `osx-x64`) for self-contained deployments that bundle the runtime
 
 ## Common Environment Issues
 
@@ -62,7 +63,7 @@ fileMatchPattern: "**/*.cs"
 
 ### NuGet Package Restore Failures
 
-**Symptom**: `Unable to resolve package` or `NU1101: Unable to find package Senzing.Sdk` during restore
+**Symptom**: `Unable to resolve package` or NuGet cannot find the Senzing SDK package during restore
 **Cause**: The NuGet package source for Senzing is not configured, or network access to the feed is blocked
 **Fix**:
 

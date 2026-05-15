@@ -16,7 +16,7 @@ import pytest
 # ---------------------------------------------------------------------------
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
-REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry.md")
+REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry-detail.md")
 
 EXPECTED_HOOK_COUNT = 26
 
@@ -47,6 +47,11 @@ TOOL_EVENT_TYPES = {"preToolUse", "postToolUse"}
 PASS_THROUGH_EVENT_TYPES = {"preToolUse", "promptSubmit"}
 EXEMPT_FROM_CLOSING_QUESTION = {"agentStop", "userTriggered"}
 
+# Hooks that intentionally include forward-moving question instructions by design.
+# These are exempt from the "no inline closing questions" check because their
+# purpose includes guiding the bootcamper to the next step after performing work.
+HOOKS_WITH_INTENTIONAL_CLOSING_QUESTION = {"commonmark-validation.kiro.hook"}
+
 # ---------------------------------------------------------------------------
 # Prompt pattern constants
 # ---------------------------------------------------------------------------
@@ -55,6 +60,7 @@ SILENT_PROCESSING_PATTERNS = [
     r"produce no output at all",
     r"do nothing",
     r"do not acknowledge.*do not explain.*do not print",
+    r"policy:\s*pass",
 ]
 
 CLOSING_QUESTION_PATTERNS = [
@@ -325,6 +331,7 @@ _non_exempt_hooks = [
     (name, data)
     for name, data in _hook_data
     if data.get("when", {}).get("type") not in EXEMPT_FROM_CLOSING_QUESTION
+    and name not in HOOKS_WITH_INTENTIONAL_CLOSING_QUESTION
 ]
 _non_exempt_ids = [name for name, _ in _non_exempt_hooks]
 
@@ -420,14 +427,14 @@ class TestHookCount:
     """Validate the expected number of hooks."""
 
     def test_hook_file_count(self):
-        """Exactly 20 .kiro.hook files exist (Req 5.1, 5.3)."""
+        """Exactly 24 .kiro.hook files exist (Req 5.1, 5.3)."""
         actual = len(get_hook_files())
         assert actual == EXPECTED_HOOK_COUNT, (
             f"Expected {EXPECTED_HOOK_COUNT} hook files, found {actual}"
         )
 
     def test_registry_entry_count(self):
-        """Exactly 20 registry entries exist (Req 5.2, 5.3)."""
+        """Exactly 24 registry entries exist (Req 5.2, 5.3)."""
 
         entries = parse_registry()
         actual = len(entries)
@@ -471,8 +478,8 @@ class TestEventTypeValidation:
 class TestRealHookFiles:
     """Example-based unit tests that validate real hook file data."""
 
-    def test_all_20_hook_files_parse_as_valid_json(self):
-        """All 20 real hook files parse as valid JSON (Req 1.1)."""
+    def test_all_25_hook_files_parse_as_valid_json(self):
+        """All 25 real hook files parse as valid JSON (Req 1.1)."""
         hook_files = get_hook_files()
         assert len(hook_files) == EXPECTED_HOOK_COUNT
         for path in hook_files:
@@ -480,12 +487,12 @@ class TestRealHookFiles:
                 data = json.load(f)
             assert isinstance(data, dict), f"{path.name} did not parse as a JSON object"
 
-    def test_hook_file_count_is_20(self):
-        """Hook file count is exactly 21 (Req 5.1)."""
+    def test_hook_file_count_is_25(self):
+        """Hook file count is exactly 25 (Req 5.1)."""
         assert len(get_hook_files()) == EXPECTED_HOOK_COUNT
 
-    def test_registry_entry_count_is_20(self):
-        """Registry entry count is exactly 21 (Req 5.2)."""
+    def test_registry_entry_count_is_25(self):
+        """Registry entry count is exactly 25 (Req 5.2)."""
         assert len(parse_registry()) == EXPECTED_HOOK_COUNT
 
     def test_valid_event_types_has_10_entries(self):
@@ -500,9 +507,7 @@ class TestRealHookFiles:
 
     @pytest.mark.parametrize("hook_id", [
         "review-bootcamper-input",
-        "enforce-feedback-path",
-        "enforce-working-directory",
-        "verify-senzing-facts",
+        "enforce-file-path-policies",
     ])
     def test_real_pass_through_hooks_have_silent_processing(self, hook_id: str):
         """Real pass-through hooks contain silent-processing instructions (Req 2.1)."""
@@ -517,6 +522,8 @@ class TestRealHookFiles:
         for name, data in _hook_data:
             event_type = data.get("when", {}).get("type", "")
             if event_type in EXEMPT_FROM_CLOSING_QUESTION:
+                continue
+            if name in HOOKS_WITH_INTENTIONAL_CLOSING_QUESTION:
                 continue
             prompt = data.get("then", {}).get("prompt", "")
             matched = find_closing_question(prompt)

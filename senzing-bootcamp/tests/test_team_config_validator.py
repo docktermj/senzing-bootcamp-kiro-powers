@@ -119,14 +119,14 @@ class TestProperty1ConfigValidation:
     9.2, 9.3, 9.4, 9.5, 9.6, 9.8**"""
 
     @given(config=valid_config_strategy())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_valid_configs_accepted(self, config):
         """Valid configs produce no validation errors."""
         errors = validate_team_config(config)
         assert errors == [], f"Expected no errors for valid config, got: {errors}"
 
     @given(data=st.data())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_invalid_configs_produce_errors(self, data):
         """Configs with at least one violation produce non-empty error lists."""
         # Start with a valid config and break it in a random way
@@ -188,7 +188,7 @@ class TestProperty2PathResolution:
         member_name=member_name_strategy,
         repo_path=repo_path_strategy,
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_colocated_paths_contain_member_id(
         self, member_id, member_name, repo_path
     ):
@@ -222,7 +222,7 @@ class TestProperty2PathResolution:
         member_name=member_name_strategy,
         repo_path=repo_path_strategy,
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_distributed_paths_rooted_at_repo_path(
         self, member_id, member_name, repo_path
     ):

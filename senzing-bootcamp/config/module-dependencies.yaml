@@ -1,6 +1,6 @@
 metadata:
   version: "1.0.0"
-  last_updated: "2025-07-15"
+  last_updated: "2026-05-14"
 
 modules:
   1:
@@ -12,12 +12,13 @@ modules:
     requires: []
     skip_if: "SDK already installed and configured"
   3:
-    name: "Quick Demo"
+    name: "System Verification"
     requires: [2]
-    skip_if: "Already familiar with Senzing"
+    skip_if: "Bootcamper explicitly requests skip ('skip verification' or 'I've already verified')"
   4:
     name: "Data Collection"
     requires: [1]
+    soft_requires: [3]
     skip_if: null
   5:
     name: "Data Quality & Mapping"
@@ -49,11 +50,6 @@ modules:
     skip_if: "Not deploying to production"
 
 tracks:
-  quick_demo:
-    name: "Quick Demo"
-    description: "Fastest path to see Senzing in action"
-    modules: [2, 3]
-    recommendation: "neutral"
   core_bootcamp:
     name: "Core Bootcamp"
     description: "Recommended foundation covering problem definition through query/visualize"
@@ -74,7 +70,7 @@ gates:
       - "SDK installed, DB configured, test passes"
   "3->4":
     requires:
-      - "Demo completed or skipped"
+      - "System verification passed or explicitly skipped by bootcamper"
   "4->5":
     requires:
       - "Sources collected, files in data/raw/"

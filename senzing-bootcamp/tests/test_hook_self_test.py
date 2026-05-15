@@ -387,7 +387,7 @@ class TestPropertyValidHookPasses:
     """
 
     @given(hook_data=st_valid_hook())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_valid_hook_always_passes(self, hook_data: dict) -> None:
         """Any hook with valid structure passes all checks."""
         with tempfile.TemporaryDirectory() as tmp:

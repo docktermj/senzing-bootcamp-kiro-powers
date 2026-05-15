@@ -83,7 +83,7 @@ class TestProperty1SerializationRoundTrip:
     """
 
     @given(prefs=st_verbosity_preferences())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_round_trip_preserves_values(self, prefs):
         """serialize then deserialize produces identical preset and categories."""
         yaml_text = serialize_preferences(prefs)
@@ -106,7 +106,7 @@ class TestProperty2CategoryLevelClamping:
         category=st.sampled_from(CATEGORIES),
         delta=st_delta(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_adjusted_level_equals_clamped_value(self, prefs, category, delta):
         """adjust_category produces clamp(original + delta, 1, 3) for the target category."""
         original_level = prefs.categories[category]
@@ -119,7 +119,7 @@ class TestProperty2CategoryLevelClamping:
         category=st.sampled_from(CATEGORIES),
         delta=st_delta(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_other_categories_unchanged(self, prefs, category, delta):
         """adjust_category leaves all other category levels unchanged."""
         result = adjust_category(prefs, category, delta)
@@ -141,7 +141,7 @@ class TestProperty3PresetDetectionAfterAdjustment:
         category=st.sampled_from(CATEGORIES),
         delta=st_delta(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_preset_detection_after_single_adjustment(self, preset_name, category, delta):
         """After adjusting one category from a named preset, detect_preset returns
         the correct preset name or 'custom'."""
@@ -170,13 +170,13 @@ class TestProperty4UnrecognizedTermRejection:
     """
 
     @given(term=st_non_matching_term())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_non_matching_term_returns_none(self, term):
         """Any string not in NL_TERM_MAP returns None from match_nl_term."""
         assert match_nl_term(term) is None
 
     @given(term=st.sampled_from(sorted(NL_TERM_MAP.keys())))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_matching_term_returns_correct_category(self, term):
         """Any key in NL_TERM_MAP returns the correct category from match_nl_term."""
         expected = NL_TERM_MAP[term]

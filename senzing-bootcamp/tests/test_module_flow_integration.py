@@ -10,6 +10,7 @@ from __future__ import annotations
 import importlib
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -102,7 +103,7 @@ ARTIFACTS: dict[int, list] = {
 
 
 class TestModuleFlowTrackA:
-    """Integration test: Track A (Quick Demo) flow — Modules 1 → 2 → 3."""
+    """Integration test: Core Bootcamp flow — Modules 1 → 2 → 3."""
 
     def test_track_a_sequential_validation(self, project_root):
         """Validates that completing modules 1, 2, 3 in sequence passes all gates."""
@@ -269,6 +270,69 @@ class TestGateEnforcement:
             creator(root)
         results = validate_module.VALIDATORS[7]()
         assert all(ok for ok, _, _ in results)
+
+
+class TestOnboardingStep5TrackBullets:
+    """Integration test: onboarding-phase2-track-setup.md Step 5 lists exactly 2 tracks.
+
+    Validates: Requirement 7.2
+    """
+
+    _ONBOARDING_FILE = (
+        Path(__file__).resolve().parent.parent / "steering" / "onboarding-phase2-track-setup.md"
+    )
+
+    def _extract_step5_section(self) -> str:
+        """Extract the Step 5 section from onboarding-phase2-track-setup.md."""
+        content = self._ONBOARDING_FILE.read_text(encoding="utf-8")
+        match = re.search(r"(## 5\. Track Selection.*?)(?=\n## |\Z)", content, re.DOTALL)
+        assert match is not None, "Step 5 section not found in onboarding-phase2-track-setup.md"
+        return match.group(1)
+
+    def test_exactly_two_track_bullets(self) -> None:
+        """Step 5 presents exactly 2 track bullets (Core Bootcamp, Advanced Topics)."""
+        section = self._extract_step5_section()
+        # Track bullets are markdown list items starting with "- **TrackName**"
+        track_bullets = re.findall(r"^- \*\*[^*]+\*\*", section, re.MULTILINE)
+        assert len(track_bullets) == 2, (
+            f"Expected exactly 2 track bullets in Step 5, found {len(track_bullets)}: "
+            f"{track_bullets}"
+        )
+
+    def test_core_bootcamp_bullet_present(self) -> None:
+        """Step 5 contains a Core Bootcamp track bullet."""
+        section = self._extract_step5_section()
+        assert "**Core Bootcamp**" in section, (
+            "Step 5 missing 'Core Bootcamp' track bullet"
+        )
+
+    def test_advanced_topics_bullet_present(self) -> None:
+        """Step 5 contains an Advanced Topics track bullet."""
+        section = self._extract_step5_section()
+        assert "**Advanced Topics**" in section, (
+            "Step 5 missing 'Advanced Topics' track bullet"
+        )
+
+    def test_no_system_verification_bullet(self) -> None:
+        """Step 5 does NOT list System Verification as a separate track.
+
+        Module 3 (System Verification) is part of the Core Bootcamp track
+        (listed by number), not a standalone track option. It should never
+        appear as a named bullet in the track selection step.
+        """
+        section = self._extract_step5_section()
+        assert "System Verification" not in section, (
+            "Step 5 should not mention 'System Verification' — it is part of Core Bootcamp, "
+            "not a separate track option"
+        )
+
+    def test_no_quick_demo_track_bullet(self) -> None:
+        """Step 5 does NOT contain a Quick Demo track bullet."""
+        section = self._extract_step5_section()
+        # Check for bold Quick Demo bullet specifically (Module 3 name may appear elsewhere)
+        assert "**Quick Demo**" not in section, (
+            "Step 5 still contains '**Quick Demo**' track bullet — should be removed"
+        )
 
 
 class TestPropertyModuleTransitionConsistency:

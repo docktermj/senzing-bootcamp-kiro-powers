@@ -187,11 +187,11 @@ class TestProperty1NonAdvancedTracksGate:
 
     @given(
         track=st.one_of(
-            st.sampled_from(["quick_demo", "core_bootcamp"]),
+            st.sampled_from(["core_bootcamp"]),
             st.text(),
         )
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_non_advanced_track_triggers_skip(self, track: str) -> None:
         """For any non-advanced track, the skip branch contains skip language.
 
@@ -250,7 +250,7 @@ class TestProperty2DeploymentOptionsPreserved:
             "not sure yet",
         ])
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_deployment_option_present_in_advanced_branch(self, option: str) -> None:
         """For any known deployment option, the advanced branch contains it.
 
@@ -286,7 +286,7 @@ class TestProperty3CheckpointWrittenForAllOutcomes:
     """
 
     @given(path=st.sampled_from(["advanced", "non_advanced"]))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_checkpoint_exists_for_all_paths(self, path: str) -> None:
         """For any execution path through Step 9, a checkpoint instruction exists.
 

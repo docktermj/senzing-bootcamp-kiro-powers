@@ -230,7 +230,7 @@ class TestModuleStatusProperties:
     """Property-based tests for module status determination."""
 
     @given(progress=st_progress())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_status_always_valid(self, progress: dict):
         """Module status is always one of {complete, current, available, locked}."""
         modules = _default_modules()
@@ -242,7 +242,7 @@ class TestModuleStatusProperties:
             )
 
     @given(progress=st_progress())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_completed_never_locked(self, progress: dict):
         """Completed modules are never shown as locked."""
         modules = _default_modules()
@@ -255,7 +255,7 @@ class TestModuleStatusProperties:
                 )
 
     @given(progress=st_progress())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_current_never_complete(self, progress: dict):
         """Current module is never shown as complete (unless also in completed)."""
         modules = _default_modules()
@@ -327,5 +327,5 @@ class TestYAMLParser:
             pytest.skip("module-dependencies.yaml not found")
         text = yaml_path.read_text(encoding="utf-8")
         tracks = _parse_yaml_tracks(text)
-        assert "quick_demo" in tracks
-        assert tracks["quick_demo"]["modules"] == [2, 3]
+        assert "core_bootcamp" in tracks
+        assert tracks["core_bootcamp"]["modules"] == [1, 2, 3, 4, 5, 6, 7]

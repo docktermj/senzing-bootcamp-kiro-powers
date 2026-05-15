@@ -22,7 +22,8 @@ from sync_hook_registry import (
     parse_all_hooks,
     load_category_mapping,
     categorize_hooks,
-    generate_registry,
+    generate_registry_summary,
+    generate_registry_detail,
     write_registry,
     verify_registry,
 )
@@ -48,7 +49,9 @@ class TestEndToEndGenerate:
 
         mapping = load_category_mapping(_CATEGORIES_PATH)
         critical, modules = categorize_hooks(entries, mapping)
-        content = generate_registry(critical, modules, len(entries))
+        content = generate_registry_summary(
+            critical, modules, len(entries), categories_path=_CATEGORIES_PATH
+        )
 
         matches, msg = verify_registry(content, _REGISTRY_PATH)
         assert matches, f"Generated registry does not match existing: {msg}"
@@ -87,7 +90,7 @@ class TestRegenerateTwice:
         mapping = load_category_mapping(_CATEGORIES_PATH)
 
         critical1, modules1 = categorize_hooks(entries, mapping)
-        content1 = generate_registry(critical1, modules1, len(entries))
+        content1 = generate_registry_summary(critical1, modules1, len(entries))
 
         # Write to temp, re-read, compare
         with tempfile.NamedTemporaryFile(
@@ -98,7 +101,7 @@ class TestRegenerateTwice:
 
         try:
             critical2, modules2 = categorize_hooks(entries, mapping)
-            content2 = generate_registry(critical2, modules2, len(entries))
+            content2 = generate_registry_summary(critical2, modules2, len(entries))
 
             assert content1 == content2, "Two generations must be byte-identical"
 

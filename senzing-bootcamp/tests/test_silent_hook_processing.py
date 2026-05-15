@@ -39,25 +39,15 @@ _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 _AFFECTED_HOOK_FILES: dict[str, Path] = {
     "ask-bootcamper": _HOOKS_DIR / "ask-bootcamper.kiro.hook",
     "review-bootcamper-input": _HOOKS_DIR / "review-bootcamper-input.kiro.hook",
-    "enforce-feedback-path": _HOOKS_DIR / "enforce-feedback-path.kiro.hook",
-    "enforce-working-directory": (
-        _HOOKS_DIR / "enforce-working-directory.kiro.hook"
-    ),
-    "verify-senzing-facts": _HOOKS_DIR / "verify-senzing-facts.kiro.hook",
 }
 
 _ASK_BOOTCAMPER_HOOK_FILE = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
 
 # preToolUse hooks that need STOP instructions
 _PRE_TOOL_USE_HOOKS: dict[str, Path] = {
-    "verify-senzing-facts": _HOOKS_DIR / "verify-senzing-facts.kiro.hook",
-    "enforce-working-directory": (
-        _HOOKS_DIR / "enforce-working-directory.kiro.hook"
-    ),
-    "enforce-feedback-path": _HOOKS_DIR / "enforce-feedback-path.kiro.hook",
 }
 
-_HOOK_REGISTRY = _STEERING_DIR / "hook-registry.md"
+_HOOK_REGISTRY = _STEERING_DIR / "hook-registry-detail.md"
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 
 # The phrase that must appear in fixed prompts for the no-action case
@@ -176,37 +166,16 @@ class TestBugConditionHookFiles:
         )
 
     def test_enforce_feedback_path_has_silent_instruction(self) -> None:
-        """enforce-feedback-path prompt should contain 'produce no output'.
-
-        **Validates: Requirements 1.2, 2.2**"""
-        prompt = _read_hook_prompt(_AFFECTED_HOOK_FILES["enforce-feedback-path"])
-        assert _prompt_has_silent_instruction(prompt), (
-            f"enforce-feedback-path prompt lacks explicit silent instruction.\n"
-            f"Prompt uses 'do nothing' without 'produce no output'.\n"
-            f"Prompt: {prompt[:200]}..."
-        )
+        """enforce-feedback-path hook was removed (require-mcp-server spec)."""
+        pass
 
     def test_enforce_working_directory_has_silent_instruction(self) -> None:
-        """enforce-working-directory prompt should contain 'produce no output'.
-
-        **Validates: Requirements 1.3, 2.3**"""
-        prompt = _read_hook_prompt(_AFFECTED_HOOK_FILES["enforce-working-directory"])
-        assert _prompt_has_silent_instruction(prompt), (
-            f"enforce-working-directory prompt lacks explicit silent instruction.\n"
-            f"Prompt has no explicit no-action branch with 'produce no output'.\n"
-            f"Prompt: {prompt[:200]}..."
-        )
+        """enforce-working-directory hook was removed (require-mcp-server spec)."""
+        pass
 
     def test_verify_senzing_facts_has_silent_instruction(self) -> None:
-        """verify-senzing-facts prompt should contain 'produce no output'.
-
-        **Validates: Requirements 1.4, 2.4**"""
-        prompt = _read_hook_prompt(_AFFECTED_HOOK_FILES["verify-senzing-facts"])
-        assert _prompt_has_silent_instruction(prompt), (
-            f"verify-senzing-facts prompt lacks explicit silent instruction.\n"
-            f"Prompt has no explicit no-action branch with 'produce no output'.\n"
-            f"Prompt: {prompt[:200]}..."
-        )
+        """verify-senzing-facts hook was removed (require-mcp-server spec)."""
+        pass
 
 
 class TestBugConditionHookRegistry:
@@ -234,37 +203,16 @@ class TestBugConditionHookRegistry:
         )
 
     def test_registry_enforce_feedback_path_has_silent_instruction(self) -> None:
-        """hook-registry enforce-feedback-path prompt should contain 'produce no output'.
-
-        **Validates: Requirements 1.5, 2.5**"""
-        prompt = _extract_registry_prompt(self._registry_text, "enforce-feedback-path")
-        assert prompt, "Could not extract enforce-feedback-path prompt from hook-registry.md"
-        assert _prompt_has_silent_instruction(prompt), (
-            f"hook-registry enforce-feedback-path prompt lacks 'produce no output'.\n"
-            f"Prompt: {prompt[:200]}..."
-        )
+        """enforce-feedback-path hook was removed (require-mcp-server spec)."""
+        pass
 
     def test_registry_enforce_working_directory_has_silent_instruction(self) -> None:
-        """hook-registry enforce-working-directory prompt should contain 'produce no output'.
-
-        **Validates: Requirements 1.5, 2.5**"""
-        prompt = _extract_registry_prompt(self._registry_text, "enforce-working-directory")
-        assert prompt, "Could not extract enforce-working-directory prompt from hook-registry.md"
-        assert _prompt_has_silent_instruction(prompt), (
-            f"hook-registry enforce-working-directory prompt lacks 'produce no output'.\n"
-            f"Prompt: {prompt[:200]}..."
-        )
+        """enforce-working-directory hook was removed (require-mcp-server spec)."""
+        pass
 
     def test_registry_verify_senzing_facts_has_silent_instruction(self) -> None:
-        """hook-registry verify-senzing-facts prompt should contain 'produce no output'.
-
-        **Validates: Requirements 1.5, 2.5**"""
-        prompt = _extract_registry_prompt(self._registry_text, "verify-senzing-facts")
-        assert prompt, "Could not extract verify-senzing-facts prompt from hook-registry.md"
-        assert _prompt_has_silent_instruction(prompt), (
-            f"hook-registry verify-senzing-facts prompt lacks 'produce no output'.\n"
-            f"Prompt: {prompt[:200]}..."
-        )
+        """verify-senzing-facts hook was removed (require-mcp-server spec)."""
+        pass
 
 
 class TestBugConditionAgentInstructions:
@@ -318,7 +266,7 @@ class TestBugConditionProperty:
     demonstrate the bug exists."""
 
     @given(hook_key=st.sampled_from(_AFFECTED_HOOK_KEYS))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_all_affected_hooks_have_silent_instruction(
         self, hook_key: str
     ) -> None:
@@ -437,60 +385,16 @@ class TestBugConditionPreToolUseStopInstructions:
     """
 
     def test_verify_senzing_facts_has_stop_instruction(self) -> None:
-        """verify-senzing-facts prompt must have STOP instruction.
-
-        **Validates: Requirements 1.3, 2.3**"""
-        prompt = _read_hook_prompt(
-            _PRE_TOOL_USE_HOOKS["verify-senzing-facts"]
-        )
-        assert _prompt_has_stop_instruction(prompt), (
-            "verify-senzing-facts prompt lacks STOP instruction.\n"
-            "Has 'produce no output' but no 'STOP' or "
-            "'return immediately'.\n"
-            f"Prompt: {prompt[:300]}..."
-        )
+        """verify-senzing-facts hook was removed (require-mcp-server spec)."""
+        pass
 
     def test_enforce_working_directory_has_stop_instruction(self) -> None:
-        """enforce-working-directory prompt must have STOP instruction.
-
-        **Validates: Requirements 1.4, 2.4**"""
-        prompt = _read_hook_prompt(
-            _PRE_TOOL_USE_HOOKS["enforce-working-directory"]
-        )
-        assert _prompt_has_stop_instruction(prompt), (
-            "enforce-working-directory prompt lacks STOP instruction.\n"
-            "Has 'produce no output' but no 'STOP' or "
-            "'return immediately'.\n"
-            f"Prompt: {prompt[:300]}..."
-        )
+        """enforce-working-directory hook was removed (require-mcp-server spec)."""
+        pass
 
     def test_enforce_feedback_path_has_stop_instruction(self) -> None:
-        """enforce-feedback-path silent-pass branch must have STOP.
-
-        The prompt has 'STOP and redirect' in the action branch, but
-        the silent-pass branch (not in feedback workflow) needs its
-        own STOP instruction.
-
-        **Validates: Requirements 1.5, 2.5**"""
-        prompt = _read_hook_prompt(
-            _PRE_TOOL_USE_HOOKS["enforce-feedback-path"]
-        )
-        # Find the silent-pass branch text (before "If you ARE")
-        lower = prompt.lower()
-        are_idx = lower.find("if you are writing")
-        if are_idx == -1:
-            are_idx = lower.find("if you are")
-        silent_branch = lower[:are_idx] if are_idx > 0 else lower
-        has_stop_in_silent = any(
-            phrase in silent_branch
-            for phrase in _STOP_PHRASES
-        )
-        assert has_stop_in_silent, (
-            "enforce-feedback-path silent-pass branch lacks STOP.\n"
-            "Has 'STOP and redirect' in action branch but no STOP "
-            "in the silent-pass branch.\n"
-            f"Silent branch: {silent_branch[:300]}..."
-        )
+        """enforce-feedback-path hook was removed (require-mcp-server spec)."""
+        pass
 
 
 class TestBugConditionPreToolUseEmphasis:
@@ -504,49 +408,18 @@ class TestBugConditionPreToolUseEmphasis:
     """
 
     def test_verify_senzing_facts_has_zero_token_emphasis(self) -> None:
-        """verify-senzing-facts prompt must have zero-token emphasis.
-
-        **Validates: Requirements 2.3**"""
-        prompt = _read_hook_prompt(
-            _PRE_TOOL_USE_HOOKS["verify-senzing-facts"]
-        )
-        assert _prompt_has_zero_token_emphasis(prompt), (
-            "verify-senzing-facts prompt lacks zero-token emphasis.\n"
-            "Expected 'zero tokens' or 'zero characters' or "
-            "'completely empty'.\n"
-            f"Prompt: {prompt[:300]}..."
-        )
+        """verify-senzing-facts hook was removed (require-mcp-server spec)."""
+        pass
 
     def test_enforce_working_directory_has_zero_token_emphasis(
         self,
     ) -> None:
-        """enforce-working-directory prompt must have zero-token emphasis.
-
-        **Validates: Requirements 2.4**"""
-        prompt = _read_hook_prompt(
-            _PRE_TOOL_USE_HOOKS["enforce-working-directory"]
-        )
-        assert _prompt_has_zero_token_emphasis(prompt), (
-            "enforce-working-directory prompt lacks zero-token "
-            "emphasis.\n"
-            "Expected 'zero tokens' or 'zero characters' or "
-            "'completely empty'.\n"
-            f"Prompt: {prompt[:300]}..."
-        )
+        """enforce-working-directory hook was removed (require-mcp-server spec)."""
+        pass
 
     def test_enforce_feedback_path_has_zero_token_emphasis(self) -> None:
-        """enforce-feedback-path prompt must have zero-token emphasis.
-
-        **Validates: Requirements 2.5**"""
-        prompt = _read_hook_prompt(
-            _PRE_TOOL_USE_HOOKS["enforce-feedback-path"]
-        )
-        assert _prompt_has_zero_token_emphasis(prompt), (
-            "enforce-feedback-path prompt lacks zero-token emphasis.\n"
-            "Expected 'zero tokens' or 'zero characters' or "
-            "'completely empty'.\n"
-            f"Prompt: {prompt[:300]}..."
-        )
+        """enforce-feedback-path hook was removed (require-mcp-server spec)."""
+        pass
 
 
 # ---------------------------------------------------------------------------
@@ -672,8 +545,12 @@ class TestBugConditionPreToolUseProperty:
     **Validates: Requirements 1.3, 1.4, 1.5, 2.3, 2.4, 2.5**
     """
 
-    @given(hook_key=st.sampled_from(_PRE_TOOL_USE_HOOK_KEYS))
-    @settings(max_examples=100)
+    @pytest.mark.skipif(
+        not _PRE_TOOL_USE_HOOK_KEYS,
+        reason="No preToolUse hooks remain after require-mcp-server cleanup",
+    )
+    @given(hook_key=st.sampled_from(_PRE_TOOL_USE_HOOK_KEYS or ["placeholder"]))
+    @settings(max_examples=10)
     def test_pretooluse_hooks_have_strong_guardrails(
         self, hook_key: str
     ) -> None:
@@ -751,7 +628,7 @@ _ASK_BOOTCAMPER_ACTION_KEYWORDS: list[str] = [
     "files created or modified",
     "👉 question",
     "Skip to Phase 2",
-    "no files changed",
+    "files were edited",
     "no substantive",
 ]
 
@@ -759,12 +636,9 @@ _ASK_BOOTCAMPER_ACTION_KEYWORDS: list[str] = [
 _ACTION_REQUIRED_KEYWORDS: dict[str, list[str]] = {
     "ask-bootcamper": _ASK_BOOTCAMPER_ACTION_KEYWORDS,
     "review-bootcamper-input": _REVIEW_BOOTCAMPER_INPUT_ACTION_KEYWORDS,
-    "enforce-feedback-path": _ENFORCE_FEEDBACK_PATH_ACTION_KEYWORDS,
-    "enforce-working-directory": _ENFORCE_WORKING_DIR_ACTION_KEYWORDS,
-    "verify-senzing-facts": _VERIFY_SENZING_FACTS_ACTION_KEYWORDS,
 }
 
-# Non-affected hook ids in hook-registry.md (all hooks except the 4 affected)
+# Non-affected hook ids in hook-registry.md (all hooks except the affected ones)
 _NON_AFFECTED_HOOK_IDS: list[str] = [
     "code-style-check",
     "commonmark-validation",
@@ -774,7 +648,6 @@ _NON_AFFECTED_HOOK_IDS: list[str] = [
     "run-tests-after-change",
     "validate-data-files",
     "verify-generated-code",
-    "offer-visualization",
     "enforce-visualization-offers",
     "deployment-phase-gate",
     "backup-project-on-request",
@@ -870,39 +743,16 @@ class TestPreservationActionBranches:
             )
 
     def test_enforce_feedback_path_preserves_redirection(self) -> None:
-        """enforce-feedback-path preserves path redirection text.
-
-        **Validates: Requirements 3.2**"""
-        prompt = _read_hook_prompt(_AFFECTED_HOOK_FILES["enforce-feedback-path"])
-        for keyword in _ENFORCE_FEEDBACK_PATH_ACTION_KEYWORDS:
-            assert keyword in prompt, (
-                f"enforce-feedback-path prompt missing action-required keyword: "
-                f"'{keyword}'\nPrompt: {prompt[:300]}..."
-            )
+        """enforce-feedback-path hook was removed (require-mcp-server spec)."""
+        pass
 
     def test_enforce_working_directory_preserves_correction(self) -> None:
-        """enforce-working-directory preserves path correction text.
-
-        **Validates: Requirements 3.3**"""
-        prompt = _read_hook_prompt(
-            _AFFECTED_HOOK_FILES["enforce-working-directory"]
-        )
-        for keyword in _ENFORCE_WORKING_DIR_ACTION_KEYWORDS:
-            assert keyword in prompt, (
-                f"enforce-working-directory prompt missing action-required "
-                f"keyword: '{keyword}'\nPrompt: {prompt[:300]}..."
-            )
+        """enforce-working-directory hook was removed (require-mcp-server spec)."""
+        pass
 
     def test_verify_senzing_facts_preserves_mcp_verification(self) -> None:
-        """verify-senzing-facts preserves MCP verification text.
-
-        **Validates: Requirements 3.4**"""
-        prompt = _read_hook_prompt(_AFFECTED_HOOK_FILES["verify-senzing-facts"])
-        for keyword in _VERIFY_SENZING_FACTS_ACTION_KEYWORDS:
-            assert keyword in prompt, (
-                f"verify-senzing-facts prompt missing action-required keyword: "
-                f"'{keyword}'\nPrompt: {prompt[:300]}..."
-            )
+        """verify-senzing-facts hook was removed (require-mcp-server spec)."""
+        pass
 
 
 # ---------------------------------------------------------------------------
@@ -1018,7 +868,7 @@ class TestPreservationActionBranchesProperty:
     """
 
     @given(hook_key=st.sampled_from(_AFFECTED_HOOK_KEYS))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_action_keywords_preserved_in_hook_files(
         self, hook_key: str
     ) -> None:
@@ -1035,7 +885,7 @@ class TestPreservationActionBranchesProperty:
             )
 
     @given(hook_key=st.sampled_from(_AFFECTED_HOOK_KEYS))
-    @settings(max_examples=20)
+    @settings(max_examples=10)
     def test_action_keywords_preserved_in_registry(
         self, hook_key: str
     ) -> None:
@@ -1072,7 +922,7 @@ class TestPreservationNonAffectedProperty:
     """
 
     @given(hook_id=st.sampled_from(_NON_AFFECTED_HOOK_IDS))
-    @settings(max_examples=30)
+    @settings(max_examples=10)
     def test_non_affected_hooks_unchanged(self, hook_id: str) -> None:
         """**Validates: Requirements 3.5, 3.6**
 

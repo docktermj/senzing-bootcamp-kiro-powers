@@ -1,5 +1,5 @@
 {
-  "name": "Backup Project on Request",
+  "name": "to back up your project",
   "version": "3.0.0",
   "description": "Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead.",
   "when": {

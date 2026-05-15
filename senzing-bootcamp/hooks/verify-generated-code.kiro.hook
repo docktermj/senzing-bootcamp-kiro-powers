@@ -1,5 +1,5 @@
 {
-  "name": "Verify Generated Code Runs",
+  "name": "to verify generated code",
   "version": "1.0.0",
   "description": "When bootcamp source code is created, prompts the agent to run it on sample data and report results before moving on.",
   "when": {

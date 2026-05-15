@@ -1,0 +1,99 @@
+# Implementation Plan
+
+- [x] 1. Write bug condition exploration test
+  - **Property 1: Bug Condition** - Visible "policy: pass" Output on Fast Path
+  - **IMPORTANT**: Write this property-based test BEFORE implementing the fix
+  - **CRITICAL**: This test MUST FAIL on unfixed code - failure confirms the bug exists
+  - **DO NOT attempt to fix the test or the code when it fails**
+  - **NOTE**: This test encodes the expected behavior - it will validate the fix when it passes after implementation
+  - **GOAL**: Surface counterexamples that demonstrate the hook prompt instructs visible "policy: pass" output
+  - **Scoped PBT Approach**: Scope the property to the concrete bug: the hook prompt's fast-path section contains "output exactly: policy: pass" and "Just output: policy: pass" instructions
+  - **Test file**: `tests/test_suppress_policy_pass_output.py`
+  - **Test class**: `TestBugConditionExploration`
+  - **Property**: For any compliant write (target path inside working directory, not misrouted feedback, no external path refs), the hook prompt SHOULD instruct silent processing with no visible output — assert the fast-path section does NOT contain "output exactly.*policy.*pass" and DOES contain a silent-proceed instruction matching `SILENT_PROCESSING_PATTERNS` (excluding the `policy:\s*pass` pattern itself)
+  - **Implementation details**:
+    - Parse `senzing-bootcamp/hooks/enforce-file-path-policies.kiro.hook` JSON
+    - Extract `then.prompt` field
+    - Use Hypothesis to generate random project-relative paths (e.g., `st.from_regex(r'[a-z][a-z0-9_/]*\.[a-z]+')`) representing compliant writes
+    - Assert prompt does NOT contain `re.search(r"output exactly.*\n.*policy.*pass", prompt, re.IGNORECASE)`
+    - Assert prompt does NOT contain "Just output: policy: pass"
+    - Assert prompt DOES contain a silent-proceed instruction (e.g., "do not acknowledge.*do not explain.*do not print" or "produce no output at all")
+    - Use `@settings(max_examples=20)`
+  - Run test on UNFIXED code
+  - **EXPECTED OUTCOME**: Test FAILS (confirms the bug exists — prompt currently contains "output exactly: policy: pass")
+  - Document counterexamples: the prompt contains literal "output exactly:\npolicy: pass" and "Just output: policy: pass" instructions
+  - Mark task complete when test is written, run, and failure is documented
+  - _Requirements: 1.1, 1.2, 2.1, 2.2_
+
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
+  - **Property 2: Preservation** - Violation Detection Behavior Unchanged
+  - **IMPORTANT**: Follow observation-first methodology
+  - **Test file**: `tests/test_suppress_policy_pass_output.py`
+  - **Test class**: `TestPreservationProperties`
+  - **Observation phase** (run on UNFIXED code to capture baseline):
+    - Observe: prompt contains "STOP" instruction for external paths (`/tmp/`, `%TEMP%`, `~/Downloads`)
+    - Observe: prompt contains redirect instruction for misrouted feedback to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
+    - Observe: prompt contains content-check section for file content referencing external paths
+    - Observe: hook JSON has `when.type` = `preToolUse` and `when.toolTypes` = `["write"]`
+    - Observe: hook JSON has all required fields (`name`, `version`, `description`, `when`, `then`)
+  - **Property-based tests**:
+    - Property 2a: For any generated external path (Hypothesis generates paths starting with `/tmp/`, `%TEMP%`, `~/`, or absolute paths outside project), the prompt SLOW PATH section contains blocking instructions referencing that path pattern
+    - Property 2b: For any feedback-related write to a non-canonical path, the prompt contains redirect to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
+    - Property 2c: For any hook field combination, all required JSON fields (`name`, `version`, `description`, `when.type`, `when.toolTypes`, `then.type`, `then.prompt`) are present and valid
+    - Property 2d: The prompt's SLOW PATH section text is identical between unfixed and fixed versions (store original slow-path text as a constant for comparison)
+  - **Implementation details**:
+    - Use `@given()` with strategies for external paths: `st.sampled_from(["/tmp/", "%TEMP%", "~/Downloads"])` combined with `st.text()` suffixes
+    - Assert prompt contains each external path reference
+    - Assert prompt contains "STOP" instruction in slow-path context
+    - Assert prompt contains `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`
+    - Assert hook JSON structure: `data["when"]["type"] == "preToolUse"`, `data["when"]["toolTypes"] == ["write"]`
+    - Use `@settings(max_examples=20)`
+  - Verify tests PASS on UNFIXED code
+  - **EXPECTED OUTCOME**: Tests PASS (confirms baseline violation-detection behavior to preserve)
+  - Mark task complete when tests are written, run, and passing on unfixed code
+  - _Requirements: 3.1, 3.2, 3.3_
+
+- [x] 3. Fix for suppress-policy-pass-output
+
+  - [x] 3.1 Implement the fix in enforce-file-path-policies.kiro.hook
+    - Modify `senzing-bootcamp/hooks/enforce-file-path-policies.kiro.hook`
+    - Replace fast-path instruction "output exactly:\npolicy: pass" with silent-proceed instruction: "Do not acknowledge. Do not explain. Do not print anything. Proceed silently."
+    - Remove the reinforcement line "Do not check file content for path references in the fast path. Do not explain. Do not acknowledge. Just output: policy: pass" — replace with "Do not check file content for path references in the fast path. Do not acknowledge. Do not explain. Do not print anything. Proceed silently."
+    - Update CONTENT CHECK trailing clause: change "output was already \"policy: pass\" — do not add anything" to "do nothing — proceed silently"
+    - Update `description` field: remove "(outputs 'policy: pass' immediately)" and replace with "(proceeds silently)"
+    - Preserve SLOW PATH section verbatim — no changes to external path blocking or feedback redirect instructions
+    - Preserve all hook JSON structure fields (`name`, `version`, `when`, `then`)
+    - _Bug_Condition: isBugCondition(input) where input passes all policy checks (path inside working dir, not misrouted feedback, no external content refs)_
+    - _Expected_Behavior: For all inputs satisfying bug condition, hook instructs silent processing with no visible "policy: pass" output_
+    - _Preservation: SLOW PATH violation detection (external paths, misrouted feedback, content path checks) remains unchanged_
+    - _Requirements: 1.1, 1.2, 2.1, 2.2, 3.1, 3.2, 3.3_
+
+  - [x] 3.2 Verify bug condition exploration test now passes
+    - **Property 1: Expected Behavior** - Silent Fast Path for Compliant Writes
+    - **IMPORTANT**: Re-run the SAME test from task 1 - do NOT write a new test
+    - The test from task 1 encodes the expected behavior (no "output exactly: policy: pass", has silent-proceed instruction)
+    - When this test passes, it confirms the expected behavior is satisfied
+    - Run: `pytest tests/test_suppress_policy_pass_output.py::TestBugConditionExploration -v`
+    - **EXPECTED OUTCOME**: Test PASSES (confirms bug is fixed — prompt no longer instructs visible "policy: pass" output)
+    - _Requirements: 2.1, 2.2_
+
+  - [x] 3.3 Verify preservation tests still pass
+    - **Property 2: Preservation** - Violation Detection Behavior Unchanged
+    - **IMPORTANT**: Re-run the SAME tests from task 2 - do NOT write new tests
+    - Run: `pytest tests/test_suppress_policy_pass_output.py::TestPreservationProperties -v`
+    - **EXPECTED OUTCOME**: Tests PASS (confirms no regressions — violation detection unchanged)
+    - Confirm all preservation properties still hold after fix
+
+  - [x] 3.4 Verify existing test suite still passes
+    - Run: `pytest tests/test_hook_prompt_standards.py::TestRealHookFiles::test_real_pass_through_hooks_have_silent_processing -v`
+    - Confirm `has_silent_processing` returns True for the fixed prompt (at least one of `SILENT_PROCESSING_PATTERNS` must match — the new "do not acknowledge.*do not explain.*do not print" instruction satisfies this)
+    - Run: `pytest tests/test_hook_prompt_standards.py -v` to verify all hook prompt standard tests pass
+    - Run: `pytest tests/ -v` to verify full repo-level test suite passes
+    - _Requirements: 2.1, 2.2, 3.1, 3.2, 3.3_
+
+- [x] 4. Checkpoint - Ensure all tests pass
+  - Run full test suite: `pytest tests/ senzing-bootcamp/tests/ -v`
+  - Verify `test_suppress_policy_pass_output.py` — all bug condition and preservation tests pass
+  - Verify `test_hook_prompt_standards.py` — all hook prompt standard tests pass (including silent processing check)
+  - Verify no other tests regressed
+  - Ensure all tests pass, ask the user if questions arise.

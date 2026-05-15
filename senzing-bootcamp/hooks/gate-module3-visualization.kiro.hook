@@ -1,0 +1,13 @@
+{
+  "name": "to gate Module 3 completion on visualization step",
+  "version": "1.0.0",
+  "description": "Prevents Module 3 from being marked complete unless Step 9 (Web Service + Visualization) checkpoints are present in bootcamp_progress.json, or the step was explicitly skipped via the skip-step protocol.",
+  "when": {
+    "type": "preToolUse",
+    "toolTypes": ["write"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "CHECK — Is this write updating `config/bootcamp_progress.json` to mark Module 3 as complete (adding 3 to modules_completed, or setting module_3_verification.status to 'passed')?\n\nIf NO (not a Module 3 completion write, or not writing to bootcamp_progress.json): produce no output at all. Do nothing.\n\nIf YES: Read the CURRENT contents of `config/bootcamp_progress.json` and check TWO conditions:\n\nCONDITION A — Step 9 checkpoints exist:\n- `module_3_verification.checks.web_service.status` equals `\"passed\"`\n- `module_3_verification.checks.web_page.status` equals `\"passed\"`\n\nCONDITION B — Step 9 was explicitly skipped:\n- `skipped_steps` contains an entry with key `\"3.9\"`\n\nIf CONDITION A is true OR CONDITION B is true: produce no output at all. Do nothing.\n\nIf NEITHER condition is met: STOP. Do NOT allow this write. Output exactly:\n\n⛔ BLOCKED: Module 3 cannot be marked complete — Step 9 (Web Service + Visualization) has not been executed. Load `module-03-phase2-visualization.md` and execute the full visualization step (generate web service, start server, verify 3 API endpoints, present URL to bootcamper). Only after web_service and web_page checkpoints show 'passed' can Module 3 be completed.\n\nDo not proceed with the write operation."
+  }
+}

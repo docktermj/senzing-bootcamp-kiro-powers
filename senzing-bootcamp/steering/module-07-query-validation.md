@@ -48,8 +48,6 @@ inclusion: manual
 
    **Iterate over records, not entity IDs.** The caller knows the record IDs and data source codes of the records they loaded — they do NOT know entity IDs (those are internal to Senzing). Query programs should iterate over loaded records (from the input JSONL file or a record manifest) and use `get_entity_by_record_id(data_source, record_id)` to look up each record's entity. Never iterate over a guessed range of entity IDs.
 
-   **Do NOT use `exportJSONEntityReport()` or `export_report`** — these do not scale. Use per-entity queries (`get_entity_by_entity_id`, `get_entity_by_record_id`, `search_by_attributes`) or streaming patterns instead.
-
    **Checkpoint:** Write step 2 to `config/bootcamp_progress.json`.
 
 3. **Run exploratory queries**:
@@ -74,19 +72,57 @@ inclusion: manual
 
    **Checkpoint:** Write step 3a to `config/bootcamp_progress.json`.
 
-3b. **Entity graph visualization checkpoint:**
+3b. **Quality evaluation:**
+
+   > **Agent instruction:** Call `reporting_guide(topic='quality', language='<chosen_language>', version='current')` to get the quality evaluation methodology. Then call `search_docs(query='entity resolution quality evaluation', version='current')` for additional context on interpreting results.
+
+   Present a quality summary to the bootcamper:
+
+   | Indicator | Value | Assessment |
+   |-----------|-------|------------|
+   | Entity-to-record ratio | [computed] | [interpretation] |
+   | Possible matches | [count] ([%] of entities) | [interpretation] |
+   | Cross-source match rate | [%] | [interpretation] |
+
+   **Quality assessment:**
+
+   - **Acceptable** (proceed): Ratio is reasonable, possible matches < 5%, no split/merge signals
+   - **Marginal** (review): Possible matches 5-15% or some split/merge signals detected
+   - **Poor** (iterate): Possible matches > 15%, clear split/merge patterns, or no matching occurring
+
+   Based on the assessment:
+
+   - **Acceptable:** "Your entity resolution quality looks good. Let's proceed to visualizations."
+   - **Marginal:** "I see some potential issues. Let me show you a few specific entities to review." [Present examples, then ask if they want to proceed or iterate]
+   - **Poor:** "The entity resolution results suggest mapping improvements would help. Here's what I recommend..." [Present specific recommendations and offer the Module 5 feedback loop]
+
+   **Module 5 feedback loop (when quality is poor or bootcamper requests iteration):**
+
+   👉 "Would you like to return to Module 5 to refine your data mapping? Your loaded data and query programs will be preserved — after remapping, you'll reload the affected sources and re-evaluate here."
+
+   🛑 STOP — Wait for bootcamper response before proceeding.
+
+   If accepted:
+
+   1. Note which data sources need remapping in `config/bootcamp_progress.json` under a `quality_iteration` key
+   2. Set `current_module` to 5 and `current_step` to the Phase 2 start step
+   3. Load `module-05-data-quality-mapping.md` and begin at Phase 2
+
+   **Checkpoint:** Write step 3b to `config/bootcamp_progress.json`.
+
+3c. **Entity graph visualization checkpoint:**
 
    **Visualization checkpoint:** Follow the Visualization Protocol.
    Load `visualization-protocol.md` and execute the offer for checkpoint `m7_exploratory_queries`.
 
-   **Checkpoint:** Write step 3b to `config/bootcamp_progress.json`.
+   **Checkpoint:** Write step 3c to `config/bootcamp_progress.json`.
 
-3c. **Results dashboard visualization checkpoint:**
+3d. **Results dashboard visualization checkpoint:**
 
    **Visualization checkpoint:** Follow the Visualization Protocol.
    Load `visualization-protocol.md` and execute the offer for checkpoint `m7_findings_documented`.
 
-   **Checkpoint:** Write step 3c to `config/bootcamp_progress.json`.
+   **Checkpoint:** Write step 3d to `config/bootcamp_progress.json`.
 
 **Success Criteria:**
 

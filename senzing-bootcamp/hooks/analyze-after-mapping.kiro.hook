@@ -1,5 +1,5 @@
 {
-  "name": "Analyze After Mapping",
+  "name": "to analyze mapped data",
   "version": "1.0.0",
   "description": "After completing a mapping task, validates the transformation output using analyze_record for quality metrics and Senzing Generic Entity Specification conformance before proceeding to loading.",
   "when": {

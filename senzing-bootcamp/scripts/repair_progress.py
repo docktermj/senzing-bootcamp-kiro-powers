@@ -18,7 +18,7 @@ from progress_utils import validate_progress_schema  # noqa: E402
 PROGRESS = Path("config/bootcamp_progress.json")
 PREFS = Path("config/bootcamp_preferences.yaml")
 D_EXT = ("*.csv", "*.json", "*.jsonl", "*.tsv", "*.xlsx")
-NAMES = {1: "Business Problem", 2: "SDK Setup", 3: "Quick Demo",
+NAMES = {1: "Business Problem", 2: "SDK Setup", 3: "System Verification",
          4: "Data Collection", 5: "Data Quality & Mapping",
          6: "Single Source Loading", 7: "Multi-Source Orchestration",
          8: "Query & Validation", 9: "Performance Testing",

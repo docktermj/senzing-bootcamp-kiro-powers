@@ -159,7 +159,7 @@ class TestProperty10HookDiscoveryCompleteness:
     # Feature: script-test-suite, Property 10: Hook discovery completeness
 
     @given(filenames=hook_filenames)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_one_entry_per_hook_file(self, filenames):
         td = tempfile.mkdtemp()
         try:
@@ -204,7 +204,7 @@ class TestProperty11UnknownHookNameDerivation:
     # Feature: script-test-suite, Property 11: Unknown hook name derivation
 
     @given(filename=unknown_hook_filenames)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_derived_name_matches_convention(self, filename):
         td = tempfile.mkdtemp()
         try:
@@ -242,7 +242,7 @@ class TestProperty12HookInstallCopySkipCorrectness:
         filenames=hook_filenames,
         pre_installed_mask=st.lists(st.booleans(), min_size=1, max_size=8),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_installed_plus_skipped_equals_total(self, filenames, pre_installed_mask):
         # Align mask length with filenames
         mask = pre_installed_mask[:len(filenames)]

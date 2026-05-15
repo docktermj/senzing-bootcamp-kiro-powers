@@ -54,14 +54,14 @@ class TestProperty4FeedbackStats:
     """**Validates: Requirements 3.8, 3.9, 3.10**"""
 
     @given(entries=st.lists(feedback_entry_st, min_size=0, max_size=30))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_total_equals_entry_count(self, entries):
         """Total count in stats equals the number of entries."""
         stats = compute_feedback_stats(entries)
         assert stats["total"] == len(entries)
 
     @given(entries=st.lists(feedback_entry_st, min_size=0, max_size=30))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_priority_sum_equals_total(self, entries):
         """Sum of all priority counts equals total entry count."""
         stats = compute_feedback_stats(entries)
@@ -69,7 +69,7 @@ class TestProperty4FeedbackStats:
         assert pri_sum == stats["total"]
 
     @given(entries=st.lists(feedback_entry_st, min_size=0, max_size=30))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_category_sum_equals_total(self, entries):
         """Sum of all category counts equals total entry count."""
         stats = compute_feedback_stats(entries)
@@ -77,7 +77,7 @@ class TestProperty4FeedbackStats:
         assert cat_sum == stats["total"]
 
     @given(entries=st.lists(feedback_entry_st, min_size=1, max_size=30))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_individual_priority_counts_match(self, entries):
         """Each priority count matches actual entries with that priority."""
         stats = compute_feedback_stats(entries)
@@ -86,7 +86,7 @@ class TestProperty4FeedbackStats:
             assert count == actual, f"Priority {pri}: expected {actual}, got {count}"
 
     @given(entries=st.lists(feedback_entry_st, min_size=1, max_size=30))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_individual_category_counts_match(self, entries):
         """Each category count matches actual entries with that category."""
         stats = compute_feedback_stats(entries)

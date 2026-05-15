@@ -19,6 +19,7 @@ import json
 import os
 import shutil
 import socket
+import sqlite3
 import subprocess
 import sys
 from typing import List, Optional
@@ -696,6 +697,81 @@ def check_directories() -> list[CheckResult]:
     return results
 
 
+# -- Database check ---------------------------------------------------------
+
+def check_database() -> list[CheckResult]:
+    """Optional database health check — runs only when database file exists."""
+    db_path = os.path.join("database", "G2C.db")
+    cat = "Database"
+
+    if not os.path.isfile(db_path):
+        return []
+
+    results: list[CheckResult] = []
+
+    # Connection test
+    try:
+        conn = sqlite3.connect(db_path)
+        conn.execute("SELECT name FROM sqlite_master LIMIT 1")
+    except sqlite3.DatabaseError as exc:
+        results.append(CheckResult(
+            name="Database connection",
+            category=cat,
+            status="fail",
+            message=f"Cannot connect to {db_path}: {exc}",
+            fix="Database may be corrupted. Run: python scripts/check_database.py --repair",
+        ))
+        return results
+    except Exception as exc:
+        results.append(CheckResult(
+            name="Database connection",
+            category=cat,
+            status="fail",
+            message=f"Database connection error: {exc}",
+            fix="Check file permissions and run: python scripts/check_database.py",
+        ))
+        return results
+
+    results.append(CheckResult(
+        name="Database connection",
+        category=cat,
+        status="pass",
+        message=f"Connected to {db_path}",
+    ))
+
+    # Integrity check
+    try:
+        cursor = conn.execute("PRAGMA integrity_check")
+        integrity_result = cursor.fetchone()[0]
+        if integrity_result == "ok":
+            results.append(CheckResult(
+                name="Database integrity",
+                category=cat,
+                status="pass",
+                message="PRAGMA integrity_check: ok",
+            ))
+        else:
+            results.append(CheckResult(
+                name="Database integrity",
+                category=cat,
+                status="fail",
+                message=f"PRAGMA integrity_check: {integrity_result}",
+                fix="Run: python scripts/check_database.py --repair",
+            ))
+    except Exception as exc:
+        results.append(CheckResult(
+            name="Database integrity",
+            category=cat,
+            status="fail",
+            message=f"Integrity check failed: {exc}",
+            fix="Run: python scripts/check_database.py --repair",
+        ))
+    finally:
+        conn.close()
+
+    return results
+
+
 # ---------------------------------------------------------------------------
 # AutoFixer  (Task 3.2)
 # ---------------------------------------------------------------------------
@@ -764,6 +840,7 @@ class CheckRunner:
         ("Senzing SDK", check_senzing_sdk),
         ("Permissions", check_write_permissions),
         ("Project Structure", check_directories),
+        ("Database", check_database),
     ]
 
     def run(self, fix: bool = False) -> PreflightReport:

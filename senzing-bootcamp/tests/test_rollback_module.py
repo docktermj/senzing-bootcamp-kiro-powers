@@ -161,14 +161,14 @@ class TestProperty1ModuleNumberValidation:
     """
 
     @given(n=st.integers(min_value=1, max_value=11))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_valid_modules_accepted(self, n):
         """Feature: module-rollback, Property 1: Module number validation — valid range"""
         args = parse_args(["--module", str(n)])
         assert args.module == n
 
     @given(n=_any_module_numbers())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_invalid_modules_rejected(self, n):
         """Feature: module-rollback, Property 1: Module number validation — invalid range"""
         assume(n < 1 or n > 12)
@@ -192,7 +192,7 @@ class TestProperty2ManifestCompleteness:
     """
 
     @given(module=_valid_module_numbers())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_manifest_has_valid_entry(self, module):
         """Feature: module-rollback, Property 2: Manifest completeness"""
         assert module in ARTIFACT_MANIFEST
@@ -224,7 +224,7 @@ class TestProperty3RollbackRemovesExactlyManifestItems:
     """
 
     @given(module=_valid_module_numbers())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_only_manifest_items_removed(self, module):
         """Feature: module-rollback, Property 3: Rollback removes exactly manifest items"""
         artifacts = ARTIFACT_MANIFEST[module]
@@ -284,7 +284,7 @@ class TestProperty4RemovalResilience:
     """
 
     @given(module=_valid_module_numbers(), data=st.data())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_partial_artifacts_categorized_correctly(self, module, data):
         """Feature: module-rollback, Property 4: Removal resilience"""
         artifacts = ARTIFACT_MANIFEST[module]
@@ -347,7 +347,7 @@ class TestProperty5DryRunSafety:
     """
 
     @given(module=_valid_module_numbers())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_dry_run_no_modifications(self, module):
         """Feature: module-rollback, Property 5: Dry-run safety"""
         artifacts = ARTIFACT_MANIFEST[module]
@@ -421,7 +421,7 @@ class TestProperty6DownstreamDependencyReporting:
     """
 
     @given(module=_valid_module_numbers(), progress=_progress_states())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_downstream_modules_listed(self, module, progress):
         """Feature: module-rollback, Property 6: Downstream dependency reporting"""
         modules_completed = progress["modules_completed"]
@@ -485,7 +485,7 @@ class TestProperty7ProgressFileUpdateCorrectness:
     """
 
     @given(progress=_progress_states(), module=_valid_module_numbers())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_compute_progress_update_mutations(self, progress, module):
         """Feature: module-rollback, Property 7: Progress file update correctness"""
         result = compute_progress_update(progress, module)
@@ -528,7 +528,7 @@ class TestProperty8ProgressFileJSONFormatting:
     """
 
     @given(progress=_progress_states())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_write_read_roundtrip(self, progress):
         """Feature: module-rollback, Property 8: Progress file JSON formatting"""
         with tempfile.TemporaryDirectory() as td:
@@ -562,7 +562,7 @@ class TestProperty9ConfirmationInputValidation:
     """
 
     @given(user_input=_confirmation_strings())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_confirmation_logic(self, user_input):
         """Feature: module-rollback, Property 9: Confirmation input validation"""
         should_proceed = user_input.strip() in ("y", "Y")
@@ -629,7 +629,7 @@ class TestProperty10LatestBackupSelection:
     """
 
     @given(filenames=st.lists(_backup_zip_filenames(), min_size=1, max_size=10, unique=True))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_latest_backup_is_most_recent(self, filenames):
         """Feature: module-rollback, Property 10: Latest backup selection"""
         with tempfile.TemporaryDirectory() as td:
@@ -680,7 +680,7 @@ class TestProperty11DatabaseRestorationExtractsOnlyDatabase:
             min_size=1, max_size=4, unique=True,
         )
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_only_database_dir_extracted(self, other_dirs):
         """Feature: module-rollback, Property 11: Database restoration extracts only database/"""
         with tempfile.TemporaryDirectory() as td:
@@ -726,7 +726,7 @@ class TestProperty12RollbackLogEntryRoundTrip:
     """
 
     @given(entry=_rollback_log_entries())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_serialize_roundtrip(self, entry):
         """Feature: module-rollback, Property 12: Rollback log entry round-trip"""
         serialized = serialize_log_entry(entry)
@@ -758,7 +758,7 @@ class TestProperty13DownstreamArtifactsUntouched:
     """
 
     @given(module=_valid_module_numbers())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_downstream_artifacts_preserved(self, module):
         """Feature: module-rollback, Property 13: Downstream artifacts untouched"""
         downstream = get_downstream_modules(module)

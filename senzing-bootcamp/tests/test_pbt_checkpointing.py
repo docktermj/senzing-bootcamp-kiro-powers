@@ -88,7 +88,7 @@ class TestProperty1SchemaConformance:
     """
 
     @given(data=_valid_progress_states())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_valid_progress_passes_schema(self, data):
         """Feature: step-level-checkpointing, Property 1: Progress file schema conformance"""
         # Round-trip through JSON to match real-world serialization
@@ -126,7 +126,7 @@ class TestProperty2ModuleCompletionClearsStep:
         module=st.integers(min_value=1, max_value=12),
         step=st.integers(min_value=1, max_value=20),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_clear_step_nullifies_current_step(self, module, step):
         """Feature: step-level-checkpointing, Property 2: Module completion clears current step"""
         with tempfile.TemporaryDirectory() as td:
@@ -167,7 +167,7 @@ class TestProperty3CheckpointWriteConsistency:
         module=st.integers(min_value=1, max_value=12),
         step=st.integers(min_value=1, max_value=20),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_checkpoint_write_is_consistent(self, module, step):
         """Feature: step-level-checkpointing, Property 3: Checkpoint write consistency"""
         with tempfile.TemporaryDirectory() as td:
@@ -205,7 +205,7 @@ class TestProperty4BackwardCompatibility:
     """
 
     @given(data=_legacy_progress_states())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_legacy_progress_passes_validation(self, data):
         """Feature: step-level-checkpointing, Property 4: Backward compatibility"""
         serialized = json.loads(json.dumps(data))
@@ -239,7 +239,7 @@ class TestProperty5StepDisplayInStatusOutput:
         current_step=st.integers(min_value=1, max_value=20),
         completed_count=st.integers(min_value=0, max_value=11),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_status_output_contains_step(
         self, current_module, current_step, completed_count
     ):

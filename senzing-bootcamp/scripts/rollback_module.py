@@ -65,7 +65,7 @@ ARTIFACT_MANIFEST = {
 }
 
 MODULE_NAMES = {
-    1: "Business Problem", 2: "SDK Setup", 3: "Quick Demo",
+    1: "Business Problem", 2: "SDK Setup", 3: "System Verification",
     4: "Data Collection", 5: "Data Quality & Mapping",
     6: "Load Data", 7: "Query & Visualize",
     8: "Performance Testing", 9: "Security Hardening",

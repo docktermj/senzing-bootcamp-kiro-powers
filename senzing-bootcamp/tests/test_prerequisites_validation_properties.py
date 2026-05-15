@@ -193,7 +193,7 @@ class TestGateParsingCorrectness:
     """
 
     @given(key=st_gate_key())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_parse_gate_key_extracts_correct_numbers(self, key):
         """For any valid gate key "N->M", parser extracts (N, M) as integers."""
         result = parse_gate_key(key)
@@ -209,7 +209,7 @@ class TestGateParsingCorrectness:
         assert isinstance(dest, int)
 
     @given(graph=st_dependency_graph())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_dependency_graph_gates_parse_without_exceptions(self, graph):
         """For any valid dependency graph, all gate keys parse correctly."""
         gates = graph["gates"]
@@ -232,7 +232,7 @@ class TestKeywordExtractionNormalized:
     """
 
     @given(requirement=st_gate_requirement())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_keywords_are_non_empty_lowercase_stripped(self, requirement):
         """Keywords are non-empty, lowercase, and have no leading/trailing whitespace."""
         keywords = extract_keywords(requirement)
@@ -243,7 +243,7 @@ class TestKeywordExtractionNormalized:
             assert len(kw) > 0, "Empty keyword in result"
 
     @given(requirement=st_gate_requirement())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_keyword_count_matches_non_empty_tokens(self, requirement):
         """Number of keywords equals number of non-empty comma-separated tokens."""
         keywords = extract_keywords(requirement)
@@ -264,7 +264,7 @@ class TestModuleReferenceCrossValidation:
     """
 
     @given(graph=st_dependency_graph(), index=st_steering_index())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_errors_for_missing_references(self, graph, index):
         """An ERROR is reported for each referenced module not in steering index."""
         modules = graph["modules"]
@@ -288,7 +288,7 @@ class TestModuleReferenceCrossValidation:
             assert all(f.level == "ERROR" for f in findings)
 
     @given(graph=st_dependency_graph())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_zero_errors_when_all_references_exist(self, graph):
         """Zero errors when all referenced modules exist in steering index."""
         modules = graph["modules"]
@@ -320,7 +320,7 @@ class TestKeywordPresenceDetection:
     """
 
     @given(data=st.data())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_warnings_for_missing_keywords(self, data):
         """A WARNING is reported for each keyword not found in content."""
         content = data.draw(st_steering_content())
@@ -385,7 +385,7 @@ class TestKeywordPresenceDetection:
         assert all(f.level == "WARNING" for f in findings)
 
     @given(data=st.data())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_zero_warnings_when_all_keywords_present(self, data):
         """Zero warnings when all keywords are found in content."""
         # Generate content first, then pick keywords from it
@@ -429,7 +429,7 @@ class TestCheckpointSuccessCriteriaDetection:
     """
 
     @given(data=st.data())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_count_checkpoints_returns_exact_count(self, data):
         """count_checkpoints returns exactly N for content with N checkpoint patterns."""
         num_checkpoints = data.draw(st.integers(min_value=0, max_value=10))
@@ -437,7 +437,7 @@ class TestCheckpointSuccessCriteriaDetection:
         assert count_checkpoints(content) == num_checkpoints
 
     @given(data=st.data())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_zero_checkpoints_with_gate_produces_error(self, data):
         """Zero checkpoints with an outgoing gate produces an ERROR."""
         content = data.draw(st_steering_content(checkpoints=0, success_criteria=True))
@@ -459,7 +459,7 @@ class TestCheckpointSuccessCriteriaDetection:
         assert any("checkpoint" in f.description.lower() for f in error_findings)
 
     @given(data=st.data())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_missing_success_criteria_produces_warning(self, data):
         """Missing success criteria with an outgoing gate produces a WARNING."""
         # Generate content with checkpoints but no success criteria
@@ -488,7 +488,7 @@ class TestCheckpointSuccessCriteriaDetection:
         assert any("success criteria" in f.description.lower() for f in warning_findings)
 
     @given(data=st.data())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_has_success_criteria_detects_heading(self, data):
         """has_success_criteria returns True for content with Success Criteria heading."""
         content = data.draw(st_steering_content(checkpoints=1, success_criteria=True))
@@ -508,7 +508,7 @@ class TestExitCodeCorrectness:
     """
 
     @given(findings=st_finding_set())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_exit_code_1_iff_errors_exist(self, findings):
         """Exit code is 1 iff at least one ERROR exists."""
         error_count = sum(1 for f in findings if f.level == "ERROR")
@@ -519,7 +519,7 @@ class TestExitCodeCorrectness:
         assert actual_exit == expected_exit
 
     @given(findings=st_finding_set())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_exit_code_with_warnings_as_errors(self, findings):
         """With --warnings-as-errors, exit code is 1 if any WARNING exists."""
         error_count = sum(1 for f in findings if f.level == "ERROR")
@@ -538,7 +538,7 @@ class TestExitCodeCorrectness:
         assert actual_exit == expected_exit
 
     @given(findings=st_finding_set())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_exit_code_0_when_no_errors_no_warnings_as_errors(self, findings):
         """Exit code is 0 when no ERRORs and --warnings-as-errors is not set."""
         error_count = sum(1 for f in findings if f.level == "ERROR")

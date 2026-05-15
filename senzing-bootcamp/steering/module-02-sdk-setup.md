@@ -22,6 +22,13 @@ Install and configure the Senzing SDK natively on your machine. This is the firs
 
 Run a language-appropriate import/version check for the bootcamper's chosen language. Use `sdk_guide(topic='install', platform='<user_platform>', language='<chosen_language>', version='current')` to get the correct verification command.
 
+**Filesystem fallback — if the import check fails:** When the language import check does not succeed (e.g., `PYTHONPATH` is not configured or the package manager query finds nothing), check for the following sentinel files on the filesystem before concluding the SDK is not installed:
+
+- `/opt/senzing/er/lib/libSz.so` (native shared library)
+- `/opt/senzing/er/szBuildVersion.json` (build version metadata)
+
+Both sentinel files must be present to conclude the SDK is installed via filesystem detection. If both files exist, read the version from `/opt/senzing/er/szBuildVersion.json`, report the SDK as installed, Skip Steps 2 and 3 entirely, and proceed to Step 4 verification. If only one file or neither is found, proceed with the "SDK not found" path (Step 2).
+
 **If the SDK is found and version is V4.0+:**
 
 Tell the user: "Senzing SDK is already installed (version [X]). No need to reinstall — skipping straight to configuration verification."
@@ -32,6 +39,7 @@ Tell the user: "Senzing SDK is already installed (version [X]). No need to reins
 - Mark Module 2 as complete once verification passes
 
 > **Required Stops:** The following steps are NEVER skipped, even when the SDK is already installed:
+>
 > - **Step 4** (Verify Installation) — confirms the SDK works with the chosen language
 > - **Step 5** (Configure License) — license configuration is always required
 
@@ -271,7 +279,7 @@ Use the MCP-generated initialization code to verify the database connection work
 
 Once the SDK is installed and verified, proceed to:
 
-- **Module 3** (Quick Demo) — see the SDK in action with sample data
+- **Module 3** (System Verification) — verify the full setup end-to-end using the Senzing TruthSet
 - **Module 1** (Business Problem) — start working with your own data
 
 ## Troubleshooting

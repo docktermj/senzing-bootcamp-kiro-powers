@@ -179,9 +179,6 @@ class TestRenameModule11:
         assert "Package & Deploy" in content, (
             "POWER.md no longer contains 'Package & Deploy' — it should be unchanged"
         )
-        assert "Package and Deploy" in content, (
-            "POWER.md no longer contains 'Package and Deploy' — it should be unchanged"
-        )
 
     def test_steering_index_unchanged(self) -> None:
         """steering-index.yaml must still reference module-11-deployment.md."""

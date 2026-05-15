@@ -1,5 +1,5 @@
 {
-  "name": "CommonMark Validation",
+  "name": "to check Markdown style",
   "version": "1.0.0",
   "description": "Validates that all Markdown files conform to CommonMark standards when edited",
   "when": {
@@ -8,6 +8,6 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "The markdown file that was just edited should be validated for CommonMark compliance. Please check for:\n\n1. MD022: Headings should be surrounded by blank lines\n2. MD040: Fenced code blocks should have a language specified\n3. Bold text followed by colons should use format: **Label:** (with space before colon)\n4. MD031: Fenced code blocks should be surrounded by blank lines\n5. MD032: Lists should be surrounded by blank lines\n\nEXCEPTION: If the file is CHANGELOG.md, ignore MD024 (duplicate headings) — repeated ### Added, ### Changed, ### Fixed, ### Removed headings under different version sections are standard Keep a Changelog format and should not be flagged.\n\nIf any issues are found, fix them automatically to maintain CommonMark compliance across all documentation."
+    "prompt": "The markdown file that was just edited should be validated for CommonMark compliance. Please check for:\n\n1. MD022: Headings should be surrounded by blank lines\n2. MD040: Fenced code blocks should have a language specified\n3. Bold text followed by colons should use format: **Label:** (with space before colon)\n4. MD031: Fenced code blocks should be surrounded by blank lines\n5. MD032: Lists should be surrounded by blank lines\n\nEXCEPTION: If the file is CHANGELOG.md, ignore MD024 (duplicate headings) — repeated ### Added, ### Changed, ### Fixed, ### Removed headings under different version sections are standard Keep a Changelog format and should not be flagged.\n\nIf any issues are found, fix them automatically to maintain CommonMark compliance across all documentation.\n\nAfter fixing issues: briefly state what was corrected (one sentence), then end with a contextual 👉 forward-moving question that guides the bootcamper to the next step in the current module workflow. Check `config/bootcamp_progress.json` for the current module and step to determine what comes next.\n\nIf no issues are found: output nothing. Proceed silently."
   }
 }

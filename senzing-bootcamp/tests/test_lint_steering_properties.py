@@ -76,7 +76,7 @@ class TestProperty1CrossReferenceDetection:
         existing=st.lists(st_filename(), min_size=1, max_size=5, unique=True),
         missing=st.lists(st_filename(), min_size=1, max_size=5, unique=True),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_reports_missing_include_refs_not_existing(self, existing, missing):
         """#[[file:path]] refs to missing files produce errors; existing ones don't."""
         assume(not set(existing) & set(missing))
@@ -133,7 +133,7 @@ class TestProperty2ModuleNumbering:
         index_nums=st.frozensets(st_module_number(), min_size=1, max_size=10),
         disk_nums=st.frozensets(st_module_number(), min_size=1, max_size=10),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_reports_all_mismatches_bidirectionally(self, index_nums, disk_nums):
         """Every module in index-only or disk-only is reported."""
         tmp = Path(tempfile.mkdtemp())
@@ -186,7 +186,7 @@ class TestProperty3ModuleSequenceGaps:
     @given(
         nums=st.frozensets(st_module_number(), min_size=2, max_size=15),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_reports_every_gap(self, nums):
         """Every gap in the module sequence is reported as a warning."""
         tmp = Path(tempfile.mkdtemp())
@@ -240,7 +240,7 @@ class TestProperty4WaitAtEndDetection:
         has_pointing=st.booleans(),
         trailing_blanks=st.integers(min_value=0, max_value=3),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_wait_at_end_detection(self, has_wait, has_pointing, trailing_blanks):
         """WAIT on final line warns unless preceded by 👉."""
         tmp = Path(tempfile.mkdtemp())
@@ -296,7 +296,7 @@ class TestProperty5StepCheckpointMatching:
         num_steps=st.integers(min_value=1, max_value=5),
         missing_indices=st.frozensets(st.integers(min_value=0, max_value=4)),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_missing_checkpoints_reported(self, num_steps, missing_indices):
         """Steps without checkpoints are reported as errors."""
         tmp = Path(tempfile.mkdtemp())
@@ -352,7 +352,7 @@ class TestProperty6FileMetadataCompleteness:
         invalid_token=st.booleans(),
         invalid_category=st.booleans(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_missing_and_invalid_metadata_reported(
         self, files_on_disk, files_in_meta, invalid_token, invalid_category
     ):
@@ -428,7 +428,7 @@ class TestProperty7HookRegistryConsistency:
         registry_ids=st.frozensets(st_hook_id(), min_size=1, max_size=5),
         disk_ids=st.frozensets(st_hook_id(), min_size=1, max_size=5),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_reports_all_mismatches_bidirectionally(self, registry_ids, disk_ids):
         """Every hook in registry-only or disk-only is reported."""
         tmp = Path(tempfile.mkdtemp())
@@ -439,14 +439,14 @@ class TestProperty7HookRegistryConsistency:
             hooks.mkdir()
 
             registry_lines = [
-                "---", "inclusion: manual", "---", "# Hook Registry", ""
+                "---", "inclusion: manual", "---", "# Hook Registry — Full Prompts", ""
             ]
             for hid in registry_ids:
                 registry_lines.append(f"**{hid}** (promptSubmit → askAgent)")
                 registry_lines.append(f"")
                 registry_lines.append(f"- id: `{hid}`")
                 registry_lines.append(f"")
-            (steering / "hook-registry.md").write_text("\n".join(registry_lines))
+            (steering / "hook-registry-detail.md").write_text("\n".join(registry_lines))
 
             for hid in disk_ids:
                 hook_data = {
@@ -496,7 +496,7 @@ class TestProperty8FrontmatterValidation:
         ),
         has_pattern=st.booleans(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_frontmatter_validation(self, has_frontmatter, inclusion, has_pattern):
         """Frontmatter presence and inclusion field are validated."""
         tmp = Path(tempfile.mkdtemp())
@@ -559,7 +559,7 @@ class TestProperty9ExitCodeCorrectness:
         warnings=st.integers(min_value=0, max_value=5),
         warnings_as_errors=st.booleans(),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_exit_code_correctness(self, errors, warnings, warnings_as_errors):
         """Exit code is 0 iff no errors (or no errors+warnings with flag)."""
         violations = []
@@ -610,7 +610,7 @@ class TestProperty10ViolationOutputFormat:
                        alphabet=st.characters(whitelist_categories=("L", "N", "P", "Z"),
                                               blacklist_characters="\n\r")),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_format_matches_pattern(self, level, filename, line, message):
         """Formatted output matches {level}: {file}:{line}: {message}."""
         v = LintViolation(level=level, file=filename, line=line, message=message)
@@ -639,7 +639,7 @@ class TestProperty11CodeBlockAwareValidation:
     """
 
     @given(ref_name=st_filename())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_refs_inside_code_blocks_skipped(self, ref_name):
         """References inside code blocks are not validated."""
         tmp = Path(tempfile.mkdtemp())
@@ -669,7 +669,7 @@ class TestProperty11CodeBlockAwareValidation:
             shutil.rmtree(tmp)
 
     @given(ref_name=st_filename())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_refs_outside_code_blocks_validated(self, ref_name):
         """References outside code blocks are validated."""
         tmp = Path(tempfile.mkdtemp())

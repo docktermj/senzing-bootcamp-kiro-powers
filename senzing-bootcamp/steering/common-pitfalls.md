@@ -9,7 +9,7 @@ Load on errors, when user is stuck, or preventively at module start. For visual 
 
 ## Quick Navigation
 
-[Symptoms](#troubleshooting-by-symptom) · Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8–11](#modules-8-11) | [Windows](#windows-pitfalls) · [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
+[Symptoms](#troubleshooting-by-symptom) · Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8–11](#modules-8-11) | [Database Issues](#database-issues) · [Windows](#windows-pitfalls) · [TypeScript/Node.js](#typescriptnodejs-pitfalls) · [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
 
 ## Guided Troubleshooting — Ask Before Scanning
 
@@ -25,13 +25,13 @@ Then jump to the relevant section and present only the matching pitfall/fix — 
 
 ## Troubleshooting by Symptom
 
-| Symptom | Likely Cause | Diagnostic Steps |
-| ------- | ------------ | ---------------- |
-| Zero entities created | Incorrect data format, missing `DATA_SOURCE` or `RECORD_ID` fields, or loading program not processing records | Check input file format, verify `DATA_SOURCE` and `RECORD_ID` fields exist in every record, review loading program output, use `search_docs` to verify required fields |
-| Loading hangs | Large record count with SQLite, threading misconfiguration, or insufficient system resources | Check record count and database type (SQLite vs PostgreSQL), review threading configuration, monitor system resources, use `search_docs` for performance tuning |
-| Query returns no results | Invalid entity IDs, data not yet loaded, or incorrect query flags | Verify entity IDs exist, confirm data was loaded successfully, use `get_sdk_reference(topic='flags')` to check correct query flags |
-| SDK initialization fails | Invalid `SENZING_ENGINE_CONFIGURATION_JSON`, incorrect CONFIGPATH/RESOURCEPATH/SUPPORTPATH, or missing Senzing installation | Verify `SENZING_ENGINE_CONFIGURATION_JSON` is valid JSON, check paths exist, use `explain_error_code` for the specific SENZ code |
-| Database connection fails | Database file doesn't exist, incorrect connection string, permission issues, or PostgreSQL service not running | Check database file existence, verify connection string format, check file permissions, verify PostgreSQL service status |
+| Symptom | Diagnostic Action |
+| ------- | ----------------- |
+| Zero entities created | Check input file format and project structure. Verify `data/transformed/` contains valid JSONL. Call `search_docs(query="record format requirements")` for current field requirements |
+| Loading hangs | Check system resources and record count. Call `search_docs(query="performance tuning loading")` for current guidance on database and threading configuration |
+| Query returns no results | Verify data was loaded successfully and entity IDs exist. Call `get_sdk_reference(topic='flags')` for correct query flag usage |
+| SDK initialization fails | Verify configuration JSON is valid and paths exist. Call `explain_error_code` with the specific SENZ code for diagnosis |
+| Database connection fails | Check database file existence, verify connection string format, check file permissions, verify PostgreSQL service status |
 
 <a id="module-2"></a>
 
@@ -40,14 +40,14 @@ Then jump to the relevant section and present only the matching pitfall/fix — 
 | Pitfall                                      | Fix                                                                          |
 | -------------------------------------------- | ---------------------------------------------------------------------------- |
 | Installing over existing SDK                 | Check first: `ls -la /opt/senzing` or language-appropriate import check      |
-| SQLite for production                        | SQLite for evaluation only (<1M records). PostgreSQL for production          |
 | Skipping anti-pattern check                  | Always call `search_docs(category='anti_patterns')`                          |
 | Wrong platform commands                      | Use `sdk_guide` with correct `platform` parameter                            |
-| Missing `SENZING_ENGINE_CONFIGURATION_JSON`  | Follow `sdk_guide` configuration exactly                                     |
+| Missing configuration JSON                   | Follow `sdk_guide(topic='configure')` exactly                                |
+| Database choice unclear                      | Call `search_docs(query="database configuration")` for current guidance on SQLite vs PostgreSQL tradeoffs |
 
 ### SQLite → PostgreSQL Migration
 
-When to migrate: >100K records and slow, need multi-threading, preparing for Modules 8-11.
+When to migrate: call `search_docs(query="database configuration scaling")` for current guidance on when to switch.
 
 Steps: Install PostgreSQL (Linux: `apt install postgresql`, macOS: `brew install postgresql`, Windows: download the installer from postgresql.org/download/windows/ or use `winget install PostgreSQL.PostgreSQL`) → `sdk_guide(topic='configure')` for new config → Reload data from JSONL (SQLite data doesn't transfer) → Update `bootcamp_preferences.yaml` → Re-validate queries.
 
@@ -55,11 +55,12 @@ What carries forward: all code, transformed data, docs, config. What doesn't: th
 
 <a id="module-3"></a>
 
-## Module 3: Quick Demo
+## Module 3: System Verification
 
 | Pitfall                                  | Fix                                                                              |
 | ---------------------------------------- | -------------------------------------------------------------------------------- |
-| Using `get_stats()` for record counts    | `get_stats()` tracks per-process stats, not totals. Use a counter during loading |
+| Confusing per-process stats with totals  | Use a counter during loading for record counts. Call `get_sdk_reference` for current stats method behavior |
+| Entity counts don't match TruthSet expectations | Check SDK config paths (CONFIGPATH, SUPPORTPATH), verify database was freshly initialized, call `search_docs(query="truthset")` for current expected results |
 
 <a id="module-1"></a>
 
@@ -91,11 +92,10 @@ What carries forward: all code, transformed data, docs, config. What doesn't: th
 | Skipping quality scoring                 | Always run automated scoring for objective metrics                               |
 | Ignoring quality issues                  | Address during mapping (Phase 2 of Module 5)                                     |
 | Proceeding with low quality              | Use the three-tier gate: ≥80% proceed, 70-79% warn and let user decide, <70% recommend fixing first |
-| Hand-coding attribute names              | ALWAYS use `mapping_workflow` — never guess. Use `search_docs(query="entity specification")` for reference   |
-| Missing `DATA_SOURCE` or `RECORD_ID`    | Every record MUST have both fields                                                                           |
-| Running transformation on full dataset first | Test on 10-100 records first                                                                             |
-| Skipping `analyze_record` after transform | Always validate output quality                                                                              |
-| Generated files in project root          | Relocate: scripts→`src/transform/`, JSONL→`data/transformed/`, docs→`docs/`, shell→`scripts/`                |
+| Guessing attribute names                 | ALWAYS use `mapping_workflow` — never guess. Call `search_docs(query="entity specification")` for current attribute reference |
+| Running transformation on full dataset first | Test on 10-100 records first                                                  |
+| Skipping validation after transform      | Always validate output with `analyze_record`                                     |
+| Generated files in project root          | Relocate: scripts→`src/transform/`, JSONL→`data/transformed/`, docs→`docs/`, shell→`scripts/` |
 
 ### Mapping Workflow State Loss
 
@@ -117,15 +117,36 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | ------------------------------------------------ | ---------------------------------------------------------------------------- |
 | No database backup                               | ALWAYS backup before loading (use backup hook)                               |
 | Loading without testing                          | Test with 100 records first                                                  |
-| Loading 5,000+ records on SQLite                 | Start with ≤1,000 records. Single-threaded ER slows as DB grows. Use PostgreSQL for larger volumes. |
-| Ignoring error codes                             | Use `explain_error_code` for every error, fix root cause                     |
-| Wrong DATA_SOURCE name                           | Verify matches Module 2 configuration                                        |
-| Duplicate RECORD_IDs                             | Ensure unique within each DATA_SOURCE. Append sequence number if needed      |
-| Poor DATA_SOURCE naming (`file1`, `data`)        | Use descriptive uppercase: `CUSTOMERS_CRM`, `VENDORS_ERP`                    |
+| Ignoring error codes                             | Call `explain_error_code` for every SENZ error, fix root cause               |
+| Poor data source naming (`file1`, `data`)        | Use descriptive uppercase names. Call `search_docs(query="data source naming")` for conventions |
 | No progress monitoring                           | Add progress logging to loading programs                                     |
-| Wrong load order (multi-source)                  | Define order based on dependencies and data quality                          |
 | No per-source error handling (multi-source)      | Implement per-source error handling, continue on failure                     |
 | Not tracking multi-source progress               | Use orchestration dashboard or logging                                       |
+| Data format or field issues                      | Call `search_docs(query="record format requirements")` for current required fields and format |
+
+<a id="database-issues"></a>
+
+## Database Issues
+
+Database corruption typically occurs during Module 6 data loading. Run `python3 scripts/check_database.py` to diagnose, or add `--repair` to attempt automatic recovery.
+
+| Pitfall | Symptoms | Fix |
+| ------- | -------- | --- |
+| Corruption after disk full | "database disk image is malformed" error during load or query | Free disk space, then run `python3 scripts/check_database.py --repair`. If repair fails, delete `database/G2C.db` and re-run the loading program from JSONL |
+| Locked database | "database is locked" error, loading hangs indefinitely | Close all other processes accessing the database. Check for stale lock files. If the lock persists, restart the system or run `python3 scripts/check_database.py --repair` |
+| Zero entities after load | Loading reports success but queries return no results, entity count is 0 | Run `python3 scripts/check_database.py` to verify entity count. If count is 0, check that the loading program used the correct data source file and that records had valid RECORD_ID fields |
+| WAL file left behind | `-wal` or `-shm` files remain next to `G2C.db` after a crash | Run `python3 scripts/check_database.py --repair` to checkpoint and remove WAL files. Alternatively, run `sqlite3 database/G2C.db "PRAGMA wal_checkpoint(TRUNCATE);"` manually |
+
+### Manual Recovery Steps
+
+If `--repair` does not resolve the issue:
+
+1. **Check integrity**: `sqlite3 database/G2C.db "PRAGMA integrity_check;"` — if result is not "ok", the database must be rebuilt
+2. **Attempt WAL recovery**: `sqlite3 database/G2C.db "PRAGMA wal_checkpoint(TRUNCATE);"` — forces pending WAL transactions into the main database file
+3. **Vacuum**: `sqlite3 database/G2C.db "VACUUM;"` — reclaims space and can fix minor inconsistencies
+4. **Rebuild from scratch**: Delete `database/G2C.db` (and any `-wal`/`-shm` files), re-initialize the database, and re-run the loading program against your transformed JSONL in `data/transformed/`
+
+For PostgreSQL: check for orphaned transactions (`SELECT * FROM pg_stat_activity WHERE state = 'idle in transaction'`), run `VACUUM ANALYZE`, and re-run failed loads — Senzing's RECORD_ID-based loading is idempotent.
 
 <a id="module-7"></a>
 
@@ -133,11 +154,11 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 
 | Pitfall                                      | Fix                                                                                                                      |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Guessing SDK method names                    | Use `generate_scaffold` or `get_sdk_reference` — never guess. Use `get_sdk_reference(topic='migration')` for V3→V4       |
-| Wrong query flags                            | Use `get_sdk_reference(topic='flags')`                                                                                   |
-| "These shouldn't have matched"               | Use SDK "why" method via `get_sdk_reference` for match details                                                           |
+| Guessing SDK method names                    | Call `get_sdk_reference` — never guess method names or signatures                                                        |
+| Unexpected match results                     | Call `get_sdk_reference(topic='why')` for match explanation methods                                                      |
 | Expecting perfect results immediately        | Iterate: adjust mappings, confidence scores, add attributes                                                              |
-| Skipping UAT                                 | Always conduct UAT with business users before production (see Module 6)                                              |
+| Skipping UAT                                 | Always conduct UAT with business users before production (see Module 6)                                                  |
+| Query flag confusion                         | Call `get_sdk_reference(topic='flags')` for current flag reference                                                       |
 
 <a id="modules-8-11"></a>
 
@@ -155,8 +176,8 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | Pitfall                              | Fix                                                                                                      |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------- |
 | `python3` not found (Windows)        | Use `python` instead of `python3` on Windows. Ensure Python is on `PATH` via the installer checkbox      |
-| Corporate proxy blocking MCP         | Allowlist `mcp.senzing.com:443`. Set `HTTPS_PROXY` if behind proxy. Modules 1-4 work without MCP         |
-| Not reading error messages           | Read carefully, use `explain_error_code`                                                                 |
+| Corporate proxy blocking MCP         | Allowlist `mcp.senzing.com:443`. Set `HTTPS_PROXY` if behind proxy                                       |
+| Not reading error messages           | Read carefully, use `explain_error_code` for SENZ codes                                                  |
 | Guessing instead of searching docs   | Use `search_docs` liberally                                                                              |
 | Not committing to git                | Commit after each module completion                                                                      |
 | Working in production first          | Always develop locally or in dev environment                                                             |
@@ -175,13 +196,36 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | PowerShell blocks script execution | Run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` once |
 | `npm` not found in scripts | Windows uses `npm.cmd` — if running scripts manually, use `npm.cmd` or run from PowerShell/Windows Terminal |
 | TypeScript SDK build fails (native addons) | Install Visual Studio Build Tools: `winget install Microsoft.VisualStudio.2022.BuildTools --override "--add Microsoft.VisualStudio.Workload.VCTools"` |
-| Senzing DLLs not found at runtime | Add Senzing `lib` directory to `PATH` — check `sdk_guide` output for the exact path |
+| Senzing DLLs not found at runtime | Call `sdk_guide` for the correct path to add to `PATH` |
 | Emoji/Unicode garbled in terminal | Use Windows Terminal or PowerShell 7 instead of `cmd.exe`. Install: `winget install Microsoft.WindowsTerminal` |
 | `source` command not found | `source` is bash-only. Use `. .\scripts\senzing-env.ps1` (PowerShell) or `call scripts\senzing-env.bat` (cmd) |
 
+<a id="typescriptnodejs-pitfalls"></a>
+
+## TypeScript/Node.js Pitfalls
+
+| Pitfall | Fix |
+| ------- | --- |
+| Unhandled promise rejections crash the process | Always `await` async SDK calls or attach `.catch()`. Add a global handler: `process.on('unhandledRejection', (err) => { /* log and exit */ })` |
+| Blocking the event loop with large record loads | Use `setImmediate` or batch processing to yield between records. Never call synchronous SDK wrappers in a tight loop |
+| Using `any` type for Senzing data structures | Define interfaces for records, entity results, and config objects. Use the SDK's exported types or create your own based on `search_docs(query="record format")` |
+| TypeScript strict mode errors on SDK return values | Enable `strict: true` in `tsconfig.json` from the start. Add explicit null checks for optional fields returned by query methods |
+| ESM `import` used but package expects `require` (CJS) | Set `"type": "module"` in `package.json` for ESM projects. If the SDK only ships CJS, use `import { createRequire } from 'module'` or dynamic `import()` |
+| `require` used in an ESM project causes ERR_REQUIRE_ESM | Convert to `import` syntax or switch `package.json` to `"type": "commonjs"`. Do not mix module systems in the same package |
+
 ## MCP Server Unavailable
 
-Load `mcp-offline-fallback.md` for detailed blocked/continuable operation tables, per-operation fallback instructions, reconnection procedures, and connectivity troubleshooting.
+The Senzing MCP server is required for the bootcamp to function. If the connection fails, troubleshoot using the table below.
+
+| Issue | Fix |
+| ----- | --- |
+| Corporate proxy blocking connection | Allowlist `mcp.senzing.com:443`. Set `HTTPS_PROXY` environment variable if behind a proxy |
+| DNS resolution failure | Run `nslookup mcp.senzing.com` to verify DNS. Try alternate DNS (8.8.8.8) if resolution fails |
+| Firewall blocking outbound HTTPS | Ensure outbound traffic to `mcp.senzing.com:443` is permitted |
+| IDE MCP connection stale | Restart the MCP server connection in the Kiro Powers panel |
+| General connectivity | Test with `curl -s -o /dev/null -w "%{http_code}" https://mcp.senzing.com:443` — expect 200 |
+
+After fixing the connection, say "retry" to re-run the MCP health check.
 
 <a id="recovery"></a>
 

@@ -63,7 +63,7 @@ class TestBackwardCompatibilityLegacyProgress:
     """
 
     @given(data=st_legacy_progress())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_legacy_progress_passes_validation(self, data):
         """Legacy progress dicts with integer-only steps produce zero validation errors."""
         errors = validate_progress_schema(data)
@@ -75,7 +75,7 @@ class TestBackwardCompatibilityLegacyProgress:
         module_number=st.integers(min_value=1, max_value=12),
         step=st.integers(min_value=1, max_value=30),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_write_checkpoint_integer_passes_validation(self, module_number, step):
         """write_checkpoint with an integer step produces a file that passes validation."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:

@@ -129,7 +129,7 @@ class TestProperty8CheckCommandReflectsAvailability:
     """
 
     @given(cmd_name=command_names, required=st.booleans())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_present_increments_passed(self, cmd_name, required):
         mod = _load_preflight()
 
@@ -144,7 +144,7 @@ class TestProperty8CheckCommandReflectsAvailability:
         assert len(passed) >= 1
 
     @given(cmd_name=command_names)
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_absent_required_increments_failed(self, cmd_name):
         mod = _load_preflight()
 

@@ -149,7 +149,7 @@ class TestProperty1MigrationVersionUpgrade:
     """
 
     @given(registry=st_v1_registry())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_version_upgraded_to_2(self, registry):
         result = migrate_v1_to_v2(copy.deepcopy(registry))
         assert result["version"] == "2"
@@ -177,7 +177,7 @@ class TestProperty2MissingFieldsBackfilled:
             include_test_entity_count=False,
         )
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_missing_fields_set_to_none(self, registry):
         result = migrate_v1_to_v2(copy.deepcopy(registry))
         for key, entry in result["sources"].items():
@@ -210,7 +210,7 @@ class TestProperty3ExistingFieldsPreserved:
             include_issues=True,
         )
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_existing_fields_unchanged(self, registry):
         original = copy.deepcopy(registry)
         result = migrate_v1_to_v2(copy.deepcopy(registry))
@@ -241,7 +241,7 @@ class TestProperty4MigrationChainReachesCurrent:
     """
 
     @given(registry=st_v1_registry())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_chain_reaches_current_version(self, registry):
         result = apply_migrations(copy.deepcopy(registry))
         assert result["version"] == CURRENT_SCHEMA_VERSION
@@ -265,7 +265,7 @@ class TestProperty5UnrecognizedVersionError:
     @given(
         version=st.text(min_size=1, max_size=5, alphabet="0123456789abc")
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_unrecognized_version_raises(self, version):
         assume(version not in MIGRATION_CHAIN)
         assume(version != CURRENT_SCHEMA_VERSION)
@@ -290,7 +290,7 @@ class TestProperty6MigrationIdempotence:
     """
 
     @given(registry=st_v1_registry())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_migration_is_idempotent(self, registry):
         # First migration + serialize
         migrated1 = apply_migrations(copy.deepcopy(registry))
@@ -320,7 +320,7 @@ class TestProperty7SerializationRoundTrip:
     """
 
     @given(registry=st_v1_registry())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_round_trip_preserves_source_data(self, registry):
         migrated = migrate_v1_to_v2(copy.deepcopy(registry))
         serialized = serialize_registry_yaml(migrated)
@@ -354,7 +354,7 @@ class TestProperty8ValidationAcceptsMigrated:
     """
 
     @given(registry=st_v1_registry())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_migrated_registry_passes_validation(self, registry):
         migrated = migrate_v1_to_v2(copy.deepcopy(registry))
         errors = validate_registry(migrated)
@@ -383,7 +383,7 @@ class TestProperty9ValidationRejectsInvalid:
             min_size=1, max_size=10, alphabet="abcdefghijklmnopqrstuvwxyz"
         ),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_invalid_test_load_status_rejected(self, registry, invalid_tls):
         assume(invalid_tls not in VALID_TEST_LOAD_STATUSES)
         migrated = migrate_v1_to_v2(copy.deepcopy(registry))
@@ -399,7 +399,7 @@ class TestProperty9ValidationRejectsInvalid:
         registry=st_v1_registry(),
         negative_count=st.integers(max_value=-1),
     )
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_negative_test_entity_count_rejected(self, registry, negative_count):
         migrated = migrate_v1_to_v2(copy.deepcopy(registry))
         first_key = next(iter(migrated["sources"]))

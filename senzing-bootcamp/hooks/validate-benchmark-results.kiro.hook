@@ -1,5 +1,5 @@
 {
-  "name": "Validate Benchmark Results",
+  "name": "to validate benchmark results",
   "version": "1.0.0",
   "description": "When benchmark scripts are created or modified in tests/performance/, validates that they produce parseable output with required metrics (records/sec, latency percentiles).",
   "when": {

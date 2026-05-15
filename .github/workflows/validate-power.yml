@@ -23,6 +23,8 @@ jobs:
         run: python senzing-bootcamp/scripts/measure_steering.py --check
       - name: Validate CommonMark
         run: python senzing-bootcamp/scripts/validate_commonmark.py
+      - name: Validate module dependencies
+        run: python senzing-bootcamp/scripts/validate_dependencies.py
       - name: Verify hook registry is in sync
         run: |
           python senzing-bootcamp/scripts/sync_hook_registry.py --verify || {

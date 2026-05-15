@@ -41,7 +41,7 @@ For teams working on a Senzing Bootcamp project together. For coding standards, 
 
 1. Grant repo access and communication channels
 2. Run `python3 scripts/preflight.py`
-3. Complete Module 3 (Quick Demo) to see entity resolution in action
+3. Complete Module 3 (System Verification) to confirm the setup end-to-end
 4. Review `docs/business_problem.md` and existing code in `src/`
 5. Pair with a team member on their first task
 

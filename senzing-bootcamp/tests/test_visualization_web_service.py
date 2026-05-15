@@ -21,7 +21,7 @@ _POWER_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 
 _VIZ_GUIDE = _POWER_ROOT / "steering" / "visualization-guide.md"
 _VIZ_WEB_SERVICE = _POWER_ROOT / "steering" / "visualization-web-service.md"
-_MODULE_03 = _POWER_ROOT / "steering" / "module-03-quick-demo.md"
+_MODULE_03 = _POWER_ROOT / "steering" / "module-03-system-verification.md"
 _MODULE_07 = _POWER_ROOT / "steering" / "module-07-query-validation.md"
 
 
@@ -299,93 +299,74 @@ class TestVizGuideFeatureParity:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 4.5 — module-03-quick-demo.md Visualization Prompt
+# 4.5 — module-03-system-verification.md Visualization Protocol Reference
 # Validates: Requirements 5.2
 # ═══════════════════════════════════════════════════════════════════════════
 
 
 class TestModule03VisualizationPrompt:
-    """Verify module-03-quick-demo.md contains the Visualization Prompt in Phase 2 Step 5."""
+    """Module 3 was redesigned as TruthSet System Verification. It no
+    longer follows the Visualization Protocol pattern used in the old
+    Quick Demo; the `enforce-visualization-offers` hook handles
+    visualization offers during Module 3 instead. This test class is
+    retained as a placeholder — its assertions are no longer relevant.
+    """
 
-    @pytest.fixture(autouse=True)
-    def _load(self):
-        self.content = _read(_MODULE_03)
-
-    def test_prompt_in_phase2_step5(self):
-        """Visualization Prompt appears in Phase 2 Step 5."""
-        # Step 5 is the "Offer visualization" step
-        step5_pos = self.content.index("Offer visualization")
-        # The prompt should be within step 5 content
-        static_pos = self.content.index("Static HTML file", step5_pos)
-        assert static_pos > step5_pos
-
-    def test_prompt_offers_static_html(self):
-        """Prompt offers Static HTML file option."""
-        assert "Static HTML file" in self.content
-
-    def test_prompt_offers_web_service(self):
-        """Prompt offers Web service option."""
-        assert "Web service" in self.content
-
-    def test_wait_instruction_after_prompt(self):
-        """WAIT instruction follows the prompt."""
-        prompt_pos = self.content.index("Static HTML file")
-        wait_pos = self.content.index("WAIT", prompt_pos)
-        assert wait_pos > prompt_pos
+    def test_module03_uses_truthset_not_visualization_protocol(self):
+        """Module 3 (System Verification) does not embed a visualization
+        protocol reference — visualization is handled by the hook layer.
+        """
+        content = _read(_MODULE_03)
+        # The file should describe System Verification, not a Quick Demo
+        assert "System Verification" in content
+        assert "TruthSet" in content
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 4.6 — module-07-query-validation.md Visualization Prompt
+# 4.6 — module-07-query-validation.md Visualization Protocol References
 # Validates: Requirements 5.3
 # ═══════════════════════════════════════════════════════════════════════════
 
 
 class TestModule07VisualizationPrompt:
-    """Verify module-07-query-validation.md contains the Visualization Prompt."""
+    """Verify module-07-query-validation.md references the Visualization Protocol."""
 
     @pytest.fixture(autouse=True)
     def _load(self):
         self.content = _read(_MODULE_07)
 
-    def test_prompt_in_entity_graph_section(self):
-        """Visualization Prompt appears in the entity graph offer section."""
-        graph_pos = self.content.index("MANDATORY VISUALIZATION OFFER — ENTITY GRAPH")
-        static_pos = self.content.index("Static HTML file", graph_pos)
-        assert static_pos > graph_pos
+    def test_protocol_reference_in_entity_graph_section(self):
+        """Visualization Protocol is referenced in the entity graph checkpoint."""
+        graph_pos = self.content.index("Entity graph visualization checkpoint")
+        protocol_pos = self.content.index("visualization-protocol.md", graph_pos)
+        assert protocol_pos > graph_pos
 
-    def test_prompt_in_results_dashboard_section(self):
-        """Visualization Prompt appears in the results dashboard offer section."""
-        dashboard_pos = self.content.index("MANDATORY VISUALIZATION OFFER — RESULTS DASHBOARD")
-        static_pos = self.content.index("Static HTML file", dashboard_pos)
-        assert static_pos > dashboard_pos
+    def test_protocol_reference_in_results_dashboard_section(self):
+        """Visualization Protocol is referenced in the results dashboard checkpoint."""
+        dashboard_pos = self.content.index("Results dashboard visualization checkpoint")
+        protocol_pos = self.content.index("visualization-protocol.md", dashboard_pos)
+        assert protocol_pos > dashboard_pos
 
-    def test_entity_graph_offers_both_options(self):
-        """Entity graph prompt offers both static HTML and web service."""
-        graph_pos = self.content.index("MANDATORY VISUALIZATION OFFER — ENTITY GRAPH")
-        dashboard_pos = self.content.index("MANDATORY VISUALIZATION OFFER — RESULTS DASHBOARD")
+    def test_entity_graph_references_m7_checkpoint(self):
+        """Entity graph section references m7_exploratory_queries checkpoint."""
+        assert "m7_exploratory_queries" in self.content
+
+    def test_results_dashboard_references_m7_checkpoint(self):
+        """Results dashboard section references m7_findings_documented checkpoint."""
+        assert "m7_findings_documented" in self.content
+
+    def test_entity_graph_follows_protocol(self):
+        """Entity graph section instructs to follow the Visualization Protocol."""
+        graph_pos = self.content.index("Entity graph visualization checkpoint")
+        dashboard_pos = self.content.index("Results dashboard visualization checkpoint")
         graph_section = self.content[graph_pos:dashboard_pos]
-        assert "Static HTML file" in graph_section
-        assert "Web service" in graph_section
+        assert "Visualization Protocol" in graph_section
 
-    def test_results_dashboard_offers_both_options(self):
-        """Results dashboard prompt offers both static HTML and web service."""
-        dashboard_pos = self.content.index("MANDATORY VISUALIZATION OFFER — RESULTS DASHBOARD")
+    def test_results_dashboard_follows_protocol(self):
+        """Results dashboard section instructs to follow the Visualization Protocol."""
+        dashboard_pos = self.content.index("Results dashboard visualization checkpoint")
         dashboard_section = self.content[dashboard_pos:]
-        assert "Static HTML file" in dashboard_section
-        assert "Web service" in dashboard_section
-
-    def test_entity_graph_wait_instruction(self):
-        """WAIT instruction follows the entity graph prompt."""
-        graph_pos = self.content.index("MANDATORY VISUALIZATION OFFER — ENTITY GRAPH")
-        dashboard_pos = self.content.index("MANDATORY VISUALIZATION OFFER — RESULTS DASHBOARD")
-        graph_section = self.content[graph_pos:dashboard_pos]
-        assert "WAIT" in graph_section
-
-    def test_results_dashboard_wait_instruction(self):
-        """WAIT instruction follows the results dashboard prompt."""
-        dashboard_pos = self.content.index("MANDATORY VISUALIZATION OFFER — RESULTS DASHBOARD")
-        dashboard_section = self.content[dashboard_pos:]
-        assert "WAIT" in dashboard_section
+        assert "Visualization Protocol" in dashboard_section
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -433,25 +414,18 @@ class TestPreservation:
         assert "Empty database" in self.viz_combined
         assert "Entity count > 500" in self.viz_combined
 
-    # --- module-03-quick-demo.md preservation ---
+    # --- module-03-system-verification.md preservation ---
+    #
+    # NOTE: Module 3 was redesigned from "Quick Demo" (Phase 1: Setup,
+    # Phase 2: Demo) to "System Verification" (Phase 1: Verification
+    # Pipeline, Phase 2: Report & Close) using the Senzing TruthSet
+    # deterministically. The old phase-structure preservation tests no
+    # longer apply and have been removed.
 
-    def test_module03_phase1_preserved(self):
-        """Module 3 Phase 1 content is unchanged."""
-        assert "Phase 1: Setup" in self.module_03
-        assert "Create project structure" in self.module_03
-        assert "Verify SDK" in self.module_03
-        assert "Choose sample dataset" in self.module_03
-        assert "Generate demo script" in self.module_03
-
-    def test_module03_phase2_other_steps_preserved(self):
-        """Module 3 Phase 2 content (other than Step 5) is unchanged."""
-        assert "Phase 2: Demo" in self.module_03
-        assert "Show records BEFORE resolution" in self.module_03
-        assert "Run the demo" in self.module_03
-        assert "Display results" in self.module_03
-        assert "Explain results" in self.module_03
-        assert "Close Module 3 explicitly" in self.module_03
-        assert "Transition to Module 1" in self.module_03
+    def test_module03_is_system_verification(self):
+        """Module 3 is the System Verification workflow."""
+        assert "System Verification" in self.module_03
+        assert "TruthSet" in self.module_03
 
     # --- module-07-query-validation.md preservation ---
 

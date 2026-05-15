@@ -30,10 +30,10 @@
            │
            ▼
 ┌──────────────────────┐
-│   MODULE 3 (Optional)│
-│    Quick Demo        │
+│      MODULE 3        │
+│  System Verification │
 │                      │
-│  • Sample data       │
+│  • TruthSet data     │
 │  • Live resolution   │
 │  • See results       │
 └──────────┬───────────┘
@@ -141,12 +141,6 @@
 ```
 
 ## Learning Paths
-
-### Quick Demo
-
-```text
-Module 2 → Module 3 → Done
-```
 
 ### Core Bootcamp (recommended)
 

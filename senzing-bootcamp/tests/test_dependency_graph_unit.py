@@ -37,6 +37,7 @@ _GRAPH_PATH = _REPO_ROOT / "config" / "module-dependencies.yaml"
 _STEERING_DIR = _REPO_ROOT / "steering"
 _PREREQS_PATH = _STEERING_DIR / "module-prerequisites.md"
 _ONBOARDING_PATH = _STEERING_DIR / "onboarding-flow.md"
+_ONBOARDING_PHASE2_PATH = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 
 
 # ---------------------------------------------------------------------------
@@ -57,10 +58,23 @@ class TestRealGraphParsing:
         graph = load_dependency_graph(_GRAPH_PATH)
         assert len(graph["modules"]) == 11
 
-    def test_graph_has_3_tracks(self):
-        """(c) Real graph has 3 tracks."""
+    def test_graph_has_2_tracks(self):
+        """(c) Real graph has exactly 2 tracks."""
         graph = load_dependency_graph(_GRAPH_PATH)
-        assert len(graph["tracks"]) == 3
+        assert len(graph["tracks"]) == 2
+
+    def test_quick_demo_absent_from_tracks(self):
+        """quick_demo track is not present in the dependency graph."""
+        graph = load_dependency_graph(_GRAPH_PATH)
+        assert "quick_demo" not in graph["tracks"]
+
+    def test_core_bootcamp_properties_preserved(self):
+        """Core Bootcamp track retains expected name, modules, and recommendation."""
+        graph = load_dependency_graph(_GRAPH_PATH)
+        core = graph["tracks"]["core_bootcamp"]
+        assert core["name"] == "Core Bootcamp"
+        assert core["modules"] == [1, 2, 3, 4, 5, 6, 7]
+        assert core["recommendation"] == "recommended"
 
     def test_graph_has_10_gates(self):
         """(d) Real graph has 10 gates."""
@@ -102,14 +116,16 @@ class TestReferenceNotes:
         assert "authoritative" in content.lower() or "Authoritative" in content
 
     def test_onboarding_flow_has_track_note(self):
-        """onboarding-flow.md contains the track authoritative source note."""
-        content = _ONBOARDING_PATH.read_text(encoding="utf-8")
+        """Onboarding files contain the track authoritative source note."""
+        # After the split, track content is in Phase 2 file
+        content = _ONBOARDING_PHASE2_PATH.read_text(encoding="utf-8")
         # Check in the Track Selection section area
         assert "config/module-dependencies.yaml" in content
 
     def test_onboarding_flow_has_gates_note(self):
-        """onboarding-flow.md contains the gates authoritative source note."""
-        content = _ONBOARDING_PATH.read_text(encoding="utf-8")
+        """Onboarding files contain the gates authoritative source note."""
+        # After the split, Validation Gates is in Phase 2 file
+        content = _ONBOARDING_PHASE2_PATH.read_text(encoding="utf-8")
         # Find the Validation Gates section and check for the note
         gates_idx = content.find("## Validation Gates")
         assert gates_idx != -1, "Validation Gates section not found"

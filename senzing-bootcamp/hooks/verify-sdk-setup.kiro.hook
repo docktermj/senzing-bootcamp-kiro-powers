@@ -1,5 +1,5 @@
 {
-  "name": "Verify SDK Setup",
+  "name": "to verify SDK setup",
   "version": "1.0.0",
   "description": "After config or environment files change during Module 2, re-verifies that the Senzing SDK setup is still valid.",
   "when": {

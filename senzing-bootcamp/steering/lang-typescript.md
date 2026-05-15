@@ -9,7 +9,7 @@ fileMatchPattern: "**/*.{ts,tsx,js,jsx}"
 
 - Always obtain SDK method signatures from the MCP server (`get_sdk_reference`) — never guess function names or parameters
 - Use `async/await` for all Senzing SDK calls — never use raw callbacks or unhandled promises
-- Wrap engine lifecycle in a class with explicit `init()` and `destroy()` methods — call `destroy()` in a `finally` block or process exit handler
+- Wrap engine lifecycle in a class with explicit initialization and cleanup methods (call `get_sdk_reference` for current method names) — call cleanup in a `finally` block or process exit handler
 - Load engine configuration from JSON files using `fs.readFileSync(path, 'utf-8')` — never hardcode configuration strings
 - Define TypeScript interfaces for Senzing record structures — enables compile-time validation of record payloads
 - Use `explain_error_code` via MCP for any Senzing error codes encountered at runtime
@@ -19,7 +19,7 @@ fileMatchPattern: "**/*.{ts,tsx,js,jsx}"
 - **Unhandled promise rejections**: Always `await` SDK calls or attach `.catch()` — unhandled rejections crash Node.js by default
 - **Using `any` for Senzing data**: Define typed interfaces for records, entities, and API responses — `any` defeats TypeScript's safety
 - **Blocking the event loop**: Senzing SDK calls may be CPU-intensive — use `worker_threads` for loading operations to keep the main thread responsive
-- **Memory leaks from unclosed engines**: Register `process.on('exit', ...)` and `process.on('SIGINT', ...)` handlers to ensure engine cleanup
+- **Memory leaks from unclosed engines**: Register `process.on('exit', ...)` and `process.on('SIGINT', ...)` handlers to ensure engine cleanup (call `get_sdk_reference` for the current cleanup method name)
 - **Implicit encoding issues**: Always pass `'utf-8'` to `fs.readFileSync` and `Buffer.toString()` — Node.js defaults can vary
 
 ## Performance Considerations
@@ -45,6 +45,7 @@ fileMatchPattern: "**/*.{ts,tsx,js,jsx}"
 - TypeScript SDK bindings for Senzing may use Node.js native addons (N-API) — ensure `node-gyp` build tools are installed
 - Use ESM (`"type": "module"` in `package.json`) for new projects — CJS is legacy but may be required by some Senzing bindings
 - On Linux, set `LD_LIBRARY_PATH` for Senzing shared libraries before running `node` or `ts-node`
+- On macOS, set `DYLD_LIBRARY_PATH` to include the Senzing `lib` directory — native addons require this for dynamic library resolution at runtime
 - On Windows, ensure Senzing DLLs are on `PATH` — native addon loading depends on OS library search paths
 - Verify TypeScript/Node.js SDK support status via MCP before generating code — relay any platform warnings to the bootcamper
 
@@ -90,9 +91,9 @@ fileMatchPattern: "**/*.{ts,tsx,js,jsx}"
 **Cause**: TypeScript strict mode (`strict: true` in tsconfig) catches nullable and untyped values that Senzing API responses may return
 **Fix**:
 
-1. Use optional chaining and nullish coalescing: `const name = entity?.resolvedEntity?.entityName ?? "unknown"`
+1. Use optional chaining and nullish coalescing: `const value = response?.nestedField?.property ?? "default"` (call `get_sdk_reference` for current response structure fields)
 2. Add type guards before accessing properties: `if (result !== undefined) { ... }`
-3. Create typed interfaces for Senzing responses and use type assertions where the API contract is known
+3. Create typed interfaces for Senzing responses and use type assertions where the API contract is known (call `get_sdk_reference` for current response schemas)
 4. Verify with: `npx tsc --noEmit` — should compile without type errors
 
 ### Package Manager Conflicts
@@ -105,3 +106,10 @@ fileMatchPattern: "**/*.{ts,tsx,js,jsx}"
 2. Delete `node_modules` and reinstall: `rm -rf node_modules && npm install` (or equivalent)
 3. Add other lockfiles to `.gitignore` to prevent accidental commits
 4. Verify with: `npm ls` (or `yarn list`, `pnpm list`) — should show clean dependency tree without errors
+
+## SDK Maturity Notes
+
+> **Note:** TypeScript/Node.js SDK support may have fewer `find_examples` results
+> compared to Python and Java. The MCP server's `generate_scaffold` and `sdk_guide`
+> tools produce equivalent-quality output for all supported workflows. If you
+> encounter a gap, use `search_docs` or ask for help.

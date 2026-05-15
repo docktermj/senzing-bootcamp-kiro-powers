@@ -31,8 +31,6 @@ The agent uses these automatically, but you can ask for them directly:
 | [Common Mistakes](COMMON_MISTAKES.md) | Something went wrong and you're not sure why |
 | [Quality Scoring](QUALITY_SCORING_METHODOLOGY.md) | Your quality score is low and you want to understand why |
 | [Performance Baselines](PERFORMANCE_BASELINES.md) | Loading or queries are slow |
-| [Offline Mode](OFFLINE_MODE.md) | MCP server is unreachable |
-| [Glossary](GLOSSARY.md) | Unfamiliar Senzing term |
 
 ## 5. Browse Senzing Documentation
 
@@ -46,4 +44,4 @@ Visit [docs.senzing.com](https://docs.senzing.com) for the official Senzing docu
 
 ---
 
-See also: [FAQ](FAQ.md) | [Common Mistakes](COMMON_MISTAKES.md) | [Offline Mode](OFFLINE_MODE.md)
+See also: [FAQ](FAQ.md) | [Common Mistakes](COMMON_MISTAKES.md)

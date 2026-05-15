@@ -1,5 +1,5 @@
 {
-  "name": "Run Tests After Code Change",
+  "name": "to remind you to run tests",
   "version": "1.0.0",
   "description": "Reminds the agent to run the test suite after source code changes in loading, query, or transformation programs.",
   "when": {

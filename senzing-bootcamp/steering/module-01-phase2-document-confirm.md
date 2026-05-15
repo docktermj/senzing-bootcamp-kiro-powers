@@ -123,7 +123,7 @@ Steps 10–18 of Module 1. Continues from Phase 1 (discovery and gap-filling).
 
     **Checkpoint:** Write step 15 to `config/bootcamp_progress.json`.
 
-16. **Get confirmation**: "Does this accurately capture your problem? Does the [pattern name] pattern seem like a good fit, or should we adjust anything?"
+16. **Get confirmation**: "Does this accurately capture your problem and approach?"
 
     > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 

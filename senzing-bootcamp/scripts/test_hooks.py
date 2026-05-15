@@ -25,7 +25,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
-REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry.md")
+REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry-detail.md")
 CATEGORIES_PATH = Path("senzing-bootcamp/hooks/hook-categories.yaml")
 
 VALID_EVENT_TYPES = {
@@ -387,7 +387,7 @@ def check_registry_consistency(
 
     Args:
         hook_ids: Set of hook IDs from discovered files.
-        registry_path: Path to hook-registry.md.
+        registry_path: Path to hook-registry-detail.md.
 
     Returns:
         RegistryConsistency with any mismatches.
@@ -573,3 +573,47 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# ---------------------------------------------------------------------------
+# pytest entry point
+# ---------------------------------------------------------------------------
+
+
+def test_all_hooks_pass() -> None:
+    """Pytest wrapper: validates all hooks pass structural checks."""
+    hook_files = discover_hooks(HOOKS_DIR)
+    assert hook_files, f"No hook files found in {HOOKS_DIR}"
+
+    results: list[HookTestResult] = []
+    for hook_file in hook_files:
+        result = validate_hook(hook_file)
+        results.append(result)
+
+    failures = [r for r in results if not r.passed]
+    if failures:
+        msgs = []
+        for r in failures:
+            msgs.append(f"{r.hook_id}: {'; '.join(r.failures)}")
+        raise AssertionError(
+            f"{len(failures)} hook(s) failed validation:\n" + "\n".join(msgs)
+        )
+
+
+def test_registry_consistency() -> None:
+    """Pytest wrapper: validates hook files match registry entries."""
+    hook_files = discover_hooks(HOOKS_DIR)
+    all_hook_ids = {hook_id_from_path(f) for f in hook_files}
+    registry = check_registry_consistency(all_hook_ids, REGISTRY_PATH)
+
+    msgs: list[str] = []
+    if registry.orphaned_hooks:
+        msgs.append(
+            f"Hooks without registry entries: {', '.join(registry.orphaned_hooks)}"
+        )
+    if registry.stale_entries:
+        msgs.append(
+            f"Registry entries without hook files: {', '.join(registry.stale_entries)}"
+        )
+    if msgs:
+        raise AssertionError("Registry inconsistency:\n" + "\n".join(msgs))

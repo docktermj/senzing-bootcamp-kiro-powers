@@ -1,5 +1,5 @@
 {
-  "name": "Validate Business Problem",
+  "name": "to validate your business problem",
   "version": "1.0.0",
   "description": "After Module 1 tasks complete, validates that the bootcamper has identified data sources, defined matching criteria, and documented success metrics before proceeding to Module 2.",
   "when": {

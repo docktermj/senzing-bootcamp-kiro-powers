@@ -28,18 +28,6 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - Organized by category
 - Covers modules, files, troubleshooting
 
-**[GLOSSARY.md](GLOSSARY.md)**
-
-- Quick-reference glossary of Senzing entity resolution terms
-- 18 key terms: entity, data source, record, feature, Senzing Entity Specification (SGES), redo record, and more
-- Concise definitions without needing MCP round-trips
-
-**[DESIGN_PATTERNS.md](DESIGN_PATTERNS.md)**
-
-- 10 common entity resolution patterns
-- Use cases and examples
-- When to use each pattern
-
 **[PERFORMANCE_BASELINES.md](PERFORMANCE_BASELINES.md)**
 
 - Reference throughput for transformation, loading, and querying at different data volumes
@@ -53,25 +41,6 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - What each scoring dimension measures (completeness, consistency, format compliance, uniqueness)
 - Threshold bands and recommended actions (≥80% proceed, 70-79% warn, <70% fix)
 - Examples of high, medium, and low quality data with sample scores
-
-**[DATA_UPDATES_AND_DELETIONS.md](DATA_UPDATES_AND_DELETIONS.md)**
-
-- Record updates using replace semantics (same DATA_SOURCE + RECORD_ID replaces old data)
-- Record deletions and their impact on entity composition
-- Entity re-evaluation after updates and deletions (merges, splits, removals)
-- Redo processing implications and the recommended check-process-drain pattern
-
-**[INCREMENTAL_LOADING.md](INCREMENTAL_LOADING.md)**
-
-- Incremental loading patterns for adding new records to an existing Senzing database
-- Redo processing after incremental loads: scheduling, queue monitoring, and drain verification
-- Pipeline health monitoring: throughput, error rates, redo queue depth, and entity count trends
-
-**[MULTI_LANGUAGE_DATA.md](MULTI_LANGUAGE_DATA.md)**
-
-- Non-Latin character support and how Senzing handles names in Chinese, Arabic, Cyrillic, and other scripts
-- UTF-8 encoding requirements, common encoding problems, and verification checklist
-- Cross-script name matching, transliteration, and multi-language data quality best practices
 
 **[PROGRESS_FILE_SCHEMA.md](PROGRESS_FILE_SCHEMA.md)**
 
@@ -105,6 +74,13 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - Validation rules and a complete example showing Modules 4-7
 - CLI usage and agent behavior on missing artifacts
 
+**[DATABASE_MIGRATION.md](DATABASE_MIGRATION.md)**
+
+- Step-by-step SQLite to PostgreSQL migration for Senzing
+- Prerequisites, schema initialization, data re-loading, verification
+- Rollback path if migration fails
+- MCP tool integration for current PostgreSQL configuration guidance
+
 ### After the Bootcamp
 
 **[AFTER_BOOTCAMP.md](AFTER_BOOTCAMP.md)**
@@ -113,12 +89,6 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - Production maintenance cadence (daily/weekly/monthly/quarterly)
 - Scaling, adding new data sources, staying updated
 - Advanced topics and community resources
-
-**[STREAMING_INTEGRATION.md](STREAMING_INTEGRATION.md)** — **Streaming Integration**
-
-- Real-time streaming patterns for consuming records from message queues (Apache Kafka, RabbitMQ, Amazon SQS) and processing them through Senzing entity resolution in real time
-- Backpressure handling strategies for when inbound message rates exceed processing capacity, including consumer-side rate limiting, queue-level buffering, and horizontal scaling
-- Error management for streaming pipelines: retry with exponential backoff, dead letter queue patterns, and monitoring to detect systemic issues
 
 ### Progress and Tracking
 
@@ -150,12 +120,6 @@ python3 scripts/status.py
 - Communication guidelines
 
 ### Troubleshooting
-
-**[OFFLINE_MODE.md](OFFLINE_MODE.md)** ⭐ NEW!
-
-- What works without MCP, module by module
-- Reconnection steps you can try
-- How the agent handles outages automatically
 
 **[COMMON_MISTAKES.md](COMMON_MISTAKES.md)** ⭐ NEW!
 
@@ -293,14 +257,8 @@ docs/
 │   ├── COLLABORATION_GUIDE.md
 │   ├── COMMON_MISTAKES.md
 │   ├── DATA_SOURCE_REGISTRY.md
-│   ├── DATA_UPDATES_AND_DELETIONS.md
-│   ├── DESIGN_PATTERNS.md
 │   ├── GETTING_HELP.md
-│   ├── GLOSSARY.md
 │   ├── HOOKS_INSTALLATION_GUIDE.md
-│   ├── INCREMENTAL_LOADING.md
-│   ├── MULTI_LANGUAGE_DATA.md
-│   ├── OFFLINE_MODE.md
 │   ├── PERFORMANCE_BASELINES.md
 │   ├── PROGRESS_FILE_SCHEMA.md
 │   ├── PROGRESS_TRACKER.md
@@ -309,7 +267,7 @@ docs/
 │   ├── QUALITY_SCORING_METHODOLOGY.md
 │   ├── STEERING_INDEX.md
 │   ├── MODULE_ARTIFACTS.md
-│   └── STREAMING_INTEGRATION.md
+│   └── DATABASE_MIGRATION.md
 ├── diagrams/                  # ⭐ NEW! Visual docs
 │   ├── module-flow.md        # Module diagrams
 │   ├── data-flow.md          # Data pipeline diagrams
@@ -318,8 +276,8 @@ docs/
 ├── modules/                   # Module documentation
 │   ├── MODULE_1_BUSINESS_PROBLEM.md
 │   ├── MODULE_2_SDK_SETUP.md
-│   ├── MODULE_3_QUICK_DEMO.md
-│   └── ... (Modules 3-12)
+│   ├── MODULE_3_SYSTEM_VERIFICATION.md
+│   └── ... (Modules 3-11)
 ├── policies/                  # Policy documents
 │   ├── FILE_STORAGE_POLICY.md
 │   ├── CODE_QUALITY_STANDARDS.md
@@ -369,7 +327,7 @@ Found an issue or have a suggestion?
 
 - [Bootcamp Overview](../../POWER.md)
 - [Module 1: Business Problem](../modules/MODULE_1_BUSINESS_PROBLEM.md)
-- [Module 3: Quick Demo](../modules/MODULE_3_QUICK_DEMO.md)
+- [Module 3: System Verification](../modules/MODULE_3_SYSTEM_VERIFICATION.md)
 - [File Storage Policy](../policies/FILE_STORAGE_POLICY.md)
 - [Code Quality Standards](../policies/CODE_QUALITY_STANDARDS.md)
 

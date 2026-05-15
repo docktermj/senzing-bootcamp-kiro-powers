@@ -11,7 +11,7 @@ inclusion: manual
 >
 > **Quality Scoring Methodology:** For a full explanation of how quality scores are calculated, what each dimension measures, and what thresholds mean, see `docs/guides/QUALITY_SCORING_METHODOLOGY.md`. When a user asks how their score was calculated or what their score means, direct them to this guide.
 >
-> **Multi-language data:** If your data contains non-Latin characters (Chinese, Arabic, Cyrillic, etc.), see `docs/guides/MULTI_LANGUAGE_DATA.md` for guidance on UTF-8 encoding, non-Latin character support, cross-script name matching, and multi-language data quality best practices.
+> **Multi-language data:** If your data contains non-Latin characters (Chinese, Arabic, Cyrillic, etc.), ask the agent about multi-language data handling — the agent will use `search_docs(query="globalization")` to provide current guidance on UTF-8 encoding, non-Latin character support, cross-script name matching, and multi-language data quality best practices.
 
 **Before/After:** You have raw data files but don't know if Senzing can use them directly. After this module, each source is scored for quality, categorized, and transformed into Senzing JSON — validated and ready to load.
 

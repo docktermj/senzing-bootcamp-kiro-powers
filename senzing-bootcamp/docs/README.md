@@ -12,7 +12,7 @@ Module-specific documentation files. Each module has detailed documentation abou
 
 - `MODULE_1_BUSINESS_PROBLEM.md` - Business problem definition
 - `MODULE_2_SDK_SETUP.md` - SDK installation and configuration
-- `MODULE_3_QUICK_DEMO.md` - Quick demo with sample data (optional)
+- `MODULE_3_SYSTEM_VERIFICATION.md` - System verification with the Senzing TruthSet (optional)
 - `MODULE_4_DATA_COLLECTION.md` - Data collection and source management
 - `MODULE_5_DATA_QUALITY_AND_MAPPING.md` - Data quality assessment and mapping
 - `MODULE_6_LOAD_DATA.md` - Data loading, redo processing, and validation
@@ -42,12 +42,9 @@ User guides and installation instructions.
 - `AFTER_BOOTCAMP.md` - Post-bootcamp guide for production and next steps
 - `COLLABORATION_GUIDE.md` - Team collaboration workflows
 - `COMMON_MISTAKES.md` - Most frequent bootcamp mistakes with real examples
-- `DESIGN_PATTERNS.md` - Entity resolution design patterns
 - `FAQ.md` - Frequently asked questions
 - `GETTING_HELP.md` - Support hierarchy and when to use each resource
-- `GLOSSARY.md` - Senzing entity resolution terminology
 - `HOOKS_INSTALLATION_GUIDE.md` - Guide for installing Kiro hooks
-- `OFFLINE_MODE.md` - What works without MCP and reconnection steps
 - `ONBOARDING_CHECKLIST.md` - Pre-bootcamp checklist
 - `PERFORMANCE_BASELINES.md` - Reference throughput and hardware requirements
 - `PROGRESS_TRACKER.md` - Module completion tracking

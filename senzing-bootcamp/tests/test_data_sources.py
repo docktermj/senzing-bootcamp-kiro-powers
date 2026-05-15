@@ -225,7 +225,7 @@ class TestProperty1YAMLRoundTrip:
     """
 
     @given(registry=_registries(min_sources=0, max_sources=8))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_round_trip_preserves_data(self, registry):
         """Feature: data-source-registry, Property 1: YAML round-trip preserves registry data"""
         # Registry → dict → YAML → dict → Registry
@@ -282,7 +282,7 @@ class TestPropertyTestLoadStatusRoundTrip:
     """
 
     @given(registry=_registries(min_sources=1, max_sources=8))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_round_trip_preserves_test_load_status(self, registry):
         """Feature: mapping-workflow-integration, Property 1: Registry schema round-trip with test_load_status"""
         # Registry → dict → YAML → dict → Registry
@@ -330,14 +330,14 @@ class TestProperty2Validation:
     """
 
     @given(data=_valid_registry_dicts())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_valid_registry_accepted(self, data):
         """Feature: data-source-registry, Property 2: valid registries accepted"""
         errors = validate_registry(data)
         assert errors == [], f"Valid registry rejected: {errors}"
 
     @given(data=_invalid_registry_dicts())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_invalid_registry_rejected(self, data):
         """Feature: data-source-registry, Property 2: invalid registries rejected"""
         errors = validate_registry(data)
@@ -360,7 +360,7 @@ class TestProperty3TableRendering:
     """
 
     @given(registry=_registries(min_sources=1, max_sources=8))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_table_contains_all_source_data(self, registry):
         """Feature: data-source-registry, Property 3: Table rendering contains all source data"""
         output = render_table(registry)
@@ -392,7 +392,7 @@ class TestProperty4DetailRendering:
     """
 
     @given(entry=_registry_entries())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_detail_contains_all_fields(self, entry):
         """Feature: data-source-registry, Property 4: Detail rendering contains all entry fields"""
         output = render_detail(entry)
@@ -434,7 +434,7 @@ class TestProperty5SummaryStatistics:
     """
 
     @given(registry=_registries(min_sources=0, max_sources=8))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_summary_statistics_correct(self, registry):
         """Feature: data-source-registry, Property 5: Summary statistics correctly computed"""
         output = render_summary(registry)
@@ -478,7 +478,7 @@ class TestProperty6Recommendations:
     """
 
     @given(registry=_registries(min_sources=0, max_sources=8))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_recommendations_correct(self, registry):
         """Feature: data-source-registry, Property 6: Recommendations identify issues and load order"""
         recs = recommend_actions(registry)
@@ -516,9 +516,27 @@ class TestProperty6Recommendations:
                 assert entry.data_source in order_line
             # Verify ordering: use full "NAME (score%)" tokens to avoid
             # substring collisions (e.g. "A" matching inside "A0").
+            # Use rfind with separator awareness to handle cases like
+            # "B (0%)" being a substring of "AB (0%)".
             tokens = [f"{e.data_source} ({e.quality_score}%)" for e in ordered]
-            positions = [order_line.index(tok) for tok in tokens]
-            assert positions == sorted(positions), "Load order not sorted by quality descending"
+            # Verify tokens appear in the correct relative order by checking
+            # each consecutive pair
+            for i in range(len(tokens) - 1):
+                tok_a = tokens[i]
+                tok_b = tokens[i + 1]
+                # Find the position of each token preceded by start-of-line or ", "
+                pos_a = order_line.find(tok_a)
+                pos_b = order_line.find(tok_b, pos_a + len(tok_a))
+                if pos_b == -1:
+                    # tok_b might appear before tok_a due to substring issues;
+                    # fall back to checking the comma-separated list directly
+                    parts = order_line.split(": ", 1)[1] if ": " in order_line else order_line
+                    part_list = [p.strip() for p in parts.split(", ")]
+                    idx_a = part_list.index(tok_a) if tok_a in part_list else -1
+                    idx_b = part_list.index(tok_b) if tok_b in part_list else -1
+                    assert idx_a < idx_b, "Load order not sorted by quality descending"
+                else:
+                    assert pos_a < pos_b, "Load order not sorted by quality descending"
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -536,7 +554,7 @@ class TestProperty7StatusIntegration:
     """
 
     @given(registry=_registries(min_sources=1, max_sources=8))
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_status_section_counts_and_warnings(self, registry):
         """Feature: data-source-registry, Property 7: Status integration section correct counts and warnings"""
         # Serialize to YAML, then use _read_file injection

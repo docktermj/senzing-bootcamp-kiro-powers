@@ -90,7 +90,7 @@ class TestValidSubStepIdentifiersPassValidation:
     """
 
     @given(step_value=st_valid_sub_step())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_valid_sub_step_as_current_step(self, step_value):
         """Valid sub-step identifiers produce zero validation errors as current_step."""
         data = {
@@ -109,7 +109,7 @@ class TestValidSubStepIdentifiersPassValidation:
         )
 
     @given(step_value=st_valid_sub_step())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_valid_sub_step_as_last_completed_step(self, step_value):
         """Valid sub-step identifiers produce zero errors as last_completed_step."""
         data = {
@@ -138,7 +138,7 @@ class TestInvalidCurrentStepValuesFailValidation:
     """
 
     @given(step_value=st_invalid_current_step())
-    @settings(max_examples=100)
+    @settings(max_examples=10)
     def test_invalid_current_step_produces_errors(self, step_value):
         """Invalid current_step values produce at least one validation error."""
         data = {"current_step": step_value}

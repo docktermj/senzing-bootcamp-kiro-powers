@@ -40,9 +40,60 @@ If you acknowledge input, always append a next action in the same response.
 
 ## One Question Rule
 
-Each turn contains at most one 👉 question. Multi-question patterns — questions joined by conjunctions (and, or, also, but first) — are violations. When you need multiple pieces of information, ask the first question, stop, wait for the response, then ask the next question in a separate turn.
+⚠️ **CRITICAL — ZERO TOLERANCE** ⚠️
+
+Each turn contains **exactly one** 👉 question. This is the single most important conversation rule in the bootcamp. Violations destroy bootcamper trust.
+
+**The rule is absolute:** One question. One question mark. One unambiguous meaning for "yes." One unambiguous meaning for "no." No exceptions. No edge cases. No "just this once."
+
+Multi-question patterns — questions joined by conjunctions (and, or, also, but first, alternatively, or if you prefer) — are violations. When you need multiple pieces of information, ask the first question, stop, wait for the response, then ask the next question in a separate turn.
 
 The phrase "But first" followed by a question is a violation — never redirect to a different question within the same turn.
+
+**Enforcement:** The `enforce-single-question` hook validates every question written to `config/.question_pending`. If it detects a compound question, you MUST rewrite before proceeding. Do not attempt to bypass this check.
+
+**Common violations to avoid:**
+
+- "Would you like to X, or would you prefer Y?" → Use a numbered choice list instead
+- "Does that look right? Anything I missed?" → Ask only the confirmation; handle corrections in the next turn
+- "Ready to continue? I can also show you..." → Ask only "Ready to continue?"
+- "Would you like to see examples, or should we skip ahead?" → Use a numbered choice list
+
+## Choice Formatting
+
+When a 👉 question presents 2 or more distinct alternatives (options the bootcamper can choose between), format them as a numbered list:
+
+### Compound Choice (WRONG)
+
+> 👉 Would you like to proceed with Python or Java or TypeScript?
+
+### Compound Choice (CORRECT)
+
+> 👉 Which language would you like to use?
+>
+> 1. Python
+> 2. Java
+> 3. TypeScript
+
+Simple yes/no questions or questions with a single implied action remain as inline prose:
+
+### Simple Question (CORRECT — no list needed)
+
+> 👉 Ready to move on to Module 3?
+
+## Question Disambiguation
+
+Every 👉 question must have exactly one unambiguous meaning for each possible short answer. A "yes" must map to one interpretation. A "no" must map to one interpretation.
+
+**Compound Question anti-pattern:** A prompt that combines a Confirmation Question with a Follow-Up Question. Example: "Does that look right? Anything I missed?" — "yes" could mean "yes it's right" OR "yes you missed something."
+
+**Rule:** When you need both confirmation and correction input:
+
+1. Ask the confirmation question alone: "👉 Does that capture your situation accurately?"
+2. If the bootcamper says yes → proceed to the next step.
+3. If the bootcamper says no → ask "👉 What would you like me to change?" in the next turn.
+
+Never append "or should we adjust anything?" or "Anything I missed?" to a confirmation question. Never combine "Would you like X?" with "Or would you prefer Y?" in prose — use a numbered choice list instead.
 
 ## Violation Examples
 
@@ -92,6 +143,25 @@ The phrase "But first" followed by a question is a violation — never redirect 
 
 > 👉 Who will be working on this project?
 > 🛑 STOP
+
+### Compound Confirmation (WRONG)
+
+> 👉 Does that summary sound right? Anything I missed or got wrong?
+
+### Compound Confirmation (CORRECT)
+
+> 👉 Does that summary capture your situation accurately?
+
+### Compound Either/Or (WRONG)
+
+> 👉 Would you like me to create a one-page executive summary, or would you prefer to skip that and move on to Module 2?
+
+### Compound Either/Or (CORRECT)
+
+> 👉 What would you like to do next?
+>
+> 1. Create a one-page executive summary
+> 2. Move on to Module 2
 
 ## Rule Priority
 

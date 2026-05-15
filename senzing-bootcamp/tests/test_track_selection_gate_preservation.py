@@ -22,6 +22,7 @@ from hypothesis import strategies as st
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _ONBOARDING_FLOW = _BOOTCAMP_DIR / "steering" / "onboarding-flow.md"
+_ONBOARDING_PHASE2 = _BOOTCAMP_DIR / "steering" / "onboarding-phase2-track-setup.md"
 _HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "ask-bootcamper.kiro.hook"
 _HOOK_REGISTRY = _BOOTCAMP_DIR / "steering" / "hook-registry.md"
 
@@ -192,14 +193,14 @@ class TestStep4ContentMarkers:
         )
 
     def test_step4_contains_glossary_reference(self) -> None:
-        """Assert Step 4 references the glossary."""
+        """Assert Step 4 provides term-definition guidance."""
         content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
         step4 = _extract_section(content, "4. Bootcamp Introduction")
         assert step4, "Step 4 section not found"
+        has_terms = re.search(r"unfamiliar terms", step4, re.IGNORECASE)
         has_glossary = re.search(r"glossary", step4, re.IGNORECASE)
-        has_file = re.search(r"GLOSSARY\.md", step4)
-        assert has_glossary or has_file, (
-            "Step 4 missing glossary / GLOSSARY.md content marker"
+        assert has_terms or has_glossary, (
+            "Step 4 missing term-definition guidance"
         )
 
 
@@ -219,32 +220,24 @@ class TestTrackMappingPreserved:
 
     def test_step5_contains_interpreting_responses(self) -> None:
         """Assert Step 5 has the 'Interpreting responses' text."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
+        content = _ONBOARDING_PHASE2.read_text(encoding="utf-8")
         step5 = _extract_section(content, "5. Track Selection")
         assert step5, "Step 5 section not found"
         assert "Interpreting responses" in step5, (
             "Step 5 missing 'Interpreting responses' text"
         )
 
-    def test_step5_maps_demo_to_module2_via_interpreting(self) -> None:
-        """Assert Step 5 interpreting responses maps demo to Module 2."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
+    def test_step5_maps_core_to_module1_via_interpreting(self) -> None:
+        """Assert Step 5 interpreting responses maps core to Module 1."""
+        content = _ONBOARDING_PHASE2.read_text(encoding="utf-8")
         step5 = _extract_section(content, "5. Track Selection")
-        assert re.search(r'"demo".*Module 2|"quick_demo".*Module 2', step5), (
-            "Step 5 missing demo→Module 2 mapping in interpreting responses"
-        )
-
-    def test_step5_maps_demo_to_module2(self) -> None:
-        """Assert demo/quick_demo maps to Module 2."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
-        step5 = _extract_section(content, "5. Track Selection")
-        assert re.search(r'"demo".*Module 2|"quick_demo".*Module 2', step5), (
-            "Step 5 missing demo→Module 2 mapping"
+        assert re.search(r'"core".*Module 1|"core_bootcamp".*Module 1', step5), (
+            "Step 5 missing core→Module 1 mapping in interpreting responses"
         )
 
     def test_step5_maps_core_to_module1(self) -> None:
         """Assert core/core_bootcamp maps to Module 1."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
+        content = _ONBOARDING_PHASE2.read_text(encoding="utf-8")
         step5 = _extract_section(content, "5. Track Selection")
         assert re.search(r'"core".*Module 1|"core_bootcamp".*Module 1', step5), (
             "Step 5 missing core→Module 1 mapping"
@@ -252,7 +245,7 @@ class TestTrackMappingPreserved:
 
     def test_step5_maps_advanced_to_module1(self) -> None:
         """Assert advanced/advanced_topics maps to Module 1."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
+        content = _ONBOARDING_PHASE2.read_text(encoding="utf-8")
         step5 = _extract_section(content, "5. Track Selection")
         assert re.search(r'"advanced".*Module 1|"advanced_topics".*Module 1', step5), (
             "Step 5 missing advanced→Module 1 mapping"
@@ -372,36 +365,37 @@ class TestHookRegistryEntryFormat:
 
     **Validates: Requirements 3.3**
 
-    The registry entry must contain id, name, and description fields
-    for the ask-bootcamper hook.
+    The registry entry must contain the ask-bootcamper hook in the
+    Critical Hooks table with its ID and description.
     """
 
     def test_registry_has_ask_bootcamper_id(self) -> None:
-        """Assert the registry contains an id for ask-bootcamper."""
+        """Assert the registry contains ask-bootcamper in the table."""
         content = _HOOK_REGISTRY.read_text(encoding="utf-8")
         section = _extract_section(content, "Critical Hooks")
         assert section, "Critical Hooks section not found"
-        assert re.search(
-            r"id:\s*`ask-bootcamper`", section
-        ), "Registry missing id field for ask-bootcamper"
+        assert "ask-bootcamper" in section, (
+            "Registry missing ask-bootcamper entry"
+        )
 
     def test_registry_has_ask_bootcamper_name(self) -> None:
-        """Assert the registry contains a name for ask-bootcamper."""
+        """Assert the registry contains ask-bootcamper with event type."""
         content = _HOOK_REGISTRY.read_text(encoding="utf-8")
         section = _extract_section(content, "Critical Hooks")
         assert section, "Critical Hooks section not found"
-        assert re.search(
-            r"name:\s*`Ask Bootcamper`", section
-        ), "Registry missing name field for ask-bootcamper"
+        assert "agentStop" in section, (
+            "Registry missing agentStop event type for ask-bootcamper"
+        )
 
     def test_registry_has_ask_bootcamper_description(self) -> None:
         """Assert the registry contains a description for ask-bootcamper."""
         content = _HOOK_REGISTRY.read_text(encoding="utf-8")
         section = _extract_section(content, "Critical Hooks")
         assert section, "Critical Hooks section not found"
+        # The description should mention closing question or recap
         assert re.search(
-            r"description:\s*`[^`]+`", section
-        ), "Registry missing description field for ask-bootcamper"
+            r"closing question|recap", section, re.IGNORECASE
+        ), "Registry missing description content for ask-bootcamper"
 
 
 # ---------------------------------------------------------------------------

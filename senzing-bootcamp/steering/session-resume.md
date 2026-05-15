@@ -14,7 +14,7 @@ Read these files to reconstruct full context:
 2. **`config/bootcamp_preferences.yaml`** — chosen language, track, cloud provider, license info, **detail_level** (if set — honor their preference for more/less/default detail), **conversation_style** (if set — restore tone, pacing, question framing, and verbosity preset for style continuity)
 2b. **Check hooks_installed** in `config/bootcamp_preferences.yaml`:
     - If `hooks_installed` key exists with hook names and timestamp → skip hook creation entirely. Hooks are already installed.
-    - If `hooks_installed` is missing or empty → load the Hook Registry from `onboarding-flow.md` and create Critical Hooks using the `createHook` tool before the welcome-back banner. This handles bootcampers who started before hook distribution was implemented, or whose preferences were reset.
+    - If `hooks_installed` is missing or empty → load the Hook Registry from `onboarding-phase2-track-setup.md` and create Critical Hooks using the `createHook` tool before the welcome-back banner. This handles bootcampers who started before hook distribution was implemented, or whose preferences were reset.
     - If `config/bootcamp_preferences.yaml` itself is missing or corrupted → treat as no hooks installed and create Critical Hooks from the Hook Registry.
     - If any Critical Hook creation fails during resume, log the failure and continue with the remaining hooks. Report failures after all attempts (see the failure impact messages in the Hook Registry).
 3. **`docs/bootcamp_journal.md`** (if exists) — narrative history of what was done and why
@@ -234,6 +234,16 @@ If `current_step` is absent, omit the step detail and display only:
 
 **If mapping checkpoints exist** (`config/mapping_state_*.json`), include the data source name and completed mapping steps in the summary. For each checkpoint, mention: "You were in the middle of mapping [data source name] — we completed steps [list of completed_steps] last time. I can pick up where we left off." If multiple mapping checkpoints exist, list each one.
 
+**Mapping resume options:** For each detected mapping checkpoint, after describing the in-progress state, present these options:
+
+- **(a) Resume** — Pick up the mapping from where it left off
+- **(b) Restart** — Delete the checkpoint and start the mapping from scratch
+- **(c) Skip** — Continue with other bootcamp work; the checkpoint stays for later
+
+If only one mapping checkpoint exists, present the options inline. If multiple checkpoints exist, list each data source with its state first, then ask which one(s) to resume.
+
+When the bootcamper chooses **(b) Restart**, delete the corresponding `config/mapping_state_[datasource].json` file before beginning the mapping workflow from scratch.
+
 ```text
 👉 Ready to continue with Module [N], or would you like to do something else?
 ```
@@ -250,10 +260,22 @@ Based on the user's response:
   - **Integer `current_step`**: skip to step `current_step + 1` in the module steering file (all steps up to and including `current_step` are already complete).
   - **Sub-step identifier string** (dotted like `"5.3"` or lettered like `"7a"`): skip to the next sub-step after the recorded position in the module steering file (not the next whole step). For example, if `current_step` is `"5.3"`, resume at sub-step `5.4` (or the next defined sub-step after `5.3`). If the sub-step identifier is not found in the module steering file, log a warning and fall back to resuming at the parent step number (extract the parent step using `parse_parent_step` logic — e.g., `"5.3"` → step 5, `"7a"` → step 7).
   - **If `current_step` references a step number that does not exist in the module steering file** (e.g., exceeds the total number of steps, is zero, or is negative), log a warning and fall back to artifact scanning to determine the correct resume point.
-  - **If mapping checkpoints exist** (`config/mapping_state_*.json`), restart `mapping_workflow` for each data source with a checkpoint and fast-track through the completed mapping steps (listed in `completed_steps`) before resuming from the first incomplete mapping step. If a mapping checkpoint file contains invalid JSON or is missing required fields (`data_source`, `current_step`, `completed_steps`), log a warning, skip that checkpoint, and inform the bootcamper that the mapping for that data source will need to restart from the beginning.
+  - **If mapping checkpoints exist** (`config/mapping_state_*.json`):
+
+    **Checkpoint validation:** Before fast-tracking through completed steps, validate the checkpoint:
+
+    1. Read the checkpoint file. If JSON is invalid or required fields (`data_source`, `current_step`, `completed_steps`) are missing, the checkpoint is corrupted.
+    2. Call `mapping_workflow` with `action='status'` and pass the full checkpoint contents as the `state` parameter.
+    3. If the MCP response confirms the state is valid, proceed with fast-tracking through `completed_steps`.
+    4. If the MCP response indicates the state is invalid (e.g., data source no longer exists, schema changed), inform the bootcamper: "The mapping checkpoint for [data source] appears to be outdated or invalid. Would you like to restart the mapping from scratch?"
+    5. If the checkpoint file has invalid JSON, inform the bootcamper: "The mapping checkpoint for [data source] is corrupted and cannot be read. The mapping will need to restart from the beginning."
+
+    In cases 4 and 5, delete the corrupted/invalid checkpoint file and offer to restart.
+
+    After validation succeeds, restart `mapping_workflow` for each data source with a valid checkpoint and fast-track through the completed mapping steps (listed in `completed_steps`) before resuming from the first incomplete mapping step.
   **If `current_step` is absent**, fall back to the existing artifact-scanning behavior to infer position.
 - If they want to switch modules → verify prerequisites via `module-prerequisites.md`, then load the requested module steering
-- If they want to switch tracks → follow the "Switching Tracks" section in `onboarding-flow.md`
+- If they want to switch tracks → follow the "Switching Tracks" section in `onboarding-phase2-track-setup.md`
 - If they want to start over → confirm, then load `onboarding-flow.md`
 
 ## Step 5: Re-establish MCP Context

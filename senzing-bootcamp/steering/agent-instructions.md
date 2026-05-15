@@ -59,7 +59,7 @@ The steering file handles confirmation, preview, and application. Do not compute
 
 ## State & Progress
 
-- `mapping_workflow`: pass exact `state`, never modify. Checkpoint to `config/mapping_state_[datasource].json` after **each** step. Delete checkpoint when workflow completes for a source.
+- `mapping_workflow`: pass exact `state`, never modify. Checkpoint to `config/mapping_state_[datasource].json` after **each** step. Delete checkpoint when workflow completes for a source. On session resume, `session-resume.md` detects these checkpoints and offers resume/restart/skip options with state validation via `mapping_workflow(action='status')`.
 - Progress: `config/bootcamp_progress.json`. Preferences: `config/bootcamp_preferences.yaml`. Corrupted? Run `python3 senzing-bootcamp/scripts/validate_module.py`.
 - Conversation style persistence: after onboarding completes and the first module interaction establishes a baseline style, write a `conversation_style` profile to `config/bootcamp_preferences.yaml`. Schema — `verbosity_preset` (string: concise | standard | detailed | custom), `question_framing` (string: minimal | moderate | full), `tone` (string: concise | conversational | detailed), `pacing` (string: one_concept_per_turn | grouped_concepts).
 - Step-level checkpointing: after each numbered step or sub-step, update `config/bootcamp_progress.json` — set `current_step` (integer for whole steps, string like `"5.3"` or `"7a"` for sub-steps), set `step_history["<module_number>"]` to `{ "last_completed_step": <step>, "updated_at": "<ISO 8601>" }`. On module completion, set `current_step` to `null`.
@@ -88,7 +88,7 @@ Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response i
 
 Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks.
 
-**🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero output — no acknowledgment, no reasoning, no status. Only produce output when the hook identifies a problem. Applies to ALL hook types. The `ask-bootcamper` hook owns all closing questions — never end your turn with a closing question yourself; the hook handles it.
+**🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero output — no acknowledgment, no reasoning, no status. Only produce output when the hook identifies a problem. Applies to ALL hook types. The agent owns closing questions (see `conversation-protocol.md`); the `ask-bootcamper` hook is a safety net that fires only when the agent fails to provide one.
 
 **🔄 preToolUse retry rule:** When a preToolUse hook produces "policy: pass" or produces no output (zero tokens), you MUST immediately retry the original tool call with exactly the same parameters. Do not emit any acknowledgment, do not explain, do not pause — retry instantly. Only when a preToolUse hook explicitly denies access or produces corrective instructions should you NOT retry.
 

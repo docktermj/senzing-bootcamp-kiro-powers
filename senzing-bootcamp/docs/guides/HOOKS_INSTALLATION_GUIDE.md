@@ -61,6 +61,7 @@ Hooks are managed through the Kiro hooks system. Common changes:
 
 ## Support
 
-- Full hook details: `senzing-bootcamp/steering/hook-registry.md`
+- Hook overview (IDs, event types, descriptions): `senzing-bootcamp/steering/hook-registry.md`
+- Full hook prompts for `createHook`: `senzing-bootcamp/steering/hook-registry-detail.md`
 - Hook source files: `senzing-bootcamp/hooks/README.md`
 - Kiro docs: [https://kiro.dev/docs/hooks/](https://kiro.dev/docs/hooks/)

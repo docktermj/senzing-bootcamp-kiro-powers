@@ -25,10 +25,28 @@ _ONBOARDING_FILE = (
     Path(__file__).resolve().parent.parent / "steering" / "onboarding-flow.md"
 )
 
+_ONBOARDING_PHASE2_FILE = (
+    Path(__file__).resolve().parent.parent
+    / "steering"
+    / "onboarding-phase2-track-setup.md"
+)
+
 
 def _read_onboarding() -> str:
     """Return the full text of onboarding-flow.md."""
     return _ONBOARDING_FILE.read_text(encoding="utf-8")
+
+
+def _read_phase2() -> str:
+    """Return the full text of onboarding-phase2-track-setup.md."""
+    return _ONBOARDING_PHASE2_FILE.read_text(encoding="utf-8")
+
+
+def _read_onboarding_combined() -> str:
+    """Return the combined text of both onboarding phase files."""
+    phase1 = _ONBOARDING_FILE.read_text(encoding="utf-8")
+    phase2 = _ONBOARDING_PHASE2_FILE.read_text(encoding="utf-8")
+    return phase1 + "\n" + phase2
 
 
 def _extract_section(full_text: str, heading_pattern: str) -> str:
@@ -132,7 +150,7 @@ class TestBugConditionInlineQuestions:
 
     def test_step_5_no_inline_question(self) -> None:
         """Step 5 should NOT contain '👉 Which track sounds right for you?'."""
-        text = _read_onboarding()
+        text = _read_phase2()
         section = _extract_section(text, r"## 5\.")
         assert "👉 Which track sounds right for you?" not in section, (
             "Step 5 contains inline closing question "
@@ -201,7 +219,7 @@ def _strip_inline_questions_and_waits(section: str) -> str:
 # Baselines — captured from UNFIXED code (observation-first)
 # ---------------------------------------------------------------------------
 
-# Expected step heading sequence in onboarding-flow.md
+# Expected step heading sequence in onboarding-flow.md (Phase 1 only after split)
 _EXPECTED_HEADINGS = [
     "0. Setup Preamble",
     "0b. MCP Health Check",
@@ -211,6 +229,10 @@ _EXPECTED_HEADINGS = [
     "2. Programming Language Selection",
     "3. Prerequisite Check (Mandatory Gate)",
     "4. Bootcamp Introduction",
+]
+
+# Expected headings in Phase 2 file
+_EXPECTED_PHASE2_HEADINGS = [
     "5. Track Selection",
     "Switching Tracks",
     "Changing Language",
@@ -219,7 +241,7 @@ _EXPECTED_HEADINGS = [
 ]
 
 # Baseline content for hook file
-_HOOK_BASELINE_HASH = "5a96fd25fa61eea9ec18b371f20d4cc852451fd0328365598ddd3304e1cc6725"
+_HOOK_BASELINE_HASH = "98e08f645acc81716e92202a631727283b6153a82c3df7a07a3d8935034c5706"
 
 # Key informational phrases that MUST be preserved in affected steps
 # (these are NOT inline 👉 questions or WAIT lines)
@@ -280,15 +302,23 @@ class TestPreservation:
     # -- 1. Step sequence preservation --
 
     def test_step_sequence_preserved(self) -> None:
-        """The file contains step headings 0, 1, 1b, 2, 3, 4, 5 plus
-        Switching Tracks, Changing Language, Validation Gates, Hook Registry
-        in the expected order."""
+        """The root file contains step headings 0–4 and Phase 2 file contains
+        Step 5 plus Switching Tracks, Changing Language, Validation Gates,
+        Hook Registry in the expected order."""
         text = _read_onboarding()
         headings = _extract_all_h2_headings(text)
         assert headings == _EXPECTED_HEADINGS, (
-            f"Step heading sequence mismatch.\n"
+            f"Phase 1 step heading sequence mismatch.\n"
             f"Expected: {_EXPECTED_HEADINGS}\n"
             f"Got:      {headings}"
+        )
+        # Also verify Phase 2 headings
+        phase2_text = _read_phase2()
+        phase2_headings = _extract_all_h2_headings(phase2_text)
+        assert phase2_headings == _EXPECTED_PHASE2_HEADINGS, (
+            f"Phase 2 step heading sequence mismatch.\n"
+            f"Expected: {_EXPECTED_PHASE2_HEADINGS}\n"
+            f"Got:      {phase2_headings}"
         )
 
     # -- 2. Non-affected steps preservation --
@@ -358,8 +388,8 @@ class TestPreservation:
 
     def test_step_5_informational_content(self) -> None:
         """Step 5 key informational content (module table, track descriptions,
-        response interpretation) is preserved."""
-        text = _read_onboarding()
+        response interpretation) is preserved (now in Phase 2 file)."""
+        text = _read_phase2()
         section = _extract_section(text, r"## 5\.")
         info = _strip_inline_questions_and_waits(section)
         for phrase in _STEP_5_KEY_CONTENT:
@@ -386,7 +416,7 @@ class TestPreservation:
         content = _read_agent_instructions()
         assert "Closing-question ownership" in content
         assert "ask-bootcamper" in content
-        assert "never end your turn with a closing question" in content
+        assert "safety net" in content
 
     def test_agent_instructions_contains_core_sections(self) -> None:
         """agent-instructions.md contains all expected core sections."""

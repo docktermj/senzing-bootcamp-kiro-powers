@@ -16,8 +16,8 @@ description: "Module prerequisites and dependencies — load when checking readi
 |------------------------------|--------------------------------------------------------------|--------------------------------------------------|
 | 1 — Business Problem         | None                                                         | —                                                |
 | 2 — SDK Setup                | None (first technical module)                                | SDK already installed (verify with import check) |
-| 3 — System Verification      | Module 2                                                     | Already familiar with Senzing and system verified |
-| 4 — Data Collection          | Module 1                                                     | —                                                |
+| 3 — System Verification      | Module 2                                                     | Bootcamper explicitly requests skip ('skip verification' or 'I've already verified') |
+| 4 — Data Collection          | Module 1 + Module 3 (soft prerequisite)                      | —                                                |
 | 5 — Data Quality & Mapping   | Module 4, files in `data/raw/`                               | All sources Entity Specification-compliant → Module 6 |
 | 6 — Load Data                | Module 2 + Module 5, transformed data in `data/transformed/` | Data already loaded → Module 7                   |
 | 7 — Query & Visualize         | Module 6, no critical load errors                            | Already validated → Module 8                     |
@@ -55,3 +55,13 @@ When user wants to start a module:
 4. If user insists on skipping → warn about potential issues but allow
 
 When user is stuck: identify which prerequisite is unmet, guide them back to complete it.
+
+### Soft Prerequisite Behavior
+
+Module 3 (System Verification) is a **soft prerequisite** for Module 4. This means:
+
+1. **Recommend:** When a bootcamper reaches Module 4 without completing Module 3, recommend completing Module 3 first.
+2. **Warn but do not block:** If the bootcamper chooses to skip Module 3, display a warning but allow them to proceed to Module 4.
+3. **Explain downstream risk:** Inform the bootcamper that unverified environments may cause hard-to-diagnose issues in Modules 5–7 (data loading, entity resolution, and querying all depend on a working SDK setup).
+
+Unlike hard prerequisites (where the agent blocks progress), soft prerequisites allow the bootcamper to proceed after acknowledging the warning.

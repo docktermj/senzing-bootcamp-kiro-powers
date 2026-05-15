@@ -730,7 +730,7 @@ def check_hook_consistency(steering_dir: Path, hooks_dir: Path) -> list:
     violations = []
     steering_path = Path(steering_dir)
     hooks_path = Path(hooks_dir)
-    registry_path = steering_path / "hook-registry.md"
+    registry_path = steering_path / "hook-registry-detail.md"
 
     if not registry_path.exists():
         violations.append(LintViolation(

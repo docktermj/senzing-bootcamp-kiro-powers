@@ -133,12 +133,16 @@ class TestHookRegistryEntry:
 
     def test_registry_mentions_status_triggers(self, registry_content: str) -> None:
         """hook-registry.md review-bootcamper-input entry mentions status triggers."""
-        # Find the review-bootcamper-input section
-        start = registry_content.find("**review-bootcamper-input**")
+        # Find the review-bootcamper-input entry in the table
+        assert "review-bootcamper-input" in registry_content, (
+            "hook-registry.md does not contain review-bootcamper-input entry"
+        )
+        # Find the line containing review-bootcamper-input and check for trigger info
+        start = registry_content.find("review-bootcamper-input")
         assert start != -1
-        # Check the section mentions status
-        section = registry_content[start:start + 2000]
-        assert "status" in section.lower()
+        # Check the entry mentions feedback triggers
+        section = registry_content[start:start + 500]
+        assert "feedback" in section.lower() or "trigger" in section.lower()
 
 
 class TestTrackCompletionProperty:

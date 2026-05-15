@@ -1,0 +1,24 @@
+# Bootcamp Preferences
+# User choices persisted during onboarding and ongoing sessions.
+# This file is created during Module 2 (SDK Setup) and updated throughout.
+
+# Programming language (set during onboarding)
+language: python
+
+# Selected track (set during onboarding)
+track: core_bootcamp
+
+# Infrastructure settings (set during Module 1 or Module 8+)
+deployment_target: null
+cloud_provider: null
+database_type: sqlite
+
+# Session behavior (set during onboarding or mid-session)
+verbosity: null
+conversation_style: null
+
+# Installed hooks (populated during onboarding and module starts)
+hooks_installed: []
+
+# Pacing adjustments (updated mid-session)
+pacing_overrides: null

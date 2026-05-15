@@ -139,6 +139,13 @@ The agent MUST use the phrase "programming language" (not just "language") when 
 
 👉 Present the MCP-returned programming language list. If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly and suggest alternatives. For example: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
 
+🛑 STOP — Wait for the bootcamper's programming language choice before proceeding.
+
+> **Note:** All listed languages produce working code via the MCP server's
+> `generate_scaffold` tool. However, the depth of supplementary examples
+> (via `find_examples`) may vary — Python and Java currently have the most
+> extensive example coverage. This does not affect the bootcamp workflow.
+
 Persist the selection to `config/bootcamp_preferences.yaml`.
 
 Load language steering file immediately after confirmation (`lang-python.md`, `lang-java.md`, etc.).
@@ -184,41 +191,9 @@ If this condition is met, present the following offer to the bootcamper:
 
 ⛔ **MUST NOT install without explicit bootcamper confirmation.** Wait for a clear acceptance before executing any installation command.
 
-**If the bootcamper accepts ("Install Scoop now"):**
+**If accepted:** Run `irm get.scoop.sh | iex` in PowerShell, then verify with `scoop --version`. On success, report the version and proceed to Step 3b. On failure, display the error, suggest manual install from <https://scoop.sh>, and proceed without blocking.
 
-1. Execute the official Scoop installation command in PowerShell:
-
-   ```powershell
-   irm get.scoop.sh | iex
-   ```
-
-2. After the command completes, verify the installation:
-
-   ```powershell
-   scoop --version
-   ```
-
-3. **If verification succeeds:** Report the installed version to the bootcamper (e.g., "✅ Scoop installed successfully — version X.Y.Z"). Proceed to check whether the chosen runtime also needs installation (see Step 3b if applicable).
-
-4. **If verification fails or the installation command returns an error:**
-   - Display the error output to the bootcamper.
-   - Suggest manual installation steps:
-
-     ```text
-     ⚠️ Scoop installation failed. You can try installing manually:
-     1. Open PowerShell as your normal user (not Admin)
-     2. Run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-     3. Run: irm get.scoop.sh | iex
-     4. Restart your terminal and verify with: scoop --version
-
-     If issues persist, see https://scoop.sh for troubleshooting.
-     ```
-
-   - Proceed with the existing WARN behavior — do NOT block onboarding. Note that Module 2 will handle Scoop installation.
-
-**If the bootcamper declines ("Skip for later"):**
-
-Proceed with the existing WARN behavior. Inform the bootcamper: "No problem — Module 2 will guide you through Scoop installation when it's needed."
+**If declined:** Inform the bootcamper Module 2 will handle it. Proceed with WARN behavior.
 
 🛑 STOP — Wait for the bootcamper's response before proceeding to runtime installation.
 
@@ -252,59 +227,19 @@ If the condition is met, present the following offer to the bootcamper:
 | Rust    | *(none)*                | `scoop install rustup`               | `rustc --version` |
 | Node.js | *(none)*                | `scoop install nodejs-lts`           | `node --version`  |
 
-**If the bootcamper accepts ("Install [runtime] now"):**
+**If accepted:**
 
-1. **For Java only** — First add the required Scoop bucket:
-
-   ```powershell
-   scoop bucket add java
-   ```
-
-   - If the bucket addition succeeds (or the bucket already exists), proceed to step 2.
-   - If the bucket addition fails, display the error and suggest the Adoptium website as an alternative:
-
-     ```text
-     ⚠️ Could not add the Java bucket to Scoop. You can install Java manually from:
-     https://adoptium.net
-
-     Download and install Temurin JDK (LTS), then restart your terminal.
-     ```
-
-     Proceed without blocking — do NOT escalate to FAIL.
-
+1. **For Java only** — First add the required Scoop bucket: `scoop bucket add java`. If it fails, suggest <https://adoptium.net> as alternative and proceed without blocking.
 2. Execute the appropriate Scoop install command for the chosen runtime (from the table above).
+3. Verify the installation using the runtime's verify command (from the table above).
+4. **If verification succeeds:** Report the installed version (e.g., "✅ [Runtime] installed — version X.Y.Z"). Record in preferences (see Step 3d).
+5. **If verification fails:** Display the error, suggest alternative downloads (Adoptium for Java, dotnet.microsoft.com for .NET, rustup.rs for Rust, nodejs.org for Node.js), and proceed with WARN behavior.
 
-3. After the command completes, verify the installation using the runtime's verify command (from the table above).
-
-4. **If verification succeeds:** Report the installed version to the bootcamper (e.g., "✅ [Runtime] installed successfully — version X.Y.Z"). Record the installation in preferences (see Step 5).
-
-5. **If verification fails or the installation command returns an error:**
-   - Display the error output to the bootcamper.
-   - Suggest alternative installation methods:
-
-     ```text
-     ⚠️ [Runtime] installation via Scoop failed. Alternative installation methods:
-     - Java: Download from https://adoptium.net
-     - .NET SDK: Download from https://dotnet.microsoft.com/download
-     - Rust: Run `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
-     - Node.js: Download from https://nodejs.org
-     ```
-
-   - Proceed with the existing WARN behavior — do NOT block onboarding. Note that Module 2 will handle runtime installation.
-
-**If the bootcamper declines ("Skip for later"):**
-
-Proceed with the existing WARN behavior. Inform the bootcamper: "No problem — Module 2 will guide you through runtime installation when it's needed."
+**If declined:** Inform the bootcamper Module 2 will handle it. Proceed with WARN behavior.
 
 ### 3c. Re-run Preflight After Installation
 
-**After any successful installation** (Scoop in Step 3a or runtime in Step 3b), re-run the preflight script to update the report:
-
-```bash
-python3 senzing-bootcamp/scripts/preflight.py
-```
-
-Present the updated report to the bootcamper before proceeding to Step 4. This confirms the installation was successful and shows the improved environment status.
+**After any successful installation** (Scoop in Step 3a or runtime in Step 3b), re-run `python3 senzing-bootcamp/scripts/preflight.py` and present the updated report before proceeding to Step 4.
 
 ### 3d. Record Installation Preferences
 
@@ -419,57 +354,6 @@ Before moving on to track selection, give the bootcamper a moment to absorb ever
 
 **Note:** This step is NOT a gate — it is not mandatory, and the bootcamper can skip it or acknowledge quickly. The `ask-bootcamper` hook handles the closing question on `agentStop`, so do not include inline closing questions here.
 
-## 5. Track Selection
+---
 
-> **Authoritative source:** Track definitions are derived from
-> `config/module-dependencies.yaml`. To update tracks, edit the dependency graph
-> first, then run `python3 scripts/validate_dependencies.py` to verify consistency.
-
-👉 Present tracks — not mutually exclusive, all completed modules carry forward:
-
-- **Core Bootcamp** *(recommended)* — Modules 1, 2, 3, 4, 5, 6, 7. Recommended foundation covering problem definition through query/visualize.
-- **Advanced Topics** *(not recommended for bootcamp)* — Modules 1–11. Adds production-readiness topics (performance, security hardening, monitoring, and packaging/deployment) as advanced add-ons layered on top of the core bootcamp.
-
-Module 2 is automatically inserted before any module that needs the SDK.
-
-Interpreting responses: "core"/"core_bootcamp"→start at Module 1, "advanced"/"advanced_topics"→start at Module 1. Bare number→clarify track vs module.
-
-> ⛔ **MANDATORY GATE — STOP HERE.** After presenting the track options above, you MUST stop. Do NOT proceed to any module. Do NOT fabricate a user response. Do NOT assume a track choice. Do NOT generate text like "I'll go with Core Bootcamp for you." The bootcamper MUST provide their own choice. The `ask-bootcamper` hook will fire and prompt them. Wait for their real response before continuing.
->
-> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not say "I'll go with X." Do not proceed to the next step. Wait for the bootcamper's real input.
-
-## Switching Tracks
-
-All completed modules carry forward. Read the appropriate progress file — in team mode, use the member-specific progress file (`config/progress_{member_id}.json` in co-located mode, or `{repo_path}/config/bootcamp_progress.json` in distributed mode); in single-user mode, use `bootcamp_progress.json`. Show new track requirements vs. done, update preferences, resume from first incomplete module.
-
-## Changing Language
-
-Update preferences. Warn: existing code in `src/` must be regenerated. Data/docs/config unaffected. Don't mix languages.
-
-## Validation Gates
-
-> **Authoritative source:** Gate conditions are derived from
-> `config/module-dependencies.yaml`. To update gate conditions, edit the
-> dependency graph first, then run `python3 scripts/validate_dependencies.py` to
-> verify consistency.
-
-Run `validate_module.py --module N` before proceeding. Update `bootcamp_progress.json` and `bootcamp_preferences.yaml`. Every 3 modules: progress bar.
-
-Gate checks:
-
-| Gate   | Requires                                                                           |
-|--------|------------------------------------------------------------------------------------|
-| 1→2    | Problem documented, sources identified, criteria defined                           |
-| 2→3    | SDK installed, DB configured, test passes                                          |
-| 3→4    | System verification passed or skipped                                              |
-| 4→5    | Sources collected, files in `data/raw/`                                            |
-| 5→6    | Sources evaluated, mapped, programs tested, quality >70%                           |
-| 6→7    | Sources loaded, no critical errors                                                 |
-| 7→8    | Queries answer business problem. Load `cloud-provider-setup.md`                    |
-| 8→9    | Baselines captured, bottlenecks documented                                         |
-| 9→10   | Security checklist complete, no critical vulns                                     |
-| 10→11  | Monitoring configured, health checks passing                                       |
-
-## Hook Registry
-
-#[[file:senzing-bootcamp/steering/hook-registry.md]]
+After Step 4c, load `onboarding-phase2-track-setup.md` for track selection.

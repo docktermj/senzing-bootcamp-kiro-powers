@@ -16,6 +16,7 @@ modules:
     - verify-sdk-setup
   3:
     - enforce-visualization-offers
+    - gate-module3-visualization
     - verify-demo-results
   4:
     - validate-data-files

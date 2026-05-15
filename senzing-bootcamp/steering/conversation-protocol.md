@@ -44,6 +44,28 @@ Each turn contains at most one 👉 question. Multi-question patterns — questi
 
 The phrase "But first" followed by a question is a violation — never redirect to a different question within the same turn.
 
+## Choice Formatting
+
+When a 👉 question presents 2 or more distinct alternatives (options the bootcamper can choose between), format them as a numbered list:
+
+### Compound Choice (WRONG)
+
+> 👉 Would you like to proceed with Python or Java or TypeScript?
+
+### Compound Choice (CORRECT)
+
+> 👉 Which language would you like to use?
+>
+> 1. Python
+> 2. Java
+> 3. TypeScript
+
+Simple yes/no questions or questions with a single implied action remain as inline prose:
+
+### Simple Question (CORRECT — no list needed)
+
+> 👉 Ready to move on to Module 3?
+
 ## Violation Examples
 
 ### Multi-Question (WRONG)

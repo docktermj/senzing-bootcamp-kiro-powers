@@ -16,6 +16,32 @@ inclusion: manual
 
 **IMPORTANT:** This module uses the Senzing TruthSet exclusively — a deterministic dataset with known-good expected outputs. No dataset choice is offered. All verification code is generated at runtime by the MCP server, not shipped as static files.
 
+## Opt-Out Gate
+
+Before starting Module 3 steps, check if the bootcamper has explicitly requested to skip:
+
+**Trigger phrases:** "skip verification", "I've already verified", "skip module 3"
+
+**If triggered:**
+
+1. Record skip in `config/bootcamp_progress.json`:
+
+   ```json
+   {"module_3_verification": {"status": "skipped", "reason": "bootcamper_opted_out"}}
+   ```
+
+2. Display warning:
+
+   ```text
+   ⚠️ Skipping system verification. If you encounter issues in later modules
+   (data loading failures, SDK errors), Module 3 can help diagnose them.
+   Say "run verification" at any time to come back.
+   ```
+
+3. Update gate 3→4 to "skipped" and proceed to Module 4.
+
+**If NOT triggered:** Proceed with Module 3 normally (default path).
+
 ## Phase 1: Verification Pipeline
 
 ### Step 1: MCP Connectivity Check
@@ -238,6 +264,8 @@ Verify read, write, and search operations against the Senzing database. Each ope
 
 ### Step 9: Web Service + Visualization Page
 
+⛔ MANDATORY GATE — This step cannot be skipped without explicit bootcamper request via the skip-step protocol. The visualization is the "wow moment" of Module 3.
+
 > **Phase file:** Load `module-03-phase2-visualization.md` for the full visualization step — API endpoints, page components, verification checks, and delivery sequence.
 
 Generate and verify a rich interactive visualization web service demonstrating entity resolution value across the three TruthSet data sources (CUSTOMERS, REFERENCE, WATCHLIST). The visualization includes:
@@ -271,9 +299,14 @@ Follow the Web Service Delivery Sequence from `visualization-guide.md`. Maintain
 
 ### Step 10: Verification Report Generation
 
+**Pre-report validation:** Before compiling the Verification Report, confirm that `config/bootcamp_progress.json` contains BOTH `web_service` and `web_page` checkpoint entries under `module_3_verification.checks`. If either entry is missing or has `"status": "failed"`:
+
+- If missing: STOP. Do not generate the report. Return to Step 9 and execute it fully by loading `module-03-phase2-visualization.md`.
+- If failed: Include the failure in the report and proceed (failed is different from skipped/missing — it means the step was attempted).
+
 Generate a structured summary of all verification checks.
 
-1. Compile the results from all 8 verification checks (MCP connectivity, TruthSet acquisition, SDK initialization, code generation, build/compilation, data loading, results validation, database operations, web service, web page) into a single Verification Report.
+1. Compile the results from all 10 verification checkpoint entries (mcp_connectivity, truthset_acquisition, sdk_initialization, code_generation, build_compilation, data_loading, results_validation, database_operations, web_service, web_page) into a single Verification Report.
 
 2. For each check, record:
    - Pass or fail status
@@ -375,10 +408,7 @@ Complete the module using the standard module completion workflow.
    - Number of checks passed
    - Timestamp of completion
 
-3. **Reflection question:** Present one reflection question to the bootcamper, such as:
-   - "Now that your system is verified end-to-end, which verification step gave you the most confidence that your environment is ready for real entity resolution work?"
-
-4. **Transition to Module 4:** Display the module transition message indicating Module 4 is now available. Follow the standard transition pattern from `module-transitions.md`.
+3. **Transition to Module 4:** Display the module transition message indicating Module 4 is now available. Follow the standard transition pattern from `module-transitions.md`.
 
 **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
 
@@ -401,13 +431,12 @@ When the bootcamper encounters an error during this module:
 
 Module 3 is considered successfully complete when ALL of the following are true:
 
-- All 8 verification checks report "passed" status
+- All 10 verification checkpoint entries report "passed" status (mcp_connectivity, truthset_acquisition, sdk_initialization, code_generation, build_compilation, data_loading, results_validation, database_operations, web_service, web_page)
 - The Verification Report is persisted to `config/bootcamp_progress.json` with a valid ISO 8601 timestamp
 - The web service process is terminated and the port is released
 - TruthSet records are purged from the database (zero TruthSet entities remain)
 - The gate 3→4 status is updated to "completed"
 - A journal entry is appended to `docs/bootcamp_journal.md`
-- The bootcamper has answered the reflection question
 
 ## Agent Rules
 

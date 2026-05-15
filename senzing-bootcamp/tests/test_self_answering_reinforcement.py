@@ -7,7 +7,6 @@ exist after 👉 questions, and anti-fabrication instructions are in place.
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
 import pytest
@@ -35,11 +34,15 @@ class TestForbiddenPatterns:
 
 
 class TestOnboardingStopMarkers:
-    """Verify onboarding-flow.md has 🛑 STOP after 👉 questions."""
+    """Verify onboarding files have 🛑 STOP after 👉 questions."""
 
     @pytest.fixture()
     def onboarding(self) -> str:
         return (_STEERING_DIR / "onboarding-flow.md").read_text(encoding="utf-8")
+
+    @pytest.fixture()
+    def onboarding_phase2(self) -> str:
+        return (_STEERING_DIR / "onboarding-phase2-track-setup.md").read_text(encoding="utf-8")
 
     def test_stop_after_verbosity_question(self, onboarding: str) -> None:
         """🛑 STOP exists after the verbosity preference 👉 question."""
@@ -53,6 +56,13 @@ class TestOnboardingStopMarkers:
         idx = onboarding.find("Does everything so far makes sense")
         assert idx != -1
         after = onboarding[idx:idx + 200]
+        assert "🛑" in after
+
+    def test_stop_after_track_selection_question(self, onboarding_phase2: str) -> None:
+        """🛑 STOP exists after the track selection 👉 question in Phase 2."""
+        idx = onboarding_phase2.find("Present tracks")
+        assert idx != -1
+        after = onboarding_phase2[idx:idx + 1500]
         assert "🛑" in after
 
 
@@ -77,28 +87,40 @@ class TestStopMarkerProperty:
     @given(data=st.data())
     @settings(max_examples=100, suppress_health_check=[HealthCheck.too_slow])
     def test_pointing_questions_have_stop_markers(self, data: st.DataObject) -> None:
-        """For key steering files, 👉 questions outside code blocks have 🛑 within 5 lines."""
-        # Test against onboarding-flow.md (the primary affected file)
-        content = (_STEERING_DIR / "onboarding-flow.md").read_text(encoding="utf-8")
-        lines = content.splitlines()
+        """For onboarding files, 👉 questions outside code blocks have 🛑 within 5 lines."""
+        # Test against both onboarding-flow.md (Phase 1) and
+        # onboarding-phase2-track-setup.md (Phase 2)
+        onboarding_files = [
+            _STEERING_DIR / "onboarding-flow.md",
+            _STEERING_DIR / "onboarding-phase2-track-setup.md",
+        ]
 
-        # Find all 👉 questions outside code blocks
-        in_code_block = False
-        pointing_questions: list[int] = []
-        for i, line in enumerate(lines):
-            if line.strip().startswith("```"):
-                in_code_block = not in_code_block
-                continue
-            if in_code_block:
-                continue
-            if "👉" in line and "?" in line:
-                pointing_questions.append(i)
+        # Collect all 👉 questions from both files.
+        # A line is a 👉 question/instruction if it starts with 👉 (after
+        # optional blockquote markers or whitespace). Lines that merely
+        # mention 👉 in the middle of prose (e.g., describing the hook) are
+        # excluded.
+        all_questions: list[tuple[str, int, list[str]]] = []
+        for filepath in onboarding_files:
+            content = filepath.read_text(encoding="utf-8")
+            lines = content.splitlines()
+            in_code_block = False
+            for i, line in enumerate(lines):
+                if line.strip().startswith("```"):
+                    in_code_block = not in_code_block
+                    continue
+                if in_code_block:
+                    continue
+                stripped = line.lstrip("> ").strip()
+                if stripped.startswith("👉"):
+                    all_questions.append((filepath.name, i, lines))
 
-        if not pointing_questions:
+        if not all_questions:
             return
 
-        # Pick a random question
-        idx = data.draw(st.sampled_from(pointing_questions))
+        # Pick a random question from the combined set
+        chosen = data.draw(st.sampled_from(all_questions))
+        filename, idx, lines = chosen
 
         # Check for 🛑 or ⛔ within 5 non-blank lines after
         found_marker = False
@@ -115,6 +137,6 @@ class TestStopMarkerProperty:
                 break
 
         assert found_marker, (
-            f"Line {idx + 1} has a 👉 question without 🛑/⛔ within 5 lines:\n"
+            f"{filename} line {idx + 1} has a 👉 question without 🛑/⛔ within 5 lines:\n"
             f"  {lines[idx].strip()[:80]}"
         )

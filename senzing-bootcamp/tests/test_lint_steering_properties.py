@@ -439,14 +439,14 @@ class TestProperty7HookRegistryConsistency:
             hooks.mkdir()
 
             registry_lines = [
-                "---", "inclusion: manual", "---", "# Hook Registry", ""
+                "---", "inclusion: manual", "---", "# Hook Registry — Full Prompts", ""
             ]
             for hid in registry_ids:
                 registry_lines.append(f"**{hid}** (promptSubmit → askAgent)")
                 registry_lines.append(f"")
                 registry_lines.append(f"- id: `{hid}`")
                 registry_lines.append(f"")
-            (steering / "hook-registry.md").write_text("\n".join(registry_lines))
+            (steering / "hook-registry-detail.md").write_text("\n".join(registry_lines))
 
             for hid in disk_ids:
                 hook_data = {

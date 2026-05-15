@@ -37,6 +37,7 @@ _GRAPH_PATH = _REPO_ROOT / "config" / "module-dependencies.yaml"
 _STEERING_DIR = _REPO_ROOT / "steering"
 _PREREQS_PATH = _STEERING_DIR / "module-prerequisites.md"
 _ONBOARDING_PATH = _STEERING_DIR / "onboarding-flow.md"
+_ONBOARDING_PHASE2_PATH = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 
 
 # ---------------------------------------------------------------------------
@@ -115,14 +116,16 @@ class TestReferenceNotes:
         assert "authoritative" in content.lower() or "Authoritative" in content
 
     def test_onboarding_flow_has_track_note(self):
-        """onboarding-flow.md contains the track authoritative source note."""
-        content = _ONBOARDING_PATH.read_text(encoding="utf-8")
+        """Onboarding files contain the track authoritative source note."""
+        # After the split, track content is in Phase 2 file
+        content = _ONBOARDING_PHASE2_PATH.read_text(encoding="utf-8")
         # Check in the Track Selection section area
         assert "config/module-dependencies.yaml" in content
 
     def test_onboarding_flow_has_gates_note(self):
-        """onboarding-flow.md contains the gates authoritative source note."""
-        content = _ONBOARDING_PATH.read_text(encoding="utf-8")
+        """Onboarding files contain the gates authoritative source note."""
+        # After the split, Validation Gates is in Phase 2 file
+        content = _ONBOARDING_PHASE2_PATH.read_text(encoding="utf-8")
         # Find the Validation Gates section and check for the note
         gates_idx = content.find("## Validation Gates")
         assert gates_idx != -1, "Validation Gates section not found"

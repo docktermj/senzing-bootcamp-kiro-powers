@@ -45,6 +45,7 @@ fileMatchPattern: "**/*.{ts,tsx,js,jsx}"
 - TypeScript SDK bindings for Senzing may use Node.js native addons (N-API) — ensure `node-gyp` build tools are installed
 - Use ESM (`"type": "module"` in `package.json`) for new projects — CJS is legacy but may be required by some Senzing bindings
 - On Linux, set `LD_LIBRARY_PATH` for Senzing shared libraries before running `node` or `ts-node`
+- On macOS, set `DYLD_LIBRARY_PATH` to include the Senzing `lib` directory — native addons require this for dynamic library resolution at runtime
 - On Windows, ensure Senzing DLLs are on `PATH` — native addon loading depends on OS library search paths
 - Verify TypeScript/Node.js SDK support status via MCP before generating code — relay any platform warnings to the bootcamper
 
@@ -105,3 +106,10 @@ fileMatchPattern: "**/*.{ts,tsx,js,jsx}"
 2. Delete `node_modules` and reinstall: `rm -rf node_modules && npm install` (or equivalent)
 3. Add other lockfiles to `.gitignore` to prevent accidental commits
 4. Verify with: `npm ls` (or `yarn list`, `pnpm list`) — should show clean dependency tree without errors
+
+## SDK Maturity Notes
+
+> **Note:** TypeScript/Node.js SDK support may have fewer `find_examples` results
+> compared to Python and Java. The MCP server's `generate_scaffold` and `sdk_guide`
+> tools produce equivalent-quality output for all supported workflows. If you
+> encounter a gap, use `search_docs` or ask for help.

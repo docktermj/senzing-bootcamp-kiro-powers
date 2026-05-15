@@ -273,18 +273,20 @@ class TestGateEnforcement:
 
 
 class TestOnboardingStep5TrackBullets:
-    """Integration test: onboarding-flow.md Step 5 lists exactly 2 tracks.
+    """Integration test: onboarding-phase2-track-setup.md Step 5 lists exactly 2 tracks.
 
     Validates: Requirement 7.2
     """
 
-    _ONBOARDING_FILE = Path(__file__).resolve().parent.parent / "steering" / "onboarding-flow.md"
+    _ONBOARDING_FILE = (
+        Path(__file__).resolve().parent.parent / "steering" / "onboarding-phase2-track-setup.md"
+    )
 
     def _extract_step5_section(self) -> str:
-        """Extract the Step 5 section from onboarding-flow.md."""
+        """Extract the Step 5 section from onboarding-phase2-track-setup.md."""
         content = self._ONBOARDING_FILE.read_text(encoding="utf-8")
         match = re.search(r"(## 5\. Track Selection.*?)(?=\n## |\Z)", content, re.DOTALL)
-        assert match is not None, "Step 5 section not found in onboarding-flow.md"
+        assert match is not None, "Step 5 section not found in onboarding-phase2-track-setup.md"
         return match.group(1)
 
     def test_exactly_two_track_bullets(self) -> None:
@@ -312,10 +314,16 @@ class TestOnboardingStep5TrackBullets:
         )
 
     def test_no_system_verification_bullet(self) -> None:
-        """Step 5 does NOT contain a System Verification track bullet."""
+        """Step 5 does NOT list System Verification as a separate track.
+
+        Module 3 (System Verification) is part of the Core Bootcamp track
+        (listed by number), not a standalone track option. It should never
+        appear as a named bullet in the track selection step.
+        """
         section = self._extract_step5_section()
         assert "System Verification" not in section, (
-            "Step 5 still contains 'System Verification' track bullet — should be removed"
+            "Step 5 should not mention 'System Verification' — it is part of Core Bootcamp, "
+            "not a separate track option"
         )
 
     def test_no_quick_demo_track_bullet(self) -> None:

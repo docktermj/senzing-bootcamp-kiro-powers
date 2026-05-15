@@ -28,6 +28,7 @@ _HOOKS_DIR = _BOOTCAMP_DIR / "hooks"
 _MODULE_01 = _STEERING_DIR / "module-01-business-problem.md"
 _MODULE_01_PHASE2 = _STEERING_DIR / "module-01-phase2-document-confirm.md"
 _ONBOARDING = _STEERING_DIR / "onboarding-flow.md"
+_ONBOARDING_PHASE2 = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 _HOOK_REGISTRY = _STEERING_DIR / "hook-registry.md"
 _MODULE_03 = _STEERING_DIR / "module-03-system-verification.md"
@@ -43,6 +44,7 @@ _ALL_AFFECTED_FILES: list[tuple[Path, str]] = [
     (_MODULE_01, "module-01-business-problem.md"),
     (_MODULE_01_PHASE2, "module-01-phase2-document-confirm.md"),
     (_ONBOARDING, "onboarding-flow.md"),
+    (_ONBOARDING_PHASE2, "onboarding-phase2-track-setup.md"),
     (_AGENT_INSTRUCTIONS, "agent-instructions.md"),
     (_HOOK_REGISTRY, "hook-registry.md"),
     (_MODULE_03, "module-03-system-verification.md"),
@@ -137,7 +139,7 @@ def _extract_step_phase2(markdown: str, step_number: int) -> str:
 
 
 def _extract_onboarding_step(markdown: str, step_id: str) -> str:
-    """Extract a step from onboarding-flow.md by step identifier.
+    """Extract a step from an onboarding file by step identifier.
 
     Handles patterns like '## 2. Language Selection' and
     '### 4b. Verbosity'.
@@ -165,6 +167,21 @@ def _extract_onboarding_step(markdown: str, step_id: str) -> str:
     return markdown[start:]
 
 
+def _extract_onboarding_step_both_files(step_id: str) -> str:
+    """Extract a step from either onboarding Phase 1 or Phase 2 file.
+
+    Searches Phase 1 (onboarding-flow.md) first, then Phase 2
+    (onboarding-phase2-track-setup.md) if not found.
+    """
+    content = _read_file(_ONBOARDING)
+    result = _extract_onboarding_step(content, step_id)
+    if result:
+        return result
+    # Step not in Phase 1 — try Phase 2
+    content = _read_file(_ONBOARDING_PHASE2)
+    return _extract_onboarding_step(content, step_id)
+
+
 # ---------------------------------------------------------------------------
 # Baselines — snapshot the UNFIXED file content for comparison
 # ---------------------------------------------------------------------------
@@ -185,11 +202,12 @@ _UNFIXED_PHASE2_STEPS: dict[int, str] = {
     for n in _PHASE2_NON_QUESTION_STEPS
 }
 
-# Onboarding non-question steps: 0, 1, 1b, 3, 4, 4c
+# Onboarding non-question steps: 0, 1, 1b, 3, 4
 _UNFIXED_ONBOARDING = _read_file(_ONBOARDING)
+_UNFIXED_ONBOARDING_PHASE2 = _read_file(_ONBOARDING_PHASE2)
 _ONBOARDING_NON_QUESTION_STEP_IDS = ["0", "1", "1b", "3", "4"]
 _UNFIXED_ONBOARDING_STEPS: dict[str, str] = {
-    sid: _extract_onboarding_step(_UNFIXED_ONBOARDING, sid)
+    sid: _extract_onboarding_step_both_files(sid)
     for sid in _ONBOARDING_NON_QUESTION_STEP_IDS
 }
 
@@ -438,8 +456,7 @@ class TestOnboardingNonQuestionStepsPreserved:
 
     def test_step0_content_unchanged(self) -> None:
         """Step 0 (setup preamble) is unchanged."""
-        content = _read_file(_ONBOARDING)
-        current = _extract_onboarding_step(content, "0")
+        current = _extract_onboarding_step_both_files("0")
         baseline = _UNFIXED_ONBOARDING_STEPS["0"]
         assert baseline, "Baseline for Step 0 is empty"
         assert current == baseline, (
@@ -450,8 +467,7 @@ class TestOnboardingNonQuestionStepsPreserved:
 
     def test_step1_content_unchanged(self) -> None:
         """Step 1 (directory structure) is unchanged."""
-        content = _read_file(_ONBOARDING)
-        current = _extract_onboarding_step(content, "1")
+        current = _extract_onboarding_step_both_files("1")
         baseline = _UNFIXED_ONBOARDING_STEPS["1"]
         assert baseline, "Baseline for Step 1 is empty"
         assert current == baseline, (
@@ -462,8 +478,7 @@ class TestOnboardingNonQuestionStepsPreserved:
 
     def test_step1b_content_unchanged(self) -> None:
         """Step 1b (team detection) is unchanged."""
-        content = _read_file(_ONBOARDING)
-        current = _extract_onboarding_step(content, "1b")
+        current = _extract_onboarding_step_both_files("1b")
         baseline = _UNFIXED_ONBOARDING_STEPS["1b"]
         assert baseline, "Baseline for Step 1b is empty"
         assert current == baseline, (
@@ -474,8 +489,7 @@ class TestOnboardingNonQuestionStepsPreserved:
 
     def test_step3_content_unchanged(self) -> None:
         """Step 3 (prerequisite check) is unchanged."""
-        content = _read_file(_ONBOARDING)
-        current = _extract_onboarding_step(content, "3")
+        current = _extract_onboarding_step_both_files("3")
         baseline = _UNFIXED_ONBOARDING_STEPS["3"]
         assert baseline, "Baseline for Step 3 is empty"
         assert current == baseline, (
@@ -486,8 +500,7 @@ class TestOnboardingNonQuestionStepsPreserved:
 
     def test_step4_content_unchanged(self) -> None:
         """Step 4 (bootcamp introduction) is unchanged."""
-        content = _read_file(_ONBOARDING)
-        current = _extract_onboarding_step(content, "4")
+        current = _extract_onboarding_step_both_files("4")
         baseline = _UNFIXED_ONBOARDING_STEPS["4"]
         assert baseline, "Baseline for Step 4 is empty"
         assert current == baseline, (
@@ -744,8 +757,7 @@ def _get_current_step_content(
         return _extract_step_phase2(content, int(num_str))
 
     if file_label == "onboarding":
-        content = _read_file(_ONBOARDING)
-        return _extract_onboarding_step(content, num_str)
+        return _extract_onboarding_step_both_files(num_str)
 
     return ""
 

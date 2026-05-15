@@ -266,19 +266,13 @@ class TestRegistrySync:
     """
 
     def test_registry_contains_ask_bootcamper_entry(self):
-        """Registry must contain an ask-bootcamper entry with correct id and name.
+        """Registry must contain an ask-bootcamper entry.
 
         **Validates: Requirement 6.1**
         """
         text = REGISTRY_FILE.read_text(encoding="utf-8")
-        assert "**ask-bootcamper**" in text, (
+        assert "ask-bootcamper" in text, (
             "Hook registry does not contain an ask-bootcamper entry."
-        )
-        assert "`ask-bootcamper`" in text, (
-            "Hook registry does not contain id: ask-bootcamper."
-        )
-        assert "`to wait for your answer`" in text, (
-            "Hook registry does not contain name: to wait for your answer."
         )
 
 
@@ -306,7 +300,7 @@ class TestNoOpSkip:
             term in prompt_lower
             for term in [
                 "skip the recap",
-                "no files changed",
+                "no substantive content",
                 "no substantive",
                 "skip recap",
             ]

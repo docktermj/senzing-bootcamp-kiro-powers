@@ -9,7 +9,7 @@ Load on errors, when user is stuck, or preventively at module start. For visual 
 
 ## Quick Navigation
 
-[Symptoms](#troubleshooting-by-symptom) · Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8–11](#modules-8-11) | [Windows](#windows-pitfalls) · [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
+[Symptoms](#troubleshooting-by-symptom) · Modules: [1](#module-1) · [2](#module-2) · [3](#module-3) · [4](#module-4) · [5](#module-5) · [6](#module-6) · [7](#module-7) · [8–11](#modules-8-11) | [Database Issues](#database-issues) · [Windows](#windows-pitfalls) · [TypeScript/Node.js](#typescriptnodejs-pitfalls) · [General](#general-pitfalls) · [MCP Down](#mcp-unavailable) · [Recovery](#recovery) · [Pre-Module Checklist](#pre-module-checklist)
 
 ## Guided Troubleshooting — Ask Before Scanning
 
@@ -124,6 +124,30 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | Not tracking multi-source progress               | Use orchestration dashboard or logging                                       |
 | Data format or field issues                      | Call `search_docs(query="record format requirements")` for current required fields and format |
 
+<a id="database-issues"></a>
+
+## Database Issues
+
+Database corruption typically occurs during Module 6 data loading. Run `python3 scripts/check_database.py` to diagnose, or add `--repair` to attempt automatic recovery.
+
+| Pitfall | Symptoms | Fix |
+| ------- | -------- | --- |
+| Corruption after disk full | "database disk image is malformed" error during load or query | Free disk space, then run `python3 scripts/check_database.py --repair`. If repair fails, delete `database/G2C.db` and re-run the loading program from JSONL |
+| Locked database | "database is locked" error, loading hangs indefinitely | Close all other processes accessing the database. Check for stale lock files. If the lock persists, restart the system or run `python3 scripts/check_database.py --repair` |
+| Zero entities after load | Loading reports success but queries return no results, entity count is 0 | Run `python3 scripts/check_database.py` to verify entity count. If count is 0, check that the loading program used the correct data source file and that records had valid RECORD_ID fields |
+| WAL file left behind | `-wal` or `-shm` files remain next to `G2C.db` after a crash | Run `python3 scripts/check_database.py --repair` to checkpoint and remove WAL files. Alternatively, run `sqlite3 database/G2C.db "PRAGMA wal_checkpoint(TRUNCATE);"` manually |
+
+### Manual Recovery Steps
+
+If `--repair` does not resolve the issue:
+
+1. **Check integrity**: `sqlite3 database/G2C.db "PRAGMA integrity_check;"` — if result is not "ok", the database must be rebuilt
+2. **Attempt WAL recovery**: `sqlite3 database/G2C.db "PRAGMA wal_checkpoint(TRUNCATE);"` — forces pending WAL transactions into the main database file
+3. **Vacuum**: `sqlite3 database/G2C.db "VACUUM;"` — reclaims space and can fix minor inconsistencies
+4. **Rebuild from scratch**: Delete `database/G2C.db` (and any `-wal`/`-shm` files), re-initialize the database, and re-run the loading program against your transformed JSONL in `data/transformed/`
+
+For PostgreSQL: check for orphaned transactions (`SELECT * FROM pg_stat_activity WHERE state = 'idle in transaction'`), run `VACUUM ANALYZE`, and re-run failed loads — Senzing's RECORD_ID-based loading is idempotent.
+
 <a id="module-7"></a>
 
 ## Module 7: Query and Visualize
@@ -175,6 +199,19 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 | Senzing DLLs not found at runtime | Call `sdk_guide` for the correct path to add to `PATH` |
 | Emoji/Unicode garbled in terminal | Use Windows Terminal or PowerShell 7 instead of `cmd.exe`. Install: `winget install Microsoft.WindowsTerminal` |
 | `source` command not found | `source` is bash-only. Use `. .\scripts\senzing-env.ps1` (PowerShell) or `call scripts\senzing-env.bat` (cmd) |
+
+<a id="typescriptnodejs-pitfalls"></a>
+
+## TypeScript/Node.js Pitfalls
+
+| Pitfall | Fix |
+| ------- | --- |
+| Unhandled promise rejections crash the process | Always `await` async SDK calls or attach `.catch()`. Add a global handler: `process.on('unhandledRejection', (err) => { /* log and exit */ })` |
+| Blocking the event loop with large record loads | Use `setImmediate` or batch processing to yield between records. Never call synchronous SDK wrappers in a tight loop |
+| Using `any` type for Senzing data structures | Define interfaces for records, entity results, and config objects. Use the SDK's exported types or create your own based on `search_docs(query="record format")` |
+| TypeScript strict mode errors on SDK return values | Enable `strict: true` in `tsconfig.json` from the start. Add explicit null checks for optional fields returned by query methods |
+| ESM `import` used but package expects `require` (CJS) | Set `"type": "module"` in `package.json` for ESM projects. If the SDK only ships CJS, use `import { createRequire } from 'module'` or dynamic `import()` |
+| `require` used in an ESM project causes ERR_REQUIRE_ESM | Convert to `import` syntax or switch `package.json` to `"type": "commonjs"`. Do not mix module systems in the same package |
 
 ## MCP Server Unavailable
 

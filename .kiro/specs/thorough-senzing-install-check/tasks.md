@@ -1,0 +1,87 @@
+# Implementation Plan
+
+- [x] 1. Write bug condition exploration test
+  - **Property 1: Bug Condition** - Missing Filesystem Fallback Detection
+  - **IMPORTANT**: Write this property-based test BEFORE implementing the fix
+  - **CRITICAL**: This test MUST FAIL on unfixed code — failure confirms the bug exists
+  - **DO NOT attempt to fix the test or the code when it fails**
+  - **NOTE**: This test encodes the expected behavior — it will validate the fix when it passes after implementation
+  - **GOAL**: Surface counterexamples that demonstrate the steering file lacks filesystem fallback instructions
+  - **Scoped PBT Approach**: Scope the property to the concrete bug condition — Step 1 of `module-02-sdk-setup.md` lacks filesystem sentinel file checks when the language import check fails
+  - **Test file**: `senzing-bootcamp/tests/test_thorough_senzing_install_check_exploration.py`
+  - **Test details**:
+    - Parse `senzing-bootcamp/steering/module-02-sdk-setup.md` and extract Step 1 content
+    - Assert Step 1 contains a reference to `/opt/senzing/er/lib/libSz.so` (native library sentinel)
+    - Assert Step 1 contains a reference to `/opt/senzing/er/szBuildVersion.json` (build version sentinel)
+    - Assert Step 1 contains fallback language indicating filesystem checks run when import fails
+    - Assert Step 1 specifies both sentinel files must be present to conclude SDK is installed
+    - Use Hypothesis `@given()` with strategies generating variations of sentinel file path strings to verify the property holds for the canonical paths
+  - Run test on UNFIXED code — expect FAILURE (this confirms the bug exists)
+  - **EXPECTED OUTCOME**: Test FAILS — the current Step 1 does not contain filesystem fallback instructions
+  - Document counterexamples found:
+    - `/opt/senzing/er/lib/libSz.so` does not appear in Step 1
+    - `szBuildVersion.json` does not appear in Step 1
+    - No fallback/filesystem detection logic exists in the current Step 1 instructions
+  - Mark task complete when test is written, run, and failure is documented
+  - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.2, 2.3_
+
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
+  - **Property 2: Preservation** - Existing Detection Paths Unchanged
+  - **IMPORTANT**: Follow observation-first methodology
+  - **Test file**: `senzing-bootcamp/tests/test_thorough_senzing_install_check_preservation.py`
+  - **Observation phase** (run on UNFIXED code):
+    - Observe: Step 1 contains language-level import check instruction (primary detection method)
+    - Observe: Step 1 contains "Skip Steps 2 and 3" behavior when SDK is found and version is V4.0+
+    - Observe: Step 1 contains "Proceed with Step 2" behavior when SDK is NOT found
+    - Observe: Step 1 contains version check for V4.0 and upgrade recommendation for incompatible versions
+    - Observe: Step 1 contains checkpoint write instruction at the end
+  - **Property-based test details**:
+    - Parse `module-02-sdk-setup.md` and extract Step 1 content
+    - Write property: for all non-bug-condition paths, the import check instruction is present and unchanged
+    - Write property: the "SDK found" path (skip Steps 2-3, jump to Step 4) is preserved
+    - Write property: the "SDK not found" path (proceed with Step 2) is preserved
+    - Write property: the version-below-V4.0 upgrade recommendation path is preserved
+    - Write property: the checkpoint write instruction remains at end of Step 1
+    - Use Hypothesis `@given()` with strategies generating variations of section markers to verify structural preservation
+  - Verify tests PASS on UNFIXED code (confirms baseline behavior to preserve)
+  - **EXPECTED OUTCOME**: Tests PASS — existing paths are present in the current file
+  - Mark task complete when tests are written, run, and passing on unfixed code
+  - _Requirements: 3.1, 3.2, 3.3_
+
+- [x] 3. Fix for missing filesystem fallback in Step 1 install check
+
+  - [x] 3.1 Implement the fix in `senzing-bootcamp/steering/module-02-sdk-setup.md`
+    - Add filesystem fallback instructions to Step 1 after the existing language import check
+    - When the language import check fails, instruct the agent to check for sentinel files:
+      - `/opt/senzing/er/lib/libSz.so` (native shared library)
+      - `/opt/senzing/er/szBuildVersion.json` (build version metadata)
+    - Require BOTH sentinel files to be present to conclude SDK is installed
+    - If both files are found: report SDK as installed, read version from `szBuildVersion.json`, skip Steps 2-3, proceed to Step 4 verification
+    - If only one file or neither is found: proceed with "SDK not found" path (Step 2)
+    - Preserve the language import check as the primary detection method (filesystem is fallback only)
+    - Preserve all existing "SDK found", "SDK not found", and "version < V4.0" paths unchanged
+    - _Bug_Condition: isBugCondition(input) where sdkExistsOnFilesystem=true AND languageImportSucceeds=false AND packageManagerQuerySucceeds=false_
+    - _Expected_Behavior: Step 1 directs agent to check filesystem sentinel files and report SDK as installed when both are present_
+    - _Preservation: Import-success path, not-installed path, version-below-V4.0 upgrade path, checkpoint write all unchanged_
+    - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3_
+
+  - [x] 3.2 Verify bug condition exploration test now passes
+    - **Property 1: Expected Behavior** - Filesystem Fallback Detects Installed SDK
+    - **IMPORTANT**: Re-run the SAME test from task 1 — do NOT write a new test
+    - The test from task 1 encodes the expected behavior (sentinel file references in Step 1)
+    - When this test passes, it confirms the filesystem fallback instructions are present
+    - Run `pytest senzing-bootcamp/tests/test_thorough_senzing_install_check_exploration.py -v`
+    - **EXPECTED OUTCOME**: Test PASSES (confirms bug is fixed — filesystem fallback is now in Step 1)
+    - _Requirements: 2.1, 2.2, 2.3_
+
+  - [x] 3.3 Verify preservation tests still pass
+    - **Property 2: Preservation** - Existing Detection Paths Unchanged
+    - **IMPORTANT**: Re-run the SAME tests from task 2 — do NOT write new tests
+    - Run `pytest senzing-bootcamp/tests/test_thorough_senzing_install_check_preservation.py -v`
+    - **EXPECTED OUTCOME**: Tests PASS (confirms no regressions — all existing paths preserved)
+    - Confirm all preservation tests still pass after fix (no regressions to import-success, not-installed, or version-check paths)
+    - _Requirements: 3.1, 3.2, 3.3_
+
+- [x] 4. Checkpoint - Ensure all tests pass
+  - Run full test suite: `pytest senzing-bootcamp/tests/test_thorough_senzing_install_check_exploration.py senzing-bootcamp/tests/test_thorough_senzing_install_check_preservation.py -v`
+  - Ensure all tests pass, ask the user if questions arise.

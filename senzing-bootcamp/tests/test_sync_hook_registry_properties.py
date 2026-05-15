@@ -23,7 +23,8 @@ from sync_hook_registry import (
     parse_hook_file,
     categorize_hooks,
     format_hook_entry,
-    generate_registry,
+    generate_registry_summary,
+    generate_registry_detail,
     verify_registry,
     write_registry,
 )
@@ -301,7 +302,7 @@ def test_property_4_registry_frontmatter_and_structure(data):
     critical, modules = categorize_hooks(hooks, mapping)
     total_count = len(hooks)
 
-    content = generate_registry(critical, modules, total_count)
+    content = generate_registry_summary(critical, modules, total_count)
 
     # Must start with frontmatter
     assert content.startswith("---\ninclusion: manual\n---\n"), (
@@ -379,10 +380,10 @@ def test_property_6_deterministic_generation(data):
     mapping = data.draw(st_category_mapping(hooks))
 
     critical1, modules1 = categorize_hooks(hooks, mapping)
-    content1 = generate_registry(critical1, modules1, len(hooks))
+    content1 = generate_registry_summary(critical1, modules1, len(hooks))
 
     critical2, modules2 = categorize_hooks(hooks, mapping)
-    content2 = generate_registry(critical2, modules2, len(hooks))
+    content2 = generate_registry_summary(critical2, modules2, len(hooks))
 
     assert content1 == content2, "Two generations from same input must be byte-identical"
 
@@ -407,12 +408,12 @@ def test_property_7_stable_sort_order_independence(data):
 
     # Generate from original order
     critical1, modules1 = categorize_hooks(hooks, mapping)
-    content1 = generate_registry(critical1, modules1, len(hooks))
+    content1 = generate_registry_summary(critical1, modules1, len(hooks))
 
     # Reverse the input order
     reversed_hooks = list(reversed(hooks))
     critical2, modules2 = categorize_hooks(reversed_hooks, mapping)
-    content2 = generate_registry(critical2, modules2, len(reversed_hooks))
+    content2 = generate_registry_summary(critical2, modules2, len(reversed_hooks))
 
     assert content1 == content2, (
         "Output must be identical regardless of input order"
@@ -475,7 +476,7 @@ def test_property_9_unix_line_ending_normalization(data):
     mapping = data.draw(st_category_mapping(hooks))
 
     critical, modules = categorize_hooks(hooks, mapping)
-    content = generate_registry(critical, modules, len(hooks))
+    content = generate_registry_summary(critical, modules, len(hooks))
 
     assert "\r" not in content, "Generated output must not contain \\r characters"
     # All line endings should be \n only

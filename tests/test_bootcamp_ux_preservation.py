@@ -97,17 +97,18 @@ class TestModuleCompletionPreservation:
         """Journal template 'Bootcamper's takeaway' field must survive."""
         assert "**Bootcamper's takeaway:**" in self.content
 
-    # Reflection question
+    # Reflection question — intentionally removed by skip-reflection-questions spec.
+    # The module completion workflow now skips reflection and proceeds directly
+    # from journal entry to certificate.
     def test_reflection_question_section(self):
-        """Reflection Question section must exist."""
-        assert "## Reflection Question" in self.content
+        """Reflection Question section was removed (skip-reflection-questions spec)."""
+        assert "## Reflection Question" not in self.content
 
     def test_reflection_question_text(self):
-        """Reflection question text about main takeaway must survive."""
-        assert (
-            "main takeaway from the module"
-            in self.content
-        )
+        """Reflection question text removed — takeaway field is auto-filled N/A."""
+        # The skip-reflection-questions spec removed the reflection question.
+        # The journal template's takeaway field is now "N/A" by default.
+        assert "**Bootcamper's takeaway:** N/A" in self.content
 
     # Next-step options: Proceed, Iterate, Share must survive
     # (Explore will be enhanced but not removed)
@@ -132,21 +133,13 @@ class TestModuleCompletionPreservation:
         """Path Completion Detection section must survive."""
         assert "## Path Completion Detection" in self.content
 
-    def test_path_a_in_table(self):
-        """Path A row must survive in the table."""
-        assert "| A" in self.content
+    def test_core_bootcamp_in_table(self):
+        """Core Bootcamp row must survive in the table."""
+        assert "| Core Bootcamp" in self.content
 
-    def test_path_b_in_table(self):
-        """Path B row must survive in the table."""
-        assert "| B" in self.content
-
-    def test_path_c_in_table(self):
-        """Path C row must survive in the table."""
-        assert "| C" in self.content
-
-    def test_path_d_in_table(self):
-        """Path D row must survive in the table."""
-        assert "| D" in self.content
+    def test_advanced_topics_in_table(self):
+        """Advanced Topics row must survive in the table."""
+        assert "| Advanced Topics" in self.content
 
     # Path Completion Celebration
     def test_celebration_section(self):

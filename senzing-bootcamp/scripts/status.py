@@ -682,6 +682,152 @@ def _esc(text) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Step-level status helpers
+# ---------------------------------------------------------------------------
+
+def _get_module_total_steps(steering_index_path: Path, module_number: int) -> int | None:
+    """Extract total step count for a module from steering-index.yaml.
+
+    Reads the YAML file as plain text and uses line-by-line parsing to find
+    all step_range values for the given module number. Returns the maximum
+    upper-bound across all phases, or None if the module has no phases.
+
+    Args:
+        steering_index_path: Path to the steering-index.yaml file.
+        module_number: The module number to look up (1-11).
+
+    Returns:
+        The maximum step number (upper bound of last phase), or None if the
+        module has no phase structure.
+    """
+    try:
+        text = steering_index_path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+
+    lines = text.splitlines()
+    step_range_re = re.compile(r"step_range:\s*\[\s*(\d+)\s*,\s*(\d+)\s*\]")
+
+    # Find the line for the target module under the "modules:" section
+    in_modules_section = False
+    in_target_module = False
+    target_indent = -1
+    max_upper = None
+
+    for line in lines:
+        stripped = line.lstrip()
+
+        # Detect the top-level "modules:" key
+        if stripped == "modules:":
+            in_modules_section = True
+            continue
+
+        if not in_modules_section:
+            continue
+
+        # Detect a top-level key outside modules (e.g., "onboarding:", "keywords:")
+        # These are lines with no indentation that end with ":"
+        if line and not line[0].isspace() and stripped.endswith(":"):
+            in_modules_section = False
+            if in_target_module:
+                break
+            continue
+
+        # Inside modules section — look for module number entries
+        # Module entries are at indent level 2 (two spaces), e.g. "  5:"
+        indent = len(line) - len(stripped)
+
+        if indent == 2 and stripped.rstrip(":").strip().isdigit():
+            mod_num = int(stripped.rstrip(":").strip())
+            if mod_num == module_number:
+                in_target_module = True
+                target_indent = indent
+            elif in_target_module:
+                # We've moved past the target module
+                break
+            continue
+
+        if not in_target_module:
+            continue
+
+        # We're inside the target module block — look for step_range
+        # Only consider lines indented deeper than the module key
+        if indent <= target_indent:
+            break
+
+        m = step_range_re.search(stripped)
+        if m:
+            upper = int(m.group(2))
+            if max_upper is None or upper > max_upper:
+                max_upper = upper
+
+    return max_upper
+
+
+def _show_step_detail(
+    current_module: int,
+    progress_data: dict,
+    steering_index_path: Path,
+) -> None:
+    """Display step-level progress detail for the current module.
+
+    Prints a formatted step-detail section showing the last completed step,
+    active step, and timestamp for the current module.
+
+    Args:
+        current_module: The module number to show detail for.
+        progress_data: The raw progress data dict from bootcamp_progress.json.
+        steering_index_path: Path to the steering-index.yaml file.
+    """
+    step_history = progress_data.get("step_history", {})
+    module_entry = step_history.get(str(current_module))
+
+    module_name = MODULE_NAMES.get(current_module, "Unknown")
+    total_steps = _get_module_total_steps(steering_index_path, current_module)
+
+    print("Step Detail:")
+
+    # No step history → "Not started"
+    if module_entry is None or not isinstance(module_entry, dict):
+        print(f"  Module {current_module}: {module_name} \u2014 Not started")
+        return
+
+    last_completed = module_entry.get("last_completed_step")
+
+    # No last_completed_step → "Not started"
+    if last_completed is None:
+        print(f"  Module {current_module}: {module_name} \u2014 Not started")
+        return
+
+    # Format the step progress line
+    if total_steps is not None:
+        print(
+            f"  Module {current_module}: {module_name} \u2014 "
+            f"Step {last_completed} of {total_steps} completed"
+        )
+    else:
+        print(
+            f"  Module {current_module}: {module_name} \u2014 "
+            f"Step {last_completed} completed"
+        )
+
+    # Active step line
+    current_step = progress_data.get("current_step")
+    if current_step is None and "current_step" in progress_data:
+        # current_step is explicitly null → "Between steps"
+        print("  Active step: Between steps")
+    elif current_step is not None:
+        # Integer or sub-step string → display as-is
+        if isinstance(current_step, (int, str)):
+            print(f"  Active step: Step {current_step}")
+
+    # Timestamp line
+    updated_at = module_entry.get("updated_at")
+    if updated_at is not None:
+        print(f"  Last updated: {updated_at}")
+
+
+# ---------------------------------------------------------------------------
 # Task 4: CLI integration and file output
 # ---------------------------------------------------------------------------
 
@@ -1011,6 +1157,19 @@ def _show_terminal_status(args):
                 print(line)
             print()
 
+    # ── Step detail section (--step flag) ──
+    if args.step and progress_json.is_file():
+        try:
+            raw_data = json.loads(progress_json.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            raw_data = None
+        if raw_data is not None:
+            steering_index_path = (
+                Path(__file__).resolve().parent.parent / "steering" / "steering-index.yaml"
+            )
+            _show_step_detail(current, raw_data, steering_index_path)
+            print()
+
     print(cyan("Quick Commands:"))
     print("    python scripts/status.py              # Show this status")
     print("    python scripts/status.py --html       # Generate HTML dashboard")
@@ -1036,6 +1195,8 @@ def main():
     parser.add_argument("--member", type=str, default=None,
                         help="Show specific team member status")
     parser.add_argument("--graph", action="store_true", help="Show module dependency graph")
+    parser.add_argument("--step", action="store_true",
+                        help="Show step-level progress for the current module")
     args = parser.parse_args()
 
     project_root = Path(__file__).resolve().parent.parent

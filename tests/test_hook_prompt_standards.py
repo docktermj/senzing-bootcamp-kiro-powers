@@ -16,9 +16,9 @@ import pytest
 # ---------------------------------------------------------------------------
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
-REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry.md")
+REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry-detail.md")
 
-EXPECTED_HOOK_COUNT = 24
+EXPECTED_HOOK_COUNT = 25
 
 VALID_EVENT_TYPES = {
     "promptSubmit",
@@ -46,6 +46,11 @@ FILE_EVENT_TYPES = {"fileEdited", "fileCreated", "fileDeleted"}
 TOOL_EVENT_TYPES = {"preToolUse", "postToolUse"}
 PASS_THROUGH_EVENT_TYPES = {"preToolUse", "promptSubmit"}
 EXEMPT_FROM_CLOSING_QUESTION = {"agentStop", "userTriggered"}
+
+# Hooks that intentionally include forward-moving question instructions by design.
+# These are exempt from the "no inline closing questions" check because their
+# purpose includes guiding the bootcamper to the next step after performing work.
+HOOKS_WITH_INTENTIONAL_CLOSING_QUESTION = {"commonmark-validation.kiro.hook"}
 
 # ---------------------------------------------------------------------------
 # Prompt pattern constants
@@ -326,6 +331,7 @@ _non_exempt_hooks = [
     (name, data)
     for name, data in _hook_data
     if data.get("when", {}).get("type") not in EXEMPT_FROM_CLOSING_QUESTION
+    and name not in HOOKS_WITH_INTENTIONAL_CLOSING_QUESTION
 ]
 _non_exempt_ids = [name for name, _ in _non_exempt_hooks]
 
@@ -472,8 +478,8 @@ class TestEventTypeValidation:
 class TestRealHookFiles:
     """Example-based unit tests that validate real hook file data."""
 
-    def test_all_24_hook_files_parse_as_valid_json(self):
-        """All 24 real hook files parse as valid JSON (Req 1.1)."""
+    def test_all_25_hook_files_parse_as_valid_json(self):
+        """All 25 real hook files parse as valid JSON (Req 1.1)."""
         hook_files = get_hook_files()
         assert len(hook_files) == EXPECTED_HOOK_COUNT
         for path in hook_files:
@@ -481,12 +487,12 @@ class TestRealHookFiles:
                 data = json.load(f)
             assert isinstance(data, dict), f"{path.name} did not parse as a JSON object"
 
-    def test_hook_file_count_is_24(self):
-        """Hook file count is exactly 24 (Req 5.1)."""
+    def test_hook_file_count_is_25(self):
+        """Hook file count is exactly 25 (Req 5.1)."""
         assert len(get_hook_files()) == EXPECTED_HOOK_COUNT
 
-    def test_registry_entry_count_is_24(self):
-        """Registry entry count is exactly 24 (Req 5.2)."""
+    def test_registry_entry_count_is_25(self):
+        """Registry entry count is exactly 25 (Req 5.2)."""
         assert len(parse_registry()) == EXPECTED_HOOK_COUNT
 
     def test_valid_event_types_has_10_entries(self):
@@ -516,6 +522,8 @@ class TestRealHookFiles:
         for name, data in _hook_data:
             event_type = data.get("when", {}).get("type", "")
             if event_type in EXEMPT_FROM_CLOSING_QUESTION:
+                continue
+            if name in HOOKS_WITH_INTENTIONAL_CLOSING_QUESTION:
                 continue
             prompt = data.get("then", {}).get("prompt", "")
             matched = find_closing_question(prompt)

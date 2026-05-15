@@ -74,6 +74,13 @@ This directory contains comprehensive guides to help you succeed with the Senzin
 - Validation rules and a complete example showing Modules 4-7
 - CLI usage and agent behavior on missing artifacts
 
+**[DATABASE_MIGRATION.md](DATABASE_MIGRATION.md)**
+
+- Step-by-step SQLite to PostgreSQL migration for Senzing
+- Prerequisites, schema initialization, data re-loading, verification
+- Rollback path if migration fails
+- MCP tool integration for current PostgreSQL configuration guidance
+
 ### After the Bootcamp
 
 **[AFTER_BOOTCAMP.md](AFTER_BOOTCAMP.md)**
@@ -259,7 +266,8 @@ docs/
 │   ├── ARCHITECTURE.md
 │   ├── QUALITY_SCORING_METHODOLOGY.md
 │   ├── STEERING_INDEX.md
-│   └── MODULE_ARTIFACTS.md
+│   ├── MODULE_ARTIFACTS.md
+│   └── DATABASE_MIGRATION.md
 ├── diagrams/                  # ⭐ NEW! Visual docs
 │   ├── module-flow.md        # Module diagrams
 │   ├── data-flow.md          # Data pipeline diagrams

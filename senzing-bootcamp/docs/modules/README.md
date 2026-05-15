@@ -40,7 +40,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 3: System Verification (Optional)
+### Module 3: System Verification
 
 **File**: [MODULE_3_SYSTEM_VERIFICATION.md](MODULE_3_SYSTEM_VERIFICATION.md)
 **Steering**: `steering/module-03-system-verification.md`

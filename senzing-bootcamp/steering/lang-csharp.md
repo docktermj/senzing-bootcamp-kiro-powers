@@ -43,9 +43,10 @@ fileMatchPattern: "**/*.cs"
 
 - .NET 6+ runs cross-platform — but Senzing native libraries differ per OS; follow `sdk_guide` output for library paths
 - On Linux, set `LD_LIBRARY_PATH` to include Senzing shared library directory before running `dotnet run`
+- On macOS, set `DYLD_LIBRARY_PATH` to include the Senzing `lib` directory — native library resolution requires this for .NET P/Invoke calls
 - On Windows, Senzing DLLs are typically on `PATH` after installation — verify if running from IDE or CI
 - Target `net6.0` or later in `.csproj` — earlier frameworks have limited cross-platform support
-- Use `dotnet publish -r linux-x64` (or `win-x64`) for self-contained deployments that bundle the runtime
+- Use `dotnet publish -r linux-x64` (or `win-x64`, `osx-x64`) for self-contained deployments that bundle the runtime
 
 ## Common Environment Issues
 

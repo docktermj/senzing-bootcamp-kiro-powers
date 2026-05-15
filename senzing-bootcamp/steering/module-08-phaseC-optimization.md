@@ -9,6 +9,11 @@ inclusion: manual
 Call `search_docs(query='database tuning', category='configuration', version='current')`.
 
 - **SQLite:** Single-writer limitation, WAL mode, page size, cache size. Recommend PostgreSQL migration if >500K records or throughput insufficient.
+
+> **Optional:** If SQLite throughput is insufficient for your data volume, see
+> [DATABASE_MIGRATION.md](../../docs/guides/DATABASE_MIGRATION.md) for a
+> step-by-step migration to PostgreSQL.
+
 - **PostgreSQL:** shared_buffers (25% RAM), effective_cache_size (75% RAM), work_mem, wal_buffers, checkpoint_completion_target, random_page_cost for SSD.
 
 Document in `docs/database_tuning.md`.

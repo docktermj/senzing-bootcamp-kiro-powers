@@ -32,10 +32,28 @@ _ONBOARDING_FILE = (
     Path(__file__).resolve().parent.parent / "steering" / "onboarding-flow.md"
 )
 
+_ONBOARDING_PHASE2_FILE = (
+    Path(__file__).resolve().parent.parent
+    / "steering"
+    / "onboarding-phase2-track-setup.md"
+)
+
 
 def _read_onboarding() -> str:
     """Return the full text of onboarding-flow.md."""
     return _ONBOARDING_FILE.read_text(encoding="utf-8")
+
+
+def _read_onboarding_combined() -> str:
+    """Return the combined text of both onboarding phase files."""
+    phase1 = _ONBOARDING_FILE.read_text(encoding="utf-8")
+    phase2 = _ONBOARDING_PHASE2_FILE.read_text(encoding="utf-8")
+    return phase1 + "\n" + phase2
+
+
+def _read_phase2() -> str:
+    """Return the full text of onboarding-phase2-track-setup.md."""
+    return _ONBOARDING_PHASE2_FILE.read_text(encoding="utf-8")
 
 
 def _extract_step_headings(text: str) -> list[str]:
@@ -145,8 +163,12 @@ class TestStepHeadingSequence:
         )
 
     def test_4c_appears_between_4b_and_5(self) -> None:
-        """Step 4c must appear after 4b and before 5 in the heading order."""
-        text = _read_onboarding()
+        """Step 4c must appear after 4b and before 5 in the heading order.
+
+        Note: After the onboarding split, Step 5 is in the Phase 2 file.
+        We check the combined heading sequence across both files.
+        """
+        text = _read_onboarding_combined()
         headings = _extract_step_headings(text)
         assert "4b" in headings, f"Step 4b not found. Headings: {headings}"
         assert "4c" in headings, f"Step 4c not found. Headings: {headings}"
@@ -163,8 +185,12 @@ class TestStepHeadingSequence:
         )
 
     def test_heading_sequence_preserves_existing_order(self) -> None:
-        """The existing step order (0, 1, 1b, 2, 3, 4, 4b, ..., 5) is preserved."""
-        text = _read_onboarding()
+        """The existing step order (0, 1, 1b, 2, 3, 4, 4b, ..., 5) is preserved.
+
+        Note: After the onboarding split, Step 5 is in the Phase 2 file.
+        We check the combined heading sequence across both files.
+        """
+        text = _read_onboarding_combined()
         headings = _extract_step_headings(text)
 
         expected_numbered = ["0", "1", "1b", "2", "3", "4", "4b", "5"]
@@ -332,7 +358,7 @@ class TestExistingStepPreservation:
 
     def test_step_5_track_descriptions(self) -> None:
         """Step 5 contains both track descriptions."""
-        text = _read_onboarding()
+        text = _read_phase2()
         section = _extract_section(text, r"5\.\s+Track Selection")
         for track in ("Core Bootcamp", "Advanced Topics"):
             assert track in section, (
@@ -341,7 +367,7 @@ class TestExistingStepPreservation:
 
     def test_step_5_all_modules_track(self) -> None:
         """Step 5 mentions the Modules 1-11 range for advanced_topics."""
-        text = _read_onboarding()
+        text = _read_phase2()
         section = _extract_section(text, r"5\.\s+Track Selection")
         assert "1–11" in section or "1-11" in section, (
             "Step 5 missing the modules 1-11 range for advanced_topics track"
@@ -349,32 +375,32 @@ class TestExistingStepPreservation:
 
     def test_step_5_gate_marker(self) -> None:
         """Step 5 contains the mandatory gate marker ⛔."""
-        text = _read_onboarding()
+        text = _read_phase2()
         section = _extract_section(text, r"5\.\s+Track Selection")
         assert "⛔" in section, "Step 5 missing mandatory gate marker ⛔"
         assert "MANDATORY GATE" in section
 
     def test_step_5_interpreting_responses(self) -> None:
         """Step 5 contains the interpreting responses mapping."""
-        text = _read_onboarding()
+        text = _read_phase2()
         section = _extract_section(text, r"5\.\s+Track Selection")
         assert "Interpreting responses" in section
 
     # -- Appendix sections --
 
     def test_switching_tracks_section_exists(self) -> None:
-        """The Switching Tracks section exists."""
-        text = _read_onboarding()
+        """The Switching Tracks section exists (in Phase 2 file)."""
+        text = _read_phase2()
         assert "## Switching Tracks" in text
 
     def test_validation_gates_section_exists(self) -> None:
-        """The Validation Gates section exists."""
-        text = _read_onboarding()
+        """The Validation Gates section exists (in Phase 2 file)."""
+        text = _read_phase2()
         assert "## Validation Gates" in text
 
     def test_hook_registry_section_exists(self) -> None:
-        """The Hook Registry section exists."""
-        text = _read_onboarding()
+        """The Hook Registry section exists (in Phase 2 file)."""
+        text = _read_phase2()
         assert "## Hook Registry" in text
 
 

@@ -1,8 +1,8 @@
 """Bug condition exploration and preservation tests for remove-duplicate-module-table bugfix.
 
-Bug condition tests verify that Step 5 (Track Selection) of onboarding-flow.md
-does NOT contain a duplicate module table that repeats the module list already
-shown in Step 4 (Bootcamp Introduction).
+Bug condition tests verify that Step 5 (Track Selection) of
+onboarding-phase2-track-setup.md does NOT contain a duplicate module table
+that repeats the module list already shown in Step 4 (Bootcamp Introduction).
 
 Preservation tests verify that Step 4's module overview, Step 5's track options,
 Module 2 auto-insertion note, and response interpretation rules remain unchanged.
@@ -29,6 +29,7 @@ from hypothesis import strategies as st
 
 _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 _ONBOARDING_FLOW = _STEERING_DIR / "onboarding-flow.md"
+_ONBOARDING_PHASE2 = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 
 # The introductory sentence that precedes the duplicate table in Step 5
 _QUICK_REF_INTRO = (
@@ -48,6 +49,11 @@ _MODULE_NUMBERS = list(range(1, 13))
 def _read_onboarding_flow() -> str:
     """Read the full content of onboarding-flow.md."""
     return _ONBOARDING_FLOW.read_text(encoding="utf-8")
+
+
+def _read_onboarding_phase2() -> str:
+    """Read the full content of onboarding-phase2-track-setup.md."""
+    return _ONBOARDING_PHASE2.read_text(encoding="utf-8")
 
 
 def _extract_section(content: str, heading: str) -> str:
@@ -132,7 +138,7 @@ class TestBugConditionDuplicateTable:
 
     @pytest.fixture(autouse=True)
     def _load_content(self) -> None:
-        self._content = _read_onboarding_flow()
+        self._content = _read_onboarding_phase2()
         self._step5 = _extract_step5(self._content)
 
     def test_step5_does_not_contain_module_table(self) -> None:
@@ -156,21 +162,15 @@ class TestBugConditionDuplicateTable:
         )
 
     def test_file_has_exactly_one_module_table(self) -> None:
-        """The full file should contain exactly one module table (in Step 4 area).
+        """The Phase 2 file should contain at most one module table.
 
-        On unfixed code, two sections contain module tables (Step 4 overview
-        reference + Step 5 duplicate table).
+        On unfixed code, Step 5 contains a duplicate module table.
 
         **Validates: Requirements 1.1, 1.2, 2.1, 2.2**"""
-        # Note: Step 4 says "Module overview table (1-12)" as an instruction
-        # but doesn't contain an actual markdown table. The only actual
-        # markdown module table should be zero after fix (Step 5's is removed).
-        # However, the Validation Gates section has a table too (but not modules 1-12).
-        # Let's count sections with module tables listing 1-12.
         count = _count_module_tables(self._content)
         assert count <= 1, (
             f"Bug condition confirmed: Found {count} sections with module "
-            f"tables listing modules 1-12. Expected at most 1 (Step 4 area). "
+            f"tables listing modules 1-12. Expected at most 1. "
             f"Step 5 contains a duplicate."
         )
 
@@ -191,7 +191,7 @@ class TestBugConditionProperty:
 
         For any module number 1-12, Step 5 should NOT contain a table row
         with that module number."""
-        content = _read_onboarding_flow()
+        content = _read_onboarding_phase2()
         step5 = _extract_step5(content)
         pattern = rf"\|\s*{module_num}\s*\|"
         assert not re.search(pattern, step5), (
@@ -242,7 +242,7 @@ class TestPreservationStep5TrackOptions:
 
     @pytest.fixture(autouse=True)
     def _load_step5(self) -> None:
-        content = _read_onboarding_flow()
+        content = _read_onboarding_phase2()
         self._step5 = _extract_step5(content)
 
     @pytest.mark.parametrize("track", _TRACK_MARKERS)
@@ -266,7 +266,7 @@ class TestPreservationStep5Module2Note:
         """Step 5 should contain 'Module 2 is automatically inserted'.
 
         **Validates: Requirements 3.3**"""
-        content = _read_onboarding_flow()
+        content = _read_onboarding_phase2()
         step5 = _extract_step5(content)
         assert "Module 2 is automatically inserted" in step5, (
             "Step 5 is missing the Module 2 auto-insertion note.\n"
@@ -287,7 +287,7 @@ class TestPreservationStep5InterpretationRules:
 
     @pytest.fixture(autouse=True)
     def _load_step5(self) -> None:
-        content = _read_onboarding_flow()
+        content = _read_onboarding_phase2()
         self._step5 = _extract_step5(content)
 
     @pytest.mark.parametrize("fragment", _INTERPRETATION_FRAGMENTS)
@@ -322,7 +322,7 @@ class TestPreservationProperty:
         """**Validates: Requirements 3.2, 3.3, 3.4**
 
         For any preserved content item, it must be present in Step 5."""
-        content = _read_onboarding_flow()
+        content = _read_onboarding_phase2()
         step5 = _extract_step5(content)
         assert content_item in step5, (
             f"Step 5 is missing preserved content: '{content_item}'"

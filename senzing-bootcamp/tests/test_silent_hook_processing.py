@@ -47,7 +47,7 @@ _ASK_BOOTCAMPER_HOOK_FILE = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
 _PRE_TOOL_USE_HOOKS: dict[str, Path] = {
 }
 
-_HOOK_REGISTRY = _STEERING_DIR / "hook-registry.md"
+_HOOK_REGISTRY = _STEERING_DIR / "hook-registry-detail.md"
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 
 # The phrase that must appear in fixed prompts for the no-action case
@@ -628,7 +628,7 @@ _ASK_BOOTCAMPER_ACTION_KEYWORDS: list[str] = [
     "files created or modified",
     "👉 question",
     "Skip to Phase 2",
-    "no files changed",
+    "files were edited",
     "no substantive",
 ]
 

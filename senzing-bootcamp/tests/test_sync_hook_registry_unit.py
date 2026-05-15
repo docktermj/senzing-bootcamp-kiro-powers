@@ -26,7 +26,8 @@ from sync_hook_registry import (
     load_category_mapping,
     categorize_hooks,
     format_hook_entry,
-    generate_registry,
+    generate_registry_summary,
+    generate_registry_detail,
     write_registry,
     verify_registry,
 )
@@ -73,7 +74,7 @@ class TestParseAllRealHooks:
     def test_all_19_hooks_parse_without_errors(self):
         entries, errors = parse_all_hooks(_HOOKS_DIR)
         assert len(errors) == 0, f"Parse errors: {errors}"
-        assert len(entries) == 24, f"Expected 24 hooks, got {len(entries)}"
+        assert len(entries) == 25, f"Expected 25 hooks, got {len(entries)}"
 
 
 # ---------------------------------------------------------------------------
@@ -124,7 +125,7 @@ class TestCategoryMappingLoads:
         mapping = load_category_mapping(_CATEGORIES_PATH)
 
         # Should have all 21 hooks mapped
-        assert len(mapping) == 24, f"Expected 24 mappings, got {len(mapping)}"
+        assert len(mapping) == 25, f"Expected 25 mappings, got {len(mapping)}"
 
         # Check some known critical hooks
         assert mapping["ask-bootcamper"].category == "critical"
@@ -156,7 +157,9 @@ class TestVerifyExitsZero:
         assert len(errors) == 0
         mapping = load_category_mapping(_CATEGORIES_PATH)
         critical, modules = categorize_hooks(entries, mapping)
-        content = generate_registry(critical, modules, len(entries))
+        content = generate_registry_summary(
+            critical, modules, len(entries), categories_path=_CATEGORIES_PATH
+        )
 
         matches, msg = verify_registry(content, _REGISTRY_PATH)
         assert matches, f"Registry should match: {msg}"
@@ -225,9 +228,9 @@ class TestDeterministicGeneration:
         mapping = load_category_mapping(_CATEGORIES_PATH)
 
         critical1, modules1 = categorize_hooks(entries, mapping)
-        content1 = generate_registry(critical1, modules1, len(entries))
+        content1 = generate_registry_summary(critical1, modules1, len(entries))
 
         critical2, modules2 = categorize_hooks(entries, mapping)
-        content2 = generate_registry(critical2, modules2, len(entries))
+        content2 = generate_registry_summary(critical2, modules2, len(entries))
 
         assert content1 == content2, "Regenerated registry must be byte-identical"

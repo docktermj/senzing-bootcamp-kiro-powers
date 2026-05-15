@@ -22,9 +22,17 @@ These three validators operate at different scopes:
 - `validate_module.py` — single module steering validation (focused check)
 - `validate_commonmark.py` — Markdown syntax validation only (no semantic checks)
 
+### `status.py` Flags
+
+| Flag | Description |
+| --- | --- |
+| `--sync` | Sync progress with workspace artifacts |
+| `--step` | Show step-level progress for the current module |
+
 ```text
 python3 senzing-bootcamp/scripts/status.py
 python3 senzing-bootcamp/scripts/status.py --sync
+python3 senzing-bootcamp/scripts/status.py --step
 python3 senzing-bootcamp/scripts/preflight.py
 python3 senzing-bootcamp/scripts/preflight.py --json
 python3 senzing-bootcamp/scripts/preflight.py --fix

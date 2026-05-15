@@ -89,6 +89,14 @@ inclusion: manual
    >
    > Present the Validation_Report to the bootcamper. If all checks pass, confirm the file is ready and move on to the next data source. If any check fails, show the failure details and remediation guidance, then help the bootcamper resolve the issue (re-upload, convert format, fix encoding, etc.) before proceeding to the next data source. Re-run the validator after each fix attempt until the file passes.
 
+   > **Agent instruction — CORD Metadata Capture:** If the bootcamper chose to use their own data instead of CORD data, skip this step entirely. Otherwise, after CORD data has been downloaded via `get_sample_data` and validated, capture a metadata snapshot for freshness verification in Module 6. Determine the dataset name and file paths from the download context, then run:
+   >
+   > ```bash
+   > python senzing-bootcamp/scripts/cord_metadata.py capture --dataset <dataset_name> --files <path_to_downloaded_files>
+   > ```
+   >
+   > Replace `<dataset_name>` with the CORD dataset identifier (e.g., `cord-las-vegas`) and `<path_to_downloaded_files>` with the space-separated paths to the downloaded JSONL files in `data/raw/`. This stores metadata in `config/cord_metadata.yaml` so Module 6 can detect if files changed between download and load time.
+
    **Checkpoint:** Write step 2 to `config/bootcamp_progress.json`.
 
 3. **Verify data was received**:

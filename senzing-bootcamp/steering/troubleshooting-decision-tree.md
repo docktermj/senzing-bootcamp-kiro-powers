@@ -10,12 +10,13 @@ Visual flowchart for diagnosing common issues.
 
 ```text
 What type of issue?
-├─→ Installation/Setup → Section A
-├─→ Transformation     → Section B
-├─→ Loading            → Section C
-├─→ Query              → Section D
-├─→ Performance        → Section E
-└─→ Data Quality       → Section F
+├─→ Installation/Setup   → Section A
+├─→ Transformation       → Section B
+├─→ Loading              → Section C
+├─→ Query                → Section D
+├─→ Performance          → Section E
+├─→ Data Quality         → Section F
+└─→ Database Corruption  → Section G
 ```
 
 ## Section A: Installation/Setup Issues
@@ -137,6 +138,42 @@ Poor matching results?
 └─→ Source data quality poor?
     ├─→ Document issues / Work with data owners
     └─→ Use anonymized test data / Set realistic expectations
+```
+
+## Section G: Database Corruption
+
+```text
+Database corruption suspected?
+├─→ Database file missing?
+│   ├─→ Run: python3 scripts/check_database.py --db-path database/G2C.db
+│   ├─→ File never created? → Re-run Module 2 SDK setup to initialize database
+│   └─→ File deleted accidentally? → Restore from backup or rebuild:
+│       └─→ python3 scripts/restore_project.py <backup-file>
+├─→ Connection fails?
+│   ├─→ "database is locked" error?
+│   │   ├─→ Close other processes accessing the database
+│   │   └─→ Remove stale lock: rm database/G2C.db-wal database/G2C.db-shm
+│   ├─→ "not a database" or "file is not a database" error?
+│   │   └─→ File is corrupted beyond repair → Rebuild from scratch
+│   └─→ Permission denied?
+│       └─→ Check file permissions → chmod 644 database/G2C.db
+├─→ Integrity check fails?
+│   ├─→ Run: python3 scripts/check_database.py --repair
+│   ├─→ Repair succeeded? → Re-run loading program to verify data
+│   └─→ Repair failed?
+│       ├─→ "database disk image is malformed"?
+│       │   └─→ Database unrecoverable → Delete and rebuild from loading program
+│       └─→ WAL corruption?
+│           ├─→ Try: python3 scripts/check_database.py --repair (runs WAL checkpoint + vacuum)
+│           └─→ Still failing? → Delete WAL file and rebuild
+└─→ Entity count is zero?
+    ├─→ Run: python3 scripts/check_database.py --db-path database/G2C.db
+    ├─→ Load reported success but no entities?
+    │   ├─→ Check for disk-full during load (df -h)
+    │   └─→ Re-run loading program with fresh database
+    └─→ Load was interrupted (process killed)?
+        ├─→ Try: python3 scripts/check_database.py --repair
+        └─→ If repair fails → Delete database/G2C.db and reload from scratch
 ```
 
 ## Diagnostic Commands

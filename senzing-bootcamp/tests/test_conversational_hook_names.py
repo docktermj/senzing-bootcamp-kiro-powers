@@ -22,8 +22,8 @@ from hypothesis import strategies as st
 _HOOKS_DIR = Path(__file__).resolve().parent.parent / "hooks"
 ALL_HOOK_FILES = sorted(_HOOKS_DIR.glob("*.kiro.hook"))
 
-assert len(ALL_HOOK_FILES) == 24, (
-    f"Expected 24 .kiro.hook files, found {len(ALL_HOOK_FILES)}"
+assert len(ALL_HOOK_FILES) == 25, (
+    f"Expected 25 .kiro.hook files, found {len(ALL_HOOK_FILES)}"
 )
 
 
@@ -76,7 +76,7 @@ class TestConversationalPatternCompliance:
 import re
 import subprocess
 
-_REGISTRY_PATH = Path(__file__).resolve().parent.parent / "steering" / "hook-registry.md"
+_REGISTRY_PATH = Path(__file__).resolve().parent.parent / "steering" / "hook-registry-detail.md"
 _SCRIPTS_DIR = Path(__file__).resolve().parent.parent / "scripts"
 
 # Capture baseline values of version, description, when, then for all 24 hooks.

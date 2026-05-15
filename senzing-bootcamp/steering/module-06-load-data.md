@@ -9,11 +9,11 @@ inclusion: manual
 
 > **User reference:** For detailed background on this module, see `docs/modules/MODULE_6_LOAD_DATA.md`.
 
-**Purpose**: Build production-quality loading programs, load all data sources into Senzing, process redo records, and validate entity resolution results — from first load through cross-source validation.
+**Purpose:** Build production-quality loading programs, load all data sources into Senzing, process redo records, and validate entity resolution results — from first load through cross-source validation.
 
-**Before/After**: You have Senzing-formatted JSON files (and possibly test load results from Module 5 Phase 3). After this module, all your data is loaded, redo records are processed, and entity resolution results are validated — duplicates matched, cross-source connections found.
+**Before/After:** You have Senzing-formatted JSON files (and possibly test load results from Module 5 Phase 3). After this module, all your data is loaded, redo records are processed, and entity resolution results are validated — duplicates matched, cross-source connections found.
 
-**Prerequisites**: Module 5 complete (at least one transformed data source in `data/transformed/`), SDK installed and configured (Module 2), database configured (SQLite or PostgreSQL), transformation validated with linter.
+**Prerequisites:** Module 5 complete (at least one transformed data source in `data/transformed/`), SDK installed and configured (Module 2), database configured (SQLite or PostgreSQL), transformation validated with linter.
 
 ## Conditional Workflow: Check Phase 3 Status
 
@@ -30,11 +30,23 @@ inclusion: manual
 > - Use quality assessments from Phase 3 to inform which sources to load first (higher quality → stronger entity baseline)
 > - Note any issues discovered during Phase 3 test loading that may affect production orchestration
 
+## Pre-Load Data Freshness Check
+
+> **Agent instruction:** Before starting any loading workflow, run the CORD data freshness check to verify data files haven't changed since download (CORD data is downloaded via `get_sample_data`).
+>
+> Run: `python senzing-bootcamp/scripts/cord_metadata.py check`
+>
+> Handle the result based on the output:
+>
+> - **Fresh** (output contains "✅"): Tell the bootcamper "Your CORD data is up to date — proceeding with loading." and continue to the next section.
+> - **Stale** (output contains "⚠️"): Present the warning to the bootcamper exactly as shown in the output, including the three options: (a) re-download fresh data via `get_sample_data`, (b) proceed with current files, (c) check what changed. Wait for the bootcamper to choose before proceeding. This is advisory only — never block loading regardless of their choice.
+> - **Skipped** (no metadata found, or output mentions "Skipping"): Proceed silently without mentioning freshness to the bootcamper. This means either the bootcamper is using their own data (not CORD) or metadata was not captured during Module 4.
+
 ## Agent Workflow
 
 > **Agent instruction:** Before starting, call `search_docs(query="loading", category="anti_patterns", version="current")`. Key pitfalls: bulk loading issues, threading problems, redo processing, load order dependencies.
 
-**Success indicator**: ✅ All data sources loaded into Senzing + redo records processed + no critical errors + entity resolution results validated
+**Success indicator:** ✅ All data sources loaded into Senzing + redo records processed + no critical errors + entity resolution results validated
 
 ---
 

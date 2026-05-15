@@ -4,7 +4,7 @@ inclusion: manual
 
 # Module Completion Workflow
 
-Load this after completing any module. Handles journal entries, reflection, and path completion.
+Load this after completing any module. Handles journal entries, certificates, and path completion.
 
 ## Bootcamp Journal
 
@@ -15,18 +15,12 @@ Append to `docs/bootcamp_journal.md` (create if needed):
 **What we did:** [1-2 sentences]
 **What was produced:** [files/artifacts]
 **Why it matters:** [enables next step]
-**Bootcamper's takeaway:** [response to reflection question]
+**Bootcamper's takeaway:** N/A
 ```
-
-## Reflection Question
-
-After the factual journal entry, ask the bootcamper about their main takeaway from the module — anything that surprised them, or something they want to remember.
-
-Append response under "Bootcamper's takeaway." If they decline, write "No additional notes." Don't push.
 
 ## Module Completion Certificate
 
-After the journal entry and reflection, generate a completion certificate:
+After the journal entry, generate a completion certificate:
 
 1. Create `docs/progress/MODULE_N_COMPLETE.md` (create `docs/progress/` directory if it doesn't exist)
 2. Use the bootcamper's chosen language from `config/bootcamp_preferences.yaml` in artifact descriptions
@@ -72,11 +66,11 @@ Now that you've completed Module [N], you can:
 
 ### Content Derivation Rules
 
-- **Key Concepts**: Derive from the module's steering file section headings and step descriptions (3-5 concepts)
-- **Artifacts**: Scan the file system for files created/modified during this module in the module's output directories
-- **What This Enables**: Read `config/module-dependencies.yaml` to find which modules are now unlocked
-- **Language**: Use the bootcamper's language in descriptions (e.g., "Built a Python loading script" not "Built a loading script")
-- **Session Stats**: Include only if `config/session_log.jsonl` exists and has entries for this module. Omit the section entirely if no analytics are available.
+- **Key Concepts:** Derive from the module's steering file section headings and step descriptions (3-5 concepts)
+- **Artifacts:** Scan the file system for files created/modified during this module in the module's output directories
+- **What This Enables:** Read `config/module-dependencies.yaml` to find which modules are now unlocked
+- **Language:** Use the bootcamper's language in descriptions (e.g., "Built a Python loading script" not "Built a loading script")
+- **Session Stats:** Include only if `config/session_log.jsonl` exists and has entries for this module. Omit the section entirely if no analytics are available.
 
 ### Summary Index
 
@@ -106,7 +100,7 @@ Certificate generation should not block the completion flow. If it fails for any
 
 ## Next-Step Options
 
-After the journal entry and reflection, present 3-4 concrete options based on the module just completed. Don't just say "proceed to Module N" — give the user choices:
+After the journal entry, present 3-4 concrete options based on the module just completed. Don't just say "proceed to Module N" — give the user choices:
 
 - **Proceed:** "Ready to move on to Module [N] ([name])?"
 - **Iterate:** "Would you like to improve anything from this module first?"
@@ -141,26 +135,25 @@ The affirmative response IS the trigger. The module banner IS the next thing the
 
 ## Path Completion Detection
 
-After each module, check if the user finished their path's last module:
+After each module, check if the user finished their track's last module:
 
-| Path | Complete after |
-|------|----------------|
-| A    | Module 3       |
-| B    | Module 7       |
-| C    | Module 7       |
-| D    | Module 11      |
+| Track | Complete after |
+|-------|----------------|
+| Core Bootcamp    | Module 7  |
+| Advanced Topics  | Module 11 |
 
 ## Path Completion Celebration
 
-When path is complete, present:
+When track is complete, present:
 
-- 🎉 "You've completed Path [letter]!"
+- 🎉 "You've completed the [track name]!"
 - Summary of all artifacts built (code, data, docs)
 - Where everything lives (src/, data/transformed/, docs/, config/, database/)
 - Reference to `docs/bootcamp_journal.md`
-- Next options: switch to longer path (modules carry forward), harden for production, or start using the code
+- Next options: switch to longer track (modules carry forward), harden for production, or start using the code
 - Export option: "Would you like to export a shareable report of your bootcamp results?" — when accepted, run `python3 scripts/export_results.py` and present the output path to the bootcamper. This option appears only at track completion, not after every module.
-- Graduation offer (after the export offer, before the feedback reminder):
+- Analytics offer (after the export offer, before the graduation offer): "📊 Would you like to see analytics on your bootcamp journey? I can show you time distribution, friction points, and how your pace compares to baselines." — when accepted, run `python3 scripts/bootcamp_analytics.py` and present the output conversationally.
+- Graduation offer (after the analytics offer, before the feedback reminder):
   1. Read `skip_graduation` from `config/bootcamp_preferences.yaml`. If `skip_graduation` is `true`, skip the graduation offer entirely.
   2. If not skipped, present: "🎓 Would you like to run the graduation workflow? It will help you turn your bootcamp project into a production-ready codebase — clean structure, production configs, CI/CD pipeline, and a migration checklist."
   3. If accepted: load `steering/graduation.md` and begin the workflow.

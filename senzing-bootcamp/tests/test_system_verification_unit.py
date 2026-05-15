@@ -26,6 +26,7 @@ _CONFIG_DIR: Path = _BASE_DIR / "config"
 _STEERING_FILE: Path = _STEERING_DIR / "module-03-system-verification.md"
 _MODULE_DEPS: Path = _CONFIG_DIR / "module-dependencies.yaml"
 _ONBOARDING_FLOW: Path = _STEERING_DIR / "onboarding-flow.md"
+_ONBOARDING_PHASE2: Path = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 
 
 # ---------------------------------------------------------------------------
@@ -156,15 +157,19 @@ class TestSystemVerificationUnit:
         )
 
     def test_gate_condition_updated(self) -> None:
-        """Gate 3→4 references system verification.
+        """Gate 3→4 references system verification and explicit skip.
 
-        Validates: Requirements 11.2, 11.5
+        Validates: Requirements 8, 9
         """
         deps = _read_module_deps()
         gate_3_4 = deps["gates"]["3->4"]
         requires_text = " ".join(gate_3_4["requires"]).lower()
         assert "system verification" in requires_text or "verification" in requires_text, (
             f"Gate 3->4 should reference system verification, "
+            f"got: {gate_3_4['requires']}"
+        )
+        assert "explicitly skipped" in requires_text, (
+            f"Gate 3->4 should reference 'explicitly skipped' for opt-out, "
             f"got: {gate_3_4['requires']}"
         )
 
@@ -225,12 +230,13 @@ class TestSystemVerificationUnit:
 
         Validates: Requirement 11.1
         """
-        content = _read_onboarding_flow()
+        # After the onboarding split, the gates table is in Phase 2 file
+        content = _ONBOARDING_PHASE2.read_text(encoding="utf-8")
 
         # "System verification" appears in the gates table (gate 3→4)
         # The quick_demo track bullet was removed, but the gate reference remains
         assert "System verification" in content or "System Verification" in content, (
-            "Onboarding flow should reference 'System verification' in gates table"
+            "Onboarding Phase 2 should reference 'System verification' in gates table"
         )
         # Module 3 should not be referenced as 'Quick Demo' in track context
         lines = content.splitlines()
@@ -239,7 +245,7 @@ class TestSystemVerificationUnit:
             if "Module" in line and "3" in line and "Quick Demo" in line
         ]
         assert len(track_lines) == 0, (
-            "Onboarding flow should not reference Module 3 as 'Quick Demo'"
+            "Onboarding Phase 2 should not reference Module 3 as 'Quick Demo'"
         )
 
     def test_build_commands_for_all_languages(self) -> None:

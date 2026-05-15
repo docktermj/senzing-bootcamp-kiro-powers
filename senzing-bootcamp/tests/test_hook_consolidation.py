@@ -23,6 +23,7 @@ STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 
 HOOK_REGISTRY = STEERING_DIR / "hook-registry.md"
 ONBOARDING_FLOW = STEERING_DIR / "onboarding-flow.md"
+ONBOARDING_PHASE2 = STEERING_DIR / "onboarding-phase2-track-setup.md"
 HOOK_CATEGORIES = HOOKS_DIR / "hook-categories.yaml"
 
 ASK_BOOTCAMPER_HOOK = HOOKS_DIR / "ask-bootcamper.kiro.hook"
@@ -147,7 +148,11 @@ class TestHookRegistryNoRemovedEntries:
 
 
 class TestOnboardingFlowNoRemovedEntries:
-    """Verify onboarding-flow.md does not reference deleted hooks in its tables.
+    """Verify onboarding files do not reference deleted hooks in their tables.
+
+    Checks both onboarding-flow.md (Phase 1, which has hook installation in
+    Step 1) and onboarding-phase2-track-setup.md (Phase 2, which has the
+    Hook Registry #[[file:]] reference).
 
     **Validates: Requirements 5.1, 5.2**
     """
@@ -170,6 +175,27 @@ class TestOnboardingFlowNoRemovedEntries:
         text = ONBOARDING_FLOW.read_text(encoding="utf-8")
         assert "capture-feedback" not in text, (
             "onboarding-flow.md still contains 'capture-feedback'"
+        )
+
+    def test_onboarding_phase2_no_feedback_submission_reminder(self):
+        """onboarding-phase2-track-setup.md must not contain feedback-submission-reminder.
+
+        **Validates: Requirement 5.1**
+        """
+        text = ONBOARDING_PHASE2.read_text(encoding="utf-8")
+        assert "feedback-submission-reminder" not in text, (
+            "onboarding-phase2-track-setup.md still contains "
+            "'feedback-submission-reminder'"
+        )
+
+    def test_onboarding_phase2_no_capture_feedback(self):
+        """onboarding-phase2-track-setup.md must not contain capture-feedback.
+
+        **Validates: Requirement 5.2**
+        """
+        text = ONBOARDING_PHASE2.read_text(encoding="utf-8")
+        assert "capture-feedback" not in text, (
+            "onboarding-phase2-track-setup.md still contains 'capture-feedback'"
         )
 
 

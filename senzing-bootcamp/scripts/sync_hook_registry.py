@@ -30,6 +30,7 @@ from typing import Optional
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry.md")
+REGISTRY_DETAIL_PATH = Path("senzing-bootcamp/steering/hook-registry-detail.md")
 CATEGORIES_PATH = Path("senzing-bootcamp/hooks/hook-categories.yaml")
 
 # ---------------------------------------------------------------------------
@@ -278,7 +279,153 @@ def categorize_hooks(
 
 
 # ---------------------------------------------------------------------------
-# Markdown generation
+# Markdown generation — summary
+# ---------------------------------------------------------------------------
+
+
+def _format_event_flow(entry: HookEntry) -> str:
+    """Return a compact event flow string like ``agentStop → askAgent``."""
+    return f"{entry.event_type} → {entry.action_type}"
+
+
+def _build_module_labels(
+    categories_path: Path,
+) -> dict[str, str]:
+    """Build a mapping of hook_id → module label from ``hook-categories.yaml``.
+
+    Hooks appearing in multiple modules get a comma-separated label (e.g. "3,5,7,8").
+    Hooks in the "any" category get the label "any".
+    """
+    text = categories_path.read_text(encoding="utf-8")
+    data = _parse_simple_yaml(text)
+
+    labels: dict[str, list[int | str]] = {}
+
+    modules = data.get("modules", {}) or {}
+    for mod_key, hook_ids in modules.items():
+        for hook_id in hook_ids or []:
+            if hook_id not in labels:
+                labels[hook_id] = []
+            if mod_key == "any":
+                labels[hook_id].append("any")
+            else:
+                labels[hook_id].append(int(mod_key))
+
+    # Build string labels: sort numeric parts, "any" goes last
+    result: dict[str, str] = {}
+    for hook_id, parts in labels.items():
+        int_parts = sorted(p for p in parts if isinstance(p, int))
+        str_parts = sorted(p for p in parts if isinstance(p, str))
+        combined = [str(p) for p in int_parts] + str_parts
+        result[hook_id] = ",".join(combined)
+
+    return result
+
+
+def generate_registry_summary(
+    critical_hooks: list[HookEntry],
+    module_hooks: dict[int | str, list[HookEntry]],
+    total_count: int,
+    categories_path: Path | None = None,
+) -> str:
+    """Generate the table-based ``hook-registry.md`` summary content.
+
+    Produces a compact reference with:
+    - Critical Hooks table (Hook ID, Event Type, Description)
+    - Module Hooks table (Hook ID, Module, Event Type, Description)
+
+    Target: under 2,500 tokens.
+
+    Args:
+        critical_hooks: Sorted list of critical hook entries.
+        module_hooks: Module hooks grouped by module number/key.
+        total_count: Total number of hooks.
+        categories_path: Path to hook-categories.yaml for module labels.
+    """
+    # Build module labels from categories file if available
+    if categories_path is not None and categories_path.is_file():
+        module_labels = _build_module_labels(categories_path)
+    else:
+        module_labels = {}
+
+    parts: list[str] = []
+
+    # Frontmatter
+    parts.append("---")
+    parts.append("inclusion: manual")
+    parts.append("---")
+    parts.append("")
+
+    # Title
+    parts.append("# Hook Registry")
+    parts.append("")
+
+    # Intro paragraph
+    parts.append(
+        f"{total_count} bootcamp hooks organized by category. "
+        "Load `hook-registry-detail.md` for full prompt text when creating hooks."
+    )
+    parts.append("")
+
+    # Critical Hooks table
+    parts.append("## Critical Hooks (created during onboarding)")
+    parts.append("")
+    parts.append("| Hook ID | Event Type | Description |")
+    parts.append("|---------|-----------|-------------|")
+    for hook in critical_hooks:
+        flow = _format_event_flow(hook)
+        parts.append(f"| {hook.hook_id} | {flow} | {hook.description} |")
+    parts.append("")
+
+    # Module Hooks table — deduplicate hooks that appear in multiple modules
+    parts.append("## Module Hooks (created when module starts)")
+    parts.append("")
+    parts.append("| Hook ID | Module | Event Type | Description |")
+    parts.append("|---------|--------|-----------|-------------|")
+
+    # Collect unique module hooks with their labels
+    seen: dict[str, HookEntry] = {}
+    int_keys = sorted(k for k in module_hooks if isinstance(k, int))
+    str_keys = sorted(k for k in module_hooks if isinstance(k, str))
+    sorted_keys: list[int | str] = int_keys + str_keys
+
+    for key in sorted_keys:
+        for hook in module_hooks[key]:
+            if hook.hook_id not in seen:
+                seen[hook.hook_id] = hook
+
+    # Sort by module label: numeric first (by first number), then "any"
+    def _sort_key(item: tuple[str, HookEntry]) -> tuple[int, str]:
+        hook_id, _ = item
+        label = module_labels.get(hook_id, "any")
+        first_part = label.split(",")[0]
+        if first_part == "any":
+            return (9999, hook_id)
+        return (int(first_part), hook_id)
+
+    for hook_id, hook in sorted(seen.items(), key=_sort_key):
+        flow = _format_event_flow(hook)
+        label = module_labels.get(hook_id, "any")
+        parts.append(f"| {hook_id} | {label} | {flow} | {hook.description} |")
+    parts.append("")
+
+    # Hook Creation section
+    parts.append("## Hook Creation")
+    parts.append("")
+    parts.append(
+        "To create hooks, load `hook-registry-detail.md` for the full prompt text "
+        "and `createHook` parameters."
+    )
+    parts.append("")
+
+    content = "\n".join(parts)
+    # Normalise line endings to Unix
+    content = content.replace("\r\n", "\n").replace("\r", "\n")
+    return content
+
+
+# ---------------------------------------------------------------------------
+# Markdown generation — detail
 # ---------------------------------------------------------------------------
 
 
@@ -317,12 +464,15 @@ def format_hook_entry(entry: HookEntry) -> str:
     return "\n".join(lines)
 
 
-def generate_registry(
+def generate_registry_detail(
     critical_hooks: list[HookEntry],
     module_hooks: dict[int | str, list[HookEntry]],
     total_count: int,
 ) -> str:
-    """Generate the complete ``hook-registry.md`` content.
+    """Generate the complete ``hook-registry-detail.md`` content.
+
+    This produces the full-prompt registry used when actively creating hooks
+    during onboarding or module start.
 
     Line endings are normalised to Unix-style ``\\n``.
     """
@@ -335,17 +485,17 @@ def generate_registry(
     parts.append("")
 
     # Title
-    parts.append("# Hook Registry")
+    parts.append("# Hook Registry — Full Prompts")
     parts.append("")
 
     # Intro paragraph
     parts.append(
-        f"All {total_count} bootcamp hooks are defined below. "
-        "The agent reads these definitions and calls the `createHook` tool "
-        "with the specified parameters. Critical Hooks are created during "
-        "onboarding (Step 1). Module Hooks are created when the bootcamper "
-        "starts the associated module."
+        "Complete hook definitions with prompt text for use with the "
+        "`createHook` tool. Load this file when actively creating hooks "
+        "during onboarding or module start."
     )
+    parts.append("")
+    parts.append("For a quick reference of all hooks, see `hook-registry.md`.")
     parts.append("")
 
     # Critical Hooks section
@@ -464,7 +614,13 @@ def main() -> None:
         "--output",
         type=Path,
         default=REGISTRY_PATH,
-        help=f"Path to output registry (default: {REGISTRY_PATH}).",
+        help=f"Path to output summary registry (default: {REGISTRY_PATH}).",
+    )
+    parser.add_argument(
+        "--output-detail",
+        type=Path,
+        default=REGISTRY_DETAIL_PATH,
+        help=f"Path to output detail registry (default: {REGISTRY_DETAIL_PATH}).",
     )
     parser.add_argument(
         "--categories",
@@ -501,16 +657,39 @@ def main() -> None:
     critical, modules = categorize_hooks(hooks, mapping)
     total_count = len(hooks)
 
-    # Generate
-    content = generate_registry(critical, modules, total_count)
+    # Generate both files
+    summary_content = generate_registry_summary(
+        critical, modules, total_count, categories_path=args.categories
+    )
+    detail_content = generate_registry_detail(critical, modules, total_count)
 
     if args.verify:
-        matches, message = verify_registry(content, args.output)
-        print(message)
-        sys.exit(0 if matches else 1)
+        all_match = True
+
+        summary_matches, summary_message = verify_registry(summary_content, args.output)
+        if not summary_matches:
+            print(f"FAIL: {args.output} — {summary_message}", file=sys.stderr)
+            all_match = False
+
+        detail_matches, detail_message = verify_registry(
+            detail_content, args.output_detail
+        )
+        if not detail_matches:
+            print(f"FAIL: {args.output_detail} — {detail_message}", file=sys.stderr)
+            all_match = False
+
+        if all_match:
+            print("Both registry files are up to date.")
+            sys.exit(0)
+        else:
+            sys.exit(1)
     else:
-        write_registry(content, args.output)
-        print(f"Registry written to {args.output} ({total_count} hooks)")
+        write_registry(summary_content, args.output)
+        print(f"Summary registry written to {args.output} ({total_count} hooks)")
+        write_registry(detail_content, args.output_detail)
+        print(
+            f"Detail registry written to {args.output_detail} ({total_count} hooks)"
+        )
 
 
 if __name__ == "__main__":

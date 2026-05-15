@@ -110,7 +110,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 
 - `module-01-business-problem.md` — Module 1: Business Problem (split: `module-01-phase2-document-confirm.md`)
 - `module-02-sdk-setup.md` — Module 2: SDK Setup
-- `module-03-system-verification.md` — Module 3: System Verification (Optional)
+- `module-03-system-verification.md` — Module 3: System Verification
 - `module-04-data-collection.md` — Module 4: Data Collection
 - `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping
 - `module-06-load-data.md` — Module 6: Load Data
@@ -198,7 +198,7 @@ explain_error_code(error_code='0023')
 |--------|------------------------------------------------|
 | 1      | Understand Business Problem                    |
 | 2      | Set Up SDK                                     |
-| 3      | System Verification (Optional)                 |
+| 3      | System Verification                            |
 | 4      | Data Collection Policy                         |
 | 5      | Data Quality & Mapping (with optional test load)  |
 | 6      | Load Data                                      |
@@ -216,6 +216,8 @@ The goal is for you to finish the bootcamp with running code that is the basis o
 
 All code templates are generated dynamically by the Senzing MCP server using `generate_scaffold`, `sdk_guide`, and `mapping_workflow` in your chosen programming language. No static templates are shipped — this ensures generated code always matches the current SDK version and follows current best practices.
 
+> **Note:** The depth of supplementary example coverage (via `find_examples`) varies across languages — Python and Java currently have the most extensive example coverage. This does not affect `generate_scaffold` or `sdk_guide` output quality, which produce equivalent results for all supported languages.
+
 ## Code Quality Standards
 
 All generated code follows language-appropriate coding standards based on the bootcamper's chosen language. The bootcamp supports Python, Java, C#, Rust, and TypeScript/Node.js — the agent queries the Senzing MCP server for the current list and asks the bootcamper to choose at the start. See `docs/policies/CODE_QUALITY_STANDARDS.md`.
@@ -230,7 +232,7 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available (24 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-file-path-policies` ⭐, `enforce-visualization-offers`, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
+Available (25 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-file-path-policies` ⭐, `enforce-visualization-offers`, `gate-module3-visualization`, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
 
 ## Project Directory Structure
 
@@ -267,10 +269,15 @@ Common commands (run from project root):
 
 ```text
 python3 senzing-bootcamp/scripts/status.py               # Check progress
+python3 senzing-bootcamp/scripts/status.py --step        # Show step-level progress for the current module
 python3 senzing-bootcamp/scripts/preflight.py             # Environment verification
 python3 senzing-bootcamp/scripts/install_hooks.py         # Install hooks
 python3 senzing-bootcamp/scripts/backup_project.py        # Backup project
 python3 senzing-bootcamp/scripts/validate_power.py        # Validate power integrity
+python3 senzing-bootcamp/scripts/bootcamp_analytics.py    # Session analytics
+python3 senzing-bootcamp/scripts/bootcamp_analytics.py --compare  # With baseline comparison
+python3 senzing-bootcamp/scripts/compare_results.py --baseline <file> --current <file>
+  # Compare ER statistics before/after mapping changes (shows diff + quality assessment)
 ```
 
 Use `python` instead of `python3` on Windows. For best results on Windows, use Windows Terminal or PowerShell 7 (`winget install Microsoft.WindowsTerminal`).

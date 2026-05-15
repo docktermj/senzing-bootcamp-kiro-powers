@@ -18,7 +18,7 @@ modules:
     phases:
       phase1-setup:
         file: module-02-sdk-setup.md
-        token_count: 4114
+        token_count: 4306
         size_category: large
         step_range: [1, 9]
   3:
@@ -26,13 +26,13 @@ modules:
     phases:
       phase1-verification:
         file: module-03-system-verification.md
-        token_count: 5429
+        token_count: 5762
         size_category: large
         step_range: [1, 8]
       phase2-visualization:
         file: module-03-phase2-visualization.md
-        token_count: 2001
-        size_category: medium
+        token_count: 2035
+        size_category: large
         step_range: [9, 12]
   4: module-04-data-collection.md
   5:
@@ -50,8 +50,8 @@ modules:
         step_range: [8, 20]
       phase3-test-load-validate:
         file: module-05-phase3-test-load.md
-        token_count: 1736
-        size_category: medium
+        token_count: 2654
+        size_category: large
         step_range: [21, 26]
   6:
     root: module-06-load-data.md
@@ -92,7 +92,7 @@ modules:
         step_range: [4, 7]
       phaseC-optimization:
         file: module-08-phaseC-optimization.md
-        token_count: 698
+        token_count: 746
         size_category: medium
         step_range: [8, 13]
   9:
@@ -134,6 +134,20 @@ modules:
         token_count: 850
         size_category: medium
         step_range: [13, 15]
+
+onboarding:
+  root: onboarding-flow.md
+  phases:
+    phase1-setup-intro:
+      file: onboarding-flow.md
+      token_count: 4968
+      size_category: large
+      step_range: [0, "4c"]
+    phase2-track-setup:
+      file: onboarding-phase2-track-setup.md
+      token_count: 990
+      size_category: medium
+      step_range: [5, 5]
 
 keywords:
   error: common-pitfalls.md
@@ -216,19 +230,19 @@ file_metadata:
     token_count: 704
     size_category: medium
   agent-instructions.md:
-    token_count: 2272
+    token_count: 2322
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
     size_category: medium
   common-pitfalls.md:
-    token_count: 3716
+    token_count: 4608
     size_category: large
   complexity-estimator.md:
     token_count: 606
     size_category: medium
   conversation-protocol.md:
-    token_count: 1288
+    token_count: 1424
     size_category: medium
   data-lineage.md:
     token_count: 603
@@ -266,14 +280,17 @@ file_metadata:
   graduation.md:
     token_count: 1919
     size_category: medium
-  hook-registry.md:
-    token_count: 7736
+  hook-registry-detail.md:
+    token_count: 8298
     size_category: large
+  hook-registry.md:
+    token_count: 1477
+    size_category: medium
   inline-status.md:
     token_count: 460
     size_category: small
   lang-csharp.md:
-    token_count: 1604
+    token_count: 1642
     size_category: medium
   lang-java.md:
     token_count: 1688
@@ -285,7 +302,7 @@ file_metadata:
     token_count: 1698
     size_category: medium
   lang-typescript.md:
-    token_count: 1770
+    token_count: 1887
     size_category: medium
   lessons-learned.md:
     token_count: 434
@@ -303,16 +320,16 @@ file_metadata:
     token_count: 1871
     size_category: medium
   module-02-sdk-setup.md:
-    token_count: 4114
+    token_count: 4306
     size_category: large
   module-03-phase2-visualization.md:
     token_count: 2035
     size_category: large
   module-03-system-verification.md:
-    token_count: 5429
+    token_count: 5762
     size_category: large
   module-04-data-collection.md:
-    token_count: 3157
+    token_count: 3370
     size_category: large
   module-05-data-quality-mapping.md:
     token_count: 614
@@ -324,10 +341,10 @@ file_metadata:
     token_count: 1894
     size_category: medium
   module-05-phase3-test-load.md:
-    token_count: 1736
-    size_category: medium
+    token_count: 2654
+    size_category: large
   module-06-load-data.md:
-    token_count: 1220
+    token_count: 1496
     size_category: medium
   module-06-phaseA-build-loading.md:
     token_count: 662
@@ -342,7 +359,7 @@ file_metadata:
     token_count: 1950
     size_category: medium
   module-07-query-validation.md:
-    token_count: 2193
+    token_count: 2728
     size_category: large
   module-08-performance.md:
     token_count: 1278
@@ -354,7 +371,7 @@ file_metadata:
     token_count: 426
     size_category: small
   module-08-phaseC-optimization.md:
-    token_count: 698
+    token_count: 746
     size_category: medium
   module-09-phaseA-assessment.md:
     token_count: 1221
@@ -381,17 +398,20 @@ file_metadata:
     token_count: 850
     size_category: medium
   module-completion.md:
-    token_count: 2183
+    token_count: 2171
     size_category: large
   module-prerequisites.md:
-    token_count: 1151
+    token_count: 1342
     size_category: medium
   module-transitions.md:
-    token_count: 928
+    token_count: 1114
     size_category: medium
   onboarding-flow.md:
-    token_count: 6451
+    token_count: 5064
     size_category: large
+  onboarding-phase2-track-setup.md:
+    token_count: 990
+    size_category: medium
   phase-loading-guide.md:
     token_count: 460
     size_category: small
@@ -399,13 +419,13 @@ file_metadata:
     token_count: 513
     size_category: medium
   recovery-from-mistakes.md:
-    token_count: 290
-    size_category: small
+    token_count: 1227
+    size_category: medium
   security-privacy.md:
     token_count: 278
     size_category: small
   session-resume.md:
-    token_count: 3926
+    token_count: 4312
     size_category: large
   skip-step-protocol.md:
     token_count: 613
@@ -417,7 +437,7 @@ file_metadata:
     token_count: 658
     size_category: medium
   troubleshooting-decision-tree.md:
-    token_count: 1164
+    token_count: 1606
     size_category: medium
   uat-framework.md:
     token_count: 576
@@ -445,7 +465,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 121891
+  total_tokens: 129411
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

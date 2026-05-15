@@ -1,6 +1,6 @@
 # Senzing Bootcamp Hooks
 
-This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 24 hooks total.
+This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 25 hooks total.
 
 ## Hook Name Style Guide
 
@@ -170,11 +170,14 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 
 **Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.
 
-The `.kiro.hook` files in this directory are the canonical hook definitions. The Hook Registry in `hook-registry.md` (referenced from `onboarding-flow.md`) must be kept in sync with these files.
+The `.kiro.hook` files in this directory are the canonical hook definitions. The Hook Registry is split across two files that must be kept in sync with these hook definitions:
+
+- `hook-registry.md` — summary with hook IDs, event types, and descriptions
+- `hook-registry-detail.md` — full prompts and `createHook` parameters
 
 ### Option 1: Automatic (Recommended)
 
-Hooks are created automatically during onboarding. The agent reads the Hook Registry in `hook-registry.md` (loaded via `onboarding-flow.md`) and calls the `createHook` tool for each hook. No manual action needed.
+Hooks are created automatically during onboarding. The agent reads the full hook definitions from `hook-registry-detail.md` (loaded via `onboarding-flow.md`) and calls the `createHook` tool for each hook. No manual action needed.
 
 ### Option 2: Ask the Agent
 

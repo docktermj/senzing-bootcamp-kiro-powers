@@ -30,7 +30,7 @@
            │
            ▼
 ┌──────────────────────┐
-│   MODULE 3 (Optional)│
+│      MODULE 3        │
 │  System Verification │
 │                      │
 │  • TruthSet data     │

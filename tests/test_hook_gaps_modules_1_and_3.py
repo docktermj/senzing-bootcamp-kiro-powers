@@ -254,7 +254,7 @@ class TestHookCount:
     def test_total_hook_file_count_is_24(self):
         """There are exactly 24 .kiro.hook files."""
         hook_files = discover_hook_files(HOOKS_DIR)
-        assert len(hook_files) == 24
+        assert len(hook_files) == 25
 
     def test_both_new_hooks_exist(self):
         """Both new hook files exist on disk."""

@@ -440,6 +440,8 @@ def validate_prerequisites_file(graph: dict, prereqs_path: Path) -> list[Violati
         if not isinstance(mod_data, dict):
             continue
         graph_requires = sorted(mod_data.get("requires", []))
+        graph_soft_requires = sorted(mod_data.get("soft_requires", []))
+        graph_all_requires = sorted(set(graph_requires + graph_soft_requires))
         file_reqs = file_requires.get(mod_num)
         if file_reqs is None:
             violations.append(
@@ -448,11 +450,11 @@ def validate_prerequisites_file(graph: dict, prereqs_path: Path) -> list[Violati
                     f"Module {mod_num} exists in graph but not in prerequisites file table",
                 )
             )
-        elif file_reqs != graph_requires:
+        elif file_reqs != graph_all_requires:
             violations.append(
                 Violation(
                     "ERROR",
-                    f"Module {mod_num} prerequisites mismatch: graph has {graph_requires}, file has {file_reqs}",
+                    f"Module {mod_num} prerequisites mismatch: graph has {graph_all_requires}, file has {file_reqs}",
                 )
             )
 
@@ -460,25 +462,35 @@ def validate_prerequisites_file(graph: dict, prereqs_path: Path) -> list[Violati
 
 
 def validate_onboarding_flow(graph: dict, onboarding_path: Path) -> list[Violation]:
-    """Parse onboarding-flow.md and verify track definitions match the graph."""
+    """Parse onboarding files and verify track definitions match the graph.
+
+    After the onboarding split, track definitions live in the Phase 2 file.
+    This function checks both the root file and the Phase 2 file.
+    """
     violations: list[Violation] = []
     tracks = graph.get("tracks")
     if not isinstance(tracks, dict):
         return violations
 
-    if not onboarding_path.exists():
+    # Check both root and Phase 2 files for track content
+    phase2_path = onboarding_path.parent / "onboarding-phase2-track-setup.md"
+    paths_to_check = [onboarding_path, phase2_path]
+    content_parts: list[str] = []
+
+    for path in paths_to_check:
+        if path.exists():
+            try:
+                content_parts.append(path.read_text(encoding="utf-8"))
+            except OSError:
+                pass
+
+    if not content_parts:
         violations.append(
             Violation("WARNING", f"onboarding-flow.md not found at {onboarding_path}, skipping cross-reference check")
         )
         return violations
 
-    try:
-        content = onboarding_path.read_text(encoding="utf-8")
-    except OSError as exc:
-        violations.append(
-            Violation("WARNING", f"Could not read {onboarding_path}: {exc}")
-        )
-        return violations
+    content = "\n".join(content_parts)
 
     # Parse track definitions from the bullet list in section 5
     # New format: "- **Quick Demo** — Modules 2, 3." or "- **Core Bootcamp** *(recommended)* — ..."
@@ -528,7 +540,7 @@ def validate_onboarding_flow(graph: dict, onboarding_path: Path) -> list[Violati
             violations.append(
                 Violation(
                     "ERROR",
-                    f"Track '{track_name}' exists in graph but not found in onboarding-flow.md",
+                    f"Track '{track_name}' exists in graph but not found in onboarding files",
                 )
             )
 
@@ -581,21 +593,28 @@ def validate_no_legacy_identifiers(graph: dict, onboarding_path: Path) -> list[V
                             )
                         )
 
-    # Check onboarding flow for legacy identifiers
-    if onboarding_path.exists():
-        try:
-            content = onboarding_path.read_text(encoding="utf-8")
-        except OSError:
-            return violations
+    # Check onboarding flow files for legacy identifiers (both root and Phase 2)
+    phase2_path = onboarding_path.parent / "onboarding-phase2-track-setup.md"
+    paths_to_check = [onboarding_path, phase2_path]
+    content_parts: list[str] = []
+
+    for path in paths_to_check:
+        if path.exists():
+            try:
+                content_parts.append(path.read_text(encoding="utf-8"))
+            except OSError:
+                pass
+
+    if content_parts:
+        content = "\n".join(content_parts)
 
         # Check for standalone legacy single-letter identifiers as track references
-        # Match patterns like "Track A", "Path B", or standalone A/B/C/D used as track refs
         for phrase in LEGACY_TRACK_PHRASES:
             if phrase in content:
                 violations.append(
                     Violation(
                         "ERROR",
-                        f"Legacy track phrase '{phrase}' found in onboarding-flow.md",
+                        f"Legacy track phrase '{phrase}' found in onboarding files",
                     )
                 )
 
@@ -606,7 +625,7 @@ def validate_no_legacy_identifiers(graph: dict, onboarding_path: Path) -> list[V
                 violations.append(
                     Violation(
                         "ERROR",
-                        f"Legacy track identifier '{legacy_id}' found in onboarding-flow.md",
+                        f"Legacy track identifier '{legacy_id}' found in onboarding files",
                     )
                 )
 
@@ -616,7 +635,7 @@ def validate_no_legacy_identifiers(graph: dict, onboarding_path: Path) -> list[V
             violations.append(
                 Violation(
                     "ERROR",
-                    "Legacy letter-label track pattern '**X)' found in onboarding-flow.md",
+                    "Legacy letter-label track pattern '**X)' found in onboarding files",
                 )
             )
 

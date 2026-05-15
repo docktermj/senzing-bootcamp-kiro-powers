@@ -22,9 +22,10 @@ from hypothesis import strategies as st
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _ONBOARDING_FLOW = _BOOTCAMP_DIR / "steering" / "onboarding-flow.md"
+_ONBOARDING_PHASE2 = _BOOTCAMP_DIR / "steering" / "onboarding-phase2-track-setup.md"
 _AGENT_INSTRUCTIONS = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
 _HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "ask-bootcamper.kiro.hook"
-_HOOK_REGISTRY = _BOOTCAMP_DIR / "steering" / "hook-registry.md"
+_HOOK_REGISTRY = _BOOTCAMP_DIR / "steering" / "hook-registry-detail.md"
 
 
 # ---------------------------------------------------------------------------
@@ -134,9 +135,9 @@ class TestMissingGateInStep5:
     """
 
     def test_step5_contains_mandatory_gate_instruction(self) -> None:
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
+        content = _ONBOARDING_PHASE2.read_text(encoding="utf-8")
         step5 = _extract_section(content, "5. Track Selection")
-        assert step5, "Step 5 section not found in onboarding-flow.md"
+        assert step5, "Step 5 section not found in onboarding-phase2-track-setup.md"
         assert _GATE_KEYWORDS.search(step5), (
             "Step 5 (Track Selection) does not contain a mandatory gate/stop instruction. "
             f"Section content:\n{step5[:500]}"

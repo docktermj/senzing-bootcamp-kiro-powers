@@ -14,10 +14,11 @@ modules:
   3:
     name: "System Verification"
     requires: [2]
-    skip_if: "Already familiar with Senzing and system verified"
+    skip_if: "Bootcamper explicitly requests skip ('skip verification' or 'I've already verified')"
   4:
     name: "Data Collection"
     requires: [1]
+    soft_requires: [3]
     skip_if: null
   5:
     name: "Data Quality & Mapping"
@@ -69,7 +70,7 @@ gates:
       - "SDK installed, DB configured, test passes"
   "3->4":
     requires:
-      - "System verification passed or skipped"
+      - "System verification passed or explicitly skipped by bootcamper"
   "4->5":
     requires:
       - "Sources collected, files in data/raw/"

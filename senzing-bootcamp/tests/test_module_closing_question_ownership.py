@@ -455,6 +455,7 @@ _HEADINGS_MODULE_05 = [
 _HEADINGS_MODULE_06 = [
     "# Module 6: Load Data",
     "## Conditional Workflow: Check Phase 3 Status",
+    "## Pre-Load Data Freshness Check",
     "## Agent Workflow",
     "## Error Handling",
     "## Phase Sub-Files",
@@ -495,7 +496,6 @@ _HEADINGS_MODULE_COMPLETION = [
     "# Module Completion Workflow",
     "## Bootcamp Journal",
     "## Module N: [Name] \u2014 Completed [date]",
-    "## Reflection Question",
     "## Module Completion Certificate",
     "### Certificate Template",
     "# Module [N]: [Title] \u2014 Complete \u2705",
@@ -638,9 +638,9 @@ _HASH_UNAFFECTED: dict[str, str] = {
     "module-10": "0dc0f96576e8ef4548fe2401558007e23c36499951c00c9f1fe04c9c456d4117",
 }
 
-_HASH_HOOK = "5a96fd25fa61eea9ec18b371f20d4cc852451fd0328365598ddd3304e1cc6725"
-_HASH_AGENT_INSTRUCTIONS = "528e7eab47d4a83ac7eeb1e05ddfe1770baede079d0f50ff13f4717d547029dc"
-_HASH_ONBOARDING_FLOW = "90bee476d9c19100a4d40cfed40338379ab7c4316e5b0806e89467b27e01c888"
+_HASH_HOOK = "98e08f645acc81716e92202a631727283b6153a82c3df7a07a3d8935034c5706"
+_HASH_AGENT_INSTRUCTIONS = "bfc6815801838fd648406dfb3cc040bb3852ac2bc51d83b450ff9f1b6973ab31"
+_HASH_ONBOARDING_FLOW = "c8d53b758ebcc3aa108d4807dfee7697ce37f60408ad39796bd6e2306e57ae2f"
 
 
 # ---------------------------------------------------------------------------
@@ -798,7 +798,7 @@ class TestPreservationAgentInstructions:
         content = _read_file(_AGENT_INSTRUCTIONS_FILE)
         assert "Closing-question ownership" in content
         assert "ask-bootcamper" in content
-        assert "never end your turn with a closing question" in content
+        assert "safety net" in content
 
 
 # ---------------------------------------------------------------------------

@@ -14,7 +14,7 @@ Read these files to reconstruct full context:
 2. **`config/bootcamp_preferences.yaml`** — chosen language, track, cloud provider, license info, **detail_level** (if set — honor their preference for more/less/default detail), **conversation_style** (if set — restore tone, pacing, question framing, and verbosity preset for style continuity)
 2b. **Check hooks_installed** in `config/bootcamp_preferences.yaml`:
     - If `hooks_installed` key exists with hook names and timestamp → skip hook creation entirely. Hooks are already installed.
-    - If `hooks_installed` is missing or empty → load the Hook Registry from `onboarding-phase2-track-setup.md` and create Critical Hooks using the `createHook` tool before the welcome-back banner. This handles bootcampers who started before hook distribution was implemented, or whose preferences were reset.
+    - If `hooks_installed` is missing or empty → load the Hook Registry from `onboarding-phase2-track-setup.md` and create Critical Hooks using the `createHook` tool before the welcome-back banner. **Use the exact `name` from each hook's `- name:` line in the registry (e.g., `to wait for your answer`, NOT `Ask Bootcamper`).** This handles bootcampers who started before hook distribution was implemented, or whose preferences were reset.
     - If `config/bootcamp_preferences.yaml` itself is missing or corrupted → treat as no hooks installed and create Critical Hooks from the Hook Registry.
     - If any Critical Hook creation fails during resume, log the failure and continue with the remaining hooks. Report failures after all attempts (see the failure impact messages in the Hook Registry).
 3. **`docs/bootcamp_journal.md`** (if exists) — narrative history of what was done and why

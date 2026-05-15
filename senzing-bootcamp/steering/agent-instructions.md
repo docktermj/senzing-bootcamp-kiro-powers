@@ -86,7 +86,7 @@ Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response i
 
 ## Hooks
 
-Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks.
+Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks. **Always use the exact `name` from the `- name:` line in `hook-registry-detail.md` — the `name` field is user-facing (UI shows "Ask Kiro Hook {name}") and must follow the "to {verb phrase}" pattern.**
 
 **🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero output — no acknowledgment, no reasoning, no status. Only produce output when the hook identifies a problem. Applies to ALL hook types. The agent owns closing questions (see `conversation-protocol.md`); the `ask-bootcamper` hook is a safety net that fires only when the agent fails to provide one.
 

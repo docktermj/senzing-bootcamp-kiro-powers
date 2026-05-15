@@ -230,7 +230,7 @@ file_metadata:
     token_count: 704
     size_category: medium
   agent-instructions.md:
-    token_count: 2322
+    token_count: 2372
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -407,7 +407,7 @@ file_metadata:
     token_count: 1114
     size_category: medium
   onboarding-flow.md:
-    token_count: 5064
+    token_count: 5174
     size_category: large
   onboarding-phase2-track-setup.md:
     token_count: 990
@@ -425,7 +425,7 @@ file_metadata:
     token_count: 278
     size_category: small
   session-resume.md:
-    token_count: 4312
+    token_count: 4344
     size_category: large
   skip-step-protocol.md:
     token_count: 613
@@ -465,7 +465,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 129411
+  total_tokens: 129603
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

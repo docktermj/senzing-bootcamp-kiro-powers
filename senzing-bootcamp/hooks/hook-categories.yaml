@@ -8,6 +8,7 @@ critical:
   - code-style-check
   - commonmark-validation
   - enforce-file-path-policies
+  - enforce-single-question
 
 modules:
   1:

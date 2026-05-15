@@ -69,9 +69,10 @@ The steering file handles confirmation, preview, and application. Do not compute
 ## Communication
 
 - One question at a time, wait for response. Prefix input-required questions with "👉" in ALL modules.
-  - Never combine questions with conjunctions (and, or, also, but first) — each is a separate turn.
+  - NEVER combine questions with conjunctions (and, or, also, but first) — each is a separate turn. This is the #1 most-reported bootcamper complaint. Zero tolerance.
   - Every 👉 question must have one unambiguous meaning for "yes" and one for "no." Never append a follow-up question to a confirmation (see conversation-protocol.md Question Disambiguation). When both confirmation and correction are needed: confirm first, ask for corrections only if the answer is no.
   - A question without the 👉 prefix is a formatting violation.
+  - The `enforce-single-question` hook validates every question at write time. If it rejects your question, rewrite it — do not bypass.
   - These rules apply in ALL contexts — onboarding, feedback workflow, module steps, and session resume. See conversation-protocol.md for the full rule set.
 - Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to agentStop hooks — zero output when a 👉 question is pending.
   - FORBIDDEN output patterns: never generate text beginning with "Human:", "User:", or any text that simulates a bootcamper response. This is a critical violation.

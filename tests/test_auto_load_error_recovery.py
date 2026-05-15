@@ -19,7 +19,7 @@ HOOKS_DIR = Path("senzing-bootcamp/hooks")
 HOOK_PATH = HOOKS_DIR / "error-recovery-context.kiro.hook"
 CATEGORIES_PATH = HOOKS_DIR / "hook-categories.yaml"
 
-EXPECTED_HOOK_COUNT = 25
+EXPECTED_HOOK_COUNT = 26
 
 
 # ---------------------------------------------------------------------------

@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-25 bootcamp hooks organized by category. Load `hook-registry-detail.md` for full prompt text when creating hooks.
+26 bootcamp hooks organized by category. Load `hook-registry-detail.md` for full prompt text when creating hooks.
 
 ## Critical Hooks (created during onboarding)
 
@@ -14,6 +14,7 @@ inclusion: manual
 | code-style-check | fileEdited → askAgent | Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions. |
 | commonmark-validation | fileEdited → askAgent | Validates that all Markdown files conform to CommonMark standards when edited |
 | enforce-file-path-policies | preToolUse → askAgent | Before any write operation, enforces two path policies: (1) feedback content must go to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md, and (2) no files may be written outside the working directory. Uses a fast path for project-relative non-feedback writes (proceeds silently) and a slow path for violations (outputs corrective instructions). |
+| enforce-single-question | preToolUse → askAgent | Validates that any 👉 question being written to .question_pending contains exactly one question with no compound constructions, conjunctions, or appended alternatives. Fires on write operations targeting the question_pending file. |
 | review-bootcamper-input | promptSubmit → askAgent | Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture. |
 
 ## Module Hooks (created when module starts)

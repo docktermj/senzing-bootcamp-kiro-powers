@@ -134,6 +134,39 @@ CONTENT CHECK (only if fast path passed): Does the file content reference /tmp/,
 - name: `to make sure the file is in the project directory`
 - description: `Before any write operation, enforces two path policies: (1) feedback content must go to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md, and (2) no files may be written outside the working directory. Uses a fast path for project-relative non-feedback writes (proceeds silently) and a slow path for violations (outputs corrective instructions).`
 
+**enforce-single-question** (preToolUse → askAgent, toolTypes: write)
+
+Prompt:
+
+````text
+SINGLE-QUESTION ENFORCEMENT CHECK
+
+Examine the file being written. If the target path does NOT end with '.question_pending', produce no output at all — do not acknowledge, do not explain, do not print anything. Proceed silently.
+
+If the target path DOES end with '.question_pending', validate the question content against ALL of these rules:
+
+1. EXACTLY ONE QUESTION: The content must contain exactly one question mark. Two or more question marks means multiple questions — VIOLATION.
+2. NO CONJUNCTIONS JOINING QUESTIONS: The content must not use 'and', 'or', 'also', 'but first', 'alternatively', 'or if you prefer', 'or would you rather' to join separate choices in prose. Exception: 'or' inside a numbered list of options is allowed.
+3. NO APPENDED ALTERNATIVES: The content must not append an alternative action after the main question (e.g., 'Do you want X, or we could skip to Y?' is a violation).
+4. UNAMBIGUOUS YES/NO: If it's a yes/no question, 'yes' must map to exactly one meaning and 'no' must map to exactly one meaning. 'Does that look right? Anything I missed?' is a violation because 'yes' is ambiguous.
+5. NO FOLLOW-UP AFTER CONFIRMATION: The content must not combine a confirmation question with a follow-up (e.g., 'Does that work? What do you want changed?' is a violation).
+
+If ALL rules pass: Produce no output at all — do not acknowledge, do not explain, do not print anything. Proceed silently.
+
+If ANY rule is violated: STOP. Output exactly:
+
+⚠️ COMPOUND QUESTION DETECTED — REWRITE REQUIRED
+Violation: [describe which rule was broken]
+Original: [the question text]
+Fix: Rewrite as a single, unambiguous question. If multiple pieces of information are needed, ask only the first one. If choices exist, use a numbered list format.
+
+Do NOT allow the write to proceed with a compound question. The agent must rewrite the question before continuing.
+````
+
+- id: `enforce-single-question`
+- name: `to enforce the single-question rule`
+- description: `Validates that any 👉 question being written to .question_pending contains exactly one question with no compound constructions, conjunctions, or appended alternatives. Fires on write operations targeting the question_pending file.`
+
 **review-bootcamper-input** (promptSubmit → askAgent)
 
 Prompt:

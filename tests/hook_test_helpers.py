@@ -52,6 +52,7 @@ CRITICAL_HOOKS: list[str] = [
     "code-style-check",
     "commonmark-validation",
     "enforce-file-path-policies",
+    "enforce-single-question",
 ]
 
 SEMVER_PATTERN: re.Pattern[str] = re.compile(

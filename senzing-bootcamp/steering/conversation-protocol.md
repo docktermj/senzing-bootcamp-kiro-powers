@@ -24,6 +24,8 @@ When processing the bootcamper's next message:
 
 The ask-bootcamper hook is a safety net only — do not rely on it for closing questions.
 
+When you complete the LAST sub-step in a gap-filling sequence (all undetermined items resolved): writing the checkpoint is NOT the end of your turn. You must also present the next numbered step's 👉 question. The checkpoint marks sub-step completion; the 👉 question marks turn completion.
+
 ## Question Stop Protocol
 
 Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question text — produce no further tokens. Do not answer, assume a response, proceed to the next step, or write checkpoints.
@@ -37,6 +39,18 @@ At the start of every turn where you process bootcamper input, check for and del
 Never end a turn with only an acknowledgment (e.g., "Understood.", "Got it.", "I see."). Every turn must advance the conversation by: (a) asking a 👉 follow-up question, (b) summarizing what was captured and stating what comes next, or (c) proceeding to the next step in the module workflow.
 
 If you acknowledge input, always append a next action in the same response.
+
+### Sub-Step Completion Dead-End (WRONG)
+
+> Got it — you're looking for a clean master list. ✅ Checkpoint written.
+
+### Sub-Step Completion (CORRECT)
+
+> Got it — you're looking for a clean master list. ✅ Checkpoint written.
+>
+> 👉 Will the entity resolution results need to interface with other
+> software — for example, a CRM, search engine, data warehouse, or
+> downstream application?
 
 ## One Question Rule
 

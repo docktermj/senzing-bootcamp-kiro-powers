@@ -18,7 +18,7 @@ import pytest
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry-detail.md")
 
-EXPECTED_HOOK_COUNT = 26
+EXPECTED_HOOK_COUNT = 27
 
 VALID_EVENT_TYPES = {
     "promptSubmit",

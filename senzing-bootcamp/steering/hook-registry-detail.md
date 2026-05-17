@@ -213,6 +213,37 @@ A configuration or database file was modified. If the bootcamper is in Module 2 
 - name: `to verify SDK setup`
 - description: `After config or environment files change during Module 2, re-verifies that the Senzing SDK setup is still valid.`
 
+**enforce-mandatory-gate** — Module 3 (preToolUse → askAgent, toolTypes: write)
+
+Prompt:
+
+````text
+CHECK — Is this write updating `config/bootcamp_progress.json` to advance `current_step` past Step 9 (the ⛔ mandatory gate step for Web Service + Visualization)?
+
+If NO (not writing to `config/bootcamp_progress.json`, or not changing `current_step`, or `current_step` is not being set to a value greater than 9): produce no output at all. Do nothing.
+
+If YES (the write sets `current_step` to 10 or higher, advancing past the ⛔ mandatory gate Step 9): Read the CURRENT contents of `config/bootcamp_progress.json` and check TWO conditions:
+
+CONDITION A — Step 9 checkpoints exist:
+- `module_3_verification.checks.web_service.status` equals `"passed"`
+- `module_3_verification.checks.web_page.status` equals `"passed"`
+
+CONDITION B — Step 9 was explicitly skipped by the bootcamper:
+- `skipped_steps` contains an entry with key `"3.9"`
+
+If CONDITION A is true OR CONDITION B is true: produce no output at all. Do nothing. The mandatory gate has been satisfied.
+
+If NEITHER condition is met: STOP. Do NOT allow this write. Block the operation. Output exactly:
+
+⛔ BLOCKED: Cannot advance past Step 9 — this is a mandatory gate step (Web Service + Visualization). The ⛔ designation means this step must be executed unconditionally. No agent-internal reason (session length, context budget, perceived redundancy) can justify skipping a mandatory gate. Load `module-03-phase2-visualization.md` and execute the full visualization step (generate web service, start server, verify 3 API endpoints, present URL to bootcamper). Only after web_service and web_page checkpoints show 'passed' in bootcamp_progress.json can current_step advance past 9.
+
+Do not proceed with the write operation.
+````
+
+- id: `enforce-mandatory-gate`
+- name: `to enforce mandatory gate step execution before advancement`
+- description: `Blocks step advancement past a ⛔ mandatory gate step in bootcamp_progress.json when the corresponding checkpoint is missing and no skipped_steps entry exists. This is a proactive guard that fires BEFORE the agent advances past a mandatory gate, unlike the module-completion hook which fires at the end.`
+
 **gate-module3-visualization** — Module 3 (preToolUse → askAgent, toolTypes: write)
 
 Prompt:

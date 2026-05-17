@@ -191,6 +191,10 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **Checkpoint:** Write step 7d to `config/bootcamp_progress.json`.
 
+   **All sub-steps complete?** → Proceed immediately to Step 8 below. Do NOT end your turn here — the bootcamper expects the next question.
+
+   Once all gap-filling sub-steps are complete (no undetermined items remain), immediately proceed to Step 8 in the same turn — present Step 8's leading question as the closing question for this turn. The checkpoint marks sub-step completion; the next numbered step's leading question marks turn completion.
+
 8. **Ask about software integration** (separate question — do NOT combine with gap-filling):
 
    "Will the entity resolution results need to interface with other software — for example, a CRM, search engine, data warehouse, API gateway, or downstream application? If so, which systems?"

@@ -81,3 +81,4 @@ When a step contains multiple independent 👉 questions, split into lettered su
 - **One question per sub-step** with its own checkpoint (e.g., "Write step 7a").
 - **No-question steps stay whole** — don't split steps with zero questions.
 - **Mutually exclusive conditionals share a sub-step** — only independent sequential questions get their own sub-steps.
+- **After the last sub-step**: When the bootcamper's answer completes the final sub-step (no undetermined items remain), write the checkpoint and immediately proceed to the next numbered step's 👉 question in the same turn. Do not end the turn after writing the last sub-step's checkpoint.

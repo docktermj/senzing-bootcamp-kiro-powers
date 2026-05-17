@@ -230,7 +230,7 @@ file_metadata:
     token_count: 704
     size_category: medium
   agent-instructions.md:
-    token_count: 2578
+    token_count: 2836
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -242,7 +242,7 @@ file_metadata:
     token_count: 606
     size_category: medium
   conversation-protocol.md:
-    token_count: 2028
+    token_count: 2197
     size_category: large
   data-lineage.md:
     token_count: 603
@@ -284,10 +284,10 @@ file_metadata:
     token_count: 1919
     size_category: medium
   hook-registry-detail.md:
-    token_count: 8871
+    token_count: 9423
     size_category: large
   hook-registry.md:
-    token_count: 1548
+    token_count: 1638
     size_category: medium
   inline-status.md:
     token_count: 460
@@ -314,7 +314,7 @@ file_metadata:
     token_count: 1536
     size_category: medium
   module-01-business-problem.md:
-    token_count: 3257
+    token_count: 3369
     size_category: large
   module-01-phase2-document-confirm.md:
     token_count: 1853
@@ -326,7 +326,7 @@ file_metadata:
     token_count: 2035
     size_category: large
   module-03-system-verification.md:
-    token_count: 5762
+    token_count: 5990
     size_category: large
   module-04-data-collection.md:
     token_count: 3370
@@ -404,7 +404,7 @@ file_metadata:
     token_count: 1342
     size_category: medium
   module-transitions.md:
-    token_count: 1115
+    token_count: 1187
     size_category: medium
   onboarding-flow.md:
     token_count: 5178
@@ -428,7 +428,7 @@ file_metadata:
     token_count: 4344
     size_category: large
   skip-step-protocol.md:
-    token_count: 613
+    token_count: 751
     size_category: medium
   track-switching.md:
     token_count: 673
@@ -465,7 +465,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 131594
+  total_tokens: 133213
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

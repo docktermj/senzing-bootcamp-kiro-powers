@@ -22,8 +22,8 @@ from hypothesis import strategies as st
 _HOOKS_DIR = Path(__file__).resolve().parent.parent / "hooks"
 ALL_HOOK_FILES = sorted(_HOOKS_DIR.glob("*.kiro.hook"))
 
-assert len(ALL_HOOK_FILES) == 26, (
-    f"Expected 26 .kiro.hook files, found {len(ALL_HOOK_FILES)}"
+assert len(ALL_HOOK_FILES) == 27, (
+    f"Expected 27 .kiro.hook files, found {len(ALL_HOOK_FILES)}"
 )
 
 

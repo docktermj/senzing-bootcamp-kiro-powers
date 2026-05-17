@@ -264,7 +264,27 @@ Verify read, write, and search operations against the Senzing database. Each ope
 
 ### Step 9: Web Service + Visualization Page
 
-⛔ MANDATORY GATE — This step cannot be skipped without explicit bootcamper request via the skip-step protocol. The visualization is the "wow moment" of Module 3.
+⛔ MANDATORY GATE — UNCONDITIONAL EXECUTION REQUIREMENT
+
+> **NEVER skip this step.** This is an absolute, non-negotiable rule.
+>
+> The agent SHALL execute this step fully regardless of ANY internal consideration.
+> No agent-initiated skip is permitted under any circumstance.
+>
+> **Prohibited rationalizations (the agent must NEVER use these as justification to skip):**
+> - Session length ("given the length of this session")
+> - Context budget pressure ("running low on context")
+> - Perceived redundancy ("similar to what was already demonstrated")
+> - Time constraints ("to save time")
+> - Any other agent-internal reasoning
+>
+> **NEVER clause:** There is NO condition, threshold, or scenario under which the agent
+> may self-initiate a skip of this step. The ⛔ designation is absolute. Only the
+> bootcamper can attempt a skip via the skip-step protocol — and the protocol itself
+> refuses mandatory gates. The agent cannot override, deprioritize, or rationalize
+> around this constraint.
+
+This step cannot be skipped. The visualization is the "wow moment" of Module 3.
 
 > **Phase file:** Load `module-03-phase2-visualization.md` for the full visualization step — API endpoints, page components, verification checks, and delivery sequence.
 

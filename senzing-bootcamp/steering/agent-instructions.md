@@ -87,6 +87,16 @@ The steering file handles confirmation, preview, and application. Do not compute
 
 Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question — do not answer, do not assume a response, do not proceed to the next step.
 
+## Mandatory Gate Precedence
+
+Steps marked with ⛔ are mandatory gates. This rule takes **absolute precedence** over context budget, session length, perceived redundancy, and all other agent-internal reasoning.
+
+- **NEVER skip a ⛔ mandatory gate step.** No agent-internal consideration — context pressure, session length, token budget, or perceived redundancy — can justify skipping a ⛔ step.
+- The ⛔ designation is an unconditional execution requirement. The agent SHALL execute the step fully before proceeding to any subsequent step.
+- Only the bootcamper can attempt to skip a ⛔ step via the skip-step protocol trigger phrases, and the protocol itself refuses the request (see `skip-step-protocol.md` Constraints: "Mandatory gates (⛔) cannot be skipped").
+- If context budget is under pressure when a ⛔ step is reached, apply context management rules (unload non-essential files, adaptive pacing) to make room — do NOT skip the step.
+- This rule overrides all other agent rules when they conflict. No rationalization is valid.
+
 ## Hooks
 
 Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks. **Always use the exact `name` from the `- name:` line in `hook-registry-detail.md` — the `name` field is user-facing (UI shows "Ask Kiro Hook {name}") and must follow the "to {verb phrase}" pattern.**

@@ -23,6 +23,7 @@ If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 
 - All Senzing facts from MCP tools — never training data. Call `get_capabilities` first each session.
 - Attribute names → `mapping_workflow` | SDK code → `generate_scaffold`/`sdk_guide` | Signatures → `get_sdk_reference` | Errors → `explain_error_code` | Docs → `search_docs` | Examples → `find_examples`
+- SDK method calls that accept flags: look up available flags via get_sdk_reference(topic='flags'), select flags matching the bootcamper's intent, and explain the choice in one sentence. Reuse flag knowledge within a module session. Default flags are acceptable for simple lookups but note that detailed flags exist.
 - Uncertain which tool? Load `mcp-tool-decision-tree.md` for the full decision tree with anti-patterns and call examples.
 - Never hand-code Senzing JSON mappings or SDK method names
 - Third-party software: consult Senzing MCP (`search_docs`) before recommending tools in a Senzing integration context.

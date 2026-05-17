@@ -80,6 +80,7 @@ Reference or reporting task?
 | Recommending integration approaches without checking | `search_docs` with `category='anti_patterns'` | Recommending deprecated or harmful patterns |
 | Guessing Senzing error code meanings | `explain_error_code` | Misdiagnosis, wrong fix applied |
 | Fabricating sample datasets | `get_sample_data` | Invalid record structures, wrong attribute names |
+| Passing None/default flags without checking | `get_sdk_reference(topic='flags')` | Missing detail needed for visualizations, no teaching moment about flag system |
 
 ## Call Pattern Examples
 
@@ -178,3 +179,23 @@ Get guidance on reporting, visualization, or result presentation.
 ```
 
 Download the entity spec, analyzer script, or other workflow resources.
+
+## Flag Selection Protocol
+
+Before any SDK method call that accepts a `flags` parameter, follow this protocol:
+
+1. **Discover** — Look up available flags:
+   `get_sdk_reference(method='<method_name>', topic='flags')`
+2. **Select** — Choose flags matching the bootcamper's intent:
+   - High-level overview → default flags
+   - Scoring / explanation → `SZ_INCLUDE_FEATURE_SCORES`
+   - Match key breakdown → `SZ_INCLUDE_MATCH_KEY_DETAILS`
+   - Visualization → both `SZ_INCLUDE_FEATURE_SCORES` and `SZ_INCLUDE_MATCH_KEY_DETAILS`
+3. **Explain** — Tell the bootcamper which flags you chose and why in one sentence
+4. **Cache** — Reuse flag knowledge within the same module session without re-querying
+
+### When to Skip Flag Lookup
+
+- Bootcamper explicitly specifies flags
+- Method has no flags parameter
+- Flags already looked up for this method during the current module session

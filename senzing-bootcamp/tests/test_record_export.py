@@ -2196,7 +2196,7 @@ _FULL_ADDRESS_RE = re.compile(r"\d+\s+\w+\s+(st|street|ave|avenue|rd|road|blvd|d
 
 @st.composite
 def st_data_source_yaml(draw) -> str:
-    """Generate mock data_sources.yaml content with various source entries."""
+    """Generate synthetic data_sources.yaml content with various source entries."""
     num_entries = draw(st.integers(min_value=1, max_value=5))
     lines: list[str] = []
 

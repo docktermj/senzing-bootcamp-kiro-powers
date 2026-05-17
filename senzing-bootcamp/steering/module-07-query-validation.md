@@ -38,6 +38,8 @@ inclusion: manual
 
    Use `generate_scaffold` with `workflow='query'` and the chosen language, or use a query template.
 
+   > **Agent instruction:** When generating query code that calls SDK methods accepting flags (get_entity, search_by_attributes, how_entity, why_entities, why_records, why_record_in_entity), look up available flags via `get_sdk_reference(method='<method>', topic='flags')` and select flags matching the bootcamper's query intent. Explain the flag choice: "I'm using [flag] so we can see [what it provides]." For visualization queries, include `SZ_INCLUDE_FEATURE_SCORES` and/or `SZ_INCLUDE_MATCH_KEY_DETAILS`.
+
    **CRITICAL:** If the generated scaffold uses `/tmp/`, `ExampleEnvironment`, or any path outside the working directory, override the database path to `database/G2C.db` and ensure all output files use project-relative paths. No files may be placed outside the working directory.
 
    Example queries (file extensions depend on chosen language):
@@ -69,6 +71,8 @@ inclusion: manual
    > Adapt these reminders to the bootcamper's own data context — reference the feature types, scores, and data sources present in their current query results, not the Module 3 sample data. If the bootcamper's data involves different feature types or sources than the demo, use those instead.
    >
    > After the reminder, tell the bootcamper: "If you'd like a deeper refresher on how Senzing matching works — features, scoring, or cross-source connections — just ask and I'll walk through it again."
+
+   > **Agent instruction:** When presenting results from `how_entity` or `why_*` methods (`why_entities`, `why_records`, `why_record_in_entity`), ensure the query was called with `SZ_INCLUDE_FEATURE_SCORES` and/or `SZ_INCLUDE_MATCH_KEY_DETAILS` flags. These flags provide the scoring detail needed for informative output. If the query used default flags, note what additional detail would be available with feature score and match key detail flags.
 
    **Checkpoint:** Write step 3a to `config/bootcamp_progress.json`.
 

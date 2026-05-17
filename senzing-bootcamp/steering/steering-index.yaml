@@ -54,7 +54,7 @@ modules:
         size_category: large
         step_range: [21, 26]
   6:
-    root: module-06-load-data.md
+    root: module-06-data-processing.md
     phases:
       phaseA-build-loading-program:
         file: module-06-phaseA-build-loading.md
@@ -236,7 +236,7 @@ file_metadata:
     token_count: 784
     size_category: medium
   common-pitfalls.md:
-    token_count: 4608
+    token_count: 4610
     size_category: large
   complexity-estimator.md:
     token_count: 606
@@ -246,6 +246,9 @@ file_metadata:
     size_category: large
   data-lineage.md:
     token_count: 603
+    size_category: medium
+  data-processing-reference.md:
+    token_count: 1174
     size_category: medium
   deployment-aws.md:
     token_count: 1323
@@ -307,9 +310,6 @@ file_metadata:
   lessons-learned.md:
     token_count: 434
     size_category: small
-  load-data-reference.md:
-    token_count: 1172
-    size_category: medium
   mcp-tool-decision-tree.md:
     token_count: 1275
     size_category: medium
@@ -343,8 +343,8 @@ file_metadata:
   module-05-phase3-test-load.md:
     token_count: 2654
     size_category: large
-  module-06-load-data.md:
-    token_count: 1496
+  module-06-data-processing.md:
+    token_count: 1509
     size_category: medium
   module-06-phaseA-build-loading.md:
     token_count: 662
@@ -356,7 +356,7 @@ file_metadata:
     token_count: 1428
     size_category: medium
   module-06-phaseD-validation.md:
-    token_count: 1950
+    token_count: 1952
     size_category: medium
   module-07-query-validation.md:
     token_count: 2728
@@ -404,7 +404,7 @@ file_metadata:
     token_count: 1342
     size_category: medium
   module-transitions.md:
-    token_count: 1114
+    token_count: 1115
     size_category: medium
   onboarding-flow.md:
     token_count: 5178
@@ -465,7 +465,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 130886
+  total_tokens: 130906
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

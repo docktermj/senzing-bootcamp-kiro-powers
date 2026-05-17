@@ -21,14 +21,14 @@ _POWER_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 _MODULE_5_STEERING = _POWER_ROOT / "steering" / "module-05-data-quality-mapping.md"
 _MODULE_5_PHASE3 = _POWER_ROOT / "steering" / "module-05-phase3-test-load.md"
 _MODULE_5_DOCS = _POWER_ROOT / "docs" / "modules" / "MODULE_5_DATA_QUALITY_AND_MAPPING.md"
-_MODULE_6_STEERING = _POWER_ROOT / "steering" / "module-06-load-data.md"
+_MODULE_6_STEERING = _POWER_ROOT / "steering" / "module-06-data-processing.md"
 _MODULE_6_PHASE_FILES = [
     _POWER_ROOT / "steering" / "module-06-phaseA-build-loading.md",
     _POWER_ROOT / "steering" / "module-06-phaseB-load-first-source.md",
     _POWER_ROOT / "steering" / "module-06-phaseC-multi-source.md",
     _POWER_ROOT / "steering" / "module-06-phaseD-validation.md",
 ]
-_MODULE_6_DOCS = _POWER_ROOT / "docs" / "modules" / "MODULE_6_LOAD_DATA.md"
+_MODULE_6_DOCS = _POWER_ROOT / "docs" / "modules" / "MODULE_6_DATA_PROCESSING.md"
 _MODULE_7_STEERING = _POWER_ROOT / "steering" / "module-07-query-validation.md"
 _MODULE_7_DOCS = _POWER_ROOT / "docs" / "modules" / "MODULE_7_QUERY_VALIDATION.md"
 _POWER_MD = _POWER_ROOT / "POWER.md"
@@ -243,7 +243,7 @@ class TestModule7ProductionFocus:
     """Verify combined Module 6 steering file and docs reflect production-quality orchestration.
     
     Note: After combining Modules 6+7, the orchestration content that was in the old
-    Module 7 is now in the combined Module 6 (module-06-load-data.md).
+    Module 7 is now in the combined Module 6 (module-06-data-processing.md).
     """
 
     @pytest.fixture(autouse=True)

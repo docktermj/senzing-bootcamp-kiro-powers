@@ -575,7 +575,7 @@ class TestUnitRootFileFrontMatter:
 
     @pytest.mark.parametrize("filename", [
         "module-05-data-quality-mapping.md",
-        "module-06-load-data.md",
+        "module-06-data-processing.md",
     ])
     def test_root_file_front_matter(self, filename):
         """Root file starts with ---\\ninclusion: manual\\n---."""
@@ -604,7 +604,7 @@ class TestUnitRootFilesAtOriginalPaths:
 
     @pytest.mark.parametrize("filename", [
         "module-05-data-quality-mapping.md",
-        "module-06-load-data.md",
+        "module-06-data-processing.md",
     ])
     def test_root_file_at_original_path(self, filename):
         """Root file exists at the original path."""
@@ -686,7 +686,7 @@ class TestIntegrationModule6EndToEnd:
 
     def test_module6_end_to_end_split(self):
         """Split real Module 6, verify 4 sub-files + root, measure_steering --check passes."""
-        root = STEERING_DIR / "module-06-load-data.md"
+        root = STEERING_DIR / "module-06-data-processing.md"
         assert root.exists(), "Module 6 root file not found"
 
         sub_files = [

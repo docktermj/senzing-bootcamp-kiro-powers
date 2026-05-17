@@ -115,7 +115,7 @@ def validate_module_5():
 
 
 def validate_module_6():
-    """Module 6: Load Data — prerequisites for Module 7."""
+    """Module 6: Data Processing — prerequisites for Module 7."""
     return [
         check_dir_has_files("src/load", "*.*", "Loading program(s) created"),
         check_path("database/G2C.db", "Database exists with loaded data"),
@@ -205,7 +205,7 @@ MODULE_NAMES = {
     3: "System Verification",
     4: "Data Collection",
     5: "Data Quality & Mapping",
-    6: "Load Data",
+    6: "Data Processing",
     7: "Query & Visualize",
     8: "Performance Testing",
     9: "Security Hardening",

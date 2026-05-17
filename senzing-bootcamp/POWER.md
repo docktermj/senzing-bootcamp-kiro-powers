@@ -67,7 +67,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 | 3 — System Verification                 | Runs entity resolution on Senzing TruthSet data and verifies expected entity counts | Validates your entire setup end-to-end against a known-good reference dataset — proving the system works before you use your own data |
 | 4 — Data Collection                     | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
 | 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Entity Specification format. Optional Phase 3 test-loads and evaluates results using `mapping_workflow` steps 5–8 | Identifies issues before they cause bad matches, gets data into the format Senzing needs, and optionally validates entity resolution quality before production loading |
-| 6 — Load Data                           | Loads all data sources, processes redo records, and validates entity resolution results | Your data is loaded and entity resolution is running — duplicates matched, cross-source connections found |
+| 6 — Data Processing                     | Loads all data sources, processes redo records, and validates entity resolution results | Your data is loaded and entity resolution is running — duplicates matched, cross-source connections found |
 | 7 — Query & Visualize                   | Builds query programs and visualizations for your resolved entities       | Proves the system answers your business questions                                                                |
 | 8 — Performance Testing & Benchmarking  | Benchmarks and optimizes for your data volume                             | Ensures the system handles production-scale data                                                                 |
 | 9 — Security Hardening                  | Implements access controls and data protection                            | Required for production with sensitive data                                                                      |
@@ -113,7 +113,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 - `module-03-system-verification.md` — Module 3: System Verification
 - `module-04-data-collection.md` — Module 4: Data Collection
 - `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping
-- `module-06-load-data.md` — Module 6: Load Data
+- `module-06-data-processing.md` — Module 6: Data Processing
 - `module-07-query-validation.md` — Module 7: Query & Visualize
 - `module-08-performance.md` — Module 8: Performance Testing
 - `module-09-security.md` — Module 9: Security Hardening
@@ -201,7 +201,7 @@ explain_error_code(error_code='0023')
 | 3      | System Verification                            |
 | 4      | Data Collection Policy                         |
 | 5      | Data Quality & Mapping (with optional test load)  |
-| 6      | Load Data                                      |
+| 6      | Data Processing                                |
 | 7      | Query & Visualize                              |
 | 8      | Performance Testing and Benchmarking           |
 | 9      | Security Hardening                             |

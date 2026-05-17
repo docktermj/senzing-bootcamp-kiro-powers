@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-# Module 6: Load Data — Reference Material
+# Module 6: Data Processing — Reference Material
 
 > **Agent instruction:** Only present multi-source reference material when the bootcamper has 2 or more data sources. For single-source bootcampers, skip this file entirely.
 

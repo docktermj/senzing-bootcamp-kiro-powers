@@ -47,7 +47,7 @@ MODULE_NAMES: dict[int, str] = {
     3: "System Verification",
     4: "Data Collection",
     5: "Data Quality & Mapping",
-    6: "Load Data",
+    6: "Data Processing",
     7: "Query & Visualize",
     8: "Performance",
     9: "Security",

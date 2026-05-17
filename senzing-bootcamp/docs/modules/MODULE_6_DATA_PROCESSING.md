@@ -1,12 +1,12 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 6: LOAD DATA  🚀🚀🚀
+🚀🚀🚀  MODULE 6: DATA PROCESSING  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 6: Load Data
+# Module 6: Data Processing
 
-> **Agent workflow:** The agent follows `steering/module-06-load-data.md` for this module's step-by-step workflow.
+> **Agent workflow:** The agent follows `steering/module-06-data-processing.md` for this module's step-by-step workflow.
 
 ## Overview
 
@@ -384,7 +384,7 @@ When a user is in Module 6:
 ## Related Documentation
 
 - `POWER.md` — Module 6 overview
-- `steering/module-06-load-data.md` — Module 6 workflow
+- `steering/module-06-data-processing.md` — Module 6 workflow
 - `steering/agent-instructions.md` — Agent behavior for Module 6
 - Use MCP: `search_docs(query="incremental loading")` for incremental loading strategies
 - Use MCP: `search_docs(query="performance optimization")` for performance optimization

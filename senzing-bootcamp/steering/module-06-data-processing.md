@@ -3,13 +3,13 @@ inclusion: manual
 ---
 
 
-# Module 6: Load Data
+# Module 6: Data Processing
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_6_LOAD_DATA.md`.
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_6_DATA_PROCESSING.md`.
 
-**Purpose:** Build production-quality loading programs, load all data sources into Senzing, process redo records, and validate entity resolution results — from first load through cross-source validation.
+**Purpose:** Guide the Data Processing workflow — build production-quality loading programs, load all data sources into Senzing, process redo records, and validate entity resolution results — from first load through cross-source validation.
 
 **Before/After:** You have Senzing-formatted JSON files (and possibly test load results from Module 5 Phase 3). After this module, all your data is loaded, redo records are processed, and entity resolution results are validated — duplicates matched, cross-source connections found.
 

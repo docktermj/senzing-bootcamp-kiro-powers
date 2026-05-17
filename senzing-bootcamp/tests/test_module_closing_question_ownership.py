@@ -38,7 +38,7 @@ _AFFECTED_FILES: dict[str, Path] = {
     "module-02": _STEERING_DIR / "module-02-sdk-setup.md",
     "module-04": _STEERING_DIR / "module-04-data-collection.md",
     "module-05": _STEERING_DIR / "module-05-data-quality-mapping.md",
-    "module-06": _STEERING_DIR / "module-06-load-data.md",
+    "module-06": _STEERING_DIR / "module-06-data-processing.md",
     "module-07": _STEERING_DIR / "module-07-query-validation.md",
     "module-11": _STEERING_DIR / "module-11-deployment.md",
     "module-completion": _STEERING_DIR / "module-completion.md",
@@ -453,7 +453,7 @@ _HEADINGS_MODULE_05 = [
 ]
 
 _HEADINGS_MODULE_06 = [
-    "# Module 6: Load Data",
+    "# Module 6: Data Processing",
     "## Conditional Workflow: Check Phase 3 Status",
     "## Pre-Load Data Freshness Check",
     "## Agent Workflow",

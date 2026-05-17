@@ -183,7 +183,7 @@ def _default_modules() -> dict[int, dict]:
         3: {"name": "System Verification", "requires": [2]},
         4: {"name": "Data Collection", "requires": [1]},
         5: {"name": "Data Quality & Mapping", "requires": [4]},
-        6: {"name": "Load Data", "requires": [2, 5]},
+        6: {"name": "Data Processing", "requires": [2, 5]},
         7: {"name": "Query & Visualize", "requires": [6]},
         8: {"name": "Performance", "requires": [7]},
         9: {"name": "Security", "requires": [8]},

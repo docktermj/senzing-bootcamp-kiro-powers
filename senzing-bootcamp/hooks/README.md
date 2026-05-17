@@ -277,7 +277,7 @@ You can customize any hook by editing the JSON file:
 - ✅ Enforce Mapping Specification
 - ✅ Enforce Visualization Offers
 
-### Module 6 (Load Data)
+### Module 6 (Data Processing)
 
 - ✅ Backup Before Load
 - ✅ Run Tests After Change

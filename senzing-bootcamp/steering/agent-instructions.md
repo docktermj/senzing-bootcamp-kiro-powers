@@ -29,6 +29,8 @@ If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 - Third-party software: consult Senzing MCP (`search_docs`) before recommending tools in a Senzing integration context.
 - Reuse MCP responses within a module; re-query across module boundaries. No answer? Say so, suggest <https://docs.senzing.com> / <support@senzing.com> — never fabricate.
 - MCP skepticism: flag data mart tables (`sz_dm_report`), beta features, or non-core SDK references
+- Never generate direct SQL (SELECT, INSERT, UPDATE, DELETE) against the Senzing database (`database/G2C.db`) or its internal tables (RES_ENT, OBS_ENT, DSRC_RECORD, LIB_FEAT, RES_FEAT_STAT, RES_REL, etc.). All Senzing data access must go through SDK methods via MCP tools.
+- SQL-tempting question redirects: "count entities" → `reporting_guide` | "find duplicates" → `search_by_attributes` | "show entity details" → `get_entity`/`get_entity_by_record_id` | "why did these match" → `why_entities`/`why_records` | "how was entity built" → `how_entity` | "export entity data" → iterate SDK methods via MCP tools
 
 ## MCP Failure
 

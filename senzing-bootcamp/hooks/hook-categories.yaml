@@ -4,6 +4,7 @@
 
 critical:
   - ask-bootcamper
+  - block-direct-sql
   - review-bootcamper-input
   - code-style-check
   - commonmark-validation

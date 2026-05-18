@@ -48,6 +48,7 @@ TOOL_EVENT_TYPES: set[str] = {"preToolUse", "postToolUse"}
 
 CRITICAL_HOOKS: list[str] = [
     "ask-bootcamper",
+    "block-direct-sql",
     "review-bootcamper-input",
     "code-style-check",
     "commonmark-validation",

@@ -272,6 +272,7 @@ Verify read, write, and search operations against the Senzing database. Each ope
 > No agent-initiated skip is permitted under any circumstance.
 >
 > **Prohibited rationalizations (the agent must NEVER use these as justification to skip):**
+>
 > - Session length ("given the length of this session")
 > - Context budget pressure ("running low on context")
 > - Perceived redundancy ("similar to what was already demonstrated")

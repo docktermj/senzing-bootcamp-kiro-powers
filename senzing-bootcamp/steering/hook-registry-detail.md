@@ -71,6 +71,39 @@ REMEMBER: If both phases produced no output, your COMPLETE response is: .
 - name: `to wait for your answer`
 - description: `Silence-first agentStop hook with dual responsibility: (1) Phase 1 produces a recap + closing question only when no question is already pending, with a near-completion feedback nudge; (2) Phase 2 independently reminds the bootcamper to share saved feedback after track completion.`
 
+**block-direct-sql** (preToolUse → askAgent, toolTypes: write)
+
+Prompt:
+
+````text
+QUICK CHECK — inspect the content being written for direct SQL against the Senzing database.
+
+SQL PATTERNS TO DETECT: SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA
+
+SENZING DATABASE INDICATORS: G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_
+
+FAST PATH: If the content does NOT contain any of the SQL patterns above targeting Senzing database indicators, this is a non-Senzing file write (e.g., CSV, JSONL, config files, general SQL for other databases like users, orders, products tables). Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
+
+SLOW PATH: If the content contains ANY of the SQL patterns (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA) AND references ANY Senzing database indicator (G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_):
+
+STOP. Do not proceed with the write. Instead:
+1. Explain that direct SQL against the Senzing database is prohibited because it bypasses the SDK abstraction layer, produces non-portable results, and may return incorrect data from internal tables.
+2. Rewrite the code to use the appropriate Senzing SDK methods via MCP tools:
+   - To query entities: use get_entity or get_entity_by_record_id
+   - To search for records: use search_by_attributes
+   - To understand resolution: use why_entities or why_records
+   - To explore entity structure: use how_entity
+   - To count or report: use reporting_guide
+   - For general SDK guidance: use sdk_guide or get_sdk_reference
+3. Present the rewritten code using SDK methods to the bootcamper.
+
+IMPORTANT: Only flag content that contains BOTH SQL patterns AND Senzing database indicators. General SQL for non-Senzing databases (e.g., SELECT * FROM users, INSERT INTO orders) must NOT be flagged.
+````
+
+- id: `block-direct-sql`
+- name: `to block direct SQL against the Senzing database`
+- description: `Before any write operation, checks if the content contains direct SQL statements (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA) targeting the Senzing database (G2C.db or internal tables). If detected, instructs the agent to rewrite using SDK methods via MCP tools instead.`
+
 **code-style-check** (fileEdited → askAgent, filePatterns: `src/**/*.py, src/**/*.java, src/**/*.cs, src/**/*.rs, src/**/*.ts, src/**/*.js`)
 
 Prompt:

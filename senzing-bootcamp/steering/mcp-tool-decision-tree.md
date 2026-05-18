@@ -17,7 +17,8 @@ What is the bootcamper trying to do?
 ├─→ Preparing or mapping data       → Data Preparation
 ├─→ Writing SDK code                 → SDK Development
 ├─→ Diagnosing errors or failures    → Troubleshooting
-└─→ Looking up docs or reporting     → Reference & Reporting
+├─→ Looking up docs or reporting     → Reference & Reporting
+└─→ Exploring entity resolution data → Data Exploration (use SDK, never direct SQL)
 ```
 
 ### Data Preparation
@@ -70,6 +71,20 @@ Reference or reporting task?
     └─→ get_capabilities
 ```
 
+### Data Exploration
+
+```text
+Exploring or querying entity resolution results?
+├─→ Counting entities or getting statistics?
+│   └─→ reporting_guide (NEVER direct SQL against Senzing database)
+├─→ Finding duplicates or matching records?
+│   └─→ search_by_attributes (NEVER SELECT from RES_ENT/OBS_ENT)
+├─→ Retrieving entity details?
+│   └─→ get_entity or get_entity_by_record_id (NEVER query G2C.db directly)
+└─→ Exporting or visualizing resolved data?
+    └─→ reporting_guide (NEVER open sqlite3 connection to Senzing database)
+```
+
 ## Anti-Patterns: When NOT to Use
 
 | Instead of | Use | Consequence of Wrong Approach |
@@ -81,6 +96,7 @@ Reference or reporting task?
 | Guessing Senzing error code meanings | `explain_error_code` | Misdiagnosis, wrong fix applied |
 | Fabricating sample datasets | `get_sample_data` | Invalid record structures, wrong attribute names |
 | Passing None/default flags without checking | `get_sdk_reference(topic='flags')` | Missing detail needed for visualizations, no teaching moment about flag system |
+| Writing direct SQL against the Senzing database | Use SDK methods via MCP tools (`get_entity`, `search_by_attributes`, `reporting_guide`) | Bypasses SDK abstraction, produces non-portable results, may return incorrect data from internal tables |
 
 ## Call Pattern Examples
 

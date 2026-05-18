@@ -316,6 +316,18 @@ Follow the Web Service Delivery Sequence from `visualization-guide.md`. Maintain
 }
 ```
 
+> **⛔ PRE-ADVANCEMENT VERIFICATION (Agent self-check):**
+>
+> Before offering to advance to Module 4 or marking Module 3 complete, the agent
+> MUST read `config/bootcamp_progress.json` and verify:
+>
+> - `module_3_verification.checks.web_service.status` = `"passed"`
+> - `module_3_verification.checks.web_page.status` = `"passed"`
+>
+> If these checkpoints are NOT present, the agent MUST execute Step 9 immediately.
+> Do NOT offer advancement. Do NOT ask "Ready for Module 4?" Do NOT save progress.
+> Execute Step 9 first.
+
 ## Phase 2: Report & Close
 
 ### Step 10: Verification Report Generation

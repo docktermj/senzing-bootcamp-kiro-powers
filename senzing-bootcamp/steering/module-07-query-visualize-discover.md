@@ -128,10 +128,24 @@ inclusion: manual
 
    **Checkpoint:** Write step 3d to `config/bootcamp_progress.json`.
 
+4. **Discover Phase — Advanced Senzing Capabilities**:
+
+   > **Phase file:** Load `module-07-phase2-discover.md` for the full Discover
+   > phase — data pattern analysis, why/how analysis, relationship networks,
+   > and data-specific visualization suggestions.
+
+   The Discover phase introduces advanced Senzing capabilities using concrete
+   examples from the bootcamper's loaded data. It is opt-in — the bootcamper
+   can decline or exit early at any demonstration point.
+
+   **Checkpoint:** Steps 4a–4e each write individually to
+   `config/bootcamp_progress.json`.
+
 **Success Criteria:**
 
 - ✅ Query programs created and tested
 - ✅ Visualizations offered (entity graph and results dashboard)
+- ✅ Discover phase completed or explicitly skipped
 
 ## Query Completeness Gate
 
@@ -139,7 +153,9 @@ Before wrapping up this module, confirm:
 
 1. **Query programs created and tested?** — At least one query program runs successfully against the resolved data.
 2. **Visualizations offered?** — Both the entity graph and results dashboard were offered to the bootcamper.
-3. **Ready to proceed?**
+3. **Discover phase status?** — The Discover phase was either completed
+   (all steps 4a–4e checkpointed) or explicitly skipped by the bootcamper.
+4. **Ready to proceed?**
    - **Path A (full bootcamp):** Proceed to Module 8 (Performance Testing).
    - **Path B/C (shorter paths):** This is a natural stopping point. The bootcamper has working query programs and can stop here.
 

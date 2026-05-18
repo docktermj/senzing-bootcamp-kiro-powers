@@ -246,6 +246,38 @@ A configuration or database file was modified. If the bootcamper is in Module 2 
 - name: `to verify SDK setup`
 - description: `After config or environment files change during Module 2, re-verifies that the Senzing SDK setup is still valid.`
 
+**enforce-gate-on-stop** — Module 3 (agentStop → askAgent)
+
+Prompt:
+
+````text
+CHECK — Read `config/bootcamp_progress.json` and evaluate:
+
+1. Is `current_module` equal to 3?
+2. Is `current_step` greater than or equal to 9?
+
+If EITHER condition is false: produce no output. Do nothing.
+
+If BOTH are true: Check whether the ⛔ mandatory gate for Step 9 has been satisfied:
+
+CONDITION A — Step 9 checkpoints exist:
+- `module_3_verification.checks.web_service.status` equals `"passed"`
+- `module_3_verification.checks.web_page.status` equals `"passed"`
+
+CONDITION B — Step 9 was explicitly skipped by the bootcamper:
+- `skipped_steps` contains an entry with key `"3.9"`
+
+If CONDITION A is true OR CONDITION B is true: produce no output. The mandatory gate is satisfied.
+
+If NEITHER condition is met: The agent has reached or passed Step 9 without executing it. This is a ⛔ mandatory gate violation. Output exactly:
+
+⛔ MANDATORY GATE VIOLATION DETECTED: Step 9 (Web Service + Visualization) has not been executed but the agent has advanced past it. This step CANNOT be skipped by the agent under any circumstances. Load `module-03-phase2-visualization.md` and execute Step 9 NOW — generate the web service, start the server, verify all 3 API endpoints, and present the URL to the bootcamper. Do not proceed with any other work until Step 9 is complete and checkpoints are written to bootcamp_progress.json.
+````
+
+- id: `enforce-gate-on-stop`
+- name: `to enforce mandatory gate execution on agent stop`
+- description: `After each agent turn during Module 3, verifies that Step 9 (⛔ mandatory gate) has been executed if the agent has reached or passed it. Forces immediate execution if the gate checkpoint is missing.`
+
 **enforce-mandatory-gate** — Module 3 (preToolUse → askAgent, toolTypes: write)
 
 Prompt:

@@ -74,7 +74,7 @@ class TestParseAllRealHooks:
     def test_all_19_hooks_parse_without_errors(self):
         entries, errors = parse_all_hooks(_HOOKS_DIR)
         assert len(errors) == 0, f"Parse errors: {errors}"
-        assert len(entries) == 28, f"Expected 28 hooks, got {len(entries)}"
+        assert len(entries) == 29, f"Expected 29 hooks, got {len(entries)}"
 
 
 # ---------------------------------------------------------------------------
@@ -124,8 +124,8 @@ class TestCategoryMappingLoads:
     def test_load_real_categories(self):
         mapping = load_category_mapping(_CATEGORIES_PATH)
 
-        # Should have all 28 hooks mapped
-        assert len(mapping) == 28, f"Expected 28 mappings, got {len(mapping)}"
+        # Should have all 29 hooks mapped
+        assert len(mapping) == 29, f"Expected 29 mappings, got {len(mapping)}"
 
         # Check some known critical hooks
         assert mapping["ask-bootcamper"].category == "critical"

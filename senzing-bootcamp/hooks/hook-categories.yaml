@@ -17,6 +17,7 @@ modules:
   2:
     - verify-sdk-setup
   3:
+    - enforce-gate-on-stop
     - enforce-mandatory-gate
     - enforce-visualization-offers
     - gate-module3-visualization

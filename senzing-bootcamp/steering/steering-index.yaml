@@ -26,7 +26,7 @@ modules:
     phases:
       phase1-verification:
         file: module-03-system-verification.md
-        token_count: 5762
+        token_count: 6120
         size_category: large
         step_range: [1, 8]
       phase2-visualization:
@@ -76,7 +76,19 @@ modules:
         token_count: 1950
         size_category: medium
         step_range: [20, 27]
-  7: module-07-query-visualize-discover.md
+  7:
+    root: module-07-query-visualize-discover.md
+    phases:
+      phase1-query-visualize:
+        file: module-07-query-visualize-discover.md
+        token_count: 3164
+        size_category: large
+        step_range: [1, "3d"]
+      phase2-discover:
+        file: module-07-phase2-discover.md
+        token_count: 6380
+        size_category: large
+        step_range: ["4a", "4e"]
   8:
     root: module-08-performance.md
     phases:
@@ -298,10 +310,10 @@ file_metadata:
     token_count: 1919
     size_category: medium
   hook-registry-detail.md:
-    token_count: 10019
+    token_count: 10447
     size_category: large
   hook-registry.md:
-    token_count: 1726
+    token_count: 1790
     size_category: medium
   inline-status.md:
     token_count: 460
@@ -343,7 +355,7 @@ file_metadata:
     token_count: 2034
     size_category: large
   module-03-system-verification.md:
-    token_count: 5990
+    token_count: 6120
     size_category: large
   module-04-data-collection.md:
     token_count: 3370
@@ -375,8 +387,11 @@ file_metadata:
   module-06-phaseD-validation.md:
     token_count: 1952
     size_category: medium
+  module-07-phase2-discover.md:
+    token_count: 6428
+    size_category: large
   module-07-query-visualize-discover.md:
-    token_count: 2971
+    token_count: 3164
     size_category: large
   module-08-performance.md:
     token_count: 1278
@@ -476,7 +491,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 136616
+  total_tokens: 143859
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-28 bootcamp hooks organized by category. Load `hook-registry-detail.md` for full prompt text when creating hooks.
+29 bootcamp hooks organized by category. Load `hook-registry-detail.md` for full prompt text when creating hooks.
 
 ## Critical Hooks (created during onboarding)
 
@@ -24,6 +24,7 @@ inclusion: manual
 |---------|--------|-----------|-------------|
 | validate-business-problem | 1 | postTaskExecution → askAgent | After Module 1 tasks complete, validates that the bootcamper has identified data sources, defined matching criteria, and documented success metrics before proceeding to Module 2. |
 | verify-sdk-setup | 2 | fileEdited → askAgent | After config or environment files change during Module 2, re-verifies that the Senzing SDK setup is still valid. |
+| enforce-gate-on-stop | 3 | agentStop → askAgent | After each agent turn during Module 3, verifies that Step 9 (⛔ mandatory gate) has been executed if the agent has reached or passed it. Forces immediate execution if the gate checkpoint is missing. |
 | enforce-mandatory-gate | 3 | preToolUse → askAgent | Blocks step advancement past a ⛔ mandatory gate step in bootcamp_progress.json when the corresponding checkpoint is missing and no skipped_steps entry exists. This is a proactive guard that fires BEFORE the agent advances past a mandatory gate, unlike the module-completion hook which fires at the end. |
 | enforce-visualization-offers | 3,5,7,8 | agentStop → askAgent | When the agent stops during a visualization-capable module (3, 5, 7, 8), checks the visualization tracker to verify all required offers were made. Prompts for missed offers. |
 | gate-module3-visualization | 3 | preToolUse → askAgent | Prevents Module 3 from being marked complete unless Step 9 (Web Service + Visualization) checkpoints are present in bootcamp_progress.json, or the step was explicitly skipped via the skip-step protocol. |

@@ -32,6 +32,27 @@ If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 - Never generate direct SQL (SELECT, INSERT, UPDATE, DELETE) against the Senzing database (`database/G2C.db`) or its internal tables (RES_ENT, OBS_ENT, DSRC_RECORD, LIB_FEAT, RES_FEAT_STAT, RES_REL, etc.). All Senzing data access must go through SDK methods via MCP tools.
 - SQL-tempting question redirects: "count entities" → `reporting_guide` | "find duplicates" → `search_by_attributes` | "show entity details" → `get_entity`/`get_entity_by_record_id` | "why did these match" → `why_entities`/`why_records` | "how was entity built" → `how_entity` | "export entity data" → iterate SDK methods via MCP tools
 
+### SDK Method Discovery
+
+When the bootcamper's request could map to multiple SDK methods in the same category, follow the discover-then-disambiguate flow:
+
+1. **Trigger**: The bootcamper's request is ambiguous — it could be satisfied by more than one SDK method in a category.
+2. **Discover**: Call `get_sdk_reference` with a category/topic filter to enumerate all available methods in that category.
+3. **Disambiguate**: If multiple methods could satisfy the request, ask a single 👉 clarifying question presenting the options as a numbered choice list with brief descriptions of what each method provides.
+4. **Proceed**: If only one method matches, proceed directly with that method, noting other available methods for the bootcamper's awareness.
+
+**SDK method categories with multiple alternatives:**
+
+- **Why/How category**: `how_entity`, `why_entities`, `why_records`, `why_record_in_entity` — different granularity levels for understanding entity resolution decisions
+- **Entity retrieval**: `get_entity`, `get_entity_by_record_id` — different lookup keys
+- **Search**: `search_by_attributes`, `search_by_record_id` — different search inputs
+
+**When to skip discovery (skip conditions — when discovery is NOT needed):**
+
+- Bootcamper explicitly names a specific SDK method (e.g., "use how_entity") — proceed directly
+- Request unambiguously maps to exactly one method with no alternatives in the category
+- Methods for this category already discovered in the current module session — reuse cached knowledge
+
 ## MCP Failure
 
 Retry once. If still failing, tell the bootcamper the MCP server is unreachable and they must fix their connection before continuing. Never fabricate Senzing facts. All Senzing facts must come from MCP tools, never from training data.

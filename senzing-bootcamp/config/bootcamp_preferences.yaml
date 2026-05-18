@@ -17,6 +17,10 @@ database_type: sqlite
 verbosity: null
 conversation_style: null
 
+# Mapping-specific verbosity (set during Module 5 Phase 2)
+# Values: verbose, concise, or null (not yet asked)
+mapping_verbosity: null
+
 # Installed hooks (populated during onboarding and module starts)
 hooks_installed: []
 

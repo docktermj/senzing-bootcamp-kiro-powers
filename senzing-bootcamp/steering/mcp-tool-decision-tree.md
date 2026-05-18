@@ -215,3 +215,41 @@ Before any SDK method call that accepts a `flags` parameter, follow this protoco
 - Bootcamper explicitly specifies flags
 - Method has no flags parameter
 - Flags already looked up for this method during the current module session
+
+## Method Discovery Protocol
+
+Before selecting an SDK method when the bootcamper's request is ambiguous (could map to multiple methods in the same category), follow this protocol:
+
+1. **Detect** — Recognize when the bootcamper's request is ambiguous and could map to multiple SDK methods in the same category (e.g., "explain why entity 74 resolved" could use `how_entity`, `why_entities`, `why_records`, or `why_record_in_entity`)
+2. **Discover** — Call `get_sdk_reference(topic='functions', filter='<category>')` to enumerate available methods in the relevant category
+3. **Disambiguate** — If multiple methods match, present a 👉 numbered choice list with one-line descriptions so the bootcamper can select the appropriate method
+4. **Proceed** — Use the bootcamper's chosen method (or the single matching method if unambiguous)
+5. **Cache** — Remember discovered methods for the rest of the module session; do not re-query for the same category
+
+### When to Skip Method Discovery
+
+- Bootcamper explicitly specifies a method name (e.g., "use why_records on records A and B")
+- Request maps to exactly one method with no alternatives in the category
+- Methods for this category already discovered during the current module session
+
+### Examples
+
+**Ambiguous** — "explain why entity 74 resolved"
+
+The request could map to `how_entity`, `why_entities`, `why_records`, or `why_record_in_entity`. Discover the why/how category, then present choices:
+
+```text
+👉 Which level of detail do you want?
+1. how_entity — shows how a single entity was constructed from its records
+2. why_entities — explains why two entities resolved together
+3. why_records — explains why two specific records resolved together
+4. why_record_in_entity — explains why a specific record belongs to an entity
+```
+
+**Unambiguous** — "get entity 42 by record ID"
+
+Only `get_entity_by_record_id` matches this request. Proceed directly without presenting choices.
+
+**Explicit** — "use why_records on records A and B"
+
+The bootcamper named the method explicitly. Proceed directly with `why_records`.

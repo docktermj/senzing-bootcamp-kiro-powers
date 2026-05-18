@@ -7,6 +7,32 @@ inclusion: manual
 
 **Before starting:** Confirm which data source. Track multi-source progress (In Progress / Complete / Pending).
 
+### Mapping Verbosity Check
+
+> **Agent instruction — before starting the mapping workflow:**
+>
+> Read `config/bootcamp_preferences.yaml` and check the `mapping_verbosity` key.
+>
+> - **If `mapping_verbosity` is `null` or absent:** Present the following question:
+>
+>   👉 "Before we start mapping, would you like **verbose mode** (I'll show each mapping step in detail — field detection, attribute selection rationale, transformation preview) or **concise mode** (I'll map quickly and show only the final mapped record and any warnings)?"
+>
+>   🛑 STOP — Wait for the bootcamper's answer. Persist their choice (`verbose` or `concise`) to `mapping_verbosity` in `config/bootcamp_preferences.yaml`.
+>
+>   If the bootcamper skips or doesn't answer directly: default to `verbose`, persist it, and say: "Defaulting to verbose mode — say 'switch to concise' anytime if you want less detail."
+>
+> - **If `mapping_verbosity` is already set to `verbose` or `concise`:** Say "Using your [verbose/concise] mapping preference from last time — say 'switch to [other]' if you'd prefer [less detail/more detail]" and proceed without waiting.
+
+### Mid-Mapping Verbosity Switch
+
+> **Agent instruction — honor verbosity changes at any point during the mapping workflow:**
+>
+> If the bootcamper says "switch to verbose", "switch to concise", "more detail", "less detail", or any natural variant indicating they want to change mapping verbosity:
+>
+> 1. Update `mapping_verbosity` in `config/bootcamp_preferences.yaml` to the requested mode (`verbose` or `concise`)
+> 2. Apply the new mode immediately to all subsequent presentation output
+> 3. Confirm briefly: "Switched to [verbose/concise] mode." — then continue the workflow without interruption
+
 ### Workflow (per data source)
 
 1. **Start:** Call `mapping_workflow(action='start')` with source file from `data/raw/` or `data/samples/`. Override any `/tmp/` paths to project-local. Tell user: "Starting mapping for [source]. I'll walk through each step and explain what I find."
@@ -19,19 +45,39 @@ inclusion: manual
 
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 
-2. **Profile:** Run profiler, summarize columns/types/completeness/quality. Advance with `action='profile_summary'`. **Tell user:** Present a table of columns with types, sample values, completeness %, and what each means for mapping (maps to Senzing / will skip / needs attention). Explain the key takeaway.
+2. **Profile:** Run profiler, summarize columns/types/completeness/quality. Advance with `action='profile_summary'`.
+
+   > **Presentation (conditional on `mapping_verbosity`):**
+   >
+   > - **Verbose:** Present a full column table with types, sample values, completeness %, and what each means for mapping (maps to Senzing / will skip / needs attention). Explain the key takeaway.
+   > - **Concise:** Present one summary line: N columns detected, X% overall completeness, and key issues only (e.g., "12 columns, 94% complete, 2 fields need attention").
 
    **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
 
 3. **Plan:** Identify entity type (person/org/both), structure (flat/nested), relationships. Advance with `action='entity_plan'`. **Tell user:** Explain entity type decision, which fields map vs. skip and why.
 
+   > **Presentation (conditional on `mapping_verbosity`):**
+   >
+   > - **Verbose:** Explain the entity type decision and rationale. For each field, state whether it maps or is skipped and why (e.g., "phone maps to PHONE_NUMBER — standard contact attribute" / "internal_id skipped — no Senzing attribute match, not useful for resolution").
+   > - **Concise:** State the entity type and a count of mapped vs. skipped fields without per-field rationale (e.g., "Entity type: Person. 8 fields mapped, 3 skipped.").
+
    **Checkpoint:** Write step 10 to `config/bootcamp_progress.json`.
 
 4. **Map:** Map fields to Senzing attributes via `mapping_workflow(action='schema_mappings')`. Never guess attribute names. For non-Latin data: `search_docs(query="globalization")`. **Tell user:** Show mapping table with reasoning for each decision and confidence score.
 
+   > **Presentation (conditional on `mapping_verbosity`):**
+   >
+   > - **Verbose:** Show the full mapping table with a rationale column explaining the reasoning for each mapping decision and a confidence score per field (e.g., "first_name → NAME_FIRST — standard given name field, confidence: high").
+   > - **Concise:** Show the mapping table with source field → Senzing attribute only, no rationale column or confidence scores (e.g., "first_name → NAME_FIRST").
+
    **Checkpoint:** Write step 11 to `config/bootcamp_progress.json`.
 
 5. **Generate starter code:** Advance with `action='paths'`. **Tell user:** Show a sample target JSON record so they see the output format.
+
+   > **Presentation (conditional on `mapping_verbosity`):**
+   >
+   > - **Verbose:** Show a sample target JSON record with annotations explaining the structure (e.g., which fields became which Senzing attributes, how DATA_SOURCE and RECORD_ID are set, nested vs. flat layout).
+   > - **Concise:** State the output file path and format only (e.g., "Output: data/transformed/customers.jsonl — one JSON record per line").
 
    **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
 
@@ -41,9 +87,19 @@ inclusion: manual
 
 7. **Test:** Run on 10-100 records from `data/samples/`. Validate with `analyze_record`. **Tell user:** Pass/fail, output file path, sample record, any observations.
 
+   > **Presentation (conditional on `mapping_verbosity`):**
+   >
+   > - **Verbose:** Show pass/fail result, the output file path, a sample transformed record, and any observations about the test run (e.g., warnings, skipped records, format issues).
+   > - **Concise:** Show pass/fail result and the output file path only (e.g., "✅ Pass — output: data/transformed/customers_sample.jsonl").
+
    **Checkpoint:** Write step 14 to `config/bootcamp_progress.json`.
 
 8. **Quality analysis:** Run on 1000+ records. Evaluate feature distribution, coverage, quality scores. Advance with `action='verdict'`. **Tell user:** Overall score, per-feature coverage with what it means for matching, any issues found.
+
+   > **Presentation (conditional on `mapping_verbosity`):**
+   >
+   > - **Verbose:** Show the overall quality score, per-feature coverage breakdown with matching implications (e.g., "NAME coverage 98% — strong for matching" / "ADDR coverage 42% — may reduce match accuracy"), and all issues found with explanations.
+   > - **Concise:** Show the overall quality score, a count of mapped vs. unmapped fields, and warnings only (e.g., "Quality: 85/100. 8 mapped, 3 unmapped. ⚠️ Low address coverage may affect matching.").
 
    **Offer visualization:** "Would you like me to create a web page showing the quality analysis? It'll have coverage charts and the field mapping summary." If yes, generate HTML and save to `docs/mapping_[name]_quality.html`.
 

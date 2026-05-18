@@ -1,12 +1,13 @@
 # Bootcamp Preferences
 # User choices persisted during onboarding and ongoing sessions.
-# This file is created during Module 2 (SDK Setup) and updated throughout.
+# This file is created during onboarding and updated throughout.
+# Copy this file to bootcamp_preferences.yaml to use as a starting point.
 
 # Programming language (set during onboarding)
-language: python
+language: null
 
 # Selected track (set during onboarding)
-track: core_bootcamp
+track: null
 
 # Infrastructure settings (set during Module 1 or Module 8+)
 deployment_target: null

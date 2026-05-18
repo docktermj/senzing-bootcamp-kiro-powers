@@ -19,38 +19,15 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 This power works best with Claude Opus 4.6 or similar.
 
-## What's New (Unreleased)
+## What's New in 0.12.0
 
 - Production-readiness pass: all CI validation steps green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `validate_dependencies`, `sync_hook_registry --verify`, `validate_prerequisites`, `validate_progress_ci`); pytest at 2,603 passed / 0 failed / 0 errors
 - CommonMark compliance across all 491 markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
-- `lint_steering.py` updated to recognize H3-nested step headings (`### Step N:`) and any `**Checkpoint:**` marker
-- Repo-root `tests/conftest.py` snaps cwd to project root before each test — eliminated cross-suite cwd drift that caused 115 collection errors
-- Test-suite reconciliation: hook-count constants aligned to 24, `enforce-visualization-offers` multi-module membership accepted, preservation hashes refreshed for `module-02-sdk-setup.md`, obsolete Quick Demo preservation classes removed
+- Consolidated visualization steering: merged visualization-protocol and visualization-reference into `visualization-guide.md` (saves ~3,000 tokens of context budget)
+- User-state config files (`bootcamp_progress.json`, `bootcamp_preferences.yaml`, `er_baseline_vendors.json`) no longer tracked in git — `.example` templates provided instead
+- Hook count reconciled to 28 (added `block-direct-sql` and `enforce-mandatory-gate` to documentation)
 
-## What's New in 0.11.0
-
-- AWS deployment reference (`deployment-aws.md`) — dedicated guidance for ECS/Fargate, RDS, Secrets Manager, CloudWatch, IAM, and cost optimization
-- Skip Step Protocol (`skip-step-protocol.md`) — escape hatch for stuck bootcampers with step-level skip tracking and consequence assessment
-- Phase-splitting for Modules 8, 9, 10 — reduces context pressure by loading only the current phase
-- New hooks for Modules 2, 8, 9, 10: `verify-sdk-setup`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`
-- Conversation protocol extracted to `conversation-protocol.md` (auto-included) — keeps `agent-instructions.md` focused on core rules
-- Integration test (`test_module_flow_integration.py`) validating multi-module state transitions across all tracks
-- Enhanced `validate_module.py` checks for Modules 8–11 (benchmark environment, security utilities, runbooks, Dockerfile)
-- Module 3 renamed from Quick Demo to System Verification — uses TruthSet data with MCP-generated verification code; authoritative steering file is `module-03-system-verification.md`
-- Hook consolidation — `feedback-submission-reminder` and `capture-feedback` merged into `ask-bootcamper` and `review-bootcamper-input` respectively; `enforce-feedback-path` and `enforce-working-directory` merged into `enforce-file-path-policies`; `verify-senzing-facts` and `offer-visualization` removed (25 hooks total)
-- Windows support improvements — Visual Studio Build Tools check in `preflight.py`, Windows-specific pitfalls section in `common-pitfalls.md`, PowerShell execution policy guidance, Windows Terminal recommendation
-- Steering best practices alignment — `common-pitfalls.md` changed to manual inclusion, context budget guidelines followed
-- Deprecated `preflight_check.py` removed
-
-## What's New in 0.10.0
-
-- Data source registry — `config/data_sources.yaml` tracks every source's quality score, mapping status, and load status across Modules 4–6. The agent maintains it automatically; view it with `data_sources.py` or in `status.py` output.
-- Team bootcamp mode — `config/team.yaml` enables multi-user sessions with per-member progress tracking, a team dashboard (`team_dashboard.py`), and consolidated feedback reports (`merge_feedback.py`). Supports both co-located (shared repo) and distributed (separate repos) setups. See `docs/guides/COLLABORATION_GUIDE.md` for details.
-- Context budget tracking — `file_metadata` in `steering-index.yaml` provides per-file token counts and size categories so the agent can manage context window pressure. Use `measure_steering.py` to keep counts up to date.
-- Interactive entity graph visualization — the agent guides bootcampers through building their own D3.js force-directed graph with entity detail panels, clustering, and search. Load `steering/visualization-guide.md` during Module 7.
-- Progress repair tool (`scripts/repair_progress.py`) — reconstructs `bootcamp_progress.json` from project artifacts when state is corrupted.
-- Steering file index (`steering/steering-index.yaml`) — machine-readable mapping for faster agent file selection.
-- CI validation via GitHub Actions for power integrity, CommonMark, and tests.
+See the CHANGELOG for the full release history.
 
 ## What This Bootcamp Does
 
@@ -232,7 +209,7 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available (26 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-file-path-policies` ⭐, `enforce-single-question` ⭐, `enforce-visualization-offers`, `gate-module3-visualization`, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
+Available (28 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-file-path-policies` ⭐, `enforce-single-question` ⭐, `block-direct-sql` ⭐, `enforce-visualization-offers`, `gate-module3-visualization`, `enforce-mandatory-gate`, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
 
 ## Project Directory Structure
 
@@ -274,6 +251,7 @@ python3 senzing-bootcamp/scripts/preflight.py             # Environment verifica
 python3 senzing-bootcamp/scripts/install_hooks.py         # Install hooks
 python3 senzing-bootcamp/scripts/backup_project.py        # Backup project
 python3 senzing-bootcamp/scripts/validate_power.py        # Validate power integrity
+python3 senzing-bootcamp/scripts/measure_steering.py      # Update steering token counts
 python3 senzing-bootcamp/scripts/bootcamp_analytics.py    # Session analytics
 python3 senzing-bootcamp/scripts/bootcamp_analytics.py --compare  # With baseline comparison
 python3 senzing-bootcamp/scripts/compare_results.py --baseline <file> --current <file>

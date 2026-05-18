@@ -116,10 +116,10 @@ class TestEnforceVisualizationOffersModules:
     def test_prompt_references_visualization_protocol(
         self, hook_prompt: str
     ) -> None:
-        """Hook prompt references visualization-protocol.md for offer templates."""
-        assert "visualization-protocol" in hook_prompt.lower(), (
-            f"{HOOK_ID} prompt does not reference visualization-protocol.md. "
-            f"The hook needs the protocol for offer templates across modules."
+        """Hook prompt references visualization-guide.md for offer templates."""
+        assert "visualization-guide" in hook_prompt.lower(), (
+            f"{HOOK_ID} prompt does not reference visualization-guide.md. "
+            f"The hook needs the guide for offer templates across modules."
         )
 
     def test_prompt_references_tracker(self, hook_prompt: str) -> None:

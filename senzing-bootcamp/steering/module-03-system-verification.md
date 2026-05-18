@@ -301,7 +301,7 @@ Generate and verify a rich interactive visualization web service demonstrating e
 
 **Constraints:** stdlib HTTP server, D3.js CDN, single HTML file, all artifacts in `src/system_verification/web_service/`. Endpoint verification timeout: 10 seconds per endpoint.
 
-Follow the Web Service Delivery Sequence from `visualization-guide.md`. Maintain compatibility with `visualization-protocol.md` checkpoint map entry `m3_demo_results`.
+Follow the Web Service Delivery Sequence from `visualization-guide.md`. Maintain compatibility with `visualization-guide.md` checkpoint map entry `m3_demo_results`.
 
 **Checkpoint:** Write to `config/bootcamp_progress.json`:
 

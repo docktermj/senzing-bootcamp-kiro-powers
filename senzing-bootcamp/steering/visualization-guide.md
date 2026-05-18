@@ -4,38 +4,115 @@ inclusion: manual
 
 # Entity Graph Visualization Guide
 
-**Purpose:** Walk the bootcamper through building an interactive D3.js entity graph with data extracted from Senzing in their chosen language.
+**Purpose:** Walk the bootcamper through building an interactive D3.js entity graph with data extracted from Senzing in their chosen language. Also serves as the single authoritative definition of the visualization offer flow used across Modules 3, 5, 7, and 8.
 
 **Before/After:** You have query results but no visual way to explore them. After: a self-contained HTML graph with entities, relationships, match strengths, and interactive features.
 
 **Prerequisites:** ✅ Module 5/6 complete (data loaded) · ✅ Query programs working (Module 7 step 3)
 
-**Triggers:** Load this file when: (1) after exploratory queries in Module 7 step 3, (2) bootcamper asks to "visualize" / "show entity graph" / "generate a visualization", (3) after documenting findings in Module 7. When done, return to `module-07-query-visualize-discover.md`.
+**Triggers:** Load this file when: (1) a module steering file instructs you to execute a visualization checkpoint, (2) after exploratory queries in Module 7 step 3, (3) bootcamper asks to "visualize" / "show entity graph" / "generate a visualization", (4) after documenting findings in Module 7. When done, return to the current module steering file.
 
-## Agent Workflow
+## Visualization Offer Protocol
 
-1. **Visualization Prompt — choose delivery mode**
+### Checkpoint Map
 
-   Before generating any visualization output, present this choice:
+```yaml
+checkpoints:
+  module_3:
+    - id: "m3_demo_results"
+      trigger: "Verification results displayed successfully"
+      context: "these system verification results"
+      types: [Static_HTML_Report, Web_Service_Dashboard]
+  module_5:
+    - id: "m5_quality_assessment"
+      trigger: "Quality assessment scoring complete"
+      context: "this data quality assessment"
+      types: [Static_HTML_Report]
+  module_7:
+    - id: "m7_exploratory_queries"
+      trigger: "Exploratory queries produce results"
+      context: "your resolved entities and relationships"
+      types: [Static_HTML_Report, Interactive_D3_Graph, Web_Service_Dashboard]
+    - id: "m7_findings_documented"
+      trigger: "Findings documented"
+      context: "your query results and validation metrics"
+      types: [Static_HTML_Report, Interactive_D3_Graph, Web_Service_Dashboard]
+  module_8:
+    - id: "m8_performance_report"
+      trigger: "Performance report generated"
+      context: "the performance benchmarks and optimization results"
+      types: [Static_HTML_Report, Web_Service_Dashboard]
+```
 
-   👉 "Before I generate this visualization, would you like it as:
-   1. **Static HTML file** — a self-contained file you can open directly in your browser, no server needed
-   2. **Web service** — a localhost server with live SDK queries, data refresh, and interactive entity details
+### Offer Template
 
-   Which would you prefer?"
+When you reach a checkpoint, use this exact template. Replace `{context}` with the checkpoint's context string and include only the types listed for that checkpoint.
 
-   > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
+```text
+Would you like me to create a visualization of {context}?
 
-   - If the bootcamper chooses **Static HTML file** → continue with step 2 below.
-   - If the bootcamper chooses **Web service** → load `visualization-web-service.md` and follow that workflow instead.
+{numbered_list_of_available_types}
+```
 
-2. **Gather requirements**
+Each type in the numbered list uses **bold name + one-line description**:
+
+1. **Static HTML file** — a self-contained file you can open directly in your browser, no server needed
+2. **Interactive D3 graph** — a force-directed network graph showing entities, relationships, and match strengths
+3. **Web service** — a localhost server with live SDK queries, data refresh, and interactive details
+
+Only include the types available for the current checkpoint. Number them sequentially starting at 1.
+
+After presenting the options, end your response with:
+
+> 🛑 STOP — End your response here. Wait for the bootcamper's input.
+
+Do NOT continue past this point. Wait for the bootcamper to choose an option or decline.
+
+### Delivery-Mode Selection
+
+After the bootcamper selects a visualization type, present the delivery-mode choice.
+
+**Skip condition:** If the checkpoint's available types list contains ONLY `Static_HTML_Report` (e.g., Module 5), skip this question entirely and default to static delivery.
+
+For all other checkpoints, present:
+
+> Now that you've chosen **{chosen_type}**, how would you like it delivered?
+>
+> 1. **Static HTML** — Self-contained file with data baked in. Open directly in your browser, no server needed. Does not update with new data.
+> 2. **Web service + HTML** — A small localhost HTTP service with live SDK queries. Data refreshes on reload. Requires a running local process.
+
+🛑 STOP — End your response here. Wait for the bootcamper's input before proceeding.
+
+### Dispatch Rules
+
+After the bootcamper selects both a visualization type and a delivery mode:
+
+- **Web service delivery mode (any type):** Load `visualization-web-service.md` for scaffolding and lifecycle management.
+- **Static HTML delivery mode (Static_HTML_Report type):** Generate the visualization inline following the generation workflow below. Do NOT load `visualization-web-service.md`.
+- **Static HTML delivery mode (Interactive_D3_Graph or Web_Service_Dashboard type):** Follow the generation workflow below for graph layout, data binding, and template structure. Do NOT load `visualization-web-service.md`.
+
+### Decline Handling
+
+If the bootcamper declines the visualization offer:
+
+- Acknowledge with a single sentence (e.g., "No problem — we'll continue with the module.").
+- Do NOT re-offer the same visualization at this checkpoint.
+- Do NOT ask follow-up questions about why they declined.
+- Continue the module workflow immediately.
+
+### Explicit-Request Override
+
+If the bootcamper explicitly requests a visualization at any point — regardless of prior declines or existing tracker entries — honor the request immediately. Update any `"declined"` tracker entry to `"offered"` and proceed.
+
+## Static HTML Generation Workflow
+
+1. **Gather requirements**
 
    👉 "Which data source(s) should the graph include?"
 
    > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 
-3. **Generate data extraction code**
+2. **Generate data extraction code**
 
    > **Agent instruction:** Read Chosen_Language from `config/bootcamp_preferences.yaml`. Load the appropriate language steering file. Use `get_sdk_reference` for SDK signatures. Use `generate_scaffold` with `workflow='query'`. Use `find_examples` for query patterns.
 
@@ -45,7 +122,7 @@ inclusion: manual
 
    > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 
-4. **Generate HTML visualization**
+3. **Generate HTML visualization**
 
    > **Agent instruction:** Generate a single self-contained HTML file (D3.js v7, CSS, data inline). Include only selected features per guidance below. Wrap D3.js init in try/catch with user-friendly error display.
 
@@ -55,32 +132,24 @@ inclusion: manual
 
    > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 
-5. **Iterate and refine**
+4. **Iterate and refine**
 
    👉 "Want any changes to the graph, features, or extraction?"
 
    > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 
-   Regenerate affected components using the same MCP tools. When done, return to `module-07-query-visualize-discover.md`.
+   Regenerate affected components using the same MCP tools. When done, return to the current module steering file.
 
 ## Web Service Delivery Sequence
 
 When presenting a completed web service to the bootcamper, the server is started automatically as a background process. ALWAYS follow this exact sequence:
 
-1. **Start the server automatically:** Use `controlBashProcess` with action `start` and the language-appropriate start command (e.g., `python src/web/app.py`, `dotnet run`, `cargo run`, `npx ts-node src/web/app.ts`) to launch the server as a background process.
-2. **Verify the server is running:** Read the process output using `getProcessOutput` and confirm the server started successfully — look for messages like "running on", "listening on", or "started on port". Wait briefly if output is not yet available.
-3. **Present URL, manual restart command, and stop instructions:** Once verified:
-   - Present the URL: "Your server is running — open `http://localhost:<port>` in your browser"
-   - Provide the manual restart command for reference: "If you need to restart the server later, run: `<command>`"
-   - Provide stop instructions: "To stop the server, I can stop the background process for you, or if you restarted it manually, press Ctrl+C in that terminal"
-4. **Fallback on failure:** If the server fails to start (port conflict, missing dependencies, SDK error, or no "running on" message after a reasonable wait):
-   - Report the error to the bootcamper with any relevant output
-   - Provide troubleshooting guidance (e.g., check if the port is in use, verify dependencies are installed)
-   - Fall back to manual instructions: "Run this command to start the server: `<command>`"
+1. **Start the server automatically:** Use `controlBashProcess` with action `start` and the language-appropriate start command.
+2. **Verify the server is running:** Read the process output and confirm the server started successfully — look for "running on", "listening on", or "started on port".
+3. **Present URL, manual restart command, and stop instructions.**
+4. **Fallback on failure:** Report the error, provide troubleshooting guidance, fall back to manual instructions.
 
 **NEVER present a localhost URL before confirming the server is actually running.**
-
-This sequence applies to ALL web service visualizations regardless of module. Static HTML file visualizations are not affected — those are opened directly without a server.
 
 ## Offline vs Online Decision Matrix
 
@@ -91,8 +160,120 @@ This sequence applies to ALL web service visualizations regardless of module. St
 | No persistent network access | Static HTML | No server or database required |
 | Iterating on data quality with frequent reloads | Web Service | `/refresh` avoids re-running extraction |
 
-## Reference
+## Graph Data Model Schema
 
-For detailed schemas, feature specifications, match strength classification, error handling, and file placement rules, load:
+Top-level: `{ "metadata": {...}, "nodes": [EntityNode], "edges": [RelationshipEdge] }`
+Metadata: `dataSource` (string), `generatedAt` (ISO 8601), `entityCount` (number), `recordCount` (number), `relationshipCount` (number), `dataSources` (string[])
 
-#[[file:senzing-bootcamp/steering/visualization-reference.md]]
+| EntityNode Field | Type | Description |
+|------------------|------|-------------|
+| entityId | number | Senzing entity ID |
+| primaryName | string | Best name from resolved entity |
+| recordCount | number | Contributing record count |
+| dataSources | string[] | Unique data source names |
+| primaryDataSource | string | Data source with most records |
+| records | object[] | `{ recordId, dataSource }` per record |
+| features | object | Feature type → string[] (NAME, ADDRESS, PHONE, EMAIL) |
+
+| RelationshipEdge Field | Type | Description |
+|------------------------|------|-------------|
+| sourceEntityId | number | Source entity ID |
+| targetEntityId | number | Target entity ID |
+| matchLevel | number | Senzing match level integer |
+| matchStrength | string | "strong", "moderate", or "weak" |
+| sharedFeatures | string[] | Feature types shared between entities |
+
+## Match Strength Classification
+
+| Senzing Match Level | Category | Edge Color | Hex |
+|---------------------|----------|------------|-----|
+| 1 (resolved) | strong | green | #22c55e |
+| 2 (possibly same) | moderate | orange | #f59e0b |
+| 3+ (possibly related) | weak | red | #ef4444 |
+
+Cluster node coloring by average match level: ≤1.5 → green, ≤2.5 → orange, >2.5 → red, no relationships → gray (#9ca3af).
+
+## Visualization Feature Guidance
+
+- **D3.js Force Layout:** D3.js v7 force simulation. Node radius proportional to record count. Edge color by match strength. Drag-to-reposition, zoom, pan. Tooltip on hover.
+- **Detail Panel:** Click node → side panel with entity ID, primary name, data sources, record list, shared features. Click away to dismiss.
+- **Cluster Highlighting:** Dropdown: data source coloring (`schemeCategory10`), match strength coloring, no clustering. Legend updates per mode.
+- **Search & Filter:** Text input filtering by name or record ID (case-insensitive substring). Matches highlighted, non-matches dimmed. Clear button.
+- **Statistics:** Total entities, records, relationships. Unique data source count. Cross-source match rate.
+
+## Static HTML Capabilities
+
+Fully available without any running server: force layout, cluster highlighting, local search/filter, detail panel (from inline JSON), statistics display.
+
+**Limitations:** No live entity detail fetching, no real-time search by attributes, no data refresh without re-running extraction. Recommended max: 500 entities.
+
+## Error Handling
+
+| Error Condition | Handling | User Feedback |
+|-----------------|----------|---------------|
+| SDK not initialized / missing DB | Exit with error | "Senzing database not found. Complete Module 5 first." |
+| Empty database | Exit with error | "No entities found. Load data first." |
+| Per-entity SDK error | Log, skip, continue | "Warning: Failed to retrieve entity for record {record_id}. Skipping." |
+| Per-relationship SDK error | Log, skip, continue | "Warning: Failed to retrieve relationships for entity {entity_id}. Skipping." |
+| Entity count > 500 | Warn, offer limit | "Warning: {count} entities. Rendering may be slow. Limit to 500?" |
+| No relationships | Continue, isolated nodes | "No relationships found. Graph will show isolated nodes." |
+
+Browser-side: try/catch around D3.js init; display user-friendly error on failure.
+
+## File Placement
+
+| Generated File | Location |
+|----------------|----------|
+| Extraction code | `src/query/extract_graph_data.[ext]` |
+| Graph data JSON | `data/temp/graph_data.json` |
+| Visualization HTML | `docs/entity_graph.html` |
+| Server code | `src/server/` (web service only) |
+
+## Visualization Tracker
+
+The visualization tracker lives at `config/visualization_tracker.json`. Use it to record and check visualization offer state.
+
+### Schema
+
+```json
+{
+  "version": "1.1.0",
+  "offers": [
+    {
+      "module": 7,
+      "checkpoint_id": "m7_exploratory_queries",
+      "timestamp": "2025-07-15T10:30:00Z",
+      "status": "offered",
+      "chosen_type": null,
+      "delivery_mode": null,
+      "output_path": null
+    }
+  ]
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| module | integer | Module number (3, 5, 7, or 8) |
+| checkpoint_id | string | Checkpoint identifier from the map above |
+| timestamp | string (ISO 8601) | When the event occurred |
+| status | string | One of: `offered`, `accepted`, `declined`, `generated` |
+| chosen_type | string or null | Set on accept |
+| delivery_mode | string or null | `"static"` or `"web_service"`. Null when `offered`. Defaults to `"static"` for Module 5. |
+| output_path | string or null | Set on generate (relative path to the output file) |
+
+### Valid State Transitions
+
+- `offered` → `accepted`: Set `chosen_type` AND `delivery_mode`
+- `offered` → `declined`: Leave `delivery_mode` as `null`
+- `accepted` → `generated`: Set `output_path`
+
+### Read/Write Instructions
+
+1. **Before offering:** Read `config/visualization_tracker.json`. If an entry with the current `checkpoint_id` exists, skip the offer.
+2. **On offer:** Write a new entry with `status: "offered"`.
+3. **On accept:** Update `status` to `"accepted"`, set `chosen_type` and `delivery_mode`.
+4. **On decline:** Update `status` to `"declined"`.
+5. **On generate:** Update `status` to `"generated"` and set `output_path`.
+
+If `config/visualization_tracker.json` does not exist, create it with `{"version": "1.1.0", "offers": []}`.

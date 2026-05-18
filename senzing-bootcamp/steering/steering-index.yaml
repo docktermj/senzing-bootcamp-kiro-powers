@@ -284,7 +284,7 @@ file_metadata:
     token_count: 1919
     size_category: medium
   hook-registry-detail.md:
-    token_count: 10017
+    token_count: 10019
     size_category: large
   hook-registry.md:
     token_count: 1726
@@ -323,10 +323,10 @@ file_metadata:
     token_count: 4306
     size_category: large
   module-03-phase2-visualization.md:
-    token_count: 2035
+    token_count: 2034
     size_category: large
   module-03-system-verification.md:
-    token_count: 5991
+    token_count: 5990
     size_category: large
   module-04-data-collection.md:
     token_count: 3370
@@ -335,7 +335,7 @@ file_metadata:
     token_count: 614
     size_category: medium
   module-05-phase1-quality-assessment.md:
-    token_count: 1725
+    token_count: 1724
     size_category: medium
   module-05-phase2-data-mapping.md:
     token_count: 2964
@@ -359,7 +359,7 @@ file_metadata:
     token_count: 1952
     size_category: medium
   module-07-query-visualize-discover.md:
-    token_count: 2973
+    token_count: 2971
     size_category: large
   module-08-performance.md:
     token_count: 1278
@@ -449,14 +449,8 @@ file_metadata:
     token_count: 1243
     size_category: medium
   visualization-guide.md:
-    token_count: 1452
-    size_category: medium
-  visualization-protocol.md:
-    token_count: 1996
-    size_category: medium
-  visualization-reference.md:
-    token_count: 1004
-    size_category: medium
+    token_count: 3432
+    size_category: large
   visualization-web-service.md:
     token_count: 2104
     size_category: large
@@ -465,7 +459,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 136522
+  total_tokens: 135499
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

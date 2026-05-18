@@ -117,14 +117,14 @@ inclusion: manual
 3c. **Entity graph visualization checkpoint:**
 
    **Visualization checkpoint:** Follow the Visualization Protocol.
-   Load `visualization-protocol.md` and execute the offer for checkpoint `m7_exploratory_queries`.
+   Load `visualization-guide.md` and execute the offer for checkpoint `m7_exploratory_queries`.
 
    **Checkpoint:** Write step 3c to `config/bootcamp_progress.json`.
 
 3d. **Results dashboard visualization checkpoint:**
 
    **Visualization checkpoint:** Follow the Visualization Protocol.
-   Load `visualization-protocol.md` and execute the offer for checkpoint `m7_findings_documented`.
+   Load `visualization-guide.md` and execute the offer for checkpoint `m7_findings_documented`.
 
    **Checkpoint:** Write step 3d to `config/bootcamp_progress.json`.
 
@@ -150,7 +150,7 @@ Present the query completion status and path options to the bootcamper:
 
 The bootcamper can continue to Module 8 (Performance Testing) or stop here if this is a good stopping point for their project.
 
-**Success indicator**: ✅ Query programs created and tested + queries answer business problem + visualizations offered (entity graph and results dashboard)
+**Success indicator:** ✅ Query programs created and tested + queries answer business problem + visualizations offered (entity graph and results dashboard)
 
 ## Error Handling
 

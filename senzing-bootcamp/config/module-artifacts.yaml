@@ -1,5 +1,10 @@
 version: "1"
 
+# NOTE: All paths below are relative to the BOOTCAMPER'S working directory
+# (the project they create during the bootcamp), NOT relative to this power's
+# source tree. The agent creates these files/directories at runtime as the
+# bootcamper progresses through modules.
+
 modules:
   4:
     produces:

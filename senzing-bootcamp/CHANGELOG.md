@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-05-18
+
 ### Added
 
 - Repo-root `tests/conftest.py` that snaps cwd to the project root before every test — eliminated cross-suite cwd drift that caused 115 collection errors when running both `senzing-bootcamp/tests/` and `tests/` in a single pytest invocation
+- `.example` template files for user-state configs (`bootcamp_progress.json.example`, `bootcamp_preferences.yaml.example`, `er_baseline_vendors.json.example`) — user-state files are no longer tracked in git
+- Consolidated visualization steering: merged `visualization-protocol.md` and `visualization-reference.md` into `visualization-guide.md` (saves ~3,000 tokens of context budget)
 
 ### Changed
 

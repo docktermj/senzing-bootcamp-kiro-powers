@@ -23,7 +23,7 @@ from hypothesis import strategies as st
 _STEERING_FILE: Path = (
     Path(__file__).resolve().parent.parent
     / "steering"
-    / "visualization-protocol.md"
+    / "visualization-guide.md"
 )
 
 _HOOKS_DIR: Path = (

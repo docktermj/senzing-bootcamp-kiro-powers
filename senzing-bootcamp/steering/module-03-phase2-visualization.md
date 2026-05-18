@@ -8,7 +8,7 @@ inclusion: manual
 
 **Prerequisites:** Phase 1 Steps 1–8 complete (all verification checks passed, TruthSet data loaded and validated)
 
-**Pattern sources:** Follow `visualization-guide.md` Web Service Delivery Sequence for server lifecycle. Follow `visualization-protocol.md` checkpoint map entry `m3_demo_results` for offer/tracking flow.
+**Pattern sources:** Follow `visualization-guide.md` Web Service Delivery Sequence for server lifecycle. Follow `visualization-guide.md` checkpoint map entry `m3_demo_results` for offer/tracking flow.
 
 **Implementation constraints:**
 

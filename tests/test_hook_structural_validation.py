@@ -1,4 +1,4 @@
-"""Structural validation tests for all 25 hooks.
+"""Structural validation tests for all hooks.
 
 Verifies JSON structure, required fields, event types, conditional fields,
 prompt length, version format, and hook file count.
@@ -44,7 +44,7 @@ _hook_ids = [hook_id for hook_id, _ in _hook_data]
 # ===========================================================================
 
 class TestHookJsonStructure:
-    """Verify all 25 hooks parse as valid JSON and contain required fields."""
+    """Verify all hooks parse as valid JSON and contain required fields."""
 
     @pytest.mark.parametrize("hook_path", _hook_files, ids=[p.name for p in _hook_files])
     def test_parses_as_valid_json(self, hook_path: Path):

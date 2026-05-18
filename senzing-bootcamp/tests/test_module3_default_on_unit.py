@@ -57,6 +57,8 @@ def _find_module3_table_row(content: str) -> str | None:
     """Find the Module 3 row in a markdown table.
 
     Looks for a table row containing '| 3' followed by content.
+    Matches both compact format (| 3 | topic |) and descriptive format
+    (| 3 — Name | description |).
 
     Args:
         content: Markdown text containing a table.
@@ -65,7 +67,7 @@ def _find_module3_table_row(content: str) -> str | None:
         The matched table row or None if not found.
     """
     for line in content.splitlines():
-        if re.match(r"\|\s*3\s*\|", line):
+        if re.match(r"\|\s*3\s*[\|—]", line):
             return line
     return None
 

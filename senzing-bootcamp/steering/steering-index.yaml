@@ -198,6 +198,17 @@ keywords:
   what's new: whats-new.md
   changelog: whats-new.md
   updates: whats-new.md
+  conversation examples: conversation-examples.md
+  question examples: conversation-examples.md
+  violation examples: conversation-examples.md
+  mcp usage: mcp-usage-reference.md
+  sdk method discovery: mcp-usage-reference.md
+  sql redirect: mcp-usage-reference.md
+  switch track: track-switching.md
+  change track: track-switching.md
+  entity resolution intro: entity-resolution-intro.md
+  what is entity resolution: entity-resolution-intro.md
+  data processing: data-processing-reference.md
   context budget: agent-context-management.md
   pacing: agent-context-management.md
   unload: agent-context-management.md

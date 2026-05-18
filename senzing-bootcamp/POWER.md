@@ -169,21 +169,7 @@ analyze_record(record='{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001","NAME_FULL"
 explain_error_code(error_code='0023')
 ```
 
-## Bootcamp Modules
-
-| Module | Topic                                          |
-|--------|------------------------------------------------|
-| 1      | Understand Business Problem                    |
-| 2      | Set Up SDK                                     |
-| 3      | System Verification                            |
-| 4      | Data Collection Policy                         |
-| 5      | Data Quality & Mapping (with optional test load)  |
-| 6      | Data Processing                                |
-| 7      | Query, Visualize, and Discover                 |
-| 8      | Performance Testing and Benchmarking           |
-| 9      | Security Hardening                             |
-| 10     | Monitoring and Observability                   |
-| 11     | Package & Deploy                               |
+## Module Progression
 
 Modules are progressive but iterative. Skip ahead options: have Entity Specification data (skip to 6), not deploying to production (skip 8-11). Modules 8-11 are production-focused and optional for learning/evaluation.
 

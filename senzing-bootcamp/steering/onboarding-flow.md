@@ -88,6 +88,7 @@ Execute these setup actions in order. Do not narrate the details to the user.
    | Hook | Impact Message |
    | ---- | -------------- |
    | ask-bootcamper | "Session summaries, closing questions, and post-completion feedback reminders will not be automatically generated when the agent stops." |
+   | block-direct-sql | "Direct SQL statements against the Senzing database will not be automatically detected and blocked." |
    | code-style-check | "Code style will not be automatically checked on save." |
    | commonmark-validation | "Markdown files will not be automatically checked for CommonMark compliance." |
    | enforce-file-path-policies | "Feedback may be written to incorrect file locations, and file writes to /tmp or external paths will not be automatically blocked." |

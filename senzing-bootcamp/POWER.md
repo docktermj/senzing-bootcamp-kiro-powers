@@ -25,7 +25,7 @@ This power works best with Claude Opus 4.6 or similar.
 - CommonMark compliance across all 491 markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
 - Consolidated visualization steering: merged visualization-protocol and visualization-reference into `visualization-guide.md` (saves ~3,000 tokens of context budget)
 - User-state config files (`bootcamp_progress.json`, `bootcamp_preferences.yaml`, `er_baseline_vendors.json`) no longer tracked in git — `.example` templates provided instead
-- Hook count reconciled to 28 (added `block-direct-sql` and `enforce-mandatory-gate` to documentation)
+- Hook count reconciled to 29 (added `block-direct-sql`, `enforce-mandatory-gate`, and `enforce-gate-on-stop` to documentation)
 
 See the CHANGELOG for the full release history.
 
@@ -246,7 +246,7 @@ For the complete script reference with all flags and options, see `docs/guides/S
 - System Architecture: `docs/diagrams/system-architecture.md` (shows how SDK, database, programs, and optional layers fit together)
 - Quality Scoring Methodology: `docs/guides/QUALITY_SCORING_METHODOLOGY.md`
 - Performance Baselines: `docs/guides/PERFORMANCE_BASELINES.md`
-- Templates: `templates/data_collection_checklist.md`, `templates/stakeholder_summary.md`, `templates/transformation_lineage.md`, `templates/uat_test_cases.md`
+- Templates: `templates/data_collection_checklist.md`, `templates/stakeholder_summary.md`, `templates/transformation_lineage.md`, `templates/uat_test_cases.md`, `templates/performance_report.md`, `templates/security_checklist.md`, `templates/monitoring_runbook.md`, `templates/deployment_plan.md`
 
 ## Senzing Contact Information
 

@@ -75,9 +75,9 @@
 
 **Trigger conditions:** [When to rollback — e.g., error rate >5%, P1 incident, data corruption]
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 **Rollback verification:**
 

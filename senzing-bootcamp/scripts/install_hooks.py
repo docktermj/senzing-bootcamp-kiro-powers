@@ -45,6 +45,10 @@ HOOKS = [
      "Validates Markdown files follow CommonMark spec"),
     ("enforce-file-path-policies.kiro.hook", "to make sure the file is in the project directory",
      "Enforces feedback and working-directory path policies"),
+    ("enforce-single-question.kiro.hook", "to enforce one question at a time",
+     "Prevents compound questions that create ambiguity"),
+    ("block-direct-sql.kiro.hook", "to block direct SQL against the Senzing database",
+     "Enforces SDK abstraction — all data access via SDK methods"),
     # Module hooks
     ("validate-business-problem.kiro.hook", "to validate your business problem",
      "Validates Module 1 problem definition before proceeding"),
@@ -54,6 +58,10 @@ HOOKS = [
      "Verifies Module 3 system verification against TruthSet"),
     ("gate-module3-visualization.kiro.hook", "to gate Module 3 completion on visualization step",
      "Blocks Module 3 completion until visualization step is done or skipped"),
+    ("enforce-mandatory-gate.kiro.hook", "to enforce mandatory gate execution",
+     "Blocks step advancement past mandatory gates"),
+    ("enforce-gate-on-stop.kiro.hook", "to enforce mandatory gate execution on agent stop",
+     "Catches mandatory gate violations retroactively"),
     ("validate-data-files.kiro.hook", "to validate data files",
      "Checks data file format and readability when added to data/raw/"),
     ("data-quality-check.kiro.hook", "to check data quality",
@@ -95,10 +103,8 @@ ESSENTIAL = {
     "code-style-check.kiro.hook",
     "commonmark-validation.kiro.hook",
     "enforce-file-path-policies.kiro.hook",
-    "backup-project-on-request.kiro.hook",
-    "error-recovery-context.kiro.hook",
-    "git-commit-reminder.kiro.hook",
-    "module-completion-celebration.kiro.hook",
+    "enforce-single-question.kiro.hook",
+    "block-direct-sql.kiro.hook",
 }
 
 

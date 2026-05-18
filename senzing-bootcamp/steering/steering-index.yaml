@@ -152,7 +152,7 @@ onboarding:
   phases:
     phase1-setup-intro:
       file: onboarding-flow.md
-      token_count: 4968
+      token_count: 5210
       size_category: large
       step_range: [0, "4c"]
     phase2-track-setup:
@@ -436,7 +436,7 @@ file_metadata:
     token_count: 1212
     size_category: medium
   onboarding-flow.md:
-    token_count: 5178
+    token_count: 5210
     size_category: large
   onboarding-phase2-track-setup.md:
     token_count: 990
@@ -485,7 +485,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 139624
+  total_tokens: 139656
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

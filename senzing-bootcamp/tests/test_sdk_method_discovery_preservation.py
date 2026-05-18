@@ -22,7 +22,7 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _AGENT_INSTRUCTIONS = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
 _MCP_DECISION_TREE = _BOOTCAMP_DIR / "steering" / "mcp-tool-decision-tree.md"
-_MODULE_07 = _BOOTCAMP_DIR / "steering" / "module-07-query-validation.md"
+_MODULE_07 = _BOOTCAMP_DIR / "steering" / "module-07-query-visualize-discover.md"
 
 
 # ---------------------------------------------------------------------------
@@ -392,7 +392,7 @@ class TestFlagSelectionProtocolPreserved:
 
 
 class TestModule07AgentInstructionsPreserved:
-    """module-07-query-validation.md agent instructions about flag lookups preserved.
+    """module-07-query-visualize-discover.md agent instructions about flag lookups preserved.
 
     **Validates: Requirements 3.4**
 
@@ -417,28 +417,28 @@ class TestModule07AgentInstructionsPreserved:
         """Assert how_entity is mentioned in module-07 agent instructions."""
         content = _MODULE_07.read_text(encoding="utf-8")
         assert "how_entity" in content, (
-            "how_entity not found in module-07-query-validation.md"
+            "how_entity not found in module-07-query-visualize-discover.md"
         )
 
     def test_module07_why_entities_mentioned(self) -> None:
         """Assert why_entities is mentioned in module-07 agent instructions."""
         content = _MODULE_07.read_text(encoding="utf-8")
         assert "why_entities" in content, (
-            "why_entities not found in module-07-query-validation.md"
+            "why_entities not found in module-07-query-visualize-discover.md"
         )
 
     def test_module07_why_records_mentioned(self) -> None:
         """Assert why_records is mentioned in module-07 agent instructions."""
         content = _MODULE_07.read_text(encoding="utf-8")
         assert "why_records" in content, (
-            "why_records not found in module-07-query-validation.md"
+            "why_records not found in module-07-query-visualize-discover.md"
         )
 
     def test_module07_why_record_in_entity_mentioned(self) -> None:
         """Assert why_record_in_entity is mentioned in module-07."""
         content = _MODULE_07.read_text(encoding="utf-8")
         assert "why_record_in_entity" in content, (
-            "why_record_in_entity not found in module-07-query-validation.md"
+            "why_record_in_entity not found in module-07-query-visualize-discover.md"
         )
 
     def test_module07_feature_scores_flag_instruction(self) -> None:

@@ -43,7 +43,7 @@ MODULE_NAMES: dict[int, str] = {
     4: "Data Collection",
     5: "Data Quality & Mapping",
     6: "Data Processing",
-    7: "Query & Visualize",
+    7: "Query, Visualize, and Discover",
     8: "Performance",
     9: "Security",
     10: "Monitoring",

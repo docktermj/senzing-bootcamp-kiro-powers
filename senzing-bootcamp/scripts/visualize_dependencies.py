@@ -184,7 +184,7 @@ def _default_modules() -> dict[int, dict]:
         4: {"name": "Data Collection", "requires": [1]},
         5: {"name": "Data Quality & Mapping", "requires": [4]},
         6: {"name": "Data Processing", "requires": [2, 5]},
-        7: {"name": "Query & Visualize", "requires": [6]},
+        7: {"name": "Query, Visualize, and Discover", "requires": [6]},
         8: {"name": "Performance", "requires": [7]},
         9: {"name": "Security", "requires": [8]},
         10: {"name": "Monitoring", "requires": [9]},

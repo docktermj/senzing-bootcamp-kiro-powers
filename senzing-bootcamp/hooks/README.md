@@ -283,7 +283,7 @@ You can customize any hook by editing the JSON file:
 - ✅ Run Tests After Change
 - ✅ Verify Generated Code
 
-### Module 7 (Query & Visualize)
+### Module 7 (Query, Visualize, and Discover)
 
 - ✅ Enforce Visualization Offers
 

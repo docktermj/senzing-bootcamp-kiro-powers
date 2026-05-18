@@ -29,7 +29,7 @@ modules:
     requires: [2, 5]
     skip_if: "Data already loaded"
   7:
-    name: "Query & Visualize"
+    name: "Query, Visualize, and Discover"
     requires: [6]
     skip_if: "Already validated"
   8:

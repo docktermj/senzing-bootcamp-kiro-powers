@@ -76,7 +76,7 @@ modules:
         token_count: 1950
         size_category: medium
         step_range: [20, 27]
-  7: module-07-query-validation.md
+  7: module-07-query-visualize-discover.md
   8:
     root: module-08-performance.md
     phases:
@@ -230,7 +230,7 @@ file_metadata:
     token_count: 704
     size_category: medium
   agent-instructions.md:
-    token_count: 3367
+    token_count: 3498
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -242,7 +242,7 @@ file_metadata:
     token_count: 606
     size_category: medium
   conversation-protocol.md:
-    token_count: 2197
+    token_count: 2317
     size_category: large
   data-lineage.md:
     token_count: 603
@@ -266,7 +266,7 @@ file_metadata:
     token_count: 952
     size_category: medium
   design-patterns.md:
-    token_count: 746
+    token_count: 749
     size_category: medium
   entity-resolution-intro.md:
     token_count: 1472
@@ -341,7 +341,7 @@ file_metadata:
     token_count: 2964
     size_category: large
   module-05-phase3-test-load.md:
-    token_count: 2654
+    token_count: 2657
     size_category: large
   module-06-data-processing.md:
     token_count: 1509
@@ -358,8 +358,8 @@ file_metadata:
   module-06-phaseD-validation.md:
     token_count: 1952
     size_category: medium
-  module-07-query-validation.md:
-    token_count: 2968
+  module-07-query-visualize-discover.md:
+    token_count: 2973
     size_category: large
   module-08-performance.md:
     token_count: 1278
@@ -401,10 +401,10 @@ file_metadata:
     token_count: 2279
     size_category: large
   module-prerequisites.md:
-    token_count: 1342
+    token_count: 1344
     size_category: medium
   module-transitions.md:
-    token_count: 1187
+    token_count: 1212
     size_category: medium
   onboarding-flow.md:
     token_count: 5178
@@ -449,7 +449,7 @@ file_metadata:
     token_count: 1243
     size_category: medium
   visualization-guide.md:
-    token_count: 1448
+    token_count: 1452
     size_category: medium
   visualization-protocol.md:
     token_count: 1996
@@ -465,7 +465,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 136229
+  total_tokens: 136522
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

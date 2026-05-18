@@ -2,15 +2,15 @@
 inclusion: manual
 ---
 
-# Module 7: Query and Visualize
+# Module 7: Query, Visualize, and Discover
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
 
-> **User reference:** For detailed background on this module, see `docs/modules/MODULE_7_QUERY_VALIDATION.md`.
+> **User reference:** For detailed background on this module, see `docs/modules/MODULE_7_QUERY_VISUALIZE_DISCOVER.md`.
 
 **Purpose:** Create query programs and visualizations.
 
-**Before/After**: Your data is loaded and entities are resolved, but you haven't examined the results yet. After this module, you'll have query programs that answer your business questions and visualizations of your resolved entities.
+**Before/After:** Your data is loaded and entities are resolved, but you haven't examined the results yet. After this module, you'll have query programs that answer your business questions and visualizations of your resolved entities.
 
 **Prerequisites:**
 

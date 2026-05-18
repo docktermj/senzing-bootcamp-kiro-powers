@@ -16,7 +16,7 @@ Module-specific documentation files. Each module has detailed documentation abou
 - `MODULE_4_DATA_COLLECTION.md` - Data collection and source management
 - `MODULE_5_DATA_QUALITY_AND_MAPPING.md` - Data quality assessment and mapping
 - `MODULE_6_DATA_PROCESSING.md` - Data loading, redo processing, and validation
-- `MODULE_7_QUERY_VALIDATION.md` - Query and validation with UAT
+- `MODULE_7_QUERY_VISUALIZE_DISCOVER.md` - Query, visualize, and discover with UAT
 - `MODULE_8_PERFORMANCE_TESTING.md` - Performance testing and benchmarking
 - `MODULE_9_SECURITY_HARDENING.md` - Security hardening for production
 - `MODULE_10_MONITORING_OBSERVABILITY.md` - Monitoring and observability

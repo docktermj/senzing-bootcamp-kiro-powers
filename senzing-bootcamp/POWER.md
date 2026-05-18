@@ -68,7 +68,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 | 4 — Data Collection                     | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
 | 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Entity Specification format. Optional Phase 3 test-loads and evaluates results using `mapping_workflow` steps 5–8 | Identifies issues before they cause bad matches, gets data into the format Senzing needs, and optionally validates entity resolution quality before production loading |
 | 6 — Data Processing                     | Loads all data sources, processes redo records, and validates entity resolution results | Your data is loaded and entity resolution is running — duplicates matched, cross-source connections found |
-| 7 — Query & Visualize                   | Builds query programs and visualizations for your resolved entities       | Proves the system answers your business questions                                                                |
+| 7 — Query, Visualize, and Discover       | Builds query programs and visualizations for your resolved entities       | Proves the system answers your business questions                                                                |
 | 8 — Performance Testing & Benchmarking  | Benchmarks and optimizes for your data volume                             | Ensures the system handles production-scale data                                                                 |
 | 9 — Security Hardening                  | Implements access controls and data protection                            | Required for production with sensitive data                                                                      |
 | 10 — Monitoring & Observability         | Sets up dashboards, alerts, and health checks                             | Keeps the system running reliably in production                                                                  |
@@ -82,7 +82,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 
 **New users:** Say "start the bootcamp" to begin. Choose your track:
 
-- **Core Bootcamp** *(recommended)* — Modules 1, 2, 3, 4, 5, 6, 7. Recommended foundation covering problem definition through query/visualize.
+- **Core Bootcamp** *(recommended)* — Modules 1, 2, 3, 4, 5, 6, 7. Recommended foundation covering problem definition through query, visualize, and discover.
 - **Advanced Topics** *(not recommended for bootcamp)* — Modules 1–11. Adds production-readiness topics (performance, security hardening, monitoring, and packaging/deployment) as advanced add-ons layered on top of the core bootcamp.
 
 Tracks are not mutually exclusive — you can start with one and extend to another at any time. All completed modules carry forward.
@@ -114,7 +114,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 - `module-04-data-collection.md` — Module 4: Data Collection
 - `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping
 - `module-06-data-processing.md` — Module 6: Data Processing
-- `module-07-query-validation.md` — Module 7: Query & Visualize
+- `module-07-query-visualize-discover.md` — Module 7: Query, Visualize, and Discover
 - `module-08-performance.md` — Module 8: Performance Testing
 - `module-09-security.md` — Module 9: Security Hardening
 - `module-10-monitoring.md` — Module 10: Monitoring
@@ -202,7 +202,7 @@ explain_error_code(error_code='0023')
 | 4      | Data Collection Policy                         |
 | 5      | Data Quality & Mapping (with optional test load)  |
 | 6      | Data Processing                                |
-| 7      | Query & Visualize                              |
+| 7      | Query, Visualize, and Discover                 |
 | 8      | Performance Testing and Benchmarking           |
 | 9      | Security Hardening                             |
 | 10     | Monitoring and Observability                   |

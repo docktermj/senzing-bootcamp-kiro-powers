@@ -39,7 +39,7 @@ _AFFECTED_FILES: dict[str, Path] = {
     "module-04": _STEERING_DIR / "module-04-data-collection.md",
     "module-05": _STEERING_DIR / "module-05-data-quality-mapping.md",
     "module-06": _STEERING_DIR / "module-06-data-processing.md",
-    "module-07": _STEERING_DIR / "module-07-query-validation.md",
+    "module-07": _STEERING_DIR / "module-07-query-visualize-discover.md",
     "module-11": _STEERING_DIR / "module-11-deployment.md",
     "module-completion": _STEERING_DIR / "module-completion.md",
 }
@@ -463,7 +463,7 @@ _HEADINGS_MODULE_06 = [
 ]
 
 _HEADINGS_MODULE_07 = [
-    "# Module 7: Query and Visualize",
+    "# Module 7: Query, Visualize, and Discover",
     "## Query Completeness Gate",
     "## Error Handling",
     "## Integration Patterns",
@@ -639,7 +639,7 @@ _HASH_UNAFFECTED: dict[str, str] = {
 }
 
 _HASH_HOOK = "98e08f645acc81716e92202a631727283b6153a82c3df7a07a3d8935034c5706"
-_HASH_AGENT_INSTRUCTIONS = "568d28c03f7f1b728d5fe7f093c76bfb73035669223a0ffde2b63834f88c1cef"
+_HASH_AGENT_INSTRUCTIONS = "68895c75d6e52c9b49328d3c6d60d197878b8a1578cf50b131bda3149ebe6820"
 _HASH_ONBOARDING_FLOW = "2083870ee8bd745ae93646f84bf2ad8420b664c70a0b911f1717111a8c4fe93e"
 
 

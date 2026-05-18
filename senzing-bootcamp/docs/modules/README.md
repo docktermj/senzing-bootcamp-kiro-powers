@@ -123,10 +123,10 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 7: Query and Visualize
+### Module 7: Query, Visualize, and Discover
 
-**File**: [MODULE_7_QUERY_VALIDATION.md](MODULE_7_QUERY_VALIDATION.md)
-**Steering**: `steering/module-07-query-validation.md`
+**File**: [MODULE_7_QUERY_VISUALIZE_DISCOVER.md](MODULE_7_QUERY_VISUALIZE_DISCOVER.md)
+**Steering**: `steering/module-07-query-visualize-discover.md`
 
 **Purpose**: Create query programs, overlap reports, and visualizations
 

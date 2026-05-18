@@ -29,8 +29,8 @@ _MODULE_6_PHASE_FILES = [
     _POWER_ROOT / "steering" / "module-06-phaseD-validation.md",
 ]
 _MODULE_6_DOCS = _POWER_ROOT / "docs" / "modules" / "MODULE_6_DATA_PROCESSING.md"
-_MODULE_7_STEERING = _POWER_ROOT / "steering" / "module-07-query-validation.md"
-_MODULE_7_DOCS = _POWER_ROOT / "docs" / "modules" / "MODULE_7_QUERY_VALIDATION.md"
+_MODULE_7_STEERING = _POWER_ROOT / "steering" / "module-07-query-visualize-discover.md"
+_MODULE_7_DOCS = _POWER_ROOT / "docs" / "modules" / "MODULE_7_QUERY_VISUALIZE_DISCOVER.md"
 _POWER_MD = _POWER_ROOT / "POWER.md"
 
 

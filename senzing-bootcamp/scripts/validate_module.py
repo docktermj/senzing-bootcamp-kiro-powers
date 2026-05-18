@@ -206,7 +206,7 @@ MODULE_NAMES = {
     4: "Data Collection",
     5: "Data Quality & Mapping",
     6: "Data Processing",
-    7: "Query & Visualize",
+    7: "Query, Visualize, and Discover",
     8: "Performance Testing",
     9: "Security Hardening",
     10: "Monitoring",

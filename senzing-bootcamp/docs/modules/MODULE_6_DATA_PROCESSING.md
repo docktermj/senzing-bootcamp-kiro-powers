@@ -14,7 +14,7 @@ Module 6 covers the complete data loading lifecycle — from building production
 
 The module adapts to your situation:
 
-- **Single source:** Build a loading program, load your data, process redo records, validate results, and proceed to Module 7 (Query & Visualize).
+- **Single source:** Build a loading program, load your data, process redo records, validate results, and proceed to Module 7 (Query, Visualize, and Discover).
 - **Multiple sources:** After loading the first source, the module adds dependency analysis, load order optimization, orchestration strategy selection, cross-source validation, UAT with business users, and stakeholder sign-off.
 
 If you completed Phase 3 (Test Load and Validate) in Module 5, the agent acknowledges your test load results and skips basic test loading. If you skipped Phase 3, the module includes a brief test load before moving to production concerns.
@@ -86,7 +86,7 @@ If you have only one data source:
 1. **Phase A:** Build a production-quality loading program
 2. **Phase B:** Load your data source, process redo records
 3. **Phase D:** Validate match accuracy, run basic UAT, document results
-4. Proceed to Module 7 (Query & Visualize)
+4. Proceed to Module 7 (Query, Visualize, and Discover)
 
 No orchestration, dependency analysis, or cross-source validation steps are presented.
 
@@ -98,7 +98,7 @@ If you have two or more data sources:
 2. **Phase B:** Load the first source, process redo records
 3. **Phase C:** Inventory all sources, analyze dependencies, determine load order, select strategy, create orchestrator, load remaining sources
 4. **Phase D:** Single-source validation + cross-source validation, UAT with business users, stakeholder sign-off
-5. Proceed to Module 7 (Query & Visualize)
+5. Proceed to Module 7 (Query, Visualize, and Discover)
 
 ### Phase 3 Shortcut (mapping-workflow-integration)
 

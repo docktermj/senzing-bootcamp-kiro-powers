@@ -20,7 +20,7 @@ import pytest
 
 _POWER_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 
-MODULE_07_PATH = _POWER_ROOT / "steering" / "module-07-query-validation.md"
+MODULE_07_PATH = _POWER_ROOT / "steering" / "module-07-query-visualize-discover.md"
 TRANSITIONS_PATH = _POWER_ROOT / "steering" / "module-transitions.md"
 
 

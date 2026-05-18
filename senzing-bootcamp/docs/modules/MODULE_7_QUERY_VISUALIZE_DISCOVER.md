@@ -1,12 +1,12 @@
 ```text
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 7: QUERY AND VISUALIZE  🚀🚀🚀
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀🚀🚀  MODULE 7: QUERY, VISUALIZE, AND DISCOVER  🚀🚀🚀
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 7: Query and Visualize
+# Module 7: Query, Visualize, and Discover
 
-> **Agent workflow:** The agent follows `steering/module-07-query-validation.md` for this module's step-by-step workflow.
+> **Agent workflow:** The agent follows `steering/module-07-query-visualize-discover.md` for this module's step-by-step workflow.
 
 ## Overview
 
@@ -217,7 +217,7 @@ When a user is in Module 7:
 ## Related Documentation
 
 - `POWER.md` - Module 7 overview
-- `steering/module-07-query-validation.md` - Module 7 workflow
+- `steering/module-07-query-visualize-discover.md` - Module 7 workflow
 - `steering/agent-instructions.md` - Agent behavior for Module 7
 - Use MCP: `reporting_guide(topic="evaluation")` for the 4-point ER evaluation framework
 - Use MCP: `reporting_guide(topic="quality")` for precision/recall, split/merge detection, and review queues

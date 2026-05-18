@@ -10,7 +10,7 @@ inclusion: manual
 
 **Prerequisites:** ✅ Module 5/6 complete (data loaded) · ✅ Query programs working (Module 7 step 3)
 
-**Triggers:** Load this file when: (1) after exploratory queries in Module 7 step 3, (2) bootcamper asks to "visualize" / "show entity graph" / "generate a visualization", (3) after documenting findings in Module 7. When done, return to `module-07-query-validation.md`.
+**Triggers:** Load this file when: (1) after exploratory queries in Module 7 step 3, (2) bootcamper asks to "visualize" / "show entity graph" / "generate a visualization", (3) after documenting findings in Module 7. When done, return to `module-07-query-visualize-discover.md`.
 
 ## Agent Workflow
 
@@ -61,7 +61,7 @@ inclusion: manual
 
    > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 
-   Regenerate affected components using the same MCP tools. When done, return to `module-07-query-validation.md`.
+   Regenerate affected components using the same MCP tools. When done, return to `module-07-query-visualize-discover.md`.
 
 ## Web Service Delivery Sequence
 

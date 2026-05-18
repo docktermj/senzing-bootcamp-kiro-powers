@@ -241,6 +241,9 @@ file_metadata:
   complexity-estimator.md:
     token_count: 606
     size_category: medium
+  conversation-examples.md:
+    token_count: 537
+    size_category: medium
   conversation-protocol.md:
     token_count: 2317
     size_category: large
@@ -313,6 +316,9 @@ file_metadata:
   mcp-tool-decision-tree.md:
     token_count: 2268
     size_category: large
+  mcp-usage-reference.md:
+    token_count: 580
+    size_category: medium
   module-01-business-problem.md:
     token_count: 3369
     size_category: large
@@ -459,7 +465,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 135499
+  total_tokens: 136616
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

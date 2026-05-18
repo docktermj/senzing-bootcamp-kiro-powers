@@ -746,10 +746,10 @@ class TestIntegrationSteeringIndexConsistency:
         assert "phase3-test-load" in content
 
         # Module 6 phases
-        assert "phaseA-build-loading" in content
-        assert "phaseB-load-first-source:" in content
-        assert "phaseC-multi-source" in content
-        assert "phaseD-validation:" in content
+        assert "phase1-build-loading" in content
+        assert "phase2-load-first-source:" in content
+        assert "phase3-multi-source" in content
+        assert "phase4-validation:" in content
 
     def test_total_tokens_matches_sum(self):
         """budget.total_tokens equals sum of all file_metadata token counts."""

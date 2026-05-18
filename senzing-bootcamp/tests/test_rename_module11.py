@@ -27,7 +27,7 @@ _MODULE_DOC_OLD = _BOOTCAMP_DIR / "docs" / "modules" / "MODULE_11_DEPLOYMENT_PAC
 _MODULES_README = _BOOTCAMP_DIR / "docs" / "modules" / "README.md"
 _DOCS_README = _BOOTCAMP_DIR / "docs" / "README.md"
 _STAKEHOLDER = _BOOTCAMP_DIR / "templates" / "stakeholder_summary.md"
-_GRADUATION_REF = _BOOTCAMP_DIR / "steering" / "graduation-reference.md"
+_GRADUATION_REF = _BOOTCAMP_DIR / "steering" / "graduation.md"
 _PREREQUISITES = _BOOTCAMP_DIR / "docs" / "diagrams" / "module-prerequisites.md"
 _POWER_MD = _BOOTCAMP_DIR / "POWER.md"
 _STEERING_INDEX = _BOOTCAMP_DIR / "steering" / "steering-index.yaml"
@@ -138,18 +138,18 @@ class TestRenameModule11:
     # -----------------------------------------------------------------------
 
     def test_graduation_ref_review_line(self) -> None:
-        """Graduation reference must say 'Review packaging and deployment from Module 11'."""
+        """Graduation file must say 'Review packaging and deployment from Module 11'."""
         content = _GRADUATION_REF.read_text(encoding="utf-8")
         assert "Review packaging and deployment from Module 11" in content, (
-            "graduation-reference.md does not contain "
+            "graduation.md does not contain "
             "'Review packaging and deployment from Module 11'"
         )
 
     def test_graduation_ref_not_covered_line(self) -> None:
-        """Graduation reference must say 'Packaging and deployment was not covered'."""
+        """Graduation file must say 'Packaging and deployment was not covered'."""
         content = _GRADUATION_REF.read_text(encoding="utf-8")
         assert "Packaging and deployment was not covered" in content, (
-            "graduation-reference.md does not contain "
+            "graduation.md does not contain "
             "'Packaging and deployment was not covered'"
         )
 

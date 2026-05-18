@@ -146,28 +146,16 @@ Always call `get_capabilities` first when starting a session.
 
 ## Tool Usage Examples
 
+Call `get_capabilities()` first to discover all tools. Key patterns:
+
 ```text
-# Discover available tools and workflows
-get_capabilities()
-
-# Get SDK installation instructions for a specific platform and language
 sdk_guide(topic='install', platform='linux', language='python', version='current')
-
-# Generate loading code in the user's chosen language
 generate_scaffold(language='java', workflow='add_records', version='current')
-
-# Start an interactive data mapping session
 mapping_workflow(action='start', source_file='data/raw/customers.csv')
-
-# Search Senzing docs for anti-patterns before recommending an approach
 search_docs(query='loading performance', category='anti_patterns', version='current')
-
-# Validate a mapped record against the Senzing Entity Specification
-analyze_record(record='{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001","NAME_FULL":"John Smith"}')
-
-# Diagnose a Senzing error code
-explain_error_code(error_code='0023')
 ```
+
+See `steering/mcp-tool-decision-tree.md` for the full decision tree with all tools and call examples.
 
 ## Module Progression
 
@@ -195,7 +183,7 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available (28 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-file-path-policies` ⭐, `enforce-single-question` ⭐, `block-direct-sql` ⭐, `enforce-visualization-offers`, `gate-module3-visualization`, `enforce-mandatory-gate`, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
+Available (29 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-file-path-policies` ⭐, `enforce-single-question` ⭐, `block-direct-sql` ⭐, `enforce-visualization-offers`, `gate-module3-visualization`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
 
 ## Project Directory Structure
 

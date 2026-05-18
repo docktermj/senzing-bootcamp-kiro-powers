@@ -1,6 +1,6 @@
 ---
 inclusion: auto
-description: "Verbosity control system — output categories, presets, and adjustment instructions"
+description: "Verbosity control system — output categories, presets, adjustment instructions, and content rules by level"
 ---
 
 # Verbosity Control
@@ -81,6 +81,54 @@ On session start, read the `verbosity` key from the preferences file:
 - If the key does not exist, apply the `standard` preset as the default.
 - If the key exists but is malformed, apply `standard` and inform the bootcamper that preferences were reset.
 
-## Reference
+## Content Rules by Level
 
-Load the reference file when applying level-specific content rules or framing patterns for the first time in a session: #[[file:senzing-bootcamp/steering/verbosity-control-reference.md]]
+### explanations
+
+- **Level 1 — "What" only:** Single sentence describing the action. Omit rationale and workflow context.
+- **Level 2 — "What" + "Why":** Action description followed by purpose or rationale.
+- **Level 3 — "What" + "Why" + workflow connection:** Action, rationale, and how this step fits into the broader pipeline.
+
+### code_walkthroughs
+
+- **Level 1 — No walkthrough:** Let the code speak for itself. Code comments within generated code are still permitted.
+- **Level 2 — Block-level summary:** Summarize what each logical section does in one or two sentences per block.
+- **Level 3 — Detailed block or line-by-line:** Explain each block in detail, including why specific SDK methods were chosen and what alternatives exist.
+
+### step_recaps
+
+- **Level 1 — One-line summary + file paths:** Single sentence + list of file paths created or modified.
+- **Level 2 — Accomplishment + files + understanding check:** What was accomplished, file paths, and what the bootcamper should understand before proceeding.
+- **Level 3 — Level 2 + next-step connection:** Everything from Level 2, plus how this step's output connects to the next step and module goal.
+
+### technical_details
+
+- **Level 1 — Omit:** No SDK internals, configuration specifics, or performance notes.
+- **Level 2 — Relevant details when they aid understanding:** Include SDK details and config specifics when they help understanding. Omit purely internal details.
+- **Level 3 — Full technical depth:** SDK internals, configuration deep-dives, performance characteristics, and resolution algorithm details.
+
+### code_execution_framing
+
+- **Level 1 — "What this code does" + one-line result:** Plain-language summary before execution, one-line result after.
+- **Level 2 — "Before" + "What" + "After":** Current state, what the code does, what changed.
+- **Level 3 — Level 2 + specific metric values:** Everything from Level 2, plus specific before/after values for key metrics.
+
+## Framing Pattern Examples
+
+### "What and Why" (explanations)
+
+- **L1:** We're adding the customer data source to the Senzing configuration.
+- **L2:** We're adding the customer data source to the Senzing configuration. This registers the source so Senzing knows where records come from when it resolves entities.
+- **L3:** We're adding the customer data source to the Senzing configuration. This registers the source so Senzing knows where records come from. Once registered, we'll use this name in the mapping file (Module 5) and loading script (Module 6).
+
+### Code Execution (code_execution_framing)
+
+- **L1:** What this code does: Loads 500 customer records. Result: 500 records loaded successfully.
+- **L2:** Before: Database has 0 records. What: Reads each record and loads via customer mapping. After: 500 records loaded, entities resolved.
+- **L3:** Before: Records: 0, Entities: 0. What: Reads and loads via mapping. After: Records: 0→500, Entities: 0→423, Time: 12.3s (40.6 rec/s).
+
+### Step Recap (step_recaps)
+
+- **L1:** Created the customer data mapping. Files: `config/mappings/customers.json`
+- **L2:** Created the mapping defining how each CSV column maps to Senzing attributes. Files: `config/mappings/customers.json`. The mapping tells Senzing which columns are names, addresses, and identifiers.
+- **L3:** Level 2 content + "Next, we'll use this mapping to load records into Senzing in Module 6."

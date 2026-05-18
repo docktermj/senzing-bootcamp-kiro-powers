@@ -10,13 +10,7 @@
    1. In "Sign in with your organization":
       1. Click on the "Sign in via IAM Identity Center instead" link.
    1. In "Sign in with AWS IAM Identity Center":
-      1. **Start URL:**
-         Example:
-
-         ```console
-         https://awssenzingsso.awsapps.com/start
-         ```
-
+      1. **Start URL:**  (Ask Mike)
       1. **AWS Region:**
          Example:
 

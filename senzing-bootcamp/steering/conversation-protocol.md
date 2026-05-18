@@ -52,6 +52,30 @@ If you acknowledge input, always append a next action in the same response.
 > software — for example, a CRM, search engine, data warehouse, or
 > downstream application?
 
+## Code Block Formatting
+
+All JSON displayed in chat must use ` ```json ` code blocks with 2-space indentation. Never display JSON as raw text or in untagged code blocks.
+
+### WRONG — untagged code block
+
+````text
+```
+{"RECORD_ID": "1001", "NAME_FULL": "Robert Smith", "DATE_OF_BIRTH": "1982-11-02"}
+```
+````
+
+### CORRECT — tagged json block with pretty-printing
+
+````text
+```json
+{
+  "RECORD_ID": "1001",
+  "NAME_FULL": "Robert Smith",
+  "DATE_OF_BIRTH": "1982-11-02"
+}
+```
+````
+
 ## One Question Rule
 
 ⚠️ **CRITICAL — ZERO TOLERANCE** ⚠️

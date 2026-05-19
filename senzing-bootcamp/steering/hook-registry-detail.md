@@ -71,39 +71,6 @@ REMEMBER: If both phases produced no output, your COMPLETE response is: .
 - name: `to wait for your answer`
 - description: `Silence-first agentStop hook with dual responsibility: (1) Phase 1 produces a recap + closing question only when no question is already pending, with a near-completion feedback nudge; (2) Phase 2 independently reminds the bootcamper to share saved feedback after track completion.`
 
-**block-direct-sql** (preToolUse → askAgent, toolTypes: write)
-
-Prompt:
-
-````text
-QUICK CHECK — inspect the content being written for direct SQL against the Senzing database.
-
-SQL PATTERNS TO DETECT: SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA
-
-SENZING DATABASE INDICATORS: G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_
-
-FAST PATH: If the content does NOT contain any of the SQL patterns above targeting Senzing database indicators, this is a non-Senzing file write (e.g., CSV, JSONL, config files, general SQL for other databases like users, orders, products tables). Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
-
-SLOW PATH: If the content contains ANY of the SQL patterns (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA) AND references ANY Senzing database indicator (G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_):
-
-STOP. Do not proceed with the write. Instead:
-1. Explain that direct SQL against the Senzing database is prohibited because it bypasses the SDK abstraction layer, produces non-portable results, and may return incorrect data from internal tables.
-2. Rewrite the code to use the appropriate Senzing SDK methods via MCP tools:
-   - To query entities: use get_entity or get_entity_by_record_id
-   - To search for records: use search_by_attributes
-   - To understand resolution: use why_entities or why_records
-   - To explore entity structure: use how_entity
-   - To count or report: use reporting_guide
-   - For general SDK guidance: use sdk_guide or get_sdk_reference
-3. Present the rewritten code using SDK methods to the bootcamper.
-
-IMPORTANT: Only flag content that contains BOTH SQL patterns AND Senzing database indicators. General SQL for non-Senzing databases (e.g., SELECT * FROM users, INSERT INTO orders) must NOT be flagged.
-````
-
-- id: `block-direct-sql`
-- name: `to block direct SQL against the Senzing database`
-- description: `Before any write operation, checks if the content contains direct SQL statements (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA) targeting the Senzing database (G2C.db or internal tables). If detected, instructs the agent to rewrite using SDK methods via MCP tools instead.`
-
 **code-style-check** (fileEdited → askAgent, filePatterns: `src/**/*.py, src/**/*.java, src/**/*.cs, src/**/*.rs, src/**/*.ts, src/**/*.js`)
 
 Prompt:
@@ -142,11 +109,86 @@ If no issues are found: output nothing. Proceed silently.
 - name: `to check Markdown style`
 - description: `Validates that all Markdown files conform to CommonMark standards when edited`
 
-**enforce-file-path-policies** (preToolUse → askAgent, toolTypes: write)
+**review-bootcamper-input** (promptSubmit → askAgent)
 
 Prompt:
 
 ````text
+Check if the bootcamper's message contains any of these feedback trigger phrases (case-insensitive): "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue". Also check for status trigger phrases (case-insensitive): "where am I", "status", "what step am I on", "show progress", "how far along am I". If NONE of these phrases appear in the message, produce no output at all — do not acknowledge, do not explain, do not print anything. If a STATUS trigger phrase IS found, output exactly: STATUS_TRIGGER_DETECTED — the agent should respond with the inline status format from inline-status.md. If a FEEDBACK trigger phrase IS found, immediately do the following: (1) Read config/bootcamp_progress.json to get the current module number and completed modules. If the file doesn't exist, record module as "Unknown". (2) Note what the bootcamper was doing in the recent conversation. (3) Note which files are open in the editor. (4) Load steering file feedback-workflow.md and follow its complete workflow, pre-filling the context fields with what you just captured. Do NOT ask the bootcamper to re-explain their context — you already have it.
+````
+
+- id: `review-bootcamper-input`
+- name: `to review what you said`
+- description: `Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture.`
+
+**write-policy-gate** (preToolUse → askAgent, toolTypes: write)
+
+Prompt:
+
+````text
+WRITE POLICY GATE — Three checks in one pass.
+
+FAST PATH GATE: If ALL of the following are true, skip all checks and proceed immediately:
+- The target path is a normal project-relative file (inside the working directory)
+- The target path does NOT end with '.question_pending'
+- The content does NOT contain SQL patterns (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA) targeting Senzing database indicators (G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_)
+
+If all conditions above are met: Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
+
+---
+
+CHECK 1: SENZING SQL BLOCKING
+
+SQL PATTERNS TO DETECT: SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA
+
+SENZING DATABASE INDICATORS: G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_
+
+If the content does NOT contain any of the SQL patterns above targeting Senzing database indicators, this is a non-Senzing file write (e.g., CSV, JSONL, config files, general SQL for other databases like users, orders, products tables). Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
+
+If the content contains ANY of the SQL patterns (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA) AND references ANY Senzing database indicator (G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_):
+
+STOP. Do not proceed with the write. Instead:
+1. Explain that direct SQL against the Senzing database is prohibited because it bypasses the SDK abstraction layer, produces non-portable results, and may return incorrect data from internal tables.
+2. Rewrite the code to use the appropriate Senzing SDK methods via MCP tools:
+   - To query entities: use get_entity or get_entity_by_record_id
+   - To search for records: use search_by_attributes
+   - To understand resolution: use why_entities or why_records
+   - To explore entity structure: use how_entity
+   - To count or report: use reporting_guide
+   - For general SDK guidance: use sdk_guide or get_sdk_reference
+3. Present the rewritten code using SDK methods to the bootcamper.
+
+IMPORTANT: Only flag content that contains BOTH SQL patterns AND Senzing database indicators. General SQL for non-Senzing databases (e.g., SELECT * FROM users, INSERT INTO orders) must NOT be flagged.
+
+---
+
+CHECK 2: SINGLE-QUESTION ENFORCEMENT
+
+Examine the file being written. If the target path does NOT end with '.question_pending', this check does not apply. Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
+
+If the target path DOES end with '.question_pending', validate the question content against ALL of these rules:
+
+1. EXACTLY ONE QUESTION: The content must contain exactly one question mark. Two or more question marks means multiple questions — VIOLATION.
+2. NO CONJUNCTIONS JOINING QUESTIONS: The content must not use 'and', 'or', 'also', 'but first', 'alternatively', 'or if you prefer', 'or would you rather' to join separate choices in prose. Exception: 'or' inside a numbered list of options is allowed.
+3. NO APPENDED ALTERNATIVES: The content must not append an alternative action after the main question (e.g., 'Do you want X, or we could skip to Y?' is a violation).
+4. UNAMBIGUOUS YES/NO: If it's a yes/no question, 'yes' must map to exactly one meaning and 'no' must map to exactly one meaning. 'Does that look right? Anything I missed?' is a violation because 'yes' is ambiguous.
+5. NO FOLLOW-UP AFTER CONFIRMATION: The content must not combine a confirmation question with a follow-up (e.g., 'Does that work? What do you want changed?' is a violation).
+
+If ALL rules pass: Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
+
+If ANY rule is violated: STOP. Output exactly:
+
+⚠️ COMPOUND QUESTION DETECTED — REWRITE REQUIRED
+Violation: [describe which rule was broken]
+Original: [the question text]
+Fix: Rewrite as a single, unambiguous question. If multiple pieces of information are needed, ask only the first one. If choices exist, use a numbered list format.
+
+Do NOT allow the write to proceed with a compound question. The agent must rewrite the question before continuing.
+
+---
+
+CHECK 3: FILE PATH POLICIES
+
 QUICK CHECK — answer these two questions about the file being written:
 
 Q1: Is the target path inside the working directory? (Not /tmp/, not %TEMP%, not ~/Downloads, not any absolute path outside the project)
@@ -163,54 +205,9 @@ SLOW PATH: If Q1 is NO (path is outside working directory) OR Q2 is YES (feedbac
 CONTENT CHECK (only if fast path passed): Does the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If YES: STOP and require replacement with project-relative equivalents. If NO: do nothing — proceed silently.
 ````
 
-- id: `enforce-file-path-policies`
-- name: `to make sure the file is in the project directory`
-- description: `Before any write operation, enforces two path policies: (1) feedback content must go to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md, and (2) no files may be written outside the working directory. Uses a fast path for project-relative non-feedback writes (proceeds silently) and a slow path for violations (outputs corrective instructions).`
-
-**enforce-single-question** (preToolUse → askAgent, toolTypes: write)
-
-Prompt:
-
-````text
-SINGLE-QUESTION ENFORCEMENT CHECK
-
-Examine the file being written. If the target path does NOT end with '.question_pending', produce no output at all — do not acknowledge, do not explain, do not print anything. Proceed silently.
-
-If the target path DOES end with '.question_pending', validate the question content against ALL of these rules:
-
-1. EXACTLY ONE QUESTION: The content must contain exactly one question mark. Two or more question marks means multiple questions — VIOLATION.
-2. NO CONJUNCTIONS JOINING QUESTIONS: The content must not use 'and', 'or', 'also', 'but first', 'alternatively', 'or if you prefer', 'or would you rather' to join separate choices in prose. Exception: 'or' inside a numbered list of options is allowed.
-3. NO APPENDED ALTERNATIVES: The content must not append an alternative action after the main question (e.g., 'Do you want X, or we could skip to Y?' is a violation).
-4. UNAMBIGUOUS YES/NO: If it's a yes/no question, 'yes' must map to exactly one meaning and 'no' must map to exactly one meaning. 'Does that look right? Anything I missed?' is a violation because 'yes' is ambiguous.
-5. NO FOLLOW-UP AFTER CONFIRMATION: The content must not combine a confirmation question with a follow-up (e.g., 'Does that work? What do you want changed?' is a violation).
-
-If ALL rules pass: Produce no output at all — do not acknowledge, do not explain, do not print anything. Proceed silently.
-
-If ANY rule is violated: STOP. Output exactly:
-
-⚠️ COMPOUND QUESTION DETECTED — REWRITE REQUIRED
-Violation: [describe which rule was broken]
-Original: [the question text]
-Fix: Rewrite as a single, unambiguous question. If multiple pieces of information are needed, ask only the first one. If choices exist, use a numbered list format.
-
-Do NOT allow the write to proceed with a compound question. The agent must rewrite the question before continuing.
-````
-
-- id: `enforce-single-question`
-- name: `to enforce the single-question rule`
-- description: `Validates that any 👉 question being written to .question_pending contains exactly one question with no compound constructions, conjunctions, or appended alternatives. Fires on write operations targeting the question_pending file.`
-
-**review-bootcamper-input** (promptSubmit → askAgent)
-
-Prompt:
-
-````text
-Check if the bootcamper's message contains any of these feedback trigger phrases (case-insensitive): "bootcamp feedback", "power feedback", "submit feedback", "provide feedback", "I have feedback", "report an issue". Also check for status trigger phrases (case-insensitive): "where am I", "status", "what step am I on", "show progress", "how far along am I". If NONE of these phrases appear in the message, produce no output at all — do not acknowledge, do not explain, do not print anything. If a STATUS trigger phrase IS found, output exactly: STATUS_TRIGGER_DETECTED — the agent should respond with the inline status format from inline-status.md. If a FEEDBACK trigger phrase IS found, immediately do the following: (1) Read config/bootcamp_progress.json to get the current module number and completed modules. If the file doesn't exist, record module as "Unknown". (2) Note what the bootcamper was doing in the recent conversation. (3) Note which files are open in the editor. (4) Load steering file feedback-workflow.md and follow its complete workflow, pre-filling the context fields with what you just captured. Do NOT ask the bootcamper to re-explain their context — you already have it.
-````
-
-- id: `review-bootcamper-input`
-- name: `to review what you said`
-- description: `Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture.`
+- id: `write-policy-gate`
+- name: `to process your response`
+- description: `Consolidated preToolUse write hook that performs three policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, and (3) validates file path policies. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions).`
 
 ## Module Hooks (created when module starts)
 

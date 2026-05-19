@@ -24,7 +24,7 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _AGENT_INSTRUCTIONS = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
 _DECISION_TREE = _BOOTCAMP_DIR / "steering" / "mcp-tool-decision-tree.md"
-_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "block-direct-sql.kiro.hook"
+_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "write-policy-gate.kiro.hook"
 
 # ---------------------------------------------------------------------------
 # Constants — Bug condition components
@@ -303,5 +303,5 @@ class TestBugConditionProperty:
         assert _HOOK_FILE.exists(), (
             f"Bug condition: agent output with '{sql_keyword}' targeting "
             f"'{senzing_indicator}' has no runtime guardrail. "
-            "block-direct-sql.kiro.hook does not exist."
+            "write-policy-gate.kiro.hook does not exist."
         )

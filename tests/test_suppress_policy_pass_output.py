@@ -17,7 +17,7 @@ from hypothesis import strategies as st
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/enforce-file-path-policies.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/write-policy-gate.kiro.hook")
 
 # Silent processing patterns (from test_hook_prompt_standards.py), excluding
 # the "policy:\s*pass" pattern itself since that IS the bug.

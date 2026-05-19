@@ -98,11 +98,13 @@ class TestEnforceSingleQuestion:
     4. Check for unambiguous yes/no meaning
     5. Block and require rewrite on violation
     6. Silent pass when rules are satisfied
+
+    Note: This logic is now consolidated into write-policy-gate.kiro.hook.
     """
 
     @pytest.fixture(autouse=True)
     def _load(self):
-        self.prompt = _load_prompt("enforce-single-question")
+        self.prompt = _load_prompt("write-policy-gate")
 
     def test_only_activates_for_question_pending(self):
         """Prompt checks if target path ends with .question_pending."""
@@ -133,7 +135,8 @@ class TestEnforceSingleQuestion:
 
     def test_silent_on_pass(self):
         """Prompt produces no output when all rules pass."""
-        assert "produce no output" in self.prompt.lower()
+        lower = self.prompt.lower()
+        assert "proceed silently" in lower or "produce no output" in lower
 
     def test_silent_for_non_question_pending_files(self):
         """Prompt produces no output for non-.question_pending files."""

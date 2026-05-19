@@ -88,7 +88,7 @@ Multi-question patterns — questions joined by conjunctions (and, or, also, but
 
 The phrase "But first" followed by a question is a violation — never redirect to a different question within the same turn.
 
-**Enforcement:** The `enforce-single-question` hook validates every question written to `config/.question_pending`. If it detects a compound question, you MUST rewrite before proceeding. Do not attempt to bypass this check.
+**Enforcement:** The `write-policy-gate` hook validates every question written to `config/.question_pending`. If it detects a compound question, you MUST rewrite before proceeding. Do not attempt to bypass this check.
 
 **Common violations to avoid:**
 

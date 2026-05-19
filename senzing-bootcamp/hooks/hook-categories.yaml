@@ -4,12 +4,10 @@
 
 critical:
   - ask-bootcamper
-  - block-direct-sql
-  - review-bootcamper-input
   - code-style-check
   - commonmark-validation
-  - enforce-file-path-policies
-  - enforce-single-question
+  - review-bootcamper-input
+  - write-policy-gate
 
 modules:
   1:

@@ -18,7 +18,7 @@ import pytest
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry-detail.md")
 
-EXPECTED_HOOK_COUNT = 29
+EXPECTED_HOOK_COUNT = 27
 
 VALID_EVENT_TYPES = {
     "promptSubmit",
@@ -507,7 +507,7 @@ class TestRealHookFiles:
 
     @pytest.mark.parametrize("hook_id", [
         "review-bootcamper-input",
-        "enforce-file-path-policies",
+        "write-policy-gate",
     ])
     def test_real_pass_through_hooks_have_silent_processing(self, hook_id: str):
         """Real pass-through hooks contain silent-processing instructions (Req 2.1)."""

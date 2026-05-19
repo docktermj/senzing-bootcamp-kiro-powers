@@ -4,19 +4,17 @@ inclusion: manual
 
 # Hook Registry
 
-29 bootcamp hooks organized by category. Load `hook-registry-detail.md` for full prompt text when creating hooks.
+27 bootcamp hooks organized by category. Load `hook-registry-detail.md` for full prompt text when creating hooks.
 
 ## Critical Hooks (created during onboarding)
 
 | Hook ID | Event Type | Description |
 |---------|-----------|-------------|
 | ask-bootcamper | agentStop → askAgent | Silence-first agentStop hook with dual responsibility: (1) Phase 1 produces a recap + closing question only when no question is already pending, with a near-completion feedback nudge; (2) Phase 2 independently reminds the bootcamper to share saved feedback after track completion. |
-| block-direct-sql | preToolUse → askAgent | Before any write operation, checks if the content contains direct SQL statements (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA) targeting the Senzing database (G2C.db or internal tables). If detected, instructs the agent to rewrite using SDK methods via MCP tools instead. |
 | code-style-check | fileEdited → askAgent | Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions. |
 | commonmark-validation | fileEdited → askAgent | Validates that all Markdown files conform to CommonMark standards when edited |
-| enforce-file-path-policies | preToolUse → askAgent | Before any write operation, enforces two path policies: (1) feedback content must go to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md, and (2) no files may be written outside the working directory. Uses a fast path for project-relative non-feedback writes (proceeds silently) and a slow path for violations (outputs corrective instructions). |
-| enforce-single-question | preToolUse → askAgent | Validates that any 👉 question being written to .question_pending contains exactly one question with no compound constructions, conjunctions, or appended alternatives. Fires on write operations targeting the question_pending file. |
 | review-bootcamper-input | promptSubmit → askAgent | Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture. |
+| write-policy-gate | preToolUse → askAgent | Consolidated preToolUse write hook that performs three policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, and (3) validates file path policies. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions). |
 
 ## Module Hooks (created when module starts)
 

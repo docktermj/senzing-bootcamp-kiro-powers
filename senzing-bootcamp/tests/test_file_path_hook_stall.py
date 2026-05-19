@@ -28,7 +28,7 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "enforce-file-path-policies.kiro.hook"
+_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "write-policy-gate.kiro.hook"
 _AGENT_INSTRUCTIONS = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
 
 # ---------------------------------------------------------------------------

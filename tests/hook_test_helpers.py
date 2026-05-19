@@ -48,12 +48,10 @@ TOOL_EVENT_TYPES: set[str] = {"preToolUse", "postToolUse"}
 
 CRITICAL_HOOKS: list[str] = [
     "ask-bootcamper",
-    "block-direct-sql",
-    "review-bootcamper-input",
     "code-style-check",
     "commonmark-validation",
-    "enforce-file-path-policies",
-    "enforce-single-question",
+    "review-bootcamper-input",
+    "write-policy-gate",
 ]
 
 SEMVER_PATTERN: re.Pattern[str] = re.compile(

@@ -639,8 +639,8 @@ _HASH_UNAFFECTED: dict[str, str] = {
 }
 
 _HASH_HOOK = "98e08f645acc81716e92202a631727283b6153a82c3df7a07a3d8935034c5706"
-_HASH_AGENT_INSTRUCTIONS = "f5023e52ee28dea12b59a8421de0039eaabdee2a1d7e632d5c40d8bfd422dcfa"
-_HASH_ONBOARDING_FLOW = "0cc9924a528dfacf755ffdb2c618e42f21df85ec4555bee8efab7b2ec6aeb3a8"
+_HASH_AGENT_INSTRUCTIONS = "c8d97020bf7a34debd1c62f7931c6e422c554276ff5b4d595fb8ecede52d1ffe"
+_HASH_ONBOARDING_FLOW = "ea6471e6f18541dfab80882ce62d98326a82d925292a194de2d89b309a9a379e"
 
 
 # ---------------------------------------------------------------------------

@@ -4,7 +4,7 @@ inclusion: manual
 
 # Conversation Protocol — Violation Examples
 
-Reference examples for correct vs incorrect question patterns. Load when the `enforce-single-question` hook rejects a question or when reviewing conversation quality.
+Reference examples for correct vs incorrect question patterns. Load when the `write-policy-gate` hook rejects a question or when reviewing conversation quality.
 
 ## Multi-Question (WRONG)
 

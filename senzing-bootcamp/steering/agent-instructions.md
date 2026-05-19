@@ -119,6 +119,7 @@ Steps marked with ⛔ are mandatory gates. This rule takes **absolute precedence
 - The ⛔ designation is an unconditional execution requirement. The agent SHALL execute the step fully before proceeding to any subsequent step.
 - Only the bootcamper can attempt to skip a ⛔ step via the skip-step protocol trigger phrases, and the protocol itself refuses the request (see `skip-step-protocol.md` Constraints: "Mandatory gates (⛔) cannot be skipped").
 - If context budget is under pressure when a ⛔ step is reached, apply context management rules (unload non-essential files, adaptive pacing) to make room — do NOT skip the step.
+- NEVER offer to skip a ⛔ mandatory gate step. Do not ask 'would you like to continue with [step]?', 'or skip ahead?', 'or move on to the next module?' when the next step is a ⛔ mandatory gate. Instead, announce that you are proceeding to the step and execute it. The ⛔ designation means the step is unconditional — presenting it as a choice undermines the gate.
 - This rule overrides all other agent rules when they conflict. No rationalization is valid.
 
 ## Hooks

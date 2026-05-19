@@ -262,6 +262,8 @@ Verify read, write, and search operations against the Senzing database. Each ope
 }
 ```
 
+**Agent behavior:** After Step 8 completes, proceed DIRECTLY to Step 9. Do not ask whether the bootcamper wants to continue — Step 9 is mandatory and unconditional.
+
 ### Step 9: Web Service + Visualization Page
 
 ⛔ MANDATORY GATE — UNCONDITIONAL EXECUTION REQUIREMENT

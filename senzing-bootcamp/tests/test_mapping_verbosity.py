@@ -102,7 +102,10 @@ class TestPerStepConditionalPresentation:
 
 
 class TestPreferencesFileSchema:
-    """Tests for the mapping_verbosity key in bootcamp_preferences.yaml.
+    """Tests for the mapping_verbosity key in bootcamp_preferences.yaml.example.
+
+    Validates the schema template (the .example file is the authoritative
+    schema definition; the runtime file is user-state and gitignored).
 
     Requirements: 3.1
     """
@@ -113,17 +116,17 @@ class TestPreferencesFileSchema:
         return Path(__file__).resolve().parent.parent
 
     def _read_preferences_file(self) -> str:
-        """Read and return the bootcamp_preferences.yaml content."""
-        path = self._power_root() / "config" / "bootcamp_preferences.yaml"
+        """Read and return the bootcamp_preferences.yaml.example content."""
+        path = self._power_root() / "config" / "bootcamp_preferences.yaml.example"
         return path.read_text(encoding="utf-8")
 
     def test_preferences_file_exists(self):
-        """bootcamp_preferences.yaml exists at the expected path."""
-        path = self._power_root() / "config" / "bootcamp_preferences.yaml"
+        """bootcamp_preferences.yaml.example exists at the expected path."""
+        path = self._power_root() / "config" / "bootcamp_preferences.yaml.example"
         assert path.is_file(), f"Missing: {path}"
 
     def test_mapping_verbosity_key_present(self):
-        """Preferences file contains the mapping_verbosity key."""
+        """Preferences template contains the mapping_verbosity key."""
         content = self._read_preferences_file()
         assert "mapping_verbosity:" in content
 

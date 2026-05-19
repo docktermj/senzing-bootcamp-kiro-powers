@@ -213,8 +213,9 @@ Before ending any turn, verify:
 2. Does any 👉 question lack the 👉 prefix?
 3. Is there content after a 👉 question?
 4. Am I answering my own question?
+5. Does any 👉 question offer to skip or bypass an upcoming ⛔ mandatory gate step?
 
-If any answer is yes, revise the turn before sending.
+If any answer is yes (across all 5 checks), revise the turn before sending.
 
 ## Mandatory question_pending
 

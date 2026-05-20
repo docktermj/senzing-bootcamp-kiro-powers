@@ -209,12 +209,15 @@ Validate that entity resolution produced the expected outcomes from the TruthSet
 2. Query the resolved entities and perform the following validation checks. Execute ALL checks regardless of whether earlier checks pass or fail:
 
    **a) Entity count tolerance:**
+
    - Verify the total number of resolved entities falls within ±5% of the expected entity count from the Expected_Results.
 
    **b) Known matches (at least 3):**
+
    - Verify that at least 3 known entity matches defined in the Expected_Results are correctly resolved — the specific records designated as matching resolve to the same entity ID.
 
    **c) Cross-record resolution:**
+
    - Verify the resolved entity count is strictly less than the total record count loaded, confirming that at least some records merged rather than all loading as singletons.
 
 3. **If all checks pass:** Report pass with entity count and number of matches verified.
@@ -408,6 +411,16 @@ Generate a structured summary of all verification checks.
 
 Terminate test services and clean up verification data from the database.
 
+**Pre-cleanup confirmation gate:**
+
+Before proceeding with termination, confirm the bootcamper has finished exploring the visualization. Ask the bootcamper for confirmation before terminating the web service or performing any cleanup:
+
+> 👉 Have you finished exploring the visualization? Let me know when you're ready and I'll clean up the server.
+
+🛑 STOP — Wait for the bootcamper to confirm they are done exploring. Do NOT proceed with termination until the bootcamper responds.
+
+**Skip condition:** If the bootcamper skipped Step 9 via the skip-step protocol (no web server was started), skip this confirmation prompt entirely and proceed directly to cleanup.
+
 1. **Terminate the web service:**
    - Send a termination signal to the Verification_Web_Service process.
    - Wait up to 5 seconds for the process to exit and release the bound port.
@@ -447,7 +460,7 @@ Complete the module using the standard module completion workflow.
 
 **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
 
-**Success indicator:** ✅ All 10 verification checks passed + database purged of TruthSet data + web service terminated + module 3 completion recorded in progress file.
+**Success indicator:** ✅ System verification passed or explicitly skipped by bootcamper. All 10 verification checks passed + database purged of TruthSet data + web service terminated + module 3 completion recorded in progress file.
 
 ## Phase Sub-Files
 

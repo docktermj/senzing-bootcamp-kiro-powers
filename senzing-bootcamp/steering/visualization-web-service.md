@@ -157,6 +157,8 @@ If the server cannot be started automatically, always fall back to presenting th
 
 ## Web Service Feature Parity
 
+> **Agent instruction:** Before generating the web service visualization, call `reporting_guide(topic='dashboard', language='<chosen_language>', version='current')` to get current dashboard layout patterns, recommended metrics, and visualization best practices from the MCP server. Use the response to inform the statistics panel layout and metric selection below.
+
 When the bootcamper chooses the web service delivery mode, the generated visualization MUST include all features available in the static HTML version:
 
 - **Force layout** — D3.js v7 force simulation with drag, zoom, pan

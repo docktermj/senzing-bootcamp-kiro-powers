@@ -142,12 +142,17 @@ If the bootcamper explicitly requests a visualization at any point — regardles
 
 ## Web Service Delivery Sequence
 
-When presenting a completed web service to the bootcamper, the server is started automatically as a background process. ALWAYS follow this exact sequence:
+When presenting a completed web service to the bootcamper, the server is started automatically as a background process. ALWAYS follow this exact 5-step sequence:
 
 1. **Start the server automatically:** Use `controlBashProcess` with action `start` and the language-appropriate start command.
 2. **Verify the server is running:** Read the process output and confirm the server started successfully — look for "running on", "listening on", or "started on port".
 3. **Present URL, manual restart command, and stop instructions.**
-4. **Fallback on failure:** Report the error, provide troubleshooting guidance, fall back to manual instructions.
+4. **Wait for user confirmation:** End your response with a 👉 question and a 🛑 STOP directive. Wait for the bootcamper to confirm they have finished exploring the visualization. Do NOT proceed to cleanup, checkpoint writes, or any subsequent steps until the bootcamper confirms they are done. Example prompt:
+
+   > 👉 Take your time exploring. Let me know when you're ready and I'll continue with cleanup.
+   >
+   > 🛑 STOP — End your response here. Wait for the bootcamper's real input.
+5. **Fallback on failure:** Report the error, provide troubleshooting guidance, fall back to manual instructions.
 
 **NEVER present a localhost URL before confirming the server is actually running.**
 

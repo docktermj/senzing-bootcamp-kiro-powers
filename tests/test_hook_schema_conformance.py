@@ -1,6 +1,6 @@
-"""Property-based tests for Module 12 Phase Gate.
+"""Property-based tests for hook JSON schema conformance.
 
-Feature: module12-phase-gate
+Feature: hook-schema-conformance
 Validates hook JSON schema conformance across all .kiro.hook files.
 """
 
@@ -107,7 +107,7 @@ st_hook_subset = st.lists(
 
 # ===========================================================================
 # Property 1: Hook JSON schema conformance
-# Feature: module12-phase-gate, Property 1: Hook JSON schema conformance
+# Feature: hook-schema-conformance, Property 1: Hook JSON schema conformance
 # **Validates: Requirements 1.7**
 # ===========================================================================
 
@@ -116,7 +116,7 @@ class TestHookJsonSchemaConformance:
     """Property-based tests verifying all .kiro.hook files conform to the
     required JSON schema.
 
-    Feature: module12-phase-gate, Property 1: Hook JSON schema conformance
+    Feature: hook-schema-conformance, Property 1: Hook JSON schema conformance
     Validates: Requirements 1.7
     """
 
@@ -281,7 +281,7 @@ st_entry_subset = st.lists(
 
 # ===========================================================================
 # Property 2: README hook entry format conformance
-# Feature: module12-phase-gate, Property 2: README hook entry format conformance
+# Feature: hook-schema-conformance, Property 2: README hook entry format conformance
 # **Validates: Requirements 3.2**
 # ===========================================================================
 
@@ -290,7 +290,7 @@ class TestReadmeHookEntryFormatConformance:
     """Property-based tests verifying all numbered hook entries in the hooks
     README contain Trigger, Action, and Use case lines with non-empty content.
 
-    Feature: module12-phase-gate, Property 2: README hook entry format conformance
+    Feature: hook-schema-conformance, Property 2: README hook entry format conformance
     Validates: Requirements 3.2
     """
 

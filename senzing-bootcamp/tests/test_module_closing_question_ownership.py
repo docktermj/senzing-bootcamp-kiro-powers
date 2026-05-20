@@ -640,7 +640,7 @@ _HASH_UNAFFECTED: dict[str, str] = {
 
 _HASH_HOOK = "98e08f645acc81716e92202a631727283b6153a82c3df7a07a3d8935034c5706"
 _HASH_AGENT_INSTRUCTIONS = "c8d97020bf7a34debd1c62f7931c6e422c554276ff5b4d595fb8ecede52d1ffe"
-_HASH_ONBOARDING_FLOW = "ea6471e6f18541dfab80882ce62d98326a82d925292a194de2d89b309a9a379e"
+_HASH_ONBOARDING_FLOW = "4bacc0be6b1e115d91b115401577fa0bfeabece9eb46d0b59fb3d634f12d3dc4"
 
 
 # ---------------------------------------------------------------------------

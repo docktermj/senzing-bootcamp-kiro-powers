@@ -6,6 +6,22 @@ inclusion: manual
 
 Load this steering file when `config/bootcamp_progress.json` exists at session start. This means the bootcamper has a previous session to resume.
 
+## Fast Path Check
+
+Before running the full state reconstruction, check if a fast resume is possible. A fast resume skips the verbose state loading and goes directly to the welcome-back banner when ALL of these conditions are true:
+
+1. `config/bootcamp_progress.json` parses as valid JSON with `current_module` and `modules_completed` present
+2. `config/bootcamp_preferences.yaml` exists and contains `language` and `track` fields
+3. No mapping checkpoints exist (`config/mapping_state_*.json` — zero files matching this pattern)
+4. `current_step` is present in the progress file (we know exactly where to resume)
+5. `hooks_installed` is present in preferences (no hook setup needed)
+
+**If ALL conditions are met:** Skip Steps 1–2e entirely. Jump directly to Step 3 (Summarize and Confirm) using the data already read from the progress and preferences files. Still execute Step 2b (Behavioral Rules Reload) and Step 2c (Restore Conversation Style) inline — these are lightweight in-memory operations that don't require file loading beyond what was already read.
+
+**If ANY condition fails:** Fall through to the full Step 1–2e sequence below.
+
+The fast path saves ~1,000 tokens of context on the happy path (returning user, clean state, no mid-mapping interruption).
+
 ## Step 1: Read All State Files
 
 Read these files to reconstruct full context:

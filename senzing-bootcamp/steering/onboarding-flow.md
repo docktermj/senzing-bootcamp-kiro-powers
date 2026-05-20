@@ -342,9 +342,15 @@ This is NOT a mandatory gate (⛔) — the bootcamper can skip it.
 
 ### 4c. Comprehension Check
 
-Before moving on to track selection, give the bootcamper a moment to absorb everything from the overview. Present a warm, conversational check-in — this is an invitation, not a quiz:
+Before moving on to track selection, give the bootcamper a moment to absorb everything from the overview. Present a warm, conversational check-in — this is an invitation, not a quiz.
 
-👉 "That was a lot of ground to cover — does everything so far make sense?"
+Output format: your output MUST begin with 👉 followed by the comprehension check question. Example:
+
+```text
+👉 That was a lot of ground to cover — does everything so far make sense?
+```
+
+If you paraphrase or reformulate the question, the 👉 prefix is still mandatory.
 
 🛑 STOP — Wait for bootcamper response.
 

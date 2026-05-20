@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `module-transitions.md` reverted from `inclusion: fileMatch` back to `inclusion: always` — the file is needed on every module start/completion, and conditional loading caused missed banners when progress file wasn't the trigger
+- Renamed `tests/test_module12_phase_gate.py` → `tests/test_hook_schema_conformance.py` — the test validates hook JSON schema generically, not Module-12-specific logic (Module 12 was collapsed into Module 11 in 0.11.0)
+- `steering-index.yaml` Module 4 entry expanded from bare string to phases map with `token_count` and `size_category` for consistency with all other modules
+
+### Fixed
+
+- Added preservation test `tests/test_module_transitions_always_inclusion.py` pinning `module-transitions.md` to `inclusion: always` — prevents accidental regression
+
 ## [0.12.0] - 2026-05-18
 
 ### Added

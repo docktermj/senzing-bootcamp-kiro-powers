@@ -35,7 +35,7 @@ _EXPECTED_TOTALS: dict[int, int | None] = {
     1: 18,
     2: 9,
     3: 12,
-    4: None,
+    4: 9,
     5: 26,
     6: 27,
     7: None,
@@ -78,7 +78,7 @@ class TestProperty3TotalStepsExtraction:
     @given(module=st.sampled_from(_MODULES_WITHOUT_PHASES))
     @settings(max_examples=5)
     def test_modules_without_phases_return_none(self, module: int) -> None:
-        """Modules without phases (4, 7) return None."""
+        """Modules with non-integer step ranges (7) return None."""
         result = status._get_module_total_steps(_STEERING_INDEX_PATH, module)
         assert result is None, (
             f"Module {module}: expected None, got {result}"

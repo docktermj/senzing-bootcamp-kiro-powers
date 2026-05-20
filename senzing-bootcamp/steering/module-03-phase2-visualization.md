@@ -152,6 +152,10 @@ Follow the Web Service Delivery Sequence from `visualization-guide.md`:
    - Manual restart: "If you need to restart, run the `src/system_verification/web_service/server.py` entry point with python3"
    - Stop: "To stop the server, I can stop the background process for you, or press Ctrl+C if running manually"
 
+   👉 Take your time exploring the visualization. Let me know when you're ready and I'll continue with cleanup.
+
+   🛑 STOP — End your response here and wait for the bootcamper to confirm they are done exploring.
+
 4. **On verification failure:** Report the specific endpoint that failed, the HTTP status received, and provide a Fix_Instruction:
    - Port 8080 in use → suggest alternative port or kill existing process
    - SDK error → re-run SDK initialization (Step 3)

@@ -143,6 +143,74 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **Checkpoint:** Write step 6 to `config/bootcamp_progress.json`.
 
+   **6a. Record count threshold check:**
+
+   After completing the five-category inference above, calculate the total record count across all sources mentioned by the bootcamper. If the total record count exceeds 500 (i.e., more than 500 records total), the built-in 500-record evaluation limit will be exceeded and license guidance is required — proceed to Step 6b. If the total is 500 or fewer, skip Steps 6b–6e and proceed directly to Step 7.
+
+   **6b. License Guidance Trigger** (conditional — only when total records exceed the 500-record evaluation limit):
+
+   The Senzing SDK includes a built-in evaluation license that allows processing up to 500 records. Since the total record count across your data sources is greater than 500, you will need a full Senzing license to process all your data.
+
+   👉 "Do you already have a Senzing license?"
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+   Once the bootcamper responds, branch based on their answer:
+
+   - If **yes** (already has a license) → proceed to Step 6c
+   - If **no** (does not have a license) → proceed to Step 6d
+
+   **6c. Already has license** (branch — bootcamper confirms they have a Senzing license):
+
+   Guide the bootcamper through configuring their existing license:
+
+   1. Ask the bootcamper to provide their Base64-encoded license string
+   2. Decode the Base64 license string and save it to `licenses/g2.lic`:
+
+      ```bash
+      echo "<Base64-encoded string>" | base64 --decode > licenses/g2.lic
+      ```
+
+   3. Add `LICENSEFILE` to the engine configuration PIPELINE section pointing to the license file path
+   4. Record `license: custom` in `config/bootcamp_preferences.yaml`
+
+   Once configuration is complete, proceed to Step 7.
+
+   **Checkpoint:** Write step 6c to `config/bootcamp_progress.json`.
+
+   **6d. Does not have license** (branch — bootcamper confirms they do not have a Senzing license):
+
+   Explain how to request and configure a Senzing license:
+
+   - **Where to request:** Contact <support@senzing.com> to request an evaluation license. Mention that you are using the Senzing Bootcamp and provide your expected record count.
+   - **What to provide:** Your name, organization, expected record count, and use case description.
+   - **Turnaround expectations:** Expect a response within 1–2 business days. Licenses are typically valid for 30–90 days.
+   - **How to configure once received:** Once you receive your Base64-encoded license string, decode it and save to `licenses/g2.lic`, then add `LICENSEFILE` to the engine configuration PIPELINE section.
+
+   Offer the bootcamper a choice:
+
+   👉 "Would you like to defer license configuration and continue with Module 1 now? You can configure the license later in Module 2, or we can wait until you receive your license."
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+
+   Once the bootcamper responds:
+
+   - If they want to **wait** for the license → pause and let them know to return when they have it
+   - If they want to **defer** and continue → proceed to Step 6e
+   - If they **received their license** → follow the configuration steps in Step 6c
+
+   **Checkpoint:** Write step 6d to `config/bootcamp_progress.json`.
+
+   **6e. Deferral handling** (branch — bootcamper chooses to defer license configuration):
+
+   Record `license_guidance_deferred: true` in `config/bootcamp_preferences.yaml`.
+
+   Note: Module 2 Step 5 (Configure License) will handle license configuration as a mandatory gate. You can proceed with Module 1 without a license and configure it later.
+
+   Proceed to Step 7.
+
+   **Checkpoint:** Write step 6e to `config/bootcamp_progress.json`.
+
 7. **Confirm inferred details and fill gaps**:
 
    Ask about only one undetermined item per turn. After the bootcamper responds, ask about the next undetermined item in a subsequent turn. Do NOT ask about items the user already covered. Queue remaining questions for subsequent turns.

@@ -40,6 +40,12 @@ NOTE: If files were edited (even by a hook-triggered action), that IS substantiv
 
 SECOND — Recap and closing question: If ALL Phase 1 conditions pass AND work was accomplished: You may provide a brief recap of what was accomplished and which files created or modified, then end with a contextual 👉 question (a closing question for the bootcamper). Keep it to 2-3 sentences maximum.
 
+THIRD — Compound-question validation: Before outputting the closing question, verify it does not contain prose-joined alternatives. If it does, reformat as a numbered list. Detect these patterns:
+- "[action A], or [action B]" (alternatives joined by comma-or)
+- "[question]? Or [alternative]?" (sentence-starter Or appending a second question)
+- "[question], or would you [alternative]?" (appended alternative with 'or would you')
+If ANY pattern matches, rewrite the closing question as a neutral lead question followed by a numbered list of alternatives. Example: instead of '👉 Would you like to proceed with Python, or shall we use Java?' write '👉 Which language would you like to use?\n1. Python\n2. Java'. If the closing question is a simple yes/no with a single action and no alternatives, keep it in the simple '👉 [question]?' format.
+
 Additionally, if the bootcamper has completed or is on the final step of their current track, append a brief nudge: 'By the way, if you have feedback about the bootcamp experience, just say "bootcamp feedback" anytime.' Otherwise, do NOT mention feedback in Phase 1.
 
 ---
@@ -109,6 +115,45 @@ If no issues are found: output nothing. Proceed silently.
 - name: `to check Markdown style`
 - description: `Validates that all Markdown files conform to CommonMark standards when edited`
 
+**question-format-gate** (agentStop → askAgent)
+
+Prompt:
+
+````text
+QUESTION FORMAT GATE — Inspect the most recent assistant message for compound 👉 questions.
+
+DETECTION: Scan the output for any line or sentence beginning with 👉 that contains a question. If a 👉 question is found, check whether it contains prose-joined alternatives using these patterns:
+
+1. Sentence-starter 'Or': The question is followed by 'Or shall we...', 'Or would you...', 'Or should we...', 'Or can we...' — two alternatives joined by 'Or' as a sentence starter.
+2. Inline prose 'or': The question contains '[option A] or [option B]?' where two distinct actions or choices are joined by 'or' in a single sentence.
+3. Appended alternative: A confirmation question followed by ', or would you rather...', ', or shall we...', ', or if you prefer...' — an alternative appended after the main question.
+
+A question is compound if it has multiple alternatives joined by prose conjunctions ('or') and is NOT already formatted as a numbered list.
+
+NOT COMPOUND (do not flag):
+- Simple yes/no questions with a single action (e.g., '👉 Ready to move on to Module 3?')
+- Questions already formatted with a numbered list below them (e.g., '👉 What would you like to do?\n1. Option A\n2. Option B')
+- The word 'or' appearing inside a numbered list item description (e.g., '1. Share with your team or manager')
+- Informational prose containing 'or' but no 👉 question
+- Non-question content
+
+ACTION:
+- If NO compound question detected: output only a single period character: .
+- If a compound question IS detected: rewrite the agent's closing question using the correct format. Replace the compound question with a neutral lead question followed by a numbered list of alternatives. Example:
+  BEFORE: '👉 Would you like me to create a summary? Or shall we skip that and move on to Module 3?'
+  AFTER: '👉 What would you like to do next?\n1. Create a summary\n2. Skip and move on to Module 3'
+
+RULES:
+- Do NOT interfere with non-compound outputs. If there is no compound question, your complete response is: .
+- Do NOT add explanations about why you are rewriting. Just output the corrected question.
+- Do NOT restructure content that is not a 👉 question.
+- Preserve all other content in the message — only rewrite the compound question portion.
+````
+
+- id: `question-format-gate`
+- name: `to enforce single-question format on agent output`
+- description: `agentStop hook that inspects every agent response for compound 👉 questions with prose-joined alternatives. If detected, instructs the agent to rewrite using numbered list format. Non-compound outputs pass through unchanged.`
+
 **review-bootcamper-input** (promptSubmit → askAgent)
 
 Prompt:
@@ -128,12 +173,14 @@ Prompt:
 ````text
 WRITE POLICY GATE — Three checks in one pass.
 
-FAST PATH GATE: If ALL of the following are true, skip all checks and proceed immediately:
+FAST PATH GATE: If ALL of the following are true, produce no output at all:
 - The target path is a normal project-relative file (inside the working directory)
 - The target path does NOT end with '.question_pending'
 - The content does NOT contain SQL patterns (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA) targeting Senzing database indicators (G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_)
 
-If all conditions above are met: Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
+Your response when fast path passes: [empty — produce zero tokens]
+OUTPUT: (none)
+Do NOT output phrases like 'Fast path passes', 'Proceeding', 'All checks pass', or any summary of your evaluation. Zero tokens means zero tokens.
 
 ---
 

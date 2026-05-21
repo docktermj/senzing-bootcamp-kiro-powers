@@ -50,6 +50,7 @@ CRITICAL_HOOKS: list[str] = [
     "ask-bootcamper",
     "code-style-check",
     "commonmark-validation",
+    "question-format-gate",
     "review-bootcamper-input",
     "write-policy-gate",
 ]

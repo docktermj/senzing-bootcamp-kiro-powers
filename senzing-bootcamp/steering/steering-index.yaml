@@ -275,7 +275,7 @@ file_metadata:
     token_count: 536
     size_category: medium
   conversation-protocol.md:
-    token_count: 2342
+    token_count: 3038
     size_category: large
   data-lineage.md:
     token_count: 603
@@ -314,10 +314,10 @@ file_metadata:
     token_count: 2547
     size_category: large
   hook-registry-detail.md:
-    token_count: 10361
+    token_count: 11256
     size_category: large
   hook-registry.md:
-    token_count: 1634
+    token_count: 1702
     size_category: medium
   inline-status.md:
     token_count: 460
@@ -347,7 +347,7 @@ file_metadata:
     token_count: 580
     size_category: medium
   module-01-business-problem.md:
-    token_count: 3369
+    token_count: 4334
     size_category: large
   module-01-phase2-document-confirm.md:
     token_count: 1853
@@ -492,7 +492,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 140313
+  total_tokens: 142937
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

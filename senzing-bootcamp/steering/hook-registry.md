@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-27 bootcamp hooks organized by category. Load `hook-registry-detail.md` for full prompt text when creating hooks.
+28 bootcamp hooks organized by category. Load `hook-registry-detail.md` for full prompt text when creating hooks.
 
 ## Critical Hooks (created during onboarding)
 
@@ -13,6 +13,7 @@ inclusion: manual
 | ask-bootcamper | agentStop → askAgent | Silence-first agentStop hook with dual responsibility: (1) Phase 1 produces a recap + closing question only when no question is already pending, with a near-completion feedback nudge; (2) Phase 2 independently reminds the bootcamper to share saved feedback after track completion. |
 | code-style-check | fileEdited → askAgent | Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions. |
 | commonmark-validation | fileEdited → askAgent | Validates that all Markdown files conform to CommonMark standards when edited |
+| question-format-gate | agentStop → askAgent | agentStop hook that inspects every agent response for compound 👉 questions with prose-joined alternatives. If detected, instructs the agent to rewrite using numbered list format. Non-compound outputs pass through unchanged. |
 | review-bootcamper-input | promptSubmit → askAgent | Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture. |
 | write-policy-gate | preToolUse → askAgent | Consolidated preToolUse write hook that performs three policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, and (3) validates file path policies. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions). |
 

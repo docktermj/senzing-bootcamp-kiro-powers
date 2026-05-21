@@ -313,12 +313,13 @@ class TestCheckpointCountPreservation:
         Steps 1-6 and 8-9 have one checkpoint each (8 total).
         Step 7 was split into sub-steps 7a-7d, each with a checkpoint (4 total).
         Step 1 also has a sub-step checkpoint.
-        Total: 13 checkpoints.
+        Step 6 has sub-step checkpoints for 6c, 6d, 6e (3 total).
+        Total: 16 checkpoints.
         """
         content = _read_module_01()
         count = len(_CHECKPOINT_RE.findall(content))
-        assert count == 13, (
-            f"Expected 13 checkpoints, found {count}."
+        assert count == 16, (
+            f"Expected 16 checkpoints, found {count}."
         )
 
 

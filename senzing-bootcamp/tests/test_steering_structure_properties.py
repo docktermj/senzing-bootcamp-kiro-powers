@@ -400,8 +400,8 @@ def check_single_question_per_step(
         List of violation descriptions. Empty list means the check
         passed.
     """
-    # Sub-step pattern: "5a. **Title**" or "5b. **Title**:"
-    re_sub_step = re.compile(r"^(\d+[a-z])\.\s+\*\*")
+    # Sub-step pattern: "5a. **Title**" or "5b. **Title**:" or "   **6a. Title:**"
+    re_sub_step = re.compile(r"^\s*(?:\*\*)?(\d+[a-z])\.\s+\*?\*?")
 
     lines = content.splitlines()
     current_step: str | None = None

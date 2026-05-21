@@ -186,9 +186,9 @@ def _extract_onboarding_step_both_files(step_id: str) -> str:
 # Baselines — snapshot the UNFIXED file content for comparison
 # ---------------------------------------------------------------------------
 
-# Module 01 non-question steps: 2, 3, 4, 6
+# Module 01 non-question steps: 2, 3, 4
 _UNFIXED_MODULE01 = _read_file(_MODULE_01)
-_MODULE01_NON_QUESTION_STEPS = [2, 3, 4, 6]
+_MODULE01_NON_QUESTION_STEPS = [2, 3, 4]
 _UNFIXED_MODULE01_STEPS: dict[int, str] = {
     n: _extract_step_module01(_UNFIXED_MODULE01, n)
     for n in _MODULE01_NON_QUESTION_STEPS

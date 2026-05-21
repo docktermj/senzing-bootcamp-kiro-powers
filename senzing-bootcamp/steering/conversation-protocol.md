@@ -205,6 +205,86 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 Conversation UX rules take precedence over content generation. Never sacrifice turn-taking correctness to deliver more information in a single turn. If following a rule means splitting content across multiple turns, split it.
 
+## Pre-Output Validation Checklist
+
+Execute this checklist **before every turn** that contains a pointing-hand question. Stop at the first failure and rewrite before sending.
+
+1. **Compound-question check (fail-fast):** Verify the closing question does NOT contain two or more alternatives joined by prose ("or", "Or", "alternatively", "or would you rather", "or should we"). If it does → apply the Rewrite Protocol below.
+2. Verify this turn contains at most one closing question. If more than one → keep only the first; defer the rest to subsequent turns.
+3. Verify every closing question has the pointing-hand prefix. If missing → add it.
+4. Verify no content appears after the closing question. If content follows → move it before the question or remove it.
+5. Verify you are not answering your own question. If self-answering → delete the self-answer.
+6. Verify no closing question offers to skip or bypass an upcoming mandatory gate step. If it does → remove the skip option.
+
+### Rewrite Protocol
+
+When the compound-question check (item 1) fails, rewrite the question using these steps:
+
+**Step 1 — Count the alternatives.** Identify each distinct action or option joined by prose conjunctions.
+
+**Step 2 — Choose the format:**
+
+- **Two or more alternatives** → numbered list preceded by a single neutral question.
+- **Confirmation with appended alternative** (e.g., "Does that look right? Or would you like me to adjust it?") → keep only the confirmation; drop the appended alternative entirely.
+
+**Step 3 — Rewrite.**
+
+- For numbered lists: write one neutral lead question (no alternatives in it), then list each option on its own numbered line.
+- For confirmations: remove everything after the first question mark.
+
+**Step 4 — Re-validate.** Run the checklist again from item 1 on the rewritten question.
+
+### Rewrite Examples
+
+#### Either/Or joined by prose
+
+##### WRONG
+
+> 👉 Would you like me to create a one-page executive summary you can share with your team or manager? Or shall we skip that and move on to Module 3?
+
+##### CORRECT
+
+> 👉 What would you like to do next?
+>
+> 1. Create a one-page executive summary to share with your team
+> 2. Skip ahead to Module 3
+
+#### Appended alternative on confirmation
+
+##### WRONG
+
+> 👉 Does that look right? Or would you like me to adjust it?
+
+##### CORRECT
+
+> 👉 Does that look right?
+
+#### Sentence-starter "Or"
+
+##### WRONG
+
+> 👉 Should I generate the loading program now? Or would you rather review the mapping first?
+
+##### CORRECT
+
+> 👉 What would you like to do next?
+>
+> 1. Generate the loading program now
+> 2. Review the mapping first
+
+#### Prose-joined choices (inline "or")
+
+##### WRONG
+
+> 👉 Would you like to proceed with Python or Java?
+
+##### CORRECT
+
+> 👉 Which language would you like to use?
+>
+> 1. Python
+> 2. Java
+
 ## Self-Check
 
 Before ending any turn, verify:

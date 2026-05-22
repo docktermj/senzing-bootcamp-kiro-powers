@@ -33,11 +33,13 @@
 
 - [x] 6.1 Create `senzing-bootcamp/tests/test_restore_project.py` with example tests: valid ZIP extracts all files, missing file → exit 1, non-ZIP file → exit 1, no arguments → usage + exit 1
 
-## Task 7: Test check_prerequisites.py
+## Task 7: Test check_prerequisites.py [removed]
 
-- [x] 7.1 Create `senzing-bootcamp/tests/test_check_prerequisites.py` with example tests: no language runtimes → failure, NO_COLOR disables color
-- [x] 7.2 [PBT] Property 8: check_command reflects availability — for any command name, present → PASSED incremented, absent+required → FAILED incremented
-- [x] 7.3 [PBT] Property 9: Language runtime detection — for any single runtime present while others absent, no language failure reported
+> **Note:** `check_prerequisites.py` has been removed from the repository. These tasks are no longer applicable.
+
+- [x] ~~7.1 Create `senzing-bootcamp/tests/test_check_prerequisites.py` with example tests~~ [removed]
+- [x] ~~7.2 [PBT] Property 8: check_command reflects availability~~ [removed]
+- [x] ~~7.3 [PBT] Property 9: Language runtime detection~~ [removed]
 
 ## Task 8: Test preflight_check.py
 
@@ -57,4 +59,4 @@
 ## Task 11: Final validation
 
 - [x] 11.1 Run `python -m pytest senzing-bootcamp/tests/ -v --tb=short` and verify all tests pass
-- [x] 11.2 Verify `pytest --collect-only senzing-bootcamp/tests/` discovers all 8 test modules
+- [x] 11.2 Verify `pytest --collect-only senzing-bootcamp/tests/` discovers all 7 test modules

@@ -80,7 +80,7 @@ This spec documents the power as-built (v0.12.0). All tasks reflect implemented 
 - [x] 7.4 Steering: measure_steering.py (with --check and --simulate flags), lint_steering.py, split_steering.py, sync_hook_registry.py (with --verify and --write flags)
 - [x] 7.5 Team: team_dashboard.py, team_config_validator.py, merge_feedback.py
 - [x] 7.6 Analytics: session_logger.py, analyze_sessions.py, bootcamp_analytics.py, triage_feedback.py
-- [x] 7.7 Utilities: data_sources.py, export_results.py, repair_progress.py, verbosity.py, check_prerequisites.py, compare_results.py, track_switcher.py
+- [x] 7.7 Utilities: data_sources.py, export_results.py, repair_progress.py, verbosity.py, compare_results.py, track_switcher.py
 
 ## Task 8: Testing (177 test files)
 

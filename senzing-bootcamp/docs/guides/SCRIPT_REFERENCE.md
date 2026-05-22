@@ -207,4 +207,3 @@ These scripts are imported by other scripts or the agent — they are not intend
 | `team_config_validator.py` | Validates `config/team.yaml` structure — used during team onboarding |
 | `test_dashboard.py` | Test suite results formatting — used by CI for pass/fail reporting |
 | `test_hooks.py` | Hook testing utilities — used by the test suite for hook validation |
-| `check_prerequisites.py` | DEPRECATED — superseded by `preflight.py` |

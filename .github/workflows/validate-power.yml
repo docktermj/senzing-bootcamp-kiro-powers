@@ -37,6 +37,12 @@ jobs:
         run: python senzing-bootcamp/scripts/validate_progress_ci.py
       - name: Validate mandatory gates
         run: python senzing-bootcamp/scripts/validate_mandatory_gates.py
+      - name: Validate YAML schemas
+        run: python senzing-bootcamp/scripts/validate_yaml_schemas.py
+      - name: Lint Python (ruff)
+        run: |
+          pip install ruff
+          ruff check senzing-bootcamp/scripts/ senzing-bootcamp/tests/ tests/
       - name: Run tests
         run: |
           pip install pytest hypothesis

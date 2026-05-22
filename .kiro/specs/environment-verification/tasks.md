@@ -25,7 +25,7 @@
 
 ## Task 4: Legacy script deprecation and documentation updates
 
-- [x] 4.1 Replace `check_prerequisites.py` with a thin deprecation shim that prints a warning to stderr and delegates to `preflight.py`
+- [x] 4.1 Replace `check_prerequisites.py` [removed] with a thin deprecation shim that prints a warning to stderr and delegates to `preflight.py`
 - [x] 4.2 Replace `preflight_check.py` with a thin deprecation shim that prints a warning to stderr and delegates to `preflight.py`
 - [x] 4.3 Update `onboarding-flow.md` Step 3 to run `preflight.py` as a mandatory gate before language selection, replacing inline `shutil.which()` checks
 - [x] 4.4 Update `POWER.md` Useful Commands section to list `preflight.py` as the primary environment verification command and mark legacy scripts as deprecated

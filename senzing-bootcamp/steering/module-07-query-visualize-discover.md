@@ -130,9 +130,10 @@ inclusion: manual
 
 4. **Discover Phase — Advanced Senzing Capabilities**:
 
-   > **Phase file:** Load `module-07-phase2-discover.md` for the full Discover
-   > phase — data pattern analysis, why/how analysis, relationship networks,
-   > and data-specific visualization suggestions.
+   > **Phase files:** Load `module-07-phase2-discover.md` for steps 4a–4c
+   > (data pattern analysis, why analysis, how analysis). Then load
+   > `module-07-phase2b-discover.md` for steps 4d–4e (relationship networks,
+   > visualization suggestions, and Discover Phase Completion).
 
    The Discover phase introduces advanced Senzing capabilities using concrete
    examples from the bootcamper's loaded data. It is opt-in — the bootcamper

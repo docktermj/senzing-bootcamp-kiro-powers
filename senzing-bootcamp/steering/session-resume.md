@@ -16,28 +16,43 @@ Before running the full state reconstruction, check if a fast resume is possible
 4. `current_step` is present in the progress file (we know exactly where to resume)
 5. `hooks_installed` is present in preferences (no hook setup needed)
 
-**If ALL conditions are met:** Skip Steps 1–2e entirely. Jump directly to Step 3 (Summarize and Confirm) using the data already read from the progress and preferences files. Still execute Step 2b (Behavioral Rules Reload) and Step 2c (Restore Conversation Style) inline — these are lightweight in-memory operations that don't require file loading beyond what was already read.
+**If ALL conditions are met:** Skip Steps 1–2 entirely. Jump directly to Step 2b, then Step 2c, then Step 3 using the data already read from the progress and preferences files.
 
-**If ANY condition fails:** Fall through to the full Step 1–2e sequence below.
+**If ANY condition fails:** Fall through to the Routing Logic evaluation, then the full Step 1–2 sequence below.
 
-The fast path saves ~1,000 tokens of context on the happy path (returning user, clean state, no mid-mapping interruption).
+## Routing Logic
+
+After the fast-path check fails, evaluate ALL of the following conditions independently. Multiple phase-2 files can be loaded simultaneously for compound recovery scenarios.
+
+**Evaluate in this order:**
+
+1. **State repair** — Load `session-resume-phase2-state-repair.md` if ANY of:
+   - `config/bootcamp_progress.json` fails to parse as valid JSON
+   - `config/bootcamp_progress.json` is missing entirely
+   - `current_module` in the progress file is inconsistent with project artifacts
+
+2. **Setup recovery** — Load `session-resume-phase2-setup-recovery.md` if ANY of:
+   - `hooks_installed` is missing or empty in `config/bootcamp_preferences.yaml`
+   - `config/bootcamp_preferences.yaml` is missing or corrupted
+   - MCP health check probe fails or times out
+   - `show_whats_new` is not `false` in preferences AND `config/session_log.jsonl` exists
+
+3. **Mapping** — Load `session-resume-phase2-mapping.md` if:
+   - One or more `config/mapping_state_*.json` files exist
+
+All conditions are evaluated independently — if state repair AND setup recovery both trigger, load both files.
 
 ## Step 1: Read All State Files
 
 Read these files to reconstruct full context:
 
 1. **`config/bootcamp_progress.json`** — completed modules, current module, data sources, database type, `current_step` (last completed step in current module, if present), `step_history` (per-module step records, if present)
-2. **`config/bootcamp_preferences.yaml`** — chosen language, track, cloud provider, license info, **detail_level** (if set — honor their preference for more/less/default detail), **conversation_style** (if set — restore tone, pacing, question framing, and verbosity preset for style continuity)
-2b. **Check hooks_installed** in `config/bootcamp_preferences.yaml`:
-    - If `hooks_installed` key exists with hook names and timestamp → skip hook creation entirely. Hooks are already installed.
-    - If `hooks_installed` is missing or empty → load the Hook Registry from `onboarding-phase2-track-setup.md` and create Critical Hooks using the `createHook` tool before the welcome-back banner. **Use the exact `name` from each hook's `- name:` line in the registry (e.g., `to wait for your answer`, NOT `Ask Bootcamper`).** This handles bootcampers who started before hook distribution was implemented, or whose preferences were reset.
-    - If `config/bootcamp_preferences.yaml` itself is missing or corrupted → treat as no hooks installed and create Critical Hooks from the Hook Registry.
-    - If any Critical Hook creation fails during resume, log the failure and continue with the remaining hooks. Report failures after all attempts (see the failure impact messages in the Hook Registry).
-3. **`docs/bootcamp_journal.md`** (if exists) — narrative history of what was done and why
-4. **`config/mapping_state_*.json`** (if any exist) — in-progress mapping checkpoints from Module 5. If found, the user was mid-mapping when the session ended.
-5. **`config/session_log.jsonl`** (if exists) — session analytics for adaptive pacing. Compute pacing classifications for completed modules and merge with `pacing_overrides` from preferences. Store in working memory for module-start decisions.
+2. **`config/bootcamp_preferences.yaml`** — chosen language, track, cloud provider, license info, **detail_level** (if set), **conversation_style** (if set)
+3. **`docs/bootcamp_journal.md`** (if exists) — narrative history
+4. **`config/mapping_state_*.json`** (if any exist) — in-progress mapping checkpoints
+5. **`config/session_log.jsonl`** (if exists) — session analytics for adaptive pacing
 
-If progress or preferences files are missing or corrupted, inform the user and offer to reconstruct from project artifacts (check `src/`, `data/`, `docs/` for evidence of completed work).
+If progress or preferences files are missing or corrupted, see `session-resume-phase2-state-repair.md` for reconstruction procedure.
 
 ## Step 2: Load Language Steering
 
@@ -55,171 +70,46 @@ Based on the `language` field from preferences, load the corresponding language 
 
 Before interacting with the bootcamper, re-assert the five core conversation rules. These are summarized below — see `conversation-protocol.md` for complete definitions.
 
-### Core Rules with Enforcement Mechanisms
+### Core Rules
 
-1. **One-question-per-turn** — Each turn contains at most one 👉 question. End the turn with 🛑 STOP immediately after the question. Enforcement: if a turn contains more than one 👉 question, the turn is invalid and must be revised before sending.
-
-2. **👉-prefix-required** — Every question expecting bootcamper input must use the 👉 prefix. Enforcement: any question directed at the bootcamper that lacks the 👉 prefix is a protocol violation. Self-check before sending: does every bootcamper-directed question have the prefix?
-
-3. **STOP markers as absolute end-of-turn boundaries (wait-for-response)** — 🛑 STOP means produce zero additional tokens. No content, no acknowledgment, no continuation after a STOP marker. Wait for the bootcamper's response before generating anything. Enforcement: any token generated after a 🛑 STOP is a violation. The turn ends at the marker unconditionally.
-
-4. **No self-answering under any circumstance** — Never generate text that answers, assumes, or implies a response to your own 👉 question. Enforcement: after outputting a 👉 question, the only permitted action is writing `config/.question_pending` and stopping. Any text that could be interpreted as a response to the question is a violation.
-
-5. **No dead-end responses after bootcamper input** — Every turn must advance the conversation with a next action: a 👉 follow-up question, a summary of what comes next, or proceeding to the next step. Enforcement: if a turn ends with only an acknowledgment ("Got it.", "Understood.") and no next action, it is a violation.
+1. **One-question-per-turn** — Each turn contains at most one 👉 question. End the turn with 🛑 STOP immediately after the question.
+2. **👉-prefix-required** — Every question expecting bootcamper input must use the 👉 prefix.
+3. **STOP markers as absolute end-of-turn boundaries** — 🛑 STOP means produce zero additional tokens. Wait for the bootcamper's response.
+4. **No self-answering** — Never generate text that answers, assumes, or implies a response to your own 👉 question.
+5. **No dead-end responses** — Every turn must advance the conversation with a next action.
 
 ### Equal Priority Statement
 
-Session resume does not reduce the authority of any behavioral rule. Conversation-protocol rules have equal priority to agent-instructions rules. No rule is relaxed, deferred, or weakened because the session was resumed rather than started fresh.
+Session resume does not reduce the authority of any behavioral rule. Conversation-protocol rules have equal priority to agent-instructions rules.
 
 ### Protocol Confirmation
 
-Before proceeding to Step 3, confirm that `conversation-protocol.md` is loaded (via its `inclusion: auto` setting) and its rules are active. The auto-inclusion mechanism ensures the protocol is present in every active session. If for any reason the protocol is unavailable, the five rules summarized above serve as the authoritative fallback — enforce them without exception.
+Before proceeding to Step 3, confirm that `conversation-protocol.md` is loaded (via its `inclusion: auto` setting) and its rules are active. If unavailable, the five rules above serve as the authoritative fallback.
 
 ### Self-Answering Prohibition
 
-After asking any 👉 question, produce zero additional tokens. Do not answer the question. Do not assume the bootcamper's response. Do not generate placeholder answers like "just me" or "I will go with X."
-
-**WRONG — generating a placeholder answer after resume:**
-
-```text
-👉 Who will be working on this project?
-I'll assume it's just me for now. Let's continue.
-```
-
-**CORRECT:**
-
-```text
-👉 Who will be working on this project?
-🛑 STOP
-```
-
-**WRONG — answering your own language question:**
-
-```text
-👉 What programming language would you like to use?
-I'll go with Python since that's most common.
-```
-
-**CORRECT:**
-
-```text
-👉 What programming language would you like to use?
-🛑 STOP
-```
-
-**WRONG — answering the Ready to continue? question:**
-
-```text
-👉 Ready to continue with Module 3, or would you like to do something else?
-Great, let's continue with Module 3!
-```
-
-**CORRECT:**
-
-```text
-👉 Ready to continue with Module 3, or would you like to do something else?
-🛑 STOP
-```
-
-**Question pending enforcement:** While `config/.question_pending` exists, the agent must not generate any response content until the bootcamper provides input. The file's existence is the definitive signal that a question is awaiting a response — no output is permitted until the bootcamper replies and the file is deleted.
+After asking any 👉 question, produce zero additional tokens. Do not answer the question. Do not assume the bootcamper's response.
 
 After asking the "Ready to continue?" question in Step 3, write `config/.question_pending` with the question text to enforce the wait mechanism.
 
 ## Step 2c: Restore Conversation Style
 
-Before generating any bootcamper-facing output, restore the conversation style from the persisted profile so that tone, pacing, and question framing are consistent with the previous session.
+Read the `conversation_style` key from `config/bootcamp_preferences.yaml`. If the key exists, apply these parameters to all subsequent output:
 
-### Apply Stored Style Parameters
+- **verbosity_preset** — `concise`, `standard`, `detailed`, or `custom`
+- **question_framing** — `minimal`, `moderate`, or `full`
+- **tone** — `concise`, `conversational`, or `detailed`
+- **pacing** — `one_concept_per_turn` or `grouped_concepts`
 
-Read the `conversation_style` key from `config/bootcamp_preferences.yaml`. If the key exists, apply these parameters to all subsequent output in this session:
+### Fallback Defaults
 
-- **verbosity_preset** — The active preset (`concise`, `standard`, `detailed`, or `custom`). Governs overall output depth.
-- **question_framing** — Length of contextual lead-in before 👉 questions (`minimal`, `moderate`, or `full`).
-- **tone** — Overall tone descriptor (`concise`, `conversational`, or `detailed`). Determines sentence structure and preamble length.
-- **pacing** — Content density per turn (`one_concept_per_turn` or `grouped_concepts`).
+If `conversation_style` is missing, apply: `verbosity_preset: standard`, `tone: conversational`, `question_framing: moderate`, `pacing: one_concept_per_turn`.
 
-### Fallback Logic
-
-If the `conversation_style` key does not exist in the preferences file (or the file itself is missing/corrupted), apply these defaults derived from `conversation-protocol.md` and `verbosity-control.md` settings:
-
-| Parameter | Default Value |
-|-----------|--------------|
-| `verbosity_preset` | `standard` |
-| `tone` | `conversational` |
-| `question_framing` | `moderate` |
-| `pacing` | `one_concept_per_turn` |
-
-Do not create the `conversation_style` key during resume — it will be written on the next style interaction or verbosity adjustment.
-
-### Tone Descriptor Mapping
-
-Use this table to translate the stored `tone` value into observable output characteristics:
-
-| Tone | Observable Characteristics |
-|------|---------------------------|
-| `concise` | Short contextual lead-ins (1-2 sentences), minimal preamble before questions, direct language |
-| `conversational` | Moderate lead-ins (2-4 sentences), friendly framing, balanced explanation depth |
-| `detailed` | Full contextual framing (4+ sentences), thorough explanations, explicit rationale for each step |
+Do not create the `conversation_style` key during resume — it will be written on the next style interaction.
 
 ### Style Drift Detection
 
-After generating the first post-resume response, compare the output style against the stored `conversation_style` profile. If the response diverges from the profile (e.g., using detailed framing when the profile specifies concise tone), self-correct in subsequent turns by re-reading the profile and adjusting output to match.
-
-When loading a new module steering file during the session, re-read the `conversation_style` profile from `config/bootcamp_preferences.yaml` to ensure module-specific instructions do not override the bootcamper's established style preferences.
-
-## Step 2d: MCP Health Check
-
-Before proceeding, verify that the Senzing MCP server is reachable. The MCP server is required for the bootcamp — it generates SDK code in your chosen language, looks up Senzing facts and configuration details, and provides working examples on demand.
-
-### Probe
-
-Attempt a lightweight MCP tool call with a 10-second timeout:
-
-```text
-search_docs(query="health check", version="current")
-```
-
-### Success Path
-
-If the call returns any response (even empty results) within 10 seconds:
-
-1. Proceed silently — do not display anything to the bootcamper.
-
-### Failure Path
-
-If the call times out or errors after 10 seconds:
-
-1. Display the following blocking error:
-
-```text
-⛔ The Senzing MCP server is unreachable.
-
-The MCP server is required for the bootcamp — it generates SDK code,
-looks up Senzing facts, and provides working examples. The bootcamp
-cannot proceed without it.
-
-**Troubleshooting steps:**
-1. Verify internet connectivity (can you load any website?)
-2. Test the endpoint: curl -s -o /dev/null -w "%{http_code}" https://mcp.senzing.com:443
-3. If behind a corporate proxy, allowlist mcp.senzing.com:443
-4. Restart the MCP connection in the Kiro Powers panel
-5. Verify DNS: nslookup mcp.senzing.com
-
-After fixing the connection, say "retry" to try again.
-```
-
-2. 🛑 STOP — Do NOT proceed to any subsequent step. Wait for the
-   bootcamper to fix the connection and request a retry.
-
-## Step 2e: What's New Notification
-
-Before the welcome-back banner, check whether there are CHANGELOG entries newer than the bootcamper's last session. Follow the instructions in `whats-new.md`:
-
-1. Read the last session date from `config/session_log.jsonl` (last line's `timestamp` field)
-2. Check `config/bootcamp_preferences.yaml` for `show_whats_new: false` — if set, skip
-3. Parse `CHANGELOG.md` for version entries newer than the last session date
-4. If new entries exist, show a brief notification (max 3 bullets) before the welcome-back banner
-5. If no new entries or conditions not met, skip silently
+After generating the first post-resume response, compare output style against the stored profile. If divergent, self-correct in subsequent turns.
 
 ## Step 3: Summarize and Confirm
 
@@ -229,7 +119,7 @@ Before the welcome-back banner, check whether there are CHANGELOG entries newer 
 🎓 Welcome back to the Senzing Bootcamp!
 ```
 
-Present a concise summary to the user. If `current_step` is present in the progress file, include the step number and total steps for the module (count numbered steps in the module steering file). `current_step` can be either an integer (whole step) or a string sub-step identifier (dotted notation like `"5.3"` or lettered notation like `"7a"`). When it is a string, display it directly (e.g., "Step 5.3 of 12" or "Step 7a of 10"). When it is an integer, display the existing format (e.g., "Step 5 of 12"):
+Present a concise summary. If `current_step` is present, include step number and total steps. `current_step` can be an integer or a string sub-step identifier (e.g., `"5.3"` or `"7a"`). Display accordingly:
 
 ```text
 Welcome back! Here's where you left off:
@@ -242,23 +132,9 @@ Welcome back! Here's where you left off:
   Data sources: [list]
 ```
 
-If `current_step` is absent, omit the step detail and display only:
+If `current_step` is absent, omit the step detail.
 
-```text
-  Current: Module [N] — [module name]
-```
-
-**If mapping checkpoints exist** (`config/mapping_state_*.json`), include the data source name and completed mapping steps in the summary. For each checkpoint, mention: "You were in the middle of mapping [data source name] — we completed steps [list of completed_steps] last time. I can pick up where we left off." If multiple mapping checkpoints exist, list each one.
-
-**Mapping resume options:** For each detected mapping checkpoint, after describing the in-progress state, present these options:
-
-- **(a) Resume** — Pick up the mapping from where it left off
-- **(b) Restart** — Delete the checkpoint and start the mapping from scratch
-- **(c) Skip** — Continue with other bootcamp work; the checkpoint stays for later
-
-If only one mapping checkpoint exists, present the options inline. If multiple checkpoints exist, list each data source with its state first, then ask which one(s) to resume.
-
-When the bootcamper chooses **(b) Restart**, delete the corresponding `config/mapping_state_[datasource].json` file before beginning the mapping workflow from scratch.
+If mapping checkpoints exist, see `session-resume-phase2-mapping.md` for checkpoint summary integration and resume options.
 
 ```text
 👉 Ready to continue with Module [N], or would you like to do something else?
@@ -266,43 +142,22 @@ When the bootcamper chooses **(b) Restart**, delete the corresponding `config/ma
 
 Write `config/.question_pending` with the question text above.
 
-🛑 STOP — Wait for bootcamper response. Do not generate any additional content.
+🛑 STOP — Wait for bootcamper response.
 
 ## Step 4: Load the Right Module Steering
 
 Based on the user's response:
 
-- If they want to continue → load the steering file for `current_module` from the Module Steering table in `agent-instructions.md`. **If `current_step` is present**, determine the resume point based on its type:
-  - **Integer `current_step`**: skip to step `current_step + 1` in the module steering file (all steps up to and including `current_step` are already complete).
-  - **Sub-step identifier string** (dotted like `"5.3"` or lettered like `"7a"`): skip to the next sub-step after the recorded position in the module steering file (not the next whole step). For example, if `current_step` is `"5.3"`, resume at sub-step `5.4` (or the next defined sub-step after `5.3`). If the sub-step identifier is not found in the module steering file, log a warning and fall back to resuming at the parent step number (extract the parent step using `parse_parent_step` logic — e.g., `"5.3"` → step 5, `"7a"` → step 7).
-  - **If `current_step` references a step number that does not exist in the module steering file** (e.g., exceeds the total number of steps, is zero, or is negative), log a warning and fall back to artifact scanning to determine the correct resume point.
-  - **If mapping checkpoints exist** (`config/mapping_state_*.json`):
-
-    **Checkpoint validation:** Before fast-tracking through completed steps, validate the checkpoint:
-
-    1. Read the checkpoint file. If JSON is invalid or required fields (`data_source`, `current_step`, `completed_steps`) are missing, the checkpoint is corrupted.
-    2. Call `mapping_workflow` with `action='status'` and pass the full checkpoint contents as the `state` parameter.
-    3. If the MCP response confirms the state is valid, proceed with fast-tracking through `completed_steps`.
-    4. If the MCP response indicates the state is invalid (e.g., data source no longer exists, schema changed), inform the bootcamper: "The mapping checkpoint for [data source] appears to be outdated or invalid. Would you like to restart the mapping from scratch?"
-    5. If the checkpoint file has invalid JSON, inform the bootcamper: "The mapping checkpoint for [data source] is corrupted and cannot be read. The mapping will need to restart from the beginning."
-
-    In cases 4 and 5, delete the corrupted/invalid checkpoint file and offer to restart.
-
-    After validation succeeds, restart `mapping_workflow` for each data source with a valid checkpoint and fast-track through the completed mapping steps (listed in `completed_steps`) before resuming from the first incomplete mapping step.
-  **If `current_step` is absent**, fall back to the existing artifact-scanning behavior to infer position.
+- If they want to continue → load the steering file for `current_module` from the Module Steering table in `agent-instructions.md`. **If `current_step` is present**, determine the resume point:
+  - **Integer**: skip to step `current_step + 1` (all steps up to and including `current_step` are complete).
+  - **Sub-step string** (e.g., `"5.3"` or `"7a"`): skip to the next sub-step after the recorded position. If not found, fall back to the parent step number.
+  - **Invalid step** (exceeds total, zero, or negative): log a warning and fall back to artifact scanning.
+  - **If mapping checkpoints exist**: see `session-resume-phase2-mapping.md` for checkpoint validation and fast-track logic.
+  - **If `current_step` is absent**: fall back to artifact-scanning to infer position.
 - If they want to switch modules → verify prerequisites via `module-prerequisites.md`, then load the requested module steering
-- If they want to switch tracks → follow the "Switching Tracks" section in `onboarding-phase2-track-setup.md`
+- If they want to switch tracks → follow "Switching Tracks" in `onboarding-phase2-track-setup.md`
 - If they want to start over → confirm, then load `onboarding-flow.md`
 
 ## Step 5: Re-establish MCP Context
 
 Call `get_capabilities` to re-establish the MCP session. This is required at the start of every new session regardless of previous progress.
-
-## Handling Stale or Corrupted State
-
-If `bootcamp_progress.json` exists but seems wrong (e.g., claims Module 8 is complete but `src/query/` is empty):
-
-1. Run `python3 scripts/validate_module.py` to check actual artifact state
-2. Show the user any discrepancies
-3. Offer to correct the progress file based on what actually exists
-4. Proceed from the last verifiably complete module

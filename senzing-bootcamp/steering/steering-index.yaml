@@ -88,14 +88,19 @@ modules:
     phases:
       phase1-query-visualize:
         file: module-07-query-visualize-discover.md
-        token_count: 3164
+        token_count: 3183
         size_category: large
         step_range: [1, "3d"]
-      phase2-discover:
+      phase2a-discover:
         file: module-07-phase2-discover.md
-        token_count: 6380
+        token_count: 3436
         size_category: large
-        step_range: ["4a", "4e"]
+        step_range: ["4a", "4c"]
+      phase2b-discover:
+        file: module-07-phase2b-discover.md
+        token_count: 3162
+        size_category: large
+        step_range: ["4d", "4e"]
   8:
     root: module-08-performance.md
     phases:
@@ -168,6 +173,26 @@ onboarding:
       size_category: medium
       step_range: [5, 5]
 
+session-resume:
+  root: session-resume.md
+  phases:
+    phase1-fast-path:
+      file: session-resume.md
+      token_count: 2063
+      size_category: large
+    phase2-mapping:
+      file: session-resume-phase2-mapping.md
+      token_count: 649
+      size_category: medium
+    phase2-state-repair:
+      file: session-resume-phase2-state-repair.md
+      token_count: 540
+      size_category: medium
+    phase2-setup-recovery:
+      file: session-resume-phase2-setup-recovery.md
+      token_count: 694
+      size_category: medium
+
 keywords:
   error: common-pitfalls.md
   stuck: common-pitfalls.md
@@ -236,6 +261,8 @@ keywords:
   skip step: skip-step-protocol.md
   skip: skip-step-protocol.md
   stuck on step: skip-step-protocol.md
+  cache: mcp-response-caching.md
+  mcp cache: mcp-response-caching.md
   environment: environment-setup.md
   env setup: environment-setup.md
   gitignore: environment-setup.md
@@ -340,6 +367,9 @@ file_metadata:
   lessons-learned.md:
     token_count: 434
     size_category: small
+  mcp-response-caching.md:
+    token_count: 1440
+    size_category: medium
   mcp-tool-decision-tree.md:
     token_count: 2268
     size_category: large
@@ -362,7 +392,7 @@ file_metadata:
     token_count: 6344
     size_category: large
   module-04-data-collection.md:
-    token_count: 3370
+    token_count: 3386
     size_category: large
   module-05-data-quality-mapping.md:
     token_count: 614
@@ -392,10 +422,13 @@ file_metadata:
     token_count: 1952
     size_category: medium
   module-07-phase2-discover.md:
-    token_count: 6428
+    token_count: 3436
+    size_category: large
+  module-07-phase2b-discover.md:
+    token_count: 3162
     size_category: large
   module-07-query-visualize-discover.md:
-    token_count: 3164
+    token_count: 3183
     size_category: large
   module-08-performance.md:
     token_count: 1278
@@ -460,8 +493,17 @@ file_metadata:
   security-privacy.md:
     token_count: 278
     size_category: small
+  session-resume-phase2-mapping.md:
+    token_count: 649
+    size_category: medium
+  session-resume-phase2-setup-recovery.md:
+    token_count: 694
+    size_category: medium
+  session-resume-phase2-state-repair.md:
+    token_count: 540
+    size_category: medium
   session-resume.md:
-    token_count: 4661
+    token_count: 2063
     size_category: large
   skip-step-protocol.md:
     token_count: 751
@@ -492,7 +534,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 142937
+  total_tokens: 143867
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

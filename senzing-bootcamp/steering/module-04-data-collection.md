@@ -10,7 +10,7 @@ inclusion: manual
 
 ## Workflow: Identify and Collect Data Sources (Module 4)
 
-**Prerequisites**: ✅ Module 1 complete (business problem defined, data sources identified)
+**Prerequisites**: ✅ Module 1 complete (business problem defined, data sources identified), ✅ Module 3 complete (system verification passed or skipped)
 
 **Before/After**: You have a list of data sources on paper. After this module, the actual data files are in your project (`data/raw/`), documented, and ready for quality evaluation.
 

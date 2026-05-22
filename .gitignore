@@ -21,3 +21,6 @@ config/.mcp_status
 senzing-bootcamp/config/bootcamp_progress.json
 senzing-bootcamp/config/bootcamp_preferences.yaml
 senzing-bootcamp/config/er_baseline_vendors.json
+
+# MCP response cache runtime state
+senzing-bootcamp/config/mcp_cache/

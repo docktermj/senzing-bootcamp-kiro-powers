@@ -30,7 +30,11 @@ _MANIFEST_PATH = _CONFIG_DIR / "module-artifacts.yaml"
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from validate_module import parse_module_artifacts_yaml
+from validate_module import (
+    check_artifact_on_disk,
+    parse_module_artifacts_yaml,
+    VALID_ARTIFACT_TYPES,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -134,6 +138,57 @@ class TestProducesPathsAreRelative:
         )
 
 
+class TestArtifactTypeValidationExhaustiveness:
+    """Property: artifact type validation is exhaustive.
+
+    For any string value used as an artifact type, the validation logic
+    accepts it if and only if it is one of "file", "directory", or "sentinel".
+    All other strings are rejected.
+
+    **Validates: Requirements 4.1, 4.3, 6.1, 6.2**
+    """
+
+    @given(artifact_type=st.text())
+    @settings(max_examples=20)
+    def test_valid_artifact_types_constant_is_exact(self, artifact_type: str) -> None:
+        """VALID_ARTIFACT_TYPES accepts exactly 'file', 'directory', 'sentinel'."""
+        expected_valid = {"file", "directory", "sentinel"}
+        # The constant must match the expected set exactly
+        assert VALID_ARTIFACT_TYPES == expected_valid, (
+            f"VALID_ARTIFACT_TYPES is {VALID_ARTIFACT_TYPES}, expected {expected_valid}"
+        )
+        # For any random string, membership matches expected behavior
+        if artifact_type in expected_valid:
+            assert artifact_type in VALID_ARTIFACT_TYPES, (
+                f"'{artifact_type}' should be accepted but is not in VALID_ARTIFACT_TYPES"
+            )
+        else:
+            assert artifact_type not in VALID_ARTIFACT_TYPES, (
+                f"'{artifact_type}' should be rejected but is in VALID_ARTIFACT_TYPES"
+            )
+
+
+class TestSentinelDiskCheckBypass:
+    """Property 2: Sentinel artifacts bypass filesystem validation.
+
+    For any artifact entry with type "sentinel", the disk-checking logic
+    SHALL report the artifact as present without performing any filesystem
+    I/O. The path field is treated as a logical identifier.
+
+    **Validates: Requirements 4.2**
+    """
+
+    @given(path=st.text(min_size=1))
+    @settings(max_examples=20)
+    def test_sentinel_always_returns_present(self, path: str) -> None:
+        """check_artifact_on_disk returns (True, False) for any sentinel path."""
+        result = check_artifact_on_disk(path, "sentinel")
+        assert result == (True, False), (
+            f"Sentinel artifact with path '{path}' returned {result}, "
+            f"expected (True, False)"
+        )
+
+
 # ---------------------------------------------------------------------------
 # Unit Tests
 # ---------------------------------------------------------------------------
@@ -170,6 +225,37 @@ class TestValidateModuleArtifactsFlag:
         assert result.returncode == 2
 
 
+class TestNonRootModuleDependencyInvariant:
+    """Property: non-root modules have upstream dependencies.
+
+    For any module in the manifest with a module number greater than 2,
+    the module SHALL have at least one entry in its requires_from mapping.
+    Only Modules 1 and 2 are permitted to have empty requires_from.
+
+    Validates: Requirements 7.2
+    """
+
+    @given(data=st.data())
+    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    def test_non_root_modules_have_requires_from(self, data: st.DataObject) -> None:
+        """Modules with number > 2 must have non-empty requires_from."""
+        manifest = load_manifest()
+        modules = manifest.get("modules", {})
+
+        # Filter to non-root modules (number > 2)
+        non_root_modules = [k for k in modules.keys() if k > 2]
+        assert len(non_root_modules) > 0, "No non-root modules found in manifest"
+
+        module_num = data.draw(st.sampled_from(non_root_modules))
+        mod_data = modules[module_num]
+        requires_from = mod_data.get("requires_from", {})
+
+        assert requires_from, (
+            f"Module {module_num} has empty requires_from — "
+            f"only Modules 1 and 2 are permitted to have no upstream dependencies"
+        )
+
+
 class TestManifestFileValidity:
     """Unit tests for module-artifacts.yaml existence and validity."""
 
@@ -202,7 +288,7 @@ class TestManifestFileValidity:
                 assert "type" in artifact, (
                     f"Module {mod_num}: produces entry missing 'type'"
                 )
-                assert artifact["type"] in ("file", "directory"), (
+                assert artifact["type"] in ("file", "directory", "sentinel"), (
                     f"Module {mod_num}: invalid type '{artifact['type']}'"
                 )
                 assert "description" in artifact, (

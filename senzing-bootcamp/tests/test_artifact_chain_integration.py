@@ -264,10 +264,10 @@ class TestArtifactChainConsistency:
                     errors.append(f"Module {mod_num} produces[{i}]: missing path")
                 if not item.get("type"):
                     errors.append(f"Module {mod_num} produces[{i}]: missing type")
-                if item.get("type") not in ("file", "directory"):
+                if item.get("type") not in ("file", "directory", "sentinel"):
                     errors.append(
                         f"Module {mod_num} produces[{i}]: type must be "
-                        f"'file' or 'directory', got '{item.get('type')}'"
+                        f"'file', 'directory', or 'sentinel', got '{item.get('type')}'"
                     )
 
         assert not errors, "Invalid produces entries:\n" + "\n".join(errors)
@@ -308,7 +308,7 @@ class TestSteeringReferencesArtifacts:
 
         assert not missing, "Missing steering files:\n" + "\n".join(missing)
 
-    @pytest.mark.parametrize("module_num", [5, 6, 7, 8, 9, 10, 11])
+    @pytest.mark.parametrize("module_num", list(range(1, 12)))
     def test_steering_mentions_required_input_paths(self, module_num: int):
         """Module steering must reference the artifact paths it requires,
         or mention the source module by number in its prerequisites."""
@@ -359,10 +359,10 @@ class TestArtifactChainContinuity:
     def test_chain_is_connected(self):
         """Every module with requires_from connects back to a producing module."""
         modules = _parse_artifacts_yaml()
-        # Starting from the highest module, trace back to ensure connectivity
-        for mod_num in sorted(modules.keys(), reverse=True):
-            if mod_num == min(modules.keys()):
-                continue  # First module has no dependencies
+        root_modules = {1, 2}  # Modules with no dependencies
+        for mod_num in sorted(modules.keys()):
+            if mod_num in root_modules:
+                continue
             info = modules[mod_num]
             assert info["requires_from"], (
                 f"Module {mod_num} has no requires_from — "

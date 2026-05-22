@@ -58,7 +58,6 @@ scripts/
 ├── backup_project.py    # Project backup
 ├── restore_project.py   # Project restore
 ├── status.py            # Bootcamp status
-├── check_prerequisites.py # Prerequisites check
 ├── install_hooks.py     # Hook installer
 └── validate_commonmark.py # Markdown validation
 ```

@@ -494,13 +494,13 @@ file_metadata:
     token_count: 278
     size_category: small
   session-resume-phase2-mapping.md:
-    token_count: 649
+    token_count: 656
     size_category: medium
   session-resume-phase2-setup-recovery.md:
-    token_count: 694
+    token_count: 701
     size_category: medium
   session-resume-phase2-state-repair.md:
-    token_count: 540
+    token_count: 547
     size_category: medium
   session-resume.md:
     token_count: 2063
@@ -534,7 +534,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 143867
+  total_tokens: 143888
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

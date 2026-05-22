@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # Mapping Checkpoint Recovery
 
 ## Guard Condition

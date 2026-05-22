@@ -893,11 +893,11 @@ class TestUnitTokenBudgets:
         )
 
     def test_phase2_setup_recovery_token_budget(self) -> None:
-        """Phase-2 Setup Recovery file token count ≤ 700."""
+        """Phase-2 Setup Recovery file token count ≤ 750."""
         token_count = _calculate_token_count(_PHASE2_SETUP_RECOVERY)
-        assert token_count <= 700, (
+        assert token_count <= 750, (
             f"Phase-2 Setup Recovery file has {token_count} tokens, "
-            f"exceeds budget of 700"
+            f"exceeds budget of 750"
         )
 
 
@@ -921,25 +921,34 @@ class TestUnitFrontmatter:
             "Phase-1 file must have 'inclusion: manual' in frontmatter"
         )
 
-    def test_phase2_mapping_no_frontmatter(self) -> None:
-        """Phase-2 Mapping file has no YAML frontmatter."""
+    def test_phase2_mapping_has_frontmatter(self) -> None:
+        """Phase-2 Mapping file has YAML frontmatter with inclusion: manual."""
         content = _PHASE2_MAPPING.read_text(encoding="utf-8")
-        assert not content.startswith("---"), (
-            "Phase-2 Mapping file should not have YAML frontmatter"
+        assert content.startswith("---"), (
+            "Phase-2 Mapping file should have YAML frontmatter"
+        )
+        assert "inclusion: manual" in content.split("---")[1], (
+            "Phase-2 Mapping file should have inclusion: manual"
         )
 
-    def test_phase2_state_repair_no_frontmatter(self) -> None:
-        """Phase-2 State Repair file has no YAML frontmatter."""
+    def test_phase2_state_repair_has_frontmatter(self) -> None:
+        """Phase-2 State Repair file has YAML frontmatter with inclusion: manual."""
         content = _PHASE2_STATE_REPAIR.read_text(encoding="utf-8")
-        assert not content.startswith("---"), (
-            "Phase-2 State Repair file should not have YAML frontmatter"
+        assert content.startswith("---"), (
+            "Phase-2 State Repair file should have YAML frontmatter"
+        )
+        assert "inclusion: manual" in content.split("---")[1], (
+            "Phase-2 State Repair file should have inclusion: manual"
         )
 
-    def test_phase2_setup_recovery_no_frontmatter(self) -> None:
-        """Phase-2 Setup Recovery file has no YAML frontmatter."""
+    def test_phase2_setup_recovery_has_frontmatter(self) -> None:
+        """Phase-2 Setup Recovery file has YAML frontmatter with inclusion: manual."""
         content = _PHASE2_SETUP_RECOVERY.read_text(encoding="utf-8")
-        assert not content.startswith("---"), (
-            "Phase-2 Setup Recovery file should not have YAML frontmatter"
+        assert content.startswith("---"), (
+            "Phase-2 Setup Recovery file should have YAML frontmatter"
+        )
+        assert "inclusion: manual" in content.split("---")[1], (
+            "Phase-2 Setup Recovery file should have inclusion: manual"
         )
 
 

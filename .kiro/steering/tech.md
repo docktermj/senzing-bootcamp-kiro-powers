@@ -1,5 +1,6 @@
 ---
 inclusion: always
+description: "Tech stack choices: Python scripts, pytest+Hypothesis, YAML/JSON configs, GitHub Actions CI, Senzing MCP"
 ---
 
 # Tech Stack

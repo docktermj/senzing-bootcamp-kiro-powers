@@ -1,5 +1,6 @@
 ---
 inclusion: always
+description: "Project directory layout, file placement rules, and naming conventions"
 ---
 
 # Project Structure

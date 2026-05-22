@@ -25,7 +25,7 @@ This power works best with Claude Opus 4.6 or similar.
 - CommonMark compliance across all 491 markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
 - Consolidated visualization steering: merged visualization-protocol and visualization-reference into `visualization-guide.md` (saves ~3,000 tokens of context budget)
 - User-state config files (`bootcamp_progress.json`, `bootcamp_preferences.yaml`, `er_baseline_vendors.json`) no longer tracked in git — `.example` templates provided instead
-- Hook count reconciled to 27 (consolidated `enforce-file-path-policies`, `enforce-single-question`, and `block-direct-sql` into `write-policy-gate`; added `enforce-mandatory-gate` and `enforce-gate-on-stop` to documentation)
+- Hook count reconciled to 28 (consolidated `enforce-file-path-policies`, `enforce-single-question`, and `block-direct-sql` into `write-policy-gate`; added `enforce-mandatory-gate` and `enforce-gate-on-stop` to documentation)
 
 See the CHANGELOG for the full release history.
 
@@ -87,7 +87,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 
 - `module-01-business-problem.md` — Module 1: Business Problem (split: `module-01-phase2-document-confirm.md`)
 - `module-02-sdk-setup.md` — Module 2: SDK Setup
-- `module-03-system-verification.md` — Module 3: System Verification
+- `module-03-system-verification.md` — Module 3: System Verification (split: `module-03-phase2-visualization.md`)
 - `module-04-data-collection.md` — Module 4: Data Collection
 - `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping
 - `module-06-data-processing.md` — Module 6: Data Processing

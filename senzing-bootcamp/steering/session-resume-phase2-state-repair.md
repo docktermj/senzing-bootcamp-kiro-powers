@@ -1,3 +1,7 @@
+---
+inclusion: manual
+---
+
 # State Repair: Stale or Corrupted Progress
 
 ## Guard Condition

@@ -380,25 +380,25 @@ file_metadata:
     token_count: 580
     size_category: medium
   module-01-business-problem.md:
-    token_count: 4408
+    token_count: 4409
     size_category: large
   module-01-phase2-document-confirm.md:
     token_count: 1853
     size_category: medium
   module-02-sdk-setup.md:
-    token_count: 4378
+    token_count: 4380
     size_category: large
   module-03-phase2-visualization.md:
     token_count: 3152
     size_category: large
   module-03-system-verification.md:
-    token_count: 6418
+    token_count: 6419
     size_category: large
   module-04-data-collection.md:
-    token_count: 3459
+    token_count: 3460
     size_category: large
   module-05-data-quality-mapping.md:
-    token_count: 687
+    token_count: 689
     size_category: medium
   module-05-phase1-quality-assessment.md:
     token_count: 1724
@@ -410,7 +410,7 @@ file_metadata:
     token_count: 2657
     size_category: large
   module-06-data-processing.md:
-    token_count: 1582
+    token_count: 1583
     size_category: medium
   module-06-phaseA-build-loading.md:
     token_count: 662
@@ -431,10 +431,10 @@ file_metadata:
     token_count: 3162
     size_category: large
   module-07-query-visualize-discover.md:
-    token_count: 3256
+    token_count: 3258
     size_category: large
   module-08-performance.md:
-    token_count: 1350
+    token_count: 1352
     size_category: medium
   module-08-phaseA-requirements.md:
     token_count: 1487
@@ -452,10 +452,10 @@ file_metadata:
     token_count: 928
     size_category: medium
   module-09-security.md:
-    token_count: 569
+    token_count: 571
     size_category: medium
   module-10-monitoring.md:
-    token_count: 566
+    token_count: 568
     size_category: medium
   module-10-phaseA-setup.md:
     token_count: 808
@@ -464,7 +464,7 @@ file_metadata:
     token_count: 451
     size_category: small
   module-11-deployment.md:
-    token_count: 3287
+    token_count: 3289
     size_category: large
   module-11-phase2-deploy.md:
     token_count: 850
@@ -506,7 +506,7 @@ file_metadata:
     token_count: 547
     size_category: medium
   session-resume.md:
-    token_count: 2063
+    token_count: 2717
     size_category: large
   skip-step-protocol.md:
     token_count: 751
@@ -537,7 +537,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 151943
+  total_tokens: 152615
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

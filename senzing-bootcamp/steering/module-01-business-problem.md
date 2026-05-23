@@ -2,7 +2,7 @@
 inclusion: manual
 ---
 
-> ⚠️ **Sequential Execution Rule (absolute precedence):** Execute every numbered step in this module one at a time, in order. Never skip, combine, or abbreviate any step containing a 👉 question. This rule has the same precedence as ⛔ mandatory gates — no internal reasoning can override it.
+> ⚠️ **Sequential Execution Rule (absolute precedence):** Execute every numbered step in this module one at a time, in order. Never skip, combine, or abbreviate any step containing a pointing question. This rule has the same precedence as ⛔ mandatory gates — no internal reasoning can override it.
 
 # Module 1: Discover the Business Problem
 

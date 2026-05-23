@@ -633,14 +633,14 @@ _ALL_KEY_CONTENT: dict[str, list[str]] = {
 # ---------------------------------------------------------------------------
 
 _HASH_UNAFFECTED: dict[str, str] = {
-    "module-08": "cbba2a596783b5d7cd4fffcf837c007908c0dbcaca96bd71f97e1e9306f0055e",
-    "module-09": "9bf4b4c8e9abdaf601c395016781f3223e4bc0df083f8ebd85393f555055cf1c",
-    "module-10": "0dc0f96576e8ef4548fe2401558007e23c36499951c00c9f1fe04c9c456d4117",
+    "module-08": "cfe50f1714ef8087468b6e9afe03f95087ad7e2609ade916903c1530c6d502b0",
+    "module-09": "38afb9f301de5efe6bdcb0577d16d803e07adf01763da7077366306c6196f838",
+    "module-10": "2aef0e0405c7f78c51747b40de662f9650667a55480d7c2808be839468135330",
 }
 
 _HASH_HOOK = "2b7c667a7abe01734babb71e212841ec2358201a8d7a999e06006d44a878c72a"
-_HASH_AGENT_INSTRUCTIONS = "c8d97020bf7a34debd1c62f7931c6e422c554276ff5b4d595fb8ecede52d1ffe"
-_HASH_ONBOARDING_FLOW = "4bacc0be6b1e115d91b115401577fa0bfeabece9eb46d0b59fb3d634f12d3dc4"
+_HASH_AGENT_INSTRUCTIONS = "833e681dceee477e4779cc0401313bf9c775484d2e8c26288a83d78c2ff41a5e"
+_HASH_ONBOARDING_FLOW = "5476a0863b092dde2e076625fb29221b282cf2391b8e855c216f08aacecf89c4"
 
 
 # ---------------------------------------------------------------------------

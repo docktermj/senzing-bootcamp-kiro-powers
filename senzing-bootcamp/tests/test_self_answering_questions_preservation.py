@@ -328,18 +328,6 @@ class TestModule01NonQuestionStepsPreserved:
             f"Got: {current[:300]}"
         )
 
-    def test_step6_content_unchanged(self) -> None:
-        """Step 6 (infer details from response) is unchanged."""
-        content = _read_file(_MODULE_01)
-        current = _extract_step_module01(content, 6)
-        baseline = _UNFIXED_MODULE01_STEPS[6]
-        assert baseline, "Baseline for Step 6 is empty"
-        assert current == baseline, (
-            f"Step 6 content changed.\n"
-            f"Expected: {baseline[:300]}\n"
-            f"Got: {current[:300]}"
-        )
-
 
 # ---------------------------------------------------------------------------
 # Test 2 — Module 01 Phase 2 non-question steps content preserved

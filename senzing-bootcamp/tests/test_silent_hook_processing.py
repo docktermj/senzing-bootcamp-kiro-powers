@@ -48,6 +48,7 @@ _PRE_TOOL_USE_HOOKS: dict[str, Path] = {
 }
 
 _HOOK_REGISTRY = _STEERING_DIR / "hook-registry-critical.md"
+_HOOK_REGISTRY_MODULES = _STEERING_DIR / "hook-registry-modules.md"
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 
 # The phrase that must appear in fixed prompts for the no-action case
@@ -665,7 +666,12 @@ _ASK_BOOTCAMPER_HOOK = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
 
 def _snapshot_registry_non_affected() -> dict[str, str]:
     """Return a dict of hook_id → full section text for non-affected hooks."""
-    registry_text = _HOOK_REGISTRY.read_text(encoding="utf-8")
+    # Search both critical and modules registry files
+    registry_texts = []
+    for path in [_HOOK_REGISTRY, _HOOK_REGISTRY_MODULES]:
+        if path.exists():
+            registry_texts.append(path.read_text(encoding="utf-8"))
+    combined_text = "\n".join(registry_texts)
     snapshots: dict[str, str] = {}
     for hook_id in _NON_AFFECTED_HOOK_IDS:
         # Extract the full section for this hook (from **hook-id** to the next
@@ -673,7 +679,7 @@ def _snapshot_registry_non_affected() -> dict[str, str]:
         pattern = (
             rf"(\*\*{re.escape(hook_id)}\*\*.*?)(?=\n\*\*[a-z]|\Z)"
         )
-        match = re.search(pattern, registry_text, re.DOTALL)
+        match = re.search(pattern, combined_text, re.DOTALL)
         if match:
             snapshots[hook_id] = match.group(1).strip()
     return snapshots
@@ -769,7 +775,11 @@ class TestPreservationNonAffectedHooks:
 
     @pytest.fixture(autouse=True)
     def _load_registry(self) -> None:
-        self._registry_text = _HOOK_REGISTRY.read_text(encoding="utf-8")
+        texts = []
+        for path in [_HOOK_REGISTRY, _HOOK_REGISTRY_MODULES]:
+            if path.exists():
+                texts.append(path.read_text(encoding="utf-8"))
+        self._registry_text = "\n".join(texts)
 
     @pytest.mark.parametrize("hook_id", _NON_AFFECTED_HOOK_IDS)
     def test_non_affected_hook_unchanged(self, hook_id: str) -> None:
@@ -928,7 +938,11 @@ class TestPreservationNonAffectedProperty:
         """**Validates: Requirements 3.5, 3.6**
 
         For any non-affected hook, its registry section matches baseline."""
-        registry_text = _HOOK_REGISTRY.read_text(encoding="utf-8")
+        texts = []
+        for path in [_HOOK_REGISTRY, _HOOK_REGISTRY_MODULES]:
+            if path.exists():
+                texts.append(path.read_text(encoding="utf-8"))
+        registry_text = "\n".join(texts)
         current_section = _extract_registry_section(registry_text, hook_id)
         baseline_section = _BASELINE_REGISTRY_NON_AFFECTED.get(hook_id, "")
         assert baseline_section, (

@@ -446,7 +446,7 @@ class TestProperty7HookRegistryConsistency:
                 registry_lines.append(f"")
                 registry_lines.append(f"- id: `{hid}`")
                 registry_lines.append(f"")
-            (steering / "hook-registry-detail.md").write_text("\n".join(registry_lines))
+            (steering / "hook-registry-critical.md").write_text("\n".join(registry_lines))
 
             for hid in disk_ids:
                 hook_data = {

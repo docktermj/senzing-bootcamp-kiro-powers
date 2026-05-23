@@ -80,13 +80,18 @@ class TestSessionResumeMCPSection:
         path = _STEERING_DIR / "session-resume.md"
         return path.read_text(encoding="utf-8")
 
+    @pytest.fixture()
+    def setup_recovery_content(self) -> str:
+        path = _STEERING_DIR / "session-resume-phase2-setup-recovery.md"
+        return path.read_text(encoding="utf-8")
+
     def test_contains_mcp_health_check_heading(self, session_resume_content: str):
         """session-resume.md has a 'Step 2d: MCP Health Check' heading."""
         assert "## Step 2d: MCP Health Check" in session_resume_content
 
-    def test_contains_search_docs_probe(self, session_resume_content: str):
-        """session-resume.md references the search_docs probe call."""
-        assert 'search_docs(query="health check", version="current")' in session_resume_content
+    def test_contains_search_docs_probe(self, setup_recovery_content: str):
+        """setup-recovery file references the search_docs probe call."""
+        assert 'search_docs(query="health check", version="current")' in setup_recovery_content
 
     def test_contains_timeout_specification(self, session_resume_content: str):
         """session-resume.md specifies a 10-second timeout."""
@@ -132,11 +137,11 @@ class TestOnboardingFlowMCPSection:
 
 
 class TestHardGateErrorMessage:
-    """Unit test: hard gate error in session-resume.md contains required elements."""
+    """Unit test: hard gate error in setup-recovery file contains required elements."""
 
     @pytest.fixture()
     def session_resume_content(self) -> str:
-        path = _STEERING_DIR / "session-resume.md"
+        path = _STEERING_DIR / "session-resume-phase2-setup-recovery.md"
         return path.read_text(encoding="utf-8")
 
     def test_contains_blocking_error(self, session_resume_content: str):

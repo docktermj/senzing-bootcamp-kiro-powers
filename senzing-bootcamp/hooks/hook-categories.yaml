@@ -1,11 +1,14 @@
-# Hook category mapping for sync_hook_registry.py
-# Critical hooks are created during onboarding (Step 1).
-# Module hooks are created when the bootcamper starts the associated module.
+metadata:
+  version: "1.0.0"
+  last_updated: "2026-05-23"
+  description: "Hook category mapping — critical hooks created during onboarding, module hooks created when bootcamper starts the associated module"
 
 critical:
   - ask-bootcamper
   - code-style-check
   - commonmark-validation
+  - enforce-step-and-transition
+  - mcp-first-invariant
   - question-format-gate
   - review-bootcamper-input
   - write-policy-gate

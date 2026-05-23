@@ -25,7 +25,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
-REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry-detail.md")
+REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry-critical.md")
 CATEGORIES_PATH = Path("senzing-bootcamp/hooks/hook-categories.yaml")
 
 VALID_EVENT_TYPES = {
@@ -387,7 +387,7 @@ def check_registry_consistency(
 
     Args:
         hook_ids: Set of hook IDs from discovered files.
-        registry_path: Path to hook-registry-detail.md.
+        registry_path: Path to hook-registry-critical.md.
 
     Returns:
         RegistryConsistency with any mismatches.

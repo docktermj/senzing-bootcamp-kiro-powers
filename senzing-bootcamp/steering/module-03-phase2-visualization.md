@@ -19,24 +19,43 @@ inclusion: manual
 - All data derived from SDK calls: `export_json_entity_report`, `get_entity_by_entity_id`, `search_by_attributes`, `find_network_by_entity_id`
 - Works with three TruthSet data sources: CUSTOMERS, REFERENCE, WATCHLIST
 
+## CRITICAL LESSONS FOR VISUALIZATION GENERATION
+
+1. **Use Python generator script** — Create `write_html.py` with HTML as a triple-quoted string. Run `python3 write_html.py` to produce `index.html`. NEVER use `fs_write` or `str_replace` to write HTML+JS content directly.
+2. **Validate JavaScript syntax** — After generating `index.html`, run `node --check index.html` equivalent validation or embed the JS in a way that can be syntax-checked.
+3. **No inline onclick with dynamic values** — Use `data-*` attributes and `querySelectorAll` event listeners. Inline `onclick="fn('${value}')"` causes quote-escaping failures.
+4. **Quote discipline** — Inside Python triple-quoted strings: use double quotes for JavaScript strings, single quotes for HTML attributes.
+5. **D3.js callback syntax** — Use `function(){}` for all D3.js callbacks, NOT arrow functions. Arrow functions break `this` binding to DOM elements.
+6. **Explicit SVG dimensions** — Set `width` and `height` attributes on SVG elements. Do not rely on CSS-only sizing.
+
 ## Step 9: Web Service + Visualization Page
 
 Generate and verify a web service with three API endpoints and a single-page visualization with four interactive tabs.
 
 ### 9.1 Generate Web Service
 
-Generate the web service using `generate_scaffold(workflow='web_service')` in the bootcamper's chosen language. Save all files to `src/system_verification/web_service/`.
+Generate the web service artifacts in `src/system_verification/web_service/`. Use a **Python generator script** (`write_html.py`) to produce the visualization HTML — do NOT use `fs_write` or `str_replace` to write HTML+JS content directly.
+
+**Generation approach:**
+
+1. Create `write_html.py` in `src/system_verification/web_service/` that contains the complete `index.html` content as a Python triple-quoted string and writes it to `index.html` in the same directory.
+2. Run `python3 src/system_verification/web_service/write_html.py` to produce `index.html`.
+3. Create `server.py` using Python stdlib HTTP server (`http.server.HTTPServer` + `BaseHTTPRequestHandler`) — no Flask, FastAPI, or third-party HTTP frameworks.
+4. Create builder modules (`stats_builder.py`, `graph_builder.py`, `merges_builder.py`, `search_builder.py`) for data computation.
+
+The generated `index.html` is a single file with embedded CSS and JavaScript. D3.js v7 is loaded from CDN (`https://d3js.org/d3.v7.min.js`) — no other external JavaScript dependencies.
 
 **Required files:**
 
 | File | Purpose |
 |------|---------|
-| `src/system_verification/web_service/server.py` | stdlib HTTP server with request routing |
+| `src/system_verification/web_service/write_html.py` | Python generator script: triple-quoted HTML string → writes `index.html` |
+| `src/system_verification/web_service/server.py` | Python stdlib HTTP server (`http.server.HTTPServer` + `BaseHTTPRequestHandler`) with request routing |
 | `src/system_verification/web_service/stats_builder.py` | Statistics computation from `export_json_entity_report` |
 | `src/system_verification/web_service/graph_builder.py` | Graph node/edge construction from SDK |
 | `src/system_verification/web_service/merges_builder.py` | Multi-record entity extraction from SDK |
 | `src/system_verification/web_service/search_builder.py` | Search-by-attributes wrapper |
-| `src/system_verification/web_service/index.html` | Single-page visualization (D3.js CDN, embedded CSS/JS) |
+| `src/system_verification/web_service/index.html` | Generated output from `write_html.py` (single-page visualization, D3.js v7 CDN, embedded CSS/JS) |
 
 ### 9.2 API Endpoints
 
@@ -111,6 +130,30 @@ Presented left-to-right with arrow indicators conveying the resolution pipeline 
    - Edges labeled with Match_Key strings (e.g., +NAME+ADDRESS, +PHONE)
    - Tooltip on hover: entity name, entity ID, record count, data sources
    - Fetches from `GET /api/graph`
+
+   **Entity Graph UX Features:**
+
+   - **Node labels:** Each node displays a text label showing the entity name, truncated to 20 characters maximum with ellipsis (e.g., "Robert Smith-Johnso…"). Labels are positioned below the node circle.
+   - **Edge labels:** Each edge displays a text label showing the match key string (e.g., +NAME+ADDRESS). Labels are positioned at the midpoint of the edge line.
+   - **Click-to-detail modal:** Clicking a node opens a modal overlay displaying:
+     - Entity ID
+     - Primary name
+     - Data sources (list)
+     - Record count
+     - Constituent records (data_source + record_id for each)
+     The modal includes a close button and closes on overlay background click.
+   - **Zoom and pan:** Implement D3.js zoom behavior — mouse wheel to zoom, drag to pan the graph viewport. Apply zoom transform to the SVG group containing nodes and edges.
+   - **Color legend:** Display a color legend mapping data source names to node colors:
+     - CUSTOMERS = #3b82f6
+     - REFERENCE = #22c55e
+     - WATCHLIST = #f59e0b
+     The legend is positioned in the top-right corner of the graph container.
+   - **Responsive resize:** On window resize, update SVG dimensions and re-center the force simulation. Use a `resize` event listener to recalculate width/height and restart the force layout center.
+
+**D3.js Code Style Constraints:**
+
+- **Use `function(){}` syntax for all D3.js callbacks** — Do NOT use arrow functions (`() => {}`) in D3.js event handlers, `.each()`, `.attr()` callbacks, or any other D3 method that binds `this` to the DOM element. Arrow functions break `this` binding to DOM elements in D3 callbacks, causing silent failures when accessing the current element via `d3.select(this)`.
+- **Explicit `width` and `height` attributes on SVG elements** — Always set `width` and `height` as attributes on `<svg>` elements (e.g., `.attr('width', width).attr('height', height)`). Do NOT rely on CSS-only sizing (e.g., `width: 100%` in a stylesheet without corresponding attributes). CSS-only sizing causes rendering issues in some browsers and when SVG is embedded in flex containers.
 
 2. **Record_Merges_View** — Card-based display of multi-record entities
    - One card per entity with side-by-side constituent records

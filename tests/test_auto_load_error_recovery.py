@@ -7,9 +7,20 @@ category registration, and hook count.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pytest
+
+# ---------------------------------------------------------------------------
+# Path setup for importing hook_test_helpers
+# ---------------------------------------------------------------------------
+
+_TESTS_DIR = str(Path(__file__).resolve().parent)
+if _TESTS_DIR not in sys.path:
+    sys.path.insert(0, _TESTS_DIR)
+
+from hook_test_helpers import parse_categories_yaml
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -19,7 +30,17 @@ HOOKS_DIR = Path("senzing-bootcamp/hooks")
 HOOK_PATH = HOOKS_DIR / "error-recovery-context.kiro.hook"
 CATEGORIES_PATH = HOOKS_DIR / "hook-categories.yaml"
 
-EXPECTED_HOOK_COUNT = 28
+
+def _expected_hook_count() -> int:
+    """Derive expected hook count from unique IDs in hook-categories.yaml."""
+    categories = parse_categories_yaml()
+    unique_ids: set[str] = set()
+    for ids in categories.values():
+        unique_ids.update(ids)
+    return len(unique_ids)
+
+
+EXPECTED_HOOK_COUNT = _expected_hook_count()
 
 
 # ---------------------------------------------------------------------------
@@ -238,6 +259,6 @@ class TestHookCount:
     """Verify total hook count."""
 
     def test_total_hook_file_count(self):
-        """There are exactly 24 .kiro.hook files in the hooks directory."""
+        """Hook file count matches unique IDs in hook-categories.yaml."""
         hook_files = list(HOOKS_DIR.glob("*.kiro.hook"))
         assert len(hook_files) == EXPECTED_HOOK_COUNT

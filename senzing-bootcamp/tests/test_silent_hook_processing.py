@@ -47,7 +47,7 @@ _ASK_BOOTCAMPER_HOOK_FILE = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
 _PRE_TOOL_USE_HOOKS: dict[str, Path] = {
 }
 
-_HOOK_REGISTRY = _STEERING_DIR / "hook-registry-detail.md"
+_HOOK_REGISTRY = _STEERING_DIR / "hook-registry-critical.md"
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 
 # The phrase that must appear in fixed prompts for the no-action case
@@ -242,6 +242,7 @@ class TestBugConditionAgentInstructions:
             _SILENT_INSTRUCTION.lower() in hooks_section
             or "produce absolutely no output" in hooks_section
             or "produce zero output" in hooks_section
+            or "produce zero visible" in hooks_section
         )
         assert has_silent, (
             "agent-instructions.md Hooks section lacks a silent-processing rule.\n"

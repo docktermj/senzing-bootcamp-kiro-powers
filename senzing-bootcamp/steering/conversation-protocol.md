@@ -34,6 +34,16 @@ After asking a 👉 question, write the file `config/.question_pending` with the
 
 At the start of every turn where you process bootcamper input, check for and delete `config/.question_pending` if it exists.
 
+### Numbered Step Execution Boundary
+
+Every numbered step containing a 👉 question is a mandatory execution boundary with the same absolute precedence as ⛔ mandatory gates. The agent SHALL:
+- Execute each numbered step individually in sequential order
+- Never advance `current_step` by more than 1 without writing intermediate checkpoints
+- Never skip a 👉 step for any internal reason (context budget, session length, redundancy)
+- Write `config/.question_pending` before ending the turn at any 👉 question
+
+Violation of this rule is equivalent to a ⛔ mandatory gate violation.
+
 ## No Dead-End Responses
 
 Never end a turn with only an acknowledgment (e.g., "Understood.", "Got it.", "I see."). Every turn must advance the conversation by: (a) asking a 👉 follow-up question, (b) summarizing what was captured and stating what comes next, or (c) proceeding to the next step in the module workflow.
@@ -304,6 +314,15 @@ Writing `config/.question_pending` is mandatory for every 👉 question — not 
 ## Module Transition Protocol
 
 When you ask 'Ready for Module X' and the bootcamper responds affirmatively (yes, sure, let's go, ready, etc.), immediately begin that module in the same turn. Display the module banner, journey map, and start Step 1. Never acknowledge without acting at a module transition.
+
+**📏 MINIMUM CONTENT REQUIREMENT:** After receiving a Transition_Confirmation, the agent response MUST contain:
+
+1. The module start banner (━━━ header with module number and name)
+2. The journey map table (Module | Name | Status)
+3. The before/after framing
+4. Step 1's introductory content (what and why)
+
+Outputting only ".", empty content, single-word acknowledgments, or any response under 50 characters after a Transition_Confirmation is a **protocol violation**. The detect-and-retry hook will catch and correct such violations automatically.
 
 **⛔ PROHIBITED:** Saving progress and ending the session is PROHIBITED as a response to an affirmative answer to a module transition question. Do not save progress, do not offer to pause, do not end the session. The only valid action is to start the module.
 

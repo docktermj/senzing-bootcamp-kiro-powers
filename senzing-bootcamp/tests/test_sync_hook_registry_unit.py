@@ -27,7 +27,8 @@ from sync_hook_registry import (
     categorize_hooks,
     format_hook_entry,
     generate_registry_summary,
-    generate_registry_detail,
+    generate_registry_critical,
+    generate_registry_modules,
     write_registry,
     verify_registry,
 )
@@ -74,7 +75,9 @@ class TestParseAllRealHooks:
     def test_all_19_hooks_parse_without_errors(self):
         entries, errors = parse_all_hooks(_HOOKS_DIR)
         assert len(errors) == 0, f"Parse errors: {errors}"
-        assert len(entries) == 28, f"Expected 28 hooks, got {len(entries)}"
+        # Count should match number of .kiro.hook files on disk
+        expected = len(list(_HOOKS_DIR.glob("*.kiro.hook")))
+        assert len(entries) == expected, f"Expected {expected} hooks, got {len(entries)}"
 
 
 # ---------------------------------------------------------------------------
@@ -124,8 +127,9 @@ class TestCategoryMappingLoads:
     def test_load_real_categories(self):
         mapping = load_category_mapping(_CATEGORIES_PATH)
 
-        # Should have all 28 hooks mapped
-        assert len(mapping) == 28, f"Expected 28 mappings, got {len(mapping)}"
+        # Should have all hooks mapped (count matches disk)
+        expected = len(list(_HOOKS_DIR.glob("*.kiro.hook")))
+        assert len(mapping) == expected, f"Expected {expected} mappings, got {len(mapping)}"
 
         # Check some known critical hooks
         assert mapping["ask-bootcamper"].category == "critical"
@@ -196,7 +200,7 @@ class TestStdlibOnly:
         stdlib_modules = {
             "argparse", "json", "sys", "pathlib", "dataclasses",
             "typing", "re", "os", "io", "collections", "functools",
-            "itertools", "textwrap", "string", "__future__",
+            "itertools", "textwrap", "string", "__future__", "datetime",
         }
 
         for node in ast.walk(tree):

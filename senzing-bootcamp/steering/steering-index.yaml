@@ -287,7 +287,7 @@ file_metadata:
     token_count: 704
     size_category: medium
   agent-instructions.md:
-    token_count: 3588
+    token_count: 4642
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -302,7 +302,7 @@ file_metadata:
     token_count: 536
     size_category: medium
   conversation-protocol.md:
-    token_count: 3038
+    token_count: 3320
     size_category: large
   data-lineage.md:
     token_count: 603
@@ -340,11 +340,14 @@ file_metadata:
   graduation.md:
     token_count: 2547
     size_category: large
-  hook-registry-detail.md:
-    token_count: 11256
+  hook-registry-critical.md:
+    token_count: 7767
+    size_category: large
+  hook-registry-modules.md:
+    token_count: 6875
     size_category: large
   hook-registry.md:
-    token_count: 1702
+    token_count: 1879
     size_category: medium
   inline-status.md:
     token_count: 460
@@ -377,25 +380,25 @@ file_metadata:
     token_count: 580
     size_category: medium
   module-01-business-problem.md:
-    token_count: 4334
+    token_count: 4408
     size_category: large
   module-01-phase2-document-confirm.md:
     token_count: 1853
     size_category: medium
   module-02-sdk-setup.md:
-    token_count: 4306
+    token_count: 4378
     size_category: large
   module-03-phase2-visualization.md:
-    token_count: 2087
+    token_count: 3152
     size_category: large
   module-03-system-verification.md:
-    token_count: 6344
+    token_count: 6418
     size_category: large
   module-04-data-collection.md:
-    token_count: 3386
+    token_count: 3459
     size_category: large
   module-05-data-quality-mapping.md:
-    token_count: 614
+    token_count: 687
     size_category: medium
   module-05-phase1-quality-assessment.md:
     token_count: 1724
@@ -407,7 +410,7 @@ file_metadata:
     token_count: 2657
     size_category: large
   module-06-data-processing.md:
-    token_count: 1509
+    token_count: 1582
     size_category: medium
   module-06-phaseA-build-loading.md:
     token_count: 662
@@ -428,10 +431,10 @@ file_metadata:
     token_count: 3162
     size_category: large
   module-07-query-visualize-discover.md:
-    token_count: 3183
+    token_count: 3256
     size_category: large
   module-08-performance.md:
-    token_count: 1278
+    token_count: 1350
     size_category: medium
   module-08-phaseA-requirements.md:
     token_count: 1487
@@ -449,11 +452,11 @@ file_metadata:
     token_count: 928
     size_category: medium
   module-09-security.md:
-    token_count: 496
-    size_category: small
+    token_count: 569
+    size_category: medium
   module-10-monitoring.md:
-    token_count: 493
-    size_category: small
+    token_count: 566
+    size_category: medium
   module-10-phaseA-setup.md:
     token_count: 808
     size_category: medium
@@ -461,7 +464,7 @@ file_metadata:
     token_count: 451
     size_category: small
   module-11-deployment.md:
-    token_count: 3214
+    token_count: 3287
     size_category: large
   module-11-phase2-deploy.md:
     token_count: 850
@@ -473,19 +476,19 @@ file_metadata:
     token_count: 1344
     size_category: medium
   module-transitions.md:
-    token_count: 1212
+    token_count: 1534
     size_category: medium
   onboarding-flow.md:
-    token_count: 5186
+    token_count: 5188
     size_category: large
   onboarding-phase2-track-setup.md:
-    token_count: 990
+    token_count: 991
     size_category: medium
   phase-loading-guide.md:
     token_count: 464
     size_category: small
   project-structure.md:
-    token_count: 513
+    token_count: 700
     size_category: medium
   recovery-from-mistakes.md:
     token_count: 1227
@@ -524,7 +527,7 @@ file_metadata:
     token_count: 2048
     size_category: large
   visualization-guide.md:
-    token_count: 3556
+    token_count: 4332
     size_category: large
   visualization-web-service.md:
     token_count: 2195
@@ -534,7 +537,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 143888
+  total_tokens: 151943
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -1,6 +1,6 @@
 # Senzing Bootcamp Hooks
 
-This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 28 hooks total.
+This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 30 hooks total.
 
 ## Hook Name Style Guide
 
@@ -41,13 +41,25 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 **Action:** Checks for CommonMark compliance and auto-fixes issues
 **Use case:** Ensures consistent Markdown formatting across all documentation
 
-### 5. Write Policy Gate (`write-policy-gate.kiro.hook`) ⭐
+### 5. Enforce Step and Transition (`enforce-step-and-transition.kiro.hook`) ⭐
+
+**Trigger:** When the agent finishes working (agentStop)
+**Action:** Two-phase check: (1) verifies that current_step has not advanced by more than one step since the last checkpoint, detecting step-skipping violations; (2) checks if the bootcamper's last message was a module transition confirmation and validates the agent produced substantive output, forcing retry with full module banner if minimal
+**Use case:** Catches step-skipping violations and prevents the agent from silently acknowledging a module transition without actually starting the new module
+
+### 6. MCP First Invariant (`mcp-first-invariant.kiro.hook`) ⭐
+
+**Trigger:** Before any file write operation (preToolUse)
+**Action:** Blocks writes that contain Senzing facts not sourced from MCP tools; ensures all Senzing information comes from the MCP server
+**Use case:** Enforces the invariant that Senzing facts must come from MCP tools, never from training data
+
+### 7. Write Policy Gate (`write-policy-gate.kiro.hook`) ⭐
 
 **Trigger:** Before any file write operation (preToolUse)
 **Action:** Consolidated write-time policy hook that performs three checks in a single interception: (1) blocks direct SQL against the Senzing database (G2C.db or internal tables), instructing the agent to rewrite using SDK methods; (2) enforces the single-question rule for `.question_pending` writes, preventing compound questions; (3) validates file path policies — feedback must go to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` and no files may be written outside the working directory. Uses a fast path for normal writes (proceeds silently) and slow paths only for violations.
 **Use case:** Unified write-time enforcement of SQL blocking, question quality, and file path policies — avoids triple-firing on every write operation
 
-### 6. Question Format Gate (`question-format-gate.kiro.hook`) ⭐
+### 8. Question Format Gate (`question-format-gate.kiro.hook`) ⭐
 
 **Trigger:** When the agent finishes working (agentStop)
 **Action:** Inspects every agent response for compound 👉 questions with prose-joined alternatives. If detected, instructs the agent to rewrite using numbered list format. Non-compound outputs pass through unchanged.
@@ -55,109 +67,109 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 
 ### Module Hooks (installed when the associated module starts)
 
-### 7. Validate Business Problem (`validate-business-problem.kiro.hook`) — Module 1
+### 9. Validate Business Problem (`validate-business-problem.kiro.hook`) — Module 1
 
 **Trigger:** After task execution (postTaskExecution)
 **Action:** Validates that data sources, matching criteria, and success metrics are documented before proceeding to Module 2
 **Use case:** Gate check for Module 1 completion
 
-### 8. Verify SDK Setup (`verify-sdk-setup.kiro.hook`) — Module 2
+### 10. Verify SDK Setup (`verify-sdk-setup.kiro.hook`) — Module 2
 
 **Trigger:** When configuration or database files are edited (`config/senzing_config.*`, `config/bootcamp_preferences.yaml`, `database/*.*`)
 **Action:** Re-verifies SDK initialization and database access during Module 2
 **Use case:** Catches config regressions during SDK setup
 
-### 9. Verify Demo Results (`verify-demo-results.kiro.hook`) — Module 3
+### 11. Verify Demo Results (`verify-demo-results.kiro.hook`) — Module 3
 
 **Trigger:** After task execution (postTaskExecution)
 **Action:** Verifies that system verification produced entity resolution results matching the Senzing TruthSet expected output
 **Use case:** Gate check for Module 3 (System Verification) before proceeding to Module 4
 
-### 10. Gate Module 3 Visualization (`gate-module3-visualization.kiro.hook`) — Module 3
+### 12. Gate Module 3 Visualization (`gate-module3-visualization.kiro.hook`) — Module 3
 
 **Trigger:** Before any file write operation (preToolUse)
 **Action:** Prevents Module 3 from being marked complete unless Step 9 (Web Service + Visualization) checkpoints are present, or the step was explicitly skipped
 **Use case:** Ensures the visualization "wow moment" is not accidentally bypassed
 
-### 11. Enforce Mandatory Gate (`enforce-mandatory-gate.kiro.hook`) — Module 3
+### 13. Enforce Mandatory Gate (`enforce-mandatory-gate.kiro.hook`) — Module 3
 
 **Trigger:** Before any file write operation (preToolUse)
 **Action:** Blocks step advancement past a ⛔ mandatory gate step in `bootcamp_progress.json` when the corresponding checkpoint is missing and no `skipped_steps` entry exists
 **Use case:** Proactive guard that fires before the agent advances past a mandatory gate, ensuring unconditional execution of ⛔ steps
 
-### 12. Enforce Gate on Stop (`enforce-gate-on-stop.kiro.hook`) — Module 3
+### 14. Enforce Gate on Stop (`enforce-gate-on-stop.kiro.hook`) — Module 3
 
 **Trigger:** When the agent finishes working (agentStop)
 **Action:** After each agent turn during Module 3, verifies that Step 9 (⛔ mandatory gate) has been executed if the agent has reached or passed it; forces immediate execution if the gate checkpoint is missing
 **Use case:** Catches mandatory gate violations retroactively when the preToolUse guard was bypassed
 
-### 13. Validate Data Files (`validate-data-files.kiro.hook`) — Module 4
+### 15. Validate Data Files (`validate-data-files.kiro.hook`) — Module 4
 
 **Trigger:** When new files are created in `data/raw/`
 **Action:** Checks file format, encoding, and basic readability
 **Use case:** Catches bad data files early before they cause mapping or loading failures
 
-### 14. Data Quality Check (`data-quality-check.kiro.hook`) — Module 5
+### 16. Data Quality Check (`data-quality-check.kiro.hook`) — Module 5
 
 **Trigger:** When transformation programs are saved (`src/transform/*.*`)
 **Action:** Reminds to validate data quality after transformation changes
 **Use case:** Ensures transformation edits don't degrade data quality
 
-### 15. Analyze After Mapping (`analyze-after-mapping.kiro.hook`) — Module 5
+### 17. Analyze After Mapping (`analyze-after-mapping.kiro.hook`) — Module 5
 
 **Trigger:** When new files are created in `data/transformed/` (`*.jsonl`, `*.json`)
 **Action:** Validates transformed data with `analyze_record` for quality score >70% and Entity Specification conformance; verifies the per-source mapping spec exists
 **Use case:** Catches bad mappings early before Module 6 loading
 
-### 16. Enforce Mapping Specification (`enforce-mapping-spec.kiro.hook`) — Module 5
+### 18. Enforce Mapping Specification (`enforce-mapping-spec.kiro.hook`) — Module 5
 
 **Trigger:** When new files are created in `data/transformed/`
 **Action:** Blocks progression until `docs/{source_name}_mapper.md` exists for each transformed source
 **Use case:** Guarantees every mapped data source has a per-source mapping specification markdown
 
-### 17. Backup Before Load (`backup-before-load.kiro.hook`) — Module 6
+### 19. Backup Before Load (`backup-before-load.kiro.hook`) — Module 6
 
 **Trigger:** When loading programs are modified (`src/load/*.*`)
 **Action:** Reminds to backup the database before running loads
 **Use case:** Prevents data loss from failed loads
 
-### 18. Run Tests After Change (`run-tests-after-change.kiro.hook`) — Module 6
+### 20. Run Tests After Change (`run-tests-after-change.kiro.hook`) — Module 6
 
 **Trigger:** When source code files are modified in `src/load/`, `src/query/`, or `src/transform/`
 **Action:** Reminds the agent to run the test suite to verify the change
 **Use case:** Catches regressions after code changes
 
-### 19. Verify Generated Code (`verify-generated-code.kiro.hook`) — Module 6
+### 21. Verify Generated Code (`verify-generated-code.kiro.hook`) — Module 6
 
 **Trigger:** When new source files are created in `src/transform/`, `src/load/`, or `src/query/`
 **Action:** Prompts the agent to run the new code on sample data and verify it works before moving on
 **Use case:** Catches broken code before the user tries to run it manually
 
-### 20. Enforce Visualization Offers (`enforce-visualization-offers.kiro.hook`) — Modules 3, 5, 7, 8
+### 22. Enforce Visualization Offers (`enforce-visualization-offers.kiro.hook`) — Modules 3, 5, 7, 8
 
 **Trigger:** When the agent finishes working (agentStop) during a visualization-capable module
 **Action:** Checks the visualization tracker and surfaces any missed visualization offers before the conversation ends
 **Use case:** Safety net to ensure visualization checkpoints are always offered
 
-### 21. Validate Benchmark Results (`validate-benchmark-results.kiro.hook`) — Module 8
+### 23. Validate Benchmark Results (`validate-benchmark-results.kiro.hook`) — Module 8
 
 **Trigger:** When benchmark scripts are edited (`tests/performance/*.*`)
 **Action:** Validates that benchmark scripts produce parseable output with required metrics (records/sec, latency percentiles)
 **Use case:** Ensures performance results are comparable across runs
 
-### 22. Security Scan on Save (`security-scan-on-save.kiro.hook`) — Module 9
+### 24. Security Scan on Save (`security-scan-on-save.kiro.hook`) — Module 9
 
 **Trigger:** When security-related files are modified (`src/security/*.*`, `config/*credentials*`, `config/*secret*`, `.env*`)
 **Action:** Reminds the agent to re-run the language-appropriate vulnerability scanner
 **Use case:** Catches regressions introduced during Module 9 hardening
 
-### 23. Validate Alert Configuration (`validate-alert-config.kiro.hook`) — Module 10
+### 25. Validate Alert Configuration (`validate-alert-config.kiro.hook`) — Module 10
 
 **Trigger:** When monitoring configuration files are created (`monitoring/alerts/*.*`, `monitoring/dashboards/*.*`)
 **Action:** Validates alert rule syntax (name, condition, severity, action) and dashboard metric references
 **Use case:** Catches malformed alert rules before deployment
 
-### 24. Deployment Phase Gate (`deployment-phase-gate.kiro.hook`) — Module 11
+### 26. Deployment Phase Gate (`deployment-phase-gate.kiro.hook`) — Module 11
 
 **Trigger:** After task execution (postTaskExecution)
 **Action:** Checks if current module is 11, then displays the packaging-complete summary and asks whether to proceed to deployment or stop
@@ -165,26 +177,26 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 
 ### Any-Module Hooks (installed during onboarding)
 
-### 25. Backup Project on Request (`backup-project-on-request.kiro.hook`)
+### 27. Backup Project on Request (`backup-project-on-request.kiro.hook`)
 
 **Trigger:** Manual — click the hook button in the Agent Hooks panel
 **Action:** Runs the project backup script
 **Use case:** Quick project backups without typing a command
 **How to use:** Click the "Backup Project on Request" button in the Kiro Agent Hooks explorer view, or say "backup my project" to the agent directly
 
-### 26. Error Recovery Context (`error-recovery-context.kiro.hook`)
+### 28. Error Recovery Context (`error-recovery-context.kiro.hook`)
 
 **Trigger:** After shell command execution (postToolUse, shell)
 **Action:** On non-zero exit codes, consults `common-pitfalls.md` and `recovery-from-mistakes.md` to surface targeted recovery guidance; calls `explain_error_code` for SENZ errors
 **Use case:** Turns raw command failures into actionable fixes
 
-### 27. Git Commit Reminder (`git-commit-reminder.kiro.hook`)
+### 29. Git Commit Reminder (`git-commit-reminder.kiro.hook`)
 
 **Trigger:** Manual — click the hook button in the Agent Hooks panel
 **Action:** Suggests a descriptive git commit based on the current module
 **Use case:** Reminds users to commit progress after completing a module
 
-### 28. Module Completion Celebration (`module-completion-celebration.kiro.hook`)
+### 30. Module Completion Celebration (`module-completion-celebration.kiro.hook`)
 
 **Trigger:** After task execution (postTaskExecution)
 **Action:** On detecting a new entry in `modules_completed`, displays a brief celebration banner and offers the next module
@@ -197,11 +209,12 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 The `.kiro.hook` files in this directory are the canonical hook definitions. The Hook Registry is split across two files that must be kept in sync with these hook definitions:
 
 - `hook-registry.md` — summary with hook IDs, event types, and descriptions
-- `hook-registry-detail.md` — full prompts and `createHook` parameters
+- `hook-registry-critical.md` — full prompts for critical hooks (created during onboarding)
+- `hook-registry-modules.md` — full prompts for module-specific hooks
 
 ### Option 1: Automatic (Recommended)
 
-Hooks are created automatically during onboarding. The agent reads the full hook definitions from `hook-registry-detail.md` (loaded via `onboarding-flow.md`) and calls the `createHook` tool for each hook. No manual action needed.
+Hooks are created automatically during onboarding. The agent reads the full hook definitions from `hook-registry-critical.md` (loaded via `onboarding-flow.md`) and calls the `createHook` tool for each hook. No manual action needed.
 
 ### Option 2: Ask the Agent
 

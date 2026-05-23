@@ -104,6 +104,41 @@ If the bootcamper declines the visualization offer:
 
 If the bootcamper explicitly requests a visualization at any point — regardless of prior declines or existing tracker entries — honor the request immediately. Update any `"declined"` tracker entry to `"offered"` and proceed.
 
+## CRITICAL LESSONS FOR VISUALIZATION GENERATION
+
+1. **Use Python generator script** — Create `write_html.py` with HTML as a triple-quoted string. Run `python3 write_html.py` to produce `index.html`. NEVER use `fs_write` or `str_replace` to write HTML+JS content directly.
+2. **Validate JavaScript syntax** — After generating `index.html`, run `node --check index.html` equivalent validation or embed the JS in a way that can be syntax-checked.
+3. **No inline onclick with dynamic values** — Use `data-*` attributes and `querySelectorAll` event listeners. Inline `onclick="fn('${value}')"` causes quote-escaping failures.
+4. **Quote discipline** — Inside Python triple-quoted strings: use double quotes for JavaScript strings, single quotes for HTML attributes.
+5. **D3.js callback syntax** — Use `function(){}` for all D3.js callbacks, NOT arrow functions. Arrow functions break `this` binding to DOM elements.
+6. **Explicit SVG dimensions** — Set `width` and `height` attributes on SVG elements. Do not rely on CSS-only sizing.
+
+## Python Generator Architecture
+
+The Python generator script approach is the **MANDATED** method for all visualization generation across modules. Every module that produces HTML visualization artifacts MUST use this pattern.
+
+### Pattern: `write_html.py` → `index.html`
+
+1. Create a Python script named `write_html.py` that contains the complete HTML document as a triple-quoted string.
+2. The script writes the string to `index.html` when executed: `python3 write_html.py`.
+3. The generated `index.html` is a single self-contained file with embedded CSS, JavaScript, and D3.js v7 loaded from CDN.
+
+### File Placement
+
+`write_html.py` resides alongside `server.py` in the web service directory:
+
+```
+src/system_verification/web_service/
+├── write_html.py      # Python generator script (triple-quoted HTML string)
+├── index.html         # Generated output (produced by write_html.py)
+├── server.py          # Python stdlib HTTP server
+└── *_builder.py       # Data builder modules
+```
+
+### Why This Approach
+
+Using `fs_write` or `str_replace` to write HTML+JS content directly causes quote-escaping conflicts — nested single quotes, double quotes, backticks, and template literals in JavaScript collide with the tool's own string delimiters. The Python triple-quoted string (`"""..."""`) eliminates these conflicts entirely because the HTML+JS content is never parsed by the file-writing tool's string handling.
+
 ## Static HTML Generation Workflow
 
 1. **Gather requirements**
@@ -205,6 +240,17 @@ Cluster node coloring by average match level: ≤1.5 → green, ≤2.5 → orang
 - **Cluster Highlighting:** Dropdown: data source coloring (`schemeCategory10`), match strength coloring, no clustering. Legend updates per mode.
 - **Search & Filter:** Text input filtering by name or record ID (case-insensitive substring). Matches highlighted, non-matches dimmed. Clear button.
 - **Statistics:** Total entities, records, relationships. Unique data source count. Cross-source match rate.
+
+### Required Entity Graph Features
+
+| Feature | Specification |
+|---------|--------------|
+| Node labels | Text labels showing entity name, truncated to 20 characters max |
+| Edge labels | Text labels showing match key string (e.g., +NAME+ADDRESS) |
+| Click-to-detail modal | Click node → modal with entity ID, primary name, data sources, record count, constituent records |
+| Zoom/pan | D3.js zoom behavior: mouse wheel to zoom, drag to pan |
+| Color legend | Legend mapping data source names to node colors (CUSTOMERS=#3b82f6, REFERENCE=#22c55e, WATCHLIST=#f59e0b) |
+| Responsive resize | Window resize → update SVG dimensions and re-center force simulation |
 
 ## Static HTML Capabilities
 

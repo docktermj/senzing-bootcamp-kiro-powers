@@ -6,7 +6,11 @@ instructions that encourage the agent to narrate or output text, and preserves
 all violation-detection behavior (slow-path blocking, compound question format,
 feedback redirect, SQL blocking).
 
-**Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6**
+Also validates that the question-format-gate hook prompt contains dual suppression
+reinforcement (front-loaded preamble + closing OUTPUT FORMAT section) with explicit
+anti-narration directives and rewrite-only output constraints.
+
+**Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 4.1, 4.2, 4.3, 6.3, 6.4, 6.5, 8.3**
 """
 
 from __future__ import annotations
@@ -485,4 +489,500 @@ class TestPreservationProperties:
             f"Prompt does not contain any SDK method alternatives "
             f"(indicator: '{indicator}'). "
             f"Expected one of: {sdk_methods}"
+        )
+
+    @given(
+        indicator=st.sampled_from(SENZING_DB_INDICATORS),
+    )
+    @settings(max_examples=20)
+    def test_property_9_sql_blocking_contains_indicator_stop_and_all_sdk_methods(
+        self, indicator: str
+    ):
+        """For any Senzing database indicator, the prompt SHALL contain that indicator,
+        a STOP instruction, and ALL four SDK method alternatives.
+
+        **Validates: Requirements 7.1**
+
+        Property 9: For any Senzing database indicator in the set {G2C.db, RES_ENT,
+        OBS_ENT, DSRC_RECORD, LIB_FEAT, RES_FEAT_STAT, RES_REL, SZ_, sz_dm_}, the
+        Write_Policy_Gate prompt SHALL contain that indicator, a STOP instruction,
+        and SDK method alternatives (get_entity, search_by_attributes, why_entities,
+        how_entity).
+        """
+        prompt = load_hook_prompt()
+
+        # The prompt must contain the Senzing database indicator
+        assert indicator in prompt, (
+            f"Property 9 FAILED: Prompt does not contain Senzing database "
+            f"indicator '{indicator}'"
+        )
+
+        # The prompt must contain a STOP instruction in the SQL blocking section
+        assert "STOP" in prompt, (
+            f"Property 9 FAILED: Prompt does not contain 'STOP' instruction "
+            f"(indicator: '{indicator}')"
+        )
+
+        # The prompt must contain ALL four required SDK method alternatives
+        required_sdk_methods = [
+            "get_entity",
+            "search_by_attributes",
+            "why_entities",
+            "how_entity",
+        ]
+        for method in required_sdk_methods:
+            assert method in prompt, (
+                f"Property 9 FAILED: Prompt does not contain required SDK method "
+                f"alternative '{method}' (indicator: '{indicator}')"
+            )
+
+    @given(
+        validation_rule=st.sampled_from([
+            "exactly one question mark",
+            "conjunctions joining questions",
+            "appended alternatives",
+            "unambiguous yes/no",
+            "follow-up after confirmation",
+        ]),
+    )
+    @settings(max_examples=20)
+    def test_property_10_single_question_enforcement_contains_all_rules(
+        self, validation_rule: str
+    ):
+        """For any valid Write_Policy_Gate prompt, the prompt SHALL contain all five
+        single-question validation rules and the compound question violation output format.
+
+        **Validates: Requirements 7.2**
+
+        Property 10: The prompt must contain all five single-question validation rules
+        (exactly one question mark, no conjunctions joining questions, no appended
+        alternatives, unambiguous yes/no, no follow-up after confirmation) and the
+        compound question violation output format.
+        """
+        prompt = load_hook_prompt()
+        prompt_lower = prompt.lower()
+
+        # Each validation rule concept must be present in the prompt
+        assert validation_rule.lower() in prompt_lower, (
+            f"Property 10 FAILED: Prompt does not contain single-question "
+            f"validation rule concept: '{validation_rule}'"
+        )
+
+        # The prompt must contain the compound question violation output format
+        assert "COMPOUND QUESTION DETECTED" in prompt, (
+            f"Property 10 FAILED: Prompt does not contain the compound question "
+            f"violation output format 'COMPOUND QUESTION DETECTED' "
+            f"(rule tested: '{validation_rule}')"
+        )
+
+        # The prompt must contain "REWRITE REQUIRED" as part of the violation format
+        assert "REWRITE REQUIRED" in prompt, (
+            f"Property 10 FAILED: Prompt does not contain 'REWRITE REQUIRED' "
+            f"in the violation output format (rule tested: '{validation_rule}')"
+        )
+
+        # The prompt must reference .question_pending as the trigger for this check
+        assert ".question_pending" in prompt, (
+            f"Property 10 FAILED: Prompt does not reference '.question_pending' "
+            f"as the trigger for single-question enforcement "
+            f"(rule tested: '{validation_rule}')"
+        )
+
+    @given(
+        path_element=st.sampled_from([
+            "external paths",
+            "misrouted feedback",
+            "SENZING_BOOTCAMP_POWER_FEEDBACK.md",
+            "project-relative equivalents",
+            "CONTENT CHECK",
+        ]),
+    )
+    @settings(max_examples=20)
+    def test_property_11_file_path_policy_slow_path_preservation(
+        self, path_element: str
+    ):
+        """For any valid Write_Policy_Gate prompt, the SLOW PATH section SHALL remain
+        character-for-character identical to the established baseline, preserving
+        external path blocking, feedback redirect, and content path checking.
+
+        **Validates: Requirements 7.3**
+
+        Property 11: The SLOW PATH section must preserve external path blocking,
+        feedback redirect to the canonical path, and content path checking.
+        """
+        prompt = load_hook_prompt()
+
+        # Verify the SLOW PATH section is identical to baseline
+        current_slow_path = extract_slow_path_section(prompt)
+        assert current_slow_path == ORIGINAL_SLOW_PATH_TEXT, (
+            f"Property 11 FAILED: SLOW PATH section has changed from baseline.\n"
+            f"Expected:\n{ORIGINAL_SLOW_PATH_TEXT}\n\n"
+            f"Got:\n{current_slow_path}\n\n"
+            f"(element tested: '{path_element}')"
+        )
+
+        # Additionally verify the specific path element is present in the prompt
+        assert path_element in prompt, (
+            f"Property 11 FAILED: Prompt does not contain required file path "
+            f"policy element: '{path_element}'"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Question Format Gate Constants
+# ---------------------------------------------------------------------------
+
+QUESTION_FORMAT_GATE_HOOK_PATH = Path(
+    "senzing-bootcamp/hooks/question-format-gate.kiro.hook"
+)
+
+# Forbidden narration phrases for the Question Format Gate.
+QUESTION_FORMAT_GATE_FORBIDDEN_PHRASES = [
+    "The question is not compound",
+    "No rewrite needed",
+    "Scanning for compound questions",
+    "This is a compound question",
+    "Let me rewrite",
+    "The question contains 'or' joining alternatives",
+]
+
+
+# ---------------------------------------------------------------------------
+# Question Format Gate Helpers
+# ---------------------------------------------------------------------------
+
+
+def load_question_format_gate_data() -> dict:
+    """Load and return the full parsed JSON from the question-format-gate hook file."""
+    with open(QUESTION_FORMAT_GATE_HOOK_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def load_question_format_gate_prompt() -> str:
+    """Load and return the then.prompt field from the question-format-gate hook file."""
+    data = load_question_format_gate_data()
+    return data["then"]["prompt"]
+
+
+# ---------------------------------------------------------------------------
+# Question Format Gate Suppression Property Tests
+# ---------------------------------------------------------------------------
+
+
+class TestQuestionFormatGateSuppression:
+    """Validate dual suppression reinforcement in the Question Format Gate prompt.
+
+    **Validates: Requirements 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 6.3, 6.4, 6.5, 8.3**
+
+    These tests verify that the question-format-gate hook prompt contains:
+    - A front-loaded suppression preamble within the first 200 characters
+    - A closing OUTPUT FORMAT section after the RULES section
+    - Explicit rewrite-only output directives forbidding preamble/explanation
+    """
+
+    @given(
+        forbidden_phrase=st.sampled_from(QUESTION_FORMAT_GATE_FORBIDDEN_PHRASES),
+    )
+    @settings(max_examples=20)
+    def test_property_5_front_loaded_suppression_preamble(
+        self, forbidden_phrase: str
+    ):
+        """For any valid Question_Format_Gate prompt, the first 200 characters SHALL
+        contain an explicit output constraint directive referencing "." for no-rewrite
+        and "corrected question" for rewrite, with "never" reasoning.
+
+        **Validates: Requirements 3.2, 6.3, 6.5**
+
+        Property 5: The suppression preamble must appear within the first 200
+        characters to ensure the LLM processes it before any detection logic.
+        """
+        prompt = load_question_format_gate_prompt()
+        first_200 = prompt[:200]
+
+        # Must reference "." for no-rewrite case
+        assert "." in first_200, (
+            f"First 200 characters do not reference '.' for no-rewrite case. "
+            f"First 200 chars: '{first_200}' "
+            f"(tested with forbidden phrase: '{forbidden_phrase}')"
+        )
+
+        # Must reference "corrected question" for rewrite case
+        assert "corrected question" in first_200.lower(), (
+            f"First 200 characters do not reference 'corrected question' for rewrite case. "
+            f"First 200 chars: '{first_200}' "
+            f"(tested with forbidden phrase: '{forbidden_phrase}')"
+        )
+
+        # Must contain "never" or "Never" reasoning constraint
+        has_never = "never" in first_200.lower()
+        assert has_never, (
+            f"First 200 characters do not contain 'never' reasoning constraint. "
+            f"First 200 chars: '{first_200}' "
+            f"(tested with forbidden phrase: '{forbidden_phrase}')"
+        )
+
+    @given(
+        forbidden_phrase=st.sampled_from(QUESTION_FORMAT_GATE_FORBIDDEN_PHRASES),
+    )
+    @settings(max_examples=20)
+    def test_property_6_closing_output_format_section(
+        self, forbidden_phrase: str
+    ):
+        """For any valid Question_Format_Gate prompt, there SHALL exist an "OUTPUT FORMAT"
+        section that appears after the RULES section and contains both the period-only
+        directive for no-rewrite and the corrected-question-only directive for rewrite,
+        plus a list of forbidden narration patterns.
+
+        **Validates: Requirements 3.3, 3.4, 6.4**
+
+        Property 6: The OUTPUT FORMAT section must exist after RULES and contain
+        both output directives and forbidden phrases.
+        """
+        prompt = load_question_format_gate_prompt()
+
+        # OUTPUT FORMAT section must exist
+        assert "OUTPUT FORMAT" in prompt, (
+            f"Prompt does not contain 'OUTPUT FORMAT' section. "
+            f"(tested with forbidden phrase: '{forbidden_phrase}')"
+        )
+
+        # RULES section must exist
+        rules_pos = prompt.find("RULES:")
+        assert rules_pos != -1, (
+            f"Prompt does not contain 'RULES:' section. "
+            f"(tested with forbidden phrase: '{forbidden_phrase}')"
+        )
+
+        # OUTPUT FORMAT must appear after RULES
+        output_format_pos = prompt.find("OUTPUT FORMAT")
+        assert output_format_pos > rules_pos, (
+            f"OUTPUT FORMAT section (pos {output_format_pos}) does not appear "
+            f"after RULES section (pos {rules_pos}). "
+            f"(tested with forbidden phrase: '{forbidden_phrase}')"
+        )
+
+        # Extract the OUTPUT FORMAT section (from "OUTPUT FORMAT" to end)
+        output_format_section = prompt[output_format_pos:]
+
+        # Must contain period-only directive for no-rewrite
+        has_period_directive = (
+            "." in output_format_section
+            and ("no compound" in output_format_section.lower()
+                 or "no rewrite" in output_format_section.lower()
+                 or "not found" in output_format_section.lower())
+        )
+        assert has_period_directive, (
+            f"OUTPUT FORMAT section does not contain period-only directive for no-rewrite. "
+            f"(tested with forbidden phrase: '{forbidden_phrase}')"
+        )
+
+        # Must contain corrected-question-only directive for rewrite
+        has_rewrite_directive = (
+            "rewritten question" in output_format_section.lower()
+            or "corrected question" in output_format_section.lower()
+            or "only the rewritten" in output_format_section.lower()
+        )
+        assert has_rewrite_directive, (
+            f"OUTPUT FORMAT section does not contain corrected-question-only directive. "
+            f"(tested with forbidden phrase: '{forbidden_phrase}')"
+        )
+
+        # Must contain the specific forbidden phrase
+        assert forbidden_phrase in output_format_section, (
+            f"OUTPUT FORMAT section does not contain forbidden phrase: "
+            f"'{forbidden_phrase}'"
+        )
+
+    @given(
+        forbidden_phrase=st.sampled_from(QUESTION_FORMAT_GATE_FORBIDDEN_PHRASES),
+    )
+    @settings(max_examples=20)
+    def test_property_7_rewrite_only_output_directive(
+        self, forbidden_phrase: str
+    ):
+        """For any valid Question_Format_Gate prompt, the prompt text SHALL contain
+        explicit instructions forbidding preamble or explanation when outputting a
+        rewritten question, and SHALL instruct preservation of non-question content.
+
+        **Validates: Requirements 4.1, 4.2, 4.3**
+
+        Property 7: The prompt must forbid preamble/explanation for rewrites and
+        instruct preservation of non-question content.
+        """
+        prompt = load_question_format_gate_prompt()
+
+        # Must contain instruction forbidding preamble/explanation for rewrites
+        # Check for anti-narration directives in the rewrite case
+        rewrite_anti_narration_patterns = [
+            r"Do NOT output.*This is a compound question",
+            r"Do NOT output.*Let me rewrite",
+            r"Output ONLY the corrected question",
+            r"no preamble.*explanation",
+        ]
+        has_rewrite_anti_narration = any(
+            re.search(pattern, prompt, re.IGNORECASE | re.DOTALL)
+            for pattern in rewrite_anti_narration_patterns
+        )
+        assert has_rewrite_anti_narration, (
+            f"Prompt does not contain explicit instructions forbidding preamble "
+            f"or explanation when outputting a rewritten question. "
+            f"(tested with forbidden phrase: '{forbidden_phrase}')"
+        )
+
+        # Must instruct preservation of non-question content
+        preservation_patterns = [
+            r"[Pp]reserve.*non-question content",
+            r"[Pp]reserve all other content",
+            r"only rewrite the compound question portion",
+            r"[Pp]reserve all non-question content",
+        ]
+        has_preservation = any(
+            re.search(pattern, prompt, re.IGNORECASE)
+            for pattern in preservation_patterns
+        )
+        assert has_preservation, (
+            f"Prompt does not contain instruction to preserve non-question content. "
+            f"(tested with forbidden phrase: '{forbidden_phrase}')"
+        )
+
+        # Must contain the forbidden phrase somewhere in the prompt
+        # (as part of the anti-narration directive enumeration)
+        assert forbidden_phrase in prompt, (
+            f"Prompt does not contain forbidden phrase '{forbidden_phrase}' "
+            f"in its anti-narration directives."
+        )
+
+
+# ---------------------------------------------------------------------------
+# Question Format Gate Detection Logic Preservation (Property 12)
+# ---------------------------------------------------------------------------
+
+# The three compound question detection patterns that must be present.
+COMPOUND_DETECTION_PATTERNS = [
+    "Sentence-starter",
+    "Inline prose",
+    "Appended alternative",
+]
+
+# NOT COMPOUND exclusion items that must be present in the prompt.
+NOT_COMPOUND_EXCLUSIONS = [
+    "Simple yes/no questions",
+    "numbered list",
+    "Informational prose",
+    "Non-question content",
+]
+
+
+class TestQuestionFormatGateDetectionPreservation:
+    """Validate preservation of compound question detection logic in Question Format Gate.
+
+    **Validates: Requirements 7.4, 7.5, 8.5**
+
+    Property 12: For any valid Question_Format_Gate prompt, the prompt SHALL contain
+    all three compound question detection patterns (sentence-starter Or, inline prose
+    or, appended alternative) and the complete NOT COMPOUND exclusion list.
+    """
+
+    @given(
+        pattern=st.sampled_from(COMPOUND_DETECTION_PATTERNS),
+    )
+    @settings(max_examples=20)
+    def test_property_12a_contains_all_detection_patterns(
+        self, pattern: str
+    ):
+        """For any compound question detection pattern, the prompt SHALL contain it.
+
+        **Validates: Requirements 7.4**
+
+        Property 12a: The Question_Format_Gate prompt must contain all three
+        compound question detection patterns: sentence-starter Or, inline prose or,
+        and appended alternative.
+        """
+        prompt = load_question_format_gate_prompt()
+
+        assert pattern in prompt, (
+            f"Property 12 FAILED: Question_Format_Gate prompt does not contain "
+            f"detection pattern: '{pattern}'"
+        )
+
+    @given(
+        exclusion=st.sampled_from(NOT_COMPOUND_EXCLUSIONS),
+    )
+    @settings(max_examples=20)
+    def test_property_12b_contains_not_compound_exclusion_list(
+        self, exclusion: str
+    ):
+        """For any NOT COMPOUND exclusion item, the prompt SHALL contain it.
+
+        **Validates: Requirements 7.4**
+
+        Property 12b: The Question_Format_Gate prompt must contain the complete
+        NOT COMPOUND exclusion list including simple yes/no questions, numbered
+        list items, informational prose, and non-question content.
+        """
+        prompt = load_question_format_gate_prompt()
+
+        # The NOT COMPOUND section must exist
+        assert "NOT COMPOUND" in prompt, (
+            f"Property 12 FAILED: Question_Format_Gate prompt does not contain "
+            f"'NOT COMPOUND' section (exclusion tested: '{exclusion}')"
+        )
+
+        # Each exclusion item must be present
+        assert exclusion in prompt, (
+            f"Property 12 FAILED: Question_Format_Gate prompt does not contain "
+            f"NOT COMPOUND exclusion: '{exclusion}'"
+        )
+
+    @given(
+        or_pattern=st.sampled_from([
+            "Or shall we",
+            "Or would you",
+            "Or should we",
+            "or would you rather",
+            "or shall we",
+            "or if you prefer",
+        ]),
+    )
+    @settings(max_examples=20)
+    def test_property_12c_contains_or_pattern_examples(
+        self, or_pattern: str
+    ):
+        """For any 'or' pattern example, the prompt SHALL contain it as a detection example.
+
+        **Validates: Requirements 7.4**
+
+        Property 12c: The Question_Format_Gate prompt must contain specific 'or'
+        pattern examples that illustrate the detection rules.
+        """
+        prompt = load_question_format_gate_prompt()
+
+        assert or_pattern in prompt, (
+            f"Property 12 FAILED: Question_Format_Gate prompt does not contain "
+            f"'or' pattern example: '{or_pattern}'"
+        )
+
+    @given(
+        rewrite_element=st.sampled_from([
+            "neutral lead question",
+            "numbered list",
+            "alternatives",
+        ]),
+    )
+    @settings(max_examples=20)
+    def test_property_12d_preserves_rewrite_format(
+        self, rewrite_element: str
+    ):
+        """For any rewrite format element, the prompt SHALL contain it.
+
+        **Validates: Requirements 7.5**
+
+        Property 12d: The Question_Format_Gate prompt must preserve the rewrite
+        format: a neutral lead question followed by a numbered list of alternatives.
+        """
+        prompt = load_question_format_gate_prompt()
+
+        assert rewrite_element in prompt, (
+            f"Property 12 FAILED: Question_Format_Gate prompt does not contain "
+            f"rewrite format element: '{rewrite_element}'"
         )

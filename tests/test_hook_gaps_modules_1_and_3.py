@@ -20,12 +20,29 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "senzing-bootcamp" /
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
+_TESTS_DIR = str(Path(__file__).resolve().parent)
+if _TESTS_DIR not in sys.path:
+    sys.path.insert(0, _TESTS_DIR)
+
 from sync_hook_registry import (
     CATEGORIES_PATH,
     HOOKS_DIR,
     discover_hook_files,
     load_category_mapping,
 )
+from hook_test_helpers import parse_categories_yaml
+
+
+def _expected_hook_count() -> int:
+    """Derive expected hook count from unique IDs in hook-categories.yaml."""
+    categories = parse_categories_yaml()
+    unique_ids: set[str] = set()
+    for ids in categories.values():
+        unique_ids.update(ids)
+    return len(unique_ids)
+
+
+EXPECTED_HOOK_COUNT = _expected_hook_count()
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -249,12 +266,12 @@ class TestHookCategoriesRegistration:
 # ===========================================================================
 
 class TestHookCount:
-    """Verify total hook count is 24."""
+    """Verify total hook count."""
 
-    def test_total_hook_file_count_is_24(self):
-        """There are exactly 24 .kiro.hook files."""
+    def test_total_hook_file_count(self):
+        """Hook file count matches unique IDs in hook-categories.yaml."""
         hook_files = discover_hook_files(HOOKS_DIR)
-        assert len(hook_files) == 28
+        assert len(hook_files) == EXPECTED_HOOK_COUNT
 
     def test_both_new_hooks_exist(self):
         """Both new hook files exist on disk."""

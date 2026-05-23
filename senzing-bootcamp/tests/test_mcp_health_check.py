@@ -86,8 +86,8 @@ class TestSessionResumeMCPSection:
         return path.read_text(encoding="utf-8")
 
     def test_contains_mcp_health_check_heading(self, session_resume_content: str):
-        """session-resume.md has a 'Step 2d: MCP Health Check' heading."""
-        assert "## Step 2d: MCP Health Check" in session_resume_content
+        """session-resume.md has a 'Step 2d' heading for MCP verification."""
+        assert "## Step 2d: Verify MCP Connection" in session_resume_content
 
     def test_contains_search_docs_probe(self, setup_recovery_content: str):
         """setup-recovery file references the search_docs probe call."""
@@ -100,7 +100,7 @@ class TestSessionResumeMCPSection:
     def test_section_between_2c_and_2e(self, session_resume_content: str):
         """Step 2d appears after Step 2c and before Step 2e."""
         pos_2c = session_resume_content.find("## Step 2c:")
-        pos_2d = session_resume_content.find("## Step 2d: MCP Health Check")
+        pos_2d = session_resume_content.find("## Step 2d: Verify MCP Connection")
         pos_2e = session_resume_content.find("## Step 2e:")
         assert pos_2c < pos_2d < pos_2e, (
             f"Expected Step 2c ({pos_2c}) < Step 2d ({pos_2d}) < Step 2e ({pos_2e})"
@@ -150,7 +150,7 @@ class TestHardGateErrorMessage:
 
     def test_contains_mcp_required_statement(self, session_resume_content: str):
         """Hard gate states MCP is required for the bootcamp."""
-        assert "cannot proceed without it" in session_resume_content
+        assert "MCP server is required for the bootcamp" in session_resume_content
 
     def test_contains_troubleshooting_steps(self, session_resume_content: str):
         """Hard gate includes connectivity troubleshooting steps."""

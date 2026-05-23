@@ -178,7 +178,7 @@ session-resume:
   phases:
     phase1-fast-path:
       file: session-resume.md
-      token_count: 2063
+      token_count: 2580
       size_category: large
     phase2-mapping:
       file: session-resume-phase2-mapping.md
@@ -506,7 +506,7 @@ file_metadata:
     token_count: 547
     size_category: medium
   session-resume.md:
-    token_count: 2717
+    token_count: 2580
     size_category: large
   skip-step-protocol.md:
     token_count: 751
@@ -537,7 +537,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 152615
+  total_tokens: 152478
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

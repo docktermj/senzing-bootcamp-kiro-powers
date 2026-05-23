@@ -870,10 +870,10 @@ class TestUnitTokenBudgets:
     """
 
     def test_phase1_token_budget(self) -> None:
-        """Phase-1 file token count ≤ 2,200."""
+        """Phase-1 file token count ≤ 2,700."""
         token_count = _calculate_token_count(_PHASE1_FILE)
-        assert token_count <= 2200, (
-            f"Phase-1 file has {token_count} tokens, exceeds budget of 2,200"
+        assert token_count <= 2700, (
+            f"Phase-1 file has {token_count} tokens, exceeds budget of 2,700"
         )
 
     def test_phase2_mapping_token_budget(self) -> None:

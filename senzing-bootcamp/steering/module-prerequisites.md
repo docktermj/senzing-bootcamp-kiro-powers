@@ -19,8 +19,8 @@ description: "Module prerequisites and dependencies — load when checking readi
 | 3 — System Verification      | Module 2                                                     | Bootcamper explicitly requests skip ('skip verification' or 'I've already verified') |
 | 4 — Data Collection          | Module 1 + Module 3 (soft prerequisite)                      | —                                                |
 | 5 — Data Quality & Mapping   | Module 4, files in `data/raw/`                               | All sources Entity Specification-compliant → Module 6 |
-| 6 — Load Data                | Module 2 + Module 5, transformed data in `data/transformed/` | Data already loaded → Module 7                   |
-| 7 — Query & Visualize         | Module 6, no critical load errors                            | Already validated → Module 8                     |
+| 6 — Data Processing           | Module 2 + Module 5, transformed data in `data/transformed/` | Data already loaded → Module 7                   |
+| 7 — Query, Visualize, and Discover | Module 6, no critical load errors                            | Already validated → Module 8                     |
 | 8 — Performance              | Module 7, representative data loaded                         | Not needed for POC                               |
 | 9 — Security                 | Module 8, compliance needs documented                        | Internal-only with no sensitive data             |
 | 10 — Monitoring              | Module 9, monitoring tools selected                          | Not deploying to production                      |

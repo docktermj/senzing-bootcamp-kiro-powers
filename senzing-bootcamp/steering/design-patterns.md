@@ -53,4 +53,4 @@ If the user's case spans multiple patterns, start with the one that delivers the
 
 When discussing how Senzing integrates with search engines, message queues, or other infrastructure, call `search_docs` with the relevant integration topic (e.g., `search_docs(query="elasticsearch integration")`, `search_docs(query="architecture patterns")`) to retrieve current guidance.
 
-Present the MCP-returned architecture guidance when the user's problem involves search, lookup, or retrieval alongside entity resolution. Reference it again in Module 8 (Query & Visualize) when building query programs.
+Present the MCP-returned architecture guidance when the user's problem involves search, lookup, or retrieval alongside entity resolution. Reference it again in Module 8 (Query, Visualize, and Discover) when building query programs.

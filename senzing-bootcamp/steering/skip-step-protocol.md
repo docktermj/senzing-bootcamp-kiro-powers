@@ -69,5 +69,6 @@ When the bootcamper says "what did I skip?" or "revisit skipped steps":
 ## Constraints
 
 - **Mandatory gates (⛔) cannot be skipped.** If the bootcamper tries to skip a mandatory gate, explain why it's required and offer help getting past it.
+- **The agent can NEVER self-initiate a skip of a ⛔ mandatory gate step.** No agent-internal reasoning — session length, context budget, perceived redundancy, or any other consideration — justifies skipping a ⛔ step. Only the bootcamper can attempt to skip a mandatory gate (and this protocol refuses that attempt). If the agent reaches a ⛔ step, it MUST execute it unconditionally. This constraint is enforced by the `enforce-mandatory-gate.kiro.hook` preToolUse hook, which blocks step advancement past a ⛔ gate when checkpoint evidence is missing.
 - **Module-level skips** use the existing track system (switch tracks or use `skip_if` from `module-dependencies.yaml`). This protocol is for step-level skips within a module.
 - Steps that produce database state (loading, SDK setup) should be skipped with extra caution — warn that downstream modules may not work correctly.

@@ -150,4 +150,4 @@ If yes, read the template: #[[file:senzing-bootcamp/templates/stakeholder_summar
 
 For multi-source reference (source ordering, orchestration patterns, conflict resolution, troubleshooting, performance benchmarks), load:
 
-#[[file:senzing-bootcamp/steering/load-data-reference.md]]
+#[[file:senzing-bootcamp/steering/data-processing-reference.md]]

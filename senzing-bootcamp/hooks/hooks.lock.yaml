@@ -1,0 +1,124 @@
+# AUTO-GENERATED — do not edit manually.
+# Run: python3 senzing-bootcamp/scripts/sync_hook_registry.py --write
+generated_at: "2026-05-23T16:31:56Z"
+hooks:
+  - id: analyze-after-mapping
+    version: "1.0.0"
+    category: module
+    event_type: fileCreated
+  - id: ask-bootcamper
+    version: "3.0.0"
+    category: critical
+    event_type: agentStop
+  - id: backup-before-load
+    version: "2.0.0"
+    category: module
+    event_type: fileEdited
+  - id: backup-project-on-request
+    version: "3.0.0"
+    category: module
+    event_type: userTriggered
+  - id: code-style-check
+    version: "2.0.0"
+    category: critical
+    event_type: fileEdited
+  - id: commonmark-validation
+    version: "1.0.0"
+    category: critical
+    event_type: fileEdited
+  - id: data-quality-check
+    version: "2.0.0"
+    category: module
+    event_type: fileEdited
+  - id: deployment-phase-gate
+    version: "1.0.0"
+    category: module
+    event_type: postTaskExecution
+  - id: enforce-gate-on-stop
+    version: "1.0.0"
+    category: module
+    event_type: agentStop
+  - id: enforce-mandatory-gate
+    version: "1.0.0"
+    category: module
+    event_type: preToolUse
+  - id: enforce-mapping-spec
+    version: "1.0.0"
+    category: module
+    event_type: fileCreated
+  - id: enforce-step-and-transition
+    version: "1.0.0"
+    category: critical
+    event_type: agentStop
+  - id: enforce-visualization-offers
+    version: "2.0.0"
+    category: module
+    event_type: agentStop
+  - id: error-recovery-context
+    version: "1.0.0"
+    category: module
+    event_type: postToolUse
+  - id: gate-module3-visualization
+    version: "1.0.0"
+    category: module
+    event_type: preToolUse
+  - id: git-commit-reminder
+    version: "1.0.0"
+    category: module
+    event_type: userTriggered
+  - id: mcp-first-invariant
+    version: "1.0.0"
+    category: critical
+    event_type: agentStop
+  - id: module-completion-celebration
+    version: "1.0.0"
+    category: module
+    event_type: postTaskExecution
+  - id: question-format-gate
+    version: "1.0.0"
+    category: critical
+    event_type: agentStop
+  - id: review-bootcamper-input
+    version: "1.0.0"
+    category: critical
+    event_type: promptSubmit
+  - id: run-tests-after-change
+    version: "1.0.0"
+    category: module
+    event_type: fileEdited
+  - id: security-scan-on-save
+    version: "1.0.0"
+    category: module
+    event_type: fileEdited
+  - id: validate-alert-config
+    version: "1.0.0"
+    category: module
+    event_type: fileCreated
+  - id: validate-benchmark-results
+    version: "1.0.0"
+    category: module
+    event_type: fileEdited
+  - id: validate-business-problem
+    version: "1.0.0"
+    category: module
+    event_type: postTaskExecution
+  - id: validate-data-files
+    version: "1.0.0"
+    category: module
+    event_type: fileCreated
+  - id: verify-demo-results
+    version: "1.0.0"
+    category: module
+    event_type: postTaskExecution
+  - id: verify-generated-code
+    version: "1.0.0"
+    category: module
+    event_type: fileCreated
+  - id: verify-sdk-setup
+    version: "1.0.0"
+    category: module
+    event_type: fileEdited
+  - id: write-policy-gate
+    version: "1.0.0"
+    category: critical
+    event_type: preToolUse

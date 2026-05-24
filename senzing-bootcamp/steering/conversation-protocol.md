@@ -24,6 +24,8 @@ When processing the bootcamper's next message:
 
 The ask-bootcamper hook is a safety net only — do not rely on it for closing questions.
 
+When you complete the LAST sub-step in a gap-filling sequence (all undetermined items resolved): writing the checkpoint is NOT the end of your turn. You must also present the next numbered step's 👉 question. The checkpoint marks sub-step completion; the 👉 question marks turn completion.
+
 ## Question Stop Protocol
 
 Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question text — produce no further tokens. Do not answer, assume a response, proceed to the next step, or write checkpoints.
@@ -32,11 +34,57 @@ After asking a 👉 question, write the file `config/.question_pending` with the
 
 At the start of every turn where you process bootcamper input, check for and delete `config/.question_pending` if it exists.
 
+### Numbered Step Execution Boundary
+
+Every numbered step containing a 👉 question is a mandatory execution boundary with the same absolute precedence as ⛔ mandatory gates. The agent SHALL:
+- Execute each numbered step individually in sequential order
+- Never advance `current_step` by more than 1 without writing intermediate checkpoints
+- Never skip a 👉 step for any internal reason (context budget, session length, redundancy)
+- Write `config/.question_pending` before ending the turn at any 👉 question
+
+Violation of this rule is equivalent to a ⛔ mandatory gate violation.
+
 ## No Dead-End Responses
 
 Never end a turn with only an acknowledgment (e.g., "Understood.", "Got it.", "I see."). Every turn must advance the conversation by: (a) asking a 👉 follow-up question, (b) summarizing what was captured and stating what comes next, or (c) proceeding to the next step in the module workflow.
 
 If you acknowledge input, always append a next action in the same response.
+
+### Sub-Step Completion Dead-End (WRONG)
+
+> Got it — you're looking for a clean master list. ✅ Checkpoint written.
+
+### Sub-Step Completion (CORRECT)
+
+> Got it — you're looking for a clean master list. ✅ Checkpoint written.
+>
+> 👉 Will the entity resolution results need to interface with other
+> software — for example, a CRM, search engine, data warehouse, or
+> downstream application?
+
+## Code Block Formatting
+
+All JSON displayed in chat must use ` ```json ` code blocks with 2-space indentation. Never display JSON as raw text or in untagged code blocks.
+
+### WRONG — untagged code block
+
+````text
+```
+{"RECORD_ID": "1001", "NAME_FULL": "Robert Smith", "DATE_OF_BIRTH": "1982-11-02"}
+```
+````
+
+### CORRECT — tagged json block with pretty-printing
+
+````text
+```json
+{
+  "RECORD_ID": "1001",
+  "NAME_FULL": "Robert Smith",
+  "DATE_OF_BIRTH": "1982-11-02"
+}
+```
+````
 
 ## One Question Rule
 
@@ -50,7 +98,7 @@ Multi-question patterns — questions joined by conjunctions (and, or, also, but
 
 The phrase "But first" followed by a question is a violation — never redirect to a different question within the same turn.
 
-**Enforcement:** The `enforce-single-question` hook validates every question written to `config/.question_pending`. If it detects a compound question, you MUST rewrite before proceeding. Do not attempt to bypass this check.
+**Enforcement:** The `write-policy-gate` hook validates every question written to `config/.question_pending`. If it detects a compound question, you MUST rewrite before proceeding. Do not attempt to bypass this check.
 
 **Common violations to avoid:**
 
@@ -167,6 +215,86 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 Conversation UX rules take precedence over content generation. Never sacrifice turn-taking correctness to deliver more information in a single turn. If following a rule means splitting content across multiple turns, split it.
 
+## Pre-Output Validation Checklist
+
+Execute this checklist **before every turn** that contains a pointing-hand question. Stop at the first failure and rewrite before sending.
+
+1. **Compound-question check (fail-fast):** Verify the closing question does NOT contain two or more alternatives joined by prose ("or", "Or", "alternatively", "or would you rather", "or should we"). If it does → apply the Rewrite Protocol below.
+2. Verify this turn contains at most one closing question. If more than one → keep only the first; defer the rest to subsequent turns.
+3. Verify every closing question has the pointing-hand prefix. If missing → add it.
+4. Verify no content appears after the closing question. If content follows → move it before the question or remove it.
+5. Verify you are not answering your own question. If self-answering → delete the self-answer.
+6. Verify no closing question offers to skip or bypass an upcoming mandatory gate step. If it does → remove the skip option.
+
+### Rewrite Protocol
+
+When the compound-question check (item 1) fails, rewrite the question using these steps:
+
+**Step 1 — Count the alternatives.** Identify each distinct action or option joined by prose conjunctions.
+
+**Step 2 — Choose the format:**
+
+- **Two or more alternatives** → numbered list preceded by a single neutral question.
+- **Confirmation with appended alternative** (e.g., "Does that look right? Or would you like me to adjust it?") → keep only the confirmation; drop the appended alternative entirely.
+
+**Step 3 — Rewrite.**
+
+- For numbered lists: write one neutral lead question (no alternatives in it), then list each option on its own numbered line.
+- For confirmations: remove everything after the first question mark.
+
+**Step 4 — Re-validate.** Run the checklist again from item 1 on the rewritten question.
+
+### Rewrite Examples
+
+#### Either/Or joined by prose
+
+##### WRONG
+
+> 👉 Would you like me to create a one-page executive summary you can share with your team or manager? Or shall we skip that and move on to Module 3?
+
+##### CORRECT
+
+> 👉 What would you like to do next?
+>
+> 1. Create a one-page executive summary to share with your team
+> 2. Skip ahead to Module 3
+
+#### Appended alternative on confirmation
+
+##### WRONG
+
+> 👉 Does that look right? Or would you like me to adjust it?
+
+##### CORRECT
+
+> 👉 Does that look right?
+
+#### Sentence-starter "Or"
+
+##### WRONG
+
+> 👉 Should I generate the loading program now? Or would you rather review the mapping first?
+
+##### CORRECT
+
+> 👉 What would you like to do next?
+>
+> 1. Generate the loading program now
+> 2. Review the mapping first
+
+#### Prose-joined choices (inline "or")
+
+##### WRONG
+
+> 👉 Would you like to proceed with Python or Java?
+
+##### CORRECT
+
+> 👉 Which language would you like to use?
+>
+> 1. Python
+> 2. Java
+
 ## Self-Check
 
 Before ending any turn, verify:
@@ -175,8 +303,9 @@ Before ending any turn, verify:
 2. Does any 👉 question lack the 👉 prefix?
 3. Is there content after a 👉 question?
 4. Am I answering my own question?
+5. Does any 👉 question offer to skip or bypass an upcoming ⛔ mandatory gate step?
 
-If any answer is yes, revise the turn before sending.
+If any answer is yes (across all 5 checks), revise the turn before sending.
 
 ## Mandatory question_pending
 
@@ -185,6 +314,15 @@ Writing `config/.question_pending` is mandatory for every 👉 question — not 
 ## Module Transition Protocol
 
 When you ask 'Ready for Module X' and the bootcamper responds affirmatively (yes, sure, let's go, ready, etc.), immediately begin that module in the same turn. Display the module banner, journey map, and start Step 1. Never acknowledge without acting at a module transition.
+
+**📏 MINIMUM CONTENT REQUIREMENT:** After receiving a Transition_Confirmation, the agent response MUST contain:
+
+1. The module start banner (━━━ header with module number and name)
+2. The journey map table (Module | Name | Status)
+3. The before/after framing
+4. Step 1's introductory content (what and why)
+
+Outputting only ".", empty content, single-word acknowledgments, or any response under 50 characters after a Transition_Confirmation is a **protocol violation**. The detect-and-retry hook will catch and correct such violations automatically.
 
 **⛔ PROHIBITED:** Saving progress and ending the session is PROHIBITED as a response to an affirmative answer to a module transition question. Do not save progress, do not offer to pause, do not end the session. The only valid action is to start the module.
 

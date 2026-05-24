@@ -2,12 +2,12 @@
 
 ## Introduction
 
-The senzing-bootcamp power ships eight Python scripts in `senzing-bootcamp/scripts/` that handle project status reporting, module validation, progress repair, backup/restore, prerequisite checking, pre-flight checks, and hook installation. These scripts have no automated test coverage. This feature adds a `senzing-bootcamp/tests/` directory with pytest-based unit tests for every script, integrated into the existing GitHub Actions CI workflow, so regressions are caught before they reach users.
+The senzing-bootcamp power ships seven Python scripts in `senzing-bootcamp/scripts/` that handle project status reporting, module validation, progress repair, backup/restore, pre-flight checks, and hook installation. These scripts have no automated test coverage. This feature adds a `senzing-bootcamp/tests/` directory with pytest-based unit tests for every script, integrated into the existing GitHub Actions CI workflow, so regressions are caught before they reach users.
 
 ## Glossary
 
 - **Test_Suite**: The collection of pytest test modules located in `senzing-bootcamp/tests/` that exercise the bootcamp scripts.
-- **Script_Under_Test**: Any Python script in `senzing-bootcamp/scripts/` targeted by the Test_Suite: `status.py`, `repair_progress.py`, `validate_module.py`, `backup_project.py`, `restore_project.py`, `check_prerequisites.py`, `preflight_check.py`, `install_hooks.py`.
+- **Script_Under_Test**: Any Python script in `senzing-bootcamp/scripts/` targeted by the Test_Suite: `status.py`, `repair_progress.py`, `validate_module.py`, `backup_project.py`, `restore_project.py`, `preflight_check.py`, `install_hooks.py`.
 - **CI_Workflow**: The GitHub Actions workflow defined in `.github/workflows/validate-power.yml` that runs validation and tests on pull requests and pushes.
 - **Progress_Data**: The JSON structure stored in `config/bootcamp_progress.json` that tracks module completion state.
 - **Preferences_Data**: The YAML-like key-value file at `config/bootcamp_preferences.yaml` that stores bootcamp configuration such as chosen language.
@@ -84,17 +84,9 @@ The senzing-bootcamp power ships eight Python scripts in `senzing-bootcamp/scrip
 3. WHEN the backup file is not a valid ZIP, THE Test_Suite SHALL verify that `restore_project.py` exits with an error.
 4. WHEN no arguments are provided, THE Test_Suite SHALL verify that `restore_project.py` prints usage information and exits.
 
-### Requirement 7: Check Prerequisites Script Tests
+### Requirement 7: Check Prerequisites Script Tests [removed]
 
-**User Story:** As a developer, I want tests for `check_prerequisites.py`, so that environment detection logic is verified.
-
-#### Acceptance Criteria
-
-1. WHEN required commands (git, curl) are available, THE Test_Suite SHALL verify that `check_prerequisites.py` reports them as passed.
-2. WHEN required commands are missing, THE Test_Suite SHALL verify that `check_prerequisites.py` increments the failure count.
-3. WHEN no language runtime is found, THE Test_Suite SHALL verify that `check_prerequisites.py` reports a failure.
-4. WHEN at least one language runtime is found, THE Test_Suite SHALL verify that `check_prerequisites.py` does not report a language failure.
-5. THE Test_Suite SHALL verify the `check_command` function by mocking `shutil.which` to simulate present and absent commands.
+> **Note:** `check_prerequisites.py` has been removed from the repository. This requirement is no longer applicable. Environment detection is now handled by `preflight_check.py` (see Requirement 8).
 
 ### Requirement 8: Preflight Check Script Tests
 

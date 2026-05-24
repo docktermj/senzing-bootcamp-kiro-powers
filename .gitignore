@@ -16,3 +16,11 @@ config/.question_pending
 
 # MCP health check status (transient, written by agent at session start)
 config/.mcp_status
+
+# User-state files (created at runtime, not shipped with the power)
+senzing-bootcamp/config/bootcamp_progress.json
+senzing-bootcamp/config/bootcamp_preferences.yaml
+senzing-bootcamp/config/er_baseline_vendors.json
+
+# MCP response cache runtime state
+senzing-bootcamp/config/mcp_cache/

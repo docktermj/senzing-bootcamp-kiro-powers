@@ -23,7 +23,8 @@ from sync_hook_registry import (
     load_category_mapping,
     categorize_hooks,
     generate_registry_summary,
-    generate_registry_detail,
+    generate_registry_critical,
+    generate_registry_modules,
     write_registry,
     verify_registry,
 )

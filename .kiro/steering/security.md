@@ -1,5 +1,6 @@
 ---
 inclusion: always
+description: "Security patterns to flag, hook file integrity rules, and power distribution safety"
 ---
 
 # Security Rules

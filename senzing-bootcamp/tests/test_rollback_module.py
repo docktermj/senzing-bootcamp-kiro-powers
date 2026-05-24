@@ -202,7 +202,7 @@ class TestProperty2ManifestCompleteness:
         assert isinstance(entry.directories, list)
         assert isinstance(entry.modifies_database, bool)
 
-        # Only module 6 (Load Data) modifies the database
+        # Only module 6 (Data Processing) modifies the database
         if module == 6:
             assert entry.modifies_database is True
         else:

@@ -24,7 +24,8 @@ from sync_hook_registry import (
     categorize_hooks,
     format_hook_entry,
     generate_registry_summary,
-    generate_registry_detail,
+    generate_registry_critical,
+    generate_registry_modules,
     verify_registry,
     write_registry,
 )

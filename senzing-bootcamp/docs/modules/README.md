@@ -102,10 +102,10 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 6: Load Data
+### Module 6: Data Processing
 
-**File**: [MODULE_6_LOAD_DATA.md](MODULE_6_LOAD_DATA.md)
-**Steering**: `steering/module-06-load-data.md` (phases: `module-06-phaseA-build-loading.md`, `module-06-phaseB-load-first-source.md`, `module-06-phaseC-multi-source.md`, `module-06-phaseD-validation.md`)
+**File**: [MODULE_6_DATA_PROCESSING.md](MODULE_6_DATA_PROCESSING.md)
+**Steering**: `steering/module-06-data-processing.md` (phases: `module-06-phaseA-build-loading.md`, `module-06-phaseB-load-first-source.md`, `module-06-phaseC-multi-source.md`, `module-06-phaseD-validation.md`)
 
 **Purpose**: Load all data sources, process redo records, and validate entity resolution results
 
@@ -123,10 +123,10 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 7: Query and Visualize
+### Module 7: Query, Visualize, and Discover
 
-**File**: [MODULE_7_QUERY_VALIDATION.md](MODULE_7_QUERY_VALIDATION.md)
-**Steering**: `steering/module-07-query-validation.md`
+**File**: [MODULE_7_QUERY_VISUALIZE_DISCOVER.md](MODULE_7_QUERY_VISUALIZE_DISCOVER.md)
+**Steering**: `steering/module-07-query-visualize-discover.md`
 
 **Purpose**: Create query programs, overlap reports, and visualizations
 

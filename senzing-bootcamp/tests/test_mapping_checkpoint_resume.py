@@ -190,28 +190,26 @@ class TestStep4Validation:
     """
 
     def test_step4_contains_mapping_workflow_status_action(self) -> None:
-        """Step 4 references mapping_workflow with action='status'."""
-        content = _read_file(SESSION_RESUME_PATH)
-        section = _extract_section(content, "Step 4: Load the Right Module Steering")
-        assert section, "Step 4: Load the Right Module Steering section not found"
-        assert "mapping_workflow" in section, (
-            "Step 4 must reference mapping_workflow"
+        """Phase-2 mapping file references mapping_workflow with action='status'."""
+        mapping_path = _STEERING_DIR / "session-resume-phase2-mapping.md"
+        content = _read_file(mapping_path)
+        assert "mapping_workflow" in content, (
+            "Phase-2 mapping file must reference mapping_workflow"
         )
-        assert "action='status'" in section or 'action="status"' in section, (
-            "Step 4 must reference mapping_workflow with action='status'"
+        assert "action='status'" in content or 'action="status"' in content, (
+            "Phase-2 mapping file must reference mapping_workflow with action='status'"
         )
 
     def test_step4_contains_corrupted_checkpoint_handling(self) -> None:
-        """Step 4 contains corrupted checkpoint handling instructions."""
-        content = _read_file(SESSION_RESUME_PATH)
-        section = _extract_section(content, "Step 4: Load the Right Module Steering")
-        assert section, "Step 4: Load the Right Module Steering section not found"
-        section_lower = section.lower()
-        assert "corrupted" in section_lower, (
-            "Step 4 must mention corrupted checkpoint handling"
+        """Phase-2 mapping file contains corrupted checkpoint handling instructions."""
+        mapping_path = _STEERING_DIR / "session-resume-phase2-mapping.md"
+        content = _read_file(mapping_path)
+        content_lower = content.lower()
+        assert "corrupted" in content_lower, (
+            "Phase-2 mapping file must mention corrupted checkpoint handling"
         )
-        assert "cannot be read" in section_lower, (
-            "Step 4 must mention that corrupted checkpoints cannot be read"
+        assert "cannot be read" in content_lower, (
+            "Phase-2 mapping file must mention that corrupted checkpoints cannot be read"
         )
 
     def test_step4_contains_invalid_state_handling_with_restart(self) -> None:

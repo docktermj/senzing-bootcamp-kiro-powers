@@ -157,11 +157,11 @@ class TestOnboardingBulletOrder:
 # Delivery-Mode Section Tests
 # ---------------------------------------------------------------------------
 
-_VISUALIZATION_PROTOCOL: Path = _STEERING_DIR / "visualization-protocol.md"
+_VISUALIZATION_PROTOCOL: Path = _STEERING_DIR / "visualization-guide.md"
 
 
 def _get_protocol_content() -> str:
-    """Read the full content of visualization-protocol.md.
+    """Read the full content of visualization-guide.md.
 
     Returns:
         The file content as a string.
@@ -170,28 +170,36 @@ def _get_protocol_content() -> str:
 
 
 def _get_section_content(heading: str) -> str:
-    """Extract the content of a specific ## section from visualization-protocol.md.
+    """Extract the content of a specific section from visualization-guide.md.
 
     Args:
-        heading: The exact heading text (without the ## prefix).
+        heading: The exact heading text (without the #+ prefix).
 
     Returns:
-        The section content from the heading line to the next ## heading.
+        The section content from the heading line to the next same-level heading.
     """
     content = _get_protocol_content()
     lines = content.splitlines()
 
     start: int | None = None
+    start_level: int = 0
     end: int | None = None
 
     for idx, line in enumerate(lines):
-        if line.strip() == f"## {heading}":
+        stripped = line.strip()
+        # Match heading at any level (##, ###, etc.)
+        heading_match = re.match(r"^(#{2,})\s+(.+)$", stripped)
+        if heading_match and heading_match.group(2).strip() == heading:
             start = idx
-        elif start is not None and re.match(r"^## ", line):
-            end = idx
-            break
+            start_level = len(heading_match.group(1))
+        elif start is not None:
+            # End at next heading of same or higher level
+            next_heading = re.match(r"^(#{2,})\s+", stripped)
+            if next_heading and len(next_heading.group(1)) <= start_level:
+                end = idx
+                break
 
-    assert start is not None, f"Section '## {heading}' not found in visualization-protocol.md"
+    assert start is not None, f"Section '{heading}' not found in visualization-guide.md"
 
     if end is None:
         end = len(lines)
@@ -200,13 +208,13 @@ def _get_section_content(heading: str) -> str:
 
 
 class TestDeliveryModeSection:
-    """Unit tests for delivery-mode section in visualization-protocol.md.
+    """Unit tests for delivery-mode section in visualization-guide.md.
 
     Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.7
     """
 
     def test_delivery_mode_question_with_both_options(self) -> None:
-        """Verify visualization-protocol.md contains the delivery-mode question with both options.
+        """Verify visualization-guide.md contains the delivery-mode question with both options.
 
         Validates: Requirement 2.1
         """
@@ -329,7 +337,7 @@ class TestTrackerSchema:
     """
 
     def test_schema_version_is_1_1_0(self) -> None:
-        """Verify the JSON schema example in visualization-protocol.md contains version 1.1.0.
+        """Verify the JSON schema example in visualization-guide.md contains version 1.1.0.
 
         Validates: Requirement 3.4
         """
@@ -337,7 +345,7 @@ class TestTrackerSchema:
 
         # The schema is in a JSON code block; look for the version field
         assert '"version": "1.1.0"' in content, (
-            "Tracker schema version must be '1.1.0' in visualization-protocol.md"
+            "Tracker schema version must be '1.1.0' in visualization-guide.md"
         )
 
     def test_delivery_mode_field_documented(self) -> None:
@@ -357,7 +365,7 @@ class TestTrackerSchema:
 
         assert len(table_lines) > 0, (
             "delivery_mode must be documented in the schema field table "
-            "in visualization-protocol.md"
+            "in visualization-guide.md"
         )
 
         # Verify the table row contains type and description info

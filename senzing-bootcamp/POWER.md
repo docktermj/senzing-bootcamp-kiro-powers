@@ -19,38 +19,15 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 This power works best with Claude Opus 4.6 or similar.
 
-## What's New (Unreleased)
+## What's New in 0.12.0
 
 - Production-readiness pass: all CI validation steps green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `validate_dependencies`, `sync_hook_registry --verify`, `validate_prerequisites`, `validate_progress_ci`); pytest at 2,603 passed / 0 failed / 0 errors
 - CommonMark compliance across all 491 markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
-- `lint_steering.py` updated to recognize H3-nested step headings (`### Step N:`) and any `**Checkpoint:**` marker
-- Repo-root `tests/conftest.py` snaps cwd to project root before each test — eliminated cross-suite cwd drift that caused 115 collection errors
-- Test-suite reconciliation: hook-count constants aligned to 24, `enforce-visualization-offers` multi-module membership accepted, preservation hashes refreshed for `module-02-sdk-setup.md`, obsolete Quick Demo preservation classes removed
+- Consolidated visualization steering: merged visualization-protocol and visualization-reference into `visualization-guide.md` (saves ~3,000 tokens of context budget)
+- User-state config files (`bootcamp_progress.json`, `bootcamp_preferences.yaml`, `er_baseline_vendors.json`) no longer tracked in git — `.example` templates provided instead
+- Hook count reconciled to 28 (consolidated `enforce-file-path-policies`, `enforce-single-question`, and `block-direct-sql` into `write-policy-gate`; added `enforce-mandatory-gate` and `enforce-gate-on-stop` to documentation)
 
-## What's New in 0.11.0
-
-- AWS deployment reference (`deployment-aws.md`) — dedicated guidance for ECS/Fargate, RDS, Secrets Manager, CloudWatch, IAM, and cost optimization
-- Skip Step Protocol (`skip-step-protocol.md`) — escape hatch for stuck bootcampers with step-level skip tracking and consequence assessment
-- Phase-splitting for Modules 8, 9, 10 — reduces context pressure by loading only the current phase
-- New hooks for Modules 2, 8, 9, 10: `verify-sdk-setup`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`
-- Conversation protocol extracted to `conversation-protocol.md` (auto-included) — keeps `agent-instructions.md` focused on core rules
-- Integration test (`test_module_flow_integration.py`) validating multi-module state transitions across all tracks
-- Enhanced `validate_module.py` checks for Modules 8–11 (benchmark environment, security utilities, runbooks, Dockerfile)
-- Module 3 renamed from Quick Demo to System Verification — uses TruthSet data with MCP-generated verification code; authoritative steering file is `module-03-system-verification.md`
-- Hook consolidation — `feedback-submission-reminder` and `capture-feedback` merged into `ask-bootcamper` and `review-bootcamper-input` respectively; `enforce-feedback-path` and `enforce-working-directory` merged into `enforce-file-path-policies`; `verify-senzing-facts` and `offer-visualization` removed (25 hooks total)
-- Windows support improvements — Visual Studio Build Tools check in `preflight.py`, Windows-specific pitfalls section in `common-pitfalls.md`, PowerShell execution policy guidance, Windows Terminal recommendation
-- Steering best practices alignment — `common-pitfalls.md` changed to manual inclusion, context budget guidelines followed
-- Deprecated `preflight_check.py` removed
-
-## What's New in 0.10.0
-
-- Data source registry — `config/data_sources.yaml` tracks every source's quality score, mapping status, and load status across Modules 4–6. The agent maintains it automatically; view it with `data_sources.py` or in `status.py` output.
-- Team bootcamp mode — `config/team.yaml` enables multi-user sessions with per-member progress tracking, a team dashboard (`team_dashboard.py`), and consolidated feedback reports (`merge_feedback.py`). Supports both co-located (shared repo) and distributed (separate repos) setups. See `docs/guides/COLLABORATION_GUIDE.md` for details.
-- Context budget tracking — `file_metadata` in `steering-index.yaml` provides per-file token counts and size categories so the agent can manage context window pressure. Use `measure_steering.py` to keep counts up to date.
-- Interactive entity graph visualization — the agent guides bootcampers through building their own D3.js force-directed graph with entity detail panels, clustering, and search. Load `steering/visualization-guide.md` during Module 7.
-- Progress repair tool (`scripts/repair_progress.py`) — reconstructs `bootcamp_progress.json` from project artifacts when state is corrupted.
-- Steering file index (`steering/steering-index.yaml`) — machine-readable mapping for faster agent file selection.
-- CI validation via GitHub Actions for power integrity, CommonMark, and tests.
+See the CHANGELOG for the full release history.
 
 ## What This Bootcamp Does
 
@@ -67,8 +44,8 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 | 3 — System Verification                 | Runs entity resolution on Senzing TruthSet data and verifies expected entity counts | Validates your entire setup end-to-end against a known-good reference dataset — proving the system works before you use your own data |
 | 4 — Data Collection                     | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
 | 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Entity Specification format. Optional Phase 3 test-loads and evaluates results using `mapping_workflow` steps 5–8 | Identifies issues before they cause bad matches, gets data into the format Senzing needs, and optionally validates entity resolution quality before production loading |
-| 6 — Load Data                           | Loads all data sources, processes redo records, and validates entity resolution results | Your data is loaded and entity resolution is running — duplicates matched, cross-source connections found |
-| 7 — Query & Visualize                   | Builds query programs and visualizations for your resolved entities       | Proves the system answers your business questions                                                                |
+| 6 — Data Processing                     | Loads all data sources, processes redo records, and validates entity resolution results | Your data is loaded and entity resolution is running — duplicates matched, cross-source connections found |
+| 7 — Query, Visualize, and Discover       | Builds query programs and visualizations for your resolved entities       | Proves the system answers your business questions                                                                |
 | 8 — Performance Testing & Benchmarking  | Benchmarks and optimizes for your data volume                             | Ensures the system handles production-scale data                                                                 |
 | 9 — Security Hardening                  | Implements access controls and data protection                            | Required for production with sensitive data                                                                      |
 | 10 — Monitoring & Observability         | Sets up dashboards, alerts, and health checks                             | Keeps the system running reliably in production                                                                  |
@@ -82,7 +59,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 
 **New users:** Say "start the bootcamp" to begin. Choose your track:
 
-- **Core Bootcamp** *(recommended)* — Modules 1, 2, 3, 4, 5, 6, 7. Recommended foundation covering problem definition through query/visualize.
+- **Core Bootcamp** *(recommended)* — Modules 1, 2, 3, 4, 5, 6, 7. Recommended foundation covering problem definition through query, visualize, and discover.
 - **Advanced Topics** *(not recommended for bootcamp)* — Modules 1–11. Adds production-readiness topics (performance, security hardening, monitoring, and packaging/deployment) as advanced add-ons layered on top of the core bootcamp.
 
 Tracks are not mutually exclusive — you can start with one and extend to another at any time. All completed modules carry forward.
@@ -110,11 +87,11 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 
 - `module-01-business-problem.md` — Module 1: Business Problem (split: `module-01-phase2-document-confirm.md`)
 - `module-02-sdk-setup.md` — Module 2: SDK Setup
-- `module-03-system-verification.md` — Module 3: System Verification
+- `module-03-system-verification.md` — Module 3: System Verification (split: `module-03-phase2-visualization.md`)
 - `module-04-data-collection.md` — Module 4: Data Collection
 - `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping
-- `module-06-load-data.md` — Module 6: Load Data
-- `module-07-query-validation.md` — Module 7: Query & Visualize
+- `module-06-data-processing.md` — Module 6: Data Processing
+- `module-07-query-visualize-discover.md` — Module 7: Query, Visualize, and Discover
 - `module-08-performance.md` — Module 8: Performance Testing
 - `module-09-security.md` — Module 9: Security Hardening
 - `module-10-monitoring.md` — Module 10: Monitoring
@@ -169,44 +146,18 @@ Always call `get_capabilities` first when starting a session.
 
 ## Tool Usage Examples
 
+Call `get_capabilities()` first to discover all tools. Key patterns:
+
 ```text
-# Discover available tools and workflows
-get_capabilities()
-
-# Get SDK installation instructions for a specific platform and language
 sdk_guide(topic='install', platform='linux', language='python', version='current')
-
-# Generate loading code in the user's chosen language
 generate_scaffold(language='java', workflow='add_records', version='current')
-
-# Start an interactive data mapping session
 mapping_workflow(action='start', source_file='data/raw/customers.csv')
-
-# Search Senzing docs for anti-patterns before recommending an approach
 search_docs(query='loading performance', category='anti_patterns', version='current')
-
-# Validate a mapped record against the Senzing Entity Specification
-analyze_record(record='{"DATA_SOURCE":"CUSTOMERS","RECORD_ID":"1001","NAME_FULL":"John Smith"}')
-
-# Diagnose a Senzing error code
-explain_error_code(error_code='0023')
 ```
 
-## Bootcamp Modules
+See `steering/mcp-tool-decision-tree.md` for the full decision tree with all tools and call examples.
 
-| Module | Topic                                          |
-|--------|------------------------------------------------|
-| 1      | Understand Business Problem                    |
-| 2      | Set Up SDK                                     |
-| 3      | System Verification                            |
-| 4      | Data Collection Policy                         |
-| 5      | Data Quality & Mapping (with optional test load)  |
-| 6      | Load Data                                      |
-| 7      | Query & Visualize                              |
-| 8      | Performance Testing and Benchmarking           |
-| 9      | Security Hardening                             |
-| 10     | Monitoring and Observability                   |
-| 11     | Package & Deploy                               |
+## Module Progression
 
 Modules are progressive but iterative. Skip ahead options: have Entity Specification data (skip to 6), not deploying to production (skip 8-11). Modules 8-11 are production-focused and optional for learning/evaluation.
 
@@ -232,7 +183,7 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available (26 hooks): `ask-bootcamper` ⭐, `review-bootcamper-input` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-file-path-policies` ⭐, `enforce-single-question` ⭐, `enforce-visualization-offers`, `gate-module3-visualization`, `validate-business-problem`, `verify-sdk-setup`, `verify-demo-results`, `validate-data-files`, `data-quality-check`, `analyze-after-mapping`, `enforce-mapping-spec`, `backup-before-load`, `run-tests-after-change`, `verify-generated-code`, `validate-benchmark-results`, `security-scan-on-save`, `validate-alert-config`, `deployment-phase-gate`, `backup-project-on-request`, `error-recovery-context`, `git-commit-reminder`, `module-completion-celebration`.
+Available (30 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-step-and-transition` ⭐, `mcp-first-invariant` ⭐, `question-format-gate` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `backup-project-on-request`, `data-quality-check`, `deployment-phase-gate`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `git-commit-reminder`, `module-completion-celebration`, `run-tests-after-change`, `security-scan-on-save`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
 
 ## Project Directory Structure
 
@@ -274,6 +225,7 @@ python3 senzing-bootcamp/scripts/preflight.py             # Environment verifica
 python3 senzing-bootcamp/scripts/install_hooks.py         # Install hooks
 python3 senzing-bootcamp/scripts/backup_project.py        # Backup project
 python3 senzing-bootcamp/scripts/validate_power.py        # Validate power integrity
+python3 senzing-bootcamp/scripts/measure_steering.py      # Update steering token counts
 python3 senzing-bootcamp/scripts/bootcamp_analytics.py    # Session analytics
 python3 senzing-bootcamp/scripts/bootcamp_analytics.py --compare  # With baseline comparison
 python3 senzing-bootcamp/scripts/compare_results.py --baseline <file> --current <file>
@@ -294,7 +246,7 @@ For the complete script reference with all flags and options, see `docs/guides/S
 - System Architecture: `docs/diagrams/system-architecture.md` (shows how SDK, database, programs, and optional layers fit together)
 - Quality Scoring Methodology: `docs/guides/QUALITY_SCORING_METHODOLOGY.md`
 - Performance Baselines: `docs/guides/PERFORMANCE_BASELINES.md`
-- Templates: `templates/data_collection_checklist.md`, `templates/stakeholder_summary.md`, `templates/transformation_lineage.md`, `templates/uat_test_cases.md`
+- Templates: `templates/data_collection_checklist.md`, `templates/stakeholder_summary.md`, `templates/transformation_lineage.md`, `templates/uat_test_cases.md`, `templates/performance_report.md`, `templates/security_checklist.md`, `templates/monitoring_runbook.md`, `templates/deployment_plan.md`
 
 ## Senzing Contact Information
 

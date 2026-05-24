@@ -25,7 +25,7 @@ _ONBOARDING_FLOW = _BOOTCAMP_DIR / "steering" / "onboarding-flow.md"
 _ONBOARDING_PHASE2 = _BOOTCAMP_DIR / "steering" / "onboarding-phase2-track-setup.md"
 _AGENT_INSTRUCTIONS = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
 _HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "ask-bootcamper.kiro.hook"
-_HOOK_REGISTRY = _BOOTCAMP_DIR / "steering" / "hook-registry-detail.md"
+_HOOK_REGISTRY = _BOOTCAMP_DIR / "steering" / "hook-registry-critical.md"
 
 
 # ---------------------------------------------------------------------------

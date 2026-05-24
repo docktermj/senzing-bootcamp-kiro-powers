@@ -381,7 +381,7 @@ The split modules and their phases are:
 | 1 Business Problem | discovery (1–9), document-confirm (10–18) | 18 |
 | 3 System Verification | verification (1–8), visualization (9–12) | 12 |
 | 5 Data Quality | quality-assessment (1–7), data-mapping (8–20), test-load (21–26) | 26 |
-| 6 Load Data | build-loading (1–3), load-first (4–10), multi-source (11–19), validation (20–27) | 27 |
+| 6 Data Processing | build-loading (1–3), load-first (4–10), multi-source (11–19), validation (20–27) | 27 |
 | 8 Performance | requirements (1–3), benchmarking (4–7), optimization (8–13) | 13 |
 | 9 Security | assessment (1–4), hardening (5–12) | 12 |
 | 10 Monitoring | setup (1–5), operations (6–10) | 10 |
@@ -391,7 +391,7 @@ When the bootcamper's `current_step` crosses a phase boundary, the agent
 unloads the previous phase file and loads the next one. This keeps context
 usage proportional to the active work rather than the total module size.
 
-Single-file modules (2 SDK Setup, 4 Data Collection, 7 Query & Visualize)
+Single-file modules (2 SDK Setup, 4 Data Collection, 7 Query, Visualize, and Discover)
 load their entire steering file at once because they are small enough to
 fit within budget without splitting.
 
@@ -411,8 +411,8 @@ must be completed before this module can start. The agent checks the
 | 3 System Verification | 2 |
 | 4 Data Collection | 1 |
 | 5 Data Quality | 4 |
-| 6 Load Data | 2, 5 |
-| 7 Query & Visualize | 6 |
+| 6 Data Processing | 2, 5 |
+| 7 Query, Visualize, and Discover | 6 |
 | 8 Performance | 7 |
 | 9 Security | 8 |
 | 10 Monitoring | 9 |
@@ -444,8 +444,8 @@ module is marked complete without executing any steps:
 | 2 SDK Setup | SDK already installed and configured |
 | 3 System Verification | Already familiar with Senzing and system verified |
 | 5 Data Quality | All sources Entity Specification-compliant |
-| 6 Load Data | Data already loaded |
-| 7 Query & Visualize | Already validated |
+| 6 Data Processing | Data already loaded |
+| 7 Query, Visualize, and Discover | Already validated |
 | 8 Performance | Not needed for POC |
 | 9 Security | Internal-only with no sensitive data |
 | 10 Monitoring | Not deploying to production |
@@ -610,8 +610,8 @@ conditions no longer match the active context).
 | 3 System Verification | `verify-demo-results`, `enforce-visualization-offers` |
 | 4 Data Collection | `validate-data-files` |
 | 5 Data Quality | `analyze-after-mapping`, `data-quality-check`, `enforce-mapping-spec`, `enforce-visualization-offers` |
-| 6 Load Data | `backup-before-load`, `run-tests-after-change`, `verify-generated-code` |
-| 7 Query & Visualize | `enforce-visualization-offers` |
+| 6 Data Processing | `backup-before-load`, `run-tests-after-change`, `verify-generated-code` |
+| 7 Query, Visualize, and Discover | `enforce-visualization-offers` |
 | 8 Performance | `validate-benchmark-results`, `enforce-visualization-offers` |
 | 9 Security | `security-scan-on-save` |
 | 10 Monitoring | `validate-alert-config` |
@@ -1103,7 +1103,7 @@ pressure. Instead of loading a single large file (which might exceed the
 `split_threshold_tokens` of 5,000), the agent loads only the phase file
 covering the bootcamper's current step.
 
-Example: Module 6 (Load Data) has four phases totaling approximately
+Example: Module 6 (Data Processing) has four phases totaling approximately
 8,444 tokens. Rather than loading all four phases simultaneously, the
 agent loads only the active phase:
 

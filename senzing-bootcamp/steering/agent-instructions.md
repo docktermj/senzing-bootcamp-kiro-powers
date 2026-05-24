@@ -19,15 +19,70 @@ On session start: check `config/bootcamp_progress.json`. If exists, load `sessio
 
 If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 
+### Root Prohibitions
+
+🚫 **NEVER place these file types in the project root:**
+
+| Blocked Type | Reason | Correct Location |
+|---|---|---|
+| `.py` files | Source code belongs in `src/` or `scripts/` | `src/transform/`, `src/load/`, `src/query/`, or `scripts/` |
+| `.md` files (except `README.md`) | Documentation belongs in `docs/` | `docs/` |
+| `.jsonl` files | Data files belong in `data/` | `data/raw/`, `data/transformed/`, `data/samples/`, `data/temp/` |
+| `.csv` files | Data files belong in `data/` | `data/raw/`, `data/transformed/`, `data/samples/`, `data/temp/` |
+| Non-config `.json` files | Data payloads belong in `data/` | `data/` or `config/` |
+
+✅ **Only these files are permitted in the project root:**
+`.gitignore`, `.env`, `.env.example`, `README.md`, `requirements.txt`, `pom.xml`, `*.csproj`, `Cargo.toml`, `package.json`
+
 ## MCP Rules
 
 - All Senzing facts from MCP tools — never training data. Call `get_capabilities` first each session.
 - Attribute names → `mapping_workflow` | SDK code → `generate_scaffold`/`sdk_guide` | Signatures → `get_sdk_reference` | Errors → `explain_error_code` | Docs → `search_docs` | Examples → `find_examples`
+- SDK method calls that accept flags: look up available flags via get_sdk_reference(topic='flags'), select flags matching the bootcamper's intent, and explain the choice in one sentence. Reuse flag knowledge within a module session. Default flags are acceptable for simple lookups but note that detailed flags exist.
 - Uncertain which tool? Load `mcp-tool-decision-tree.md` for the full decision tree with anti-patterns and call examples.
 - Never hand-code Senzing JSON mappings or SDK method names
 - Third-party software: consult Senzing MCP (`search_docs`) before recommending tools in a Senzing integration context.
 - Reuse MCP responses within a module; re-query across module boundaries. No answer? Say so, suggest <https://docs.senzing.com> / <support@senzing.com> — never fabricate.
 - MCP skepticism: flag data mart tables (`sz_dm_report`), beta features, or non-core SDK references
+- Never generate direct SQL (SELECT, INSERT, UPDATE, DELETE) against the Senzing database (`database/G2C.db`) or its internal tables (RES_ENT, OBS_ENT, DSRC_RECORD, LIB_FEAT, RES_FEAT_STAT, RES_REL, etc.). All Senzing data access must go through SDK methods via MCP tools.
+- SQL-tempting question redirects: "count entities" → `reporting_guide` | "find duplicates" → `search_by_attributes` | "show entity details" → `get_entity`/`get_entity_by_record_id` | "why did these match" → `why_entities`/`why_records` | "how was entity built" → `how_entity` | "export entity data" → iterate SDK methods via MCP tools
+
+### SDK Method Discovery
+
+When the bootcamper's request could map to multiple SDK methods in the same category, follow the discover-then-disambiguate flow:
+
+1. **Trigger**: The bootcamper's request is ambiguous — it could be satisfied by more than one SDK method in a category.
+2. **Discover**: Call `get_sdk_reference` with a category/topic filter to enumerate all available methods in that category.
+3. **Disambiguate**: If multiple methods could satisfy the request, ask a single 👉 clarifying question presenting the options as a numbered choice list with brief descriptions of what each method provides.
+4. **Proceed**: If only one method matches, proceed directly with that method, noting other available methods for the bootcamper's awareness.
+
+**SDK method categories with multiple alternatives:**
+
+- **Why/How category**: `how_entity`, `why_entities`, `why_records`, `why_record_in_entity` — different granularity levels for understanding entity resolution decisions
+- **Entity retrieval**: `get_entity`, `get_entity_by_record_id` — different lookup keys
+- **Search**: `search_by_attributes`, `search_by_record_id` — different search inputs
+
+**When to skip discovery (skip conditions — when discovery is NOT needed):**
+
+- Bootcamper explicitly names a specific SDK method (e.g., "use how_entity") — proceed directly
+- Request unambiguously maps to exactly one method with no alternatives in the category
+- Methods for this category already discovered in the current module session — reuse cached knowledge
+
+### MCP-First Invariant
+
+**This rule has the same absolute precedence as ⛔ mandatory gates.** No agent-internal reasoning — context pressure, perceived simplicity, cached knowledge from training data, session length, or token budget — can justify bypassing MCP consultation.
+
+**Pre-response checklist** (evaluate before presenting ANY Senzing content):
+1. Does my response contain Senzing SDK method names, attribute names, config options, error codes, or entity resolution technical details?
+2. If YES: Did I call at least one MCP tool (search_docs, get_sdk_reference, generate_scaffold, sdk_guide, explain_error_code, find_examples, mapping_workflow, get_capabilities) in this turn to retrieve that information?
+3. If NO to #2: STOP. Call the appropriate MCP tool before continuing.
+
+**Violation examples** (each is a breach of the MCP-first invariant):
+- Stating that `add_record` accepts a `LOAD_ID` parameter without calling `get_sdk_reference`
+- Generating code with `sz_engine.add_record(...)` without calling `generate_scaffold` or `sdk_guide`
+- Explaining that `NAME_FULL` maps to a person's full name without calling `mapping_workflow` or `search_docs`
+- Describing error code SENZ0002 without calling `explain_error_code`
+- Recommending entity resolution thresholds without calling `search_docs`
 
 ## MCP Failure
 
@@ -72,12 +127,13 @@ The steering file handles confirmation, preview, and application. Do not compute
   - NEVER combine questions with conjunctions (and, or, also, but first) — each is a separate turn. This is the #1 most-reported bootcamper complaint. Zero tolerance.
   - Every 👉 question must have one unambiguous meaning for "yes" and one for "no." Never append a follow-up question to a confirmation (see conversation-protocol.md Question Disambiguation). When both confirmation and correction are needed: confirm first, ask for corrections only if the answer is no.
   - A question without the 👉 prefix is a formatting violation.
-  - The `enforce-single-question` hook validates every question at write time. If it rejects your question, rewrite it — do not bypass.
+  - The `write-policy-gate` hook validates every question at write time. If it rejects your question, rewrite it — do not bypass.
   - These rules apply in ALL contexts — onboarding, feedback workflow, module steps, and session resume. See conversation-protocol.md for the full rule set.
 - Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to agentStop hooks — zero output when a 👉 question is pending.
   - FORBIDDEN output patterns: never generate text beginning with "Human:", "User:", or any text that simulates a bootcamper response. This is a critical violation.
 - Goldilocks check: after Modules 3, 6, 9 ask if detail level is right. Store as `detail_level` in preferences. First-term explanations: define Senzing terms inline on first use by calling `search_docs` from the MCP server to retrieve current definitions.
 - Before each step: what and why. During: status updates. After: what changed, files with paths. Offer to visualize data results as a web page.
+- When displaying JSON in chat (record previews, API responses, MCP tool results, configuration snippets, command output), always use a ` ```json ` fenced code block. Pretty-print compact or single-line JSON with 2-space indentation. Format multiple JSON records consistently — each in its own ` ```json ` block. For JSON exceeding 50 pretty-printed lines, truncate with a note (e.g., 'showing first 3 of 50 records'). Inline references to JSON field names or short values in prose use single backticks (e.g., `DATA_SOURCE`).
 - At module completion: summary, all files, why it matters for next module. Follow `module-transitions.md` rules. Load `module-completion.md`.
 - Feedback trigger phrases: the `review-bootcamper-input` hook handles this automatically — do not manually load feedback-workflow.md.
 - Turn-taking, closing question ownership, and question protocols: see `conversation-protocol.md` (auto-loaded during active modules). Closing-question ownership: the `ask-bootcamper` hook is the primary owner; agent-instructions provides the inline stop protocol as reinforcement.
@@ -86,11 +142,57 @@ The steering file handles confirmation, preview, and application. Do not compute
 
 Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question — do not answer, do not assume a response, do not proceed to the next step.
 
+## Module Transition Execution
+
+When a bootcamper responds affirmatively to a module transition question ("Ready for Module X?"), the ONLY valid response is to start that module immediately:
+
+1. Display the module start banner
+2. Display the journey map
+3. Display the before/after framing
+4. Begin Step 1 with its introductory content
+
+**⛔ ZERO TOLERANCE:** Producing only ".", an empty response, a single-word acknowledgment, or any output under 50 characters after a Transition_Confirmation is a critical protocol violation. The detect-and-retry hook will force a retry, but the agent must not rely on the hook — produce correct output on the first attempt.
+
+This rule takes precedence over any other agent-internal reasoning (context budget, token limits, perceived completion) when a Transition_Confirmation has been received.
+
+## Mandatory Gate Precedence
+
+Steps marked with ⛔ are mandatory gates. This rule takes **absolute precedence** over context budget, session length, perceived redundancy, and all other agent-internal reasoning.
+
+- **NEVER skip a ⛔ mandatory gate step.** No agent-internal consideration — context pressure, session length, token budget, or perceived redundancy — can justify skipping a ⛔ step.
+- The ⛔ designation is an unconditional execution requirement. The agent SHALL execute the step fully before proceeding to any subsequent step.
+- Only the bootcamper can attempt to skip a ⛔ step via the skip-step protocol trigger phrases, and the protocol itself refuses the request (see `skip-step-protocol.md` Constraints: "Mandatory gates (⛔) cannot be skipped").
+- If context budget is under pressure when a ⛔ step is reached, apply context management rules (unload non-essential files, adaptive pacing) to make room — do NOT skip the step.
+- NEVER offer to skip a ⛔ mandatory gate step. Do not ask 'would you like to continue with [step]?', 'or skip ahead?', 'or move on to the next module?' when the next step is a ⛔ mandatory gate. Instead, announce that you are proceeding to the step and execute it. The ⛔ designation means the step is unconditional — presenting it as a choice undermines the gate.
+- This rule overrides all other agent rules when they conflict. No rationalization is valid.
+- **NEVER skip a numbered step containing a 👉 question.** This rule has the same absolute precedence as ⛔ mandatory gate rules. No agent-internal consideration — context pressure, session length, token budget, or perceived redundancy — can justify skipping a 👉 step. The agent SHALL execute each numbered step sequentially, advancing by exactly one step at a time.
+- IF the agent identifies an opportunity to combine or abbreviate steps, it SHALL ask the bootcamper for explicit consent before doing so.
+
 ## Hooks
 
-Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks. **Always use the exact `name` from the `- name:` line in `hook-registry-detail.md` — the `name` field is user-facing (UI shows "Ask Kiro Hook {name}") and must follow the "to {verb phrase}" pattern.**
+Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks. **Always use the exact `name` from the `- name:` line in `hook-registry-critical.md` — the `name` field is user-facing (UI shows "Ask Kiro Hook {name}") and must follow the "to {verb phrase}" pattern.**
 
-**🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero output — no acknowledgment, no reasoning, no status. Only produce output when the hook identifies a problem. Applies to ALL hook types. The agent owns closing questions (see `conversation-protocol.md`); the `ask-bootcamper` hook is a safety net that fires only when the agent fails to provide one.
+**🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero visible
+tokens — no acknowledgment, no reasoning, no status, no summary. Only produce output when the
+hook identifies a problem requiring corrective action. When a hook produces corrective output
+(e.g., a rewritten question, a STOP message), output ONLY the corrective content with no
+preamble or explanation of why the correction was made. This applies to ALL hook types:
+preToolUse hooks, agentStop hooks, and any future hook types added to the power.
+
+FORBIDDEN hook reasoning output (never produce these after any hook fires):
+
+- "Fast path passes"
+- "Proceeding"
+- "All checks pass"
+- "The question is not compound"
+- "No rewrite needed"
+- "This is a JSON configuration file"
+- "Not SQL"
+- "The file is inside the working directory"
+- "Scanning for compound questions"
+- Any text that describes, summarizes, or narrates the hook's internal evaluation process
+
+The agent owns closing questions (see `conversation-protocol.md`); the `ask-bootcamper` hook is a safety net that fires only when the agent fails to provide one.
 
 **🔄 preToolUse retry rule:** When a preToolUse hook produces "policy: pass" or produces no output (zero tokens), you MUST immediately retry the original tool call with exactly the same parameters. Do not emit any acknowledgment, do not explain, do not pause — retry instantly. Only when a preToolUse hook explicitly denies access or produces corrective instructions should you NOT retry.
 

@@ -15,8 +15,8 @@ Module-specific documentation files. Each module has detailed documentation abou
 - `MODULE_3_SYSTEM_VERIFICATION.md` - System verification with the Senzing TruthSet (optional)
 - `MODULE_4_DATA_COLLECTION.md` - Data collection and source management
 - `MODULE_5_DATA_QUALITY_AND_MAPPING.md` - Data quality assessment and mapping
-- `MODULE_6_LOAD_DATA.md` - Data loading, redo processing, and validation
-- `MODULE_7_QUERY_VALIDATION.md` - Query and validation with UAT
+- `MODULE_6_DATA_PROCESSING.md` - Data loading, redo processing, and validation
+- `MODULE_7_QUERY_VISUALIZE_DISCOVER.md` - Query, visualize, and discover with UAT
 - `MODULE_8_PERFORMANCE_TESTING.md` - Performance testing and benchmarking
 - `MODULE_9_SECURITY_HARDENING.md` - Security hardening for production
 - `MODULE_10_MONITORING_OBSERVABILITY.md` - Monitoring and observability
@@ -40,17 +40,23 @@ User guides and installation instructions.
 **Files:**
 
 - `AFTER_BOOTCAMP.md` - Post-bootcamp guide for production and next steps
+- `ARCHITECTURE.md` - System architecture overview (components, data flow, hooks, MCP, context budget)
 - `COLLABORATION_GUIDE.md` - Team collaboration workflows
 - `COMMON_MISTAKES.md` - Most frequent bootcamp mistakes with real examples
+- `DATA_SOURCE_REGISTRY.md` - Data source registry management guide
+- `DATABASE_MIGRATION.md` - Database migration guide
 - `FAQ.md` - Frequently asked questions
 - `GETTING_HELP.md` - Support hierarchy and when to use each resource
 - `HOOKS_INSTALLATION_GUIDE.md` - Guide for installing Kiro hooks
+- `MODULE_ARTIFACTS.md` - Module artifact dependency reference
 - `ONBOARDING_CHECKLIST.md` - Pre-bootcamp checklist
 - `PERFORMANCE_BASELINES.md` - Reference throughput and hardware requirements
+- `PROGRESS_FILE_SCHEMA.md` - Progress file JSON schema documentation
 - `PROGRESS_TRACKER.md` - Module completion tracking
 - `QUALITY_SCORING_METHODOLOGY.md` - How quality scores are calculated
-- `ARCHITECTURE.md` - System architecture overview (components, data flow, hooks, MCP, context budget)
 - `QUICK_START.md` - Three fast paths to get started
+- `SCRIPT_REFERENCE.md` - Complete script reference with flags and examples
+- `STEERING_INDEX.md` - Steering file index documentation
 
 ## Root Level Files
 

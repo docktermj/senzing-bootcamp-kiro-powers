@@ -34,7 +34,7 @@ _ONBOARDING_PHASE2 = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 _HOOK_REGISTRY = _STEERING_DIR / "hook-registry.md"
 _MODULE_03 = _STEERING_DIR / "module-03-system-verification.md"
-_MODULE_07 = _STEERING_DIR / "module-07-query-validation.md"
+_MODULE_07 = _STEERING_DIR / "module-07-query-visualize-discover.md"
 _VIS_GUIDE = _STEERING_DIR / "visualization-guide.md"
 _DEPLOY_AZURE = _STEERING_DIR / "deployment-azure.md"
 _DEPLOY_GCP = _STEERING_DIR / "deployment-gcp.md"
@@ -576,7 +576,7 @@ _ALL_QUESTION_POINTS: list[tuple[str, str, str]] = [
     ("hook-registry.md", "Hook Registry", "ask_bootcamper_prompt"),
     # Other module files with 👉 questions
     ("module-03-system-verification.md", "Module 03", "pointing_questions"),
-    ("module-07-query-validation.md", "Module 07", "pointing_questions"),
+    ("module-07-query-visualize-discover.md", "Module 07", "pointing_questions"),
     ("visualization-guide.md", "Visualization Guide", "pointing_questions"),
     ("deployment-azure.md", "Deployment Azure", "pointing_questions"),
     ("deployment-gcp.md", "Deployment GCP", "pointing_questions"),

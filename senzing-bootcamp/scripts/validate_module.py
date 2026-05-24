@@ -115,7 +115,7 @@ def validate_module_5():
 
 
 def validate_module_6():
-    """Module 6: Load Data — prerequisites for Module 7."""
+    """Module 6: Data Processing — prerequisites for Module 7."""
     return [
         check_dir_has_files("src/load", "*.*", "Loading program(s) created"),
         check_path("database/G2C.db", "Database exists with loaded data"),
@@ -205,8 +205,8 @@ MODULE_NAMES = {
     3: "System Verification",
     4: "Data Collection",
     5: "Data Quality & Mapping",
-    6: "Load Data",
-    7: "Query & Visualize",
+    6: "Data Processing",
+    7: "Query, Visualize, and Discover",
     8: "Performance Testing",
     9: "Security Hardening",
     10: "Monitoring",
@@ -355,18 +355,25 @@ def parse_module_artifacts_yaml(path: str) -> dict:
     return result
 
 
-def check_artifact_on_disk(artifact_path: str) -> tuple[bool, bool]:
+VALID_ARTIFACT_TYPES = {"file", "directory", "sentinel"}
+
+
+def check_artifact_on_disk(artifact_path: str, artifact_type: str) -> tuple[bool, bool]:
     """Check if an artifact exists on disk.
 
-    For directories, checks existence and that it contains at least one file.
-    For files, checks existence.
+    Sentinel artifacts are always considered present (they represent
+    non-file system state like 'SDK installed').
 
     Args:
         artifact_path: Relative path to the artifact.
+        artifact_type: The artifact type ("file", "directory", or "sentinel").
 
     Returns:
         Tuple of (exists, is_directory).
     """
+    if artifact_type == "sentinel":
+        return (True, False)
+
     p = Path(artifact_path)
     if artifact_path.endswith("/"):
         # Directory check
@@ -419,8 +426,16 @@ def run_artifact_check(module_num: int) -> bool:
     all_required_present = True
 
     for source_module, paths in sorted(requires_from.items()):
+        source_data = modules.get(source_module, {})
         for artifact_path in paths:
-            exists, _is_dir = check_artifact_on_disk(artifact_path)
+            # Resolve artifact type from source module's produces
+            artifact_type = "file"  # default
+            for prod in source_data.get("produces", []):
+                if prod["path"] == artifact_path:
+                    artifact_type = prod.get("type", "file")
+                    break
+
+            exists, _is_dir = check_artifact_on_disk(artifact_path, artifact_type)
             status = "✅ present" if exists else "❌ missing"
             source_label = f"Module {source_module}"
             print(f"  {artifact_path:<35} {source_label:<12} {status}")

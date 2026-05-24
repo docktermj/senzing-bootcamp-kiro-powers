@@ -59,4 +59,4 @@ Gate checks:
 
 ## Hook Registry
 
-#[[file:senzing-bootcamp/steering/hook-registry-detail.md]]
+#[[file:senzing-bootcamp/steering/hook-registry-critical.md]]

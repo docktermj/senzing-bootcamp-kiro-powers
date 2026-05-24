@@ -25,27 +25,27 @@ modules:
     requires: [4]
     skip_if: "All sources Entity Specification-compliant"
   6:
-    name: "Load Data"
+    name: "Data Processing"
     requires: [2, 5]
     skip_if: "Data already loaded"
   7:
-    name: "Query & Visualize"
+    name: "Query, Visualize, and Discover"
     requires: [6]
     skip_if: "Already validated"
   8:
-    name: "Performance"
+    name: "Performance Testing & Benchmarking"
     requires: [7]
     skip_if: "Not needed for POC"
   9:
-    name: "Security"
+    name: "Security Hardening"
     requires: [8]
     skip_if: "Internal-only with no sensitive data"
   10:
-    name: "Monitoring"
+    name: "Monitoring & Observability"
     requires: [9]
     skip_if: "Not deploying to production"
   11:
-    name: "Deployment"
+    name: "Package & Deploy"
     requires: [10]
     skip_if: "Not deploying to production"
 

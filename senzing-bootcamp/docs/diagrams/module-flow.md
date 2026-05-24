@@ -85,14 +85,15 @@
 └──────────┬───────────┘
            │
            ▼
-┌──────────────────────┐
-│      MODULE 8        │
-│ Query & Visualize    │
-│                      │
-│  • Create queries    │
-│  • Overlap reports   │
-│  • Visualizations    │
-└──────────┬───────────┘
+┌──────────────────────────────┐
+│          MODULE 8            │
+│ Query, Visualize, and        │
+│ Discover                     │
+│                              │
+│  • Create queries            │
+│  • Overlap reports           │
+│  • Visualizations            │
+└──────────────┬───────────────┘
            │
            ├─────────────────────┐
            │                     │

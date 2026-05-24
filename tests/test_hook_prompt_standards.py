@@ -6,19 +6,41 @@ prompt quality patterns, and registry synchronization.
 
 import json
 import re
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
 
 # ---------------------------------------------------------------------------
+# Path setup for importing hook_test_helpers
+# ---------------------------------------------------------------------------
+
+_TESTS_DIR = str(Path(__file__).resolve().parent)
+if _TESTS_DIR not in sys.path:
+    sys.path.insert(0, _TESTS_DIR)
+
+from hook_test_helpers import parse_categories_yaml
+
+# ---------------------------------------------------------------------------
 # Module-level constants
 # ---------------------------------------------------------------------------
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
-REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry-detail.md")
+REGISTRY_CRITICAL_PATH = Path("senzing-bootcamp/steering/hook-registry-critical.md")
+REGISTRY_MODULES_PATH = Path("senzing-bootcamp/steering/hook-registry-modules.md")
 
-EXPECTED_HOOK_COUNT = 26
+
+def _expected_hook_count() -> int:
+    """Derive expected hook count from unique IDs in hook-categories.yaml."""
+    categories = parse_categories_yaml()
+    unique_ids: set[str] = set()
+    for ids in categories.values():
+        unique_ids.update(ids)
+    return len(unique_ids)
+
+
+EXPECTED_HOOK_COUNT = _expected_hook_count()
 
 VALID_EVENT_TYPES = {
     "promptSubmit",
@@ -113,44 +135,54 @@ def load_hook_files() -> list[tuple[str, dict]]:
 # Registry parser
 # ---------------------------------------------------------------------------
 
-def parse_registry(registry_path: Path = REGISTRY_PATH) -> list[RegistryEntry]:
-    """Parse hook-registry.md and extract hook entries.
+def parse_registry(
+    registry_paths: list[Path] | None = None,
+) -> list[RegistryEntry]:
+    """Parse hook registry files and extract hook entries.
 
     Extracts id from ``- id: `{id}` `` lines,
     name from ``- name: `{name}` `` lines,
     description from ``- description: `{description}` `` lines.
 
+    Args:
+        registry_paths: List of registry file paths. Defaults to both split files.
+
     Returns:
         List of RegistryEntry objects.
     """
-    assert registry_path.is_file(), f"Hook registry not found at {registry_path}"
-    text = registry_path.read_text(encoding="utf-8")
+    if registry_paths is None:
+        registry_paths = [REGISTRY_CRITICAL_PATH, REGISTRY_MODULES_PATH]
 
     entries: list[RegistryEntry] = []
-    current_id = None
-    current_name = None
-    current_desc = None
 
-    for line in text.splitlines():
-        id_match = re.match(r"^- id:\s*`([^`]+)`", line)
-        if id_match:
-            current_id = id_match.group(1)
+    for registry_path in registry_paths:
+        assert registry_path.is_file(), f"Hook registry not found at {registry_path}"
+        text = registry_path.read_text(encoding="utf-8")
 
-        name_match = re.match(r"^- name:\s*`([^`]+)`", line)
-        if name_match:
-            current_name = name_match.group(1)
+        current_id = None
+        current_name = None
+        current_desc = None
 
-        desc_match = re.match(r"^- description:\s*`([^`]+)`", line)
-        if desc_match:
-            current_desc = desc_match.group(1)
+        for line in text.splitlines():
+            id_match = re.match(r"^- id:\s*`([^`]+)`", line)
+            if id_match:
+                current_id = id_match.group(1)
 
-        if current_id and current_name and current_desc:
-            entries.append(RegistryEntry(
-                id=current_id,
-                name=current_name,
-                description=current_desc,
-            ))
-            current_id = current_name = current_desc = None
+            name_match = re.match(r"^- name:\s*`([^`]+)`", line)
+            if name_match:
+                current_name = name_match.group(1)
+
+            desc_match = re.match(r"^- description:\s*`([^`]+)`", line)
+            if desc_match:
+                current_desc = desc_match.group(1)
+
+            if current_id and current_name and current_desc:
+                entries.append(RegistryEntry(
+                    id=current_id,
+                    name=current_name,
+                    description=current_desc,
+                ))
+                current_id = current_name = current_desc = None
 
     return entries
 
@@ -507,7 +539,7 @@ class TestRealHookFiles:
 
     @pytest.mark.parametrize("hook_id", [
         "review-bootcamper-input",
-        "enforce-file-path-policies",
+        "write-policy-gate",
     ])
     def test_real_pass_through_hooks_have_silent_processing(self, hook_id: str):
         """Real pass-through hooks contain silent-processing instructions (Req 2.1)."""

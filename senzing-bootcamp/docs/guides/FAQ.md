@@ -59,11 +59,13 @@ Yes. The bootcamp is iterative.
 
 ### What if I get stuck?
 
-1. Check module prerequisites (`module-prerequisites.md`)
-2. Check `steering/common-pitfalls.md`
+1. Ask the agent — describe what's happening
+2. Check module prerequisites (`module-prerequisites.md`)
 3. Use MCP tool `search_docs` for Senzing topics
 4. Use MCP tool `explain_error_code` for SENZ errors
-5. Ask the agent
+5. Check `steering/common-pitfalls.md` for known issues
+6. Browse [docs.senzing.com](https://docs.senzing.com)
+7. Contact Senzing support: <support@senzing.com>
 
 ## Code and Files
 
@@ -78,6 +80,36 @@ The bootcamp applies language-appropriate coding standards based on your chosen 
 ### Which hooks should I install?
 
 Hooks are installed automatically when you start the bootcamp. To reinstall or add hooks later, run `python3 scripts/install_hooks.py`.
+
+## Common Mistakes
+
+### Loading raw data without mapping
+
+Your source data needs to be transformed into the correct format before loading. Skipping Module 5 means the engine can't recognize your fields. Complete Module 5 for each data source before loading.
+
+### Using too few sample records
+
+Testing with 2-3 records doesn't produce meaningful entity resolution results. Use 50-200 records for demos (Module 3) and 100-1000 for quality testing (Module 5).
+
+### Ignoring data quality scores below 70%
+
+Proceeding with low-quality data produces poor matches. Check `docs/guides/QUALITY_SCORING_METHODOLOGY.md` for what each score means and how to improve.
+
+### Using /tmp or system directories for project files
+
+All project files must stay in the working directory. Using `/tmp`, `%TEMP%`, or `~/Downloads` causes files to disappear. Use `data/`, `src/`, `docs/`, `config/`, `database/` directories within your project.
+
+### Skipping database backup before loading
+
+If a load goes wrong, you need to restore. Without a backup, you start from scratch. Run `python3 scripts/backup_project.py` before every load operation.
+
+### Deploying without performance testing
+
+What works with 500 records may not work with 500,000. Complete Module 9 before production. See `docs/guides/PERFORMANCE_BASELINES.md`.
+
+### Senzing-specific issues
+
+For attribute names, SDK methods, error codes, or configuration questions — ask the agent. It uses MCP tools (`mapping_workflow`, `search_docs`, `get_sdk_reference`, `explain_error_code`) to provide current, authoritative guidance.
 
 ## Backup and Recovery
 
@@ -107,24 +139,30 @@ Review `docs/policies/FILE_STORAGE_POLICY.md` and relocate files to the correct 
 
 ### What if I run out of disk space during loading?
 
-Stop the loading program, free disk space (clear `data/temp/`, remove old backups from `backups/`, or move the database to a larger volume), then resume or restart loading. The `backup-before-load` hook helps you recover if the database is corrupted.
+Stop the loading program, free disk space (clear `data/temp/`, remove old backups from `backups/`, or move the database to a larger volume), then resume or restart loading.
 
 ### Can I run multiple bootcamp projects on the same machine?
 
-Yes. Each project has its own directory with its own `database/G2C.db`, `config/`, and `src/`. They don't interfere with each other as long as you use project-local paths (which the FILE_STORAGE_POLICY enforces).
+Yes. Each project has its own directory with its own `database/G2C.db`, `config/`, and `src/`. They don't interfere with each other as long as you use project-local paths.
 
 ### What if my data has non-English names?
 
-Ask the agent for guidance on non-Latin character support. The agent will use MCP tools to provide current information about character set handling, UTF-8 encoding requirements, and cross-script matching capabilities.
-
-### For Senzing-specific questions
-
-Ask the agent — it uses the MCP `search_docs` tool to search indexed Senzing documentation and always has current information.
+Ask the agent for guidance on non-Latin character support. The agent will use MCP tools to provide current information about character set handling and cross-script matching.
 
 ## Feedback
 
-Say "power feedback" at any time. The agent guides you through documenting issues and suggestions. Your feedback is saved to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md` — see that file for the template format and submission instructions.
+Say "power feedback" at any time. The agent guides you through documenting issues and suggestions. Your feedback is saved to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK_TEMPLATE.md`.
 
 ## Data Visualization
 
-You can ask the agent to visualize data as a web page at any point — entity resolution results, quality analysis, match explanations, performance benchmarks. The agent will generate a self-contained HTML file you can open in your browser. The agent will also offer this at key moments (after the demo, after quality analysis, after validation, after performance testing).
+You can ask the agent to visualize data as a web page at any point — entity resolution results, quality analysis, match explanations, performance benchmarks. The agent will generate a self-contained HTML file you can open in your browser.
+
+## Getting More Help
+
+| Resource | When to Use |
+|----------|-------------|
+| [Quality Scoring](QUALITY_SCORING_METHODOLOGY.md) | Your quality score is low |
+| [Performance Baselines](PERFORMANCE_BASELINES.md) | Loading or queries are slow |
+| [Senzing Docs](https://docs.senzing.com) | Official Senzing documentation |
+| <support@senzing.com> | Senzing support |
+| <sales@senzing.com> | Licensing and sales |

@@ -56,7 +56,7 @@ Apply one optimization at a time. Re-run the relevant benchmark after each chang
 Create `docs/performance_report.md` with: requirements vs actuals, benchmark results, bottleneck analysis, optimizations applied, scalability projections, recommendations.
 
 **Visualization checkpoint:** Follow the Visualization Protocol.
-Load `visualization-protocol.md` and execute the offer for checkpoint `m8_performance_report`.
+Load `visualization-guide.md` and execute the offer for checkpoint `m8_performance_report`.
 
 **Checkpoint:** Write step 13 to `config/bootcamp_progress.json`.
 

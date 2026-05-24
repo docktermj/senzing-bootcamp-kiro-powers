@@ -44,6 +44,8 @@ def _has(d, *pats):
 def _multi():
     try:
         d = json.loads(PROGRESS.read_text("utf-8"))
+        if not isinstance(d, dict):
+            return False
         return len(d.get("data_sources", [])) > 1
     except Exception:  # noqa: BLE001
         return False
@@ -136,7 +138,10 @@ def detect_steps():
 
 def _load():
     try:
-        return json.loads(PROGRESS.read_text("utf-8"))
+        data = json.loads(PROGRESS.read_text("utf-8"))
+        if not isinstance(data, dict):
+            return None
+        return data
     except Exception:  # noqa: BLE001
         return None
 
@@ -153,7 +158,8 @@ def main():
         print(f"  {mk} Module {m}: {NAMES[m]}{step_info}")
     ex = _load()
     if ex:
-        rec = set(ex.get("modules_completed", []))
+        mc = ex.get("modules_completed", [])
+        rec = set(mc) if isinstance(mc, list) else set()
         miss, extra = det - rec, rec - det
         print(f"\n{cyan('vs. existing progress file:')}")
         if not miss and not extra:
@@ -179,6 +185,8 @@ def main():
     # Populate step_history for all modules with detected steps
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
     step_history = prog.get("step_history", {})
+    if not isinstance(step_history, dict):
+        step_history = {}
     for mod, step in step_map.items():
         step_history[str(mod)] = {
             "last_completed_step": step,

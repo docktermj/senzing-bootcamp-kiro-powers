@@ -1,6 +1,56 @@
 version: "1"
 
+# NOTE: All paths below are relative to the BOOTCAMPER'S working directory
+# (the project they create during the bootcamp), NOT relative to this power's
+# source tree. The agent creates these files/directories at runtime as the
+# bootcamper progresses through modules.
+
 modules:
+  1:
+    produces:
+      - path: "docs/business_problem.md"
+        type: file
+        description: "Business problem definition document"
+        required: true
+      - path: "config/data_sources.yaml"
+        type: file
+        description: "Data source registry identifying sources to resolve"
+        required: true
+    requires_from: {}
+
+  2:
+    produces:
+      - path: "database/G2C.db"
+        type: file
+        description: "SQLite database for Senzing engine"
+        required: true
+      - path: "config/engine_config.json"
+        type: file
+        description: "Senzing engine configuration"
+        required: true
+      - path: "config/bootcamp_preferences.yaml"
+        type: file
+        description: "Bootcamp user preferences (language, style)"
+        required: true
+      - path: "sdk_installed"
+        type: sentinel
+        description: "Senzing SDK installed and importable"
+        required: true
+    requires_from: {}
+
+  3:
+    produces:
+      - path: "src/system_verification/"
+        type: directory
+        description: "System verification scripts and outputs"
+        required: true
+      - path: "docs/progress/MODULE_3_COMPLETE.md"
+        type: file
+        description: "Module 3 completion marker"
+        required: true
+    requires_from:
+      2: ["database/G2C.db"]
+
   4:
     produces:
       - path: "data/raw/"
@@ -11,6 +61,9 @@ modules:
         type: file
         description: "Data source registry"
         required: true
+    requires_from:
+      1: ["config/data_sources.yaml"]
+      3: ["docs/progress/MODULE_3_COMPLETE.md"]
   5:
     produces:
       - path: "data/transformed/"
@@ -26,6 +79,7 @@ modules:
         description: "Loading scripts"
         required: true
     requires_from:
+      2: ["database/G2C.db"]
       5: ["data/transformed/"]
   7:
     produces:

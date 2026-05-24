@@ -34,7 +34,7 @@ Example with step info:
 |--------|------|--------|
 | 2 | SDK Setup | ✅ Complete |
 | → 5 | Data Quality & Mapping | 🔄 Current — Step 3/12 |
-| 6 | Load Data | ⬜ Upcoming |
+| 6 | Data Processing | ⬜ Upcoming |
 
 ## Before/After Framing (at module start)
 
@@ -61,14 +61,36 @@ Then follow the journal and path-completion rules in `module-completion.md`.
 - Module transition questions are commitments: asking the question means the agent is prepared to execute the transition if confirmed.
 - If context limits may prevent completing the next module, do NOT ask the transition question. Instead, transparently inform the bootcamper about the limitation and offer to save progress.
 
-## Quality Feedback Loop (Module 7 → Module 5)
+## Confirmation Response Requirements
 
-When entity resolution quality is assessed as marginal or poor in Module 7, the bootcamper may return to Module 5 for mapping refinement. This is a valid backward transition that preserves progress:
+When the bootcamper confirms a module transition (responds affirmatively to "Ready for Module X?"), the agent response MUST include all of the following:
+
+| Required Element | Description | Minimum |
+|-----------------|-------------|---------|
+| Module Start Banner | ━━━ header with 🚀🚀🚀 MODULE N: NAME 🚀🚀🚀 | Exact format from Module Start Banner section |
+| Journey Map | Table with Module, Name, Status columns | All modules in selected path |
+| Before/After Framing | What you have now / what you'll have when done | From module steering file |
+| Step 1 Introduction | "Next up: [action]. This matters because [reason]." | At least one sentence |
+
+**Total response must exceed 50 characters.** This is a hard minimum — the actual response will be significantly longer given the required elements above.
+
+**Violations that trigger the detect-and-retry hook:**
+- Output is only "." (single period)
+- Output is empty or whitespace-only
+- Output is a single-word acknowledgment ("OK", "Sure", "Got it")
+- Output is fewer than 50 characters total
+- Output lacks the module start banner
+
+The hook will instruct the agent to retry with full module start content. The agent should produce correct output on the first attempt to avoid the retry overhead.
+
+## Quality Feedback Loop (Module 7: Query, Visualize, and Discover → Module 5)
+
+When entity resolution quality is assessed as marginal or poor in Module 7 (Query, Visualize, and Discover), the bootcamper may return to Module 5 for mapping refinement. This is a valid backward transition that preserves progress:
 
 - Module 6/7 completion status is retained in `config/bootcamp_progress.json`
 - The database and loaded data are NOT deleted
 - Module 5 is re-entered at Phase 2 (data mapping), not Phase 1
-- After remapping, the bootcamper reloads affected sources (Module 6) and re-evaluates (Module 7)
+- After remapping, the bootcamper reloads affected sources (Module 6) and re-evaluates (Module 7: Query, Visualize, and Discover)
 - The `quality_iteration` key in progress tracks which sources triggered the loop
 
 This transition does NOT require track switching or rollback — it's an iterative refinement within the normal bootcamp flow.
@@ -81,3 +103,4 @@ When a step contains multiple independent 👉 questions, split into lettered su
 - **One question per sub-step** with its own checkpoint (e.g., "Write step 7a").
 - **No-question steps stay whole** — don't split steps with zero questions.
 - **Mutually exclusive conditionals share a sub-step** — only independent sequential questions get their own sub-steps.
+- **After the last sub-step**: When the bootcamper's answer completes the final sub-step (no undetermined items remain), write the checkpoint and immediately proceed to the next numbered step's 👉 question in the same turn. Do not end the turn after writing the last sub-step's checkpoint.

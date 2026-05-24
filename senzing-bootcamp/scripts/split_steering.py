@@ -690,7 +690,7 @@ MODULE_CONFIG = {
         ],
     },
     6: {
-        "filename": "module-06-load-data.md",
+        "filename": "module-06-data-processing.md",
         "sub_files": [
             "module-06-phaseA-build-loading.md",
             "module-06-phaseB-load-first-source.md",

@@ -48,7 +48,7 @@ def _load_hook_data(hook_id: str) -> dict:
 # ===========================================================================
 
 class TestEnforceFilePathPolicies:
-    """Verify enforce-file-path-policies prompt covers both path policies:
+    """Verify write-policy-gate prompt covers both path policies:
     (1) feedback path and (2) working-directory restrictions.
     """
 
@@ -57,26 +57,26 @@ class TestEnforceFilePathPolicies:
 
     def test_prompt_references_forbidden_paths(self):
         """Prompt references at least one forbidden path pattern (Req 3.2)."""
-        prompt = _load_prompt("enforce-file-path-policies")
+        prompt = _load_prompt("write-policy-gate")
         found = [p for p in self.FORBIDDEN_PATHS if p in prompt]
         assert len(found) >= 1, (
-            f"enforce-file-path-policies prompt does not reference any forbidden "
+            f"write-policy-gate prompt does not reference any forbidden "
             f"path. Expected at least one of: {self.FORBIDDEN_PATHS}"
         )
 
     def test_prompt_references_all_forbidden_paths(self):
         """Prompt references all three forbidden path patterns."""
-        prompt = _load_prompt("enforce-file-path-policies")
+        prompt = _load_prompt("write-policy-gate")
         for path in self.FORBIDDEN_PATHS:
             assert path in prompt, (
-                f"enforce-file-path-policies prompt missing forbidden path: {path}"
+                f"write-policy-gate prompt missing forbidden path: {path}"
             )
 
     def test_prompt_contains_canonical_feedback_path(self):
         """Prompt contains the canonical feedback file path (Req 3.4)."""
-        prompt = _load_prompt("enforce-file-path-policies")
+        prompt = _load_prompt("write-policy-gate")
         assert self.CANONICAL_FEEDBACK_PATH in prompt, (
-            f"enforce-file-path-policies prompt does not contain canonical "
+            f"write-policy-gate prompt does not contain canonical "
             f"feedback path: {self.CANONICAL_FEEDBACK_PATH}"
         )
 

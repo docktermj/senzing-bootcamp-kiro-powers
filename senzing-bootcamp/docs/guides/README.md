@@ -210,7 +210,7 @@ All scripts are cross-platform Python (Linux, macOS, Windows).
 ### Check Prerequisites
 
 ```text
-python3 scripts/check_prerequisites.py
+python3 scripts/preflight.py
 ```
 
 Validates your environment before starting.
@@ -265,6 +265,7 @@ docs/
 │   ├── AFTER_BOOTCAMP.md
 │   ├── ARCHITECTURE.md
 │   ├── QUALITY_SCORING_METHODOLOGY.md
+│   ├── SCRIPT_REFERENCE.md
 │   ├── STEERING_INDEX.md
 │   ├── MODULE_ARTIFACTS.md
 │   └── DATABASE_MIGRATION.md

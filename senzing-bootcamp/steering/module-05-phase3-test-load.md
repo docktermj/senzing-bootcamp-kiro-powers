@@ -100,7 +100,7 @@ inclusion: manual
 
 26. **Shortcut path decision:** After all sources have completed (or skipped) Phase 3, present the decision gate:
 
-    - **Shortcut path (→ Module 7):** For simple use cases — single data source, small dataset (≤1000 records), no production requirements — the Phase 3 test load results may be sufficient. The bootcamper can proceed directly to Module 7 (Query & Visualize) and skip Module 6.
+    - **Shortcut path (→ Module 7):** For simple use cases — single data source, small dataset (≤1000 records), no production requirements — the Phase 3 test load results may be sufficient. The bootcamper can proceed directly to Module 7 (Query, Visualize, and Discover) and skip Module 6.
     - **Full path (→ Module 6):** For production requirements, multiple data sources, datasets exceeding 1000 records, or when the bootcamper wants to learn production-quality loading patterns — recommend the full Module 6 path.
 
     > **Agent instruction:** When the bootcamper chooses the shortcut path, update `config/bootcamp_progress.json` to mark Module 6 as skipped with reason `shortcut_path`:

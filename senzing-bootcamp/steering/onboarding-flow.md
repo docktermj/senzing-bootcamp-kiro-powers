@@ -81,7 +81,7 @@ Then continue with the onboarding sequence — do NOT block on version errors.
 Execute these setup actions in order. Do not narrate the details to the user.
 
 1. Check if `src/`, `data/`, `docs/` exist. If not, load `project-structure.md` and create.
-2. **Install Critical Hooks:** Load `hook-registry-detail.md` and create each Critical Hook using the `createHook` tool. For each hook entry, use EXACTLY the `id`, `name`, `description`, event type, file patterns, tool types, and prompt text specified in the registry. **CRITICAL: The `name` parameter passed to `createHook` MUST be the exact string from the `- name:` line in `hook-registry-detail.md` (e.g., `to wait for your answer`, NOT `Ask Bootcamper`).** The `name` field is user-facing — the Kiro UI renders it as "Ask Kiro Hook {name}", so it must follow the "to {verb phrase}" pattern. Create `.kiro/hooks/` directory first if needed. If a `createHook` call fails, log the failure and continue with the remaining hooks. After all attempts, report any failures to the bootcamper with the affected functionality using the impact messages below. If all Critical Hook creations fail, warn the bootcamper that hooks are unavailable and suggest restarting onboarding.
+2. **Install Critical Hooks:** Load `hook-registry-critical.md` and create each Critical Hook using the `createHook` tool. For each hook entry, use EXACTLY the `id`, `name`, `description`, event type, file patterns, tool types, and prompt text specified in the registry. **CRITICAL: The `name` parameter passed to `createHook` MUST be the exact string from the `- name:` line in `hook-registry-critical.md` (e.g., `to wait for your answer`, NOT `Ask Bootcamper`).** The `name` field is user-facing — the Kiro UI renders it as "Ask Kiro Hook {name}", so it must follow the "to {verb phrase}" pattern. Create `.kiro/hooks/` directory first if needed. If a `createHook` call fails, log the failure and continue with the remaining hooks. After all attempts, report any failures to the bootcamper with the affected functionality using the impact messages below. If all Critical Hook creations fail, warn the bootcamper that hooks are unavailable and suggest restarting onboarding.
 
    **Failure impact messages** — when a critical hook fails, report the corresponding message:
 
@@ -90,9 +90,8 @@ Execute these setup actions in order. Do not narrate the details to the user.
    | ask-bootcamper | "Session summaries, closing questions, and post-completion feedback reminders will not be automatically generated when the agent stops." |
    | code-style-check | "Code style will not be automatically checked on save." |
    | commonmark-validation | "Markdown files will not be automatically checked for CommonMark compliance." |
-   | enforce-file-path-policies | "Feedback may be written to incorrect file locations, and file writes to /tmp or external paths will not be automatically blocked." |
-   | enforce-single-question | "Compound questions (multiple questions in a single prompt) will not be automatically detected and blocked." |
    | review-bootcamper-input | "Feedback trigger phrases will not be automatically detected on message submission." |
+   | write-policy-gate | "Write policy violations (direct SQL, compound questions, external paths) will not be automatically detected and blocked." |
 
    **Verify hooks:** Check that each Critical Hook exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.
 
@@ -343,9 +342,15 @@ This is NOT a mandatory gate (⛔) — the bootcamper can skip it.
 
 ### 4c. Comprehension Check
 
-Before moving on to track selection, give the bootcamper a moment to absorb everything from the overview. Present a warm, conversational check-in — this is an invitation, not a quiz:
+Before moving on to track selection, give the bootcamper a moment to absorb everything from the overview. Present a warm, conversational check-in — this is an invitation, not a quiz.
 
-👉 "That was a lot of ground to cover — does everything so far make sense?"
+Output format: your output MUST begin with 👉 followed by the comprehension check question. Example:
+
+```text
+👉 That was a lot of ground to cover — does everything so far make sense?
+```
+
+If you paraphrase or reformulate the question, the 👉 prefix is still mandatory.
 
 🛑 STOP — Wait for bootcamper response.
 

@@ -583,7 +583,7 @@ By the end of Phase 3, you will:
 
 After completing Phase 3, a decision gate helps you choose the most efficient path forward:
 
-- **Shortcut path (→ Module 8):** If you have a simple use case — single data source, small dataset (≤1000 records), no production requirements — the Phase 3 test load results may be sufficient. You can skip Modules 6–7 and proceed directly to Module 8 (Query & Visualize).
+- **Shortcut path (→ Module 7):** If you have a simple use case — single data source, small dataset (≤1000 records), no production requirements — the Phase 3 test load results may be sufficient. You can skip Module 6 and proceed directly to Module 7 (Query, Visualize, and Discover).
 - **Full path (→ Module 6):** If you have production requirements, multiple data sources, or larger datasets, the full Module 6–7 path teaches production-quality loading patterns (error handling, throughput optimization, redo processing, incremental loading, multi-source orchestration).
 
 The shortcut path is designed for bootcampers who want to see entity resolution results quickly without building production infrastructure. You can always return to Modules 6–7 later if your needs grow.
@@ -673,7 +673,7 @@ The shortcut path is designed for bootcampers who want to see entity resolution 
 
 After completing this module:
 
-- **Completed Phase 3 with shortcut path:** Proceed to Module 8 (Query & Visualize)
+- **Completed Phase 3 with shortcut path:** Proceed to Module 7 (Query, Visualize, and Discover)
 - **Completed Phase 3 with full path:** Proceed to Module 6 (Production-Quality Loading)
 - **Skipped Phase 3:** Proceed to Module 2 (Set Up Senzing SDK) if not already done, then Module 6
 

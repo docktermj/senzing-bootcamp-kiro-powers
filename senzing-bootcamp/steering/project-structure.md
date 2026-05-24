@@ -28,6 +28,20 @@ my-senzing-project/
 - See `docs/policies/FILE_STORAGE_POLICY.md` for complete policy
 - All Markdown documentation files (`*.md`) belong in `docs/` or a subdirectory of `docs/`. The `scripts/` directory is reserved for executable code only — no `.md` files.
 
+### Root File Placement Enforcement
+
+🚫 **The following file types are NEVER permitted in the project root:**
+
+- **Source code (`.py`)** → Route to `src/transform/`, `src/load/`, `src/query/`, or `scripts/`
+- **Documentation (`.md`, except `README.md`)** → Route to `docs/`
+- **Data files (`.jsonl`, `.csv`)** → Route to `data/raw/`, `data/transformed/`, `data/samples/`, or `data/temp/`
+- **Non-config JSON (`.json`, except `package.json`)** → Route to `data/` or `config/`
+
+✅ **Exhaustive root-permitted file list:**
+`.gitignore`, `.env`, `.env.example`, `README.md`, `requirements.txt`, `pom.xml`, `*.csproj`, `Cargo.toml`, `package.json`
+
+No other files may exist in the project root. The `write-policy-gate` hook enforces this at write time.
+
 ## Create Structure (execute before any other action)
 
 Detect the operating system first. Use the platform-specific command below that matches the detected OS.

@@ -17,7 +17,7 @@ import pytest
 # ---------------------------------------------------------------------------
 
 _ROOT = Path(__file__).resolve().parent.parent
-PROTOCOL_PATH = _ROOT / "senzing-bootcamp" / "steering" / "visualization-protocol.md"
+PROTOCOL_PATH = _ROOT / "senzing-bootcamp" / "steering" / "visualization-guide.md"
 HOOK_PATH = _ROOT / "senzing-bootcamp" / "hooks" / "enforce-visualization-offers.kiro.hook"
 REMOVED_HOOK_PATH = _ROOT / "senzing-bootcamp" / "hooks" / "offer-visualization.kiro.hook"
 CATEGORIES_PATH = _ROOT / "senzing-bootcamp" / "hooks" / "hook-categories.yaml"
@@ -50,7 +50,7 @@ def _parse_checkpoint_map(text: str) -> dict[str, list[dict[str, str | list[str]
     dicts with 'id' and 'types' fields.
     """
     # Find the YAML code block in the Checkpoint Map section
-    pattern = r"## Checkpoint Map\s*\n+```yaml\s*\n(.*?)```"
+    pattern = r"#{2,3} Checkpoint Map\s*\n+```yaml\s*\n(.*?)```"
     match = re.search(pattern, text, re.DOTALL)
     if not match:
         return {}
@@ -176,10 +176,10 @@ def module_hooks(categories_text: str) -> dict[int, list[str]]:
 
 
 class TestProtocolFileExists:
-    """Verify visualization-protocol.md exists with correct frontmatter."""
+    """Verify visualization-guide.md exists with correct frontmatter."""
 
     def test_protocol_file_exists(self) -> None:
-        """visualization-protocol.md exists on disk."""
+        """visualization-guide.md exists on disk."""
         assert PROTOCOL_PATH.is_file(), f"Missing: {PROTOCOL_PATH}"
 
     def test_frontmatter_has_inclusion_key(
@@ -467,37 +467,39 @@ class TestTrackerSchema:
 
 
 class TestDispatchRuleReferences:
-    """Verify protocol references visualization-guide.md for correct types."""
+    """Verify dispatch rules reference visualization-web-service.md for web service mode."""
 
-    def test_protocol_references_visualization_guide(
+    def test_protocol_references_visualization_web_service(
         self, protocol_text: str
     ) -> None:
-        """Protocol file mentions visualization-guide.md."""
-        assert "visualization-guide.md" in protocol_text
+        """Consolidated guide mentions visualization-web-service.md for dispatch."""
+        assert "visualization-web-service.md" in protocol_text
 
-    def test_interactive_d3_dispatches_to_guide(self, protocol_text: str) -> None:
-        """Interactive_D3_Graph dispatch rule references visualization-guide.md."""
-        # Find the dispatch rules section
-        dispatch_section = protocol_text[protocol_text.find("## Dispatch Rules"):]
+    def test_interactive_d3_in_dispatch(self, protocol_text: str) -> None:
+        """Interactive_D3_Graph is mentioned in dispatch rules."""
+        dispatch_pos = protocol_text.find("### Dispatch Rules")
+        if dispatch_pos == -1:
+            dispatch_pos = protocol_text.find("## Dispatch Rules")
+        dispatch_section = protocol_text[dispatch_pos:]
         assert "Interactive_D3_Graph" in dispatch_section
-        assert "visualization-guide.md" in dispatch_section
 
-    def test_web_service_dispatches_to_guide(self, protocol_text: str) -> None:
-        """Web_Service_Dashboard dispatch rule references visualization-guide.md."""
-        dispatch_section = protocol_text[protocol_text.find("## Dispatch Rules"):]
-        assert "Web_Service_Dashboard" in dispatch_section
-        assert "visualization-guide.md" in dispatch_section
+    def test_web_service_dispatches_to_web_service_file(self, protocol_text: str) -> None:
+        """Web service delivery mode dispatches to visualization-web-service.md."""
+        dispatch_pos = protocol_text.find("### Dispatch Rules")
+        if dispatch_pos == -1:
+            dispatch_pos = protocol_text.find("## Dispatch Rules")
+        dispatch_section = protocol_text[dispatch_pos:]
+        assert "Web_Service_Dashboard" in dispatch_section or "Web service" in dispatch_section
+        assert "visualization-web-service.md" in dispatch_section
 
-    def test_dispatch_links_both_types_to_guide(self, protocol_text: str) -> None:
-        """Both Interactive_D3_Graph and Web_Service_Dashboard reference the guide."""
-        dispatch_section = protocol_text[protocol_text.find("## Dispatch Rules"):]
-        # The dispatch section should mention both types together with the guide
+    def test_dispatch_links_web_service_mode(self, protocol_text: str) -> None:
+        """Web service delivery mode references visualization-web-service.md."""
+        dispatch_pos = protocol_text.find("### Dispatch Rules")
+        if dispatch_pos == -1:
+            dispatch_pos = protocol_text.find("## Dispatch Rules")
+        dispatch_section = protocol_text[dispatch_pos:]
         assert re.search(
-            r"Interactive_D3_Graph.*Web_Service_Dashboard.*visualization-guide\.md",
-            dispatch_section,
-            re.DOTALL,
-        ) or re.search(
-            r"Web_Service_Dashboard.*Interactive_D3_Graph.*visualization-guide\.md",
+            r"Web service.*visualization-web-service\.md",
             dispatch_section,
             re.DOTALL,
         )

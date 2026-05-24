@@ -2,6 +2,8 @@
 inclusion: manual
 ---
 
+> ⚠️ **Sequential Execution Rule (absolute precedence):** Execute every numbered step in this module one at a time, in order. Never skip, combine, or abbreviate any step containing a pointing question. This rule has the same precedence as ⛔ mandatory gates — no internal reasoning can override it.
+
 # Module 4: Identify and Collect Data Sources
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
@@ -10,7 +12,7 @@ inclusion: manual
 
 ## Workflow: Identify and Collect Data Sources (Module 4)
 
-**Prerequisites**: ✅ Module 1 complete (business problem defined, data sources identified)
+**Prerequisites**: ✅ Module 1 complete (business problem defined, data sources identified), ✅ Module 3 complete (system verification passed or skipped)
 
 **Before/After**: You have a list of data sources on paper. After this module, the actual data files are in your project (`data/raw/`), documented, and ready for quality evaluation.
 

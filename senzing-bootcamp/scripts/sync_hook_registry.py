@@ -30,8 +30,10 @@ from typing import Optional
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry.md")
-REGISTRY_DETAIL_PATH = Path("senzing-bootcamp/steering/hook-registry-detail.md")
+REGISTRY_CRITICAL_PATH = Path("senzing-bootcamp/steering/hook-registry-critical.md")
+REGISTRY_MODULES_PATH = Path("senzing-bootcamp/steering/hook-registry-modules.md")
 CATEGORIES_PATH = Path("senzing-bootcamp/hooks/hook-categories.yaml")
+LOCKFILE_PATH = Path("senzing-bootcamp/hooks/hooks.lock.yaml")
 
 # ---------------------------------------------------------------------------
 # Data structures
@@ -363,7 +365,7 @@ def generate_registry_summary(
     # Intro paragraph
     parts.append(
         f"{total_count} bootcamp hooks organized by category. "
-        "Load `hook-registry-detail.md` for full prompt text when creating hooks."
+        "Load `hook-registry-critical.md` for full prompt text when creating hooks."
     )
     parts.append("")
 
@@ -413,8 +415,8 @@ def generate_registry_summary(
     parts.append("## Hook Creation")
     parts.append("")
     parts.append(
-        "To create hooks, load `hook-registry-detail.md` for the full prompt text "
-        "and `createHook` parameters."
+        "To create hooks, load `hook-registry-critical.md` for critical hook prompts "
+        "or `hook-registry-modules.md` for module hook prompts and `createHook` parameters."
     )
     parts.append("")
 
@@ -464,17 +466,13 @@ def format_hook_entry(entry: HookEntry) -> str:
     return "\n".join(lines)
 
 
-def generate_registry_detail(
+def generate_registry_critical(
     critical_hooks: list[HookEntry],
-    module_hooks: dict[int | str, list[HookEntry]],
     total_count: int,
 ) -> str:
-    """Generate the complete ``hook-registry-detail.md`` content.
+    """Generate the ``hook-registry-critical.md`` content.
 
-    This produces the full-prompt registry used when actively creating hooks
-    during onboarding or module start.
-
-    Line endings are normalised to Unix-style ``\\n``.
+    Contains only critical hooks with full prompt text, used during onboarding.
     """
     parts: list[str] = []
 
@@ -485,16 +483,16 @@ def generate_registry_detail(
     parts.append("")
 
     # Title
-    parts.append("# Hook Registry — Full Prompts")
+    parts.append("# Hook Registry — Critical Hooks (Full Prompts)")
     parts.append("")
 
     # Intro paragraph
     parts.append(
-        "Complete hook definitions with prompt text for use with the "
-        "`createHook` tool. Load this file when actively creating hooks "
-        "during onboarding or module start."
+        "Critical hook definitions with prompt text for use with the "
+        "`createHook` tool during onboarding. These hooks are created in Step 1."
     )
     parts.append("")
+    parts.append("For module-specific hooks, see `hook-registry-modules.md`.")
     parts.append("For a quick reference of all hooks, see `hook-registry.md`.")
     parts.append("")
 
@@ -504,6 +502,41 @@ def generate_registry_detail(
     for hook in critical_hooks:
         parts.append(format_hook_entry(hook))
         parts.append("")
+
+    content = "\n".join(parts)
+    content = content.replace("\r\n", "\n").replace("\r", "\n")
+    return content
+
+
+def generate_registry_modules(
+    module_hooks: dict[int | str, list[HookEntry]],
+    total_count: int,
+) -> str:
+    """Generate the ``hook-registry-modules.md`` content.
+
+    Contains module-specific and 'any' hooks with full prompt text.
+    """
+    parts: list[str] = []
+
+    # Frontmatter
+    parts.append("---")
+    parts.append("inclusion: manual")
+    parts.append("---")
+    parts.append("")
+
+    # Title
+    parts.append("# Hook Registry — Module Hooks (Full Prompts)")
+    parts.append("")
+
+    # Intro paragraph
+    parts.append(
+        "Module-specific hook definitions with prompt text for use with the "
+        "`createHook` tool when starting a module."
+    )
+    parts.append("")
+    parts.append("For critical hooks (created during onboarding), see `hook-registry-critical.md`.")
+    parts.append("For a quick reference of all hooks, see `hook-registry.md`.")
+    parts.append("")
 
     # Module Hooks section
     parts.append("## Module Hooks (created when module starts)")
@@ -549,8 +582,60 @@ def generate_registry_detail(
             parts.append("")
 
     content = "\n".join(parts)
-    # Normalise line endings to Unix
     content = content.replace("\r\n", "\n").replace("\r", "\n")
+    return content
+
+
+# ---------------------------------------------------------------------------
+# Lockfile generation
+# ---------------------------------------------------------------------------
+
+
+def generate_lockfile(
+    hooks: list[HookEntry],
+    mapping: dict[str, CategoryMapping],
+) -> str:
+    """Generate the ``hooks.lock.yaml`` content.
+
+    Produces a deterministic YAML lockfile listing all hooks with their
+    ID, version, category, and event type.
+    """
+    from datetime import datetime, timezone
+
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    lines: list[str] = []
+    lines.append("# AUTO-GENERATED — do not edit manually.")
+    lines.append("# Run: python3 senzing-bootcamp/scripts/sync_hook_registry.py --write")
+    lines.append(f'generated_at: "{now}"')
+    lines.append("hooks:")
+
+    # Sort hooks alphabetically by ID
+    sorted_hooks = sorted(hooks, key=lambda h: h.hook_id)
+
+    for hook in sorted_hooks:
+        cat = mapping.get(hook.hook_id)
+        if cat is not None:
+            category = cat.category
+        else:
+            category = "uncategorized"
+
+        # Get version from the hook file
+        hook_path = HOOKS_DIR / f"{hook.hook_id}.kiro.hook"
+        version = "1.0.0"
+        if hook_path.exists():
+            try:
+                data = json.loads(hook_path.read_text(encoding="utf-8"))
+                version = data.get("version", "1.0.0")
+            except (json.JSONDecodeError, OSError):
+                pass
+
+        lines.append(f"  - id: {hook.hook_id}")
+        lines.append(f'    version: "{version}"')
+        lines.append(f"    category: {category}")
+        lines.append(f"    event_type: {hook.event_type}")
+
+    content = "\n".join(lines) + "\n"
     return content
 
 
@@ -617,10 +702,16 @@ def main() -> None:
         help=f"Path to output summary registry (default: {REGISTRY_PATH}).",
     )
     parser.add_argument(
-        "--output-detail",
+        "--output-critical",
         type=Path,
-        default=REGISTRY_DETAIL_PATH,
-        help=f"Path to output detail registry (default: {REGISTRY_DETAIL_PATH}).",
+        default=REGISTRY_CRITICAL_PATH,
+        help=f"Path to output critical registry (default: {REGISTRY_CRITICAL_PATH}).",
+    )
+    parser.add_argument(
+        "--output-modules",
+        type=Path,
+        default=REGISTRY_MODULES_PATH,
+        help=f"Path to output modules registry (default: {REGISTRY_MODULES_PATH}).",
     )
     parser.add_argument(
         "--categories",
@@ -657,11 +748,13 @@ def main() -> None:
     critical, modules = categorize_hooks(hooks, mapping)
     total_count = len(hooks)
 
-    # Generate both files
+    # Generate all files
     summary_content = generate_registry_summary(
         critical, modules, total_count, categories_path=args.categories
     )
-    detail_content = generate_registry_detail(critical, modules, total_count)
+    critical_content = generate_registry_critical(critical, total_count)
+    modules_content = generate_registry_modules(modules, total_count)
+    lockfile_content = generate_lockfile(hooks, mapping)
 
     if args.verify:
         all_match = True
@@ -671,25 +764,55 @@ def main() -> None:
             print(f"FAIL: {args.output} — {summary_message}", file=sys.stderr)
             all_match = False
 
-        detail_matches, detail_message = verify_registry(
-            detail_content, args.output_detail
+        critical_matches, critical_message = verify_registry(
+            critical_content, args.output_critical
         )
-        if not detail_matches:
-            print(f"FAIL: {args.output_detail} — {detail_message}", file=sys.stderr)
+        if not critical_matches:
+            print(f"FAIL: {args.output_critical} — {critical_message}", file=sys.stderr)
+            all_match = False
+
+        modules_matches, modules_message = verify_registry(
+            modules_content, args.output_modules
+        )
+        if not modules_matches:
+            print(f"FAIL: {args.output_modules} — {modules_message}", file=sys.stderr)
+            all_match = False
+
+        # Lockfile verification: compare structure (skip generated_at timestamp)
+        lockfile_path = LOCKFILE_PATH
+        if lockfile_path.exists():
+            existing_lock = lockfile_path.read_text(encoding="utf-8")
+            # Compare everything except the generated_at line
+            def _strip_timestamp(text: str) -> str:
+                return "\n".join(
+                    line for line in text.splitlines()
+                    if not line.startswith("generated_at:")
+                )
+            if _strip_timestamp(lockfile_content) != _strip_timestamp(existing_lock):
+                print(f"FAIL: {lockfile_path} — Lockfile is out of sync.", file=sys.stderr)
+                all_match = False
+        else:
+            print(f"FAIL: {lockfile_path} — Lockfile missing.", file=sys.stderr)
             all_match = False
 
         if all_match:
-            print("Both registry files are up to date.")
+            print("All registry files are up to date.")
             sys.exit(0)
         else:
             sys.exit(1)
     else:
         write_registry(summary_content, args.output)
         print(f"Summary registry written to {args.output} ({total_count} hooks)")
-        write_registry(detail_content, args.output_detail)
+        write_registry(critical_content, args.output_critical)
         print(
-            f"Detail registry written to {args.output_detail} ({total_count} hooks)"
+            f"Critical registry written to {args.output_critical} ({len(critical)} hooks)"
         )
+        write_registry(modules_content, args.output_modules)
+        print(
+            f"Modules registry written to {args.output_modules} ({total_count - len(critical)} hooks)"
+        )
+        write_registry(lockfile_content, LOCKFILE_PATH)
+        print(f"Lockfile written to {LOCKFILE_PATH} ({total_count} hooks)")
 
 
 if __name__ == "__main__":

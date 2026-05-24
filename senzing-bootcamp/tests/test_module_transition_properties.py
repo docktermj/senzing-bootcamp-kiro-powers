@@ -200,7 +200,8 @@ def parse_steering_index(path: Path) -> dict:
                                         if pkey == "file":
                                             phase_data["file"] = pval
                                         elif pkey == "step_range":
-                                            # Parse [N, M]
+                                            # Parse [N, M] where N/M may be
+                                            # int or quoted string like "3d"
                                             pval = pval.strip("[]")
                                             parts = pval.split(",")
                                             if len(parts) != 2:
@@ -208,9 +209,16 @@ def parse_steering_index(path: Path) -> dict:
                                                     f"Malformed step_range at "
                                                     f"line {i + 1}"
                                                 )
+                                            parsed: list[int | str] = []
+                                            for part in parts:
+                                                part = part.strip().strip('"').strip("'")
+                                                try:
+                                                    parsed.append(int(part))
+                                                except ValueError:
+                                                    parsed.append(part)
                                             phase_data["step_range"] = (
-                                                int(parts[0].strip()),
-                                                int(parts[1].strip()),
+                                                parsed[0],
+                                                parsed[1],
                                             )
                                         # Skip token_count, size_category
                                         i += 1
@@ -310,9 +318,21 @@ def resolve_module_files(
         all_phase_files.append(phase_path)
 
         step_end = phase_data["step_range"][1]
-        if step_end > max_step_end:
+        # Compare step_end values; use string comparison for
+        # non-integer step identifiers (e.g. "4e" > "4a")
+        if max_step_end == -1:
             max_step_end = step_end
             last_phase_file = phase_path
+        else:
+            try:
+                if step_end > max_step_end:
+                    max_step_end = step_end
+                    last_phase_file = phase_path
+            except TypeError:
+                # Mixed int/str comparison — use str representation
+                if str(step_end) > str(max_step_end):
+                    max_step_end = step_end
+                    last_phase_file = phase_path
 
     return ModuleFiles(
         module_number=module_number,

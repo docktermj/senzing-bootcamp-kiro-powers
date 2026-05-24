@@ -75,6 +75,72 @@ def check_steering_files():
                 check(False, f"{f.name}: has 'inclusion' in frontmatter")
 
 
+def check_hook_categories_sync():
+    """Verify every .kiro.hook file is in hook-categories.yaml and vice versa."""
+    print("\n=== Hook ↔ Categories Sync ===")
+    hooks_dir = POWER_DIR / "hooks"
+    categories_path = hooks_dir / "hook-categories.yaml"
+
+    if not categories_path.exists():
+        check(False, "hook-categories.yaml exists")
+        return
+
+    check(True, "hook-categories.yaml exists")
+
+    # Parse hook-categories.yaml to get all unique hook IDs
+    content = categories_path.read_text(encoding="utf-8")
+    category_ids: set = set()
+    current_top_key = None
+    current_sub_key = None
+
+    for line in content.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        indent = len(line) - len(line.lstrip())
+
+        if indent == 0 and stripped.endswith(":"):
+            key = stripped[:-1].strip()
+            current_top_key = key
+            current_sub_key = None
+            continue
+
+        if current_top_key == "metadata":
+            continue
+
+        if indent > 0 and stripped.endswith(":") and not stripped.startswith("- "):
+            current_sub_key = stripped[:-1].strip()
+            continue
+
+        if stripped.startswith("- "):
+            hook_id = stripped[2:].strip()
+            if hook_id:
+                category_ids.add(hook_id)
+
+    # Get all .kiro.hook files on disk
+    hook_files = sorted(hooks_dir.glob("*.kiro.hook"))
+    disk_ids = set()
+    for f in hook_files:
+        hook_id = f.name.replace(".kiro.hook", "")
+        disk_ids.add(hook_id)
+
+    # Check: every file has a category entry
+    files_without_category = disk_ids - category_ids
+    check(
+        len(files_without_category) == 0,
+        f"All hook files have category entries ({len(files_without_category)} missing)"
+        + (f": {sorted(files_without_category)}" if files_without_category else ""),
+    )
+
+    # Check: every category entry has a file
+    categories_without_file = category_ids - disk_ids
+    check(
+        len(categories_without_file) == 0,
+        f"All category entries have hook files ({len(categories_without_file)} missing)"
+        + (f": {sorted(categories_without_file)}" if categories_without_file else ""),
+    )
+
+
 def check_hooks():
     print("\n=== Hooks ===")
     hooks_dir = POWER_DIR / "hooks"
@@ -123,7 +189,7 @@ def check_scripts():
     print("\n=== Scripts ===")
     scripts_dir = POWER_DIR / "scripts"
     expected = [
-        "status.py", "validate_module.py", "check_prerequisites.py",
+        "status.py", "validate_module.py", "validate_prerequisites.py",
         "install_hooks.py", "backup_project.py", "restore_project.py",
         "preflight.py", "validate_commonmark.py",
         "validate_power.py",
@@ -314,6 +380,7 @@ def main():
 
     check_steering_files()
     check_hooks()
+    check_hook_categories_sync()
     check_module_docs()
     check_scripts()
     check_power_md_references()

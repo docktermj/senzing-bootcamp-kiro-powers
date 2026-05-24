@@ -1,0 +1,12 @@
+{
+  "name": "to enforce mandatory gate execution on agent stop",
+  "version": "1.0.0",
+  "description": "After each agent turn during Module 3, verifies that Step 9 (⛔ mandatory gate) has been executed if the agent has reached or passed it. Forces immediate execution if the gate checkpoint is missing.",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "CHECK — Read `config/bootcamp_progress.json` and evaluate:\n\n1. Is `current_module` equal to 3?\n2. Is `current_step` greater than or equal to 9?\n\nIf EITHER condition is false: produce no output. Do nothing.\n\nIf BOTH are true: Check whether the ⛔ mandatory gate for Step 9 has been satisfied:\n\nCONDITION A — Step 9 checkpoints exist:\n- `module_3_verification.checks.web_service.status` equals `\"passed\"`\n- `module_3_verification.checks.web_page.status` equals `\"passed\"`\n\nCONDITION B — Step 9 was explicitly skipped by the bootcamper:\n- `skipped_steps` contains an entry with key `\"3.9\"`\n\nIf CONDITION A is true OR CONDITION B is true: produce no output. The mandatory gate is satisfied.\n\nIf NEITHER condition is met: The agent has reached or passed Step 9 without executing it. This is a ⛔ mandatory gate violation. Output exactly:\n\n⛔ MANDATORY GATE VIOLATION DETECTED: Step 9 (Web Service + Visualization) has not been executed but the agent has advanced past it. This step CANNOT be skipped by the agent under any circumstances. Load `module-03-phase2-visualization.md` and execute Step 9 NOW — generate the web service, start the server, verify all 3 API endpoints, and present the URL to the bootcamper. Do not proceed with any other work until Step 9 is complete and checkpoints are written to bootcamp_progress.json."
+  }
+}

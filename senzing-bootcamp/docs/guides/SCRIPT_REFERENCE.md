@@ -143,6 +143,57 @@ python3 senzing-bootcamp/scripts/team_dashboard.py --output report.html
 
 See Also: `status.py` shows individual progress; `analyze_sessions.py` shows historical analytics.
 
+## Additional Validation
+
+| Script | Purpose |
+| --- | --- |
+| `validate_prerequisites.py` | CI: validates module prerequisite documentation matches dependency graph |
+| `validate_progress_ci.py` | CI: validates bootcamp_progress.json.example schema |
+| `validate_mandatory_gates.py` | CI: validates all ⛔ mandatory gates have proper checkpoint instructions |
+| `validate_links.py` | Validates external URLs in markdown files are reachable |
+
+```text
+python3 senzing-bootcamp/scripts/validate_prerequisites.py
+python3 senzing-bootcamp/scripts/validate_progress_ci.py
+python3 senzing-bootcamp/scripts/validate_mandatory_gates.py
+python3 senzing-bootcamp/scripts/validate_links.py
+python3 senzing-bootcamp/scripts/validate_links.py --dry-run
+python3 senzing-bootcamp/scripts/validate_links.py --timeout 10
+```
+
+## Data Tools
+
+| Script | Purpose |
+| --- | --- |
+| `compare_results.py` | Compares ER statistics before/after mapping changes (diff + quality assessment) |
+| `bootcamp_analytics.py` | Session analytics — module timing, question counts, error frequency |
+| `cord_metadata.py` | Displays metadata for CORD sample datasets (Las Vegas, London, Moscow) — use `get_sample_data` to download |
+| `check_database.py` | Checks Senzing database health — entity count, record count, data sources |
+| `record_export.py` | Exports records from the Senzing database in various formats |
+| `visualize_dependencies.py` | Generates a visual dependency graph of module relationships |
+
+```text
+python3 senzing-bootcamp/scripts/compare_results.py --baseline <file> --current <file>
+python3 senzing-bootcamp/scripts/bootcamp_analytics.py
+python3 senzing-bootcamp/scripts/bootcamp_analytics.py --compare
+python3 senzing-bootcamp/scripts/cord_metadata.py
+python3 senzing-bootcamp/scripts/check_database.py
+python3 senzing-bootcamp/scripts/record_export.py --format jsonl
+python3 senzing-bootcamp/scripts/visualize_dependencies.py
+```
+
+## Track Management
+
+| Script | Purpose |
+| --- | --- |
+| `track_switcher.py` | Switches between Core Bootcamp and Advanced Topics tracks |
+
+```text
+python3 senzing-bootcamp/scripts/track_switcher.py --to advanced_topics
+python3 senzing-bootcamp/scripts/track_switcher.py --to core_bootcamp
+python3 senzing-bootcamp/scripts/track_switcher.py --preview
+```
+
 ## Libraries (not standalone CLI tools)
 
 These scripts are imported by other scripts or the agent — they are not intended to be run directly from the command line.
@@ -152,6 +203,7 @@ These scripts are imported by other scripts or the agent — they are not intend
 | `progress_utils.py` | Progress file read/write/validate — used by status, repair, rollback scripts |
 | `session_logger.py` | Appends structured log entries to `config/session_log.jsonl` |
 | `verbosity.py` | Verbosity level helpers — used by the agent for output formatting |
+| `version.py` | Version parsing and validation — used by validate_power.py for semver checks |
 | `team_config_validator.py` | Validates `config/team.yaml` structure — used during team onboarding |
 | `test_dashboard.py` | Test suite results formatting — used by CI for pass/fail reporting |
-| `check_prerequisites.py` | DEPRECATED — superseded by `preflight.py` |
+| `test_hooks.py` | Hook testing utilities — used by the test suite for hook validation |

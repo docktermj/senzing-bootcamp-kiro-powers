@@ -400,8 +400,8 @@ def check_single_question_per_step(
         List of violation descriptions. Empty list means the check
         passed.
     """
-    # Sub-step pattern: "5a. **Title**" or "5b. **Title**:"
-    re_sub_step = re.compile(r"^(\d+[a-z])\.\s+\*\*")
+    # Sub-step pattern: "5a. **Title**" or "5b. **Title**:" or "   **6a. Title:**"
+    re_sub_step = re.compile(r"^\s*(?:\*\*)?(\d+[a-z])\.\s+\*?\*?")
 
     lines = content.splitlines()
     current_step: str | None = None
@@ -792,17 +792,17 @@ class TestIndexResolution:
     """
 
     def test_simple_entry_resolves_to_single_file(self) -> None:
-        """Module 4 (simple string entry) resolves to one root file.
+        """Module 4 (single-phase entry) resolves to root + 1 phase file.
 
-        Verifies that a simple string entry in the steering index
-        produces a ModuleFiles with the correct root file, no phase
-        files, and exactly one file in all_files.
+        Verifies that a single-phase entry in the steering index
+        produces a ModuleFiles with the correct root file, one phase
+        file (same as root), and the root appearing in all_files.
         """
         mod = _INDEX[4]
         assert mod.module_number == 4
         assert mod.root_file.name == "module-04-data-collection.md"
-        assert mod.phase_files == []
-        assert len(mod.all_files) == 1
+        assert len(mod.phase_files) == 1
+        assert mod.phase_files[0].name == "module-04-data-collection.md"
 
     def test_phased_entry_resolves_to_root_plus_phases(self) -> None:
         """Module 5 (phased entry) resolves to root + 3 phase files.

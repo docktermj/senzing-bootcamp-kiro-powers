@@ -110,7 +110,6 @@ The output should show `data` or `binary`. If it shows `ASCII text`, the file wa
 ```text
 licenses/
 ├── g2.lic                 # Your Senzing license file
-├── .gitkeep               # Keeps directory in git
 └── README.md              # This file
 ```
 
@@ -173,7 +172,6 @@ License files are sensitive and should never be committed to version control.
 licenses/*.lic
 
 # Keep directory structure
-!licenses/.gitkeep
 !licenses/README.md
 ```
 

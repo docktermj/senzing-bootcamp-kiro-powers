@@ -2,6 +2,8 @@
 inclusion: manual
 ---
 
+> ⚠️ **Sequential Execution Rule (absolute precedence):** Execute every numbered step in this module one at a time, in order. Never skip, combine, or abbreviate any step containing a pointing question. This rule has the same precedence as ⛔ mandatory gates — no internal reasoning can override it.
+
 # Module 3: System Verification
 
 **🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner, journey map, and before/after framing before proceeding.
@@ -209,12 +211,15 @@ Validate that entity resolution produced the expected outcomes from the TruthSet
 2. Query the resolved entities and perform the following validation checks. Execute ALL checks regardless of whether earlier checks pass or fail:
 
    **a) Entity count tolerance:**
+
    - Verify the total number of resolved entities falls within ±5% of the expected entity count from the Expected_Results.
 
    **b) Known matches (at least 3):**
+
    - Verify that at least 3 known entity matches defined in the Expected_Results are correctly resolved — the specific records designated as matching resolve to the same entity ID.
 
    **c) Cross-record resolution:**
+
    - Verify the resolved entity count is strictly less than the total record count loaded, confirming that at least some records merged rather than all loading as singletons.
 
 3. **If all checks pass:** Report pass with entity count and number of matches verified.
@@ -262,9 +267,32 @@ Verify read, write, and search operations against the Senzing database. Each ope
 }
 ```
 
+**Agent behavior:** After Step 8 completes, proceed DIRECTLY to Step 9. Do not ask whether the bootcamper wants to continue — Step 9 is mandatory and unconditional.
+
 ### Step 9: Web Service + Visualization Page
 
-⛔ MANDATORY GATE — This step cannot be skipped without explicit bootcamper request via the skip-step protocol. The visualization is the "wow moment" of Module 3.
+⛔ MANDATORY GATE — UNCONDITIONAL EXECUTION REQUIREMENT
+
+> **NEVER skip this step.** This is an absolute, non-negotiable rule.
+>
+> The agent SHALL execute this step fully regardless of ANY internal consideration.
+> No agent-initiated skip is permitted under any circumstance.
+>
+> **Prohibited rationalizations (the agent must NEVER use these as justification to skip):**
+>
+> - Session length ("given the length of this session")
+> - Context budget pressure ("running low on context")
+> - Perceived redundancy ("similar to what was already demonstrated")
+> - Time constraints ("to save time")
+> - Any other agent-internal reasoning
+>
+> **NEVER clause:** There is NO condition, threshold, or scenario under which the agent
+> may self-initiate a skip of this step. The ⛔ designation is absolute. Only the
+> bootcamper can attempt a skip via the skip-step protocol — and the protocol itself
+> refuses mandatory gates. The agent cannot override, deprioritize, or rationalize
+> around this constraint.
+
+This step cannot be skipped. The visualization is the "wow moment" of Module 3.
 
 > **Phase file:** Load `module-03-phase2-visualization.md` for the full visualization step — API endpoints, page components, verification checks, and delivery sequence.
 
@@ -280,7 +308,7 @@ Generate and verify a rich interactive visualization web service demonstrating e
 
 **Constraints:** stdlib HTTP server, D3.js CDN, single HTML file, all artifacts in `src/system_verification/web_service/`. Endpoint verification timeout: 10 seconds per endpoint.
 
-Follow the Web Service Delivery Sequence from `visualization-guide.md`. Maintain compatibility with `visualization-protocol.md` checkpoint map entry `m3_demo_results`.
+Follow the Web Service Delivery Sequence from `visualization-guide.md`. Maintain compatibility with `visualization-guide.md` checkpoint map entry `m3_demo_results`.
 
 **Checkpoint:** Write to `config/bootcamp_progress.json`:
 
@@ -294,6 +322,18 @@ Follow the Web Service Delivery Sequence from `visualization-guide.md`. Maintain
   }
 }
 ```
+
+> **⛔ PRE-ADVANCEMENT VERIFICATION (Agent self-check):**
+>
+> Before offering to advance to Module 4 or marking Module 3 complete, the agent
+> MUST read `config/bootcamp_progress.json` and verify:
+>
+> - `module_3_verification.checks.web_service.status` = `"passed"`
+> - `module_3_verification.checks.web_page.status` = `"passed"`
+>
+> If these checkpoints are NOT present, the agent MUST execute Step 9 immediately.
+> Do NOT offer advancement. Do NOT ask "Ready for Module 4?" Do NOT save progress.
+> Execute Step 9 first.
 
 ## Phase 2: Report & Close
 
@@ -373,6 +413,16 @@ Generate a structured summary of all verification checks.
 
 Terminate test services and clean up verification data from the database.
 
+**Pre-cleanup confirmation gate:**
+
+Before proceeding with termination, confirm the bootcamper has finished exploring the visualization. Ask the bootcamper for confirmation before terminating the web service or performing any cleanup:
+
+> 👉 Have you finished exploring the visualization? Let me know when you're ready and I'll clean up the server.
+
+🛑 STOP — Wait for the bootcamper to confirm they are done exploring. Do NOT proceed with termination until the bootcamper responds.
+
+**Skip condition:** If the bootcamper skipped Step 9 via the skip-step protocol (no web server was started), skip this confirmation prompt entirely and proceed directly to cleanup.
+
 1. **Terminate the web service:**
    - Send a termination signal to the Verification_Web_Service process.
    - Wait up to 5 seconds for the process to exit and release the bound port.
@@ -412,7 +462,7 @@ Complete the module using the standard module completion workflow.
 
 **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
 
-**Success indicator:** ✅ All 10 verification checks passed + database purged of TruthSet data + web service terminated + module 3 completion recorded in progress file.
+**Success indicator:** ✅ System verification passed or explicitly skipped by bootcamper. All 10 verification checks passed + database purged of TruthSet data + web service terminated + module 3 completion recorded in progress file.
 
 ## Phase Sub-Files
 

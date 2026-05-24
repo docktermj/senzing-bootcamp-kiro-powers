@@ -2,7 +2,7 @@
 
 ## Overview
 
-This feature consolidates two overlapping environment-check scripts (`check_prerequisites.py` and `preflight_check.py`) into a single `senzing-bootcamp/scripts/preflight.py`. The new script performs all environment checks (language runtimes, disk space, network connectivity, Senzing SDK availability, write permissions, required tools), produces a structured pass/warn/fail report, supports `--json` for programmatic consumption and `--fix` for auto-remediation, and integrates into the onboarding flow as a mandatory gate before track selection.
+This feature consolidates two overlapping environment-check scripts (`check_prerequisites.py` [removed] and `preflight_check.py`) into a single `senzing-bootcamp/scripts/preflight.py`. The new script performs all environment checks (language runtimes, disk space, network connectivity, Senzing SDK availability, write permissions, required tools), produces a structured pass/warn/fail report, supports `--json` for programmatic consumption and `--fix` for auto-remediation, and integrates into the onboarding flow as a mandatory gate before track selection.
 
 The design prioritizes:
 - **Single responsibility**: one script, one entry point, one report format
@@ -32,7 +32,7 @@ graph TD
     Formatter -->|stdout| Output["Human-readable or JSON"]
 
     subgraph "Legacy Wrappers"
-        CP["check_prerequisites.py"]
+        CP["check_prerequisites.py [removed]"]
         PF["preflight_check.py"]
     end
     CP -->|deprecation + delegate| CLI
@@ -143,7 +143,7 @@ Accepts `--json` and `--fix` flags via `argparse`. Returns 0 for PASS/WARN, 1 fo
 
 ### Legacy Wrappers
 
-Both `check_prerequisites.py` and `preflight_check.py` are replaced with thin shims:
+Both `check_prerequisites.py` [removed] and `preflight_check.py` are replaced with thin shims:
 
 ```python
 #!/usr/bin/env python3

@@ -17,7 +17,8 @@ What is the bootcamper trying to do?
 ├─→ Preparing or mapping data       → Data Preparation
 ├─→ Writing SDK code                 → SDK Development
 ├─→ Diagnosing errors or failures    → Troubleshooting
-└─→ Looking up docs or reporting     → Reference & Reporting
+├─→ Looking up docs or reporting     → Reference & Reporting
+└─→ Exploring entity resolution data → Data Exploration (use SDK, never direct SQL)
 ```
 
 ### Data Preparation
@@ -70,6 +71,20 @@ Reference or reporting task?
     └─→ get_capabilities
 ```
 
+### Data Exploration
+
+```text
+Exploring or querying entity resolution results?
+├─→ Counting entities or getting statistics?
+│   └─→ reporting_guide (NEVER direct SQL against Senzing database)
+├─→ Finding duplicates or matching records?
+│   └─→ search_by_attributes (NEVER SELECT from RES_ENT/OBS_ENT)
+├─→ Retrieving entity details?
+│   └─→ get_entity or get_entity_by_record_id (NEVER query G2C.db directly)
+└─→ Exporting or visualizing resolved data?
+    └─→ reporting_guide (NEVER open sqlite3 connection to Senzing database)
+```
+
 ## Anti-Patterns: When NOT to Use
 
 | Instead of | Use | Consequence of Wrong Approach |
@@ -80,6 +95,8 @@ Reference or reporting task?
 | Recommending integration approaches without checking | `search_docs` with `category='anti_patterns'` | Recommending deprecated or harmful patterns |
 | Guessing Senzing error code meanings | `explain_error_code` | Misdiagnosis, wrong fix applied |
 | Fabricating sample datasets | `get_sample_data` | Invalid record structures, wrong attribute names |
+| Passing None/default flags without checking | `get_sdk_reference(topic='flags')` | Missing detail needed for visualizations, no teaching moment about flag system |
+| Writing direct SQL against the Senzing database | Use SDK methods via MCP tools (`get_entity`, `search_by_attributes`, `reporting_guide`) | Bypasses SDK abstraction, produces non-portable results, may return incorrect data from internal tables |
 
 ## Call Pattern Examples
 
@@ -178,3 +195,61 @@ Get guidance on reporting, visualization, or result presentation.
 ```
 
 Download the entity spec, analyzer script, or other workflow resources.
+
+## Flag Selection Protocol
+
+Before any SDK method call that accepts a `flags` parameter, follow this protocol:
+
+1. **Discover** — Look up available flags:
+   `get_sdk_reference(method='<method_name>', topic='flags')`
+2. **Select** — Choose flags matching the bootcamper's intent:
+   - High-level overview → default flags
+   - Scoring / explanation → `SZ_INCLUDE_FEATURE_SCORES`
+   - Match key breakdown → `SZ_INCLUDE_MATCH_KEY_DETAILS`
+   - Visualization → both `SZ_INCLUDE_FEATURE_SCORES` and `SZ_INCLUDE_MATCH_KEY_DETAILS`
+3. **Explain** — Tell the bootcamper which flags you chose and why in one sentence
+4. **Cache** — Reuse flag knowledge within the same module session without re-querying
+
+### When to Skip Flag Lookup
+
+- Bootcamper explicitly specifies flags
+- Method has no flags parameter
+- Flags already looked up for this method during the current module session
+
+## Method Discovery Protocol
+
+Before selecting an SDK method when the bootcamper's request is ambiguous (could map to multiple methods in the same category), follow this protocol:
+
+1. **Detect** — Recognize when the bootcamper's request is ambiguous and could map to multiple SDK methods in the same category (e.g., "explain why entity 74 resolved" could use `how_entity`, `why_entities`, `why_records`, or `why_record_in_entity`)
+2. **Discover** — Call `get_sdk_reference(topic='functions', filter='<category>')` to enumerate available methods in the relevant category
+3. **Disambiguate** — If multiple methods match, present a 👉 numbered choice list with one-line descriptions so the bootcamper can select the appropriate method
+4. **Proceed** — Use the bootcamper's chosen method (or the single matching method if unambiguous)
+5. **Cache** — Remember discovered methods for the rest of the module session; do not re-query for the same category
+
+### When to Skip Method Discovery
+
+- Bootcamper explicitly specifies a method name (e.g., "use why_records on records A and B")
+- Request maps to exactly one method with no alternatives in the category
+- Methods for this category already discovered during the current module session
+
+### Examples
+
+**Ambiguous** — "explain why entity 74 resolved"
+
+The request could map to `how_entity`, `why_entities`, `why_records`, or `why_record_in_entity`. Discover the why/how category, then present choices:
+
+```text
+👉 Which level of detail do you want?
+1. how_entity — shows how a single entity was constructed from its records
+2. why_entities — explains why two entities resolved together
+3. why_records — explains why two specific records resolved together
+4. why_record_in_entity — explains why a specific record belongs to an entity
+```
+
+**Unambiguous** — "get entity 42 by record ID"
+
+Only `get_entity_by_record_id` matches this request. Proceed directly without presenting choices.
+
+**Explicit** — "use why_records on records A and B"
+
+The bootcamper named the method explicitly. Proceed directly with `why_records`.

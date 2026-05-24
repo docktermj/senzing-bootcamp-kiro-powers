@@ -400,15 +400,24 @@ def _parse_steering_index(path: Path) -> dict:
                                         if pkey == "file":
                                             phase_data["file"] = pval
                                         elif pkey == "step_range":
+                                            # Parse [N, M] where N/M may be
+                                            # int or quoted string like "3d"
                                             pval = pval.strip("[]")
                                             range_parts = pval.split(",")
                                             if len(range_parts) != 2:
                                                 raise ValueError(
                                                     f"Malformed step_range at line {i + 1}"
                                                 )
+                                            parsed: list[int | str] = []
+                                            for part in range_parts:
+                                                part = part.strip().strip('"').strip("'")
+                                                try:
+                                                    parsed.append(int(part))
+                                                except ValueError:
+                                                    parsed.append(part)
                                             phase_data["step_range"] = (
-                                                int(range_parts[0].strip()),
-                                                int(range_parts[1].strip()),
+                                                parsed[0],
+                                                parsed[1],
                                             )
                                         i += 1
 
@@ -942,6 +951,10 @@ class TestPhaseTransitionProperties:
         for idx in range(len(phase_list) - 1):
             current_end = phase_list[idx]["step_range"][1]
             next_start = phase_list[idx + 1]["step_range"][0]
+            # Skip contiguity check for non-integer step identifiers
+            # (e.g. "3d" -> "4a") where arithmetic doesn't apply
+            if not isinstance(current_end, int) or not isinstance(next_start, int):
+                continue
             assert current_end + 1 == next_start, (
                 f"Module {module_num}: step ranges not contiguous between "
                 f"phases {idx} and {idx + 1}: {current_end} -> {next_start}"
@@ -1145,11 +1158,8 @@ class TestConfigParsing:
     def test_steering_index_parsed(self) -> None:
         """Verify steering-index.yaml was parsed successfully."""
         assert len(STEERING_INDEX) == 11
-        # Single-phase modules
-        for num in [4, 7]:
-            assert isinstance(STEERING_INDEX[num], str)
-        # Multi-phase modules (including module 2 which uses structured format)
-        for num in [1, 2, 3, 5, 6, 8, 9, 10, 11]:
+        # All modules use structured format (dict with root and phases)
+        for num in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]:
             assert isinstance(STEERING_INDEX[num], dict)
 
     def test_tracks_contain_valid_modules(self) -> None:

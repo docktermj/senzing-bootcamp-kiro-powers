@@ -561,7 +561,6 @@ LEGACY_TRACK_PHRASES = [
     "Path A", "Path B", "Path C", "Path D",
     "Track A", "Track B", "Track C", "Track D",
     "Quick Demo",
-    "System Verification",
 ]
 
 

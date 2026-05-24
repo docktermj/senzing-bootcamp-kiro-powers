@@ -111,7 +111,7 @@ Prevention: warn user before long mapping sessions that state doesn't persist ac
 
 <a id="module-6"></a>
 
-## Module 6: Load Data
+## Module 6: Data Processing
 
 | Pitfall                                          | Fix                                                                          |
 | ------------------------------------------------ | ---------------------------------------------------------------------------- |

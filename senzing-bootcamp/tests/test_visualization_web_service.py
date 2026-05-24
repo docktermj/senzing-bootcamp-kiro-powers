@@ -22,7 +22,7 @@ _POWER_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 _VIZ_GUIDE = _POWER_ROOT / "steering" / "visualization-guide.md"
 _VIZ_WEB_SERVICE = _POWER_ROOT / "steering" / "visualization-web-service.md"
 _MODULE_03 = _POWER_ROOT / "steering" / "module-03-system-verification.md"
-_MODULE_07 = _POWER_ROOT / "steering" / "module-07-query-validation.md"
+_MODULE_07 = _POWER_ROOT / "steering" / "module-07-query-visualize-discover.md"
 
 
 def _read(path: Path) -> str:
@@ -44,13 +44,13 @@ class TestVizGuidePromptAndBranching:
         self.content = _read(_VIZ_GUIDE)
 
     def test_prompt_is_first_workflow_step(self):
-        """Visualization Prompt appears as the first step in Agent Workflow."""
-        # The prompt step should come before any other numbered step
-        workflow_start = self.content.index("## Agent Workflow")
-        prompt_pos = self.content.index("Visualization Prompt", workflow_start)
-        # Step 2 (Gather requirements) should come after the prompt
-        step2_pos = self.content.index("Gather requirements", workflow_start)
-        assert prompt_pos < step2_pos
+        """Delivery mode choice appears before the generation workflow steps."""
+        # The delivery mode section should come before the generation workflow
+        offer_pos = self.content.index("## Visualization Offer Protocol")
+        workflow_pos = self.content.index("## Static HTML Generation Workflow")
+        # Gather requirements should come after the offer protocol
+        step1_pos = self.content.index("Gather requirements", workflow_pos)
+        assert offer_pos < step1_pos
 
     def test_prompt_offers_static_html(self):
         """Prompt offers Static HTML file option."""
@@ -61,12 +61,12 @@ class TestVizGuidePromptAndBranching:
         assert "Web service" in self.content
 
     def test_wait_instruction_after_prompt(self):
-        """STOP/WAIT instruction follows the Visualization Prompt."""
-        prompt_pos = self.content.index("Visualization Prompt")
-        # Find the next STOP or WAIT after the prompt
-        stop_pos = self.content.index("STOP", prompt_pos)
-        # The STOP should be reasonably close to the prompt (within the same step)
-        assert stop_pos - prompt_pos < 800
+        """STOP/WAIT instruction follows the delivery-mode offer."""
+        offer_pos = self.content.index("Delivery-Mode Selection")
+        # Find the next STOP after the offer
+        stop_pos = self.content.index("STOP", offer_pos)
+        # The STOP should be reasonably close to the offer (within the same section)
+        assert stop_pos - offer_pos < 800
 
     def test_branching_static_html_path(self):
         """Branching logic exists for Static HTML path."""
@@ -80,7 +80,7 @@ class TestVizGuidePromptAndBranching:
         lower = self.content.lower()
         assert "web service" in lower
         # Should mention the web service option and reference file
-        assert "visualization-reference.md" in self.content or "web service" in lower
+        assert "visualization-guide.md" in self.content or "web service" in lower
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -323,28 +323,28 @@ class TestModule03VisualizationPrompt:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 4.6 — module-07-query-validation.md Visualization Protocol References
+# 4.6 — module-07-query-visualize-discover.md Visualization Protocol References
 # Validates: Requirements 5.3
 # ═══════════════════════════════════════════════════════════════════════════
 
 
 class TestModule07VisualizationPrompt:
-    """Verify module-07-query-validation.md references the Visualization Protocol."""
+    """Verify module-07-query-visualize-discover.md references the Visualization Protocol."""
 
     @pytest.fixture(autouse=True)
     def _load(self):
         self.content = _read(_MODULE_07)
 
     def test_protocol_reference_in_entity_graph_section(self):
-        """Visualization Protocol is referenced in the entity graph checkpoint."""
+        """Visualization Guide is referenced in the entity graph checkpoint."""
         graph_pos = self.content.index("Entity graph visualization checkpoint")
-        protocol_pos = self.content.index("visualization-protocol.md", graph_pos)
+        protocol_pos = self.content.index("visualization-guide.md", graph_pos)
         assert protocol_pos > graph_pos
 
     def test_protocol_reference_in_results_dashboard_section(self):
-        """Visualization Protocol is referenced in the results dashboard checkpoint."""
+        """Visualization Guide is referenced in the results dashboard checkpoint."""
         dashboard_pos = self.content.index("Results dashboard visualization checkpoint")
-        protocol_pos = self.content.index("visualization-protocol.md", dashboard_pos)
+        protocol_pos = self.content.index("visualization-guide.md", dashboard_pos)
         assert protocol_pos > dashboard_pos
 
     def test_entity_graph_references_m7_checkpoint(self):
@@ -381,10 +381,9 @@ class TestPreservation:
     @pytest.fixture(autouse=True)
     def _load(self):
         self.viz_guide = _read(_VIZ_GUIDE)
-        # Content was split: reference material moved to visualization-reference.md
-        viz_ref_path = _POWER_ROOT / "steering" / "visualization-reference.md"
-        self.viz_ref = _read(viz_ref_path) if viz_ref_path.exists() else ""
-        self.viz_combined = self.viz_guide + self.viz_ref
+        # visualization-protocol.md and visualization-reference.md were merged
+        # into visualization-guide.md in 0.12.0
+        self.viz_combined = self.viz_guide
         self.module_03 = _read(_MODULE_03)
         self.module_07 = _read(_MODULE_07)
 
@@ -427,7 +426,7 @@ class TestPreservation:
         assert "System Verification" in self.module_03
         assert "TruthSet" in self.module_03
 
-    # --- module-07-query-validation.md preservation ---
+    # --- module-07-query-visualize-discover.md preservation ---
 
     def test_module07_query_requirements_preserved(self):
         """Module 7 query requirements content is preserved."""

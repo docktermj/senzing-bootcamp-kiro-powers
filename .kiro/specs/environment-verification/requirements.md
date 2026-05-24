@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The senzing-bootcamp power currently ships two overlapping environment-check scripts — `check_prerequisites.py` (tool/directory/config checks with colored output) and `preflight_check.py` (runtime/disk/memory/permissions checks with emoji output). Neither is wired into the onboarding flow as a mandatory gate; the agent runs ad-hoc checks in Step 3 of `onboarding-flow.md` using inline `shutil.which()` calls. This feature consolidates both scripts into a single `preflight.py` that runs every check (language runtime, disk space, network connectivity to `mcp.senzing.com`, Senzing SDK availability with version detection, write permissions, required tools), produces a structured pass/warn/fail report with actionable fix instructions, supports `--json` output for programmatic consumption and `--fix` for auto-remediation of simple issues, and is integrated into the onboarding flow as a mandatory pre-track-selection gate.
+The senzing-bootcamp power currently ships two overlapping environment-check scripts — `check_prerequisites.py` [removed] (tool/directory/config checks with colored output) and `preflight_check.py` (runtime/disk/memory/permissions checks with emoji output). Neither is wired into the onboarding flow as a mandatory gate; the agent runs ad-hoc checks in Step 3 of `onboarding-flow.md` using inline `shutil.which()` calls. This feature consolidates both scripts into a single `preflight.py` that runs every check (language runtime, disk space, network connectivity to `mcp.senzing.com`, Senzing SDK availability with version detection, write permissions, required tools), produces a structured pass/warn/fail report with actionable fix instructions, supports `--json` output for programmatic consumption and `--fix` for auto-remediation of simple issues, and is integrated into the onboarding flow as a mandatory pre-track-selection gate.
 
 ## Glossary
 
@@ -20,12 +20,12 @@ The senzing-bootcamp power currently ships two overlapping environment-check scr
 
 ### Requirement 1: Consolidated Preflight Script
 
-**User Story:** As a bootcamp maintainer, I want a single preflight script that replaces both `check_prerequisites.py` and `preflight_check.py`, so that environment verification logic lives in one place and is easier to maintain.
+**User Story:** As a bootcamp maintainer, I want a single preflight script that replaces both `check_prerequisites.py` [removed] and `preflight_check.py`, so that environment verification logic lives in one place and is easier to maintain.
 
 #### Acceptance Criteria
 
 1. THE Preflight_Script SHALL reside at `senzing-bootcamp/scripts/preflight.py`.
-2. THE Preflight_Script SHALL perform all checks previously performed by `check_prerequisites.py` and `preflight_check.py` without requiring either script to be present.
+2. THE Preflight_Script SHALL perform all checks previously performed by `check_prerequisites.py` [removed] and `preflight_check.py` without requiring either script to be present.
 3. THE Preflight_Script SHALL depend only on the Python standard library (no third-party packages).
 4. THE Preflight_Script SHALL be cross-platform, supporting Linux, macOS, and Windows.
 
@@ -153,7 +153,7 @@ The senzing-bootcamp power currently ships two overlapping environment-check scr
 
 #### Acceptance Criteria
 
-1. THE Preflight_Script SHALL include a deprecation notice at the top of both `check_prerequisites.py` and `preflight_check.py` directing users to `preflight.py`.
-2. WHEN `check_prerequisites.py` is executed directly, THE Script SHALL print a deprecation warning to stderr and delegate to the Preflight_Script.
+1. THE Preflight_Script SHALL include a deprecation notice at the top of both `check_prerequisites.py` [removed] and `preflight_check.py` directing users to `preflight.py`.
+2. WHEN `check_prerequisites.py` [removed] is executed directly, THE Script SHALL print a deprecation warning to stderr and delegate to the Preflight_Script.
 3. WHEN `preflight_check.py` is executed directly, THE Script SHALL print a deprecation warning to stderr and delegate to the Preflight_Script.
 4. THE `POWER.md` Useful Commands section SHALL list `preflight.py` as the primary environment verification command and mark the legacy scripts as deprecated.

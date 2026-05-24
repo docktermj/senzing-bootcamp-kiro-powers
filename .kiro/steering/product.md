@@ -1,5 +1,6 @@
 ---
 inclusion: always
+description: "Product purpose, users, delivery model, and key constraints"
 ---
 
 # Product Context

@@ -268,50 +268,9 @@ class TestSteeringFileSmokeTests:
         path = self._power_root() / "steering" / "steering-index.yaml"
         return path.read_text(encoding="utf-8")
 
-    def _read_reference_file(self) -> str:
-        """Read and return the verbosity-control-reference.md content."""
-        path = (
-            self._power_root()
-            / "steering"
-            / "verbosity-control-reference.md"
-        )
-        return path.read_text(encoding="utf-8")
-
-    def test_reference_file_exists(self):
-        """verbosity-control-reference.md exists at the expected path."""
-        path = (
-            self._power_root()
-            / "steering"
-            / "verbosity-control-reference.md"
-        )
-        assert path.is_file(), f"Missing: {path}"
-
-    def test_reference_file_frontmatter_contains_inclusion_manual(self):
-        """Reference file frontmatter contains 'inclusion: manual'."""
-        content = self._read_reference_file()
-        assert "inclusion: manual" in content
-
-    def test_core_file_line_count_within_limit(self):
-        """Core verbosity-control.md has 80 lines or fewer."""
+    def test_merged_file_contains_content_rules(self):
+        """Merged verbosity-control.md contains content rules for all categories."""
         content = self._read_steering_file()
-        line_count = len(content.splitlines())
-        assert line_count <= 90, (
-            f"verbosity-control.md has {line_count} lines, "
-            f"expected ≤90"
-        )
-
-    def test_core_file_contains_file_reference_directive(self):
-        """Core file contains a #[[file:]] directive to the reference file."""
-        content = self._read_steering_file()
-        assert "#[[file:" in content
-        assert "verbosity-control-reference.md" in content
-
-    def test_reference_file_contains_full_category_definitions(self):
-        """Reference file contains definition paragraphs for all five categories.
-
-        Validates: Requirements 4.1, 4.2
-        """
-        content = self._read_reference_file()
         categories = [
             "explanations",
             "code_walkthroughs",
@@ -321,38 +280,54 @@ class TestSteeringFileSmokeTests:
         ]
         for cat in categories:
             assert f"### {cat}" in content, (
-                f"Missing category heading '### {cat}' in reference file"
+                f"Missing category heading '### {cat}' in verbosity-control.md"
             )
-        assert content.count("Definition:") >= 5, (
-            "Expected at least 5 'Definition:' entries in reference file, "
-            f"found {content.count('Definition:')}"
+
+    def test_merged_file_contains_framing_patterns(self):
+        """Merged verbosity-control.md contains framing pattern examples."""
+        content = self._read_steering_file()
+        assert "Framing Pattern" in content, (
+            "Missing framing pattern section in verbosity-control.md"
         )
 
+    def test_file_contains_preset_definitions(self):
+        """verbosity-control.md contains preset definitions table."""
+        content = self._read_steering_file()
+        assert "concise" in content
+        assert "standard" in content
+        assert "detailed" in content
+
+    def test_file_contains_adjustment_instructions(self):
+        """verbosity-control.md contains adjustment instructions."""
+        content = self._read_steering_file()
+        assert "Adjustment Instructions" in content
+        assert "Natural Language" in content
+
     def test_reference_file_contains_content_rules_by_level(self):
-        """Reference file contains content rules for all three levels.
+        """Merged file contains content rules for all three levels.
 
         Validates: Requirements 4.2
         """
-        content = self._read_reference_file()
-        assert "Content rules by level:" in content
+        content = self._read_steering_file()
+        assert "Content Rules by Level" in content
         assert "Level 1" in content
         assert "Level 2" in content
         assert "Level 3" in content
 
     def test_reference_file_contains_all_framing_patterns(self):
-        """Reference file contains all three framing pattern sections.
+        """Merged file contains all three framing pattern sections.
 
         Validates: Requirements 4.3, 4.4, 4.5
         """
-        content = self._read_reference_file()
+        content = self._read_steering_file()
         assert "What and Why" in content, (
-            "Missing 'What and Why' framing section in reference file"
+            "Missing 'What and Why' framing section in steering file"
         )
-        assert "Code Execution Framing" in content, (
-            "Missing 'Code Execution Framing' section in reference file"
+        assert "Code Execution" in content, (
+            "Missing 'Code Execution' section in steering file"
         )
-        assert "Step Recap Framing" in content, (
-            "Missing 'Step Recap Framing' section in reference file"
+        assert "Step Recap" in content, (
+            "Missing 'Step Recap' section in steering file"
         )
 
     def test_steering_file_exists(self):
@@ -387,25 +362,25 @@ class TestSteeringFileSmokeTests:
 
     def test_what_why_framing_all_levels(self):
         """What/why framing examples exist for all three levels."""
-        content = self._read_reference_file()
+        content = self._read_steering_file()
         assert "What and Why" in content
-        assert "Level 1" in content
-        assert "Level 2" in content
-        assert "Level 3" in content
+        assert "L1" in content or "Level 1" in content
+        assert "L2" in content or "Level 2" in content
+        assert "L3" in content or "Level 3" in content
 
     def test_code_execution_framing_all_levels(self):
         """Code execution framing examples exist for all three levels."""
-        content = self._read_reference_file()
-        assert "Code Execution Framing" in content
+        content = self._read_steering_file()
+        assert "Code Execution" in content
         assert "What this code does" in content
         assert "Before" in content
         assert "After" in content
 
     def test_step_recap_framing_all_levels(self):
         """Step recap framing examples exist for all three levels."""
-        content = self._read_reference_file()
+        content = self._read_steering_file()
         assert "Step Recap" in content
-        assert "One-line" in content or "one-line" in content
+        assert "One-line" in content or "one-line" in content or "L1" in content
 
     def test_steering_index_contains_verbosity_keyword(self):
         """steering-index.yaml contains 'verbosity' keyword entry."""

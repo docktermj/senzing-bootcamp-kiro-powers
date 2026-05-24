@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-30 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
+31 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
 
 ## Critical Hooks (created during onboarding)
 
@@ -17,7 +17,7 @@ inclusion: manual
 | mcp-first-invariant | agentStop → askAgent | Audits every agent response for MCP-first invariant compliance. Silent when compliant; triggers self-correction when Senzing content is presented without prior MCP tool consultation. |
 | question-format-gate | agentStop → askAgent | agentStop hook that inspects every agent response for compound 👉 questions with prose-joined alternatives. If detected, instructs the agent to rewrite using numbered list format. Non-compound outputs pass through unchanged. |
 | review-bootcamper-input | promptSubmit → askAgent | Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture. |
-| write-policy-gate | preToolUse → askAgent | Consolidated preToolUse write hook that performs four policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, (3) validates file path policies, and (4) enforces root file placement rules. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions). |
+| write-policy-gate | preToolUse → askAgent | Consolidated preToolUse write hook that performs five policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, (3) validates file path policies including append-only guard for the feedback file, (4) enforces root file placement rules. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions). |
 
 ## Module Hooks (created when module starts)
 
@@ -45,6 +45,7 @@ inclusion: manual
 | error-recovery-context | any | postToolUse → askAgent | Detects shell command failures and consults common-pitfalls.md and recovery-from-mistakes.md to provide targeted error recovery guidance during bootcamp modules. |
 | git-commit-reminder | any | userTriggered → askAgent | Reminds the user to commit their work after completing a module. Triggered manually via button click. |
 | module-completion-celebration | any | postTaskExecution → askAgent | Detects module completion boundaries and displays a brief celebration with next-step guidance. |
+| module-recap-append | any | postTaskExecution → askAgent | Appends a structured recap section to docs/bootcamp_recap.md when a module is completed. |
 
 ## Hook Creation
 

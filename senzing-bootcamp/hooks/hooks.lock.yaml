@@ -1,6 +1,6 @@
 # AUTO-GENERATED — do not edit manually.
 # Run: python3 senzing-bootcamp/scripts/sync_hook_registry.py --write
-generated_at: "2026-05-23T16:31:56Z"
+generated_at: "2026-05-24T15:10:21Z"
 hooks:
   - id: analyze-after-mapping
     version: "1.0.0"
@@ -71,6 +71,10 @@ hooks:
     category: critical
     event_type: agentStop
   - id: module-completion-celebration
+    version: "1.0.0"
+    category: module
+    event_type: postTaskExecution
+  - id: module-recap-append
     version: "1.0.0"
     category: module
     event_type: postTaskExecution

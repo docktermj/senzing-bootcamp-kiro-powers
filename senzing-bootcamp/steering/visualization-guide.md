@@ -127,7 +127,7 @@ The Python generator script approach is the **MANDATED** method for all visualiz
 
 `write_html.py` resides alongside `server.py` in the web service directory:
 
-```
+```text
 src/system_verification/web_service/
 ├── write_html.py      # Python generator script (triple-quoted HTML string)
 ├── index.html         # Generated output (produced by write_html.py)

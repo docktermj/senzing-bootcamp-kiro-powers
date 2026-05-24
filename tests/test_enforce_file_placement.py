@@ -387,13 +387,13 @@ class TestCheck4PromptStructure:
         assert "The target path is NOT a blocked file type in the project root" in hook_prompt
 
     def test_four_checks_in_description(self):
-        """Hook description mentions four policy checks."""
+        """Hook description mentions five policy checks."""
         hook_path = (
             REPO_ROOT / "senzing-bootcamp" / "hooks" / "write-policy-gate.kiro.hook"
         )
         with open(hook_path, encoding="utf-8") as f:
             data = json.load(f)
-        assert "four policy checks" in data["description"]
+        assert "five policy checks" in data["description"]
 
 
 # ===========================================================================

@@ -26,6 +26,7 @@ cache_key = tool_name + "|" + JSON-serialized parameters sorted by key
 ```
 
 Serialization rules:
+
 - Sort parameters dictionary by key (alphabetical, recursive for nested objects)
 - Use compact JSON separators: `(',', ':')`  — no extra whitespace
 - The `|` character separates tool name from parameters to prevent ambiguity
@@ -50,6 +51,7 @@ filename = SHA-256 hex digest of cache_key (UTF-8 encoded), truncated to 16 char
 ```
 
 Properties:
+
 - Exactly 16 hexadecimal characters followed by `.json`
 - Deterministic: same cache key always produces the same filename
 - Collision-resistant for the expected cache size
@@ -95,16 +97,19 @@ Before every MCP tool call, perform this lookup:
 3. Check if `config/mcp_cache/<filename>` exists
 
 **Cache hit** — file exists and `module_id` matches the current module:
+
 - Parse the JSON file
 - Return the `response` field directly
 - Do not call the MCP server
 - The bootcamper sees no difference from a live response
 
 **Stale hit** — file exists but `module_id` does not match the current module:
+
 - Delete the stale file
 - Fall through to cache miss handling
 
 **Cache miss** — file does not exist (or was just deleted as stale):
+
 - Call the MCP server
 - On success: write a new cache entry file with all five fields populated
 - Return the response to the bootcamper
@@ -126,13 +131,17 @@ This ensures no data from a previous module context is ever served in the new mo
 When the MCP server is unreachable and no valid cache entry exists:
 
 1. Display a clear error to the bootcamper:
+
    ```text
    The Senzing MCP server is unreachable and no cached response is available for this request.
    ```
+
 2. Suggest a remedy:
+
    ```text
    Check your network connectivity or try again in a moment.
    ```
+
 3. **Never serve a stale or expired cache entry as fallback** — this is a hard rule. Even if stale entries exist in the cache directory, do not return them when the MCP call fails.
 
 ### Corrupted Cache File Recovery

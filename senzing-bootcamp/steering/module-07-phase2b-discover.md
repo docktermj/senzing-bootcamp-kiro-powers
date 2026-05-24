@@ -13,6 +13,8 @@ inclusion: manual
 > already completed. Resume from the first incomplete step. Do not re-run
 > completed demonstrations.
 
+## Steps 4d–4e: Discover (continued)
+
 ### Step 4d: Relationship Network Exploration
 
 > **Agent instruction:** Demonstrate Relationship Network exploration using

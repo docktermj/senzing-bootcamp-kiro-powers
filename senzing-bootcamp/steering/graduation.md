@@ -6,8 +6,9 @@ inclusion: manual
 
 This steering file guides the agent through transitioning a completed bootcamp project into a production-ready codebase. Load it when the bootcamper accepts the graduation offer at track completion, or when they say "run graduation" or "graduate."
 
-The workflow has five sequential steps:
+The workflow has a preparatory step followed by five sequential steps:
 
+0. **Recap PDF Generation** — Generate a PDF of the bootcamp recap document (non-blocking)
 1. **Production Project Structure** — Copy production-relevant code into a clean `production/` directory, excluding bootcamp scaffolding
 2. **Production Configuration Files** — Generate `.env.production`, `.env.example`, `docker-compose.yml`, a CI/CD pipeline, and `.gitignore`
 3. **Production README** — Generate a production-ready `README.md` with no bootcamp language
@@ -28,7 +29,31 @@ Before starting any steps, gather the bootcamper's context:
 
 3. **Fallback if files are missing:** Inform the bootcamper, prompt for **language** and **database type**, use sensible defaults for everything else (track: unknown, platform: GitHub Actions, data_sources: []).
 
-Store these values for use throughout the workflow. Proceed to Step 1.
+Store these values for use throughout the workflow. Proceed to Step 0.
+
+## Step 0: Recap PDF Generation
+
+Generate a PDF version of the bootcamper's recap document for sharing. This step is **non-blocking** — graduation continues regardless of the outcome.
+
+**Procedure:**
+
+1. Check if `docs/bootcamp_recap.md` exists. If it does not exist, skip this step silently and proceed to Step 1.
+
+2. Run the PDF generation script:
+
+   ```bash
+   python scripts/generate_recap_pdf.py
+   ```
+
+   This converts `docs/bootcamp_recap.md` into `docs/bootcamp_recap.pdf`, rendering a cover page (bootcamp title, bootcamper name, completion date, total duration) and per-module pages with formatted headings, lists, and code blocks.
+
+3. **Handle errors gracefully:**
+   - If the script reports `fpdf2` is not installed: Inform the bootcamper that PDF generation was skipped and suggest `pip install fpdf2` to enable it. Proceed to Step 1.
+   - If the script fails for any other reason: Inform the bootcamper of the failure reason and proceed to Step 1.
+
+4. On success, inform the bootcamper: "📄 Recap PDF generated at `docs/bootcamp_recap.pdf`."
+
+Proceed to Step 1.
 
 ## Step 1: Production Project Structure
 

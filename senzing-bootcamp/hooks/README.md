@@ -1,6 +1,6 @@
 # Senzing Bootcamp Hooks
 
-This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 30 hooks total.
+This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 31 hooks total.
 
 ## Hook Name Style Guide
 
@@ -202,6 +202,12 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 **Action:** On detecting a new entry in `modules_completed`, displays a brief celebration banner and offers the next module
 **Use case:** Marks module boundaries and orients the bootcamper toward the next step
 
+### 31. Module Recap Append (`module-recap-append.kiro.hook`)
+
+**Trigger:** After task execution (postTaskExecution)
+**Action:** On detecting a new entry in `modules_completed`, appends a structured recap section to `docs/bootcamp_recap.md` capturing information shared, questions asked, answers given, and actions taken
+**Use case:** Builds a running record of the bootcamp experience for PDF generation at graduation
+
 ## Installation
 
 **Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.
@@ -277,6 +283,7 @@ You can customize any hook by editing the JSON file:
 - ✅ Error Recovery Context
 - ✅ Git Commit Reminder
 - ✅ Module Completion Celebration
+- ✅ Module Recap Append
 
 ### Module 1 (Business Problem)
 

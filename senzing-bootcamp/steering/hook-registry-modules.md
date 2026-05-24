@@ -461,3 +461,83 @@ CONSTRAINTS:
 - id: `module-completion-celebration`
 - name: `to celebrate module completion`
 - description: `Detects module completion boundaries and displays a brief celebration with next-step guidance.`
+
+**module-recap-append** — any module (postTaskExecution → askAgent)
+
+Prompt:
+
+````text
+You are checking whether the bootcamper just completed a module and, if so, appending a structured recap section to docs/bootcamp_recap.md. Follow these steps exactly:
+
+1. BOUNDARY DETECTION: Read `config/bootcamp_progress.json` and examine the `modules_completed` array. If `modules_completed` has not changed (no new module number was added since the previous state), produce no output at all — do nothing, do not acknowledge, do not explain. Let the conversation continue normally.
+
+2. IDENTIFY COMPLETED MODULE: If a new module number appears in `modules_completed`, identify that module number. Read `config/module-dependencies.yaml` to find the module name corresponding to that number.
+
+3. GATHER SESSION CONTENT: Review the current session context to collect:
+   - Information Shared: key concepts, explanations, and reference material presented to the bootcamper during this module
+   - Questions Asked: all substantive questions the agent posed to the bootcamper (exclude rhetorical or transitional prompts)
+   - Answers Given: the bootcamper's responses to each question, maintaining 1:1 correspondence with questions
+   - Actions Taken: all file creations, modifications, code generation, configuration changes, and commands executed during the module
+   - Duration: elapsed time from module start to completion
+
+4. GET BOOTCAMPER NAME: Read `config/bootcamp_preferences.yaml` and extract the bootcamper's name. If the file does not exist or the name field is missing, use "Bootcamper" as the default.
+
+5. CREATE OR VERIFY FILE: Check if `docs/bootcamp_recap.md` exists.
+   - If it does NOT exist, create it with this header:
+     ```
+     # Senzing Bootcamp Recap
+
+     **Bootcamper:** [Name]
+     **Started:** [ISO 8601 timestamp with timezone of current time]
+     **Total Duration:** [elapsed time]
+
+     ---
+     ```
+   - If it already exists, do NOT overwrite or modify any existing content.
+
+6. APPEND RECAP SECTION: Append the following structured section to the end of `docs/bootcamp_recap.md`:
+   ```
+
+   ## Module N: [Module Name] — [ISO 8601 timestamp with timezone]
+
+   ### Information Shared
+   - [Concept or explanation presented]
+   - [Reference material shared]
+
+   ### Questions Asked
+   1. [Agent question to bootcamper]
+   2. [Agent question to bootcamper]
+
+   ### Answers Given
+   1. [Bootcamper response to question 1]
+   2. [Bootcamper response to question 2]
+
+   ### Actions Taken
+   - Created `[file path]`
+   - Modified `[file path]`
+   - Ran `[command]`
+
+   ### Duration
+   [elapsed time for module]
+
+   ---
+   ```
+
+7. UPDATE TOTAL DURATION: If the file header contains a **Total Duration** line, update it to reflect the cumulative duration across all modules completed so far. The total duration must be monotonically non-decreasing.
+
+8. CONFIRMATION: Display a single brief line confirming the recap was updated, for example: "Recap updated for Module N: [Module Name]."
+
+CONSTRAINTS:
+- All timestamps MUST use ISO 8601 format with timezone offset (e.g., 2026-05-23T10:30:00-05:00).
+- Preserve all existing file content byte-for-byte when appending.
+- If any section has no content (e.g., no questions were asked), include the subsection heading with a single item "None" or "N/A".
+- If the file cannot be written due to a file system error, log a warning message and continue without blocking the module completion flow. Do NOT raise an error or halt execution.
+- Do NOT alter the behavior of any other hooks (celebration, journal entry, etc.).
+- Keep the recap factual and concise — summarize rather than reproduce entire conversations.
+- Do NOT include secrets, credentials, environment variable values, or connection strings in the recap content.
+- Module sections must appear in chronological order of completion timestamps.
+````
+
+- id: `module-recap-append`
+- name: `to append module recap on completion`
+- description: `Appends a structured recap section to docs/bootcamp_recap.md when a module is completed.`

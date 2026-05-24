@@ -6,6 +6,31 @@ inclusion: manual
 
 Load this after completing any module. Handles journal entries, certificates, and path completion.
 
+## Recap Append
+
+The `hooks/module-recap-append.kiro.hook` hook handles this automatically as a `postTaskExecution` hook. When a module is marked complete in `config/bootcamp_progress.json`, the hook gathers session content and appends a structured Recap_Section to `docs/bootcamp_recap.md`.
+
+### What is gathered
+
+- **Information Shared:** Key concepts, explanations, and reference material presented during the module
+- **Questions Asked:** All substantive questions the agent posed to the bootcamper
+- **Answers Given:** The bootcamper's responses, maintaining 1:1 correspondence with questions
+- **Actions Taken:** File creations, modifications, code generation, and commands executed
+- **Duration:** Elapsed time from module start to completion
+
+### Workflow position
+
+The recap append executes after the progress file update (module marked complete) and before the journal entry below. It completes without requiring additional bootcamper confirmation and displays a single confirmation line (e.g., "Recap updated for Module N: [Name].").
+
+### Non-blocking behavior
+
+If the recap append fails for any reason (file system error, missing data), it logs a warning and continues the module completion flow. It does not halt execution, raise errors, or alter the behavior of existing hooks or the journal entry process.
+
+### References
+
+- Hook: `hooks/module-recap-append.kiro.hook`
+- Output: `docs/bootcamp_recap.md`
+
 ## Bootcamp Journal
 
 Append to `docs/bootcamp_journal.md` (create if needed):

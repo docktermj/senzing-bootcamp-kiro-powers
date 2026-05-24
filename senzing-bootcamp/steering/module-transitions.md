@@ -75,6 +75,7 @@ When the bootcamper confirms a module transition (responds affirmatively to "Rea
 **Total response must exceed 50 characters.** This is a hard minimum — the actual response will be significantly longer given the required elements above.
 
 **Violations that trigger the detect-and-retry hook:**
+
 - Output is only "." (single period)
 - Output is empty or whitespace-only
 - Output is a single-word acknowledgment ("OK", "Sure", "Got it")

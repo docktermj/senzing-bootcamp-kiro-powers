@@ -37,6 +37,7 @@ At the start of every turn where you process bootcamper input, check for and del
 ### Numbered Step Execution Boundary
 
 Every numbered step containing a 👉 question is a mandatory execution boundary with the same absolute precedence as ⛔ mandatory gates. The agent SHALL:
+
 - Execute each numbered step individually in sequential order
 - Never advance `current_step` by more than 1 without writing intermediate checkpoints
 - Never skip a 👉 step for any internal reason (context budget, session length, redundancy)

@@ -287,7 +287,7 @@ file_metadata:
     token_count: 704
     size_category: medium
   agent-instructions.md:
-    token_count: 4642
+    token_count: 4643
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -335,19 +335,19 @@ file_metadata:
     token_count: 658
     size_category: medium
   feedback-workflow.md:
-    token_count: 1199
+    token_count: 1239
     size_category: medium
   graduation.md:
-    token_count: 2547
+    token_count: 2847
     size_category: large
   hook-registry-critical.md:
-    token_count: 7767
+    token_count: 8138
     size_category: large
   hook-registry-modules.md:
-    token_count: 6875
+    token_count: 7887
     size_category: large
   hook-registry.md:
-    token_count: 1879
+    token_count: 1929
     size_category: medium
   inline-status.md:
     token_count: 460
@@ -371,7 +371,7 @@ file_metadata:
     token_count: 434
     size_category: small
   mcp-response-caching.md:
-    token_count: 1440
+    token_count: 1442
     size_category: medium
   mcp-tool-decision-tree.md:
     token_count: 2268
@@ -428,7 +428,7 @@ file_metadata:
     token_count: 3436
     size_category: large
   module-07-phase2b-discover.md:
-    token_count: 3162
+    token_count: 3171
     size_category: large
   module-07-query-visualize-discover.md:
     token_count: 3258
@@ -470,7 +470,7 @@ file_metadata:
     token_count: 850
     size_category: medium
   module-completion.md:
-    token_count: 2279
+    token_count: 2634
     size_category: large
   module-prerequisites.md:
     token_count: 1344
@@ -506,7 +506,7 @@ file_metadata:
     token_count: 547
     size_category: medium
   session-resume.md:
-    token_count: 2580
+    token_count: 2587
     size_category: large
   skip-step-protocol.md:
     token_count: 751
@@ -527,7 +527,7 @@ file_metadata:
     token_count: 2048
     size_category: large
   visualization-guide.md:
-    token_count: 4332
+    token_count: 4334
     size_category: large
   visualization-web-service.md:
     token_count: 2195
@@ -537,7 +537,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 152478
+  total_tokens: 154627
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

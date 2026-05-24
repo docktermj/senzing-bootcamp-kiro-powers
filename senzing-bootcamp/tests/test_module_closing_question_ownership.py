@@ -494,6 +494,11 @@ _HEADINGS_MODULE_11 = [
 
 _HEADINGS_MODULE_COMPLETION = [
     "# Module Completion Workflow",
+    "## Recap Append",
+    "### What is gathered",
+    "### Workflow position",
+    "### Non-blocking behavior",
+    "### References",
     "## Bootcamp Journal",
     "## Module N: [Name] \u2014 Completed [date]",
     "## Module Completion Certificate",
@@ -639,7 +644,7 @@ _HASH_UNAFFECTED: dict[str, str] = {
 }
 
 _HASH_HOOK = "2b7c667a7abe01734babb71e212841ec2358201a8d7a999e06006d44a878c72a"
-_HASH_AGENT_INSTRUCTIONS = "833e681dceee477e4779cc0401313bf9c775484d2e8c26288a83d78c2ff41a5e"
+_HASH_AGENT_INSTRUCTIONS = "d2db7284ea0c520ed7ddbe5f292ae4b37f929a8b640ba5ba3e78a21774f536b1"
 _HASH_ONBOARDING_FLOW = "5476a0863b092dde2e076625fb29221b282cf2391b8e855c216f08aacecf89c4"
 
 

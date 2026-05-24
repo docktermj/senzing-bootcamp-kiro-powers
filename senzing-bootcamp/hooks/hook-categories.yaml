@@ -51,3 +51,4 @@ modules:
     - error-recovery-context
     - git-commit-reminder
     - module-completion-celebration
+    - module-recap-append

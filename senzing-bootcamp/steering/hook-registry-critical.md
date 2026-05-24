@@ -357,6 +357,7 @@ FAST PATH GATE: If ALL of the following are true, produce no output at all:
 - The target path does NOT end with '.question_pending'
 - The content does NOT contain SQL patterns (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA) targeting Senzing database indicators (G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_)
 - The target path is NOT a blocked file type in the project root (or if it is in the root, it is on the ROOT WHITELIST)
+- The target path is NOT 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md' being overwritten via fs_write (append via fs_append is allowed)
 
 Your response when fast path passes: [empty — produce zero tokens]
 OUTPUT: (none)
@@ -435,6 +436,23 @@ SLOW PATH: If Q1 is NO (path is outside working directory) OR Q2 is YES (feedbac
 - For misrouted feedback: STOP. Redirect to docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md.
 
 CONTENT CHECK (only if fast path passed): Does the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If YES: STOP and require replacement with project-relative equivalents. If NO: do nothing — proceed silently.
+
+APPEND-ONLY GUARD: If the target path is 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md':
+
+(a) If the tool being invoked is fs_write (full file overwrite, NOT fs_append):
+STOP. Do not proceed with the write. Output:
+⚠️ FEEDBACK FILE OVERWRITE BLOCKED — docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md is append-only.
+This file accumulates bootcamper feedback across the entire bootcamp. Overwriting it would destroy previous entries.
+Fix: Use fs_append to add new feedback entries. NEVER use fs_write on this file after initial creation.
+If the file does not yet exist, fs_write is permitted for initial creation from the template.
+
+(b) If the tool being invoked is str_replace (in-place edit of existing content):
+STOP. Do not proceed with the edit. Output:
+⚠️ FEEDBACK FILE MODIFICATION BLOCKED — docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md is append-only.
+Existing feedback entries must never be modified, reformatted, corrected, or deleted. The bootcamper's original words are preserved exactly as written.
+Fix: If you need to add new content, use fs_append. If the bootcamper explicitly asks to edit their own feedback, they can do so manually in their editor.
+
+(c) If the tool being invoked is fs_append: Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
 
 ---
 
@@ -530,4 +548,4 @@ FORBIDDEN output (never produce these):
 
 - id: `write-policy-gate`
 - name: `to process your response`
-- description: `Consolidated preToolUse write hook that performs four policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, (3) validates file path policies, and (4) enforces root file placement rules. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions).`
+- description: `Consolidated preToolUse write hook that performs five policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, (3) validates file path policies including append-only guard for the feedback file, (4) enforces root file placement rules. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions).`

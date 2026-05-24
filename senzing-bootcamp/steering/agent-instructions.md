@@ -73,11 +73,13 @@ When the bootcamper's request could map to multiple SDK methods in the same cate
 **This rule has the same absolute precedence as ⛔ mandatory gates.** No agent-internal reasoning — context pressure, perceived simplicity, cached knowledge from training data, session length, or token budget — can justify bypassing MCP consultation.
 
 **Pre-response checklist** (evaluate before presenting ANY Senzing content):
+
 1. Does my response contain Senzing SDK method names, attribute names, config options, error codes, or entity resolution technical details?
 2. If YES: Did I call at least one MCP tool (search_docs, get_sdk_reference, generate_scaffold, sdk_guide, explain_error_code, find_examples, mapping_workflow, get_capabilities) in this turn to retrieve that information?
 3. If NO to #2: STOP. Call the appropriate MCP tool before continuing.
 
 **Violation examples** (each is a breach of the MCP-first invariant):
+
 - Stating that `add_record` accepts a `LOAD_ID` parameter without calling `get_sdk_reference`
 - Generating code with `sz_engine.add_record(...)` without calling `generate_scaffold` or `sdk_guide`
 - Explaining that `NAME_FULL` maps to a person's full name without calling `mapping_workflow` or `search_docs`

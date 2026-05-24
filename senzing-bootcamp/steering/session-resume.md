@@ -91,37 +91,43 @@ Before proceeding to Step 3, confirm that `conversation-protocol.md` is loaded (
 After asking any 👉 question, produce zero additional tokens. Do not answer the question. Do not assume the bootcamper's response.
 
 **WRONG** — Agent answers its own question:
-```
+
+```text
 👉 Which language would you like to use for the bootcamp?
 I'd recommend Python since it has the best SDK support...
 ```
 
 **CORRECT** — Agent stops after the question:
-```
+
+```text
 👉 Which language would you like to use for the bootcamp?
 🛑 STOP
 ```
 
 **WRONG** — Agent assumes the response:
-```
+
+```text
 👉 Ready to continue with Module 3?
 Great, let's get started with the system verification...
 ```
 
 **CORRECT** — Agent waits for confirmation:
-```
+
+```text
 👉 Ready to continue with Module 3?
 🛑 STOP
 ```
 
 **WRONG** — Agent provides unsolicited follow-up:
-```
+
+```text
 👉 Would you like to see the entity resolution results?
 While you decide, here are some things to look for in the output...
 ```
 
 **CORRECT** — Agent produces zero tokens after the question:
-```
+
+```text
 👉 Would you like to see the entity resolution results?
 🛑 STOP
 ```

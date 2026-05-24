@@ -1,4 +1,4 @@
-# Implementation Plan:
+# Implementation Plan
 
 ## Overview
 
@@ -19,7 +19,7 @@ This plan implements the module-recap-document feature: a running recap file app
 - [x] 11. Write property test: total duration is monotonically non-decreasing across sequential appends [PBT]
 - [x] 12. Write property test: module sections appear in chronological order of completion timestamps [PBT]
 - [x] 13. Write edge case tests: empty sections, special markdown characters, unicode content, very long content
-- [x] 14. Create `senzing-bootcamp/hooks/module-recap-append.kiro.hook` as a `postTaskExecution` hook with prompt instructions for detecting module completion, gathering session content, and appending a structured Recap_Section to `docs/bootcamp_recap.md`
+- [x] 14. Create `senzing-bootcamp/hooks/module-recap-append.kiro.hook` as a `postTaskExecution` hook with prompt instructions for detecting module completion, gathering session content, and appending a structured Recap_Section to `docs/booSSNtcamp_recap.md`
 - [x] 15. Add "Recap Append" section to `senzing-bootcamp/steering/module-completion.md` between the existing progress update reference and the "Bootcamp Journal" section, documenting the non-blocking recap workflow
 - [x] 16. Add "Step 0: Recap PDF Generation" section to `senzing-bootcamp/steering/graduation.md` after pre-checks and before Step 1, documenting the PDF generation step with error handling
 - [x] 17. Verify the hook JSON is valid, the PDF script passes ruff linting, and the full test suite passes without regressions

@@ -432,7 +432,7 @@ The user wants to commit their bootcamp progress. Check config/bootcamp_progress
 - name: `to remind you to commit`
 - description: `Reminds the user to commit their work after completing a module. Triggered manually via button click.`
 
-**module-completion-celebration** — any module (postTaskExecution → askAgent)
+**module-completion-celebration** — any module (agentStop → askAgent)
 
 Prompt:
 
@@ -462,7 +462,7 @@ CONSTRAINTS:
 - name: `to celebrate module completion`
 - description: `Detects module completion boundaries and displays a brief celebration with next-step guidance.`
 
-**module-recap-append** — any module (postTaskExecution → askAgent)
+**module-recap-append** — any module (agentStop → askAgent)
 
 Prompt:
 

@@ -178,8 +178,13 @@ When track is complete, present:
 - Next options: switch to longer track (modules carry forward), harden for production, or start using the code
 - Export option: "Would you like to export a shareable report of your bootcamp results?" — when accepted, run `python3 scripts/export_results.py` and present the output path to the bootcamper. This option appears only at track completion, not after every module.
 - Record export offer (after the export option, before the analytics offer): "📋 Would you like a record of your bootcamp journey? You can share it with your team or use it to replay the same setup on another project." — when accepted, run `python3 scripts/record_export.py` and present the output path (`docs/bootcamp_record.yaml`) to the bootcamper. When declined, proceed to the next step without generating any export file.
-- Analytics offer (after the record export offer, before the graduation offer): "📊 Would you like to see analytics on your bootcamp journey? I can show you time distribution, friction points, and how your pace compares to baselines." — when accepted, run `python3 scripts/bootcamp_analytics.py` and present the output conversationally.
-- Graduation offer (after the analytics offer, before the feedback reminder):
+- Analytics offer (after the record export offer, before the certificate generation): "📊 Would you like to see analytics on your bootcamp journey? I can show you time distribution, friction points, and how your pace compares to baselines." — when accepted, run `python3 scripts/bootcamp_analytics.py` and present the output conversationally.
+- Certificate generation (after the analytics offer, before the graduation offer):
+  Run `python3 senzing-bootcamp/scripts/generate_graduation_certificate.py` silently
+  (no confirmation prompt). If it succeeds, display:
+  "🎓 Graduation certificate generated at docs/graduation/"
+  If it fails, log a warning and continue without blocking subsequent steps.
+- Graduation offer (after the certificate generation, before the feedback reminder):
   1. Read `skip_graduation` from `config/bootcamp_preferences.yaml`. If `skip_graduation` is `true`, skip the graduation offer entirely.
   2. If not skipped, present: "🎓 Would you like to run the graduation workflow? It will help you turn your bootcamp project into a production-ready codebase — clean structure, production configs, CI/CD pipeline, and a migration checklist."
   3. If accepted: load `steering/graduation.md` and begin the workflow.

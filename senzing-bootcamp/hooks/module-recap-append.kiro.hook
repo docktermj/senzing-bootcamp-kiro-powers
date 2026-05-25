@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Appends a structured recap section to docs/bootcamp_recap.md when a module is completed.",
   "when": {
-    "type": "postTaskExecution"
+    "type": "agentStop"
   },
   "then": {
     "type": "askAgent",

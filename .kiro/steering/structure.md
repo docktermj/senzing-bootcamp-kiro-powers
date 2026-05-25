@@ -12,7 +12,7 @@ senzing-bootcamp/           # Distributed power root
 ├── config/                 # Machine-readable configs
 ├── docs/
 │   ├── modules/            # MODULE_N_*.md companion docs
-│   ├── guides/             # GLOSSARY, FAQ, QUICK_START, etc.
+│   ├── guides/             # FAQ, QUICK_START, etc.
 │   ├── feedback/           # Feedback templates
 │   ├── policies/           # Agent policies (CODE_QUALITY_STANDARDS)
 │   └── diagrams/           # Architecture and flow diagrams

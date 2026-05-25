@@ -92,6 +92,22 @@ inclusion: manual
 
     > **Agent instruction:** Only present the accept/reject gate when a prior baseline existed (i.e., this is not the first test load). On the first test load, the baseline is saved automatically in step 24b without asking.
 
+> **Agent instruction — Organize mapping output files:**
+>
+> After `mapping_workflow` steps 5–8 generate output files into the workspace
+> directory, run the organizer script to sort them into the correct project
+> subdirectories:
+>
+> ```bash
+> python3 senzing-bootcamp/scripts/organize_mapping_files.py \
+>   --source <workspace_dir> \
+>   --project-root <bootcamper_project_root>
+> ```
+>
+> Where `<workspace_dir>` is the directory passed to `mapping_workflow` as
+> `workspace_dir` and `<bootcamper_project_root>` is the bootcamper's project
+> root directory. Review the output summary to confirm files landed correctly.
+
 25. **Present results and decision gate:** Present the Phase 3 results summary for this data source. Include: records loaded, entities created, deduplication rate, quality assessment, and any issues found. Ask the bootcamper to review the results before proceeding.
 
     > **Agent instruction — Data Source Registry:** Update the source's `test_load_status` to `complete` and `test_entity_count` to the entity count from the test load in `config/data_sources.yaml`. Set `updated_at`.

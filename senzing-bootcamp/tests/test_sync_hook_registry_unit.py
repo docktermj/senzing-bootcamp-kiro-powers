@@ -55,7 +55,7 @@ class TestParseRealHookFile:
 
         assert entry.hook_id == "ask-bootcamper"
         assert entry.name == "to wait for your answer"
-        assert "bootcamper" in entry.description.lower()
+        assert "agentstop" in entry.description.lower()
         assert entry.event_type == "agentStop"
         assert entry.action_type == "askAgent"
         assert entry.prompt is not None

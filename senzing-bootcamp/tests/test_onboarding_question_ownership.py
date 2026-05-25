@@ -241,7 +241,7 @@ _EXPECTED_PHASE2_HEADINGS = [
 ]
 
 # Baseline content for hook file
-_HOOK_BASELINE_HASH = "2b7c667a7abe01734babb71e212841ec2358201a8d7a999e06006d44a878c72a"
+_HOOK_BASELINE_HASH = "2be48f67f5ab5d19f2368248e9569ec1bb8b0ccd6f39c4124b4e24da7c0fb47e"
 
 # Key informational phrases that MUST be preserved in affected steps
 # (these are NOT inline 👉 questions or WAIT lines)

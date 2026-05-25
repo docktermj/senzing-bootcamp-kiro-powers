@@ -47,6 +47,7 @@ The power is installed into Kiro IDE and connects to the Senzing MCP server (`mc
    - Module 3: 2 phases (verification, visualization)
    - Module 5: 3 phases (quality-assessment, data-mapping, test-load-validate)
    - Module 6: 4 phases (build-loading, load-first-source, multi-source, validation)
+   - Module 7: 3 phases (query-visualize, discover, discover-continued)
    - Module 8: 3 phases (requirements, benchmarking, optimization)
    - Module 9: 2 phases (assessment, hardening)
    - Module 10: 2 phases (setup, operations)
@@ -124,11 +125,11 @@ The power is installed into Kiro IDE and connects to the Senzing MCP server (`mc
 
 #### Acceptance Criteria
 
-1. THE Power SHALL provide 27 hooks organized into critical (created during onboarding), module-specific (created when the module starts), and any-module categories.
+1. THE Power SHALL provide 28 hooks organized into critical (created during onboarding), module-specific (created when the module starts), and any-module categories.
 2. CRITICAL hooks (5) SHALL include: ask-bootcamper, review-bootcamper-input, code-style-check, commonmark-validation, write-policy-gate (consolidates block-direct-sql, enforce-file-path-policies, and enforce-single-question).
 3. MODULE hooks SHALL cover: Module 1 (validate-business-problem), Module 2 (verify-sdk-setup), Module 3 (enforce-mandatory-gate, enforce-gate-on-stop, enforce-visualization-offers, gate-module3-visualization, verify-demo-results), Module 4 (validate-data-files), Module 5 (analyze-after-mapping, data-quality-check, enforce-mapping-spec, enforce-visualization-offers), Module 6 (backup-before-load, run-tests-after-change, verify-generated-code), Module 7 (enforce-visualization-offers), Module 8 (enforce-visualization-offers, validate-benchmark-results), Module 9 (security-scan-on-save), Module 10 (validate-alert-config), Module 11 (deployment-phase-gate).
-4. ANY-MODULE hooks (4) SHALL include: backup-project-on-request, error-recovery-context, git-commit-reminder, module-completion-celebration.
-5. THE hook registry (`hook-categories.yaml`, `hook-registry.md`, `hook-registry-detail.md`) SHALL stay in sync with `.kiro.hook` files — verified by `sync_hook_registry.py --verify`.
+4. ANY-MODULE hooks (5) SHALL include: backup-project-on-request, error-recovery-context, git-commit-reminder, module-completion-celebration, module-recap-append.
+5. THE hook registry (`hook-categories.yaml`, `hook-registry.md`, `hook-registry-critical.md`, `hook-registry-modules.md`) SHALL stay in sync with `.kiro.hook` files — verified by `sync_hook_registry.py --verify`.
 6. HOOK structural validation SHALL be provided by `tests/test_hook_structural_validation.py` (JSON validity, required fields, event types, patterns, toolTypes, registry consistency).
 
 ### Requirement 8: Onboarding Flow

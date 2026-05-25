@@ -30,7 +30,7 @@ from hypothesis import strategies as st
 
 _POWER_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 
-HOOK_FILE = _POWER_ROOT / "hooks" / "enforce-step-and-transition.kiro.hook"
+HOOK_FILE = _POWER_ROOT / "hooks" / "ask-bootcamper.kiro.hook"
 CATEGORIES_FILE = _POWER_ROOT / "hooks" / "hook-categories.yaml"
 
 
@@ -190,7 +190,7 @@ class TestHookRegistration:
     """
 
     def test_hook_registered_in_critical_category(self):
-        """enforce-step-and-transition must appear in the critical category list.
+        """ask-bootcamper (consolidated hook) must appear in the critical category list.
 
         **Validates: Requirements 5.5**
         """
@@ -208,7 +208,7 @@ class TestHookRegistration:
                     critical_hooks.append(stripped[2:].strip())
                 elif stripped and not stripped.startswith("#"):
                     break  # End of critical section
-        assert "enforce-step-and-transition" in critical_hooks, (
+        assert "ask-bootcamper" in critical_hooks, (
             f"Hook not found in critical category. Found: {critical_hooks}"
         )
 

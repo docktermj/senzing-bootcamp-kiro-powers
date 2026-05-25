@@ -81,6 +81,21 @@ inclusion: manual
 
    **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
 
+   > **Agent instruction — Organize mapping output files:**
+   >
+   > After `mapping_workflow` generates output files into the workspace directory,
+   > run the organizer script to sort them into the correct project subdirectories:
+   >
+   > ```bash
+   > python3 senzing-bootcamp/scripts/organize_mapping_files.py \
+   >   --source <workspace_dir> \
+   >   --project-root <bootcamper_project_root>
+   > ```
+   >
+   > Where `<workspace_dir>` is the directory passed to `mapping_workflow` as
+   > `workspace_dir` and `<bootcamper_project_root>` is the bootcamper's project
+   > root directory. Review the output summary to confirm files landed correctly.
+
 6. **Build transformation program:** Use `generate_scaffold` or mapping workflow output as foundation. Handle: input reading, field mapping, type conversion, cleansing, `DATA_SOURCE`/`RECORD_ID`, error handling. Save to `src/transform/transform_[name].[ext]`. **Tell user:** File path, what it reads/writes, what it handles.
 
    **Checkpoint:** Write step 13 to `config/bootcamp_progress.json`.

@@ -89,12 +89,12 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 - `module-02-sdk-setup.md` — Module 2: SDK Setup
 - `module-03-system-verification.md` — Module 3: System Verification (split: `module-03-phase2-visualization.md`)
 - `module-04-data-collection.md` — Module 4: Data Collection
-- `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping
-- `module-06-data-processing.md` — Module 6: Data Processing
-- `module-07-query-visualize-discover.md` — Module 7: Query, Visualize, and Discover
-- `module-08-performance.md` — Module 8: Performance Testing
-- `module-09-security.md` — Module 9: Security Hardening
-- `module-10-monitoring.md` — Module 10: Monitoring
+- `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping (split: `module-05-phase1-quality-assessment.md`, `module-05-phase2-data-mapping.md`, `module-05-phase3-test-load.md`)
+- `module-06-data-processing.md` — Module 6: Data Processing (split: `module-06-phaseA-build-loading.md`, `module-06-phaseB-load-first-source.md`, `module-06-phaseC-multi-source.md`, `module-06-phaseD-validation.md`)
+- `module-07-query-visualize-discover.md` — Module 7: Query, Visualize, and Discover (split: `module-07-phase2-discover.md`, `module-07-phase2b-discover.md`)
+- `module-08-performance.md` — Module 8: Performance Testing (split: `module-08-phaseA-requirements.md`, `module-08-phaseB-benchmarking.md`, `module-08-phaseC-optimization.md`)
+- `module-09-security.md` — Module 9: Security Hardening (split: `module-09-phaseA-assessment.md`, `module-09-phaseB-hardening.md`)
+- `module-10-monitoring.md` — Module 10: Monitoring (split: `module-10-phaseA-setup.md`, `module-10-phaseB-operations.md`)
 - `module-11-deployment.md` — Module 11: Deployment (split: `module-11-phase2-deploy.md`)
 
 ## MCP Server Configuration
@@ -183,7 +183,7 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available (31 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-step-and-transition` ⭐, `mcp-first-invariant` ⭐, `question-format-gate` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `backup-project-on-request`, `data-quality-check`, `deployment-phase-gate`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `git-commit-reminder`, `module-completion-celebration`, `module-recap-append`, `run-tests-after-change`, `security-scan-on-save`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
+Available (28 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `backup-project-on-request`, `data-quality-check`, `deployment-phase-gate`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `git-commit-reminder`, `module-completion-celebration`, `module-recap-append`, `run-tests-after-change`, `security-scan-on-save`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
 
 ## Project Directory Structure
 

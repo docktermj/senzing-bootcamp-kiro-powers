@@ -192,7 +192,7 @@ _HOOK_FILE: Path = (
     Path(__file__).resolve().parent.parent
     / "senzing-bootcamp"
     / "hooks"
-    / "enforce-step-and-transition.kiro.hook"
+    / "ask-bootcamper.kiro.hook"
 )
 
 

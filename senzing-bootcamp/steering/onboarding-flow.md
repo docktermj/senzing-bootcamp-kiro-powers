@@ -302,6 +302,7 @@ Present the overview before track selection. Cover all points naturally:
 - Built-in 500-record eval license; bring your own for more
 - Senzing provides CORD (Collections Of Relatable Data) — curated data collections designed for entity resolution evaluation. Three CORD datasets are available: Las Vegas, London, Moscow. Learn more: <https://senzing.com/senzing-ready-data-collections-cord/>. If CORD data doesn't meet your specific needs, test data can also be generated.
 - If you encounter unfamiliar terms (like Senzing Entity Specification, DATA_SOURCE, entity resolution), just ask me to explain — I'll look up the current definition from the Senzing documentation on demand
+- If you noticed hook files (like `.kiro.hook` files) appearing in your editor panel during setup — those are automated quality checks that run in the background. They do not require your review. You can safely close them, but please do not delete them — they help maintain code quality throughout the bootcamp.
 
 ### 4a. What Is Entity Resolution?
 

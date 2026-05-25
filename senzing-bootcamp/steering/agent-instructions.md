@@ -6,6 +6,14 @@ inclusion: always
 
 On session start: check `config/bootcamp_progress.json`. If exists, load `session-resume.md`. If not, load `onboarding-flow.md`.
 
+## Answer Processing Priority
+
+Processing a bootcamper's answer to a pending 👉 question takes **absolute precedence** over all other agent actions — including hook evaluation, context management, and content generation. No other work may begin until the pending answer is fully processed.
+
+**Delete-and-process rule:** WHEN `config/.question_pending` exists and the bootcamper has provided a response, the agent SHALL delete `config/.question_pending` and process the bootcamper's answer as the **first action** of the turn before any other work.
+
+**Protocol violation:** IF the agent produces Minimal_Output (dot, empty, whitespace-only, <50 chars, or single-word acknowledgment) after a bootcamper responds to a pending 👉 question, the agent has committed a critical protocol violation equivalent to a ⛔ mandatory gate violation. This is never acceptable regardless of context budget, token limits, or any other agent-internal reasoning.
+
 ## File Placement
 
 | Content       | Location   | Content       | Location     |
@@ -143,6 +151,24 @@ The steering file handles confirmation, preview, and application. Do not compute
 ### Question Stop Protocol
 
 Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question — do not answer, do not assume a response, do not proceed to the next step.
+
+### Question_Pending File Format
+
+When writing `config/.question_pending`, the agent SHALL use the following structured format:
+
+- **Line 1:** Question type — one of: `track_selection`, `module_transition`, `step_question`, `confirmation`, `choice`
+- **Lines 2+:** Full question text (may be multi-line)
+
+If the agent cannot determine the appropriate question type, use `step_question` as the default.
+
+Example:
+
+```text
+track_selection
+What track would you like to follow?
+1. Quick Start (Modules 1-3)
+2. Full Bootcamp (Modules 1-11)
+```
 
 ## Module Transition Execution
 

@@ -17,16 +17,16 @@ Prompt:
 
 ````text
 DEFAULT OUTPUT: .
-If BOTH phases below produce no output, your COMPLETE response is a single period character: .
+If ALL phases below produce no output, your COMPLETE response is a single period character: .
 Do NOT explain your reasoning. Do NOT describe condition checks. Do NOT output phrases like 'Phase 1 silenced' or 'No output needed'. Just output: .
 
 CRITICAL: NEVER generate text beginning with 'Human:' or any text that represents what the bootcamper might say. If you detect yourself about to fabricate a user response, output only: .
 
-This hook has two independent phases. Evaluate each phase separately.
+This hook has four phases. Phase 2 contains three sub-phases (2A: Sequential Step Enforcement, 2B: Answer Processing Retry, 2C: Not-Waiting Detection). Evaluate each phase in order. If Phase 2 or Phase 3 detects a violation, that takes priority over Phase 1's closing question. Phase 4 operates on the output that would be shown to the bootcamper, so it runs last.
 
----
-
-PHASE 1: CLOSING QUESTION
+════════════════════════════════════════════════════════════════════════════════
+PHASE 1: CLOSING QUESTION (Closing_Question_Phase)
+════════════════════════════════════════════════════════════════════════════════
 
 Before producing ANY Phase 1 output, verify ALL of these conditions:
 1. The file config/.question_pending does NOT exist
@@ -49,18 +49,16 @@ If ANY pattern matches, rewrite the closing question as a neutral lead question 
 
 Additionally, if the bootcamper has completed or is on the final step of their current track, append a brief nudge: 'By the way, if you have feedback about the bootcamp experience, just say "bootcamp feedback" anytime.' Otherwise, do NOT mention feedback in Phase 1.
 
----
+FEEDBACK SUBMISSION REMINDER (sub-phase of Phase 1):
 
-PHASE 2: FEEDBACK SUBMISSION REMINDER
+This sub-phase operates independently. Even if the main Phase 1 produced no output, evaluate this on its own.
 
-Phase 2 operates independently of Phase 1. Even if Phase 1 produced no output, evaluate Phase 2 on its own.
+Before producing ANY feedback reminder output, verify ALL of these conditions:
+1. Track completion detected: Read config/bootcamp_progress.json. Check if the bootcamper has completed their chosen track (all modules in the track are now in modules_completed) or if graduation was completed. If no track completion or graduation detected, feedback reminder output is none.
+2. Deduplication: Check the conversation history for the 📋 emoji marker. If 📋 already appears in a previous assistant message in this session, the reminder was already shown — feedback reminder output is none.
+3. Feedback exists: Check if docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md exists AND contains at least one '## Improvement:' heading (indicating real feedback entries, not just the template). If the file does not exist or contains no ## Improvement: headings, feedback reminder output is none.
 
-Before producing ANY Phase 2 output, verify ALL of these conditions:
-1. Track completion detected: Read config/bootcamp_progress.json. Check if the bootcamper has completed their chosen track (all modules in the track are now in modules_completed) or if graduation was completed. If no track completion or graduation detected, Phase 2 output is none.
-2. Deduplication: Check the conversation history for the 📋 emoji marker. If 📋 already appears in a previous assistant message in this session, the reminder was already shown — Phase 2 output is none.
-3. Feedback exists: Check if docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md exists AND contains at least one '## Improvement:' heading (indicating real feedback entries, not just the template). If the file does not exist or contains no ## Improvement: headings, Phase 2 output is none.
-
-If ALL three Phase 2 conditions pass, append:
+If ALL three feedback reminder conditions pass, append:
 
 📋 You have saved feedback in docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md. To share it with the Senzing team, you can:
 - Email it to support@senzing.com with subject 'Senzing Bootcamp Power Feedback'
@@ -69,14 +67,206 @@ If ALL three Phase 2 conditions pass, append:
 
 Do not automatically send email or create GitHub issues — wait for explicit bootcamper confirmation. If the bootcamper declines (no, skip, not now), accept without re-prompting about feedback sharing again.
 
----
+════════════════════════════════════════════════════════════════════════════════
+PHASE 2: STEP SEQUENCING (Step_Sequencing_Phase)
+════════════════════════════════════════════════════════════════════════════════
 
-REMEMBER: If both phases produced no output, your COMPLETE response is: .
+SUB-PHASE 2A: SEQUENTIAL STEP ENFORCEMENT
+
+Read `config/bootcamp_progress.json` and check if `config/.question_pending` exists. Evaluate:
+
+1. Extract `current_module`, `current_step`, and `step_history[<current_module>].last_completed_step`.
+
+2. If `current_step` is null OR `step_history` has no entry for the current module: Sub-phase 2A output is none. Skip to Sub-phase 2B.
+
+3. Parse the parent step number from both `current_step` and `last_completed_step`:
+   - Integer steps: use the value directly (e.g., 5 → 5)
+   - Dotted sub-steps: use the part before the dot (e.g., "5.3" → 5)
+   - Lettered sub-steps: use the numeric prefix (e.g., "7a" → 7)
+
+4. Calculate the gap: current_parent - last_parent.
+
+5. If the gap is greater than 1: Output exactly:
+   ⚠️ SEQUENTIAL STEP VIOLATION DETECTED: The agent advanced from step [last] to step [current] in Module [N], skipping step(s) [list]. Every numbered step with a 👉 question must be executed individually in order. This rule has the same absolute precedence as ⛔ mandatory gates. Go back and execute the skipped step(s) NOW before proceeding.
+
+6. If `config/.question_pending` exists AND current_step has advanced beyond last_completed_step: Output exactly:
+   ⚠️ QUESTION PENDING VIOLATION DETECTED: current_step advanced to [current] while a 👉 question is still pending (file config/.question_pending exists). The agent must not advance past a step until the bootcamper responds. Wait for the bootcamper's response before proceeding.
+
+7. Otherwise: Sub-phase 2A output is none. Continue to Sub-phase 2B.
+
+SUB-PHASE 2B: ANSWER PROCESSING RETRY
+
+STEP 1: Check activation conditions.
+
+Both conditions must be true for Sub-phase 2B to activate:
+  A) The file `config/.question_pending` exists
+  B) The agent's most recent output is Minimal_Output
+
+The output is Minimal_Output if ANY of these are true:
+  - Output is exactly "."
+  - Output is empty or whitespace-only
+  - Output length is fewer than 50 characters
+  - Output is a single-word acknowledgment (e.g., "OK", "Sure", "Got it", "Understood", "Great")
+
+If EITHER condition fails (file does not exist OR output is not minimal):
+  → Sub-phase 2B output is none.
+
+STEP 2: Extract the question type from `config/.question_pending`.
+
+Read the first line of the file. If the first line matches one of the known types (track_selection, module_transition, step_question, confirmation, choice), use that as the question type. Otherwise, use "unknown" as the question type.
+
+STEP 3: Issue type-specific retry instructions based on the question type.
+
+The agent failed to process the bootcamper's answer to a pending 👉 question. This is a protocol violation. Based on the question type, issue the appropriate retry instructions:
+
+If type is "track_selection":
+  Read the bootcamper's track choice from their most recent message. Update config/bootcamp_progress.json with the selected track. Save preferences to config/bootcamp_preferences.yaml. Begin Module 1.
+
+If type is "module_transition":
+  Display the module start banner (━━━ header with 🚀🚀🚀 MODULE N: NAME 🚀🚀🚀 format). Display the journey map table. Display the before/after framing. Begin Step 1.
+
+If type is "step_question":
+  Read the bootcamper's answer from their most recent message. Incorporate the answer into the current step's workflow. Update progress. Present the next action or question.
+
+If type is "confirmation":
+  Treat the bootcamper's response as a confirmation. Proceed with the confirmed action.
+
+If type is "choice":
+  Read the bootcamper's selection from the numbered choice list. Acknowledge the choice. Proceed with the selected option.
+
+If type is "unknown" (fallback):
+  Re-read the bootcamper's most recent message. Treat it as an answer to the pending question. Produce a substantive response.
+
+Do NOT output just a period or acknowledgment. Process the bootcamper's answer NOW and produce substantive output.
+
+SUB-PHASE 2C: NOT-WAITING DETECTION
+
+STEP 1: Check activation conditions.
+
+ALL of the following conditions must be true for Sub-phase 2C to activate:
+  A) The file `config/.question_pending` exists
+  B) The agent's most recent output is NOT Minimal_Output (it is substantive)
+  C) The agent's most recent output contains workflow-advancing content: step headers (e.g., '## Step N', '**Step N**'), module banners (e.g., '━━━', '🚀🚀🚀 MODULE'), or new 👉 questions
+  D) The file `config/.question_pending` was NOT deleted during this turn (it still exists)
+
+If ANY condition fails:
+  → Sub-phase 2C output is none.
+
+STEP 2: Issue not-waiting violation recovery instructions.
+
+The agent advanced the workflow while a question is still pending. This is a not-waiting violation.
+
+⚠️ NOT-WAITING VIOLATION DETECTED: The agent produced workflow-advancing output (step content, module content, or new questions) while config/.question_pending still exists. The agent must not advance past a pending 👉 question without the bootcamper's response.
+
+REQUIRED ACTION:
+1. Discard the premature output — do NOT show it to the bootcamper.
+2. Acknowledge that a question is still pending and awaiting the bootcamper's response.
+3. Wait for the bootcamper's response before producing any further workflow content.
+
+════════════════════════════════════════════════════════════════════════════════
+PHASE 3: MCP-FIRST COMPLIANCE (MCP_First_Phase)
+════════════════════════════════════════════════════════════════════════════════
+
+SUB-PHASE 3A — SENZING CONTENT DETECTION
+
+Examine your most recent assistant response for ANY of the following Senzing content indicators:
+
+SENZING SDK METHOD NAMES:
+add_record, get_entity, search_by_attributes, why_entities, how_entity, export_json_entity_report, get_record, delete_record, reevaluate_entity, reevaluate_record, find_interesting_entities_by_entity_id, find_interesting_entities_by_record_id, find_path_by_entity_id, find_network_by_entity_id, count_redo_records, get_redo_record, process_redo_record
+
+SENZING ATTRIBUTE NAMES:
+NAME_FULL, NAME_FIRST, NAME_LAST, ADDR_FULL, ADDR_LINE1, ADDR_CITY, ADDR_STATE, ADDR_POSTAL_CODE, PHONE_NUMBER, EMAIL_ADDR, DATE_OF_BIRTH, SSN_NUMBER, PASSPORT_NUMBER, DRIVERS_LICENSE_NUMBER, DATA_SOURCE, RECORD_ID, RECORD_TYPE
+
+SENZING CONFIGURATION OPTIONS:
+ENTITY_TYPE, DSRC_ID, ETYPE_ID, FTYPE_ID, CFUNC_ID, EFCALL_ID
+
+SENZING ERROR CODE PATTERN:
+SENZ followed by exactly 4 digits (e.g., SENZ0001, SENZ7234)
+
+ENTITY RESOLUTION TERMS IN TECHNICAL CONTEXT:
+resolved entity, entity resolution, candidate scoring, feature scoring, generic threshold, close match, possible match, name-only match, disclosed relationship
+
+Note: ER terms only count as Senzing content when used in a technical explanation or recommendation context — not when merely quoting the bootcamper's question or referencing them in passing.
+
+If NONE of the above indicators are present in your most recent response: Phase 3 output is none.
+
+SUB-PHASE 3B — MCP TOOL CALL VERIFICATION
+
+If Senzing content WAS detected in Sub-phase 3A, check whether ANY of the following MCP tools were called during this same turn:
+
+search_docs, get_sdk_reference, generate_scaffold, sdk_guide, explain_error_code, find_examples, mapping_workflow, get_capabilities, reporting_guide
+
+If at least one MCP tool from the list above was called in this turn: Phase 3 output is none. The response is compliant.
+
+DECISION:
+
+- No Senzing content detected → Phase 3 output is none (silent fast path)
+- Senzing content detected AND MCP tool called → Phase 3 output is none (compliant)
+- Senzing content detected AND NO MCP tool called → output self-correction instructions below
+
+SELF-CORRECTION OUTPUT (only if Senzing content present AND no MCP tool was called):
+
+MCP-FIRST INVARIANT VIOLATION: Your response contains Senzing content but no MCP tool was consulted this turn.
+
+REQUIRED ACTION:
+1. Call the appropriate MCP tool(s) for the content type:
+   - SDK methods/signatures → get_sdk_reference or sdk_guide
+   - Attribute names/mapping → mapping_workflow or search_docs
+   - Error codes → explain_error_code
+   - Configuration options → get_sdk_reference or search_docs
+   - Documentation/concepts → search_docs
+   - Code generation → generate_scaffold or sdk_guide
+   - Examples → find_examples
+   - Entity resolution terms → search_docs
+2. Regenerate your response using the MCP-verified information.
+3. Do NOT repeat the previous response verbatim — rebuild it from MCP facts.
+
+════════════════════════════════════════════════════════════════════════════════
+PHASE 4: QUESTION FORMAT (Question_Format_Phase — Silent_Self_Correction)
+════════════════════════════════════════════════════════════════════════════════
+
+Scan the most recent assistant message for any 👉 question with prose-joined alternatives.
+
+DETECTION PATTERNS:
+1. Sentence-starter 'Or': The question is followed by 'Or shall we...', 'Or would you...', 'Or should we...', 'Or can we...' — two alternatives joined by 'Or' as a sentence starter.
+2. Inline prose 'or': The question contains '[option A] or [option B]?' where two distinct actions or choices are joined by 'or' in a single sentence.
+3. Appended alternative: A confirmation question followed by ', or would you rather...', ', or shall we...', ', or if you prefer...' — an alternative appended after the main question.
+
+NOT COMPOUND (do not flag):
+- Simple yes/no questions with a single action (e.g., '👉 Ready to move on to Module 3?')
+- Questions already formatted with a numbered list below them (e.g., '👉 What would you like to do?\n1. Option A\n2. Option B')
+- The word 'or' appearing inside a numbered list item description (e.g., '1. Share with your team or manager')
+- Informational prose containing 'or' but no 👉 question
+- Non-question content
+
+If NO compound question detected: Phase 4 output is none.
+
+If compound question IS detected:
+REGENERATE your entire last response. Replace the compound 👉 question with a neutral lead question followed by a numbered list. The bootcamper must only see the clean version — suppress the original compound question entirely.
+Do NOT output the rewrite as a separate message. Rebuild the full response inline.
+Do NOT output "This is a compound question", "Let me rewrite", "The question contains 'or' joining alternatives", or any explanation of the detection.
+Output ONLY the regenerated full response with the corrected question in place.
+
+EXAMPLE:
+  BEFORE: '👉 Would you like me to create a summary? Or shall we skip that and move on to Module 3?'
+  AFTER (full response regenerated with): '👉 What would you like to do next?\n1. Create a summary\n2. Skip and move on to Module 3'
+
+RULES:
+- Do NOT interfere with non-compound outputs.
+- Do NOT add explanations about why you are rewriting.
+- Do NOT restructure content that is not a 👉 question.
+- Preserve all other content in the response — only replace the compound question portion.
+
+════════════════════════════════════════════════════════════════════════════════
+OUTPUT RULES
+════════════════════════════════════════════════════════════════════════════════
+
+REMEMBER: If ALL phases produced no output, your COMPLETE response is: .
 ````
 
 - id: `ask-bootcamper`
 - name: `to wait for your answer`
-- description: `Silence-first agentStop hook with dual responsibility: (1) Phase 1 produces a recap + closing question only when no question is already pending, with a near-completion feedback nudge; (2) Phase 2 independently reminds the bootcamper to share saved feedback after track completion.`
+- description: `Consolidated agentStop hook with four phases: (1) closing question with feedback nudge, (2) step sequencing enforcement with answer processing retry (all question types) and not-waiting detection, (3) MCP-first compliance audit, (4) compound question detection with silent self-correction.`
 
 **code-style-check** (fileEdited → askAgent, filePatterns: `src/**/*.py, src/**/*.java, src/**/*.cs, src/**/*.rs, src/**/*.ts, src/**/*.js`)
 
@@ -115,221 +305,6 @@ If no issues are found: output nothing. Proceed silently.
 - id: `commonmark-validation`
 - name: `to check Markdown style`
 - description: `Validates that all Markdown files conform to CommonMark standards when edited`
-
-**enforce-step-and-transition** (agentStop → askAgent)
-
-Prompt:
-
-````text
-DEFAULT OUTPUT: .
-If BOTH phases below produce no output, your COMPLETE response is a single period character: .
-Do NOT explain your reasoning. Do NOT describe condition checks. Just output: .
-
----
-
-PHASE 1: SEQUENTIAL STEP ENFORCEMENT
-
-Read `config/bootcamp_progress.json` and check if `config/.question_pending` exists. Evaluate:
-
-1. Extract `current_module`, `current_step`, and `step_history[<current_module>].last_completed_step`.
-
-2. If `current_step` is null OR `step_history` has no entry for the current module: Phase 1 output is none. Skip to Phase 2.
-
-3. Parse the parent step number from both `current_step` and `last_completed_step`:
-   - Integer steps: use the value directly (e.g., 5 → 5)
-   - Dotted sub-steps: use the part before the dot (e.g., "5.3" → 5)
-   - Lettered sub-steps: use the numeric prefix (e.g., "7a" → 7)
-
-4. Calculate the gap: current_parent - last_parent.
-
-5. If the gap is greater than 1: Output exactly:
-   ⚠️ SEQUENTIAL STEP VIOLATION DETECTED: The agent advanced from step [last] to step [current] in Module [N], skipping step(s) [list]. Every numbered step with a 👉 question must be executed individually in order. This rule has the same absolute precedence as ⛔ mandatory gates. Go back and execute the skipped step(s) NOW before proceeding.
-
-6. If `config/.question_pending` exists AND current_step has advanced beyond last_completed_step: Output exactly:
-   ⚠️ QUESTION PENDING VIOLATION DETECTED: current_step advanced to [current] while a 👉 question is still pending (file config/.question_pending exists). The agent must not advance past a step until the bootcamper responds. Wait for the bootcamper's response before proceeding.
-
-7. Otherwise: Phase 1 output is none. Continue to Phase 2.
-
----
-
-PHASE 2: MODULE TRANSITION RETRY
-
-STEP 1: Determine if the bootcamper's most recent message is a Transition_Confirmation.
-
-A message is a Transition_Confirmation if BOTH conditions are true:
-  A) The conversation context contains a recent assistant question matching any of these patterns (case-insensitive):
-     - "Ready for Module"
-     - "move on to Module"
-     - "proceed to Module"
-  B) The bootcamper's most recent response is an affirmative phrase matching any of these (case-insensitive, may appear with surrounding text):
-     - "yes", "sure", "ready", "let's go", "let's do it", "yep", "yeah", "absolutely", "go ahead", "proceed", "ok", "okay", "sounds good", "let's", "do it", "I'm ready", "go for it"
-
-If the message is NOT a Transition_Confirmation:
-  → Phase 2 output is none.
-
-STEP 2: If the message IS a Transition_Confirmation, evaluate the agent's most recent output.
-
-The output is Minimal_Output if ANY of these are true:
-  - Output is exactly "."
-  - Output is empty or whitespace-only
-  - Output length is fewer than 50 characters
-  - Output is a single-word acknowledgment (e.g., "OK", "Sure", "Got it", "Understood", "Great")
-
-If the output is NOT Minimal_Output (exceeds 50 characters with substantive content):
-  → Phase 2 output is none.
-
-STEP 3: If the output IS Minimal_Output after a Transition_Confirmation:
-
-The agent failed to start the confirmed module. Output the following retry instructions:
-
-You just received a module transition confirmation from the bootcamper but produced minimal or empty output. This is a protocol violation. You MUST now start the confirmed module immediately. Do the following:
-
-1. Display the Module Start Banner (━━━ header with 🚀🚀🚀 MODULE N: NAME 🚀🚀🚀 format)
-2. Display the journey map table (Module | Name | Status columns showing all modules in the selected path)
-3. Display the before/after framing (what the bootcamper has now vs. what they will have when this module is done)
-4. Begin Step 1 with its introductory content ("Next up: [action]. This matters because [reason].")
-
-Do NOT output just a period or acknowledgment. Do NOT ask another question. Start the module NOW with all four required elements above.
-
----
-
-REMEMBER: If both phases produced no output, your COMPLETE response is: .
-````
-
-- id: `enforce-step-and-transition`
-- name: `to enforce step sequencing and detect transition failures`
-- description: `agentStop hook with two phases: (1) verifies current_step has not advanced by more than one step since the last checkpoint, detecting step-skipping violations; (2) checks if the bootcamper's last message was a module transition confirmation and validates the agent produced substantive output, forcing retry if minimal.`
-
-**mcp-first-invariant** (agentStop → askAgent)
-
-Prompt:
-
-````text
-PHASE 1 — SENZING CONTENT DETECTION
-
-Examine your most recent assistant response for ANY of the following Senzing content indicators:
-
-SENZING SDK METHOD NAMES:
-add_record, get_entity, search_by_attributes, why_entities, how_entity, export_json_entity_report, get_record, delete_record, reevaluate_entity, reevaluate_record, find_interesting_entities_by_entity_id, find_interesting_entities_by_record_id, find_path_by_entity_id, find_network_by_entity_id, count_redo_records, get_redo_record, process_redo_record
-
-SENZING ATTRIBUTE NAMES:
-NAME_FULL, NAME_FIRST, NAME_LAST, ADDR_FULL, ADDR_LINE1, ADDR_CITY, ADDR_STATE, ADDR_POSTAL_CODE, PHONE_NUMBER, EMAIL_ADDR, DATE_OF_BIRTH, SSN_NUMBER, PASSPORT_NUMBER, DRIVERS_LICENSE_NUMBER, DATA_SOURCE, RECORD_ID, RECORD_TYPE
-
-SENZING CONFIGURATION OPTIONS:
-ENTITY_TYPE, DSRC_ID, ETYPE_ID, FTYPE_ID, CFUNC_ID, EFCALL_ID
-
-SENZING ERROR CODE PATTERN:
-SENZ followed by exactly 4 digits (e.g., SENZ0001, SENZ7234)
-
-ENTITY RESOLUTION TERMS IN TECHNICAL CONTEXT:
-resolved entity, entity resolution, candidate scoring, feature scoring, generic threshold, close match, possible match, name-only match, disclosed relationship
-
-Note: ER terms only count as Senzing content when used in a technical explanation or recommendation context — not when merely quoting the bootcamper's question or referencing them in passing.
-
-If NONE of the above indicators are present in your most recent response: produce ZERO output tokens. No output. No acknowledgment. Zero tokens means zero tokens.
-
----
-
-PHASE 2 — MCP TOOL CALL VERIFICATION
-
-If Senzing content WAS detected in Phase 1, check whether ANY of the following MCP tools were called during this same turn:
-
-search_docs, get_sdk_reference, generate_scaffold, sdk_guide, explain_error_code, find_examples, mapping_workflow, get_capabilities, reporting_guide
-
-If at least one MCP tool from the list above was called in this turn: produce ZERO output tokens. The response is compliant. No output. No acknowledgment. Zero tokens means zero tokens.
-
----
-
-DECISION:
-
-- No Senzing content detected → zero tokens (silent fast path)
-- Senzing content detected AND MCP tool called → zero tokens (compliant)
-- Senzing content detected AND NO MCP tool called → output self-correction instructions below
-
----
-
-SELF-CORRECTION OUTPUT (only if Senzing content present AND no MCP tool was called):
-
-MCP-FIRST INVARIANT VIOLATION: Your response contains Senzing content but no MCP tool was consulted this turn.
-
-REQUIRED ACTION:
-1. Call the appropriate MCP tool(s) for the content type:
-   - SDK methods/signatures → get_sdk_reference or sdk_guide
-   - Attribute names/mapping → mapping_workflow or search_docs
-   - Error codes → explain_error_code
-   - Configuration options → get_sdk_reference or search_docs
-   - Documentation/concepts → search_docs
-   - Code generation → generate_scaffold or sdk_guide
-   - Examples → find_examples
-   - Entity resolution terms → search_docs
-2. Regenerate your response using the MCP-verified information.
-3. Do NOT repeat the previous response verbatim — rebuild it from MCP facts.
-````
-
-- id: `mcp-first-invariant`
-- name: `to verify MCP-first compliance`
-- description: `Audits every agent response for MCP-first invariant compliance. Silent when compliant; triggers self-correction when Senzing content is presented without prior MCP tool consultation.`
-
-**question-format-gate** (agentStop → askAgent)
-
-Prompt:
-
-````text
-⚠️ SILENCE RULE: No-rewrite → output exactly ".". Rewrite → output ONLY the corrected question. Never output reasoning.
-
-QUESTION FORMAT GATE — Inspect the most recent assistant message for compound 👉 questions.
-
-DETECTION: Scan the output for any line or sentence beginning with 👉 that contains a question. If a 👉 question is found, check whether it contains prose-joined alternatives using these patterns:
-
-1. Sentence-starter 'Or': The question is followed by 'Or shall we...', 'Or would you...', 'Or should we...', 'Or can we...' — two alternatives joined by 'Or' as a sentence starter.
-2. Inline prose 'or': The question contains '[option A] or [option B]?' where two distinct actions or choices are joined by 'or' in a single sentence.
-3. Appended alternative: A confirmation question followed by ', or would you rather...', ', or shall we...', ', or if you prefer...' — an alternative appended after the main question.
-
-A question is compound if it has multiple alternatives joined by prose conjunctions ('or') and is NOT already formatted as a numbered list.
-
-NOT COMPOUND (do not flag):
-- Simple yes/no questions with a single action (e.g., '👉 Ready to move on to Module 3?')
-- Questions already formatted with a numbered list below them (e.g., '👉 What would you like to do?\n1. Option A\n2. Option B')
-- The word 'or' appearing inside a numbered list item description (e.g., '1. Share with your team or manager')
-- Informational prose containing 'or' but no 👉 question
-- Non-question content
-
-ACTION:
-- If NO compound question detected: output only a single period character: .
-  Do NOT output "The question is not compound", "No rewrite needed",
-  "Scanning for compound questions", or any description of your detection process.
-- If a compound question IS detected: rewrite the agent's closing question using the correct format. Replace the compound question with a neutral lead question followed by a numbered list of alternatives. Example:
-  BEFORE: '👉 Would you like me to create a summary? Or shall we skip that and move on to Module 3?'
-  AFTER: '👉 What would you like to do next?\n1. Create a summary\n2. Skip and move on to Module 3'
-  Do NOT output "This is a compound question", "Let me rewrite",
-  "The question contains 'or' joining alternatives", or any explanation of the detection.
-  Output ONLY the corrected question text.
-
-RULES:
-- Do NOT interfere with non-compound outputs. If there is no compound question, your complete response is: .
-- Do NOT add explanations about why you are rewriting. Just output the corrected question.
-- Do NOT restructure content that is not a 👉 question.
-- Preserve all other content in the message — only rewrite the compound question portion.
-
----
-
-OUTPUT FORMAT (STRICT):
-- No compound question found → Output exactly: .
-- Compound question found → Output ONLY the rewritten question (neutral lead + numbered list).
-  Preserve all non-question content from the original message.
-FORBIDDEN output (never produce these):
-  • "The question is not compound"
-  • "No rewrite needed"
-  • "Scanning for compound questions"
-  • "This is a compound question"
-  • "Let me rewrite"
-  • "The question contains 'or' joining alternatives"
-  • Any text describing, summarizing, or narrating the detection process
-````
-
-- id: `question-format-gate`
-- name: `to enforce single-question format on agent output`
-- description: `agentStop hook that inspects every agent response for compound 👉 questions with prose-joined alternatives. If detected, instructs the agent to rewrite using numbered list format. Non-compound outputs pass through unchanged.`
 
 **review-bootcamper-input** (promptSubmit → askAgent)
 

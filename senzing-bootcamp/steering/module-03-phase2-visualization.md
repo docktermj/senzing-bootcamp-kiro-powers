@@ -28,6 +28,22 @@ inclusion: manual
 5. **D3.js callback syntax** — Use `function(){}` for all D3.js callbacks, NOT arrow functions. Arrow functions break `this` binding to DOM elements.
 6. **Explicit SVG dimensions** — Set `width` and `height` attributes on SVG elements. Do not rely on CSS-only sizing.
 
+---
+
+## ⚠️ DO NOT SKIP — Phase 2 Execution Is Mandatory
+
+> **🚨 This phase is MANDATORY. It is NOT optional.**
+>
+> Phase 2 visualization generation MUST be executed in full.
+> DO NOT SKIP this phase. DO NOT transition to Module 4 until
+> Phase 2 is complete and the bootcamper has confirmed they
+> have explored the visualization.
+>
+> Skipping Phase 2 deprives the bootcamper of their first
+> "wow moment" with entity resolution results.
+
+---
+
 ## Step 9: Web Service + Visualization Page
 
 Generate and verify a web service with three API endpoints and a single-page visualization with four interactive tabs.
@@ -131,6 +147,17 @@ Presented left-to-right with arrow indicators conveying the resolution pipeline 
    - Tooltip on hover: entity name, entity ID, record count, data sources
    - Fetches from `GET /api/graph`
 
+   **Graph container height:** The `#graph-container` element SHALL use viewport-relative height:
+
+   ```css
+   #graph-container {
+     height: calc(100vh - 120px);
+     /* 120px offset = fixed header (~50px) + summary banner (~40px) + tab navigation (~30px) */
+   }
+   ```
+
+   Do NOT use a fixed pixel height (e.g., `600px`) for the graph container. The graph must fill the remaining viewport space below the fixed UI elements.
+
    **Entity Graph UX Features:**
 
    - **Node labels:** Each node displays a text label showing the entity name, truncated to 20 characters maximum with ellipsis (e.g., "Robert Smith-Johnso…"). Labels are positioned below the node circle.
@@ -194,6 +221,36 @@ Follow the Web Service Delivery Sequence from `visualization-guide.md`:
    - URL: "Your visualization is running — open `http://localhost:8080` in your browser"
    - Manual restart: "If you need to restart, run the `src/system_verification/web_service/server.py` entry point with python3"
    - Stop: "To stop the server, I can stop the background process for you, or press Ctrl+C if running manually"
+
+**Guided Tour — deliver the following as a single structured chat message
+(no interactive pauses):**
+
+Present this guided tour to the bootcamper immediately after confirming
+the URL is accessible:
+
+---
+
+🗺️ **What You're Looking At — A Quick Tour**
+
+**Entity Graph tab (default view):**
+
+- **Cross-source matches:** Nodes with multiple colors represent entities
+  resolved across data sources (e.g., a CUSTOMERS record matched to a
+  REFERENCE record). These are Senzing's highest-value findings.
+- **Name variations:** Senzing resolves name variants automatically —
+  look for entities like "Robert Smith" that merged records originally
+  entered as "Bob Smith" or "R. Smith".
+- **Relationship edges:** Lines between nodes show relationships.
+  The labels (e.g., +NAME+ADDRESS, +PHONE) are match keys — they tell
+  you which features Senzing used to link those entities.
+
+**Merge Statistics tab:**
+
+- The **records-per-entity histogram** shows how many records collapsed
+  into each entity. A tall "1" bar means many unique entities; bars at
+  "2", "3", "4+" show where Senzing found duplicates across sources.
+
+---
 
    👉 Take your time exploring the visualization. Let me know when you're ready and I'll continue with cleanup.
 

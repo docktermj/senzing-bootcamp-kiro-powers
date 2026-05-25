@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Detects module completion boundaries and displays a brief celebration with next-step guidance.",
   "when": {
-    "type": "postTaskExecution"
+    "type": "agentStop"
   },
   "then": {
     "type": "askAgent",

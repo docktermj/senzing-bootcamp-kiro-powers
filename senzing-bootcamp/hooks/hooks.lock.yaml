@@ -1,13 +1,13 @@
 # AUTO-GENERATED — do not edit manually.
 # Run: python3 senzing-bootcamp/scripts/sync_hook_registry.py --write
-generated_at: "2026-05-24T15:10:21Z"
+generated_at: "2026-05-25T16:07:10Z"
 hooks:
   - id: analyze-after-mapping
     version: "1.0.0"
     category: module
     event_type: fileCreated
   - id: ask-bootcamper
-    version: "3.0.0"
+    version: "4.0.0"
     category: critical
     event_type: agentStop
   - id: backup-before-load
@@ -46,10 +46,6 @@ hooks:
     version: "1.0.0"
     category: module
     event_type: fileCreated
-  - id: enforce-step-and-transition
-    version: "1.0.0"
-    category: critical
-    event_type: agentStop
   - id: enforce-visualization-offers
     version: "2.0.0"
     category: module
@@ -66,21 +62,13 @@ hooks:
     version: "1.0.0"
     category: module
     event_type: userTriggered
-  - id: mcp-first-invariant
-    version: "1.0.0"
-    category: critical
-    event_type: agentStop
   - id: module-completion-celebration
     version: "1.0.0"
     category: module
-    event_type: postTaskExecution
+    event_type: agentStop
   - id: module-recap-append
     version: "1.0.0"
     category: module
-    event_type: postTaskExecution
-  - id: question-format-gate
-    version: "1.0.0"
-    category: critical
     event_type: agentStop
   - id: review-bootcamper-input
     version: "1.0.0"

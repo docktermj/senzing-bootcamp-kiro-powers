@@ -4,18 +4,15 @@ inclusion: manual
 
 # Hook Registry
 
-31 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
+28 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
 
 ## Critical Hooks (created during onboarding)
 
 | Hook ID | Event Type | Description |
 |---------|-----------|-------------|
-| ask-bootcamper | agentStop → askAgent | Silence-first agentStop hook with dual responsibility: (1) Phase 1 produces a recap + closing question only when no question is already pending, with a near-completion feedback nudge; (2) Phase 2 independently reminds the bootcamper to share saved feedback after track completion. |
+| ask-bootcamper | agentStop → askAgent | Consolidated agentStop hook with four phases: (1) closing question with feedback nudge, (2) step sequencing enforcement with answer processing retry (all question types) and not-waiting detection, (3) MCP-first compliance audit, (4) compound question detection with silent self-correction. |
 | code-style-check | fileEdited → askAgent | Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions. |
 | commonmark-validation | fileEdited → askAgent | Validates that all Markdown files conform to CommonMark standards when edited |
-| enforce-step-and-transition | agentStop → askAgent | agentStop hook with two phases: (1) verifies current_step has not advanced by more than one step since the last checkpoint, detecting step-skipping violations; (2) checks if the bootcamper's last message was a module transition confirmation and validates the agent produced substantive output, forcing retry if minimal. |
-| mcp-first-invariant | agentStop → askAgent | Audits every agent response for MCP-first invariant compliance. Silent when compliant; triggers self-correction when Senzing content is presented without prior MCP tool consultation. |
-| question-format-gate | agentStop → askAgent | agentStop hook that inspects every agent response for compound 👉 questions with prose-joined alternatives. If detected, instructs the agent to rewrite using numbered list format. Non-compound outputs pass through unchanged. |
 | review-bootcamper-input | promptSubmit → askAgent | Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture. |
 | write-policy-gate | preToolUse → askAgent | Consolidated preToolUse write hook that performs five policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, (3) validates file path policies including append-only guard for the feedback file, (4) enforces root file placement rules. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions). |
 
@@ -44,8 +41,8 @@ inclusion: manual
 | backup-project-on-request | any | userTriggered → askAgent | Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead. |
 | error-recovery-context | any | postToolUse → askAgent | Detects shell command failures and consults common-pitfalls.md and recovery-from-mistakes.md to provide targeted error recovery guidance during bootcamp modules. |
 | git-commit-reminder | any | userTriggered → askAgent | Reminds the user to commit their work after completing a module. Triggered manually via button click. |
-| module-completion-celebration | any | postTaskExecution → askAgent | Detects module completion boundaries and displays a brief celebration with next-step guidance. |
-| module-recap-append | any | postTaskExecution → askAgent | Appends a structured recap section to docs/bootcamp_recap.md when a module is completed. |
+| module-completion-celebration | any | agentStop → askAgent | Detects module completion boundaries and displays a brief celebration with next-step guidance. |
+| module-recap-append | any | agentStop → askAgent | Appends a structured recap section to docs/bootcamp_recap.md when a module is completed. |
 
 ## Hook Creation
 

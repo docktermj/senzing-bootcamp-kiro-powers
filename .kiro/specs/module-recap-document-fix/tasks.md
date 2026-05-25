@@ -6,24 +6,24 @@ Fix the `module-recap-append` and `module-completion-celebration` hooks by chang
 
 ## Tasks
 
-- [ ] 1. Fix hook event types
-  - [ ] 1.1 Change `module-recap-append.kiro.hook` event type to `agentStop`
+- [x] 1. Fix hook event types
+  - [x] 1.1 Change `module-recap-append.kiro.hook` event type to `agentStop`
     - Open `senzing-bootcamp/hooks/module-recap-append.kiro.hook`
     - Replace `"type": "postTaskExecution"` with `"type": "agentStop"` inside the `when` object
     - Verify no other fields are modified — the `then.prompt` content must remain byte-for-byte identical
     - _Requirements: 1.1, 1.3, 1.5_
 
-  - [ ] 1.2 Change `module-completion-celebration.kiro.hook` event type to `agentStop`
+  - [x] 1.2 Change `module-completion-celebration.kiro.hook` event type to `agentStop`
     - Open `senzing-bootcamp/hooks/module-completion-celebration.kiro.hook`
     - Replace `"type": "postTaskExecution"` with `"type": "agentStop"` inside the `when` object
     - Verify no other fields are modified — the `then.prompt` content must remain byte-for-byte identical
     - _Requirements: 1.2, 1.4, 1.6_
 
-- [ ] 2. Checkpoint - Validate hook files
+- [x] 2. Checkpoint - Validate hook files
   - Ensure both hook files parse as valid JSON and pass schema validation, ask the user if questions arise.
 
-- [ ] 3. Write integration tests
-  - [ ] 3.1 Create test file with event type validation tests
+- [x] 3. Write integration tests
+  - [x] 3.1 Create test file with event type validation tests
     - Create `tests/test_module_recap_document_fix.py`
     - Import `json`, `Path`, `re` from stdlib and `hypothesis` / `pytest`
     - Import helpers from `tests/hook_test_helpers.py` (`load_hook`, `validate_required_fields`, `validate_version`, `VALID_EVENT_TYPES`, `HOOKS_DIR`, `SEMVER_PATTERN`)
@@ -33,7 +33,7 @@ Fix the `module-recap-append` and `module-completion-celebration` hooks by chang
     - Include a test that fails with a clear assertion message if either hook uses `postTaskExecution`
     - _Requirements: 5.1, 5.5, 5.6_
 
-  - [ ] 3.2 Add boundary detection and schema integrity tests
+  - [x] 3.2 Add boundary detection and schema integrity tests
     - In the same test file, write `class TestBoundaryDetection` with tests asserting both hook prompts contain:
       - Reference to `config/bootcamp_progress.json`
       - Reference to `modules_completed`
@@ -44,7 +44,7 @@ Fix the `module-recap-append` and `module-completion-celebration` hooks by chang
       - `version` matches semver format
     - _Requirements: 5.2, 5.3, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-  - [ ] 3.3 Add prompt content regression tests
+  - [x] 3.3 Add prompt content regression tests
     - In the same test file, write `class TestPromptRegression` with tests asserting:
       - Both hooks reference `config/module-dependencies.yaml`
       - Celebration hook references `config/bootcamp_preferences.yaml`
@@ -54,32 +54,32 @@ Fix the `module-recap-append` and `module-completion-celebration` hooks by chang
       - Both hooks contain constraint language preventing script execution and file-system scans
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8_
 
-  - [ ]* 3.4 Write property test for event type correctness (Property 1)
+  - [x] 3.4 Write property test for event type correctness (Property 1)
     - **Property 1: Event type is agentStop for all affected hooks**
     - In the same test file, write `class TestPropertyEventType` using `@given` with a strategy that samples from the two affected hook filenames
     - Assert `when.type == "agentStop"` for each
     - Use `@settings(max_examples=20)`
     - **Validates: Requirements 1.1, 1.2**
 
-  - [ ]* 3.5 Write property test for schema integrity (Property 2)
+  - [x] 3.5 Write property test for schema integrity (Property 2)
     - **Property 2: Schema integrity preserved after modification**
     - Write a property test that for any hook in the affected set, all required fields are present and `then.type == "askAgent"`
     - Use `@settings(max_examples=20)`
     - **Validates: Requirements 1.3, 1.4, 1.5, 1.6, 3.1, 3.2, 3.5, 3.6**
 
-  - [ ]* 3.6 Write property test for semver validation (Property 3)
+  - [x] 3.6 Write property test for semver validation (Property 3)
     - **Property 3: Version field is valid semver**
     - Write a property test that for any hook in the affected set, the `version` field matches `SEMVER_PATTERN`
     - Use `@settings(max_examples=20)`
     - **Validates: Requirements 3.3, 3.4**
 
-  - [ ]* 3.7 Write property test for boundary detection prompt integrity (Property 4)
+  - [x] 3.7 Write property test for boundary detection prompt integrity (Property 4)
     - **Property 4: Boundary detection prompt integrity**
     - Write a property test that for any hook in the affected set, the prompt contains `config/bootcamp_progress.json`, `modules_completed`, and a silent-exit instruction
     - Use `@settings(max_examples=20)`
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5, 2.6**
 
-  - [ ]* 3.8 Write property test for boundary detection correctness (Property 7)
+  - [x] 3.8 Write property test for boundary detection correctness (Property 7)
     - **Property 7: Boundary detection correctness for arbitrary progress states**
     - Write a `has_new_completion(before, after)` function
     - Write a property test using `@given` with `st.lists(st.integers(1, 11))` for before/after states
@@ -87,14 +87,14 @@ Fix the `module-recap-append` and `module-completion-celebration` hooks by chang
     - Use `@settings(max_examples=100)`
     - **Validates: Requirements 5.4**
 
-  - [ ]* 3.9 Write property test for wrong event type rejection (Property 8)
+  - [x] 3.9 Write property test for wrong event type rejection (Property 8)
     - **Property 8: Wrong event type causes test failure**
     - Write a property test using `@given` with a strategy generating event type strings that are NOT `"agentStop"`
     - Assert that validating such a type against the expected value produces a failure
     - Use `@settings(max_examples=20)`
     - **Validates: Requirements 5.6**
 
-- [ ] 4. Final checkpoint - Ensure all tests pass
+- [x] 4. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

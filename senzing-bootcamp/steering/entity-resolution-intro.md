@@ -82,6 +82,35 @@ A capable ER engine delivers three outputs the business cares about:
 
 Those outputs underpin use cases like fraud detection, compliance and KYC, customer 360, and investigations — anywhere a decision hinges on whether two records point at the same entity. Producing, querying, and operationalizing these three outputs is exactly what the later bootcamp modules teach.
 
+## Explore Further
+
+<!-- AGENT INSTRUCTION — not shown to the bootcamper.
+This is a mandatory gate. The agent MUST stop here and wait for the
+bootcamper to either ask follow-up questions or signal readiness to proceed.
+
+Handling rules:
+- If the bootcamper asks a follow-up question: answer it using search_docs
+  from the Senzing MCP server, then re-present this gate.
+- If the bootcamper signals readiness to proceed (e.g., "ready", "let's go",
+  "continue", "next"): allow the flow to continue to the next section.
+- If the bootcamper provides an ambiguous response: treat it as a follow-up
+  question, attempt to answer it using MCP tools, then re-present this gate.
+-->
+
+⛔ **MANDATORY GATE** — Entity Resolution Exploration
+
+That covers the foundations of entity resolution. Before we move on, this is a good moment to dig deeper if anything sparked your curiosity.
+
+Here are some questions other bootcampers have found useful:
+
+- "How does Senzing match records without rules?"
+- "What's the difference between matching and relating?"
+- "What kinds of data does entity resolution work with?"
+
+You can ask any question about entity resolution — not just these examples. When you're ready to move on, just say so.
+
+🛑 **STOP — End your response here.** Do not proceed. Do not assume a response. Wait for the bootcamper's real input.
+
 ## Sources
 
 <!-- AGENT INSTRUCTION — not shown to the bootcamper.

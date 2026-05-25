@@ -287,7 +287,7 @@ file_metadata:
     token_count: 704
     size_category: medium
   agent-instructions.md:
-    token_count: 4643
+    token_count: 5013
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -302,7 +302,7 @@ file_metadata:
     token_count: 536
     size_category: medium
   conversation-protocol.md:
-    token_count: 3320
+    token_count: 3765
     size_category: large
   data-lineage.md:
     token_count: 603
@@ -329,7 +329,7 @@ file_metadata:
     token_count: 749
     size_category: medium
   entity-resolution-intro.md:
-    token_count: 1472
+    token_count: 1806
     size_category: medium
   environment-setup.md:
     token_count: 658
@@ -341,13 +341,13 @@ file_metadata:
     token_count: 2847
     size_category: large
   hook-registry-critical.md:
-    token_count: 8138
+    token_count: 8169
     size_category: large
   hook-registry-modules.md:
-    token_count: 7887
+    token_count: 7883
     size_category: large
   hook-registry.md:
-    token_count: 1929
+    token_count: 1706
     size_category: medium
   inline-status.md:
     token_count: 460
@@ -386,10 +386,10 @@ file_metadata:
     token_count: 1853
     size_category: medium
   module-02-sdk-setup.md:
-    token_count: 4380
+    token_count: 4450
     size_category: large
   module-03-phase2-visualization.md:
-    token_count: 3152
+    token_count: 3650
     size_category: large
   module-03-system-verification.md:
     token_count: 6419
@@ -401,13 +401,13 @@ file_metadata:
     token_count: 689
     size_category: medium
   module-05-phase1-quality-assessment.md:
-    token_count: 1724
+    token_count: 1710
     size_category: medium
   module-05-phase2-data-mapping.md:
-    token_count: 2964
+    token_count: 3128
     size_category: large
   module-05-phase3-test-load.md:
-    token_count: 2657
+    token_count: 2813
     size_category: large
   module-06-data-processing.md:
     token_count: 1583
@@ -470,7 +470,7 @@ file_metadata:
     token_count: 850
     size_category: medium
   module-completion.md:
-    token_count: 2634
+    token_count: 2727
     size_category: large
   module-prerequisites.md:
     token_count: 1344
@@ -479,7 +479,7 @@ file_metadata:
     token_count: 1534
     size_category: medium
   onboarding-flow.md:
-    token_count: 5188
+    token_count: 5266
     size_category: large
   onboarding-phase2-track-setup.md:
     token_count: 991
@@ -537,7 +537,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 154627
+  total_tokens: 156625
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

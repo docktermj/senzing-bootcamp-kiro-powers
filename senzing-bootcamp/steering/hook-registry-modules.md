@@ -541,3 +541,45 @@ CONSTRAINTS:
 - id: `module-recap-append`
 - name: `to append module recap on completion`
 - description: `Appends a structured recap section to docs/bootcamp_recap.md when a module is completed.`
+
+**session-log-events** — any module (postToolUse → askAgent, toolTypes: write)
+
+Prompt:
+
+````text
+A write operation just completed. Log it as a session event for the completion summary. Follow these steps exactly:
+
+1. DETERMINE ACTION TYPE: Examine the tool call that just completed and classify it:
+   - If a new file was created: action_type is "file_create"
+   - If an existing file was modified (edit, append, replace): action_type is "file_modify"
+   - If a file was deleted: action_type is "file_delete"
+   - If an MCP tool was invoked: action_type is "mcp_tool_call"
+   - If a shell command was executed: action_type is "command_run"
+
+2. GET CURRENT MODULE: Read config/bootcamp_progress.json and use the current_module field as the module number (integer 0-11). If the file is unreadable or missing, use 0.
+
+3. BUILD THE LOG ENTRY: Use the session_logger.py functions:
+   - Import build_completion_entry and append_completion_entry from scripts/session_logger.py
+   - Call build_completion_entry with:
+     - event_type: "action"
+     - module: the current module number from step 2
+     - data: a dictionary containing:
+       - "action_type": the classified type from step 1
+       - "description": a brief description of what was done (max 500 chars)
+       - "file_path": the target file path (required for file_create, file_modify, file_delete; omit for command_run and mcp_tool_call)
+
+4. APPEND TO LOG: Call append_completion_entry with log_path "config/session_log.jsonl" and the built entry.
+
+5. SILENCE: After logging, produce no visible output to the bootcamper. Do not acknowledge the logging action. Do not print confirmation. Zero tokens of user-facing output.
+
+CONSTRAINTS:
+- Do NOT log writes to config/session_log.jsonl itself (avoid infinite recursion).
+- Do NOT log writes to .question_pending files.
+- Do NOT log writes to .git/ directory files.
+- Do NOT include secrets, credentials, or environment variable values in the description.
+- If build_completion_entry or append_completion_entry raises an error, silently continue without blocking the bootcamp flow.
+````
+
+- id: `session-log-events`
+- name: `to log session events after write operations`
+- description: `Logs file create, modify, delete, and MCP tool call actions to the session log after write operations complete, enabling progressive session tracking for the completion summary.`

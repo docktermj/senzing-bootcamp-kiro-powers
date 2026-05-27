@@ -37,7 +37,7 @@ _EXPECTED_TOTALS: dict[int, int | None] = {
     3: 12,
     4: 9,
     5: 26,
-    6: 27,
+    6: 28,
     7: None,
     8: 13,
     9: 12,

@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-28 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
+29 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
 
 ## Critical Hooks (created during onboarding)
 
@@ -14,7 +14,7 @@ inclusion: manual
 | code-style-check | fileEdited → askAgent | Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions. |
 | commonmark-validation | fileEdited → askAgent | Validates that all Markdown files conform to CommonMark standards when edited |
 | review-bootcamper-input | promptSubmit → askAgent | Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture. |
-| write-policy-gate | preToolUse → askAgent | Consolidated preToolUse write hook that performs five policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, (3) validates file path policies including append-only guard for the feedback file, (4) enforces root file placement rules. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions). |
+| write-policy-gate | preToolUse → askAgent | Consolidated preToolUse write hook that performs four policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, (3) validates file path policies including append-only guard for the feedback file, (4) enforces root file placement rules. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions). |
 
 ## Module Hooks (created when module starts)
 
@@ -43,6 +43,7 @@ inclusion: manual
 | git-commit-reminder | any | userTriggered → askAgent | Reminds the user to commit their work after completing a module. Triggered manually via button click. |
 | module-completion-celebration | any | agentStop → askAgent | Detects module completion boundaries and displays a brief celebration with next-step guidance. |
 | module-recap-append | any | agentStop → askAgent | Appends a structured recap section to docs/bootcamp_recap.md when a module is completed. |
+| session-log-events | any | postToolUse → askAgent | Logs file create, modify, delete, and MCP tool call actions to the session log after write operations complete, enabling progressive session tracking for the completion summary. |
 
 ## Hook Creation
 

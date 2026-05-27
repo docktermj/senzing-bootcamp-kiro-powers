@@ -3,18 +3,47 @@ inclusion: manual
 ---
 ## Phase A: Build Loading Program
 
-1. **Identify the input data:** Determine where the Senzing-formatted JSON records are for the first data source:
+1. **Assess production record volume:**
+
+   👉 How many records do you expect to load in a production system?
+
+   🛑 STOP — do not proceed until the bootcamper responds.
+
+   Here are some example ranges to help you answer:
+   - Fewer than 500 — demo/evaluation
+   - 500 to 500,000 — small production
+   - 500,000 to 10,000,000 — medium production
+   - 10,000,000+ — large production
+
+   > **Agent instruction — Volume Classification:**
+   > 1. Parse the bootcamper's response using `volume_utils.parse_volume_input`.
+   > 2. Classify the parsed value using `volume_utils.classify_tier`.
+   > 3. Persist the selection using `volume_utils.persist_volume_selection` with `preferences_path="config/bootcamp_preferences.yaml"`, `progress_path="config/bootcamp_progress.json"`, and `step_number=1`.
+   > 4. If `parse_volume_input` returns `None` (unparseable): ask ONE clarifying follow-up question presenting the four tier options as a numbered list:
+   >    1. Fewer than 500 (demo/evaluation)
+   >    2. 500 to 500,000 (small production)
+   >    3. 500,000 to 10,000,000 (medium production)
+   >    4. 10,000,000+ (large production)
+   > 5. If the follow-up response is still unparseable: default to the demo tier, inform the bootcamper that demo/evaluation has been selected as the default, and proceed.
+
+   **Checkpoint:** Write step 1 to `config/bootcamp_progress.json`.
+
+2. **Identify the input data:** Determine where the Senzing-formatted JSON records are for the first data source:
    - Output from a transformation program (Module 5)
    - Direct Entity Specification-compliant data files
    - Database query results or API responses
 
    > **Agent instruction — Data Source Registry:** Update the source's `load_status` to `loading` in `config/data_sources.yaml` and set `updated_at`.
 
-   **Checkpoint:** Write step 1 to `config/bootcamp_progress.json`.
+   **Checkpoint:** Write step 2 to `config/bootcamp_progress.json`.
 
-2. **Create the production loading program:** Help the user build a complete, production-quality loading program for this data source.
+3. **Create the production loading program:** Help the user build a complete, production-quality loading program for this data source.
 
    **IMPORTANT:** All generated code must follow the coding standards for the bootcamper's chosen language (see `docs/policies/CODE_QUALITY_STANDARDS.md`).
+
+   > **Agent instruction — Volume-Aware Scaffold:** Read the `production_volume` key from `config/bootcamp_preferences.yaml`.
+   > - If the tier is `medium` or `large`: call `generate_scaffold(language='<chosen_language>', workflow='add_records', version='current', record_count=<raw_value>)` to get threaded loading patterns. Include a comment in the generated code stating the tier name and architecture recommendation (multi-threaded with thread pool for medium, distributed/queue-based for large).
+   > - If the tier is `demo` or `small`, or if `production_volume` is missing: call `generate_scaffold(language='<chosen_language>', workflow='add_records', version='current')` without `record_count`. Include a comment in the generated code stating the tier name (or "no volume selection found" if missing) and that single-threaded loading is recommended.
 
    > **Agent instruction:** Use `generate_scaffold(language='<chosen_language>', workflow='add_records', version='current')`
    > to get the current loading pattern. Do not use inline examples — they may use outdated SDK patterns. Customize the scaffold with the user's file path, data source name, and progress reporting.
@@ -29,10 +58,10 @@ inclusion: manual
 
    **Save the program:** Save in `src/load/` with a clear name (e.g., `src/load/load_customer_db.[ext]` using the appropriate file extension for the chosen language).
 
-   **Checkpoint:** Write step 2 to `config/bootcamp_progress.json`.
-
-3. **Use MCP tools for code generation:** Call `generate_scaffold` with workflow `add_records` and the bootcamper's chosen language to get version-correct SDK code. Call `sdk_guide` with `topic='load'` for platform-specific loading patterns.
-
    **Checkpoint:** Write step 3 to `config/bootcamp_progress.json`.
+
+4. **Use MCP tools for code generation:** Call `generate_scaffold` with workflow `add_records` and the bootcamper's chosen language to get version-correct SDK code. Call `sdk_guide` with `topic='load'` for platform-specific loading patterns.
+
+   **Checkpoint:** Write step 4 to `config/bootcamp_progress.json`.
 
 ---

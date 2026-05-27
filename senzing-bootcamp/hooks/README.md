@@ -1,6 +1,6 @@
 # Senzing Bootcamp Hooks
 
-This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 28 hooks total.
+This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 29 hooks total.
 
 ## Hook Name Style Guide
 
@@ -44,8 +44,8 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 ### 5. Write Policy Gate (`write-policy-gate.kiro.hook`) ⭐
 
 **Trigger:** Before any file write operation (preToolUse)
-**Action:** Consolidated write-time policy hook that performs three checks in a single interception: (1) blocks direct SQL against the Senzing database (G2C.db or internal tables), instructing the agent to rewrite using SDK methods; (2) enforces the single-question rule for `.question_pending` writes, preventing compound questions; (3) validates file path policies — feedback must go to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` and no files may be written outside the working directory. Uses a fast path for normal writes (proceeds silently) and slow paths only for violations.
-**Use case:** Unified write-time enforcement of SQL blocking, question quality, and file path policies — avoids triple-firing on every write operation
+**Action:** Consolidated write-time policy hook that performs four checks in a single interception: (1) blocks direct SQL against the Senzing database (G2C.db or internal tables), instructing the agent to rewrite using SDK methods; (2) enforces the single-question rule for `.question_pending` writes, preventing compound questions; (3) validates file path policies — feedback must go to `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` and no files may be written outside the working directory; (4) enforces root file placement rules, blocking source code and data files from the project root. Uses a fast path for normal writes (proceeds silently) and slow paths only for violations.
+**Use case:** Unified write-time enforcement of SQL blocking, question quality, file path policies, and root placement — avoids quadruple-firing on every write operation
 
 ### Module Hooks (installed when the associated module starts)
 
@@ -190,6 +190,12 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 **Action:** On detecting a new entry in `modules_completed`, appends a structured recap section to `docs/bootcamp_recap.md` capturing information shared, questions asked, answers given, and actions taken
 **Use case:** Builds a running record of the bootcamp experience for PDF generation at graduation
 
+### 29. Session Log Events (`session-log-events.kiro.hook`)
+
+**Trigger:** After write operations (postToolUse)
+**Action:** Logs file create, modify, delete, and MCP tool call actions to the session log after write operations complete
+**Use case:** Enables progressive session tracking for the completion summary
+
 ## Installation
 
 **Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.
@@ -265,6 +271,7 @@ You can customize any hook by editing the JSON file:
 - ✅ Git Commit Reminder
 - ✅ Module Completion Celebration
 - ✅ Module Recap Append
+- ✅ Session Log Events
 
 ### Module 1 (Business Problem)
 

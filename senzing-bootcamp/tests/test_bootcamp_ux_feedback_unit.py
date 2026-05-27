@@ -140,16 +140,17 @@ class TestOnboardingBulletOrder:
             f"Got: {bullets[0]}"
         )
 
-    def test_glossary_reference_is_last_bullet(self) -> None:
-        """Verify term-definition guidance is the last bullet.
+    def test_glossary_reference_is_second_to_last_bullet(self) -> None:
+        """Verify term-definition guidance is the second-to-last bullet.
 
         Validates: Requirement 1.3
+        The hook files explanation bullet comes after the glossary reference.
         """
         bullets = _get_step4_bullets()
-        assert len(bullets) > 0, "No bullets found in Step 4"
-        assert _GLOSSARY_MARKER in bullets[-1].lower(), (
-            f"Last bullet must be the term-definition guidance.\n"
-            f"Got: {bullets[-1]}"
+        assert len(bullets) > 1, "Not enough bullets found in Step 4"
+        assert _GLOSSARY_MARKER in bullets[-2].lower(), (
+            f"Second-to-last bullet must be the term-definition guidance.\n"
+            f"Got: {bullets[-2]}"
         )
 
 

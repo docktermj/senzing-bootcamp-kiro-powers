@@ -63,6 +63,7 @@ modules:
         required: true
     requires_from:
       1: ["config/data_sources.yaml"]
+      # Module 3 is a soft prerequisite — warn if missing but do not block
       3: ["docs/progress/MODULE_3_COMPLETE.md"]
   5:
     produces:

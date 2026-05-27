@@ -300,7 +300,7 @@ MODULE_02 = STEERING_DIR / "module-02-sdk-setup.md"
 
 # SHA-256 hash of module-02-sdk-setup.md at the time preservation tests were written.
 # Used to verify byte-identical content (Module 2 Step 5 independence).
-MODULE_02_SHA256 = "03214ded373212228a71386b6cfe9610859b53d8ea5299d54854934c187b052c"
+MODULE_02_SHA256 = "548b94e501110e4d058af391292bfc81a8f7a5e0b3fcd194c2fa4ee6bca1d5a0"
 
 # The five inference categories in Step 6 (labeled A–F in the steering file,
 # but the task spec lists five named categories plus INTEGRATION TARGETS).

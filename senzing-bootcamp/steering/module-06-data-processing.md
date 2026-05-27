@@ -64,10 +64,10 @@ When the bootcamper encounters an error during this module:
 
 ## Phase Sub-Files
 
-- **Phase A: Build Loading Program** (steps 1–3): `module-06-phaseA-build-loading.md`
-- **Phase B: Load First Source** (steps 4–10): `module-06-phaseB-load-first-source.md`
-- **Phase C: Multi-Source Orchestration (Conditional — 2+ Data Sources)** (steps 11–19): `module-06-phaseC-multi-source.md`
-- **Phase D: Validation** (steps 20–27): `module-06-phaseD-validation.md`
+- **Phase A: Build Loading Program** (steps 1–4): `module-06-phaseA-build-loading.md`
+- **Phase B: Load First Source** (steps 5–11): `module-06-phaseB-load-first-source.md`
+- **Phase C: Multi-Source Orchestration (Conditional — 2+ Data Sources)** (steps 12–20): `module-06-phaseC-multi-source.md`
+- **Phase D: Validation** (steps 21–28): `module-06-phaseD-validation.md`
 
 ## Advanced Reading
 

@@ -1,10 +1,9 @@
 {
   "mcpServers": {
-    "senzing-mcp-server": {
-      "url": "https://mcp.senzing.com/mcp",
-      "disabled": false,
-      "autoApprove": [],
-      "disabledTools": ["submit_feedback"]
+    "power-senzing-senzing": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.senzing.com/mcp"],
+      "disabled": false
     }
   }
 }

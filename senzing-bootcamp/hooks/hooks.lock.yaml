@@ -1,6 +1,6 @@
 # AUTO-GENERATED — do not edit manually.
 # Run: python3 senzing-bootcamp/scripts/sync_hook_registry.py --write
-generated_at: "2026-05-25T16:07:10Z"
+generated_at: "2026-05-26T23:56:14Z"
 hooks:
   - id: analyze-after-mapping
     version: "1.0.0"
@@ -82,6 +82,10 @@ hooks:
     version: "1.0.0"
     category: module
     event_type: fileEdited
+  - id: session-log-events
+    version: "1.0.0"
+    category: module
+    event_type: postToolUse
   - id: validate-alert-config
     version: "1.0.0"
     category: module

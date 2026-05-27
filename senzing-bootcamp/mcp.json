@@ -1,6 +1,7 @@
 {
   "mcpServers": {
     "senzing-mcp-server": {
+      "type": "http",
       "url": "https://mcp.senzing.com/mcp",
       "disabled": false,
       "autoApprove": [],

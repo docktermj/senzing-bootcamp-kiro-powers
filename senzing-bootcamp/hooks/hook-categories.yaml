@@ -49,3 +49,4 @@ modules:
     - git-commit-reminder
     - module-completion-celebration
     - module-recap-append
+    - session-log-events

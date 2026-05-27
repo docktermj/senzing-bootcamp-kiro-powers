@@ -1,0 +1,13 @@
+{
+  "name": "to log session events after write operations",
+  "version": "1.0.0",
+  "description": "Logs file create, modify, delete, and MCP tool call actions to the session log after write operations complete, enabling progressive session tracking for the completion summary.",
+  "when": {
+    "type": "postToolUse",
+    "toolTypes": ["write"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A write operation just completed. Log it as a session event for the completion summary. Follow these steps exactly:\n\n1. DETERMINE ACTION TYPE: Examine the tool call that just completed and classify it:\n   - If a new file was created: action_type is \"file_create\"\n   - If an existing file was modified (edit, append, replace): action_type is \"file_modify\"\n   - If a file was deleted: action_type is \"file_delete\"\n   - If an MCP tool was invoked: action_type is \"mcp_tool_call\"\n   - If a shell command was executed: action_type is \"command_run\"\n\n2. GET CURRENT MODULE: Read config/bootcamp_progress.json and use the current_module field as the module number (integer 0-11). If the file is unreadable or missing, use 0.\n\n3. BUILD THE LOG ENTRY: Use the session_logger.py functions:\n   - Import build_completion_entry and append_completion_entry from scripts/session_logger.py\n   - Call build_completion_entry with:\n     - event_type: \"action\"\n     - module: the current module number from step 2\n     - data: a dictionary containing:\n       - \"action_type\": the classified type from step 1\n       - \"description\": a brief description of what was done (max 500 chars)\n       - \"file_path\": the target file path (required for file_create, file_modify, file_delete; omit for command_run and mcp_tool_call)\n\n4. APPEND TO LOG: Call append_completion_entry with log_path \"config/session_log.jsonl\" and the built entry.\n\n5. SILENCE: After logging, produce no visible output to the bootcamper. Do not acknowledge the logging action. Do not print confirmation. Zero tokens of user-facing output.\n\nCONSTRAINTS:\n- Do NOT log writes to config/session_log.jsonl itself (avoid infinite recursion).\n- Do NOT log writes to .question_pending files.\n- Do NOT log writes to .git/ directory files.\n- Do NOT include secrets, credentials, or environment variable values in the description.\n- If build_completion_entry or append_completion_entry raises an error, silently continue without blocking the bootcamp flow."
+  }
+}

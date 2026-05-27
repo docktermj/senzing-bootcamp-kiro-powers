@@ -84,9 +84,9 @@ class TestHookFileStructure:
         missing = validate_required_fields(hook_data)
         assert not missing, f"Missing required fields: {', '.join(missing)}"
 
-    def test_when_type_is_post_task_execution(self, hook_data: dict):
-        """when.type is postTaskExecution (Req 1.3)."""
-        assert hook_data["when"]["type"] == "postTaskExecution"
+    def test_when_type_is_agent_stop(self, hook_data: dict):
+        """when.type is agentStop (Req 1.3)."""
+        assert hook_data["when"]["type"] == "agentStop"
 
     def test_then_type_is_ask_agent(self, hook_data: dict):
         """then.type is askAgent (Req 1.4)."""

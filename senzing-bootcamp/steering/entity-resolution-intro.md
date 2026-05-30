@@ -4,7 +4,7 @@ inclusion: manual
 
 # What Is Entity Resolution?
 
-Loaded via `#[[file:]]` from `onboarding-flow.md` during Step 4a.
+Loaded via `#[[file:]]` from `onboarding-flow.md` during Step 3.
 
 <!-- AGENT INSTRUCTION — not shown to the bootcamper.
 Before presenting this section, call `search_docs` from the Senzing MCP server:
@@ -95,6 +95,9 @@ Handling rules:
   "continue", "next"): allow the flow to continue to the next section.
 - If the bootcamper provides an ambiguous response: treat it as a follow-up
   question, attempt to answer it using MCP tools, then re-present this gate.
+- If search_docs returns no relevant results or the tool call fails: inform
+  the bootcamper that no documentation was found for their specific question,
+  suggest they rephrase or ask a different question, then re-present this gate.
 -->
 
 ⛔ **MANDATORY GATE** — Entity Resolution Exploration

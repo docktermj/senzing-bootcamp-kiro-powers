@@ -37,9 +37,49 @@ Generate a PDF version of the bootcamper's recap document for sharing. This step
 
 **Procedure:**
 
-1. Check if `docs/bootcamp_recap.md` exists. If it does not exist, skip this step silently and proceed to Step 1.
+### Step 0a: Recap Document Recovery
 
-2. Run the PDF generation script:
+Before generating the PDF, validate that the recap document exists and is usable. Do NOT silently skip — treat a missing recap as a recoverable error.
+
+1. **Check if `docs/bootcamp_recap.md` exists.**
+
+2. **If `docs/bootcamp_recap.md` does NOT exist:**
+
+   a. Check if `config/bootcamp_progress.json` exists and contains a non-empty `modules_completed` array.
+
+   b. **If progress data is available** (file exists and `modules_completed` is non-empty):
+      - Regenerate `docs/bootcamp_recap.md` from the progress data and module artifacts produced during the bootcamp.
+      - For each module in `modules_completed`, reconstruct a recap section using available module artifacts (files created, code produced, documentation generated during that module).
+      - Display message to the bootcamper: "⚠️ Recap document was not found and has been reconstructed from available progress data."
+      - Proceed to Step 0b (validation).
+
+   c. **If progress data is NOT available** (progress file missing or `modules_completed` is empty):
+      - Display message to the bootcamper: "⚠️ Cannot generate recap PDF — the recap document is missing and there is insufficient progress data to reconstruct it. Skipping PDF generation."
+      - Skip PDF generation entirely and proceed to Step 1.
+
+3. **If `docs/bootcamp_recap.md` exists:** Proceed to Step 0b (validation).
+
+### Step 0b: Recap Document Validation
+
+Before generating the PDF, validate that the recap document contains content matching the bootcamper's progress.
+
+1. Read `config/bootcamp_progress.json` and extract the `modules_completed` array.
+
+2. Check that `docs/bootcamp_recap.md` contains at least one markdown heading matching the pattern `## Module N:` where N is a module number present in the `modules_completed` array.
+
+3. **If valid** (at least one matching `## Module N:` heading found): Proceed to Step 0c (PDF generation).
+
+4. **If invalid** (no matching `## Module N:` headings found):
+
+   a. Check if `config/bootcamp_progress.json` exists and contains a non-empty `modules_completed` array.
+
+   b. **If progress data is available:** Regenerate `docs/bootcamp_recap.md` from progress data and module artifacts. Display message: "⚠️ Recap document was incomplete and has been reconstructed from available progress data."
+
+   c. **If progress data is NOT available:** Display message: "⚠️ Cannot generate recap PDF — the recap document has no valid module sections and there is insufficient progress data to reconstruct it. Skipping PDF generation." Skip PDF generation and proceed to Step 1.
+
+### Step 0c: PDF Generation
+
+1. Run the PDF generation script:
 
    ```bash
    python scripts/generate_recap_pdf.py
@@ -47,11 +87,11 @@ Generate a PDF version of the bootcamper's recap document for sharing. This step
 
    This converts `docs/bootcamp_recap.md` into `docs/bootcamp_recap.pdf`, rendering a cover page (bootcamp title, bootcamper name, completion date, total duration) and per-module pages with formatted headings, lists, and code blocks.
 
-3. **Handle errors gracefully:**
+2. **Handle errors gracefully:**
    - If the script reports `fpdf2` is not installed: Inform the bootcamper that PDF generation was skipped and suggest `pip install fpdf2` to enable it. Proceed to Step 1.
    - If the script fails for any other reason: Inform the bootcamper of the failure reason and proceed to Step 1.
 
-4. On success, inform the bootcamper: "📄 Recap PDF generated at `docs/bootcamp_recap.pdf`."
+3. On success, inform the bootcamper: "📄 Recap PDF generated at `docs/bootcamp_recap.pdf`."
 
 Proceed to Step 1.
 

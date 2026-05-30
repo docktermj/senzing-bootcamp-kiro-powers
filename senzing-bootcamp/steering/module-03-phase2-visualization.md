@@ -70,8 +70,38 @@ The generated `index.html` is a single file with embedded CSS and JavaScript. D3
 | `src/system_verification/web_service/stats_builder.py` | Statistics computation from `export_json_entity_report` |
 | `src/system_verification/web_service/graph_builder.py` | Graph node/edge construction from SDK |
 | `src/system_verification/web_service/merges_builder.py` | Multi-record entity extraction from SDK |
-| `src/system_verification/web_service/search_builder.py` | Search-by-attributes wrapper |
+| `src/system_verification/web_service/search_builder.py` | Search-by-attributes wrapper with entity enrichment: calls `search_by_attributes`, then `get_entity_by_entity_id` for each matched entity (up to 10) to retrieve match keys, feature scores, and resolution rules |
 | `src/system_verification/web_service/index.html` | Generated output from `write_html.py` (single-page visualization, D3.js v7 CDN, embedded CSS/JS) |
+
+#### search_builder.py — Entity Enrichment Specification
+
+The `search_builder.py` module SHALL implement the following enrichment behavior:
+
+**Enrichment flow:**
+
+1. Call `search_by_attributes` with the query parameters to get matching entities
+2. For each matched entity (up to a maximum of 10), call `get_entity_by_entity_id` to retrieve full resolution detail
+3. Extract match keys, feature scores, and resolution rules from the entity detail response
+4. Return enriched results combining basic search info with resolution reasoning
+
+**Enrichment cap:** Enrichment is capped at 10 entities maximum. If a search returns more than 10 matching entities, only the first 10 are enriched with resolution detail. Remaining entities (positions 11+) are returned as basic search results with null values for `match_keys`, `feature_scores`, and `resolution_rules`.
+
+**Extraction functions:**
+
+| Function | Input | Output |
+|----------|-------|--------|
+| `_extract_match_keys(entity_detail)` | Full entity detail JSON | `{"entity_level": "+NAME+DOB", "per_record": ["+NAME+DOB", "+PHONE"]}` — entity-level match key string + list of per-record match key strings |
+| `_extract_feature_scores(search_match_info)` | Search match comparison info | `[{"feature": "NAME", "score": 97, "label": "CLOSE"}, ...]` — feature name, numeric percentage (0-100), classification label |
+| `_extract_resolution_rules(entity_detail)` | Full entity detail JSON | `[{"data_source": "CUSTOMERS", "record_id": "1001", "rule": "CNAME_CFF_CEXCL"}, ...]` — per-record data source, record ID, and resolution rule string |
+
+**Graceful degradation:** If `get_entity_by_entity_id` raises any exception for a specific entity, the search builder SHALL return the basic search result for that entity with:
+
+- `match_keys`: null
+- `feature_scores`: null
+- `resolution_rules`: null
+- `enrichment_error`: a non-empty string containing the exception type and message (e.g., `"SzError: Entity 5 not found in repository"`)
+
+One entity's enrichment failure SHALL NOT prevent enrichment of remaining entities.
 
 ### 9.2 API Endpoints
 
@@ -121,6 +151,86 @@ Each node: `entity_id`, `entity_name`, `record_count`, `data_sources`, `records`
 ```
 
 Each entity: `entity_id`, `entity_name`, `match_key`, `records`. Each record: `data_source`, `record_id`, `name`, `address`, `phone`, `identifiers`. Only entities with 2+ records are returned.
+
+**`GET /api/search`** — Search entities with enriched resolution reasoning
+
+```json
+{
+  "results": [
+    {
+      "entity_id": 1,
+      "entity_name": "Robert Smith",
+      "record_count": 3,
+      "data_sources": ["CUSTOMERS", "REFERENCE"],
+      "match_keys": {
+        "entity_level": "+NAME+DOB+PHONE",
+        "per_record": ["+NAME+DOB", "+PHONE", "+NAME+ADDRESS"]
+      },
+      "feature_scores": [
+        {"feature": "NAME", "score": 97, "label": "CLOSE"},
+        {"feature": "DOB", "score": 100, "label": "SAME"},
+        {"feature": "PHONE", "score": 100, "label": "SAME"}
+      ],
+      "resolution_rules": [
+        {"data_source": "CUSTOMERS", "record_id": "1001", "rule": "CNAME_CFF_CEXCL"},
+        {"data_source": "REFERENCE", "record_id": "2001", "rule": "CNAME_CFF"}
+      ],
+      "enrichment_error": null
+    }
+  ],
+  "query": {
+    "name": "Robert Smith",
+    "address": null,
+    "phone": null,
+    "email": null
+  }
+}
+```
+
+Each result includes the base fields (`entity_id`, `entity_name`, `record_count`, `data_sources`) plus enrichment fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `match_keys.entity_level` | `string \| null` | The overall match key string for the entity |
+| `match_keys.per_record` | `list[string]` | Per-record match key strings (empty list for single-record entities) |
+| `feature_scores` | `list[object]` | Each entry: `feature` (string), `score` (int 0-100), `label` (string) |
+| `resolution_rules` | `list[object]` | Each entry: `data_source` (string), `record_id` (string), `rule` (string) |
+| `enrichment_error` | `string \| null` | Non-null if `get_entity_by_entity_id` failed; contains exception type + message |
+
+**Error case response** — When enrichment fails for a specific entity, return the basic result with null enrichment fields and an `enrichment_error` string:
+
+```json
+{
+  "entity_id": 5,
+  "entity_name": "Jane Doe",
+  "record_count": 2,
+  "data_sources": ["WATCHLIST"],
+  "match_keys": null,
+  "feature_scores": null,
+  "resolution_rules": null,
+  "enrichment_error": "SzError: Entity 5 not found in repository"
+}
+```
+
+**Single-record entity response** — When an entity has only one record (no inter-record resolution occurred), return an empty `per_record` list and empty `resolution_rules` list:
+
+```json
+{
+  "entity_id": 10,
+  "entity_name": "Alice Johnson",
+  "record_count": 1,
+  "data_sources": ["CUSTOMERS"],
+  "match_keys": {
+    "entity_level": "+NAME",
+    "per_record": []
+  },
+  "feature_scores": [
+    {"feature": "NAME", "score": 95, "label": "CLOSE"}
+  ],
+  "resolution_rules": [],
+  "enrichment_error": null
+}
+```
 
 **Error response (all endpoints):** HTTP 500 with `{"error": "<description>"}` on SDK failure.
 
@@ -195,11 +305,32 @@ Presented left-to-right with arrow indicators conveying the resolution pipeline 
    - Labeled axes and count annotations on bars
    - Fetches from `GET /api/stats`
 
-4. **Probe_Panel** — One-click TruthSet entities and search
+4. **Probe_Panel** — One-click TruthSet entities and search with resolution reasoning
    - Pre-configured buttons for canonical TruthSet entity pairs (e.g., Robert Smith / Bob Smith)
    - Search input accepting name, address, or phone attributes
-   - On click/search: query `GET /api/search` and display resolved entity with records and relationships
+   - On click/search: query `GET /api/search` and display resolved entity with records, relationships, and resolution reasoning
    - "No matching entities found" message for empty results
+
+   **Resolution Reasoning Display:**
+
+   For each search result, the Probe_Panel SHALL display match keys, feature scores, and resolution rules from the enriched `/api/search` response:
+
+   **Match Key Chips:**
+   - Display the entity-level match key string for each resolved entity (e.g., `+NAME+DOB+PHONE`)
+   - Each individual feature indicator within a match key (e.g., `+NAME`, `+DOB`, `+PHONE`) SHALL be rendered as a separate inline `<span>` element with a visible border and background color distinguishing it from adjacent indicators and surrounding text
+   - If a resolved entity contains multiple records, display per-record match keys indicating which features linked each record into the entity
+   - If a resolved entity contains only one record, omit the per-record match key section for that entity
+   - If an entity has no match key data available (i.e., `match_keys` is null), display a placeholder label: "No match key information available"
+
+   **Feature Scores:**
+   - Display feature scores for the search match comparison as a structured list
+   - Each feature score SHALL show the feature name, numeric percentage, and classification label (e.g., `NAME: 97% CLOSE`)
+   - When multiple features were compared, list all scored features in a structured format, one per line
+
+   **Resolution Rules:**
+   - Display the resolution rule applied to each record within the entity (e.g., `CNAME_CFF_CEXCL`)
+   - Per-record rule strings SHALL be displayed in monospace/code-style format (e.g., `<code>` or `font-family: monospace`) to distinguish them from natural language text
+   - When an entity contains multiple records, show the resolution rule next to each constituent record with its data source and record ID
 
 Summary_Banner remains visible above tabs regardless of active tab. Tab switching without page reload.
 

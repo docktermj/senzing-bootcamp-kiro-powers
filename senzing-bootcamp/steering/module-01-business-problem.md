@@ -36,7 +36,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **If not a repo:** Ask the bootcamper:
 
-   👉 "This is optional, but would you like me to initialize a git repository for version control? You can skip this without affecting the bootcamp."
+   👉 "If you don't know what 'git' is, just skip this. This is optional, but would you like me to initialize a git repository for version control? You can skip this without affecting the bootcamp."
 
    > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 

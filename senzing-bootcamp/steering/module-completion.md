@@ -6,6 +6,66 @@ inclusion: manual
 
 Load this after completing any module. Handles journal entries, certificates, and path completion.
 
+## Completion Step Ordering
+
+The module completion process executes the following steps in a **fixed, invariant order** regardless of which module is being completed:
+
+1. **progress_update** — Mark the module complete in `config/bootcamp_progress.json`
+2. **recap_append** — Append a recap section to `docs/bootcamp_recap.md` (create file if first completion)
+3. **journal_entry** — Append a journal entry to `docs/bootcamp_journal.md` (create file if first completion)
+4. **completion_certificate** — Generate `docs/progress/MODULE_N_COMPLETE.md` and update the summary index
+5. **next_step_options** — Present the bootcamper with concrete next-step choices
+
+### Ordering Rules
+
+- Each step **must complete** (or be skipped due to error) before the next step begins.
+- This ordering is invariant — it applies to every module completion (Module 1 through Module 11), whether the module was completed normally or skipped.
+- If a step fails (file system error, timeout exceeding 30 seconds, or unhandled exception), skip it with a logged warning and proceed to the next step. A failed predecessor does not block subsequent steps.
+
+## Non-Blocking Error Handling
+
+Every artifact-creation step (recap append, journal entry, completion certificate) MUST handle errors gracefully so that a single failure never blocks the bootcamper's flow.
+
+### Per-Step Error Handling
+
+For each of the following steps — **recap_append**, **journal_entry**, and **completion_certificate** — apply these rules:
+
+1. **Catch file-system errors** (permission denied, disk full, path not found, or any OS-level I/O failure).
+2. **Log a warning** visible to the bootcamper using this exact format:
+
+   > ⚠️ [Step name] skipped: [reason]. This will be retried on next module completion.
+
+   Examples:
+   - `⚠️ recap_append skipped: Permission denied writing to docs/bootcamp_recap.md. This will be retried on next module completion.`
+   - `⚠️ journal_entry skipped: Disk full. This will be retried on next module completion.`
+   - `⚠️ completion_certificate skipped: Path not found for docs/progress/. This will be retried on next module completion.`
+
+3. **Continue** to the next step in the defined order. Do NOT halt, raise an error, or prompt the bootcamper for intervention.
+4. **Do NOT retry immediately** — the failed step will be retried on the next module completion.
+
+### 30-Second Timeout
+
+If any single step exceeds **30 seconds** of execution time (e.g., due to a hung file system or unresponsive disk), skip that step and log a warning:
+
+> ⚠️ [Step name] skipped: Timed out after 30 seconds. This will be retried on next module completion.
+
+### Predecessor Failure Does Not Block Subsequent Steps
+
+If a predecessor step fails or is skipped:
+
+- Subsequent steps **still execute** using only data available from previously successful steps.
+- The journal entry does NOT depend on the recap append's output — it can proceed independently.
+- The completion certificate does NOT depend on the journal entry — it can proceed independently.
+- Even if **both** the recap append and journal entry fail, the **next_step_options** step MUST still execute and present the bootcamper with their choices.
+
+### Retry on Next Module Completion
+
+Failed steps are not retried within the same completion flow. Instead:
+
+- The next time any module is completed, each step runs again from scratch.
+- If the file-system issue has been resolved by then, the step will succeed normally.
+- If the issue persists, the same skip-and-warn behavior applies again.
+
 ## Recap Append
 
 The `hooks/module-recap-append.kiro.hook` hook handles this automatically as a `postTaskExecution` hook. When a module is marked complete in `config/bootcamp_progress.json`, the hook gathers session content and appends a structured Recap_Section to `docs/bootcamp_recap.md`.
@@ -26,6 +86,31 @@ The recap append executes after the progress file update (module marked complete
 
 If the recap append fails for any reason (file system error, missing data), it logs a warning and continues the module completion flow. It does not halt execution, raise errors, or alter the behavior of existing hooks or the journal entry process.
 
+### Recap File Creation
+
+On first module completion, if `docs/bootcamp_recap.md` does not exist:
+
+1. Create the `docs/` directory if absent
+2. Read the bootcamper's name from `config/bootcamp_preferences.yaml`
+   - If the file does not exist or the `name` field is missing, use **"Bootcamper"** as the default name
+3. Create `docs/bootcamp_recap.md` with the following header:
+
+```markdown
+# Senzing Bootcamp Recap
+
+**Bootcamper:** {name}
+**Started:** {ISO 8601 timestamp with timezone offset, e.g. 2026-05-14T10:30:00-05:00}
+**Total Duration:** {first module's session duration}
+
+---
+```
+
+4. Append the first recap section immediately after the separator
+
+If `docs/bootcamp_recap.md` already exists, append the new recap section at the end of the file without modifying any existing bytes in the file.
+
+**Step ordering:** The recap append always executes after the progress file update and before the journal entry. This ensures the progress data is available when building the recap section, and the journal entry can reference a successful recap write.
+
 ### References
 
 - Hook: `hooks/module-recap-append.kiro.hook`
@@ -33,15 +118,80 @@ If the recap append fails for any reason (file system error, missing data), it l
 
 ## Bootcamp Journal
 
-Append to `docs/bootcamp_journal.md` (create if needed):
+The journal entry step executes **after** the recap append and **before** the completion certificate. This step is **mandatory** regardless of module number (1 through 11) or completion method (normal completion or skip). It must never be omitted.
+
+### Journal File Creation (First Module Completion)
+
+On first module completion, if `docs/bootcamp_journal.md` does not exist:
+
+1. Create the `docs/` directory if it does not already exist
+2. Read the bootcamper's name from `config/bootcamp_preferences.yaml`
+   - If the file does not exist or the `name` field is missing, use **"Bootcamper"** as the default name
+3. Determine the start date as today's date in ISO 8601 format (`YYYY-MM-DD`)
+4. Create `docs/bootcamp_journal.md` with the following header:
 
 ```markdown
-## Module N: [Name] — Completed [date]
-**What we did:** [1-2 sentences]
-**What was produced:** [files/artifacts]
-**Why it matters:** [enables next step]
-**Bootcamper's takeaway:** N/A
+# Bootcamp Journal
+
+**Bootcamper:** {name from config/bootcamp_preferences.yaml}
+**Started:** {YYYY-MM-DD}
+
+---
 ```
+
+5. Proceed immediately to appending the first journal entry (below)
+
+### Journal Entry Append
+
+After the recap append step completes (or is skipped due to error), append a journal entry to `docs/bootcamp_journal.md`. If the file already exists, append the new entry at the end **without modifying any existing content** — all prior entries must be preserved byte-for-byte.
+
+Each journal entry uses this structure:
+
+```markdown
+## Module N: {Name} — Completed {ISO 8601 with timezone}
+
+**What we did:** {summary}
+**What was produced:** {comma-separated artifact paths}
+**Why it matters:** {explanation}
+**Bootcamper's takeaway:** {takeaway or N/A}
+
+---
+```
+
+### Field Derivation Rules
+
+| Field | Source |
+|-------|--------|
+| **Module number** | The module number just completed (from `config/bootcamp_progress.json`) |
+| **Module name** | Derived from `config/module-dependencies.yaml` — use the `name` field for the corresponding module number |
+| **Completion date** | Current timestamp in ISO 8601 format with timezone offset (e.g., `2026-05-14T10:30:00-05:00`) |
+| **Summary** | 1–2 sentences describing what was accomplished during the module |
+| **Artifacts** | Comma-separated list of file paths created or modified during the module session |
+| **Why it matters** | Brief explanation of how this module enables subsequent work |
+| **Takeaway** | The bootcamper's stated takeaway if provided during the session, otherwise `N/A` |
+
+### Workflow Position
+
+The journal entry step occupies position 3 in the fixed completion order:
+
+1. progress_update
+2. recap_append
+3. **journal_entry** ← this step
+4. completion_certificate
+5. next_step_options
+
+The journal entry does not depend on the recap append's output — if the recap append fails, the journal entry still executes using data from the progress file and session context.
+
+### Non-blocking Behavior
+
+If the journal file cannot be created or the entry cannot be appended (file system error, permission denied, disk full), log a warning identifying the failure reason and continue to the completion certificate step. Do not halt execution, raise errors, or retry immediately. Retry happens automatically on the next module completion.
+
+### References
+
+- Output: `docs/bootcamp_journal.md`
+- Module names: `config/module-dependencies.yaml`
+- Bootcamper name: `config/bootcamp_preferences.yaml`
+- Validation: `scripts/validate_completion_artifacts.py --journal`
 
 ## Module Completion Certificate
 

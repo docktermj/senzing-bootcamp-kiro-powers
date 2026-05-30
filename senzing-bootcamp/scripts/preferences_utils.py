@@ -11,7 +11,9 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import sys
+import tempfile
 from dataclasses import dataclass
 
 # ---------------------------------------------------------------------------
@@ -96,6 +98,367 @@ class PreferencesSchema:
     detail_level: str | None = None
     hardware_target: str | None = None
     production_specs: dict | None = None
+
+
+# ---------------------------------------------------------------------------
+# Result dataclasses
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class WriteResult:
+    """Result of a preference write operation.
+
+    Attributes:
+        success: Whether the write completed successfully.
+        error: Human-readable error message if the write failed, None otherwise.
+    """
+
+    success: bool
+    error: str | None = None
+
+
+@dataclass
+class LoadResult:
+    """Result of loading preferences from the YAML file.
+
+    Attributes:
+        preferences: Parsed preferences dict, or None if file is missing/corrupt.
+        missing_required: List of required field names that are absent from the file.
+        error: Human-readable error message if loading failed, None otherwise.
+    """
+
+    preferences: dict | None
+    missing_required: list[str]
+    error: str | None = None
+
+
+@dataclass
+class ContextResetMessage:
+    """Structured context reset message with metadata.
+
+    Attributes:
+        message: The formatted message to display to the bootcamper.
+        module_number: Current module number (1-11) from progress state.
+        step_identifier: Current step within the module, or None if unknown.
+        continuation_phrase: The phrase the bootcamper should paste into a new chat.
+    """
+
+    message: str
+    module_number: int
+    step_identifier: str | int | None
+    continuation_phrase: str
+
+
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+
+FORBIDDEN_TEMPORAL_PHRASES: tuple[str, ...] = (
+    "come back later",
+    "come back tomorrow",
+    "take a break",
+    "try again in a while",
+    "when you're ready",
+    "try again later",
+    "wait a moment",
+    "give it some time",
+)
+
+LANGUAGE_STEERING_MAP: dict[str, str] = {
+    "python": "lang-python.md",
+    "java": "lang-java.md",
+    "csharp": "lang-csharp.md",
+    "c#": "lang-csharp.md",
+    "rust": "lang-rust.md",
+    "typescript": "lang-typescript.md",
+}
+
+
+# ---------------------------------------------------------------------------
+# Language steering resolver
+# ---------------------------------------------------------------------------
+
+
+def resolve_language_steering(language: str) -> str | None:
+    """Map a language preference value to its steering file name.
+
+    Args:
+        language: The persisted language value (case-insensitive).
+
+    Returns:
+        Steering file name (e.g., "lang-python.md") or None if unrecognized.
+    """
+    return LANGUAGE_STEERING_MAP.get(language.lower())
+
+
+# ---------------------------------------------------------------------------
+# Session resume summary formatter
+# ---------------------------------------------------------------------------
+
+
+def format_resume_summary(
+    language: str,
+    track: str,
+    verbosity: str,
+) -> str:
+    """Format a 1-2 sentence session resume confirmation.
+
+    Args:
+        language: Active programming language.
+        track: Active bootcamp track.
+        verbosity: Active verbosity level.
+
+    Returns:
+        Summary string of at most 2 sentences containing all three values.
+    """
+    return f"Resuming with {language}, {verbosity} verbosity, {track} track."
+
+
+# ---------------------------------------------------------------------------
+# Context reset formatter
+# ---------------------------------------------------------------------------
+
+
+def format_context_reset(
+    progress_path: str = "config/bootcamp_progress.json",
+) -> ContextResetMessage:
+    """Generate a context reset message from current progress state.
+
+    Reads the progress file to determine current module and step,
+    then formats a message containing:
+    1. Technical reason (context memory full)
+    2. Immediacy clarification (can start new chat right now)
+    3. Progress reassurance (all work saved in project files)
+    4. Continuation instruction with quoted phrase
+
+    The message is at most 4 sentences, contains no temporal delay language,
+    and includes no questions.
+
+    Args:
+        progress_path: Path to the progress JSON file.
+
+    Returns:
+        ContextResetMessage with the formatted message and metadata.
+    """
+    import json
+
+    # Default fallback values
+    module_number = 1
+    step_identifier: str | int | None = None
+
+    # Read progress file
+    try:
+        with open(progress_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        raw_module = data.get("current_module")
+        if isinstance(raw_module, int) and 1 <= raw_module <= 11:
+            module_number = raw_module
+        raw_step = data.get("current_step")
+        if isinstance(raw_step, (str, int)):
+            step_identifier = raw_step
+    except (OSError, IOError, json.JSONDecodeError, TypeError, AttributeError):
+        # File missing or corrupt — use fallback defaults
+        pass
+
+    # Build continuation phrase
+    continuation_phrase = f"continue the bootcamp from module {module_number}"
+
+    # Format the 4-sentence message
+    message = (
+        "My conversation memory is getting full from our work so far. "
+        "You can start a new chat right now to continue. "
+        "All your progress is saved in your project files and will be "
+        "available in the new session. "
+        f'Say "{continuation_phrase}" in the new chat.'
+    )
+
+    return ContextResetMessage(
+        message=message,
+        module_number=module_number,
+        step_identifier=step_identifier,
+        continuation_phrase=continuation_phrase,
+    )
+
+
+# ---------------------------------------------------------------------------
+# YAML serializer (minimal, stdlib-only)
+# ---------------------------------------------------------------------------
+
+
+def _serialize_yaml_value(value: str | bool | int | dict | list | None) -> str:
+    """Serialize a Python value to a YAML string fragment.
+
+    Handles scalars (str, bool, int, None), flat dicts, and lists of
+    scalars or dicts. Designed for the shallow preferences schema.
+
+    Args:
+        value: The value to serialize.
+
+    Returns:
+        YAML string representation (may be multi-line for dicts/lists).
+    """
+    if value is None:
+        return "null"
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, str):
+        # Quote strings that could be misinterpreted as YAML special values
+        if value in ("true", "false", "null", "~", ""):
+            return f'"{value}"'
+        if value.startswith(("{", "[", "-", "#", '"', "'")) or ":" in value:
+            return f'"{value}"'
+        try:
+            int(value)
+            return f'"{value}"'
+        except ValueError:
+            pass
+        return value
+    if isinstance(value, dict):
+        lines: list[str] = []
+        for k, v in value.items():
+            lines.append(f"  {k}: {_serialize_yaml_value(v)}")
+        return "\n" + "\n".join(lines)
+    if isinstance(value, list):
+        if not value:
+            return "[]"
+        lines = []
+        for item in value:
+            if isinstance(item, dict):
+                first = True
+                for k, v in item.items():
+                    if first:
+                        lines.append(f"  - {k}: {_serialize_yaml_value(v)}")
+                        first = False
+                    else:
+                        lines.append(f"    {k}: {_serialize_yaml_value(v)}")
+            else:
+                lines.append(f"  - {_serialize_yaml_value(item)}")
+        return "\n" + "\n".join(lines)
+    return str(value)
+
+
+def _serialize_preferences(data: dict) -> str:
+    """Serialize a preferences dict to a YAML string.
+
+    Args:
+        data: Preferences dict with known top-level keys.
+
+    Returns:
+        Valid YAML string ready to write to file.
+    """
+    lines: list[str] = []
+    for key, value in data.items():
+        serialized = _serialize_yaml_value(value)
+        if serialized.startswith("\n"):
+            lines.append(f"{key}:{serialized}")
+        else:
+            lines.append(f"{key}: {serialized}")
+    return "\n".join(lines) + "\n" if lines else ""
+
+
+# ---------------------------------------------------------------------------
+# Preference writer
+# ---------------------------------------------------------------------------
+
+_MAX_FILE_SIZE_BYTES = 10 * 1024  # 10 KB
+
+
+def write_preference(
+    key: str,
+    value: str | bool | dict | list | None,
+    preferences_path: str = "config/bootcamp_preferences.yaml",
+) -> WriteResult:
+    """Write a single preference field atomically.
+
+    Reads existing file (if any), merges the new key-value pair,
+    validates the result, and writes atomically via temp file + rename.
+
+    Args:
+        key: The preference field name (must be in KNOWN_TOP_LEVEL_KEYS).
+        value: The value to persist. None values are treated as deletion
+               (the key is removed from the file rather than stored as null).
+        preferences_path: Path to the preferences YAML file.
+
+    Returns:
+        WriteResult with success status and optional error message.
+    """
+    # Validate key is known
+    if key not in KNOWN_TOP_LEVEL_KEYS:
+        return WriteResult(success=False, error=f"Unknown key: '{key}'")
+
+    # Read existing preferences
+    existing: dict = {}
+    try:
+        if os.path.isfile(preferences_path):
+            with open(preferences_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            if content.strip():
+                existing = parse_yaml(content)
+    except (OSError, IOError) as exc:
+        return WriteResult(success=False, error=f"Failed to read preferences: {exc}")
+    except ValueError:
+        # Existing file has invalid YAML — start fresh with just the new value
+        existing = {}
+
+    # Merge: remove key if value is None, otherwise set it
+    if value is None:
+        existing.pop(key, None)
+    else:
+        existing[key] = value
+
+    # Serialize the updated preferences
+    yaml_content = _serialize_preferences(existing)
+
+    # Validate size constraint
+    content_bytes = yaml_content.encode("utf-8")
+    if len(content_bytes) > _MAX_FILE_SIZE_BYTES:
+        return WriteResult(
+            success=False, error="File would exceed 10 KB limit"
+        )
+
+    # Ensure directory exists
+    dir_path = os.path.dirname(preferences_path)
+    if dir_path:
+        try:
+            os.makedirs(dir_path, exist_ok=True)
+        except OSError as exc:
+            return WriteResult(
+                success=False, error=f"Failed to create directory: {exc}"
+            )
+
+    # Atomic write: temp file + os.replace()
+    tmp_path = ""
+    try:
+        fd, tmp_path = tempfile.mkstemp(
+            dir=dir_path if dir_path else ".",
+            prefix=".bootcamp_preferences_",
+            suffix=".tmp",
+        )
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as tmp_file:
+                tmp_file.write(yaml_content)
+                tmp_file.flush()
+                os.fsync(tmp_file.fileno())
+        except (OSError, IOError):
+            os.close(fd)
+            raise
+
+        os.replace(tmp_path, preferences_path)
+    except (OSError, IOError) as exc:
+        # Clean up temp file if it still exists
+        try:
+            if tmp_path and os.path.exists(tmp_path):
+                os.unlink(tmp_path)
+        except OSError:
+            pass
+        return WriteResult(
+            success=False, error=f"Failed to write preferences: {exc}"
+        )
+
+    return WriteResult(success=True)
 
 
 # ---------------------------------------------------------------------------
@@ -655,6 +1018,79 @@ def validate_preferences_schema(data: dict) -> list[str]:
                         )
 
     return errors
+
+
+# ---------------------------------------------------------------------------
+# Preference loading
+# ---------------------------------------------------------------------------
+
+
+def load_preferences(
+    preferences_path: str = "config/bootcamp_preferences.yaml",
+    required_fields: tuple[str, ...] = ("language", "track", "verbosity"),
+) -> LoadResult:
+    """Load and validate preferences from the YAML file.
+
+    Reads the preferences file, parses it using the custom YAML parser,
+    and identifies any missing required fields. Does NOT assume default
+    values for missing fields.
+
+    Args:
+        preferences_path: Path to the preferences YAML file.
+        required_fields: Fields that must be present for a complete session.
+
+    Returns:
+        LoadResult with parsed preferences, list of missing required fields,
+        and optional error message if file is missing/corrupt.
+    """
+    import os
+
+    # Check if file exists
+    if not os.path.exists(preferences_path):
+        return LoadResult(
+            preferences=None,
+            missing_required=list(required_fields),
+            error="File not found",
+        )
+
+    # Try to read the file
+    try:
+        with open(preferences_path, "r", encoding="utf-8") as f:
+            content = f.read()
+    except PermissionError as e:
+        return LoadResult(
+            preferences=None,
+            missing_required=list(required_fields),
+            error=f"Permission denied: {e}",
+        )
+    except OSError as e:
+        return LoadResult(
+            preferences=None,
+            missing_required=list(required_fields),
+            error=f"Cannot read file: {e}",
+        )
+
+    # Try to parse the YAML content
+    try:
+        preferences = parse_yaml(content)
+    except ValueError as e:
+        return LoadResult(
+            preferences=None,
+            missing_required=list(required_fields),
+            error=f"Invalid YAML: {e}",
+        )
+
+    # Identify missing required fields
+    missing = [
+        field for field in required_fields
+        if field not in preferences or preferences[field] is None
+    ]
+
+    return LoadResult(
+        preferences=preferences,
+        missing_required=missing,
+        error=None,
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -23,9 +23,28 @@ inclusion: manual
 
 1. **Define query requirements**:
 
+   > **Agent instruction:** Read `docs/business_problem.md` as the first action before any bootcamper interaction in this step.
+
+   **IF** `docs/business_problem.md` exists AND contains at least one success criterion or at least one non-empty desired output field:
+
+   - Derive between 1 and 10 query requirements from the success criteria and desired outputs in the document. Each derived requirement must reference the specific success criterion or desired output it addresses.
+   - Present the derived requirements to the bootcamper with this attribution: "Based on your business problem from Module 1, here are the query requirements I've derived:"
+   - List each requirement with its source (e.g., "From your success criterion about [X]..." or "From your desired output format of [Y]...")
+
+   👉 "Is there anything you'd like to add or change?"
+
+   🛑 STOP — Wait for bootcamper response before proceeding.
+
+   - **If the bootcamper accepts or modifies:** Proceed with the confirmed requirements.
+   - **If the bootcamper rejects all derived requirements:** Ask a fresh open-ended question without referencing the rejected items: "What questions do you need to answer with your data?"
+
+   **ELSE** (file does not exist, OR both success criteria and desired outputs sections are missing or empty):
+
    Ask: "What questions do you need to answer with your data?"
 
-   Common queries:
+   ---
+
+   Common queries (guidance for both paths):
    - Find duplicates within a source
    - Find cross-source matches
    - Search for specific entities

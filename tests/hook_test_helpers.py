@@ -161,6 +161,12 @@ def parse_categories_yaml(path: Path | None = None) -> dict[str, list[str]]:
                 categories["critical"] = []
             continue
 
+        # Skip the `agentstop_order` block: it is a list-of-mappings
+        # (`- id:` / `order:` / `rationale:`) describing agentStop precedence,
+        # not a category → hook-list mapping, so its entries are not hook ids.
+        if current_top_key == "agentstop_order":
+            continue
+
         # Module sub-key (2-space indent): "  1:" or "  any:"
         if indent == 2 and stripped.endswith(":") and current_top_key == "modules":
             key_name = stripped.strip()[:-1]

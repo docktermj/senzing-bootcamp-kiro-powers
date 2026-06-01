@@ -7,6 +7,18 @@ description: "Protocol for switching bootcamp tracks mid-session"
 
 When a bootcamper wants to switch tracks mid-bootcamp, follow this protocol to preview the change, confirm intent, and apply the switch safely.
 
+## Trigger Phrases
+
+This file is loaded when the bootcamper says any of these trigger phrases:
+
+- "switch track"
+- "change track"
+- "move to core"
+- "upgrade to advanced"
+- "go back to system verification"
+
+This file handles confirmation, preview, and application. Do not compute track switches inline — always invoke the `track_switcher.py` script as instructed below.
+
 ## Confirmation Gate
 
 Before making any changes, run the track switcher in dry-run mode to preview the effect:

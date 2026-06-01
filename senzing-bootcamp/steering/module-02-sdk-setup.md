@@ -132,7 +132,7 @@ Before checking for license files or asking the bootcamper anything, proactively
 
 If you load more than 500 records, the SDK returns a **SENZ9000 error at record 501**. For larger datasets, you need a custom license file placed at `licenses/g2.lic`."
 
-You can also request a larger evaluation license directly through the Senzing MCP server — it can guide you through the process without waiting for email responses.
+If a larger or temporary evaluation license is needed, **consult the Senzing MCP server**: call `search_docs(query='request a larger or temporary evaluation license')` and present the returned guidance — this avoids waiting for email responses.
 
 ### 5b. Ask about the bootcamper's license situation
 
@@ -183,7 +183,7 @@ Confirm: "License file placed at `licenses/g2.lic`."
 
 Confirm: "No problem — the built-in 500-record evaluation license is active automatically. That's enough for the bootcamp demo modules."
 
-Mention: "If you need a free evaluation license for larger datasets later, contact <support@senzing.com> (typically 1–2 business days, 30–90 day validity). For production licenses, contact <sales@senzing.com>. Alternatively, the Senzing MCP server can guide you through requesting a larger evaluation license interactively. See `licenses/README.md` for details."
+Mention: "If you need a free evaluation license for larger datasets later, contact <support@senzing.com> (typically 1–2 business days, 30–90 day validity). For production licenses, contact <sales@senzing.com>. If you need a larger evaluation license, **consult the Senzing MCP server** — call `search_docs(query='larger evaluation license for datasets over 500 records')` and present the returned guidance. See `licenses/README.md` for details."
 
 Record in `config/bootcamp_preferences.yaml`: `license: evaluation`.
 

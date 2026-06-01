@@ -319,6 +319,8 @@ After each module, check if the user finished their track's last module:
 
 ## Path Completion Celebration
 
+> **Note:** The completion-summary document (`docs/completion_summary.md`) is always created at track completion; the completion-summary offer in its existing position (between the celebration and the export option) governs only the shareable PDF/share, not the document's creation.
+
 When track is complete, present:
 
 - 🎉 "You've completed the [track name]!"

@@ -25,6 +25,12 @@ jobs:
         run: python senzing-bootcamp/scripts/validate_commonmark.py
       - name: Validate module dependencies
         run: python senzing-bootcamp/scripts/validate_dependencies.py
+      - name: Verify composed hook prompts are in sync
+        run: |
+          python senzing-bootcamp/scripts/compose_hook_prompts.py --verify || {
+            echo "::error::Composed hook prompts drifted. Run: python senzing-bootcamp/scripts/compose_hook_prompts.py --write"
+            exit 1
+          }
       - name: Verify hook registry is in sync
         run: |
           python senzing-bootcamp/scripts/sync_hook_registry.py --verify || {
@@ -43,6 +49,8 @@ jobs:
         run: |
           pip install ruff
           ruff check senzing-bootcamp/scripts/ senzing-bootcamp/tests/ tests/
+      - name: Conversational eval harness
+        run: python senzing-bootcamp/scripts/eval_conversations.py
       - name: Run tests
         run: |
           pip install pytest hypothesis

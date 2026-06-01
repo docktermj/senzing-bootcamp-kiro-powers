@@ -335,8 +335,9 @@ class TestBootcamperSkipsLegitimate:
     treats them as legitimate.
 
     The skip-step protocol handles bootcamper-initiated skips of non-mandatory
-    steps. The existing gate hook accepts skipped_steps["3.9"] as a valid
-    alternative to checkpoints.
+    steps. The Module 3 Step 9 visualization gate is unconditional, so its gate
+    hook no longer accepts a `skipped_steps["3.9"]` entry as an alternative to
+    checkpoints — only CONDITION A (checkpoints) satisfies it.
 
     **Validates: Requirements 3.1, 3.2**
     """
@@ -373,20 +374,29 @@ class TestBootcamperSkipsLegitimate:
             f"Skip reason '{entry['reason']}' not in protocol-defined options"
         )
 
-    def test_existing_gate_hook_accepts_skipped_steps_entry(self) -> None:
-        """The existing gate hook treats skipped_steps['3.9'] as legitimate.
+    def test_visualization_gate_hook_rejects_skipped_steps_entry(self) -> None:
+        """The visualization gate hook no longer accepts a `"3.9"` skip.
 
-        CONDITION B in the hook prompt: if skipped_steps contains '3.9',
-        the hook produces no output (allows the write).
+        After the module3-visualization-no-skip bugfix, the CONDITION B branch
+        was removed from the gate hook prompt: a `skipped_steps["3.9"]` entry can
+        no longer satisfy the Module 3 Step 9 visualization gate. The gate is
+        unconditional and only CONDITION A (checkpoints) satisfies it.
         """
-        hook_prompt = _UNFIXED_GATE_HOOK_JSON["then"]["prompt"]
+        hook_prompt = json.loads(_GATE_HOOK.read_text(encoding="utf-8"))["then"]["prompt"]
 
-        # The hook must check for skipped_steps entry as an alternative
-        assert "skipped_steps" in hook_prompt, (
-            "Gate hook must check skipped_steps as alternative to checkpoints"
+        # The hook must NOT define a CONDITION B skip-satisfaction branch
+        assert "CONDITION B" not in hook_prompt, (
+            "Gate hook must not define a CONDITION B skip-satisfaction branch"
         )
-        assert "3.9" in hook_prompt, (
-            "Gate hook must specifically check for skipped_steps['3.9']"
+        # The hook must NOT reference skipped_steps as a way to satisfy the gate
+        assert "skipped_steps" not in hook_prompt, (
+            "Gate hook must not reference skipped_steps — the visualization gate "
+            "cannot be satisfied by a skip"
+        )
+        # The hook must NOT reference the "3.9" skip key as satisfying the gate
+        assert "3.9" not in hook_prompt, (
+            "Gate hook must not reference skipped_steps['3.9'] — the Step 9 "
+            "visualization gate is unconditional"
         )
 
     def test_skip_protocol_refuses_mandatory_gate_skips(self) -> None:
@@ -641,11 +651,22 @@ class TestExistingGateHookPreserved:
         assert "when" in hook_data, "Hook must have 'when' field"
         assert "then" in hook_data, "Hook must have 'then' field"
 
-    def test_gate_hook_checks_both_conditions(self) -> None:
-        """Gate hook checks CONDITION A (checkpoints) and CONDITION B (skipped)."""
+    def test_gate_hook_has_no_condition_b(self) -> None:
+        """Gate hook defines CONDITION A (checkpoints) but NOT CONDITION B (skip).
+
+        After the module3-visualization-no-skip bugfix, the Module 3 Step 9
+        visualization gate is unconditional: the CONDITION B escape hatch (a
+        `skipped_steps["3.9"]` entry satisfying the gate) has been removed. Only
+        CONDITION A — both Step 9 checkpoints `"passed"` — can satisfy the gate.
+        """
         hook_data = json.loads(_GATE_HOOK.read_text(encoding="utf-8"))
         prompt = hook_data["then"]["prompt"]
 
-        # Must check both conditions
-        assert "CONDITION A" in prompt, "Hook must define CONDITION A"
-        assert "CONDITION B" in prompt, "Hook must define CONDITION B"
+        # CONDITION A (the checkpoints requirement) must still be present
+        assert "CONDITION A" in prompt, "Hook must still define CONDITION A"
+
+        # CONDITION B (the skip escape hatch) must be ABSENT
+        assert "CONDITION B" not in prompt, (
+            "Hook must NOT define CONDITION B — the Step 9 visualization gate is "
+            "unconditional and a skip can never satisfy it"
+        )

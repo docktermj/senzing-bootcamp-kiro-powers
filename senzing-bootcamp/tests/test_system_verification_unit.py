@@ -157,7 +157,7 @@ class TestSystemVerificationUnit:
         )
 
     def test_gate_condition_updated(self) -> None:
-        """Gate 3→4 references system verification and explicit skip.
+        """Gate 3→4 references system verification and the non-skippable visualization.
 
         Validates: Requirements 8, 9
         """
@@ -168,8 +168,13 @@ class TestSystemVerificationUnit:
             f"Gate 3->4 should reference system verification, "
             f"got: {gate_3_4['requires']}"
         )
-        assert "explicitly skipped" in requires_text, (
-            f"Gate 3->4 should reference 'explicitly skipped' for opt-out, "
+        assert "system verification passed, including the step 9 web service " \
+            "+ visualization (cannot be skipped)" in requires_text, (
+            f"Gate 3->4 should state the Step 9 visualization cannot be skipped, "
+            f"got: {gate_3_4['requires']}"
+        )
+        assert "explicitly skipped" not in requires_text, (
+            f"Gate 3->4 should no longer reference 'explicitly skipped', "
             f"got: {gate_3_4['requires']}"
         )
 

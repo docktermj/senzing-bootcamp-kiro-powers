@@ -182,6 +182,8 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **6d. Does not have license** (branch — bootcamper confirms they do not have a Senzing license):
 
+   **Consult the Senzing MCP server first.** Because the total record count exceeds the 500-record evaluation limit, the current license is insufficient. Call `search_docs(query='temporary or larger evaluation license for more than 500 records')` to retrieve current Senzing guidance on obtaining a temporary/larger evaluation license, and present that guidance to the bootcamper. Then continue with the email path below.
+
    Explain how to request and configure a Senzing license:
 
    - **Where to request:** Contact <support@senzing.com> to request an evaluation license. Mention that you are using the Senzing Bootcamp and provide your expected record count.

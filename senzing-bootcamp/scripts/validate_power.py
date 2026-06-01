@@ -105,7 +105,10 @@ def check_hook_categories_sync():
             current_sub_key = None
             continue
 
-        if current_top_key == "metadata":
+        # Skip non-category blocks. `agentstop_order` is a list-of-mappings
+        # (`- id:` / `order:` / `rationale:`), not a category → hook membership
+        # list, so its `- id: <hook>` entries must not be treated as hook ids.
+        if current_top_key in ("metadata", "agentstop_order"):
             continue
 
         if indent > 0 and stripped.endswith(":") and not stripped.startswith("- "):

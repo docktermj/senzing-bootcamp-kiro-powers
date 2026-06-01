@@ -823,6 +823,29 @@ class TestIndexResolution:
         assert "module-05-phase2-data-mapping.md" in phase_names
         assert "module-05-phase3-test-load.md" in phase_names
 
+    def test_module3_phased_entry_resolves_to_root_plus_phases(
+        self,
+    ) -> None:
+        """Module 3 (phased entry) resolves to root + 3 phase files.
+
+        After the Module 3 corpus split, the module is a phased entry with
+        the ``module-03-system-verification.md`` root plus three phase
+        sub-files: phase 1 (verification, steps 1–8), phase 2
+        (visualization, step 9), and phase 3 (report & close, steps 10–12).
+
+        Verifies the new phase filenames are resolved from the steering
+        index so that no relocated phase content is orphaned.
+        """
+        mod = _INDEX[3]
+        assert mod.module_number == 3
+        assert mod.root_file.name == "module-03-system-verification.md"
+        assert len(mod.phase_files) == 3
+        assert len(mod.all_files) == 4
+        phase_names = sorted(f.name for f in mod.phase_files)
+        assert "module-03-phase1-verification.md" in phase_names
+        assert "module-03-phase2-visualization.md" in phase_names
+        assert "module-03-phase3-report-close.md" in phase_names
+
     def test_missing_file_raises_value_error(
         self, tmp_path: Path
     ) -> None:
@@ -838,3 +861,130 @@ class TestIndexResolution:
         index_file.write_text(index_content, encoding="utf-8")
         with pytest.raises(ValueError, match="does not exist"):
             parse_steering_index(index_file)
+
+
+class TestModule3SplitStructure:
+    """Feature: steering-corpus-split, Module 3 phase-split structure.
+
+    After the Module 3 corpus split, Module 3 is a phased entry whose root
+    (``module-03-system-verification.md``) retains the Before/After framing
+    and Prerequisites, and whose three phase sub-files —
+    ``module-03-phase1-verification.md`` (steps 1–8),
+    ``module-03-phase2-visualization.md`` (step 9), and
+    ``module-03-phase3-report-close.md`` (steps 10–12) — each satisfy the
+    step-checkpoint correspondence, single-question-per-step, and YAML
+    frontmatter (``inclusion: manual``) rules. These example tests lock the
+    new filenames and structure in addition to the auto-discovered
+    property tests above.
+
+    Validates: Requirements 7.3, 7.4, 3.4
+    """
+
+    # New Module 3 phase sub-file names, resolved relative to the index.
+    _PHASE_NAMES: tuple[str, ...] = (
+        "module-03-phase1-verification.md",
+        "module-03-phase2-visualization.md",
+        "module-03-phase3-report-close.md",
+    )
+
+    def test_module3_root_has_before_after_and_prerequisites(self) -> None:
+        """Module 3 root retains Before/After framing and Prerequisites.
+
+        The split moves the numbered steps into phase sub-files but keeps
+        the Before/After framing and the Prerequisites section in the
+        ``module-03-system-verification.md`` root so the module-root
+        structural properties still hold.
+        """
+        mod = _INDEX[3]
+        assert mod.root_file.name == "module-03-system-verification.md"
+        content = mod.root_file.read_text(encoding="utf-8")
+
+        assert check_before_after_framing(content, mod.root_file) == []
+        assert check_prerequisites_listed(content, mod.root_file) == []
+
+    def test_module3_phase_files_present(self) -> None:
+        """The three new Module 3 phase sub-files are registered and exist.
+
+        Verifies the steering index resolves exactly the three new phase
+        filenames and that each file exists on disk.
+        """
+        mod = _INDEX[3]
+        phase_names = sorted(f.name for f in mod.phase_files)
+        assert phase_names == sorted(self._PHASE_NAMES)
+        for phase_file in mod.phase_files:
+            assert phase_file.exists(), (
+                f"Module 3 phase file missing on disk: {phase_file}"
+            )
+
+    def test_module3_phase_files_step_checkpoint_correspondence(
+        self,
+    ) -> None:
+        """Each Module 3 phase sub-file keeps step↔checkpoint correspondence.
+
+        Every numbered step relocated into a phase sub-file retains a
+        ``**Checkpoint:**`` directive between it and the next step.
+        """
+        mod = _INDEX[3]
+        violations: list[str] = []
+        for phase_file in mod.phase_files:
+            content = phase_file.read_text(encoding="utf-8")
+            violations.extend(
+                check_step_checkpoint_correspondence(content, phase_file)
+            )
+
+        assert violations == [], (
+            f"Module 3 phase step-checkpoint violations: {violations}"
+        )
+
+    def test_module3_phase_files_single_question_per_step(self) -> None:
+        """Each Module 3 phase sub-file has at most one question per step.
+
+        The split preserves the single-question-per-step rule so each
+        relocated step still contains at most one ``👉`` pointing question.
+        """
+        mod = _INDEX[3]
+        violations: list[str] = []
+        for phase_file in mod.phase_files:
+            content = phase_file.read_text(encoding="utf-8")
+            violations.extend(
+                check_single_question_per_step(content, phase_file)
+            )
+
+        assert violations == [], (
+            f"Module 3 phase single-question violations: {violations}"
+        )
+
+    def test_module3_phase_files_pointing_question_stop(self) -> None:
+        """Each Module 3 phase pointing question is followed by a STOP/WAIT.
+
+        The split keeps every ``👉`` question with its ``STOP``/``WAIT``
+        instruction inside the same phase sub-file (Requirement 3.5).
+        """
+        mod = _INDEX[3]
+        violations: list[str] = []
+        for phase_file in mod.phase_files:
+            content = phase_file.read_text(encoding="utf-8")
+            violations.extend(
+                check_pointing_question_stop(content, phase_file)
+            )
+
+        assert violations == [], (
+            f"Module 3 phase pointing-question-stop violations: "
+            f"{violations}"
+        )
+
+    def test_module3_files_have_manual_frontmatter(self) -> None:
+        """Module 3 root and every phase sub-file declare inclusion: manual.
+
+        The relocated phase content uses ``inclusion: manual`` frontmatter,
+        matching the split_steering.py output format.
+        """
+        mod = _INDEX[3]
+        violations: list[str] = []
+        for file_path in mod.all_files:
+            content = file_path.read_text(encoding="utf-8")
+            violations.extend(check_yaml_frontmatter(content, file_path))
+
+        assert violations == [], (
+            f"Module 3 frontmatter violations: {violations}"
+        )

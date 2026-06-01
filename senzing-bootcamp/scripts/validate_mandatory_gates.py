@@ -106,6 +106,10 @@ class ValidationResult:
 # Module 3 Step 9 requires these checkpoints to be present with "passed" status
 _MODULE3_STEP9_CHECKPOINTS = ["web_service", "web_page"]
 
+# Mandatory gates whose checkpoints CANNOT be bypassed by a skipped_steps entry.
+# The Module 3 Step 9 visualization gate ("3.9") is unconditional (Governing Rule 15).
+NON_SKIPPABLE_GATES = {"3.9"}
+
 
 # ---------------------------------------------------------------------------
 # Parsing
@@ -261,7 +265,7 @@ def _check_gate(progress: dict, gate: MandatoryGate) -> Violation | None:
     # Check if skipped_steps entry exists (bootcamper-initiated skip)
     skipped_steps = progress.get("skipped_steps", {})
     skip_key = f"{gate.module}.{gate.step}"
-    if skip_key in skipped_steps:
+    if skip_key in skipped_steps and skip_key not in NON_SKIPPABLE_GATES:
         return None
 
     # Check if required checkpoints exist with "passed" status

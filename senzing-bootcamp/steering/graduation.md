@@ -35,6 +35,8 @@ Store these values for use throughout the workflow. Proceed to Step 0.
 
 Generate a PDF version of the bootcamper's recap document for sharing. This step is **non-blocking** — graduation continues regardless of the outcome.
 
+**Note:** Independent of this recap PDF, the completion-summary document (`docs/completion_summary.md`) is **always** generated during the post-completion/graduation flow via `generate_completion_summary.py` (triggered by `completion-summary-offer.md`). That generation is **non-blocking** — in the same spirit as this recap PDF step and the always-generated `GRADUATION_REPORT.md`, any failure logs a warning and graduation continues.
+
 **Procedure:**
 
 ### Step 0a: Recap Document Recovery

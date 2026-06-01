@@ -21,7 +21,7 @@ Adaptive pacing adjusts the baseline but never reduces below explicit verbosity 
 
 ## Context Budget Management
 
-Maintain a mental model of which steering files are currently loaded and their token costs (from `steering-index.yaml` `file_metadata`).
+Maintain a mental model of which steering files are currently loaded and their token costs (from `steering-index.yaml` `file_metadata`). When loading a `large` file, announce the token cost.
 
 **Unload candidates** — a file is eligible for unloading when ALL of these are true:
 

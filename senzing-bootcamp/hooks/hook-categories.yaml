@@ -50,3 +50,20 @@ modules:
     - module-completion-celebration
     - module-recap-append
     - session-log-events
+
+agentstop_order:
+  - id: ask-bootcamper
+    order: 1
+    rationale: "Owns answer-processing and closing questions; absolute precedence per agent-instructions."
+  - id: module-recap-append
+    order: 2
+    rationale: "Capture must run before celebration so the recap reflects the just-completed module."
+  - id: module-completion-celebration
+    order: 3
+    rationale: "Celebrates a completed module; must yield to gate-violation output."
+  - id: enforce-gate-on-stop
+    order: 4
+    rationale: "Mandatory-gate safety net; a gate violation outranks a celebration in the same turn."
+  - id: enforce-visualization-offers
+    order: 5
+    rationale: "Lowest-stakes nudge; offers missed visualizations only when nothing higher fired."

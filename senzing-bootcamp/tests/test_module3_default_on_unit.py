@@ -141,8 +141,12 @@ class TestModule3DefaultOnUnit:
             f"got: {module_4['soft_requires']}"
         )
 
-    def test_gate_3_4_explicitly_skipped(self) -> None:
-        """Gate 3→4 text references 'explicitly skipped'.
+    def test_gate_3_4_non_skippable_visualization(self) -> None:
+        """Gate 3→4 text presents the Step 9 visualization as non-skippable.
+
+        After the module3-visualization-no-skip bugfix, the gate 3->4 requires
+        text no longer presents the visualization as skippable. It now states
+        the Step 9 web service + visualization cannot be skipped.
 
         Validates: Requirements 5, 9
         """
@@ -150,8 +154,16 @@ class TestModule3DefaultOnUnit:
         gate_3_4 = deps["gates"]["3->4"]
         requires_text = " ".join(gate_3_4["requires"]).lower()
 
-        assert "explicitly skipped" in requires_text, (
-            f"Gate 3->4 should reference 'explicitly skipped', "
+        expected = (
+            "system verification passed, including the step 9 web service "
+            "+ visualization (cannot be skipped)"
+        )
+        assert expected in requires_text, (
+            f"Gate 3->4 should state the Step 9 visualization cannot be skipped, "
+            f"got: {gate_3_4['requires']}"
+        )
+        assert "explicitly skipped" not in requires_text, (
+            f"Gate 3->4 should no longer reference 'explicitly skipped', "
             f"got: {gate_3_4['requires']}"
         )
 

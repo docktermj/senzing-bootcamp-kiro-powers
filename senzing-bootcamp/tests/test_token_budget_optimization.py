@@ -820,11 +820,24 @@ class TestNoHookModification:
             "mcp-first-invariant.kiro.hook",
             "question-format-gate.kiro.hook",
         }
-        # Filter for .kiro.hook files in the output, excluding consolidated hooks
+        # agentStop hooks intentionally edited by the hook-architecture-improvements
+        # spec (task 1.4): a behavior-preserving question-pending guard clause was
+        # added to each per Req 2.4. These edits are expected and unrelated to the
+        # token budget optimization, so they are excluded here.
+        _AGENTSTOP_GUARD_HOOKS = {
+            "module-recap-append.kiro.hook",
+            "module-completion-celebration.kiro.hook",
+            "enforce-gate-on-stop.kiro.hook",
+            "enforce-visualization-offers.kiro.hook",
+        }
+        _ALLOWED_MODIFIED = _CONSOLIDATED_HOOKS | _AGENTSTOP_GUARD_HOOKS
+        # Filter for .kiro.hook files in the output, excluding hooks modified by
+        # other specs. (Unrelated protections stay intact: any hook not in this
+        # allowlist still fails the assertion.)
         modified_hooks = [
             line for line in result.stdout.strip().split("\n")
             if line.strip() and ".kiro.hook" in line
-            and not any(h in line for h in _CONSOLIDATED_HOOKS)
+            and not any(h in line for h in _ALLOWED_MODIFIED)
         ]
         assert not modified_hooks, \
             f"Hook files were modified: {modified_hooks}"

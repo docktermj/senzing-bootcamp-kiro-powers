@@ -1,0 +1,22 @@
+{
+  "scenario": "single_question_stop",
+  "description": "Agent asks exactly one pointer question, stops, does not self-answer or compound. Exercises Rule 4 (pointer), One Question Rule, Question Stop Protocol, Self-Answering anti-pattern.",
+  "rule_ref": "conversation-protocol.md#one-question-rule; agent-behavior-rules.md#rule-4",
+  "turns": [
+    {
+      "role": "bootcamper",
+      "content": "Tell me about the problem you're trying to solve."
+    },
+    {
+      "role": "agent",
+      "content": "Got it — let's capture your data sources.\n\n👉 How many distinct data sources or systems will we be working with?\n\n🛑 STOP — End your response here and wait for the bootcamper's real input.",
+      "assertions": [
+        {"type": "exactly_one_pointer"},
+        {"type": "ends_with_question_then_stop"},
+        {"type": "no_compound_question"},
+        {"type": "no_self_answer"},
+        {"type": "contains_marker", "marker": "🛑"}
+      ]
+    }
+  ]
+}

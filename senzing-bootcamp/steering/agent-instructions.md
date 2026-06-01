@@ -55,26 +55,7 @@ If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 - Never generate direct SQL (SELECT, INSERT, UPDATE, DELETE) against the Senzing database (`database/G2C.db`) or its internal tables (RES_ENT, OBS_ENT, DSRC_RECORD, LIB_FEAT, RES_FEAT_STAT, RES_REL, etc.). All Senzing data access must go through SDK methods via MCP tools.
 - SQL-tempting question redirects: "count entities" → `reporting_guide` | "find duplicates" → `search_by_attributes` | "show entity details" → `get_entity`/`get_entity_by_record_id` | "why did these match" → `why_entities`/`why_records` | "how was entity built" → `how_entity` | "export entity data" → iterate SDK methods via MCP tools
 
-### SDK Method Discovery
-
-When the bootcamper's request could map to multiple SDK methods in the same category, follow the discover-then-disambiguate flow:
-
-1. **Trigger**: The bootcamper's request is ambiguous — it could be satisfied by more than one SDK method in a category.
-2. **Discover**: Call `get_sdk_reference` with a category/topic filter to enumerate all available methods in that category.
-3. **Disambiguate**: If multiple methods could satisfy the request, ask a single 👉 clarifying question presenting the options as a numbered choice list with brief descriptions of what each method provides.
-4. **Proceed**: If only one method matches, proceed directly with that method, noting other available methods for the bootcamper's awareness.
-
-**SDK method categories with multiple alternatives:**
-
-- **Why/How category**: `how_entity`, `why_entities`, `why_records`, `why_record_in_entity` — different granularity levels for understanding entity resolution decisions
-- **Entity retrieval**: `get_entity`, `get_entity_by_record_id` — different lookup keys
-- **Search**: `search_by_attributes`, `search_by_record_id` — different search inputs
-
-**When to skip discovery (skip conditions — when discovery is NOT needed):**
-
-- Bootcamper explicitly names a specific SDK method (e.g., "use how_entity") — proceed directly
-- Request unambiguously maps to exactly one method with no alternatives in the category
-- Methods for this category already discovered in the current module session — reuse cached knowledge
+- SDK method discovery & disambiguation flow: load `mcp-usage-reference.md` (trigger: *sdk method discovery*).
 
 ### MCP-First Invariant
 
@@ -112,15 +93,7 @@ Load per-module steering file when user starts that module (1→`module-01-busin
 
 ## Track Switching
 
-When the bootcamper says any of these trigger phrases, load `track-switching.md`:
-
-- "switch track"
-- "change track"
-- "move to core"
-- "upgrade to advanced"
-- "go back to system verification"
-
-The steering file handles confirmation, preview, and application. Do not compute track switches inline — always invoke the `track_switcher.py` script as instructed by the steering file.
+Track switch triggers (*switch track*, *change track*, …): load `track-switching.md`.
 
 ## State & Progress
 
@@ -200,6 +173,10 @@ Steps marked with ⛔ are mandatory gates. This rule takes **absolute precedence
 
 Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks. **Always use the exact `name` from the `- name:` line in `hook-registry-critical.md` — the `name` field is user-facing (UI shows "Ask Kiro Hook {name}") and must follow the "to {verb phrase}" pattern.**
 
+**Capture-critical hooks created at session start:** The capture-critical hooks — `ask-bootcamper`, `module-recap-append`, and `session-log-events` — MUST all be created via `createHook` during onboarding/session start, not deferred to module start, so the completion summary and journey recap are never silently incomplete. `ask-bootcamper` is a critical hook (definition in `hook-registry-critical.md`); `module-recap-append` and `session-log-events` are defined in `hook-registry-modules.md` but are added to the onboarding createHook-from-registry set alongside `ask-bootcamper`. Capture-critical coverage is required on **both** the createHook-from-registry path and the `install_hooks.py --essential` file-copy path.
+
+**Session-start warn-on-absence:** On session resume, after the `hooks_installed` check, the agent inspects `.kiro/hooks` and warns which capture-critical hooks (`session-log-events`, `module-recap-append`, `ask-bootcamper`) are absent and how to install them (createHook from the registry, or `python3 senzing-bootcamp/scripts/install_hooks.py --essential`). The warning is advisory and never blocks the session. See `session-resume-phase2-setup-recovery.md` (Capture-Critical Warn-on-Absence Check) for the full behavior.
+
 **🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero visible
 tokens — no acknowledgment, no reasoning, no status, no summary. Only produce output when the
 hook identifies a problem requiring corrective action. When a hook produces corrective output
@@ -226,10 +203,4 @@ The agent owns closing questions (see `conversation-protocol.md`); the `ask-boot
 
 ## Context Budget
 
-Check `steering-index.yaml` `file_metadata` for `token_count` and `size_category` before loading. For split modules, use phase-level `token_count` from the `phases` map. Track cumulative tokens.
-
-- **Warn (60% of context budget):** Load only files relevant to current module/question.
-- **Critical (80% of context budget):** Unload non-essential files first.
-- **Retention priority:** `agent-instructions.md` > current module > language file > troubleshooting > everything else.
-
-When loading a `large` file, announce the token cost. See `agent-context-management.md` for detailed unloading rules and adaptive pacing.
+Context Budget: check `steering-index.yaml` `file_metadata` `token_count`/`size_category` before loading; for split modules use phase-level `token_count` from the `phases` map. Warn/critical/unload detail: load `agent-context-management.md` (trigger: *context budget*).

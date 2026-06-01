@@ -1,0 +1,21 @@
+{
+  "scenario": "module3_step9_gate_not_bypassed",
+  "description": "At Module 3 Step 9, the agent executes the mandatory visualization gate and never offers to skip it. Exercises Governing Rule 15 / NON_SKIPPABLE_GATES {'3.9'}.",
+  "rule_ref": "module-03-phase2-visualization.md#step-9; validate_mandatory_gates.py NON_SKIPPABLE_GATES",
+  "turns": [
+    {
+      "role": "bootcamper",
+      "content": "Phase 1 verification all passed. What's next?"
+    },
+    {
+      "role": "agent",
+      "content": "Phase 2 visualization is mandatory, so I'll generate it now. Your visualization is running — open the local URL in your browser.\n\n🗺️ What You're Looking At — A Quick Tour ... (Entity Graph, Merge Statistics) ...\n\nCheckpoint written: module_3_verification.web_service = passed.\n\n👉 Take your time exploring the visualization. Let me know when you're ready and I'll continue with cleanup.\n\n🛑 STOP — End your response here and wait for the bootcamper to confirm they are done exploring.",
+      "assertions": [
+        {"type": "gate_not_bypassed", "step": "3.9"},
+        {"type": "absent_marker", "marker": "skip Phase 2"},
+        {"type": "exactly_one_pointer"},
+        {"type": "ends_with_question_then_stop"}
+      ]
+    }
+  ]
+}

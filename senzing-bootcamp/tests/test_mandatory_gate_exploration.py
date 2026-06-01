@@ -109,6 +109,11 @@ def st_progress_with_skipped_steps_no_protocol() -> st.SearchStrategy[dict]:
 
     This is the core bug condition: agent-initiated skip without bootcamper request.
 
+    Note: under the module3-visualization-no-skip fix, the Step 9 visualization
+    gate is unconditional — even a `skipped_steps["3.9"]` protocol entry never
+    satisfies it. This strategy intentionally omits the entry to model the
+    agent-initiated (no-protocol) skip.
+
     Returns:
         A strategy producing progress states with agent-initiated skip.
     """
@@ -321,7 +326,10 @@ class TestMandatoryGateViolationDetection:
         initiator="agent" AND bootcamperRequestedSkip=false.
 
         This manifests as current_step > 9 with no web_service/web_page checkpoint
-        AND no skipped_steps["3.9"] entry (meaning the skip was not via protocol).
+        AND no skipped_steps["3.9"] entry (the skip was not via protocol). Under the
+        module3-visualization-no-skip fix the gate is unconditional, so even a
+        `skipped_steps["3.9"]` protocol entry would not satisfy it — only the
+        web_service/web_page checkpoints can.
 
         Args:
             progress: A generated progress state representing an agent-initiated skip.

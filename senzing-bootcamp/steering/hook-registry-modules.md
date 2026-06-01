@@ -48,6 +48,8 @@ A configuration or database file was modified. If the bootcamper is in Module 2 
 Prompt:
 
 ````text
+If `config/.question_pending` exists, produce no output at all — defer to `ask-bootcamper`.
+
 CHECK — Read `config/bootcamp_progress.json` and evaluate:
 
 1. Is `current_module` equal to 3?
@@ -61,12 +63,9 @@ CONDITION A — Step 9 checkpoints exist:
 - `module_3_verification.checks.web_service.status` equals `"passed"`
 - `module_3_verification.checks.web_page.status` equals `"passed"`
 
-CONDITION B — Step 9 was explicitly skipped by the bootcamper:
-- `skipped_steps` contains an entry with key `"3.9"`
+If CONDITION A is true: produce no output. The mandatory gate is satisfied.
 
-If CONDITION A is true OR CONDITION B is true: produce no output. The mandatory gate is satisfied.
-
-If NEITHER condition is met: The agent has reached or passed Step 9 without executing it. This is a ⛔ mandatory gate violation. Output exactly:
+If CONDITION A is not met: The agent has reached or passed Step 9 without executing it. This is a ⛔ mandatory gate violation. Output exactly:
 
 ⛔ MANDATORY GATE VIOLATION DETECTED: Step 9 (Web Service + Visualization) has not been executed but the agent has advanced past it. This step CANNOT be skipped by the agent under any circumstances. Load `module-03-phase2-visualization.md` and execute Step 9 NOW — generate the web service, start the server, verify all 3 API endpoints, and present the URL to the bootcamper. Do not proceed with any other work until Step 9 is complete and checkpoints are written to bootcamp_progress.json.
 ````
@@ -90,12 +89,9 @@ CONDITION A — Step 9 checkpoints exist:
 - `module_3_verification.checks.web_service.status` equals `"passed"`
 - `module_3_verification.checks.web_page.status` equals `"passed"`
 
-CONDITION B — Step 9 was explicitly skipped by the bootcamper:
-- `skipped_steps` contains an entry with key `"3.9"`
+If CONDITION A is true: produce no output at all. Do nothing. The mandatory gate has been satisfied.
 
-If CONDITION A is true OR CONDITION B is true: produce no output at all. Do nothing. The mandatory gate has been satisfied.
-
-If NEITHER condition is met: STOP. Do NOT allow this write. Block the operation. Output exactly:
+If CONDITION A is not met: STOP. Do NOT allow this write. Block the operation. Output exactly:
 
 ⛔ BLOCKED: Cannot advance past Step 9 — this is a mandatory gate step (Web Service + Visualization). The ⛔ designation means this step must be executed unconditionally. No agent-internal reason (session length, context budget, perceived redundancy) can justify skipping a mandatory gate. Load `module-03-phase2-visualization.md` and execute the full visualization step (generate web service, start server, verify 3 API endpoints, present URL to bootcamper). Only after web_service and web_page checkpoints show 'passed' in bootcamp_progress.json can current_step advance past 9.
 
@@ -104,7 +100,7 @@ Do not proceed with the write operation.
 
 - id: `enforce-mandatory-gate`
 - name: `to enforce mandatory gate step execution before advancement`
-- description: `Blocks step advancement past a ⛔ mandatory gate step in bootcamp_progress.json when the corresponding checkpoint is missing and no skipped_steps entry exists. This is a proactive guard that fires BEFORE the agent advances past a mandatory gate, unlike the module-completion hook which fires at the end.`
+- description: `Blocks step advancement past a ⛔ mandatory gate step in bootcamp_progress.json when the corresponding checkpoint is missing. Step 9 is unconditional and cannot be satisfied by a skip. This is a proactive guard that fires BEFORE the agent advances past a mandatory gate, unlike the module-completion hook which fires at the end.`
 
 **gate-module3-visualization** — Module 3 (preToolUse → askAgent, toolTypes: write)
 
@@ -115,18 +111,15 @@ CHECK — Is this write updating `config/bootcamp_progress.json` to mark Module 
 
 If NO (not a Module 3 completion write, or not writing to bootcamp_progress.json): produce no output at all. Do nothing.
 
-If YES: Read the CURRENT contents of `config/bootcamp_progress.json` and check TWO conditions:
+If YES: Read the CURRENT contents of `config/bootcamp_progress.json` and check this condition:
 
 CONDITION A — Step 9 checkpoints exist:
 - `module_3_verification.checks.web_service.status` equals `"passed"`
 - `module_3_verification.checks.web_page.status` equals `"passed"`
 
-CONDITION B — Step 9 was explicitly skipped:
-- `skipped_steps` contains an entry with key `"3.9"`
+If CONDITION A is true: produce no output at all. Do nothing.
 
-If CONDITION A is true OR CONDITION B is true: produce no output at all. Do nothing.
-
-If NEITHER condition is met: STOP. Do NOT allow this write. Output exactly:
+If CONDITION A is not met: STOP. Do NOT allow this write. Output exactly:
 
 ⛔ BLOCKED: Module 3 cannot be marked complete — Step 9 (Web Service + Visualization) has not been executed. Load `module-03-phase2-visualization.md` and execute the full visualization step (generate web service, start server, verify 3 API endpoints, present URL to bootcamper). Only after web_service and web_page checkpoints show 'passed' can Module 3 be completed.
 
@@ -135,7 +128,7 @@ Do not proceed with the write operation.
 
 - id: `gate-module3-visualization`
 - name: `to gate Module 3 completion on visualization step`
-- description: `Prevents Module 3 from being marked complete unless Step 9 (Web Service + Visualization) checkpoints are present in bootcamp_progress.json, or the step was explicitly skipped via the skip-step protocol.`
+- description: `Prevents Module 3 from being marked complete unless Step 9 (Web Service + Visualization) checkpoints are present in bootcamp_progress.json. Step 9 is an unconditional ⛔ mandatory gate and cannot be skipped.`
 
 **verify-demo-results** — Module 3 (postTaskExecution → askAgent)
 
@@ -285,6 +278,8 @@ A new bootcamp source file was created. Before moving to the next step, verify t
 Prompt:
 
 ````text
+If `config/.question_pending` exists, produce no output at all — defer to `ask-bootcamper`.
+
 Read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT in {3, 5, 7, 8}, do nothing — let the conversation end normally.
 
 If the current module IS in {3, 5, 7, 8}, load `visualization-guide.md` and read the Checkpoint Map section. Identify all checkpoints defined for the current module.
@@ -437,6 +432,8 @@ The user wants to commit their bootcamp progress. Check config/bootcamp_progress
 Prompt:
 
 ````text
+If `config/.question_pending` exists, produce no output at all — defer to `ask-bootcamper`.
+
 You are checking whether the bootcamper just completed a module. Follow these steps exactly:
 
 1. BOUNDARY DETECTION: Read `config/bootcamp_progress.json` and examine the `modules_completed` array. If `modules_completed` has not changed (no new module number was added since the previous state), produce no output at all — do nothing, do not acknowledge, do not explain, do not print any message. Let the conversation continue normally.
@@ -467,6 +464,8 @@ CONSTRAINTS:
 Prompt:
 
 ````text
+If `config/.question_pending` exists, produce no output at all — defer to `ask-bootcamper`.
+
 You are checking whether the bootcamper just completed a module and, if so, appending a structured recap section to docs/bootcamp_recap.md. Follow these steps exactly:
 
 1. BOUNDARY DETECTION: Read `config/bootcamp_progress.json` and examine the `modules_completed` array. If `modules_completed` has not changed (no new module number was added since the previous state), produce no output at all — do nothing, do not acknowledge, do not explain. Let the conversation continue normally.

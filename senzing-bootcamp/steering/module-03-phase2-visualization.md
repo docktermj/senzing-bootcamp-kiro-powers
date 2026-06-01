@@ -13,8 +13,8 @@ inclusion: manual
 **Implementation constraints:**
 
 - Python stdlib HTTP server only (`http.server.HTTPServer` + `BaseHTTPRequestHandler`) — no Flask, FastAPI, or third-party HTTP frameworks
-- D3.js v7 loaded from CDN (`https://d3js.org/d3.v7.min.js`) — no other external JavaScript dependencies
-- Single HTML file with embedded CSS and JavaScript (aside from D3.js CDN import)
+- D3.js v7 loaded from the d3js.org CDN (`d3js.org/d3.v7.min.js`) — no other external JavaScript dependencies
+- Single HTML file with embedded CSS and JavaScript (aside from the D3.js CDN import)
 - All artifacts reside in `src/system_verification/web_service/`
 - All data derived from SDK calls: `export_json_entity_report`, `get_entity_by_entity_id`, `search_by_attributes`, `find_network_by_entity_id`
 - Works with three TruthSet data sources: CUSTOMERS, REFERENCE, WATCHLIST
@@ -32,21 +32,38 @@ inclusion: manual
 
 ## ⚠️ DO NOT SKIP — Phase 2 Execution Is Mandatory
 
-> **🚨 This phase is MANDATORY. It is NOT optional.**
+> ⛔ **MANDATORY GATE — UNCONDITIONAL EXECUTION REQUIREMENT**
 >
-> Phase 2 visualization generation MUST be executed in full.
-> DO NOT SKIP this phase. DO NOT transition to Module 4 until
-> Phase 2 is complete and the bootcamper has confirmed they
-> have explored the visualization.
+> **This phase is MANDATORY. It is NOT optional. NEVER skip it.** This is an
+> absolute, non-negotiable rule.
 >
-> Skipping Phase 2 deprives the bootcamper of their first
-> "wow moment" with entity resolution results.
+> Phase 2 visualization generation MUST be executed in full, regardless of ANY
+> internal consideration. No agent-initiated skip is permitted under any
+> circumstance. DO NOT transition to Module 4 until Phase 2 is complete and the
+> bootcamper has confirmed they have explored the visualization.
+>
+> **Prohibited rationalizations (the agent must NEVER use these as justification to skip):**
+>
+> - Session length ("given the length of this session")
+> - Context budget pressure ("running low on context")
+> - Perceived redundancy ("similar to what was already demonstrated")
+> - Time constraints ("to save time")
+> - Any other agent-internal reasoning
+>
+> **NEVER clause:** There is NO condition, threshold, or scenario under which the agent
+> may self-initiate a skip of this step. The ⛔ designation is absolute. Only the
+> bootcamper can attempt a skip via the skip-step protocol — and the protocol itself
+> refuses mandatory gates. The agent cannot override, deprioritize, or rationalize
+> around this constraint.
+>
+> Skipping Phase 2 deprives the bootcamper of their first "wow moment" with entity
+> resolution results.
 
 ---
 
 ## Step 9: Web Service + Visualization Page
 
-Generate and verify a web service with three API endpoints and a single-page visualization with four interactive tabs.
+Generate and verify a web service with four API endpoints and a single-page visualization with four interactive tabs.
 
 ### 9.1 Generate Web Service
 
@@ -59,7 +76,7 @@ Generate the web service artifacts in `src/system_verification/web_service/`. Us
 3. Create `server.py` using Python stdlib HTTP server (`http.server.HTTPServer` + `BaseHTTPRequestHandler`) — no Flask, FastAPI, or third-party HTTP frameworks.
 4. Create builder modules (`stats_builder.py`, `graph_builder.py`, `merges_builder.py`, `search_builder.py`) for data computation.
 
-The generated `index.html` is a single file with embedded CSS and JavaScript. D3.js v7 is loaded from CDN (`https://d3js.org/d3.v7.min.js`) — no other external JavaScript dependencies.
+The generated `index.html` is a single file with embedded CSS and JavaScript. D3.js v7 is loaded from the d3js.org CDN (`d3js.org/d3.v7.min.js`) — no other external JavaScript dependencies.
 
 **Required files:**
 
@@ -70,169 +87,27 @@ The generated `index.html` is a single file with embedded CSS and JavaScript. D3
 | `src/system_verification/web_service/stats_builder.py` | Statistics computation from `export_json_entity_report` |
 | `src/system_verification/web_service/graph_builder.py` | Graph node/edge construction from SDK |
 | `src/system_verification/web_service/merges_builder.py` | Multi-record entity extraction from SDK |
-| `src/system_verification/web_service/search_builder.py` | Search-by-attributes wrapper with entity enrichment: calls `search_by_attributes`, then `get_entity_by_entity_id` for each matched entity (up to 10) to retrieve match keys, feature scores, and resolution rules |
+| `src/system_verification/web_service/search_builder.py` | Search-by-attributes wrapper with entity enrichment: calls `search_by_attributes`, then `get_entity_by_entity_id` for each matched entity (up to 10) to retrieve match keys, feature scores, and resolution rules (full enrichment spec in the API reference companion) |
 | `src/system_verification/web_service/index.html` | Generated output from `write_html.py` (single-page visualization, D3.js v7 CDN, embedded CSS/JS) |
-
-#### search_builder.py — Entity Enrichment Specification
-
-The `search_builder.py` module SHALL implement the following enrichment behavior:
-
-**Enrichment flow:**
-
-1. Call `search_by_attributes` with the query parameters to get matching entities
-2. For each matched entity (up to a maximum of 10), call `get_entity_by_entity_id` to retrieve full resolution detail
-3. Extract match keys, feature scores, and resolution rules from the entity detail response
-4. Return enriched results combining basic search info with resolution reasoning
-
-**Enrichment cap:** Enrichment is capped at 10 entities maximum. If a search returns more than 10 matching entities, only the first 10 are enriched with resolution detail. Remaining entities (positions 11+) are returned as basic search results with null values for `match_keys`, `feature_scores`, and `resolution_rules`.
-
-**Extraction functions:**
-
-| Function | Input | Output |
-|----------|-------|--------|
-| `_extract_match_keys(entity_detail)` | Full entity detail JSON | `{"entity_level": "+NAME+DOB", "per_record": ["+NAME+DOB", "+PHONE"]}` — entity-level match key string + list of per-record match key strings |
-| `_extract_feature_scores(search_match_info)` | Search match comparison info | `[{"feature": "NAME", "score": 97, "label": "CLOSE"}, ...]` — feature name, numeric percentage (0-100), classification label |
-| `_extract_resolution_rules(entity_detail)` | Full entity detail JSON | `[{"data_source": "CUSTOMERS", "record_id": "1001", "rule": "CNAME_CFF_CEXCL"}, ...]` — per-record data source, record ID, and resolution rule string |
-
-**Graceful degradation:** If `get_entity_by_entity_id` raises any exception for a specific entity, the search builder SHALL return the basic search result for that entity with:
-
-- `match_keys`: null
-- `feature_scores`: null
-- `resolution_rules`: null
-- `enrichment_error`: a non-empty string containing the exception type and message (e.g., `"SzError: Entity 5 not found in repository"`)
-
-One entity's enrichment failure SHALL NOT prevent enrichment of remaining entities.
 
 ### 9.2 API Endpoints
 
-The server SHALL expose these endpoints:
+The server SHALL expose four endpoints. Compact summaries follow — the full JSON
+response schemas, field tables, and the `search_builder.py` enrichment specification
+live in the API reference companion (see below):
 
-**`GET /api/stats`** — Aggregate entity resolution statistics
+- **`GET /api/stats`** — Aggregate entity resolution statistics. Required fields: `records_total`, `entities_total`, `multi_record_entities`, `cross_source_entities`, `relationships_total`, `histogram` (record-count buckets 1/2/3/4+ → entity counts).
+- **`GET /api/graph`** — Entity nodes and relationship edges. Each node: `entity_id`, `entity_name`, `record_count`, `data_sources`, `records`. Each edge: `source_entity_id`, `target_entity_id`, `match_key`, `relationship_type`.
+- **`GET /api/merges`** — Multi-record entities (2+ records only) with constituent records. Each entity: `entity_id`, `entity_name`, `match_key`, `records`; each record: `data_source`, `record_id`, `name`, `address`, `phone`, `identifiers`.
+- **`GET /api/search`** — Search entities with enriched resolution reasoning. Each result has base fields (`entity_id`, `entity_name`, `record_count`, `data_sources`) plus enrichment fields: `match_keys` (`entity_level` + `per_record`), `feature_scores`, `resolution_rules`, and `enrichment_error`. Enrichment is capped at 10 entities; on per-entity enrichment failure the result carries null enrichment fields and a non-empty `enrichment_error`.
+- **Error response (all endpoints):** HTTP 500 with `{"error": "<description>"}` on SDK failure.
 
-```json
-{
-  "records_total": 510,
-  "entities_total": 395,
-  "multi_record_entities": 87,
-  "cross_source_entities": 42,
-  "relationships_total": 156,
-  "histogram": {"1": 308, "2": 65, "3": 17, "4+": 5}
-}
-```
-
-Required fields: `records_total`, `entities_total`, `multi_record_entities`, `cross_source_entities`, `relationships_total`, `histogram`. The `histogram` maps record-count buckets (1, 2, 3, 4+) to entity counts.
-
-**`GET /api/graph`** — Entity nodes and relationship edges
-
-```json
-{
-  "nodes": [
-    {"entity_id": 1, "entity_name": "Robert Smith", "record_count": 3, "data_sources": ["CUSTOMERS", "REFERENCE"], "records": [{"data_source": "CUSTOMERS", "record_id": "1001"}]}
-  ],
-  "edges": [
-    {"source_entity_id": 1, "target_entity_id": 2, "match_key": "+NAME+ADDRESS", "relationship_type": "possible_match"}
-  ]
-}
-```
-
-Each node: `entity_id`, `entity_name`, `record_count`, `data_sources`, `records`. Each edge: `source_entity_id`, `target_entity_id`, `match_key`, `relationship_type`.
-
-**`GET /api/merges`** — Multi-record entities with constituent records
-
-```json
-[
-  {
-    "entity_id": 1, "entity_name": "Robert Smith", "match_key": "+NAME+ADDRESS",
-    "records": [
-      {"data_source": "CUSTOMERS", "record_id": "1001", "name": "Robert Smith", "address": "123 Main St", "phone": "555-0100", "identifiers": {"SSN": "123-45-6789"}}
-    ]
-  }
-]
-```
-
-Each entity: `entity_id`, `entity_name`, `match_key`, `records`. Each record: `data_source`, `record_id`, `name`, `address`, `phone`, `identifiers`. Only entities with 2+ records are returned.
-
-**`GET /api/search`** — Search entities with enriched resolution reasoning
-
-```json
-{
-  "results": [
-    {
-      "entity_id": 1,
-      "entity_name": "Robert Smith",
-      "record_count": 3,
-      "data_sources": ["CUSTOMERS", "REFERENCE"],
-      "match_keys": {
-        "entity_level": "+NAME+DOB+PHONE",
-        "per_record": ["+NAME+DOB", "+PHONE", "+NAME+ADDRESS"]
-      },
-      "feature_scores": [
-        {"feature": "NAME", "score": 97, "label": "CLOSE"},
-        {"feature": "DOB", "score": 100, "label": "SAME"},
-        {"feature": "PHONE", "score": 100, "label": "SAME"}
-      ],
-      "resolution_rules": [
-        {"data_source": "CUSTOMERS", "record_id": "1001", "rule": "CNAME_CFF_CEXCL"},
-        {"data_source": "REFERENCE", "record_id": "2001", "rule": "CNAME_CFF"}
-      ],
-      "enrichment_error": null
-    }
-  ],
-  "query": {
-    "name": "Robert Smith",
-    "address": null,
-    "phone": null,
-    "email": null
-  }
-}
-```
-
-Each result includes the base fields (`entity_id`, `entity_name`, `record_count`, `data_sources`) plus enrichment fields:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `match_keys.entity_level` | `string \| null` | The overall match key string for the entity |
-| `match_keys.per_record` | `list[string]` | Per-record match key strings (empty list for single-record entities) |
-| `feature_scores` | `list[object]` | Each entry: `feature` (string), `score` (int 0-100), `label` (string) |
-| `resolution_rules` | `list[object]` | Each entry: `data_source` (string), `record_id` (string), `rule` (string) |
-| `enrichment_error` | `string \| null` | Non-null if `get_entity_by_entity_id` failed; contains exception type + message |
-
-**Error case response** — When enrichment fails for a specific entity, return the basic result with null enrichment fields and an `enrichment_error` string:
-
-```json
-{
-  "entity_id": 5,
-  "entity_name": "Jane Doe",
-  "record_count": 2,
-  "data_sources": ["WATCHLIST"],
-  "match_keys": null,
-  "feature_scores": null,
-  "resolution_rules": null,
-  "enrichment_error": "SzError: Entity 5 not found in repository"
-}
-```
-
-**Single-record entity response** — When an entity has only one record (no inter-record resolution occurred), return an empty `per_record` list and empty `resolution_rules` list:
-
-```json
-{
-  "entity_id": 10,
-  "entity_name": "Alice Johnson",
-  "record_count": 1,
-  "data_sources": ["CUSTOMERS"],
-  "match_keys": {
-    "entity_level": "+NAME",
-    "per_record": []
-  },
-  "feature_scores": [
-    {"feature": "NAME", "score": 95, "label": "CLOSE"}
-  ],
-  "resolution_rules": [],
-  "enrichment_error": null
-}
-```
-
-**Error response (all endpoints):** HTTP 500 with `{"error": "<description>"}` on SDK failure.
+> **Full response schemas (all four endpoints), the `search_builder.py` enrichment
+> specification (enrichment flow, the 10-entity cap, extraction functions, and graceful
+> degradation), and the error-case / single-record response examples are in the API
+> reference companion. Load it on demand:**
+>
+> #[[file:senzing-bootcamp/steering/module-03-visualization-api-reference.md]]
 
 ### 9.3 Visualization Page Components
 

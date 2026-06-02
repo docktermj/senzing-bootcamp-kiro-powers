@@ -1,0 +1,269 @@
+# governance-rules.yaml
+# ---------------------------------------------------------------------------
+# Canonical registry of Senzing Bootcamp governing rules and their enforcement.
+#
+# This file is the single artifact that enumerates the governing rules covered
+# by the governance-rule-conformance feature and points at where each rule is
+# enforced. It is a verification layer only: it references existing enforcement
+# points (steering files, hooks, scripts) WITHOUT relocating, duplicating, or
+# modifying the enforcement logic those points contain.
+#
+# PATH BASE: every `file:` below (in enforced_by and assertions) is resolved
+#            RELATIVE TO THE REPOSITORY ROOT (the directory containing
+#            `senzing-bootcamp/` and `.github/`).
+#
+# ASSERTION VALUES: `value` and `pattern` MUST be double-quoted. Inside quotes,
+#            the escapes \\  \"  \n  \t  \uXXXX are decoded. The 👉 emoji and any
+#            other UTF-8 character may also appear literally between the quotes.
+#            Regex `pattern`s are passed verbatim to Python's re.search after
+#            decoding (so a registry "\\s" becomes the regex \s).
+#
+# BEHAVIORAL-ONLY RULES: entries with `static_checkable: false` carry no
+#            assertions and are skipped by the validator (see Requirement 8).
+#            They are recorded here for discoverability so the coverage boundary
+#            between statically-checkable and runtime-only rules is explicit.
+#
+# OVERLAP NOTE: the `pointer-prefix` rule also overlaps validate_behavior_rules.py
+#            (Rule 4). 👉 This registry asserts the pointer requirement
+#            INDEPENDENTLY (a substring_present against agent-behavior-rules.md);
+#            it does NOT call or delegate to validate_behavior_rules.py. The two
+#            checks are decoupled by design (see design.md Requirement 9 mapping).
+# ---------------------------------------------------------------------------
+rules:
+  - id: "pointer-prefix"
+    rule: "ALWAYS prefix bootcamper input-requiring prompts with the pointer indicator (👉)."
+    category: "conversation-protocol"
+    enforced_by:
+      - "senzing-bootcamp/steering/agent-behavior-rules.md"
+      - "senzing-bootcamp/steering/agent-instructions.md"
+    assertions:
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/agent-behavior-rules.md"
+        value: "Prefix every input-requiring prompt with 👉"
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/agent-instructions.md"
+        value: "👉"
+
+  - id: "mcp-first"
+    rule: "MCP-First Invariant: all Senzing facts come from MCP tool calls, never training data."
+    category: "mcp-integrity"
+    enforced_by:
+      - "senzing-bootcamp/steering/agent-instructions.md"
+    assertions:
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/agent-instructions.md"
+        value: "MCP-First Invariant"
+
+  - id: "rule-06-license-mcp"
+    rule: "If the current Senzing license is insufficient, consult the Senzing MCP server for a temporary/larger evaluation license."
+    category: "mcp-integrity"
+    enforced_by:
+      - "senzing-bootcamp/steering/module-01-business-problem.md"
+      - "senzing-bootcamp/steering/module-02-sdk-setup.md"
+    assertions:
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/module-01-business-problem.md"
+        value: "search_docs("
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/module-02-sdk-setup.md"
+        value: "search_docs("
+
+  - id: "rule-15-module3-visualization-gate"
+    rule: "Module 3 Step 9 visualization gate is unconditional — no skip escape hatch."
+    category: "mandatory-gate"
+    enforced_by:
+      - "senzing-bootcamp/scripts/validate_mandatory_gates.py"
+      - "senzing-bootcamp/hooks/gate-module3-visualization.kiro.hook"
+    assertions:
+      - type: "regex_present"
+        file: "senzing-bootcamp/scripts/validate_mandatory_gates.py"
+        pattern: "NON_SKIPPABLE_GATES\\s*=\\s*\\{\"3\\.9\"\\}"
+      - type: "substring_absent"
+        file: "senzing-bootcamp/hooks/gate-module3-visualization.kiro.hook"
+        value: "CONDITION B"
+
+  - id: "hook-name-form"
+    rule: "Every hook name is of the form 'to (verb phrase)'."
+    category: "hook-convention"
+    enforced_by:
+      - "senzing-bootcamp/hooks/analyze-after-mapping.kiro.hook"
+      - "senzing-bootcamp/hooks/ask-bootcamper.kiro.hook"
+      - "senzing-bootcamp/hooks/backup-before-load.kiro.hook"
+      - "senzing-bootcamp/hooks/backup-project-on-request.kiro.hook"
+      - "senzing-bootcamp/hooks/code-style-check.kiro.hook"
+      - "senzing-bootcamp/hooks/commonmark-validation.kiro.hook"
+      - "senzing-bootcamp/hooks/data-quality-check.kiro.hook"
+      - "senzing-bootcamp/hooks/deployment-phase-gate.kiro.hook"
+      - "senzing-bootcamp/hooks/enforce-gate-on-stop.kiro.hook"
+      - "senzing-bootcamp/hooks/enforce-mandatory-gate.kiro.hook"
+      - "senzing-bootcamp/hooks/enforce-mapping-spec.kiro.hook"
+      - "senzing-bootcamp/hooks/enforce-visualization-offers.kiro.hook"
+      - "senzing-bootcamp/hooks/error-recovery-context.kiro.hook"
+      - "senzing-bootcamp/hooks/gate-module3-visualization.kiro.hook"
+      - "senzing-bootcamp/hooks/git-commit-reminder.kiro.hook"
+      - "senzing-bootcamp/hooks/module-completion-celebration.kiro.hook"
+      - "senzing-bootcamp/hooks/module-recap-append.kiro.hook"
+      - "senzing-bootcamp/hooks/review-bootcamper-input.kiro.hook"
+      - "senzing-bootcamp/hooks/run-tests-after-change.kiro.hook"
+      - "senzing-bootcamp/hooks/security-scan-on-save.kiro.hook"
+      - "senzing-bootcamp/hooks/session-log-events.kiro.hook"
+      - "senzing-bootcamp/hooks/validate-alert-config.kiro.hook"
+      - "senzing-bootcamp/hooks/validate-benchmark-results.kiro.hook"
+      - "senzing-bootcamp/hooks/validate-business-problem.kiro.hook"
+      - "senzing-bootcamp/hooks/validate-data-files.kiro.hook"
+      - "senzing-bootcamp/hooks/verify-demo-results.kiro.hook"
+      - "senzing-bootcamp/hooks/verify-generated-code.kiro.hook"
+      - "senzing-bootcamp/hooks/verify-sdk-setup.kiro.hook"
+      - "senzing-bootcamp/hooks/write-policy-gate.kiro.hook"
+    assertions:
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/analyze-after-mapping.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/ask-bootcamper.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/backup-before-load.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/backup-project-on-request.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/code-style-check.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/commonmark-validation.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/data-quality-check.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/deployment-phase-gate.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/enforce-gate-on-stop.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/enforce-mandatory-gate.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/enforce-mapping-spec.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/enforce-visualization-offers.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/error-recovery-context.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/gate-module3-visualization.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/git-commit-reminder.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/module-completion-celebration.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/module-recap-append.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/review-bootcamper-input.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/run-tests-after-change.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/security-scan-on-save.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/session-log-events.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/validate-alert-config.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/validate-benchmark-results.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/validate-business-problem.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/validate-data-files.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/verify-demo-results.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/verify-generated-code.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/verify-sdk-setup.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+      - type: "regex_present"
+        file: "senzing-bootcamp/hooks/write-policy-gate.kiro.hook"
+        pattern: "\"name\":\\s*\"to\\s"
+
+  - id: "feedback-file-path"
+    rule: "The feedback workflow writes to the canonical feedback file path docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md."
+    category: "feedback-workflow"
+    enforced_by:
+      - "senzing-bootcamp/steering/feedback-workflow.md"
+    assertions:
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/feedback-workflow.md"
+        value: "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md"
+
+  - id: "frontmatter-inclusion"
+    rule: "Steering files declare the expected YAML frontmatter inclusion value (always / auto / manual) for their role."
+    category: "steering-convention"
+    enforced_by:
+      - "senzing-bootcamp/steering/agent-instructions.md"
+      - "senzing-bootcamp/steering/module-transitions.md"
+      - "senzing-bootcamp/steering/agent-behavior-rules.md"
+      - "senzing-bootcamp/steering/module-01-business-problem.md"
+    assertions:
+      - type: "regex_present"
+        file: "senzing-bootcamp/steering/agent-instructions.md"
+        pattern: "inclusion:\\s*always"
+      - type: "regex_present"
+        file: "senzing-bootcamp/steering/module-transitions.md"
+        pattern: "inclusion:\\s*always"
+      - type: "regex_present"
+        file: "senzing-bootcamp/steering/agent-behavior-rules.md"
+        pattern: "inclusion:\\s*auto"
+      - type: "regex_present"
+        file: "senzing-bootcamp/steering/module-01-business-problem.md"
+        pattern: "inclusion:\\s*manual"
+
+  - id: "graduation-completion-summary"
+    rule: "Graduation always generates the completion-summary document; declining the offer skips only the PDF render, never the document itself."
+    category: "graduation"
+    enforced_by:
+      - "senzing-bootcamp/steering/completion-summary-offer.md"
+      - "senzing-bootcamp/steering/graduation.md"
+    assertions:
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/completion-summary-offer.md"
+        value: "Always Generate the Summary Document"
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/completion-summary-offer.md"
+        value: "skip **only** the PDF render"
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/graduation.md"
+        value: "is **always** generated during the post-completion/graduation flow"
+      - type: "substring_absent"
+        file: "senzing-bootcamp/steering/completion-summary-offer.md"
+        value: "skip the summary"
+
+  # ----------------------------------------------------------------------
+  # Behavioral-only rules (Requirement 8): recorded for discoverability,
+  # static_checkable: false, no assertions — the validator skips them.
+  # ----------------------------------------------------------------------
+  - id: "no-ambiguous-yes-no"
+    rule: "Never ask an ambiguous yes/no question; each question has one meaning for yes and one for no."
+    category: "behavioral-only"
+    enforced_by:
+      - "senzing-bootcamp/steering/agent-behavior-rules.md"
+    static_checkable: false
+    assertions:

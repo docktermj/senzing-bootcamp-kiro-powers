@@ -893,11 +893,21 @@ class TestUnitTokenBudgets:
         )
 
     def test_phase2_setup_recovery_token_budget(self) -> None:
-        """Phase-2 Setup Recovery file token count ≤ 750."""
+        """Phase-2 Setup Recovery file token count ≤ 1,050.
+
+        Budget raised from 750 to 1,050 to accommodate the capture-critical
+        warn-on-absence check (Requirements 10.4, 10.6 of the
+        hook-architecture-improvements spec). That content — inspecting
+        `.kiro/hooks`, naming all three capture-critical hooks, and the
+        install options — is required by `tests/test_capture_critical_coverage.py`
+        and cannot coexist with the file's existing setup-recovery content
+        (Guard Condition, Hook Installation, MCP Health Check, What's New)
+        under the original 750-token budget.
+        """
         token_count = _calculate_token_count(_PHASE2_SETUP_RECOVERY)
-        assert token_count <= 750, (
+        assert token_count <= 1050, (
             f"Phase-2 Setup Recovery file has {token_count} tokens, "
-            f"exceeds budget of 750"
+            f"exceeds budget of 1,050"
         )
 
 

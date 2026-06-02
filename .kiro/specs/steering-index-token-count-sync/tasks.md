@@ -31,7 +31,7 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
 
 ## Tasks
 
-- [ ] 1. Write bug condition exploration test (Fix Checking)
+- [x] 1. Write bug condition exploration test (Fix Checking)
   - **Property 1: Bug Condition** - Phase Token Counts Reconciled and Validated
   - **CRITICAL**: This test MUST FAIL on unfixed code — failure confirms the bug exists
   - **DO NOT attempt to fix the test or the code when it fails**
@@ -54,7 +54,7 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
   - Mark task complete when the test is written, run, and the failure is documented
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
-- [ ] 2. Write preservation property tests (BEFORE implementing fix)
+- [x] 2. Write preservation property tests (BEFORE implementing fix)
   - **Property 2: Preservation** - Non-Drifted Entries and Existing Behavior Unchanged
   - **IMPORTANT**: Follow observation-first methodology — observe behavior on UNFIXED code, snapshot it, then assert it is preserved
   - **IMPORTANT**: Write these tests BEFORE implementing the fix
@@ -71,9 +71,9 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
   - Mark task complete when tests are written, run, and passing on unfixed code
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-- [ ] 3. Fix — reconcile and validate phase token counts in `measure_steering.py`
+- [x] 3. Fix — reconcile and validate phase token counts in `measure_steering.py`
 
-  - [ ] 3.1 Add `_parse_phase_entries(content)` to `measure_steering.py`
+  - [x] 3.1 Add `_parse_phase_entries(content)` to `measure_steering.py`
     - Walk the YAML text line by line over the region above `file_metadata`; each time a line matches `^(\s+)file:\s+([\w.-]+\.md)\s*$`, capture the indent, filename, and the line index, then locate the immediately-following `token_count:` and `size_category:` line indices/values within the same (more-indented) phase block
     - Return a list of phase-entry records (filename, stored `token_count`, stored `size_category`, and the line positions of the `token_count`/`size_category` lines)
     - Keying on `file:` lines naturally restricts the walk to phase entries and excludes `root:` and `file_metadata` entries; covers `modules.*.phases.*`, `onboarding.*.phases.*`, and `session-resume.*.phases.*` uniformly (same `file:`/`token_count:`/`size_category:` shape)
@@ -83,7 +83,7 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
     - _Preservation: `file_metadata` / `root` entries excluded; existing parsing helpers untouched (Property 2)_
     - _Requirements: 2.1, 2.4_
 
-  - [ ] 3.2 Add `check_phase_counts(index_path, steering_dir)` to `measure_steering.py`
+  - [x] 3.2 Add `check_phase_counts(index_path, steering_dir)` to `measure_steering.py`
     - For each record from `_parse_phase_entries`, compute `measured = calculate_token_count(steering_dir / file)` and apply the existing tolerance test `abs(stored - measured) / max(measured, 1) > 0.10`
     - Return a list of mismatch tuples (e.g. `(file, stored_count, measured_count)`) for the violating phases; treat a phase whose `file` does not exist on disk as a mismatch (mirroring `file_metadata` missing detection)
     - This function does NOT modify the file
@@ -92,7 +92,7 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
     - _Preservation: pure read — no file mutation; in-tolerance phases produce no mismatch (Property 2)_
     - _Requirements: 2.2, 2.6_
 
-  - [ ] 3.3 Extend the `--check` path in `main()` to validate the phases map
+  - [x] 3.3 Extend the `--check` path in `main()` to validate the phases map
     - After the existing `check_counts(index_path, file_metadata)` call, also call `check_phase_counts(index_path, args.steering_dir)`
     - Print a clearly-labeled "Phase token count mismatches (>10% difference)" report for the phase results IN ADDITION to the existing `file_metadata` report; exit non-zero if EITHER list is non-empty, and print the existing success message and exit 0 only when BOTH are empty
     - Preserve the existing `file_metadata` report and exit semantics exactly when no phase drift exists
@@ -101,7 +101,7 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
     - _Preservation: existing file_metadata report and success/exit-0 semantics unchanged when no phase drift (Property 2 reqs 3.1, 3.6)_
     - _Requirements: 2.2, 2.6_
 
-  - [ ] 3.4 Add `rewrite_phase_counts(content, steering_dir)` to `measure_steering.py`
+  - [x] 3.4 Add `rewrite_phase_counts(content, steering_dir)` to `measure_steering.py`
     - For each phase record, compute `measured = calculate_token_count(file)` and `new_cat = classify_size(measured)`, then replace ONLY that phase block's `token_count:` value line and `size_category:` value line in place — preserving exact indentation, the surrounding `file:` / `step_range:` lines, and ordering
     - This is an in-place line edit, not a section rebuild, so module/phase structure and ordering are preserved; a phase already within tolerance is rewritten to identical bytes (no net change)
     - Stdlib only; no PyYAML
@@ -110,7 +110,7 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
     - _Preservation: in-tolerance phases byte-identical; file:/step_range:/indentation/ordering preserved (Property 2 reqs 3.2, 3.3, 3.6)_
     - _Requirements: 2.1, 2.3, 2.5_
 
-  - [ ] 3.5 Wire `rewrite_phase_counts` into update mode
+  - [x] 3.5 Wire `rewrite_phase_counts` into update mode
     - In update mode, apply `rewrite_phase_counts` to the YAML region above `file_metadata` BEFORE `update_index` rebuilds `file_metadata` + `budget` (or have `update_index` apply it to its `preserved` prefix)
     - Leave the existing `file_metadata`/`budget` rebuild and the `split_threshold_tokens` preservation unchanged; confirm `budget.total_tokens` stays the sum of `file_metadata` counts only (phase counts excluded, so reconciliation does not change `total_tokens` — currently 166655)
     - _Bug_Condition: isBugCondition(X) — F's update mode cannot repair phase drift (phases live in the preserved prefix)_
@@ -118,7 +118,7 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
     - _Preservation: budget.total_tokens still equals the sum of file_metadata counts; budget/keywords/languages/deployment/root/step_range preserved (Property 2 reqs 3.3, 3.4)_
     - _Requirements: 2.3_
 
-  - [ ] 3.6 Reconcile the data: regenerate `steering-index.yaml` via the fixed update mode
+  - [x] 3.6 Reconcile the data: regenerate `steering-index.yaml` via the fixed update mode
     - Run `python senzing-bootcamp/scripts/measure_steering.py` (fixed update mode) from the repo root to regenerate `senzing-bootcamp/steering/steering-index.yaml` — **do NOT hand-edit**
     - Confirm exactly the flagged drifted phases changed (expected set per design: `modules.3.phases.phase2-visualization` 2035→5312, `modules.1.phases.phase1-discovery` 3257→4527, `modules.5.phases.phase2-data-mapping` 1894→3128 **medium→large**, `modules.6.phases.phase1-build-loading-program` 662→1219, `modules.7.phases.phase1-query-visualize` 3183→3591) — treat the tool's actual output as authoritative if it differs
     - Confirm `modules.11.phases.phase1-packaging` (3214 vs 3289) and all `onboarding.*` / `session-resume.*` phases are unchanged
@@ -127,7 +127,7 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
     - _Preservation: in-tolerance phases and all non-phase content unchanged by the regeneration (Property 2 reqs 3.2, 3.3, 3.6)_
     - _Requirements: 2.1, 2.3, 2.5_
 
-  - [ ] 3.7 Update `tests/test_measure_steering.py` for the new phase code paths
+  - [x] 3.7 Update `tests/test_measure_steering.py` for the new phase code paths
     - Add a phases-validation case asserting `check_phase_counts` detects a drifted phase and that `--check` exits non-zero when a phase is out of tolerance (complementing the existing `file_metadata`-only cases); optionally cover `rewrite_phase_counts` (drifted corrected, in-tolerance byte-identical, `size_category` recomputed across the 2000 boundary)
     - Ensure all existing cases (`TestProperty1`–`TestProperty8`, `TestCheckModeDoesNotModifyYAML`, `TestIntegrationRealSteering`, etc.) still pass with the new code paths — do NOT break existing assertions
     - _Bug_Condition: the existing suite has no coverage of phase validation/rewrite_
@@ -135,7 +135,7 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
     - _Preservation: existing file_metadata-focused assertions remain intact and passing (Property 2 reqs 3.1)_
     - _Requirements: 2.2, 3.1_
 
-  - [ ] 3.8 Verify bug condition exploration test now passes
+  - [x] 3.8 Verify bug condition exploration test now passes
     - **Property 1: Expected Behavior** - Phase Token Counts Reconciled and Validated
     - **IMPORTANT**: Re-run the SAME test from task 1 — do NOT write a new test
     - The test from task 1 encodes the expected behavior; when it passes, phase counts are reconciled, size categories are consistent, and `--check` validates the phases map
@@ -143,7 +143,7 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
     - **EXPECTED OUTCOME**: Test PASSES (confirms the bug is fixed)
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
-  - [ ] 3.9 Verify preservation tests still pass
+  - [x] 3.9 Verify preservation tests still pass
     - **Property 2: Preservation** - Non-Drifted Entries and Existing Behavior Unchanged
     - **IMPORTANT**: Re-run the SAME tests from task 2 — do NOT write new tests
     - Run `pytest senzing-bootcamp/tests/test_steering_index_token_count_sync_preservation.py`
@@ -151,7 +151,7 @@ Checking) authored to PASS on the unfixed code. The bug condition mirrors `bugfi
     - Confirm all tests still pass after the fix (no regressions)
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-- [ ] 4. Checkpoint - Ensure all tests pass
+- [x] 4. Checkpoint - Ensure all tests pass
   - Run the two new suites: `pytest senzing-bootcamp/tests/test_steering_index_token_count_sync_exploration.py senzing-bootcamp/tests/test_steering_index_token_count_sync_preservation.py`
   - Run the existing regression suites: `pytest senzing-bootcamp/tests/test_measure_steering.py senzing-bootcamp/tests/test_token_budget_optimization.py`
   - Run CI validators: `python senzing-bootcamp/scripts/measure_steering.py --check` (must exit 0 post-reconciliation, with both `file_metadata` and the phases map validated), `python senzing-bootcamp/scripts/validate_power.py`, `python senzing-bootcamp/scripts/validate_commonmark.py`, `python senzing-bootcamp/scripts/sync_hook_registry.py --verify`

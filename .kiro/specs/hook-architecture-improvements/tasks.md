@@ -101,10 +101,10 @@ and may be implemented in parallel; tests are placed right after the component t
       capture-critical / both-paths statements
     - _Requirements: 1.1, 1.2, 1.3, 2.2, 2.3, 3.1, 3.2, 3.3, 4.2, 8.6, 10.1, 10.5, 10.6_
 
-- [ ] 2. Checkpoint - Theme A
+- [x] 2. Checkpoint - Theme A
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Theme B — hook-prompt deduplication
+- [x] 3. Theme B — hook-prompt deduplication
   - [x] 3.1 Create the fragment source `hook_prompt_fragments.py`
     - Create `senzing-bootcamp/scripts/hook_prompt_fragments.py` (stdlib-only,
       `from __future__ import annotations`) exposing `FRAGMENTS: dict[str, str]`
@@ -170,7 +170,7 @@ and may be implemented in parallel; tests are placed right after the component t
       present / marker references / stdlib-only import)
     - _Requirements: 6.3, 6.4, 5.1, 5.2, 5.4, 5.5_
 
-  - [ ] 3.7 Write no-op refactor property tests against the real on-disk hooks
+  - [x] 3.7 Write no-op refactor property tests against the real on-disk hooks
     - Create `tests/test_compose_no_op_refactor.py` (composer output vs real `.kiro.hook` files)
     - **Property 4: Shared fragments expand byte-identically across hooks** —
       **Validates: Requirements 7.5**
@@ -179,19 +179,19 @@ and may be implemented in parallel; tests are placed right after the component t
     - **Property 7: Any drift from the composed source is detected and reported (exit 1 + hook id)**
       — **Validates: Requirements 7.3**
 
-  - [ ] 3.8 Write compose→sync integration test
+  - [x] 3.8 Write compose→sync integration test
     - Create `senzing-bootcamp/tests/test_compose_sync_integration.py`
     - Assert that after `compose_hook_prompts.py --write`, `sync_hook_registry.py --verify` exits 0
       (composer-before-sync ordering holds)
     - _Requirements: 8.5_
 
-  - [ ] 3.9 Write CI-step presence test
+  - [x] 3.9 Write CI-step presence test
     - Create `tests/test_ci_compose_verify.py` reading `.github/workflows/validate-power.yml`
     - Assert the composer `--verify` step is present and ordered before the `sync_hook_registry.py
       --verify` step
     - _Requirements: 7.4_
 
-- [ ] 4. Checkpoint - Theme B
+- [x] 4. Checkpoint - Theme B
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 5. Theme C — capture-hook install reliability
@@ -259,7 +259,7 @@ and may be implemented in parallel; tests are placed right after the component t
       (10.2) and that the session-start warn-on-absence behavior is documented (10.4)
     - _Requirements: 10.2, 10.4_
 
-- [ ] 6. Final checkpoint - Run CI validators
+- [x] 6. Final checkpoint - Run CI validators
   - Run the new test files for all three themes and confirm they pass
   - Run `python3 senzing-bootcamp/scripts/compose_hook_prompts.py --verify` and confirm exit 0
   - Run `python3 senzing-bootcamp/scripts/sync_hook_registry.py --verify` and confirm exit 0

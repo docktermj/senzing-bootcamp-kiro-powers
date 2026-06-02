@@ -5,7 +5,7 @@ modules:
     phases:
       phase1-discovery:
         file: module-01-business-problem.md
-        token_count: 3257
+        token_count: 4527
         size_category: large
         step_range: [1, 9]
       phase2-document-confirm:
@@ -57,8 +57,8 @@ modules:
         step_range: [1, 7]
       phase2-data-mapping:
         file: module-05-phase2-data-mapping.md
-        token_count: 1894
-        size_category: medium
+        token_count: 3128
+        size_category: large
         step_range: [8, 20]
       phase3-test-load-validate:
         file: module-05-phase3-test-load.md
@@ -70,7 +70,7 @@ modules:
     phases:
       phase1-build-loading-program:
         file: module-06-phaseA-build-loading.md
-        token_count: 662
+        token_count: 1219
         size_category: medium
         step_range: [1, 4]
       phase2-load-first-source:
@@ -93,7 +93,7 @@ modules:
     phases:
       phase1-query-visualize:
         file: module-07-query-visualize-discover.md
-        token_count: 3183
+        token_count: 3591
         size_category: large
         step_range: [1, "3d"]
       phase2a-discover:
@@ -200,7 +200,7 @@ session-resume:
       size_category: medium
     phase2-setup-recovery:
       file: session-resume-phase2-setup-recovery.md
-      token_count: 1053
+      token_count: 996
       size_category: medium
 
 keywords:
@@ -533,7 +533,7 @@ file_metadata:
     token_count: 656
     size_category: medium
   session-resume-phase2-setup-recovery.md:
-    token_count: 1053
+    token_count: 996
     size_category: medium
   session-resume-phase2-state-repair.md:
     token_count: 547

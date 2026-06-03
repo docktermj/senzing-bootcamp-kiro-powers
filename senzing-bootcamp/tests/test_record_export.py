@@ -29,7 +29,6 @@ from record_export import (
     SecuritySanitizer,
 )
 
-
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
 # ---------------------------------------------------------------------------
@@ -534,7 +533,6 @@ class TestCollectProgress:
 # Unit Tests: DecisionCollector.collect_mappings
 # ---------------------------------------------------------------------------
 
-from record_export import MappingDecision
 
 
 class TestCollectMappings:
@@ -791,7 +789,6 @@ class TestCollectMappings:
 # Unit Tests: DecisionCollector.collect_loading_config
 # ---------------------------------------------------------------------------
 
-from record_export import LoadingConfig
 
 
 class TestCollectLoadingConfig:
@@ -1005,7 +1002,6 @@ class TestCollectLoadingConfig:
 # Unit Tests: DecisionCollector.collect_query_programs
 # ---------------------------------------------------------------------------
 
-from record_export import QueryProgram
 
 
 class TestCollectQueryPrograms:
@@ -1357,7 +1353,6 @@ class TestCollectQueryPrograms:
 # Unit Tests: DecisionCollector.collect_business_problem
 # ---------------------------------------------------------------------------
 
-from record_export import BusinessProblem
 
 
 class TestCollectBusinessProblem:
@@ -1581,7 +1576,6 @@ class TestCollectBusinessProblem:
 
 from record_export import CollectedDecisions
 
-
 # The required source files that collect_all() checks for
 _REQUIRED_FILES = ["preferences", "progress", "data_sources", "journal"]
 
@@ -1709,7 +1703,6 @@ from record_export import (
     PerformanceTuning,
     SecurityHardening,
 )
-
 
 
 @st.composite
@@ -2114,10 +2107,7 @@ class TestManifestWriter:
 # Unit Tests: CLI argument parsing and main flow
 # ---------------------------------------------------------------------------
 
-import os
-import tempfile
 
-import yaml
 
 from record_export import main
 
@@ -2182,7 +2172,6 @@ class TestCLI:
 # Property Tests: DataSourceEntry contains no actual record data
 # ---------------------------------------------------------------------------
 
-from record_export import DataSourceEntry
 
 
 # Known file formats that data_sources.yaml entries should use

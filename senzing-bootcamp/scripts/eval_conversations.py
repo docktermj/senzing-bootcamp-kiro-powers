@@ -40,7 +40,6 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
-import collections
 import json
 import re
 import sys
@@ -723,6 +722,46 @@ def _gate_not_bypassed(
     return AssertionOutcome(True, "")
 
 
+def _substantive_response(
+    turn: Turn, ctx: EvalContext, params: dict[str, object]
+) -> AssertionOutcome:
+    """Pass when the agent turn is a Substantive_Response, not Minimal_Output (R6.2, R6.3).
+
+    Substantive_Response = NOT Minimal_Output. Minimal_Output is content that is
+    empty, whitespace-only, a single-word acknowledgment, or fewer than 50
+    characters of content. Mirrors the answer-processing substantive-output rule
+    in conversation-protocol.md (".", "OK", empty, or < 50 chars are violations).
+
+    The predicate takes no parameters (so it has no REQUIRED_PARAMS entry, R6.6).
+    It is a pure function of turn.content — no network, filesystem, clock, or
+    random-source access (R6.4), consistent with every existing predicate.
+
+    Args:
+        turn: The agent turn being evaluated.
+        ctx: Surrounding-transcript context (unused).
+        params: Assertion parameters (unused; the type takes none).
+
+    Returns:
+        Passing outcome when the content is substantive; otherwise a failing
+        outcome whose message names which Minimal_Output condition was hit.
+    """
+    content = turn.content.strip()
+    if not content:
+        return AssertionOutcome(False, "minimal output: empty or whitespace-only content")
+    words = content.split()
+    if len(words) <= 1:
+        return AssertionOutcome(
+            False, f"minimal output: single-word acknowledgment {content!r}"
+        )
+    if len(content) < 50:
+        return AssertionOutcome(
+            False,
+            f"minimal output: {len(content)} characters of content "
+            f"(Substantive_Response requires >= 50)",
+        )
+    return AssertionOutcome(True, "")
+
+
 # ---------------------------------------------------------------------------
 # Assertion registry (Requirement 4)
 # ---------------------------------------------------------------------------
@@ -767,6 +806,11 @@ def _gate_not_bypassed(
 #       Purpose: pass when a mandatory gate is shown executed and is not offered
 #                as skippable.
 #       Params:  step (str) — the gate step identifier, e.g. "3.9".
+#   substantive_response
+#       Purpose: pass when the agent turn is a Substantive_Response (not
+#                Minimal_Output: not empty, not whitespace-only, not a
+#                single-word acknowledgment, and >= 50 characters of content).
+#       Params:  none.
 
 REGISTRY: dict[str, Predicate] = {
     "exactly_one_pointer": _exactly_one_pointer,
@@ -778,6 +822,7 @@ REGISTRY: dict[str, Predicate] = {
     "mentions_tool": _mentions_tool,
     "transition_response_completeness": _transition_response_completeness,
     "gate_not_bypassed": _gate_not_bypassed,
+    "substantive_response": _substantive_response,
 }
 
 # Required named parameters per parameterized Assertion_Type (R2.6). Types not

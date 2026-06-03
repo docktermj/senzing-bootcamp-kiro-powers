@@ -22,7 +22,6 @@ import os
 import sqlite3
 import sys
 
-
 # ---------------------------------------------------------------------------
 # Data models
 # ---------------------------------------------------------------------------
@@ -355,7 +354,7 @@ def _format_human(report: DatabaseHealthReport) -> str:
         icon = _STATUS_ICON.get(cr.status, "?")
         lines.append(f"    {icon}  {cr.name}: {cr.message}")
         if cr.fixed:
-            lines.append(f"        ↳ Fixed by --repair")
+            lines.append("        ↳ Fixed by --repair")
         elif cr.status in ("warn", "fail") and cr.fix:
             lines.append(f"        ↳ {cr.fix}")
 

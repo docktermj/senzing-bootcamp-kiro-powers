@@ -10,7 +10,6 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
@@ -20,21 +19,13 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from test_hooks import (
-    VALID_EVENT_TYPES,
-    VALID_TOOL_CATEGORIES,
     FILE_EVENT_TYPES,
     TOOL_EVENT_TYPES,
-    validate_hook,
-    validate_glob_pattern,
-    validate_tool_type,
-    parse_categories_yaml,
-    parse_registry_hook_ids,
-    check_registry_consistency,
-    discover_hooks,
-    hook_id_from_path,
+    VALID_EVENT_TYPES,
+    VALID_TOOL_CATEGORIES,
     main,
+    validate_hook,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

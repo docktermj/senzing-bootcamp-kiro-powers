@@ -33,7 +33,6 @@ from preflight import (
     check_scoop,
 )
 
-
 # ---------------------------------------------------------------------------
 # Property 1 — Scoop detection is platform-conditional and status-correct
 # ---------------------------------------------------------------------------

@@ -5,18 +5,17 @@ inputs, plus pytest unit tests for specific examples and edge cases.
 """
 
 import dataclasses
-import importlib
 import json
 import os
 import sys
 import tempfile
 import zipfile
-from io import BytesIO, StringIO
+from io import StringIO
 from pathlib import Path
 from unittest import mock
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 # Ensure scripts dir is on sys.path so we can import rollback_module
@@ -26,15 +25,12 @@ if _scripts_dir not in sys.path:
 
 from rollback_module import (
     ARTIFACT_MANIFEST,
-    MODULE_NAMES,
     PREREQUISITES,
     ModuleArtifacts,
     RemovalResult,
     RollbackLogEntry,
-    build_log_entry,
     compute_progress_update,
     find_latest_backup,
-    format_dry_run_report,
     get_completed_downstream,
     get_downstream_modules,
     main,

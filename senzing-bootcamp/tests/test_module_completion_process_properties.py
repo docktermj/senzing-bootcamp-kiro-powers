@@ -20,19 +20,13 @@ if _SCRIPTS_DIR not in sys.path:
 
 from validate_completion_artifacts import (
     COMPLETION_STEPS,
-    JournalDocument,
     JournalEntry,
-    RecapHeader,
     count_recap_sections,
     format_journal_entry,
     format_journal_header,
     parse_journal,
-    parse_recap_header,
-    validate_journal_consistency,
-    validate_journal_structure,
     validate_recap_consistency,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies

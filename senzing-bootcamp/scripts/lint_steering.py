@@ -1336,7 +1336,7 @@ def run_all_checks(
     if not index_path.exists():
         return (
             [LintViolation("ERROR", str(index_path), 0,
-                           f"Cannot parse steering-index.yaml: file not found")],
+                           "Cannot parse steering-index.yaml: file not found")],
             1,
         )
 

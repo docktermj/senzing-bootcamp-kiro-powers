@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, assume, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -21,14 +21,11 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from track_switcher import (
-    compute_switch,
-    apply_switch,
-    main,
     SwitchResult,
-    load_track_definitions,
-    load_module_names,
+    apply_switch,
+    compute_switch,
+    main,
 )
-
 
 # ---------------------------------------------------------------------------
 # Constants (from module-dependencies.yaml)

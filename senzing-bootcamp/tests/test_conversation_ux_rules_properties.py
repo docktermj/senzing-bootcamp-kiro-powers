@@ -252,7 +252,7 @@ class TestProperty1UniversalPointingPrefix:
                     )
 
         assert violations == [], (
-            f"Questions with STOP/gate markers missing 👉 prefix:\n"
+            "Questions with STOP/gate markers missing 👉 prefix:\n"
             + "\n".join(violations)
         )
 
@@ -316,7 +316,7 @@ class TestProperty2StopMarkerBetweenQuestions:
                 )
 
         assert violations == [], (
-            f"Missing 🛑 STOP markers between 👉 questions:\n"
+            "Missing 🛑 STOP markers between 👉 questions:\n"
             + "\n".join(violations)
         )
 

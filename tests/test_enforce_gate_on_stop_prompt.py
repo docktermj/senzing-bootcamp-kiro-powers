@@ -13,7 +13,6 @@ Verifies that the agentStop hook prompt contains the required logic checks:
 
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 

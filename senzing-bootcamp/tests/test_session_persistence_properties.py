@@ -16,7 +16,6 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from preferences_utils import (
-    KNOWN_TOP_LEVEL_KEYS,
     LANGUAGE_STEERING_MAP,
     VALID_MAPPING_VERBOSITY,
     format_context_reset,
@@ -26,7 +25,6 @@ from preferences_utils import (
     validate_preferences_schema,
     write_preference,
 )
-
 
 # ---------------------------------------------------------------------------
 # Strategies

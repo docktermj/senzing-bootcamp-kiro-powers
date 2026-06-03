@@ -20,7 +20,6 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from validate_behavior_rules import (
-    AcknowledgmentResult,
     contains_pause_language,
     has_pointer_prefix,
     is_compound_question,
@@ -28,7 +27,6 @@ from validate_behavior_rules import (
     validate_acknowledgment,
     validate_steering_file,
 )
-
 
 # ---------------------------------------------------------------------------
 # Tests: Continuation Request Detection

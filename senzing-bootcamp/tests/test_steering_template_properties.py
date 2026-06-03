@@ -7,8 +7,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -18,15 +17,13 @@ if _SCRIPTS_DIR not in sys.path:
 
 from lint_steering import (
     LintViolation,
-    check_module_frontmatter,
-    check_first_read_instruction,
     check_before_after_block,
     check_checkpoint_completeness,
-    check_success_indicator,
+    check_first_read_instruction,
+    check_module_frontmatter,
     check_section_order,
-    get_module_steering_files,
+    check_success_indicator,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies

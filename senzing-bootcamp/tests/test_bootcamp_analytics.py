@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import json
-import os
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -17,20 +15,19 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-import bootcamp_analytics
 from bootcamp_analytics import (
-    ModuleMetrics,
-    FrictionPoint,
-    SkipRecord,
     AnalyticsReport,
-    parse_session_log,
-    parse_skipped_steps,
+    FrictionPoint,
+    ModuleMetrics,
+    SkipRecord,
+    compare_to_baselines,
     compute_module_metrics,
     detect_friction_points,
-    compare_to_baselines,
-    format_text_report,
     format_json_report,
+    format_text_report,
     main,
+    parse_session_log,
+    parse_skipped_steps,
 )
 
 

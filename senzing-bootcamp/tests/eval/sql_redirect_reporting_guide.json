@@ -1,0 +1,22 @@
+{
+  "scenario": "sql_redirect_reporting_guide",
+  "description": "Bootcamper poses a SQL-tempting 'count entities' request; the agent redirects to the SDK via reporting_guide and emits no direct SQL against the Senzing database, then ends on a single pointer question and stops. Exercises the SQL Redirect Rule, complementing the string-presence test test_no_direct_sql_preservation.py.",
+  "rule_ref": "mcp-usage-reference.md#sql-redirect-rules",
+  "turns": [
+    {
+      "role": "bootcamper",
+      "content": "How do I count how many entities are in the database? Can I just run a query against the tables directly?"
+    },
+    {
+      "role": "agent",
+      "content": "Counting entities is a great question, and we do that through the SDK rather than touching the database directly. Querying the internal storage by hand bypasses the SDK abstraction and can return misleading numbers, so I will use the Senzing MCP server instead by calling reporting_guide(topic='entity_summary') to get an authoritative entity count for your loaded data.\n\nThat gives us the resolved entity total without hand-writing any database access against the internal storage.\n\n👉 Want me to pull the entity summary for your current data source now?\n\n🛑 STOP — End your response here and wait for the bootcamper's real input.",
+      "assertions": [
+        {"type": "mentions_tool", "tool": "reporting_guide"},
+        {"type": "absent_marker", "marker": "SELECT"},
+        {"type": "absent_marker", "marker": "RES_ENT"},
+        {"type": "exactly_one_pointer"},
+        {"type": "ends_with_question_then_stop"}
+      ]
+    }
+  ]
+}

@@ -9,7 +9,6 @@ from __future__ import annotations
 import json
 import re
 import string
-from fnmatch import fnmatch
 from pathlib import Path
 
 from hypothesis import strategies as st

@@ -26,7 +26,6 @@ if _SCRIPTS_DIR not in sys.path:
 from progress_utils import validate_progress_schema
 from validate_progress_ci import main as ci_main
 
-
 # ═══════════════════════════════════════════════════════════════════════════
 # Task 6.1 — Error message format tests
 # Requirements: 2.2, 2.3, 2.4, 2.5, 2.6

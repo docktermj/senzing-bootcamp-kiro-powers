@@ -13,7 +13,6 @@ from hypothesis import strategies as st
 
 from merge_feedback import FeedbackEntry, compute_feedback_stats
 
-
 # ═══════════════════════════════════════════════════════════════════════════
 # Hypothesis strategies
 # ═══════════════════════════════════════════════════════════════════════════

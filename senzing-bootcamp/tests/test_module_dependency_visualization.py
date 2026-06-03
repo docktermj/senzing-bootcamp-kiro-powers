@@ -25,14 +25,13 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from visualize_dependencies import (
-    get_module_status,
-    render_mermaid,
-    render_text,
     _default_modules,
     _parse_yaml_modules,
     _parse_yaml_tracks,
+    get_module_status,
+    render_mermaid,
+    render_text,
 )
-
 
 # ---------------------------------------------------------------------------
 # Strategies for property tests

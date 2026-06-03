@@ -6,7 +6,6 @@ unit / integration tests for the context-budget-tracking feature.
 
 import importlib
 import io
-import os
 import re
 import shutil
 import sys
@@ -14,10 +13,8 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-from hypothesis import given, settings, assume
 import hypothesis.strategies as st
-
+from hypothesis import given, settings
 
 # ---------------------------------------------------------------------------
 # Helper: import (or reload) measure_steering

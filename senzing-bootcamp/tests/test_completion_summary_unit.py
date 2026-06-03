@@ -119,12 +119,9 @@ from generate_completion_summary import (  # noqa: E402
     write_narrative,
 )
 from session_logger import (  # noqa: E402
-    CompletionLogEntry,
     append_completion_entry,
     build_completion_entry,
-    serialize_completion_entry,
 )
-
 
 # ---------------------------------------------------------------------------
 # Tests: PDF Generator (Task 4.2)

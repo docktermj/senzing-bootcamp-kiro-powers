@@ -19,7 +19,6 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-
 POWER_DIR = Path(__file__).resolve().parent.parent
 URL_PATTERN = re.compile(r"https?://[^\s\)>\]\"'`]+")
 

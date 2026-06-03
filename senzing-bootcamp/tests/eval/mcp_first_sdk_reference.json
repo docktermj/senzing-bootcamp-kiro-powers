@@ -1,0 +1,20 @@
+{
+  "scenario": "mcp_first_sdk_reference",
+  "description": "Bootcamper asks for an SDK method signature; the agent consults the MCP server via get_sdk_reference before stating the signature, then ends on a single pointer question and stops. Exercises the MCP-First Invariant for the SDK-reference branch, distinct from the licensing branch in license_insufficient_search_docs.json.",
+  "rule_ref": "agent-instructions.md#mcp-first-invariant",
+  "turns": [
+    {
+      "role": "bootcamper",
+      "content": "What parameters does the add_record method take in the Senzing SDK?"
+    },
+    {
+      "role": "agent",
+      "content": "Good question, and I will not quote the signature from memory. Let me look it up with the Senzing MCP server by calling get_sdk_reference(method='add_record', language='python') so we use the current, authoritative definition.\n\nHere is what the current reference returns: add_record takes the data source code, the record identifier, and the record definition, plus optional engine flags. I will use that exact signature when we scaffold your loader.\n\n👉 Want me to scaffold the add_record call for your loader now?\n\n🛑 STOP — End your response here and wait for the bootcamper's real input.",
+      "assertions": [
+        {"type": "mentions_tool", "tool": "get_sdk_reference"},
+        {"type": "exactly_one_pointer"},
+        {"type": "ends_with_question_then_stop"}
+      ]
+    }
+  ]
+}

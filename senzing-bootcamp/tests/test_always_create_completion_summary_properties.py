@@ -36,17 +36,17 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from session_logger import (  # noqa: E402
-    COMPLETION_EVENT_TYPES,
-    CompletionLogEntry,
-    build_completion_entry,
-    serialize_completion_entry,
-)
 from generate_completion_summary import (  # noqa: E402
     build_narrative,
     ensure_fpdf2,
     main,
     render_markdown,
+)
+from session_logger import (  # noqa: E402
+    COMPLETION_EVENT_TYPES,
+    CompletionLogEntry,
+    build_completion_entry,
+    serialize_completion_entry,
 )
 
 # Resolve fpdf2 availability once (the script's helper) so the PDF property can

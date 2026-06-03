@@ -7,8 +7,6 @@ after the postTaskExecution → agentStop migration.
 
 from __future__ import annotations
 
-import json
-import re
 import sys
 from pathlib import Path
 
@@ -26,7 +24,6 @@ if _TESTS_DIR not in sys.path:
 
 from hook_test_helpers import (
     HOOKS_DIR,
-    REQUIRED_FIELDS,
     SEMVER_PATTERN,
     VALID_EVENT_TYPES,
     has_silent_processing,

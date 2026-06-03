@@ -24,7 +24,6 @@ if _SCRIPTS_DIR not in sys.path:
 
 from validate_preferences_ci import _check_schema_consistency, main
 
-
 # ═══════════════════════════════════════════════════════════════════════════
 # Task 5.2 — CI script unit tests
 # Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6

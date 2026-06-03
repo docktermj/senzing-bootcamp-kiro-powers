@@ -1,14 +1,9 @@
 """Tests for senzing-bootcamp/scripts/install_hooks.py."""
 
 import importlib
-import os
 import shutil
-import sys
 import tempfile
 from pathlib import Path
-from unittest.mock import patch
-
-import pytest
 
 
 def _load_install_hooks():
@@ -131,8 +126,8 @@ class TestInstallHooks:
 # Property-based tests  (Tasks 9.2, 9.3, 9.4)
 # ---------------------------------------------------------------------------
 
-from hypothesis import given, settings, assume
 import hypothesis.strategies as st
+from hypothesis import given, settings
 
 # Strategy: generate valid hook filenames
 hook_name_parts = st.from_regex(r"[a-z][a-z0-9]{1,8}", fullmatch=True)

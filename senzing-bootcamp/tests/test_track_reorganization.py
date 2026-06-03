@@ -29,11 +29,11 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from export_results import (
+    TRACK_DISPLAY_NAMES,
     ArtifactManifest,
     ExportMetrics,
     ProgressData,
     SummaryGenerator,
-    TRACK_DISPLAY_NAMES,
 )
 from validate_dependencies import (
     validate_no_legacy_identifiers,

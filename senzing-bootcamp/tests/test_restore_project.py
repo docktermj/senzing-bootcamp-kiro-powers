@@ -1,7 +1,6 @@
 """Tests for senzing-bootcamp/scripts/restore_project.py."""
 
 import importlib
-import os
 import sys
 import zipfile
 from pathlib import Path

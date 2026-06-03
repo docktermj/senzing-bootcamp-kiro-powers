@@ -21,6 +21,7 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
+from generate_completion_summary import filter_secrets
 from session_logger import (
     COMPLETION_EVENT_TYPES,
     CompletionLogEntry,
@@ -29,8 +30,6 @@ from session_logger import (
     serialize_completion_entry,
     truncate_field,
 )
-from generate_completion_summary import filter_secrets
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
@@ -627,7 +626,7 @@ class TestNarrativeSectionsOrderedProperty:
 # Feature: completion-summary, Property 6: Every module with events gets all four subsections
 # ---------------------------------------------------------------------------
 
-from generate_completion_summary import build_narrative, NarrativeSection
+from generate_completion_summary import build_narrative
 
 
 class TestModuleSubsectionsProperty:
@@ -712,7 +711,7 @@ class TestModuleSubsectionsProperty:
 # Feature: completion-summary, Property 8: Narrative metadata completeness
 # ---------------------------------------------------------------------------
 
-from generate_completion_summary import build_narrative, render_markdown
+from generate_completion_summary import render_markdown
 
 
 @st.composite
@@ -885,7 +884,6 @@ class TestNarrativeSizeLimitProperty:
 # Feature: completion-summary, Property 7: Question-answer pairing via question_id
 # ---------------------------------------------------------------------------
 
-from generate_completion_summary import build_narrative
 
 
 @st.composite

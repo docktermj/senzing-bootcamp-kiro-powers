@@ -37,9 +37,8 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-from hypothesis import given, settings
 import hypothesis.strategies as st
-
+from hypothesis import given, settings
 
 # ---------------------------------------------------------------------------
 # Make senzing-bootcamp/scripts/ importable (scripts aren't packages)

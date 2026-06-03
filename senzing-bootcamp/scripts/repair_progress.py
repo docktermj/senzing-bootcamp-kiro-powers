@@ -6,7 +6,8 @@ Usage:
     python scripts/repair_progress.py --fix    # Write/update progress
 """
 import datetime
-import json, sys  # noqa: E401
+import json  # noqa: E401
+import sys
 from pathlib import Path
 
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent)

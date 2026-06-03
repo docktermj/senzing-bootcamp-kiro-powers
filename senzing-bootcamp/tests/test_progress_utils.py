@@ -2,15 +2,12 @@
 
 import json
 
-import pytest
-
 from progress_utils import (
     clear_step,
     parse_parent_step,
     validate_progress_schema,
     write_checkpoint,
 )
-
 
 # ---------------------------------------------------------------------------
 # write_checkpoint

@@ -23,11 +23,8 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from validate_behavior_rules import (  # noqa: E402
-    CONJUNCTION_PATTERNS,
     CONTENT_FREE_PHRASES,
     CONTINUATION_PHRASES,
-    PAUSE_PATTERNS,
-    AcknowledgmentResult,
     contains_pause_language,
     has_pointer_prefix,
     is_compound_question,

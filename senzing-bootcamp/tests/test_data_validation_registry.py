@@ -9,10 +9,8 @@ Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
-
-import pytest
 
 # ---------------------------------------------------------------------------
 # Make senzing-bootcamp/scripts/ importable
@@ -27,7 +25,6 @@ from validate_data_files import (
     ValidationReport,
     update_registry,
 )
-
 
 # ── Helpers ───────────────────────────────────────────────────────────────
 

@@ -7,9 +7,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-import yaml
-
 # Make scripts importable
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
@@ -18,14 +15,11 @@ if _SCRIPTS_DIR not in sys.path:
 from validate_dependencies import (
     Violation,
     load_dependency_graph,
-    validate_schema,
+    run_all_checks,
     validate_no_cycles,
     validate_references,
+    validate_schema,
     validate_topological_order,
-    validate_steering_files,
-    validate_prerequisites_file,
-    validate_onboarding_flow,
-    run_all_checks,
 )
 
 # ---------------------------------------------------------------------------

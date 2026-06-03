@@ -6,14 +6,11 @@ Uses Hypothesis to verify correctness properties across a wide input space.
 from __future__ import annotations
 
 import json
-import os
 import sys
 import tempfile
-import uuid
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -23,19 +20,17 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from session_logger import (
-    VALID_EVENTS,
-    LogEntry,
-    build_log_entry,
-    serialize_entry,
-    append_entry,
-)
 from analyze_sessions import (
-    parse_log,
     compute_summary,
     format_json,
-    format_text,
+    parse_log,
     pretty_print_entries,
+)
+from session_logger import (
+    VALID_EVENTS,
+    append_entry,
+    build_log_entry,
+    serialize_entry,
 )
 
 # ---------------------------------------------------------------------------
@@ -198,7 +193,7 @@ class TestProperty2SchemaValidity:
         # Type and range checks
         assert isinstance(parsed["timestamp"], str)
         # Verify ISO 8601 by parsing
-        from datetime import datetime, timezone
+        from datetime import datetime
         datetime.fromisoformat(parsed["timestamp"])
 
         assert isinstance(parsed["session_id"], str)

@@ -21,8 +21,8 @@ a Correctness Properties section intentionally; Hypothesis is not used here).
 
 ## Tasks
 
-- [ ] 1. Extend the governance registry with the five new Rule Entries
-  - [ ] 1.1 Append the five Rule Entries to `senzing-bootcamp/config/governance-rules.yaml`
+- [x] 1. Extend the governance registry with the five new Rule Entries
+  - [x] 1.1 Append the five Rule Entries to `senzing-bootcamp/config/governance-rules.yaml`
     - Add the five entries verbatim from the design's Data Models section, appended to the existing
       `rules:` block sequence after the seed/behavioral entries, in the constrained YAML subset
       (double-quoted `value`/`pattern` scalars, two-space indentation, repository-root-relative `file`
@@ -54,15 +54,15 @@ a Correctness Properties section intentionally; Hypothesis is not used here).
       endpoint, or place any developer-only file under `senzing-bootcamp/`.
       _Requirements: 7.1, 7.2, 7.3, 8.1, 8.2, 8.4, 9.1, 9.2, 9.3, 9.4, 9.5_
 
-- [ ] 2. Add and update test coverage for the new Rule Entries
-  - [ ] 2.1 Update the rule-count literal in the existing validator test
+- [x] 2. Add and update test coverage for the new Rule Entries
+  - [x] 2.1 Update the rule-count literal in the existing validator test
     - In `senzing-bootcamp/tests/test_governance_rules_validator.py`, change the hard-coded
       `"Rule Entries checked: 8"` literal (in the `main([])`-over-real-repo case) to
       `"Rule Entries checked: 13"` to reflect the five new statically-checkable entries.
     - Test-data change only — do NOT modify `validate_governance_rules.py` and do not touch any other
       assertion in the file. _Requirements: 8.3, 10.3_
 
-  - [ ]* 2.2 Add the presence + conformance test file
+  - [x] 2.2 Add the presence + conformance test file
     - Create `senzing-bootcamp/tests/test_governance_hook_and_mcp_coverage.py`: class-based,
       stdlib-only (no Hypothesis / no property tests), `from __future__ import annotations`, type hints
       (`X | None`, `list[str]`), scripts imported via `sys.path` insertion of the `scripts/` directory.
@@ -75,7 +75,7 @@ a Correctness Properties section intentionally; Hypothesis is not used here).
       five new ids. Reuse the existing conformance `run` entry point; do not duplicate the validator's
       own behavioral property tests. _Requirements: 11.2, 11.3, 11.5_
 
-- [ ] 3. Checkpoint — verify conformance, tests, lint, and no enforcement/CI drift
+- [x] 3. Checkpoint — verify conformance, tests, lint, and no enforcement/CI drift
   - Run `python senzing-bootcamp/scripts/validate_governance_rules.py`; confirm it prints
     `Governance rule conformance: PASS`, `Rule Entries checked: 13`, `Violations found: 0`, and exits 0.
     If any new assertion fails (e.g. an anchor string is not exactly present), fix the offending

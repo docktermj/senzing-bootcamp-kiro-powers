@@ -8,8 +8,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 LINTER_SCRIPT = REPO_ROOT / "senzing-bootcamp" / "scripts" / "lint_steering.py"
 
@@ -112,7 +110,7 @@ class TestSkipTemplateSuppressesOutput:
             ])
         ]
         assert len(skip_template_specific) == 0, (
-            f"Found template-specific violations with --skip-template:\n"
+            "Found template-specific violations with --skip-template:\n"
             + "\n".join(skip_template_specific[:5])
         )
 

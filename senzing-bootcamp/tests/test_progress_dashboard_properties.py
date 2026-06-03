@@ -9,7 +9,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, assume, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -18,17 +18,15 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from progress_dashboard import (
-    ProgressData,
-    PreferencesData,
-    ModuleInfo,
-    GateInfo,
     DependencyData,
-    parse_progress,
-    parse_preferences,
+    GateInfo,
+    ModuleInfo,
+    PreferencesData,
+    ProgressData,
     parse_dependencies,
-    parse_yaml,
+    parse_preferences,
+    parse_progress,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
@@ -422,12 +420,9 @@ class TestDependencyGraphParsingCompleteness:
 
 # Additional imports for computation tests
 from progress_dashboard import (
-    Artifact,
-    NextStep,
     compute_module_statuses,
     compute_next_steps,
 )
-
 
 # ---------------------------------------------------------------------------
 # Strategies for computation tests (generate dataclass instances directly)
@@ -671,10 +666,9 @@ class TestNextStepsComputationCorrectness:
 
 # Additional imports for renderer tests
 from progress_dashboard import (
-    render_dashboard,
     extract_artifacts,
+    render_dashboard,
 )
-
 
 # ---------------------------------------------------------------------------
 # Property 7: Preferences Card Rendering Completeness
@@ -893,7 +887,6 @@ class TestArtifactDisplayCorrectness:
 
 from progress_dashboard import main
 
-
 # ---------------------------------------------------------------------------
 # Strategies for exit code tests
 # ---------------------------------------------------------------------------
@@ -1076,9 +1069,6 @@ class TestExitCodeCorrectness:
 # ---------------------------------------------------------------------------
 
 import os
-import tempfile
-
-from progress_dashboard import main
 
 
 class TestCLIEdgeCases:

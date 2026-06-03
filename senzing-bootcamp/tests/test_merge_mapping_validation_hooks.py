@@ -9,12 +9,10 @@ Feature: merge-mapping-validation-hooks
 
 from __future__ import annotations
 
-import json
 import re
 import sys
 from pathlib import Path
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
@@ -334,10 +332,10 @@ def _parse_registry_entry(text: str, hook_id: str) -> dict[str, str | None]:
     id_match = re.search(rf"- id: `{re.escape(hook_id)}`", text)
     if id_match:
         result["id"] = hook_id
-        name_match = re.search(rf"- name: `([^`]+)`", text[text.find(f"**{hook_id}**"):])
+        name_match = re.search(r"- name: `([^`]+)`", text[text.find(f"**{hook_id}**"):])
         if name_match:
             result["name"] = name_match.group(1)
-        desc_match = re.search(rf"- description: `([^`]+)`", text[text.find(f"**{hook_id}**"):])
+        desc_match = re.search(r"- description: `([^`]+)`", text[text.find(f"**{hook_id}**"):])
         if desc_match:
             result["description"] = desc_match.group(1)
         return result

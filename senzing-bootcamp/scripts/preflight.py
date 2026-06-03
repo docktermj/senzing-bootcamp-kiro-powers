@@ -24,7 +24,6 @@ import subprocess
 import sys
 from typing import List, Optional
 
-
 # ---------------------------------------------------------------------------
 # Color helpers (matches existing NO_COLOR convention)
 # ---------------------------------------------------------------------------

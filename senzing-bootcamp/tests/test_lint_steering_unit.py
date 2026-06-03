@@ -3,14 +3,10 @@
 Tests run against the real steering corpus and synthetic examples.
 """
 
-import json
 import shutil
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
-
-import pytest
 
 # Make scripts importable
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
@@ -19,21 +15,14 @@ if _SCRIPTS_DIR not in sys.path:
 
 from lint_steering import (
     LintViolation,
-    STEERING_DIR,
-    HOOKS_DIR,
-    INDEX_PATH,
-    check_cross_references,
-    check_module_numbering,
     check_checkpoints,
-    check_index_completeness,
-    check_hook_consistency,
+    check_cross_references,
     check_frontmatter,
-    check_internal_links,
-    check_wait_conflicts,
+    check_hook_consistency,
+    check_module_numbering,
     parse_steering_index,
     run_all_checks,
 )
-
 
 # ---------------------------------------------------------------------------
 # Paths to real corpus

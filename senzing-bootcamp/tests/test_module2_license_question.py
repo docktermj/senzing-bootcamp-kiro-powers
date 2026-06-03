@@ -131,7 +131,7 @@ class TestBugConditionStep5:
             if pattern.search(line) and not line.strip().startswith("👉")
         ]
         assert len(matches) == 0, (
-            f"Step 5 contains inline question 'Do you have a Senzing license':\n"
+            "Step 5 contains inline question 'Do you have a Senzing license':\n"
             + "\n".join(f"  - {m}" for m in matches)
         )
 
@@ -144,7 +144,7 @@ class TestBugConditionStep5:
         pattern = re.compile(r"Use this one\?", re.IGNORECASE)
         matches = [line.strip() for line in step5.splitlines() if pattern.search(line)]
         assert len(matches) == 0, (
-            f"Step 5 contains inline question 'Use this one?':\n"
+            "Step 5 contains inline question 'Use this one?':\n"
             + "\n".join(f"  - {m}" for m in matches)
         )
 
@@ -194,7 +194,7 @@ class TestBugConditionStep5:
         assert len(non_question_lines_with_500) > 0, (
             "Evaluation license info (500 records) only appears inside inline "
             "question text — it should be presented as unconditional content.\n"
-            f"Question lines with 500-record info:\n"
+            "Question lines with 500-record info:\n"
             + "\n".join(f"  - {q}" for q in question_lines_with_500)
         )
 

@@ -8,13 +8,11 @@ from __future__ import annotations
 import json
 import os
 import sys
-from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 
-from team_config_validator import TeamConfig, TeamMember, PathResolver
-
+from team_config_validator import PathResolver, TeamConfig, TeamMember
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Helpers
@@ -63,6 +61,7 @@ class TestTeamDetection:
         try:
             os.chdir(tmp_path)
             import importlib
+
             import status
             importlib.reload(status)
             config, resolver = status._detect_team_mode()
@@ -85,6 +84,7 @@ class TestTeamDetection:
         try:
             os.chdir(tmp_path)
             import importlib
+
             import status
             importlib.reload(status)
             config, resolver = status._detect_team_mode()
@@ -103,6 +103,7 @@ class TestTeamDetection:
         try:
             os.chdir(tmp_path)
             import importlib
+
             import status
             importlib.reload(status)
             config, resolver = status._detect_team_mode()
@@ -122,6 +123,7 @@ class TestShowMemberStatus:
     def test_with_data(self, capsys):
         """Shows member name and progress when data exists."""
         import importlib
+
         import status
         importlib.reload(status)
         member = TeamMember(id="alice", name="Alice")
@@ -140,6 +142,7 @@ class TestShowMemberStatus:
     def test_with_no_data(self, capsys):
         """Shows warning when no data available."""
         import importlib
+
         import status
         importlib.reload(status)
         member = TeamMember(id="alice", name="Alice")
@@ -167,6 +170,7 @@ class TestShowTeamSummary:
         try:
             os.chdir(tmp_path)
             import importlib
+
             import status
             importlib.reload(status)
             status._show_team_summary(config, resolver)
@@ -189,6 +193,7 @@ class TestShowTeamSummary:
         try:
             os.chdir(tmp_path)
             import importlib
+
             import status
             importlib.reload(status)
             status._show_team_summary(config, resolver)
@@ -210,6 +215,7 @@ class TestShowTeamSummary:
         try:
             os.chdir(tmp_path)
             import importlib
+
             import status
             importlib.reload(status)
             status._show_team_summary(config, resolver)
@@ -253,6 +259,7 @@ class TestMainTeamMode:
         try:
             os.chdir(tmp_path)
             import importlib
+
             import status
             importlib.reload(status)
             with patch.object(status, "_detect_team_mode", return_value=(config, resolver)):
@@ -280,6 +287,7 @@ class TestMainTeamMode:
         }
 
         import importlib
+
         import status
         importlib.reload(status)
         with patch.object(status, "_detect_team_mode", return_value=(config, resolver)):
@@ -300,6 +308,7 @@ class TestMainTeamMode:
         try:
             os.chdir(tmp_path)
             import importlib
+
             import status
             importlib.reload(status)
             with patch.object(status, "_detect_team_mode", return_value=(config, resolver)):

@@ -13,8 +13,6 @@ import json
 import sys
 from pathlib import Path
 
-import pytest
-
 # ---------------------------------------------------------------------------
 # Make sibling test modules importable
 # ---------------------------------------------------------------------------
@@ -28,7 +26,6 @@ from test_mcp_response_caching import (  # noqa: E402
     derive_filename,
     serialize_cache_entry,
 )
-
 
 # ---------------------------------------------------------------------------
 # Constants matching the steering file error messages

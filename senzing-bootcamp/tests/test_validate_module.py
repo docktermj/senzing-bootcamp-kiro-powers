@@ -1,7 +1,6 @@
 """Tests for senzing-bootcamp/scripts/validate_module.py."""
 
 import importlib
-import io
 import os
 import shutil
 import subprocess
@@ -11,7 +10,6 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
 
 # ---------------------------------------------------------------------------
 # Helper: import (or reload) validate_module inside the isolated project_root
@@ -192,8 +190,8 @@ class TestNextNValidatesPrevious:
 # Property-based tests  (Tasks 4.2 & 4.3)
 # ---------------------------------------------------------------------------
 
-from hypothesis import given, settings
 import hypothesis.strategies as st
+from hypothesis import given, settings
 
 
 class TestProperty5ValidatorPassesOnCompleteArtifacts:

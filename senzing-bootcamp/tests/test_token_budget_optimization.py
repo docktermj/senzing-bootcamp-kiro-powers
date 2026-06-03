@@ -12,7 +12,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -513,7 +513,7 @@ class TestProperty3SteeringIndexConsistency:
             for filename, token_count in entries:
                 lines.append(f"  {filename}:")
                 lines.append(f"    token_count: {token_count}")
-                lines.append(f"    size_category: large")
+                lines.append("    size_category: large")
                 total += token_count
 
             lines.append("")
@@ -656,7 +656,7 @@ class TestProperty3SteeringIndexConsistency:
                 )
 
         assert not mismatches, (
-            f"Token counts outside 10% tolerance:\n" + "\n".join(mismatches)
+            "Token counts outside 10% tolerance:\n" + "\n".join(mismatches)
         )
 
 

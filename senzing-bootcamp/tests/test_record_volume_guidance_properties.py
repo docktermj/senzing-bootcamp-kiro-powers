@@ -29,7 +29,6 @@ from volume_utils import (
     should_ask_volume,
 )
 
-
 # ---------------------------------------------------------------------------
 # Hypothesis strategies — Parsing and Classification
 # ---------------------------------------------------------------------------
@@ -405,7 +404,6 @@ from volume_utils import (
     get_license_guidance,
     get_performance_guidance,
 )
-
 
 # ---------------------------------------------------------------------------
 # Properties 6–13: Guidance Generators

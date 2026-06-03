@@ -7,8 +7,7 @@ import re
 import sys
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -20,10 +19,9 @@ from validate_dependencies import (
     Violation,
     validate_no_cycles,
     validate_references,
-    validate_topological_order,
     validate_schema,
+    validate_topological_order,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies

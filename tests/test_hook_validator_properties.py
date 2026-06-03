@@ -12,8 +12,7 @@ import sys
 from fnmatch import fnmatch
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 _TESTS_DIR = str(Path(__file__).resolve().parent)
@@ -35,7 +34,6 @@ from hook_test_helpers import (
     validate_required_fields,
     validate_version,
 )
-
 
 # ===========================================================================
 # TestValidHookAcceptance — Property 1

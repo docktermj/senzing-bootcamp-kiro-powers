@@ -26,10 +26,8 @@ from validate_completion_artifacts import (  # noqa: E402
     main,
     parse_journal,
     parse_recap_header,
-    validate_journal_consistency,
     validate_recap_consistency,
 )
-
 
 # ---------------------------------------------------------------------------
 # Tests: Module 1 Completion Flow (Requirements 1.1, 1.2, 3.1)

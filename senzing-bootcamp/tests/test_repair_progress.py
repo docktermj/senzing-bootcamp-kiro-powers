@@ -10,8 +10,6 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 
 def _load_repair():
     """Import / reload repair_progress module."""
@@ -119,8 +117,8 @@ class TestDiscrepancyReporting:
 # Property-based tests  (Tasks 3.2 & 3.3)
 # ---------------------------------------------------------------------------
 
-from hypothesis import given, settings
 import hypothesis.strategies as st
+from hypothesis import given, settings
 
 # Modules we can create artifacts for (excluding 7 which needs JSON state)
 TESTABLE_MODULES = sorted(ARTIFACT_CREATORS.keys())

@@ -4,12 +4,9 @@ Feature: steering-file-template
 """
 
 import re
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
-
-import pytest
 
 # Make scripts importable
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
@@ -17,16 +14,14 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from lint_steering import (
-    LintViolation,
-    check_module_frontmatter,
-    check_first_read_instruction,
+    SECTION_ORDER,
     check_before_after_block,
     check_checkpoint_completeness,
-    check_success_indicator,
+    check_first_read_instruction,
+    check_module_frontmatter,
     check_section_order,
-    get_module_steering_files,
+    check_success_indicator,
     run_all_checks,
-    SECTION_ORDER,
 )
 
 # ---------------------------------------------------------------------------

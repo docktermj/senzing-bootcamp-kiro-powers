@@ -11,13 +11,9 @@ Feature: split-session-resume
 
 from __future__ import annotations
 
-import re
-import subprocess
-import sys
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, HealthCheck, assume
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -256,7 +252,7 @@ class TestProperty2ContentCompleteness:
                 )
 
         assert violations == [], (
-            f"Content completeness violations:\n"
+            "Content completeness violations:\n"
             + "\n".join(f"  - {v}" for v in violations)
         )
 
@@ -273,7 +269,7 @@ class TestProperty2ContentCompleteness:
                 )
 
         assert duplications == [], (
-            f"Instruction blocks duplicated across files:\n"
+            "Instruction blocks duplicated across files:\n"
             + "\n".join(f"  - {d}" for d in duplications)
         )
 

@@ -14,7 +14,6 @@ from string import ascii_letters, digits
 import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
-import pytest
 
 # Make scripts importable
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
@@ -23,16 +22,12 @@ if _SCRIPTS_DIR not in sys.path:
 
 from compare_results import (
     ERStatistics,
-    ComparisonResult,
     accept_baseline,
-    assess_quality,
     baseline_path,
     compare,
-    format_report,
     load_statistics,
     main,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies

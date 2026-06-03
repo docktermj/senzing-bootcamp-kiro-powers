@@ -16,7 +16,6 @@ when.type == "agentStop", then.type == "askAgent", and non-empty then.prompt.
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 from hypothesis import given, settings

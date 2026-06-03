@@ -27,7 +27,6 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
-
 # ---------------------------------------------------------------------------
 # YAML Parsing (minimal, stdlib only)
 # ---------------------------------------------------------------------------
@@ -375,7 +374,7 @@ def main(argv: list[str] | None = None) -> None:
         try:
             progress_data = json.loads(progress_path.read_text(encoding="utf-8"))
             modules_completed = progress_data.get("modules_completed", [])
-        except (json.JSONDecodeError, ValueError) as e:
+        except (json.JSONDecodeError, ValueError):
             print(f"ERROR: Cannot parse progress file: {progress_path}", file=sys.stderr)
             sys.exit(1)
     elif args.apply:

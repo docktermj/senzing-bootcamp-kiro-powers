@@ -9,7 +9,6 @@ Feature: display-version-on-start
 from __future__ import annotations
 
 import sys
-from io import StringIO
 from pathlib import Path
 
 import pytest
@@ -22,9 +21,7 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from version import (  # noqa: E402
-    VERSION_FILE_PATH,
     VersionError,
-    format_version_display,
     main,
     read_version,
     validate_version,

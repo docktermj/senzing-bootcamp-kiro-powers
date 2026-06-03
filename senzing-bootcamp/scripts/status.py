@@ -19,9 +19,13 @@ from pathlib import Path
 _TEAM_AVAILABLE = False
 try:
     from team_config_validator import (
-        load_and_validate as _load_team_config,
         PathResolver as _PathResolver,
+    )
+    from team_config_validator import (
         TeamConfigError as _TeamConfigError,
+    )
+    from team_config_validator import (
+        load_and_validate as _load_team_config,
     )
     _TEAM_AVAILABLE = True
 except ImportError:
@@ -1207,11 +1211,19 @@ def main():
     elif args.graph:
         try:
             from visualize_dependencies import (
-                load_modules, load_progress, load_tracks, load_preferences, render_text,
+                load_modules,
+                load_preferences,
+                load_progress,
+                load_tracks,
+                render_text,
             )
         except ImportError:
             from scripts.visualize_dependencies import (
-                load_modules, load_progress, load_tracks, load_preferences, render_text,
+                load_modules,
+                load_preferences,
+                load_progress,
+                load_tracks,
+                render_text,
             )
         modules = load_modules()
         progress = load_progress()

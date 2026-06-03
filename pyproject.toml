@@ -1,5 +1,6 @@
 [tool.ruff]
 target-version = "py311"
+line-length = 100
 src = ["senzing-bootcamp/scripts", "senzing-bootcamp/tests", "tests"]
 
 [tool.ruff.lint]

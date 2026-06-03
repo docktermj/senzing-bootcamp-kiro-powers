@@ -18,15 +18,13 @@ import io
 import json
 import os
 import shutil
-import string
 import sys
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-from hypothesis import given, settings, assume
 import hypothesis.strategies as st
+from hypothesis import assume, given, settings
 
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:

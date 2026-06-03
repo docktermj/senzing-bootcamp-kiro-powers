@@ -35,9 +35,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from unittest.mock import patch
 
-from hypothesis import assume, given, settings
 import hypothesis.strategies as st
-
+from hypothesis import assume, given, settings
 
 # ---------------------------------------------------------------------------
 # Import target script via the documented sys.path pattern

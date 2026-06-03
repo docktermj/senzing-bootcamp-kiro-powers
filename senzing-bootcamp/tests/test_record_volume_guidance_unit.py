@@ -20,6 +20,8 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
+import pytest  # noqa: E402
+
 from volume_utils import (  # noqa: E402
     classify_tier,
     get_architecture_guidance,
@@ -27,9 +29,6 @@ from volume_utils import (  # noqa: E402
     get_performance_guidance,
     parse_volume_input,
 )
-
-import pytest  # noqa: E402
-
 
 # ---------------------------------------------------------------------------
 # TestParseVolumeInput

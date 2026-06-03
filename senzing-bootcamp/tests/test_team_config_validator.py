@@ -6,11 +6,10 @@ Uses Hypothesis for PBT and pytest for example-based tests.
 from __future__ import annotations
 
 import string
-import tempfile
-from pathlib import Path, PurePosixPath
+from pathlib import PurePosixPath
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from team_config_validator import (
@@ -18,11 +17,10 @@ from team_config_validator import (
     TeamConfig,
     TeamConfigError,
     TeamMember,
+    load_and_validate,
     parse_team_yaml,
     validate_team_config,
-    load_and_validate,
 )
-
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Hypothesis strategies

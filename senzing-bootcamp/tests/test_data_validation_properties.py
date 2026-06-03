@@ -13,8 +13,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, assume, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -23,17 +22,14 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from validate_data_files import (
+    RECOGNIZED_FORMATS,
     CheckResult,
     ValidationReport,
-    RECOGNIZED_FORMATS,
-    FALLBACK_ENCODINGS,
-    check_existence,
+    check_encoding,
     check_format,
     check_records,
-    check_encoding,
     validate_file,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies

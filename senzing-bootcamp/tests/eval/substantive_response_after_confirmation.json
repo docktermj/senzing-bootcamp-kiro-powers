@@ -1,0 +1,18 @@
+{
+  "scenario": "substantive_response_after_confirmation",
+  "description": "After the bootcamper affirmatively confirms readiness for the next module (a Transition_Confirmation), the agent produces a Substantive_Response (a full module start), not Minimal_Output. Exercises the answer-processing substantive-output rule via the new substantive_response assertion type.",
+  "rule_ref": "conversation-protocol.md#answer-processing-priority",
+  "turns": [
+    {
+      "role": "bootcamper",
+      "content": "Yes, I'm ready to start Module 2."
+    },
+    {
+      "role": "agent",
+      "content": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nMODULE 2: SDK Setup\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nGreat — your business problem is documented, so now we stand up the Senzing SDK in your chosen language. Step 1 detects whether the SDK is already installed so we never reinstall something that is already working on your machine.",
+      "assertions": [
+        {"type": "substantive_response"}
+      ]
+    }
+  ]
+}

@@ -16,12 +16,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from team_config_validator import (
-    TeamConfig,
-    TeamConfigError,
     PathResolver,
+    TeamConfigError,
     load_and_validate,
 )
-
 
 # ── Data model ────────────────────────────────────────────────────────────
 

@@ -35,7 +35,6 @@ from eval_conversations import (  # noqa: E402
     POINTER,
     AssertionOutcome,
     AssertionSpec,
-    DEFAULT_FIXTURES_DIR,
     EmptyDirError,
     EvalContext,
     EvalError,
@@ -52,12 +51,12 @@ from eval_conversations import (  # noqa: E402
     _mentions_tool,
     _no_compound_question,
     _no_self_answer,
+    _substantive_response,
     _transition_response_completeness,
     count_assertions,
     count_pointers,
     count_question_marks,
     evaluate_scenario,
-    evaluate_turn,
     has_conjunction,
     load_scenarios,
     main,
@@ -66,7 +65,6 @@ from eval_conversations import (  # noqa: E402
     run,
     text_after,
 )
-
 
 # ---------------------------------------------------------------------------
 # Shared helper: build a Turn + EvalContext and invoke a predicate
@@ -643,6 +641,101 @@ class TestGateNotBypassedProperty:
 
         no_evidence = benign if benign else "the gate ran"
         assert not _outcome(_gate_not_bypassed, no_evidence, self._PARAMS).passed
+
+
+# ---------------------------------------------------------------------------
+# Property: substantive_response soundness
+# ---------------------------------------------------------------------------
+
+# Multi-character filler words used to build substantive content. Lowercase
+# letters only, so each is a single whitespace-delimited token and none collide
+# with a marker or boundary phrase.
+_SUBSTANTIVE_WORDS: list[str] = [
+    "module", "step", "first", "next", "together", "detects", "installed",
+    "language", "scaffold", "loader", "records", "entities", "resolved",
+    "documented", "business", "problem", "chosen", "machine", "working",
+]
+
+# A fixed multi-word prefix that is unconditionally >= 50 non-whitespace
+# characters (60 chars), so any content built from it satisfies BOTH
+# Substantive_Response conditions (>= 2 words AND >= 50 stripped chars)
+# regardless of what is appended.
+_SUBSTANTIVE_PREFIX = "Here is the next substantive step we will take together now:"
+
+
+@st.composite
+def st_substantive_response(draw: st.DrawFn) -> str:
+    """Build a Substantive_Response: multi-word AND >= 50 stripped characters.
+
+    The content always begins with ``_SUBSTANTIVE_PREFIX`` (60 chars, many words),
+    optionally extended with extra filler words, and is optionally wrapped in
+    leading/trailing whitespace so the strategy exercises ``str.strip``. Because
+    the prefix alone already satisfies both conditions, every generated value is
+    guaranteed substantive after stripping.
+    """
+    extra = draw(st.lists(st.sampled_from(_SUBSTANTIVE_WORDS), max_size=10))
+    body = " ".join([_SUBSTANTIVE_PREFIX, *extra])
+    lead = draw(st.sampled_from(["", " ", "\n", "  \n", "\t"]))
+    trail = draw(st.sampled_from(["", " ", "\n", "  ", "\n\t"]))
+    return f"{lead}{body}{trail}"
+
+
+@st.composite
+def st_minimal_output(draw: st.DrawFn) -> str:
+    """Build Minimal_Output covering all four prohibited sub-cases.
+
+    * empty           — the empty string.
+    * whitespace      — only spaces / tabs / newlines (strips to empty).
+    * single_word     — a single-word acknowledgment (".", "OK", ...), optionally
+                        wrapped in whitespace so it still strips to one token.
+    * short_multiword — >= 2 words but < 50 stripped characters (max 4 tokens of
+                        <= 10 chars + 3 spaces = 43 chars, always under 50).
+
+    Every generated value must FAIL the predicate.
+    """
+    kind = draw(
+        st.sampled_from(["empty", "whitespace", "single_word", "short_multiword"])
+    )
+    if kind == "empty":
+        return ""
+    if kind == "whitespace":
+        return draw(st.text(alphabet=" \t\n", min_size=1, max_size=10))
+    if kind == "single_word":
+        token = draw(
+            st.sampled_from([".", "OK", "Okay", "Understood", "Got", "Yes", "Sure"])
+        )
+        lead = draw(st.sampled_from(["", " ", "\n", "  "]))
+        trail = draw(st.sampled_from(["", " ", "\n", "  "]))
+        return f"{lead}{token}{trail}"
+    words = draw(st.lists(st_alpha_token, min_size=2, max_size=4))
+    return " ".join(words)
+
+
+class TestSubstantiveResponseProperty:
+    """Property: `substantive_response` soundness.
+
+    Passes for Substantive_Response content (multi-word AND >= 50 non-trivial
+    characters); fails for every Minimal_Output condition (empty, whitespace-only,
+    single-word acknowledgment, or < 50 characters of content).
+
+    Validates: Requirements 6.2, 6.3, 8.2
+    """
+
+    @given(st_substantive_response())
+    @settings(max_examples=20)
+    def test_substantive_content_passes(self, content: str) -> None:
+        """Multi-word content of >= 50 stripped characters passes the predicate."""
+        stripped = content.strip()
+        # Generator sanity check: the content really is a Substantive_Response.
+        assert len(stripped) >= 50
+        assert len(stripped.split()) >= 2
+        assert _outcome(_substantive_response, content).passed
+
+    @given(st_minimal_output())
+    @settings(max_examples=20)
+    def test_minimal_output_fails(self, content: str) -> None:
+        """Empty, whitespace-only, single-word, or < 50-char content fails."""
+        assert not _outcome(_substantive_response, content).passed
 
 
 # ===========================================================================
@@ -1460,9 +1553,9 @@ class TestShippedFixturesPassProperty:
     """
 
     def test_starter_set_is_present(self) -> None:
-        """The shipped starter set is non-empty (the four fixtures of R10.1-R10.4)."""
+        """The shipped set is non-empty (4 starter + 4 coverage fixtures)."""
         assert _SHIPPED_FIXTURES, f"no shipped fixtures found under {_EVAL_DIR}"
-        assert len(_SHIPPED_FIXTURES) == 4  # R10.1-R10.4 ship exactly four fixtures
+        assert len(_SHIPPED_FIXTURES) == 8  # 4 starter + 4 coverage fixtures
 
     @given(st.sampled_from(_SHIPPED_FIXTURES))
     @settings(max_examples=20)
@@ -1480,6 +1573,53 @@ class TestShippedFixturesPassProperty:
         with redirect_stdout(StringIO()), redirect_stderr(StringIO()):
             code = run(_EVAL_DIR)
         assert code == 0
+
+
+# ---------------------------------------------------------------------------
+# Fixture-pass tests: the four new coverage fixtures — task 3.2
+# ---------------------------------------------------------------------------
+
+# The four positive-exemplar fixtures added by the conversational-eval-coverage
+# feature (tasks 2.1-2.4). Each must evaluate with zero failures so the
+# "Conversational eval harness" CI step continues to exit 0 (R7.2, R7.4).
+_NEW_COVERAGE_FIXTURES: list[Path] = [
+    _EVAL_DIR / "mcp_first_sdk_reference.json",
+    _EVAL_DIR / "sql_redirect_reporting_guide.json",
+    _EVAL_DIR / "confirmation_question_disambiguation.json",
+    _EVAL_DIR / "substantive_response_after_confirmation.json",
+]
+
+
+class TestNewCoverageFixturesPassProperty:
+    """The four new coverage fixtures pass: The_Checker reports zero failures.
+
+    Each of the four positive-exemplar fixtures added by this feature
+    (mcp_first_sdk_reference, sql_redirect_reporting_guide,
+    confirmation_question_disambiguation, substantive_response_after_confirmation)
+    encodes correct agent behavior, so every attached Behavioral_Assertion passes
+    and The_Checker reports zero failures. This preserves the harness CI step at
+    exit 0 alongside the four retained starter fixtures.
+
+    Validates: Requirements 8.3, 8.4, 7.2, 7.4
+    """
+
+    def test_new_fixtures_are_present(self) -> None:
+        """All four new coverage fixtures exist on disk under the Eval_Directory."""
+        missing: list[str] = [
+            path.name for path in _NEW_COVERAGE_FIXTURES if not path.is_file()
+        ]
+        assert missing == [], f"missing new coverage fixture(s): {missing}"
+
+    @given(st.sampled_from(_NEW_COVERAGE_FIXTURES))
+    @settings(max_examples=20)
+    def test_each_new_fixture_has_zero_failures(self, fixture_path: Path) -> None:
+        """Every assertion in each new fixture passes (zero EvalFailures) (R8.3)."""
+        scenarios = load_scenarios(fixture_path)
+        assert scenarios  # the fixture parsed into at least one scenario
+        failures: list[EvalFailure] = []
+        for scenario in scenarios:
+            failures.extend(evaluate_scenario(scenario))
+        assert failures == [], f"{fixture_path.name} produced failures: {failures}"
 
 
 # ---------------------------------------------------------------------------
@@ -1598,7 +1738,6 @@ class TestStdlibOnlyImportAudit:
         # The checker's expected stdlib imports (excluding the skipped __future__).
         expected = {
             "argparse",
-            "collections",
             "json",
             "re",
             "sys",

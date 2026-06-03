@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -31,7 +31,6 @@ from data_sources import (
     serialize_registry_yaml,
     validate_registry,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies

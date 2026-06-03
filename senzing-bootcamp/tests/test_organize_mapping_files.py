@@ -8,8 +8,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -19,14 +18,12 @@ if _SCRIPTS_DIR not in sys.path:
 
 from organize_mapping_files import (
     ROUTING_RULES,
-    MoveResult,
     execute_moves,
     main,
     plan_moves,
     print_summary,
     scan_source,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies

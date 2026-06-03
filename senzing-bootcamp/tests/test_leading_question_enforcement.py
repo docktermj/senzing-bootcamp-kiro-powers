@@ -17,7 +17,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -128,11 +128,11 @@ def _contains_step_chaining_instruction(text: str, next_step: int) -> bool:
         rf"continue.*to\s+Step\s+{next_step}",
         rf"Step\s+{next_step}.*👉\s*question",
         rf"👉\s*question.*Step\s+{next_step}",
-        rf"next\s+numbered\s+step",
-        rf"immediately\s+proceed",
-        rf"same\s+turn",
-        rf"do\s+NOT\s+end\s+your\s+turn",
-        rf"All\s+sub-steps\s+complete",
+        r"next\s+numbered\s+step",
+        r"immediately\s+proceed",
+        r"same\s+turn",
+        r"do\s+NOT\s+end\s+your\s+turn",
+        r"All\s+sub-steps\s+complete",
     ]
     combined = "|".join(patterns)
     return bool(re.search(combined, text, re.IGNORECASE))

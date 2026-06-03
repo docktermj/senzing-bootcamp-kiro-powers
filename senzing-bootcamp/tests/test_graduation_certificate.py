@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import html
-import html
 import json
 import sys
 import tempfile
@@ -32,7 +31,6 @@ from generate_graduation_certificate import (
     ProgressData,
     assemble_certificate,
     derive_next_steps,
-    derive_skills,
     load_journal,
     load_preferences,
     load_progress,

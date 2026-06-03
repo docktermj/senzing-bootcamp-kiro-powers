@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import sys
-from io import StringIO
 from pathlib import Path
 
 import pytest
@@ -16,22 +15,19 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from session_logger import (
-    VALID_EVENTS,
-    LogEntry,
-    build_log_entry,
-    serialize_entry,
-    append_entry,
-)
 from analyze_sessions import (
-    parse_log,
     compute_summary,
     format_text,
-    format_json,
-    pretty_print_entries,
+    parse_log,
+)
+from analyze_sessions import (
     main as analyze_main,
 )
-
+from session_logger import (
+    LogEntry,
+    append_entry,
+    build_log_entry,
+)
 
 # ---------------------------------------------------------------------------
 # 9.1 build_log_entry with valid inputs

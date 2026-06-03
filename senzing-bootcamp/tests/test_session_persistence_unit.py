@@ -23,8 +23,6 @@ import sys
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 # ---------------------------------------------------------------------------
 # Make senzing-bootcamp/scripts/ importable
 # ---------------------------------------------------------------------------
@@ -40,10 +38,7 @@ from preferences_utils import (
     parse_yaml,
     resolve_language_steering,
     write_preference,
-    LoadResult,
-    WriteResult,
 )
-
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Task 8.1 — Preference writing unit tests

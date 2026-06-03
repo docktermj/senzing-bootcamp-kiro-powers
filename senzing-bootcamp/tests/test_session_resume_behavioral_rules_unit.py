@@ -12,8 +12,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import yaml
 import pytest
+import yaml
 
 # ---------------------------------------------------------------------------
 # Paths to steering files under test

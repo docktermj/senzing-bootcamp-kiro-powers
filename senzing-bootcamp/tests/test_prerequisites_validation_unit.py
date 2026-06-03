@@ -17,20 +17,16 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from validate_prerequisites import (  # noqa: E402
-    parse_gate_key,
-    extract_keywords,
     Finding,
-    ModuleInfo,
     GateInfo,
-    count_checkpoints,
-    has_success_criteria,
-    _validate_module_references,
-    _validate_keyword_presence,
+    ModuleInfo,
     _validate_checkpoint_coverage,
-    validate_prerequisites,
-    main,
+    _validate_keyword_presence,
+    _validate_module_references,
     load_dependency_graph,
     load_steering_index,
+    main,
+    validate_prerequisites,
 )
 
 # ---------------------------------------------------------------------------

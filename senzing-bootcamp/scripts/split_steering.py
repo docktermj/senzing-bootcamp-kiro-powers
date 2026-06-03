@@ -18,7 +18,6 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-
 DEFAULT_STEERING_DIR = Path("senzing-bootcamp/steering")
 DEFAULT_INDEX_PATH = Path("senzing-bootcamp/steering/steering-index.yaml")
 
@@ -751,11 +750,11 @@ def main():
 
     # Print summary
     print(f"\nRoot file: {result.root_path.name} ({result.root_token_count} tokens)")
-    print(f"Sub-files created:")
+    print("Sub-files created:")
     for sub_path, tc in zip(result.sub_files, result.sub_file_token_counts):
         print(f"  {sub_path.name} ({tc} tokens)")
     print(f"\nTotal: {len(result.sub_files)} sub-files + 1 root file")
-    print(f"steering-index.yaml updated.")
+    print("steering-index.yaml updated.")
 
 
 if __name__ == "__main__":

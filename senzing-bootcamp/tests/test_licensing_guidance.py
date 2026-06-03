@@ -11,8 +11,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
@@ -229,7 +227,6 @@ class TestLicensingGuidanceScope:
 
         Validates: Requirement 4.1
         """
-        import re
 
         non_step5 = self._extract_non_step5_content().lower()
         # The MCP guidance phrases we added should not appear outside Step 5.

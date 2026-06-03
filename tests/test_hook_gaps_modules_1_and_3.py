@@ -24,13 +24,13 @@ _TESTS_DIR = str(Path(__file__).resolve().parent)
 if _TESTS_DIR not in sys.path:
     sys.path.insert(0, _TESTS_DIR)
 
+from hook_test_helpers import parse_categories_yaml
 from sync_hook_registry import (
     CATEGORIES_PATH,
     HOOKS_DIR,
     discover_hook_files,
     load_category_mapping,
 )
-from hook_test_helpers import parse_categories_yaml
 
 
 def _expected_hook_count() -> int:

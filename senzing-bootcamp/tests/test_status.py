@@ -7,9 +7,6 @@ import sys
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
-
 # ---------------------------------------------------------------------------
 # Helper: import (or reload) status inside the isolated project_root
 # ---------------------------------------------------------------------------
@@ -173,12 +170,11 @@ class TestStatusNoColor:
 # Property-based tests  (Tasks 2.2 & 2.3)
 # ---------------------------------------------------------------------------
 
-import tempfile
 import shutil
+import tempfile
 
-from hypothesis import given, settings
 import hypothesis.strategies as st
-
+from hypothesis import given, settings
 
 # Strategy: any subset of {1..11}
 module_subsets = st.lists(

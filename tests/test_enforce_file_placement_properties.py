@@ -29,7 +29,6 @@ from test_enforce_file_placement import (
     ROOT_WHITELIST_EXACT,
     ROOT_WHITELIST_PATTERNS,
     has_blocked_extension,
-    is_root_path,
     is_whitelisted,
 )
 

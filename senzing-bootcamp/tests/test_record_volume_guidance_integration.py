@@ -13,8 +13,6 @@ import re
 import sys
 from pathlib import Path
 
-import pytest
-
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -26,7 +24,6 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 import volume_utils  # noqa: E402
-
 
 # ---------------------------------------------------------------------------
 # TestEndToEndFlow

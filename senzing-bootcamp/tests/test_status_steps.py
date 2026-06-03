@@ -10,9 +10,6 @@ import sys
 from io import StringIO
 from pathlib import Path
 
-import pytest
-
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -37,6 +34,7 @@ def _capture_status_main(tmp_path, monkeypatch):
     # relative to __file__.  We override __file__ inside the module so that
     # project_root resolves to tmp_path.
     import importlib
+
     import status
 
     importlib.reload(status)
@@ -144,6 +142,7 @@ class TestSyncProgressTracker:
         monkeypatch.syspath_prepend(scripts_dir)
 
         import importlib
+
         import status
 
         importlib.reload(status)
@@ -170,6 +169,7 @@ class TestSyncProgressTracker:
         monkeypatch.syspath_prepend(scripts_dir)
 
         import importlib
+
         import status
 
         importlib.reload(status)

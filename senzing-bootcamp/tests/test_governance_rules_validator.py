@@ -224,7 +224,7 @@ class TestMainDefaults:
             f"stderr was:\n{captured.err}"
         )
         assert "Governance rule conformance: PASS" in captured.out
-        assert "Rule Entries checked: 8" in captured.out
+        assert "Rule Entries checked: 13" in captured.out
         assert "Violations found: 0" in captured.out
         # Success path writes nothing to stderr.
         assert captured.err == ""

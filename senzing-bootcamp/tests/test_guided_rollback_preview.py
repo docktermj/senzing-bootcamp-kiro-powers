@@ -110,7 +110,7 @@ class TestRollbackSafetyAssessment:
         """format_dry_run_report includes Safety Assessment section."""
         sys.path.insert(0, str(_SCRIPTS_DIR))
         try:
-            from rollback_module import format_dry_run_report, ModuleArtifacts
+            from rollback_module import ModuleArtifacts, format_dry_run_report
             artifacts = ModuleArtifacts(
                 files=["src/load/load.py", "docs/loading_strategy.md"],
                 directories=["src/load"],

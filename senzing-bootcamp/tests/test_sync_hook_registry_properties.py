@@ -8,8 +8,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -18,18 +17,14 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from sync_hook_registry import (
-    HookEntry,
     CategoryMapping,
-    parse_hook_file,
+    HookEntry,
     categorize_hooks,
     format_hook_entry,
     generate_registry_summary,
-    generate_registry_critical,
-    generate_registry_modules,
+    parse_hook_file,
     verify_registry,
-    write_registry,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies

@@ -18,7 +18,6 @@ if _TESTS_DIR not in sys.path:
 from hook_test_helpers import (
     CRITICAL_HOOKS,
     HOOKS_DIR,
-    TOOL_EVENT_TYPES,
     has_silent_processing,
     load_hook,
 )

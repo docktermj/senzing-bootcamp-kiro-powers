@@ -330,8 +330,8 @@ def _redirect_stdout(buf: StringIO):
 # Validates: Requirements 10
 # ---------------------------------------------------------------------------
 
-import json
 import importlib
+import json
 
 
 def _write_progress(tmp_path, data):

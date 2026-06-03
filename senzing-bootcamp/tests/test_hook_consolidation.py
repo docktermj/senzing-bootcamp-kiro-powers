@@ -10,7 +10,6 @@ Correctness Properties (from design.md):
 import json
 from pathlib import Path
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 

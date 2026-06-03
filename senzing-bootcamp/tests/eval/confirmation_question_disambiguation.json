@@ -1,0 +1,21 @@
+{
+  "scenario": "confirmation_question_disambiguation",
+  "description": "After summarizing captured context, the agent poses a single confirmation pointer question with exactly one unambiguous yes/no meaning, no appended follow-up, no compound conjunction, and no self-answer, then stops. Exercises the Question Disambiguation Rule, distinct from single_question_stop.json in that it targets a confirmation question that must not carry an appended follow-up.",
+  "rule_ref": "conversation-protocol.md#question-disambiguation",
+  "turns": [
+    {
+      "role": "bootcamper",
+      "content": "We keep customer records in two separate systems and we want to merge them into one clean list."
+    },
+    {
+      "role": "agent",
+      "content": "Here is what I captured: you keep customer records in two separate systems, and your goal is to resolve them into a single deduplicated master list. I will use that as the basis for the mapping work in the next step.\n\n👉 Does that capture your situation accurately?\n\n🛑 STOP — End your response here and wait for the bootcamper's real input.",
+      "assertions": [
+        {"type": "exactly_one_pointer"},
+        {"type": "no_compound_question"},
+        {"type": "no_self_answer"},
+        {"type": "ends_with_question_then_stop"}
+      ]
+    }
+  ]
+}

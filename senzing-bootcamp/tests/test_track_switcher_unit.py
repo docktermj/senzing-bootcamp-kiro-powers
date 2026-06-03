@@ -18,14 +18,10 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from track_switcher import (
-    compute_switch,
     apply_switch,
-    SwitchResult,
-    load_track_definitions,
-    load_module_names,
+    compute_switch,
     main,
 )
-
 
 # ---------------------------------------------------------------------------
 # Constants (from module-dependencies.yaml)

@@ -6,7 +6,6 @@ groups covering CLI parsing, journal handling, HTML structure, and ZIP output.
 
 from __future__ import annotations
 
-import io
 import json
 import os
 import re
@@ -17,23 +16,22 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 from export_results import (
+    VALID_ARTIFACT_TYPES,
     ArtifactDiscovery,
     ArtifactEntry,
     ArtifactManifest,
     EntityStatistics,
     ExportMetrics,
     HTMLRenderer,
-    MetricsExtractor,
     ModuleFilter,
     PerformanceMetrics,
     ProgressData,
     QualityScore,
     SummaryGenerator,
-    VALID_ARTIFACT_TYPES,
     ZIPAssembler,
     _parse_args,
     main,

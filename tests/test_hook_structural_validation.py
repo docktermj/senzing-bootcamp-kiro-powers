@@ -7,11 +7,10 @@ prompt length, version format, and hook file count.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pytest
-
-import sys
 
 _TESTS_DIR = str(Path(__file__).resolve().parent)
 if _TESTS_DIR not in sys.path:
@@ -19,14 +18,11 @@ if _TESTS_DIR not in sys.path:
 
 from hook_test_helpers import (
     FILE_EVENT_TYPES,
-    HOOKS_DIR,
-    REQUIRED_FIELDS,
     SEMVER_PATTERN,
     TOOL_EVENT_TYPES,
     VALID_EVENT_TYPES,
     get_hook_files,
     load_all_hooks,
-    validate_conditional_fields,
     validate_required_fields,
 )
 

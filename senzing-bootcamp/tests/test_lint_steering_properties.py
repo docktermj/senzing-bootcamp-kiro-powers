@@ -9,8 +9,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -19,23 +18,17 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from lint_steering import (
-    LintViolation,
     VALID_INCLUSIONS,
-    VALID_SIZE_CATEGORIES,
-    check_cross_references,
-    check_module_numbering,
+    LintViolation,
     check_checkpoints,
-    check_index_completeness,
-    check_hook_consistency,
+    check_cross_references,
     check_frontmatter,
+    check_hook_consistency,
+    check_index_completeness,
     check_internal_links,
+    check_module_numbering,
     check_wait_conflicts,
-    is_in_code_block,
-    parse_frontmatter,
-    get_final_substantive_line,
-    run_all_checks,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
@@ -443,9 +436,9 @@ class TestProperty7HookRegistryConsistency:
             ]
             for hid in registry_ids:
                 registry_lines.append(f"**{hid}** (promptSubmit → askAgent)")
-                registry_lines.append(f"")
+                registry_lines.append("")
                 registry_lines.append(f"- id: `{hid}`")
-                registry_lines.append(f"")
+                registry_lines.append("")
             (steering / "hook-registry-critical.md").write_text("\n".join(registry_lines))
 
             for hid in disk_ids:
@@ -664,7 +657,7 @@ class TestProperty11CodeBlockAwareValidation:
             violations = check_internal_links(steering)
             ref_violations = [v for v in violations if ref_name in v.message]
             assert len(ref_violations) == 0, \
-                f"Reference inside code block was incorrectly validated"
+                "Reference inside code block was incorrectly validated"
         finally:
             shutil.rmtree(tmp)
 

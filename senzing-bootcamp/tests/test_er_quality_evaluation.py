@@ -9,10 +9,8 @@ Feature: er-quality-evaluation-loop
 
 from __future__ import annotations
 
-from pathlib import Path
 import re
-
-import pytest
+from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # Path constants

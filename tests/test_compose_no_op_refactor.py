@@ -53,8 +53,8 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from compose_hook_prompts import (  # noqa: E402
-    HOOK_TEMPLATES,
     _MARKER_RE,
+    HOOK_TEMPLATES,
     compose_hook,
     main,
     serialize_hook,

@@ -267,3 +267,123 @@ rules:
       - "senzing-bootcamp/steering/agent-behavior-rules.md"
     static_checkable: false
     assertions:
+
+  # ----------------------------------------------------------------------
+  # governance-hook-and-mcp-coverage feature additions (Gap 1 + Gap 2).
+  # Five additive Rule Entries closing the agentStop hook-contract and the
+  # MCP docs-vs-source-of-truth coverage gaps. Existing seven assertion
+  # types only; every assertion holds against the real repository.
+  # ----------------------------------------------------------------------
+  - id: "agentstop-hook-set"
+    rule: "Exactly five hooks fire on agentStop; each of the five hook files must exist. session-log-events is postToolUse and is NOT a member."
+    category: "hook-architecture"
+    enforced_by:
+      - "senzing-bootcamp/hooks/ask-bootcamper.kiro.hook"
+      - "senzing-bootcamp/hooks/module-completion-celebration.kiro.hook"
+      - "senzing-bootcamp/hooks/module-recap-append.kiro.hook"
+      - "senzing-bootcamp/hooks/enforce-gate-on-stop.kiro.hook"
+      - "senzing-bootcamp/hooks/enforce-visualization-offers.kiro.hook"
+    assertions:
+      - type: "file_exists"
+        file: "senzing-bootcamp/hooks/ask-bootcamper.kiro.hook"
+      - type: "file_exists"
+        file: "senzing-bootcamp/hooks/module-completion-celebration.kiro.hook"
+      - type: "file_exists"
+        file: "senzing-bootcamp/hooks/module-recap-append.kiro.hook"
+      - type: "file_exists"
+        file: "senzing-bootcamp/hooks/enforce-gate-on-stop.kiro.hook"
+      - type: "file_exists"
+        file: "senzing-bootcamp/hooks/enforce-visualization-offers.kiro.hook"
+
+  - id: "agentstop-trigger-type"
+    rule: "Each of the five agentStop hooks declares when.type equal to agentStop. session-log-events declares postToolUse and is excluded."
+    category: "hook-architecture"
+    enforced_by:
+      - "senzing-bootcamp/hooks/ask-bootcamper.kiro.hook"
+      - "senzing-bootcamp/hooks/module-completion-celebration.kiro.hook"
+      - "senzing-bootcamp/hooks/module-recap-append.kiro.hook"
+      - "senzing-bootcamp/hooks/enforce-gate-on-stop.kiro.hook"
+      - "senzing-bootcamp/hooks/enforce-visualization-offers.kiro.hook"
+    assertions:
+      - type: "hook_field_equals"
+        file: "senzing-bootcamp/hooks/ask-bootcamper.kiro.hook"
+        key_path: "when.type"
+        value: "agentStop"
+      - type: "hook_field_equals"
+        file: "senzing-bootcamp/hooks/module-completion-celebration.kiro.hook"
+        key_path: "when.type"
+        value: "agentStop"
+      - type: "hook_field_equals"
+        file: "senzing-bootcamp/hooks/module-recap-append.kiro.hook"
+        key_path: "when.type"
+        value: "agentStop"
+      - type: "hook_field_equals"
+        file: "senzing-bootcamp/hooks/enforce-gate-on-stop.kiro.hook"
+        key_path: "when.type"
+        value: "agentStop"
+      - type: "hook_field_equals"
+        file: "senzing-bootcamp/hooks/enforce-visualization-offers.kiro.hook"
+        key_path: "when.type"
+        value: "agentStop"
+
+  - id: "agentstop-contract-doc"
+    rule: "The agentStop hook contract (five-member set and intended precedence) stays documented in hook-architecture.md and machine-represented by the agentstop_order mapping in hook-categories.yaml."
+    category: "hook-architecture"
+    enforced_by:
+      - "senzing-bootcamp/steering/hook-architecture.md"
+      - "senzing-bootcamp/hooks/hook-categories.yaml"
+    assertions:
+      - type: "file_exists"
+        file: "senzing-bootcamp/steering/hook-architecture.md"
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/hook-architecture.md"
+        value: "Exactly five hooks fire on `agentStop`."
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/hook-architecture.md"
+        value: "Their intended precedence, highest first, is:"
+      - type: "yaml_key_present"
+        file: "senzing-bootcamp/hooks/hook-categories.yaml"
+        key_path: "agentstop_order"
+      - type: "substring_present"
+        file: "senzing-bootcamp/hooks/hook-categories.yaml"
+        value: "id: ask-bootcamper"
+      - type: "substring_present"
+        file: "senzing-bootcamp/hooks/hook-categories.yaml"
+        value: "id: module-recap-append"
+      - type: "substring_present"
+        file: "senzing-bootcamp/hooks/hook-categories.yaml"
+        value: "id: module-completion-celebration"
+      - type: "substring_present"
+        file: "senzing-bootcamp/hooks/hook-categories.yaml"
+        value: "id: enforce-gate-on-stop"
+      - type: "substring_present"
+        file: "senzing-bootcamp/hooks/hook-categories.yaml"
+        value: "id: enforce-visualization-offers"
+
+  - id: "mcp-server-name"
+    rule: "mcp.json is the single source of truth for the MCP server name senzing-mcp-server, and POWER.md documents the same server name."
+    category: "mcp-integrity"
+    enforced_by:
+      - "senzing-bootcamp/mcp.json"
+      - "senzing-bootcamp/POWER.md"
+    assertions:
+      - type: "yaml_key_present"
+        file: "senzing-bootcamp/mcp.json"
+        key_path: "mcpServers.senzing-mcp-server"
+      - type: "substring_present"
+        file: "senzing-bootcamp/POWER.md"
+        value: "senzing-mcp-server"
+
+  - id: "mcp-disabled-tool"
+    rule: "submit_feedback stays configured as a disabled tool in mcp.json, and POWER.md documents it as disabled."
+    category: "mcp-integrity"
+    enforced_by:
+      - "senzing-bootcamp/mcp.json"
+      - "senzing-bootcamp/POWER.md"
+    assertions:
+      - type: "regex_present"
+        file: "senzing-bootcamp/mcp.json"
+        pattern: "\"disabledTools\"\\s*:\\s*\\[[^\\]]*\"submit_feedback\""
+      - type: "substring_present"
+        file: "senzing-bootcamp/POWER.md"
+        value: "submit_feedback"

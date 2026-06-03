@@ -13,12 +13,10 @@ from io import StringIO
 from pathlib import Path
 from unittest import mock
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from progress_utils import clear_step, validate_progress_schema, write_checkpoint
-
 
 # ---------------------------------------------------------------------------
 # Shared strategies

@@ -22,7 +22,6 @@ import json
 import re
 from pathlib import Path
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
@@ -353,7 +352,7 @@ class TestSelfCorrectionInstructions:
         violation_section = extract_violation_output(prompt)
 
         assert violation_section, (
-            f"Hook prompt does not contain a self-correction/violation output section"
+            "Hook prompt does not contain a self-correction/violation output section"
         )
 
         # The violation section must reference at least one of the expected tools

@@ -8,26 +8,23 @@ import argparse
 import json
 import os
 import re
-import sys
 import tempfile
 from io import StringIO
-from pathlib import Path
 from unittest import mock
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from status import (
-    QualityScoreData,
-    PerformanceData,
+    DashboardData,
+    DashboardDataCollector,
+    DashboardRenderer,
     EntityStatsData,
     HealthCheckItem,
-    DashboardData,
-    DashboardRenderer,
-    DashboardDataCollector,
+    PerformanceData,
+    QualityScoreData,
     generate_dashboard,
-    MODULE_NAMES,
 )
 
 # ---------------------------------------------------------------------------

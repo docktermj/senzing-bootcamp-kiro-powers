@@ -8,18 +8,17 @@ from __future__ import annotations
 
 import string
 
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from team_config_validator import TeamConfig, TeamMember
 from team_dashboard import (
+    TOTAL_MODULES,
+    _best_cross_source,
+    _best_er_rate,
     compute_team_stats,
     render_dashboard_html,
-    _best_er_rate,
-    _best_cross_source,
-    TOTAL_MODULES,
 )
-
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Hypothesis strategies

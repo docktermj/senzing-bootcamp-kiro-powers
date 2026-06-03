@@ -29,7 +29,6 @@ if _TESTS_DIR not in sys.path:
 from hook_test_helpers import (
     HOOKS_DIR,
     REQUIRED_FIELDS,
-    SEMVER_PATTERN,
     SILENT_PROCESSING_PATTERNS,
     has_silent_processing,
     parse_categories_yaml,

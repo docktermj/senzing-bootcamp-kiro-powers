@@ -9,29 +9,25 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 import tempfile
 from collections import namedtuple
 from unittest.mock import MagicMock, patch
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from preflight import (
     AutoFixer,
     CheckResult,
-    CheckRunner,
     OutputFormatter,
     PreflightReport,
     check_disk_space,
     check_language_runtimes,
+    check_network,
     check_required_tools,
     check_senzing_sdk,
     check_write_permissions,
-    check_network,
 )
-
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Task 5.1 — Hypothesis strategies

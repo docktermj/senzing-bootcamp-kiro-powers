@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -22,20 +22,16 @@ if _SCRIPTS_DIR not in sys.path:
 from split_steering import (
     Phase,
     SplitResult,
-    parse_phases,
+    _size_category,
+    _token_count,
     build_root_file,
     build_sub_file,
-    split_module,
-    update_steering_index,
     get_split_candidates,
-    step_to_phase,
+    parse_phases,
     resolve_sub_file,
-    _token_count,
-    _size_category,
-    _make_slug,
-    MODULE_CONFIG,
+    step_to_phase,
+    update_steering_index,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
@@ -495,8 +491,8 @@ class TestProperty7FallbackBehavior:
             for phase in phases:
                 lines.append(f"      {phase.slug}:")
                 lines.append(f"        file: test-module-99-{phase.slug}.md")
-                lines.append(f"        token_count: 100")
-                lines.append(f"        size_category: small")
+                lines.append("        token_count: 100")
+                lines.append("        size_category: small")
                 lines.append(f"        step_range: [{phase.step_start}, {phase.step_end}]")
 
             lines.append("")
@@ -638,7 +634,6 @@ class TestUnitAgentInstructionsUpdated:
 # Integration tests (Task 10)
 # ---------------------------------------------------------------------------
 
-import shutil
 import subprocess
 
 

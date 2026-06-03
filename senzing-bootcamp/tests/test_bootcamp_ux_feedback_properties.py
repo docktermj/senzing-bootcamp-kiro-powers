@@ -11,7 +11,6 @@ from __future__ import annotations
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-
 # ---------------------------------------------------------------------------
 # Domain logic under test
 # ---------------------------------------------------------------------------

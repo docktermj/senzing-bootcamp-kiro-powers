@@ -27,10 +27,8 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-import check_database  # noqa: E402
 from check_database import DatabaseCheckResult, DatabaseHealthChecker, main  # noqa: E402
 from preflight import check_database as preflight_check_database  # noqa: E402
-
 
 # ---------------------------------------------------------------------------
 # Task 4.1 — Property 1: Corruption detection

@@ -16,8 +16,6 @@ import json
 import sys
 from pathlib import Path
 
-import pytest
-
 # ---------------------------------------------------------------------------
 # Make senzing-bootcamp/scripts/ importable
 # ---------------------------------------------------------------------------

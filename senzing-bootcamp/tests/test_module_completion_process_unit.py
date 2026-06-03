@@ -33,7 +33,6 @@ from validate_completion_artifacts import (  # noqa: E402
     validate_recap_consistency,
 )
 
-
 # ---------------------------------------------------------------------------
 # Tests: Journal Creation (Requirement 1.1)
 # ---------------------------------------------------------------------------
@@ -325,7 +324,6 @@ class TestErrorHandlingAndEdgeCases:
 
     def test_completion_steps_constant_has_correct_order(self) -> None:
         """COMPLETION_STEPS contains the five steps in the defined order."""
-        from validate_completion_artifacts import COMPLETION_STEPS
 
         assert COMPLETION_STEPS == [
             "progress_update",

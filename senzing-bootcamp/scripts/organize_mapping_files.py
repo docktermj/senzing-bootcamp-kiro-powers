@@ -17,7 +17,6 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-
 # ---------------------------------------------------------------------------
 # Routing table: extension → target subdirectory (relative to project root)
 # ---------------------------------------------------------------------------

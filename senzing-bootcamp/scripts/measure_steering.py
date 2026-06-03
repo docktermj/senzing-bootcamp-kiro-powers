@@ -19,7 +19,6 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-
 DEFAULT_STEERING_DIR = Path("senzing-bootcamp/steering")
 DEFAULT_INDEX_PATH = Path("senzing-bootcamp/steering/steering-index.yaml")
 

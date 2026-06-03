@@ -35,7 +35,6 @@ from assess_entry_point import (
     scan_artifacts,
 )
 
-
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
 # ---------------------------------------------------------------------------
@@ -1223,7 +1222,7 @@ class TestSuccessfulAssessmentExitsZero:
 # ---------------------------------------------------------------------------
 
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 
 class TestCliArgumentParsing:

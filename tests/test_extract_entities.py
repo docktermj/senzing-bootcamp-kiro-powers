@@ -5,15 +5,10 @@ from __future__ import annotations
 import json
 import logging
 
-import pytest
-
 from src.query.generate_visualization import (
-    EntityNode,
-    Record,
     _parse_entity_response,
     extract_entities,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers — mock Senzing engine

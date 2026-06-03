@@ -68,20 +68,24 @@ def main():
         config_file.write_text(json.dumps(config, indent=2), encoding="utf-8")
         print("✅ Created .markdownlint.json configuration")
 
-    # Count markdown files
+    # Count markdown files. Scope to the distributed power directory
+    # (senzing-bootcamp/) so non-shipped files elsewhere in the repo — e.g.
+    # planning notes or contributor docs at the repo root — cannot turn CI red.
+    scan_root = "senzing-bootcamp" if Path("senzing-bootcamp").is_dir() else "."
     md_files = []
-    for root, dirs, files in os.walk("."):
+    for root, dirs, files in os.walk(scan_root):
         dirs[:] = [d for d in dirs if d not in ("node_modules", ".history", ".git")]
         for f in files:
             if f.endswith(".md"):
                 md_files.append(os.path.join(root, f))
 
-    print(f"📄 Found {len(md_files)} markdown files")
+    print(f"📄 Found {len(md_files)} markdown files under {scan_root}/")
     print()
     print("Running markdownlint...")
 
+    glob_pattern = f"{scan_root}/**/*.md" if scan_root != "." else "**/*.md"
     result = subprocess.run(
-        [ml_cmd, "**/*.md", "--ignore", "node_modules", "--ignore", ".history"],
+        [ml_cmd, glob_pattern, "--ignore", "node_modules", "--ignore", ".history"],
         capture_output=True, text=True,
     )
 

@@ -21,7 +21,11 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _VISUALIZATION_GUIDE = _BOOTCAMP_DIR / "steering" / "visualization-guide.md"
 _MODULE_03_PHASE2 = _BOOTCAMP_DIR / "steering" / "module-03-phase2-visualization.md"
-_MODULE_03_SYSTEM = _BOOTCAMP_DIR / "steering" / "module-03-system-verification.md"
+# Step 11 (Cleanup, with the wait-before-termination gate) moved out of the
+# module-03 monolith into the phase-3 sub-file during the module-03 dispatcher
+# refactor. The content moved unchanged, so this is re-targeted to its shipped
+# location.
+_MODULE_03_SYSTEM = _BOOTCAMP_DIR / "steering" / "module-03-phase3-report-close.md"
 
 # ---------------------------------------------------------------------------
 # Helpers

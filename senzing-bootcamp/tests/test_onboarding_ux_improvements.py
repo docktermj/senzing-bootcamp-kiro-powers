@@ -21,8 +21,14 @@ from pathlib import Path
 #: Repository root — parent of the ``senzing-bootcamp/`` power directory.
 REPO_ROOT: Path = Path(__file__).resolve().parent.parent.parent
 
-#: The onboarding flow steering file containing the hook files note.
+#: The onboarding flow steering file (Steps 0–2d after the split).
 ONBOARDING_FLOW: Path = REPO_ROOT / "senzing-bootcamp" / "steering" / "onboarding-flow.md"
+
+#: The phase 1b steering file that now owns the Bootcamp Introduction (Step 5),
+#: including the hook files note, after the onboarding split.
+ONBOARDING_PHASE1B: Path = (
+    REPO_ROOT / "senzing-bootcamp" / "steering" / "onboarding-phase1b-intro-language.md"
+)
 
 #: The entity resolution intro steering file containing the exploration gate.
 ENTITY_RESOLUTION_INTRO: Path = (
@@ -35,38 +41,48 @@ ENTITY_RESOLUTION_INTRO: Path = (
 # ---------------------------------------------------------------------------
 
 def _read_onboarding_flow() -> str:
-    """Read and return the full text of onboarding-flow.md."""
-    return ONBOARDING_FLOW.read_text(encoding="utf-8")
+    """Read and return the full text of onboarding-phase1b-intro-language.md.
+
+    After the onboarding split, the Bootcamp Introduction (Step 5) — which
+    contains the hook files note — moved out of onboarding-flow.md into
+    onboarding-phase1b-intro-language.md. This helper reads the phase file
+    that now owns that content.
+    """
+    return ONBOARDING_PHASE1B.read_text(encoding="utf-8")
 
 
 def _extract_between_unfamiliar_and_4a(text: str) -> str:
-    """Extract text between the 'unfamiliar terms' bullet and '### 4a' heading.
+    """Extract text between the 'unfamiliar terms' bullet and '### 5a' heading.
 
     Returns the content strictly after the unfamiliar terms bullet line
-    and before the ### 4a heading line.
+    and before the ### 5a heading line. After the onboarding split, the
+    Verbosity Preference sub-step is Step 5a (it was 4a/4b pre-split), so
+    the hook files note sits between the unfamiliar-terms bullet and the
+    '### 5a' heading within the Bootcamp Introduction (Step 5).
     """
     lines = text.splitlines(keepends=True)
     unfamiliar_idx: int | None = None
-    heading_4a_idx: int | None = None
+    heading_5a_idx: int | None = None
 
     for i, line in enumerate(lines):
         if "unfamiliar terms" in line.lower():
             unfamiliar_idx = i
-        if re.match(r"^###\s+4a\b", line):
-            heading_4a_idx = i
+        if re.match(r"^###\s+5a\b", line):
+            heading_5a_idx = i
             break
 
     assert unfamiliar_idx is not None, (
-        "Could not find 'unfamiliar terms' bullet in onboarding-flow.md"
+        "Could not find 'unfamiliar terms' bullet in "
+        "onboarding-phase1b-intro-language.md"
     )
-    assert heading_4a_idx is not None, (
-        "Could not find '### 4a' heading in onboarding-flow.md"
+    assert heading_5a_idx is not None, (
+        "Could not find '### 5a' heading in onboarding-phase1b-intro-language.md"
     )
-    assert unfamiliar_idx < heading_4a_idx, (
-        "'unfamiliar terms' bullet must appear before '### 4a' heading"
+    assert unfamiliar_idx < heading_5a_idx, (
+        "'unfamiliar terms' bullet must appear before '### 5a' heading"
     )
 
-    return "".join(lines[unfamiliar_idx + 1 : heading_4a_idx])
+    return "".join(lines[unfamiliar_idx + 1 : heading_5a_idx])
 
 
 # ---------------------------------------------------------------------------

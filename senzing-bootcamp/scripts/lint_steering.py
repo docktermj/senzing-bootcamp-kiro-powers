@@ -74,6 +74,11 @@ RE_HOOK_ID = re.compile(r"^- id:\s*`([^`]+)`", re.MULTILINE)
 RE_HOOK_EVENT_TYPE = re.compile(
     r"\*\*([a-zA-Z0-9_-]+)\*\*.*?\((\w+)\s*→\s*(\w+)"
 )
+# Event flow inside a hook-registry.md table cell: "eventType → actionType".
+RE_HOOK_TABLE_EVENT = re.compile(r"(\w+)\s*→\s*(\w+)")
+# A bare hook identifier — used to validate the first cell of a registry
+# table row (rejects the header cell "Hook ID" and separator rows "------").
+RE_HOOK_ID_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
 
 
 # ---------------------------------------------------------------------------
@@ -725,37 +730,100 @@ def check_index_completeness(steering_dir: Path, index_data: dict) -> list:
     return violations
 
 
+def _parse_hook_registry_source(content: str) -> tuple[set, dict]:
+    """Parse one hook-registry source file into IDs and event types.
+
+    Handles BOTH documented registry shapes:
+    - Full-prompt files (``hook-registry-critical.md`` / ``hook-registry-modules.md``):
+      ``- id: `hook-id`` lines plus ``**hook-id** (eventType → actionType)`` headers
+      (the modules file uses ``**hook-id** — Module N (eventType → actionType)``).
+    - Summary table file (``hook-registry.md``): markdown rows such as
+      ``| ask-bootcamper | agentStop → askAgent | ... |`` where the first cell is
+      the hook ID and the cell containing ``eventType → actionType`` is the flow.
+
+    Args:
+        content: Raw text of a single registry file.
+
+    Returns:
+        Tuple of (hook_ids, event_types) where event_types maps hook_id → eventType.
+    """
+    ids: set = set()
+    event_types: dict = {}
+
+    # Shape 1: "- id: `hook-id`" lines (full-prompt files).
+    for match in RE_HOOK_ID.finditer(content):
+        ids.add(match.group(1))
+
+    for line in content.splitlines():
+        stripped = line.strip()
+
+        # Shape 1: "**hook-id** (eventType → actionType)" headers (full-prompt files).
+        event_match = RE_HOOK_EVENT_TYPE.search(line)
+        if event_match:
+            hook_id = event_match.group(1)
+            ids.add(hook_id)
+            event_types[hook_id] = event_match.group(2)
+            continue
+
+        # Shape 2: markdown table rows in hook-registry.md.
+        if not stripped.startswith("|"):
+            continue
+        cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+        if not cells:
+            continue
+        hook_id = cells[0]
+        # Reject the header row ("Hook ID") and the separator row ("------").
+        if not RE_HOOK_ID_TOKEN.match(hook_id):
+            continue
+        ids.add(hook_id)
+        # The event flow lives in whichever cell carries the "→" arrow.
+        for cell in cells[1:]:
+            flow_match = RE_HOOK_TABLE_EVENT.search(cell)
+            if flow_match:
+                event_types.setdefault(hook_id, flow_match.group(1))
+                break
+
+    return ids, event_types
+
+
 def check_hook_consistency(steering_dir: Path, hooks_dir: Path) -> list:
-    """Rule 6: Verify hook registry and hook file bidirectional consistency."""
+    """Rule 6: Verify hook registry and hook file bidirectional consistency.
+
+    The documented-hook surface is the UNION of every registry source that
+    ``sync_hook_registry.py`` maintains: ``hook-registry.md`` (summary table),
+    ``hook-registry-critical.md`` and ``hook-registry-modules.md`` (full prompts).
+    A hook documented in ANY of these is considered documented.
+    """
     violations = []
     steering_path = Path(steering_dir)
     hooks_path = Path(hooks_dir)
-    registry_path = steering_path / "hook-registry-critical.md"
+    registry_paths = [
+        steering_path / "hook-registry.md",
+        steering_path / "hook-registry-critical.md",
+        steering_path / "hook-registry-modules.md",
+    ]
 
-    if not registry_path.exists():
+    existing_paths = [p for p in registry_paths if p.exists()]
+    if not existing_paths:
+        # Only an error when ALL documentation sources are absent.
         violations.append(LintViolation(
-            "ERROR", str(registry_path), 0, "Hook registry file not found"
+            "ERROR", str(registry_paths[0]), 0, "Hook registry file not found"
         ))
         return violations
 
-    registry_content = registry_path.read_text(encoding="utf-8")
+    # Build the documented-hook set as the UNION across all present sources.
+    registry_ids: set = set()
+    registry_event_types: dict = {}
+    for path in existing_paths:
+        source_ids, source_event_types = _parse_hook_registry_source(
+            path.read_text(encoding="utf-8")
+        )
+        registry_ids |= source_ids
+        for hook_id, event_type in source_event_types.items():
+            registry_event_types.setdefault(hook_id, event_type)
 
-    # Extract hook IDs from registry
-    registry_ids = set()
-    for match in RE_HOOK_ID.finditer(registry_content):
-        registry_ids.add(match.group(1))
-
-    # Extract event types from registry (hook_id -> event_type mapping)
-    registry_event_types = {}
-    lines = registry_content.splitlines()
-    current_hook_id = None
-    for line in lines:
-        # Look for hook header pattern: **hook-id** (eventType → actionType)
-        event_match = RE_HOOK_EVENT_TYPE.search(line)
-        if event_match:
-            current_hook_id = event_match.group(1)
-            event_type = event_match.group(2)
-            registry_event_types[current_hook_id] = event_type
+    # Path used in registry-side violation messages (the canonical registry).
+    registry_path = existing_paths[0]
 
     # Find all .kiro.hook files on disk
     hook_files_on_disk = {}
@@ -857,6 +925,10 @@ RE_FIRST_READ = re.compile(r"\*\*🚀 First:\*\*")
 RE_BEFORE_AFTER = re.compile(r"\*\*Before/After\b", re.IGNORECASE)
 RE_SUCCESS_INDICATOR = re.compile(r"\*\*Success indicator\b", re.IGNORECASE)
 RE_TOP_LEVEL_STEP = re.compile(r"^(\d+)\.\s+\*\*")
+# A level-2 "## Phase Sub-Files" heading marks a dispatcher/overview module
+# whose numbered steps live in separate phase files (matched at heading level 2,
+# tolerating trailing whitespace).
+RE_PHASE_SUB_FILES = re.compile(r"^##[ \t]+Phase Sub-Files[ \t]*$", re.MULTILINE)
 RE_CHECKPOINT_TEMPLATE = re.compile(
     r"\*\*Checkpoint:\*\*.*(?:step|Step)\s+(\d+)"
 )
@@ -876,16 +948,58 @@ SECTION_ORDER = [
 
 
 def get_module_steering_files(steering_dir: Path) -> list:
-    """Return all module-NN-*.md files in the steering directory.
+    """Return all module-NN-*.md root workflow files in the steering directory.
 
-    Only returns root module files (module-01-..., module-02-..., etc.),
-    not phase files (module-05-phase1-..., module-06-phaseA-...).
+    Only returns standalone *workflow* module files, because the module-template
+    checks that consume this helper (frontmatter, first-read instruction,
+    Before/After block, checkpoint completeness, success indicator, section
+    order) only make sense for files that are themselves a numbered workflow.
+
+    Excluded:
+    - Phase files (``module-05-phase1-...``, ``module-06-phaseA-...``): their
+      steps belong to a parent module, not a standalone workflow.
+    - Reference/appendix files with the ``*-api-reference.md`` suffix (e.g.
+      ``module-03-visualization-api-reference.md``): API schemas / spec material
+      loaded on demand, not a workflow, so they legitimately have no first-read
+      instruction, Before/After block, or success indicator.
+    - Dispatcher/overview files that declare a ``## Phase Sub-Files`` section and
+      have no ``**Success indicator**`` of their own (e.g.
+      ``module-03-system-verification.md``): the real numbered steps live in the
+      referenced phase files, so the workflow-template elements belong there, not
+      in the dispatcher. The success-indicator guard keeps the rule narrow:
+      genuine workflow modules that happen to also link out to phase files (e.g.
+      ``module-05-data-quality-mapping.md``, ``module-06-data-processing.md``)
+      DO carry their own success indicator and remain subject to all checks.
+
+    Subjecting reference/dispatcher files to the workflow-template checks produces
+    legitimate-but-misclassified findings (missing first-read instruction, missing
+    Before/After block, missing success indicator); excluding them keeps the
+    linter's output accurate without injecting cosmetic scaffolding into reference
+    content.
     """
     steering_path = Path(steering_dir)
     result = []
     for f in sorted(steering_path.glob("module-*.md")):
-        if RE_MODULE_FILENAME.match(f.name) and "phase" not in f.name:
+        if not RE_MODULE_FILENAME.match(f.name):
+            continue
+        if "phase" in f.name:
+            continue
+        # Reference/appendix files (loaded on demand, not a workflow).
+        if f.name.endswith("-api-reference.md"):
+            continue
+        # Dispatcher/overview files: declare "## Phase Sub-Files" and have no
+        # success indicator of their own (their steps live in phase files).
+        try:
+            content = f.read_text(encoding="utf-8")
+        except (PermissionError, OSError):
+            # Can't read it to classify — fall through and let the checks
+            # report a "Could not read file" warning as before.
             result.append(f)
+            continue
+        if (RE_PHASE_SUB_FILES.search(content)
+                and not RE_SUCCESS_INDICATOR.search(content)):
+            continue
+        result.append(f)
     return result
 
 

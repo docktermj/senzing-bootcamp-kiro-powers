@@ -570,7 +570,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 169633
+  total_tokens: 169576
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -38,6 +38,12 @@ _VALIDATE_SCRIPT_PATH = _SCRIPTS_DIR / "validate_mandatory_gates.py"
 # The steering file containing the ⛔ mandatory gate on Step 9
 _MODULE3_STEERING = _STEERING_DIR / "module-03-system-verification.md"
 
+# After the module-03 monolith was split into a dispatcher + phase sub-files
+# (same-branch refactor), Step 9 and its ⛔ MANDATORY GATE moved into the
+# visualization phase file. The marker content is unchanged — only its owning
+# file moved.
+_MODULE3_PHASE2 = _STEERING_DIR / "module-03-phase2-visualization.md"
+
 # ---------------------------------------------------------------------------
 # Hypothesis strategies — generate progress states satisfying bug condition
 # ---------------------------------------------------------------------------
@@ -371,34 +377,53 @@ class TestMandatoryGateMarkerParseable:
     """
 
     def test_step9_has_mandatory_gate_marker(self) -> None:
-        """Step 9 in module-03-system-verification.md has a ⛔ marker."""
-        content = _MODULE3_STEERING.read_text(encoding="utf-8")
+        """Step 9 + its ⛔ gate live in module-03-phase2-visualization.md.
 
-        # Find Step 9 section and verify it has ⛔
-        step9_match = re.search(
-            r"###\s+Step\s+9.*?\n(.*?)(?=###\s+Step\s+\d+|## Phase)",
+        The module-03 monolith was split into a dispatcher + phase sub-files
+        (same-branch refactor). Step 9 (Web Service + Visualization Page) and
+        its ⛔ MANDATORY GATE moved into the Phase 2 visualization file. The
+        marker is unchanged — only its owning file moved. Phase 2 uses an h2
+        ``## Step 9:`` heading and renders the gate as a blockquote
+        ``> ⛔ **MANDATORY GATE — ...``.
+        """
+        content = _MODULE3_PHASE2.read_text(encoding="utf-8")
+
+        # The mandatory-gate block precedes the Step 9 heading; capture from the
+        # "DO NOT SKIP" gate section through the end of the Step 9 section.
+        gate_match = re.search(
+            r"##\s+.*DO NOT SKIP.*?\n(.*?)(?=\n##\s+[^#]|\Z)",
             content,
             re.DOTALL,
         )
-        assert step9_match is not None, "Step 9 section not found in steering file"
+        assert gate_match is not None, (
+            "Phase 2 mandatory-gate section not found in "
+            "module-03-phase2-visualization.md"
+        )
+        gate_section = gate_match.group(0)
 
-        step9_header_line = content[
-            content.rfind("\n", 0, step9_match.start()) + 1 : step9_match.start()
-        ]
-        step9_section = step9_match.group(0)
+        # The ⛔ marker must be present in the mandatory-gate section.
+        assert "⛔" in gate_section, (
+            "Phase 2 gate section does not contain ⛔ mandatory gate marker"
+        )
 
-        # The ⛔ marker must be present near Step 9
-        assert "⛔" in step9_section, (
-            "Step 9 section does not contain ⛔ mandatory gate marker"
+        # Independent content assertion: Step 9 itself is present in this file
+        # (the relocation target), confirming the marker sits with Step 9.
+        assert re.search(r"##\s+Step\s+9\b", content), (
+            "Step 9 heading not found in module-03-phase2-visualization.md"
         )
 
     def test_mandatory_gate_marker_on_step9_line(self) -> None:
-        """The ⛔ MANDATORY GATE text appears in the Step 9 section."""
-        content = _MODULE3_STEERING.read_text(encoding="utf-8")
+        """The ⛔ MANDATORY GATE text appears in the Phase 2 visualization file.
 
-        # Look for the specific pattern: ⛔ MANDATORY GATE
-        assert re.search(r"⛔\s*MANDATORY\s*GATE", content), (
-            "No '⛔ MANDATORY GATE' pattern found in module-03-system-verification.md. "
+        After the split, the marker renders as a bold blockquote
+        ``> ⛔ **MANDATORY GATE — ...`` in module-03-phase2-visualization.md.
+        """
+        content = _MODULE3_PHASE2.read_text(encoding="utf-8")
+
+        # Look for the specific pattern: ⛔ MANDATORY GATE (allow markdown bold
+        # markers between ⛔ and MANDATORY GATE for the blockquote rendering).
+        assert re.search(r"⛔\s*\**\s*MANDATORY\s*GATE", content), (
+            "No '⛔ MANDATORY GATE' pattern found in module-03-phase2-visualization.md. "
             "The marker must be machine-parseable for enforcement tools."
         )
 

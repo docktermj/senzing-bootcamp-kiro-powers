@@ -20,7 +20,13 @@ from hypothesis import strategies as st
 # -------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-_ONBOARDING_FILE = _BOOTCAMP_DIR / "steering" / "onboarding-flow.md"
+# After the onboarding split, the Comprehension Check (and its neighbouring
+# verbosity / language-selection / bootcamp-introduction steps) moved out of
+# onboarding-flow.md into onboarding-phase1b-intro-language.md. The content
+# moved unchanged; only the step numbers were rebased to the phase-file
+# sequence (language selection = Step 4, verbosity = Step 5a, comprehension
+# check = Step 5b). These preservation tests therefore read the phase file.
+_ONBOARDING_FILE = _BOOTCAMP_DIR / "steering" / "onboarding-phase1b-intro-language.md"
 
 # -------------------------------------------------------------------
 # Helpers
@@ -111,28 +117,31 @@ def _identify_step_for_line(markdown: str, target_line: int) -> str | None:
 
 _UNFIXED_CONTENT = _read_onboarding()
 
-# Steps that contain 👉 markers outside Step 4c
-_STEPS_WITH_POINTER_OUTSIDE_4C = ["2", "3a", "3b", "4b"]
+# Steps in the phase file that contain 👉 markers outside the Comprehension
+# Check (Step 5b). After the onboarding split, the phase file owns Steps 3–5b;
+# the 👉-bearing steps other than the comprehension check are the Programming
+# Language Selection (Step 4) and the Verbosity Preference (Step 5a).
+_STEPS_WITH_POINTER_OUTSIDE_4C = ["4", "5a"]
 
-# All step IDs in the file (excluding Step 4c's question formatting)
-_ALL_STEP_IDS = ["0", "0b", "0c", "1", "1b", "2", "3", "3a", "3b", "3c", "3d", "4", "4a", "4b", "4c"]
+# All step IDs present in onboarding-phase1b-intro-language.md.
+_ALL_STEP_IDS = ["3", "4", "5", "5a", "5b"]
 
-# Steps that are NOT Step 4c (for content preservation)
-_NON_4C_STEP_IDS = [s for s in _ALL_STEP_IDS if s != "4c"]
+# Steps that are NOT the Comprehension Check (Step 5b) — for content preservation.
+_NON_4C_STEP_IDS = [s for s in _ALL_STEP_IDS if s != "5b"]
 
 # Snapshot all 👉 markers outside Step 4c
 _UNFIXED_POINTER_MARKERS = _find_all_pointer_markers(_UNFIXED_CONTENT)
 _UNFIXED_POINTERS_OUTSIDE_4C = [
     (line_num, line_text)
     for line_num, line_text in _UNFIXED_POINTER_MARKERS
-    if _identify_step_for_line(_UNFIXED_CONTENT, line_num) != "4c"
+    if _identify_step_for_line(_UNFIXED_CONTENT, line_num) != "5b"
 ]
 
 # Snapshot all 🛑 STOP directives
 _UNFIXED_STOP_DIRECTIVES = _find_all_stop_directives(_UNFIXED_CONTENT)
 
 # Snapshot Step 4c acknowledgment and clarification handling text
-_UNFIXED_STEP_4C = _extract_section_by_step_id(_UNFIXED_CONTENT, "4c") or ""
+_UNFIXED_STEP_4C = _extract_section_by_step_id(_UNFIXED_CONTENT, "5b") or ""
 
 # Extract acknowledgment handling text
 _ACK_PATTERN = re.compile(
@@ -158,7 +167,7 @@ for _sid in _NON_4C_STEP_IDS:
         _UNFIXED_SECTIONS[_sid] = _section
 
 # Step 4 informational content (overview, module table, track descriptions)
-_UNFIXED_STEP_4 = _extract_section_by_step_id(_UNFIXED_CONTENT, "4") or ""
+_UNFIXED_STEP_4 = _extract_section_by_step_id(_UNFIXED_CONTENT, "5") or ""
 
 
 # -------------------------------------------------------------------
@@ -199,11 +208,11 @@ class TestNonStep4cContentPreservation:
         informational content that should NOT have a 👉 prefix.
         """
         content = _read_onboarding()
-        step_4 = _extract_section_by_step_id(content, "4")
+        step_4 = _extract_section_by_step_id(content, "5")
         assert step_4 is not None, "Step 4 not found"
 
         # Extract only the Step 4 own content (before first sub-step heading)
-        sub_step_start = re.search(r"^###\s+4[a-z]\.", step_4, re.MULTILINE)
+        sub_step_start = re.search(r"^###\s+5[a-z]\.", step_4, re.MULTILINE)
         step_4_own = step_4[:sub_step_start.start()] if sub_step_start else step_4
 
         assert "👉" not in step_4_own, (
@@ -234,7 +243,7 @@ class TestPointerMarkersOutside4cPreservation:
         current_outside_4c = [
             (line_num, line_text)
             for line_num, line_text in current_pointers
-            if _identify_step_for_line(content, line_num) != "4c"
+            if _identify_step_for_line(content, line_num) != "5b"
         ]
         assert len(current_outside_4c) == len(_UNFIXED_POINTERS_OUTSIDE_4C), (
             f"Pointer marker count outside Step 4c changed. "
@@ -249,7 +258,7 @@ class TestPointerMarkersOutside4cPreservation:
         current_outside_4c = [
             (line_num, line_text)
             for line_num, line_text in current_pointers
-            if _identify_step_for_line(content, line_num) != "4c"
+            if _identify_step_for_line(content, line_num) != "5b"
         ]
         # Compare line text (positions may shift if Step 4c changes size)
         baseline_texts = sorted(t for _, t in _UNFIXED_POINTERS_OUTSIDE_4C)
@@ -289,7 +298,7 @@ class TestStep4cResponseHandlingPreservation:
     def test_acknowledgment_handling_text_preserved(self) -> None:
         """Acknowledgment handling instructions are unchanged."""
         content = _read_onboarding()
-        step_4c = _extract_section_by_step_id(content, "4c")
+        step_4c = _extract_section_by_step_id(content, "5b")
         assert step_4c is not None, "Step 4c not found"
 
         ack_match = _ACK_PATTERN.search(step_4c)
@@ -306,7 +315,7 @@ class TestStep4cResponseHandlingPreservation:
     def test_clarification_handling_text_preserved(self) -> None:
         """Clarification handling instructions are unchanged."""
         content = _read_onboarding()
-        step_4c = _extract_section_by_step_id(content, "4c")
+        step_4c = _extract_section_by_step_id(content, "5b")
         assert step_4c is not None, "Step 4c not found"
 
         clar_match = _CLAR_PATTERN.search(step_4c)
@@ -320,19 +329,33 @@ class TestStep4cResponseHandlingPreservation:
             f"Got:\n{current_clar[:500]}"
         )
 
-    def test_acknowledgment_proceeds_to_step_5(self) -> None:
-        """Acknowledgment handling mentions proceeding to Step 5."""
+    def test_acknowledgment_proceeds_to_track_selection(self) -> None:
+        """Acknowledgment handling mentions proceeding to track selection.
+
+        In the post-split phase file the Comprehension Check (Step 5b) is the
+        final step, so an acknowledgment proceeds directly to track selection
+        (loading ``onboarding-phase2-track-setup.md``) rather than to a
+        numbered "Step 5" within the same file. The shipped wording —
+        "proceed directly to track selection (load
+        ``onboarding-phase2-track-setup.md``)" — moved unchanged from the
+        pre-split onboarding-flow.md.
+        """
         content = _read_onboarding()
-        step_4c = _extract_section_by_step_id(content, "4c")
-        assert step_4c is not None, "Step 4c not found"
-        assert "proceed directly to Step 5" in step_4c or "proceed to Step 5" in step_4c, (
-            "Step 4c acknowledgment handling missing 'proceed to Step 5'"
+        step_4c = _extract_section_by_step_id(content, "5b")
+        assert step_4c is not None, "Step 5b not found"
+        assert "proceed directly to track selection" in step_4c, (
+            "Step 5b acknowledgment handling missing 'proceed directly to "
+            "track selection'"
+        )
+        assert "onboarding-phase2-track-setup.md" in step_4c, (
+            "Step 5b acknowledgment handling missing the track-setup load "
+            "reference 'onboarding-phase2-track-setup.md'"
         )
 
     def test_clarification_uses_verbosity_settings(self) -> None:
         """Clarification handling references verbosity settings."""
         content = _read_onboarding()
-        step_4c = _extract_section_by_step_id(content, "4c")
+        step_4c = _extract_section_by_step_id(content, "5b")
         assert step_4c is not None, "Step 4c not found"
         assert "verbosity settings" in step_4c, (
             "Step 4c clarification handling missing 'verbosity settings'"
@@ -341,7 +364,7 @@ class TestStep4cResponseHandlingPreservation:
     def test_acknowledgment_example_phrases_preserved(self) -> None:
         """Acknowledgment handling contains the expected example phrases."""
         content = _read_onboarding()
-        step_4c = _extract_section_by_step_id(content, "4c")
+        step_4c = _extract_section_by_step_id(content, "5b")
         assert step_4c is not None, "Step 4c not found"
         expected_phrases = ["looks good", "makes sense", "no questions", "ready", "got it"]
         found = [p for p in expected_phrases if p in step_4c]
@@ -389,7 +412,7 @@ class TestStopDirectivesPreservation:
     def test_step_4c_has_stop_directive(self) -> None:
         """Step 4c contains a 🛑 STOP directive."""
         content = _read_onboarding()
-        step_4c = _extract_section_by_step_id(content, "4c")
+        step_4c = _extract_section_by_step_id(content, "5b")
         assert step_4c is not None, "Step 4c not found"
         assert "🛑" in step_4c, (
             "Step 4c missing 🛑 STOP directive"

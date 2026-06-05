@@ -255,6 +255,25 @@ def _parse_stored_metadata(content):
     return metadata
 
 
+def parse_budget_total(content: str) -> int | None:
+    """Extract budget.total_tokens from YAML content via a localized regex.
+
+    Uses the same minimal-regex approach as ``simulate_context_load`` (which reads
+    ``reference_window`` with ``re.search(r"reference_window:\\s*(\\d+)")``), matching
+    the ``total_tokens:`` line in the budget section. This is the declared aggregate
+    that the ``--check`` mode compares against the sum of per-file ``token_count``
+    values.
+
+    Args:
+        content: Raw YAML text of steering-index.yaml.
+
+    Returns:
+        The declared ``budget.total_tokens`` value, or None if not found.
+    """
+    match = re.search(r"total_tokens:\s*(\d+)", content)
+    return int(match.group(1)) if match else None
+
+
 def _parse_phase_entries(content: str) -> list[PhaseEntry]:
     """Parse phase entries from the region above the file_metadata section.
 
@@ -622,6 +641,16 @@ def main():
     elif args.check:
         mismatches = check_counts(args.index_path, file_metadata)
         phase_mismatches = check_phase_counts(args.index_path, args.steering_dir)
+        # Additive aggregate check: declared budget.total_tokens must equal the
+        # sum of per-file token_count values. Reuse _parse_stored_metadata so the
+        # "sum" definition matches check_counts exactly (exact equality, not ±10%).
+        content = load_yaml_content(args.index_path)
+        declared_total = parse_budget_total(content)
+        stored_metadata = _parse_stored_metadata(content) or {}
+        expected_total = sum(
+            meta.get("token_count", 0) for meta in stored_metadata.values()
+        )
+        budget_mismatch = declared_total != expected_total
         if mismatches:
             print("Token count mismatches (>10% difference):")
             for filename, stored, calculated in mismatches:
@@ -634,7 +663,13 @@ def main():
                 stored_str = str(stored) if stored is not None else "MISSING"
                 measured_str = str(measured) if measured is not None else "REMOVED"
                 print(f"  {filename}: stored={stored_str}, calculated={measured_str}")
-        if mismatches or phase_mismatches:
+        if budget_mismatch:
+            declared_str = str(declared_total) if declared_total is not None else "MISSING"
+            print(
+                f"Budget total mismatch: declared={declared_str}, "
+                f"sum(file_metadata)={expected_total}"
+            )
+        if mismatches or phase_mismatches or budget_mismatch:
             sys.exit(1)
         else:
             print("All token counts are within 10% tolerance.")

@@ -30,6 +30,7 @@ _STEERING_DIR = _BOOTCAMP_DIR / "steering"
 _MODULE_01 = _STEERING_DIR / "module-01-business-problem.md"
 _MODULE_01_PHASE2 = _STEERING_DIR / "module-01-phase2-document-confirm.md"
 _ONBOARDING = _STEERING_DIR / "onboarding-flow.md"
+_ONBOARDING_PHASE1B = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
 _ONBOARDING_PHASE2 = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 _HOOK_REGISTRY = _STEERING_DIR / "hook-registry.md"
@@ -272,12 +273,18 @@ class TestModule01Phase2HardStopBlocks:
 
 
 class TestOnboardingHardStopBlocks:
-    """Onboarding Steps 2, 4b, 5 lack structurally upgraded hard-stop blocks.
+    """Onboarding language selection (Step 4), verbosity (Step 5a), and track
+    selection (Step 5) lack structurally upgraded hard-stop blocks.
 
     **Validates: Requirements 1.2, 1.3**
 
     Mandatory gates and question points need 🛑 STOP blocks with 'end your
     response' and prohibited behavior language.
+
+    Re-baselined for the onboarding split: the language-selection prompt moved
+    from onboarding-flow.md (old Step 2) into onboarding-phase1b-intro-language.md
+    as Step 4, and the verbosity prompt moved from old Step 4b into Step 5a of the
+    same phase file. Track selection (Step 5) lives in onboarding-phase2-track-setup.md.
     """
 
     @pytest.fixture()
@@ -285,49 +292,84 @@ class TestOnboardingHardStopBlocks:
         return _read_file(_ONBOARDING)
 
     def test_step2_has_hard_stop_block(self, onboarding_content: str) -> None:
-        step = _extract_onboarding_step(onboarding_content, "2")
-        assert step, "Step 2 (Language Selection) not found in onboarding-flow.md"
+        phase1b = _read_file(_ONBOARDING_PHASE1B)
+        step = _extract_onboarding_step(phase1b, "4")
+        assert step, (
+            "Step 4 (Programming Language Selection) not found in "
+            "onboarding-phase1b-intro-language.md"
+        )
+        # Independent content assertion: confirm the moved content is the
+        # language-selection prompt and uses the phrase "programming language".
+        assert "programming language" in step.lower(), (
+            "Step 4 in onboarding-phase1b-intro-language.md does not appear to be "
+            "the programming language selection step (missing 'programming language')."
+        )
         assert _has_hard_stop_block(step), (
-            "Step 2 (Language Selection) in onboarding-flow.md lacks a 🛑 STOP "
-            "hard-stop block. The ⛔ mandatory gate exists but without the "
-            "upgraded structural pattern."
+            "Step 4 (Programming Language Selection) in "
+            "onboarding-phase1b-intro-language.md lacks a 🛑 STOP hard-stop block. "
+            "The ⛔ mandatory gate exists but without the upgraded structural pattern."
         )
 
     def test_step2_has_end_response_language(
         self, onboarding_content: str
     ) -> None:
-        step = _extract_onboarding_step(onboarding_content, "2")
-        assert step, "Step 2 (Language Selection) not found in onboarding-flow.md"
+        phase1b = _read_file(_ONBOARDING_PHASE1B)
+        step = _extract_onboarding_step(phase1b, "4")
+        assert step, (
+            "Step 4 (Programming Language Selection) not found in "
+            "onboarding-phase1b-intro-language.md"
+        )
         assert _has_end_response_language(step), (
-            "Step 2 (Language Selection) in onboarding-flow.md lacks explicit "
+            "Step 4 (Programming Language Selection) in "
+            "onboarding-phase1b-intro-language.md lacks explicit "
             "'end your response' language."
         )
 
     def test_step2_has_prohibited_behavior(
         self, onboarding_content: str
     ) -> None:
-        step = _extract_onboarding_step(onboarding_content, "2")
-        assert step, "Step 2 (Language Selection) not found in onboarding-flow.md"
+        phase1b = _read_file(_ONBOARDING_PHASE1B)
+        step = _extract_onboarding_step(phase1b, "4")
+        assert step, (
+            "Step 4 (Programming Language Selection) not found in "
+            "onboarding-phase1b-intro-language.md"
+        )
         assert _has_prohibited_behavior(step), (
-            "Step 2 (Language Selection) in onboarding-flow.md lacks prohibited "
-            "behavior language (e.g., 'do not answer', 'do not assume')."
+            "Step 4 (Programming Language Selection) in "
+            "onboarding-phase1b-intro-language.md lacks prohibited behavior "
+            "language (e.g., 'do not answer', 'do not assume')."
         )
 
     def test_step4b_has_hard_stop_block(self, onboarding_content: str) -> None:
-        step = _extract_onboarding_step(onboarding_content, "4b")
-        assert step, "Step 4b (Verbosity Preference) not found in onboarding-flow.md"
+        phase1b = _read_file(_ONBOARDING_PHASE1B)
+        step = _extract_onboarding_step(phase1b, "5a")
+        assert step, (
+            "Step 5a (Verbosity Preference) not found in "
+            "onboarding-phase1b-intro-language.md"
+        )
+        # Independent content assertion: confirm this is the verbosity step.
+        assert "verbosity" in step.lower(), (
+            "Step 5a in onboarding-phase1b-intro-language.md does not appear to be "
+            "the verbosity preference step (missing 'verbosity')."
+        )
         assert _has_hard_stop_block(step), (
-            "Step 4b (Verbosity Preference) in onboarding-flow.md lacks a "
-            "🛑 STOP hard-stop block after the verbosity question."
+            "Step 5a (Verbosity Preference) in "
+            "onboarding-phase1b-intro-language.md lacks a 🛑 STOP hard-stop block "
+            "after the verbosity question."
         )
 
     def test_step4b_has_end_response_language(
         self, onboarding_content: str
     ) -> None:
-        step = _extract_onboarding_step(onboarding_content, "4b")
-        assert step, "Step 4b (Verbosity Preference) not found in onboarding-flow.md"
+        phase1b = _read_file(_ONBOARDING_PHASE1B)
+        step = _extract_onboarding_step(phase1b, "5a")
+        assert step, (
+            "Step 5a (Verbosity Preference) not found in "
+            "onboarding-phase1b-intro-language.md"
+        )
         assert _has_end_response_language(step), (
-            "Step 4b (Verbosity Preference) in onboarding-flow.md lacks explicit "
+            "Step 5a (Verbosity Preference) in "
+            "onboarding-phase1b-intro-language.md lacks explicit "
             "'end your response' language."
         )
 
@@ -566,10 +608,11 @@ _ALL_QUESTION_POINTS: list[tuple[str, str, str]] = [
     # Module 01 Phase 2 steps
     ("module-01-phase2-document-confirm.md", "Module 01 Phase 2", "step_16"),
     ("module-01-phase2-document-confirm.md", "Module 01 Phase 2", "step_17"),
-    # Onboarding steps
-    ("onboarding-flow.md", "Onboarding", "step_2"),
-    ("onboarding-flow.md", "Onboarding", "step_4b"),
-    ("onboarding-flow.md", "Onboarding", "step_5"),
+    # Onboarding steps (post-split: language → phase1b Step 4, verbosity →
+    # phase1b Step 5a, track selection → phase2 Step 5)
+    ("onboarding-phase1b-intro-language.md", "Onboarding", "step_4"),
+    ("onboarding-phase1b-intro-language.md", "Onboarding", "step_5a"),
+    ("onboarding-phase2-track-setup.md", "Onboarding", "step_5"),
     # agent-instructions.md
     ("agent-instructions.md", "Agent Instructions", "communication_section"),
     # hook-registry.md
@@ -601,7 +644,11 @@ def _check_question_point(file_name: str, question_id: str) -> bool:
             step = _extract_step_module01(content, int(step_num_str))
         elif file_name == "module-01-phase2-document-confirm.md":
             step = _extract_step_phase2(content, int(step_num_str))
-        elif file_name == "onboarding-flow.md":
+        elif file_name in (
+            "onboarding-flow.md",
+            "onboarding-phase1b-intro-language.md",
+            "onboarding-phase2-track-setup.md",
+        ):
             step = _extract_onboarding_step(content, step_num_str)
         else:
             return True  # Unknown file — skip

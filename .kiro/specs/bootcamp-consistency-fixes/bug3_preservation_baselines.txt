@@ -1,0 +1,66 @@
+# BUG 3 — Linter / hook-registry preservation baselines (observation-first, UNFIXED tree)
+#
+# Captured by Task 6 (Phase B preservation baseline) on the UNFIXED tree.
+# Property 6: Preservation — Registry Contents and sync_hook_registry Unchanged
+# Requirements: 3.8, 3.9
+#
+# PURPOSE: Lock down the byte-level state of the three hook-registry steering files
+# and the sync_hook_registry --verify result so Task 9.5 can prove the BUG 3 fix
+# touches ONLY lint_steering.py's hook-consistency source selection (Rule 6) and
+# leaves the registry contents + sync_hook_registry behavior byte/exit identical.
+# The fix corrects the LINTER's source, NOT the registry.
+#
+# Re-verify (Task 9.5) with:
+#   sha256sum senzing-bootcamp/steering/hook-registry.md \
+#             senzing-bootcamp/steering/hook-registry-critical.md \
+#             senzing-bootcamp/steering/hook-registry-modules.md
+#   python3 senzing-bootcamp/scripts/sync_hook_registry.py --verify   # expect exit 0
+# and compare against the digests / result below.
+#
+# Interpreter note: this environment provides `python3` (3.12.3), not `python`.
+
+## SHA-256 byte-level baselines — filename  sha256  bytes
+hook-registry.md            sha256=388cffe18e522b64b04dc716378a1fae7b463f5cd300bc63ef4d1fca33a138bd  bytes=7154
+hook-registry-critical.md   sha256=71b8f11b051831998b8a248f81bf29d09df5e36a6b93b121de45c2c40502d08f  bytes=34598
+hook-registry-modules.md    sha256=f17c10437454954fb594e0a0464515991b5dcf304405b99626f2fb17712b9a7f  bytes=34453
+
+## sync_hook_registry.py --verify on the UNFIXED tree
+# Command: python3 senzing-bootcamp/scripts/sync_hook_registry.py --verify
+# Output : "All registry files are up to date."
+# Exit   : 0   (registry files are in sync with the .kiro.hook source of truth)
+
+## Linter baseline on the UNFIXED tree (the defect being fixed in Task 9 — recorded for context)
+# Command: python3 senzing-bootcamp/scripts/lint_steering.py
+# Summary: "1 error(s), 27 warning(s)"
+# Exit   : 1
+#   - 24 FALSE-POSITIVE warnings: "Hook file 'X.kiro.hook' exists but is not documented
+#     in the hook registry" — caused by Rule 6 (check_hook_consistency) reading ONLY
+#     hook-registry-critical.md (5 critical hooks). The 24 module/`any` hooks ARE
+#     documented in hook-registry.md / hook-registry-modules.md.
+#   - 29 .kiro.hook files on disk; 5 critical hooks documented in hook-registry-critical.md
+#     => 29 - 5 = 24 false positives. The union-source fix (Task 9.1) removes all 24.
+#   - 1 ERROR + 3 legitimate template warnings on module-03 reference/dispatcher files
+#     (resolved by reclassification in Task 9.2): these are NOT hook false positives.
+#   - The linter ALREADY exits 1 when an ERROR is present (refutes the audit's "exits 0
+#     on error" claim; clause 2.14 re-scoped to a regression guard in Task 9.3).
+
+## Linter test-suite baseline on the UNFIXED tree (must stay green after the fix — Task 9.5)
+# Command: python3 -m pytest senzing-bootcamp/tests/test_lint_steering_unit.py \
+#                            senzing-bootcamp/tests/test_lint_steering_integration.py \
+#                            senzing-bootcamp/tests/test_lint_steering_properties.py
+# Result : 28 passed
+#   - test_lint_steering_unit.py            10 passed
+#   - test_lint_steering_integration.py      6 passed
+#   - test_lint_steering_properties.py      12 passed
+# Backward-compat note: the synthetic Property-7 test
+# (TestProperty7HookRegistryConsistency) builds its registry fixture on
+# hook-registry-critical.md ONLY. The Task 9 union logic MUST therefore remain
+# backward-compatible: a hook documented in ANY of the three sources counts as
+# documented, and the critical-only synthetic corpus must still pass unchanged.
+
+## Preservation contract for Task 9.5
+# - The three SHA-256 digests above MUST be byte-identical after the BUG 3 fix.
+# - sync_hook_registry.py --verify MUST still print "All registry files are up to date."
+#   and exit 0.
+# - All 28 linter tests above MUST still pass (union logic backward-compatible).
+# - Every linter rule OTHER than hook-consistency source selection MUST behave identically.

@@ -23,19 +23,24 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-_ONBOARDING_FLOW = _BOOTCAMP_DIR / "steering" / "onboarding-flow.md"
+# The Programming Language Selection step was moved out of onboarding-flow.md
+# (pre-split Step 2) into onboarding-phase1b-intro-language.md (Step 4). The
+# assertions below now target the shipped post-split location.
+_ONBOARDING_PHASE1B = _BOOTCAMP_DIR / "steering" / "onboarding-phase1b-intro-language.md"
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
+# Programming Language Selection is Step 4 in the phase file; the next top-level
+# step is Step 5 (Bootcamp Introduction).
 _STEP2_HEADING_PATTERN = re.compile(
-    r"^##\s+2\.\s+(.+)$",
+    r"^##\s+4\.\s+(.+)$",
     re.MULTILINE,
 )
 
 _NEXT_STEP_HEADING_PATTERN = re.compile(
-    r"^##\s+3\.\s+",
+    r"^##\s+5\.\s+",
     re.MULTILINE,
 )
 
@@ -61,14 +66,14 @@ _WORDING_DIRECTIVE_PATTERN = re.compile(
 
 
 def _read_onboarding_flow() -> str:
-    """Read the full content of onboarding-flow.md."""
-    return _ONBOARDING_FLOW.read_text(encoding="utf-8")
+    """Read the full content of the phase file owning language selection."""
+    return _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
 
 
 def _extract_step2_section(markdown: str) -> str:
-    """Extract the Step 2 section from onboarding-flow.md.
+    """Extract the Programming Language Selection (Step 4) section.
 
-    Returns the text from the Step 2 heading to the next step heading.
+    Returns the text from the Step 4 heading to the next step heading.
     """
     heading_match = _STEP2_HEADING_PATTERN.search(markdown)
     if not heading_match:
@@ -226,9 +231,15 @@ class TestBugConditionPBT:
         )
 
         # Allow technical references that are unambiguous in context
-        # (e.g., "language steering file", "lang-python.md")
+        # (e.g., "language steering file", "lang-python.md"). Also allow the
+        # supplementary blockquote "Tip:" note in the shipped phase-file Step 4
+        # (production-reuse hint: "choosing the language your team already
+        # uses") — that is explanatory prose, not the selection prompt, so the
+        # directive lines that DO enforce "programming language" still govern
+        # the question itself.
         is_technical_ref = bool(re.search(
-            r"(lang-\w+\.md|language\s+steering\s+file|language\s+preference)",
+            r"(lang-\w+\.md|language\s+steering\s+file|language\s+preference"
+            r"|^\s*>\s*Tip:)",
             line,
             re.IGNORECASE,
         ))

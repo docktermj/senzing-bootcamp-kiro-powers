@@ -298,9 +298,13 @@ class TestBugConditionLicenseGuidance:
 
 MODULE_02 = STEERING_DIR / "module-02-sdk-setup.md"
 
-# SHA-256 hash of module-02-sdk-setup.md at the time preservation tests were written.
-# Used to verify byte-identical content (Module 2 Step 5 independence).
-MODULE_02_SHA256 = "548b94e501110e4d058af391292bfc81a8f7a5e0b3fcd194c2fa4ee6bca1d5a0"
+# SHA-256 hash of module-02-sdk-setup.md.
+# Re-baselined after the intentional Step 5 license-guidance wording change in
+# commit b2bccbb (license request guidance now uses a concrete `search_docs(...)`
+# MCP call). Recomputed from the current shipped bytes via
+# hashlib.sha256(MODULE_02.read_bytes()).hexdigest(). Used to verify
+# byte-identical content (Module 2 Step 5 independence).
+MODULE_02_SHA256 = "dea834ea1928c767e4908e670c39cb7a6709973058b541db6350554996689ba8"
 
 # The five inference categories in Step 6 (labeled A–F in the steering file,
 # but the task spec lists five named categories plus INTEGRATION TARGETS).
@@ -546,9 +550,15 @@ class TestPreservationLicenseGuidance:
     # -------------------------------------------------------------------
 
     def test_module_2_byte_identical(self):
-        """Module 2 steering file (module-02-sdk-setup.md) must be
-        byte-identical to its original content. The license gate in
-        Module 2 Step 5 must be unaffected by any changes.
+        """Module 2 steering file (module-02-sdk-setup.md) must match its
+        re-baselined SHA-256. The license gate in Module 2 Step 5 must remain
+        intact.
+
+        The hash was re-baselined (commit b2bccbb) after an intentional Step 5
+        license-guidance wording change. To ensure the recomputed hash cannot
+        silently lock in a future regression of the protected Step 5 region, the
+        hash check is paired with independent content assertions that the key
+        license facts are still present.
 
         **Validates: Requirements 3.4**
         """
@@ -562,6 +572,25 @@ class TestPreservationLicenseGuidance:
             f"  Expected SHA-256: {MODULE_02_SHA256}\n"
             f"  Actual SHA-256:   {actual_hash}\n"
             f"Module 2 Step 5 (Configure License) must remain unchanged."
+        )
+
+        # Independent content assertions: the key Step 5 license facts must
+        # still be present, so the recomputed hash cannot silently lock in a
+        # future regression of the protected license-guidance region.
+        text = content.decode("utf-8")
+        assert "built-in evaluation license limited to 500 records" in text, (
+            "Step 5 must still reference the built-in 500-record evaluation license."
+        )
+        assert "licenses/g2.lic" in text, (
+            "Step 5 must still reference the project-local licenses/g2.lic path."
+        )
+        assert "support@senzing.com" in text, (
+            "Step 5 must still reference the support@senzing.com contact for "
+            "evaluation licenses."
+        )
+        assert "search_docs(" in text, (
+            "Step 5 must still include the MCP search_docs guidance for license "
+            "requests (intentional commit b2bccbb wording change)."
         )
 
     # -------------------------------------------------------------------

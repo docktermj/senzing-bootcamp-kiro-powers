@@ -31,6 +31,12 @@ _ONBOARDING_PHASE2_FILE = (
     / "onboarding-phase2-track-setup.md"
 )
 
+_ONBOARDING_PHASE1B_FILE = (
+    Path(__file__).resolve().parent.parent
+    / "steering"
+    / "onboarding-phase1b-intro-language.md"
+)
+
 
 def _read_onboarding() -> str:
     """Return the full text of onboarding-flow.md."""
@@ -40,6 +46,16 @@ def _read_onboarding() -> str:
 def _read_phase2() -> str:
     """Return the full text of onboarding-phase2-track-setup.md."""
     return _ONBOARDING_PHASE2_FILE.read_text(encoding="utf-8")
+
+
+def _read_phase1b() -> str:
+    """Return the full text of onboarding-phase1b-intro-language.md.
+
+    Post-split, this phase file owns the entity-resolution intro (Step 3),
+    the Programming Language Selection step (Step 4), the welcome banner /
+    Bootcamp Introduction (Step 5), the verbosity preference (Step 5a), and
+    the comprehension check (Step 5b)."""
+    return _ONBOARDING_PHASE1B_FILE.read_text(encoding="utf-8")
 
 
 def _read_onboarding_combined() -> str:
@@ -113,39 +129,48 @@ class TestBugConditionInlineQuestions:
         )
 
     def test_step_2_no_inline_question(self) -> None:
-        """Step 2 should NOT contain '👉 Which language would you like to use?'
-        with 'WAIT for response'."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"## 2\.")
+        """Programming Language Selection should NOT contain
+        '👉 Which language would you like to use?' with 'WAIT for response'.
+
+        Post-split, language selection moved out of onboarding-flow.md into
+        onboarding-phase1b-intro-language.md (Step 4)."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"## 4\.")
         assert "👉 Which language would you like to use?" not in section, (
-            "Step 2 contains inline closing question "
+            "Programming Language Selection contains inline closing question "
             "'👉 Which language would you like to use?'"
         )
 
     def test_step_2_no_wait(self) -> None:
-        """Step 2 should NOT contain a WAIT instruction after the question."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"## 2\.")
+        """Programming Language Selection should NOT contain a 'WAIT for
+        response' instruction (now in onboarding-phase1b, Step 4)."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"## 4\.")
         assert "WAIT for response" not in section, (
-            "Step 2 contains 'WAIT for response' instruction"
+            "Programming Language Selection contains 'WAIT for response' instruction"
         )
 
     def test_step_4_no_inline_question(self) -> None:
-        """Step 4 should NOT contain '👉 Does this outline make sense?'
-        with 'WAIT for response'."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"## 4\.")
+        """Bootcamp Introduction should NOT contain
+        '👉 Does this outline make sense?' with 'WAIT for response'.
+
+        Post-split, the bootcamp introduction / comprehension check moved out
+        of onboarding-flow.md into onboarding-phase1b-intro-language.md
+        (Step 5 plus sub-steps 5a/5b)."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"## 5\.")
         assert "👉 Does this outline make sense?" not in section, (
-            "Step 4 contains inline closing question "
+            "Bootcamp Introduction contains inline closing question "
             "'👉 Does this outline make sense?'"
         )
 
     def test_step_4_no_wait(self) -> None:
-        """Step 4 should NOT contain a WAIT instruction after the question."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"## 4\.")
+        """Bootcamp Introduction should NOT contain a 'WAIT for response'
+        instruction (now in onboarding-phase1b, Step 5/5a/5b)."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"## 5\.")
         assert "WAIT for response" not in section, (
-            "Step 4 contains 'WAIT for response' instruction"
+            "Bootcamp Introduction contains 'WAIT for response' instruction"
         )
 
     def test_step_5_no_inline_question(self) -> None:
@@ -219,16 +244,20 @@ def _strip_inline_questions_and_waits(section: str) -> str:
 # Baselines — captured from UNFIXED code (observation-first)
 # ---------------------------------------------------------------------------
 
-# Expected step heading sequence in onboarding-flow.md (Phase 1 only after split)
+# Expected step heading sequence in onboarding-flow.md (Phase 1 only after split).
+# Post-split, onboarding-flow.md owns Steps 0–2d (setup → MCP health → version →
+# directory → team detection → prerequisite gate), then directs the agent to load
+# onboarding-phase1b-intro-language.md. The entity-resolution intro (Step 3),
+# Programming Language Selection (Step 4), Bootcamp Introduction (Step 5), verbosity
+# (5a), and comprehension check (5b) now live in the phase1b file.
 _EXPECTED_HEADINGS = [
+    "Phase Sub-Files",
     "0. Setup Preamble",
     "0b. MCP Health Check",
     "0c. Version Display",
     "1. Directory Structure",
     "1b. Team Detection",
-    "2. Programming Language Selection",
-    "3. Prerequisite Check (Mandatory Gate)",
-    "4. Bootcamp Introduction",
+    "2. Prerequisite Check (Mandatory Gate)",
 ]
 
 # Expected headings in Phase 2 file
@@ -342,9 +371,13 @@ class TestPreservation:
         assert "structure.md" in section
 
     def test_step_3_content_present(self) -> None:
-        """Step 3 (Prerequisite Check) content is present and unchanged."""
+        """Prerequisite Check content is present and unchanged.
+
+        Post-split this is Step 2 (Prerequisite Check / Mandatory Gate) of
+        onboarding-flow.md; the entity-resolution intro took the Step 3 slot
+        in the phase1b file."""
         text = _read_onboarding()
-        section = _extract_section(text, r"## 3\.")
+        section = _extract_section(text, r"## 2\. Prerequisite")
         assert "preflight.py" in section
         assert "FAIL:" in section
         assert "WARN:" in section
@@ -365,25 +398,34 @@ class TestPreservation:
             )
 
     def test_step_2_informational_content(self) -> None:
-        """Step 2 key informational content (platform detection, MCP query,
-        language list, preference persistence) is preserved."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"## 2\.")
+        """Programming Language Selection key informational content (platform
+        detection, MCP query, language list, preference persistence) is
+        preserved.
+
+        Post-split this content moved to Step 4 of
+        onboarding-phase1b-intro-language.md."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"## 4\.")
         info = _strip_inline_questions_and_waits(section)
         for phrase in _STEP_2_KEY_CONTENT:
             assert phrase in info, (
-                f"Step 2 missing key informational content: '{phrase}'"
+                f"Programming Language Selection missing key informational "
+                f"content: '{phrase}'"
             )
 
     def test_step_4_informational_content(self) -> None:
-        """Step 4 key informational content (welcome banners, overview points,
-        module table reference) is preserved."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"## 4\.")
+        """Bootcamp Introduction key informational content (welcome banners,
+        overview points, module table reference) is preserved.
+
+        Post-split this content moved to Step 5 of
+        onboarding-phase1b-intro-language.md."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"## 5\.")
         info = _strip_inline_questions_and_waits(section)
         for phrase in _STEP_4_KEY_CONTENT:
             assert phrase in info, (
-                f"Step 4 missing key informational content: '{phrase}'"
+                f"Bootcamp Introduction missing key informational content: "
+                f"'{phrase}'"
             )
 
     def test_step_5_informational_content(self) -> None:
@@ -439,7 +481,14 @@ class TestPreservation:
 
     def test_agent_instructions_unchanged(self) -> None:
         """agent-instructions.md full content matches the observed baseline
-        (verified via key content markers at start, middle, and end)."""
+        (verified via key content markers at start, middle, and end).
+
+        Re-baselined against the shipped (post-refactor) agent-instructions.md.
+        The Context Budget section was condensed in the same branch that split
+        onboarding; the detailed unloading guidance (including the "announce
+        the token cost" instruction) was relocated to
+        agent-context-management.md, leaving a pointer reference here. This is
+        a relocation, not a content deletion."""
         content = _read_agent_instructions()
         # Start marker
         assert content.startswith("---\ninclusion: always\n---")
@@ -447,5 +496,7 @@ class TestPreservation:
         assert "mapping_workflow" in content
         assert "bootcamp_progress.json" in content
         assert "step-level checkpointing" in content.lower() or "Step-level checkpointing" in content
-        # End marker
-        assert "announce the token cost" in content
+        # End marker — the condensed Context Budget section now points to
+        # agent-context-management.md for warn/critical/unload detail.
+        assert "Context Budget" in content
+        assert "agent-context-management.md" in content

@@ -420,8 +420,27 @@ class TestAgentInstructions:
         path = Path(__file__).resolve().parent.parent / "steering" / "agent-instructions.md"
         return path.read_text(encoding="utf-8")
 
-    def test_contains_trigger_phrases(self, instructions_content):
-        """agent-instructions.md contains all trigger phrases."""
+    @pytest.fixture()
+    def track_switching_content(self) -> str:
+        """Read the track-switching.md file.
+
+        The track-switch trigger phrases were relocated here when
+        agent-instructions.md was condensed (same-branch refactor):
+        agent-instructions.md now only carries the routing pointer
+        ("Track switch triggers ...: load `track-switching.md`") while the
+        enumerated trigger phrases live in track-switching.md.
+        """
+        path = Path(__file__).resolve().parent.parent / "steering" / "track-switching.md"
+        return path.read_text(encoding="utf-8")
+
+    def test_contains_trigger_phrases(self, track_switching_content, instructions_content):
+        """track-switching.md contains all trigger phrases (relocated here).
+
+        The trigger-phrase list moved out of agent-instructions.md into
+        track-switching.md during the agent-instructions condensation. The
+        phrases are unchanged — only their owning file moved. agent-instructions.md
+        retains the routing pointer to track-switching.md (asserted independently).
+        """
         trigger_phrases = [
             "switch track",
             "change track",
@@ -429,9 +448,16 @@ class TestAgentInstructions:
             "upgrade to advanced",
         ]
         for phrase in trigger_phrases:
-            assert phrase in instructions_content, (
+            assert phrase in track_switching_content, (
                 f"Missing trigger phrase: '{phrase}'"
             )
+        # Independent content assertion: agent-instructions.md still routes to
+        # track-switching.md (the relocation target), so the trigger phrases
+        # remain reachable from the always-on core rules.
+        assert "track-switching.md" in instructions_content, (
+            "agent-instructions.md must retain the routing pointer to "
+            "track-switching.md after the condensation"
+        )
 
     def test_references_track_switching_steering(self, instructions_content):
         """agent-instructions.md references track-switching.md."""

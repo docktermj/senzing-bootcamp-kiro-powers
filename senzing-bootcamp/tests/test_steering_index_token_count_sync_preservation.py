@@ -38,7 +38,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import hypothesis.strategies as st
-from hypothesis import given, settings
+from hypothesis import example, given, settings
 
 # ---------------------------------------------------------------------------
 # Make senzing-bootcamp/scripts/ importable (scripts aren't packages)
@@ -58,7 +58,7 @@ _TOLERANCE = 0.10
 # SHA-256 of the stable (non-phase) regions of the live steering-index.yaml,
 # snapshotted on the UNFIXED code. The fix must leave these byte-identical.
 _BASELINE_HASHES: dict[str, str] = {
-    "budget": "adb7ca3d873c689102c4c266e5c5bfb2fb5e12dda511ac243406e34defb939e4",
+    "budget": "d6e17c3b89a6417a81d878c505b135caaeefc5387367789fd5fc7aaa99f657f3",
     "keywords": "eeba1e086d5533ae85fdd0b7e45f7ff37ebc6e53d4ba207414f9cc698a7d302f",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -383,6 +383,34 @@ class TestNonPhaseBlocksBytePreserved:
             )
         assert _sha256(_root_step_range_blob(content)) == _BASELINE_HASHES["root_step_range"]
 
+    def test_budget_block_content_matches_baseline_hash(self):
+        """Independent content assertion paired with the budget-block hash.
+
+        The budget hash is re-baselined observation-first from the corrected
+        bytes (total_tokens 169633 -> 169576). Pinning the hash alone could
+        silently lock in a future regression, so this asserts the budget block's
+        actual contents (the corrected aggregate plus every other budget
+        sub-key) line by line. The two assertions together guarantee the
+        re-baselined hash corresponds to the intended content and nothing else.
+
+        **Validates: Requirements 3.3, 3.5**
+        """
+        content = _INDEX_PATH.read_text(encoding="utf-8")
+        budget_block = _extract_top_block(content, "budget")
+
+        # Hash side: must equal the re-baselined constant.
+        assert _sha256(budget_block) == _BASELINE_HASHES["budget"]
+
+        # Content side: the corrected aggregate and the unchanged sub-keys. The
+        # aggregate equals the live sum of file_metadata token_count entries
+        # (169576), so the hash cannot silently re-pin a stale 169633.
+        assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
+        assert "total_tokens: 169576" in budget_block
+        assert "reference_window: 200000" in budget_block
+        assert "warn_threshold_pct: 60" in budget_block
+        assert "critical_threshold_pct: 80" in budget_block
+        assert "split_threshold_tokens: 5000" in budget_block
+
     def test_update_mode_preserves_non_phase_blocks(self):
         mod = _load_measure_steering()
         updated = _run_update_on_copy(mod)
@@ -524,4 +552,196 @@ class TestInTolerancePhasesUntouched:
         for fname in in_tolerance_files:
             assert all(fname not in ln for ln in mismatch_lines), (
                 f"in-tolerance phase {fname} was flagged by --check"
+            )
+
+# ---------------------------------------------------------------------------
+# Test 5 — BUG 2 Property 4: per-file / per-phase checks are independent of the
+# aggregate budget.total_tokens value (bootcamp-consistency-fixes spec, Task 5)
+# ---------------------------------------------------------------------------
+
+
+def _replace_total_tokens(content: str, new_total: int) -> str:
+    """Return *content* with budget.total_tokens set to *new_total*.
+
+    Only the aggregate line changes; every per-file ``token_count`` and every
+    per-phase ``token_count`` is left byte-identical so the perturbation isolates
+    the aggregate value.
+
+    Args:
+        content: Raw YAML text of steering-index.yaml.
+        new_total: Replacement value for the ``budget.total_tokens`` line.
+
+    Returns:
+        The YAML text with exactly the ``budget.total_tokens`` value replaced.
+    """
+    new_content, count = re.subn(
+        r"^(  total_tokens:\s*)\d+\s*$",
+        rf"\g<1>{new_total}",
+        content,
+        count=1,
+        flags=re.MULTILINE,
+    )
+    assert count == 1, "expected exactly one budget.total_tokens line to replace"
+    return new_content
+
+
+def st_total_tokens():
+    """Generate arbitrary non-negative aggregate totals (including the drifted one)."""
+    return st.integers(min_value=0, max_value=1_000_000)
+
+
+class TestPerFilePerPhaseChecksIndependentOfAggregate:
+    """Per-file +/-10% and per-phase checks ignore budget.total_tokens.
+
+    Bug-condition-2 preservation companion (Property 4): for an index whose
+    per-file ``token_count`` values are unchanged, ``check_counts`` (per-file
+    +/-10% tolerance) and ``check_phase_counts`` (per-phase tolerance) behave
+    identically regardless of the declared aggregate ``budget.total_tokens``.
+    This pins the existing ``--check`` semantics that the BUG 2 fix must
+    preserve: correcting the aggregate (169633 -> 169576) and adding an additive
+    aggregate check must NOT alter the per-file or per-phase verdicts.
+
+    Captured on the UNFIXED tree, where ``--check`` already exits 0 and both
+    mismatch lists are empty for the live index.
+
+    **Validates: Requirements 3.5, 3.7**
+    """
+
+    def test_baseline_check_passes_on_live_index(self):
+        """On the live (UNFIXED) index both checks report no mismatches."""
+        mod = _load_measure_steering()
+        calculated = mod.scan_steering_files(_STEERING_DIR)
+
+        file_mismatches = mod.check_counts(_INDEX_PATH, calculated)
+        phase_mismatches = mod.check_phase_counts(_INDEX_PATH, _STEERING_DIR)
+
+        assert file_mismatches == [], (
+            f"expected no per-file mismatch on the live index, got {file_mismatches}"
+        )
+        assert phase_mismatches == [], (
+            f"expected no per-phase mismatch on the live index, got {phase_mismatches}"
+        )
+
+    @given(new_total=st_total_tokens())
+    @settings(max_examples=20)
+    def test_perfile_and_perphase_checks_ignore_aggregate(self, new_total):
+        """Mutating only budget.total_tokens leaves both check verdicts unchanged.
+
+        **Validates: Requirements 3.5, 3.7**
+        """
+        mod = _load_measure_steering()
+        calculated = mod.scan_steering_files(_STEERING_DIR)
+
+        # Baseline verdicts on the unmodified live index.
+        base_file = mod.check_counts(_INDEX_PATH, calculated)
+        base_phase = mod.check_phase_counts(_INDEX_PATH, _STEERING_DIR)
+
+        live = _INDEX_PATH.read_text(encoding="utf-8")
+        perturbed = _replace_total_tokens(live, new_total)
+
+        td = tempfile.mkdtemp()
+        try:
+            tmp_index = Path(td) / "steering-index.yaml"
+            tmp_index.write_text(perturbed, encoding="utf-8")
+
+            # Per-file token_count and per-phase token_count lines are untouched,
+            # so both checks must return exactly the baseline verdict regardless
+            # of the aggregate value we injected.
+            file_mismatches = mod.check_counts(tmp_index, calculated)
+            phase_mismatches = mod.check_phase_counts(tmp_index, _STEERING_DIR)
+        finally:
+            shutil.rmtree(td, ignore_errors=True)
+
+        assert file_mismatches == base_file, (
+            f"per-file check changed with aggregate={new_total}: "
+            f"{file_mismatches} != baseline {base_file}"
+        )
+        assert phase_mismatches == base_phase, (
+            f"per-phase check changed with aggregate={new_total}: "
+            f"{phase_mismatches} != baseline {base_phase}"
+        )
+
+    @given(new_total=st_total_tokens())
+    @settings(max_examples=20)
+    @example(new_total=169576)  # equals the live per-file sum -> --check exits 0
+    @example(new_total=169633)  # the pre-fix BUG 2 drift value  -> --check exits 1
+    def test_check_cli_exit_code_enforces_aggregate(self, new_total):
+        """``--check`` enforces the aggregate while leaving per-file/per-phase verdicts intact.
+
+        This is the BUG 2 Property 3 enforcement / Property 4 preservation
+        boundary. Task 8.2 added an *additive* aggregate check (not a
+        replacement) to ``measure_steering.py --check``: the declared
+        ``budget.total_tokens`` must now equal the sum of the per-file
+        ``token_count`` values.
+
+        Post-fix contract (derived observation-first by running the script):
+
+        - When ``budget.total_tokens`` is perturbed AWAY from the per-file sum,
+          ``--check`` MUST exit non-zero AND print a ``Budget total mismatch``
+          line. This is the new enforced behavior; the earlier baseline that
+          ``--check`` "still exits 0 ... aggregate not checked" encoded the
+          UNFIXED behavior and no longer holds.
+        - When ``budget.total_tokens`` EQUALS the per-file sum (the unperturbed
+          live index, or a perturbed-then-set-equal value), ``--check`` exits 0.
+        - PRESERVATION (Property 4): the per-file +/-10% and per-phase verdicts are
+          UNCHANGED by the aggregate value. When the aggregate is perturbed the
+          ONLY new failure is the aggregate mismatch; no per-file or per-phase
+          mismatch detail lines (``stored=...``) are introduced.
+
+        **Validates: Requirements 3.5, 3.7**
+        """
+        live = _INDEX_PATH.read_text(encoding="utf-8")
+        live_sum = _sum_file_metadata(live)
+        perturbed = _replace_total_tokens(live, new_total)
+
+        td = tempfile.mkdtemp()
+        try:
+            tmp_index = Path(td) / "steering-index.yaml"
+            tmp_index.write_text(perturbed, encoding="utf-8")
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(_SCRIPT_PATH),
+                    "--check",
+                    "--steering-dir",
+                    str(_STEERING_DIR),
+                    "--index-path",
+                    str(tmp_index),
+                ],
+                capture_output=True,
+                text=True,
+            )
+        finally:
+            shutil.rmtree(td, ignore_errors=True)
+
+        # Preservation invariant (holds for ANY aggregate value): perturbing only
+        # budget.total_tokens introduces no per-file or per-phase mismatch. Those
+        # detail lines are the only lines containing "stored="; the additive
+        # "Budget total mismatch" line does not.
+        detail_lines = [ln for ln in result.stdout.splitlines() if "stored=" in ln]
+        assert detail_lines == [], (
+            f"perturbing the aggregate to {new_total} introduced per-file/per-phase "
+            f"mismatch lines (Property 4 preservation violated):\n{detail_lines}"
+        )
+
+        if new_total == live_sum:
+            # Declared == sum: aggregate is satisfied, --check passes.
+            assert result.returncode == 0, (
+                f"--check exited {result.returncode} for aggregate={new_total} "
+                f"which equals the per-file sum {live_sum}:\n"
+                f"{result.stdout}\n{result.stderr}"
+            )
+            assert "Budget total mismatch" not in result.stdout, (
+                f"unexpected budget mismatch when aggregate equals the sum:\n{result.stdout}"
+            )
+        else:
+            # Declared != sum: the additive aggregate check must now fail.
+            assert result.returncode != 0, (
+                f"--check exited 0 for aggregate={new_total} != per-file sum {live_sum}; "
+                f"the additive aggregate check must catch this drift:\n"
+                f"{result.stdout}\n{result.stderr}"
+            )
+            assert "Budget total mismatch" in result.stdout, (
+                f"expected a 'Budget total mismatch' line for aggregate={new_total} "
+                f"(sum={live_sum}):\n{result.stdout}\n{result.stderr}"
             )

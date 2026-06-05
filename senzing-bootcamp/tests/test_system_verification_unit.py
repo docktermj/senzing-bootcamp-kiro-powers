@@ -24,6 +24,16 @@ _STEERING_DIR: Path = _BASE_DIR / "steering"
 _CONFIG_DIR: Path = _BASE_DIR / "config"
 
 _STEERING_FILE: Path = _STEERING_DIR / "module-03-system-verification.md"
+# Module 3 was refactored from a single monolithic steering file into a
+# dispatcher (module-03-system-verification.md) plus three phase sub-files.
+# The dispatcher's "Phase Sub-Files" section enumerates them. The verification
+# pipeline steps, build-command table, web-service step, cleanup/purge
+# instructions, module-completion reference, and the full report JSON schema
+# all moved UNCHANGED into these phase files. Tests that assert that content
+# read the combined Module 3 steering surface via ``_read_steering()``.
+_STEERING_PHASE1: Path = _STEERING_DIR / "module-03-phase1-verification.md"
+_STEERING_PHASE2: Path = _STEERING_DIR / "module-03-phase2-visualization.md"
+_STEERING_PHASE3: Path = _STEERING_DIR / "module-03-phase3-report-close.md"
 _MODULE_DEPS: Path = _CONFIG_DIR / "module-dependencies.yaml"
 _ONBOARDING_FLOW: Path = _STEERING_DIR / "onboarding-flow.md"
 _ONBOARDING_PHASE2: Path = _STEERING_DIR / "onboarding-phase2-track-setup.md"
@@ -35,12 +45,26 @@ _ONBOARDING_PHASE2: Path = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 
 
 def _read_steering() -> str:
-    """Read the Module 3 system verification steering file.
+    """Read the combined Module 3 system verification steering surface.
+
+    Module 3 was refactored from one monolithic file into a dispatcher
+    (``module-03-system-verification.md``) plus three phase sub-files
+    (phase1 verification pipeline, phase2 visualization, phase3 report &
+    close). Content moved into the phase files unchanged, so the combined
+    surface reproduces the original single-file content for assertion
+    purposes.
 
     Returns:
-        Full text content of the steering file.
+        Concatenated text content of the dispatcher and all three phase
+        sub-files, in load order.
     """
-    return _STEERING_FILE.read_text(encoding="utf-8")
+    parts = [
+        _STEERING_FILE,
+        _STEERING_PHASE1,
+        _STEERING_PHASE2,
+        _STEERING_PHASE3,
+    ]
+    return "\n".join(p.read_text(encoding="utf-8") for p in parts)
 
 
 def _read_module_deps() -> dict:

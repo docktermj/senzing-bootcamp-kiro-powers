@@ -52,6 +52,44 @@ CORD_URL = "https://senzing.com/senzing-ready-data-collections-cord/"
 # Pattern to detect get_sample_data MCP tool reference
 GET_SAMPLE_DATA_PATTERN = re.compile(r"get_sample_data", re.IGNORECASE)
 
+# Pattern to detect on-demand CORD lookup language.
+#
+# The workspace security rule (.kiro/steering/security.md) forbids steering
+# files from referencing external URLs ("Steering file referencing external
+# URLs | MEDIUM | Use MCP tools or #[[file:]] references"). During the
+# onboarding split, the CORD reference URL was intentionally removed from
+# steering/onboarding-phase1b-intro-language.md and replaced with on-demand
+# lookup language ("Ask me and I'll look up the current CORD details from the
+# Senzing documentation on demand"). This pattern recognizes that intentional,
+# security-rule-driven substitution so a steering file that directs the
+# bootcamper to look up CORD details on demand is still considered compliant
+# (the URL itself must NOT be re-added to the steering file).
+ON_DEMAND_CORD_PATTERN = re.compile(
+    r"look up the current CORD details[^.]*on demand"
+    r"|ask me[^.]*CORD[^.]*on demand",
+    re.IGNORECASE,
+)
+
+# Pattern verifying the on-demand substitution names an authoritative,
+# security-compliant lookup source (the Senzing documentation / MCP server)
+# in place of the removed external URL. Used as an independent content
+# assertion so the relaxation is precise rather than a blanket pass.
+ON_DEMAND_LOOKUP_SOURCE_PATTERN = re.compile(
+    r"Senzing documentation|Senzing MCP|MCP server",
+    re.IGNORECASE,
+)
+
+# Pattern to detect a CORD mention that is a PROHIBITION rather than a
+# recommendation. Mirrors the prohibition-context logic in
+# test_system_verification_properties.py. For example,
+# steering/module-03-system-verification.md forbids CORD with the line
+# "Do not use CORD, Las Vegas, London, Moscow, or any other dataset" — a
+# forbidding mention must NOT be classified as a recommendation.
+CORD_PROHIBITION_PATTERN = re.compile(
+    r"do not use|shall not|must not|never use|no dataset choice|don.t use",
+    re.IGNORECASE,
+)
+
 
 # ---------------------------------------------------------------------------
 # File collection helpers
@@ -105,18 +143,49 @@ def collect_files_recommending_cord(
 ) -> list[Path]:
     """Collect Markdown files that recommend CORD data to a bootcamper.
 
+    A file is considered to *recommend* CORD only if it contains at least one
+    CORD mention that is NOT in a prohibition/negative context. Files whose
+    ONLY CORD mention forbids the dataset (e.g.
+    steering/module-03-system-verification.md, which says "Do not use CORD,
+    Las Vegas, London, Moscow, or any other dataset") are excluded — a
+    forbidding mention is not a recommendation. This mirrors the
+    prohibition-context logic in test_system_verification_properties.py.
+
     Args:
         cord_pattern: Compiled regex for CORD mentions.
 
     Returns:
-        Sorted list of Path objects for files that mention CORD.
+        Sorted list of Path objects for files that recommend CORD.
     """
     result: list[Path] = []
     for md_file in collect_markdown_files():
         content = md_file.read_text(encoding="utf-8")
-        if cord_pattern.search(content):
+        if _has_cord_recommendation(content, cord_pattern):
             result.append(md_file)
     return sorted(result)
+
+
+def _has_cord_recommendation(
+    content: str,
+    cord_pattern: re.Pattern[str] = CORD_PATTERN,
+) -> bool:
+    """Return True if content mentions CORD as a recommendation (not a prohibition).
+
+    A CORD mention counts as a recommendation when it appears on a line that is
+    not in a prohibition/negative context. If every CORD-bearing line forbids
+    the dataset, the file is not recommending CORD.
+
+    Args:
+        content: The file content to inspect.
+        cord_pattern: Compiled regex for CORD mentions.
+
+    Returns:
+        True if at least one non-prohibition CORD mention exists.
+    """
+    for line in content.splitlines():
+        if cord_pattern.search(line) and not CORD_PROHIBITION_PATTERN.search(line):
+            return True
+    return False
 
 
 def first_match_line(content: str, pattern: re.Pattern[str]) -> int | None:
@@ -214,21 +283,38 @@ class TestCordDataPriorityProperties:
     @given(md_file=st.sampled_from(_FILES_RECOMMENDING_CORD or [Path(".")]))
     @settings(max_examples=100, suppress_health_check=[HealthCheck.too_slow])
     def test_cord_url_present_where_cord_recommended(self, md_file: Path) -> None:
-        """Files recommending CORD contain the CORD URL or get_sample_data reference.
+        """Files recommending CORD reference the URL, get_sample_data, or on-demand lookup.
 
         For any Markdown file under senzing-bootcamp/ that recommends CORD data,
-        the file must contain the CORD reference URL or a reference to the
-        get_sample_data MCP tool.
+        the file must contain ONE of:
+          - the CORD reference URL, OR
+          - a reference to the get_sample_data MCP tool, OR
+          - on-demand CORD lookup language.
 
-        **Validates: Requirements 2.3, 3.2, 4.3, 5.3**
+        The on-demand branch reflects an intentional, security-rule-driven
+        change: .kiro/steering/security.md forbids steering files from
+        referencing external URLs, so during the onboarding split the CORD URL
+        was removed from steering/onboarding-phase1b-intro-language.md and
+        replaced with "Ask me and I'll look up the current CORD details from
+        the Senzing documentation on demand". To keep the relaxation precise
+        (not a blanket pass), the on-demand branch additionally requires the
+        text to name an authoritative lookup source (the Senzing documentation
+        / MCP server) in place of the removed URL.
+
+        **Validates: Requirements 2.3, 2.4, 2.6, 2.9, 3.2, 4.3, 5.3**
         """
         content = md_file.read_text(encoding="utf-8")
         has_cord_url = CORD_URL in content
         has_get_sample_data = GET_SAMPLE_DATA_PATTERN.search(content) is not None
-        assert has_cord_url or has_get_sample_data, (
+        has_on_demand_lookup = (
+            ON_DEMAND_CORD_PATTERN.search(content) is not None
+            and ON_DEMAND_LOOKUP_SOURCE_PATTERN.search(content) is not None
+        )
+        assert has_cord_url or has_get_sample_data or has_on_demand_lookup, (
             f"File {md_file.relative_to(_BOOTCAMP_DIR)} recommends CORD data but "
-            f"contains neither the CORD URL ({CORD_URL}) nor a reference to "
-            f"get_sample_data"
+            f"contains none of: the CORD URL ({CORD_URL}), a reference to "
+            f"get_sample_data, or on-demand CORD lookup language that names the "
+            f"Senzing documentation / MCP server as the source"
         )
 
 
@@ -245,20 +331,28 @@ class TestCordDataPriorityExamples:
     """
 
     def test_onboarding_flow_cord_in_step4(self) -> None:
-        """Step 4 mentions CORD with description, before synthesized data.
+        """Bootcamp Introduction step mentions CORD with description, before synthesized data.
+
+        The Bootcamp Introduction (which carries the CORD overview bullet) was
+        moved out of onboarding-flow.md into onboarding-phase1b-intro-language.md
+        (shipped Step 5).
 
         Validates: Requirements 2.1, 2.2, 2.4
         """
-        path = _BOOTCAMP_DIR / "steering" / "onboarding-flow.md"
+        path = _BOOTCAMP_DIR / "steering" / "onboarding-phase1b-intro-language.md"
         content = path.read_text(encoding="utf-8")
 
-        # Requirement 2.1: CORD is mentioned in Step 4 section
-        step4_marker = content.find("## 4. Bootcamp Introduction")
-        assert step4_marker != -1, "Step 4 section not found in onboarding-flow.md"
+        # Requirement 2.1: CORD is mentioned in the Bootcamp Introduction section
+        step4_marker = content.find("## 5. Bootcamp Introduction")
+        assert step4_marker != -1, (
+            "Bootcamp Introduction section not found in "
+            "onboarding-phase1b-intro-language.md"
+        )
         step4_content = content[step4_marker:]
 
         assert CORD_PATTERN.search(step4_content), (
-            "CORD is not mentioned in Step 4 of onboarding-flow.md"
+            "CORD is not mentioned in the Bootcamp Introduction step of "
+            "onboarding-phase1b-intro-language.md"
         )
 
         # Requirement 2.2: CORD description (curated/entity resolution evaluation)
@@ -268,21 +362,25 @@ class TestCordDataPriorityExamples:
             re.IGNORECASE,
         ), (
             "CORD description (curated/entity resolution evaluation) "
-            "not found in Step 4 of onboarding-flow.md"
+            "not found in the Bootcamp Introduction step of "
+            "onboarding-phase1b-intro-language.md"
         )
 
-        # Requirement 2.4: CORD appears before synthesized test data in Step 4
+        # Requirement 2.4: CORD appears before synthesized test data
         cord_match = CORD_PATTERN.search(step4_content)
         synth_match = SYNTHESIZED_DATA_PATTERN.search(step4_content)
         assert cord_match is not None, (
-            "CORD mention not found in Step 4 of onboarding-flow.md"
+            "CORD mention not found in the Bootcamp Introduction step of "
+            "onboarding-phase1b-intro-language.md"
         )
         assert synth_match is not None, (
-            "Synthesized test data mention not found in Step 4 of onboarding-flow.md"
+            "Synthesized test data mention not found in the Bootcamp "
+            "Introduction step of onboarding-phase1b-intro-language.md"
         )
         assert cord_match.start() < synth_match.start(), (
             f"CORD (pos {cord_match.start()}) does not appear before synthesized "
-            f"test data (pos {synth_match.start()}) in Step 4 of onboarding-flow.md"
+            f"test data (pos {synth_match.start()}) in the Bootcamp Introduction "
+            f"step of onboarding-phase1b-intro-language.md"
         )
 
     def test_power_md_cord_primary(self) -> None:

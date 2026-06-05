@@ -17,6 +17,11 @@ from hypothesis import strategies as st
 
 _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 _ONBOARDING_FLOW = _STEERING_DIR / "onboarding-flow.md"
+# After the onboarding split, the Entity Resolution Introduction (Step 3),
+# Programming Language Selection (Step 4), Bootcamp Introduction (Step 5),
+# Verbosity Preference (Step 5a), and Comprehension Check (Step 5b) live in
+# this phase file. onboarding-flow.md keeps Steps 0–2d.
+_ONBOARDING_PHASE1B = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
 _ER_INTRO = _STEERING_DIR / "entity-resolution-intro.md"
 _MODULE_01 = _STEERING_DIR / "module-01-business-problem.md"
 
@@ -122,29 +127,41 @@ class TestProperty1ERIntroBeforeLanguageSelection:
     @given(noise=st_noise_content())
     @settings(max_examples=20)
     def test_er_intro_precedes_language_selection(self, noise: str) -> None:
-        """ER intro step number < language selection step number, both > prerequisite check."""
-        content = _read_file(_ONBOARDING_FLOW)
+        """ER intro step number < language selection step number, both > prerequisite check.
 
-        # Find step containing the ER intro file directive
+        After the onboarding split, the Entity Resolution Introduction
+        (Step 3) and Programming Language Selection (Step 4) live in
+        onboarding-phase1b-intro-language.md, while the Prerequisite Check
+        (Step 2) stays in onboarding-flow.md. The documented step numbering
+        is continuous across the two files, so the ordering invariant is
+        asserted across both.
+        """
+        flow_content = _read_file(_ONBOARDING_FLOW)
+        phase1b_content = _read_file(_ONBOARDING_PHASE1B)
+
+        # Find step containing the ER intro file directive (phase1b)
         er_intro_step = _find_step_number_for_content(
-            content, "#[[file:senzing-bootcamp/steering/entity-resolution-intro.md]]"
+            phase1b_content,
+            "#[[file:senzing-bootcamp/steering/entity-resolution-intro.md]]",
         )
         assert er_intro_step is not None, (
-            "Could not find step containing entity-resolution-intro.md directive"
+            "Could not find step containing entity-resolution-intro.md directive "
+            "in onboarding-phase1b-intro-language.md"
         )
 
-        # Find step containing Programming Language Selection mandatory gate
+        # Find step containing Programming Language Selection mandatory gate (phase1b)
         lang_selection_step = _find_step_number_for_content(
-            content, "Programming Language Selection"
+            phase1b_content, "Programming Language Selection"
         )
         assert lang_selection_step is not None, (
-            "Could not find Programming Language Selection step"
+            "Could not find Programming Language Selection step in "
+            "onboarding-phase1b-intro-language.md"
         )
 
-        # Find Prerequisite Check step
-        prereq_step = _find_step_number_for_content(content, "Prerequisite Check")
+        # Find Prerequisite Check step (onboarding-flow.md)
+        prereq_step = _find_step_number_for_content(flow_content, "Prerequisite Check")
         assert prereq_step is not None, (
-            "Could not find Prerequisite Check step"
+            "Could not find Prerequisite Check step in onboarding-flow.md"
         )
 
         # Assert ordering: prerequisite < ER intro < language selection
@@ -197,8 +214,13 @@ class TestProperty3VerbosityAndComprehensionPlacement:
     @given(noise=st_noise_content())
     @settings(max_examples=20)
     def test_substeps_under_bootcamp_introduction(self, noise: str) -> None:
-        """Verbosity Preference and Comprehension Check are ### headings under Bootcamp Introduction."""
-        content = _read_file(_ONBOARDING_FLOW)
+        """Verbosity Preference and Comprehension Check are ### headings under Bootcamp Introduction.
+
+        After the onboarding split, the Bootcamp Introduction (Step 5) and
+        its sub-steps Verbosity Preference (5a) and Comprehension Check (5b)
+        live in onboarding-phase1b-intro-language.md.
+        """
+        content = _read_file(_ONBOARDING_PHASE1B)
 
         # Find the Bootcamp Introduction section
         bootcamp_intro_section = _extract_section(content, r"\d+\. Bootcamp Introduction")
@@ -251,7 +273,7 @@ class TestProperty4ProductionReuseHintPlacement:
     @settings(max_examples=20)
     def test_hint_after_language_list_before_gate(self, noise: str) -> None:
         """Production Reuse Hint appears after language list instruction and before mandatory gate."""
-        content = _read_file(_ONBOARDING_FLOW)
+        content = _read_file(_ONBOARDING_PHASE1B)
 
         # Extract Programming Language Selection section
         lang_section = _extract_section(content, r"\d+\. Programming Language Selection")
@@ -413,7 +435,7 @@ class TestProductionReuseHintBehavior:
 
     def test_no_stop_instruction_between_hint_and_gate(self) -> None:
         """No STOP instruction appears between the hint and the mandatory gate."""
-        content = _read_file(_ONBOARDING_FLOW)
+        content = _read_file(_ONBOARDING_PHASE1B)
 
         lang_section = _extract_section(content, r"\d+\. Programming Language Selection")
         assert lang_section, "Programming Language Selection section not found"
@@ -432,7 +454,7 @@ class TestProductionReuseHintBehavior:
 
     def test_hint_is_unconditional(self) -> None:
         """The hint is not wrapped in IF/condition."""
-        content = _read_file(_ONBOARDING_FLOW)
+        content = _read_file(_ONBOARDING_PHASE1B)
 
         lang_section = _extract_section(content, r"\d+\. Programming Language Selection")
         assert lang_section, "Programming Language Selection section not found"

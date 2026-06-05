@@ -494,13 +494,29 @@ _HEADINGS_MODULE_11 = [
 
 _HEADINGS_MODULE_COMPLETION = [
     "# Module Completion Workflow",
+    "## Completion Step Ordering",
+    "### Ordering Rules",
+    "## Non-Blocking Error Handling",
+    "### Per-Step Error Handling",
+    "### 30-Second Timeout",
+    "### Predecessor Failure Does Not Block Subsequent Steps",
+    "### Retry on Next Module Completion",
     "## Recap Append",
     "### What is gathered",
     "### Workflow position",
     "### Non-blocking behavior",
+    "### Recap File Creation",
+    "# Senzing Bootcamp Recap",
     "### References",
     "## Bootcamp Journal",
-    "## Module N: [Name] \u2014 Completed [date]",
+    "### Journal File Creation (First Module Completion)",
+    "# Bootcamp Journal",
+    "### Journal Entry Append",
+    "## Module N: {Name} \u2014 Completed {ISO 8601 with timezone}",
+    "### Field Derivation Rules",
+    "### Workflow Position",
+    "### Non-blocking Behavior",
+    "### References",
     "## Module Completion Certificate",
     "### Certificate Template",
     "# Module [N]: [Title] \u2014 Complete \u2705",
@@ -644,8 +660,19 @@ _HASH_UNAFFECTED: dict[str, str] = {
 }
 
 _HASH_HOOK = "2be48f67f5ab5d19f2368248e9569ec1bb8b0ccd6f39c4124b4e24da7c0fb47e"
-_HASH_AGENT_INSTRUCTIONS = "0f38b3187d7f900df5e1691b0a28a858bfac05fb8cd26fb204fa6202312ed2e2"
-_HASH_ONBOARDING_FLOW = "2961cef5467aa56d32cd60732a480f6fa1b5d79bb5b4a375931a3501e1a3d5ff"
+# Re-baselined (observation-first) against the shipped post-refactor content.
+# agent-instructions.md was condensed in the same branch that split onboarding
+# (Context Budget / SDK-discovery / Track-switching detail relocated to other
+# steering files via pointer references) — a relocation, not a content
+# deletion; see TestPreservationAgentInstructions.test_agent_instructions_has_ownership_rule
+# for the paired independent content assertion.
+_HASH_AGENT_INSTRUCTIONS = "26341d605bd059fbf2e5694ee9f71b7d5d88c069a3f74192f5197652bde5d120"
+# Re-baselined (observation-first) against the shipped post-split onboarding-flow.md.
+# The welcome banner / language selection / comprehension steps moved into
+# onboarding-phase1b-intro-language.md; the cross-reference "After Step 2d, load
+# `onboarding-phase1b-intro-language.md`" remains intact (see
+# TestPreservationOnboardingFlow.test_onboarding_flow_cross_reference_intact).
+_HASH_ONBOARDING_FLOW = "fd03ebcc58464f6022e6a2990dad0318ed29a09bb9d672cb6fc3decb7de2a8c9"
 
 
 # ---------------------------------------------------------------------------
@@ -822,13 +849,36 @@ class TestPreservationOnboardingFlow:
     def test_onboarding_flow_matches_baseline(self) -> None:
         """**Validates: Requirements 3.5**
 
-        onboarding-flow.md content matches the observed baseline hash."""
+        onboarding-flow.md content matches the observed baseline hash.
+
+        Re-baselined (observation-first) against the shipped post-split
+        onboarding-flow.md. The welcome banner, Programming Language Selection
+        step, and comprehension-check steps moved into
+        onboarding-phase1b-intro-language.md; only the test baseline is
+        updated (no steering content is changed for BUG 1)."""
         content = _read_file(_ONBOARDING_FILE)
         actual_hash = _sha256(content)
         assert actual_hash == _HASH_ONBOARDING_FLOW, (
             "onboarding-flow.md content has changed.\n"
             f"Expected hash: {_HASH_ONBOARDING_FLOW}\n"
             f"Actual hash:   {actual_hash}"
+        )
+
+    def test_onboarding_flow_cross_reference_intact(self) -> None:
+        """**Validates: Requirements 3.5**
+
+        Independent content assertion paired with the re-baselined hash above:
+        the post-split onboarding-flow.md still directs the agent to load the
+        phase1b file after Step 2d, proving the moved content was relocated
+        (not deleted) and the cross-reference survived the split."""
+        content = _read_file(_ONBOARDING_FILE)
+        assert (
+            "After Step 2d, load `onboarding-phase1b-intro-language.md`"
+            in content
+        ), "onboarding-flow.md is missing the phase1b load cross-reference"
+        # The moved content must NOT remain in onboarding-flow.md.
+        assert "🎓🎓🎓  WELCOME TO THE SENZING BOOTCAMP!  🎓🎓🎓" not in content, (
+            "Welcome banner should have moved to onboarding-phase1b-intro-language.md"
         )
 
     def test_onboarding_flow_no_inline_questions(self) -> None:

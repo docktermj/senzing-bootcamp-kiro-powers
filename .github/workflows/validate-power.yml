@@ -4,10 +4,10 @@ on:
   pull_request:
     paths:
       - 'senzing-bootcamp/**'
+      - 'tests/**'
+      - '.github/workflows/**'
   push:
     branches: [main]
-    paths:
-      - 'senzing-bootcamp/**'
 
 jobs:
   validate:
@@ -41,6 +41,8 @@ jobs:
             echo "::error::Hook registry is out of sync. Run: python senzing-bootcamp/scripts/sync_hook_registry.py --write"
             exit 1
           }
+      - name: Lint steering files
+        run: python senzing-bootcamp/scripts/lint_steering.py
       - name: Validate module prerequisites
         run: python senzing-bootcamp/scripts/validate_prerequisites.py
       - name: Validate progress schema

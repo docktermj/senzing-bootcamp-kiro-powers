@@ -23,6 +23,14 @@ _STEERING_DIR: Path = (
 )
 
 _STEERING_FILE: Path = _STEERING_DIR / "module-03-system-verification.md"
+# Module 3 was refactored from a single monolithic steering file into a
+# dispatcher (module-03-system-verification.md) plus three phase sub-files.
+# The verification pipeline steps (1–8), the build-command table, and the
+# Step 9 web-service section moved UNCHANGED into these phase files, so the
+# structural invariants below are validated against the combined surface.
+_STEERING_PHASE1: Path = _STEERING_DIR / "module-03-phase1-verification.md"
+_STEERING_PHASE2: Path = _STEERING_DIR / "module-03-phase2-visualization.md"
+_STEERING_PHASE3: Path = _STEERING_DIR / "module-03-phase3-report-close.md"
 
 
 # ---------------------------------------------------------------------------
@@ -31,19 +39,32 @@ _STEERING_FILE: Path = _STEERING_DIR / "module-03-system-verification.md"
 
 
 def read_steering_content() -> str:
-    """Read the Module 3 system verification steering file content.
+    """Read the combined Module 3 system verification steering surface.
+
+    Module 3 was split from one monolithic file into a dispatcher plus three
+    phase sub-files. The verification steps, build commands, and Step 9 web
+    service moved into the phase files unchanged, so the concatenated surface
+    reproduces the original single-file content for structural assertions.
 
     Returns:
-        The full text content of the steering file.
+        Concatenated text content of the dispatcher and all three phase
+        sub-files, in load order.
 
     Raises:
-        FileNotFoundError: If the steering file does not exist.
+        FileNotFoundError: If any of the Module 3 steering files is missing.
     """
-    if not _STEERING_FILE.exists():
-        raise FileNotFoundError(
-            f"Steering file not found: {_STEERING_FILE}"
-        )
-    return _STEERING_FILE.read_text(encoding="utf-8")
+    parts = [
+        _STEERING_FILE,
+        _STEERING_PHASE1,
+        _STEERING_PHASE2,
+        _STEERING_PHASE3,
+    ]
+    for part in parts:
+        if not part.exists():
+            raise FileNotFoundError(
+                f"Steering file not found: {part}"
+            )
+    return "\n".join(p.read_text(encoding="utf-8") for p in parts)
 
 
 def parse_sections(content: str) -> dict[str, str]:
@@ -51,33 +72,45 @@ def parse_sections(content: str) -> dict[str, str]:
 
     Splits the content at markdown headings (lines starting with one or
     more ``#`` characters) and returns a dictionary mapping each heading
-    text (stripped of ``#`` prefix and whitespace) to the content between
-    that heading and the next heading of equal or higher level.
+    text (stripped of ``#`` prefix and whitespace) to the content of that
+    section.
+
+    Sections are **hierarchical**: a heading's section body extends until
+    the next heading of the *same or higher* level (fewer-or-equal ``#``
+    characters), so a parent section includes the text of its nested
+    subsections. This matters post Module-3 refactor: ``## Step 9`` now has
+    ``### 9.1``–``### 9.4`` subsections, and Step 9's endpoint timeout lives
+    in subsection 9.4. Treating the step as inclusive of its subsections
+    reproduces the original single-file section semantics (where Step 9 was
+    a leaf ``### Step 9`` heading whose body held the timeout inline).
 
     Args:
         content: The full text content of the steering file.
 
     Returns:
-        Dictionary mapping heading text to section body content.
+        Dictionary mapping heading text to section body content (including
+        the bodies of any nested deeper-level subsections).
     """
-    sections: dict[str, str] = {}
-    current_heading: str | None = None
-    current_lines: list[str] = []
-
-    for line in content.splitlines():
+    lines = content.splitlines()
+    # Collect (line_index, level, heading_text) for every heading.
+    headings: list[tuple[int, int, str]] = []
+    for idx, line in enumerate(lines):
         heading_match = re.match(r"^(#{1,6})\s+(.+)$", line)
         if heading_match:
-            # Save previous section
-            if current_heading is not None:
-                sections[current_heading] = "\n".join(current_lines)
-            current_heading = heading_match.group(2).strip()
-            current_lines = []
-        else:
-            current_lines.append(line)
+            level = len(heading_match.group(1))
+            text = heading_match.group(2).strip()
+            headings.append((idx, level, text))
 
-    # Save the last section
-    if current_heading is not None:
-        sections[current_heading] = "\n".join(current_lines)
+    sections: dict[str, str] = {}
+    for i, (start_idx, level, text) in enumerate(headings):
+        # Body runs until the next heading of the same or higher level.
+        end_idx = len(lines)
+        for next_idx, next_level, _ in headings[i + 1:]:
+            if next_level <= level:
+                end_idx = next_idx
+                break
+        body_lines = lines[start_idx + 1:end_idx]
+        sections[text] = "\n".join(body_lines)
 
     return sections
 

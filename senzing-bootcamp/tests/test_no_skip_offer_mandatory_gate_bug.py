@@ -28,6 +28,12 @@ _STEERING_DIR = _BOOTCAMP_DIR / "steering"
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 _CONVERSATION_PROTOCOL = _STEERING_DIR / "conversation-protocol.md"
 _MODULE3_STEERING = _STEERING_DIR / "module-03-system-verification.md"
+# Module 3 was refactored from a monolith into a dispatcher + phase sub-files.
+# Step 8 (Database Operations) and the "proceed DIRECTLY to Step 9" agent-behavior
+# instruction now live in phase 1; Step 9 (Web Service + Visualization) and its
+# mandatory gate block now live in phase 2.
+_MODULE3_PHASE1 = _STEERING_DIR / "module-03-phase1-verification.md"
+_MODULE3_PHASE2 = _STEERING_DIR / "module-03-phase2-visualization.md"
 
 # ---------------------------------------------------------------------------
 # Constants — Skip-offer patterns (the bug condition)
@@ -100,13 +106,19 @@ def _extract_self_check_section(content: str) -> str:
     return content[start:]
 
 
-def _extract_between_step8_and_step9(content: str) -> str:
-    """Extract content between Step 8 and Step 9 headings in module-03."""
+def _extract_step8_region(content: str) -> str:
+    """Extract the Step 8 region from module-03 phase 1.
+
+    After the module-03 dispatcher refactor, Step 8 (Database Operations) lives
+    in ``module-03-phase1-verification.md`` and Step 9 lives in a separate phase
+    file. The agent-behavior / proceed-directly instruction sits after Step 8 in
+    phase 1, just before the pointer that loads the phase 2 visualization file.
+    Returns the content from the Step 8 heading to the end of the phase 1 file.
+    """
     step8_match = re.search(r"^###\s+Step\s+8\b", content, re.MULTILINE)
-    step9_match = re.search(r"^###\s+Step\s+9\b", content, re.MULTILINE)
-    if not step8_match or not step9_match:
+    if not step8_match:
         return ""
-    return content[step8_match.end():step9_match.start()]
+    return content[step8_match.end():]
 
 
 def _count_self_check_items(section: str) -> int:
@@ -304,54 +316,65 @@ class TestConversationProtocolSelfCheck:
 class TestModule03ProceedDirectlyInstruction:
     """Test 3 — No 'proceed directly' instruction before Step 9.
 
-    module-03-system-verification.md marks Step 9 as ⛔ mandatory but does NOT
-    explicitly instruct the agent to proceed directly without asking. The agent
-    can still ask "Would you like to continue with the visualization?"
+    module-03 marks Step 9 as ⛔ mandatory but does NOT explicitly instruct the
+    agent to proceed directly without asking. The agent can still ask "Would you
+    like to continue with the visualization?"
+
+    After the module-03 dispatcher refactor, Step 9 + its ⛔ MANDATORY GATE marker
+    live in ``module-03-phase2-visualization.md`` and the proceed-directly /
+    agent-behavior instruction lives after Step 8 in
+    ``module-03-phase1-verification.md``. These assertions are re-targeted to the
+    shipped post-refactor locations.
 
     **Validates: Requirements 1.1, 1.3**
     """
 
     def test_step9_exists_with_mandatory_gate(self) -> None:
-        """Step 9 exists and has the ⛔ MANDATORY GATE marker."""
-        content = _read_file(_MODULE3_STEERING)
-        assert re.search(r"###\s+Step\s+9", content), (
-            "Step 9 heading not found in module-03-system-verification.md"
+        """Step 9 exists and has the ⛔ MANDATORY GATE marker.
+
+        In the shipped phase 2 file the marker is rendered with markdown
+        emphasis (``> ⛔ **MANDATORY GATE — ...**``), so the regex tolerates
+        optional blockquote/bold markup around the marker text.
+        """
+        content = _read_file(_MODULE3_PHASE2)
+        assert re.search(r"#+\s+Step\s+9", content), (
+            "Step 9 heading not found in module-03-phase2-visualization.md"
         )
-        assert re.search(r"⛔\s*MANDATORY\s*GATE", content), (
-            "⛔ MANDATORY GATE marker not found in module-03-system-verification.md"
+        assert re.search(r"⛔\s*\*{0,2}\s*MANDATORY\s*GATE", content), (
+            "⛔ MANDATORY GATE marker not found in module-03-phase2-visualization.md"
         )
 
     def test_proceed_directly_instruction_before_step9(self) -> None:
-        """A 'proceed DIRECTLY to Step 9' instruction exists between Steps 8 and 9.
+        """A 'proceed DIRECTLY to Step 9' instruction exists after Step 8.
 
-        After the fix, there is an explicit instruction telling the agent to
-        proceed directly to Step 9 after Step 8 completes.
+        The instruction tells the agent to proceed directly to Step 9 after
+        Step 8 completes. It lives in the Step 8 region of phase 1.
         """
-        content = _read_file(_MODULE3_STEERING)
-        between_8_and_9 = _extract_between_step8_and_step9(content)
+        content = _read_file(_MODULE3_PHASE1)
+        step8_region = _extract_step8_region(content)
 
-        assert _PROCEED_DIRECTLY_PATTERN.search(between_8_and_9), (
-            "'proceed DIRECTLY to Step 9' instruction NOT found between "
-            "Step 8 and Step 9. The fix has not been applied. "
-            f"Content between steps:\n{between_8_and_9[:500]}"
+        assert _PROCEED_DIRECTLY_PATTERN.search(step8_region), (
+            "'proceed DIRECTLY to Step 9' instruction NOT found after Step 8 "
+            "in module-03-phase1-verification.md. "
+            f"Step 8 region content:\n{step8_region[:500]}"
         )
 
     def test_agent_behavior_instruction_before_step9(self) -> None:
-        """An 'Agent behavior' instruction exists between Steps 8 and 9.
+        """An 'Agent behavior' instruction exists after Step 8.
 
-        The fix adds an '**Agent behavior:**' block before Step 9 instructing
-        the agent to proceed without asking.
+        An '**Agent behavior:**' block sits after Step 8 instructing the agent
+        to proceed without asking before Step 9 (which lives in phase 2).
         """
-        content = _read_file(_MODULE3_STEERING)
-        between_8_and_9 = _extract_between_step8_and_step9(content)
+        content = _read_file(_MODULE3_PHASE1)
+        step8_region = _extract_step8_region(content)
 
         has_agent_behavior = bool(
-            re.search(r"\*\*Agent\s+behavior", between_8_and_9, re.IGNORECASE)
+            re.search(r"\*\*Agent\s+behavior", step8_region, re.IGNORECASE)
         )
         assert has_agent_behavior, (
-            "'**Agent behavior:**' instruction NOT found between Step 8 and "
-            "Step 9. The fix has not been applied. "
-            f"Content between steps:\n{between_8_and_9[:500]}"
+            "'**Agent behavior:**' instruction NOT found after Step 8 in "
+            "module-03-phase1-verification.md. "
+            f"Step 8 region content:\n{step8_region[:500]}"
         )
 
 
@@ -441,11 +464,11 @@ class TestBugConditionProperty:
         Args:
             question: A generated question satisfying the bug condition.
         """
-        content = _read_file(_MODULE3_STEERING)
-        between_8_and_9 = _extract_between_step8_and_step9(content)
+        content = _read_file(_MODULE3_PHASE1)
+        step8_region = _extract_step8_region(content)
 
-        assert _PROCEED_DIRECTLY_PATTERN.search(between_8_and_9), (
+        assert _PROCEED_DIRECTLY_PATTERN.search(step8_region), (
             f"Bug condition: agent can generate '{question['content']}' — "
-            f"no 'proceed DIRECTLY to Step 9' instruction exists between "
-            f"Step 8 and Step 9 in module-03-system-verification.md."
+            f"no 'proceed DIRECTLY to Step 9' instruction exists after "
+            f"Step 8 in module-03-phase1-verification.md."
         )

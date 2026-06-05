@@ -32,6 +32,10 @@ from version import (  # noqa: E402
 # ---------------------------------------------------------------------------
 _POWER_ROOT = Path(__file__).resolve().parent.parent
 _ONBOARDING_FLOW = _POWER_ROOT / "steering" / "onboarding-flow.md"
+# After the onboarding split, the welcome banner (Bootcamp Introduction,
+# Step 5) moved into onboarding-phase1b-intro-language.md, while the version
+# display (Step 0c) stays in onboarding-flow.md.
+_ONBOARDING_PHASE1B = _POWER_ROOT / "steering" / "onboarding-phase1b-intro-language.md"
 _VERSION_FILE = _POWER_ROOT / "VERSION"
 
 
@@ -159,12 +163,38 @@ class TestOnboardingIntegration:
         assert "## 0c. Version Display" in content
 
     def test_version_step_before_welcome_banner(self) -> None:
-        """Step 0c appears before Step 4 (welcome banner) in onboarding-flow.md."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
-        pos_0c = content.index("## 0c. Version Display")
-        pos_step4 = content.index("## 4. Bootcamp Introduction")
-        assert pos_0c < pos_step4, (
-            "Version Display (0c) must appear before Bootcamp Introduction (Step 4)"
+        """Version step (0c) precedes the welcome banner via the load sequence.
+
+        After the onboarding split, the version display stays in
+        onboarding-flow.md (Step 0c) while the welcome banner moved to
+        onboarding-phase1b-intro-language.md (Step 5, Bootcamp Introduction).
+        Ordering is therefore asserted across files via the documented load
+        sequence ("After Step 2d, load onboarding-phase1b-intro-language.md")
+        rather than within a single file.
+        """
+        flow = _ONBOARDING_FLOW.read_text(encoding="utf-8")
+        phase1b = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
+
+        # Version display is Step 0c in onboarding-flow.md.
+        assert "## 0c. Version Display" in flow, (
+            "Version Display (0c) must remain in onboarding-flow.md"
+        )
+        # The welcome banner now lives in Step 5 (Bootcamp Introduction) of the
+        # phase file.
+        assert "## 5. Bootcamp Introduction" in phase1b, (
+            "Bootcamp Introduction (Step 5) must be in "
+            "onboarding-phase1b-intro-language.md"
+        )
+        assert "WELCOME TO THE SENZING BOOTCAMP" in phase1b, (
+            "Welcome banner must be present in the phase file"
+        )
+        # onboarding-flow.md directs loading the phase file after Step 2d, so the
+        # version step (0c) is reached before the banner (phase file, Step 5).
+        pos_0c = flow.index("## 0c. Version Display")
+        pos_load = flow.index("load `onboarding-phase1b-intro-language.md`")
+        assert pos_0c < pos_load, (
+            "Version Display (0c) must appear before the directive to load the "
+            "phase file that contains the welcome banner (Step 5)."
         )
 
 

@@ -1,8 +1,12 @@
 """Unit tests for bootcamp UX feedback onboarding bullet order.
 
-Verifies that the Step 4 overview bullets in onboarding-flow.md are in the
-correct order after the reorder: Tracks → License → Test data, with the
+Verifies that the Bootcamp Introduction overview bullets are in the correct
+order after the reorder: Tracks → License → Test data, with the
 guided-discovery preamble first and glossary reference last.
+
+After the onboarding split, the overview moved from onboarding-flow.md into
+onboarding-phase1b-intro-language.md under "## 5. Bootcamp Introduction"
+(the next heading after the bullets is now "### 5a. Verbosity Preference").
 
 Feature: bootcamp-ux-feedback
 """
@@ -17,7 +21,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 _STEERING_DIR: Path = Path(__file__).resolve().parent.parent / "steering"
-_ONBOARDING_FLOW: Path = _STEERING_DIR / "onboarding-flow.md"
+_ONBOARDING_INTRO: Path = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -33,13 +37,13 @@ _PREAMBLE_MARKER = "guided discovery"
 _GLOSSARY_MARKER = "unfamiliar terms"
 
 
-def _get_step4_bullets() -> list[str]:
-    """Extract the bullet list from Step 4 overview section.
+def _get_overview_bullets() -> list[str]:
+    """Extract the bullet list from the Bootcamp Introduction overview section.
 
     Returns the bullet lines between the 'Present the overview' instruction
-    and the next heading (### 4a).
+    and the next heading (### 5a) in onboarding-phase1b-intro-language.md.
     """
-    content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
+    content = _ONBOARDING_INTRO.read_text(encoding="utf-8")
     lines = content.splitlines()
 
     # Find the start of the bullet list (after "Present the overview")
@@ -49,15 +53,15 @@ def _get_step4_bullets() -> list[str]:
     for idx, line in enumerate(lines):
         if "Present the overview" in line and "Cover all points" in line:
             bullet_start = idx + 1
-        elif bullet_start is not None and re.match(r"^###\s+4a", line):
+        elif bullet_start is not None and re.match(r"^###\s+5a", line):
             bullet_end = idx
             break
 
     assert bullet_start is not None, (
-        "Could not find 'Present the overview' instruction in Step 4"
+        "Could not find 'Present the overview' instruction in Bootcamp Introduction"
     )
     assert bullet_end is not None, (
-        "Could not find '### 4a' heading after Step 4 bullets"
+        "Could not find '### 5a' heading after the overview bullets"
     )
 
     # Extract only lines that start with '- ' (bullet points)
@@ -70,7 +74,7 @@ def _get_step4_bullets() -> list[str]:
 
 
 class TestOnboardingBulletOrder:
-    """Unit tests for onboarding Step 4 bullet reorder.
+    """Unit tests for onboarding Bootcamp Introduction overview bullet reorder.
 
     Validates: Requirements 1.1, 1.2, 1.3
     """
@@ -80,7 +84,7 @@ class TestOnboardingBulletOrder:
 
         Validates: Requirement 1.1
         """
-        bullets = _get_step4_bullets()
+        bullets = _get_overview_bullets()
         bullet_text = "\n".join(bullets)
 
         tracks_idx = bullet_text.find(_TRACKS_BULLET)
@@ -88,13 +92,13 @@ class TestOnboardingBulletOrder:
         test_data_idx = bullet_text.find(_TEST_DATA_BULLET)
 
         assert tracks_idx != -1, (
-            f"Tracks bullet not found in Step 4. Bullets:\n{bullet_text}"
+            f"Tracks bullet not found in overview. Bullets:\n{bullet_text}"
         )
         assert license_idx != -1, (
-            f"License bullet not found in Step 4. Bullets:\n{bullet_text}"
+            f"License bullet not found in overview. Bullets:\n{bullet_text}"
         )
         assert test_data_idx != -1, (
-            f"Test data bullet not found in Step 4. Bullets:\n{bullet_text}"
+            f"Test data bullet not found in overview. Bullets:\n{bullet_text}"
         )
 
         assert tracks_idx < license_idx, (
@@ -109,7 +113,7 @@ class TestOnboardingBulletOrder:
 
         Validates: Requirement 1.2
         """
-        bullets = _get_step4_bullets()
+        bullets = _get_overview_bullets()
         bullet_text = "\n".join(bullets)
 
         expected_fragments = [
@@ -133,8 +137,8 @@ class TestOnboardingBulletOrder:
 
         Validates: Requirement 1.3
         """
-        bullets = _get_step4_bullets()
-        assert len(bullets) > 0, "No bullets found in Step 4"
+        bullets = _get_overview_bullets()
+        assert len(bullets) > 0, "No bullets found in overview"
         assert _PREAMBLE_MARKER in bullets[0].lower(), (
             f"First bullet must be the guided-discovery preamble.\n"
             f"Got: {bullets[0]}"
@@ -146,8 +150,8 @@ class TestOnboardingBulletOrder:
         Validates: Requirement 1.3
         The hook files explanation bullet comes after the glossary reference.
         """
-        bullets = _get_step4_bullets()
-        assert len(bullets) > 1, "Not enough bullets found in Step 4"
+        bullets = _get_overview_bullets()
+        assert len(bullets) > 1, "Not enough bullets found in overview"
         assert _GLOSSARY_MARKER in bullets[-2].lower(), (
             f"Second-to-last bullet must be the term-definition guidance.\n"
             f"Got: {bullets[-2]}"

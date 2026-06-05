@@ -553,18 +553,34 @@ class TestContextBudgetIndependence:
 
         The mandatory gate text states the step cannot be skipped — period.
         No exception for context budget.
-        """
-        content = _MODULE3_STEERING.read_text(encoding="utf-8")
-        step9_section = _extract_step_section(content, _MANDATORY_GATE_STEP)
 
-        # Step 9 has the mandatory gate marker
-        assert "⛔" in step9_section, (
-            "Step 9 must have ⛔ mandatory gate marker"
+        After the module-03 monolith was split into a dispatcher + phase
+        sub-files (same-branch refactor), Step 9 and its ⛔ MANDATORY GATE
+        moved into module-03-phase2-visualization.md. The gate text is
+        unchanged — only its owning file moved. Phase 2 renders the gate as a
+        bold blockquote (``> ⛔ **MANDATORY GATE — ...``) inside the
+        "## ⚠️ DO NOT SKIP — Phase 2 Execution Is Mandatory" section.
+        """
+        phase2 = _STEERING_DIR / "module-03-phase2-visualization.md"
+        content = phase2.read_text(encoding="utf-8")
+
+        # Step 9 has the mandatory gate marker somewhere in the phase 2 file.
+        assert "⛔" in content, (
+            "Phase 2 visualization file must have ⛔ mandatory gate marker"
         )
 
-        # The mandatory gate text says it cannot be skipped
-        assert "cannot be skipped" in step9_section.lower() or "mandatory" in step9_section.lower(), (
-            "Step 9 must state it cannot be skipped"
+        # The mandatory gate text says it cannot be skipped (no budget exception).
+        # Independent content assertion: the gate explicitly forbids
+        # agent-initiated skips and names context budget as a prohibited
+        # rationalization, and Step 9 lives in this same file.
+        assert re.search(r"⛔\s*\**\s*MANDATORY\s*GATE", content), (
+            "Phase 2 file must contain the ⛔ MANDATORY GATE marker"
+        )
+        assert "NEVER skip" in content or "MANDATORY" in content, (
+            "Phase 2 gate must state the step cannot be skipped"
+        )
+        assert re.search(r"##\s+Step\s+9\b", content), (
+            "Step 9 heading must be present in module-03-phase2-visualization.md"
         )
 
 

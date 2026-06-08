@@ -176,7 +176,6 @@ def parse_steering_index(index_path: Path) -> dict:
     current_file = None
     current_module_num = None
     in_phases = False
-    in_phase = False
 
     i = 0
     while i < len(lines):
@@ -198,7 +197,6 @@ def parse_steering_index(index_path: Path) -> dict:
             current_file = None
             current_module_num = None
             in_phases = False
-            in_phase = False
             i += 1
             continue
 
@@ -211,7 +209,6 @@ def parse_steering_index(index_path: Path) -> dict:
                 current_file = None
                 current_module_num = None
                 in_phases = False
-                in_phase = False
                 if val:
                     # Inline value — not expected for our sections
                     pass
@@ -246,7 +243,6 @@ def parse_steering_index(index_path: Path) -> dict:
                     result["modules"][current_module_num] = val
                 elif key == "phases":
                     in_phases = True
-                    in_phase = False
                 elif key == "file" and val and in_phases:
                     # Phase file — also track as part of the module
                     pass
@@ -256,7 +252,7 @@ def parse_steering_index(index_path: Path) -> dict:
                 val = val.strip()
                 if not val:
                     # Phase name
-                    in_phase = True
+                    pass
                 elif key == "file" and val:
                     # Phase file reference — these are sub-files of the module
                     pass
@@ -568,9 +564,9 @@ def _is_in_non_workflow_section(lines: list, line_idx: int) -> bool:
         if stripped.startswith("# ") and not stripped.startswith("## "):
             # Check if there are any ## Step headings in the file
             has_step_headings = any(
-                l.strip().startswith("## Step ")
-                or l.strip().startswith("## Phase ")
-                for l in lines
+                line_text.strip().startswith("## Step ")
+                or line_text.strip().startswith("## Phase ")
+                for line_text in lines
             )
             return has_step_headings
     return False
@@ -588,7 +584,6 @@ def check_checkpoints(steering_dir: Path) -> list:
 
         # Phase files use module-global step numbering — checkpoint step
         # numbers intentionally differ from file-local step position.
-        is_phase_file = "phase" in md_file.name
 
         try:
             content = md_file.read_text(encoding="utf-8")
@@ -1343,7 +1338,10 @@ def check_section_order(steering_dir: Path) -> list:
             if "workflow_steps" not in section_positions and RE_TOP_LEVEL_STEP.match(line):
                 if not _is_in_non_workflow_section(lines, i):
                     section_positions["workflow_steps"] = i
-            if "success_indicator" not in section_positions and RE_SUCCESS_INDICATOR.search(stripped):
+            if (
+                "success_indicator" not in section_positions
+                and RE_SUCCESS_INDICATOR.search(stripped)
+            ):
                 section_positions["success_indicator"] = i
 
         # Check ordering for present sections

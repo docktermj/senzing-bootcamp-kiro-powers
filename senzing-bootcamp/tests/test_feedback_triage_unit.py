@@ -203,7 +203,7 @@ class TestDefaultFilePath:
         feedback_file.write_text("# Empty feedback\n", encoding="utf-8")
 
         # Run main with no path argument, from tmp_path
-        with patch("triage_feedback.Path") as mock_path_cls:
+        with patch("triage_feedback.Path"):
             # We just verify the argparse default is correct
             import argparse
             parser = argparse.ArgumentParser()

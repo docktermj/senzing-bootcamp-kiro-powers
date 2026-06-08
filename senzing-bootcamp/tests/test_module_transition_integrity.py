@@ -68,7 +68,10 @@ class TestConversationProtocolTransition:
 
     def test_contains_commitment_rule_only_valid_response(self) -> None:
         """File contains commitment rule about 'only valid response' being to start the module."""
-        assert "only valid response" in self.content.lower() or "only valid action" in self.content.lower()
+        assert (
+            "only valid response" in self.content.lower()
+            or "only valid action" in self.content.lower()
+        )
 
     def test_contains_context_limit_guidance_before_asking(self) -> None:
         """File contains context-limit guidance about addressing limits BEFORE asking."""
@@ -211,7 +214,8 @@ class TestTransitionCrossFileConsistency:
         assert "confirmed" in transitions_lower or "affirmative" in transitions_lower
 
     def test_prohibition_language_consistent_across_files(self) -> None:
-        """Prohibition language is consistent (saving/pausing/ending prohibited in multiple files)."""
+        """Prohibition language is consistent (saving/pausing/ending prohibited in \
+multiple files)."""
         protocol_lower = self.protocol_content.lower()
         completion_lower = self.completion_content.lower()
 

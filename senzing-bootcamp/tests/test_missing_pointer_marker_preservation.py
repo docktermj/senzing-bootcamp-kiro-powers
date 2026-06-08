@@ -145,7 +145,8 @@ _UNFIXED_STEP_4C = _extract_section_by_step_id(_UNFIXED_CONTENT, "5b") or ""
 
 # Extract acknowledgment handling text
 _ACK_PATTERN = re.compile(
-    r"\*\*Acknowledgment handling:\*\*\s*(.*?)(?=\*\*Clarification handling:\*\*|\*\*Note:\*\*|---|\Z)",
+    r"\*\*Acknowledgment handling:\*\*\s*"
+    r"(.*?)(?=\*\*Clarification handling:\*\*|\*\*Note:\*\*|---|\Z)",
     re.DOTALL,
 )
 _ACK_MATCH = _ACK_PATTERN.search(_UNFIXED_STEP_4C)

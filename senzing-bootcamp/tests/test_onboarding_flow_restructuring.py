@@ -39,7 +39,10 @@ def _read_file(path: Path) -> str:
 def _extract_top_level_steps(content: str) -> list[tuple[int, str]]:
     """Extract all top-level step headings (## N. Title) and return (number, title) pairs."""
     pattern = r"^## (\d+)\. (.+)$"
-    return [(int(m.group(1)), m.group(2).strip()) for m in re.finditer(pattern, content, re.MULTILINE)]
+    return [
+        (int(m.group(1)), m.group(2).strip())
+        for m in re.finditer(pattern, content, re.MULTILINE)
+    ]
 
 
 def _extract_section(content: str, heading_pattern: str) -> str:
@@ -204,7 +207,8 @@ class TestProperty2ContiguousStepNumbers:
 
 
 class TestProperty3VerbosityAndComprehensionPlacement:
-    """Property 3: Verbosity Preference and Comprehension Check are sub-steps of Bootcamp Introduction.
+    """Property 3: Verbosity Preference and Comprehension Check are sub-steps of \
+Bootcamp Introduction.
 
     Feature: onboarding-flow-restructuring, Property 3
 
@@ -214,7 +218,8 @@ class TestProperty3VerbosityAndComprehensionPlacement:
     @given(noise=st_noise_content())
     @settings(max_examples=20)
     def test_substeps_under_bootcamp_introduction(self, noise: str) -> None:
-        """Verbosity Preference and Comprehension Check are ### headings under Bootcamp Introduction.
+        """Verbosity Preference and Comprehension Check are ### headings under \
+Bootcamp Introduction.
 
         After the onboarding split, the Bootcamp Introduction (Step 5) and
         its sub-steps Verbosity Preference (5a) and Comprehension Check (5b)
@@ -272,7 +277,8 @@ class TestProperty4ProductionReuseHintPlacement:
     @given(noise=st_noise_content())
     @settings(max_examples=20)
     def test_hint_after_language_list_before_gate(self, noise: str) -> None:
-        """Production Reuse Hint appears after language list instruction and before mandatory gate."""
+        """Production Reuse Hint appears after language list instruction and before \
+mandatory gate."""
         content = _read_file(_ONBOARDING_PHASE1B)
 
         # Extract Programming Language Selection section

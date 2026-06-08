@@ -146,7 +146,8 @@ class TestCaptureCriticalCoverage:
             )
 
     def test_capture_hooks_added_to_onboarding_createhook_set(self) -> None:
-        """Both capture hooks must be documented as part of the onboarding createHook set (Req 10.2).
+        """Both capture hooks must be documented as part of the onboarding createHook \
+set (Req 10.2).
 
         Each of ``module-recap-append`` and ``session-log-events`` must appear
         near a ``createHook`` reference in an onboarding / session-start
@@ -168,7 +169,8 @@ class TestCaptureCriticalCoverage:
             )
 
     def test_capture_hooks_alongside_ask_bootcamper(self) -> None:
-        """Capture hooks must be documented alongside the existing critical ask-bootcamper (Req 10.2)."""
+        """Capture hooks must be documented alongside the existing critical \
+ask-bootcamper (Req 10.2)."""
         for hook_id in _ONBOARDING_CAPTURE_HOOKS:
             assert _near(self.onboarding_lower, hook_id, "ask-bootcamper"), (
                 f"agent-instructions.md must document '{hook_id}' alongside the "

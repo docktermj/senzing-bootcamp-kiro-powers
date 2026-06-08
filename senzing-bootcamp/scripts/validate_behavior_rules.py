@@ -9,7 +9,8 @@ Checks steering file content against the four agent behavior rules:
 
 Usage:
     python senzing-bootcamp/scripts/validate_behavior_rules.py
-    python senzing-bootcamp/scripts/validate_behavior_rules.py --check steering/agent-behavior-rules.md
+    python senzing-bootcamp/scripts/validate_behavior_rules.py \
+--check steering/agent-behavior-rules.md
     python senzing-bootcamp/scripts/validate_behavior_rules.py path/to/file.md
 
 Exit codes:
@@ -21,7 +22,8 @@ Examples:
     python senzing-bootcamp/scripts/validate_behavior_rules.py
 
     # Check a specific file
-    python senzing-bootcamp/scripts/validate_behavior_rules.py --check steering/agent-behavior-rules.md
+    python senzing-bootcamp/scripts/validate_behavior_rules.py \
+--check steering/agent-behavior-rules.md
 """
 
 from __future__ import annotations

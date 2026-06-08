@@ -208,7 +208,8 @@ class TestProperty1ErrorHandlingSectionCompleteness:
     @given(module_num=st_module_number())
     @settings(max_examples=10)
     def test_error_handling_section_exists_with_required_references(self, module_num):
-        """Root module file contains ## Error Handling with explain_error_code and common-pitfalls.md."""
+        """Root module file contains ## Error Handling with explain_error_code and \
+common-pitfalls.md."""
         module_entry = _INDEX_DATA["modules"][module_num]
         root_filename = resolve_root_path(module_entry)
         root_path = STEERING_DIR / root_filename
@@ -218,10 +219,12 @@ class TestProperty1ErrorHandlingSectionCompleteness:
             f"Module {module_num} ({root_filename}) is missing ## Error Handling section"
         )
         assert "explain_error_code" in section, (
-            f"Module {module_num} ({root_filename}) ## Error Handling does not reference explain_error_code"
+            f"Module {module_num} ({root_filename}) ## Error Handling does not "
+            f"reference explain_error_code"
         )
         assert "common-pitfalls.md" in section, (
-            f"Module {module_num} ({root_filename}) ## Error Handling does not reference common-pitfalls.md"
+            f"Module {module_num} ({root_filename}) ## Error Handling does not "
+            f"reference common-pitfalls.md"
         )
 
 

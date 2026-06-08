@@ -809,7 +809,8 @@ def main() -> None:
         )
         write_registry(modules_content, args.output_modules)
         print(
-            f"Modules registry written to {args.output_modules} ({total_count - len(critical)} hooks)"
+            f"Modules registry written to {args.output_modules} "
+            f"({total_count - len(critical)} hooks)"
         )
         write_registry(lockfile_content, LOCKFILE_PATH)
         print(f"Lockfile written to {LOCKFILE_PATH} ({total_count} hooks)")

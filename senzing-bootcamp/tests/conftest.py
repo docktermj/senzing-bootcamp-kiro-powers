@@ -6,6 +6,24 @@ import sys
 from pathlib import Path
 
 import pytest
+from hypothesis import HealthCheck, settings
+
+# ---------------------------------------------------------------------------
+# Hypothesis profile — deterministic under variable CI/local machine load
+# ---------------------------------------------------------------------------
+# Many property tests do real per-example filesystem I/O (tempfile, write_text,
+# mkdir) or run a CLI ``main()``, which can exceed Hypothesis's default 200 ms
+# deadline or trip the ``too_slow`` input-generation health check when the
+# machine is under load. Those are timing artifacts, not logic failures. This
+# profile disables the per-example deadline and suppresses the timing-related
+# health checks so the suite is deterministic. Per-test ``@settings`` still take
+# precedence for any key they specify. Assertions are unaffected.
+settings.register_profile(
+    "bootcamp",
+    deadline=None,
+    suppress_health_check=[HealthCheck.too_slow],
+)
+settings.load_profile("bootcamp")
 
 # ---------------------------------------------------------------------------
 # Make senzing-bootcamp/scripts/ importable

@@ -79,7 +79,7 @@ class TestStatusMainStepDisplay:
 
         output = _capture_status_main(tmp_path, monkeypatch)
         # The "Current Module:" line should contain step info
-        current_line = [l for l in output.splitlines() if "Current Module:" in l][0]
+        current_line = [line for line in output.splitlines() if "Current Module:" in line][0]
         assert "Module 5, Step 3" in current_line
 
     def test_no_step_when_current_step_absent(self, tmp_path, monkeypatch):
@@ -92,7 +92,7 @@ class TestStatusMainStepDisplay:
         })
 
         output = _capture_status_main(tmp_path, monkeypatch)
-        current_line = [l for l in output.splitlines() if "Current Module:" in l][0]
+        current_line = [line for line in output.splitlines() if "Current Module:" in line][0]
         assert "Module 3" in current_line
         assert "Step" not in current_line
 
@@ -107,7 +107,7 @@ class TestStatusMainStepDisplay:
         })
 
         output = _capture_status_main(tmp_path, monkeypatch)
-        current_line = [l for l in output.splitlines() if "Current Module:" in l][0]
+        current_line = [line for line in output.splitlines() if "Current Module:" in line][0]
         assert "Module 4" in current_line
         assert "Step" not in current_line
 
@@ -124,7 +124,7 @@ class TestStatusMainStepDisplay:
 
         output = _capture_status_main(tmp_path, monkeypatch)
         # current_module is in completed list, so step should NOT display
-        current_line = [l for l in output.splitlines() if "Current Module:" in l][0]
+        current_line = [line for line in output.splitlines() if "Current Module:" in line][0]
         assert "Step" not in current_line
 
 

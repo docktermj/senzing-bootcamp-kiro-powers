@@ -6,7 +6,8 @@ graduation certificate in both Markdown and HTML formats.
 
 Usage:
     python senzing-bootcamp/scripts/generate_graduation_certificate.py
-    python senzing-bootcamp/scripts/generate_graduation_certificate.py --progress-file config/bootcamp_progress.json
+    python senzing-bootcamp/scripts/generate_graduation_certificate.py \
+--progress-file config/bootcamp_progress.json
     python senzing-bootcamp/scripts/generate_graduation_certificate.py --output-dir docs/graduation/
 
 Uses only the Python standard library.
@@ -560,7 +561,9 @@ def render_html(data: CertificateData) -> str:
     parts.append("      color: #333;")
     parts.append("    }")
     parts.append("    h1 { color: #2c3e50; }")
-    parts.append("    h2 { color: #34495e; border-bottom: 1px solid #eee; padding-bottom: 0.3rem; }")
+    parts.append(
+        "    h2 { color: #34495e; border-bottom: 1px solid #eee; padding-bottom: 0.3rem; }"
+    )
     parts.append("    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }")
     parts.append("    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }")
     parts.append("    th { background-color: #f4f4f4; }")

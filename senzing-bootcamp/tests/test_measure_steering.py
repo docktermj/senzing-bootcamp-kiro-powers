@@ -60,7 +60,8 @@ class TestProperty1ScanCompletenessAndStructure:
     **Validates: Requirements 1.1, 1.2, 2.4, 2.5**
     """
 
-    # Feature: context-budget-tracking, Property 1: Scan produces complete, correctly-structured metadata
+    # Feature: context-budget-tracking, Property 1: Scan produces complete,
+    # correctly-structured metadata
 
     @given(
         filenames=_filename_set_st,
@@ -126,7 +127,8 @@ class TestProperty3TokenCountFormula:
     **Validates: Requirements 2.1**
     """
 
-    # Feature: context-budget-tracking, Property 3: Token count equals rounded character-count-over-four
+    # Feature: context-budget-tracking, Property 3: Token count equals rounded
+    # character-count-over-four
 
     @given(content=st.text(min_size=0, max_size=5000))
     @settings(max_examples=10)
@@ -313,7 +315,8 @@ class TestProperty7CheckModeThresholdDetection:
     **Validates: Requirements 2.7**
     """
 
-    # Feature: context-budget-tracking, Property 7: Check mode detects mismatches exceeding 10% tolerance
+    # Feature: context-budget-tracking, Property 7: Check mode detects mismatches
+    # exceeding 10% tolerance
 
     @given(
         stored=st.integers(min_value=0, max_value=100_000),
@@ -374,7 +377,8 @@ class TestProperty8ValidatorDetectsMalformedMetadata:
     **Validates: Requirements 5.2, 5.3**
     """
 
-    # Feature: context-budget-tracking, Property 8: Validator detects missing or malformed metadata entries
+    # Feature: context-budget-tracking, Property 8: Validator detects missing or
+    # malformed metadata entries
 
     @given(
         filenames=_filename_set_st,
@@ -466,7 +470,7 @@ class TestCheckModeDoesNotModifyYAML:
 
             # Record content before check
             content_before = index_path.read_text(encoding="utf-8")
-            mtime_before = index_path.stat().st_mtime
+            index_path.stat().st_mtime
 
             # Run check
             mismatches = mod.check_counts(index_path, metadata)

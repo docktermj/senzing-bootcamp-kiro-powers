@@ -377,17 +377,23 @@ _HTML_TEMPLATE = """\
   <section id="summary">
     <h2>Team Summary</h2>
     <div class="stats-grid">
-      <div class="stat-card"><div class="value">{member_count}</div><div class="label">Members</div></div>
-      <div class="stat-card"><div class="value">{avg_pct}%</div><div class="label">Avg Completion</div></div>
-      <div class="stat-card"><div class="value">{total_mods}</div><div class="label">Total Modules Done</div></div>
-      <div class="stat-card"><div class="value">{lowest_mod}</div><div class="label">Lowest Completion Module</div></div>
-      <div class="stat-card"><div class="value">{fully_done}</div><div class="label">Fully Completed</div></div>
+      <div class="stat-card"><div class="value">{member_count}</div>\
+<div class="label">Members</div></div>
+      <div class="stat-card"><div class="value">{avg_pct}%</div>\
+<div class="label">Avg Completion</div></div>
+      <div class="stat-card"><div class="value">{total_mods}</div>\
+<div class="label">Total Modules Done</div></div>
+      <div class="stat-card"><div class="value">{lowest_mod}</div>\
+<div class="label">Lowest Completion Module</div></div>
+      <div class="stat-card"><div class="value">{fully_done}</div>\
+<div class="label">Fully Completed</div></div>
     </div>
   </section>
   <section id="members">
     <h2>Member Progress</h2>
     <table>
-      <thead><tr><th>Member</th><th>Current Module</th><th>Completed</th><th>Language</th><th>Completion</th></tr></thead>
+      <thead><tr><th>Member</th><th>Current Module</th>\
+<th>Completed</th><th>Language</th><th>Completion</th></tr></thead>
       <tbody>
 {member_rows}
       </tbody>
@@ -405,7 +411,9 @@ _HTML_TEMPLATE = """\
   <section id="er-comparison">
     <h2>ER Comparison</h2>
     <table>
-      <thead><tr><th>Member</th><th>Records Loaded</th><th>Entities Resolved</th><th>Duplicates</th><th>Cross-Source</th><th>Data Sources</th></tr></thead>
+      <thead><tr><th>Member</th><th>Records Loaded</th>\
+<th>Entities Resolved</th><th>Duplicates</th>\
+<th>Cross-Source</th><th>Data Sources</th></tr></thead>
       <tbody>
 {er_rows}
       </tbody>
@@ -427,7 +435,10 @@ def main() -> None:
     """CLI entry point: load config, collect data, render, write file."""
     parser = argparse.ArgumentParser(
         description="Generate team bootcamp dashboard",
-        epilog="See Also: status.py (individual progress), analyze_sessions.py (historical analytics)",
+        epilog=(
+            "See Also: status.py (individual progress), "
+            "analyze_sessions.py (historical analytics)"
+        ),
     )
     parser.add_argument(
         "--output",

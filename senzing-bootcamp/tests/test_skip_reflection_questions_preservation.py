@@ -130,7 +130,8 @@ PRESERVED_SECTIONS_MODULE_COMPLETION: dict[str, dict] = {
             r"\*\*What was produced:\*\*",
             r"\*\*Why it matters:\*\*",
         ],
-        "description": "Journal template with module name, date, what we did, what was produced, why it matters",
+        "description": "Journal template with module name, date, what we did, "
+        "what was produced, why it matters",
     },
     "module_completion_certificate": {
         "heading": "## Module Completion Certificate",
@@ -151,7 +152,8 @@ PRESERVED_SECTIONS_MODULE_COMPLETION: dict[str, dict] = {
             r"\*\*Undo:\*\*",
             r"\*\*Share:\*\*",
         ],
-        "description": "Next-step options with all five choices (Proceed, Iterate, Explore, Undo, Share)",
+        "description": "Next-step options with all five choices "
+        "(Proceed, Iterate, Explore, Undo, Share)",
     },
     "immediate_execution": {
         "heading": "### ⛔ Immediate Execution on Affirmative Response",
@@ -170,7 +172,8 @@ PRESERVED_SECTIONS_MODULE_COMPLETION: dict[str, dict] = {
             r"Module 7",
             r"Module 11",
         ],
-        "description": "Path completion detection table with Core Bootcamp and Advanced Topics tracks",
+        "description": "Path completion detection table with Core Bootcamp and "
+        "Advanced Topics tracks",
     },
     "path_completion_celebration": {
         "heading": "## Path Completion Celebration",

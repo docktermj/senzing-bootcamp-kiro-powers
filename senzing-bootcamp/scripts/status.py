@@ -36,7 +36,11 @@ def color_supported():
     if os.environ.get("NO_COLOR"):
         return False
     if sys.platform == "win32":
-        return os.environ.get("WT_SESSION") or os.environ.get("TERM_PROGRAM") or "ANSICON" in os.environ
+        return (
+            os.environ.get("WT_SESSION")
+            or os.environ.get("TERM_PROGRAM")
+            or "ANSICON" in os.environ
+        )
     return hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
 
 
@@ -65,11 +69,14 @@ MODULE_NAMES = {
 NEXT_STEPS = {
     1:  ("Start Module 1: Business Problem", "Define your problem and identify data sources"),
     2:  ("Start Module 2: SDK Setup", "Install and configure Senzing SDK"),
-    3:  ("Start Module 3: System Verification", "Verify your setup end-to-end using the Senzing TruthSet"),
+    3:  ("Start Module 3: System Verification",
+        "Verify your setup end-to-end using the Senzing TruthSet"),
     4:  ("Start Module 4: Data Collection", "Upload or link to data source files"),
-    5:  ("Start Module 5: Data Quality & Mapping", "Evaluate data quality and create transformation programs"),
+    5:  ("Start Module 5: Data Quality & Mapping",
+        "Evaluate data quality and create transformation programs"),
     6:  ("Start Module 6: Data Processing", "Load your data sources and validate results"),
-    7:  ("Start Module 7: Query, Visualize, and Discover", "Create query programs and visualize results"),
+    7:  ("Start Module 7: Query, Visualize, and Discover",
+        "Create query programs and visualize results"),
     8:  ("Start Module 8: Performance Testing", "Benchmark and optimize performance"),
     9:  ("Start Module 9: Security Hardening", "Implement security best practices"),
     10: ("Start Module 10: Monitoring", "Set up monitoring and observability"),
@@ -277,7 +284,11 @@ class DashboardDataCollector:
                 if 1 <= mod_num <= 12:
                     ts = None
                     if isinstance(entry, dict):
-                        ts = entry.get("updated_at") or entry.get("completed_at") or entry.get("timestamp")
+                        ts = (
+                            entry.get("updated_at")
+                            or entry.get("completed_at")
+                            or entry.get("timestamp")
+                        )
                     elif isinstance(entry, str):
                         ts = entry
                     if ts and mod_num not in timestamps:
@@ -294,7 +305,9 @@ class DashboardDataCollector:
         docs_dir = self.root / "docs"
         if not docs_dir.is_dir():
             return scores
-        patterns = list(docs_dir.glob("*quality*")) + list(docs_dir.glob("*data_source_evaluation*"))
+        patterns = list(docs_dir.glob("*quality*")) + list(
+            docs_dir.glob("*data_source_evaluation*")
+        )
         overall_re = re.compile(r"overall[^:]*:\s*([\d.]+)", re.IGNORECASE)
         source_re = re.compile(r"(?:source|data\s*source)[^:]*:\s*(.+)", re.IGNORECASE)
         completeness_re = re.compile(r"completeness[^:]*:\s*([\d.]+)", re.IGNORECASE)
@@ -338,8 +351,13 @@ class DashboardDataCollector:
         if not docs_dir.is_dir():
             return None
         patterns = list(docs_dir.glob("*performance*")) + list(docs_dir.glob("*benchmark*"))
-        throughput_re = re.compile(r"(?:throughput|records?\s*/?\s*s(?:ec(?:ond)?)?)[^:]*:\s*([\d,.]+)", re.IGNORECASE)
-        avg_re = re.compile(r"(?:average|avg)\s*(?:query)?\s*(?:response)?\s*(?:time)?[^:]*:\s*([\d,.]+)\s*ms", re.IGNORECASE)
+        throughput_re = re.compile(
+            r"(?:throughput|records?\s*/?\s*s(?:ec(?:ond)?)?)[^:]*:\s*([\d,.]+)", re.IGNORECASE
+        )
+        avg_re = re.compile(
+            r"(?:average|avg)\s*(?:query)?\s*(?:response)?\s*(?:time)?[^:]*:\s*([\d,.]+)\s*ms",
+            re.IGNORECASE,
+        )
         p95_re = re.compile(r"p95[^:]*:\s*([\d,.]+)\s*ms", re.IGNORECASE)
         db_re = re.compile(r"database[_ ]?type[^:]*:\s*(\w+)", re.IGNORECASE)
         wall_re = re.compile(r"wall[_ ]?clock[^:]*:\s*([\d,.]+)\s*s", re.IGNORECASE)
@@ -392,7 +410,11 @@ class DashboardDataCollector:
         docs_dir = self.root / "docs"
         if not docs_dir.is_dir():
             return None
-        patterns = list(docs_dir.glob("*entity*")) + list(docs_dir.glob("*resolution*")) + list(docs_dir.glob("*results*"))
+        patterns = (
+            list(docs_dir.glob("*entity*"))
+            + list(docs_dir.glob("*resolution*"))
+            + list(docs_dir.glob("*results*"))
+        )
         records_re = re.compile(r"total\s*records?[^:]*:\s*([\d,]+)", re.IGNORECASE)
         entities_re = re.compile(r"total\s*entit(?:y|ies)[^:]*:\s*([\d,]+)", re.IGNORECASE)
         match_re = re.compile(r"match(?:es)?\s*(?:count)?[^:]*:\s*([\d,]+)", re.IGNORECASE)
@@ -428,7 +450,10 @@ class DashboardDataCollector:
             if cross_matches is None:
                 cross_matches = _first_int(cross_re, text)
 
-        if any(v is not None for v in (total_records, total_entities, match_count, dup_count, cross_matches)):
+        if any(
+            v is not None
+            for v in (total_records, total_entities, match_count, dup_count, cross_matches)
+        ):
             return EntityStatsData(
                 total_records=total_records,
                 total_entities=total_entities,
@@ -478,9 +503,11 @@ header h1{font-size:1.6rem;margin-bottom:4px}
 .status-badge{display:inline-block;padding:2px 12px;border-radius:12px;font-size:.85rem;
   background:rgba(255,255,255,.25);margin-top:6px}
 main{max-width:960px;margin:0 auto}
-section{background:#fff;border:1px solid #d0d7de;border-radius:8px;padding:20px 24px;margin-bottom:20px}
+section{background:#fff;border:1px solid #d0d7de;border-radius:8px;\
+padding:20px 24px;margin-bottom:20px}
 section h2{font-size:1.15rem;margin-bottom:12px;color:#24292f}
-.progress-bar-outer{background:#d0d7de;border-radius:6px;height:22px;overflow:hidden;position:relative}
+.progress-bar-outer{background:#d0d7de;border-radius:6px;height:22px;\
+overflow:hidden;position:relative}
 .progress-bar-inner{background:#2da44e;height:100%;border-radius:6px;transition:width .3s}
 .progress-label{text-align:center;margin-top:6px;font-size:.9rem;color:#57606a}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
@@ -495,9 +522,11 @@ section h2{font-size:1.15rem;margin-bottom:12px;color:#24292f}
 .metric-item .value{font-size:1.3rem;font-weight:700;color:#0969da}
 .metric-item .label{font-size:.8rem;color:#57606a}
 .quality-item{margin-bottom:14px;padding:10px;border:1px solid #d0d7de;border-radius:8px}
-.quality-item .header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.quality-item .header-row{display:flex;justify-content:space-between;\
+align-items:center;margin-bottom:6px}
 .quality-item .source{font-weight:600}
-.quality-item .score-badge{padding:2px 10px;border-radius:10px;color:#fff;font-weight:600;font-size:.85rem}
+.quality-item .score-badge{padding:2px 10px;border-radius:10px;color:#fff;\
+font-weight:600;font-size:.85rem}
 .sub-scores{display:flex;gap:12px;flex-wrap:wrap;font-size:.82rem;color:#57606a}
 .timeline-list{list-style:none;border-left:3px solid #0969da;padding-left:20px}
 .timeline-list li{margin-bottom:12px;position:relative}
@@ -508,9 +537,11 @@ section h2{font-size:1.15rem;margin-bottom:12px;color:#24292f}
 .health-item .icon{font-size:1.1rem}
 .health-score{margin-top:10px;font-weight:600;font-size:.95rem}
 footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top:8px}
-.notice{background:#fff8c5;border:1px solid #bf8700;border-radius:8px;padding:14px;text-align:center;
+.notice{background:#fff8c5;border:1px solid #bf8700;border-radius:8px;padding:14px;\
+text-align:center;
   margin-bottom:20px;color:#6a5300}
-@media print{body{background:#fff;padding:0}header{background:#0969da;-webkit-print-color-adjust:exact;
+@media print{body{background:#fff;padding:0}\
+header{background:#0969da;-webkit-print-color-adjust:exact;
   print-color-adjust:exact}section{break-inside:avoid}}
 @media(max-width:600px){.cards{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
   .metric-grid{grid-template-columns:1fr 1fr}}
@@ -520,7 +551,11 @@ footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top
     # -- 3.2 _render_header ------------------------------------------------
 
     def _render_header(self, data: DashboardData) -> str:
-        lang_line = f"<div style='font-size:.9rem;margin-top:4px'>Language: {_esc(data.language)}</div>" if data.language else ""
+        lang_line = (
+            f"<div style='font-size:.9rem;margin-top:4px'>Language: {_esc(data.language)}</div>"
+            if data.language
+            else ""
+        )
         return f"""<header>
 <h1>Senzing Bootcamp Dashboard</h1>
 <div class="status-badge">{_esc(data.status)}</div>
@@ -559,7 +594,10 @@ footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top
                 f'<div class="num">Module {num}</div>'
                 f'<div>{_esc(name)}</div></div>'
             )
-        return f'<section id="modules"><h2>Modules</h2><div class="cards">{"".join(cards)}</div></section>'
+        return (
+            f'<section id="modules"><h2>Modules</h2>'
+            f'<div class="cards">{"".join(cards)}</div></section>'
+        )
 
     # -- 3.5 _render_quality_section ---------------------------------------
 
@@ -590,18 +628,41 @@ footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top
             return ""
         items = []
         if perf.loading_throughput_rps is not None:
-            items.append(f'<div class="metric-item"><div class="value">{perf.loading_throughput_rps:,.1f}</div><div class="label">Records / sec</div></div>')
+            items.append(
+                f'<div class="metric-item">'
+                f'<div class="value">{perf.loading_throughput_rps:,.1f}</div>'
+                f'<div class="label">Records / sec</div></div>'
+            )
         if perf.query_avg_ms is not None:
-            items.append(f'<div class="metric-item"><div class="value">{perf.query_avg_ms:,.1f}</div><div class="label">Avg Query (ms)</div></div>')
+            items.append(
+                f'<div class="metric-item">'
+                f'<div class="value">{perf.query_avg_ms:,.1f}</div>'
+                f'<div class="label">Avg Query (ms)</div></div>'
+            )
         if perf.query_p95_ms is not None:
-            items.append(f'<div class="metric-item"><div class="value">{perf.query_p95_ms:,.1f}</div><div class="label">P95 Query (ms)</div></div>')
+            items.append(
+                f'<div class="metric-item">'
+                f'<div class="value">{perf.query_p95_ms:,.1f}</div>'
+                f'<div class="label">P95 Query (ms)</div></div>'
+            )
         if perf.database_type is not None:
-            items.append(f'<div class="metric-item"><div class="value">{_esc(perf.database_type)}</div><div class="label">Database Type</div></div>')
+            items.append(
+                f'<div class="metric-item">'
+                f'<div class="value">{_esc(perf.database_type)}</div>'
+                f'<div class="label">Database Type</div></div>'
+            )
         if perf.wall_clock_seconds is not None:
-            items.append(f'<div class="metric-item"><div class="value">{perf.wall_clock_seconds:,.1f}</div><div class="label">Wall Clock (s)</div></div>')
+            items.append(
+                f'<div class="metric-item">'
+                f'<div class="value">{perf.wall_clock_seconds:,.1f}</div>'
+                f'<div class="label">Wall Clock (s)</div></div>'
+            )
         if not items:
             return ""
-        return f'<section id="performance"><h2>Performance Metrics</h2><div class="metric-grid">{"".join(items)}</div></section>'
+        return (
+            f'<section id="performance"><h2>Performance Metrics</h2>'
+            f'<div class="metric-grid">{"".join(items)}</div></section>'
+        )
 
     # -- 3.7 _render_entity_section ----------------------------------------
 
@@ -609,14 +670,24 @@ footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top
         if stats is None:
             return ""
         items = []
-        for label, val in [("Total Records", stats.total_records), ("Total Entities", stats.total_entities),
-                           ("Matches", stats.match_count), ("Duplicates", stats.duplicate_count),
-                           ("Cross-Source", stats.cross_source_matches)]:
+        for label, val in [
+            ("Total Records", stats.total_records),
+            ("Total Entities", stats.total_entities),
+            ("Matches", stats.match_count),
+            ("Duplicates", stats.duplicate_count),
+            ("Cross-Source", stats.cross_source_matches),
+        ]:
             if val is not None:
-                items.append(f'<div class="metric-item"><div class="value">{val:,}</div><div class="label">{label}</div></div>')
+                items.append(
+                    f'<div class="metric-item"><div class="value">{val:,}</div>'
+                    f'<div class="label">{label}</div></div>'
+                )
         if not items:
             return ""
-        return f'<section id="entities"><h2>Entity Resolution Statistics</h2><div class="metric-grid">{"".join(items)}</div></section>'
+        return (
+            f'<section id="entities"><h2>Entity Resolution Statistics</h2>'
+            f'<div class="metric-grid">{"".join(items)}</div></section>'
+        )
 
     # -- 3.8 _render_timeline ----------------------------------------------
 
@@ -630,8 +701,14 @@ footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top
             name = MODULE_NAMES.get(mod_num, "?")
             # Show just the date portion if it's an ISO timestamp
             display_date = ts[:10] if len(ts) >= 10 else ts
-            items.append(f'<li><strong>Module {mod_num}: {_esc(name)}</strong><div class="date">{_esc(display_date)}</div></li>')
-        return f'<section id="timeline"><h2>Completion Timeline</h2><ul class="timeline-list">{"".join(items)}</ul></section>'
+            items.append(
+                f'<li><strong>Module {mod_num}: {_esc(name)}</strong>'
+                f'<div class="date">{_esc(display_date)}</div></li>'
+            )
+        return (
+            f'<section id="timeline"><h2>Completion Timeline</h2>'
+            f'<ul class="timeline-list">{"".join(items)}</ul></section>'
+        )
 
     # -- 3.9 _render_health_section ----------------------------------------
 
@@ -640,9 +717,15 @@ footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top
         for chk in data.health_checks:
             icon = "&#x2705;" if chk.exists else "&#x274C;"
             status_text = "exists" if chk.exists else "missing"
-            items.append(f'<div class="health-item"><span class="icon">{icon}</span>{_esc(chk.label)} — {status_text}</div>')
+            items.append(
+                f'<div class="health-item"><span class="icon">{icon}</span>'
+                f'{_esc(chk.label)} — {status_text}</div>'
+            )
         pct = data.health_score * 100 // data.health_total if data.health_total else 0
-        score_line = f'<div class="health-score">Health Score: {data.health_score}/{data.health_total} ({pct}%)</div>'
+        score_line = (
+            f'<div class="health-score">Health Score: '
+            f'{data.health_score}/{data.health_total} ({pct}%)</div>'
+        )
         return f'<section id="health"><h2>Project Health</h2>{"".join(items)}{score_line}</section>'
 
     # -- 3.10 _render_footer + render orchestrator -------------------------
@@ -654,7 +737,10 @@ footer{text-align:center;color:#57606a;font-size:.8rem;padding:16px 0;margin-top
         """Generate complete self-contained HTML dashboard string."""
         notice = ""
         if not data.has_progress_data:
-            notice = '<div class="notice">No progress data found. Start the bootcamp to begin tracking progress.</div>'
+            notice = (
+                '<div class="notice">No progress data found. '
+                'Start the bootcamp to begin tracking progress.</div>'
+            )
 
         sections = [
             self._render_progress_bar(data),
@@ -682,7 +768,13 @@ def _esc(text) -> str:
     """HTML-escape a string."""
     if text is None:
         return ""
-    return str(text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+    return (
+        str(text)
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -892,7 +984,8 @@ def sync_progress_tracker(completed, current, language, current_step=None):
         else:
             icon = "⬜"
         line = f"- {icon} Module {m}: {name}"
-        if m == current and m not in completed and isinstance(current_step, int) and current_step > 0:
+        if m == current and m not in completed and isinstance(current_step, int) \
+                and current_step > 0:
             line += f" (Step {current_step})"
         lines.append(line)
 
@@ -987,7 +1080,11 @@ def _show_team_summary(config, resolver):
 
     print()
     total = sum(all_completed_counts)
-    avg = sum(c / 11 * 100 for c in all_completed_counts) / len(all_completed_counts) if all_completed_counts else 0
+    avg = (
+        sum(c / 11 * 100 for c in all_completed_counts) / len(all_completed_counts)
+        if all_completed_counts
+        else 0
+    )
     fully = sum(1 for c in all_completed_counts if c >= 11)
     print(cyan("Team Statistics:"))
     print(f"  Total modules completed: {total}")
@@ -1002,7 +1099,10 @@ def _show_terminal_status(args):
     os.chdir(project_root)
 
     print(blue("╔════════════════════════════════════════════════════════════╗"))
-    print(blue("║") + "  " + cyan("Senzing Bootcamp - Project Status") + "                     " + blue("║"))
+    print(
+        blue("║") + "  " + cyan("Senzing Bootcamp - Project Status")
+        + "                     " + blue("║")
+    )
     print(blue("╚════════════════════════════════════════════════════════════╝"))
     print()
 
@@ -1105,7 +1205,10 @@ def _show_terminal_status(args):
         print(green("✓ Completed Modules:"))
         for m in sorted(completed):
             print(f"    ✓ Module {m}: {MODULE_NAMES.get(m, '?')}")
-        print(f"  Tip: Use {yellow('python scripts/rollback_module.py --module N')} to undo a module")
+        print(
+            f"  Tip: Use {yellow('python scripts/rollback_module.py --module N')}"
+            " to undo a module"
+        )
         print()
 
     if current <= 11 and status != "Complete":

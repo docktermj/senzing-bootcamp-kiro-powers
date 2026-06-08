@@ -76,12 +76,16 @@ def st_dependency_graph(draw):
         modules[i] = ModuleInfo(name=f"Module {i}", requires=sorted(reqs))
 
     # Generate gates between existing modules
-    num_gates = draw(st.integers(min_value=0, max_value=min(4, num_modules - 1) if num_modules > 1 else 0))
+    num_gates = draw(
+        st.integers(min_value=0, max_value=min(4, num_modules - 1) if num_modules > 1 else 0)
+    )
     gates: dict[str, GateInfo] = {}
     if num_modules > 1:
         for _ in range(num_gates):
             src = draw(st.integers(min_value=1, max_value=num_modules))
-            dst = draw(st.integers(min_value=1, max_value=num_modules).filter(lambda x, s=src: x != s))
+            dst = draw(
+                st.integers(min_value=1, max_value=num_modules).filter(lambda x, s=src: x != s)
+            )
             key = f"{src}->{dst}"
             if key not in gates:
                 num_reqs = draw(st.integers(min_value=0, max_value=3))

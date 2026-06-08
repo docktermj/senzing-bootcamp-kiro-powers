@@ -27,7 +27,7 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from progress_utils import (
+from progress_utils import (  # noqa: E402
     MODULE_RANGE,
     STEP_HISTORY_KEY_RANGE,
     VALID_TRACKS,

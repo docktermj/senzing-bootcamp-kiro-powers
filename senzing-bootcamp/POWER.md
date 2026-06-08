@@ -21,8 +21,8 @@ This power works best with Claude Opus 4.6 or similar.
 
 ## What's New in 0.12.0
 
-- Production-readiness pass: all CI validation steps green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `validate_dependencies`, `sync_hook_registry --verify`, `validate_prerequisites`, `validate_progress_ci`); pytest at 2,603 passed / 0 failed / 0 errors
-- CommonMark compliance across all 491 markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
+- Production-readiness pass: all CI validation steps green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `validate_dependencies`, `sync_hook_registry --verify`, `validate_prerequisites`, `validate_progress_ci`, `lint (ruff)`); pytest at 4,830 passed / 0 failed / 0 errors
+- CommonMark compliance across all shipped markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
 - Consolidated visualization steering: merged visualization-protocol and visualization-reference into `visualization-guide.md` (saves ~3,000 tokens of context budget)
 - User-state config files (`bootcamp_progress.json`, `bootcamp_preferences.yaml`, `er_baseline_vendors.json`) no longer tracked in git — `.example` templates provided instead
 - Hook count reconciled to 29 (consolidated `enforce-file-path-policies`, `enforce-single-question`, and `block-direct-sql` into `write-policy-gate`; added `enforce-mandatory-gate`, `enforce-gate-on-stop`, and `session-log-events` to documentation)

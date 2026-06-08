@@ -120,7 +120,8 @@ def st_mixed_jsonl(draw):
 # ---------------------------------------------------------------------------
 
 class TestProperty1AppendPreservesAndAddsOne:
-    """Feature: session-analytics, Property 1: Append Preserves Existing Lines and Adds Exactly One"""
+    """Feature: session-analytics, Property 1: Append Preserves Existing Lines and \
+Adds Exactly One"""
 
     @given(
         existing_lines=st.lists(

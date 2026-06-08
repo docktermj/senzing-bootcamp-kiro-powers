@@ -998,7 +998,11 @@ class TestErrorScenarios:
 
             assert exit_code == 0
             output = buf.getvalue()
-            assert "Warning" in output or "not found" in output.lower() or "not updated" in output.lower()
+            assert (
+                "Warning" in output
+                or "not found" in output.lower()
+                or "not updated" in output.lower()
+            )
 
     def test_invalid_json_progress_file(self):
         """Invalid JSON in progress file prints warning."""
@@ -1086,7 +1090,7 @@ class TestDatabaseScenarios:
         """Backup found + user confirms → database restored."""
         with tempfile.TemporaryDirectory() as td:
             fake_script = self._setup_db_module(td)
-            root = Path(td)
+            Path(td)
 
             buf = StringIO()
             # Two prompts: confirmation + db restore

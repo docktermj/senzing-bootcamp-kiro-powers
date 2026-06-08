@@ -755,8 +755,16 @@ st_track = st.sampled_from(["Core Bootcamp", "Advanced Topics", "Unknown"])
 st_module_record = st.builds(
     ModuleRecord,
     number=st.integers(min_value=1, max_value=11),
-    name=st.text(min_size=1, max_size=30, alphabet=st.characters(whitelist_categories=("L", "N", "P"))),
-    outcome=st.text(min_size=0, max_size=50, alphabet=st.characters(whitelist_categories=("L", "N", "P", "Z"))),
+    name=st.text(
+        min_size=1,
+        max_size=30,
+        alphabet=st.characters(whitelist_categories=("L", "N", "P")),
+    ),
+    outcome=st.text(
+        min_size=0,
+        max_size=50,
+        alphabet=st.characters(whitelist_categories=("L", "N", "P", "Z")),
+    ),
 )
 """Strategy generating a random ModuleRecord."""
 
@@ -1007,7 +1015,7 @@ class TestPropertyJournalOutcomes:
             outcomes[mod_num] = outcome
 
         # Build CertificateData
-        module_names = {num: f"Module {num}" for num in modules}
+        {num: f"Module {num}" for num in modules}
         module_records = [
             ModuleRecord(
                 number=num,

@@ -492,7 +492,8 @@ def st_content_free_text(draw: st.DrawFn) -> str:
 
 
 class TestSubstantiveAcknowledgmentRejection:
-    """Feature: agent-behavior-rules, Property 4: Substantive Acknowledgment Rejection of Content-Free Phrases"""
+    """Feature: agent-behavior-rules, Property 4: Substantive Acknowledgment \
+Rejection of Content-Free Phrases"""
 
     @given(text=st_content_free_text())
     @settings(max_examples=100)

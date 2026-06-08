@@ -200,7 +200,8 @@ class TestPreservationProperties:
     def test_property_2a_slow_path_contains_blocking_for_external_paths(
         self, prefix: str, suffix: str
     ):
-        """For any external path prefix, the prompt SLOW PATH section contains blocking instructions.
+        """For any external path prefix, the prompt SLOW PATH section contains \
+blocking instructions.
 
         **Validates: Requirements 3.1**
 

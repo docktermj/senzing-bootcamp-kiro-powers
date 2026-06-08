@@ -275,7 +275,8 @@ class TestCordDataPriorityProperties:
                 f"CORD must precede synthesized test data."
             )
 
-    # Feature: cord-data-priority, Property 2: CORD reference URL present wherever CORD is recommended
+    # Feature: cord-data-priority, Property 2: CORD reference URL present wherever
+    # CORD is recommended
     @pytest.mark.skipif(
         not _FILES_RECOMMENDING_CORD,
         reason="No Markdown files found recommending CORD data",

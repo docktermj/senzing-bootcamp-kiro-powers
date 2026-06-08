@@ -183,7 +183,9 @@ class TestPrematureCheckpoint:
 
         has_stop = bool(_STOP_KEYWORDS.search(text_between))
         has_conditional_checkpoint = bool(
-            re.search(r"(after|once|when).*(respond|answer|reply|input)", text_between, re.IGNORECASE)
+            re.search(
+                r"(after|once|when).*(respond|answer|reply|input)", text_between, re.IGNORECASE
+            )
         )
 
         assert has_stop or has_conditional_checkpoint, (

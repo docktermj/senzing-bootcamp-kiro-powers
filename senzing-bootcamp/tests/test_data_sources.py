@@ -268,7 +268,8 @@ class TestProperty1YAMLRoundTrip:
 
 
 class TestPropertyTestLoadStatusRoundTrip:
-    """Feature: mapping-workflow-integration, Property 1: Registry schema round-trip with test_load_status
+    """Feature: mapping-workflow-integration, Property 1: Registry schema round-trip \
+with test_load_status
 
     For any valid data source registry entry that includes a test_load_status
     field (one of complete, skipped, or None) and an optional test_entity_count
@@ -282,7 +283,8 @@ class TestPropertyTestLoadStatusRoundTrip:
     @given(registry=_registries(min_sources=1, max_sources=8))
     @settings(max_examples=10)
     def test_round_trip_preserves_test_load_status(self, registry):
-        """Feature: mapping-workflow-integration, Property 1: Registry schema round-trip with test_load_status"""
+        """Feature: mapping-workflow-integration, Property 1: Registry schema \
+round-trip with test_load_status"""
         # Registry → dict → YAML → dict → Registry
         original_dict = _registry_to_dict(registry)
         yaml_str = serialize_registry_yaml(original_dict)
@@ -319,7 +321,8 @@ class TestPropertyTestLoadStatusRoundTrip:
 
 
 class TestProperty2Validation:
-    """Feature: data-source-registry, Property 2: Registry validation accepts valid and rejects invalid
+    """Feature: data-source-registry, Property 2: Registry validation accepts valid \
+and rejects invalid
 
     Valid registries produce empty error lists; invalid ones produce non-empty
     error lists with messages identifying each specific violation.
@@ -467,7 +470,8 @@ class TestProperty5SummaryStatistics:
 
 
 class TestProperty6Recommendations:
-    """Feature: data-source-registry, Property 6: Recommendations correctly identify issues and load order
+    """Feature: data-source-registry, Property 6: Recommendations correctly identify \
+issues and load order
 
     recommend_actions SHALL flag low-quality not_loaded sources, pending-mapping
     not_loaded sources, and produce a quality-descending load order.
@@ -478,7 +482,8 @@ class TestProperty6Recommendations:
     @given(registry=_registries(min_sources=0, max_sources=8))
     @settings(max_examples=10)
     def test_recommendations_correct(self, registry):
-        """Feature: data-source-registry, Property 6: Recommendations identify issues and load order"""
+        """Feature: data-source-registry, Property 6: Recommendations identify issues \
+and load order"""
         recs = recommend_actions(registry)
         recs_text = "\n".join(recs)
 
@@ -543,7 +548,8 @@ class TestProperty6Recommendations:
 
 
 class TestProperty7StatusIntegration:
-    """Feature: data-source-registry, Property 7: Status integration section correct counts and warnings
+    """Feature: data-source-registry, Property 7: Status integration section correct \
+counts and warnings
 
     render_data_sources_section SHALL contain load status counts and quality
     warnings for sources below threshold.
@@ -554,7 +560,8 @@ class TestProperty7StatusIntegration:
     @given(registry=_registries(min_sources=1, max_sources=8))
     @settings(max_examples=10)
     def test_status_section_counts_and_warnings(self, registry):
-        """Feature: data-source-registry, Property 7: Status integration section correct counts and warnings"""
+        """Feature: data-source-registry, Property 7: Status integration section \
+correct counts and warnings"""
         # Serialize to YAML, then use _read_file injection
         reg_dict = _registry_to_dict(registry)
         yaml_content = serialize_registry_yaml(reg_dict)
@@ -949,7 +956,8 @@ class TestDefaultEntryValues:
         assert "Issues:" not in output
 
     def test_yaml_parse_default_entry_values(self):
-        """Parsing a YAML entry with null quality, pending mapping, not_loaded produces correct defaults."""
+        """Parsing a YAML entry with null quality, pending mapping, not_loaded \
+produces correct defaults."""
         yaml_content = (
             'version: "2"\n'
             "sources:\n"
@@ -974,7 +982,8 @@ class TestDefaultEntryValues:
         assert entry.load_status == "not_loaded"
 
     def test_yaml_parse_absent_issues_field(self):
-        """Parsing a YAML entry without the issues field produces a RegistryEntry with issues as None."""
+        """Parsing a YAML entry without the issues field produces a RegistryEntry \
+with issues as None."""
         yaml_content = (
             'version: "2"\n'
             "sources:\n"

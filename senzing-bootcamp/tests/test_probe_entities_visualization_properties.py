@@ -785,7 +785,8 @@ def st_entity_detail_with_resolution_rules(draw) -> dict:
 
 
 class TestResolutionRuleExtractionPreservesAssociation:
-    """Feature: probe-entities-visualization, Property 4: Resolution rule extraction preserves per-record association
+    """Feature: probe-entities-visualization, Property 4: Resolution rule extraction \
+preserves per-record association
 
     For any valid entity detail JSON containing records with resolution rules,
     the _extract_resolution_rules function SHALL return a list where each entry
@@ -937,7 +938,8 @@ def st_exception_type_and_message(draw) -> tuple[str, str]:
 
 
 class TestEnrichmentErrorGracefulDegradation:
-    """Feature: probe-entities-visualization, Property 5: Enrichment error produces graceful degradation
+    """Feature: probe-entities-visualization, Property 5: Enrichment error produces \
+graceful degradation
 
     For any exception raised during get_entity_by_entity_id (with any
     exception type name and any message string), the enrichment result
@@ -1203,7 +1205,8 @@ def st_single_record_entity_detail(draw) -> tuple[dict, dict]:
 
 
 class TestSingleRecordEntitiesEmptyPerRecordFields:
-    """Feature: probe-entities-visualization, Property 6: Single-record entities have empty per-record fields
+    """Feature: probe-entities-visualization, Property 6: Single-record entities have \
+empty per-record fields
 
     For any entity detail representing a single-record entity (record count
     = 1), the enrichment result SHALL have `match_keys.per_record` as an

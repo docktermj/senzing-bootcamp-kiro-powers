@@ -267,6 +267,17 @@ def st_other_gate(draw: st.DrawFn) -> tuple[vmg.MandatoryGate, dict]:
 # fix's scope and byte-stable going forward. An independent content assertion
 # (test_status_py_imports_intact) pairs the regenerated digest with the actual
 # imported symbols so the digest can never silently lock in a regression.
+#
+# NOTE (ruff-lint-gate-fix Phase D re-baseline): the `scripts/status.py` digest
+# was recomputed again after the ruff E501 remediation reflowed long lines to
+# <=100 chars. The reflow is layout-only (wrapped expressions in parens, implicit
+# f-string concatenation, and backslash line-continuations inside the embedded
+# CSS triple-quoted string — all of which Python collapses to byte-identical
+# values). Verified byte-identical: _render_head() and the full rendered
+# dashboard HTML (populated and empty/no-progress paths) match the pre-reflow
+# output exactly. The file remains outside this fix's scope; only its source
+# layout changed, not its emitted output. test_status_py_imports_intact still
+# guards against any import regression.
 # ---------------------------------------------------------------------------
 
 _UNRELATED_FILE_BASELINES: dict[str, str] = {
@@ -277,7 +288,7 @@ _UNRELATED_FILE_BASELINES: dict[str, str] = {
     "scripts/progress_utils.py":
         "7b3355d9165ec39a8f49c65bb9a1e5f27610f8f3ad727b93e6272587ee6dc29f",
     "scripts/status.py":
-        "cb9b297935dedea3af89624e29490915437be407297864fd5167dcad8af1ffaa",
+        "81ee75888a5ce845945bd4214875f583c5365bbe1f17ce5d4d0aa829691fad79",
     "steering/module-01-business-problem.md":
         "1f10c561826b8b397fc257be3cfc2dea0ed7aa4560f6663d9eea45838f29431f",
     "steering/lang-python.md":

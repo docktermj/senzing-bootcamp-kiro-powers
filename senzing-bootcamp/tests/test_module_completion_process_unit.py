@@ -199,7 +199,8 @@ class TestGraduationRecovery:
         assert errors == []
 
     def test_recap_validation_fails_when_progress_has_modules_but_recap_missing(self) -> None:
-        """validate_recap_consistency reports errors for modules in progress but missing from recap."""
+        """validate_recap_consistency reports errors for modules in progress but \
+missing from recap."""
         errors = validate_recap_consistency([], [1, 2, 3])
         assert len(errors) == 3
         assert any("1" in err for err in errors)

@@ -51,10 +51,6 @@ ARTIFACT_CREATORS = {
     6: [
         lambda r: _write(r / "src" / "load" / "loader.py", "x"),
         lambda r: _write(r / "database" / "G2C.db", "data"),
-    ],
-    6: [
-        lambda r: _write(r / "src" / "load" / "loader.py", "x"),
-        lambda r: _write(r / "database" / "G2C.db", "data"),
         lambda r: _write(r / "docs" / "loading_strategy.md", "x"),
     ],
     7: [

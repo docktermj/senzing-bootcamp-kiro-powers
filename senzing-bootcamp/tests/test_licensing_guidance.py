@@ -259,13 +259,13 @@ class TestLicensingGuidanceScope:
         # Also allow well-known email addresses (not URLs but sometimes matched)
         # and URLs that were already in Step 5 before our changes
         # The key check: no NEW urls introduced that don't exist elsewhere
-        new_urls = step5_urls - non_step5_urls
+        step5_urls - non_step5_urls
         # Allow empty set (all URLs already exist elsewhere) or known pre-existing
         # Step 5 URLs that are self-contained (e.g., senzing.com/end-user-license)
         # Since the requirement says "no new URLs beyond what already exists in the
         # file", we check that Step 5 URLs are a subset of all URLs in the full file.
         all_urls = set(url_pattern.findall(_CONTENT))
-        step5_only_urls = step5_urls - (all_urls - step5_urls)
+        step5_urls - (all_urls - step5_urls)
         # A URL that ONLY appears in Step 5 is fine if it was there before our change.
         # The real test: no URL in Step 5 is absent from the rest of the file,
         # unless it was already there (pre-existing Step 5 content).

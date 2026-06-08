@@ -473,7 +473,8 @@ def st_graph_container_css_block() -> st.SearchStrategy[str]:
 
 
 class TestGraphContainerViewportRelativeHeight:
-    """Feature: module3-visualization-fixes, Property 2: Graph container uses viewport-relative height
+    """Feature: module3-visualization-fixes, Property 2: Graph container uses \
+viewport-relative height
 
     For any CSS height specification associated with the graph container in
     the steering file, the value SHALL be a viewport-relative expression

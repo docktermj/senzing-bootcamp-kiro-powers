@@ -56,7 +56,8 @@ def _extract_step5(content: str) -> str:
     '## Step' heading (exclusive).
     """
     pattern = re.compile(
-        r"(## Step 5: Configure License.*?)(?=\n## (?:Step \d|Success Criteria|Transition|Troubleshooting|Agent Behavior))",
+        r"(## Step 5: Configure License.*?)"
+        r"(?=\n## (?:Step \d|Success Criteria|Transition|Troubleshooting|Agent Behavior))",
         re.DOTALL,
     )
     match = pattern.search(content)
@@ -93,7 +94,8 @@ def _extract_all_steps(content: str) -> dict[str, str]:
     steps: dict[str, str] = {}
     # Match ## Step N: ... sections
     step_pattern = re.compile(
-        r"(## (Step \d+):[^\n]*\n.*?)(?=\n## (?:Step \d|Success Criteria|Transition|Troubleshooting|Agent Behavior))",
+        r"(## (Step \d+):[^\n]*\n.*?)"
+        r"(?=\n## (?:Step \d|Success Criteria|Transition|Troubleshooting|Agent Behavior))",
         re.DOTALL,
     )
     for match in step_pattern.finditer(content):

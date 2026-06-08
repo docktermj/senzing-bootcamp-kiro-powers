@@ -496,7 +496,10 @@ class TestCLIArgumentDefaults:
 
         captured = capsys.readouterr()
         assert exit_code == 1
-        assert "not a directory" in captured.err.lower() or "does not exist" in captured.err.lower(), (
+        assert (
+            "not a directory" in captured.err.lower()
+            or "does not exist" in captured.err.lower()
+        ), (
             f"Expected directory error in stderr, got: {captured.err!r}"
         )
 

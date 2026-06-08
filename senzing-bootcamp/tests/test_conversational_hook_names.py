@@ -76,8 +76,12 @@ class TestConversationalPatternCompliance:
 import re
 import subprocess
 
-_REGISTRY_CRITICAL_PATH = Path(__file__).resolve().parent.parent / "steering" / "hook-registry-critical.md"
-_REGISTRY_MODULES_PATH = Path(__file__).resolve().parent.parent / "steering" / "hook-registry-modules.md"
+_REGISTRY_CRITICAL_PATH = (
+    Path(__file__).resolve().parent.parent / "steering" / "hook-registry-critical.md"
+)
+_REGISTRY_MODULES_PATH = (
+    Path(__file__).resolve().parent.parent / "steering" / "hook-registry-modules.md"
+)
 _SCRIPTS_DIR = Path(__file__).resolve().parent.parent / "scripts"
 
 # Capture baseline values of version, description, when, then for all 24 hooks.

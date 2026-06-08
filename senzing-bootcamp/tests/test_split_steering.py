@@ -81,7 +81,10 @@ def module_content_strategy(draw):
         for step in range(step_start, step_end + 1):
             line = draw(_safe_text())
             lines.append(f"{step}. {line}")
-            lines.append(f"   **Checkpoint:** Write step {step} to `config/bootcamp_progress.json`.\n")
+            lines.append(
+                f"   **Checkpoint:** Write step {step} to "
+                f"`config/bootcamp_progress.json`.\n"
+            )
 
         phases_content.append("\n".join(lines) + "\n\n")
         step_ranges.append((step_start, step_end))
@@ -159,7 +162,9 @@ class TestProperty1ContentPreservation:
                 manifest_idx = i
                 break
 
-        preamble_text = "\n".join(root_lines_list[:manifest_idx]).strip() if manifest_idx else root_body
+        preamble_text = (
+            "\n".join(root_lines_list[:manifest_idx]).strip() if manifest_idx else root_body
+        )
 
         sub_bodies = [strip_fm(sc).strip() for sc in sub_contents]
         reconstructed = preamble_text + "\n\n" + "\n\n".join(sub_bodies)
@@ -413,7 +418,10 @@ class TestProperty6StepToPhaseMapping:
                 lines.append(f"      {phase.slug}:")
                 lines.append(f"        file: test-module-99-{phase.slug}.md")
                 lines.append(f"        token_count: {_token_count(phase.content)}")
-                lines.append(f"        size_category: {_size_category(_token_count(phase.content))}")
+                lines.append(
+                    f"        size_category: "
+                    f"{_size_category(_token_count(phase.content))}"
+                )
                 lines.append(f"        step_range: [{phase.step_start}, {phase.step_end}]")
 
             lines.append("")

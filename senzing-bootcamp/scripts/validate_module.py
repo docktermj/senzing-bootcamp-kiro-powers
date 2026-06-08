@@ -262,7 +262,6 @@ def parse_module_artifacts_yaml(path: str) -> dict:
     current_module: int | None = None
     current_section: str | None = None  # "produces" or "requires_from"
     current_artifact: dict | None = None
-    current_req_module: int | None = None
 
     for line in lines:
         raw = line.rstrip()
@@ -290,7 +289,6 @@ def parse_module_artifacts_yaml(path: str) -> dict:
             current_module = int(content.rstrip(":"))
             result["modules"][current_module] = {"produces": [], "requires_from": {}}
             current_section = None
-            current_req_module = None
             continue
 
         # Section headers (indent 4)
@@ -301,11 +299,9 @@ def parse_module_artifacts_yaml(path: str) -> dict:
                 current_artifact = None
             if content == "produces:":
                 current_section = "produces"
-                current_req_module = None
                 continue
             elif content == "requires_from:":
                 current_section = "requires_from"
-                current_req_module = None
                 continue
 
         # Produces list items (indent 6, starts with "- path:")
@@ -345,7 +341,6 @@ def parse_module_artifacts_yaml(path: str) -> dict:
                         if item:
                             paths.append(item)
                 result["modules"][current_module]["requires_from"][mod_num] = paths
-                current_req_module = mod_num
             continue
 
     # Flush last artifact

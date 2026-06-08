@@ -360,7 +360,8 @@ def _extract_step_7_section(content: str) -> str:
 def _extract_steps_1_to_5(content: str) -> str:
     """Extract Steps 1–5 content."""
     match = re.search(
-        r"(1\.\s+\*\*Initialize version control\*\*.*?)(?=6\.\s+\*\*Infer details from response\*\*)",
+        r"(1\.\s+\*\*Initialize version control\*\*.*?)"
+        r"(?=6\.\s+\*\*Infer details from response\*\*)",
         content,
         re.DOTALL,
     )
@@ -624,7 +625,8 @@ class TestPreservationLicenseGuidance:
         else:
             # Fallback: extract from **A. RECORD TYPES** to **F. INTEGRATION TARGETS** end
             inference_match = re.search(
-                r"(\*\*A\. RECORD TYPES\*\*.*?\*\*F\. INTEGRATION TARGETS\*\*.*?)(?=\n\s*\*\*Checkpoint)",
+                r"(\*\*A\. RECORD TYPES\*\*.*?\*\*F\. INTEGRATION TARGETS\*\*.*?)"
+                r"(?=\n\s*\*\*Checkpoint)",
                 step_6,
                 re.DOTALL,
             )
@@ -687,7 +689,8 @@ class TestPreservationLicenseGuidance:
         else:
             # Fallback: extract from **A. to **F. end
             inference_match = re.search(
-                r"(\*\*A\. RECORD TYPES\*\*.*?\*\*F\. INTEGRATION TARGETS\*\*.*?)(?=\n\s*\*\*Checkpoint)",
+                r"(\*\*A\. RECORD TYPES\*\*.*?\*\*F\. INTEGRATION TARGETS\*\*.*?)"
+                r"(?=\n\s*\*\*Checkpoint)",
                 step_6,
                 re.DOTALL,
             )

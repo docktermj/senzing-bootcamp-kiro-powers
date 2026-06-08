@@ -285,7 +285,10 @@ class TestNoEnforcementOnNonMandatoryAdvancement:
         hook_prompt = _UNFIXED_GATE_HOOK_JSON["then"]["prompt"]
 
         # Verify the hook only cares about module completion, not step advancement
-        assert "modules_completed" in hook_prompt or "module_3_verification.status" in hook_prompt, (
+        assert (
+            "modules_completed" in hook_prompt
+            or "module_3_verification.status" in hook_prompt
+        ), (
             "Gate hook prompt should reference module completion conditions"
         )
 
@@ -539,7 +542,10 @@ class TestContextBudgetIndependence:
         """
         hook_prompt = _UNFIXED_GATE_HOOK_JSON["then"]["prompt"]
 
-        assert "context" not in hook_prompt.lower() or "context" in "context budget" not in hook_prompt.lower(), (
+        assert (
+            "context" not in hook_prompt.lower()
+            or "context" in "context budget" not in hook_prompt.lower()
+        ), (
             "Gate hook should not reference context budget"
         )
         # More precise check: no "budget" in the hook prompt

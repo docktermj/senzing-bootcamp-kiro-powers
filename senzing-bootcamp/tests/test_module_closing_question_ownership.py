@@ -265,26 +265,6 @@ class TestBugConditionAffectedFiles:
             + "\n".join(f"  - {w}" for w in waits)
         )
 
-    # -- Module 07: now Query and Visualize (was module-08) --
-
-    def test_module_07_no_inline_questions(self) -> None:
-        """module-07 should NOT contain inline closing questions."""
-        content = _read_file(_AFFECTED_FILES["module-07"])
-        questions = _find_inline_pointing_questions(content)
-        assert len(questions) == 0, (
-            f"module-07 contains {len(questions)} inline question(s):\n"
-            + "\n".join(f"  - {q}" for q in questions)
-        )
-
-    def test_module_07_no_wait_instructions(self) -> None:
-        """module-07 should NOT contain WAIT instructions."""
-        content = _read_file(_AFFECTED_FILES["module-07"])
-        waits = _find_wait_instructions(content)
-        assert len(waits) == 0, (
-            f"module-07 contains {len(waits)} WAIT instruction(s):\n"
-            + "\n".join(f"  - {w}" for w in waits)
-        )
-
     # -- Module 11: Deployment (was module-12) --
 
     def test_module_11_no_inline_questions(self) -> None:

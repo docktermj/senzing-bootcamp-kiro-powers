@@ -1037,7 +1037,12 @@ class TestUnitGuardConditions:
     def test_phase2_setup_recovery_has_guard_condition(self) -> None:
         """Phase-2 Setup Recovery file begins with a guard condition block."""
         content = _PHASE2_SETUP_RECOVERY.read_text(encoding="utf-8")
-        assert "## Guard Condition" in content or "Guard Condition" in content.split("\n\n")[1] if len(content.split("\n\n")) > 1 else False, (
+        assert (
+            "## Guard Condition" in content
+            or "Guard Condition" in content.split("\n\n")[1]
+            if len(content.split("\n\n")) > 1
+            else False
+        ), (
             "Phase-2 Setup Recovery file must contain a Guard Condition section"
         )
 

@@ -72,7 +72,6 @@ def parse_feedback_file(
         priority = ""
         category = ""
         body_lines: list[str] = []
-        in_body = False
 
         for line in lines[1:]:
             stripped = line.strip()

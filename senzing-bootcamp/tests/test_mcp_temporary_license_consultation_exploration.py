@@ -82,7 +82,9 @@ def is_bug_condition(x: LicenseSituation) -> bool:
         True when capacity is exceeded or a capacity error occurred AND no
         sufficient custom license is present.
     """
-    return (x.total_record_count > 500 or x.error_code == "SENZ9000") and not x.has_sufficient_license
+    return (
+        x.total_record_count > 500 or x.error_code == "SENZ9000"
+    ) and not x.has_sufficient_license
 
 
 @st.composite

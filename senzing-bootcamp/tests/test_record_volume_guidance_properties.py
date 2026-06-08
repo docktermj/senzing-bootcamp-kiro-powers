@@ -488,7 +488,8 @@ class TestGuidanceGenerators:
     def test_property_8_database_guidance_sqlite_sufficient_low_tiers(
         self, tier: str
     ) -> None:
-        """Feature: record-volume-guidance, Property 8: Database guidance — SQLite sufficient for low tiers.
+        """Feature: record-volume-guidance, Property 8: Database guidance — SQLite \
+sufficient for low tiers.
 
         For any tier in {demo, small}, get_database_guidance returns a string
         confirming SQLite is sufficient for production use at the stated volume.
@@ -515,7 +516,8 @@ class TestGuidanceGenerators:
     def test_property_9_database_guidance_postgresql_for_high_tiers(
         self, tier: str
     ) -> None:
-        """Feature: record-volume-guidance, Property 9: Database guidance — PostgreSQL for high tiers.
+        """Feature: record-volume-guidance, Property 9: Database guidance — PostgreSQL \
+for high tiers.
 
         For any tier in {medium, large} with current_database="sqlite",
         get_database_guidance returns a string recommending PostgreSQL and
@@ -544,7 +546,8 @@ class TestGuidanceGenerators:
     def test_property_10_database_guidance_bootcamp_disclaimer(
         self, tier: str
     ) -> None:
-        """Feature: record-volume-guidance, Property 10: Database guidance — bootcamp disclaimer for all tiers.
+        """Feature: record-volume-guidance, Property 10: Database guidance — bootcamp \
+disclaimer for all tiers.
 
         For any tier in {demo, small, medium, large}, get_database_guidance returns
         a string containing a statement that the bootcamp continues using the
@@ -573,7 +576,8 @@ class TestGuidanceGenerators:
     def test_property_11_database_guidance_postgresql_acknowledgment(
         self, tier: str
     ) -> None:
-        """Feature: record-volume-guidance, Property 11: Database guidance — PostgreSQL acknowledgment.
+        """Feature: record-volume-guidance, Property 11: Database guidance — \
+PostgreSQL acknowledgment.
 
         For any tier in {medium, large} with current_database="postgresql",
         get_database_guidance returns a string that acknowledges the existing
@@ -603,7 +607,8 @@ class TestGuidanceGenerators:
     def test_property_12_performance_guidance_fast_completion_low_tiers(
         self, tier: str
     ) -> None:
-        """Feature: record-volume-guidance, Property 12: Performance guidance — fast completion for low tiers.
+        """Feature: record-volume-guidance, Property 12: Performance guidance — fast \
+completion for low tiers.
 
         For any tier in {demo, small}, get_performance_guidance returns a string
         indicating loading completes in seconds to minutes.
@@ -630,7 +635,8 @@ class TestGuidanceGenerators:
     def test_property_13_performance_guidance_mcp_reference(
         self, tier: str
     ) -> None:
-        """Feature: record-volume-guidance, Property 13: Performance guidance — MCP reference for all tiers.
+        """Feature: record-volume-guidance, Property 13: Performance guidance — MCP \
+reference for all tiers.
 
         For any tier in {demo, small, medium, large}, get_performance_guidance
         returns a string referencing search_docs with category="configuration".

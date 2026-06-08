@@ -391,7 +391,9 @@ def main(argv: list[str] | None = None) -> None:
     bootcamp_root = Path(__file__).resolve().parent.parent
     steering_dir = Path(args.steering) if args.steering else bootcamp_root / "steering"
     progress_path = (
-        Path(args.progress) if args.progress else bootcamp_root / "config" / "bootcamp_progress.json"
+        Path(args.progress)
+        if args.progress
+        else bootcamp_root / "config" / "bootcamp_progress.json"
     )
 
     # Parse mandatory gates from steering files

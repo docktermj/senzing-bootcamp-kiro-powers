@@ -390,7 +390,7 @@ class TestCLIBehavior:
                     status="fail",
                     message="PRAGMA integrity_check: corruption",
                 )
-                exit_code = main(argv=["--db-path", str(db_file), "--repair"])
+                main(argv=["--db-path", str(db_file), "--repair"])
                 mock_repair.assert_called_once()
 
     def test_json_produces_valid_json_output(self, tmp_path: Path, capsys) -> None:

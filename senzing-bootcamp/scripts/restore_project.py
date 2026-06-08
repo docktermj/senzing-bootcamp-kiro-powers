@@ -15,7 +15,11 @@ def color_supported():
     if os.environ.get("NO_COLOR"):
         return False
     if sys.platform == "win32":
-        return os.environ.get("WT_SESSION") or os.environ.get("TERM_PROGRAM") or "ANSICON" in os.environ
+        return (
+            os.environ.get("WT_SESSION")
+            or os.environ.get("TERM_PROGRAM")
+            or "ANSICON" in os.environ
+        )
     return hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
 
 
@@ -38,8 +42,14 @@ def main():
         print("Usage: python scripts/restore_project.py <backup-file.zip> [restore-directory]")
         print()
         print("Examples:")
-        print("  python scripts/restore_project.py backups/senzing-bootcamp-backup_20260326_143022.zip")
-        print("  python scripts/restore_project.py backups/senzing-bootcamp-backup_20260326_143022.zip ~/new-project")
+        print(
+            "  python scripts/restore_project.py "
+            "backups/senzing-bootcamp-backup_20260326_143022.zip"
+        )
+        print(
+            "  python scripts/restore_project.py "
+            "backups/senzing-bootcamp-backup_20260326_143022.zip ~/new-project"
+        )
         print()
         backups_dir = project_root / "backups"
         zips = sorted(backups_dir.glob("*.zip")) if backups_dir.is_dir() else []
@@ -83,7 +93,9 @@ def main():
             sys.exit(0)
 
     if restore_dir == project_root:
-        resp = input(yellow("Warning: This will overwrite files in the current project. Continue? (y/N): ")).strip()
+        resp = input(yellow(
+            "Warning: This will overwrite files in the current project. Continue? (y/N): "
+        )).strip()
         if resp.lower() != "y":
             print("Restore cancelled.")
             sys.exit(0)

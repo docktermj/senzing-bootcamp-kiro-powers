@@ -49,7 +49,6 @@ def _parse_artifacts_yaml() -> dict:
     modules: dict[int, dict] = {}
     current_module: int | None = None
     current_section: str | None = None  # "produces" or "requires_from"
-    current_requires_module: int | None = None
     current_produce_item: dict | None = None
 
     for line in lines:
@@ -72,7 +71,6 @@ def _parse_artifacts_yaml() -> dict:
                 current_module = int(key)
                 modules[current_module] = {"produces": [], "requires_from": {}}
                 current_section = None
-                current_requires_module = None
                 current_produce_item = None
             continue
 
@@ -82,7 +80,6 @@ def _parse_artifacts_yaml() -> dict:
             if section in ("produces", "requires_from"):
                 current_section = section
                 current_produce_item = None
-                current_requires_module = None
             continue
 
         # Produces list item (indent 6): "      - path: ..."
@@ -121,7 +118,6 @@ def _parse_artifacts_yaml() -> dict:
                 paths_str = match.group(2)
                 paths = [p.strip().strip('"') for p in paths_str.split(",")]
                 modules[current_module]["requires_from"][src_module] = paths
-                current_requires_module = src_module
             continue
 
     return modules
@@ -139,11 +135,11 @@ def _get_all_produced_paths() -> dict[int, set[str]]:
 def _get_steering_files_for_module(module_num: int) -> list[Path]:
     """Return all steering file paths for a given module."""
     # Parse steering-index.yaml to find module files
-    text = _STEERING_INDEX_PATH.read_text(encoding="utf-8")
+    _STEERING_INDEX_PATH.read_text(encoding="utf-8")
 
     # Look for the module's root and phase files
     files: list[Path] = []
-    pattern = re.compile(
+    re.compile(
         rf'module-{module_num:02d}[a-z0-9_-]*\.md|'
         rf'module-{module_num:02d}-[a-z0-9_-]*\.md|'
         rf'module-0?{module_num}-[a-z0-9_-]*\.md'
@@ -369,9 +365,10 @@ class TestArtifactChainContinuity:
             )
 
     def test_no_orphan_producers(self):
-        """Every module that produces artifacts (except the last) is consumed by at least one downstream module."""
+        """Every module that produces artifacts (except the last) is consumed by \
+at least one downstream module."""
         modules = _parse_artifacts_yaml()
-        produced_by = _get_all_produced_paths()
+        _get_all_produced_paths()
 
         # Collect all consumed source modules
         consumed_sources: set[int] = set()

@@ -90,10 +90,22 @@ def st_quality_score() -> st.SearchStrategy[QualityScore]:
         QualityScore,
         source_name=st.text(min_size=1, max_size=30),
         overall=st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
-        completeness=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        consistency=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        format_compliance=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        uniqueness=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
+        completeness=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        consistency=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        format_compliance=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        uniqueness=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
     )
 
 
@@ -101,8 +113,14 @@ def st_performance_metrics() -> st.SearchStrategy[PerformanceMetrics]:
     """Strategy producing random PerformanceMetrics instances."""
     return st.builds(
         PerformanceMetrics,
-        loading_throughput_rps=st.one_of(st.none(), st.floats(min_value=0.0, max_value=10000.0, allow_nan=False, allow_infinity=False)),
-        query_response_ms=st.one_of(st.none(), st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False)),
+        loading_throughput_rps=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=10000.0, allow_nan=False, allow_infinity=False),
+        ),
+        query_response_ms=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False),
+        ),
         database_type=st.one_of(st.none(), st.sampled_from(["sqlite", "postgresql"])),
     )
 
@@ -281,7 +299,12 @@ class TestProperty3VisualizationDetection:
                 content = f"<html><body>{filler} {marker} {filler}</body></html>"
             else:
                 # Ensure no markers appear in filler
-                safe_filler = re.sub(r"\b(d3|force|graph|dashboard|entity|svg)\b", "xxxx", filler, flags=re.IGNORECASE)
+                safe_filler = re.sub(
+                    r"\b(d3|force|graph|dashboard|entity|svg)\b",
+                    "xxxx",
+                    filler,
+                    flags=re.IGNORECASE,
+                )
                 content = f"<html><body>{safe_filler}</body></html>"
 
             (tmp_path / "test_viz.html").write_text(content, encoding="utf-8")
@@ -293,7 +316,9 @@ class TestProperty3VisualizationDetection:
             if has_marker:
                 assert "test_viz.html" in viz_paths, "File with marker should be a visualization"
             else:
-                assert "test_viz.html" not in viz_paths, "File without marker should not be a visualization"
+                assert "test_viz.html" not in viz_paths, (
+                    "File without marker should not be a visualization"
+                )
         finally:
             shutil.rmtree(tmp_path, ignore_errors=True)
 
@@ -318,7 +343,9 @@ class TestProperty4ManifestMetadata:
         """Feature: export-results, Property 4: Manifest entries have complete metadata"""
         for entry in manifest.artifacts:
             assert entry.path, "path must be non-empty"
-            assert entry.artifact_type in VALID_ARTIFACT_TYPES, f"invalid type: {entry.artifact_type}"
+            assert entry.artifact_type in VALID_ARTIFACT_TYPES, (
+                f"invalid type: {entry.artifact_type}"
+            )
             assert entry.file_size >= 0, "file_size must be non-negative"
             assert entry.description, "description must be non-empty"
 
@@ -923,9 +950,15 @@ class TestZIPReportAndModuleDefault:
     def test_no_modules_includes_all_artifacts(self):
         """When modules is None, filter returns all artifacts."""
         arts = [
-            ArtifactEntry(path="a.py", artifact_type="source_code", module=1, file_size=10, description="a"),
-            ArtifactEntry(path="b.py", artifact_type="source_code", module=5, file_size=20, description="b"),
-            ArtifactEntry(path="c.md", artifact_type="journal", module=None, file_size=30, description="c"),
+            ArtifactEntry(
+                path="a.py", artifact_type="source_code", module=1, file_size=10, description="a"
+            ),
+            ArtifactEntry(
+                path="b.py", artifact_type="source_code", module=5, file_size=20, description="b"
+            ),
+            ArtifactEntry(
+                path="c.md", artifact_type="journal", module=None, file_size=30, description="c"
+            ),
         ]
         manifest = ArtifactManifest(artifacts=arts, scan_timestamp="2025-01-15T10:00:00Z")
         filtered = ModuleFilter.filter(manifest, None)

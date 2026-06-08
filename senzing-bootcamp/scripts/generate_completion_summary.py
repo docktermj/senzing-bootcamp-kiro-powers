@@ -8,9 +8,11 @@ docs/completion_summary.md. Optionally generates a PDF at docs/completion_summar
 Usage:
     python senzing-bootcamp/scripts/generate_completion_summary.py
     python senzing-bootcamp/scripts/generate_completion_summary.py --log config/session_log.jsonl
-    python senzing-bootcamp/scripts/generate_completion_summary.py --output docs/completion_summary.md
+    python senzing-bootcamp/scripts/generate_completion_summary.py \
+--output docs/completion_summary.md
     python senzing-bootcamp/scripts/generate_completion_summary.py --pdf
-    python senzing-bootcamp/scripts/generate_completion_summary.py --pdf --pdf-output docs/completion_summary.pdf
+    python senzing-bootcamp/scripts/generate_completion_summary.py --pdf \
+--pdf-output docs/completion_summary.pdf
 """
 
 from __future__ import annotations

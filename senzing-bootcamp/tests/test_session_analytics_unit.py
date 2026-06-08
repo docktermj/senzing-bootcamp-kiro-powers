@@ -34,7 +34,8 @@ from session_logger import (
 # ---------------------------------------------------------------------------
 
 class TestBuildLogEntryValid:
-    """9.1 Unit test: build_log_entry with valid inputs returns a LogEntry with correct field values."""
+    """9.1 Unit test: build_log_entry with valid inputs returns a LogEntry with \
+correct field values."""
 
     def test_returns_log_entry_with_correct_fields(self):
         entry = build_log_entry(
@@ -167,7 +168,8 @@ class TestParseLogDefaultPath:
 # ---------------------------------------------------------------------------
 
 class TestComputeSummaryEmpty:
-    """9.6 Unit test: compute_summary with empty entries returns report indicating no data (Req 4.5)."""
+    """9.6 Unit test: compute_summary with empty entries returns report indicating \
+no data (Req 4.5)."""
 
     def test_empty_entries(self):
         report = compute_summary([])

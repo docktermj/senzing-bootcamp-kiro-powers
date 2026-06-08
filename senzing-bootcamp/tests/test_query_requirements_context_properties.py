@@ -151,7 +151,11 @@ class TestReadBeforeInteractOrderingProperty:
     **Validates: Requirements 1.1, 3.1, 3.5**
     """
 
-    STEERING_FILE = Path(__file__).resolve().parent.parent / "steering" / "module-07-query-visualize-discover.md"
+    STEERING_FILE = (
+        Path(__file__).resolve().parent.parent
+        / "steering"
+        / "module-07-query-visualize-discover.md"
+    )
 
     def _extract_step1_content(self) -> str:
         """Extract Step 1 content from the steering file.

@@ -131,7 +131,8 @@ _MATURITY_NOTE_FILES: dict[str, Path] = {
 
 
 class TestMaturityNotesPresence:
-    """Feature: typescript-language-maturity, Property 2: Maturity notes presence in designated files
+    """Feature: typescript-language-maturity, Property 2: Maturity notes presence in \
+designated files
 
     For any file in the set {lang-typescript.md, POWER.md}, it SHALL contain
     a support depth or maturity note that acknowledges varying `find_examples`

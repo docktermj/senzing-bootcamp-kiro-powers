@@ -17,7 +17,11 @@ def color_supported():
     if os.environ.get("NO_COLOR"):
         return False
     if sys.platform == "win32":
-        return os.environ.get("WT_SESSION") or os.environ.get("TERM_PROGRAM") or "ANSICON" in os.environ
+        return (
+            os.environ.get("WT_SESSION")
+            or os.environ.get("TERM_PROGRAM")
+            or "ANSICON" in os.environ
+        )
     return hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
 
 

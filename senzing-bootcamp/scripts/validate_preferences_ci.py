@@ -25,7 +25,7 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from preferences_utils import (
+from preferences_utils import (  # noqa: E402
     KNOWN_TOP_LEVEL_KEYS,
     parse_yaml,
     validate_preferences_schema,

@@ -282,7 +282,12 @@ class TestFilesystemFallbackDetectionBugCondition:
         has_fallback_language = bool(_FALLBACK_LANGUAGE_KEYWORDS.search(step1))
         has_both_required = bool(_BOTH_FILES_REQUIRED_KEYWORDS.search(step1))
 
-        assert has_native_lib and has_build_version and has_fallback_language and has_both_required, (
+        assert (
+            has_native_lib
+            and has_build_version
+            and has_fallback_language
+            and has_both_required
+        ), (
             f"Bug condition confirmed for scenario: "
             f"sdk_on_filesystem={scenario['sdk_on_filesystem']}, "
             f"pythonpath_configured={scenario['pythonpath_configured']}, "

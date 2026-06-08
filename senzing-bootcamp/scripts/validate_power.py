@@ -18,7 +18,12 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from version import VersionError, read_version, read_version_from_frontmatter, validate_version
+from version import (  # noqa: E402
+    VersionError,
+    read_version,
+    read_version_from_frontmatter,
+    validate_version,
+)
 
 
 def color(code, text):
@@ -90,7 +95,6 @@ def check_hook_categories_sync():
     content = categories_path.read_text(encoding="utf-8")
     category_ids: set = set()
     current_top_key = None
-    current_sub_key = None
 
     for line in content.splitlines():
         stripped = line.strip()
@@ -101,7 +105,6 @@ def check_hook_categories_sync():
         if indent == 0 and stripped.endswith(":"):
             key = stripped[:-1].strip()
             current_top_key = key
-            current_sub_key = None
             continue
 
         # Skip non-category blocks. `agentstop_order` is a list-of-mappings
@@ -111,7 +114,7 @@ def check_hook_categories_sync():
             continue
 
         if indent > 0 and stripped.endswith(":") and not stripped.startswith("- "):
-            current_sub_key = stripped[:-1].strip()
+            stripped[:-1].strip()
             continue
 
         if stripped.startswith("- "):
@@ -297,7 +300,9 @@ def check_steering_index_metadata():
     check(has_budget, "budget mapping exists in steering-index.yaml")
 
     if has_budget:
-        budget_fields = ["total_tokens", "reference_window", "warn_threshold_pct", "critical_threshold_pct"]
+        budget_fields = [
+            "total_tokens", "reference_window", "warn_threshold_pct", "critical_threshold_pct"
+        ]
         for field in budget_fields:
             field_match = re.search(rf"^\s+{re.escape(field)}:\s*(\d+)", content, re.MULTILINE)
             check(field_match is not None, f"budget.{field} exists and is an integer")

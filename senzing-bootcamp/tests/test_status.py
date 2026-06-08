@@ -27,9 +27,9 @@ class TestStatusNoProgressFile:
     """Requirement 2.2 — no progress file → 'Not Started'."""
 
     def test_no_progress_file_reports_not_started(self, project_root, capsys):
-        status = _load_status()
+        _load_status()
         with patch.object(sys, "argv", ["status.py"]):
-            with patch("status.Path") as MockPath:
+            with patch("status.Path"):
                 # We need to run main() but it does os.chdir based on __file__
                 # Instead, test the logic directly: when no file exists the
                 # default status is "Not Started".
@@ -101,7 +101,9 @@ class TestStatusAllComplete:
 class TestStatusSync:
     """Requirement 2.4 — --sync writes PROGRESS_TRACKER.md."""
 
-    def test_sync_writes_tracker(self, project_root, write_progress_file, sample_progress_data, capsys):
+    def test_sync_writes_tracker(
+        self, project_root, write_progress_file, sample_progress_data, capsys
+    ):
         data = sample_progress_data(modules_completed=[1, 2], current_module=3)
         write_progress_file(data)
 
@@ -125,7 +127,9 @@ class TestStatusSync:
 class TestStatusEmptyCompleted:
     """Requirement 11.1 — empty modules_completed → not started."""
 
-    def test_empty_modules_completed(self, project_root, write_progress_file, sample_progress_data, capsys):
+    def test_empty_modules_completed(
+        self, project_root, write_progress_file, sample_progress_data, capsys
+    ):
         data = sample_progress_data(modules_completed=[], current_module=1)
         write_progress_file(data)
 

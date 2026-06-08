@@ -44,10 +44,22 @@ def _quality_score_data():
             blacklist_characters="\x00",
         )),
         overall=st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
-        completeness=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        consistency=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        format_compliance=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        uniqueness=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
+        completeness=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        consistency=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        format_compliance=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        uniqueness=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
     )
 
 
@@ -55,11 +67,23 @@ def _performance_data():
     """Strategy for PerformanceData with valid ranges."""
     return st.builds(
         PerformanceData,
-        loading_throughput_rps=st.one_of(st.none(), st.floats(min_value=0.0, max_value=10000.0, allow_nan=False, allow_infinity=False)),
-        query_avg_ms=st.one_of(st.none(), st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False)),
-        query_p95_ms=st.one_of(st.none(), st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False)),
+        loading_throughput_rps=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=10000.0, allow_nan=False, allow_infinity=False),
+        ),
+        query_avg_ms=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False),
+        ),
+        query_p95_ms=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False),
+        ),
         database_type=st.one_of(st.none(), st.sampled_from(_DB_TYPES)),
-        wall_clock_seconds=st.one_of(st.none(), st.floats(min_value=0.0, max_value=86400.0, allow_nan=False, allow_infinity=False)),
+        wall_clock_seconds=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=86400.0, allow_nan=False, allow_infinity=False),
+        ),
     )
 
 
@@ -114,7 +138,9 @@ def _dashboard_data():
         ).map(sorted),
         current_module=st.integers(min_value=1, max_value=12),
         status=st.sampled_from(_STATUSES),
-        language=st.one_of(st.none(), st.sampled_from(["Python", "Java", "Go", "C#", "JavaScript"])),
+        language=st.one_of(
+            st.none(), st.sampled_from(["Python", "Java", "Go", "C#", "JavaScript"])
+        ),
         completion_pct_override=st.none(),  # will be computed
         completion_timestamps=_completion_timestamps(),
         quality_scores=st.lists(_quality_score_data(), min_size=0, max_size=3),
@@ -178,7 +204,9 @@ class TestProperty1SelfContainedHTML:
         """**Validates: Requirements 2.1, 2.2, 2.3**"""
         html = _render(data)
         # No <link rel="stylesheet" href="http...">
-        assert not re.search(r'<link[^>]+rel=["\']stylesheet["\'][^>]+href=["\']http', html, re.IGNORECASE)
+        assert not re.search(
+            r'<link[^>]+rel=["\']stylesheet["\'][^>]+href=["\']http', html, re.IGNORECASE
+        )
         # No <script src="...">
         assert not re.search(r'<script[^>]+src=', html, re.IGNORECASE)
         # No <link href="http...">
@@ -593,7 +621,9 @@ class TestCLIArgumentParsing:
         parser.add_argument("--html", action="store_true")
         parser.add_argument("--output", type=str, default=None)
         parser.add_argument("--no-open", action="store_true")
-        args = parser.parse_args(["--html", "--output", os.path.join(tempfile.gettempdir(), "my_dash.html")])
+        args = parser.parse_args(
+            ["--html", "--output", os.path.join(tempfile.gettempdir(), "my_dash.html")]
+        )
         assert args.output == os.path.join(tempfile.gettempdir(), "my_dash.html")
 
     def test_no_open_flag(self):
@@ -884,4 +914,8 @@ class TestErrorHandling:
             assert data.modules_completed == []
             # Warning should have been printed
             err_output = captured_err.getvalue()
-            assert "Warning" in err_output or "invalid JSON" in err_output.lower() or "warning" in err_output.lower()
+            assert (
+                "Warning" in err_output
+                or "invalid JSON" in err_output.lower()
+                or "warning" in err_output.lower()
+            )

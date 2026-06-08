@@ -178,7 +178,9 @@ class TestProperty2DiskSpaceThreshold:
         """Feature: environment-verification, Property 2: Disk space threshold"""
         DiskUsage = namedtuple("DiskUsage", ["total", "used", "free"])
         free_bytes = int(gb * (1024 ** 3))
-        fake_usage = DiskUsage(total=100 * 1024**3, used=(100 * 1024**3) - free_bytes, free=free_bytes)
+        fake_usage = DiskUsage(
+            total=100 * 1024**3, used=(100 * 1024**3) - free_bytes, free=free_bytes
+        )
 
         with patch("preflight.shutil.disk_usage", return_value=fake_usage):
             results = check_disk_space()

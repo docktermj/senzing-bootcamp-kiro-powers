@@ -81,7 +81,7 @@ class TestSkipTemplateSuppressesOutput:
 
         # Filter to only lines that are template-specific
         skip_lines = stdout_skip.splitlines()
-        template_lines = [
+        [
             line for line in skip_lines
             if any(msg in line for msg in template_messages)
             # Exclude existing Rule 4 checkpoint violations (not template rules)
@@ -91,7 +91,7 @@ class TestSkipTemplateSuppressesOutput:
         # The --skip-template output should have fewer template-specific lines
         # than the standard run
         with_lines = stdout_with.splitlines()
-        with_template_lines = [
+        [
             line for line in with_lines
             if any(msg in line for msg in template_messages[:6])
         ]

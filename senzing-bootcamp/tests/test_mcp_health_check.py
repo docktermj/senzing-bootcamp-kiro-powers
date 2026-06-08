@@ -95,7 +95,10 @@ class TestSessionResumeMCPSection:
 
     def test_contains_timeout_specification(self, session_resume_content: str):
         """session-resume.md specifies a 10-second timeout."""
-        assert "10-second timeout" in session_resume_content or "10 seconds" in session_resume_content
+        assert (
+            "10-second timeout" in session_resume_content
+            or "10 seconds" in session_resume_content
+        )
 
     def test_section_between_2c_and_2e(self, session_resume_content: str):
         """Step 2d appears after Step 2c and before Step 2e."""
@@ -125,7 +128,10 @@ class TestOnboardingFlowMCPSection:
 
     def test_contains_first_time_user_explanation(self, onboarding_content: str):
         """onboarding-flow.md explains what MCP provides for first-time users."""
-        assert "generates SDK code" in onboarding_content or "generate working Senzing code" in onboarding_content
+        assert (
+            "generates SDK code" in onboarding_content
+            or "generate working Senzing code" in onboarding_content
+        )
 
     def test_section_before_step_1(self, onboarding_content: str):
         """Step 0b appears before Step 1 (Directory Structure)."""

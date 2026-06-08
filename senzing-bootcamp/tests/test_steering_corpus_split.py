@@ -981,7 +981,8 @@ _MODULE_3_SPLIT_FILES: tuple[str, ...] = (
 
 
 class TestPropertyContentPreservation:
-    """Feature: steering-corpus-split, Property 4: Content preservation and always-on-core retention.
+    """Feature: steering-corpus-split, Property 4: Content preservation and \
+always-on-core retention.
 
     Two complementary checks:
 

@@ -495,7 +495,10 @@ class TestPreservation:
         # Middle markers
         assert "mapping_workflow" in content
         assert "bootcamp_progress.json" in content
-        assert "step-level checkpointing" in content.lower() or "Step-level checkpointing" in content
+        assert (
+            "step-level checkpointing" in content.lower()
+            or "Step-level checkpointing" in content
+        )
         # End marker — the condensed Context Budget section now points to
         # agent-context-management.md for warn/critical/unload detail.
         assert "Context Budget" in content

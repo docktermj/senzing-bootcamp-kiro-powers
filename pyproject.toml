@@ -5,3 +5,13 @@ src = ["senzing-bootcamp/scripts", "senzing-bootcamp/tests", "tests"]
 
 [tool.ruff.lint]
 select = ["F", "E", "W", "I"]
+
+# E402 (module-import-not-at-top) is expected in test files: they manipulate
+# sys.path before importing scripts-as-modules (scripts aren't packages), the
+# documented pattern in .kiro/steering/python-conventions.md. These directories
+# uniformly use that pattern, so a per-file-ignore is clearer than repeating a
+# per-line `# noqa` in every test. Scripts that need it use a targeted
+# `# noqa: E402` instead, since only a single import is affected there.
+[tool.ruff.lint.per-file-ignores]
+"senzing-bootcamp/tests/*" = ["E402"]
+"tests/*" = ["E402"]

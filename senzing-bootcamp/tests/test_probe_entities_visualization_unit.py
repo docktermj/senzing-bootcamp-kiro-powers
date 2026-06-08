@@ -161,7 +161,8 @@ class TestProbeEntitiesFrontendRenderingSpecifications:
     """
 
     def test_match_key_inline_chip_elements(self) -> None:
-        """Assert steering file specifies inline <span> elements with visible boundary for match keys.
+        """Assert steering file specifies inline <span> elements with visible \
+boundary for match keys.
 
         Each feature indicator (+NAME, +DOB) must be rendered as a separate
         inline <span> element with a visible border/background distinguishing

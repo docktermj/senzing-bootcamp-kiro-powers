@@ -2246,7 +2246,7 @@ class TestDataSourceProperty:
 
         for entry in entries:
             # Verify entry only has the expected fields
-            actual_fields = set(dataclasses.fields(entry).__class__.__name__
+            set(dataclasses.fields(entry).__class__.__name__
                                 for _ in [None])  # dummy
             entry_fields = {f.name for f in dataclasses.fields(entry)}
             assert entry_fields == expected_fields, (

@@ -44,7 +44,6 @@ def _create_artifact(root, module_num):
     if creator is None:
         return
     # Ensure parent dirs exist
-    p = root  # just for reference
     creator_needs_dirs = {
         1: ["docs"], 2: ["database"], 3: ["src", "quickstart_demo"],
         4: ["data", "raw"], 5: ["docs"], 6: ["src", "load"],

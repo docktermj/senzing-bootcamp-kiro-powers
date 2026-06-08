@@ -56,7 +56,8 @@ inclusion: manual
 
 # Module 01 — Test Module
 
-**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner.
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — \
+display the module start banner.
 
 > **User reference:** See docs.
 
@@ -150,11 +151,17 @@ class TestTemplateSections:
                 positions["frontmatter"] = i
             if "**🚀 First:**" in line and "first_read" not in positions:
                 positions["first_read"] = i
-            if re.search(r"\*\*Before/After\b", line, re.IGNORECASE) and "before_after" not in positions:
+            if (
+                re.search(r"\*\*Before/After\b", line, re.IGNORECASE)
+                and "before_after" not in positions
+            ):
                 positions["before_after"] = i
             if re.match(r"^\d+\.\s", line) and "workflow_steps" not in positions:
                 positions["workflow_steps"] = i
-            if re.search(r"\*\*Success indicator\b", line, re.IGNORECASE) and "success_indicator" not in positions:
+            if (
+                re.search(r"\*\*Success indicator\b", line, re.IGNORECASE)
+                and "success_indicator" not in positions
+            ):
                 positions["success_indicator"] = i
 
         # Verify all sections found

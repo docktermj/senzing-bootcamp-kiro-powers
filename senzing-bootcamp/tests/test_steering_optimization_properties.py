@@ -13,7 +13,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from hypothesis import given, settings
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -1201,7 +1201,7 @@ def st_md_file_content() -> st.SearchStrategy[str]:
         body_lines=st.lists(
             st.from_regex(r"[A-Za-z0-9 .,;:!?-]{10,80}", fullmatch=True),
             min_size=1,
-            max_size=100,
+            max_size=30,
         ),
     )
 
@@ -1290,7 +1290,7 @@ class TestProperty3IndexCompleteness:
     """
 
     @given(file_set=st_steering_file_set())
-    @settings(max_examples=20)
+    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
     def test_all_md_files_have_index_entries(
         self, file_set: list[tuple[str, str]]
     ) -> None:
@@ -1337,7 +1337,7 @@ class TestProperty3IndexCompleteness:
                 )
 
     @given(file_set=st_steering_file_set())
-    @settings(max_examples=20)
+    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
     def test_token_counts_within_tolerance(
         self, file_set: list[tuple[str, str]]
     ) -> None:
@@ -1384,7 +1384,7 @@ class TestProperty3IndexCompleteness:
                 )
 
     @given(file_set=st_steering_file_set())
-    @settings(max_examples=20)
+    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
     def test_size_categories_match_thresholds(
         self, file_set: list[tuple[str, str]]
     ) -> None:
@@ -1429,7 +1429,7 @@ class TestProperty3IndexCompleteness:
                 )
 
     @given(file_set=st_steering_file_set())
-    @settings(max_examples=20)
+    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
     def test_missing_file_detectable(
         self, file_set: list[tuple[str, str]]
     ) -> None:

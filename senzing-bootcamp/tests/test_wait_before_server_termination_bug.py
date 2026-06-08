@@ -93,7 +93,9 @@ def _extract_step_94_section3(content: str) -> str:
     # Find the next ### heading to bound the 9.4 section
     next_heading = re.compile(r"^###\s+", re.MULTILINE)
     next_match = next_heading.search(content, heading_match.end())
-    section_94 = content[section_start:next_match.start()] if next_match else content[section_start:]
+    section_94 = (
+        content[section_start:next_match.start()] if next_match else content[section_start:]
+    )
 
     # Find item 3 within 9.4 — "3. **Present to bootcamper"
     item3_pattern = re.compile(r"^3\.\s+\*\*Present\s+to\s+bootcamper", re.MULTILINE)

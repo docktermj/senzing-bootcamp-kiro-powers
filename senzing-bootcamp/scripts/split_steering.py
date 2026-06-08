@@ -7,7 +7,8 @@ steering-index.yaml with phase metadata.
 Usage:
     python senzing-bootcamp/scripts/split_steering.py --module 5
     python senzing-bootcamp/scripts/split_steering.py --module 6
-    python senzing-bootcamp/scripts/split_steering.py --module 5 --steering-dir senzing-bootcamp/steering --index-path senzing-bootcamp/steering/steering-index.yaml
+    python senzing-bootcamp/scripts/split_steering.py --module 5 \
+--steering-dir senzing-bootcamp/steering --index-path senzing-bootcamp/steering/steering-index.yaml
 """
 
 from __future__ import annotations
@@ -420,7 +421,12 @@ def update_steering_index(
     else:
         expanded_match = expanded_pattern.search(content)
         if expanded_match:
-            content = content[:expanded_match.start()] + new_module_entry + "\n" + content[expanded_match.end():]
+            content = (
+                content[:expanded_match.start()]
+                + new_module_entry
+                + "\n"
+                + content[expanded_match.end():]
+            )
 
     # --- Update file_metadata section ---
     fm_start, fm_end = _find_section_range(content, "file_metadata")
@@ -610,7 +616,6 @@ def step_to_phase(
 
     # Parse phase entries
     phase_file = None
-    step_range = None
     for line in module_block.splitlines():
         file_match = re.match(r"\s+file:\s*(\S+)", line)
         if file_match:
@@ -622,7 +627,6 @@ def step_to_phase(
             if start <= step <= end:
                 return phase_file
             phase_file = None
-            step_range = None
 
     return None
 

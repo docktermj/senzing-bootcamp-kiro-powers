@@ -440,7 +440,8 @@ class TestPathCompletionCelebrationOrderingUnchanged:
         )
 
     def test_celebration_offer_ordering_preserved(self) -> None:
-        """Celebration -> export -> record export -> analytics -> certificate -> grad -> feedback."""
+        """Celebration -> export -> record export -> analytics -> certificate -> grad \
+-> feedback."""
         section = _extract_section(
             _read(_MODULE_COMPLETION_FILE), "Path Completion Celebration"
         )

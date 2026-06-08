@@ -578,5 +578,6 @@ class TestRealHookFiles:
             file_desc = _hook_data_by_id[hook_id]["description"]
             registry_desc = _registry_by_id[hook_id].description
             assert file_desc == registry_desc, (
-                f'"{hook_id}" description mismatch — file: "{file_desc}", registry: "{registry_desc}"'
+                f'"{hook_id}" description mismatch — file: "{file_desc}", '
+                f'registry: "{registry_desc}"'
             )

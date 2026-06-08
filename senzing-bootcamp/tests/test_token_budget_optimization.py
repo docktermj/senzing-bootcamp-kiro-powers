@@ -5,6 +5,7 @@ Feature: token-budget-optimization
 
 from __future__ import annotations
 
+import math
 import re
 import subprocess
 import sys
@@ -549,16 +550,19 @@ class TestProperty3SteeringIndexConsistency:
 
     @given(
         content_length=st.integers(min_value=4, max_value=2000),
-        tolerance_factor=st.floats(min_value=0.0, max_value=0.09),
+        data=st.data(),
     )
     @settings(max_examples=20)
     def test_stored_token_count_within_tolerance_of_measured(
-        self, content_length, tolerance_factor
+        self, content_length, data
     ):
         """**Validates: Requirements 2.3, 2.4**
 
         For any file content, a stored token_count within 10% of the measured
-        value (round(len(content) / 4)) satisfies the consistency check.
+        value (round(len(content) / 4)) satisfies the consistency check. The
+        stored value is drawn from the closed integer interval
+        [ceil(measured * 0.90), floor(measured * 1.10)], so it is within the
+        ±10% tolerance by construction and the assertion cannot self-falsify.
         """
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp_path = Path(tmp_dir)
@@ -572,19 +576,18 @@ class TestProperty3SteeringIndexConsistency:
             measured = calculate_token_count(test_file)
             assert measured == round(content_length / 4)
 
-            # Generate a stored value within tolerance
-            stored = round(measured * (1 + tolerance_factor))
+            # Draw a stored value provably within ±10% of measured. The closed
+            # integer interval is non-empty for measured >= 1 because
+            # lo <= measured <= hi.
+            lo = math.ceil(measured * 0.90)
+            hi = math.floor(measured * 1.10)
+            stored = data.draw(st.integers(min_value=lo, max_value=hi))
 
-            # Verify the 10% tolerance check passes
-            if measured > 0:
-                deviation = abs(stored - measured) / measured
-                # For small token counts, allow absolute difference of 1
-                if measured < 50 and abs(stored - measured) <= 1:
-                    pass  # acceptable rounding for small counts
-                else:
-                    assert deviation <= 0.10, (
-                        f"stored={stored}, measured={measured}, deviation={deviation:.2%} > 10%"
-                    )
+            # The 10% tolerance check holds by construction.
+            assert abs(stored - measured) / measured <= 0.10, (
+                f"stored={stored}, measured={measured}, "
+                f"deviation={abs(stored - measured) / measured:.2%} > 10%"
+            )
 
     def test_actual_steering_index_total_tokens_equals_sum(self):
         """Concrete test: budget.total_tokens in the real steering-index.yaml

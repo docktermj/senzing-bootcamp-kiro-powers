@@ -305,8 +305,15 @@ def _serialize_yaml_value(value: str | bool | int | dict | list | None) -> str:
     if isinstance(value, int):
         return str(value)
     if isinstance(value, str):
-        # Quote strings that could be misinterpreted as YAML special values
-        if value in ("true", "false", "null", "~", ""):
+        # Quote strings that could be misinterpreted as YAML special values.
+        # Any string whose lowercased form is a YAML bool/null literal (e.g.
+        # "FalSe", "TRUE") must be quoted so it round-trips back to str rather
+        # than being coerced to a Python bool/None on read.
+        if value in ("true", "false", "null", "~", "") or value.lower() in (
+            "true",
+            "false",
+            "null",
+        ):
             return f'"{value}"'
         if value.startswith(("{", "[", "-", "#", '"', "'")) or ":" in value:
             return f'"{value}"'
@@ -477,9 +484,9 @@ def _parse_scalar(value: str) -> str | int | bool | None:
     """
     if value in ("null", "~", ""):
         return None
-    if value.lower() == "true":
+    if value == "true":
         return True
-    if value.lower() == "false":
+    if value == "false":
         return False
     if (value.startswith('"') and value.endswith('"')) or (
         value.startswith("'") and value.endswith("'")

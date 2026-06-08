@@ -18,6 +18,8 @@ if _SCRIPTS_DIR not in sys.path:
 from preferences_utils import (
     LANGUAGE_STEERING_MAP,
     VALID_MAPPING_VERBOSITY,
+    _parse_scalar,
+    _serialize_yaml_value,
     format_context_reset,
     format_resume_summary,
     load_preferences,
@@ -695,3 +697,163 @@ class TestContextResetMessageConstraints:
             )
         finally:
             os.unlink(progress_path)
+
+
+# ---------------------------------------------------------------------------
+# Property A1-Pres: Non-Buggy Scalars Round-Trip Unchanged (preservation)
+# ---------------------------------------------------------------------------
+
+
+@st.composite
+def st_non_buggy_scalar(draw):
+    """Generate a scalar that is NOT an A1 bug-condition input.
+
+    The A1 bug condition is a ``str`` whose lowercased form is ``"true"`` or
+    ``"false"`` but whose casing is non-canonical (e.g. ``'FalSe'``,
+    ``'TRUE'``). This strategy deliberately EXCLUDES those, covering only the
+    preservation domain: a genuine Python ``bool``, an ``int``, the canonical
+    lowercase strings ``'true'``/``'false'``, a plain (non-boolean-looking)
+    string, and ``None``.
+
+    Returns:
+        A value drawn from {genuine bool, int, 'true'/'false' str, plain str,
+        None} whose round-trip through the preferences codec must be identical
+        in both value and Python type.
+
+    **Validates: Requirements 9.1**
+    """
+
+    def _is_bug_condition(value: object) -> bool:
+        """A1 bug condition: non-canonical-case boolean-looking string."""
+        return (
+            isinstance(value, str)
+            and value.lower() in {"true", "false"}
+            and value not in {"true", "false"}
+        )
+
+    # Plain strings: alphanumeric + underscore/hyphen, never a YAML special
+    # token. Filtering keeps the generator honest even though the alphabet
+    # already excludes the colon/quote characters that would force quoting.
+    st_plain_str = st.text(
+        min_size=1,
+        max_size=20,
+        alphabet=st.characters(
+            whitelist_categories=("L", "N"),
+            whitelist_characters="_-",
+        ),
+    ).filter(lambda s: not _is_bug_condition(s))
+
+    return draw(
+        st.one_of(
+            st.booleans(),                       # genuine Python bool
+            st.integers(min_value=-10_000, max_value=10_000),  # int
+            st.sampled_from(["true", "false"]),  # canonical lowercase str
+            st_plain_str,                        # plain non-boolean str
+            st.none(),                           # None
+        )
+    )
+
+
+class TestPropertyA1PreservationNonBuggyScalars:
+    """Property A1-Pres: A1 Non-Buggy Scalars Round-Trip Unchanged.
+
+    Preservation companion to the A1 boolean-string fidelity property
+    (Property 1). For every scalar that is NOT an A1 bug-condition input — a
+    genuine Python ``bool`` (e.g. ``license_guidance_deferred: true``), an
+    ``int``, the canonical lowercase strings ``'true'``/``'false'``, a plain
+    string, or ``None`` — the preferences codec SHALL round-trip the value
+    identically in both value and Python type.
+
+    Baseline captured observation-first on the UNFIXED tree (HEAD 56b91b4):
+    every such scalar already round-trips unchanged. The A1 fix MUST keep this
+    behavior byte/behavior-identical. This SAME test is reused after the fix
+    (Task 17.3) to confirm no preservation regression.
+
+    **Validates: Requirements 9.1**
+    """
+
+    @given(value=st_non_buggy_scalar())
+    @settings(max_examples=50)
+    def test_codec_round_trip_preserves_value_and_type(self, value):
+        """``_parse_scalar(_serialize_yaml_value(X))`` preserves value + type.
+
+        Exercises the read/write codec sides directly for every non-buggy
+        scalar, asserting both equality and identical Python type.
+        """
+        result = _parse_scalar(_serialize_yaml_value(value))
+        assert result == value, (
+            f"Codec round-trip changed value: in={value!r}, out={result!r}"
+        )
+        assert type(result) is type(value), (
+            f"Codec round-trip changed type for {value!r}: "
+            f"expected {type(value).__name__}, got {type(result).__name__}"
+        )
+
+    @given(value=st_non_buggy_scalar())
+    @settings(max_examples=50)
+    def test_write_read_preserves_value_and_type(self, value):
+        """End-to-end ``write_preference`` -> ``load_preferences`` preservation.
+
+        Carries the scalar inside the ``pacing_overrides`` dict (whose values
+        may be str/bool/int/None) so the full write/read path is exercised, and
+        asserts the loaded value matches in both value and Python type.
+        """
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            prefs_file = str(Path(tmp_dir) / "prefs.yaml")
+            carrier = {"slot": value}
+            result = write_preference(
+                "pacing_overrides", carrier, preferences_path=prefs_file
+            )
+            assert result.success, f"Write failed: {result.error}"
+
+            loaded = load_preferences(preferences_path=prefs_file)
+            assert loaded.preferences is not None, f"Load failed: {loaded.error}"
+            assert "pacing_overrides" in loaded.preferences
+            out = loaded.preferences["pacing_overrides"]["slot"]
+            assert out == value, (
+                f"Round-trip changed value: in={value!r}, out={out!r}"
+            )
+            assert type(out) is type(value), (
+                f"Round-trip changed type for {value!r}: "
+                f"expected {type(value).__name__}, got {type(out).__name__}"
+            )
+
+    def test_genuine_bool_field_round_trips_as_bool(self):
+        """Genuine ``bool`` field (``license_guidance_deferred``) stays ``bool``.
+
+        Concrete preservation example from the design: a real Python boolean
+        top-level field must reload as a Python ``bool``, not a string.
+        """
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            prefs_file = str(Path(tmp_dir) / "prefs.yaml")
+            for raw in (True, False):
+                result = write_preference(
+                    "license_guidance_deferred", raw, preferences_path=prefs_file
+                )
+                assert result.success, f"Write failed: {result.error}"
+                loaded = load_preferences(preferences_path=prefs_file)
+                assert loaded.preferences is not None
+                out = loaded.preferences["license_guidance_deferred"]
+                assert out is raw, f"Expected {raw!r}, got {out!r}"
+                assert type(out) is bool
+
+    def test_validate_preferences_schema_unaffected(self):
+        """``validate_preferences_schema`` still accepts/rejects as before.
+
+        Confirms the schema validator is unaffected on the unfixed tree: a
+        genuine-bool field and canonical-string fields validate clean, while a
+        type violation is still reported.
+        """
+        valid = {
+            "database_type": "sqlite",
+            "language": "python",
+            "license_guidance_deferred": True,
+        }
+        assert validate_preferences_schema(valid) == [], (
+            "Valid preferences unexpectedly produced schema errors"
+        )
+
+        invalid = {"database_type": "sqlite", "language": 12345}
+        assert len(validate_preferences_schema(invalid)) >= 1, (
+            "Wrong-type field should produce at least one schema error"
+        )

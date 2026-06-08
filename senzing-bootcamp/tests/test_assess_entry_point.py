@@ -160,9 +160,12 @@ class TestPathSeparatorNormalization:
                 f"Expected Path, got {type(result)} for '{path_str}'"
             )
 
-            # The path parts should match the original segments
-            assert list(result.parts) == segments, (
-                f"Path parts {list(result.parts)} != segments {segments} "
+            # The path parts should match the original segments, normalized the
+            # same way `_normalize_path` collapses pure-`.`/empty segments (a
+            # degenerate segment list like ['.'] yields an empty `.parts`).
+            expected = [s for s in segments if s not in (".", "")]
+            assert list(result.parts) == expected, (
+                f"Path parts {list(result.parts)} != expected {expected} "
                 f"for input '{path_str}'"
             )
 
@@ -203,7 +206,7 @@ def st_artifact(draw):
     artifact_type = draw(st.sampled_from(["file", "directory"]))
     description = draw(
         st.text(
-            st.characters(whitelist_categories=("L", "N", "Z"), whitelist_characters="-_."),
+            st.characters(whitelist_categories=("L", "N", "Zs"), whitelist_characters="-_."),
             min_size=1,
             max_size=30,
         )

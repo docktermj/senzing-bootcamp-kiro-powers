@@ -12,10 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `module-transitions.md` reverted from `inclusion: fileMatch` back to `inclusion: always` — the file is needed on every module start/completion, and conditional loading caused missed banners when progress file wasn't the trigger
 - Renamed `tests/test_module12_phase_gate.py` → `tests/test_hook_schema_conformance.py` — the test validates hook JSON schema generically, not Module-12-specific logic (Module 12 was collapsed into Module 11 in 0.11.0)
 - `steering-index.yaml` Module 4 entry expanded from bare string to phases map with `token_count` and `size_category` for consistency with all other modules
+- `lint_steering.py` now resolves registered hooks against the **union** of registry sources (`hook-categories.yaml` plus the `hooks/` directory) instead of a single source, so hooks present in either place are recognized and stop producing false "unregistered hook" findings
+- `measure_steering.py --check` gained an additive aggregate check: a new `parse_budget_total` helper reads `budget.total_tokens` and the run now emits a `Budget total mismatch` line (and exits non-zero) when the declared aggregate diverges from `sum(file_metadata)` token counts — per-file and per-phase verdicts are unchanged
+- Onboarding-split test target re-pointed to the current 147-test layout after the onboarding-question suite was split, so the count assertion tracks the live 147 tests
 
 ### Fixed
 
 - Added preservation test `tests/test_module_transitions_always_inclusion.py` pinning `module-transitions.md` to `inclusion: always` — prevents accidental regression
+- `steering-index.yaml` `budget.total_tokens` corrected from `169633` to `169576` to match the live `sum(file_metadata)` token total, clearing the aggregate drift now enforced by `measure_steering.py`
+- `preferences_utils.py` boolean-string round-trip fidelity (A1): values that serialize to `"true"`/`"false"` now survive a write-then-read cycle without being coerced to native booleans or altered casing, so persisted preferences round-trip exactly
+- `validate_mandatory_gates.py` mandatory-gate parsing made non-vacuous (B): the parser now recognizes gates declared under H2/H3 headings, inside blockquotes, and in section preambles, so the validator detects the shipped gates instead of passing on an empty set — covered by a new regression test that runs the validator's own parser against the real steering corpus and fails if zero gates are found
+- `validate_prerequisites.py` no longer emits the spurious `3 -> 4` prerequisites keyword-mismatch warning (D); the false positive for the Module 3→4 gate is removed
+- Stabilized property tests (A2–A5): tightened test-logic and generators and de-flaked timing-sensitive assertions so the previously failing/flaky property tests run deterministically
 
 ## [0.12.0] - 2026-05-18
 

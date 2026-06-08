@@ -926,8 +926,13 @@ class TestDurationMonotonicity:
 def st_sorted_timestamps(draw: st.DrawFn, count: int) -> list[str]:
     """Generate a list of chronologically sorted ISO 8601 timestamps.
 
-    All timestamps use the same timezone offset so lexicographic ordering
-    equals chronological ordering.
+    Each timestamp is derived from a single monotonic integer source: unique
+    "calendar tick" offsets are drawn, sorted, and decomposed via mixed-radix
+    arithmetic (most-significant field first: year, month, day, hour, minute,
+    second). Because every field is zero-padded to a fixed width and a single
+    fixed timezone suffix is appended, lexicographic ordering of the formatted
+    strings equals chronological ordering. The offsets are unique and sorted,
+    so the emitted timestamps are genuinely strictly increasing.
 
     Args:
         count: Number of timestamps to generate.
@@ -935,17 +940,33 @@ def st_sorted_timestamps(draw: st.DrawFn, count: int) -> list[str]:
     Returns:
         List of ISO 8601 timestamps in ascending chronological order.
     """
-    tz_offset_hours = draw(st.integers(min_value=-12, max_value=14))
-    tz_offset_minutes = draw(st.sampled_from([0, 30]))
-    tz_sign = "+" if tz_offset_hours >= 0 else "-"
-    tz_h = abs(tz_offset_hours)
-    tz_suffix = f"{tz_sign}{tz_h:02d}:{tz_offset_minutes:02d}"
+    # Mixed-radix field ranges chosen to keep every date valid:
+    #   second 0-59, minute 0-59, hour 0-23, day 1-28, month 1-12.
+    _SECONDS_PER_MINUTE = 60
+    _MINUTES_PER_HOUR = 60
+    _HOURS_PER_DAY = 24
+    _DAYS_PER_MONTH = 28
+    _MONTHS_PER_YEAR = 12
+    _BASE_YEAR = 2024
+    _YEARS_SPAN = 6
+    _TICKS_PER_YEAR = (
+        _MONTHS_PER_YEAR
+        * _DAYS_PER_MONTH
+        * _HOURS_PER_DAY
+        * _MINUTES_PER_HOUR
+        * _SECONDS_PER_MINUTE
+    )
+    _MAX_TICK = _YEARS_SPAN * _TICKS_PER_YEAR
 
-    # Generate sorted base minutes from a fixed epoch to ensure ordering
-    base_minutes = sorted(
+    # A single fixed timezone suffix so lexicographic order == chronological.
+    tz_suffix = "+00:00"
+
+    # Unique, sorted monotonic integer source. Uniqueness + sorting guarantees
+    # the decomposed timestamps are strictly increasing.
+    ticks = sorted(
         draw(
             st.lists(
-                st.integers(min_value=0, max_value=3_000_000),
+                st.integers(min_value=0, max_value=_MAX_TICK - 1),
                 min_size=count,
                 max_size=count,
                 unique=True,
@@ -954,18 +975,19 @@ def st_sorted_timestamps(draw: st.DrawFn, count: int) -> list[str]:
     )
 
     timestamps: list[str] = []
-    for minutes in base_minutes:
-        year = 2024 + minutes // (525_600)
-        remainder = minutes % 525_600
-        month = 1 + remainder // 43_800
-        month = min(month, 12)
-        remainder = remainder % 43_800
-        day = 1 + remainder // 1_440
-        day = min(day, 28)
-        remainder = remainder % 1_440
-        hour = remainder // 60
-        minute = remainder % 60
-        second = draw(st.integers(min_value=0, max_value=59))
+    for tick in ticks:
+        value = tick
+        second = value % _SECONDS_PER_MINUTE
+        value //= _SECONDS_PER_MINUTE
+        minute = value % _MINUTES_PER_HOUR
+        value //= _MINUTES_PER_HOUR
+        hour = value % _HOURS_PER_DAY
+        value //= _HOURS_PER_DAY
+        day = 1 + (value % _DAYS_PER_MONTH)
+        value //= _DAYS_PER_MONTH
+        month = 1 + (value % _MONTHS_PER_YEAR)
+        value //= _MONTHS_PER_YEAR
+        year = _BASE_YEAR + value
 
         ts = (
             f"{year:04d}-{month:02d}-{day:02d}"

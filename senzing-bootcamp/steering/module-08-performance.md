@@ -10,7 +10,7 @@ inclusion: manual
 
 > **User reference:** See `docs/modules/MODULE_8_PERFORMANCE_TESTING.md` for background.
 
-**Prerequisites:** Module 7 (Query and Visualize) complete, representative data loaded, cloud provider set at 7→8 gate.
+**Prerequisites:** Module 7 (Query, Visualize, and Discover) complete, queries answer the business problem (7→8 gate), representative data loaded.
 
 **Before/After:** Entity resolution works but you don't know how it performs at scale. After this module, you'll have benchmarks, bottleneck analysis, and optimizations — confidence that it'll handle production volumes.
 

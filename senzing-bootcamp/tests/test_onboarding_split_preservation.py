@@ -41,7 +41,11 @@ _PHASE_FILE = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
 # Source of truth mirrored in
 # .kiro/specs/bootcamp-consistency-fixes/bug1_preservation_baselines.txt
 _HASH_ONBOARDING_FLOW = (
-    "fd03ebcc58464f6022e6a2990dad0318ed29a09bb9d672cb6fc3decb7de2a8c9"
+    # Re-baselined (observation-first) for the bootcamp-consistency-fixes batch:
+    # the Step 2 hook-installation step now also instructs creation of the
+    # capture-critical hooks (module-recap-append, session-log-events). Correct
+    # content change; onboarding-phase1b-intro-language.md is unchanged.
+    "980c5c32dab773a1c2cb3f194cd2ed4c8617994a7f913c806bde727da9eea8d5"
 )
 _HASH_PHASE_FILE = (
     "4631a4eaccdfadaf12d8a8c6f2d53eafbf5d372744da95abebff8d36e739f86e"

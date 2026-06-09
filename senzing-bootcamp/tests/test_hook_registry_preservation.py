@@ -47,16 +47,21 @@ _SCRIPTS_DIR = Path(__file__).resolve().parent.parent / "scripts"
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _SYNC_SCRIPT = _SCRIPTS_DIR / "sync_hook_registry.py"
 
-# SHA-256 byte-level baselines observed on the UNFIXED tree (Task 6).
-# Source of truth mirrored in
-# .kiro/specs/bootcamp-consistency-fixes/bug3_preservation_baselines.txt
+# SHA-256 byte-level baselines. hook-registry.md and hook-registry-critical.md
+# remain at their original Task 6 (UNFIXED-tree) digests. hook-registry-modules.md
+# was re-baselined observation-first after the sync_hook_registry multi-module fix
+# (bootcamp-consistency-fixes): a hook listed under multiple modules in
+# hook-categories.yaml (e.g. enforce-visualization-offers under 3,5,7,8) now appears
+# under EACH module bucket in the detailed modules registry, so a Module 7 section
+# now exists. The old digest pinned the incorrect collapsed content (the hook filed
+# only under its last module, 8); this digest pins the corrected multi-module output.
 _REGISTRY_BASELINES: dict[str, str] = {
     "hook-registry.md":
         "388cffe18e522b64b04dc716378a1fae7b463f5cd300bc63ef4d1fca33a138bd",
     "hook-registry-critical.md":
         "71b8f11b051831998b8a248f81bf29d09df5e36a6b93b121de45c2c40502d08f",
     "hook-registry-modules.md":
-        "f17c10437454954fb594e0a0464515991b5dcf304405b99626f2fb17712b9a7f",
+        "834f9369a2ec335816cff1470195a1ff60c7b00bb082082a11d9103bda808c61",
 }
 
 # sync_hook_registry --verify success marker observed on the UNFIXED tree.

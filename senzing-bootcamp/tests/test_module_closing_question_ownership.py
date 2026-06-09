@@ -455,7 +455,7 @@ _HEADINGS_MODULE_11 = [
     "## Step 1: Deployment Target and Method \u2014 ASK FIRST",
     "### Step 1a: Deployment Target",
     "### Step 1b: Deployment Method",
-    "## Phase 1: Packaging (Steps 2-11)",
+    "## Phase 1: Packaging (Steps 2-12)",
     "## Step 2: Packaging Requirements",
     "## Step 3: Package Code",
     "## Step 4: Multi-Environment Config",
@@ -466,8 +466,8 @@ _HEADINGS_MODULE_11 = [
     "## Step 9: Scaling Guidance",
     "## Step 10: Deployment Scripts",
     "## Step 11: Pre-Deployment Checklist",
-    "## \u26d4 PHASE GATE \u2014 PACKAGING COMPLETE, DEPLOYMENT DECISION REQUIRED",
     "## Step 12: Rollback Plan",
+    "## \u26d4 PHASE GATE \u2014 PACKAGING COMPLETE, DEPLOYMENT DECISION REQUIRED",
     "## Further Reading",
     "## Error Handling",
 ]
@@ -634,7 +634,7 @@ _ALL_KEY_CONTENT: dict[str, list[str]] = {
 # ---------------------------------------------------------------------------
 
 _HASH_UNAFFECTED: dict[str, str] = {
-    "module-08": "cfe50f1714ef8087468b6e9afe03f95087ad7e2609ade916903c1530c6d502b0",
+    "module-08": "7b013f5f483fdd7b130bfe7eccc75b16fec9e64734c143db79e31bf05f212513",
     "module-09": "38afb9f301de5efe6bdcb0577d16d803e07adf01763da7077366306c6196f838",
     "module-10": "2aef0e0405c7f78c51747b40de662f9650667a55480d7c2808be839468135330",
 }
@@ -647,12 +647,11 @@ _HASH_HOOK = "2be48f67f5ab5d19f2368248e9569ec1bb8b0ccd6f39c4124b4e24da7c0fb47e"
 # deletion; see TestPreservationAgentInstructions.test_agent_instructions_has_ownership_rule
 # for the paired independent content assertion.
 _HASH_AGENT_INSTRUCTIONS = "26341d605bd059fbf2e5694ee9f71b7d5d88c069a3f74192f5197652bde5d120"
-# Re-baselined (observation-first) against the shipped post-split onboarding-flow.md.
-# The welcome banner / language selection / comprehension steps moved into
-# onboarding-phase1b-intro-language.md; the cross-reference "After Step 2d, load
-# `onboarding-phase1b-intro-language.md`" remains intact (see
-# TestPreservationOnboardingFlow.test_onboarding_flow_cross_reference_intact).
-_HASH_ONBOARDING_FLOW = "fd03ebcc58464f6022e6a2990dad0318ed29a09bb9d672cb6fc3decb7de2a8c9"
+# Re-baselined (observation-first) against the shipped onboarding-flow.md. Prior
+# re-baseline was for the onboarding split; this batch (bootcamp-consistency-fixes)
+# added the capture-critical hooks instruction (module-recap-append, session-log-events)
+# to the Step 2 hook-installation step, a correct content change.
+_HASH_ONBOARDING_FLOW = "980c5c32dab773a1c2cb3f194cd2ed4c8617994a7f913c806bde727da9eea8d5"
 
 
 # ---------------------------------------------------------------------------

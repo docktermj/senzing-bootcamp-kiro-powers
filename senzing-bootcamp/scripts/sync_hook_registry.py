@@ -247,8 +247,18 @@ def load_category_mapping(config_path: Path) -> dict[str, CategoryMapping]:
 def categorize_hooks(
     hooks: list[HookEntry],
     mapping: dict[str, CategoryMapping],
+    categories_path: Path | None = None,
 ) -> tuple[list[HookEntry], dict[int | str, list[HookEntry]]]:
     """Split *hooks* into critical and module groups.
+
+    A hook listed under multiple modules in ``hook-categories.yaml`` is placed
+    under EACH of its module buckets (multi-module membership). To do this the
+    per-module membership is read directly from *categories_path* (the same
+    ``modules`` map ``_build_module_labels`` reads), because the
+    ``hook_id -> CategoryMapping`` *mapping* collapses a multi-module hook to a
+    single module (its last occurrence). When *categories_path* is None the
+    function falls back to the single-module *mapping* (``cat.module_number``),
+    preserving the original behavior for callers that pass a synthetic mapping.
 
     Returns
     -------
@@ -260,11 +270,26 @@ def categorize_hooks(
     critical: list[HookEntry] = []
     modules: dict[int | str, list[HookEntry]] = {}
 
+    membership: dict[str, list[int | str]] | None = None
+    if categories_path is not None and categories_path.is_file():
+        membership = _build_module_membership(categories_path)
+
     for hook in hooks:
         cat = mapping.get(hook.hook_id)
         if cat is not None and cat.category == "critical":
             critical.append(hook)
-        elif cat is not None and cat.category == "module" and cat.module_number is not None:
+            continue
+
+        if membership is not None and hook.hook_id in membership:
+            # Multi-module aware: add the hook under every module bucket it
+            # belongs to (e.g. [3, 5, 7, 8]). "any" stays a single bucket.
+            for key in membership[hook.hook_id]:
+                modules.setdefault(key, []).append(hook)
+        elif (
+            cat is not None
+            and cat.category == "module"
+            and cat.module_number is not None
+        ):
             modules.setdefault(cat.module_number, []).append(hook)
         else:
             # Unmapped → "any module"
@@ -288,6 +313,37 @@ def categorize_hooks(
 def _format_event_flow(entry: HookEntry) -> str:
     """Return a compact event flow string like ``agentStop → askAgent``."""
     return f"{entry.event_type} → {entry.action_type}"
+
+
+def _build_module_membership(
+    categories_path: Path,
+) -> dict[str, list[int | str]]:
+    """Build a mapping of hook_id → list of module keys from the categories file.
+
+    Unlike ``_build_module_labels`` (which returns a single comma-joined string
+    per hook), this returns the raw per-hook list of module buckets a hook
+    belongs to — integer module numbers for numbered modules and the literal
+    ``"any"`` for the any-module group. A hook under ``[3, 5, 7, 8]`` yields
+    ``[3, 5, 7, 8]`` so ``categorize_hooks`` can file it under every bucket.
+
+    Args:
+        categories_path: Path to ``hook-categories.yaml``.
+
+    Returns:
+        Mapping of hook_id → list of module keys (``int`` or ``"any"``), in the
+        order the modules appear in the file.
+    """
+    text = categories_path.read_text(encoding="utf-8")
+    data = _parse_simple_yaml(text)
+
+    membership: dict[str, list[int | str]] = {}
+    modules = data.get("modules", {}) or {}
+    for mod_key, hook_ids in modules.items():
+        key: int | str = "any" if mod_key == "any" else int(mod_key)
+        for hook_id in hook_ids or []:
+            membership.setdefault(hook_id, []).append(key)
+
+    return membership
 
 
 def _build_module_labels(
@@ -745,7 +801,7 @@ def main() -> None:
         sys.exit(1)
 
     # Categorize
-    critical, modules = categorize_hooks(hooks, mapping)
+    critical, modules = categorize_hooks(hooks, mapping, args.categories)
     total_count = len(hooks)
 
     # Generate all files

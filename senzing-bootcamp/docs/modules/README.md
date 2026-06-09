@@ -92,7 +92,7 @@ This directory contains detailed documentation for each bootcamp module.
 - Uniqueness metrics
 - HTML dashboard generation
 - Quality recommendations
-- Senzing Entity Specification (SGES) format
+- Senzing Generic Entity Specification (SGES) format
 - Interactive mapping workflow via MCP
 - Transformation program creation
 - Data quality validation with `analyze_record`

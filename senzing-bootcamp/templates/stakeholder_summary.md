@@ -225,8 +225,8 @@ Output: docs/stakeholder_summary_module7.md
 
 [next_steps]
   Based on validation results and the user's bootcamp path:
-  - Path B/C: "Results validated. Ready to query and visualize (Module 8)."
-  - Path D: "Proceed to querying (Module 8), then performance and production."
+  - Path B/C: "Results validated. Ready to query and visualize (Module 7)."
+  - Path D: "Proceed to querying (Module 7), then performance and production."
 
 [roi_considerations]
   Quantify actual results against the original business case.

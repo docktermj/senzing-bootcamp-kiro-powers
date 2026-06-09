@@ -42,6 +42,24 @@ def _expected_hook_count() -> int:
 
 EXPECTED_HOOK_COUNT = _expected_hook_count()
 
+
+def _expected_registry_entry_count() -> int:
+    """Derive the expected number of detailed registry entries.
+
+    The detailed registries (hook-registry-critical.md + hook-registry-modules.md)
+    list a hook once per category bucket it belongs to. A hook mapped to multiple
+    modules in hook-categories.yaml (e.g. ``enforce-visualization-offers`` under
+    modules 3, 5, 7, 8) therefore appears once under EACH of those module sections,
+    so the total entry count is the sum of all category memberships — not the number
+    of unique hooks. Unique-hook coverage is asserted separately against
+    EXPECTED_HOOK_COUNT.
+    """
+    categories = parse_categories_yaml()
+    return sum(len(ids) for ids in categories.values())
+
+
+EXPECTED_REGISTRY_ENTRY_COUNT = _expected_registry_entry_count()
+
 VALID_EVENT_TYPES = {
     "promptSubmit",
     "preToolUse",
@@ -466,12 +484,22 @@ class TestHookCount:
         )
 
     def test_registry_entry_count(self):
-        """Exactly 24 registry entries exist (Req 5.2, 5.3)."""
+        """Registry entries cover every hook, with multi-module hooks listed per module.
+
+        Multi-module hooks (e.g. enforce-visualization-offers under modules 3, 5, 7, 8)
+        appear once under each module section, so the total entry count equals the sum
+        of category memberships; unique-hook coverage equals EXPECTED_HOOK_COUNT.
+        """
 
         entries = parse_registry()
         actual = len(entries)
-        assert actual == EXPECTED_HOOK_COUNT, (
-            f"Expected {EXPECTED_HOOK_COUNT} registry entries, found {actual}"
+        assert actual == EXPECTED_REGISTRY_ENTRY_COUNT, (
+            f"Expected {EXPECTED_REGISTRY_ENTRY_COUNT} registry entries, found {actual}"
+        )
+        unique_ids = {entry.id for entry in entries}
+        assert len(unique_ids) == EXPECTED_HOOK_COUNT, (
+            f"Expected {EXPECTED_HOOK_COUNT} unique hooks documented, "
+            f"found {len(unique_ids)}"
         )
 
 
@@ -524,8 +552,15 @@ class TestRealHookFiles:
         assert len(get_hook_files()) == EXPECTED_HOOK_COUNT
 
     def test_registry_entry_count_is_25(self):
-        """Registry entry count is exactly 25 (Req 5.2)."""
-        assert len(parse_registry()) == EXPECTED_HOOK_COUNT
+        """Registry entry count equals the sum of category memberships.
+
+        Multi-module hooks are listed once per module, so the detailed registries
+        contain EXPECTED_REGISTRY_ENTRY_COUNT entries covering EXPECTED_HOOK_COUNT
+        unique hooks.
+        """
+        entries = parse_registry()
+        assert len(entries) == EXPECTED_REGISTRY_ENTRY_COUNT
+        assert len({entry.id for entry in entries}) == EXPECTED_HOOK_COUNT
 
     def test_valid_event_types_has_10_entries(self):
         """VALID_EVENT_TYPES constant contains all 10 expected event type strings (Req 7.1)."""

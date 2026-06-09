@@ -1,7 +1,7 @@
 ---
 name: "senzing-bootcamp"
 displayName: "Senzing Bootcamp"
-version: "0.12.0"
+version: "0.12.1"
 description: "Guided 11-module bootcamp for learning Senzing entity resolution, from first demo to production deployment."
 keywords: ["senzing", "bootcamp", "entity-resolution", "senzing-bootcamp", "learning-track"]
 author: "Senzing"
@@ -17,11 +17,18 @@ This power provides a guided bootcamp for learning Senzing entity resolution thr
 
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
-This power works best with Claude Opus 4.6 or similar.
+This power works best with Claude Opus 4.8 or similar.
+
+## What's New in 0.12.1
+
+- "Lint Python (ruff)" CI gate brought from 438 violations to 0 — the full CI suite is now green, with pytest at 4,830 passed / 0 failed
+- Fixed 3 correctness defects the ruff gate surfaced: two duplicate test functions that silently shadowed earlier definitions, and a duplicate dict key that dropped a fixture entry
+- Style-only ruff remediation (long-line reflow, import-order suppression for the documented `sys.path` pattern, unused-variable/whitespace cleanup, ambiguous-name renames) with no runtime behavior change to any script
+- External-link checking (`validate_links.py`) wired into the CI gate sequence
 
 ## What's New in 0.12.0
 
-- Production-readiness pass: all CI validation steps green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `validate_dependencies`, `sync_hook_registry --verify`, `validate_prerequisites`, `validate_progress_ci`, `lint (ruff)`); pytest at 4,830 passed / 0 failed / 0 errors
+- Production-readiness pass: CI validation steps green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `validate_dependencies`, `sync_hook_registry --verify`, `validate_prerequisites`, `validate_progress_ci`); pytest at 4,830 passed / 0 failed / 0 errors
 - CommonMark compliance across all shipped markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
 - Consolidated visualization steering: merged visualization-protocol and visualization-reference into `visualization-guide.md` (saves ~3,000 tokens of context budget)
 - User-state config files (`bootcamp_progress.json`, `bootcamp_preferences.yaml`, `er_baseline_vendors.json`) no longer tracked in git — `.example` templates provided instead
@@ -87,7 +94,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 
 - `module-01-business-problem.md` — Module 1: Business Problem (split: `module-01-phase2-document-confirm.md`)
 - `module-02-sdk-setup.md` — Module 2: SDK Setup
-- `module-03-system-verification.md` — Module 3: System Verification (split: `module-03-phase2-visualization.md`)
+- `module-03-system-verification.md` — Module 3: System Verification (split: `module-03-phase1-verification.md`, `module-03-phase2-visualization.md`, `module-03-phase3-report-close.md`)
 - `module-04-data-collection.md` — Module 4: Data Collection
 - `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping (split: `module-05-phase1-quality-assessment.md`, `module-05-phase2-data-mapping.md`, `module-05-phase3-test-load.md`)
 - `module-06-data-processing.md` — Module 6: Data Processing (split: `module-06-phaseA-build-loading.md`, `module-06-phaseB-load-first-source.md`, `module-06-phaseC-multi-source.md`, `module-06-phaseD-validation.md`)
@@ -105,6 +112,7 @@ Connects to the Senzing MCP server (no API keys required):
 {
   "mcpServers": {
     "senzing-mcp-server": {
+      "type": "http",
       "url": "https://mcp.senzing.com/mcp",
       "disabled": false,
       "autoApprove": [],
@@ -187,7 +195,7 @@ Available (29 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-
 
 ## Project Directory Structure
 
-The agent creates an organized directory structure in the bootcamper's working directory at bootcamp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `logs/`, `monitoring/`. During Module 4 the agent creates `config/data_sources.yaml` in the bootcamper's project — a registry tracking each data source's quality, mapping, and load status across modules. Load `project-structure.md` for details.
+The agent creates an organized directory structure in the bootcamper's working directory at bootcamp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `logs/`, `monitoring/`. Module 1 initializes `config/data_sources.yaml` in the bootcamper's project from the data sources and matching criteria identified in the business problem, and Module 4 (Data Collection) populates each entry as sources are collected — a registry tracking each data source's quality, mapping, and load status across modules. Load `project-structure.md` for details.
 
 ## Entity Resolution Design Patterns
 
@@ -250,6 +258,6 @@ For the complete script reference with all flags and options, see `docs/guides/S
 
 ## Senzing Contact Information
 
-- Support: <support@senzing.com> / <https://senzing.com/support/>
+- Support: <support@senzing.com> / <https://senzing.com/contact/>
 - Sales: <sales@senzing.com> / <https://senzing.com/contact/>
 - Docs: <https://docs.senzing.com>

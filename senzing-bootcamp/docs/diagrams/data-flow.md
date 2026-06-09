@@ -46,7 +46,8 @@
 ┌──────────────────┐
 │data/transformed/ │
 │                  │
-│  Senzing Entity  │
+│  Senzing Generic │
+│  Entity          │
 │  Specification   │
 │  (SGES) format:  │
 │  • customers.    │

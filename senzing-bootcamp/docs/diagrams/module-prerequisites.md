@@ -43,7 +43,7 @@ Module 2 (SDK Setup) is auto-inserted before any module that needs the SDK.
 
 ## Key Skip Points
 
-- Have Senzing Entity Specification (SGES) data? Skip to Module 5
+- Have Senzing Generic Entity Specification (SGES) data? Skip to Module 5
 - SDK already installed? Module 2 auto-detects and skips
 - Single source only? Skip Module 7
 - Not deploying to production? Stop after Module 8

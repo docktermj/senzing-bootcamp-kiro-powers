@@ -4,7 +4,7 @@ inclusion: manual
 
 # MCP Tool Decision Tree
 
-This file maps common bootcamp tasks to the correct Senzing MCP tool. Use it when deciding which tool to call for a given bootcamper request. The decision tree covers all 12 MCP tools organized by task category, with anti-pattern warnings and call-pattern examples.
+This file maps common bootcamp tasks to the correct Senzing MCP tool. Use it when deciding which tool to call for a given bootcamper request. The decision tree covers all 12 MCP tools organized by task category, with anti-pattern warnings and call-pattern examples. (A 13th tool, `submit_feedback`, is the disabled-by-default tool listed in `disabledTools` in `mcp.json`, so this routing covers the 12 active tools.)
 
 ## Session Start
 

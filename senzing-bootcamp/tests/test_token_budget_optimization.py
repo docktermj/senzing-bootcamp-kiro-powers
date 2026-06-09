@@ -833,7 +833,17 @@ class TestNoHookModification:
             "enforce-gate-on-stop.kiro.hook",
             "enforce-visualization-offers.kiro.hook",
         }
-        _ALLOWED_MODIFIED = _CONSOLIDATED_HOOKS | _AGENTSTOP_GUARD_HOOKS
+        # Hook intentionally edited by the bootcamp-consistency-fixes batch: the
+        # deployment-phase-gate prompt's deployment-step label was corrected from
+        # "(Steps 12-15)" to "(Steps 13-15)" to match module-11-deployment.md after
+        # Step 12 (Rollback Plan) moved into the packaging phase. Behavior-preserving
+        # label fix, unrelated to the token budget optimization.
+        _CONSISTENCY_FIX_HOOKS = {
+            "deployment-phase-gate.kiro.hook",
+        }
+        _ALLOWED_MODIFIED = (
+            _CONSOLIDATED_HOOKS | _AGENTSTOP_GUARD_HOOKS | _CONSISTENCY_FIX_HOOKS
+        )
         # Filter for .kiro.hook files in the output, excluding hooks modified by
         # other specs. (Unrelated protections stay intact: any hook not in this
         # allowlist still fails the assertion.)

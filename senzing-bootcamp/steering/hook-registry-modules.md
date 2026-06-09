@@ -102,6 +102,36 @@ Do not proceed with the write operation.
 - name: `to enforce mandatory gate step execution before advancement`
 - description: `Blocks step advancement past a ⛔ mandatory gate step in bootcamp_progress.json when the corresponding checkpoint is missing. Step 9 is unconditional and cannot be satisfied by a skip. This is a proactive guard that fires BEFORE the agent advances past a mandatory gate, unlike the module-completion hook which fires at the end.`
 
+**enforce-visualization-offers** — Module 3 (agentStop → askAgent)
+
+Prompt:
+
+````text
+If `config/.question_pending` exists, produce no output at all — defer to `ask-bootcamper`.
+
+Read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT in {3, 5, 7, 8}, do nothing — let the conversation end normally.
+
+If the current module IS in {3, 5, 7, 8}, load `visualization-guide.md` and read the Checkpoint Map section. Identify all checkpoints defined for the current module.
+
+Next, read `config/visualization_tracker.json`. For each checkpoint in the current module's checkpoint map, check whether a tracker entry with that `checkpoint_id` exists.
+
+If ALL checkpoints for the current module have tracker entries (regardless of status — offered, accepted, declined, or generated), do nothing — all offers were made.
+
+If ANY checkpoint is missing a tracker entry, offer the missed visualization(s) before the conversation ends. For each missing checkpoint, use the Visualization Offer Protocol's offer template:
+
+Would you like me to create a visualization of {context}?
+
+Present only the types listed for that checkpoint in the checkpoint map, using the standard numbered list format with bold names and one-line descriptions. End with the STOP directive and wait for the bootcamper's response.
+
+After the bootcamper responds (accept or decline), update `config/visualization_tracker.json` accordingly following the Visualization Tracker section in the guide.
+
+Process missed checkpoints one at a time. Do not batch multiple offers into a single message.
+````
+
+- id: `enforce-visualization-offers`
+- name: `to offer visualizations`
+- description: `When the agent stops during a visualization-capable module (3, 5, 7, 8), checks the visualization tracker to verify all required offers were made. Prompts for missed offers.`
+
 **gate-module3-visualization** — Module 3 (preToolUse → askAgent, toolTypes: write)
 
 Prompt:
@@ -237,6 +267,36 @@ If docs/{source_name}_mapper.md DOES NOT EXIST:
 - name: `to enforce the mapping specification`
 - description: `When transformed data is created, verifies that a per-source mapping specification markdown exists in docs/. Blocks progression until the mapping spec is created.`
 
+**enforce-visualization-offers** — Module 5 (agentStop → askAgent)
+
+Prompt:
+
+````text
+If `config/.question_pending` exists, produce no output at all — defer to `ask-bootcamper`.
+
+Read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT in {3, 5, 7, 8}, do nothing — let the conversation end normally.
+
+If the current module IS in {3, 5, 7, 8}, load `visualization-guide.md` and read the Checkpoint Map section. Identify all checkpoints defined for the current module.
+
+Next, read `config/visualization_tracker.json`. For each checkpoint in the current module's checkpoint map, check whether a tracker entry with that `checkpoint_id` exists.
+
+If ALL checkpoints for the current module have tracker entries (regardless of status — offered, accepted, declined, or generated), do nothing — all offers were made.
+
+If ANY checkpoint is missing a tracker entry, offer the missed visualization(s) before the conversation ends. For each missing checkpoint, use the Visualization Offer Protocol's offer template:
+
+Would you like me to create a visualization of {context}?
+
+Present only the types listed for that checkpoint in the checkpoint map, using the standard numbered list format with bold names and one-line descriptions. End with the STOP directive and wait for the bootcamper's response.
+
+After the bootcamper responds (accept or decline), update `config/visualization_tracker.json` accordingly following the Visualization Tracker section in the guide.
+
+Process missed checkpoints one at a time. Do not batch multiple offers into a single message.
+````
+
+- id: `enforce-visualization-offers`
+- name: `to offer visualizations`
+- description: `When the agent stops during a visualization-capable module (3, 5, 7, 8), checks the visualization tracker to verify all required offers were made. Prompts for missed offers.`
+
 **backup-before-load** — Module 6 (fileEdited → askAgent, filePatterns: `src/load/*.*`)
 
 Prompt:
@@ -272,6 +332,36 @@ A new bootcamp source file was created. Before moving to the next step, verify t
 - id: `verify-generated-code`
 - name: `to verify generated code`
 - description: `When bootcamp source code is created, prompts the agent to run it on sample data and report results before moving on.`
+
+**enforce-visualization-offers** — Module 7 (agentStop → askAgent)
+
+Prompt:
+
+````text
+If `config/.question_pending` exists, produce no output at all — defer to `ask-bootcamper`.
+
+Read `config/bootcamp_progress.json` and check the `current_module` field. If the current module is NOT in {3, 5, 7, 8}, do nothing — let the conversation end normally.
+
+If the current module IS in {3, 5, 7, 8}, load `visualization-guide.md` and read the Checkpoint Map section. Identify all checkpoints defined for the current module.
+
+Next, read `config/visualization_tracker.json`. For each checkpoint in the current module's checkpoint map, check whether a tracker entry with that `checkpoint_id` exists.
+
+If ALL checkpoints for the current module have tracker entries (regardless of status — offered, accepted, declined, or generated), do nothing — all offers were made.
+
+If ANY checkpoint is missing a tracker entry, offer the missed visualization(s) before the conversation ends. For each missing checkpoint, use the Visualization Offer Protocol's offer template:
+
+Would you like me to create a visualization of {context}?
+
+Present only the types listed for that checkpoint in the checkpoint map, using the standard numbered list format with bold names and one-line descriptions. End with the STOP directive and wait for the bootcamper's response.
+
+After the bootcamper responds (accept or decline), update `config/visualization_tracker.json` accordingly following the Visualization Tracker section in the guide.
+
+Process missed checkpoints one at a time. Do not batch multiple offers into a single message.
+````
+
+- id: `enforce-visualization-offers`
+- name: `to offer visualizations`
+- description: `When the agent stops during a visualization-capable module (3, 5, 7, 8), checks the visualization tracker to verify all required offers were made. Prompts for missed offers.`
 
 **enforce-visualization-offers** — Module 8 (agentStop → askAgent)
 
@@ -368,7 +458,7 @@ Everything from the packaging phase is done:
 
 Then ask: "Ready to deploy now, or prefer to stop here and deploy later on your own?"
 
-WAIT for the bootcamper's response. Do NOT proceed to any deployment steps (Steps 12–15) until the bootcamper explicitly says they want to deploy.
+WAIT for the bootcamper's response. Do NOT proceed to any deployment steps (Steps 13–15) until the bootcamper explicitly says they want to deploy.
 ````
 
 - id: `deployment-phase-gate`

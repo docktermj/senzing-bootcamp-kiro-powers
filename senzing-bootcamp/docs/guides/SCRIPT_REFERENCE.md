@@ -85,11 +85,14 @@ python3 senzing-bootcamp/scripts/backup_project.py
 | --- | --- |
 | `install_hooks.py` | Installs hook files from the power into the workspace |
 | `sync_hook_registry.py` | CI: verifies hook-registry.md matches actual hook files |
+| `compose_hook_prompts.py` | CI: composes the Module 3 gate-hook prompts from shared fragments and verifies on-disk sync |
 
 ```text
 python3 senzing-bootcamp/scripts/install_hooks.py
 python3 senzing-bootcamp/scripts/sync_hook_registry.py --verify
 python3 senzing-bootcamp/scripts/sync_hook_registry.py --write
+python3 senzing-bootcamp/scripts/compose_hook_prompts.py --verify
+python3 senzing-bootcamp/scripts/compose_hook_prompts.py --write
 ```
 
 ## Analysis and Reporting
@@ -151,6 +154,11 @@ See Also: `status.py` shows individual progress; `analyze_sessions.py` shows his
 | `validate_progress_ci.py` | CI: validates bootcamp_progress.json.example schema |
 | `validate_mandatory_gates.py` | CI: validates all ⛔ mandatory gates have proper checkpoint instructions |
 | `validate_links.py` | Validates external URLs in markdown files are reachable |
+| `validate_governance_rules.py` | CI: validates each governing rule is wired to its enforcement point(s) via `governance-rules.yaml` |
+| `validate_yaml_schemas.py` | CI: validates top-level key structure of the authoritative YAML config files |
+| `validate_preferences_ci.py` | CI: validates `bootcamp_preferences.yaml` schema (uses a built-in sample when no file exists) |
+| `validate_behavior_rules.py` | Validates steering content against the four agent behavior rules (`--check`) |
+| `validate_completion_artifacts.py` | Validates journal/recap structure and consistency with the progress file |
 
 ```text
 python3 senzing-bootcamp/scripts/validate_prerequisites.py
@@ -159,6 +167,11 @@ python3 senzing-bootcamp/scripts/validate_mandatory_gates.py
 python3 senzing-bootcamp/scripts/validate_links.py
 python3 senzing-bootcamp/scripts/validate_links.py --dry-run
 python3 senzing-bootcamp/scripts/validate_links.py --timeout 10
+python3 senzing-bootcamp/scripts/validate_governance_rules.py
+python3 senzing-bootcamp/scripts/validate_yaml_schemas.py
+python3 senzing-bootcamp/scripts/validate_preferences_ci.py
+python3 senzing-bootcamp/scripts/validate_behavior_rules.py
+python3 senzing-bootcamp/scripts/validate_completion_artifacts.py --progress config/bootcamp_progress.json --journal docs/bootcamp_journal.md --recap docs/bootcamp_recap.md
 ```
 
 ## Data Tools
@@ -189,9 +202,39 @@ python3 senzing-bootcamp/scripts/visualize_dependencies.py
 | `track_switcher.py` | Switches between Core Bootcamp and Advanced Topics tracks |
 
 ```text
-python3 senzing-bootcamp/scripts/track_switcher.py --to advanced_topics
-python3 senzing-bootcamp/scripts/track_switcher.py --to core_bootcamp
-python3 senzing-bootcamp/scripts/track_switcher.py --preview
+# Dry-run (the DEFAULT): print the computed switch as JSON without writing
+python3 senzing-bootcamp/scripts/track_switcher.py --from core_bootcamp --to advanced_topics --progress config/bootcamp_progress.json
+
+# Apply the switch (writes config/bootcamp_progress.json)
+python3 senzing-bootcamp/scripts/track_switcher.py --from advanced_topics --to core_bootcamp --progress config/bootcamp_progress.json --apply
+```
+
+`--from`, `--to`, and `--progress` are all required. Without `--apply` the script is a dry-run; pass `--apply` to write the change.
+
+## Generators and Tools
+
+| Script | Purpose |
+| --- | --- |
+| `eval_conversations.py` | CI: runs scripted transcript fixtures against behavioral rules (runtime-behavior eval) |
+| `assess_entry_point.py` | Recommends where to begin/resume by scanning produced artifacts and SDK availability |
+| `parse_business_problem.py` | Derives Module 7 query requirements from `docs/business_problem.md` |
+| `organize_mapping_files.py` | Routes `mapping_workflow` output files into the correct project subdirectories |
+| `optimize_steering.py` | Splits/compresses always-on steering files and syncs `steering-index.yaml` (`--check`, `--dry-run`) |
+| `progress_dashboard.py` | Generates a self-contained HTML progress dashboard at `docs/progress/dashboard.html` |
+| `generate_graduation_certificate.py` | Generates a graduation certificate in Markdown and HTML |
+| `generate_recap_pdf.py` | Renders `docs/bootcamp_recap.md` to PDF (optional `fpdf2`; keeps Markdown when absent) |
+| `generate_completion_summary.py` | Builds a module completion summary in Markdown (optional PDF via `fpdf2`) |
+
+```text
+python3 senzing-bootcamp/scripts/eval_conversations.py
+python3 senzing-bootcamp/scripts/assess_entry_point.py
+python3 senzing-bootcamp/scripts/parse_business_problem.py --file docs/business_problem.md
+python3 senzing-bootcamp/scripts/organize_mapping_files.py --source <dir> --project-root . --dry-run
+python3 senzing-bootcamp/scripts/optimize_steering.py --check
+python3 senzing-bootcamp/scripts/progress_dashboard.py
+python3 senzing-bootcamp/scripts/generate_graduation_certificate.py
+python3 senzing-bootcamp/scripts/generate_recap_pdf.py --input docs/bootcamp_recap.md
+python3 senzing-bootcamp/scripts/generate_completion_summary.py
 ```
 
 ## Libraries (not standalone CLI tools)
@@ -207,3 +250,6 @@ These scripts are imported by other scripts or the agent — they are not intend
 | `team_config_validator.py` | Validates `config/team.yaml` structure — used during team onboarding |
 | `test_dashboard.py` | Test suite results formatting — used by CI for pass/fail reporting |
 | `test_hooks.py` | Hook testing utilities — used by the test suite for hook validation |
+| `preferences_utils.py` | Preferences schema, minimal YAML parser, and validator — used by `validate_preferences_ci.py` |
+| `volume_utils.py` | Record-volume parsing, tier classification, and Module 6 guidance generation |
+| `hook_prompt_fragments.py` | Single-source shared Module 3 gate-hook prompt fragments — expanded by `compose_hook_prompts.py` |

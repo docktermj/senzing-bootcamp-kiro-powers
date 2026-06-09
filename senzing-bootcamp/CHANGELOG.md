@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.1] - 2026-06-08
+
 ### Changed
 
+- `validate_links.py` external-link check wired into the CI gate sequence (after `validate_yaml_schemas`); intentional example endpoints, XML-namespace identifiers, and bot-blocking hosts added to its ignore list so the gate flags only genuine breakage
 - `module-transitions.md` reverted from `inclusion: fileMatch` back to `inclusion: always` — the file is needed on every module start/completion, and conditional loading caused missed banners when progress file wasn't the trigger
 - Renamed `tests/test_module12_phase_gate.py` → `tests/test_hook_schema_conformance.py` — the test validates hook JSON schema generically, not Module-12-specific logic (Module 12 was collapsed into Module 11 in 0.11.0)
 - `steering-index.yaml` Module 4 entry expanded from bare string to phases map with `token_count` and `size_category` for consistency with all other modules
@@ -26,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `validate_mandatory_gates.py` mandatory-gate parsing made non-vacuous (B): the parser now recognizes gates declared under H2/H3 headings, inside blockquotes, and in section preambles, so the validator detects the shipped gates instead of passing on an empty set — covered by a new regression test that runs the validator's own parser against the real steering corpus and fails if zero gates are found
 - `validate_prerequisites.py` no longer emits the spurious `3 -> 4` prerequisites keyword-mismatch warning (D); the false positive for the Module 3→4 gate is removed
 - Stabilized property tests (A2–A5): tightened test-logic and generators and de-flaked timing-sensitive assertions so the previously failing/flaky property tests run deterministically
+- Corrected the broken Senzing support URL (`https://senzing.com/support/` returned 404) to `https://senzing.com/contact/` in `POWER.md` and `licenses/README.md`
+- Updated the recommended-model note in `POWER.md` (Claude Opus 4.6 → 4.8)
+- Reattributed the "lint (ruff) green" milestone to `0.12.1` in the `POWER.md` "What's New" section; the `0.12.0` entry no longer claims the ruff gate was green (it was still red at 0.12.0)
 
 ## [0.12.0] - 2026-05-18
 

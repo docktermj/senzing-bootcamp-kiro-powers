@@ -10,7 +10,7 @@ modules:
         step_range: [1, 9]
       phase2-document-confirm:
         file: module-01-phase2-document-confirm.md
-        token_count: 1871
+        token_count: 1853
         size_category: medium
         step_range: [10, 18]
   2:
@@ -18,7 +18,7 @@ modules:
     phases:
       phase1-setup:
         file: module-02-sdk-setup.md
-        token_count: 4306
+        token_count: 4491
         size_category: large
         step_range: [1, 9]
   3:
@@ -44,7 +44,7 @@ modules:
     phases:
       phase1-collection:
         file: module-04-data-collection.md
-        token_count: 3370
+        token_count: 3460
         size_category: large
         step_range: [1, 9]
   5:
@@ -52,7 +52,7 @@ modules:
     phases:
       phase1-quality-assessment:
         file: module-05-phase1-quality-assessment.md
-        token_count: 1725
+        token_count: 1710
         size_category: medium
         step_range: [1, 7]
       phase2-data-mapping:
@@ -62,7 +62,7 @@ modules:
         step_range: [8, 20]
       phase3-test-load-validate:
         file: module-05-phase3-test-load.md
-        token_count: 2654
+        token_count: 2813
         size_category: large
         step_range: [21, 26]
   6:
@@ -85,7 +85,7 @@ modules:
         step_range: [12, 20]
       phase4-validation:
         file: module-06-phaseD-validation.md
-        token_count: 1950
+        token_count: 1952
         size_category: medium
         step_range: [21, 28]
   7:
@@ -103,7 +103,7 @@ modules:
         step_range: ["4a", "4c"]
       phase2b-discover:
         file: module-07-phase2b-discover.md
-        token_count: 3162
+        token_count: 3171
         size_category: large
         step_range: ["4d", "4e"]
   8:
@@ -111,7 +111,7 @@ modules:
     phases:
       phase1-requirements:
         file: module-08-phaseA-requirements.md
-        token_count: 1508
+        token_count: 1487
         size_category: medium
         step_range: [1, 3]
       phase2-benchmarking:
@@ -155,7 +155,7 @@ modules:
     phases:
       phase1-packaging:
         file: module-11-deployment.md
-        token_count: 3214
+        token_count: 3289
         size_category: large
         step_range: [1, 12]
       phase2-deploy:
@@ -192,11 +192,11 @@ session-resume:
       size_category: large
     phase2-mapping:
       file: session-resume-phase2-mapping.md
-      token_count: 649
+      token_count: 656
       size_category: medium
     phase2-state-repair:
       file: session-resume-phase2-state-repair.md
-      token_count: 540
+      token_count: 547
       size_category: medium
     phase2-setup-recovery:
       file: session-resume-phase2-setup-recovery.md
@@ -308,7 +308,7 @@ file_metadata:
     token_count: 784
     size_category: medium
   common-pitfalls.md:
-    token_count: 4610
+    token_count: 4612
     size_category: large
   completion-summary-offer.md:
     token_count: 1867
@@ -365,7 +365,7 @@ file_metadata:
     token_count: 8169
     size_category: large
   hook-registry-modules.md:
-    token_count: 8474
+    token_count: 9872
     size_category: large
   hook-registry.md:
     token_count: 1772
@@ -395,7 +395,7 @@ file_metadata:
     token_count: 1442
     size_category: medium
   mcp-tool-decision-tree.md:
-    token_count: 2268
+    token_count: 2305
     size_category: large
   mcp-usage-reference.md:
     token_count: 580
@@ -464,13 +464,13 @@ file_metadata:
     token_count: 3591
     size_category: large
   module-08-performance.md:
-    token_count: 1352
+    token_count: 1359
     size_category: medium
   module-08-phaseA-requirements.md:
     token_count: 1487
     size_category: medium
   module-08-phaseB-benchmarking.md:
-    token_count: 426
+    token_count: 429
     size_category: small
   module-08-phaseC-optimization.md:
     token_count: 746
@@ -509,7 +509,7 @@ file_metadata:
     token_count: 1534
     size_category: medium
   onboarding-flow.md:
-    token_count: 3468
+    token_count: 3618
     size_category: large
   onboarding-phase1b-intro-language.md:
     token_count: 2055
@@ -518,7 +518,7 @@ file_metadata:
     token_count: 991
     size_category: medium
   phase-loading-guide.md:
-    token_count: 464
+    token_count: 499
     size_category: small
   project-structure.md:
     token_count: 700
@@ -570,7 +570,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 169576
+  total_tokens: 171208
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

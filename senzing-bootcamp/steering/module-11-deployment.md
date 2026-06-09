@@ -18,8 +18,8 @@ Use the bootcamper's chosen language. Read `cloud_provider` from `config/bootcam
 
 **Two distinct phases** — explain upfront:
 
-1. **Packaging** (Steps 2-11): Containerization, configuration, CI/CD, documentation. Everyone does this.
-2. **Deployment** (Steps 12-15): Actually deploying. Optional — only if the bootcamper wants to deploy now.
+1. **Packaging** (Steps 2-12): Containerization, configuration, CI/CD, documentation. Everyone does this.
+2. **Deployment** (Steps 13-15): Actually deploying. Optional — only if the bootcamper wants to deploy now.
 
 Tell the user: "Module 11 has two phases. First we'll package your code. I need to know your deployment target first because it shapes what we build. Once packaging is complete, I'll ask if you want to deploy now or later."
 
@@ -78,7 +78,7 @@ Persist `deployment_method` to `config/bootcamp_preferences.yaml`.
 
 ---
 
-## Phase 1: Packaging (Steps 2-11)
+## Phase 1: Packaging (Steps 2-12)
 
 ## Step 2: Packaging Requirements
 
@@ -190,13 +190,19 @@ Tell the user the checklist results with ✅/⬜ status for each item. If all pa
 
 **Checkpoint:** Write step 11 to `config/bootcamp_progress.json`.
 
+## Step 12: Rollback Plan
+
+Document in `docs/rollback_plan.md`: how to revert to previous version, database rollback procedure, communication plan for failed deployments.
+
+**Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
+
 ---
 
 ## ⛔ PHASE GATE — PACKAGING COMPLETE, DEPLOYMENT DECISION REQUIRED
 
 > **🛑 MANDATORY STOP — DO NOT SKIP THIS SECTION**
 >
-> The packaging phase (Steps 2–11) is now complete. **You MUST stop here and wait for the bootcamper's explicit decision** before proceeding to any deployment steps.
+> The packaging phase (Steps 2–12) is now complete. **You MUST stop here and wait for the bootcamper's explicit decision** before proceeding to any deployment steps.
 
 **Display this summary to the bootcamper:**
 
@@ -222,17 +228,11 @@ Everything from the packaging phase is done:
 
 > **⚠️ WAIT — Do NOT proceed past this point until the bootcamper responds.**
 >
-> - If they want to **stop here**: Mark Module 11 complete (packaging only). Do NOT proceed to Step 12.
-> - If they want to **deploy now**: Proceed to Phase 2 (Steps 12–15).
+> - If they want to **stop here**: Mark Module 11 complete (packaging only). Do NOT proceed to Step 13.
+> - If they want to **deploy now**: Proceed to Phase 2 (Steps 13–15).
 > - If they are **unsure**: Reassure them that stopping is perfectly fine and they can deploy later on their own using the scripts and documentation created during packaging.
 
 ---
-
-## Step 12: Rollback Plan
-
-Document in `docs/rollback_plan.md`: how to revert to previous version, database rollback procedure, communication plan for failed deployments.
-
-**Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
 
 **Success indicator**: ✅ Code packaged (containerized, multi-environment config, CI/CD) + deployment complete (or deferred by bootcamper) + rollback plan documented + all tests passing
 

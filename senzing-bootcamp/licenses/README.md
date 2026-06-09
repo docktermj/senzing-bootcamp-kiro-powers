@@ -317,7 +317,7 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 ### Senzing Support
 
 - **Email**: [support@senzing.com](mailto:support@senzing.com)
-- **Website**: [https://senzing.com/support/](https://senzing.com/support/)
+- **Website**: [https://senzing.com/contact/](https://senzing.com/contact/)
 
 ### Senzing Sales
 

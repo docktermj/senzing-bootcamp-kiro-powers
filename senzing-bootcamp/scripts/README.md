@@ -21,6 +21,11 @@ These run in the GitHub Actions pipeline on every PR.
 | `measure_steering.py` | Measure token counts for steering files and update steering-index.yaml |
 | `sync_hook_registry.py` | Generate hook-registry.md from .kiro.hook JSON files |
 | `lint_steering.py` | Lint steering files for structural consistency |
+| `validate_governance_rules.py` | Validate governing rules are wired to their enforcement points (`governance-rules.yaml`) |
+| `validate_yaml_schemas.py` | Validate top-level key structure of the authoritative YAML config files |
+| `validate_preferences_ci.py` | Validate `bootcamp_preferences.yaml` schema (validates a built-in sample when no file exists) |
+| `eval_conversations.py` | Conversational-eval harness — run scripted transcripts against behavioral rules |
+| `compose_hook_prompts.py` | Compose the Module 3 gate-hook prompts from shared fragments (`--write` / `--verify`) |
 
 ## User-Facing Scripts
 
@@ -55,6 +60,15 @@ Used by the agent or for development/maintenance tasks.
 | `verbosity.py` | Verbosity control logic |
 | `session_logger.py` | Session event logging |
 | `progress_utils.py` | Shared progress checkpoint utilities (imported by other scripts) |
+| `assess_entry_point.py` | Recommend where to begin/resume by scanning produced artifacts and SDK availability |
+| `organize_mapping_files.py` | Route `mapping_workflow` output files into the correct project subdirectories |
+| `parse_business_problem.py` | Derive Module 7 query requirements from `docs/business_problem.md` |
+| `optimize_steering.py` | Split/compress always-on steering files and sync `steering-index.yaml` |
+| `validate_behavior_rules.py` | Check steering content against the four agent behavior rules |
+| `validate_completion_artifacts.py` | Validate journal/recap structure and consistency with progress |
+| `preferences_utils.py` | Preferences schema + minimal YAML parser/validator (imported by other scripts) |
+| `volume_utils.py` | Record-volume parsing, tier classification, and guidance (imported by other scripts) |
+| `hook_prompt_fragments.py` | Single-source shared Module 3 gate-hook prompt fragments (imported by `compose_hook_prompts.py`) |
 
 ## Analytics and Reporting Scripts
 
@@ -64,6 +78,10 @@ Used by the agent or for development/maintenance tasks.
 | `analyze_sessions.py` | Session analytics (duration, pacing, module timing) |
 | `cord_metadata.py` | CORD data freshness metadata (use `get_sample_data` to download CORD datasets) |
 | `visualize_dependencies.py` | Generate module dependency visualization |
+| `progress_dashboard.py` | Generate a self-contained HTML progress dashboard at `docs/progress/dashboard.html` |
+| `generate_graduation_certificate.py` | Generate a graduation certificate in Markdown and HTML |
+| `generate_recap_pdf.py` | Render `docs/bootcamp_recap.md` to a PDF (optional `fpdf2`; keeps Markdown if absent) |
+| `generate_completion_summary.py` | Build a module completion summary in Markdown (optional PDF via `fpdf2`) |
 
 ## Steering and Content Management Scripts
 

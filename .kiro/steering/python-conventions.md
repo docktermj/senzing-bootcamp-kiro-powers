@@ -39,3 +39,4 @@ Every script in `senzing-bootcamp/scripts/` follows this structure:
 - Line length: 100 chars max
 - String formatting: f-strings preferred
 - YAML parsing: custom minimal parsers (no PyYAML) except `validate_dependencies.py`
+- Optional third-party dep: `fpdf2` (`import fpdf`) is used only by `generate_recap_pdf.py` and `generate_completion_summary.py`. Import it lazily inside the rendering function (never at module top level) and degrade gracefully when it is absent — keep the Markdown output and print a `pip install fpdf2` hint. Do not make it a hard dependency.

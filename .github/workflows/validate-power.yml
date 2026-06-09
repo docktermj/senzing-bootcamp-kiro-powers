@@ -47,12 +47,16 @@ jobs:
         run: python senzing-bootcamp/scripts/validate_prerequisites.py
       - name: Validate progress schema
         run: python senzing-bootcamp/scripts/validate_progress_ci.py
+      - name: Validate preferences schema
+        run: python senzing-bootcamp/scripts/validate_preferences_ci.py
       - name: Validate mandatory gates
         run: python senzing-bootcamp/scripts/validate_mandatory_gates.py
       - name: Validate governance rules
         run: python senzing-bootcamp/scripts/validate_governance_rules.py
       - name: Validate YAML schemas
         run: python senzing-bootcamp/scripts/validate_yaml_schemas.py
+      - name: Validate external links
+        run: python senzing-bootcamp/scripts/validate_links.py --timeout 10
       - name: Lint Python (ruff)
         run: |
           pip install ruff

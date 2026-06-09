@@ -180,13 +180,13 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 
 ### 27. Module Completion Celebration (`module-completion-celebration.kiro.hook`)
 
-**Trigger:** After task execution (postTaskExecution)
+**Trigger:** When the agent finishes working (agentStop)
 **Action:** On detecting a new entry in `modules_completed`, displays a brief celebration banner and offers the next module
 **Use case:** Marks module boundaries and orients the bootcamper toward the next step
 
 ### 28. Module Recap Append (`module-recap-append.kiro.hook`)
 
-**Trigger:** After task execution (postTaskExecution)
+**Trigger:** When the agent finishes working (agentStop)
 **Action:** On detecting a new entry in `modules_completed`, appends a structured recap section to `docs/bootcamp_recap.md` capturing information shared, questions asked, answers given, and actions taken
 **Use case:** Builds a running record of the bootcamp experience for PDF generation at graduation
 
@@ -200,7 +200,7 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 
 **Note:** These hooks use file patterns like `data/transformed/*.jsonl` and `src/load/*` that assume the bootcamp project directory structure exists. Run the bootcamp setup (say "start the bootcamp") before installing hooks, or the file-based triggers won't match anything.
 
-The `.kiro.hook` files in this directory are the canonical hook definitions. The Hook Registry is split across two files that must be kept in sync with these hook definitions:
+The `.kiro.hook` files in this directory are the canonical hook definitions. The Hook Registry is split across three files that must be kept in sync with these hook definitions:
 
 - `hook-registry.md` — summary with hook IDs, event types, and descriptions
 - `hook-registry-critical.md` — full prompts for critical hooks (created during onboarding)

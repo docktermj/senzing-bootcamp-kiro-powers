@@ -392,8 +392,9 @@ Use `analyze_record` to check format and quality:
 
 ```text
 analyze_record(
-    record=transformed_record,
-    data_source="CUSTOMERS"
+    file_paths=["data/transformed/output.jsonl"],
+    workspace_dir="data/transformed",
+    version="current"
 )
 ```
 

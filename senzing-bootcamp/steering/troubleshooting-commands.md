@@ -14,7 +14,7 @@ Use MCP tools for diagnosis:
 - **Installation issues**: `search_docs(query="installation troubleshooting", category="troubleshooting", version="current")`
 - **Performance issues**: `search_docs(query="performance", category="anti_patterns", version="current")`
 - **Database issues**: `search_docs(query="database troubleshooting", category="troubleshooting", version="current")`
-- **Mapping issues**: `analyze_record(file_paths=["data/transformed/output.jsonl"])` to validate output
+- **Mapping issues**: `analyze_record(file_paths=["data/transformed/output.jsonl"], workspace_dir="data/transformed", version="current")` to validate output
 - **SDK method questions**: `get_sdk_reference(topic="functions", filter="<method_name>", version="current")`
 
 System-level checks (cross-platform):

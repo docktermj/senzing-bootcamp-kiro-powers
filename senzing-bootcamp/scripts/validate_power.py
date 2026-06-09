@@ -18,6 +18,7 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
+import mcp_tool_inventory as inventory  # noqa: E402
 from version import (  # noqa: E402
     VersionError,
     read_version,
@@ -308,6 +309,122 @@ def check_steering_index_metadata():
             check(field_match is not None, f"budget.{field} exists and is an integer")
 
 
+def _extract_section(text, heading):
+    """Return the body of a Markdown section starting at `heading`.
+
+    The section runs from `heading` to the next heading of the same or a
+    higher level (or end of file).
+
+    Args:
+        text: Full Markdown text.
+        heading: The exact heading line to anchor on (e.g. "## Available MCP Tools").
+
+    Returns:
+        The section text including its heading, or "" when not found.
+    """
+    level = len(heading) - len(heading.lstrip("#"))
+    pattern = re.compile(rf"^{re.escape(heading)}\s*$", re.MULTILINE)
+    match = pattern.search(text)
+    if not match:
+        return ""
+    start = match.start()
+    next_pattern = re.compile(rf"^#{{1,{level}}} ", re.MULTILINE)
+    nxt = next_pattern.search(text, match.end())
+    return text[start:nxt.start()] if nxt else text[start:]
+
+
+def _power_md_tool_bullets(text):
+    """Return the tool names from POWER.md's "Available MCP Tools" bullet list.
+
+    Args:
+        text: Full POWER.md text.
+
+    Returns:
+        The ordered list of bulleted tool names.
+    """
+    section = _extract_section(text, "## Available MCP Tools")
+    return re.findall(r"^- `([a-z_]+)`", section, re.MULTILINE)
+
+
+def _architecture_category_tools(text):
+    """Return the tool names listed in ARCHITECTURE.md "MCP Tool Categories".
+
+    Args:
+        text: Full ARCHITECTURE.md text.
+
+    Returns:
+        The list of tool names from the category tables (one per table row).
+    """
+    section = _extract_section(text, "### MCP Tool Categories")
+    return re.findall(r"^\| `([a-z_]+)` \|", section, re.MULTILINE)
+
+
+def check_mcp_tool_inventory():
+    """Cross-check the documented MCP tool inventory against the canonical source.
+
+    Belt-and-suspenders guard mirroring the pytest drift guard so the same
+    check also runs in the validate_power.py CI gate. Sourced from
+    scripts/mcp_tool_inventory.py (confirmed live against
+    get_capabilities(version="current"), server v1.24.0): POWER.md "Available
+    MCP Tools" and ARCHITECTURE.md "MCP Tool Categories" must each list exactly
+    ALL_TOOLS, and ARCHITECTURE.md must state the TOTAL_COUNT. Fails if a real
+    tool is dropped, a phantom tool (e.g. lint_record) is added, or a stale
+    12/14-tool total is reintroduced.
+    """
+    print("\n=== MCP Tool Inventory ===")
+    power_md = POWER_DIR / "POWER.md"
+    architecture = POWER_DIR / "docs" / "guides" / "ARCHITECTURE.md"
+
+    expected = set(inventory.ALL_TOOLS)
+
+    # POWER.md "Available MCP Tools" lists exactly ALL_TOOLS.
+    if not power_md.exists():
+        check(False, "POWER.md exists for MCP tool inventory check")
+    else:
+        bullets = _power_md_tool_bullets(power_md.read_text(encoding="utf-8"))
+        check(
+            len(bullets) == inventory.TOTAL_COUNT,
+            f"POWER.md lists exactly {inventory.TOTAL_COUNT} MCP tools "
+            f"(found {len(bullets)})",
+        )
+        check(
+            set(bullets) == expected,
+            "POWER.md 'Available MCP Tools' lists exactly the canonical inventory"
+            + (
+                f" — unexpected: {sorted(set(bullets) - expected)}, "
+                f"missing: {sorted(expected - set(bullets))}"
+                if set(bullets) != expected
+                else ""
+            ),
+        )
+
+    # ARCHITECTURE.md "MCP Tool Categories" lists exactly ALL_TOOLS and states TOTAL_COUNT.
+    if not architecture.exists():
+        check(False, "ARCHITECTURE.md exists for MCP tool inventory check")
+    else:
+        arch_text = architecture.read_text(encoding="utf-8")
+        tools = _architecture_category_tools(arch_text)
+        check(
+            len(tools) == inventory.TOTAL_COUNT,
+            f"ARCHITECTURE.md categories list exactly {inventory.TOTAL_COUNT} MCP "
+            f"tools (found {len(tools)})",
+        )
+        check(
+            set(tools) == expected,
+            "ARCHITECTURE.md 'MCP Tool Categories' lists exactly the canonical inventory"
+            + (
+                f" — unexpected: {sorted(set(tools) - expected)}, "
+                f"missing: {sorted(expected - set(tools))}"
+                if set(tools) != expected
+                else ""
+            ),
+        )
+        check(
+            f"exposes {inventory.TOTAL_COUNT} tools" in arch_text,
+            f"ARCHITECTURE.md states the MCP server exposes {inventory.TOTAL_COUNT} tools",
+        )
+
+
 def check_diagrams():
     print("\n=== Diagrams ===")
     diagrams_dir = POWER_DIR / "docs" / "diagrams"
@@ -394,6 +511,7 @@ def main():
     check_policies()
     check_diagrams()
     check_steering_index_metadata()
+    check_mcp_tool_inventory()
     check_version_file()
     check_version_sync()
 

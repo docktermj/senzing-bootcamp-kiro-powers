@@ -395,7 +395,7 @@ file_metadata:
     token_count: 1442
     size_category: medium
   mcp-tool-decision-tree.md:
-    token_count: 2305
+    token_count: 2310
     size_category: large
   mcp-usage-reference.md:
     token_count: 580
@@ -548,7 +548,7 @@ file_metadata:
     token_count: 766
     size_category: medium
   troubleshooting-commands.md:
-    token_count: 658
+    token_count: 672
     size_category: medium
   troubleshooting-decision-tree.md:
     token_count: 1606
@@ -570,7 +570,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 171208
+  total_tokens: 171227
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

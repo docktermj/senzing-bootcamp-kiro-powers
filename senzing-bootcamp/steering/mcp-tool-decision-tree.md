@@ -151,7 +151,7 @@ Diagnose a Senzing error code — get meaning, common causes, and fix steps.
 ### analyze_record
 
 ```json
-{ "tool": "analyze_record", "record": "{\"DATA_SOURCE\":\"TEST\",\"RECORD_ID\":\"1\",\"NAME_FULL\":\"John Smith\"}" }
+{ "tool": "analyze_record", "file_paths": ["data/transformed/output.jsonl"], "workspace_dir": "data/transformed", "version": "current" }
 ```
 
 Validate a mapped record for correctness and attribute coverage.

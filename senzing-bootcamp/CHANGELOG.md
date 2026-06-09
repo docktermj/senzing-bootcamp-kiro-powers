@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `scripts/mcp_tool_inventory.py` — canonical single source of truth for the
+  13-tool MCP inventory (ALL_TOOLS + TOTAL_COUNT), confirmed live against
+  get_capabilities(version="current") on sz-mcp-coworker v1.24.0
+- `tests/test_mcp_tool_inventory.py` — pins the 13-tool inventory and the
+  absence of any lint_record tool
+- `check_mcp_tool_inventory()` gate in `scripts/validate_power.py` — fails CI if
+  POWER.md / ARCHITECTURE.md tool listings drift from mcp_tool_inventory.py
+
+### Changed
+
+- Normalized the `analyze_record` call signature to
+  `analyze_record(file_paths=[...], workspace_dir="<dir>", version="current")`
+  across `steering/mcp-tool-decision-tree.md`,
+  `docs/modules/MODULE_5_DATA_QUALITY_AND_MAPPING.md`, and
+  `steering/troubleshooting-commands.md`
+
 ## [0.12.1] - 2026-06-08
 
 ### Changed

@@ -21,7 +21,7 @@ This power works best with Claude Opus 4.8 or similar.
 
 ## What's New in 0.12.1
 
-- "Lint Python (ruff)" CI gate brought from 438 violations to 0 — the full CI suite is now green, with pytest at 4,830 passed / 0 failed
+- "Lint Python (ruff)" CI gate brought from 438 violations to 0 — the full CI suite is now green, with pytest at 4,868 passed / 0 failed
 - Fixed 3 correctness defects the ruff gate surfaced: two duplicate test functions that silently shadowed earlier definitions, and a duplicate dict key that dropped a fixture entry
 - Style-only ruff remediation (long-line reflow, import-order suppression for the documented `sys.path` pattern, unused-variable/whitespace cleanup, ambiguous-name renames) with no runtime behavior change to any script
 - External-link checking (`validate_links.py`) wired into the CI gate sequence

@@ -24,7 +24,7 @@ The goal of this bootcamp is that you can say to yourself,
 
 ## Configure Kiro
 
-1. In Kiro's agentic chat, switch from "Auto" to "Claude Opus 4.6".
+1. In Kiro's agentic chat, switch from "Auto" to "Claude Opus 4.8 high".
 
 ## Install the Senzing Bootcamp Power
 

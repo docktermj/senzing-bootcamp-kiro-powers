@@ -58,7 +58,7 @@ _TOLERANCE = 0.10
 # SHA-256 of the stable (non-phase) regions of the live steering-index.yaml,
 # snapshotted on the UNFIXED code. The fix must leave these byte-identical.
 _BASELINE_HASHES: dict[str, str] = {
-    "budget": "89527397519962172eeaf2b1dff37136a4ee3b3b781d2251401b2b20977c8e9e",
+    "budget": "661cf1cc1c8c86ce7041b537b264d0b80065597474d66af7bb181061fcaaad18",
     "keywords": "eeba1e086d5533ae85fdd0b7e45f7ff37ebc6e53d4ba207414f9cc698a7d302f",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -397,6 +397,13 @@ class TestNonPhaseBlocksBytePreserved:
         normalizing the ``analyze_record`` signature in ``mcp-tool-decision-tree.md``
         and ``troubleshooting-commands.md`` increased their token counts, recomputed
         by ``measure_steering.py`` into ``file_metadata`` and the budget total.
+        Most recently, the docs-file-placement bugfix re-baselines again
+        (171227 -> 171518): Change 3 corrected the write-policy-gate hook's Check 4
+        .py fallback (regenerating ``hook-registry-critical.md``, +1 token) and
+        Change 4/5 realigned ``project-structure.md`` and
+        ``module-05-phase2-data-mapping.md`` to the ``src/``-rooted convention with
+        ``docs/`` subdirectories, all recomputed by ``measure_steering.py`` into
+        ``file_metadata`` and the budget total.
         Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
@@ -413,9 +420,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (171227), so the hash cannot silently re-pin a stale value.
+        # (171518), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 171227" in budget_block
+        assert "total_tokens: 171518" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

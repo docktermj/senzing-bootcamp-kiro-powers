@@ -55,11 +55,18 @@ _SYNC_SCRIPT = _SCRIPTS_DIR / "sync_hook_registry.py"
 # under EACH module bucket in the detailed modules registry, so a Module 7 section
 # now exists. The old digest pinned the incorrect collapsed content (the hook filed
 # only under its last module, 8); this digest pins the corrected multi-module output.
+#
+# hook-registry-critical.md was re-baselined observation-first by the
+# docs-file-placement bugfix (Change 3): the write-policy-gate hook's Check 4 .py
+# fallback was corrected from "scripts/{filename}" to "src/scripts/{filename}",
+# and sync_hook_registry.py --write regenerated the critical registry to mirror
+# that single-line prompt change. sync_hook_registry.py --verify still passes
+# (registry in sync with the hook source); only the byte digest moves forward.
 _REGISTRY_BASELINES: dict[str, str] = {
     "hook-registry.md":
         "388cffe18e522b64b04dc716378a1fae7b463f5cd300bc63ef4d1fca33a138bd",
     "hook-registry-critical.md":
-        "71b8f11b051831998b8a248f81bf29d09df5e36a6b93b121de45c2c40502d08f",
+        "0f1e5665ec4d8668480069999d5883f0f3fce557f0e0c0995f959b0be7b29510",
     "hook-registry-modules.md":
         "834f9369a2ec335816cff1470195a1ff60c7b00bb082082a11d9103bda808c61",
 }

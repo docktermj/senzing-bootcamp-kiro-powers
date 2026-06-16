@@ -14,19 +14,125 @@ from __future__ import annotations
 import argparse
 import shutil
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
-# Routing table: extension → target subdirectory (relative to project root)
+# Routing model
 # ---------------------------------------------------------------------------
+#
+# Routing is filename-aware and evaluated first-match-wins via ``route()`` over
+# the ordered ``ROUTING_RULE_LIST`` below. Each rule pairs a matcher (built with
+# the ``match_name`` / ``match_suffix`` / ``match_ext`` factories) with a single
+# target subdirectory (a POSIX-style relative path, possibly nested such as
+# ``src/mapping`` or ``docs/reference``).
+#
+# ``ROUTING_RULES`` is retained as an extension -> subdir compatibility table so
+# existing callers/tests that introspect extension-level defaults keep working.
+# It mirrors the extension-only rules in ``ROUTING_RULE_LIST`` and is NOT the
+# routing source of truth -- ``route()`` is.
 
+Matcher = Callable[[str], bool]
+
+
+def match_name(name: str) -> Matcher:
+    """Build a matcher that matches an exact filename.
+
+    Args:
+        name: The exact filename to match (e.g. "senzing_entity_specification.md").
+
+    Returns:
+        A predicate returning True when the filename equals ``name``.
+    """
+    return lambda filename: filename == name
+
+
+def match_suffix(suffix: str) -> Matcher:
+    """Build a matcher that matches filenames ending with a suffix.
+
+    Args:
+        suffix: The filename suffix to match (e.g. "_mapper.md").
+
+    Returns:
+        A predicate returning True when the filename ends with ``suffix``.
+    """
+    return lambda filename: filename.endswith(suffix)
+
+
+def match_ext(ext: str) -> Matcher:
+    """Build a matcher that matches filenames by extension (case-insensitive).
+
+    Args:
+        ext: The file extension to match, including the dot (e.g. ".py").
+
+    Returns:
+        A predicate returning True when the filename's suffix equals ``ext``.
+    """
+    return lambda filename: Path(filename).suffix.lower() == ext.lower()
+
+
+@dataclass(frozen=True)
+class RoutingRule:
+    """A single routing rule pairing a filename matcher with a target subdir.
+
+    Attributes:
+        matcher: Predicate that tests whether a filename matches this rule.
+        target_subdir: POSIX-style relative subdirectory to route matches into.
+    """
+
+    matcher: Matcher
+    target_subdir: str
+
+
+# Ordered, first-match-wins. Filename-specific rules precede extension rules so
+# that, e.g., ``senzing_entity_specification.md`` and ``*_mapper.md`` are routed
+# to their dedicated subdirectories before the generic ``.md`` rule applies.
+ROUTING_RULE_LIST: list[RoutingRule] = [
+    RoutingRule(match_name("senzing_entity_specification.md"), "docs/reference"),
+    RoutingRule(match_suffix("_mapper.md"), "docs/mapping"),
+    RoutingRule(match_ext(".md"), "docs/mapping"),
+    RoutingRule(match_ext(".py"), "src/mapping"),
+    RoutingRule(match_ext(".jsonl"), "data"),
+    RoutingRule(match_ext(".json"), "config"),
+]
+
+# Extension -> subdir compatibility table (see module note above). Kept in sync
+# with the extension-level entries in ROUTING_RULE_LIST. ``.jsonl`` and ``.json``
+# destinations are unchanged from prior behavior.
 ROUTING_RULES: dict[str, str] = {
-    ".py": "scripts",
-    ".md": "docs",
+    ".py": "src/mapping",
+    ".md": "docs/mapping",
     ".jsonl": "data",
     ".json": "config",
 }
+
+
+# Canonical single-copy artifacts: when the routed destination already exists,
+# the misplaced source copy is removed (deduplicated) rather than skipped, so
+# exactly one copy remains at the conventional location. Scoped narrowly to
+# named files so deduplication can never delete bootcamper data or
+# correctly-placed files.
+CANONICAL_DEDUP_FILES: set[str] = {"senzing_entity_specification.md"}
+
+
+def route(filename: str) -> str | None:
+    """Route a filename to its conventional target subdirectory.
+
+    Evaluates ``ROUTING_RULE_LIST`` first-match-wins. Filename-specific rules
+    (exact name, suffix) take precedence over extension rules.
+
+    Args:
+        filename: The base file name to route (e.g. "playpalace_mapper.md").
+
+    Returns:
+        The POSIX-style relative target subdirectory (e.g. "docs/mapping"), or
+        None when no rule matches (the file is left in place and warned about).
+    """
+    for rule in ROUTING_RULE_LIST:
+        if rule.matcher(filename):
+            return rule.target_subdir
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -41,7 +147,10 @@ class MoveResult:
     Attributes:
         source: Original file path.
         destination: Target file path (where it would be or was moved).
-        status: One of "moved", "skipped", "unrouted".
+        status: One of "moved", "skipped", "deduplicate", "unrouted".
+            "deduplicate" marks a canonical single-copy artifact (see
+            CANONICAL_DEDUP_FILES) whose routed destination already exists; the
+            misplaced source copy is removed so exactly one copy remains.
         reason: Human-readable explanation (empty for "moved").
     """
 
@@ -75,9 +184,12 @@ def scan_source(source_dir: Path) -> list[Path]:
 def plan_moves(files: list[Path], project_root: Path) -> list[MoveResult]:
     """Apply routing rules to a list of files and detect conflicts.
 
-    For each file, determines the target subdirectory based on extension.
-    If the destination already exists, the file is marked as skipped.
-    If no routing rule matches, the file is marked as unrouted.
+    For each file, determines the target subdirectory via ``route()`` (a
+    filename-aware, first-match-wins evaluation). If the destination already
+    exists, the file is marked as skipped -- unless it is a canonical
+    single-copy artifact (see CANONICAL_DEDUP_FILES), in which case it is marked
+    as deduplicate so the misplaced source copy can be removed. If no routing
+    rule matches, the file is marked as unrouted.
 
     Args:
         files: List of file paths to route.
@@ -88,8 +200,7 @@ def plan_moves(files: list[Path], project_root: Path) -> list[MoveResult]:
     """
     results: list[MoveResult] = []
     for file in files:
-        ext = file.suffix.lower()
-        target_subdir = ROUTING_RULES.get(ext)
+        target_subdir = route(file.name)
         if target_subdir is None:
             results.append(MoveResult(
                 source=file,
@@ -100,12 +211,20 @@ def plan_moves(files: list[Path], project_root: Path) -> list[MoveResult]:
         else:
             destination = project_root / target_subdir / file.name
             if destination.exists():
-                results.append(MoveResult(
-                    source=file,
-                    destination=destination,
-                    status="skipped",
-                    reason="file already exists at destination",
-                ))
+                if file.name in CANONICAL_DEDUP_FILES:
+                    results.append(MoveResult(
+                        source=file,
+                        destination=destination,
+                        status="deduplicate",
+                        reason="canonical copy already exists; removing misplaced source",
+                    ))
+                else:
+                    results.append(MoveResult(
+                        source=file,
+                        destination=destination,
+                        status="skipped",
+                        reason="file already exists at destination",
+                    ))
             else:
                 results.append(MoveResult(
                     source=file,
@@ -119,8 +238,11 @@ def plan_moves(files: list[Path], project_root: Path) -> list[MoveResult]:
 def execute_moves(plan: list[MoveResult]) -> None:
     """Create target directories and move files according to the plan.
 
-    Only processes entries with status="moved". Creates parent directories
-    as needed and moves files using shutil.move.
+    Processes entries with status="moved" by creating parent directories as
+    needed and moving files with shutil.move. Processes entries with
+    status="deduplicate" by removing the misplaced source copy ONLY after
+    confirming the canonical destination exists, leaving exactly one copy at the
+    conventional location. No other status causes any deletion.
 
     Args:
         plan: List of MoveResult objects from plan_moves.
@@ -129,6 +251,9 @@ def execute_moves(plan: list[MoveResult]) -> None:
         if result.status == "moved" and result.destination is not None:
             result.destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.move(str(result.source), str(result.destination))
+        elif result.status == "deduplicate" and result.destination is not None:
+            if result.destination.exists():
+                result.source.unlink()
 
 
 def print_summary(plan: list[MoveResult], dry_run: bool) -> None:
@@ -142,6 +267,7 @@ def print_summary(plan: list[MoveResult], dry_run: bool) -> None:
     """
     moved = [r for r in plan if r.status == "moved"]
     skipped = [r for r in plan if r.status == "skipped"]
+    deduplicated = [r for r in plan if r.status == "deduplicate"]
     unrouted = [r for r in plan if r.status == "unrouted"]
 
     if dry_run:
@@ -155,6 +281,12 @@ def print_summary(plan: list[MoveResult], dry_run: bool) -> None:
 
     for r in skipped:
         print(f"Skipped: {r.source.name} ({r.reason})", file=sys.stderr)
+
+    for r in deduplicated:
+        if dry_run:
+            print(f"Would deduplicate: {r.source.name} ({r.reason})", file=sys.stderr)
+        else:
+            print(f"Deduplicated: {r.source.name} ({r.reason})", file=sys.stderr)
 
     for r in unrouted:
         print(f"Warning: {r.source.name} ({r.reason})", file=sys.stderr)

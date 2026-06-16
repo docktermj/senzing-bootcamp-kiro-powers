@@ -467,7 +467,7 @@ Examine the file content to determine the correct location:
 - Transformation/mapping logic (transform, mapper, mapping, convert) → src/transform/{filename}
 - Data loading logic (load, loader, ingest, import_data) → src/load/{filename}
 - Query/search logic (query, search, find, get_entity, get_record) → src/query/{filename}
-- Otherwise (utility scripts, CLI tools) → scripts/{filename}
+- Otherwise (utility scripts, CLI tools) → src/scripts/{filename}
 Rewrite the path and retry.
 
 .md files:

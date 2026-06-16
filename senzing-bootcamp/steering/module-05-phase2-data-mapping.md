@@ -41,7 +41,7 @@ inclusion: manual
 
    > **🔒 Agent Instruction — Per-Source Mapping Requirement**
    >
-   > Each data source **must** complete its own full `mapping_workflow` run from start to finish. Do NOT reuse the mapping output, field mappings, or mapping specification from one source for another source — even if the schemas appear similar. Every source gets its own independent `mapping_workflow` execution and its own mapping specification markdown (`docs/{source_name}_mapper.md`). Mapper code may be shared across sources if schemas are identical, but mapping documentation is always per-source.
+   > Each data source **must** complete its own full `mapping_workflow` run from start to finish. Do NOT reuse the mapping output, field mappings, or mapping specification from one source for another source — even if the schemas appear similar. Every source gets its own independent `mapping_workflow` execution and its own mapping specification markdown (`docs/mapping/{source_name}_mapper.md`). Mapper code may be shared across sources if schemas are identical, but mapping documentation is always per-source.
 
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 
@@ -96,6 +96,19 @@ inclusion: manual
    > `workspace_dir` and `<bootcamper_project_root>` is the bootcamper's project
    > root directory. Review the output summary to confirm files landed correctly.
 
+   > **Agent instruction — Refresh the docs index:**
+   >
+   > After running the organizer, regenerate the documentation index so the
+   > bootcamper's `docs/README.md` lists every document under `docs/`:
+   >
+   > ```bash
+   > python3 senzing-bootcamp/scripts/generate_docs_index.py \
+   >   --project-root <bootcamper_project_root>
+   > ```
+   >
+   > This creates or refreshes `docs/README.md`. Regenerate the index whenever
+   > documents are added across modules so it stays current.
+
 6. **Build transformation program:** Use `generate_scaffold` or mapping workflow output as foundation. Handle: input reading, field mapping, type conversion, cleansing, `DATA_SOURCE`/`RECORD_ID`, error handling. Save to `src/transform/transform_[name].[ext]`. **Tell user:** File path, what it reads/writes, what it handles.
 
    **Checkpoint:** Write step 13 to `config/bootcamp_progress.json`.
@@ -116,7 +129,7 @@ inclusion: manual
    > - **Verbose:** Show the overall quality score, per-feature coverage breakdown with matching implications (e.g., "NAME coverage 98% — strong for matching" / "ADDR coverage 42% — may reduce match accuracy"), and all issues found with explanations.
    > - **Concise:** Show the overall quality score, a count of mapped vs. unmapped fields, and warnings only (e.g., "Quality: 85/100. 8 mapped, 3 unmapped. ⚠️ Low address coverage may affect matching.").
 
-   **Offer visualization:** "Would you like me to create a web page showing the quality analysis? It'll have coverage charts and the field mapping summary." If yes, generate HTML and save to `docs/mapping_[name]_quality.html`.
+   **Offer visualization:** "Would you like me to create a web page showing the quality analysis? It'll have coverage charts and the field mapping summary." If yes, generate HTML and save to `docs/mapping/mapping_[name]_quality.html`.
 
    **Checkpoint:** Write step 15 to `config/bootcamp_progress.json`.
 
@@ -135,9 +148,11 @@ inclusion: manual
 
     > **Agent instruction — Data Source Registry:** Update the source's `mapping_status` to `complete` in `config/data_sources.yaml` and set `updated_at`. If a transformed file was created, update `file_path` to the `data/transformed/` output.
 
-11. **Save and document:** Program in `src/transform/`, docs in `docs/mapping_[name].md` (field mappings, logic, quality, how to run), sample output in `data/transformed/[name]_sample.jsonl`. **Transformation lineage:** Have the bootcamper copy the transformation lineage template (#[[file:senzing-bootcamp/templates/transformation_lineage.md]]) to `docs/transformation_lineage_[name].md` and fill it in for this data source — covering source file info, transformation program, output file info, field mappings, format changes, filters, quality improvements, and before/after record counts.
+11. **Save and document:** Program in `src/transform/`, docs in `docs/mapping/mapping_[name].md` (field mappings, logic, quality, how to run), sample output in `data/transformed/[name]_sample.jsonl`. **Transformation lineage:** Have the bootcamper copy the transformation lineage template (#[[file:senzing-bootcamp/templates/transformation_lineage.md]]) to `docs/mapping/transformation_lineage_[name].md` and fill it in for this data source — covering source file info, transformation program, output file info, field mappings, format changes, filters, quality improvements, and before/after record counts.
 
-    **Per-source mapping specification:** Save a mapping specification markdown to `docs/{source_name}_mapper.md` for this data source. This file is always per-source, even when the transformation program is shared. Use the following structure:
+    **Entity specification reference:** The Senzing entity specification reference is written only to `docs/reference/senzing_entity_specification.md` — a single canonical copy. Do NOT create a copy in the `docs/` root; if one already exists there, remove it (or leave it to the organizer's dedup pass, which keeps the single `docs/reference/` copy).
+
+    **Per-source mapping specification:** Save a mapping specification markdown to `docs/mapping/{source_name}_mapper.md` for this data source. This file is always per-source, even when the transformation program is shared. Use the following structure:
 
     ```markdown
     # Mapping Specification: {SOURCE_NAME}
@@ -168,9 +183,9 @@ inclusion: manual
 
     > **🚫 MANDATORY GATE — Do NOT Write Module Completion Checkpoint Until This Passes:**
     >
-    > **BEFORE writing the module completion checkpoint:** List ALL files in `data/transformed/` and verify that EACH has a corresponding `docs/{source_name}_mapper.md`. If any are missing, create them NOW. Do NOT write the module completion checkpoint until all mapping specs exist. This is a hard requirement — the module is not complete without per-source mapping specifications for every transformed data source.
+    > **BEFORE writing the module completion checkpoint:** List ALL files in `data/transformed/` and verify that EACH has a corresponding `docs/mapping/{source_name}_mapper.md`. If any are missing, create them NOW. Do NOT write the module completion checkpoint until all mapping specs exist. This is a hard requirement — the module is not complete without per-source mapping specifications for every transformed data source.
 
-    **Per-source completion checkpoint:** Before marking a source as complete, verify that `docs/{source_name}_mapper.md` exists for that source. Do not proceed to the next source or mark the current source as done until its mapping specification markdown is saved. When all sources are mapped, confirm that every completed source has its own `docs/{source_name}_mapper.md` file.
+    **Per-source completion checkpoint:** Before marking a source as complete, verify that `docs/mapping/{source_name}_mapper.md` exists for that source. Do not proceed to the next source or mark the current source as done until its mapping specification markdown is saved. When all sources are mapped, confirm that every completed source has its own `docs/mapping/{source_name}_mapper.md` file.
 
     **Checkpoint:** Write step 19 to `config/bootcamp_progress.json`.
 

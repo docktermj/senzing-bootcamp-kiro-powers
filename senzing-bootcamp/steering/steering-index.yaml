@@ -362,7 +362,7 @@ file_metadata:
     token_count: 2149
     size_category: large
   hook-registry-critical.md:
-    token_count: 8169
+    token_count: 8170
     size_category: large
   hook-registry-modules.md:
     token_count: 9872
@@ -434,7 +434,7 @@ file_metadata:
     token_count: 1710
     size_category: medium
   module-05-phase2-data-mapping.md:
-    token_count: 3128
+    token_count: 3354
     size_category: large
   module-05-phase3-test-load.md:
     token_count: 2813
@@ -521,7 +521,7 @@ file_metadata:
     token_count: 499
     size_category: small
   project-structure.md:
-    token_count: 700
+    token_count: 764
     size_category: medium
   recovery-from-mistakes.md:
     token_count: 1227
@@ -570,7 +570,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 171227
+  total_tokens: 171518
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

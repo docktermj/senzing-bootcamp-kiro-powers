@@ -841,8 +841,20 @@ class TestNoHookModification:
         _CONSISTENCY_FIX_HOOKS = {
             "deployment-phase-gate.kiro.hook",
         }
+        # Hook intentionally edited by the docs-file-placement bugfix (Change 3):
+        # the write-policy-gate Check 4 .py fallback was corrected from
+        # "scripts/{filename}" to "src/scripts/{filename}" to remove the
+        # src/-or-scripts/ ambiguity. The edit is confined to then.prompt text; the
+        # JSON schema and all four security checks are unchanged. Unrelated to the
+        # token budget optimization, so it is excluded here.
+        _DOCS_FILE_PLACEMENT_HOOKS = {
+            "write-policy-gate.kiro.hook",
+        }
         _ALLOWED_MODIFIED = (
-            _CONSOLIDATED_HOOKS | _AGENTSTOP_GUARD_HOOKS | _CONSISTENCY_FIX_HOOKS
+            _CONSOLIDATED_HOOKS
+            | _AGENTSTOP_GUARD_HOOKS
+            | _CONSISTENCY_FIX_HOOKS
+            | _DOCS_FILE_PLACEMENT_HOOKS
         )
         # Filter for .kiro.hook files in the output, excluding hooks modified by
         # other specs. (Unrelated protections stay intact: any hook not in this

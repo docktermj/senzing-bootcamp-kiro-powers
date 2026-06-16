@@ -62,13 +62,20 @@ _SYNC_SCRIPT = _SCRIPTS_DIR / "sync_hook_registry.py"
 # and sync_hook_registry.py --write regenerated the critical registry to mirror
 # that single-line prompt change. sync_hook_registry.py --verify still passes
 # (registry in sync with the hook source); only the byte digest moves forward.
+#
+# hook-registry-modules.md was re-baselined observation-first by the
+# module-completion-artifacts bugfix: that fix edited the module-recap-append and
+# module-completion-celebration hook prompts, and sync_hook_registry.py --write
+# regenerated the modules registry to mirror those prompt changes.
+# sync_hook_registry.py --verify still passes (registry in sync with the hook
+# source); only the byte digest moves forward.
 _REGISTRY_BASELINES: dict[str, str] = {
     "hook-registry.md":
         "388cffe18e522b64b04dc716378a1fae7b463f5cd300bc63ef4d1fca33a138bd",
     "hook-registry-critical.md":
         "0f1e5665ec4d8668480069999d5883f0f3fce557f0e0c0995f959b0be7b29510",
     "hook-registry-modules.md":
-        "834f9369a2ec335816cff1470195a1ff60c7b00bb082082a11d9103bda808c61",
+        "db3d1f278b42d9fd4eb2e7923551f87993f571503d74a9730874cf5e1e03953f",
 }
 
 # sync_hook_registry --verify success marker observed on the UNFIXED tree.

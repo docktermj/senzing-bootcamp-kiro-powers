@@ -476,6 +476,11 @@ _HEADINGS_MODULE_COMPLETION = [
     "# Module Completion Workflow",
     "## Completion Step Ordering",
     "### Ordering Rules",
+    # The module-completion-artifacts bugfix added the shared boundary-detection
+    # trigger and the backfill sections below.
+    "## Shared Boundary-Detection Trigger",
+    "### Trigger Rules",
+    "## Backfill for Already-Completed Modules",
     "## Non-Blocking Error Handling",
     "### Per-Step Error Handling",
     "### 30-Second Timeout",

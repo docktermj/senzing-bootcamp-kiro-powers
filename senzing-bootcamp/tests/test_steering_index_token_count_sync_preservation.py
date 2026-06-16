@@ -58,7 +58,7 @@ _TOLERANCE = 0.10
 # SHA-256 of the stable (non-phase) regions of the live steering-index.yaml,
 # snapshotted on the UNFIXED code. The fix must leave these byte-identical.
 _BASELINE_HASHES: dict[str, str] = {
-    "budget": "661cf1cc1c8c86ce7041b537b264d0b80065597474d66af7bb181061fcaaad18",
+    "budget": "4cfc06691df40e0d3e95edce6e17f1f40a77dbc257c8e067d990874407fd2902",
     "keywords": "eeba1e086d5533ae85fdd0b7e45f7ff37ebc6e53d4ba207414f9cc698a7d302f",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -404,6 +404,12 @@ class TestNonPhaseBlocksBytePreserved:
         ``module-05-phase2-data-mapping.md`` to the ``src/``-rooted convention with
         ``docs/`` subdirectories, all recomputed by ``measure_steering.py`` into
         ``file_metadata`` and the budget total.
+        Most recently, the module-completion-artifacts bugfix re-baselines again
+        (171518 -> 173650): the bugfix grew ``module-completion.md`` (added the
+        shared boundary-detection trigger and backfill sections) and regenerated the
+        ``hook-registry-modules.md`` file (the module-recap-append and
+        module-completion-celebration hook prompts changed), all recomputed by
+        ``measure_steering.py`` into ``file_metadata`` and the budget total.
         Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
@@ -420,9 +426,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (171518), so the hash cannot silently re-pin a stale value.
+        # (173650), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 171518" in budget_block
+        assert "total_tokens: 173650" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block
@@ -680,7 +686,7 @@ class TestPerFilePerPhaseChecksIndependentOfAggregate:
 
     @given(new_total=st_total_tokens())
     @settings(max_examples=20)
-    @example(new_total=171208)  # equals the live per-file sum -> --check exits 0
+    @example(new_total=173650)  # equals the live per-file sum -> --check exits 0
     @example(new_total=169633)  # the pre-fix BUG 2 drift value  -> --check exits 1
     def test_check_cli_exit_code_enforces_aggregate(self, new_total):
         """``--check`` enforces the aggregate while leaving per-file/per-phase verdicts intact.

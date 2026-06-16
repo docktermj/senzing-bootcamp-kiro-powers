@@ -22,6 +22,38 @@ The module completion process executes the following steps in a **fixed, invaria
 - This ordering is invariant — it applies to every module completion (Module 1 through Module 11), whether the module was completed normally or skipped.
 - If a step fails (file system error, timeout exceeding 30 seconds, or unhandled exception), skip it with a logged warning and proceed to the next step. A failed predecessor does not block subsequent steps.
 
+## Shared Boundary-Detection Trigger
+
+The **recap_append**, **journal_entry**, and **completion_certificate** steps all fire from the **same boundary-detection trigger** — the comparison of the current `modules_completed` array against the prior state. There is no longer a split where the recap is appended by a hook while the journal entry and certificate run only when the bootcamper explicitly invokes this workflow. When boundary detection observes a newly completed module, all three artifact steps run together (followed by `next_step_options`), so a completed module never ends up with only a subset of its artifacts.
+
+### Trigger Rules
+
+- **Fire on every new entry.** Whenever a module number is added to `modules_completed`, run the recap section, journal entry, and completion certificate for that module — in the fixed step order above.
+- **Include the final module of a track.** Track completion (graduation or celebration) MUST NOT suppress the per-module artifact path. If the newly completed module is the last module of the bootcamper's track (Module 7 for Core, Module 11 for Advanced), still produce its recap section, journal entry, and certificate exactly as for any other module. The celebration path runs in addition to — never instead of — the per-module artifacts.
+- **Defer when a question is pending.** If `config/.question_pending` exists at completion-check time, produce no completion-artifact output at all (no recap, journal, or certificate) and defer to `ask-bootcamper`. This deferral is unchanged.
+- **No-op when nothing new completed.** If `modules_completed` has not gained a new entry since the previous state, produce no recap, journal, or certificate output — no spurious duplicate artifacts. This no-op behavior is unchanged.
+
+## Backfill for Already-Completed Modules
+
+On a completion boundary — and before appending the new module's artifacts — reconcile the artifact set for **all** already-completed modules so modules finished before the artifact logic existed (or skipped by an earlier partial run) are not left behind.
+
+1. Run the deterministic planner to discover exactly which artifacts are missing:
+
+   ```text
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --plan
+   ```
+
+2. Parse the emitted JSON. It lists, by set difference only (never re-emitting existing artifacts):
+   - `recap_modules` — completed modules missing a recap section
+   - `journal_modules` — completed modules missing a journal entry
+   - `certificate_modules` — completed modules missing a completion certificate (applying the uniform-certificate rule: either every completed module gets a certificate or none do)
+   - `module_durations` — per-module Duration strings computed from `step_history` (only modules with reliable timing appear)
+   - `total_duration` — the cumulative `Total Duration`, or `null` when timing is unreliable
+
+3. For each module listed, generate the missing artifact(s) using the same templates and field-derivation rules defined below, sourcing Duration / Time Spent from the planner's `module_durations` (omit the field when the module is absent from `module_durations`). Apply certificates uniformly across the modules in `certificate_modules`.
+
+4. The plan is idempotent: re-running on a complete, consistent set yields empty module lists, so backfill produces no duplicates. If the planner cannot be run (file-system error or timeout), log a warning and continue with the current module's artifacts rather than halting.
+
 ## Non-Blocking Error Handling
 
 Every artifact-creation step (recap append, journal entry, completion certificate) MUST handle errors gracefully so that a single failure never blocks the bootcamper's flow.
@@ -76,7 +108,7 @@ The `hooks/module-recap-append.kiro.hook` hook handles this automatically as a `
 - **Questions Asked:** All substantive questions the agent posed to the bootcamper
 - **Answers Given:** The bootcamper's responses, maintaining 1:1 correspondence with questions
 - **Actions Taken:** File creations, modifications, code generation, and commands executed
-- **Duration:** Elapsed time from module start to completion
+- **Duration:** The per-module elapsed time and cumulative `Total Duration` come from `scripts/completion_artifacts.py` (computed from the ISO 8601 timestamps in `step_history` and the top-level `started_at`), never from session context. When the planner returns no value for a module, omit the `### Duration` field entirely rather than writing a placeholder such as "Module N session".
 
 ### Workflow position
 
@@ -118,7 +150,7 @@ If `docs/bootcamp_recap.md` already exists, append the new recap section at the 
 
 ## Bootcamp Journal
 
-The journal entry step executes **after** the recap append and **before** the completion certificate. This step is **mandatory** regardless of module number (1 through 11) or completion method (normal completion or skip). It must never be omitted.
+The journal entry step executes **after** the recap append and **before** the completion certificate. It is driven by the **same boundary-detection trigger** as the recap append (see the Shared Boundary-Detection Trigger section above), so every newly completed module — including the final module of a track — gets a journal entry without the bootcamper having to invoke this workflow explicitly. This step is **mandatory** regardless of module number (1 through 11) or completion method (normal completion or skip). It must never be omitted.
 
 ### Journal File Creation (First Module Completion)
 
@@ -195,6 +227,8 @@ If the journal file cannot be created or the entry cannot be appended (file syst
 
 ## Module Completion Certificate
 
+The completion certificate is driven by the **same boundary-detection trigger** as the recap append and journal entry (see the Shared Boundary-Detection Trigger section above), so every newly completed module — including the final module of a track — gets a certificate. Certificates are applied **uniformly**: either every completed module has a `docs/progress/MODULE_N_COMPLETE.md` or none do (the planner's `certificate_modules` list enforces this).
+
 After the journal entry, generate a completion certificate:
 
 1. Create `docs/progress/MODULE_N_COMPLETE.md` (create `docs/progress/` directory if it doesn't exist)
@@ -206,7 +240,7 @@ After the journal entry, generate a completion certificate:
 # Module [N]: [Title] — Complete ✅
 
 **Completed**: [ISO 8601 date]
-**Time Spent**: [duration from session analytics, or "not tracked"]
+**Time Spent**: [per-module Duration from scripts/completion_artifacts.py — omit this line entirely when the planner returns no value for the module, rather than writing a placeholder]
 **Language**: [chosen language]
 
 ## Key Concepts Learned
@@ -246,6 +280,7 @@ Now that you've completed Module [N], you can:
 - **What This Enables:** Read `config/module-dependencies.yaml` to find which modules are now unlocked
 - **Language:** Use the bootcamper's language in descriptions (e.g., "Built a Python loading script" not "Built a loading script")
 - **Session Stats:** Include only if `config/session_log.jsonl` exists and has entries for this module. Omit the section entirely if no analytics are available.
+- **Time Spent / Summary Index time:** Source the certificate `Time Spent`, the Summary Index `Time` column, and the `Total Time Invested` value from `scripts/completion_artifacts.py` (`module_durations` and `total_duration`). Omit the value when the planner returns none for that module rather than emitting a placeholder.
 
 ### Summary Index
 
@@ -318,6 +353,8 @@ After each module, check if the user finished their track's last module:
 | Advanced Topics  | Module 11 |
 
 ## Path Completion Celebration
+
+> **Note:** The per-module artifacts (recap section, journal entry, completion certificate) for the final module of a track are produced by the Shared Boundary-Detection Trigger BEFORE this celebration runs. Track completion adds the celebration and next-step guidance below — it never replaces or suppresses the final module's per-module artifacts.
 
 > **Note:** The completion-summary document (`docs/completion_summary.md`) is always created at track completion; the completion-summary offer in its existing position (between the celebration and the export option) governs only the shareable PDF/share, not the document's creation.
 

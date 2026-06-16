@@ -170,8 +170,12 @@ _SNAP_GRAD_REPORT = (
 # its existing position governing only the PDF/share. The meaningful invariant — the
 # offer ordering — is independently asserted by test_celebration_offer_ordering_preserved
 # via _CELEBRATION_ORDER_MARKERS, which the added prose does not disturb.
+# Re-baselined again for the module-completion-artifacts bugfix, which added a
+# clarifying note to this section; the ordering-marker test
+# (test_celebration_offer_ordering_preserved) still independently guards the
+# meaningful invariant.
 _SNAP_PATH_COMPLETION_CELEBRATION = (
-    "5b8c811466d038e0403aae802e12e0a7839a4ef6adb1930ffbf4d8f813943e42"
+    "92ed1845950c3d0b9277bd6f62191d02b69c090126873e8c063d691f06f4345a"
 )
 
 

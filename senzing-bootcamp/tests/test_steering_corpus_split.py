@@ -58,12 +58,21 @@ GENERATED_FILES: frozenset[str] = frozenset(
     }
 )
 
-# Enumerated exemption set (Requirements 2.2, 5.5, 8.1, 8.2). Empty in v1 because
-# every in-scope unit reduces to <= split_threshold_tokens by relocation alone.
+# Enumerated exemption set (Requirements 2.2, 5.5, 8.1, 8.2). Contains
+# module-completion.md: it is a single cohesive, sequential completion workflow
+# (fixed step order: progress_update -> recap_append -> journal_entry ->
+# completion_certificate -> next_step_options, plus a shared boundary-detection
+# trigger, backfill for already-completed modules, and non-blocking error
+# handling) that does not split into independently-loadable units without harming
+# agent comprehension — the steps are interdependent and must load together. The
+# module-completion-artifacts bugfix grew this file past the 5000-token
+# split_threshold; rather than fragment a workflow that must be read as a whole,
+# it is exempted with this justification. The file remains indexed in
+# file_metadata (and is therefore covered by test_exemptions_exist_in_index).
 # If a future indivisible unit cannot be reduced, its filename is added here with
 # a written justification; the threshold test then passes via the exemption
 # branch and ``test_exemptions_exist_in_index`` requires the file to be indexed.
-EXEMPTIONS: frozenset[str] = frozenset()
+EXEMPTIONS: frozenset[str] = frozenset({"module-completion.md"})
 
 
 # ---------------------------------------------------------------------------

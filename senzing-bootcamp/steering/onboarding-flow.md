@@ -18,6 +18,18 @@ Before doing any setup work, tell the user:
 
 "I'm going to do some quick administrative setup — creating your project directory, installing hooks, and checking your environment. You'll see me working for a moment. When I'm done, you'll see a big **WELCOME TO THE SENZING BOOTCAMP** banner — that's when the bootcamp officially starts and I'll begin asking you questions."
 
+## 0a. Why You May See "Rejected"/"Accepted" Messages
+
+During setup and throughout the bootcamp, you may occasionally see a pair of messages like "Rejected creation of ..." followed immediately by "Accepted edits to ...". This is expected and harmless — nothing has gone wrong.
+
+Here is what is happening: the `write-policy-gate` safety check briefly holds each write for inspection before it is applied. While a write is held, the IDE surfaces it as "Rejected". The agent then immediately re-issues the identical write, which completes and surfaces as "Accepted edits".
+
+- Your writes **succeed on retry** — nothing fails.
+- **No data is lost** during the intercept-then-retry cycle.
+- The cycle is **expected and harmless**, so there is no need to act on these messages.
+
+Routine internal bookkeeping files (such as the progress and preference files the bootcamp manages for you) no longer trigger this message, so any remaining "Rejected" → "Accepted" pairs are rare and still harmless.
+
 ## 0b. MCP Health Check
 
 Before starting the bootcamp, verify that the Senzing MCP server is reachable. The MCP server is required for the bootcamp — it generates SDK code in your chosen language, looks up Senzing facts and configuration details, and provides working examples on demand.

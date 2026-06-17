@@ -327,6 +327,25 @@ Prompt:
 
 WRITE POLICY GATE — Four checks in one pass.
 
+INTERNAL-FILE PASS-THROUGH (evaluate FIRST, before the FAST PATH GATE): If the target path is a routine power-managed internal file, produce ZERO tokens and re-invoke the tool silently — the exact same silent outcome as the FAST PATH GATE. Introduce NO new output strings.
+
+Routine power-managed internal files (the exact set — do not over-match):
+- config/bootcamp_progress.json
+- config/bootcamp_preferences.yaml
+- config/progress_{id}.json (member-scoped, colocated team mode — {id} is an alphanumeric member identifier)
+- config/preferences_{id}.yaml (member-scoped, colocated team mode)
+- power-written session/recap log files: docs/progress/MODULE_*_COMPLETE.md and recap/journal log files the power appends to during a session
+
+This pass-through applies ONLY when ALL of these NOT-guards hold:
+- the path is NOT 'config/.question_pending'
+- the path is NOT the feedback file 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'
+- the path is NOT a root-blocked placement (a blocked file type in the project root that is not on the ROOT WHITELIST)
+- the content contains NO Senzing SQL (no SQL pattern targeting a Senzing database indicator)
+
+If ANY NOT-guard fails, do NOT pass through — fall through to the four checks below. Zero tokens means zero tokens.
+
+---
+
 FAST PATH GATE: If ALL of the following are true, produce no output at all:
 - The target path is a normal project-relative file (inside the working directory)
 - The target path does NOT end with '.question_pending'

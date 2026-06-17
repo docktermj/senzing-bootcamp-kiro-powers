@@ -58,7 +58,15 @@ _TOLERANCE = 0.10
 # SHA-256 of the stable (non-phase) regions of the live steering-index.yaml,
 # snapshotted on the UNFIXED code. The fix must leave these byte-identical.
 _BASELINE_HASHES: dict[str, str] = {
-    "budget": "4cfc06691df40e0d3e95edce6e17f1f40a77dbc257c8e067d990874407fd2902",
+    # Re-baselined for the write-policy-gate-ux batch. NOTE: this baseline was
+    # ALSO stale on main before this batch — a prior commit moved the live total
+    # to 174709 without updating this constant (it still pinned 173650). This
+    # batch makes two legitimate token changes: Change B added a "## 0a."
+    # onboarding section to onboarding-flow.md (+247), and Change A's hook-prompt
+    # edit regenerated hook-registry-critical.md (+318). measure_steering's
+    # update_index recomputed file_metadata + budget.total_tokens to the live
+    # consistent value (175274 = sum of file_metadata counts).
+    "budget": "a3dffd189da9b99b8c812cc048edd1fb4e88b4473fc65371d67902b4679db1d1",
     "keywords": "eeba1e086d5533ae85fdd0b7e45f7ff37ebc6e53d4ba207414f9cc698a7d302f",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -426,9 +434,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (173650), so the hash cannot silently re-pin a stale value.
+        # (175274), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 173650" in budget_block
+        assert "total_tokens: 175274" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

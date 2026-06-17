@@ -169,7 +169,7 @@ onboarding:
   phases:
     phase1-setup-prereqs:
       file: onboarding-flow.md
-      token_count: 3468
+      token_count: 3865
       size_category: large
       step_range: [0, 2]
     phase1b-intro-language:
@@ -362,7 +362,7 @@ file_metadata:
     token_count: 2149
     size_category: large
   hook-registry-critical.md:
-    token_count: 8170
+    token_count: 8488
     size_category: large
   hook-registry-modules.md:
     token_count: 10631
@@ -509,7 +509,7 @@ file_metadata:
     token_count: 1534
     size_category: medium
   onboarding-flow.md:
-    token_count: 3618
+    token_count: 3865
     size_category: large
   onboarding-phase1b-intro-language.md:
     token_count: 2055
@@ -570,7 +570,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 174709
+  total_tokens: 175274
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -72,8 +72,14 @@ _SYNC_SCRIPT = _SCRIPTS_DIR / "sync_hook_registry.py"
 _REGISTRY_BASELINES: dict[str, str] = {
     "hook-registry.md":
         "388cffe18e522b64b04dc716378a1fae7b463f5cd300bc63ef4d1fca33a138bd",
+    # Re-baselined observation-first by the write-policy-gate-ux bugfix
+    # (Change A): the write-policy-gate hook prompt gained an INTERNAL-FILE
+    # PASS-THROUGH clause, and sync_hook_registry.py --write regenerated the
+    # critical registry to mirror that prompt change. sync_hook_registry.py
+    # --verify still passes (registry in sync with the hook source); only the
+    # byte digest moves forward.
     "hook-registry-critical.md":
-        "0f1e5665ec4d8668480069999d5883f0f3fce557f0e0c0995f959b0be7b29510",
+        "b7f35ddcc2ad0367f2acc0ea40b51deb740a50dcdc2f81604c723e485ea2f980",
     "hook-registry-modules.md":
         "db3d1f278b42d9fd4eb2e7923551f87993f571503d74a9730874cf5e1e03953f",
 }

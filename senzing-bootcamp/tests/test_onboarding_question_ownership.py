@@ -253,6 +253,10 @@ def _strip_inline_questions_and_waits(section: str) -> str:
 _EXPECTED_HEADINGS = [
     "Phase Sub-Files",
     "0. Setup Preamble",
+    # Added by the write-policy-gate-ux batch (Change B): an onboarding section
+    # explaining the write-policy-gate intercept-retry ("Rejected"/"Accepted")
+    # cycle. Purely additive — sits between Step 0 and Step 0b.
+    '0a. Why You May See "Rejected"/"Accepted" Messages',
     "0b. MCP Health Check",
     "0c. Version Display",
     "1. Directory Structure",

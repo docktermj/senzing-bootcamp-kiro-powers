@@ -652,11 +652,13 @@ _HASH_HOOK = "2be48f67f5ab5d19f2368248e9569ec1bb8b0ccd6f39c4124b4e24da7c0fb47e"
 # deletion; see TestPreservationAgentInstructions.test_agent_instructions_has_ownership_rule
 # for the paired independent content assertion.
 _HASH_AGENT_INSTRUCTIONS = "26341d605bd059fbf2e5694ee9f71b7d5d88c069a3f74192f5197652bde5d120"
-# Re-baselined (observation-first) against the shipped onboarding-flow.md. Prior
-# re-baseline was for the onboarding split; this batch (bootcamp-consistency-fixes)
-# added the capture-critical hooks instruction (module-recap-append, session-log-events)
-# to the Step 2 hook-installation step, a correct content change.
-_HASH_ONBOARDING_FLOW = "980c5c32dab773a1c2cb3f194cd2ed4c8617994a7f913c806bde727da9eea8d5"
+# Re-baselined (observation-first) against the shipped onboarding-flow.md. The
+# write-policy-gate-ux batch added a new "## 0a. Why You May See
+# 'Rejected'/'Accepted' Messages" onboarding section (Change B) explaining the
+# write-policy-gate intercept-retry cycle — a purely additive content change.
+# Prior re-baselines: the onboarding split, then the bootcamp-consistency-fixes
+# batch (capture-critical hooks instruction in Step 2).
+_HASH_ONBOARDING_FLOW = "faa18d2770e2ddb71e3d9ca60d341c99f17ecf91c6c4bead2fbd7df9f84be6fa"
 
 
 # ---------------------------------------------------------------------------

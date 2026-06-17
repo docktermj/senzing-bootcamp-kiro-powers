@@ -70,6 +70,37 @@ inclusion: manual
    > - **Verbose:** Show the full mapping table with a rationale column explaining the reasoning for each mapping decision and a confidence score per field (e.g., "first_name → NAME_FIRST — standard given name field, confidence: high").
    > - **Concise:** Show the mapping table with source field → Senzing attribute only, no rationale column or confidence scores (e.g., "first_name → NAME_FIRST").
 
+   > **Agent instruction — Availability-aware mapping validation (Step 4):**
+   >
+   > `mapping_workflow` advertises three validation scripts. Run them by availability — do NOT treat any one of them as a hard blocking gate that the bootcamper cannot clear.
+   >
+   > 1. **`sz_json_analyzer.py` (primary validation):** This is the primary mapping validation — structural + Entity-Specification validation — and is currently hosted (HTTP 200). When it is available, run it and use its result as the authoritative check. It is **sufficient to proceed**: when the verbatim/routing scripts below are unavailable, a passing `sz_json_analyzer.py` result lets you continue the mapping workflow.
+   >
+   > 2. **`sz_verbatim_check.py` (verbatim-fidelity, optional/best-effort):**
+   >    - **If available:** run the verbatim-fidelity check as before and report its result.
+   >    - **If unavailable** (HTTP 404 / no working inline fallback): tell the bootcamper the verbatim-fidelity check is being **skipped because the script is unavailable**, treat it as **optional/best-effort**, and **proceed** — do NOT block on it.
+   >
+   > 3. **`sz_routing_report.py` (routing-coverage, optional/best-effort):**
+   >    - **If available:** run the routing-coverage report as before and report its result.
+   >    - **If unavailable** (HTTP 404 / no working inline fallback): tell the bootcamper the routing-coverage report is being **skipped because the script is unavailable**, treat it as **optional/best-effort**, and **proceed** — do NOT block on it.
+   >
+   > In short: anchor validation on `sz_json_analyzer.py`; degrade the verbatim and routing checks to optional/best-effort when their scripts are unavailable, and never leave the bootcamper blocked at Step 4 because of a 404.
+
+   > **Agent instruction — Step 5 `detect_environment` menu handling (after Step 4 approval):**
+   >
+   > After a source's mapping is approved at Step 4, `mapping_workflow` returns Step 5 (`detect_environment`) with a four-option menu. Do NOT stop here — explain the menu and relay a recommendation so the bootcamper never hits a dead end.
+   >
+   > **Steps 5–8 are optional sandbox validation.** They let you trial-load the mapped source into a throwaway sandbox to preview entity resolution. They are NOT the production load — the real load happens in **Module 6**. The four `detect_environment` options are:
+   >
+   > - **skip** — skip the per-source sandbox test load and move on. **Recommended when one or more unmapped sources remain.**
+   > - **test_load** — run the optional sandbox test load (enters Phase 3, Steps 5–8) for this source.
+   > - **load+resolve** — run the optional sandbox test load and resolve entities (enters Phase 3, Steps 5–8) for this source.
+   > - **done** — finish the mapping workflow for this source without a sandbox test load.
+   >
+   > **Multi-source continuation (recommended path):** When one or more unmapped data sources remain, recommend the **skip** option — note that the real load is deferred to **Module 6**, so a per-source sandbox test load adds little here — and automatically continue to the next unmapped source by starting its own `mapping_workflow` run. Tell the bootcamper: "Steps 5–8 are an optional sandbox preview; since you still have sources to map and the real load happens in Module 6, I'll skip the per-source test load and move on to the next unmapped source."
+   >
+   > **Explicit choice is preserved:** If the bootcamper explicitly chooses **test_load** or **load+resolve**, follow that path into Phase 3 (Steps 5–8) unchanged — see #[[file:senzing-bootcamp/steering/module-05-phase3-test-load.md]]. The real production load still happens in Module 6 regardless.
+
    **Checkpoint:** Write step 11 to `config/bootcamp_progress.json`.
 
 5. **Generate starter code:** Advance with `action='paths'`. **Tell user:** Show a sample target JSON record so they see the output format.

@@ -57,7 +57,7 @@ modules:
         step_range: [1, 7]
       phase2-data-mapping:
         file: module-05-phase2-data-mapping.md
-        token_count: 3128
+        token_count: 4279
         size_category: large
         step_range: [8, 20]
       phase3-test-load-validate:
@@ -434,10 +434,10 @@ file_metadata:
     token_count: 1710
     size_category: medium
   module-05-phase2-data-mapping.md:
-    token_count: 3354
+    token_count: 4279
     size_category: large
   module-05-phase3-test-load.md:
-    token_count: 2813
+    token_count: 2947
     size_category: large
   module-06-data-processing.md:
     token_count: 1583
@@ -570,7 +570,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 173650
+  total_tokens: 174709
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -5,6 +5,8 @@ inclusion: manual
 
 > **This phase is optional.** Bootcampers who prefer to write custom loading programs can skip Phase 3 and proceed directly to Module 6. Phase 3 uses `mapping_workflow` steps 5–8 to give immediate feedback on entity resolution quality without leaving Module 5.
 
+> **Entry from the Step 5 `detect_environment` menu:** Phase 3 is entered from the Step 5 menu handled in #[[file:senzing-bootcamp/steering/module-05-phase2-data-mapping.md]]. When the bootcamper explicitly chooses **test_load** or **load+resolve** at that menu, follow the Phase 3 workflow below (`mapping_workflow` steps 5–8, Steps 21–26) unchanged. When sources remain unmapped, the Phase 2 guidance instead recommends **skip** and continues to the next source — the real production load is still deferred to Module 6 in either case.
+
 **Before starting Phase 3:** The Senzing SDK must be installed and configured (Module 2). If the SDK is not yet set up, inform the bootcamper: "Phase 3 requires the Senzing SDK (Module 2). You can skip Phase 3 and proceed to Module 6, or complete Module 2 first and return here." If the bootcamper chooses to skip, update the Data Source Registry with `test_load_status: skipped` for each source and proceed to Module 6.
 
 ### Workflow (per data source that completed Phase 2)

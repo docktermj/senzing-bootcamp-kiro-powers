@@ -278,6 +278,14 @@ def st_other_gate(draw: st.DrawFn) -> tuple[vmg.MandatoryGate, dict]:
 # output exactly. The file remains outside this fix's scope; only its source
 # layout changed, not its emitted output. test_status_py_imports_intact still
 # guards against any import regression.
+#
+# NOTE (module1-license-request-option re-baseline): the
+# `steering/module-01-business-problem.md` whole-file digest was recomputed from
+# the current shipped bytes. That spec is chartered to edit Module 1 Step 6b/6d
+# (the in-flow MCP License_Request_Option), which is outside THIS bugfix's scope
+# but a legitimate, separately-specced change to module-01. The file remains
+# byte-stable with respect to *this* fix's surfaces; only the cross-spec Step
+# 6b/6d edits changed it, so the snapshot is refreshed to the now-correct bytes.
 # ---------------------------------------------------------------------------
 
 _UNRELATED_FILE_BASELINES: dict[str, str] = {
@@ -290,7 +298,7 @@ _UNRELATED_FILE_BASELINES: dict[str, str] = {
     "scripts/status.py":
         "81ee75888a5ce845945bd4214875f583c5365bbe1f17ce5d4d0aa829691fad79",
     "steering/module-01-business-problem.md":
-        "1f10c561826b8b397fc257be3cfc2dea0ed7aa4560f6663d9eea45838f29431f",
+        "065f0e9a770057807df368926251d268574f786b02d188454823323895469853",
     "steering/lang-python.md":
         "15114d9eb719de92aa060649aa8e1bddb8ad01cb6b04a3ff73ca22abb8433a76",
     "config/module-artifacts.yaml":

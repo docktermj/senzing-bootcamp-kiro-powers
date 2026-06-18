@@ -153,6 +153,8 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    The Senzing SDK includes a built-in evaluation license that allows processing up to 500 records. Since the total record count across your data sources is greater than 500, you will need a full Senzing license to process all your data.
 
+   Licensing options include applying an existing license, requesting one through the external request path, and — when available — the in-flow MCP license-request path that asks the Senzing MCP server to generate an evaluation license for you (covered in Step 6d).
+
    👉 "Do you already have a Senzing license?"
 
    > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
@@ -182,26 +184,33 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **6d. Does not have license** (branch — bootcamper confirms they do not have a Senzing license):
 
-   **Consult the Senzing MCP server first.** Because the total record count exceeds the 500-record evaluation limit, the current license is insufficient. Call `search_docs(query='temporary or larger evaluation license for more than 500 records')` to retrieve current Senzing guidance on obtaining a temporary/larger evaluation license, and present that guidance to the bootcamper. Then continue with the email path below.
+   **Consult the Senzing MCP server first.** Because the total record count exceeds the 500-record evaluation limit, the current license is insufficient. Call `search_docs(query='temporary or larger evaluation license for more than 500 records')` to retrieve current Senzing guidance on obtaining a temporary/larger evaluation license, and present that guidance to the bootcamper.
 
-   Explain how to request and configure a Senzing license:
+   **Check the in-flow option's availability before presenting choices.** Within this same licensing interaction, call `get_capabilities` on the Senzing MCP server to determine whether the `submit_feedback` tool is reported as available. Wait up to 30 seconds for a response, then apply this decision:
 
-   - **Where to request:** Contact <support@senzing.com> to request an evaluation license. Mention that you are using the Senzing Bootcamp and provide your expected record count.
-   - **What to provide:** Your name, organization, expected record count, and use case description.
-   - **Turnaround expectations:** Expect a response within 1–2 business days. Licenses are typically valid for 30–90 days.
-   - **How to configure once received:** Once you receive your Base64-encoded license string, decode it and save to `licenses/g2.lic`, then add `LICENSEFILE` to the engine configuration PIPELINE section.
+   - **`submit_feedback` reported available** → present all three licensing paths below (in-flow MCP request, external request, apply an existing license).
+   - **`submit_feedback` reported unavailable, an error response is returned, or no response arrives within 30 seconds** → omit the in-flow MCP request path and present only the external request and apply-an-existing-license paths.
 
-   Offer the bootcamper a choice:
+   Present the available paths as distinct, individually selectable options:
 
-   👉 "Would you like to defer license configuration and continue with Module 1 now? You can configure the license later in Module 2, or we can wait until you receive your license."
+   1. **Request an evaluation license through the MCP server (in-flow)** — *present this option only when `submit_feedback` is reported available.* This path asks the Senzing MCP server to generate an evaluation license for you by invoking the `submit_feedback` tool with the `license_request` category. The evaluation license is delivered by email, and the email contains a download link. This option requires the `submit_feedback` tool, which is **disabled by default** — it is listed in the `disabledTools` array in `senzing-bootcamp/mcp.json`.
+   2. **Request a license through the external channel** — Contact <support@senzing.com> to request an evaluation license. Mention that you are using the Senzing Bootcamp and provide your name, organization, expected record count, and use case description. Expect a response within 1–2 business days.
+   3. **Apply an existing license** — if you already have, or later obtain, a Base64-encoded license string, follow the Step 6c configuration steps to save and wire it.
+
+   When presenting the evaluation license's validity period or record capacity, retrieve those values from a Senzing MCP server tool during this session and present exactly what the tool returns. If the tool does not return a value, or the MCP server cannot be reached, omit the specific figure and tell the bootcamper that the current value is unavailable from the MCP server — never substitute a hardcoded or remembered figure.
+
+   👉 "Which would you like to do — request an evaluation license through the MCP server, request one through the external channel, apply a license you already have, or defer and continue Module 1 for now?"
 
    > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
-   Once the bootcamper responds:
+   Once the bootcamper responds, act on their choice:
 
-   - If they want to **wait** for the license → pause and let them know to return when they have it
-   - If they want to **defer** and continue → proceed to Step 6e
-   - If they **received their license** → follow the configuration steps in Step 6c
+   - **In-flow MCP request:** If `submit_feedback` is still listed in `disabledTools`, tell the bootcamper this option requires the `submit_feedback` tool and that it is disabled by default: open `senzing-bootcamp/mcp.json`, remove `submit_feedback` from the `disabledTools` array, and save the file. After they confirm they have re-enabled it, re-verify availability by calling `get_capabilities` again before invoking. If they decline to re-enable it, present only the remaining paths (external request and apply existing). When availability is confirmed, invoke `submit_feedback` exactly once with the `license_request` category. On a response with no error, instruct the bootcamper to check the email associated with their request for the evaluation license and its download link; once they confirm receipt, follow the Step 6c configuration steps. If the invocation returns an error or no response within 30 seconds, tell the bootcamper the license request did not complete, present the remaining paths (external request and apply existing), and do not automatically re-invoke `submit_feedback`.
+   - **External request:** request via the external channel above; follow the Step 6c configuration steps once you have the license file.
+   - **Apply an existing license:** follow the configuration steps in Step 6c.
+   - **Defer:** proceed to Step 6e. (If they would rather **wait** for a license, pause and let them know to return when they have it.)
+
+   If at any point the bootcamper reveals they already have a Senzing license, omit the in-flow MCP request option and route them to the apply-an-existing-license path in Step 6c.
 
    **Checkpoint:** Write step 6d to `config/bootcamp_progress.json`.
 

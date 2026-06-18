@@ -5,7 +5,7 @@ modules:
     phases:
       phase1-discovery:
         file: module-01-business-problem.md
-        token_count: 4527
+        token_count: 5321
         size_category: large
         step_range: [1, 9]
       phase2-document-confirm:
@@ -401,7 +401,7 @@ file_metadata:
     token_count: 580
     size_category: medium
   module-01-business-problem.md:
-    token_count: 4527
+    token_count: 5321
     size_category: large
   module-01-phase2-document-confirm.md:
     token_count: 1853
@@ -570,7 +570,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 176518
+  total_tokens: 177312
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -74,7 +74,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # write-policy-gate prompt's two new pass-through entries. measure_steering's
     # update_index recomputed file_metadata + budget.total_tokens to the live
     # consistent value (175589 = sum of file_metadata counts).
-    "budget": "ab69fd14a6f7d534fdc1436de46cb9242fc88034fe274f04e31dcea5ba4fa804",
+    #
+    # Re-baselined again observation-first for the module1-license-request-option
+    # spec (Module 1 Step 6b/6d edits): module-01-business-problem.md grew from
+    # the in-flow MCP License_Request_Option additions (4527 -> 5321 tokens),
+    # which measure_steering recomputed into file_metadata and the budget total
+    # (175589 -> 177312 = sum of file_metadata counts). Only the budget block
+    # changed; keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "bb4995d15e0fda9812cce42241bef5215fa97fbe3aa181471d370cadf5614cc8",
     "keywords": "eeba1e086d5533ae85fdd0b7e45f7ff37ebc6e53d4ba207414f9cc698a7d302f",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -442,9 +449,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (175589), so the hash cannot silently re-pin a stale value.
+        # (177312), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 175589" in budget_block
+        assert "total_tokens: 177312" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block
@@ -702,7 +709,7 @@ class TestPerFilePerPhaseChecksIndependentOfAggregate:
 
     @given(new_total=st_total_tokens())
     @settings(max_examples=20)
-    @example(new_total=175589)  # equals the live per-file sum -> --check exits 0
+    @example(new_total=177312)  # equals the live per-file sum -> --check exits 0
     @example(new_total=169633)  # a value != the live sum        -> --check exits 1
     def test_check_cli_exit_code_enforces_aggregate(self, new_total):
         """``--check`` enforces the aggregate while leaving per-file/per-phase verdicts intact.

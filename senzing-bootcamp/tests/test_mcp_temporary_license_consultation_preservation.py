@@ -282,8 +282,14 @@ _BASELINE_HASHES: dict[str, str] = {
     "m2_5c_has_license": "8f4721c2c4fe42d3af9ec1e861ad6bc674ab3471e67b7acebd9285ec16eab27b",
     "m2_5d": "1656db835193fb7ee569b206b22478138d86668a2e5c2c202df8f6810892bc8f",
     # Module 1 preserved license sub-steps (6a, 6b, 6c, 6e) — NOT 6d (edited)
+    # NOTE (module1-license-request-option re-baseline): the m1_6b hash was
+    # re-baselined observation-first from the current bytes. That spec is
+    # chartered to edit Step 6b (Task 1.1 added the in-flow MCP
+    # License_Request_Option to the Step 6b licensing-trigger reference), so the
+    # 6b region legitimately changed for this spec. The other preserved
+    # sub-steps (6a, 6c, 6e) remain byte-identical to baseline.
     "m1_6a": "06d0c151f7973f09d05f789afb572f7c788f523f2a6e0918be03a9004f76755a",
-    "m1_6b": "8fcfdca8ab71cd131424ed6c69983697dde4e49f1b7cd8f4f1722e11529adf62",
+    "m1_6b": "ef5bb1131098a3f1502c72694232ae0f758fc7d5e9a626a1b564bf47de536d91",
     "m1_6c": "461b6fc579b83b42460e93eb8414d05bbbec48c6da76a3cc92286a83cbbbc2fc",
     "m1_6e": "28c9fdd1338c0cf4b165d10e639e8b17383b6564235f648b85c0a7a35b4846b0",
 }

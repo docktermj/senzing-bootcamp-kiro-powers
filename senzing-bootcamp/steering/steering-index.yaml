@@ -296,7 +296,7 @@ deployment:
 
 file_metadata:
   agent-behavior-rules.md:
-    token_count: 674
+    token_count: 760
     size_category: medium
   agent-context-management.md:
     token_count: 1326
@@ -570,7 +570,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 177312
+  total_tokens: 177398
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

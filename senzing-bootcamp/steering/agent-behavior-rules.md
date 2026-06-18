@@ -46,4 +46,6 @@ Prefix every input-requiring prompt with 👉 at the start of the line.
 - Omission is a formatting violation — correct before completing the response.
 - Module close calls-to-action must include the 👉 prefix.
 
-A `write-policy-gate` intercept/retry cycle does not relieve you of this obligation. A re-issued write following an intercept is work completed in the turn and still requires a closing 👉 call-to-action before yielding (see Intercept-Recovery Continuity in `conversation-protocol.md`).
+**Leading-question guarantee.** Every yielding turn ends with exactly one 👉 leading question. This closing question is YOUR responsibility — do not depend on a hook to provide it. Per the One Question Rule, exactly one 👉 question per yielding turn: ending a yielding turn with zero 👉 questions, or with two or more, is a violation.
+
+A `write-policy-gate` intercept/retry cycle does not relieve you of this obligation. A re-issued write following an intercept is work completed in the turn and still requires exactly one closing 👉 leading question before yielding (see Intercept-Recovery Continuity in `conversation-protocol.md`).

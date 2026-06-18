@@ -112,7 +112,7 @@ All JSON displayed in chat must use ` ```json ` code blocks with 2-space indenta
 
 ⚠️ **CRITICAL — ZERO TOLERANCE** ⚠️
 
-Each turn contains **exactly one** 👉 question. This is the single most important conversation rule in the bootcamp. Violations destroy bootcamper trust.
+Every yielding turn ends with **exactly one** 👉 leading question. A turn ending with **zero** 👉 questions, or with **two or more** 👉 questions, violates this rule. This is the single most important conversation rule in the bootcamp. Violations destroy bootcamper trust.
 
 **The rule is absolute:** One question. One question mark. One unambiguous meaning for "yes." One unambiguous meaning for "no." No exceptions. No edge cases. No "just this once."
 

@@ -296,7 +296,7 @@ deployment:
 
 file_metadata:
   agent-behavior-rules.md:
-    token_count: 602
+    token_count: 674
     size_category: medium
   agent-context-management.md:
     token_count: 1326
@@ -320,7 +320,7 @@ file_metadata:
     token_count: 536
     size_category: medium
   conversation-protocol.md:
-    token_count: 3765
+    token_count: 3993
     size_category: large
   data-lineage.md:
     token_count: 603
@@ -362,7 +362,7 @@ file_metadata:
     token_count: 2149
     size_category: large
   hook-registry-critical.md:
-    token_count: 8488
+    token_count: 8503
     size_category: large
   hook-registry-modules.md:
     token_count: 10631
@@ -570,7 +570,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 175274
+  total_tokens: 175589
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

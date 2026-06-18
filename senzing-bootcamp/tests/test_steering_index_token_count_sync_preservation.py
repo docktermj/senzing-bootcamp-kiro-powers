@@ -66,7 +66,15 @@ _BASELINE_HASHES: dict[str, str] = {
     # edit regenerated hook-registry-critical.md (+318). measure_steering's
     # update_index recomputed file_metadata + budget.total_tokens to the live
     # consistent value (175274 = sum of file_metadata counts).
-    "budget": "a3dffd189da9b99b8c812cc048edd1fb4e88b4473fc65371d67902b4679db1d1",
+    #
+    # Re-baselined again observation-first for the leading-question-continuity
+    # spec (Tasks 6.1/6.2): conversation-protocol.md (+228) and
+    # agent-behavior-rules.md (+72) grew from the Intercept-Recovery Continuity
+    # additions, and hook-registry-critical.md (+15) was re-synced to mirror the
+    # write-policy-gate prompt's two new pass-through entries. measure_steering's
+    # update_index recomputed file_metadata + budget.total_tokens to the live
+    # consistent value (175589 = sum of file_metadata counts).
+    "budget": "ab69fd14a6f7d534fdc1436de46cb9242fc88034fe274f04e31dcea5ba4fa804",
     "keywords": "eeba1e086d5533ae85fdd0b7e45f7ff37ebc6e53d4ba207414f9cc698a7d302f",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -434,9 +442,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (175274), so the hash cannot silently re-pin a stale value.
+        # (175589), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 175274" in budget_block
+        assert "total_tokens: 175589" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block
@@ -694,8 +702,8 @@ class TestPerFilePerPhaseChecksIndependentOfAggregate:
 
     @given(new_total=st_total_tokens())
     @settings(max_examples=20)
-    @example(new_total=173650)  # equals the live per-file sum -> --check exits 0
-    @example(new_total=169633)  # the pre-fix BUG 2 drift value  -> --check exits 1
+    @example(new_total=175589)  # equals the live per-file sum -> --check exits 0
+    @example(new_total=169633)  # a value != the live sum        -> --check exits 1
     def test_check_cli_exit_code_enforces_aggregate(self, new_total):
         """``--check`` enforces the aggregate while leaving per-file/per-phase verdicts intact.
 

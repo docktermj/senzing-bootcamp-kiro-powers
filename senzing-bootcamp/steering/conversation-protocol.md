@@ -39,6 +39,14 @@ The ask-bootcamper hook is a safety net only — do not rely on it for closing q
 
 When you complete the LAST sub-step in a gap-filling sequence (all undetermined items resolved): writing the checkpoint is NOT the end of your turn. You must also present the next numbered step's 👉 question. The checkpoint marks sub-step completion; the 👉 question marks turn completion.
 
+### Intercept-Recovery Continuity
+
+When a turn's primary action was a write **re-issued after a `write-policy-gate` intercept**, the turn is NOT complete until you have appended exactly one 👉 leading question reflecting the next step in the guided flow AND written `config/.question_pending`. A re-issued write is work completed in the turn — it carries the same closing-question obligation as any other yielding turn.
+
+Ending such a turn on bare tool activity or a bare acknowledgment (".", empty output) is a **protocol violation** equivalent to a dead-end response. The intercept/retry cycle never separates the completed work from the next instruction, and you must not wait for the bootcamper to prompt for the next question.
+
+This closing question is YOUR responsibility and is not deferred to a hook. The One Question Rule and Question Stop Protocol below continue to govern the *shape* of that question.
+
 ## Question Stop Protocol
 
 Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question text — produce no further tokens. Do not answer, assume a response, proceed to the next step, or write checkpoints.

@@ -332,6 +332,8 @@ INTERNAL-FILE PASS-THROUGH (evaluate FIRST, before the FAST PATH GATE): If the t
 Routine power-managed internal files (the exact set — do not over-match):
 - config/bootcamp_progress.json
 - config/bootcamp_preferences.yaml
+- config/data_sources.yaml
+- config/visualization_tracker.json
 - config/progress_{id}.json (member-scoped, colocated team mode — {id} is an alphanumeric member identifier)
 - config/preferences_{id}.yaml (member-scoped, colocated team mode)
 - power-written session/recap log files: docs/progress/MODULE_*_COMPLETE.md and recap/journal log files the power appends to during a session

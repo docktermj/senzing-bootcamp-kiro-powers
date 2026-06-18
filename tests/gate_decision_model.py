@@ -104,6 +104,8 @@ _INTERNAL_EXACT: frozenset[str] = frozenset(
     {
         "config/bootcamp_progress.json",
         "config/bootcamp_preferences.yaml",
+        "config/data_sources.yaml",
+        "config/visualization_tracker.json",
     }
 )
 

@@ -1,9 +1,4 @@
 {
   "mcpServers": {
-    "power-senzing-senzing": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "https://mcp.senzing.com/mcp"],
-      "disabled": false
-    }
   }
 }

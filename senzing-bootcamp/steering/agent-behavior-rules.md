@@ -45,3 +45,5 @@ Prefix every input-requiring prompt with 👉 at the start of the line.
 - Each prompt in a multi-prompt response gets its own 👉.
 - Omission is a formatting violation — correct before completing the response.
 - Module close calls-to-action must include the 👉 prefix.
+
+A `write-policy-gate` intercept/retry cycle does not relieve you of this obligation. A re-issued write following an intercept is work completed in the turn and still requires a closing 👉 call-to-action before yielding (see Intercept-Recovery Continuity in `conversation-protocol.md`).

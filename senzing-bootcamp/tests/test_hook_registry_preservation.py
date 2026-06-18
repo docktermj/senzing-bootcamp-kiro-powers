@@ -78,8 +78,16 @@ _REGISTRY_BASELINES: dict[str, str] = {
     # critical registry to mirror that prompt change. sync_hook_registry.py
     # --verify still passes (registry in sync with the hook source); only the
     # byte digest moves forward.
+    #
+    # Re-baselined again observation-first by the leading-question-continuity
+    # spec (Task 6.2): the write-policy-gate hook prompt's INTERNAL-FILE
+    # PASS-THROUGH enumeration gained two exact-match entries
+    # (config/data_sources.yaml, config/visualization_tracker.json), and
+    # sync_hook_registry.py --write re-synced the critical registry to mirror
+    # that prompt change. sync_hook_registry.py --verify still passes (registry
+    # in sync with the hook source); only the byte digest moves forward.
     "hook-registry-critical.md":
-        "b7f35ddcc2ad0367f2acc0ea40b51deb740a50dcdc2f81604c723e485ea2f980",
+        "705dbaad9e92d0bbd80bd9f067309ad51518d4fa9591fd6e0a4cfdf4a3dae125",
     "hook-registry-modules.md":
         "db3d1f278b42d9fd4eb2e7923551f87993f571503d74a9730874cf5e1e03953f",
 }

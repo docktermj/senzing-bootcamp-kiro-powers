@@ -36,7 +36,7 @@ If all three fields are present and non-empty, confirm readiness: "Your business
 Prompt:
 
 ````text
-A configuration or database file was modified. If the bootcamper is in Module 2 (SDK Setup), run a quick verification: check that database/G2C.db exists and is accessible, and that the Senzing engine can initialize with the current config. If not in Module 2, produce no output. If verification fails, present the error and suggest running: python3 senzing-bootcamp/scripts/preflight.py
+A configuration or database file was modified. If the bootcamper is in Module 2 (SDK Setup), run a quick verification: check that database/G2C.db exists and is accessible, and that the Senzing engine can initialize with the current config. If not in Module 2, produce no output. If verification fails, present the error and suggest running: python3 src/scripts/verify_sdk.py
 ````
 
 - id: `verify-sdk-setup`

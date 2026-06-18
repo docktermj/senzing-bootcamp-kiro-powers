@@ -355,6 +355,34 @@ mapping_workflow(
 )
 ```
 
+The `mapping_workflow` download writes its resources into a scratch
+`workspace_dir` (for example `data/temp/mapping/`). As soon as that download
+completes — and before any further mapping work proceeds — the organize step
+runs to relocate the reusable resources out of the scratch directory and into
+their policy-correct project locations:
+
+```bash
+python3 senzing-bootcamp/scripts/organize_mapping_files.py \
+  --source <workspace_dir> \
+  --project-root <bootcamper_project_root>
+```
+
+Running the organize step right after the download (rather than later in the
+workflow) is what keeps reusable scripts and reference documents from sitting
+buried in the scratch directory while you continue working — they land where
+the structure guide promises (`.py` → `src/`, reference `.md`/`.json` →
+their policy-correct homes) from the start. Transient run artifacts produced
+later in the run (profiling, validation, and transformation output) stay in the
+`workspace_dir` for the workflow's continued use.
+
+The Senzing entity specification, `senzing_entity_specification.md`, is one of
+those relocated reference documents. After the organize step completes, its
+canonical home is `docs/reference/` — that is, `docs/reference/senzing_entity_specification.md`.
+Look for it there rather than in the scratch `workspace_dir`: once the organize
+step has run, the specification no longer lives in the workspace, so you can
+open it directly at `docs/reference/` without inspecting where the workflow
+downloaded it.
+
 #### Step 2: Interactive Mapping
 
 The workflow guides you through 7 steps:

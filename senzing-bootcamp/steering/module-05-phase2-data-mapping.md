@@ -43,6 +43,76 @@ inclusion: manual
    >
    > Each data source **must** complete its own full `mapping_workflow` run from start to finish. Do NOT reuse the mapping output, field mappings, or mapping specification from one source for another source — even if the schemas appear similar. Every source gets its own independent `mapping_workflow` execution and its own mapping specification markdown (`docs/mapping/{source_name}_mapper.md`). Mapper code may be shared across sources if schemas are identical, but mapping documentation is always per-source.
 
+   > **Agent instruction — Organize downloaded resources immediately after download:**
+   >
+   > As soon as `mapping_workflow(action='start')` finishes downloading its
+   > workflow resources into the workspace directory — and **before any further
+   > mapping work proceeds** (profiling, planning, mapping) — run the organizer
+   > to relocate the just-downloaded reusable resources (the workflow `.py`
+   > scripts and the reference `.md`/`.json` files) to their policy-correct
+   > project locations:
+   >
+   > ```bash
+   > python3 senzing-bootcamp/scripts/organize_mapping_files.py \
+   >   --source <workspace_dir> \
+   >   --project-root <bootcamper_project_root>
+   > ```
+   >
+   > Where `<workspace_dir>` is the directory passed to `mapping_workflow` as
+   > `workspace_dir` and `<bootcamper_project_root>` is the bootcamper's project
+   > root directory.
+   >
+   > Review the organizer summary output to confirm files landed at the expected
+   > locations: `.py` scripts → `src/`, the entity specification
+   > (`senzing_entity_specification.md`) → `docs/reference/`, and reference
+   > `.md`/`.json` files → their policy-correct homes. Only then continue with
+   > the rest of the mapping workflow.
+
+   > **Agent instruction — Rely on the organizer's existing routing; handle
+   > unrouted files and blocked writes gracefully:**
+   >
+   > This guidance relies entirely on the organizer's **existing routing rules**
+   > to place reusable resources. Do **NOT** introduce alternative placement
+   > destinations or force a file to a location the organizer did not choose —
+   > the organizer already routes each file to its policy-correct home (`.py` →
+   > `src/`, the entity specification → `docs/reference/`, non-README `.md` →
+   > `docs/`, data → `data/`, config JSON → `config/`).
+   >
+   > When reviewing the organizer summary, handle these two cases by deferring to
+   > the summary rather than overriding the outcome:
+   >
+   > - **Unrouted files:** If a downloaded file matches no routing rule, the
+   >   organizer leaves it in `<workspace_dir>` and reports it as a warning in the
+   >   summary. Surface that warning to the bootcamper and leave the file where it
+   >   is — do **NOT** invent a destination for it.
+   > - **Blocked writes:** If the `write-policy-gate` blocks a write during the
+   >   organize step, the organizer leaves the affected file in `<workspace_dir>`
+   >   and reports the blocked destination as an error in the summary. Treat this
+   >   as a signal to review the summary — do **NOT** retry the write against a
+   >   different location to force the file through.
+   >
+   > In both cases the file simply stays in `<workspace_dir>`; review the summary
+   > and report the outcome rather than working around the organizer.
+
+   > **Agent instruction — Leave transient run artifacts in the workspace:**
+   >
+   > The post-download organizer relocates only the **reusable resources** that
+   > exist at download time. Later steps (profiling, planning, mapping,
+   > transformation) produce **transient run artifacts** that the workflow reads
+   > and writes for its own use during the run. These are NOT reusable resources
+   > and must stay in `<workspace_dir>`:
+   >
+   > - `profile_report.md`
+   > - `schema_hints.md`
+   > - `JOURNAL.md`
+   > - generated JSONL output
+   >
+   > While the `mapping_workflow` run is in progress, do **NOT** relocate, delete,
+   > or redirect these transient artifacts out of `<workspace_dir>` — the workflow
+   > needs them in place to keep functioning. Because they are produced *after*
+   > the post-download organize step, they are not present when the organizer runs
+   > and are therefore left untouched in the workspace by design.
+
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 
 2. **Profile:** Run profiler, summarize columns/types/completeness/quality. Advance with `action='profile_summary'`.

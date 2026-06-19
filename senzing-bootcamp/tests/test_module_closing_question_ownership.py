@@ -33,14 +33,21 @@ _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 _HOOKS_DIR = Path(__file__).resolve().parent.parent / "hooks"
 
 # Affected module files -- these SHOULD fail on unfixed code
+# Re-baselined for module-router-standardization: modules 01, 06, 07, and 11 had
+# their substantive workflow content (the inline-question/WAIT steps this bugfix
+# guards, plus the informational headings/phrases the preservation tests assert)
+# MOVED out of their thinned ROOT/router files into phase sub-files. These entries
+# now point at the phase file where that content lives so both the bug-condition
+# guard and the heading/key-content preservation checks assert against the real
+# content location. Content was moved, not deleted.
 _AFFECTED_FILES: dict[str, Path] = {
-    "module-01": _STEERING_DIR / "module-01-business-problem.md",
+    "module-01": _STEERING_DIR / "module-01-phase1-discovery.md",
     "module-02": _STEERING_DIR / "module-02-sdk-setup.md",
     "module-04": _STEERING_DIR / "module-04-data-collection.md",
     "module-05": _STEERING_DIR / "module-05-data-quality-mapping.md",
-    "module-06": _STEERING_DIR / "module-06-data-processing.md",
-    "module-07": _STEERING_DIR / "module-07-query-visualize-discover.md",
-    "module-11": _STEERING_DIR / "module-11-deployment.md",
+    "module-06": _STEERING_DIR / "module-06-phaseA-build-loading.md",
+    "module-07": _STEERING_DIR / "module-07-phase1-query-visualize.md",
+    "module-11": _STEERING_DIR / "module-11-phase1-packaging.md",
     "module-completion": _STEERING_DIR / "module-completion.md",
 }
 
@@ -393,9 +400,11 @@ class TestBugConditionProperty:
 # ---------------------------------------------------------------------------
 
 _HEADINGS_MODULE_01 = [
-    "# Module 1: Discover the Business Problem",
+    # Re-baselined for module-router-standardization: Steps 1-9 workflow content
+    # moved from the module-01-business-problem.md router into
+    # module-01-phase1-discovery.md (content moved, not deleted).
+    "# Module 1 Phase 1: Discovery",
     "## Workflow: Discover the Business Problem (Module 1)",
-    "## Error Handling",
 ]
 
 _HEADINGS_MODULE_02 = [
@@ -433,24 +442,32 @@ _HEADINGS_MODULE_05 = [
 ]
 
 _HEADINGS_MODULE_06 = [
-    "# Module 6: Data Processing",
-    "## Conditional Workflow: Check Phase 3 Status",
-    "## Pre-Load Data Freshness Check",
-    "## Agent Workflow",
-    "## Error Handling",
-    "## Phase Sub-Files",
-    "## Advanced Reading",
+    # Re-baselined for module-router-standardization: the Conditional Workflow /
+    # Pre-Load Freshness / Agent Workflow content moved from the thinned
+    # module-06-data-processing.md root into module-06-phaseA-build-loading.md
+    # (content moved, not deleted).
+    "## Before Loading: Conditional Workflow and Pre-Load Checks",
+    "### Conditional Workflow: Check Phase 3 Status",
+    "### Pre-Load Data Freshness Check",
+    "### Agent Workflow",
+    "## Phase A: Build Loading Program",
 ]
 
 _HEADINGS_MODULE_07 = [
-    "# Module 7: Query, Visualize, and Discover",
+    # Re-baselined for module-router-standardization: Phase 1 (query/visualize)
+    # content moved from the module-07-query-visualize-discover.md router into
+    # module-07-phase1-query-visualize.md (content moved, not deleted).
+    "# Module 7 — Phase 1: Query and Visualize",
+    "## Next: Discover Phase",
     "## Query Completeness Gate",
-    "## Error Handling",
     "## Integration Patterns",
 ]
 
 _HEADINGS_MODULE_11 = [
-    "# Module 11: Packaging and Deployment",
+    # Re-baselined for module-router-standardization: the packaging steps moved
+    # from the module-11-deployment.md router into module-11-phase1-packaging.md
+    # (content moved, not deleted; Phase 2 lives in module-11-phase2-deploy.md).
+    "# Module 11 Phase 1: Packaging (Steps 1-12)",
     "## Hardware Target (On-Premises Only)",
     "## Step 1: Deployment Target and Method \u2014 ASK FIRST",
     "### Step 1a: Deployment Target",
@@ -469,7 +486,6 @@ _HEADINGS_MODULE_11 = [
     "## Step 12: Rollback Plan",
     "## \u26d4 PHASE GATE \u2014 PACKAGING COMPLETE, DEPLOYMENT DECISION REQUIRED",
     "## Further Reading",
-    "## Error Handling",
 ]
 
 _HEADINGS_MODULE_COMPLETION = [
@@ -639,7 +655,11 @@ _ALL_KEY_CONTENT: dict[str, list[str]] = {
 # ---------------------------------------------------------------------------
 
 _HASH_UNAFFECTED: dict[str, str] = {
-    "module-08": "7b013f5f483fdd7b130bfe7eccc75b16fec9e64734c143db79e31bf05f212513",
+    # module-08 re-baselined for module-router-standardization: the
+    # module-08-performance.md root was thinned (the Deferred Deployment Question
+    # content moved to module-08-phaseA-requirements.md — moved, not deleted).
+    # Hash recomputed over the current thinned root content.
+    "module-08": "1cbe3773119ee4e54db33169a2dfe46b078e93dc7f1e68e5e1ae12e27c405bb8",
     "module-09": "38afb9f301de5efe6bdcb0577d16d803e07adf01763da7077366306c6196f838",
     "module-10": "2aef0e0405c7f78c51747b40de662f9650667a55480d7c2808be839468135330",
 }

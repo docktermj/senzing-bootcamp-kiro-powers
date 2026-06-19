@@ -25,7 +25,7 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-_MODULE_01 = _BOOTCAMP_DIR / "steering" / "module-01-business-problem.md"
+_MODULE_01 = _BOOTCAMP_DIR / "steering" / "module-01-phase1-discovery.md"
 _MODULE_TRANSITIONS = _BOOTCAMP_DIR / "steering" / "module-transitions.md"
 _CONVERSATION_PROTOCOL = _BOOTCAMP_DIR / "steering" / "conversation-protocol.md"
 
@@ -249,7 +249,7 @@ class TestModule01StepChainingInstruction:
 
     **Validates: Requirements 1.1, 1.2**
 
-    Parse module-01-business-problem.md, extract the Step 7d section, and
+    Parse module-01-phase1-discovery.md, extract the Step 7d section, and
     assert it contains an explicit instruction directing the agent to proceed
     to Step 8's 👉 question after the checkpoint. On unfixed content this
     will FAIL because no such instruction exists — Step 7d contains only

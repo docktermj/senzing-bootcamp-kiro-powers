@@ -134,6 +134,7 @@ class TestStdlibOnly:
             "dataclasses", "collections", "typing", "textwrap",
             "string", "io", "functools", "itertools", "enum",
             "abc", "copy", "math", "operator", "contextlib",
+            "importlib",
         }
 
         non_stdlib = []

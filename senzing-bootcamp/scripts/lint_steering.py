@@ -34,6 +34,13 @@ INDEX_PATH = Path("senzing-bootcamp/steering/steering-index.yaml")
 VALID_INCLUSIONS = {"always", "auto", "fileMatch", "manual"}
 VALID_SIZE_CATEGORIES = {"small", "medium", "large"}
 
+# Environment guard (Requirements 6.4, 6.6): the linter requires Python 3.11+
+# with these standard-library modules importable. The runtime is verified at the
+# start of main() so an unsupported interpreter fails loudly instead of silently
+# reporting success.
+MIN_PYTHON = (3, 11)
+REQUIRED_STDLIB_MODULES = ("argparse", "dataclasses", "json", "pathlib", "re")
+
 # ---------------------------------------------------------------------------
 # Regex patterns
 # ---------------------------------------------------------------------------
@@ -285,6 +292,410 @@ def parse_steering_index(index_path: Path) -> dict:
         i += 1
 
     return result
+
+
+# ---------------------------------------------------------------------------
+# Router convention parsing (Requirements 6.1, 2.1, 2.2)
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class ModuleRouterInfo:
+    """Router-relevant view of one module entry from steering-index.yaml.
+
+    Captures the module's ``root`` filename and every phase ``file:`` value so
+    the router-convention rule can decide whether the root is an in-scope
+    Router_Root and whether it doubles as a phase file.
+    """
+
+    module_num: int
+    root: str                       # root filename
+    phase_files: list[str]          # phase `file:` values (in document order)
+    root_token_count: int | None    # from file_metadata[root]
+
+    @property
+    def in_scope(self) -> bool:
+        """True when a phases map exists with a phase file distinct from root.
+
+        A module with no phases, or whose only phase file equals the root, is
+        excluded from the router-remediation scope (Requirement 2.2).
+        """
+        return any(pf != self.root for pf in self.phase_files)
+
+    @property
+    def doubles_as_phase(self) -> bool:
+        """True when the root filename also appears among the phase files."""
+        return self.root in self.phase_files
+
+
+def parse_module_phase_files(index_path: Path) -> dict:
+    """Parse the ``modules:`` section into per-module router information.
+
+    Walks the ``modules:`` section only (onboarding/session-resume entries are
+    intentionally out of scope) using the same indentation-based minimal YAML
+    parsing as ``parse_steering_index``. For each module it captures the ``root``
+    filename and the ordered list of phase ``file:`` values, and looks up the
+    root's ``token_count`` from ``file_metadata``.
+
+    Args:
+        index_path: Path to steering-index.yaml.
+
+    Returns:
+        Mapping of module number to ``ModuleRouterInfo``.
+    """
+    result: dict = {}
+    if not index_path.exists():
+        return result
+
+    # file_metadata is parsed by the existing helper so root token counts can
+    # be attached without duplicating that parsing logic.
+    file_metadata = parse_steering_index(index_path).get("file_metadata", {})
+
+    content = index_path.read_text(encoding="utf-8")
+    lines = content.splitlines()
+
+    in_modules = False
+    module_num = None
+    root = None
+    phase_files: list = []
+    in_phases = False
+
+    def flush() -> None:
+        if module_num is not None and root is not None:
+            tc = file_metadata.get(root, {}).get("token_count")
+            if not isinstance(tc, int):
+                tc = None
+            result[module_num] = ModuleRouterInfo(
+                module_num=module_num,
+                root=root,
+                phase_files=list(phase_files),
+                root_token_count=tc,
+            )
+
+    for line in lines:
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+
+        # Top-level (non-indented) lines start a new section.
+        if not line[0].isspace():
+            if in_modules:
+                flush()
+            in_modules = stripped == "modules:"
+            module_num = None
+            root = None
+            phase_files = []
+            in_phases = False
+            continue
+
+        if not in_modules:
+            continue
+
+        indent = len(line) - len(line.lstrip())
+
+        if indent == 2 and ":" in stripped:
+            # New module entry: "  5:" (complex) or "  2: module-02-...md" (simple).
+            flush()
+            key, _, val = stripped.partition(":")
+            val = val.strip()
+            try:
+                module_num = int(key.strip())
+            except ValueError:
+                module_num = None
+            # Simple modules inline the root; complex modules set it below.
+            root = val if val else None
+            phase_files = []
+            in_phases = False
+        elif indent == 4 and module_num is not None:
+            key, _, val = stripped.partition(":")
+            key = key.strip()
+            val = val.strip()
+            if key == "root" and val:
+                root = val
+            elif key == "phases":
+                in_phases = True
+        elif indent == 8 and in_phases:
+            key, _, val = stripped.partition(":")
+            key = key.strip()
+            val = val.strip()
+            if key == "file" and val:
+                phase_files.append(val)
+
+    if in_modules:
+        flush()
+
+    return result
+
+
+def get_router_ceiling(index_path: Path) -> int:
+    """Read ``budget.router_ceiling`` from the steering index.
+
+    Uses the same localized-regex approach as ``measure_steering`` (which reads
+    ``split_threshold_tokens`` with ``re.search``). Defaults to 1000 tokens when
+    the key is absent so enforcement still runs (Requirement 1.6).
+
+    Args:
+        index_path: Path to steering-index.yaml.
+
+    Returns:
+        The configured Router_Ceiling, or 1000 when not present.
+    """
+    if not index_path.exists():
+        return 1000
+    content = index_path.read_text(encoding="utf-8")
+    match = re.search(r"router_ceiling:\s*(\d+)", content)
+    return int(match.group(1)) if match else 1000
+
+
+def check_router_convention(
+    index_data: dict,
+    file_metadata: dict,
+    router_ceiling: int,
+) -> list:
+    """Rule: enforce the thin Router_Root convention (Requirements 6.1-6.3, 6.5).
+
+    Identifies each Router_Root from the parsed module router information (a
+    module's ``root`` whose module also has a ``phases`` map with at least one
+    phase ``file`` distinct from the root — ``ModuleRouterInfo.in_scope``) and
+    emits an ERROR when:
+
+    - the in-scope root's ``token_count`` is strictly greater than the
+      ``router_ceiling`` (the message names the root, its token count, and the
+      ceiling) — Requirement 6.2;
+    - the root filename appears among its module's phase files, the
+      root-doubles-as-phase pattern — Requirement 6.3;
+    - the in-scope root has no measured ``token_count`` and therefore cannot be
+      classified, mirroring ``check_counts`` MISSING handling.
+
+    Excluded modules (no phases, or a single phase whose file equals the root)
+    never produce a router violation, so a compliant index yields no violations
+    and the linter exits 0 (Requirements 2.2, 6.5).
+
+    Args:
+        index_data: Mapping of module number to ``ModuleRouterInfo`` (as produced
+            by ``parse_module_phase_files``).
+        file_metadata: ``file_metadata`` mapping from the steering index, used to
+            resolve each root's stored ``token_count``.
+        router_ceiling: The maximum token count permitted for a Router_Root.
+
+    Returns:
+        List of ``LintViolation`` instances (all ERROR level), one per detected
+        violation.
+    """
+    violations = []
+    index_path_str = str(INDEX_PATH)
+
+    for module_num in sorted(index_data):
+        info = index_data[module_num]
+        if not info.in_scope:
+            continue
+
+        # Root-doubles-as-phase: the root filename is reused as a phase file.
+        if info.doubles_as_phase:
+            violations.append(LintViolation(
+                "ERROR", index_path_str, 0,
+                f"Module {info.module_num} root '{info.root}' "
+                f"root-doubles-as-phase: the root filename also appears among "
+                f"its phase files; a dedicated Router_Root distinct from every "
+                f"phase file is required"
+            ))
+
+        # Resolve the root's measured token count. Prefer the explicit
+        # file_metadata mapping; fall back to the value captured on the
+        # ModuleRouterInfo so callers may supply either source.
+        token_count = file_metadata.get(info.root, {}).get("token_count")
+        if not isinstance(token_count, int):
+            token_count = info.root_token_count
+
+        if not isinstance(token_count, int):
+            violations.append(LintViolation(
+                "ERROR", index_path_str, 0,
+                f"Module {info.module_num} root '{info.root}' has no measured "
+                f"token_count in file_metadata and cannot be classified against "
+                f"the Router_Ceiling ({router_ceiling})"
+            ))
+            continue
+
+        if token_count > router_ceiling:
+            violations.append(LintViolation(
+                "ERROR", index_path_str, 0,
+                f"Module {info.module_num} Router_Root '{info.root}' token_count "
+                f"{token_count} exceeds the Router_Ceiling {router_ceiling}; "
+                f"relocate substantive content into phase files"
+            ))
+
+    return violations
+
+
+# ---------------------------------------------------------------------------
+# Step-range coverage and contiguity (Requirements 3.2, 3.3, 3.4, 5.4)
+# ---------------------------------------------------------------------------
+
+# A module step token: an integer parent (e.g. 1, 2, 3) optionally followed by a
+# lettered sub-step suffix (e.g. "3a", "3b", "3d").
+RE_STEP_TOKEN = re.compile(r"^\s*(\d+)\s*([A-Za-z]*)\s*$")
+
+
+def normalize_step(step: object) -> str:
+    """Normalize a step token to a canonical ``"<int><lowercase-suffix>"`` form.
+
+    Accepts integers (``3``) and lettered sub-steps (``"3d"``, ``" 3D "``) and
+    returns a canonical string so that ``3`` and ``"3"`` collapse to the same
+    token and ``"3D"`` and ``"3d"`` compare equal. Tokens that do not match the
+    ``<digits><letters>`` shape are returned stripped and unchanged so the caller
+    can still surface them in a violation.
+
+    Args:
+        step: A step token (int or str), e.g. ``3`` or ``"3d"``.
+
+    Returns:
+        The canonical token string (e.g. ``"3"`` or ``"3d"``).
+    """
+    text = str(step).strip()
+    match = RE_STEP_TOKEN.match(text)
+    if not match:
+        return text
+    parent, suffix = match.group(1), match.group(2)
+    return f"{int(parent)}{suffix.lower()}"
+
+
+def step_sort_key(step: object) -> tuple:
+    """Return the sub-step-aware ``(parent_integer, suffix)`` ordering key.
+
+    Integers sort by their value with an empty suffix that orders before any
+    lettered sub-step of the same parent (so ``3`` precedes ``"3a"``), and
+    lettered sub-steps sort lexicographically by their lowercased suffix within
+    a parent (``"3a"`` < ``"3b"`` < ``"3d"``). Non-conforming tokens sort last
+    by their text so malformed input is detectable rather than crashing.
+
+    Args:
+        step: A step token (int or str).
+
+    Returns:
+        A ``(parent_integer, suffix)`` tuple suitable for ``sorted``.
+    """
+    text = str(step).strip()
+    match = RE_STEP_TOKEN.match(text)
+    if not match:
+        # Sort unparseable tokens after every well-formed step.
+        return (float("inf"), text)
+    return (int(match.group(1)), match.group(2).lower())
+
+
+def check_step_range_coverage(
+    step_ranges: list,
+    full_step_set: object,
+    module_label: str = "",
+    file: str | None = None,
+) -> list:
+    """Rule: enforce phase ``step_range`` contiguity and coverage.
+
+    Accepts the partition (returns no violations) **iff** the module's ordered
+    phase ``step_range``s are contiguous and non-overlapping under the sub-step-
+    aware ``(parent_integer, suffix)`` ordering and together cover exactly the
+    module's full step set — integers and lettered sub-steps alike. Introducing a
+    gap, an overlap, or an uncovered step yields one or more ``LintViolation``
+    instances (Requirements 3.2, 3.3, 3.4, 5.4).
+
+    This is a pure function: it operates only on the supplied ordered list of
+    ``step_range`` pairs and the module's full step set, so it can be exercised
+    directly by the Property 5 test. Each ``step_range`` is a ``(start, end)``
+    pair whose endpoints may be integers (``1``, ``9``) or lettered sub-steps
+    (``"3a"``, ``"3d"``). A range covers every step in the full step set whose
+    ordering key falls within ``[key(start), key(end)]`` inclusive, so contiguity
+    is judged relative to the steps that actually exist (a missing integer that
+    is not a real step is not treated as a gap).
+
+    The acceptance criterion is equivalent to: concatenating each range's covered
+    steps (in sorted order) across the ranges in document order reproduces the
+    full step set in sorted order exactly. When it does not, the mismatch is
+    diagnosed into specific overlap / gap / ordering / inverted-range violations.
+
+    Args:
+        step_ranges: Ordered list of ``(start, end)`` step-range pairs, one per
+            phase, in document (phase) order.
+        full_step_set: Iterable of every step token the module contains (ints
+            and/or lettered sub-step strings).
+        module_label: Optional prefix for messages, e.g. ``"Module 7"``.
+        file: Path string recorded on each violation; defaults to the steering
+            index path.
+
+    Returns:
+        List of ``LintViolation`` instances (all ERROR level); empty when the
+        partition is accepted.
+    """
+    file = file or str(INDEX_PATH)
+    label = f"{module_label} " if module_label else ""
+    violations = []
+
+    # Canonical, de-duplicated, ordered view of the module's full step set.
+    ordered = sorted(
+        {normalize_step(step) for step in full_step_set},
+        key=step_sort_key,
+    )
+    index_of = {token: i for i, token in enumerate(ordered)}
+
+    # Expand each range into the contiguous block of full-set steps it covers.
+    # produced collects the covered steps across ranges in document order so the
+    # accept condition (produced == ordered) can be checked directly.
+    produced = []
+    coverage_counts = [0] * len(ordered)
+    for start, end in step_ranges:
+        start_key = step_sort_key(start)
+        end_key = step_sort_key(end)
+        if start_key > end_key:
+            violations.append(LintViolation(
+                "ERROR", file, 0,
+                f"{label}phase step_range [{start}, {end}] is inverted: "
+                f"start '{start}' orders after end '{end}'"
+            ))
+            continue
+        segment = [tok for tok in ordered if start_key <= step_sort_key(tok) <= end_key]
+        if not segment:
+            violations.append(LintViolation(
+                "ERROR", file, 0,
+                f"{label}phase step_range [{start}, {end}] covers no steps in "
+                f"the module's step set"
+            ))
+            continue
+        produced.extend(segment)
+        for tok in segment:
+            coverage_counts[index_of[tok]] += 1
+
+    # Fast path: a contiguous, non-overlapping, fully-covering, in-order
+    # partition reproduces the sorted full step set exactly.
+    if not violations and produced == ordered:
+        return violations
+
+    # Overlap: a step covered by more than one range (Requirement 3.3).
+    for i, count in enumerate(coverage_counts):
+        if count > 1:
+            violations.append(LintViolation(
+                "ERROR", file, 0,
+                f"{label}step '{ordered[i]}' is covered by {count} phase "
+                f"step_ranges (overlap)"
+            ))
+
+    # Gap / uncovered: a step in the full set covered by no range
+    # (Requirements 3.2, 3.4).
+    for i, count in enumerate(coverage_counts):
+        if count == 0:
+            violations.append(LintViolation(
+                "ERROR", file, 0,
+                f"{label}step '{ordered[i]}' is not covered by any phase "
+                f"step_range (gap/uncovered)"
+            ))
+
+    # Ordering: every step is covered exactly once but the ranges are not in
+    # ascending document order, so the partition is not contiguous as written.
+    if not violations and produced != ordered:
+        violations.append(LintViolation(
+            "ERROR", file, 0,
+            f"{label}phase step_ranges are not in ascending step order; "
+            f"reorder the phases so their step_ranges are contiguous"
+        ))
+
+    return violations
 
 
 def get_final_substantive_line(lines: list) -> tuple:
@@ -1472,6 +1883,15 @@ def run_all_checks(
     violations.extend(check_frontmatter(steering_dir))
     violations.extend(check_internal_links(steering_dir))
 
+    # Router convention rule (Requirements 6.1-6.3, 6.5). The router rule needs
+    # per-module phase files, which parse_steering_index intentionally discards,
+    # so drive it from parse_module_phase_files + get_router_ceiling.
+    router_info = parse_module_phase_files(index_path)
+    router_ceiling = get_router_ceiling(index_path)
+    violations.extend(check_router_convention(
+        router_info, index_data.get("file_metadata", {}), router_ceiling
+    ))
+
     # Template conformance rules (unless skipped)
     if not skip_template:
         violations.extend(check_module_frontmatter(steering_dir))
@@ -1491,8 +1911,61 @@ def run_all_checks(
     return (violations, exit_code)
 
 
+def require_runtime(
+    min_python: tuple = MIN_PYTHON,
+    required_modules: tuple = REQUIRED_STDLIB_MODULES,
+) -> None:
+    """Verify the interpreter satisfies the linter's runtime requirements.
+
+    Confirms the running interpreter is at least ``min_python`` and that every
+    name in ``required_modules`` can be imported from the standard library. On an
+    unsupported runtime an environment error is written to stderr and the process
+    exits with a non-zero status, so the linter never reports success on an
+    interpreter it cannot trust (Requirements 6.4, 6.6).
+
+    The version is read from ``sys.version_info`` and modules are resolved with
+    ``importlib.import_module`` so a test can patch either and observe the
+    failure path.
+
+    Args:
+        min_python: Minimum required ``(major, minor)`` Python version.
+        required_modules: Standard-library module names that must import.
+
+    Raises:
+        SystemExit: With a non-zero code when the runtime is unsupported.
+    """
+    import importlib
+
+    current = (sys.version_info[0], sys.version_info[1])
+    if current < tuple(min_python):
+        required_str = ".".join(str(part) for part in min_python)
+        current_str = ".".join(str(part) for part in current)
+        print(
+            f"ERROR: lint_steering.py requires Python {required_str}+ "
+            f"(running {current_str}).",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    missing = []
+    for module_name in required_modules:
+        try:
+            importlib.import_module(module_name)
+        except ImportError:
+            missing.append(module_name)
+
+    if missing:
+        print(
+            "ERROR: lint_steering.py requires standard-library modules that are "
+            f"unavailable: {', '.join(missing)}.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+
 def main() -> None:
     """CLI entry point."""
+    require_runtime()
     parser = argparse.ArgumentParser(
         description="Lint steering files for structural consistency"
     )

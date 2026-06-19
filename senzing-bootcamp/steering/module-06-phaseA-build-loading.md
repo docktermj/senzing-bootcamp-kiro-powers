@@ -1,6 +1,43 @@
 ---
 inclusion: manual
 ---
+## Before Loading: Conditional Workflow and Pre-Load Checks
+
+> **Agent instruction:** Complete the following three checks before starting Phase A step 1.
+
+### Conditional Workflow: Check Phase 3 Status
+
+> **Agent instruction:** Before starting any loading, read `config/data_sources.yaml` and check the `test_load_status` field for each data source.
+>
+> - **If `test_load_status: complete`** — Phase 3 was completed in Module 5. Acknowledge the test load results: "You already test-loaded this source in Module 5 Phase 3 and saw [entity_count] entities. Module 6 builds on those results with production-quality loading — error handling, progress tracking, throughput optimization, redo processing, and incremental loading strategies." Skip the basic test loading steps and proceed directly to the production loading workflow below.
+> - **If `test_load_status: skipped` or missing** — Phase 3 was not completed. Include a brief test load step: run `mapping_workflow` steps 5–8 (or a quick manual load of 10–100 records) to verify the data loads correctly before proceeding to production concerns. Update `test_load_status` to `complete` after the test load succeeds.
+>
+> Also check for anti-patterns before starting: `search_docs(query="loading", category="anti_patterns", version="current")`.
+
+> **Agent instruction — Phase 3 Results Integration:** Read `config/data_sources.yaml` and check `test_load_status` and `test_entity_count` for each source. If Phase 3 was completed for multiple sources, reference the test load results when planning load order and dependency management:
+>
+> - Use `test_entity_count` values to estimate total entity volume and plan resource allocation
+> - Use quality assessments from Phase 3 to inform which sources to load first (higher quality → stronger entity baseline)
+> - Note any issues discovered during Phase 3 test loading that may affect production orchestration
+
+### Pre-Load Data Freshness Check
+
+> **Agent instruction:** Before starting any loading workflow, run the CORD data freshness check to verify data files haven't changed since download (CORD data is downloaded via `get_sample_data`).
+>
+> Run: `python senzing-bootcamp/scripts/cord_metadata.py check`
+>
+> Handle the result based on the output:
+>
+> - **Fresh** (output contains "✅"): Tell the bootcamper "Your CORD data is up to date — proceeding with loading." and continue to the next section.
+> - **Stale** (output contains "⚠️"): Present the warning to the bootcamper exactly as shown in the output, including the three options: (a) re-download fresh data via `get_sample_data`, (b) proceed with current files, (c) check what changed. Wait for the bootcamper to choose before proceeding. This is advisory only — never block loading regardless of their choice.
+> - **Skipped** (no metadata found, or output mentions "Skipping"): Proceed silently without mentioning freshness to the bootcamper. This means either the bootcamper is using their own data (not CORD) or metadata was not captured during Module 4.
+
+### Agent Workflow
+
+> **Agent instruction:** Before starting, call `search_docs(query="loading", category="anti_patterns", version="current")`. Key pitfalls: bulk loading issues, threading problems, redo processing, load order dependencies.
+
+---
+
 ## Phase A: Build Loading Program
 
 1. **Assess production record volume:**

@@ -18,7 +18,7 @@ from pathlib import Path
 
 _POWER_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 
-MODULE_07_PATH = _POWER_ROOT / "steering" / "module-07-query-visualize-discover.md"
+MODULE_07_PATH = _POWER_ROOT / "steering" / "module-07-phase1-query-visualize.md"
 TRANSITIONS_PATH = _POWER_ROOT / "steering" / "module-transitions.md"
 
 

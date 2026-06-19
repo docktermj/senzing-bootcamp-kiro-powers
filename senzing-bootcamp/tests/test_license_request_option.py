@@ -1,7 +1,7 @@
 """Example-based tests for the Module 1 license-request option content.
 
 Validates that the in-flow MCP license-request path was correctly added to the
-Module 1 licensing branch in `steering/module-01-business-problem.md` — the
+Module 1 licensing branch in `steering/module-01-phase1-discovery.md` — the
 Step 6b trigger reference (R1.3) and the Step 6d no-license branch
 (capability verification, tool-enablement, single invocation, MCP-sourced
 facts) — and that the edits stay scoped to the licensing branch without
@@ -24,7 +24,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 _STEERING_DIR: Path = Path(__file__).resolve().parent.parent / "steering"
-_MODULE_01_FILE: Path = _STEERING_DIR / "module-01-business-problem.md"
+_MODULE_01_FILE: Path = _STEERING_DIR / "module-01-phase1-discovery.md"
 
 _LICENSES_DIR: Path = Path(__file__).resolve().parent.parent / "licenses"
 _README_FILE: Path = _LICENSES_DIR / "README.md"

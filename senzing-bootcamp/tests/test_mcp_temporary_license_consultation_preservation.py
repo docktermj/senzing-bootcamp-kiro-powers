@@ -40,7 +40,7 @@ from hypothesis import strategies as st
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _STEERING_DIR = _BOOTCAMP_DIR / "steering"
-_MODULE_01_FILE = _STEERING_DIR / "module-01-business-problem.md"
+_MODULE_01_FILE = _STEERING_DIR / "module-01-phase1-discovery.md"
 _MODULE_02_FILE = _STEERING_DIR / "module-02-sdk-setup.md"
 _MCP_JSON_FILE = _BOOTCAMP_DIR / "mcp.json"
 

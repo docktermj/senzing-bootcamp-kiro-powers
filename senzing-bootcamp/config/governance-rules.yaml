@@ -58,11 +58,11 @@ rules:
     rule: "If the current Senzing license is insufficient, consult the Senzing MCP server for a temporary/larger evaluation license."
     category: "mcp-integrity"
     enforced_by:
-      - "senzing-bootcamp/steering/module-01-business-problem.md"
+      - "senzing-bootcamp/steering/module-01-phase1-discovery.md"
       - "senzing-bootcamp/steering/module-02-sdk-setup.md"
     assertions:
       - type: "substring_present"
-        file: "senzing-bootcamp/steering/module-01-business-problem.md"
+        file: "senzing-bootcamp/steering/module-01-phase1-discovery.md"
         value: "search_docs("
       - type: "substring_present"
         file: "senzing-bootcamp/steering/module-02-sdk-setup.md"

@@ -25,7 +25,7 @@ _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _STEERING_DIR = _BOOTCAMP_DIR / "steering"
 _HOOKS_DIR = _BOOTCAMP_DIR / "hooks"
 
-_MODULE_01 = _STEERING_DIR / "module-01-business-problem.md"
+_MODULE_01 = _STEERING_DIR / "module-01-phase1-discovery.md"
 _MODULE_01_PHASE2 = _STEERING_DIR / "module-01-phase2-document-confirm.md"
 _ONBOARDING = _STEERING_DIR / "onboarding-flow.md"
 _ONBOARDING_PHASE1B = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
@@ -42,7 +42,7 @@ _DEPLOY_K8S = _STEERING_DIR / "deployment-kubernetes.md"
 
 # All affected steering files for frontmatter checks
 _ALL_AFFECTED_FILES: list[tuple[Path, str]] = [
-    (_MODULE_01, "module-01-business-problem.md"),
+    (_MODULE_01, "module-01-phase1-discovery.md"),
     (_MODULE_01_PHASE2, "module-01-phase2-document-confirm.md"),
     (_ONBOARDING, "onboarding-flow.md"),
     (_ONBOARDING_PHASE2, "onboarding-phase2-track-setup.md"),
@@ -88,7 +88,7 @@ def _extract_yaml_frontmatter(content: str) -> str | None:
 
 
 def _extract_step_module01(markdown: str, step_number: int) -> str:
-    """Extract a numbered step from module-01-business-problem.md."""
+    """Extract a numbered step from module-01-phase1-discovery.md."""
     step_pattern = re.compile(
         rf"^{step_number}\.\s+\*\*", re.MULTILINE
     )

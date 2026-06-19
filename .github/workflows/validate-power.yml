@@ -41,6 +41,10 @@ jobs:
             echo "::error::Hook registry is out of sync. Run: python senzing-bootcamp/scripts/sync_hook_registry.py --write"
             exit 1
           }
+      # Enforces the thin Router_Root convention: lint_steering.py runs
+      # check_router_convention inside run_all_checks, so a regressing root
+      # (over-ceiling or root-doubles-as-phase) emits an ERROR and exits non-zero,
+      # failing the PR. Runs on the full 3.11/3.12/3.13 matrix above.
       - name: Lint steering files
         run: python senzing-bootcamp/scripts/lint_steering.py
       - name: Validate module prerequisites

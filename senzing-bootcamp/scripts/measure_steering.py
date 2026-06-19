@@ -143,7 +143,8 @@ def update_index(index_path, file_metadata, total_tokens, steering_dir=DEFAULT_S
     ``rewrite_phase_counts``. In-tolerance phases and all non-phase content
     (``budget``, ``keywords``, ``languages``, ``deployment``, module ``root`` /
     ``step_range``) are left byte-identical. The ``file_metadata`` / ``budget``
-    rebuild and ``split_threshold_tokens`` preservation are unchanged, and
+    rebuild, ``split_threshold_tokens`` preservation, and ``router_ceiling``
+    preservation (defaulting to ``1000`` when absent) are unchanged, and
     ``total_tokens`` remains the sum of ``file_metadata`` counts only (phase
     counts are never added to the budget total).
 
@@ -167,6 +168,7 @@ def update_index(index_path, file_metadata, total_tokens, steering_dir=DEFAULT_S
     """
     index_path = Path(index_path)
     split_threshold = None
+    router_ceiling = None
 
     if index_path.exists():
         content = load_yaml_content(index_path)
@@ -178,6 +180,10 @@ def update_index(index_path, file_metadata, total_tokens, steering_dir=DEFAULT_S
         threshold_match = re.search(r"split_threshold_tokens:\s*(\d+)", content)
         if threshold_match:
             split_threshold = threshold_match.group(1)
+        # Check for router_ceiling before truncating
+        ceiling_match = re.search(r"router_ceiling:\s*(\d+)", content)
+        if ceiling_match:
+            router_ceiling = ceiling_match.group(1)
         # Find where file_metadata starts (if it already exists) and truncate there
         fm_pos = _find_section_start(content, "file_metadata")
         if fm_pos >= 0:
@@ -208,6 +214,12 @@ def update_index(index_path, file_metadata, total_tokens, steering_dir=DEFAULT_S
     # Preserve split_threshold_tokens if it existed in the original content
     if split_threshold is not None:
         lines.append(f"  split_threshold_tokens: {split_threshold}")
+
+    # Preserve router_ceiling if it existed; default to 1000 when absent
+    if router_ceiling is not None:
+        lines.append(f"  router_ceiling: {router_ceiling}")
+    else:
+        lines.append("  router_ceiling: 1000")
 
     lines.append("")
 

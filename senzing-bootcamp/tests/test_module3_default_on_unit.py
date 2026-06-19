@@ -24,7 +24,9 @@ _MODULE_DEPS: Path = _BASE_DIR / "config" / "module-dependencies.yaml"
 _MODULE_PREREQS: Path = _BASE_DIR / "steering" / "module-prerequisites.md"
 _DOCS_MODULES_README: Path = _BASE_DIR / "docs" / "modules" / "README.md"
 _MODULE_FLOW: Path = _BASE_DIR / "docs" / "diagrams" / "module-flow.md"
-_STEERING_MODULE3: Path = _BASE_DIR / "steering" / "module-03-system-verification.md"
+# The Opt-Out Gate moved out of the module-03 root dispatcher into the Phase 1
+# verification file when module-router-standardization split Module 3.
+_STEERING_MODULE3: Path = _BASE_DIR / "steering" / "module-03-phase1-verification.md"
 
 
 # ---------------------------------------------------------------------------

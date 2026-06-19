@@ -154,7 +154,7 @@ class TestReadBeforeInteractOrderingProperty:
     STEERING_FILE = (
         Path(__file__).resolve().parent.parent
         / "steering"
-        / "module-07-query-visualize-discover.md"
+        / "module-07-phase1-query-visualize.md"
     )
 
     def _extract_step1_content(self) -> str:

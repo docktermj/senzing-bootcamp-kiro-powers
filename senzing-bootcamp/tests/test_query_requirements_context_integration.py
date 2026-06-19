@@ -16,7 +16,7 @@ from pathlib import Path
 import pytest
 
 _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
-_STEERING_FILE = _STEERING_DIR / "module-07-query-visualize-discover.md"
+_STEERING_FILE = _STEERING_DIR / "module-07-phase1-query-visualize.md"
 _STEERING_INDEX = _STEERING_DIR / "steering-index.yaml"
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _SCRIPTS_DIR = Path(__file__).resolve().parent.parent / "scripts"
@@ -276,7 +276,7 @@ class TestSteeringIndexResolution:
         )
 
     def test_module_7_phase1_file_matches_root(self) -> None:
-        """Module 7 phase1 file entry matches the root file."""
+        """Module 7 phase1 file entry points to the phase-1 steering file."""
         content = _STEERING_INDEX.read_text(encoding="utf-8")
 
         # Find the phase1-query-visualize file entry under module 7
@@ -290,9 +290,9 @@ class TestSteeringIndexResolution:
         )
 
         phase1_file = phase1_match.group(1).strip()
-        assert phase1_file == "module-07-query-visualize-discover.md", (
+        assert phase1_file == "module-07-phase1-query-visualize.md", (
             f"Module 7 phase1 file is '{phase1_file}', expected "
-            f"'module-07-query-visualize-discover.md'"
+            f"'module-07-phase1-query-visualize.md'"
         )
 
 

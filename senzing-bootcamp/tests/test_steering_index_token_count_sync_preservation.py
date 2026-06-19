@@ -81,7 +81,17 @@ _BASELINE_HASHES: dict[str, str] = {
     # which measure_steering recomputed into file_metadata and the budget total
     # (175589 -> 177312 = sum of file_metadata counts). Only the budget block
     # changed; keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "bb4995d15e0fda9812cce42241bef5215fa97fbe3aa181471d370cadf5614cc8",
+    #
+    # Re-baselined again observation-first for the module-router-standardization
+    # spec: a new `router_ceiling: 1000` key was added to the budget block, and
+    # the Module 1/7/11 root-doubles-as-phase content was relocated into new
+    # dedicated phase files (module-01-phase1-discovery.md,
+    # module-07-phase1-query-visualize.md, module-11-phase1-packaging.md) while
+    # the content roots (3/6/8) were thinned. measure_steering recomputed
+    # file_metadata and the budget total to the live consistent value
+    # (177312 -> 178266 = sum of file_metadata counts). Only the budget block
+    # changed; keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "68338a4dfdd0b23119510e9a14e65c2d6010a9bde5205717b4658456d979ad52",
     "keywords": "eeba1e086d5533ae85fdd0b7e45f7ff37ebc6e53d4ba207414f9cc698a7d302f",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -449,13 +459,14 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (177312), so the hash cannot silently re-pin a stale value.
+        # (178266), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 177312" in budget_block
+        assert "total_tokens: 178266" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block
         assert "split_threshold_tokens: 5000" in budget_block
+        assert "router_ceiling: 1000" in budget_block
 
     def test_update_mode_preserves_non_phase_blocks(self):
         mod = _load_measure_steering()
@@ -526,11 +537,15 @@ class TestInTolerancePhasesUntouched:
         assert live_records, "no phase entries parsed from the live index"
 
         # Observe-first: the in-tolerance set is non-empty and includes the
-        # named-stable entries (module 11 packaging, all onboarding + session
-        # phases) without hardcoding their exact counts.
+        # named-stable entries (module 11 packaging phase, all onboarding +
+        # session phases) without hardcoding their exact counts. The
+        # module-router-standardization spec gave Module 11 a dedicated router
+        # (module-11-deployment.md) and moved the packaging phase content into
+        # module-11-phase1-packaging.md, so the named packaging phase file is now
+        # module-11-phase1-packaging.md.
         in_tolerance = [r for r in live_records if _is_within_tolerance(mod, r)]
         in_tolerance_files = {r.file for r in in_tolerance}
-        assert "module-11-deployment.md" in in_tolerance_files
+        assert "module-11-phase1-packaging.md" in in_tolerance_files
 
         onboarding = [r for r in live_records if r.section == "onboarding"]
         session = [r for r in live_records if r.section == "session-resume"]

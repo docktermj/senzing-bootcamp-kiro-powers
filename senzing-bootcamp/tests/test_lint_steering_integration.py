@@ -86,6 +86,7 @@ class TestNoThirdPartyImports:
         # Standard library modules used by the script
         stdlib_modules = {
             "argparse", "json", "re", "sys", "dataclasses", "pathlib",
+            "importlib",
         }
 
         for line in import_lines:

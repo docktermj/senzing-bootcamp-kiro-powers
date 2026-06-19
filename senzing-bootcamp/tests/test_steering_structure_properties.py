@@ -283,6 +283,14 @@ def check_step_checkpoint_correspondence(
             heading_match = re_heading_step.match(line)
             if heading_match:
                 steps.append((idx, heading_match.group(1)))
+                # Entering a real step heading ends any non-step section
+                # opened by a preceding ## heading. After the
+                # module-router-standardization split, the ## Agent Rules
+                # block precedes the ### Step headings inside
+                # module-03-phase1-verification.md; without resetting here the
+                # **Checkpoint:** lines inside those steps would be skipped and
+                # every step would falsely report a missing checkpoint.
+                in_non_step_section = False
             continue
 
         if in_non_step_section:

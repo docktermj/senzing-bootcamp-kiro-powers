@@ -27,7 +27,7 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _STEERING_DIR = _BOOTCAMP_DIR / "steering"
 
-_MODULE_01 = _STEERING_DIR / "module-01-business-problem.md"
+_MODULE_01 = _STEERING_DIR / "module-01-phase1-discovery.md"
 _MODULE_01_PHASE2 = _STEERING_DIR / "module-01-phase2-document-confirm.md"
 _ONBOARDING = _STEERING_DIR / "onboarding-flow.md"
 _ONBOARDING_PHASE1B = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
@@ -66,7 +66,7 @@ def _read_file(path: Path) -> str:
 
 
 def _extract_step_module01(markdown: str, step_number: int) -> str:
-    """Extract a numbered step from module-01-business-problem.md.
+    """Extract a numbered step from module-01-phase1-discovery.md.
 
     Steps are top-level numbered items like ``1. **Step title** ...``.
     """
@@ -203,9 +203,9 @@ class TestModule01HardStopBlocks:
         self, module01_content: str, step_num: int
     ) -> None:
         step = _extract_step_module01(module01_content, step_num)
-        assert step, f"Step {step_num} not found in module-01-business-problem.md"
+        assert step, f"Step {step_num} not found in module-01-phase1-discovery.md"
         assert _has_hard_stop_block(step), (
-            f"Step {step_num} in module-01-business-problem.md lacks a 🛑 STOP "
+            f"Step {step_num} in module-01-phase1-discovery.md lacks a 🛑 STOP "
             f"hard-stop block after its question point. The agent can continue "
             f"generating past the question without a structural stop boundary."
         )
@@ -215,9 +215,9 @@ class TestModule01HardStopBlocks:
         self, module01_content: str, step_num: int
     ) -> None:
         step = _extract_step_module01(module01_content, step_num)
-        assert step, f"Step {step_num} not found in module-01-business-problem.md"
+        assert step, f"Step {step_num} not found in module-01-phase1-discovery.md"
         assert _has_end_response_language(step), (
-            f"Step {step_num} in module-01-business-problem.md lacks explicit "
+            f"Step {step_num} in module-01-phase1-discovery.md lacks explicit "
             f"'end your response' language. Without this, the model may interpret "
             f"'STOP' as 'pause briefly' rather than 'terminate output'."
         )
@@ -600,11 +600,11 @@ class TestOtherModuleHardStopBlocks:
 
 _ALL_QUESTION_POINTS: list[tuple[str, str, str]] = [
     # Module 01 steps
-    ("module-01-business-problem.md", "Module 01", "step_1"),
-    ("module-01-business-problem.md", "Module 01", "step_5"),
-    ("module-01-business-problem.md", "Module 01", "step_7"),
-    ("module-01-business-problem.md", "Module 01", "step_8"),
-    ("module-01-business-problem.md", "Module 01", "step_9"),
+    ("module-01-phase1-discovery.md", "Module 01", "step_1"),
+    ("module-01-phase1-discovery.md", "Module 01", "step_5"),
+    ("module-01-phase1-discovery.md", "Module 01", "step_7"),
+    ("module-01-phase1-discovery.md", "Module 01", "step_8"),
+    ("module-01-phase1-discovery.md", "Module 01", "step_9"),
     # Module 01 Phase 2 steps
     ("module-01-phase2-document-confirm.md", "Module 01 Phase 2", "step_16"),
     ("module-01-phase2-document-confirm.md", "Module 01 Phase 2", "step_17"),
@@ -640,7 +640,7 @@ def _check_question_point(file_name: str, question_id: str) -> bool:
     if question_id.startswith("step_"):
         step_num_str = question_id.replace("step_", "")
 
-        if file_name == "module-01-business-problem.md":
+        if file_name == "module-01-phase1-discovery.md":
             step = _extract_step_module01(content, int(step_num_str))
         elif file_name == "module-01-phase2-document-confirm.md":
             step = _extract_step_phase2(content, int(step_num_str))

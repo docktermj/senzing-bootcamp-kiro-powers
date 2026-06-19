@@ -22,7 +22,7 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _AGENT_INSTRUCTIONS = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
 _MCP_DECISION_TREE = _BOOTCAMP_DIR / "steering" / "mcp-tool-decision-tree.md"
-_MODULE_07 = _BOOTCAMP_DIR / "steering" / "module-07-query-visualize-discover.md"
+_MODULE_07 = _BOOTCAMP_DIR / "steering" / "module-07-phase1-query-visualize.md"
 
 
 # ---------------------------------------------------------------------------

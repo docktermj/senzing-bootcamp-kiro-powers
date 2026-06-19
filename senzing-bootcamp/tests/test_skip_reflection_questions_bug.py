@@ -25,9 +25,10 @@ _MODULE_03 = _BOOTCAMP_DIR / "steering" / "module-03-system-verification.md"
 
 # After the module-03 monolith was split into a dispatcher + phase sub-files
 # (same-branch refactor), Step 12 (Module Close) moved into the Phase 3
-# report-&-close file. Its instructions are unchanged — only the owning file
-# moved. The dispatcher (module-03-system-verification.md) still owns the
-# Success Criteria section.
+# report-&-close file and the Success Criteria section moved into the Phase 1
+# verification file. Their instructions are unchanged — only the owning files
+# moved.
+_MODULE_03_PHASE1 = _BOOTCAMP_DIR / "steering" / "module-03-phase1-verification.md"
 _MODULE_03_PHASE3 = _BOOTCAMP_DIR / "steering" / "module-03-phase3-report-close.md"
 
 # ---------------------------------------------------------------------------
@@ -43,6 +44,14 @@ def _read_module_completion() -> str:
 def _read_module_03() -> str:
     """Read the full content of module-03-system-verification.md."""
     return _MODULE_03.read_text(encoding="utf-8")
+
+
+def _read_module_03_phase1() -> str:
+    """Read the full content of module-03-phase1-verification.md.
+
+    The Success Criteria section lives here after the module-03 dispatcher split.
+    """
+    return _MODULE_03_PHASE1.read_text(encoding="utf-8")
 
 
 def _read_module_03_phase3() -> str:
@@ -232,16 +241,16 @@ class TestModule3SuccessCriteriaReflection:
 
     **Validates: Requirements 1.3**
 
-    Parse module-03-system-verification.md success criteria and assert it
+    Parse module-03-phase1-verification.md success criteria and assert it
     does NOT contain "answered the reflection question". On unfixed code
     this will FAIL because the success criteria require a reflection answer.
     """
 
     def test_success_criteria_no_reflection_requirement(self) -> None:
-        content = _read_module_03()
+        content = _read_module_03_phase1()
         success_criteria = _extract_success_criteria(content)
         assert success_criteria, (
-            "Success Criteria section not found in module-03-system-verification.md"
+            "Success Criteria section not found in module-03-phase1-verification.md"
         )
 
         reflection_match = re.search(
@@ -250,7 +259,7 @@ class TestModule3SuccessCriteriaReflection:
             re.IGNORECASE,
         )
         assert reflection_match is None, (
-            "module-03-system-verification.md Success Criteria contains "
+            "module-03-phase1-verification.md Success Criteria contains "
             "'answered the reflection question' as a completion condition. "
             "The success criteria should NOT require a reflection answer."
         )

@@ -35,7 +35,7 @@ from parse_business_problem import (  # noqa: E402
 # ---------------------------------------------------------------------------
 
 _STEERING_DIR: Path = Path(__file__).resolve().parent.parent / "steering"
-_MODULE_07: Path = _STEERING_DIR / "module-07-query-visualize-discover.md"
+_MODULE_07: Path = _STEERING_DIR / "module-07-phase1-query-visualize.md"
 
 
 # ---------------------------------------------------------------------------

@@ -19,7 +19,7 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-_MODULE_01 = _BOOTCAMP_DIR / "steering" / "module-01-business-problem.md"
+_MODULE_01 = _BOOTCAMP_DIR / "steering" / "module-01-phase1-discovery.md"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -40,7 +40,7 @@ _GIT_QUESTION_KEYWORDS = re.compile(
 
 
 def _read_module_01() -> str:
-    """Read the full content of module-01-business-problem.md."""
+    """Read the full content of module-01-phase1-discovery.md."""
     return _MODULE_01.read_text(encoding="utf-8")
 
 
@@ -97,7 +97,7 @@ class TestMissingPointingMarker:
 
     **Validates: Requirements 1.1, 1.2**
 
-    Parse module-01-business-problem.md, extract Step 1, and assert the git
+    Parse module-01-phase1-discovery.md, extract Step 1, and assert the git
     initialization question text contains the 👉 marker prefix. On unfixed
     content this will FAIL because no marker exists.
     """
@@ -126,7 +126,7 @@ class TestMissingStopInstruction:
 
     **Validates: Requirements 1.1, 1.3**
 
-    Parse module-01-business-problem.md, extract Step 1, and assert it
+    Parse module-01-phase1-discovery.md, extract Step 1, and assert it
     contains an explicit stop/wait instruction after the git question telling
     the agent to STOP and wait for the bootcamper's response. On unfixed
     content this will FAIL because no stop instruction exists.
@@ -156,7 +156,7 @@ class TestPrematureCheckpoint:
 
     **Validates: Requirements 1.3**
 
-    Parse module-01-business-problem.md, extract Step 1, and assert the
+    Parse module-01-phase1-discovery.md, extract Step 1, and assert the
     checkpoint is deferred until after the bootcamper responds. The checkpoint
     should NOT appear unconditionally right after the question — it should be
     conditional on the response path. On unfixed content this will FAIL

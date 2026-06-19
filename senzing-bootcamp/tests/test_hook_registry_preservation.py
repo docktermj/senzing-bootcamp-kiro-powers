@@ -88,8 +88,17 @@ _REGISTRY_BASELINES: dict[str, str] = {
     # in sync with the hook source); only the byte digest moves forward.
     "hook-registry-critical.md":
         "705dbaad9e92d0bbd80bd9f067309ad51518d4fa9591fd6e0a4cfdf4a3dae125",
+    # Re-baselined observation-first by the sdk-verify-hook-dead-end-path bugfix
+    # (commit 33fab59): that fix corrected the verify-sdk-setup hook prompt's
+    # suggested command (python3 senzing-bootcamp/scripts/preflight.py ->
+    # python3 src/scripts/verify_sdk.py), and sync_hook_registry.py --write
+    # regenerated the modules registry to mirror that single-line prompt change.
+    # That spec updated the hook + registry but did not refresh this preservation
+    # baseline, so the digest stayed stale. sync_hook_registry.py --verify still
+    # passes (registry in sync with the hook source); only the byte digest moves
+    # forward.
     "hook-registry-modules.md":
-        "db3d1f278b42d9fd4eb2e7923551f87993f571503d74a9730874cf5e1e03953f",
+        "789ab4c6447d13faee199e0cb4966fcd79d6f56d504627423092c2cc82339cfd",
 }
 
 # sync_hook_registry --verify success marker observed on the UNFIXED tree.

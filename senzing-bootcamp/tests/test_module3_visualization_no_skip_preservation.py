@@ -279,13 +279,15 @@ def st_other_gate(draw: st.DrawFn) -> tuple[vmg.MandatoryGate, dict]:
 # layout changed, not its emitted output. test_status_py_imports_intact still
 # guards against any import regression.
 #
-# NOTE (module1-license-request-option re-baseline): the
-# `steering/module-01-business-problem.md` whole-file digest was recomputed from
-# the current shipped bytes. That spec is chartered to edit Module 1 Step 6b/6d
-# (the in-flow MCP License_Request_Option), which is outside THIS bugfix's scope
-# but a legitimate, separately-specced change to module-01. The file remains
-# byte-stable with respect to *this* fix's surfaces; only the cross-spec Step
-# 6b/6d edits changed it, so the snapshot is refreshed to the now-correct bytes.
+# NOTE (module-router-standardization re-point): the Module 1 byte-stability
+# snapshot was re-pointed from `steering/module-01-business-problem.md` to
+# `steering/module-01-phase1-discovery.md`. The module-router-standardization
+# spec converted module-01-business-problem.md into a thin router/dispatcher and
+# MOVED the substantive Module 1 discovery content (steps 1–9) into the new
+# Phase 1 file. That content is outside THIS bugfix's scope, so the snapshot now
+# reads the file that actually holds the moved content. The digest is the
+# current shipped bytes of the phase file; it remains byte-stable with respect
+# to *this* fix's surfaces.
 # ---------------------------------------------------------------------------
 
 _UNRELATED_FILE_BASELINES: dict[str, str] = {
@@ -297,8 +299,8 @@ _UNRELATED_FILE_BASELINES: dict[str, str] = {
         "7b3355d9165ec39a8f49c65bb9a1e5f27610f8f3ad727b93e6272587ee6dc29f",
     "scripts/status.py":
         "81ee75888a5ce845945bd4214875f583c5365bbe1f17ce5d4d0aa829691fad79",
-    "steering/module-01-business-problem.md":
-        "065f0e9a770057807df368926251d268574f786b02d188454823323895469853",
+    "steering/module-01-phase1-discovery.md":
+        "8189fcf340e94c1a662751414f953dba9ccfbc92f48029ee39d3965218ab8315",
     "steering/lang-python.md":
         "15114d9eb719de92aa060649aa8e1bddb8ad01cb6b04a3ff73ca22abb8433a76",
     "config/module-artifacts.yaml":

@@ -73,15 +73,20 @@ GENERATED_FILES: frozenset[str] = frozenset(
 # a written justification; the threshold test then passes via the exemption
 # branch and ``test_exemptions_exist_in_index`` requires the file to be indexed.
 #
-# module-01-business-problem.md (module1-license-request-option spec): the
-# Module 1 Step 6b/6d edits added the in-flow MCP License_Request_Option
-# (capability gate, three selectable licensing paths, enable instructions,
-# MCP-sourced facts) to the phase1-discovery root, pushing it from 4527 to 5321
-# tokens. The split_threshold_tokens budget value is held at 5000 across the
-# corpus (it is independently pinned by test_token_budget_optimization.py and
-# test_split_steering.py), so rather than move the global threshold this single
-# unit is exempted: phase1-discovery covers Module 1 steps 1-9 as one cohesive
-# discovery+licensing flow whose Step 6 licensing branches must load together.
+# module-01-phase1-discovery.md (module1-license-request-option spec, relocated
+# by module-router-standardization): the Module 1 Step 6b/6d edits added the
+# in-flow MCP License_Request_Option (capability gate, three selectable
+# licensing paths, enable instructions, MCP-sourced facts) to the
+# phase1-discovery content. The module-router-standardization feature thinned
+# the root (module-01-business-problem.md) to a navigation-only router and
+# moved Steps 1-9 into the dedicated module-01-phase1-discovery.md phase file,
+# which measures ~5027 tokens. The split_threshold_tokens budget value is held
+# at 5000 across the corpus (it is independently pinned by
+# test_token_budget_optimization.py and test_split_steering.py), so rather than
+# move the global threshold this single unit is exempted: phase1-discovery
+# covers Module 1 steps 1-9 as one cohesive discovery+licensing flow whose
+# Step 6 licensing branches must load together (the design's Module 1 end-state
+# defines this as a single phase1-discovery file with step_range [1, 9]).
 #
 # module-05-phase2-data-mapping.md (pre-existing, module5-mapping-workflow /
 # mapping-resource-placement-policy specs): this Module 5 Phase 2 mapping
@@ -92,7 +97,7 @@ GENERATED_FILES: frozenset[str] = frozenset(
 EXEMPTIONS: frozenset[str] = frozenset(
     {
         "module-completion.md",
-        "module-01-business-problem.md",
+        "module-01-phase1-discovery.md",
         "module-05-phase2-data-mapping.md",
     }
 )

@@ -23,7 +23,7 @@ _ONBOARDING_FLOW = _STEERING_DIR / "onboarding-flow.md"
 # this phase file. onboarding-flow.md keeps Steps 0–2d.
 _ONBOARDING_PHASE1B = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
 _ER_INTRO = _STEERING_DIR / "entity-resolution-intro.md"
-_MODULE_01 = _STEERING_DIR / "module-01-business-problem.md"
+_MODULE_01 = _STEERING_DIR / "module-01-phase1-discovery.md"
 
 
 # ---------------------------------------------------------------------------

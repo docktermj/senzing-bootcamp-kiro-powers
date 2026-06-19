@@ -1,0 +1,33 @@
+# Catalog metadata for generate_spec_catalog.py.
+#
+# Curated editorial facts the generator cannot derive from the spec directories
+# themselves. This is living configuration: edit it as supersession chains and
+# related-spec groupings evolve, then regenerate the Spec_Index.
+#
+# Schema (parsed by _parse_simple_yaml in generate_spec_catalog.py):
+#   status_overrides: mapping of <identifier> -> <status value>
+#   supersessions:    list of { supersedes: <newer>, superseded: <older> }
+#   related:          list of identifiers that are mutually related
+#
+# Every identifier referenced below MUST resolve to an immediate subdirectory
+# of .kiro/specs/ — a dangling reference makes the generator exit 1.
+
+# No abandoned / forced-status specs are recorded yet. Add entries here when a
+# spec needs a status the generator cannot derive. Uncomment and extend:
+#   status_overrides:
+#     some-abandoned-spec: abandoned
+
+# Directional supersession chain for the self-answering line of work:
+#   self-answering-questions-fix
+#     -> self-answering-prevention-v2
+#       -> self-answering-reinforcement
+supersessions:
+  - supersedes: self-answering-prevention-v2
+    superseded: self-answering-questions-fix
+  - supersedes: self-answering-reinforcement
+    superseded: self-answering-prevention-v2
+
+# The module recap document and its follow-up fix are mutually related.
+related:
+  - module-recap-document
+  - module-recap-document-fix

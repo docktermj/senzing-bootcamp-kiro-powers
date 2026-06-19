@@ -6,6 +6,9 @@ on:
       - 'senzing-bootcamp/**'
       - 'tests/**'
       - '.github/workflows/**'
+      - '.kiro/specs/**'
+      - '.kiro/spec-catalog.yaml'
+      - '.kiro/SPEC_CATALOG.md'
   push:
     branches: [main]
 
@@ -71,6 +74,12 @@ jobs:
         run: |
           python senzing-bootcamp/scripts/generate_power_docs.py --verify || {
             echo "::error::Generated POWER.md docs are out of sync. Run: python senzing-bootcamp/scripts/generate_power_docs.py --write"
+            exit 1
+          }
+      - name: Verify spec catalog index is in sync
+        run: |
+          python senzing-bootcamp/scripts/generate_spec_catalog.py --check || {
+            echo "::error::Spec catalog index is out of sync. Run: python senzing-bootcamp/scripts/generate_spec_catalog.py"
             exit 1
           }
       - name: Validate example-coverage record and disclosure

@@ -301,6 +301,14 @@ All code templates are generated dynamically by the Senzing MCP server using `ge
 
 > **Note:** The depth of supplementary example coverage (via `find_examples`) varies across languages — Python and Java currently have the most extensive example coverage. This does not affect `generate_scaffold` or `sdk_guide` output quality, which produce equivalent results for all supported languages.
 
+<!-- BEGIN GENERATED: example-coverage -->
+
+> **Note:** Based on the tracked coverage snapshot, `python` currently has the most extensive supplementary example coverage (availability observed via `find_examples`).
+> This tracked coverage signal reflects supplementary example availability only.
+> `generate_scaffold` and `sdk_guide` produce equivalent results for all supported languages.
+
+<!-- END GENERATED: example-coverage -->
+
 ## Code Quality Standards
 
 All generated code follows language-appropriate coding standards based on the bootcamper's chosen language. The bootcamp supports Python, Java, C#, Rust, and TypeScript/Node.js — the agent queries the Senzing MCP server for the current list and asks the bootcamper to choose at the start. See `docs/policies/CODE_QUALITY_STANDARDS.md`.

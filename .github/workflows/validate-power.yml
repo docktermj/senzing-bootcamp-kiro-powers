@@ -69,6 +69,8 @@ jobs:
             echo "::error::Generated POWER.md docs are out of sync. Run: python senzing-bootcamp/scripts/generate_power_docs.py --write"
             exit 1
           }
+      - name: Validate example-coverage record and disclosure
+        run: python senzing-bootcamp/scripts/example_coverage_report.py --check
       - name: Run tests
         run: |
           pip install pytest hypothesis

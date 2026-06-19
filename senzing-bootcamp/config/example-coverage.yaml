@@ -1,0 +1,70 @@
+# Coverage_Record for the language-example-coverage feature.
+#
+# Per-language supplementary-example coverage, curated from observed Senzing
+# MCP find_examples results. This is a maintainer-maintained snapshot, not a
+# live query and not model training data. It contains NO MCP server URLs; the
+# MCP server URL lives only in senzing-bootcamp/mcp.json.
+
+metadata:
+  description: >
+    Per-language supplementary-example coverage, curated from observed Senzing
+    MCP find_examples results. This is a maintainer-maintained snapshot, not a
+    live query and not model training data.
+  signal_definition: >
+    Coverage = availability of supplementary examples via the MCP find_examples
+    tool for a given topic and language. It does NOT reflect generate_scaffold or
+    sdk_guide output quality, which are equivalent across all supported languages.
+  status_meanings:
+    available: "At least one supplementary example was observed via find_examples."
+    none: "No supplementary example was observed via find_examples."
+    unknown: "This topic/language combination has not yet been observed via the MCP server."
+  maintenance: >
+    Coverage entries are updated by a maintainer from observed find_examples
+    results, never from model training data.
+  snapshot:
+    last_observed: "2026-06-09"     # date coverage data was last observed
+    senzing_version: "4.0.0"        # Senzing version it was observed against
+
+languages:                          # tracked Supported_Language keys (Req 1.2)
+  - python
+  - java
+  - csharp
+  - rust
+  - typescript
+
+topics:                             # tracked Coverage_Topic identifiers (Req 1.3, 2.4)
+  add_records:
+    label: "Add records to the repository"
+  query:
+    label: "Query and search for entities"
+  redo:
+    label: "Process redo records"
+  container_deployment:
+    label: "Container deployment"
+
+coverage:                           # exactly one entry per (language, topic) (Req 1.4)
+  python:
+    add_records: available
+    query: available
+    redo: available
+    container_deployment: available
+  java:
+    add_records: available
+    query: available
+    redo: available
+    container_deployment: unknown
+  csharp:
+    add_records: available
+    query: none
+    redo: unknown
+    container_deployment: unknown
+  rust:
+    add_records: none
+    query: none
+    redo: unknown
+    container_deployment: unknown
+  typescript:
+    add_records: available
+    query: none
+    redo: unknown
+    container_deployment: unknown

@@ -26,6 +26,27 @@ These run in the GitHub Actions pipeline on every PR.
 | `validate_preferences_ci.py` | Validate `bootcamp_preferences.yaml` schema (validates a built-in sample when no file exists) |
 | `eval_conversations.py` | Conversational-eval harness — run scripted transcripts against behavioral rules |
 | `compose_hook_prompts.py` | Compose the Module 3 gate-hook prompts from shared fragments (`--write` / `--verify`) |
+| `generate_power_docs.py` | Regenerate the volatile POWER.md sections from sources (`--write` / `--verify`) |
+
+### POWER.md Documentation Generator
+
+`generate_power_docs.py` regenerates the four volatile sections of `POWER.md`
+(MCP tools, hooks, steering files, modules) in place between marker comments,
+preserving all hand-written prose. It mirrors the `--write` / `--verify` pattern
+of `sync_hook_registry.py`.
+
+Regenerate the sections in place (default mode):
+
+```bash
+python3 senzing-bootcamp/scripts/generate_power_docs.py --write
+```
+
+Verify the committed `POWER.md` matches what the generator would produce (used
+in CI; exits non-zero on drift and prints the regeneration command):
+
+```bash
+python3 senzing-bootcamp/scripts/generate_power_docs.py --verify
+```
 
 ## User-Facing Scripts
 

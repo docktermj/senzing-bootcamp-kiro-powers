@@ -104,6 +104,106 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 - `module-10-monitoring.md` — Module 10: Monitoring (split: `module-10-phaseA-setup.md`, `module-10-phaseB-operations.md`)
 - `module-11-deployment.md` — Module 11: Deployment (split: `module-11-phase2-deploy.md`)
 
+<!-- BEGIN GENERATED: steering-files -->
+
+| Steering File | Tokens | Size |
+|---|---|---|
+| `agent-behavior-rules.md` | 760 | medium |
+| `agent-context-management.md` | 1326 | medium |
+| `agent-instructions.md` | 4814 | large |
+| `cloud-provider-setup.md` | 784 | medium |
+| `common-pitfalls.md` | 4612 | large |
+| `completion-summary-offer.md` | 1867 | medium |
+| `complexity-estimator.md` | 606 | medium |
+| `conversation-examples.md` | 536 | medium |
+| `conversation-protocol.md` | 3993 | large |
+| `data-lineage.md` | 603 | medium |
+| `data-processing-reference.md` | 1174 | medium |
+| `deployment-aws.md` | 1323 | medium |
+| `deployment-azure.md` | 965 | medium |
+| `deployment-gcp.md` | 956 | medium |
+| `deployment-kubernetes.md` | 1397 | medium |
+| `deployment-onpremises.md` | 952 | medium |
+| `design-patterns.md` | 749 | medium |
+| `entity-resolution-intro.md` | 1864 | medium |
+| `environment-setup.md` | 658 | medium |
+| `feedback-workflow.md` | 1239 | medium |
+| `graduation.md` | 3584 | large |
+| `hook-architecture.md` | 2149 | large |
+| `hook-registry-critical.md` | 8503 | large |
+| `hook-registry-modules.md` | 10631 | large |
+| `hook-registry.md` | 1772 | medium |
+| `inline-status.md` | 460 | small |
+| `lang-csharp.md` | 1642 | medium |
+| `lang-java.md` | 1688 | medium |
+| `lang-python.md` | 1655 | medium |
+| `lang-rust.md` | 1698 | medium |
+| `lang-typescript.md` | 1887 | medium |
+| `lessons-learned.md` | 434 | small |
+| `mcp-response-caching.md` | 1442 | medium |
+| `mcp-tool-decision-tree.md` | 2310 | large |
+| `mcp-usage-reference.md` | 580 | medium |
+| `module-01-business-problem.md` | 5321 | large |
+| `module-01-phase2-document-confirm.md` | 1853 | medium |
+| `module-02-sdk-setup.md` | 4491 | large |
+| `module-03-phase1-verification.md` | 2695 | large |
+| `module-03-phase2-visualization.md` | 4411 | large |
+| `module-03-phase3-report-close.md` | 1751 | medium |
+| `module-03-system-verification.md` | 1448 | medium |
+| `module-03-visualization-api-reference.md` | 1711 | medium |
+| `module-04-data-collection.md` | 3460 | large |
+| `module-05-data-quality-mapping.md` | 689 | medium |
+| `module-05-phase1-quality-assessment.md` | 1710 | medium |
+| `module-05-phase2-data-mapping.md` | 5208 | large |
+| `module-05-phase3-test-load.md` | 2947 | large |
+| `module-06-data-processing.md` | 1583 | medium |
+| `module-06-phaseA-build-loading.md` | 1219 | medium |
+| `module-06-phaseB-load-first-source.md` | 1193 | medium |
+| `module-06-phaseC-multi-source.md` | 1428 | medium |
+| `module-06-phaseD-validation.md` | 1952 | medium |
+| `module-07-phase2-discover.md` | 3436 | large |
+| `module-07-phase2b-discover.md` | 3171 | large |
+| `module-07-query-visualize-discover.md` | 3591 | large |
+| `module-08-performance.md` | 1359 | medium |
+| `module-08-phaseA-requirements.md` | 1487 | medium |
+| `module-08-phaseB-benchmarking.md` | 429 | small |
+| `module-08-phaseC-optimization.md` | 746 | medium |
+| `module-09-phaseA-assessment.md` | 1221 | medium |
+| `module-09-phaseB-hardening.md` | 928 | medium |
+| `module-09-security.md` | 571 | medium |
+| `module-10-monitoring.md` | 568 | medium |
+| `module-10-phaseA-setup.md` | 808 | medium |
+| `module-10-phaseB-operations.md` | 451 | small |
+| `module-11-deployment.md` | 3289 | large |
+| `module-11-phase2-deploy.md` | 850 | medium |
+| `module-completion.md` | 6076 | large |
+| `module-prerequisites.md` | 1344 | medium |
+| `module-transitions.md` | 1534 | medium |
+| `onboarding-flow.md` | 3865 | large |
+| `onboarding-phase1b-intro-language.md` | 2055 | large |
+| `onboarding-phase2-track-setup.md` | 991 | medium |
+| `phase-loading-guide.md` | 499 | small |
+| `project-structure.md` | 764 | medium |
+| `recovery-from-mistakes.md` | 1227 | medium |
+| `security-privacy.md` | 278 | small |
+| `session-resume-phase2-mapping.md` | 656 | medium |
+| `session-resume-phase2-setup-recovery.md` | 996 | medium |
+| `session-resume-phase2-state-repair.md` | 547 | medium |
+| `session-resume.md` | 3380 | large |
+| `skip-step-protocol.md` | 799 | medium |
+| `track-switching.md` | 766 | medium |
+| `troubleshooting-commands.md` | 672 | medium |
+| `troubleshooting-decision-tree.md` | 1606 | medium |
+| `uat-framework.md` | 576 | medium |
+| `verbosity-control.md` | 2048 | large |
+| `visualization-guide.md` | 4334 | large |
+| `visualization-web-service.md` | 2195 | large |
+| `whats-new.md` | 602 | medium |
+
+**Total budget:** 177398 tokens
+
+<!-- END GENERATED: steering-files -->
+
 ## MCP Server Configuration
 
 Connects to the Senzing MCP server (no API keys required):
@@ -132,19 +232,23 @@ Always call `get_capabilities` first when starting a session.
 
 **Core tools:**
 
+<!-- BEGIN GENERATED: mcp-tools -->
+
 - `get_capabilities` — Discover all tools and workflows
 - `mapping_workflow` — Interactive 8-step data mapping to Senzing JSON
+- `analyze_record` — Analyze and validate mapped data against the Senzing Entity Specification
+- `download_resource` — Download workflow resources (entity spec, analyzer script)
+- `explain_error_code` — Diagnose Senzing errors (456 error codes)
+- `search_docs` — Search indexed Senzing documentation
+- `find_examples` — Working code from 27 Senzing GitHub repositories
 - `generate_scaffold` — Generate SDK code (Python, Java, C#, Rust, TypeScript)
 - `get_sample_data` — Download sample datasets (Las Vegas, London, Moscow)
-- `search_docs` — Search indexed Senzing documentation
-- `explain_error_code` — Diagnose Senzing errors (456 error codes)
-- `analyze_record` — Analyze and validate mapped data against the Senzing Entity Specification
-- `sdk_guide` — Platform-specific SDK installation and setup
-- `find_examples` — Working code from 27 Senzing GitHub repositories
 - `get_sdk_reference` — SDK method signatures and flags
+- `sdk_guide` — Platform-specific SDK installation and setup
 - `reporting_guide` — Reporting, visualization, and dashboard guidance
-- `download_resource` — Download workflow resources (entity spec, analyzer script)
 - `submit_feedback` — Report issues or suggestions
+
+<!-- END GENERATED: mcp-tools -->
 
 **Key rules:**
 
@@ -171,6 +275,26 @@ Modules are progressive but iterative. Skip ahead options: have Entity Specifica
 
 The goal is for you to finish the bootcamp with running code that is the basis of your real-world use of Senzing.
 
+<!-- BEGIN GENERATED: modules -->
+
+| # | Module |
+|---|---|
+| 1 | Business Problem |
+| 2 | SDK Setup |
+| 3 | System Verification |
+| 4 | Data Collection |
+| 5 | Data Quality & Mapping |
+| 6 | Data Processing |
+| 7 | Query, Visualize, and Discover |
+| 8 | Performance Testing & Benchmarking |
+| 9 | Security Hardening |
+| 10 | Monitoring & Observability |
+| 11 | Package & Deploy |
+
+Total: 11 modules.
+
+<!-- END GENERATED: modules -->
+
 ## Code Generation
 
 All code templates are generated dynamically by the Senzing MCP server using `generate_scaffold`, `sdk_guide`, and `mapping_workflow` in your chosen programming language. No static templates are shipped — this ensures generated code always matches the current SDK version and follows current best practices.
@@ -191,7 +315,11 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
+<!-- BEGIN GENERATED: hooks -->
+
 Available (29 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `backup-project-on-request`, `data-quality-check`, `deployment-phase-gate`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `git-commit-reminder`, `module-completion-celebration`, `module-recap-append`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
+
+<!-- END GENERATED: hooks -->
 
 ## Project Directory Structure
 

@@ -79,8 +79,13 @@ import subprocess
 _REGISTRY_CRITICAL_PATH = (
     Path(__file__).resolve().parent.parent / "steering" / "hook-registry-critical.md"
 )
-_REGISTRY_MODULES_PATH = (
-    Path(__file__).resolve().parent.parent / "steering" / "hook-registry-modules.md"
+# The steering-budget-headroom spec replaced the single hook-registry-modules.md
+# monolith with one per-module slice (hook-registry-module-NN.md / -any.md). Read
+# all module slices where the module registry monolith was previously read.
+_REGISTRY_MODULE_SLICE_PATHS = sorted(
+    (Path(__file__).resolve().parent.parent / "steering").glob(
+        "hook-registry-module-*.md"
+    )
 )
 _SCRIPTS_DIR = Path(__file__).resolve().parent.parent / "scripts"
 
@@ -214,10 +219,8 @@ class TestRegistryConsistency:
             hook_id = hook_id[: -len(".kiro.hook")]
 
         # Parse registry to find the name: line for this hook_id
-        registry_text = (
-            _REGISTRY_CRITICAL_PATH.read_text(encoding="utf-8")
-            + "\n"
-            + _REGISTRY_MODULES_PATH.read_text(encoding="utf-8")
+        registry_text = _REGISTRY_CRITICAL_PATH.read_text(encoding="utf-8") + "\n".join(
+            p.read_text(encoding="utf-8") for p in _REGISTRY_MODULE_SLICE_PATHS
         )
 
         # Look for pattern: "- id: `{hook_id}`" followed by "- name: `{name}`"

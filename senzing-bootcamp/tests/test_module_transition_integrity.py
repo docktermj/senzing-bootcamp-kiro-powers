@@ -32,6 +32,22 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def _read_module_completion_combined() -> str:
+    """Return the module-completion router plus every concern slice, combined.
+
+    The steering-budget-headroom spec sliced module-completion.md into a router
+    plus cohesive concern slices (content moved, not changed); the immediate-
+    execution and transition-prohibition rules now live in the next-step-options
+    slice. Reading the router plus every slice asserts that content at its new
+    location while leaving the frontmatter check (below) reading the router file.
+    """
+    steering = _POWER_ROOT / "steering"
+    names = ["module-completion.md", *sorted(
+        p.name for p in steering.glob("module-completion-*.md")
+    )]
+    return "\n".join((steering / name).read_text(encoding="utf-8") for name in names)
+
+
 def _extract_frontmatter(content: str) -> str | None:
     """Extract YAML frontmatter from markdown content.
 
@@ -123,7 +139,7 @@ class TestModuleCompletionImmediateExecution:
 
     @pytest.fixture(autouse=True)
     def _load(self) -> None:
-        self.content = _read(_MODULE_COMPLETION)
+        self.content = _read_module_completion_combined()
 
     def test_contains_immediate_execution_heading(self) -> None:
         """File contains 'Immediate Execution' heading or similar."""
@@ -203,7 +219,7 @@ class TestTransitionCrossFileConsistency:
     def _load(self) -> None:
         self.protocol_content = _read(_CONVERSATION_PROTOCOL)
         self.transitions_content = _read(_MODULE_TRANSITIONS)
-        self.completion_content = _read(_MODULE_COMPLETION)
+        self.completion_content = _read_module_completion_combined()
 
     def test_all_files_mention_affirmative_in_transition_context(self) -> None:
         """All three files mention 'affirmative' in context of transition responses."""

@@ -38,8 +38,18 @@ _MODULE_03_PHASE3 = _BOOTCAMP_DIR / "steering" / "module-03-phase3-report-close.
 
 
 def _read_module_completion() -> str:
-    """Read the full content of module-completion.md."""
-    return _MODULE_COMPLETION.read_text(encoding="utf-8")
+    """Read the module-completion router plus every concern slice, combined.
+
+    The steering-budget-headroom spec sliced module-completion.md into a router
+    plus cohesive concern slices (content moved, not changed). The preserved
+    sections below now live across those slices, so read the router plus every
+    slice to assert them at their new locations.
+    """
+    steering = _BOOTCAMP_DIR / "steering"
+    names = ["module-completion.md", *sorted(
+        p.name for p in steering.glob("module-completion-*.md")
+    )]
+    return "\n".join((steering / name).read_text(encoding="utf-8") for name in names)
 
 
 def _read_module_03() -> str:

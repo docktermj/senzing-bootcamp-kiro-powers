@@ -26,7 +26,10 @@ from pathlib import Path
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry-critical.md")
-REGISTRY_MODULES_PATH = Path("senzing-bootcamp/steering/hook-registry-modules.md")
+# The single ``hook-registry-modules.md`` monolith was replaced by per-module
+# registry slices (``hook-registry-module-NN.md`` / ``hook-registry-module-any.md``).
+# Registry consistency reads every slice matching this glob.
+MODULE_SLICE_GLOB = "hook-registry-module-*.md"
 CATEGORIES_PATH = Path("senzing-bootcamp/hooks/hook-categories.yaml")
 
 VALID_EVENT_TYPES = {
@@ -386,6 +389,12 @@ def check_registry_consistency(
 ) -> RegistryConsistency:
     """Compare hook file IDs against registry entries.
 
+    The documented-hook surface is the union of the critical registry
+    (``hook-registry-critical.md``) and every per-module slice
+    (``hook-registry-module-NN.md`` / ``hook-registry-module-any.md``), which
+    together replaced the retired ``hook-registry-modules.md`` monolith. A hook
+    is considered documented if it appears in any of these files.
+
     Args:
         hook_ids: Set of hook IDs from discovered files.
         registry_path: Path to hook-registry-critical.md.
@@ -394,9 +403,10 @@ def check_registry_consistency(
         RegistryConsistency with any mismatches.
     """
     registry_ids = parse_registry_hook_ids(registry_path)
-    # Also check the modules registry
-    modules_registry = registry_path.parent / "hook-registry-modules.md"
-    registry_ids |= parse_registry_hook_ids(modules_registry)
+    # Also check the per-module registry slices that replaced the single
+    # hook-registry-modules.md monolith.
+    for slice_path in sorted(registry_path.parent.glob(MODULE_SLICE_GLOB)):
+        registry_ids |= parse_registry_hook_ids(slice_path)
     result = RegistryConsistency()
 
     for hid in sorted(hook_ids - registry_ids):

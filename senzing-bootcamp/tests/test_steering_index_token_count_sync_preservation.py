@@ -91,8 +91,20 @@ _BASELINE_HASHES: dict[str, str] = {
     # file_metadata and the budget total to the live consistent value
     # (177312 -> 178266 = sum of file_metadata counts). Only the budget block
     # changed; keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "68338a4dfdd0b23119510e9a14e65c2d6010a9bde5205717b4658456d979ad52",
-    "keywords": "eeba1e086d5533ae85fdd0b7e45f7ff37ebc6e53d4ba207414f9cc698a7d302f",
+    # Re-baselined again observation-first for the steering-budget-headroom spec:
+    # module-completion.md was sliced into a router plus concern slices and the
+    # hook-registry-modules.md monolith was replaced by per-module slices, so new
+    # file_metadata entries were added and the budget total moved
+    # (178266 -> 179653 = sum of file_metadata counts). The keywords block also
+    # gained completion-concern routes (recap/journal/certificate/etc. -> the new
+    # completion slices). languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (179653 -> 179656) when the orphaned
+    # hook-registry-modules.md references in agent-instructions.md,
+    # onboarding-flow.md, and session-resume-phase2-setup-recovery.md were
+    # repointed at the per-module slices; measure_steering.py recomputed the
+    # affected file_metadata counts and the budget total.
+    "budget": "79684f4aacd841e11062b2919ca44fa61bd251522c1b9c13edf7c5feab0ff1a7",
+    "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
     "root_step_range": "560fe6ad7e2b2b4e852bb6ad8515aca16846416084f9d204c83f2871764ffadd",
@@ -461,7 +473,7 @@ class TestNonPhaseBlocksBytePreserved:
         # aggregate equals the live sum of file_metadata token_count entries
         # (178266), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 178266" in budget_block
+        assert "total_tokens: 179656" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

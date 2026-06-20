@@ -47,4 +47,8 @@ inclusion: manual
 
 ## Hook Creation
 
-To create hooks, load `hook-registry-critical.md` for critical hook prompts or `hook-registry-modules.md` for module hook prompts and `createHook` parameters.
+To create hooks, load `hook-registry-critical.md` for the full critical hook prompts and `createHook` parameters.
+
+For module hook prompts, resolve `current_module` from `config/bootcamp_progress.json` and load the matching per-module slice `hook-registry-module-<NN>.md` (zero-padded two-digit module number, e.g. `hook-registry-module-03.md`) or `hook-registry-module-any.md` for hooks that apply to any module. Each slice holds the full prompt text and `createHook` parameters for that module's hooks.
+
+If the expected per-module slice is missing at its path, fall back to this summary and report that the per-module slice is unavailable. The tables above list every hook by ID, event flow, module label, and description.

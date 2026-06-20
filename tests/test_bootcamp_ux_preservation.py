@@ -75,11 +75,34 @@ class TestModuleTransitionsPreservation:
 # ---------------------------------------------------------------------------
 
 class TestModuleCompletionPreservation:
-    """Preserve journal template, reflection, options, and path completion."""
+    """Preserve journal template, reflection, options, and path completion.
+
+    The ``steering-budget-headroom`` spec refactored ``module-completion.md``
+    into a lightweight Module_Completion_Root plus four cohesive slices. No
+    content was deleted — the journal template, next-step options, and
+    path-completion sections were relocated into:
+
+    - ``module-completion-artifacts.md`` (journal/recap/certificate fields)
+    - ``module-completion-error-handling.md`` (non-blocking error handling)
+    - ``module-completion-next-steps.md`` (next-step options)
+    - ``module-completion-track.md`` (path completion detection + celebration)
+
+    To preserve the original intent — the content still exists and is reachable
+    via the completion workflow — these assertions run against the Root combined
+    with all four slices.
+    """
+
+    _COMPLETION_FILES = (
+        "module-completion.md",
+        "module-completion-artifacts.md",
+        "module-completion-error-handling.md",
+        "module-completion-next-steps.md",
+        "module-completion-track.md",
+    )
 
     @pytest.fixture(autouse=True)
     def load_content(self):
-        self.content = _read("module-completion.md")
+        self.content = "\n".join(_read(name) for name in self._COMPLETION_FILES)
 
     # Journal template fields
     def test_journal_field_what_we_did(self):

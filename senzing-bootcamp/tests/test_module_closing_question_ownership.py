@@ -85,6 +85,25 @@ def _read_file(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def _read_affected_for_preservation(module_key: str) -> str:
+    """Return the content the preservation checks assert against for an affected file.
+
+    The steering-budget-headroom spec sliced module-completion.md into a router
+    plus cohesive concern slices (content moved, not changed). For that key, read
+    the router plus every completion slice (in router-then-alphabetical order) so
+    the moved headings and key content are asserted at their new locations. Every
+    other affected file is read directly, exactly as before.
+    """
+    if module_key == "module-completion":
+        names = ["module-completion.md", *sorted(
+            p.name for p in _STEERING_DIR.glob("module-completion-*.md")
+        )]
+        return "\n".join(
+            (_STEERING_DIR / name).read_text(encoding="utf-8") for name in names
+        )
+    return _read_file(_AFFECTED_FILES[module_key])
+
+
 def _sha256(content: str) -> str:
     """Return SHA-256 hex digest of content."""
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
@@ -489,19 +508,21 @@ _HEADINGS_MODULE_11 = [
 ]
 
 _HEADINGS_MODULE_COMPLETION = [
+    # Re-baselined for steering-budget-headroom: module-completion.md was sliced
+    # into a router (Completion Step Ordering / Shared Boundary-Detection Trigger
+    # / Completion Slice Manifest) plus cohesive concern slices
+    # (module-completion-artifacts.md, -error-handling.md, -next-steps.md,
+    # -track.md). Content was moved, not deleted. This baseline is the heading
+    # sequence of the router followed by the slices in alphabetical order, which
+    # is exactly what _read_affected_for_preservation("module-completion") yields.
     "# Module Completion Workflow",
     "## Completion Step Ordering",
     "### Ordering Rules",
-    # The module-completion-artifacts bugfix added the shared boundary-detection
-    # trigger and the backfill sections below.
     "## Shared Boundary-Detection Trigger",
     "### Trigger Rules",
+    "## Completion Slice Manifest",
+    "### Slice Fallback",
     "## Backfill for Already-Completed Modules",
-    "## Non-Blocking Error Handling",
-    "### Per-Step Error Handling",
-    "### 30-Second Timeout",
-    "### Predecessor Failure Does Not Block Subsequent Steps",
-    "### Retry on Next Module Completion",
     "## Recap Append",
     "### What is gathered",
     "### Workflow position",
@@ -532,6 +553,11 @@ _HEADINGS_MODULE_COMPLETION = [
     "## Track Progress",
     "## Total Time Invested",
     "### Error Handling",
+    "## Non-Blocking Error Handling",
+    "### Per-Step Error Handling",
+    "### 30-Second Timeout",
+    "### Predecessor Failure Does Not Block Subsequent Steps",
+    "### Retry on Next Module Completion",
     "## Next-Step Options",
     "### \u26d4 Immediate Execution on Affirmative Response",
     "## Path Completion Detection",
@@ -671,14 +697,21 @@ _HASH_HOOK = "2be48f67f5ab5d19f2368248e9569ec1bb8b0ccd6f39c4124b4e24da7c0fb47e"
 # steering files via pointer references) — a relocation, not a content
 # deletion; see TestPreservationAgentInstructions.test_agent_instructions_has_ownership_rule
 # for the paired independent content assertion.
-_HASH_AGENT_INSTRUCTIONS = "26341d605bd059fbf2e5694ee9f71b7d5d88c069a3f74192f5197652bde5d120"
+# Re-baselined again for the steering-budget-headroom finalize: the orphaned
+# `hook-registry-modules.md` reference was repointed at `hook-registry-module-any.md`
+# (the slice that holds the module-recap-append / session-log-events prompts);
+# the closing-question ownership content is unchanged.
+_HASH_AGENT_INSTRUCTIONS = "c4d68c15c2ae8982a08dfafa4cc9ebbebc18d9e49b3b32403cc10da29081e973"
 # Re-baselined (observation-first) against the shipped onboarding-flow.md. The
 # write-policy-gate-ux batch added a new "## 0a. Why You May See
 # 'Rejected'/'Accepted' Messages" onboarding section (Change B) explaining the
 # write-policy-gate intercept-retry cycle — a purely additive content change.
 # Prior re-baselines: the onboarding split, then the bootcamp-consistency-fixes
 # batch (capture-critical hooks instruction in Step 2).
-_HASH_ONBOARDING_FLOW = "faa18d2770e2ddb71e3d9ca60d341c99f17ecf91c6c4bead2fbd7df9f84be6fa"
+# Re-baselined again for the steering-budget-headroom finalize: the orphaned
+# `hook-registry-modules.md` reference in Step 1 was repointed at
+# `hook-registry-module-any.md`. No other content changed.
+_HASH_ONBOARDING_FLOW = "92237d42eb1c361a7f93d1b3375f58283c7260b6833c91ce071a8908878752bd"
 
 
 # ---------------------------------------------------------------------------
@@ -698,7 +731,7 @@ class TestPreservationHeadings:
         """**Validates: Requirements 3.3, 3.4**
 
         For each affected file, the heading sequence matches the baseline."""
-        content = _read_file(_AFFECTED_FILES[module_key])
+        content = _read_affected_for_preservation(module_key)
         actual = _extract_headings(content)
         expected = _ALL_HEADING_BASELINES[module_key]
         assert actual == expected, (
@@ -726,7 +759,7 @@ class TestPreservationKeyContent:
 
         For each affected file, key informational phrases are present
         after stripping inline questions and WAIT lines."""
-        content = _read_file(_AFFECTED_FILES[module_key])
+        content = _read_affected_for_preservation(module_key)
         info = _strip_question_and_wait_lines(content)
         key_phrases = _ALL_KEY_CONTENT[module_key]
         missing = [p for p in key_phrases if p.lower() not in info.lower()]
@@ -932,7 +965,7 @@ class TestPreservationProperty:
 
         For any affected module steering file, the heading sequence matches
         the observed baseline."""
-        content = _read_file(_AFFECTED_FILES[module_key])
+        content = _read_affected_for_preservation(module_key)
         actual = _extract_headings(content)
         expected = _ALL_HEADING_BASELINES[module_key]
         assert actual == expected, (
@@ -950,7 +983,7 @@ class TestPreservationProperty:
 
         For any affected module steering file, key informational phrases
         are present after stripping inline questions and WAIT lines."""
-        content = _read_file(_AFFECTED_FILES[module_key])
+        content = _read_affected_for_preservation(module_key)
         info = _strip_question_and_wait_lines(content)
         key_phrases = _ALL_KEY_CONTENT[module_key]
         missing = [p for p in key_phrases if p.lower() not in info.lower()]

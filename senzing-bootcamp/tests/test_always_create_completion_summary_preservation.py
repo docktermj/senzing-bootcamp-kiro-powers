@@ -60,7 +60,11 @@ _TESTS_DIR: Path = _POWER_ROOT / "tests"
 
 _OFFER_FILE: Path = _STEERING_DIR / "completion-summary-offer.md"
 _GRADUATION_FILE: Path = _STEERING_DIR / "graduation.md"
-_MODULE_COMPLETION_FILE: Path = _STEERING_DIR / "module-completion.md"
+# The steering-budget-headroom spec sliced module-completion.md into a router plus
+# cohesive concern slices (content moved, not changed). The Path Completion
+# Celebration section now lives in module-completion-track.md; its bytes are
+# unchanged, so the SHA-256 snapshot below still matches at the new location.
+_MODULE_COMPLETION_FILE: Path = _STEERING_DIR / "module-completion-track.md"
 
 # ---------------------------------------------------------------------------
 # Helpers

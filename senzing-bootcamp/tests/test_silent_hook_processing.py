@@ -48,7 +48,11 @@ _PRE_TOOL_USE_HOOKS: dict[str, Path] = {
 }
 
 _HOOK_REGISTRY = _STEERING_DIR / "hook-registry-critical.md"
-_HOOK_REGISTRY_MODULES = _STEERING_DIR / "hook-registry-modules.md"
+# The steering-budget-headroom spec replaced the single hook-registry-modules.md
+# monolith with one per-module slice (hook-registry-module-NN.md / -any.md). The
+# module-hook prompts now live across those slices; read them all where the
+# module registry was previously read as a single file.
+_HOOK_REGISTRY_MODULE_SLICES = sorted(_STEERING_DIR.glob("hook-registry-module-*.md"))
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 
 # The phrase that must appear in fixed prompts for the no-action case
@@ -666,9 +670,9 @@ _ASK_BOOTCAMPER_HOOK = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
 
 def _snapshot_registry_non_affected() -> dict[str, str]:
     """Return a dict of hook_id → full section text for non-affected hooks."""
-    # Search both critical and modules registry files
+    # Search both critical and module-slice registry files
     registry_texts = []
-    for path in [_HOOK_REGISTRY, _HOOK_REGISTRY_MODULES]:
+    for path in [_HOOK_REGISTRY, *_HOOK_REGISTRY_MODULE_SLICES]:
         if path.exists():
             registry_texts.append(path.read_text(encoding="utf-8"))
     combined_text = "\n".join(registry_texts)
@@ -776,7 +780,7 @@ class TestPreservationNonAffectedHooks:
     @pytest.fixture(autouse=True)
     def _load_registry(self) -> None:
         texts = []
-        for path in [_HOOK_REGISTRY, _HOOK_REGISTRY_MODULES]:
+        for path in [_HOOK_REGISTRY, *_HOOK_REGISTRY_MODULE_SLICES]:
             if path.exists():
                 texts.append(path.read_text(encoding="utf-8"))
         self._registry_text = "\n".join(texts)
@@ -939,7 +943,7 @@ class TestPreservationNonAffectedProperty:
 
         For any non-affected hook, its registry section matches baseline."""
         texts = []
-        for path in [_HOOK_REGISTRY, _HOOK_REGISTRY_MODULES]:
+        for path in [_HOOK_REGISTRY, *_HOOK_REGISTRY_MODULE_SLICES]:
             if path.exists():
                 texts.append(path.read_text(encoding="utf-8"))
         registry_text = "\n".join(texts)

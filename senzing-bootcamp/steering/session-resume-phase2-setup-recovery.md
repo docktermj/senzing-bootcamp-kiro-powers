@@ -28,7 +28,7 @@ Immediately **after** the `hooks_installed` check above, inspect the bootcamper'
 
 For each capture-critical hook whose `<id>.kiro.hook` file is **absent** from `.kiro/hooks`, warn the bootcamper which are missing and how to install them:
 
-- Re-create them with `createHook` from the Hook Registry (`ask-bootcamper` in `hook-registry-critical.md`; `module-recap-append` and `session-log-events` in `hook-registry-modules.md`), **or**
+- Re-create them with `createHook` from the Hook Registry (`ask-bootcamper` in `hook-registry-critical.md`; `module-recap-append` and `session-log-events` in `hook-registry-module-any.md`), **or**
 - Run the file-copy installer: `python3 senzing-bootcamp/scripts/install_hooks.py --essential` (its `--essential` set includes all three).
 
 This check is **advisory only** — it never blocks the session. Report the missing hooks, surface the install options, and continue the resume flow regardless. These hooks are auto-created on the createHook-from-registry path at session start; the check exists because a bootcamper may have deleted one or skipped the installer.

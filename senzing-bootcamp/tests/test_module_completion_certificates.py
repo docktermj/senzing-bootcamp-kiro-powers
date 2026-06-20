@@ -23,12 +23,21 @@ if str(_SCRIPTS_DIR) not in sys.path:
 
 
 class TestModuleCompletionSteering:
-    """Verify module-completion.md contains certificate generation instructions."""
+    """Verify the module-completion workflow contains certificate generation instructions."""
 
     @pytest.fixture()
     def module_completion(self) -> str:
-        path = _STEERING_DIR / "module-completion.md"
-        return path.read_text(encoding="utf-8")
+        # The steering-budget-headroom spec sliced module-completion.md into a
+        # router plus cohesive concern slices (content moved, not changed). The
+        # certificate guidance now lives in module-completion-artifacts.md; read
+        # the router plus every completion slice so the workflow content is
+        # asserted at its new location.
+        slices = ["module-completion.md", *sorted(
+            p.name for p in _STEERING_DIR.glob("module-completion-*.md")
+        )]
+        return "\n".join(
+            (_STEERING_DIR / name).read_text(encoding="utf-8") for name in slices
+        )
 
     def test_contains_certificate_generation_instruction(self, module_completion: str) -> None:
         """module-completion.md instructs generating a certificate."""

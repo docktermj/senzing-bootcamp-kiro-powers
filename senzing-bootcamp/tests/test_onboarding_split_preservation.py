@@ -47,7 +47,10 @@ _HASH_ONBOARDING_FLOW = (
     # intercept-retry cycle. Purely additive content change; no prior content
     # was removed. (Previous baseline was the bootcamp-consistency-fixes batch,
     # which added the capture-critical hooks instruction to Step 2.)
-    "faa18d2770e2ddb71e3d9ca60d341c99f17ecf91c6c4bead2fbd7df9f84be6fa"
+    # Re-baselined again for the steering-budget-headroom finalize: the orphaned
+    # `hook-registry-modules.md` reference in Step 1 was repointed at the
+    # `hook-registry-module-any.md` slice. No other content changed.
+    "92237d42eb1c361a7f93d1b3375f58283c7260b6833c91ce071a8908878752bd"
 )
 _HASH_PHASE_FILE = (
     "4631a4eaccdfadaf12d8a8c6f2d53eafbf5d372744da95abebff8d36e739f86e"

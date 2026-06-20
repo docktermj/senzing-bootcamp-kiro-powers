@@ -27,8 +27,20 @@ from hook_test_helpers import parse_categories_yaml
 # ---------------------------------------------------------------------------
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
-REGISTRY_CRITICAL_PATH = Path("senzing-bootcamp/steering/hook-registry-critical.md")
-REGISTRY_MODULES_PATH = Path("senzing-bootcamp/steering/hook-registry-modules.md")
+STEERING_DIR = Path("senzing-bootcamp/steering")
+REGISTRY_CRITICAL_PATH = STEERING_DIR / "hook-registry-critical.md"
+# The single hook-registry-modules.md monolith was replaced by per-module
+# registry slices (hook-registry-module-NN.md / hook-registry-module-any.md).
+MODULE_SLICE_GLOB = "hook-registry-module-*.md"
+
+
+def module_slice_paths() -> list[Path]:
+    """Return the per-module registry slice paths in sorted order.
+
+    Returns:
+        Sorted list of ``hook-registry-module-*.md`` paths under the steering dir.
+    """
+    return sorted(STEERING_DIR.glob(MODULE_SLICE_GLOB))
 
 
 def _expected_hook_count() -> int:
@@ -46,7 +58,8 @@ EXPECTED_HOOK_COUNT = _expected_hook_count()
 def _expected_registry_entry_count() -> int:
     """Derive the expected number of detailed registry entries.
 
-    The detailed registries (hook-registry-critical.md + hook-registry-modules.md)
+    The detailed registries (hook-registry-critical.md + the per-module
+    hook-registry-module-*.md slices)
     list a hook once per category bucket it belongs to. A hook mapped to multiple
     modules in hook-categories.yaml (e.g. ``enforce-visualization-offers`` under
     modules 3, 5, 7, 8) therefore appears once under EACH of those module sections,
@@ -169,7 +182,7 @@ def parse_registry(
         List of RegistryEntry objects.
     """
     if registry_paths is None:
-        registry_paths = [REGISTRY_CRITICAL_PATH, REGISTRY_MODULES_PATH]
+        registry_paths = [REGISTRY_CRITICAL_PATH, *module_slice_paths()]
 
     entries: list[RegistryEntry] = []
 

@@ -101,6 +101,19 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def _module_completion_combined() -> str:
+    """Return the module-completion router plus every concern slice, combined.
+
+    The steering-budget-headroom spec sliced module-completion.md into a router
+    plus cohesive concern slices (content moved, not changed). Reading the router
+    plus every slice asserts the preserved instructions at their new locations.
+    """
+    names = ["module-completion.md", *sorted(
+        p.name for p in _STEERING_DIR.glob("module-completion-*.md")
+    )]
+    return "\n".join((_STEERING_DIR / name).read_text(encoding="utf-8") for name in names)
+
+
 def _read_json(path: Path) -> dict[str, object]:
     """Read and parse a JSON hook file."""
     return json.loads(_read(path))
@@ -355,8 +368,8 @@ class TestByteForBytePreservation:
         )
 
     def test_steering_preserves_byte_for_byte_instruction(self) -> None:
-        """`module-completion.md` keeps the byte-for-byte journal preservation rule."""
-        content = _read(_MODULE_COMPLETION_FILE)
+        """The module-completion workflow keeps the byte-for-byte journal preservation rule."""
+        content = _module_completion_combined()
         assert "byte-for-byte" in content, (
             "module-completion.md must preserve the 'byte-for-byte' journal rule"
         )
@@ -441,8 +454,8 @@ class TestDefaultName:
         assert "Bootcamper" in prompt, "Recap hook must preserve the default name"
 
     def test_steering_preserves_default_name(self) -> None:
-        """`module-completion.md` keeps the "Bootcamper" default-name fallback."""
-        content = _read(_MODULE_COMPLETION_FILE)
+        """The module-completion workflow keeps the "Bootcamper" default-name fallback."""
+        content = _module_completion_combined()
         assert "Bootcamper" in content, "module-completion.md must keep the default name"
 
     def test_missing_file_uses_default(self) -> None:
@@ -501,7 +514,7 @@ class TestNonBlockingErrorsAndStepOrder:
 
     def test_steering_preserves_non_blocking_warning_format(self) -> None:
         """The documented non-blocking warning format is preserved."""
-        content = _read(_MODULE_COMPLETION_FILE)
+        content = _module_completion_combined()
         assert "skipped:" in content, "Warning format '[Step] skipped: [reason]' missing"
         assert "retried on next module completion" in content, (
             "Retry-on-next-completion behavior must be preserved"

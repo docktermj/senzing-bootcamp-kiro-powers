@@ -35,6 +35,12 @@ REGISTRY_MODULES_PATH = Path("senzing-bootcamp/steering/hook-registry-modules.md
 CATEGORIES_PATH = Path("senzing-bootcamp/hooks/hook-categories.yaml")
 LOCKFILE_PATH = Path("senzing-bootcamp/hooks/hooks.lock.yaml")
 
+# Registry outputs that the slicing refactor has retired.  ``--write`` removes
+# any of these that still exist and ``--verify`` flags them as orphans.  The
+# monolithic ``hook-registry-modules.md`` is superseded by the per-module
+# ``hook-registry-module-NN.md`` / ``hook-registry-module-any.md`` slices.
+DEPRECATED_REGISTRY_PATHS = (REGISTRY_MODULES_PATH,)
+
 # ---------------------------------------------------------------------------
 # Data structures
 # ---------------------------------------------------------------------------
@@ -471,8 +477,23 @@ def generate_registry_summary(
     parts.append("## Hook Creation")
     parts.append("")
     parts.append(
-        "To create hooks, load `hook-registry-critical.md` for critical hook prompts "
-        "or `hook-registry-modules.md` for module hook prompts and `createHook` parameters."
+        "To create hooks, load `hook-registry-critical.md` for the full critical "
+        "hook prompts and `createHook` parameters."
+    )
+    parts.append("")
+    parts.append(
+        "For module hook prompts, resolve `current_module` from "
+        "`config/bootcamp_progress.json` and load the matching per-module slice "
+        "`hook-registry-module-<NN>.md` (zero-padded two-digit module number, e.g. "
+        "`hook-registry-module-03.md`) or `hook-registry-module-any.md` for hooks "
+        "that apply to any module. Each slice holds the full prompt text and "
+        "`createHook` parameters for that module's hooks."
+    )
+    parts.append("")
+    parts.append(
+        "If the expected per-module slice is missing at its path, fall back to this "
+        "summary and report that the per-module slice is unavailable. The tables "
+        "above list every hook by ID, event flow, module label, and description."
     )
     parts.append("")
 
@@ -548,7 +569,10 @@ def generate_registry_critical(
         "`createHook` tool during onboarding. These hooks are created in Step 1."
     )
     parts.append("")
-    parts.append("For module-specific hooks, see `hook-registry-modules.md`.")
+    parts.append(
+        "For module-specific hooks, see `hook-registry.md`, which routes to the "
+        "per-module slice for your current module."
+    )
     parts.append("For a quick reference of all hooks, see `hook-registry.md`.")
     parts.append("")
 
@@ -564,14 +588,75 @@ def generate_registry_critical(
     return content
 
 
-def generate_registry_modules(
-    module_hooks: dict[int | str, list[HookEntry]],
+def module_slice_filename(key: int | str) -> str:
+    """Return the slice filename for a module bucket key.
+
+    Produces a deterministic kebab-case filename for a per-module hook slice.
+    Numbered modules use a zero-padded two-digit number; the unmapped group
+    uses a distinct ``any`` name.
+
+    Args:
+        key: A module bucket key — an ``int`` module number or the literal
+            string ``"any"`` for the unmapped group.
+
+    Returns:
+        The slice filename, e.g. ``"hook-registry-module-03.md"`` for module
+        ``3`` or ``"hook-registry-module-any.md"`` for the ``"any"`` group.
+
+    Examples:
+        >>> module_slice_filename(3)
+        'hook-registry-module-03.md'
+        >>> module_slice_filename(11)
+        'hook-registry-module-11.md'
+        >>> module_slice_filename("any")
+        'hook-registry-module-any.md'
+    """
+    if isinstance(key, int):
+        return f"hook-registry-module-{key:02d}.md"
+    return f"hook-registry-module-{key}.md"
+
+
+def _module_label(key: int | str) -> str:
+    """Return the human-readable module label for a bucket *key*.
+
+    Args:
+        key: A module bucket key — an ``int`` module number or the literal
+            string ``"any"`` for the unmapped group.
+
+    Returns:
+        ``"Module N"`` for a numbered module or ``"any module"`` for ``"any"``.
+    """
+    if isinstance(key, int):
+        return f"Module {key}"
+    return "any module"
+
+
+def generate_module_slice(
+    key: int | str,
+    hooks: list[HookEntry],
     total_count: int,
 ) -> str:
-    """Generate the ``hook-registry-modules.md`` content.
+    """Generate the markdown for one Hook_Registry_Module_Slice.
 
-    Contains module-specific and 'any' hooks with full prompt text.
+    Begins with ``inclusion: manual`` frontmatter, a module-scoped title and
+    label heading, and a short intro that points back to ``hook-registry.md``
+    and ``hook-registry-critical.md``. It then renders the full prompt entry
+    for each hook in *hooks* (already sorted by :func:`categorize_hooks`),
+    reusing :func:`format_hook_entry` so a hook renders identically whether it
+    appears in one slice or several. Line endings are normalised to ``\\n``.
+
+    Args:
+        key: The module bucket key — an ``int`` module number or the literal
+            string ``"any"`` for the unmapped group.
+        hooks: The hook entries belonging to this module bucket, already sorted
+            by ``hook_id``.
+        total_count: Total number of hooks across the registry (for context).
+
+    Returns:
+        The rendered Markdown content for the slice, with ``\\n`` line endings.
     """
+    label = _module_label(key)
+
     parts: list[str] = []
 
     # Frontmatter
@@ -581,65 +666,64 @@ def generate_registry_modules(
     parts.append("")
 
     # Title
-    parts.append("# Hook Registry — Module Hooks (Full Prompts)")
+    parts.append(f"# Hook Registry — {label} (Full Prompts)")
     parts.append("")
 
-    # Intro paragraph
+    # Intro paragraph pointing back to the summary and critical registries
     parts.append(
-        "Module-specific hook definitions with prompt text for use with the "
-        "`createHook` tool when starting a module."
+        f"Full hook prompts for {label}, for use with the `createHook` tool when "
+        "starting this module."
     )
     parts.append("")
-    parts.append("For critical hooks (created during onboarding), see `hook-registry-critical.md`.")
     parts.append("For a quick reference of all hooks, see `hook-registry.md`.")
+    parts.append(
+        "For critical hooks (created during onboarding), see `hook-registry-critical.md`."
+    )
     parts.append("")
 
-    # Module Hooks section
-    parts.append("## Module Hooks (created when module starts)")
+    # Module hooks section
+    parts.append(f"## {label} Hooks")
     parts.append("")
-
-    # Sort module keys: integers first (ascending), then "any" last
-    int_keys = sorted(k for k in module_hooks if isinstance(k, int))
-    str_keys = sorted(k for k in module_hooks if isinstance(k, str))
-    sorted_keys = int_keys + str_keys
-
-    for key in sorted_keys:
-        hooks_in_module = module_hooks[key]
-        for hook in hooks_in_module:
-            if isinstance(key, int):
-                label = f"Module {key}"
-            else:
-                label = "any module"
-
-            # Build event flow for the module line
-            flow = f"{hook.event_type} → {hook.action_type}"
-            if hook.file_patterns:
-                flow += f", filePatterns: `{hook.file_patterns}`"
-            if hook.tool_types:
-                flow += f", toolTypes: {hook.tool_types}"
-
-            entry_lines: list[str] = []
-            entry_lines.append(f"**{hook.hook_id}** — {label} ({flow})")
-            entry_lines.append("")
-
-            if hook.prompt:
-                entry_lines.append("Prompt:")
-                entry_lines.append("")
-                entry_lines.append("````text")
-                entry_lines.append(hook.prompt)
-                entry_lines.append("````")
-                entry_lines.append("")
-
-            entry_lines.append(f"- id: `{hook.hook_id}`")
-            entry_lines.append(f"- name: `{hook.name}`")
-            entry_lines.append(f"- description: `{hook.description}`")
-
-            parts.append("\n".join(entry_lines))
-            parts.append("")
+    for hook in hooks:
+        parts.append(format_hook_entry(hook))
+        parts.append("")
 
     content = "\n".join(parts)
     content = content.replace("\r\n", "\n").replace("\r", "\n")
     return content
+
+
+def build_module_slices(
+    module_hooks: dict[int | str, list[HookEntry]],
+    steering_dir: Path,
+    total_count: int,
+) -> dict[Path, str]:
+    """Map each non-empty module bucket to its slice path and rendered content.
+
+    Builds the full ``{slice_path: content}`` map for every module bucket
+    produced by :func:`categorize_hooks`. Those buckets only contain non-empty
+    lists, so a module with no hooks yields no slice (no empty file is written).
+    The ``"any"`` bucket maps to ``hook-registry-module-any.md``. Each slice
+    path is ``steering_dir / module_slice_filename(key)`` and its content comes
+    from :func:`generate_module_slice`.
+
+    Args:
+        module_hooks: Module buckets from :func:`categorize_hooks` — keys are
+            ``int`` module numbers or the literal ``"any"`` and each value is a
+            non-empty list of hook entries sorted by ``hook_id``.
+        steering_dir: Directory the slice files live in; slice paths are derived
+            relative to it.
+        total_count: Total number of hooks across the registry (for context).
+
+    Returns:
+        Mapping of each non-empty bucket's slice path to its rendered Markdown
+        content.
+    """
+    slices: dict[Path, str] = {}
+    for key, hooks in module_hooks.items():
+        slice_path = steering_dir / module_slice_filename(key)
+        slices[slice_path] = generate_module_slice(key, hooks, total_count)
+    return slices
 
 
 # ---------------------------------------------------------------------------
@@ -764,10 +848,13 @@ def main() -> None:
         help=f"Path to output critical registry (default: {REGISTRY_CRITICAL_PATH}).",
     )
     parser.add_argument(
-        "--output-modules",
+        "--steering-dir",
         type=Path,
-        default=REGISTRY_MODULES_PATH,
-        help=f"Path to output modules registry (default: {REGISTRY_MODULES_PATH}).",
+        default=REGISTRY_PATH.parent,
+        help=(
+            "Directory the per-module hook slices are written to / verified "
+            f"against (default: {REGISTRY_PATH.parent})."
+        ),
     )
     parser.add_argument(
         "--categories",
@@ -809,7 +896,6 @@ def main() -> None:
         critical, modules, total_count, categories_path=args.categories
     )
     critical_content = generate_registry_critical(critical, total_count)
-    modules_content = generate_registry_modules(modules, total_count)
     lockfile_content = generate_lockfile(hooks, mapping)
 
     if args.verify:
@@ -827,12 +913,27 @@ def main() -> None:
             print(f"FAIL: {args.output_critical} — {critical_message}", file=sys.stderr)
             all_match = False
 
-        modules_matches, modules_message = verify_registry(
-            modules_content, args.output_modules
-        )
-        if not modules_matches:
-            print(f"FAIL: {args.output_modules} — {modules_message}", file=sys.stderr)
-            all_match = False
+        # Per-module slice verification: regenerate the slice set and compare
+        # each on disk byte-for-byte. A freshly generated slice that is missing
+        # on disk (or differs) fails verification.
+        steering_dir = args.steering_dir
+        slices = build_module_slices(modules, steering_dir, total_count)
+        for slice_path, slice_content in slices.items():
+            slice_matches, slice_message = verify_registry(slice_content, slice_path)
+            if not slice_matches:
+                print(f"FAIL: {slice_path} — {slice_message}", file=sys.stderr)
+                all_match = False
+
+        # Orphan detection: a deprecated registry file that still exists on disk
+        # must be removed via --write.
+        for deprecated_path in DEPRECATED_REGISTRY_PATHS:
+            if deprecated_path.exists():
+                print(
+                    f"FAIL: {deprecated_path} — orphaned deprecated registry file; "
+                    "run --write to remove",
+                    file=sys.stderr,
+                )
+                all_match = False
 
         # Lockfile verification: compare structure (skip generated_at timestamp)
         lockfile_path = LOCKFILE_PATH
@@ -857,19 +958,37 @@ def main() -> None:
         else:
             sys.exit(1)
     else:
-        write_registry(summary_content, args.output)
-        print(f"Summary registry written to {args.output} ({total_count} hooks)")
-        write_registry(critical_content, args.output_critical)
-        print(
-            f"Critical registry written to {args.output_critical} ({len(critical)} hooks)"
-        )
-        write_registry(modules_content, args.output_modules)
-        print(
-            f"Modules registry written to {args.output_modules} "
-            f"({total_count - len(critical)} hooks)"
-        )
-        write_registry(lockfile_content, LOCKFILE_PATH)
-        print(f"Lockfile written to {LOCKFILE_PATH} ({total_count} hooks)")
+        # Derive the steering directory from --steering-dir so the per-module
+        # slices land alongside hook-registry.md.
+        steering_dir = args.steering_dir
+        slices = build_module_slices(modules, steering_dir, total_count)
+
+        try:
+            write_registry(summary_content, args.output)
+            print(f"Summary registry written to {args.output} ({total_count} hooks)")
+
+            write_registry(critical_content, args.output_critical)
+            print(
+                f"Critical registry written to {args.output_critical} "
+                f"({len(critical)} hooks)"
+            )
+
+            for slice_path, slice_content in slices.items():
+                write_registry(slice_content, slice_path)
+                print(f"Module slice written to {slice_path}")
+
+            # Remove any retired registry output that still exists on disk so the
+            # deprecated monolith does not linger as an orphan.
+            for deprecated_path in DEPRECATED_REGISTRY_PATHS:
+                if deprecated_path.exists():
+                    deprecated_path.unlink()
+                    print(f"Removed deprecated registry file {deprecated_path}")
+
+            write_registry(lockfile_content, LOCKFILE_PATH)
+            print(f"Lockfile written to {LOCKFILE_PATH} ({total_count} hooks)")
+        except (OSError, PermissionError) as exc:
+            print(f"ERROR: Failed to write registry files: {exc}", file=sys.stderr)
+            sys.exit(1)
 
 
 if __name__ == "__main__":

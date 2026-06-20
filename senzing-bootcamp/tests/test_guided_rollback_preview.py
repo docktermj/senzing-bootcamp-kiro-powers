@@ -82,11 +82,14 @@ class TestRollbackPreviewOutput:
 
 
 class TestModuleCompletionSteering:
-    """Verify module-completion.md instructs agent to run preview before rollback."""
+    """Verify module-completion guidance instructs agent to run preview before rollback."""
 
     @pytest.fixture()
     def module_completion(self) -> str:
-        path = _STEERING_DIR / "module-completion.md"
+        # The steering-budget-headroom spec sliced module-completion.md into a
+        # router plus concern slices; the rollback preview/confirmation guidance
+        # moved (unchanged) into the next-step-options slice.
+        path = _STEERING_DIR / "module-completion-next-steps.md"
         return path.read_text(encoding="utf-8")
 
     def test_contains_preview_instruction(self, module_completion: str) -> None:

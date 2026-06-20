@@ -70,35 +70,19 @@ _SYNC_SCRIPT = _SCRIPTS_DIR / "sync_hook_registry.py"
 # sync_hook_registry.py --verify still passes (registry in sync with the hook
 # source); only the byte digest moves forward.
 _REGISTRY_BASELINES: dict[str, str] = {
+    # Re-baselined observation-first by the steering-budget-headroom spec. That
+    # refactor regenerated the routable summary (hook-registry.md gained the
+    # per-module-slice routing instruction) and the critical registry (its
+    # cross-reference now points at hook-registry.md), and replaced the single
+    # hook-registry-modules.md monolith with per-module slices
+    # (hook-registry-module-NN.md / -any.md). sync_hook_registry.py --verify
+    # still passes (registry in sync with the hook source); only the byte digests
+    # move forward and the deleted monolith's baseline is removed. The per-module
+    # slices' byte-stability is covered by sync_hook_registry.py --verify.
     "hook-registry.md":
-        "388cffe18e522b64b04dc716378a1fae7b463f5cd300bc63ef4d1fca33a138bd",
-    # Re-baselined observation-first by the write-policy-gate-ux bugfix
-    # (Change A): the write-policy-gate hook prompt gained an INTERNAL-FILE
-    # PASS-THROUGH clause, and sync_hook_registry.py --write regenerated the
-    # critical registry to mirror that prompt change. sync_hook_registry.py
-    # --verify still passes (registry in sync with the hook source); only the
-    # byte digest moves forward.
-    #
-    # Re-baselined again observation-first by the leading-question-continuity
-    # spec (Task 6.2): the write-policy-gate hook prompt's INTERNAL-FILE
-    # PASS-THROUGH enumeration gained two exact-match entries
-    # (config/data_sources.yaml, config/visualization_tracker.json), and
-    # sync_hook_registry.py --write re-synced the critical registry to mirror
-    # that prompt change. sync_hook_registry.py --verify still passes (registry
-    # in sync with the hook source); only the byte digest moves forward.
+        "869d518a6b657f03f74cac7ba2035b5b1f4b2228a9acdb73140e79307680f06a",
     "hook-registry-critical.md":
-        "705dbaad9e92d0bbd80bd9f067309ad51518d4fa9591fd6e0a4cfdf4a3dae125",
-    # Re-baselined observation-first by the sdk-verify-hook-dead-end-path bugfix
-    # (commit 33fab59): that fix corrected the verify-sdk-setup hook prompt's
-    # suggested command (python3 senzing-bootcamp/scripts/preflight.py ->
-    # python3 src/scripts/verify_sdk.py), and sync_hook_registry.py --write
-    # regenerated the modules registry to mirror that single-line prompt change.
-    # That spec updated the hook + registry but did not refresh this preservation
-    # baseline, so the digest stayed stale. sync_hook_registry.py --verify still
-    # passes (registry in sync with the hook source); only the byte digest moves
-    # forward.
-    "hook-registry-modules.md":
-        "789ab4c6447d13faee199e0cb4966fcd79d6f56d504627423092c2cc82339cfd",
+        "dfa1af62df783c799938385637fb8360396707b0b9abacab6d0de98fafefcba2",
 }
 
 # sync_hook_registry --verify success marker observed on the UNFIXED tree.

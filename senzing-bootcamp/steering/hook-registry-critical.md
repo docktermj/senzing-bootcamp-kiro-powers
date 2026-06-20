@@ -6,7 +6,7 @@ inclusion: manual
 
 Critical hook definitions with prompt text for use with the `createHook` tool during onboarding. These hooks are created in Step 1.
 
-For module-specific hooks, see `hook-registry-modules.md`.
+For module-specific hooks, see `hook-registry.md`, which routes to the per-module slice for your current module.
 For a quick reference of all hooks, see `hook-registry.md`.
 
 ## Critical Hooks (created during onboarding)

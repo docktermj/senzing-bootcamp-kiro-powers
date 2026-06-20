@@ -216,6 +216,15 @@ keywords:
   hook: hook-registry.md
   hooks: hook-registry.md
   completion: module-completion.md
+  recap: module-completion-artifacts.md
+  journal: module-completion-artifacts.md
+  certificate: module-completion-artifacts.md
+  artifact backfill: module-completion-artifacts.md
+  completion error: module-completion-error-handling.md
+  next step: module-completion-next-steps.md
+  track complete: module-completion-track.md
+  path completion: module-completion-track.md
+  celebration: module-completion-track.md
   graduate: graduation.md
   graduation: graduation.md
   prerequisite: module-prerequisites.md
@@ -302,7 +311,7 @@ file_metadata:
     token_count: 1326
     size_category: medium
   agent-instructions.md:
-    token_count: 4814
+    token_count: 4815
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -362,13 +371,46 @@ file_metadata:
     token_count: 2149
     size_category: large
   hook-registry-critical.md:
-    token_count: 8503
+    token_count: 8517
     size_category: large
-  hook-registry-modules.md:
-    token_count: 10628
+  hook-registry-module-01.md:
+    token_count: 474
+    size_category: small
+  hook-registry-module-02.md:
+    token_count: 261
+    size_category: small
+  hook-registry-module-03.md:
+    token_count: 2341
+    size_category: large
+  hook-registry-module-04.md:
+    token_count: 282
+    size_category: small
+  hook-registry-module-05.md:
+    token_count: 1390
+    size_category: medium
+  hook-registry-module-06.md:
+    token_count: 519
+    size_category: medium
+  hook-registry-module-07.md:
+    token_count: 544
+    size_category: medium
+  hook-registry-module-08.md:
+    token_count: 760
+    size_category: medium
+  hook-registry-module-09.md:
+    token_count: 268
+    size_category: small
+  hook-registry-module-10.md:
+    token_count: 286
+    size_category: small
+  hook-registry-module-11.md:
+    token_count: 463
+    size_category: small
+  hook-registry-module-any.md:
+    token_count: 3846
     size_category: large
   hook-registry.md:
-    token_count: 1772
+    token_count: 1914
     size_category: medium
   inline-status.md:
     token_count: 460
@@ -508,9 +550,21 @@ file_metadata:
   module-11-phase2-deploy.md:
     token_count: 850
     size_category: medium
-  module-completion.md:
-    token_count: 6076
+  module-completion-artifacts.md:
+    token_count: 2902
     size_category: large
+  module-completion-error-handling.md:
+    token_count: 604
+    size_category: medium
+  module-completion-next-steps.md:
+    token_count: 555
+    size_category: medium
+  module-completion-track.md:
+    token_count: 1277
+    size_category: medium
+  module-completion.md:
+    token_count: 1163
+    size_category: medium
   module-prerequisites.md:
     token_count: 1344
     size_category: medium
@@ -518,7 +572,7 @@ file_metadata:
     token_count: 1534
     size_category: medium
   onboarding-flow.md:
-    token_count: 3865
+    token_count: 3866
     size_category: large
   onboarding-phase1b-intro-language.md:
     token_count: 2055
@@ -542,7 +596,7 @@ file_metadata:
     token_count: 656
     size_category: medium
   session-resume-phase2-setup-recovery.md:
-    token_count: 996
+    token_count: 997
     size_category: medium
   session-resume-phase2-state-repair.md:
     token_count: 547
@@ -579,7 +633,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 178266
+  total_tokens: 179656
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

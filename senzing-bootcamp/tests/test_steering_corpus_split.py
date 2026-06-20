@@ -54,8 +54,13 @@ GENERATED_FILES: frozenset[str] = frozenset(
     {
         "hook-registry.md",
         "hook-registry-critical.md",
-        "hook-registry-modules.md",
     }
+    # The steering-budget-headroom spec replaced the single hook-registry-modules.md
+    # monolith with one generated per-module slice (hook-registry-module-NN.md /
+    # -any.md). Those slices are likewise generated, on-demand-loaded files governed
+    # by sync_hook_registry.py, so they are discovered dynamically and excluded from
+    # the hand-split threshold property the same way the old monolith was.
+    | {p.name for p in _STEERING_DIR.glob("hook-registry-module-*.md")}
 )
 
 # Enumerated exemption set (Requirements 2.2, 5.5, 8.1, 8.2). Contains

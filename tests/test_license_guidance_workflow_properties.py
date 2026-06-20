@@ -22,7 +22,15 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 STEERING_DIR = Path("senzing-bootcamp/steering")
-MODULE_01 = STEERING_DIR / "module-01-business-problem.md"
+# NOTE: The module-router-standardization spec split the former inline
+# `module-01-business-problem.md` into a thin phase ROUTER plus phase files.
+# All Step 1–9 discovery content — including the Step 6 inference categories
+# (A–F), the license-guidance workflow (Steps 6a–6e), the Step 7 gap-filling
+# sub-steps, and the verbatim Phase 2 reference line — was relocated into
+# `module-01-phase1-discovery.md`. These tests therefore read the phase-1 file,
+# which is the new home of the content they assert. The original test intent is
+# preserved; only the source path changed.
+MODULE_01 = STEERING_DIR / "module-01-phase1-discovery.md"
 
 
 # ---------------------------------------------------------------------------
@@ -31,7 +39,11 @@ MODULE_01 = STEERING_DIR / "module-01-business-problem.md"
 
 
 def _load_module_01_content() -> str:
-    """Load the full content of module-01-business-problem.md."""
+    """Load the full content of module-01-phase1-discovery.md.
+
+    Phase 1 holds the relocated Steps 1–9 discovery content (formerly inline in
+    module-01-business-problem.md before the module-router-standardization split).
+    """
     return MODULE_01.read_text(encoding="utf-8")
 
 
@@ -48,7 +60,7 @@ def _extract_step_6_and_transition(content: str) -> str:
         content,
         re.DOTALL,
     )
-    assert match, "Could not locate Step 6 in module-01-business-problem.md"
+    assert match, "Could not locate Step 6 in module-01-phase1-discovery.md"
     return match.group(1)
 
 
@@ -342,7 +354,7 @@ def _extract_step_6_section(content: str) -> str:
         content,
         re.DOTALL,
     )
-    assert match, "Could not locate Step 6 in module-01-business-problem.md"
+    assert match, "Could not locate Step 6 in module-01-phase1-discovery.md"
     return match.group(1)
 
 
@@ -353,7 +365,7 @@ def _extract_step_7_section(content: str) -> str:
         content,
         re.DOTALL,
     )
-    assert match, "Could not locate Step 7 in module-01-business-problem.md"
+    assert match, "Could not locate Step 7 in module-01-phase1-discovery.md"
     return match.group(1)
 
 
@@ -365,7 +377,7 @@ def _extract_steps_1_to_5(content: str) -> str:
         content,
         re.DOTALL,
     )
-    assert match, "Could not locate Steps 1–5 in module-01-business-problem.md"
+    assert match, "Could not locate Steps 1–5 in module-01-phase1-discovery.md"
     return match.group(1)
 
 
@@ -376,7 +388,7 @@ def _extract_steps_8_to_9(content: str) -> str:
         content,
         re.DOTALL,
     )
-    assert match, "Could not locate Steps 8–9 in module-01-business-problem.md"
+    assert match, "Could not locate Steps 8–9 in module-01-phase1-discovery.md"
     return match.group(1)
 
 
@@ -392,7 +404,7 @@ class TestPreservationLicenseGuidance:
 
     @pytest.fixture
     def module_01_content(self) -> str:
-        """Load the full module-01-business-problem.md content."""
+        """Load the full module-01-phase1-discovery.md content."""
         return _load_module_01_content()
 
     # -------------------------------------------------------------------

@@ -84,6 +84,25 @@ This directory contains policy documents that define coding standards and organi
 
 ---
 
+### Brittle Assertion Taxonomy
+
+**File**: [BRITTLE_ASSERTION_TAXONOMY.md](BRITTLE_ASSERTION_TAXONOMY.md)
+
+**Purpose**: Define what makes a test assertion brittle versus structural, and how to remediate each brittle category
+
+**Key Rules**:
+
+- Four brittle categories: Exact_Count_Assertion, Whole_File_Snapshot_Assertion, Section_Snapshot_Assertion, Exact_Sequence_Snapshot_Assertion
+- Each has a structural replacement: non-regression threshold, marker membership, section invariants, ordered-subsequence
+- Legitimate_Hash_Use (hashing test-generated data) is structural, not brittle
+- Use the `brittle-allow` marker only for reviewed, deliberate exemptions
+
+**Why It Matters**: Brittle assertions force reflexive hash/count refreshes on benign edits, eroding their value as regression guards
+
+**Applies To**: The pytest + Hypothesis test suite (`senzing-bootcamp/tests/` and repo-root `tests/`)
+
+---
+
 ## Policy Summary
 
 | Policy              | Directory              | File Types          | Applies To             |
@@ -92,6 +111,7 @@ This directory contains policy documents that define coding standards and organi
 | Code Quality        | N/A (standards)        | Source code         | All code modules       |
 | Dependencies        | Project root           | Language-specific   | All projects           |
 | Senzing Information | N/A (agent behavior)   | All                 | All modules (1–12)     |
+| Brittle Assertions  | tests/                 | Test assertions     | Test suite             |
 
 ## File Organization Overview
 

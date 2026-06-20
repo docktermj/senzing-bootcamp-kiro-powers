@@ -493,6 +493,7 @@ def test_property_9_unix_line_ending_normalization(data):
 
 from sync_hook_registry import generate_module_slice
 
+
 # Module bucket keys: numbered modules plus the unmapped "any" group.
 def st_module_bucket_key():
     """Generate a module bucket key — a numbered module or the 'any' group."""
@@ -682,7 +683,8 @@ class TestSliceSizeComposition:
     )
     @settings(max_examples=100, suppress_health_check=[HealthCheck.too_slow])
     def test_property_6_slice_size_composition(self, key, hooks):
-        """Feature: steering-budget-headroom, Property 6: Slice size is the composition of its members
+        """Feature: steering-budget-headroom, Property 6: Slice size is the composition
+        of its members
 
         For any module bucket, the rendered slice's token estimate equals the sum
         of its member hook-entry renderings plus a fixed, bounded header, and is
@@ -916,7 +918,8 @@ class TestHookIdUnionCompletenessAndMultiModulePresence:
     @given(data=st.data())
     @settings(max_examples=100, suppress_health_check=[HealthCheck.too_slow])
     def test_property_2_hook_id_union_completeness_and_multi_module_presence(self, data):
-        """Feature: steering-budget-headroom, Property 2: Hook-ID union completeness and multi-module presence
+        """Feature: steering-budget-headroom, Property 2: Hook-ID union completeness and
+        multi-module presence
 
         For any set of hooks and category mapping, the union of hook IDs across
         the critical file and all module slices equals the source hook-ID set,
@@ -1308,7 +1311,8 @@ class TestVerifySemanticsIncludingOrphanDetection:
     @given(data=st.data())
     @settings(max_examples=100, suppress_health_check=[HealthCheck.too_slow])
     def test_property_7_verify_semantics_including_orphan_detection(self, data):
-        """Feature: steering-budget-headroom, Property 7: Verify semantics including orphan detection
+        """Feature: steering-budget-headroom, Property 7: Verify semantics including
+        orphan detection
 
         For any generated content and on-disk state, ``--verify`` reports a match
         iff the file exists and is byte-identical, a non-match when missing or
@@ -1642,5 +1646,5 @@ class TestRealCorpusSliceSizeBound:
         largest_tokens = token_counts[largest_path]
         assert largest_tokens <= _HALF_MONOLITH_TOKENS, (
             f"Largest slice {largest_path.name} is {largest_tokens} tokens, "
-            f"over the {_HALF_MONOLITH_TOKENS}-token (50% of {_PRE_REFACTOR_MONOLITH_TOKENS}) ceiling"
+            f"over the {_HALF_MONOLITH_TOKENS}-token (50% of {_PRE_REFACTOR_MONOLITH_TOKENS}) ceiling"  # noqa: E501
         )

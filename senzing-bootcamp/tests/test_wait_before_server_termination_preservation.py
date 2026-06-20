@@ -205,7 +205,7 @@ class TestDeliverySequenceSteps1to3Preservation:
             (num, text) for num, text in current_steps if num <= 3
         ]
 
-        assert len(baseline_steps_1_3) == 3, (
+        assert len(baseline_steps_1_3) == 3, (  # brittle-allow: steps 1-3 count, not suite count
             f"Expected 3 baseline steps (1-3), found {len(baseline_steps_1_3)}"
         )
         assert len(current_steps_1_3) == 3, (

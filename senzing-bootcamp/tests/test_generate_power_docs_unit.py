@@ -33,7 +33,6 @@ from generate_power_docs import (
     Sources,
     SteeringFileInfo,
     SteeringRegion,
-    VerifyResult,
     assemble,
     kiro_include,
     load_sources,
@@ -43,7 +42,6 @@ from generate_power_docs import (
     verify,
     write_atomic,
 )
-
 
 # ---------------------------------------------------------------------------
 # 1.3 normalize_newlines (Req 5.5, 5.6)

@@ -84,6 +84,8 @@ jobs:
           }
       - name: Validate example-coverage record and disclosure
         run: python senzing-bootcamp/scripts/example_coverage_report.py --check
+      - name: Scan for brittle test assertions
+        run: python senzing-bootcamp/scripts/scan_brittle_assertions.py --check
       - name: Run tests
         run: |
           pip install pytest hypothesis

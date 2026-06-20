@@ -3,8 +3,8 @@
 Property 2: Preservation — All Non-Buggy Inputs Unchanged.
 
 These tests follow the observation-first methodology: they observe the behavior
-of the UNFIXED code, snapshot it (via SHA-256 for unrelated regions and via
-hard-coded structural baselines for the three edited hooks), and assert that
+of the UNFIXED code, snapshot it (via structural markers for unrelated files and
+via hard-coded structural baselines for the three edited hooks), and assert that
 behavior is preserved. They are authored to PASS on the current unfixed code —
 this confirms the baseline behavior the fix must not regress — and are designed
 to remain valid after the fix touches ONLY the in-scope surfaces.
@@ -38,12 +38,12 @@ Feature: module3-visualization-no-skip
 
 from __future__ import annotations
 
-import hashlib
 import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+import pytest
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
@@ -251,73 +251,81 @@ def st_other_gate(draw: st.DrawFn) -> tuple[vmg.MandatoryGate, dict]:
 
 
 # ---------------------------------------------------------------------------
-# Observation phase — SHA-256 baselines of UNFIXED unrelated regions.
+# Observation phase — structural markers of UNFIXED unrelated files.
 #
-# These files are NOT in the fix's scope, so their bytes must be byte-stable
-# across the fix. The hashes are observed on the current unfixed tree.
+# These files are NOT in the fix's scope, so the fix must not touch them. The
+# original guard was a whole-file SHA-256 digest map (_UNRELATED_FILE_BASELINES)
+# that pinned each unrelated file's bytes so an accidental edit by the
+# module3-visualization-no-skip fix would be caught. But a whole-file digest
+# broke on every benign, unrelated edit to those files (import reordering, a
+# ruff line-reflow, a module-router content relocation — see the layers of
+# re-baseline NOTEs this constant accumulated) without telling us whether the
+# fix had actually reached outside its scope. Each re-baseline silently
+# weakened the guard.
+#
+# Structural replacement (Req 5.1, 6.2, 6.6): for each unrelated file assert it
+# is still present and still carries its defining structural markers, so a fix
+# that empties, truncates, or rewrites an out-of-scope file is still caught,
+# while benign edits (reflows, reorderings, additive content) pass. The bug
+# condition guarded — the fix reaching outside its scope and gutting an
+# unrelated hook/script/steering/config file — is still detected.
 # Paths are relative to the bootcamp root.
-#
-# NOTE (task 7.4b re-baseline): the `scripts/status.py` digest was recomputed
-# from the current shipped bytes. An earlier same-branch commit
-# (2c0b893 "#1 governanc-hook-and-mcp-coverage") reordered/grouped its import
-# statements (a cosmetic, non-functional change — the same symbols are still
-# imported: load_modules, load_preferences, load_progress, load_tracks,
-# render_text, plus the team_config_validator imports). The previous baseline
-# was a stale snapshot of the pre-refactor bytes; the file is still outside this
-# fix's scope and byte-stable going forward. An independent content assertion
-# (test_status_py_imports_intact) pairs the regenerated digest with the actual
-# imported symbols so the digest can never silently lock in a regression.
-#
-# NOTE (ruff-lint-gate-fix Phase D re-baseline): the `scripts/status.py` digest
-# was recomputed again after the ruff E501 remediation reflowed long lines to
-# <=100 chars. The reflow is layout-only (wrapped expressions in parens, implicit
-# f-string concatenation, and backslash line-continuations inside the embedded
-# CSS triple-quoted string — all of which Python collapses to byte-identical
-# values). Verified byte-identical: _render_head() and the full rendered
-# dashboard HTML (populated and empty/no-progress paths) match the pre-reflow
-# output exactly. The file remains outside this fix's scope; only its source
-# layout changed, not its emitted output. test_status_py_imports_intact still
-# guards against any import regression.
-#
-# NOTE (module-router-standardization re-point): the Module 1 byte-stability
-# snapshot was re-pointed from `steering/module-01-business-problem.md` to
-# `steering/module-01-phase1-discovery.md`. The module-router-standardization
-# spec converted module-01-business-problem.md into a thin router/dispatcher and
-# MOVED the substantive Module 1 discovery content (steps 1–9) into the new
-# Phase 1 file. That content is outside THIS bugfix's scope, so the snapshot now
-# reads the file that actually holds the moved content. The digest is the
-# current shipped bytes of the phase file; it remains byte-stable with respect
-# to *this* fix's surfaces.
-# ---------------------------------------------------------------------------
-
-_UNRELATED_FILE_BASELINES: dict[str, str] = {
-    "hooks/ask-bootcamper.kiro.hook":
-        "2be48f67f5ab5d19f2368248e9569ec1bb8b0ccd6f39c4124b4e24da7c0fb47e",
-    "hooks/git-commit-reminder.kiro.hook":
-        "8f37fb88040bd0b382fbfabf9b339c3954fcf7ec3b3bfbd750aacc79b4a365e4",
-    "scripts/progress_utils.py":
-        "7b3355d9165ec39a8f49c65bb9a1e5f27610f8f3ad727b93e6272587ee6dc29f",
-    "scripts/status.py":
-        "81ee75888a5ce845945bd4214875f583c5365bbe1f17ce5d4d0aa829691fad79",
-    "steering/module-01-phase1-discovery.md":
-        "8189fcf340e94c1a662751414f953dba9ccfbc92f48029ee39d3965218ab8315",
-    "steering/lang-python.md":
-        "15114d9eb719de92aa060649aa8e1bddb8ad01cb6b04a3ff73ca22abb8433a76",
-    "config/module-artifacts.yaml":
-        "5d197db607b795e85f6a86b1fc370733c29c359276b4bd2139f49e6bd3dc691c",
+_UNRELATED_FILE_MARKERS: dict[str, tuple[str, ...]] = {
+    # ask-bootcamper hook: agentStop → askAgent trigger and its closing-question
+    # ownership must survive untouched.
+    "hooks/ask-bootcamper.kiro.hook": (
+        '"agentStop"',
+        '"askAgent"',
+        "\U0001f449",  # 👉 closing-question marker
+    ),
+    # git-commit-reminder hook: userTriggered → askAgent commit reminder.
+    "hooks/git-commit-reminder.kiro.hook": (
+        '"to remind you to commit"',
+        '"userTriggered"',
+        "git commit",
+    ),
+    # progress_utils.py: the progress read/write/validate API surface.
+    "scripts/progress_utils.py": (
+        "class ProgressSchema",
+        "def write_checkpoint",
+        "def clear_step",
+        "def validate_progress_schema",
+    ),
+    # status.py: the imported render/loader symbols (also pinned independently by
+    # test_status_py_imports_intact).
+    "scripts/status.py": (
+        "load_progress",
+        "render_text",
+        "team_config_validator",
+    ),
+    # Module 1 Phase 1 steering: its top heading and discovery workflow.
+    "steering/module-01-phase1-discovery.md": (
+        "# Module 1 Phase 1: Discovery",
+        "## Workflow: Discover the Business Problem (Module 1)",
+    ),
+    # Python language steering: its identity heading and SDK guidance.
+    "steering/lang-python.md": (
+        "# Python + Senzing SDK",
+        "## Senzing SDK Best Practices",
+    ),
+    # Module artifacts config: schema version and the modules mapping.
+    "config/module-artifacts.yaml": (
+        'version: "1"',
+        "modules:",
+    ),
 }
 
 
-def _sha256(path: Path) -> str:
-    """Return the hex SHA-256 digest of a file's bytes.
+def _read_text(path: Path) -> str:
+    """Return the UTF-8 text of a file.
 
     Args:
-        path: The file to hash.
+        path: The file to read.
 
     Returns:
-        The lowercase hex digest string.
+        The decoded file contents.
     """
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return path.read_text(encoding="utf-8")
 
 
 # ---------------------------------------------------------------------------
@@ -708,52 +716,51 @@ class TestHookSchemaPreservation:
 
 
 # ---------------------------------------------------------------------------
-# Snapshot of unrelated regions (3.7)
+# Structural preservation of unrelated regions (3.7)
 # ---------------------------------------------------------------------------
 
 
 class TestUnrelatedRegionsByteStable:
-    """Unrelated hooks/scripts/steering/config bytes are unchanged.
+    """Unrelated hooks/scripts/steering/config files keep their structure.
 
-    These files are outside the fix's scope; their SHA-256 digests must equal
-    the baselines observed on the unfixed tree. Holds now and must hold after
+    These files are outside the fix's scope. The whole-file SHA-256 digest map
+    that used to pin them byte-for-byte is replaced with structural marker
+    checks (Req 5.1, 6.2, 6.6): each unrelated file must still be present and
+    still carry its defining markers, so a fix that empties, truncates, or
+    rewrites an out-of-scope file is caught, while benign edits (reflows,
+    import reorderings, additive content) pass. Holds now and must hold after
     the fix (which touches only in-scope files).
 
     **Validates: Requirements 3.7**
     """
 
-    def test_unrelated_files_match_sha256_baseline(self) -> None:
-        """Every snapshotted unrelated file matches its baseline digest."""
-        mismatches: list[str] = []
-        for rel_path, expected in _UNRELATED_FILE_BASELINES.items():
-            path = _BOOTCAMP_DIR / rel_path
-            assert path.exists(), f"Snapshot baseline file missing: {rel_path}"
-            actual = _sha256(path)
-            if actual != expected:
-                mismatches.append(f"{rel_path}: expected {expected}, got {actual}")
-        assert not mismatches, (
-            "Unrelated regions changed (must stay byte-stable):\n"
-            + "\n".join(mismatches)
+    @pytest.mark.parametrize("rel_path", sorted(_UNRELATED_FILE_MARKERS))
+    def test_unrelated_file_retains_structure(self, rel_path: str) -> None:
+        """Each unrelated file is present and retains its defining markers."""
+        path = _BOOTCAMP_DIR / rel_path
+        assert path.exists(), f"Unrelated file missing (must not be deleted): {rel_path}"
+        content = _read_text(path)
+        missing = [m for m in _UNRELATED_FILE_MARKERS[rel_path] if m not in content]
+        assert not missing, (
+            f"Unrelated file changed out of scope: {rel_path} lost defining "
+            f"marker(s) {missing!r}. The fix must touch only in-scope files."
         )
 
     def test_snapshot_covers_each_surface_type(self) -> None:
-        """The snapshot spans hooks, scripts, steering, and config surfaces."""
-        prefixes = {rel.split("/", 1)[0] for rel in _UNRELATED_FILE_BASELINES}
+        """The marker map spans hooks, scripts, steering, and config surfaces."""
+        prefixes = {rel.split("/", 1)[0] for rel in _UNRELATED_FILE_MARKERS}
         for surface in ("hooks", "scripts", "steering", "config"):
             assert surface in prefixes, (
-                f"Snapshot baseline must include an unrelated {surface} file"
+                f"Structural baseline must include an unrelated {surface} file"
             )
 
     def test_status_py_imports_intact(self) -> None:
-        """Independent content assertion for the regenerated status.py digest.
+        """Independent content assertion for status.py's import surface.
 
-        The `scripts/status.py` SHA-256 baseline was regenerated after a
-        same-branch import-reordering refactor. This content assertion pins the
-        actual behavior the digest stands in for — every symbol status.py
-        imports from its sibling scripts is still imported — so the regenerated
-        digest can never silently lock in a functional regression (a true
-        removal of an import would still fail here even if someone re-pinned the
-        hash). The reordering moved lines only; it did not change what is used.
+        This is the structural companion to the (now removed) `scripts/status.py`
+        whole-file digest: every symbol status.py imports from its sibling
+        scripts must still be imported, so an out-of-scope edit that drops an
+        import is caught regardless of source-layout churn (reordering, reflow).
         """
         status_py = _BOOTCAMP_DIR / "scripts" / "status.py"
         content = status_py.read_text(encoding="utf-8")

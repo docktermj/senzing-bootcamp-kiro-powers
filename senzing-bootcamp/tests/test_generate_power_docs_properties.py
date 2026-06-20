@@ -31,19 +31,6 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-# Make the tests directory importable as a top-level module so the shared
-# strategies/helpers in conftest.py can be imported directly, independent of how
-# pytest happens to package the conftest during collection.
-_TESTS_DIR = str(Path(__file__).resolve().parent)
-if _TESTS_DIR not in sys.path:
-    sys.path.insert(0, _TESTS_DIR)
-
-from conftest import (  # noqa: E402
-    REGION_IDS,
-    disable_commonmark,
-    materialize_world,
-    st_world_spec,
-)
 import generate_power_docs as gpd  # noqa: E402
 from generate_power_docs import (  # noqa: E402
     assemble,
@@ -55,6 +42,20 @@ from generate_power_docs import (  # noqa: E402
     verify,
 )
 from mcp_tool_inventory import ALL_TOOLS  # noqa: E402
+
+# Import the shared strategies/helpers from this directory's conftest using a
+# package-relative import. This test module is collected as part of the
+# ``tests`` package (``senzing-bootcamp/tests/__init__.py``), so ``.conftest``
+# resolves unambiguously to the sibling conftest. A bare ``from conftest import``
+# is unsafe in the combined CI run (``pytest senzing-bootcamp/tests/ tests/``)
+# because the repo-root ``tests/conftest.py`` registers the top-level
+# ``conftest`` module name and shadows this one.
+from .conftest import (  # noqa: E402
+    REGION_IDS,
+    disable_commonmark,
+    materialize_world,
+    st_world_spec,
+)
 
 
 class TestScaffoldingSmoke:

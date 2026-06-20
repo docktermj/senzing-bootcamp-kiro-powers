@@ -11,7 +11,6 @@ EXPECTED OUTCOME on UNFIXED code: tests FAIL (confirming the bug exists).
 
 from __future__ import annotations
 
-import hashlib
 import re
 from pathlib import Path
 
@@ -211,6 +210,38 @@ def _extract_all_h2_headings(text: str) -> list[str]:
     return re.findall(r"^## (.+)$", text, re.MULTILINE)
 
 
+def _assert_required_headings_in_order(
+    actual: list[str], required: list[str], label: str
+) -> None:
+    """Assert that ``required`` headings appear in ``actual`` in the required
+    relative order, tolerating unrelated headings added anywhere.
+
+    Ordered-subsequence replacement for a former full-list ``==`` snapshot
+    (Exact_Sequence_Snapshot). It preserves the original intent — the protected
+    structural skeleton of the document, in order — while no longer breaking when
+    a benign, unrelated heading is added (Req 5.3). It still fails if a required
+    heading is removed (Req 5.5) or if two required headings are reordered
+    (Req 6.6), so it retains equivalent bug-condition coverage.
+    """
+    missing = [h for h in required if h not in actual]
+    assert not missing, (
+        f"{label}: required heading(s) removed:\n"
+        + "\n".join(f"  - {h}" for h in missing)
+        + f"\nGot: {actual}"
+    )
+    # Ordered-subsequence check: walk ``actual`` once, consuming each required
+    # heading in turn (``h in it`` advances the shared iterator). This correctly
+    # handles repeated headings, unlike list.index.
+    it = iter(actual)
+    unmatched = next((h for h in required if h not in it), None)
+    assert unmatched is None, (
+        f"{label}: required headings are out of order "
+        f"(could not match {unmatched!r} in sequence).\n"
+        f"Required order: {required}\n"
+        f"Got:            {actual}"
+    )
+
+
 def _strip_inline_questions_and_waits(section: str) -> str:
     """Remove inline 👉 closing question lines and WAIT instruction lines.
 
@@ -273,8 +304,26 @@ _EXPECTED_PHASE2_HEADINGS = [
     "Hook Registry",
 ]
 
-# Baseline content for hook file
-_HOOK_BASELINE_HASH = "2be48f67f5ab5d19f2368248e9569ec1bb8b0ccd6f39c4124b4e24da7c0fb47e"
+# Structural markers proving the ask-bootcamper hook is preserved as the sole
+# owner of closing questions. (Replaces the whole-file SHA-256 snapshot
+# _HOOK_BASELINE_HASH, which broke on every benign edit to the hook prompt
+# without telling us whether the protected ownership behavior changed.)
+_HOOK_OWNERSHIP_MARKERS = (
+    '"agentStop"',  # the hook fires on agent stop ...
+    '"askAgent"',  # ... and asks the agent to act
+    "PHASE 1: CLOSING QUESTION",  # Phase 1 owns the 👉 closing question
+    "Closing_Question_Phase",
+    "👉",  # the closing-question marker itself
+    "DEFAULT OUTPUT",  # default-silence rule keeps it quiet otherwise
+)
+
+# The four-phase structure the hook must retain.
+_HOOK_PHASE_MARKERS = (
+    "PHASE 1: CLOSING QUESTION",
+    "PHASE 2: STEP SEQUENCING",
+    "PHASE 3: MCP-FIRST COMPLIANCE",
+    "PHASE 4: QUESTION FORMAT",
+)
 
 # Key informational phrases that MUST be preserved in affected steps
 # (these are NOT inline 👉 questions or WAIT lines)
@@ -337,21 +386,26 @@ class TestPreservation:
     def test_step_sequence_preserved(self) -> None:
         """The root file contains step headings 0–4 and Phase 2 file contains
         Step 5 plus Switching Tracks, Changing Language, Validation Gates,
-        Hook Registry in the expected order."""
+        Hook Registry in the expected order.
+
+        Original intent: a full-list ``==`` snapshot pinned the exact, complete
+        ordered heading sequence of each file, which broke on every benign,
+        additive section (the layered comments on ``_EXPECTED_HEADINGS`` record
+        that churn). The structural invariant being protected is that the
+        required step headings remain present and in their required relative
+        order; unrelated additive headings are benign. Checked as an
+        ordered-subsequence so it still fails if a required heading is removed or
+        two required headings are reordered (Req 5.3, 6.2, 6.6)."""
         text = _read_onboarding()
         headings = _extract_all_h2_headings(text)
-        assert headings == _EXPECTED_HEADINGS, (
-            f"Phase 1 step heading sequence mismatch.\n"
-            f"Expected: {_EXPECTED_HEADINGS}\n"
-            f"Got:      {headings}"
+        _assert_required_headings_in_order(
+            headings, _EXPECTED_HEADINGS, "Phase 1 step heading sequence"
         )
         # Also verify Phase 2 headings
         phase2_text = _read_phase2()
         phase2_headings = _extract_all_h2_headings(phase2_text)
-        assert phase2_headings == _EXPECTED_PHASE2_HEADINGS, (
-            f"Phase 2 step heading sequence mismatch.\n"
-            f"Expected: {_EXPECTED_PHASE2_HEADINGS}\n"
-            f"Got:      {phase2_headings}"
+        _assert_required_headings_in_order(
+            phase2_headings, _EXPECTED_PHASE2_HEADINGS, "Phase 2 step heading sequence"
         )
 
     # -- 2. Non-affected steps preservation --
@@ -446,14 +500,35 @@ class TestPreservation:
     # -- 4. Hook file preservation --
 
     def test_hook_file_matches_baseline(self) -> None:
-        """ask-bootcamper.kiro.hook content matches the observed baseline hash."""
+        """ask-bootcamper.kiro.hook preserves the closing-question ownership
+        behavior.
+
+        Original intent (Req 3.1, 3.6): a whole-file SHA-256 snapshot
+        (``_HOOK_BASELINE_HASH``) pinned the entire ask-bootcamper hook so that
+        the bugfix — making the hook the *sole* owner of 👉 closing questions —
+        could not silently regress. That snapshot broke on every benign edit to
+        the hook prompt (reworded copy, reflowed JSON) without telling us whether
+        the protected ownership behavior actually changed.
+
+        Structural replacement (Req 5.1, 6.6): assert the markers that encode the
+        protected behavior are still present — the hook fires on agent stop and
+        asks the agent to act, it owns the 👉 closing question in its
+        ``Closing_Question_Phase``, it keeps its default-silence rule, and it
+        retains all four phases. If the bug regressed (closing-question ownership
+        moved out of the hook, or a phase was dropped) one of these markers would
+        disappear and this test would fail."""
         content = _read_hook()
-        actual_hash = hashlib.sha256(content.encode()).hexdigest()
-        assert actual_hash == _HOOK_BASELINE_HASH, (
-            "ask-bootcamper.kiro.hook content has changed.\n"
-            f"Expected hash: {_HOOK_BASELINE_HASH}\n"
-            f"Actual hash:   {actual_hash}"
-        )
+        for marker in _HOOK_OWNERSHIP_MARKERS:
+            assert marker in content, (
+                "ask-bootcamper.kiro.hook lost a closing-question ownership "
+                f"marker: {marker!r}. The hook must remain the sole owner of "
+                "👉 closing questions."
+            )
+        for phase in _HOOK_PHASE_MARKERS:
+            assert phase in content, (
+                f"ask-bootcamper.kiro.hook lost a required phase: {phase!r}. "
+                "The four-phase closing-question structure must be preserved."
+            )
 
     # -- 5. Agent instructions preservation --
 

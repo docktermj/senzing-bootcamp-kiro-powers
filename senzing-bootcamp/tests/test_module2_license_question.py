@@ -395,6 +395,38 @@ def _extract_headings(content: str) -> list[str]:
     return re.findall(r"^(#{1,4} .+)$", content, re.MULTILINE)
 
 
+def _assert_required_headings_in_order(
+    actual: list[str], required: list[str], label: str
+) -> None:
+    """Assert that ``required`` headings appear in ``actual`` in the required
+    relative order, tolerating unrelated headings added anywhere.
+
+    Ordered-subsequence replacement for a former full-list ``==`` snapshot
+    (Exact_Sequence_Snapshot). It preserves the original intent — the protected
+    structural skeleton of the document, in order — while no longer breaking when
+    a benign, unrelated heading is added (Req 5.3). It still fails if a required
+    heading is removed (Req 5.5) or if two required headings are reordered
+    (Req 6.6), so it retains equivalent bug-condition coverage.
+    """
+    missing = [h for h in required if h not in actual]
+    assert not missing, (
+        f"{label}: required heading(s) removed:\n"
+        + "\n".join(f"  - {h}" for h in missing)
+        + f"\nGot: {actual}"
+    )
+    # Ordered-subsequence check: walk ``actual`` once, consuming each required
+    # heading in turn (``h in it`` advances the shared iterator). This correctly
+    # handles repeated headings, unlike list.index.
+    it = iter(actual)
+    unmatched = next((h for h in required if h not in it), None)
+    assert unmatched is None, (
+        f"{label}: required headings are out of order "
+        f"(could not match {unmatched!r} in sequence).\n"
+        f"Required order: {required}\n"
+        f"Got:            {actual}"
+    )
+
+
 # ---------------------------------------------------------------------------
 # Preservation Tests -- Step 5 Key Content
 # **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5, 3.6**
@@ -546,13 +578,18 @@ class TestPreservationHeadings:
     def test_heading_sequence_preserved(self) -> None:
         """**Validates: Requirements 3.6**
 
-        The heading sequence matches the observed baseline."""
+        The required headings are present in the baseline relative order.
+
+        Original intent: a full-list ``==`` snapshot pinned the exact, complete
+        ordered heading sequence of module-02. The protected invariant is that
+        the required step/section headings stay present and in their required
+        relative order; unrelated additive headings are benign. Checked as an
+        ordered-subsequence so it still fails if a required heading is removed or
+        two required headings are reordered (Req 5.3, 6.2, 6.6)."""
         content = _read_file(_MODULE_02_FILE)
         actual = _extract_headings(content)
-        assert actual == _EXPECTED_HEADINGS, (
-            f"Heading sequence mismatch.\n"
-            f"Expected: {_EXPECTED_HEADINGS}\n"
-            f"Got:      {actual}"
+        _assert_required_headings_in_order(
+            actual, _EXPECTED_HEADINGS, "module-02 heading sequence"
         )
 
 

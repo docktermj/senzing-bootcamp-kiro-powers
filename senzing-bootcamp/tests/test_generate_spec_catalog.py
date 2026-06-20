@@ -397,7 +397,7 @@ class TestDiscoverSpecs:
             "- [ ] one\n- [x] two\n- [X] three\n", encoding="utf-8"
         )
         records = discover_specs(tmp_path)
-        assert records[0].task_total == 3
+        assert records[0].task_total == 3  # brittle-allow: domain count, not suite count
         assert records[0].task_complete == 2
 
     def test_includes_empty_directory(self, tmp_path):

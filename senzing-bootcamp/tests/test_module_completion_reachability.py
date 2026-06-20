@@ -97,7 +97,7 @@ class TestModuleCompletionReachability:
             }
             total = sum(locations.values())
             holders = [name for name, count in locations.items() if count > 0]
-            assert total == 1, (
+            assert total == 1, (  # brittle-allow: exactly-one-location invariant, not suite count
                 f"section '## {heading}' must appear exactly once across "
                 f"Root + slices, found {total} occurrence(s) in {locations}"
             )

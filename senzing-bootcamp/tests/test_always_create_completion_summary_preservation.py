@@ -6,9 +6,12 @@ Property 2: Preservation — Surrounding behavior and the published steering con
 are unchanged.
 
 Methodology: observation-first. The preserved sections of the UNFIXED steering files
-are snapshotted here as (a) verbatim exact-text excerpts and (b) SHA-256 byte-identity
-digests captured from the current files. The fix MUST NOT touch these sections, so the
-snapshots are valid both BEFORE and AFTER the fix.
+are pinned here as (a) verbatim exact-text excerpts and (b) section-content invariant
+assertions (required markers/sentinels present in the required relation) captured from
+the current files. The fix MUST NOT touch these sections, so the assertions are valid
+both BEFORE and AFTER the fix. (Task 8.2 of test-suite-debrittling replaced the prior
+SHA-256 byte-identity digests with these structural invariants; see
+docs/policies/BRITTLE_ASSERTION_TAXONOMY.md.)
 
 Sections snapshotted (preserved — NOT edited by the fix):
     completion-summary-offer.md : ## Stopping Point Detection Rules
@@ -29,7 +32,6 @@ that must survive the fix.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import subprocess
 import sys
@@ -118,11 +120,6 @@ def _extract_inclusive(content: str, start_marker: str, end_marker: str) -> str:
     return content[start:end + len(end_marker)]
 
 
-def _sha256(text: str) -> str:
-    """Return the hex SHA-256 digest of the given text (UTF-8)."""
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()
-
-
 def _ordered(haystack: str, needles: list[str]) -> bool:
     """Return True if every needle appears in haystack in the given order.
 
@@ -143,44 +140,18 @@ def _ordered(haystack: str, needles: list[str]) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Byte-identity snapshots (SHA-256), captured from the UNFIXED steering files
+# Section content invariants (required markers/sentinels), captured from the
+# UNFIXED steering files
 # ---------------------------------------------------------------------------
-
-# completion-summary-offer.md preserved sections.
-_SNAP_DETECTION_RULES = (
-    "97c8814da7a89af4afe25c6c40fc599c0055e5a2f48643f2516c0817eb6a2e32"
-)
-_SNAP_FALSE_POSITIVE_GUARDS = (
-    "94d6acc3ee8db291301c337d5f03ef05b61feeb493691ee810bf2f2fc960b93a"
-)
-_SNAP_ORDERING_RULES = (
-    "fbfa5aa457bdfeabb53322a4f1546bf6153fbae76af25a602bd342bbe02bb385"
-)
-_SNAP_REPEAT_POLICY = (
-    "50db6dca507336d2f2840c2ea75ac476d8ee1d1e541805c79e8bb59879931f92"
-)
-
-# graduation.md preserved sections.
-_SNAP_GRAD_STEP0_RECAP_ATTEMPT = (
-    "10789b5c1b591ba0229301b417e73a3afdf741555c2c606529f18c919cab3b63"
-)
-_SNAP_GRAD_REPORT = (
-    "e90585f1fda29397c3f565c965bde06edcb07325c04bf24c4243004bf097fd6f"
-)
-
-# module-completion.md preserved section.
-# Recomputed after task 4.6 added a one-line clarification to the section intro: the
-# completion-summary document is always created at track completion, with the offer in
-# its existing position governing only the PDF/share. The meaningful invariant — the
-# offer ordering — is independently asserted by test_celebration_offer_ordering_preserved
-# via _CELEBRATION_ORDER_MARKERS, which the added prose does not disturb.
-# Re-baselined again for the module-completion-artifacts bugfix, which added a
-# clarifying note to this section; the ordering-marker test
-# (test_celebration_offer_ordering_preserved) still independently guards the
-# meaningful invariant.
-_SNAP_PATH_COMPLETION_CELEBRATION = (
-    "92ed1845950c3d0b9277bd6f62191d02b69c090126873e8c063d691f06f4345a"
-)
+#
+# Task 8.2 (test-suite-debrittling) replaced the prior section SHA-256 byte-identity
+# snapshots (`_SNAP_*` + `_sha256`) with section-content invariant assertions. The
+# original intent — pin the baseline behavior of the preserved sections so the
+# always-create-completion-summary fix cannot disturb them — is retained: each section
+# is still asserted to contain its required markers/sentinels in the required relation,
+# which detects removal or reordering of the protected content (the historical bug
+# conditions) while tolerating benign, unrelated edits. See
+# docs/policies/BRITTLE_ASSERTION_TAXONOMY.md (Section content invariants).
 
 
 # ---------------------------------------------------------------------------
@@ -325,39 +296,58 @@ class TestPublishedContractTokensPreserved:
 class TestDetectionOrderingRepeatPolicyUnchanged:
     """The detection, false-positive, ordering, and repeat-policy sections are frozen.
 
-    Each preserved section is asserted byte-identical to the captured UNFIXED snapshot
-    (SHA-256) and is also checked to still contain its verbatim distinctive excerpts.
+    Each preserved section is asserted to still contain its required markers/sentinels
+    in the required relation (section content invariants). This detects removal or
+    reordering of the protected content — the behavior the original SHA-256 byte-identity
+    snapshots guarded — while tolerating benign, unrelated edits.
 
     Validates: Requirements 3.1, 3.4, 3.5, 3.7
     """
 
-    def test_stopping_point_detection_rules_byte_identical(self) -> None:
-        """`## Stopping Point Detection Rules` is byte-identical to the snapshot."""
+    def test_stopping_point_detection_rules_preserved(self) -> None:
+        """`## Stopping Point Detection Rules` keeps all four rule markers, in order."""
         section = _extract_section(_read(_OFFER_FILE), "Stopping Point Detection Rules")
         assert section, "Detection rules section must be present"
+        # Section content invariant (replaces SHA-256 snapshot): every detection-rule
+        # marker/sentinel must remain present. Removing any rule fails the test.
         for excerpt in _DETECTION_RULE_EXCERPTS:
             assert excerpt in section, f"Detection rules missing excerpt: {excerpt!r}"
-        assert _sha256(section) == _SNAP_DETECTION_RULES, (
-            "Detection rules section changed (not byte-identical to UNFIXED snapshot)"
-        )
+        # The four numbered rules must remain in their required relative order.
+        assert _ordered(
+            section,
+            [
+                "### 1. Module 7 Completion (Core Track End)",
+                "### 2. Module 11 Completion (Advanced Track End)",
+                "### 3. Explicit Stop Request",
+                "### 4. Track Switch at Boundary",
+            ],
+        ), "Detection rules ordering (rule 1 -> 2 -> 3 -> 4) changed"
 
-    def test_false_positive_guards_byte_identical(self) -> None:
-        """`## False Positive Guards` is byte-identical to the snapshot."""
+    def test_false_positive_guards_preserved(self) -> None:
+        """`## False Positive Guards` keeps its required guard markers."""
         section = _extract_section(_read(_OFFER_FILE), "False Positive Guards")
         assert section, "False positive guards section must be present"
+        # Section content invariant (replaces SHA-256 snapshot): each false-positive
+        # guard marker/sentinel must remain present and in its required order.
         for excerpt in _FALSE_POSITIVE_GUARD_EXCERPTS:
             assert excerpt in section, f"Guards missing excerpt: {excerpt!r}"
-        assert _sha256(section) == _SNAP_FALSE_POSITIVE_GUARDS, (
-            "False positive guards section changed (not byte-identical to snapshot)"
-        )
+        assert _ordered(
+            section,
+            [
+                "### Stop Phrase in Longer Substantive Request",
+                "### Missing or Unreadable Progress File",
+            ],
+        ), "False positive guard ordering changed"
 
-    def test_ordering_rules_byte_identical(self) -> None:
-        """`## Ordering Rules` (track/mid-session/simultaneous) is byte-identical."""
+    def test_ordering_rules_preserved(self) -> None:
+        """`## Ordering Rules` (track/mid-session/simultaneous) keeps its ordering."""
         section = _extract_section(_read(_OFFER_FILE), "Ordering Rules")
         assert section, "Ordering rules section must be present"
         for excerpt in _ORDERING_RULE_EXCERPTS:
             assert excerpt in section, f"Ordering rules missing excerpt: {excerpt!r}"
-        # celebration -> Completion Summary PDF offer -> export ordering preserved.
+        # Section content invariant (replaces SHA-256 snapshot): the meaningful guarded
+        # behavior is the track-completion ordering celebration -> Completion Summary
+        # PDF offer -> export. Reordering or removing any of these fails the test.
         assert _ordered(
             section,
             [
@@ -366,18 +356,23 @@ class TestDetectionOrderingRepeatPolicyUnchanged:
                 "Export results offer (`scripts/export_results.py`)",
             ],
         ), "Track-completion ordering (celebration -> summary offer -> export) changed"
-        assert _sha256(section) == _SNAP_ORDERING_RULES, (
-            "Ordering rules section changed (not byte-identical to snapshot)"
-        )
+        # The three ordering sub-sections must remain in their required relative order.
+        assert _ordered(
+            section,
+            [
+                "### Track Completion (Module 7 or Module 11)",
+                "### Mid-Session Stop (Explicit Stop Request)",
+                "### Simultaneous Detection",
+            ],
+        ), "Ordering-rules sub-section ordering changed"
 
-    def test_repeat_policy_byte_identical(self) -> None:
-        """`## Repeat Policy` text is byte-identical to the snapshot."""
+    def test_repeat_policy_preserved(self) -> None:
+        """`## Repeat Policy` keeps its every-stopping-point sentinel text."""
         section = _extract_section(_read(_OFFER_FILE), "Repeat Policy")
         assert section, "Repeat policy section must be present"
+        # Section content invariant (replaces SHA-256 snapshot): the repeat-policy
+        # sentinel (offer presented at *every* stopping point) must remain present.
         assert _REPEAT_POLICY_EXCERPT in section, "Repeat policy text changed"
-        assert _sha256(section) == _SNAP_REPEAT_POLICY, (
-            "Repeat policy section changed (not byte-identical to snapshot)"
-        )
 
 
 # ===========================================================================
@@ -389,14 +384,15 @@ class TestGraduationStep0AndReportUntouched:
     """The recap-PDF attempt (Step 0a/0b/0c) and Graduation Report are unchanged.
 
     The fix may add a short note to the `## Step 0` intro, but the Step 0a/0b/0c
-    recap-PDF procedure and the `## Graduation Report` section must remain
-    byte-identical.
+    recap-PDF procedure and the `## Graduation Report` always-generate behavior must
+    remain intact. Asserted via section content invariants (required markers/sentinels
+    in the required relation) rather than a SHA-256 byte-identity snapshot.
 
     Validates: Requirements 3.3, 3.6
     """
 
-    def test_step0_recap_pdf_attempt_byte_identical(self) -> None:
-        """Step 0a/0b/0c recap-PDF attempt block is byte-identical to the snapshot."""
+    def test_step0_recap_pdf_attempt_preserved(self) -> None:
+        """Step 0a/0b/0c recap-PDF block keeps its markers in the required order."""
         content = _read(_GRADUATION_FILE)
         block = _extract_inclusive(
             content,
@@ -404,21 +400,27 @@ class TestGraduationStep0AndReportUntouched:
             "Proceed to Step 1.",
         )
         assert block, "Step 0a/0b/0c recap-PDF block must be present"
+        # Section content invariant (replaces SHA-256 snapshot): every recap-PDF marker
+        # must remain present, and the 0a -> 0b -> 0c procedure order must be preserved.
         for excerpt in _GRAD_STEP0_EXCERPTS:
             assert excerpt in block, f"Step 0 block missing excerpt: {excerpt!r}"
-        assert _sha256(block) == _SNAP_GRAD_STEP0_RECAP_ATTEMPT, (
-            "Step 0a/0b/0c recap-PDF block changed (not byte-identical to snapshot)"
-        )
+        assert _ordered(
+            block,
+            [
+                "### Step 0a: Recap Document Recovery",
+                "### Step 0b: Recap Document Validation",
+                "### Step 0c: PDF Generation",
+            ],
+        ), "Step 0a/0b/0c recap-PDF procedure ordering changed"
 
-    def test_graduation_report_byte_identical(self) -> None:
-        """`## Graduation Report` (always-generate GRADUATION_REPORT.md) is unchanged."""
+    def test_graduation_report_preserved(self) -> None:
+        """`## Graduation Report` keeps its always-generate sentinel."""
         section = _extract_section(_read(_GRADUATION_FILE), "Graduation Report")
         assert section, "Graduation Report section must be present"
+        # Section content invariant (replaces SHA-256 snapshot): the always-generate
+        # GRADUATION_REPORT.md sentinel — the meaningful guarded behavior — must remain.
         assert _GRAD_REPORT_ALWAYS_GENERATE in section, (
             "Graduation Report 'Always generate GRADUATION_REPORT.md' behavior changed"
-        )
-        assert _sha256(section) == _SNAP_GRAD_REPORT, (
-            "Graduation Report section changed (not byte-identical to snapshot)"
         )
 
 
@@ -437,14 +439,19 @@ class TestPathCompletionCelebrationOrderingUnchanged:
     Validates: Requirements 3.4
     """
 
-    def test_celebration_ordering_byte_identical(self) -> None:
-        """`## Path Completion Celebration` is byte-identical to the snapshot."""
+    def test_celebration_ordering_preserved(self) -> None:
+        """`## Path Completion Celebration` keeps its full offer ordering."""
         section = _extract_section(
             _read(_MODULE_COMPLETION_FILE), "Path Completion Celebration"
         )
         assert section, "Path Completion Celebration section must be present"
-        assert _sha256(section) == _SNAP_PATH_COMPLETION_CELEBRATION, (
-            "Path Completion Celebration section changed (not byte-identical)"
+        # Section content invariant (replaces SHA-256 snapshot): the meaningful guarded
+        # behavior is the full celebration offer ordering. The byte-identity snapshot
+        # was re-baselined on every benign edit to this section; the ordering markers
+        # are the invariant it was really protecting. Removing or reordering any marker
+        # fails the test (equivalent bug-condition coverage retained).
+        assert _ordered(section, _CELEBRATION_ORDER_MARKERS), (
+            "Path completion celebration offer ordering changed"
         )
 
     def test_celebration_offer_ordering_preserved(self) -> None:

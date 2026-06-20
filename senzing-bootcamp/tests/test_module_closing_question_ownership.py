@@ -17,7 +17,6 @@ EXPECTED OUTCOME on UNFIXED code:
 
 from __future__ import annotations
 
-import hashlib
 import re
 from pathlib import Path
 
@@ -104,11 +103,6 @@ def _read_affected_for_preservation(module_key: str) -> str:
     return _read_file(_AFFECTED_FILES[module_key])
 
 
-def _sha256(content: str) -> str:
-    """Return SHA-256 hex digest of content."""
-    return hashlib.sha256(content.encode("utf-8")).hexdigest()
-
-
 def _find_inline_pointing_questions(content: str) -> list[str]:
     """Find lines containing a pointing-right emoji followed by a question mark.
 
@@ -166,6 +160,39 @@ def _find_wait_instructions(content: str) -> list[str]:
 def _extract_headings(content: str) -> list[str]:
     """Extract all markdown headings (# through ####) in order."""
     return re.findall(r"^(#{1,4} .+)$", content, re.MULTILINE)
+
+
+def _assert_required_headings_in_order(
+    actual: list[str], required: list[str], label: str
+) -> None:
+    """Assert that ``required`` headings appear in ``actual`` in the required
+    relative order, tolerating unrelated headings added anywhere.
+
+    Ordered-subsequence replacement for a former full-list ``==`` snapshot
+    (Exact_Sequence_Snapshot). It preserves the original intent — the protected
+    structural skeleton of the document, in order — while no longer breaking when
+    a benign, unrelated heading is added (Req 5.3). It still fails if a required
+    heading is removed (Req 5.5) or if two required headings are reordered
+    (Req 6.6), so it retains equivalent bug-condition coverage.
+    """
+    missing = [h for h in required if h not in actual]
+    assert not missing, (
+        f"{label}: required heading(s) removed:\n"
+        + "\n".join(f"  - {h}" for h in missing)
+        + f"\nGot: {actual}"
+    )
+    # Ordered-subsequence check: walk ``actual`` once, consuming each required
+    # heading in turn (``h in it`` advances the shared iterator). This correctly
+    # handles repeated headings (e.g. the duplicate "### References" in the
+    # module-completion baseline), unlike list.index.
+    it = iter(actual)
+    unmatched = next((h for h in required if h not in it), None)
+    assert unmatched is None, (
+        f"{label}: required headings are out of order "
+        f"(could not match {unmatched!r} in sequence).\n"
+        f"Required order: {required}\n"
+        f"Got:            {actual}"
+    )
 
 
 def _strip_question_and_wait_lines(content: str) -> str:
@@ -677,41 +704,49 @@ _ALL_KEY_CONTENT: dict[str, list[str]] = {
 
 
 # ---------------------------------------------------------------------------
-# Baselines -- SHA-256 hashes for files that must not change
+# Baselines -- structural markers for files that must not regress
+#
+# These replace four whole-file SHA-256 snapshots (_HASH_UNAFFECTED,
+# _HASH_HOOK, _HASH_AGENT_INSTRUCTIONS, _HASH_ONBOARDING_FLOW). Each snapshot
+# pinned an entire tracked file so the module-closing-question-ownership bugfix
+# could not silently regress, but it broke on every benign, unrelated edit
+# (content relocations, reworded copy, additive sections — see the layers of
+# "re-baselined" comments the old constants accumulated) without telling us
+# whether the protected behavior actually changed. The markers below assert the
+# behavioral invariants those snapshots were really protecting (Req 5.1, 6.2,
+# 6.6); they tolerate benign edits but still fail if the guarded behavior is
+# removed.
 # ---------------------------------------------------------------------------
 
-_HASH_UNAFFECTED: dict[str, str] = {
-    # module-08 re-baselined for module-router-standardization: the
-    # module-08-performance.md root was thinned (the Deferred Deployment Question
-    # content moved to module-08-phaseA-requirements.md — moved, not deleted).
-    # Hash recomputed over the current thinned root content.
-    "module-08": "1cbe3773119ee4e54db33169a2dfe46b078e93dc7f1e68e5e1ae12e27c405bb8",
-    "module-09": "38afb9f301de5efe6bdcb0577d16d803e07adf01763da7077366306c6196f838",
-    "module-10": "2aef0e0405c7f78c51747b40de662f9650667a55480d7c2808be839468135330",
+# The bug being guarded: module steering files must NOT carry inline closing
+# questions / WAIT-for-response instructions (the ask-bootcamper hook is the sole
+# owner). The "unaffected" files were already clean and must STAY clean, and must
+# remain present (their top-level module heading proves the file was not emptied
+# or truncated by an unrelated edit).
+_UNAFFECTED_MARKERS: dict[str, str] = {
+    "module-08": "# Module 8: Performance Testing",
+    "module-09": "# Module 9: Security Hardening",
+    "module-10": "# Module 10: Monitoring and Observability",
 }
 
-_HASH_HOOK = "2be48f67f5ab5d19f2368248e9569ec1bb8b0ccd6f39c4124b4e24da7c0fb47e"
-# Re-baselined (observation-first) against the shipped post-refactor content.
-# agent-instructions.md was condensed in the same branch that split onboarding
-# (Context Budget / SDK-discovery / Track-switching detail relocated to other
-# steering files via pointer references) — a relocation, not a content
-# deletion; see TestPreservationAgentInstructions.test_agent_instructions_has_ownership_rule
-# for the paired independent content assertion.
-# Re-baselined again for the steering-budget-headroom finalize: the orphaned
-# `hook-registry-modules.md` reference was repointed at `hook-registry-module-any.md`
-# (the slice that holds the module-recap-append / session-log-events prompts);
-# the closing-question ownership content is unchanged.
-_HASH_AGENT_INSTRUCTIONS = "c4d68c15c2ae8982a08dfafa4cc9ebbebc18d9e49b3b32403cc10da29081e973"
-# Re-baselined (observation-first) against the shipped onboarding-flow.md. The
-# write-policy-gate-ux batch added a new "## 0a. Why You May See
-# 'Rejected'/'Accepted' Messages" onboarding section (Change B) explaining the
-# write-policy-gate intercept-retry cycle — a purely additive content change.
-# Prior re-baselines: the onboarding split, then the bootcamp-consistency-fixes
-# batch (capture-critical hooks instruction in Step 2).
-# Re-baselined again for the steering-budget-headroom finalize: the orphaned
-# `hook-registry-modules.md` reference in Step 1 was repointed at
-# `hook-registry-module-any.md`. No other content changed.
-_HASH_ONBOARDING_FLOW = "92237d42eb1c361a7f93d1b3375f58283c7260b6833c91ce071a8908878752bd"
+# The ask-bootcamper hook must remain the sole owner of 👉 closing questions:
+# it fires on agentStop, asks the agent to act, owns the closing-question phase,
+# keeps its default-silence rule, and retains all four phases. (Replaces the
+# whole-file _HASH_HOOK snapshot.)
+_HOOK_OWNERSHIP_MARKERS = (
+    '"agentStop"',
+    '"askAgent"',
+    "PHASE 1: CLOSING QUESTION",
+    "Closing_Question_Phase",
+    "👉",
+    "DEFAULT OUTPUT",
+)
+_HOOK_PHASE_MARKERS = (
+    "PHASE 1: CLOSING QUESTION",
+    "PHASE 2: STEP SEQUENCING",
+    "PHASE 3: MCP-FIRST COMPLIANCE",
+    "PHASE 4: QUESTION FORMAT",
+)
 
 
 # ---------------------------------------------------------------------------
@@ -730,14 +765,22 @@ class TestPreservationHeadings:
     def test_heading_sequence_preserved(self, module_key: str) -> None:
         """**Validates: Requirements 3.3, 3.4**
 
-        For each affected file, the heading sequence matches the baseline."""
+        For each affected file, the required headings are present in the
+        baseline relative order.
+
+        Original intent: a full-list ``==`` snapshot pinned the exact, complete
+        ordered heading sequence of each affected file. The layered
+        "re-baselined" comments on the baselines record how that broke on every
+        benign content relocation/addition. The protected invariant is that the
+        baseline's required headings stay present and in their required relative
+        order; unrelated additive headings are benign. Checked as an
+        ordered-subsequence so it still fails if a required heading is removed or
+        two required headings are reordered (Req 5.3, 6.2, 6.6)."""
         content = _read_affected_for_preservation(module_key)
         actual = _extract_headings(content)
         expected = _ALL_HEADING_BASELINES[module_key]
-        assert actual == expected, (
-            f"Heading sequence mismatch in {module_key}.\n"
-            f"Expected: {expected}\n"
-            f"Got:      {actual}"
+        _assert_required_headings_in_order(
+            actual, expected, f"Heading sequence in {module_key}"
         )
 
 
@@ -776,23 +819,42 @@ class TestPreservationKeyContent:
 
 
 class TestPreservationUnaffectedFiles:
-    """Verify that non-affected module files (03, 09, 10, 11) are completely
-    unchanged by comparing SHA-256 hashes.
+    """Verify that non-affected module files (08, 09, 10) did not regress.
+
+    Original intent (Req 3.3): a whole-file SHA-256 snapshot proved these files
+    were "completely unchanged" by the bugfix. The real invariant being guarded
+    is that these files were never affected by the closing-question-ownership bug
+    and must STAY clean — they must not gain inline 👉 closing questions or
+    WAIT-for-response instructions — and must remain intact (not emptied or
+    truncated). The hash also broke on benign edits (e.g. module-08 content
+    relocations) that did not touch the guarded behavior.
 
     EXPECTED OUTCOME on UNFIXED code: all tests PASS."""
 
     @pytest.mark.parametrize("module_key", list(_UNAFFECTED_FILES.keys()))
     def test_unaffected_file_unchanged(self, module_key: str) -> None:
-        """**Validates: Requirements 3.3**
+        """**Validates: Requirements 3.3, 6.6**
 
-        Non-affected module file content matches the observed baseline hash."""
+        Non-affected module file remains free of the bug condition (no inline
+        closing questions, no WAIT instructions) and remains structurally
+        intact (its top-level module heading is present)."""
         content = _read_file(_UNAFFECTED_FILES[module_key])
-        actual_hash = _sha256(content)
-        expected_hash = _HASH_UNAFFECTED[module_key]
-        assert actual_hash == expected_hash, (
-            f"{module_key} content has changed.\n"
-            f"Expected hash: {expected_hash}\n"
-            f"Actual hash:   {actual_hash}"
+        # Bug-condition coverage retained: the file must not acquire inline
+        # closing questions or WAIT instructions owned by the ask-bootcamper hook.
+        questions = _find_inline_pointing_questions(content)
+        waits = _find_wait_instructions(content)
+        assert len(questions) == 0 and len(waits) == 0, (
+            f"{module_key} regressed — it now contains the bug condition.\n"
+            f"  Inline questions ({len(questions)}): "
+            + ", ".join(questions)
+            + f"\n  WAIT instructions ({len(waits)}): "
+            + ", ".join(waits)
+        )
+        # Structural integrity: the file was not emptied or truncated.
+        marker = _UNAFFECTED_MARKERS[module_key]
+        assert marker in content, (
+            f"{module_key} is missing its top-level heading {marker!r} — the "
+            "file may have been truncated or replaced."
         )
 
 
@@ -809,16 +871,26 @@ class TestPreservationHookFile:
     EXPECTED OUTCOME on UNFIXED code: test PASSES."""
 
     def test_hook_file_matches_baseline(self) -> None:
-        """**Validates: Requirements 3.1, 3.6**
+        """**Validates: Requirements 3.1, 3.6, 6.6**
 
-        ask-bootcamper.kiro.hook content matches the observed baseline hash."""
+        ask-bootcamper.kiro.hook preserves closing-question ownership.
+
+        Original intent: a whole-file SHA-256 snapshot (_HASH_HOOK) pinned the
+        entire hook so the bugfix — making the hook the sole owner of 👉 closing
+        questions — could not silently regress. It broke on every benign edit to
+        the hook prompt without telling us whether the protected behavior changed.
+
+        Structural replacement: assert the ownership markers and all four phases
+        are present, so the test fails only if the guarded behavior is removed."""
         content = _read_file(_HOOK_FILE)
-        actual_hash = _sha256(content)
-        assert actual_hash == _HASH_HOOK, (
-            "ask-bootcamper.kiro.hook content has changed.\n"
-            f"Expected hash: {_HASH_HOOK}\n"
-            f"Actual hash:   {actual_hash}"
-        )
+        for marker in _HOOK_OWNERSHIP_MARKERS:
+            assert marker in content, (
+                f"ask-bootcamper.kiro.hook lost ownership marker {marker!r}."
+            )
+        for phase in _HOOK_PHASE_MARKERS:
+            assert phase in content, (
+                f"ask-bootcamper.kiro.hook lost required phase {phase!r}."
+            )
 
     def test_hook_file_has_agent_stop_trigger(self) -> None:
         """**Validates: Requirements 3.1**
@@ -851,16 +923,41 @@ class TestPreservationAgentInstructions:
     EXPECTED OUTCOME on UNFIXED code: test PASSES."""
 
     def test_agent_instructions_matches_baseline(self) -> None:
-        """**Validates: Requirements 3.2, 3.6**
+        """**Validates: Requirements 3.2, 3.6, 6.6**
 
-        agent-instructions.md content matches the observed baseline hash."""
+        agent-instructions.md preserves the closing-question ownership rule and
+        its core structure.
+
+        Original intent: a whole-file SHA-256 snapshot (_HASH_AGENT_INSTRUCTIONS)
+        pinned the entire file so the bugfix — the closing-question ownership rule
+        naming the ask-bootcamper hook as the safety net — could not silently
+        regress. The hash broke on benign, unrelated edits (Context Budget section
+        condensed, SDK-discovery/track-switching detail relocated to other steering
+        files via pointer references, an orphaned hook-registry reference
+        repointed) that did not touch the guarded behavior, forcing repeated
+        re-baselines.
+
+        Structural replacement: assert the ownership rule is intact and the core
+        section skeleton is present, so the test fails only if the guarded content
+        is actually removed."""
         content = _read_file(_AGENT_INSTRUCTIONS_FILE)
-        actual_hash = _sha256(content)
-        assert actual_hash == _HASH_AGENT_INSTRUCTIONS, (
-            "agent-instructions.md content has changed.\n"
-            f"Expected hash: {_HASH_AGENT_INSTRUCTIONS}\n"
-            f"Actual hash:   {actual_hash}"
-        )
+        # Closing-question ownership rule (the bugfix being preserved).
+        assert "Closing-question ownership" in content
+        assert "ask-bootcamper" in content
+        assert "safety net" in content
+        # Core section skeleton must remain present.
+        for section in (
+            "# Agent Core Rules",
+            "## File Placement",
+            "## MCP Rules",
+            "## State & Progress",
+            "## Communication",
+            "## Hooks",
+            "## Context Budget",
+        ):
+            assert section in content, (
+                f"agent-instructions.md missing core section: {section!r}"
+            )
 
     def test_agent_instructions_has_ownership_rule(self) -> None:
         """**Validates: Requirements 3.2**
@@ -886,21 +983,39 @@ class TestPreservationOnboardingFlow:
     EXPECTED OUTCOME on UNFIXED code: test PASSES."""
 
     def test_onboarding_flow_matches_baseline(self) -> None:
-        """**Validates: Requirements 3.5**
+        """**Validates: Requirements 3.5, 6.6**
 
-        onboarding-flow.md content matches the observed baseline hash.
+        onboarding-flow.md preserves the missing-pointing-prefix fix.
 
-        Re-baselined (observation-first) against the shipped post-split
-        onboarding-flow.md. The welcome banner, Programming Language Selection
-        step, and comprehension-check steps moved into
-        onboarding-phase1b-intro-language.md; only the test baseline is
-        updated (no steering content is changed for BUG 1)."""
+        Original intent: a whole-file SHA-256 snapshot (_HASH_ONBOARDING_FLOW)
+        pinned the entire file as a regression check so the earlier
+        missing-pointing-prefix fix (closing questions removed from onboarding
+        steps, hook is sole owner) could not regress. It broke on every benign,
+        additive edit (the onboarding split, the write-policy-gate "0a" section,
+        a repointed hook-registry reference) without telling us whether the
+        guarded behavior changed, forcing repeated re-baselines.
+
+        Structural replacement: assert the post-split cross-reference survives,
+        the moved welcome banner did not creep back in, and the affected steps
+        carry at most the small set of intentional 👉 questions (no regression to
+        inline closing questions). Fails only if the guarded behavior is removed."""
         content = _read_file(_ONBOARDING_FILE)
-        actual_hash = _sha256(content)
-        assert actual_hash == _HASH_ONBOARDING_FLOW, (
-            "onboarding-flow.md content has changed.\n"
-            f"Expected hash: {_HASH_ONBOARDING_FLOW}\n"
-            f"Actual hash:   {actual_hash}"
+        # Post-split cross-reference must survive (moved content relocated, not
+        # deleted) and the moved welcome banner must not have crept back in.
+        assert (
+            "After Step 2d, load `onboarding-phase1b-intro-language.md`" in content
+        ), "onboarding-flow.md is missing the phase1b load cross-reference"
+        assert "🎓🎓🎓  WELCOME TO THE SENZING BOOTCAMP!  🎓🎓🎓" not in content, (
+            "Welcome banner should have moved to onboarding-phase1b-intro-language.md"
+        )
+        # Regression guard: the missing-pointing-prefix fix must hold — no inline
+        # closing questions beyond the small intentional set (Step 0b offline-mode,
+        # Step 2 language example, Step 4c comprehension check).
+        questions = _find_inline_pointing_questions(content)
+        assert len(questions) <= 3, (
+            f"onboarding-flow.md contains {len(questions)} inline question(s); "
+            "the missing-pointing-prefix fix may have regressed:\n"
+            + "\n".join(f"  - {q}" for q in questions)
         )
 
     def test_onboarding_flow_cross_reference_intact(self) -> None:
@@ -963,15 +1078,18 @@ class TestPreservationProperty:
     ) -> None:
         """**Validates: Requirements 3.3, 3.4**
 
-        For any affected module steering file, the heading sequence matches
-        the observed baseline."""
+        For any affected module steering file, the required headings are
+        present in the baseline relative order.
+
+        Ordered-subsequence replacement for the former full-list ``==`` snapshot
+        (Exact_Sequence_Snapshot): tolerates benign additive headings but still
+        fails if a required heading is removed or two are reordered
+        (Req 5.3, 6.2, 6.6)."""
         content = _read_affected_for_preservation(module_key)
         actual = _extract_headings(content)
         expected = _ALL_HEADING_BASELINES[module_key]
-        assert actual == expected, (
-            f"Heading sequence mismatch in {module_key}.\n"
-            f"Expected: {expected}\n"
-            f"Got:      {actual}"
+        _assert_required_headings_in_order(
+            actual, expected, f"Heading sequence in {module_key}"
         )
 
     @given(module_key=st.sampled_from(_AFFECTED_KEYS))

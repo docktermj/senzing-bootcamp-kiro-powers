@@ -838,4 +838,4 @@ class TestDryRunMode:
             dry_run=True,
         )
 
-        assert result.total_token_savings == 0
+        assert result.total_token_savings == 0  # brittle-allow: dry-run zero-savings invariant

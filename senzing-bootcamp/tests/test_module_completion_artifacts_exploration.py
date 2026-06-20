@@ -320,7 +320,7 @@ class TestJournalAndCertificateCoverage:
         journal_covered = REPORTED_JOURNAL_ENTRIES | plan_journal
         cert_covered = REPORTED_CERTIFICATES | plan_cert
         assert journal_covered.issuperset(set(REPORTED_MODULES_COMPLETED)), (
-            f"After backfill, all modules must have journal entries. Covered={sorted(journal_covered)}"
+            f"After backfill, all modules must have journal entries. Covered={sorted(journal_covered)}"  # noqa: E501
         )
         assert cert_covered == set(REPORTED_MODULES_COMPLETED), (
             "After backfill, certificates must be uniform: one per completed module "

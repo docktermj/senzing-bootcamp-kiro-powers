@@ -451,7 +451,8 @@ def st_compliant_index(draw):
 
 
 class TestProperty4CompliantIndexNoViolations:
-    """Feature: module-router-standardization, Property 4: Compliant index produces no router violations
+    """Feature: module-router-standardization, Property 4: Compliant index produces no
+    router violations
 
     For any generated index in which every in-scope Router_Root has a
     token_count at or below the router_ceiling and a filename distinct from all

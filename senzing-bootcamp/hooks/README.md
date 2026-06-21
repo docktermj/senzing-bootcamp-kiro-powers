@@ -204,7 +204,7 @@ The `.kiro.hook` files in this directory are the canonical hook definitions. The
 
 - `hook-registry.md` — summary with hook IDs, event types, and descriptions
 - `hook-registry-critical.md` — full prompts for critical hooks (created during onboarding)
-- `hook-registry-modules.md` — full prompts for module-specific hooks
+- `hook-registry-module-NN.md` (and `hook-registry-module-any.md`) — full prompts for module-specific hooks, one slice per module
 
 ### Option 1: Automatic (Recommended)
 

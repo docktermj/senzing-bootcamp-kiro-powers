@@ -290,7 +290,10 @@ inclusion: manual
 
     **Checkpoint:** Write step 19 to `config/bootcamp_progress.json`.
 
-13. **Transition** to Module 2 (SDK Setup) once all sources mapped.
+13. **Transition** once all sources are mapped. Choose the next module by whether the Senzing SDK is already set up — check `config/bootcamp_progress.json` for Module 2 completion before deciding:
+
+    - **If Module 2 (SDK Setup) is already complete** (e.g., the bootcamper ran the optional Module 3 System Verification, which requires a working SDK, or the SDK was installed during onboarding): skip Module 2 and transition directly to **Module 6 (Data Processing)** to load the mapped data.
+    - **If Module 2 is not yet complete:** transition to **Module 2 (SDK Setup)** — it is the next module that needs the SDK, and loading in Module 6 depends on it.
 
     **Checkpoint:** Write step 20 to `config/bootcamp_progress.json`.
 

@@ -4,7 +4,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ## Available Modules
 
-### Module 1: Understand Business Problem
+### Module 1: Business Problem
 
 **File**: [MODULE_1_BUSINESS_PROBLEM.md](MODULE_1_BUSINESS_PROBLEM.md)
 **Steering**: `steering/module-01-business-problem.md` (+ `module-01-phase2-document-confirm.md`)
@@ -58,7 +58,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 4: Data Collection Policy
+### Module 4: Data Collection
 
 **File**: [MODULE_4_DATA_COLLECTION.md](MODULE_4_DATA_COLLECTION.md)
 **Steering**: `steering/module-04-data-collection.md`

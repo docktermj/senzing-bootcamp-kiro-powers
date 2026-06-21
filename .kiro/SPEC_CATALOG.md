@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 2
-- implemented: 218
+- in-progress: 0
+- implemented: 220
 - superseded: 2
 - abandoned: 0
 - unknown: 0
@@ -1339,7 +1339,7 @@
 
 ### steering-budget-headroom
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/steering-budget-headroom/](.kiro/specs/steering-budget-headroom/)
@@ -1437,7 +1437,7 @@
 
 ### test-suite-debrittling
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/test-suite-debrittling/](.kiro/specs/test-suite-debrittling/)

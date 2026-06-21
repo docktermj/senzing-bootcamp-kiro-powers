@@ -1,16 +1,16 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 4: DATA COLLECTION POLICY  🚀🚀🚀
+🚀🚀🚀  MODULE 4: DATA COLLECTION  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 4: Data Collection Policy
+# Module 4: Data Collection
 
 > **Agent workflow:** The agent follows `steering/module-04-data-collection.md` for this module's step-by-step workflow.
 
 ## Overview
 
-Module 4 is a module between Module 1 (Understand Business Problem) and Module 5 (Data Quality & Mapping). This module focuses on identifying and collecting the actual data sources that will be used for entity resolution.
+Module 4 is a module between Module 1 (Business Problem) and Module 5 (Data Quality & Mapping). This module focuses on identifying and collecting the actual data sources that will be used for entity resolution.
 
 ## Purpose
 

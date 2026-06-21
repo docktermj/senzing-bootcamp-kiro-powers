@@ -103,7 +103,13 @@ _BASELINE_HASHES: dict[str, str] = {
     # onboarding-flow.md, and session-resume-phase2-setup-recovery.md were
     # repointed at the per-module slices; measure_steering.py recomputed the
     # affected file_metadata counts and the budget total.
-    "budget": "79684f4aacd841e11062b2919ca44fa61bd251522c1b9c13edf7c5feab0ff1a7",
+    # Re-baselined once more (179656 -> 179803) for the bootcamp-consistency
+    # fixes: module-05-phase2-data-mapping.md grew when its Step 13 transition
+    # was made conditional (skip Module 2 / SDK setup when already complete),
+    # which measure_steering.py recomputed into file_metadata and the budget
+    # total. Only the budget block changed; keywords/languages/deployment/
+    # root_step_range are byte-identical.
+    "budget": "ecc3967a165ade73481602432b595c693de69731e21e27fe04f438f1ccb913b5",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -473,7 +479,7 @@ class TestNonPhaseBlocksBytePreserved:
         # aggregate equals the live sum of file_metadata token_count entries
         # (178266), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 179656" in budget_block
+        assert "total_tokens: 179803" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

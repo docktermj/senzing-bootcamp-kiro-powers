@@ -7,7 +7,7 @@ graph TD
     M2[Module 2: Set Up SDK] --> M3[Module 3: System Verification]
     M2 --> M6[Module 6: Load Single Data Source]
 
-    M1[Module 1: Business Problem] --> M4[Module 4: Data Collection Policy]
+    M1[Module 1: Business Problem] --> M4[Module 4: Data Collection]
     M4 --> M5[Module 5: Data Quality & Mapping]
     M5 --> M6
 

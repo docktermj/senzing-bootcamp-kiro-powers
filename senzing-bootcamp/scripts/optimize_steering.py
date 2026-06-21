@@ -148,7 +148,9 @@ TRANSITIONS_EXTRACT = [
 
 COMPRESSION_TARGETS = [
     CompressTarget(filename="hook-registry-critical.md", max_token_ratio=0.70),
-    CompressTarget(filename="hook-registry-modules.md", max_token_ratio=0.70),
+    # Note: the monolithic ``hook-registry-modules.md`` was retired in favor of
+    # per-module ``hook-registry-module-NN.md`` / ``hook-registry-module-any.md``
+    # slices, which are already small and need no compression target.
     CompressTarget(filename="module-03-system-verification.md", max_token_ratio=0.75),
     CompressTarget(filename="onboarding-flow.md", max_token_ratio=0.75),
 ]

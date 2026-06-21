@@ -1140,7 +1140,8 @@ def _parse_hook_registry_source(content: str) -> tuple[set, dict]:
     """Parse one hook-registry source file into IDs and event types.
 
     Handles BOTH documented registry shapes:
-    - Full-prompt files (``hook-registry-critical.md`` / ``hook-registry-modules.md``):
+    - Full-prompt files (``hook-registry-critical.md`` / the per-module
+      ``hook-registry-module-NN.md`` slices):
       ``- id: `hook-id`` lines plus ``**hook-id** (eventType → actionType)`` headers
       (the modules file uses ``**hook-id** — Module N (eventType → actionType)``).
     - Summary table file (``hook-registry.md``): markdown rows such as
@@ -1197,7 +1198,8 @@ def check_hook_consistency(steering_dir: Path, hooks_dir: Path) -> list:
 
     The documented-hook surface is the UNION of every registry source that
     ``sync_hook_registry.py`` maintains: ``hook-registry.md`` (summary table),
-    ``hook-registry-critical.md`` and ``hook-registry-modules.md`` (full prompts).
+    ``hook-registry-critical.md`` and the per-module ``hook-registry-module-NN.md``
+    slices (full prompts).
     A hook documented in ANY of these is considered documented.
     """
     violations = []
@@ -1206,7 +1208,7 @@ def check_hook_consistency(steering_dir: Path, hooks_dir: Path) -> list:
     registry_paths = [
         steering_path / "hook-registry.md",
         steering_path / "hook-registry-critical.md",
-        steering_path / "hook-registry-modules.md",
+        *sorted(steering_path.glob("hook-registry-module-*.md")),
     ]
 
     existing_paths = [p for p in registry_paths if p.exists()]

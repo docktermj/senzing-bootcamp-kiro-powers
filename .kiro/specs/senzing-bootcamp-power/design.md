@@ -28,9 +28,9 @@ senzing-bootcamp/                    # The distributed power root
 │   ├── feedback/                    # Feedback templates
 │   ├── policies/                    # Agent policies (code quality, file storage, Senzing info, dependency management)
 │   └── diagrams/                    # Architecture and flow diagrams (Mermaid + ASCII)
-├── hooks/                           # 27 .kiro.hook JSON files + hook-categories.yaml + README.md
-├── scripts/                         # 41 Python CLI tools (stdlib only)
-├── steering/                        # 78 steering files + steering-index.yaml
+├── hooks/                           # 29 .kiro.hook JSON files + hook-categories.yaml + README.md
+├── scripts/                         # 65 Python CLI tools (stdlib only)
+├── steering/                        # 109 steering files + steering-index.yaml
 │   ├── agent-instructions.md        # Always-on core rules (140 lines)
 │   ├── module-transitions.md        # Always-on transition protocol (84 lines)
 │   ├── security-privacy.md          # Always-on PII policy (27 lines)
@@ -50,8 +50,8 @@ senzing-bootcamp/                    # The distributed power root
 │   ├── conversation-examples.md     # Manual: violation examples reference
 │   └── ...                          # Manual: workflows, troubleshooting, etc.
 ├── templates/                       # User templates (checklists, lineage, UAT, lessons learned)
-└── tests/                           # pytest + Hypothesis test suites (157 files)
-tests/                               # Repo-level tests (27 files, hook validation)
+└── tests/                           # pytest + Hypothesis test suites (252 files)
+tests/                               # Repo-level tests (73 files, hook validation)
 ```
 
 ### Steering Architecture
@@ -61,9 +61,9 @@ The steering system follows the "Steering Kiro: Best Practices" guidelines:
 | Inclusion Mode | Files | Purpose |
 |---|---|---|
 | always | 3 | Universal rules (file placement, MCP, communication, gates) |
-| auto | 7 | Context loaded when relevant (budget management, conversation protocol, session resume) |
+| auto | 9 | Context loaded when relevant (budget management, conversation protocol, session resume) |
 | fileMatch | 5 | Language-specific SDK guidance + troubleshooting |
-| manual | 63 | Module workflows, deployment, troubleshooting, visualization, references |
+| manual | 92 | Module workflows, deployment, troubleshooting, visualization, references |
 
 **Context budget:** Total steering ~136k tokens tracked in `steering-index.yaml`. Warn at 60%, critical at 80% (percentage-based, derived from `reference_window` of 200k). Phase-splitting keeps individual loads small. Detailed unloading rules in `agent-context-management.md`.
 
@@ -82,11 +82,11 @@ The root file is loaded at module start. Phase files are loaded on-demand based 
 
 ### Hook Architecture
 
-27 hooks organized by lifecycle:
+29 hooks organized by lifecycle:
 
 - **Critical (5):** Created during onboarding. Cover: conversation management (ask-bootcamper with silence-first default, review-bootcamper-input with feedback + status trigger detection), code quality (code-style-check, commonmark-validation), and consolidated write policy (write-policy-gate — combines block-direct-sql, enforce-file-path-policies, and enforce-single-question).
 - **Module-specific (18):** Created when the relevant module starts. Cover: business problem validation (Module 1), SDK verification (Module 2), mandatory gate enforcement + gate-on-stop + visualization gating + demo verification (Module 3), data file validation (Module 4), mapping enforcement + quality checks (Module 5), backup + testing + code verification (Module 6), visualization offers (Modules 3/5/7/8), benchmark validation (Module 8), security scanning (Module 9), alert config validation (Module 10), deployment phase gate (Module 11).
-- **Any-module (4):** backup-project-on-request (userTriggered), error-recovery-context (postToolUse), git-commit-reminder (userTriggered), module-completion-celebration (postTaskExecution).
+- **Any-module (6):** backup-project-on-request (userTriggered), error-recovery-context (postToolUse), git-commit-reminder (userTriggered), module-completion-celebration (postTaskExecution), module-recap-append (agentStop), session-log-events (postToolUse).
 
 Hook registry sync is enforced by `sync_hook_registry.py --verify` in CI. Structural validation in `tests/test_hook_structural_validation.py`.
 
@@ -134,7 +134,7 @@ GitHub Actions pipeline (`validate-power.yml`):
 6. `validate_prerequisites.py` — Module prerequisite consistency
 7. `validate_progress_ci.py` — Progress schema validation
 8. `validate_mandatory_gates.py` — Mandatory gate enforcement
-9. `pytest senzing-bootcamp/tests/ tests/` — 184 test files with property-based testing (Hypothesis)
+9. `pytest senzing-bootcamp/tests/ tests/` — 325 test files with property-based testing (Hypothesis)
 
 ### Team Mode
 

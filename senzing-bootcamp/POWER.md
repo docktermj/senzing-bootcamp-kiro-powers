@@ -50,7 +50,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 | 2 — SDK Setup                           | Installs and configures the Senzing SDK on your machine                   | Everything else depends on a working SDK installation                                                            |
 | 3 — System Verification                 | Runs entity resolution on Senzing TruthSet data and verifies expected entity counts | Validates your entire setup end-to-end against a known-good reference dataset — proving the system works before you use your own data |
 | 4 — Data Collection                     | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
-| 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Entity Specification format. Optional Phase 3 test-loads and evaluates results using `mapping_workflow` steps 5–8 | Identifies issues before they cause bad matches, gets data into the format Senzing needs, and optionally validates entity resolution quality before production loading |
+| 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Generic Entity Specification (SGES) format. Optional Phase 3 test-loads and evaluates results using `mapping_workflow` steps 5–8 | Identifies issues before they cause bad matches, gets data into the format Senzing needs, and optionally validates entity resolution quality before production loading |
 | 6 — Data Processing                     | Loads all data sources, processes redo records, and validates entity resolution results | Your data is loaded and entity resolution is running — duplicates matched, cross-source connections found |
 | 7 — Query, Visualize, and Discover       | Builds query programs and visualizations for your resolved entities       | Proves the system answers your business questions                                                                |
 | 8 — Performance Testing & Benchmarking  | Benchmarks and optimizes for your data volume                             | Ensures the system handles production-scale data                                                                 |
@@ -75,7 +75,7 @@ Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 
 After completing any track, the agent offers a **graduation workflow** that transitions your bootcamp project into a production-ready codebase — clean directory structure, production configs, CI/CD pipeline, and a migration checklist. Say "run graduation" or "graduate" at any time to start it manually.
 
-**Experienced users:** Skip to Module 5 (have Entity Specification data), Module 6 (SDK + data ready), or Module 7 (data loaded).
+**Experienced users:** Skip to Module 5 (have Senzing Generic Entity Specification (SGES) data), Module 6 (SDK + data ready), or Module 7 (data loaded).
 
 ## Relationship to Senzing Power
 
@@ -92,17 +92,17 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 
 **Module Workflows (load the one you need):**
 
-- `module-01-business-problem.md` — Module 1: Business Problem (split: `module-01-phase2-document-confirm.md`)
+- `module-01-business-problem.md` — Module 1: Business Problem (split: `module-01-phase1-discovery.md`, `module-01-phase2-document-confirm.md`)
 - `module-02-sdk-setup.md` — Module 2: SDK Setup
 - `module-03-system-verification.md` — Module 3: System Verification (split: `module-03-phase1-verification.md`, `module-03-phase2-visualization.md`, `module-03-phase3-report-close.md`)
 - `module-04-data-collection.md` — Module 4: Data Collection
 - `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping (split: `module-05-phase1-quality-assessment.md`, `module-05-phase2-data-mapping.md`, `module-05-phase3-test-load.md`)
 - `module-06-data-processing.md` — Module 6: Data Processing (split: `module-06-phaseA-build-loading.md`, `module-06-phaseB-load-first-source.md`, `module-06-phaseC-multi-source.md`, `module-06-phaseD-validation.md`)
-- `module-07-query-visualize-discover.md` — Module 7: Query, Visualize, and Discover (split: `module-07-phase2-discover.md`, `module-07-phase2b-discover.md`)
+- `module-07-query-visualize-discover.md` — Module 7: Query, Visualize, and Discover (split: `module-07-phase1-query-visualize.md`, `module-07-phase2-discover.md`, `module-07-phase2b-discover.md`)
 - `module-08-performance.md` — Module 8: Performance Testing (split: `module-08-phaseA-requirements.md`, `module-08-phaseB-benchmarking.md`, `module-08-phaseC-optimization.md`)
 - `module-09-security.md` — Module 9: Security Hardening (split: `module-09-phaseA-assessment.md`, `module-09-phaseB-hardening.md`)
 - `module-10-monitoring.md` — Module 10: Monitoring (split: `module-10-phaseA-setup.md`, `module-10-phaseB-operations.md`)
-- `module-11-deployment.md` — Module 11: Deployment (split: `module-11-phase2-deploy.md`)
+- `module-11-deployment.md` — Module 11: Deployment (split: `module-11-phase1-packaging.md`, `module-11-phase2-deploy.md`)
 
 <!-- BEGIN GENERATED: steering-files -->
 
@@ -110,13 +110,13 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 |---|---|---|
 | `agent-behavior-rules.md` | 760 | medium |
 | `agent-context-management.md` | 1326 | medium |
-| `agent-instructions.md` | 4814 | large |
+| `agent-instructions.md` | 4815 | large |
 | `cloud-provider-setup.md` | 784 | medium |
 | `common-pitfalls.md` | 4612 | large |
 | `completion-summary-offer.md` | 1867 | medium |
 | `complexity-estimator.md` | 606 | medium |
 | `conversation-examples.md` | 536 | medium |
-| `conversation-protocol.md` | 3993 | large |
+| `conversation-protocol.md` | 4022 | large |
 | `data-lineage.md` | 603 | medium |
 | `data-processing-reference.md` | 1174 | medium |
 | `deployment-aws.md` | 1323 | medium |
@@ -130,9 +130,20 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `feedback-workflow.md` | 1239 | medium |
 | `graduation.md` | 3584 | large |
 | `hook-architecture.md` | 2149 | large |
-| `hook-registry-critical.md` | 8503 | large |
-| `hook-registry-modules.md` | 10631 | large |
-| `hook-registry.md` | 1772 | medium |
+| `hook-registry-critical.md` | 8517 | large |
+| `hook-registry-module-01.md` | 474 | small |
+| `hook-registry-module-02.md` | 261 | small |
+| `hook-registry-module-03.md` | 2341 | large |
+| `hook-registry-module-04.md` | 282 | small |
+| `hook-registry-module-05.md` | 1390 | medium |
+| `hook-registry-module-06.md` | 519 | medium |
+| `hook-registry-module-07.md` | 544 | medium |
+| `hook-registry-module-08.md` | 760 | medium |
+| `hook-registry-module-09.md` | 268 | small |
+| `hook-registry-module-10.md` | 286 | small |
+| `hook-registry-module-11.md` | 463 | small |
+| `hook-registry-module-any.md` | 3846 | large |
+| `hook-registry.md` | 1914 | medium |
 | `inline-status.md` | 460 | small |
 | `lang-csharp.md` | 1642 | medium |
 | `lang-java.md` | 1688 | medium |
@@ -143,29 +154,31 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `mcp-response-caching.md` | 1442 | medium |
 | `mcp-tool-decision-tree.md` | 2310 | large |
 | `mcp-usage-reference.md` | 580 | medium |
-| `module-01-business-problem.md` | 5321 | large |
+| `module-01-business-problem.md` | 500 | medium |
+| `module-01-phase1-discovery.md` | 5027 | large |
 | `module-01-phase2-document-confirm.md` | 1853 | medium |
 | `module-02-sdk-setup.md` | 4491 | large |
-| `module-03-phase1-verification.md` | 2695 | large |
+| `module-03-phase1-verification.md` | 3536 | large |
 | `module-03-phase2-visualization.md` | 4411 | large |
 | `module-03-phase3-report-close.md` | 1751 | medium |
-| `module-03-system-verification.md` | 1448 | medium |
+| `module-03-system-verification.md` | 604 | medium |
 | `module-03-visualization-api-reference.md` | 1711 | medium |
 | `module-04-data-collection.md` | 3460 | large |
 | `module-05-data-quality-mapping.md` | 689 | medium |
 | `module-05-phase1-quality-assessment.md` | 1710 | medium |
-| `module-05-phase2-data-mapping.md` | 5208 | large |
+| `module-05-phase2-data-mapping.md` | 5355 | large |
 | `module-05-phase3-test-load.md` | 2947 | large |
-| `module-06-data-processing.md` | 1583 | medium |
-| `module-06-phaseA-build-loading.md` | 1219 | medium |
+| `module-06-data-processing.md` | 652 | medium |
+| `module-06-phaseA-build-loading.md` | 2034 | large |
 | `module-06-phaseB-load-first-source.md` | 1193 | medium |
 | `module-06-phaseC-multi-source.md` | 1428 | medium |
-| `module-06-phaseD-validation.md` | 1952 | medium |
-| `module-07-phase2-discover.md` | 3436 | large |
-| `module-07-phase2b-discover.md` | 3171 | large |
-| `module-07-query-visualize-discover.md` | 3591 | large |
-| `module-08-performance.md` | 1359 | medium |
-| `module-08-phaseA-requirements.md` | 1487 | medium |
+| `module-06-phaseD-validation.md` | 2109 | large |
+| `module-07-phase1-query-visualize.md` | 3233 | large |
+| `module-07-phase2-discover.md` | 3453 | large |
+| `module-07-phase2b-discover.md` | 3174 | large |
+| `module-07-query-visualize-discover.md` | 545 | medium |
+| `module-08-performance.md` | 617 | medium |
+| `module-08-phaseA-requirements.md` | 2169 | large |
 | `module-08-phaseB-benchmarking.md` | 429 | small |
 | `module-08-phaseC-optimization.md` | 746 | medium |
 | `module-09-phaseA-assessment.md` | 1221 | medium |
@@ -174,20 +187,25 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-10-monitoring.md` | 568 | medium |
 | `module-10-phaseA-setup.md` | 808 | medium |
 | `module-10-phaseB-operations.md` | 451 | small |
-| `module-11-deployment.md` | 3289 | large |
+| `module-11-deployment.md` | 479 | small |
+| `module-11-phase1-packaging.md` | 2870 | large |
 | `module-11-phase2-deploy.md` | 850 | medium |
-| `module-completion.md` | 6076 | large |
+| `module-completion-artifacts.md` | 2902 | large |
+| `module-completion-error-handling.md` | 604 | medium |
+| `module-completion-next-steps.md` | 555 | medium |
+| `module-completion-track.md` | 1277 | medium |
+| `module-completion.md` | 1163 | medium |
 | `module-prerequisites.md` | 1344 | medium |
 | `module-transitions.md` | 1534 | medium |
-| `onboarding-flow.md` | 3865 | large |
+| `onboarding-flow.md` | 3866 | large |
 | `onboarding-phase1b-intro-language.md` | 2055 | large |
 | `onboarding-phase2-track-setup.md` | 991 | medium |
-| `phase-loading-guide.md` | 499 | small |
+| `phase-loading-guide.md` | 890 | medium |
 | `project-structure.md` | 764 | medium |
 | `recovery-from-mistakes.md` | 1227 | medium |
 | `security-privacy.md` | 278 | small |
 | `session-resume-phase2-mapping.md` | 656 | medium |
-| `session-resume-phase2-setup-recovery.md` | 996 | medium |
+| `session-resume-phase2-setup-recovery.md` | 997 | medium |
 | `session-resume-phase2-state-repair.md` | 547 | medium |
 | `session-resume.md` | 3380 | large |
 | `skip-step-protocol.md` | 799 | medium |
@@ -200,7 +218,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2195 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 177398 tokens
+**Total budget:** 179803 tokens
 
 <!-- END GENERATED: steering-files -->
 
@@ -271,7 +289,9 @@ See `steering/mcp-tool-decision-tree.md` for the full decision tree with all too
 
 ## Module Progression
 
-Modules are progressive but iterative. Skip ahead options: have Entity Specification data (skip to 6), not deploying to production (skip 8-11). Modules 8-11 are production-focused and optional for learning/evaluation.
+Modules are progressive but iterative. Skip ahead options: have Senzing Generic Entity Specification (SGES) data (skip to 6), not deploying to production (skip 8-11). Modules 8-11 are production-focused and optional for learning/evaluation.
+
+**Module numbers are topic labels, not a strict running order.** SDK Setup (Module 2) is performed right before the first module that actually needs the SDK — that's System Verification (Module 3) if you run it, otherwise Data Processing (Module 6). In practice the Core path runs **1 → 4 → 5 → 2 → 6 → 7**: you define the problem, collect your data, and map it first, then install the SDK just before loading. The agent inserts Module 2 automatically at the right point, so you never have to track this yourself.
 
 The goal is for you to finish the bootcamp with running code that is the basis of your real-world use of Senzing.
 

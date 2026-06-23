@@ -569,7 +569,7 @@ file_metadata:
     token_count: 1344
     size_category: medium
   module-transitions.md:
-    token_count: 1534
+    token_count: 1751
     size_category: medium
   onboarding-flow.md:
     token_count: 3866
@@ -633,7 +633,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 181773
+  total_tokens: 181990
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

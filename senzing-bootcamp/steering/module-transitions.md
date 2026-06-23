@@ -36,6 +36,15 @@ Example with step info:
 | → 5 | Data Quality & Mapping | 🔄 Current — Step 3/12 |
 | 6 | Data Processing | ⬜ Upcoming |
 
+## Numeric-Order-by-Default Sequencing
+
+Present and run the selected track's modules in **ascending numeric order** (`1 → 2 → 3 → … → N` for the modules in the track). Deviate from ascending numeric order **only** when there is a clear, stated dependency reason.
+
+- **Module 3 (System Verification) runs immediately after Module 2 and before any data loading (Module 6)**, unless the bootcamper explicitly requested to skip verification. Preparatory Modules 2 and 3 complete before solution-building begins at Module 4.
+- Module 3 is omitted only on an explicit skip request ("skip verification" / "I've already verified"); it is never silently skipped or reordered after data loading in Module 6.
+
+This default governs **forward sequencing only**. It does not override the documented Module 7 → Module 5 quality feedback loop or other explicit backward transitions.
+
 ## Before/After Framing (at module start)
 
 Present the `Before/After` line from the module's steering file so the user knows what they have now and what they'll have when done.

@@ -126,21 +126,32 @@ class TestModule3DefaultOnUnit:
                 f"contain '(Optional)', got: {entry}"
             )
 
-    def test_module_dependencies_soft_requires(self) -> None:
-        """module-dependencies.yaml Module 4 has soft_requires: [3].
+    def test_module_dependencies_module4_hard_requires_module3(self) -> None:
+        """module-dependencies.yaml Module 4 hard-requires Module 3 (and Module 1).
 
-        Validates: Requirements 6, 9
+        Module 3 (System Verification) is promoted from a soft prerequisite to a
+        hard ``requires`` edge of Module 4, so a dependency-respecting order can no
+        longer place Module 4 before Module 3 or silently omit Module 3. Module 3
+        must not appear as a soft requirement.
+
+        Validates: Requirements 2.2, 3.2
         """
         deps = _read_module_deps()
         module_4 = deps["modules"][4]
 
-        assert "soft_requires" in module_4, (
-            "Module 4 should have a 'soft_requires' field in "
-            "module-dependencies.yaml"
+        requires = module_4.get("requires") or []
+        assert 1 in requires, (
+            f"Module 4 requires should include 1, got: {requires}"
         )
-        assert 3 in module_4["soft_requires"], (
-            f"Module 4 soft_requires should include 3, "
-            f"got: {module_4['soft_requires']}"
+        assert 3 in requires, (
+            f"Module 4 should hard-require Module 3 (requires should include 3), "
+            f"got: {requires}"
+        )
+
+        soft_requires = module_4.get("soft_requires") or []
+        assert 3 not in soft_requires, (
+            f"Module 4 should no longer list Module 3 as a soft requirement, "
+            f"got soft_requires: {soft_requires}"
         )
 
     def test_gate_3_4_non_skippable_visualization(self) -> None:

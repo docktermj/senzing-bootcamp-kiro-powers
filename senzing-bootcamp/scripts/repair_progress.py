@@ -21,9 +21,9 @@ PREFS = Path("config/bootcamp_preferences.yaml")
 D_EXT = ("*.csv", "*.json", "*.jsonl", "*.tsv", "*.xlsx")
 NAMES = {1: "Business Problem", 2: "SDK Setup", 3: "System Verification",
          4: "Data Collection", 5: "Data Quality & Mapping",
-         6: "Single Source Loading", 7: "Multi-Source Orchestration",
-         8: "Query & Validation", 9: "Performance Testing",
-         10: "Security Hardening", 11: "Deployment"}
+         6: "Data Processing", 7: "Query, Visualize, and Discover",
+         8: "Performance Testing & Benchmarking", 9: "Security Hardening",
+         10: "Monitoring & Observability", 11: "Package & Deploy"}
 
 
 def _c(code, t):

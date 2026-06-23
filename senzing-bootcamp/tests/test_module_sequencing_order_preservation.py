@@ -405,14 +405,18 @@ class TestModuleSequencingOrderPreservation:
         Validates: Requirements 3.1, 3.2
         """
         graph = load_dependency_graph()
-        assert graph_regions_sha256(graph) == _BASELINE_GRAPH_REGIONS_SHA256
+        assert (  # brittle-allow: intentional preservation snapshot (Req 3.1, 3.2)
+            graph_regions_sha256(graph) == _BASELINE_GRAPH_REGIONS_SHA256
+        )
 
     def test_completion_track_file_snapshot_unchanged(self) -> None:
         """module-completion-track.md is byte-for-byte unchanged from baseline.
 
         Validates: Requirements 3.5
         """
-        assert file_sha256(_COMPLETION_TRACK_FILE) == _BASELINE_COMPLETION_TRACK_SHA256
+        assert (  # brittle-allow: intentional byte-for-byte preservation snapshot (Req 3.5)
+            file_sha256(_COMPLETION_TRACK_FILE) == _BASELINE_COMPLETION_TRACK_SHA256
+        )
 
     # -- Non-bug-condition equivalence: F(X) == F'(X) --------------------
 

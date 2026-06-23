@@ -8,6 +8,7 @@ Usage:
     python senzing-bootcamp/scripts/validate_power.py
 """
 
+import importlib
 import json
 import re
 import sys
@@ -19,6 +20,7 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 import mcp_tool_inventory as inventory  # noqa: E402
+import track_switcher  # noqa: E402
 from version import (  # noqa: E402
     VersionError,
     read_version,
@@ -425,7 +427,102 @@ def check_mcp_tool_inventory():
         )
 
 
+_SCRIPTS_WITH_MODULE_MAPS = (
+    "status",
+    "export_results",
+    "repair_progress",
+    "team_dashboard",
+    "rollback_module",
+    "assess_entry_point",
+    "generate_graduation_certificate",
+    "validate_module",
+)
+
+
+def _power_md_module_table(text):
+    """Return {module_number: name} from POWER.md's generated modules table."""
+    m = re.search(
+        r"<!-- BEGIN GENERATED: modules -->(.*?)<!-- END GENERATED: modules -->",
+        text, re.DOTALL,
+    )
+    section = m.group(1) if m else ""
+    table = {}
+    for num, name in re.findall(r"^\|\s*(\d+)\s*\|\s*(.+?)\s*\|", section, re.MULTILINE):
+        table[int(num)] = name.strip()
+    return table
+
+
+def _find_module_name_maps(module):
+    """Find module-level dicts mapping a contiguous 1..N int range to strings."""
+    maps = []
+    for value in vars(module).values():
+        if not isinstance(value, dict) or len(value) < 5:
+            continue
+        if not all(isinstance(k, int) for k in value):
+            continue
+        if not all(isinstance(v, str) for v in value.values()):
+            continue
+        if set(value) == set(range(1, len(value) + 1)):
+            maps.append(value)
+    return maps
+
+
+def check_module_inventory():
+    """Cross-check module number↔name mappings against the canonical source.
+
+    config/module-dependencies.yaml is the single source of truth for the
+    module roster. This gate fails CI if POWER.md's generated module table or
+    any script's module-name map drifts from it — a renamed module, a wrong
+    name for a number, or a stale "Module 12" reintroduced after the 0.11.0
+    collapse of Module 12 into Module 11.
+    """
+    print("\n=== Module Inventory ===")
+    yaml_path = POWER_DIR / "config" / "module-dependencies.yaml"
+    if not yaml_path.exists():
+        check(False, "config/module-dependencies.yaml exists for module inventory check")
+        return
+
+    try:
+        canonical = track_switcher.load_module_names(yaml_path)
+    except (ValueError, OSError) as exc:
+        check(False, f"module-dependencies.yaml module names are parseable — {exc}")
+        return
+
+    count = len(canonical)
+    check(count > 0, f"module-dependencies.yaml defines a module roster (found {count})")
+
+    # POWER.md generated modules table matches the canonical roster.
+    power_md = POWER_DIR / "POWER.md"
+    if power_md.exists():
+        table = _power_md_module_table(power_md.read_text(encoding="utf-8"))
+        check(
+            table == canonical,
+            "POWER.md modules table matches module-dependencies.yaml"
+            + (f" — POWER.md: {table}, canonical: {canonical}" if table != canonical else ""),
+        )
+
+    # Each registered script's module-name map matches the canonical roster.
+    for name in _SCRIPTS_WITH_MODULE_MAPS:
+        try:
+            module = importlib.import_module(name)
+        except Exception as exc:
+            check(False, f"{name}.py imports cleanly for module-map check — {exc}")
+            continue
+        maps = _find_module_name_maps(module)
+        check(bool(maps), f"{name}.py defines a module number→name map")
+        for mod_map in maps:
+            check(
+                mod_map == canonical,
+                f"{name}.py module-name map matches module-dependencies.yaml"
+                + (
+                    f" — script: {mod_map}, canonical: {canonical}"
+                    if mod_map != canonical else ""
+                ),
+            )
+
+
 def check_diagrams():
+    print("\n=== Diagrams ===")
     print("\n=== Diagrams ===")
     diagrams_dir = POWER_DIR / "docs" / "diagrams"
     expected = ["module-flow.md", "data-flow.md", "system-architecture.md"]
@@ -512,6 +609,7 @@ def main():
     check_diagrams()
     check_steering_index_metadata()
     check_mcp_tool_inventory()
+    check_module_inventory()
     check_version_file()
     check_version_sync()
 

@@ -10,9 +10,9 @@ Progress: [░░░░░░░░░░░░░░░░░░░░░░░
 - ⬜ Module 3: System Verification
 - ⬜ Module 4: Data Collection
 - ⬜ Module 5: Data Quality & Mapping
-- ⬜ Module 6: Single Source Loading
-- ⬜ Module 7: Multi-Source Orchestration
-- ⬜ Module 8: Query, Visualize & Validate
-- ⬜ Module 9: Performance Testing
-- ⬜ Module 10: Security Hardening
-- ⬜ Module 11: Monitoring & Deployment
+- ⬜ Module 6: Data Processing
+- ⬜ Module 7: Query, Visualize, and Discover
+- ⬜ Module 8: Performance Testing & Benchmarking
+- ⬜ Module 9: Security Hardening
+- ⬜ Module 10: Monitoring & Observability
+- ⬜ Module 11: Package & Deploy

@@ -16,6 +16,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   absence of any lint_record tool
 - `check_mcp_tool_inventory()` gate in `scripts/validate_power.py` — fails CI if
   POWER.md / ARCHITECTURE.md tool listings drift from mcp_tool_inventory.py
+- `check_module_inventory()` gate in `scripts/validate_power.py` — cross-checks
+  the POWER.md generated module table and every script module-name map against
+  `config/module-dependencies.yaml` (the single source of truth); fails CI on a
+  renamed module, a wrong name for a number, or a stale "Module 12"
+- `tests/test_module_inventory.py` — pins the canonical 11-module roster and
+  asserts all eight script module-name maps and the POWER.md table match it
+
+### Fixed
+
+- Module numbering/naming drift across docs and scripts: corrected the POWER.md
+  "Module Progression" narrative (the stale `1 → 4 → 5 → 2 → 6 → 7` order and
+  "topic labels" framing now read as the canonical ascending `1 → 2 → … → 7`),
+  and refreshed `docs/diagrams/module-flow.md`, `docs/diagrams/module-prerequisites.md`,
+  `docs/diagrams/data-flow.md`, `docs/diagrams/system-architecture.md`,
+  `docs/guides/PROGRESS_TRACKER.md`, and `templates/stakeholder_summary.md` to the
+  current roster (6 = Data Processing, 7 = Query/Visualize/Discover, 8 = Performance,
+  9 = Security, 10 = Monitoring, 11 = Package & Deploy)
+- Stale module-name maps and a phantom "Module 12" in `scripts/export_results.py`,
+  `scripts/repair_progress.py`, and `scripts/team_dashboard.py`; normalized the
+  display names in `status.py`, `rollback_module.py`, `assess_entry_point.py`,
+  `validate_module.py`, and `visualize_dependencies.py` to the canonical roster
+- HTML dashboards (`status.py`, `export_results.py`, `team_dashboard.py`) computed
+  completion against 12 modules (so all 11 done showed 91%) and rendered a phantom
+  12th card; the count is now derived from the module roster (`len(MODULE_NAMES)` /
+  `TOTAL_MODULES`) so it stays correct
 
 ### Changed
 

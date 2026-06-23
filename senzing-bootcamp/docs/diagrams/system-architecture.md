@@ -80,13 +80,13 @@ data/raw/    ──▶  src/transform/  ──▶  SDK add_record  ──▶  sr
 ```text
 Module 1:  docs/business_problem.md
 Module 2:  SDK installed + database/ configured
-Module 3:  src/quickstart_demo/ (demo script + sample data)
+Module 3:  System verification results (entity counts vs TruthSet) + visualization
 Module 4:  data/raw/ (source files)
 Module 5:  docs/data_source_evaluation.md, src/transform/ + data/transformed/ + docs/mapping_*.md
-Module 6:  src/load/ + loaded database
-Module 7:  Multi-source orchestration scripts
-Module 8:  src/query/ + docs/results_validation.md
-Module 9:  tests/performance/ + docs/performance_report.md
-Module 10: src/security/ + docs/security_checklist.md
+Module 6:  src/load/ + loaded database (all sources, redo processed)
+Module 7:  src/query/ + visualizations + docs/results_validation.md
+Module 8:  tests/performance/ + docs/performance_report.md
+Module 9:  src/security/ + docs/security_checklist.md
+Module 10: monitoring/ + docs/monitoring_setup.md + runbooks
 Module 11: Dockerfile + CI/CD + deployment/scripts/
 ```

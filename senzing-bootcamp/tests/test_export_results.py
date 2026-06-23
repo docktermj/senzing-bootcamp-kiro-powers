@@ -20,6 +20,7 @@ from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 from export_results import (
+    MODULE_NAMES,
     VALID_ARTIFACT_TYPES,
     ArtifactDiscovery,
     ArtifactEntry,
@@ -36,6 +37,9 @@ from export_results import (
     _parse_args,
     main,
 )
+
+#: Canonical bootcamp module count (single source: export_results.MODULE_NAMES).
+_MODULE_COUNT = len(MODULE_NAMES)
 
 # ---------------------------------------------------------------------------
 # Task 8.1 — Hypothesis strategies for all data types
@@ -55,7 +59,7 @@ def st_artifact_entry() -> st.SearchStrategy[ArtifactEntry]:
             min_size=3, max_size=60,
         ).filter(lambda p: p.strip() != "" and "/" not in p[:1]),
         artifact_type=st.sampled_from(_ARTIFACT_TYPES),
-        module=st.one_of(st.none(), st.integers(min_value=1, max_value=12)),
+        module=st.one_of(st.none(), st.integers(min_value=1, max_value=_MODULE_COUNT)),
         file_size=st.integers(min_value=0, max_value=10_000_000),
         description=st.text(min_size=1, max_size=120),
     )
@@ -75,9 +79,10 @@ def st_progress_data() -> st.SearchStrategy[ProgressData]:
     return st.builds(
         ProgressData,
         modules_completed=st.lists(
-            st.integers(min_value=1, max_value=12), unique=True, max_size=12,
+            st.integers(min_value=1, max_value=_MODULE_COUNT), unique=True,
+            max_size=_MODULE_COUNT,
         ),
-        current_module=st.one_of(st.none(), st.integers(min_value=1, max_value=12)),
+        current_module=st.one_of(st.none(), st.integers(min_value=1, max_value=_MODULE_COUNT)),
         language=st.sampled_from(_LANGUAGES),
         data_sources=st.just([]),
         track=st.sampled_from(_TRACKS),
@@ -174,13 +179,13 @@ class TestProperty1ModuleValidation:
         """Feature: export-results, Property 1: Module number validation partitions correctly"""
         valid, invalid = ModuleFilter.validate_modules(modules)
 
-        # Every valid is in 1-12
+        # Every valid is in 1.._MODULE_COUNT
         for v in valid:
-            assert 1 <= v <= 12, f"{v} should be in 1-12"
+            assert 1 <= v <= _MODULE_COUNT, f"{v} should be in 1-{_MODULE_COUNT}"
 
-        # Every invalid is outside 1-12
+        # Every invalid is outside 1.._MODULE_COUNT
         for i in invalid:
-            assert not (1 <= i <= 12), f"{i} should be outside 1-12"
+            assert not (1 <= i <= _MODULE_COUNT), f"{i} should be outside 1-{_MODULE_COUNT}"
 
         # Union preserves multiplicity
         assert sorted(valid + invalid) == sorted(modules)
@@ -381,9 +386,9 @@ class TestProperty5ModuleCompletionTable:
         renderer = HTMLRenderer()
         html = renderer._render_module_table(progress)
 
-        # Exactly 12 <tr> data rows in tbody (exclude header row)
+        # Exactly one <tr> data row per module in tbody (exclude header row)
         rows = re.findall(r"<tr><td>.*?</td></tr>", html, re.DOTALL)
-        assert len(rows) == 12, f"Expected 12 rows, got {len(rows)}"
+        assert len(rows) == _MODULE_COUNT, f"Expected {_MODULE_COUNT} rows, got {len(rows)}"
 
         # Each completed module marked
         for m in progress.modules_completed:
@@ -396,7 +401,7 @@ class TestProperty5ModuleCompletionTable:
 
         # Progress percentage
         n = len(progress.modules_completed)
-        pct = n * 100 / 12
+        pct = n * 100 / _MODULE_COUNT
         assert f"{pct:.0f}%" in html
 
         # Language displayed if provided
@@ -566,7 +571,8 @@ class TestProperty9ModuleFilter:
         manifest=st_artifact_manifest(),
         modules=st.one_of(
             st.none(),
-            st.lists(st.integers(min_value=1, max_value=12), unique=True, max_size=12),
+            st.lists(st.integers(min_value=1, max_value=_MODULE_COUNT), unique=True,
+                     max_size=_MODULE_COUNT),
         ),
     )
     @settings(max_examples=10)

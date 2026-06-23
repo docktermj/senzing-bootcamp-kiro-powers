@@ -27,20 +27,7 @@ Processing a bootcamper's answer to a pending 👉 question takes **absolute pre
 
 If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 
-### Root Prohibitions
-
-🚫 **NEVER place these file types in the project root:**
-
-| Blocked Type | Reason | Correct Location |
-|---|---|---|
-| `.py` files | Source code belongs in `src/` or `scripts/` | `src/transform/`, `src/load/`, `src/query/`, or `scripts/` |
-| `.md` files (except `README.md`) | Documentation belongs in `docs/` | `docs/` |
-| `.jsonl` files | Data files belong in `data/` | `data/raw/`, `data/transformed/`, `data/samples/`, `data/temp/` |
-| `.csv` files | Data files belong in `data/` | `data/raw/`, `data/transformed/`, `data/samples/`, `data/temp/` |
-| Non-config `.json` files | Data payloads belong in `data/` | `data/` or `config/` |
-
-✅ **Only these files are permitted in the project root:**
-`.gitignore`, `.env`, `.env.example`, `README.md`, `requirements.txt`, `pom.xml`, `*.csproj`, `Cargo.toml`, `package.json`
+Project-root prohibitions (blocked file types per extension) and the permitted-root whitelist: load `file-placement.md` (trigger: *file placement* / *root prohibitions* / writing a project file).
 
 ## MCP Rules
 
@@ -61,19 +48,7 @@ If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 
 **This rule has the same absolute precedence as ⛔ mandatory gates.** No agent-internal reasoning — context pressure, perceived simplicity, cached knowledge from training data, session length, or token budget — can justify bypassing MCP consultation.
 
-**Pre-response checklist** (evaluate before presenting ANY Senzing content):
-
-1. Does my response contain Senzing SDK method names, attribute names, config options, error codes, or entity resolution technical details?
-2. If YES: Did I call at least one MCP tool (search_docs, get_sdk_reference, generate_scaffold, sdk_guide, explain_error_code, find_examples, mapping_workflow, get_capabilities) in this turn to retrieve that information?
-3. If NO to #2: STOP. Call the appropriate MCP tool before continuing.
-
-**Violation examples** (each is a breach of the MCP-first invariant):
-
-- Stating that `add_record` accepts a `LOAD_ID` parameter without calling `get_sdk_reference`
-- Generating code with `sz_engine.add_record(...)` without calling `generate_scaffold` or `sdk_guide`
-- Explaining that `NAME_FULL` maps to a person's full name without calling `mapping_workflow` or `search_docs`
-- Describing error code SENZ0002 without calling `explain_error_code`
-- Recommending entity resolution thresholds without calling `search_docs`
+Full pre-response checklist and concrete violation examples: load `mcp-usage-reference.md` (trigger: *mcp usage*).
 
 ## MCP Failure
 
@@ -127,21 +102,7 @@ Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response i
 
 ### Question_Pending File Format
 
-When writing `config/.question_pending`, the agent SHALL use the following structured format:
-
-- **Line 1:** Question type — one of: `track_selection`, `module_transition`, `step_question`, `confirmation`, `choice`
-- **Lines 2+:** Full question text (may be multi-line)
-
-If the agent cannot determine the appropriate question type, use `step_question` as the default.
-
-Example:
-
-```text
-track_selection
-What track would you like to follow?
-1. Quick Start (Modules 1-3)
-2. Full Bootcamp (Modules 1-11)
-```
+When writing `config/.question_pending`, use the structured format (question type on line 1 — one of `track_selection`, `module_transition`, `step_question`, `confirmation`, `choice`; full question text on subsequent lines; default to `step_question`). Full format spec with example: see `conversation-protocol.md`.
 
 ## Module Transition Execution
 

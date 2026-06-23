@@ -61,9 +61,8 @@ MODULE_NAMES = {
     1: "Business Problem", 2: "SDK Setup", 3: "System Verification",
     4: "Data Collection", 5: "Data Quality & Mapping",
     6: "Data Processing", 7: "Query, Visualize, and Discover",
-    8: "Performance Testing", 9: "Security Hardening",
-    10: "Monitoring", 11: "Deployment",
-    12: "Production Readiness",
+    8: "Performance Testing & Benchmarking", 9: "Security Hardening",
+    10: "Monitoring & Observability", 11: "Package & Deploy",
 }
 
 NEXT_STEPS = {
@@ -77,10 +76,12 @@ NEXT_STEPS = {
     6:  ("Start Module 6: Data Processing", "Load your data sources and validate results"),
     7:  ("Start Module 7: Query, Visualize, and Discover",
         "Create query programs and visualize results"),
-    8:  ("Start Module 8: Performance Testing", "Benchmark and optimize performance"),
+    8:  ("Start Module 8: Performance Testing & Benchmarking",
+        "Benchmark and optimize performance"),
     9:  ("Start Module 9: Security Hardening", "Implement security best practices"),
-    10: ("Start Module 10: Monitoring", "Set up monitoring and observability"),
-    11: ("Start Module 11: Deployment", "Package and deploy to production"),
+    10: ("Start Module 10: Monitoring & Observability",
+        "Set up monitoring and observability"),
+    11: ("Start Module 11: Package & Deploy", "Package and deploy to production"),
 }
 
 
@@ -182,7 +183,7 @@ class DashboardDataCollector:
         """Gather all data sources and return a populated DashboardData."""
         completed, current, status, language, current_step, raw_data = self._load_progress()
         has_progress = len(completed) > 0 or status != "Not Started"
-        completion_pct = len(completed) * 100 // 12
+        completion_pct = len(completed) * 100 // len(MODULE_NAMES)
         timestamps = self._load_completion_timestamps(raw_data)
         quality = self._scan_quality_scores()
         perf = self._scan_performance_metrics()
@@ -281,7 +282,7 @@ class DashboardDataCollector:
                         mod_num = int(m.group(1))
                     else:
                         continue
-                if 1 <= mod_num <= 12:
+                if 1 <= mod_num <= len(MODULE_NAMES):
                     ts = None
                     if isinstance(entry, dict):
                         ts = (
@@ -556,10 +557,12 @@ header{background:#0969da;-webkit-print-color-adjust:exact;
             if data.language
             else ""
         )
+        total = len(MODULE_NAMES)
+        done = len(data.modules_completed)
         return f"""<header>
 <h1>Senzing Bootcamp Dashboard</h1>
 <div class="status-badge">{_esc(data.status)}</div>
-<div style="font-size:.95rem;margin-top:6px">{len(data.modules_completed)} / 12 modules</div>
+<div style="font-size:.95rem;margin-top:6px">{done} / {total} modules</div>
 {lang_line}
 </header>"""
 
@@ -567,17 +570,19 @@ header{background:#0969da;-webkit-print-color-adjust:exact;
 
     def _render_progress_bar(self, data: DashboardData) -> str:
         pct = data.completion_pct
+        total = len(MODULE_NAMES)
+        done = len(data.modules_completed)
         return f"""<section id="progress">
 <h2>Overall Progress</h2>
 <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:{pct}%"></div></div>
-<div class="progress-label">{pct}% complete &mdash; {len(data.modules_completed)} / 12 modules</div>
+<div class="progress-label">{pct}% complete &mdash; {done} / {total} modules</div>
 </section>"""
 
     # -- 3.4 _render_module_cards ------------------------------------------
 
     def _render_module_cards(self, data: DashboardData) -> str:
         cards = []
-        for num in range(1, 13):
+        for num in range(1, len(MODULE_NAMES) + 1):
             name = MODULE_NAMES.get(num, "?")
             if num in data.modules_completed:
                 cls = "completed"

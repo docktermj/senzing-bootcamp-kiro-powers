@@ -311,7 +311,7 @@ file_metadata:
     token_count: 1326
     size_category: medium
   agent-instructions.md:
-    token_count: 4815
+    token_count: 4376
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -364,8 +364,11 @@ file_metadata:
   feedback-workflow.md:
     token_count: 1239
     size_category: medium
+  file-placement.md:
+    token_count: 291
+    size_category: small
   graduation.md:
-    token_count: 3584
+    token_count: 3761
     size_category: large
   hook-architecture.md:
     token_count: 2149
@@ -440,7 +443,7 @@ file_metadata:
     token_count: 2310
     size_category: large
   mcp-usage-reference.md:
-    token_count: 580
+    token_count: 905
     size_category: medium
   module-01-business-problem.md:
     token_count: 500
@@ -566,7 +569,7 @@ file_metadata:
     token_count: 1394
     size_category: medium
   module-prerequisites.md:
-    token_count: 1344
+    token_count: 1394
     size_category: medium
   module-transitions.md:
     token_count: 1751
@@ -633,7 +636,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 181990
+  total_tokens: 182394
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

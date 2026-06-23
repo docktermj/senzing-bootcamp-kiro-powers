@@ -22,7 +22,7 @@ This directory contains detailed documentation for each bootcamp module.
 
 ---
 
-### Module 2: Set Up SDK
+### Module 2: SDK Setup
 
 **File**: [MODULE_2_SDK_SETUP.md](MODULE_2_SDK_SETUP.md)
 **Steering**: `steering/module-02-sdk-setup.md`
@@ -230,20 +230,26 @@ This directory contains detailed documentation for each bootcamp module.
 ## Module Dependencies
 
 ```text
-Module 1 → Module 4 → Module 5
-                         ↓
-Module 2 ──────────→ Module 6 (requires Module 2 + Module 5)
-                         ↓
-                    Module 7
-                         ↓
-                    Module 8 (for production)
-                         ↓
-                    Module 9 (for production)
-                         ↓
-                    Module 10 (for production)
-                         ↓
-                    Module 11 (for production)
+Module 1 ─────────────────────┐
+                              ↓
+Module 2 → Module 3 → Module 4 → Module 5
+                                    ↓
+Module 2 ──────────────────────→ Module 6 (requires Module 2 + Module 5)
+                                    ↓
+                               Module 7
+                                    ↓
+                               Module 8 (for production)
+                                    ↓
+                               Module 9 (for production)
+                                    ↓
+                               Module 10 (for production)
+                                    ↓
+                               Module 11 (for production)
 ```
+
+Module 3 (System Verification) requires Module 2, and Module 4 requires both
+Module 1 and Module 3. Module 2 (SDK Setup) is auto-inserted before any module
+that needs the SDK.
 
 ## Quick Reference
 

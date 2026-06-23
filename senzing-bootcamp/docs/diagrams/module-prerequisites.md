@@ -4,19 +4,17 @@ This diagram shows which modules depend on which. Use it to understand skip path
 
 ```mermaid
 graph TD
-    M2[Module 2: Set Up SDK] --> M3[Module 3: System Verification]
-    M2 --> M6[Module 6: Load Single Data Source]
-
     M1[Module 1: Business Problem] --> M4[Module 4: Data Collection]
+    M2[Module 2: SDK Setup] --> M3[Module 3: System Verification]
+    M2 --> M6[Module 6: Data Processing]
+    M3 --> M4
     M4 --> M5[Module 5: Data Quality & Mapping]
     M5 --> M6
+    M6 --> M7[Module 7: Query, Visualize, and Discover]
 
-    M6 --> M7[Module 7: Multi-Source Orchestration]
-    M6 --> M8[Module 8: Query, Visualize & Validate Results]
-    M7 --> M8
-
-    M8 --> M9[Module 9: Performance Testing & Benchmarking]
-    M9 --> M10[Module 10: Security Hardening]
+    M7 --> M8[Module 8: Performance Testing & Benchmarking]
+    M8 --> M9[Module 9: Security Hardening]
+    M9 --> M10[Module 10: Monitoring & Observability]
     M10 --> M11[Module 11: Package & Deploy]
 
     style M1 fill:#fff3e0
@@ -26,7 +24,7 @@ graph TD
     style M5 fill:#fff3e0
     style M6 fill:#e8f5e9
     style M7 fill:#e8f5e9
-    style M8 fill:#e8f5e9
+    style M8 fill:#fce4ec
     style M9 fill:#fce4ec
     style M10 fill:#fce4ec
     style M11 fill:#fce4ec
@@ -43,7 +41,7 @@ Module 2 (SDK Setup) is auto-inserted before any module that needs the SDK.
 
 ## Key Skip Points
 
-- Have Senzing Generic Entity Specification (SGES) data? Skip to Module 5
+- Have Senzing Generic Entity Specification (SGES) data? Skip ahead to Module 6
 - SDK already installed? Module 2 auto-detects and skips
-- Single source only? Skip Module 7
-- Not deploying to production? Stop after Module 8
+- Already verified your setup? Skip Module 3 with an explicit "skip verification" request
+- Not deploying to production? Core Bootcamp ends after Module 7 (Modules 8-11 are Advanced Topics)

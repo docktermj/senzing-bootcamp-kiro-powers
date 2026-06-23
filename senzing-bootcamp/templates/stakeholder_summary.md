@@ -1,6 +1,6 @@
 # Entity Resolution Project — Executive Summary
 
-**Date**: [date] | **Module**: [module_number] — [module_name] | **Status**: [status]
+**Date:** [date] | **Module:** [module_number] — [module_name] | **Status:** [status]
 
 ---
 
@@ -88,13 +88,13 @@ Output: docs/stakeholder_summary_module1.md
   A unified customer view enables cross-sell opportunities across channels."
 
 =============================================================================
-MODULE 2 — Business Problem Definition
+MODULE 2 — SDK Setup
 Output: docs/stakeholder_summary_module2.md
 =============================================================================
 
-[status]        → "Problem defined, ready for data collection"
+[status]        → "SDK installed and configured, ready for system verification"
 [module_number] → "2"
-[module_name]   → "Business Problem Definition"
+[module_name]   → "SDK Setup"
 
 [problem_statement]
   Summarize the business problem from docs/business_problem.md in 2-3 sentences.
@@ -123,10 +123,10 @@ Output: docs/stakeholder_summary_module2.md
   Estimated 15-20% duplication rate based on preliminary analysis."
 
 [next_steps]
-  1. Collect and catalog data samples (Module 3)
-  2. Evaluate data quality (Module 4)
-  3. Map data to Senzing format (Module 5)
-  4. Load and resolve entities (Modules 6-7)
+  1. Run system verification with the Senzing TruthSet (Module 3)
+  2. Collect and catalog data samples (Module 4)
+  3. Evaluate data quality and map to Senzing format (Module 5)
+  4. Load and resolve entities (Module 6)
 
 [roi_considerations]
   Frame the expected business value. Use estimates where possible.
@@ -135,63 +135,13 @@ Output: docs/stakeholder_summary_module2.md
   A unified customer view enables cross-sell opportunities across channels."
 
 =============================================================================
-MODULE 8 — Query and Validation Results
-Output: docs/stakeholder_summary_module8.md
-=============================================================================
-
-[status]        → "Results validated, ready for [performance testing / production planning]"
-[module_number] → "8"
-[module_name]   → "Query and Validation Results"
-
-[problem_statement]
-  Restate the original business problem from docs/business_problem.md.
-  Add context on what has been accomplished since Module 2.
-  Example: "We set out to deduplicate customer records across CRM and billing.
-  Data has been collected, quality-scored, mapped, loaded, and resolved."
-
-[approach]
-  Describe what was actually done — not just planned.
-  Mention record counts, data sources loaded, and resolution method.
-  Example: "Loaded 85,000 records from 3 data sources into Senzing.
-  Entity resolution matched records using name, address, email, and phone."
-
-[data_sources]
-  List each data source with actual loaded record counts.
-  Pull from loading results and config/bootcamp_progress.json.
-  Example:
-  | Source | Records Loaded | Match Rate |
-  |--------|---------------|------------|
-  | CRM Export | 50,000 | 18% matched |
-  | Billing System | 35,000 | 22% matched |
-
-[key_findings]
-  Present validation results with specific metrics.
-  Pull from docs/results_validation.md and UAT results.
-  Example:
-  - 85,000 records resolved into 62,000 unique entities
-  - 95% UAT test cases passed (45/50)
-  - 2% false positive rate, 3% false negative rate
-  - Cross-source matching linked 12,000 records across systems
-
-[next_steps]
-  Based on validation results and the user's bootcamp path:
-  - Path B/C: "Results validated. Ready to integrate into production workflows."
-  - Path D: "Proceed to performance testing (Module 9) and production hardening."
-
-[roi_considerations]
-  Quantify actual results against the original business case.
-  Example: "Entity resolution identified 23,000 duplicate records (27% of total).
-  Eliminating these duplicates is estimated to save $45,000/year in mailing costs
-  and reduce customer service lookup time by 30%."
-
-=============================================================================
-MODULE 7 — Multi-Source Orchestration
-Output: docs/stakeholder_summary_module7.md
+MODULE 6 — Data Processing
+Output: docs/stakeholder_summary_module6.md
 =============================================================================
 
 [status]        → "All sources loaded and validated, ready for querying"
-[module_number] → "7"
-[module_name]   → "Multi-Source Orchestration"
+[module_number] → "6"
+[module_name]   → "Data Processing"
 
 [problem_statement]
   Restate the original business problem from docs/business_problem.md.
@@ -235,12 +185,62 @@ Output: docs/stakeholder_summary_module7.md
   and reduce customer service lookup time by 30%."
 
 =============================================================================
-MODULE 11 — Monitoring and Observability
-Output: docs/stakeholder_summary_module11.md
+MODULE 7 — Query, Visualize, and Discover
+Output: docs/stakeholder_summary_module7.md
+=============================================================================
+
+[status]        → "Results validated, ready for [performance testing / production planning]"
+[module_number] → "7"
+[module_name]   → "Query, Visualize, and Discover"
+
+[problem_statement]
+  Restate the original business problem from docs/business_problem.md.
+  Add context on what has been accomplished since Module 2.
+  Example: "We set out to deduplicate customer records across CRM and billing.
+  Data has been collected, quality-scored, mapped, loaded, and resolved."
+
+[approach]
+  Describe what was actually done — not just planned.
+  Mention record counts, data sources loaded, and resolution method.
+  Example: "Loaded 85,000 records from 3 data sources into Senzing.
+  Entity resolution matched records using name, address, email, and phone."
+
+[data_sources]
+  List each data source with actual loaded record counts.
+  Pull from loading results and config/bootcamp_progress.json.
+  Example:
+  | Source | Records Loaded | Match Rate |
+  |--------|---------------|------------|
+  | CRM Export | 50,000 | 18% matched |
+  | Billing System | 35,000 | 22% matched |
+
+[key_findings]
+  Present validation results with specific metrics.
+  Pull from docs/results_validation.md and UAT results.
+  Example:
+  - 85,000 records resolved into 62,000 unique entities
+  - 95% UAT test cases passed (45/50)
+  - 2% false positive rate, 3% false negative rate
+  - Cross-source matching linked 12,000 records across systems
+
+[next_steps]
+  Based on validation results and the user's bootcamp path:
+  - Path B/C: "Results validated. Ready to integrate into production workflows."
+  - Path D: "Proceed to performance testing (Module 8) and production hardening."
+
+[roi_considerations]
+  Quantify actual results against the original business case.
+  Example: "Entity resolution identified 23,000 duplicate records (27% of total).
+  Eliminating these duplicates is estimated to save $45,000/year in mailing costs
+  and reduce customer service lookup time by 30%."
+
+=============================================================================
+MODULE 10 — Monitoring and Observability
+Output: docs/stakeholder_summary_module10.md
 =============================================================================
 
 [status]        → "Monitoring configured, dashboards and alerts operational"
-[module_number] → "11"
+[module_number] → "10"
 [module_name]   → "Monitoring and Observability"
 
 [problem_statement]

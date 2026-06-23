@@ -34,10 +34,13 @@ VALID_ARTIFACT_TYPES = frozenset({
 MODULE_NAMES = {
     1: "Business Problem", 2: "SDK Setup", 3: "System Verification",
     4: "Data Collection", 5: "Data Quality & Mapping",
-    6: "Single Source Loading", 7: "Multi-Source Orchestration",
-    8: "Query, Visualize & Validate", 9: "Performance Testing",
-    10: "Security Hardening", 11: "Monitoring", 12: "Deployment",
+    6: "Data Processing", 7: "Query, Visualize, and Discover",
+    8: "Performance Testing & Benchmarking", 9: "Security Hardening",
+    10: "Monitoring & Observability", 11: "Package & Deploy",
 }
+
+#: Total number of bootcamp modules (derived from MODULE_NAMES, single source).
+_MODULE_COUNT = len(MODULE_NAMES)
 
 LANG_EXTENSIONS: dict[str, list[str]] = {
     "python": [".py"], "java": [".java"], "csharp": [".cs"],
@@ -164,9 +167,9 @@ class ProgressData:
 class ModuleFilter:
     @staticmethod
     def validate_modules(modules: list[int]) -> tuple[list[int], list[int]]:
-        """Partition *modules* into (valid, invalid). Valid means 1–12."""
-        valid = [m for m in modules if 1 <= m <= 12]
-        invalid = [m for m in modules if not (1 <= m <= 12)]
+        """Partition *modules* into (valid, invalid). Valid means 1–11."""
+        valid = [m for m in modules if 1 <= m <= _MODULE_COUNT]
+        invalid = [m for m in modules if not (1 <= m <= _MODULE_COUNT)]
         return valid, invalid
 
     @staticmethod
@@ -517,7 +520,7 @@ class SummaryGenerator:
         else:
             track_str = "the bootcamp"
         parts.append(f"This report summarises work completed during {track_str}.")
-        parts.append(f"{n} of 12 modules have been completed.")
+        parts.append(f"{n} of {_MODULE_COUNT} modules have been completed.")
         # Quality bands
         for qs in metrics.quality_scores:
             band_word = {"green": "high", "yellow": "moderate", "red": "low"}.get(qs.band, qs.band)
@@ -656,9 +659,9 @@ class HTMLRenderer:
 
     def _render_module_table(self, progress: ProgressData) -> str:
         n = len(progress.modules_completed)
-        pct = n * 100 / 12 if True else 0
+        pct = n * 100 / _MODULE_COUNT if True else 0
         rows = ""
-        for m in range(1, 13):
+        for m in range(1, _MODULE_COUNT + 1):
             name = MODULE_NAMES.get(m, f"Module {m}")
             if m in progress.modules_completed:
                 status = "✅ Completed"
@@ -673,7 +676,7 @@ class HTMLRenderer:
             else ""
         )
         return (
-            f"<p>Progress: <strong>{n}/12 ({pct:.0f}%)</strong></p>\n"
+            f"<p>Progress: <strong>{n}/{_MODULE_COUNT} ({pct:.0f}%)</strong></p>\n"
             + lang_row
             + "<table><thead><tr><th>#</th><th>Module</th><th>Status</th></tr></thead>\n<tbody>\n"
             + rows + "</tbody></table>"
@@ -944,7 +947,8 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         valid, invalid = ModuleFilter.validate_modules(raw)
         for inv in invalid:
-            print(f"Warning: ignoring invalid module number {inv} (must be 1-12).", file=sys.stderr)
+            print(f"Warning: ignoring invalid module number {inv} (must be 1-{_MODULE_COUNT}).",
+                  file=sys.stderr)
         if valid:
             modules_filter = valid
         else:

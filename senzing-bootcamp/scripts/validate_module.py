@@ -207,10 +207,10 @@ MODULE_NAMES = {
     5: "Data Quality & Mapping",
     6: "Data Processing",
     7: "Query, Visualize, and Discover",
-    8: "Performance Testing",
+    8: "Performance Testing & Benchmarking",
     9: "Security Hardening",
-    10: "Monitoring",
-    11: "Deployment",
+    10: "Monitoring & Observability",
+    11: "Package & Deploy",
 }
 
 

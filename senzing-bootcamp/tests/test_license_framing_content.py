@@ -355,7 +355,10 @@ class TestUserFacingDocsFraming:
                 # Frames the figure as a default, not a wall.
                 ("a default, not a wall", "not a wall", "is a default"),
                 ("apply an existing senzing license", "apply an existing license"),
-                ("through senzing support", "request an evaluation license through senzing support"),
+                (
+                    "through senzing support",
+                    "request an evaluation license through senzing support",
+                ),
                 ("in-flow", "request one in-flow"),
                 # Downsizing is one option among several.
                 ("just one option", "one option"),

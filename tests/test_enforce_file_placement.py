@@ -138,6 +138,14 @@ def agent_instructions_content() -> str:
 
 
 @pytest.fixture(scope="module")
+def file_placement_content() -> str:
+    """Load file-placement.md content (root prohibitions + whitelist relocated here)."""
+    path = REPO_ROOT / "senzing-bootcamp" / "steering" / "file-placement.md"
+    assert path.exists(), f"Steering file not found: {path}"
+    return path.read_text(encoding="utf-8")
+
+
+@pytest.fixture(scope="module")
 def project_structure_content() -> str:
     """Load project-structure.md content."""
     path = REPO_ROOT / "senzing-bootcamp" / "steering" / "project-structure.md"
@@ -404,46 +412,52 @@ class TestCheck4PromptStructure:
 class TestSteeringFileProhibitions:
     """Verify steering files contain prohibition language."""
 
-    # --- agent-instructions.md tests (Req 4.1–4.5) ---
+    # --- file-placement.md tests (Req 4.1–4.5; relocated from agent-instructions.md) ---
 
-    def test_agent_instructions_blocks_py(self, agent_instructions_content: str):
-        """Agent instructions prohibit .py files in root (Req 4.1)."""
-        assert "`.py` files" in agent_instructions_content
-        assert "src/" in agent_instructions_content or "scripts/" in agent_instructions_content
+    def test_agent_instructions_blocks_py(self, file_placement_content: str):
+        """Root prohibitions block .py files in root (Req 4.1)."""
+        assert "`.py` files" in file_placement_content
+        assert "src/" in file_placement_content or "scripts/" in file_placement_content
 
-    def test_agent_instructions_blocks_md(self, agent_instructions_content: str):
-        """Agent instructions prohibit .md files (except README.md) in root (Req 4.2)."""
-        assert "`.md` files (except `README.md`)" in agent_instructions_content
+    def test_agent_instructions_blocks_md(self, file_placement_content: str):
+        """Root prohibitions block .md files (except README.md) in root (Req 4.2)."""
+        assert "`.md` files (except `README.md`)" in file_placement_content
 
-    def test_agent_instructions_blocks_data_files(self, agent_instructions_content: str):
-        """Agent instructions prohibit .jsonl and .csv files in root (Req 4.3)."""
-        assert "`.jsonl` files" in agent_instructions_content
-        assert "`.csv` files" in agent_instructions_content
+    def test_agent_instructions_blocks_data_files(self, file_placement_content: str):
+        """Root prohibitions block .jsonl and .csv files in root (Req 4.3)."""
+        assert "`.jsonl` files" in file_placement_content
+        assert "`.csv` files" in file_placement_content
 
-    def test_agent_instructions_blocks_json(self, agent_instructions_content: str):
-        """Agent instructions prohibit non-config .json files in root (Req 4.4)."""
-        assert "`.json` files" in agent_instructions_content or \
-               "Non-config `.json` files" in agent_instructions_content
+    def test_agent_instructions_blocks_json(self, file_placement_content: str):
+        """Root prohibitions block non-config .json files in root (Req 4.4)."""
+        assert "`.json` files" in file_placement_content or \
+               "Non-config `.json` files" in file_placement_content
 
-    def test_agent_instructions_lists_whitelist(self, agent_instructions_content: str):
-        """Agent instructions list the root whitelist (Req 4.5)."""
-        assert "`.gitignore`" in agent_instructions_content
-        assert "`README.md`" in agent_instructions_content
-        assert "`requirements.txt`" in agent_instructions_content
-        assert "`package.json`" in agent_instructions_content
-        assert "`Cargo.toml`" in agent_instructions_content
-        assert "`pom.xml`" in agent_instructions_content
-        assert "`*.csproj`" in agent_instructions_content
+    def test_agent_instructions_lists_whitelist(self, file_placement_content: str):
+        """Root prohibitions list the root whitelist (Req 4.5)."""
+        assert "`.gitignore`" in file_placement_content
+        assert "`README.md`" in file_placement_content
+        assert "`requirements.txt`" in file_placement_content
+        assert "`package.json`" in file_placement_content
+        assert "`Cargo.toml`" in file_placement_content
+        assert "`pom.xml`" in file_placement_content
+        assert "`*.csproj`" in file_placement_content
 
     def test_agent_instructions_has_root_prohibitions_section(
+        self, file_placement_content: str
+    ):
+        """file-placement.md contains a Root Prohibitions section."""
+        assert "## Root Prohibitions" in file_placement_content
+
+    def test_agent_instructions_never_language(self, file_placement_content: str):
+        """Root prohibitions use NEVER prohibition language."""
+        assert "NEVER place these file types in the project root" in file_placement_content
+
+    def test_agent_instructions_points_to_file_placement(
         self, agent_instructions_content: str
     ):
-        """Agent instructions contain a Root Prohibitions section."""
-        assert "### Root Prohibitions" in agent_instructions_content
-
-    def test_agent_instructions_never_language(self, agent_instructions_content: str):
-        """Agent instructions use NEVER prohibition language."""
-        assert "NEVER place these file types in the project root" in agent_instructions_content
+        """agent-instructions.md keeps a pointer to file-placement.md."""
+        assert "file-placement.md" in agent_instructions_content
 
     # --- project-structure.md tests (Req 5.1–5.6) ---
 

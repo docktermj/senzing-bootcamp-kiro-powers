@@ -8,10 +8,10 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 220
+- implemented: 224
 - superseded: 2
 - abandoned: 0
-- unknown: 0
+- unknown: 1
 
 ## Specs
 
@@ -498,6 +498,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/governance-rule-conformance/](.kiro/specs/governance-rule-conformance/)
 
+### graduation-artifact-inventory
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/graduation-artifact-inventory/](.kiro/specs/graduation-artifact-inventory/)
+
 ### graduation-certificate
 
 - Status: implemented
@@ -637,6 +644,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/leading-question-enforcement/](.kiro/specs/leading-question-enforcement/)
+
+### license-capacity-framing
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/license-capacity-framing/](.kiro/specs/license-capacity-framing/)
 
 ### license-guidance-workflow
 
@@ -870,6 +884,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/module-router-standardization/](.kiro/specs/module-router-standardization/)
+
+### module-sequencing-order
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/module-sequencing-order/](.kiro/specs/module-sequencing-order/)
 
 ### module-start-banners
 
@@ -1122,6 +1143,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/remove-verification-track/](.kiro/specs/remove-verification-track/)
+
+### rename-module-6
+
+- Status: unknown
+- Type: unknown
+- Workflow: unknown
+- Directory: [.kiro/specs/rename-module-6/](.kiro/specs/rename-module-6/)
 
 ### rename-module-6-data-processing
 
@@ -1462,6 +1490,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/transformation-lineage/](.kiro/specs/transformation-lineage/)
+
+### turn-answer-handling
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/turn-answer-handling/](.kiro/specs/turn-answer-handling/)
 
 ### typescript-language-maturity
 

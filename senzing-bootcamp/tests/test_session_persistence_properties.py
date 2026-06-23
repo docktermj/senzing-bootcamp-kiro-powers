@@ -835,7 +835,7 @@ class TestPropertyA1PreservationNonBuggyScalars:
                 assert loaded.preferences is not None
                 out = loaded.preferences["license_guidance_deferred"]
                 assert out is raw, f"Expected {raw!r}, got {out!r}"
-                assert type(out) is bool
+                assert isinstance(out, bool)
 
     def test_validate_preferences_schema_unaffected(self):
         """``validate_preferences_schema`` still accepts/rejects as before.

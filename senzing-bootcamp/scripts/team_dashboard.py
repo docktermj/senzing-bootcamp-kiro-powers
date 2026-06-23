@@ -27,16 +27,15 @@ MODULE_NAMES = {
     3: "System Verification",
     4: "Data Collection",
     5: "Data Quality & Mapping",
-    6: "Single Source Loading",
-    7: "Multi-Source Orchestration",
-    8: "Query, Visualize & Validate",
-    9: "Performance Testing",
-    10: "Security Hardening",
-    11: "Monitoring",
-    12: "Deployment",
+    6: "Data Processing",
+    7: "Query, Visualize, and Discover",
+    8: "Performance Testing & Benchmarking",
+    9: "Security Hardening",
+    10: "Monitoring & Observability",
+    11: "Package & Deploy",
 }
 
-TOTAL_MODULES = 12
+TOTAL_MODULES = 11
 
 
 # ── Data collection ───────────────────────────────────────────────────────
@@ -109,7 +108,7 @@ def compute_team_stats(member_data: list[dict]) -> dict:
     # Total modules completed across all members
     total = sum(len(m.get("modules_completed", [])) for m in member_data)
 
-    # Fully completed count (all 12 modules)
+    # Fully completed count (all modules)
     fully = sum(
         1
         for m in member_data
@@ -217,14 +216,14 @@ def render_dashboard_html(
             )
 
     # ── Build heatmap rows ──
-    heatmap_header = "".join(f"<th>M{i}</th>" for i in range(1, 13))
+    heatmap_header = "".join(f"<th>M{i}</th>" for i in range(1, TOTAL_MODULES + 1))
     heatmap_rows = ""
     for m in member_data:
         name = _esc(m["member_name"])
         completed = set(m.get("modules_completed", []))
         cur = m.get("current_module", 0)
         cells = ""
-        for mod in range(1, 13):
+        for mod in range(1, TOTAL_MODULES + 1):
             if mod in completed:
                 cells += '<td class="mod-done">&#10003;</td>'
             elif mod == cur and m["status"] != "No data available":

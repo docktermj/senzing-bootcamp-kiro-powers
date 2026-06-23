@@ -17,6 +17,7 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from status import (
+    MODULE_NAMES,
     DashboardData,
     DashboardDataCollector,
     DashboardRenderer,
@@ -26,6 +27,9 @@ from status import (
     QualityScoreData,
     generate_dashboard,
 )
+
+#: Canonical bootcamp module count (single source: status.MODULE_NAMES).
+_MODULE_COUNT = len(MODULE_NAMES)
 
 # ---------------------------------------------------------------------------
 # Task 5.1: Hypothesis strategies
@@ -125,8 +129,8 @@ def _iso_timestamps():
 
 def _completion_timestamps():
     """Strategy for completion_timestamps dict (module_number -> ISO string)."""
-    keys = st.sampled_from(list(range(1, 13)))
-    return st.dictionaries(keys, _iso_timestamps(), min_size=0, max_size=12)
+    keys = st.sampled_from(list(range(1, _MODULE_COUNT + 1)))
+    return st.dictionaries(keys, _iso_timestamps(), min_size=0, max_size=_MODULE_COUNT)
 
 
 def _dashboard_data():
@@ -134,9 +138,10 @@ def _dashboard_data():
     return st.builds(
         _build_dashboard_data,
         modules_completed=st.lists(
-            st.integers(min_value=1, max_value=12), unique=True, max_size=12,
+            st.integers(min_value=1, max_value=_MODULE_COUNT), unique=True,
+            max_size=_MODULE_COUNT,
         ).map(sorted),
-        current_module=st.integers(min_value=1, max_value=12),
+        current_module=st.integers(min_value=1, max_value=_MODULE_COUNT),
         status=st.sampled_from(_STATUSES),
         language=st.one_of(
             st.none(), st.sampled_from(["Python", "Java", "Go", "C#", "JavaScript"])
@@ -158,7 +163,7 @@ def _build_dashboard_data(
     performance, entity_stats, health_checks, generated_at, has_progress_data,
 ):
     """Build DashboardData with computed fields."""
-    completion_pct = len(modules_completed) * 100 // 12
+    completion_pct = len(modules_completed) * 100 // _MODULE_COUNT
     health_score = sum(1 for h in health_checks if h.exists)
     health_total = len(health_checks)
     return DashboardData(
@@ -257,12 +262,12 @@ class TestProperty3ProgressBar:
     def test_progress_bar_percentage_and_fraction(self, data):
         """**Validates: Requirements 4.1, 4.2**"""
         html = _render(data)
-        expected_pct = len(data.modules_completed) * 100 // 12
+        expected_pct = len(data.modules_completed) * 100 // _MODULE_COUNT
         n = len(data.modules_completed)
         # The percentage should appear in the progress section
         assert f"{expected_pct}%" in html
-        # The fraction "N / 12" should appear
-        assert f"{n} / 12" in html
+        # The fraction "N / <count>" should appear
+        assert f"{n} / {_MODULE_COUNT}" in html
 
 
 # ---------------------------------------------------------------------------
@@ -278,9 +283,9 @@ class TestProperty4ModuleCards:
     def test_twelve_module_cards_with_correct_status(self, data):
         """**Validates: Requirements 4.3, 4.4, 4.5, 4.6**"""
         html = _render(data)
-        # Exactly 12 module cards
+        # Exactly one module card per module
         card_matches = re.findall(r'class="card\s+(completed|in-progress|not-started)"', html)
-        assert len(card_matches) == 12
+        assert len(card_matches) == _MODULE_COUNT
 
         # Extract individual cards by splitting on card boundaries
         # Each card is a <div class="card ...">...</div>
@@ -298,9 +303,9 @@ class TestProperty4ModuleCards:
             if mod_match:
                 card_status_map[int(mod_match.group(1))] = card_class
 
-        assert len(card_status_map) == 12
+        assert len(card_status_map) == _MODULE_COUNT
 
-        for num in range(1, 13):
+        for num in range(1, _MODULE_COUNT + 1):
             card_class = card_status_map[num]
             if num in data.modules_completed:
                 assert card_class == "completed", f"Module {num} should be completed"

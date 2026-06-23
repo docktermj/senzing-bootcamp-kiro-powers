@@ -27,7 +27,6 @@ if _SCRIPTS_DIR not in sys.path:
 
 import volume_utils  # noqa: E402
 
-
 # ---------------------------------------------------------------------------
 # TestExpansionPathSelection
 # ---------------------------------------------------------------------------
@@ -142,7 +141,8 @@ class TestDefaultLicenseFraming:
     Validates Requirement 1.1.
     """
 
-    # Feature: license-capacity-framing, Property 1: Framing presents a default license, never a hard cap
+    # Feature: license-capacity-framing, Property 1:
+    # Framing presents a default license, never a hard cap
     @settings(max_examples=100)
     @given(ctx=st_license_framing_context())
     def test_framing_presents_default_license_never_hard_cap(
@@ -184,7 +184,8 @@ class TestRenderedPathsPresent:
     Validates Requirements 2.1, 2.2, 2.4.
     """
 
-    # Feature: license-capacity-framing, Property 3: Rendered framing includes every selected expansion path
+    # Feature: license-capacity-framing, Property 3:
+    # Rendered framing includes every selected expansion path
     @settings(max_examples=100)
     @given(ctx=st_license_framing_context())
     def test_rendered_framing_includes_every_selected_path(
@@ -248,7 +249,8 @@ class TestFiguresSourcedNotHardcoded:
     Validates Requirements 1.3, 1.4.
     """
 
-    # Feature: license-capacity-framing, Property 4: Capacity and validity figures are sourced, never hardcoded
+    # Feature: license-capacity-framing, Property 4:
+    # Capacity and validity figures are sourced, never hardcoded
     @settings(max_examples=100)
     @given(ctx=st_license_framing_context())
     def test_figures_are_sourced_never_hardcoded(
@@ -315,7 +317,8 @@ class TestDownsizingCoPresented:
     Validates Requirements 1.2, 3.1, 3.2.
     """
 
-    # Feature: license-capacity-framing, Property 5: Downsizing is co-presented, never the sole or primary path
+    # Feature: license-capacity-framing, Property 5:
+    # Downsizing is co-presented, never the sole or primary path
     @settings(max_examples=100)
     @given(ctx=st_license_framing_context())
     def test_downsizing_is_co_presented_never_primary(
@@ -420,7 +423,8 @@ class TestNoHardcodedUrls:
     Validates Requirement 4.4.
     """
 
-    # Feature: license-capacity-framing, Property 6: Framing output contains no hardcoded MCP or external URL
+    # Feature: license-capacity-framing, Property 6:
+    # Framing output contains no hardcoded MCP or external URL
     @settings(max_examples=100)
     @given(ctx=st_license_framing_context())
     def test_framing_output_has_no_hardcoded_urls(

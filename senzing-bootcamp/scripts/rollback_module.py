@@ -96,8 +96,8 @@ MODULE_NAMES = {
     1: "Business Problem", 2: "SDK Setup", 3: "System Verification",
     4: "Data Collection", 5: "Data Quality & Mapping",
     6: "Data Processing", 7: "Query, Visualize, and Discover",
-    8: "Performance Testing", 9: "Security Hardening",
-    10: "Monitoring", 11: "Deployment",
+    8: "Performance Testing & Benchmarking", 9: "Security Hardening",
+    10: "Monitoring & Observability", 11: "Package & Deploy",
 }
 PREREQUISITES = {
     3:  [2],

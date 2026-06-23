@@ -333,6 +333,12 @@ If any answer is yes (across all 5 checks), revise the turn before sending.
 
 Writing `config/.question_pending` is mandatory for every 👉 question — not optional, not best-effort. If you output a 👉 question and do not write the file, you have violated the protocol. The file must use the structured format: question type on the first line (one of: `track_selection`, `module_transition`, `step_question`, `confirmation`, `choice`), full question text on subsequent lines. Default to `step_question` when the type is undetermined. The file enforces the wait: while it exists, you must not generate response content until the bootcamper provides input and the file is deleted.
 
+## Final-Message Invariant
+
+Every input-expecting (yielding) turn ends with exactly one **live** 👉 pending question as the **final message** shown to the bootcamper, with `config/.question_pending` written for it. The live 👉 pending question must be the final message of an input-expecting turn — nothing may appear after it.
+
+A recap or confirmation emission must never be the final message of an input-expecting turn. If any recap/confirmation runs after the 👉 question (for example a per-module recap step), the live 👉 pending question must be re-surfaced as the final message and `config/.question_pending` (re)written for it, so the bootcamper always ends the turn looking at one actionable question.
+
 ## Module Transition Protocol
 
 When you ask 'Ready for Module X' and the bootcamper responds affirmatively (yes, sure, let's go, ready, etc.), immediately begin that module in the same turn. Display the module banner, journey map, and start Step 1. Never acknowledge without acting at a module transition.

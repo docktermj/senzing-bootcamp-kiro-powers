@@ -33,6 +33,12 @@ The **recap_append**, **journal_entry**, and **completion_certificate** steps al
 - **Defer when a question is pending.** If `config/.question_pending` exists at completion-check time, produce no completion-artifact output at all (no recap, journal, or certificate) and defer to `ask-bootcamper`. This deferral is unchanged.
 - **No-op when nothing new completed.** If `modules_completed` has not gained a new entry since the previous state, produce no recap, journal, or certificate output — no spurious duplicate artifacts. This no-op behavior is unchanged.
 
+### Final-Message Ordering (recap vs. forward transition)
+
+A module-completion turn that expects input must end with exactly one live pending question (👉) as its **final message** (per the Final-Message Invariant in `conversation-protocol.md`). Run the recap/confirmation BEFORE the forward transition question, or re-surface the forward "Ready for Module X" prompt (👉) as the final message after any recap/confirmation, with `config/.question_pending` (re)written for it. A recap/confirmation line (e.g., "Recap updated for Module N") must never be the final message of a completion turn.
+
+This ordering rule does not change the fixed completion step order above, the defer-when-pending / no-op trigger rules, or the affirmative-transition commitment: an affirmative answer to "Ready for Module X?" still immediately starts the next module in the same turn with its banner, journey map, before/after framing, and Step 1.
+
 ## Completion Slice Manifest
 
 The detailed completion behavior lives in cohesive slices under `senzing-bootcamp/steering/`. Each completion concern maps to exactly **one** slice. Load only the slice you need for the concern at hand:

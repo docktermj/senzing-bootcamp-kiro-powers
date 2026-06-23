@@ -70,7 +70,7 @@ modules:
     phases:
       phase1-build-loading-program:
         file: module-06-phaseA-build-loading.md
-        token_count: 2424
+        token_count: 2866
         size_category: large
         step_range: [1, 4]
       phase2-load-first-source:
@@ -329,7 +329,7 @@ file_metadata:
     token_count: 536
     size_category: medium
   conversation-protocol.md:
-    token_count: 4022
+    token_count: 4199
     size_category: large
   data-lineage.md:
     token_count: 603
@@ -488,7 +488,7 @@ file_metadata:
     token_count: 652
     size_category: medium
   module-06-phaseA-build-loading.md:
-    token_count: 2424
+    token_count: 2860
     size_category: large
   module-06-phaseB-load-first-source.md:
     token_count: 1193
@@ -557,13 +557,13 @@ file_metadata:
     token_count: 604
     size_category: medium
   module-completion-next-steps.md:
-    token_count: 555
+    token_count: 702
     size_category: medium
   module-completion-track.md:
     token_count: 1277
     size_category: medium
   module-completion.md:
-    token_count: 1163
+    token_count: 1394
     size_category: medium
   module-prerequisites.md:
     token_count: 1344
@@ -633,7 +633,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 180782
+  total_tokens: 181773
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

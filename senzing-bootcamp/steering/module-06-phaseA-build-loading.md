@@ -53,6 +53,19 @@ inclusion: manual
    - 10,000,000+ — large production
 
    > **Agent instruction — Volume Classification:**
+   >
+   > **Bind first (numbered option list answers).** The example ranges above (and the clarifying follow-up below) present the four tiers as a numbered option list. When the question presented that numbered list, FIRST attempt to bind the bootcamper's reply to it with `answer_binding.bind_option(reply, ["demo", "small", "medium", "large"])` from `senzing-bootcamp/scripts/answer_binding.py` (helper functions: `parse_option_token`, `bind_option`, `is_bare_matching_token`). The presented option list is ordered 1→demo, 2→small, 3→medium, 4→large, so a bound 1-based index selects the tier directly via this option→tier map:
+   > - 1 → demo
+   > - 2 → small
+   > - 3 → medium
+   > - 4 → large
+   >
+   > `bind_option` only binds a bare matching token (e.g. `3`, `3.`, `(3)`); replies that carry additional free-text meaning (e.g. `3 million`, `around 3`) return `None` and fall through to the parse path below.
+   >
+   > - **If `bind_option` returns an index (1–4):** select the mapped tier directly, persist the selection using `volume_utils.persist_volume_selection` with `preferences_path="config/bootcamp_preferences.yaml"`, `progress_path="config/bootcamp_progress.json"`, and `step_number=1`, then advance. Do NOT re-present the Module 6 banner or the volume question — the bootcamper already answered.
+   > - **If `bind_option` returns `None`:** the reply is not a bare matching token — fall through to the parse path below.
+   >
+   > **Fall-through (free-text parsing).** Only when `bind_option` returns `None`:
    > 1. Parse the bootcamper's response using `volume_utils.parse_volume_input`.
    > 2. Classify the parsed value using `volume_utils.classify_tier`.
    > 3. Persist the selection using `volume_utils.persist_volume_selection` with `preferences_path="config/bootcamp_preferences.yaml"`, `progress_path="config/bootcamp_progress.json"`, and `step_number=1`.
@@ -61,6 +74,7 @@ inclusion: manual
    >    2. 500 to 500,000 (small production)
    >    3. 500,000 to 10,000,000 (medium production)
    >    4. 10,000,000+ (large production)
+   >    Then bind the follow-up reply with `answer_binding.bind_option` against this numbered list first (same 1→demo, 2→small, 3→medium, 4→large map); only fall through to `parse_volume_input` again when it returns `None`.
    > 5. If the follow-up response is still unparseable: default to the demo tier, inform the bootcamper that demo/evaluation has been selected as the default, and proceed.
 
    > **Agent instruction — License framing (default + expansion paths):** After the tier is classified, present licensing as a default the bootcamper already has, never as a hard cap. Build the wording with `volume_utils.get_license_guidance(tier, capacity=<from MCP>, validity=<from MCP>, submit_feedback_available=<from gate>, has_existing_license=<from prefs>)` and present its output.

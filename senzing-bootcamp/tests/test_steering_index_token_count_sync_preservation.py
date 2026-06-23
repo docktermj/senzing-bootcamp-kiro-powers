@@ -116,7 +116,16 @@ _BASELINE_HASHES: dict[str, str] = {
     # which measure_steering.py recomputed into file_metadata and the budget
     # total. Only the budget block changed; keywords/languages/deployment/
     # root_step_range are byte-identical.
-    "budget": "5f6d549b0ba50081c0185a2e28aef936325ee256825547b86025e01a4cc74d8e",
+    # Re-baselined once more (180782 -> 181773) for the turn-answer-handling
+    # bugfix: module-06-phaseA-build-loading.md (2034 -> 2860) gained the
+    # binding-first Volume Classification instruction, conversation-protocol.md
+    # (4022 -> 4199) gained the final-message invariant, and
+    # module-completion.md (1163 -> 1394) / module-completion-next-steps.md
+    # (555 -> 702) gained the recap-before-transition ordering rule, all
+    # recomputed by measure_steering.py into file_metadata and the budget total.
+    # Only the budget block changed; keywords/languages/deployment/root_step_range
+    # are byte-identical.
+    "budget": "0e1303165e53480d1dd372d5fa689d22013f8c36e3c4fa061cd16aaf5cd27d9b",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -490,9 +499,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (180782), so the hash cannot silently re-pin a stale value.
+        # (181773), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 180782" in budget_block
+        assert "total_tokens: 181773" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

@@ -222,6 +222,7 @@ python3 senzing-bootcamp/scripts/track_switcher.py --from advanced_topics --to c
 | `optimize_steering.py` | Splits/compresses always-on steering files and syncs `steering-index.yaml` (`--check`, `--dry-run`) |
 | `progress_dashboard.py` | Generates a self-contained HTML progress dashboard at `docs/progress/dashboard.html` |
 | `generate_graduation_certificate.py` | Generates a graduation certificate in Markdown and HTML |
+| `generate_artifact_inventory.py` | Generates the "Complete Artifact Inventory" graduation-report section — every artifact grouped by phase with why-it-matters notes and carry-forward/leave-behind tags, derived from progress + files on disk |
 | `generate_recap_pdf.py` | Renders `docs/bootcamp_recap.md` to PDF (optional `fpdf2`; keeps Markdown when absent) |
 | `generate_completion_summary.py` | Builds a module completion summary in Markdown (optional PDF via `fpdf2`) |
 
@@ -233,6 +234,7 @@ python3 senzing-bootcamp/scripts/organize_mapping_files.py --source <dir> --proj
 python3 senzing-bootcamp/scripts/optimize_steering.py --check
 python3 senzing-bootcamp/scripts/progress_dashboard.py
 python3 senzing-bootcamp/scripts/generate_graduation_certificate.py
+python3 senzing-bootcamp/scripts/generate_artifact_inventory.py
 python3 senzing-bootcamp/scripts/generate_recap_pdf.py --input docs/bootcamp_recap.md
 python3 senzing-bootcamp/scripts/generate_completion_summary.py
 ```

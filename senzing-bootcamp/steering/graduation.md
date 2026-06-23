@@ -173,6 +173,8 @@ Ask: "Would you like me to initialize a new git repository in the `production/` 
 
 Include: timestamp, track completed, modules finished, language, database type, files generated table, files excluded table, and next steps (fill in secrets, obtain license, work through checklist, configure CI/CD, test with production data).
 
+**Complete Artifact Inventory:** Run `python scripts/generate_artifact_inventory.py` and embed its stdout as a "Complete Artifact Inventory" section in `GRADUATION_REPORT.md`, placed **after** the files-excluded table and **before** the next steps. Unlike the files tables (which cover only the `production/` subset), this section lists every artifact created across all completed modules, grouped by phase, each with a short why-it-matters note and a carry-forward / bootcamp-record tag. This step is **non-blocking**: if the script fails, record the failure under "⚠️ Issues Encountered" and still produce the rest of the report. Do not duplicate or contradict the files-generated/files-excluded tables.
+
 If any step encountered errors, add a "⚠️ Issues Encountered" section listing what failed and what was skipped.
 
 Present completion:

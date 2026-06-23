@@ -101,6 +101,7 @@ Used by the agent or for development/maintenance tasks.
 | `visualize_dependencies.py` | Generate module dependency visualization |
 | `progress_dashboard.py` | Generate a self-contained HTML progress dashboard at `docs/progress/dashboard.html` |
 | `generate_graduation_certificate.py` | Generate a graduation certificate in Markdown and HTML |
+| `generate_artifact_inventory.py` | Generate the "Complete Artifact Inventory" graduation-report section — every artifact grouped by phase with why-it-matters notes and carry-forward/leave-behind tags, derived from progress + files on disk |
 | `generate_recap_pdf.py` | Render `docs/bootcamp_recap.md` to a PDF (optional `fpdf2`; keeps Markdown if absent) |
 | `generate_completion_summary.py` | Build a module completion summary in Markdown (optional PDF via `fpdf2`) |
 

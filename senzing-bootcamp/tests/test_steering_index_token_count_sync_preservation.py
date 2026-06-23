@@ -109,7 +109,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # which measure_steering.py recomputed into file_metadata and the budget
     # total. Only the budget block changed; keywords/languages/deployment/
     # root_step_range are byte-identical.
-    "budget": "ecc3967a165ade73481602432b595c693de69731e21e27fe04f438f1ccb913b5",
+    # Re-baselined once more (179803 -> 180782) for the license-capacity-framing
+    # spec: module-04-data-collection.md (3460 -> 4049) and
+    # module-06-phaseA-build-loading.md (2034 -> 2424) grew when their license
+    # guidance was reframed as a default evaluation license with expansion paths,
+    # which measure_steering.py recomputed into file_metadata and the budget
+    # total. Only the budget block changed; keywords/languages/deployment/
+    # root_step_range are byte-identical.
+    "budget": "5f6d549b0ba50081c0185a2e28aef936325ee256825547b86025e01a4cc74d8e",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -461,6 +468,12 @@ class TestNonPhaseBlocksBytePreserved:
         ``hook-registry-modules.md`` file (the module-recap-append and
         module-completion-celebration hook prompts changed), all recomputed by
         ``measure_steering.py`` into ``file_metadata`` and the budget total.
+        Most recently, the license-capacity-framing spec re-baselines again
+        (179803 -> 180782): ``module-04-data-collection.md`` (3460 -> 4049) and
+        ``module-06-phaseA-build-loading.md`` (2034 -> 2424) grew when their
+        license guidance was reframed as a default evaluation license with
+        expansion paths, all recomputed by ``measure_steering.py`` into
+        ``file_metadata`` and the budget total.
         Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
@@ -477,9 +490,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (178266), so the hash cannot silently re-pin a stale value.
+        # (180782), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 179803" in budget_block
+        assert "total_tokens: 180782" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

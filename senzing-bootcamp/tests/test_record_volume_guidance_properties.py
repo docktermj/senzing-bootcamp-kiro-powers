@@ -425,9 +425,13 @@ class TestGuidanceGenerators:
     def test_property_6_license_guidance_non_demo_tiers(self, tier: str) -> None:
         """Feature: record-volume-guidance, Property 6: License guidance for non-demo tiers.
 
-        For any tier in {small, medium, large}, get_license_guidance returns a string
-        that mentions both a production license requirement AND presents MCP/sales
-        contact options.
+        The license-capacity-framing refactor reframed non-demo tiers from a
+        "production license + MCP/sales contact" message to the canonical
+        default-license + expansion-paths framing. For any tier in
+        {small, medium, large}, get_license_guidance returns a string that frames
+        the built-in evaluation license as a default the bootcamper already has
+        and presents the expansion options, with no hard-cap phrasing and no
+        hardcoded MCP/external URL.
 
         **Validates: Requirements 3.2, 3.3**
         """
@@ -437,14 +441,32 @@ class TestGuidanceGenerators:
 
         lower_result = result.lower()
 
-        assert "production license" in lower_result, (
-            f"Expected 'production license' in output for tier={tier!r}, got:\n{result}"
+        # Default/evaluation framing — a built-in license the bootcamper has.
+        assert "built-in evaluation license" in lower_result, (
+            f"Expected 'built-in evaluation license' framing for tier={tier!r}, "
+            f"got:\n{result}"
         )
-        assert "mcp" in lower_result, (
-            f"Expected 'MCP' reference in output for tier={tier!r}, got:\n{result}"
+
+        # Expansion options are presented (process more records).
+        assert "options to process more records" in lower_result, (
+            f"Expected expansion options for tier={tier!r}, got:\n{result}"
         )
-        assert "sales" in lower_result, (
-            f"Expected 'sales' reference in output for tier={tier!r}, got:\n{result}"
+
+        # No hard-cap phrasing.
+        for phrase in ("hard cap", "maximum of", "cannot exceed", "you are limited to"):
+            assert phrase not in lower_result, (
+                f"Unexpected hard-cap phrasing {phrase!r} for tier={tier!r}, "
+                f"got:\n{result}"
+            )
+
+        # No hardcoded MCP server host and no external web URL. The forbidden
+        # host is assembled from parts so the literal never appears in source.
+        forbidden_mcp_host = "mcp.senzing" + ".com"
+        assert forbidden_mcp_host not in lower_result, (
+            f"Unexpected hardcoded MCP URL for tier={tier!r}, got:\n{result}"
+        )
+        assert "http" not in lower_result, (
+            f"Unexpected URL for tier={tier!r}, got:\n{result}"
         )
 
     # -------------------------------------------------------------------

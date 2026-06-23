@@ -126,17 +126,45 @@ class TestClassifyTier:
 # ---------------------------------------------------------------------------
 
 
+_HARD_CAP_PHRASES = ("hard cap", "maximum of", "cannot exceed", "you are limited to")
+
+
 class TestLicenseGuidance:
     """Test license guidance content for demo tier.
 
     Validates: Requirement 3.1
+
+    The license-capacity-framing refactor removed the hardcoded "500-record"
+    literal (capacity figures now come from the MCP server, never hardcoded).
+    The demo tier now frames the built-in evaluation license as sufficient for
+    the stated volume rather than asserting a fixed figure.
     """
 
-    def test_demo_tier_mentions_500_record(self) -> None:
-        """Demo tier guidance mentions '500-record'."""
+    def test_demo_tier_frames_builtin_license_as_sufficient(self) -> None:
+        """Demo tier frames the built-in evaluation license as sufficient.
+
+        No "500-record" literal is required — the figure is sourced from the MCP
+        server, not hardcoded.
+        """
         result = get_license_guidance("demo")
         assert result is not None
-        assert "500-record" in result
+        lower = result.lower()
+        assert "built-in evaluation license" in lower
+        assert "sufficient" in lower
+
+    def test_demo_tier_no_hardcoded_figure_by_default(self) -> None:
+        """Demo tier omits any hardcoded capacity figure when none is supplied."""
+        result = get_license_guidance("demo")
+        assert result is not None
+        assert "500-record" not in result
+
+    def test_demo_tier_no_hard_cap_phrasing(self) -> None:
+        """Demo tier never presents the limit as a hard cap."""
+        result = get_license_guidance("demo")
+        assert result is not None
+        lower = result.lower()
+        for phrase in _HARD_CAP_PHRASES:
+            assert phrase not in lower, f"unexpected hard-cap phrasing: {phrase!r}"
 
     def test_demo_tier_mentions_evaluation(self) -> None:
         """Demo tier guidance mentions 'evaluation'."""

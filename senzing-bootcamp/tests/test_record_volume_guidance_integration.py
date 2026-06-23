@@ -72,6 +72,17 @@ class TestEndToEndFlow:
         assert isinstance(license_guidance, str)
         assert len(license_guidance) > 0
 
+        # Non-demo tiers use the canonical default-license + expansion-paths
+        # framing (license-capacity-framing refactor). Assert the new framing
+        # invariants rather than the removed "500-record" literal or MCP URL.
+        lower_license = license_guidance.lower()
+        assert "built-in evaluation license" in lower_license
+        assert "options to process more records" in lower_license
+        for phrase in ("hard cap", "maximum of", "cannot exceed", "you are limited to"):
+            assert phrase not in lower_license, f"unexpected hard-cap phrasing: {phrase!r}"
+        assert ("mcp.senzing" + ".com") not in lower_license
+        assert "http" not in lower_license
+
         arch_guidance = volume_utils.get_architecture_guidance(tier)
         assert isinstance(arch_guidance, str)
         assert len(arch_guidance) > 0

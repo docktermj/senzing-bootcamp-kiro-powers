@@ -15,6 +15,7 @@ import datetime
 import json
 import re
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -33,6 +34,183 @@ TIER_BOUNDARIES: dict[str, tuple[int | float, int | float]] = {
     TIER_MEDIUM: (500_000, 10_000_000),
     TIER_LARGE: (10_000_000, float("inf")),
 }
+
+
+# ---------------------------------------------------------------------------
+# License framing constants and value object
+# ---------------------------------------------------------------------------
+
+# Expansion path identifiers (stable, ordered). The canonical order is
+# apply-existing, external-request, then in-flow MCP (when applicable).
+PATH_APPLY_EXISTING = "apply_existing"      # apply an existing Senzing license
+PATH_EXTERNAL_REQUEST = "external_request"  # request via support channel
+PATH_IN_FLOW_MCP = "in_flow_mcp"            # request in-flow via submit_feedback
+
+
+@dataclass(frozen=True)
+class LicenseFramingContext:
+    """Inputs the agent gathers (from MCP + known state) for license framing.
+
+    The agent retrieves Senzing facts from the Senzing MCP server at request
+    time and passes them in here; the pure framing helpers never embed
+    hardcoded figures. ``capacity`` / ``validity`` are ``None`` when the MCP
+    server does not return them or cannot be reached — the framing then omits
+    the figure entirely.
+
+    Attributes:
+        capacity: Record capacity from the MCP server, or None when unavailable.
+        validity: Validity period from the MCP server, or None when unavailable.
+        submit_feedback_available: Whether the in-flow MCP ``submit_feedback``
+            tool is available (from ``get_capabilities``).
+        has_existing_license: Whether the bootcamper already has a Senzing
+            license (from bootcamp preferences / their answer).
+        mention_downsizing: Whether downsizing should be mentioned as one option.
+    """
+
+    capacity: int | None = None
+    validity: str | None = None
+    submit_feedback_available: bool = False
+    has_existing_license: bool = False
+    mention_downsizing: bool = True
+
+
+def build_expansion_paths(
+    submit_feedback_available: bool,
+    has_existing_license: bool,
+) -> list[str]:
+    """Return the applicable expansion path ids, in canonical order.
+
+    The canonical order is apply-existing, external-request, then in-flow MCP
+    (when applicable).
+
+    - apply-existing (``PATH_APPLY_EXISTING``) is always included.
+    - external-request (``PATH_EXTERNAL_REQUEST``) is always included.
+    - in-flow MCP (``PATH_IN_FLOW_MCP``) is included only when
+      ``submit_feedback_available`` is True AND the bootcamper does not already
+      have a license (``has_existing_license`` is False).
+
+    Args:
+        submit_feedback_available: Whether the in-flow MCP ``submit_feedback``
+            tool is available (from ``get_capabilities``).
+        has_existing_license: Whether the bootcamper already has a Senzing
+            license.
+
+    Returns:
+        Ordered list of expansion path id strings.
+    """
+    paths: list[str] = [PATH_APPLY_EXISTING, PATH_EXTERNAL_REQUEST]
+
+    if submit_feedback_available and not has_existing_license:
+        paths.append(PATH_IN_FLOW_MCP)
+
+    return paths
+
+
+# Human-readable description for each expansion path id. The in-flow MCP path
+# refers to the Senzing MCP server by name only — never by URL.
+_EXPANSION_PATH_DESCRIPTIONS: dict[str, str] = {
+    PATH_APPLY_EXISTING: (
+        "**Apply an existing license** — if you already have a Senzing license, "
+        "apply it to unlock its full record capacity."
+    ),
+    PATH_EXTERNAL_REQUEST: (
+        "**Request an evaluation license** — request a larger evaluation license "
+        "through the Senzing support channel."
+    ),
+    PATH_IN_FLOW_MCP: (
+        "**Request an evaluation license in-flow** — request one without leaving "
+        "the bootcamp by asking the Senzing MCP server to submit a license request "
+        "for you (the `submit_feedback` tool with the `license_request` category)."
+    ),
+}
+
+
+def build_license_framing(
+    *,
+    capacity: int | None = None,
+    validity: str | None = None,
+    submit_feedback_available: bool = False,
+    has_existing_license: bool = False,
+    mention_downsizing: bool = True,
+) -> str:
+    """Build the canonical "default license + expansion paths" framing text.
+
+    Produces the single source-of-truth wording every dataset-sizing touchpoint
+    reuses, so the message cannot drift between touchpoints. The text describes
+    the built-in evaluation license as a default the bootcamper already has,
+    lists the applicable expansion paths, and (optionally) notes downsizing as
+    one option among several.
+
+    Senzing facts are passed in by the agent from the Senzing MCP server and are
+    never hardcoded: when ``capacity`` or ``validity`` is ``None`` the figure is
+    omitted and the text states the value is currently unavailable from the MCP
+    server.
+
+    Args:
+        capacity: Record capacity from the MCP server, or None when unavailable.
+        validity: Validity period from the MCP server, or None when unavailable.
+        submit_feedback_available: Whether the in-flow MCP ``submit_feedback``
+            tool is available (from ``get_capabilities``).
+        has_existing_license: Whether the bootcamper already has a Senzing
+            license.
+        mention_downsizing: Whether to mention downsizing as one option.
+
+    Returns:
+        The canonical framing text. Describes the limit as a built-in evaluation
+        license the bootcamper already has, renders a description for every path
+        from :func:`build_expansion_paths`, includes capacity/validity only when
+        provided, positions expansion options before any downsizing mention, and
+        refers to the Senzing MCP server by name only (no URLs).
+    """
+    lines: list[str] = []
+
+    # --- Default-license framing (never a hard cap) ---
+    lines.append(
+        "**Your evaluation license:** Senzing includes a built-in evaluation "
+        "license that you already have by default — it lets you start processing "
+        "records right away with no license file."
+    )
+
+    # --- Capacity / validity facts (sourced from MCP, never hardcoded) ---
+    if capacity is not None:
+        lines.append(
+            f"It currently covers up to {capacity} records, as reported by the "
+            "Senzing MCP server."
+        )
+    else:
+        lines.append(
+            "Its exact record capacity is currently unavailable from the MCP "
+            "server, so no specific figure is shown here."
+        )
+
+    if validity is not None:
+        lines.append(
+            f"Its validity period is {validity}, as reported by the Senzing MCP "
+            "server."
+        )
+    else:
+        lines.append(
+            "Its validity period is currently unavailable from the MCP server, "
+            "so no specific figure is shown here."
+        )
+
+    # --- Expansion paths (presented before/alongside any downsizing mention) ---
+    lines.append(
+        "\nIf your data is larger than the built-in evaluation license covers, "
+        "you have options to process more records:"
+    )
+    for path_id in build_expansion_paths(submit_feedback_available, has_existing_license):
+        lines.append(f"- {_EXPANSION_PATH_DESCRIPTIONS[path_id]}")
+
+    # --- Downsizing as one option among several (after expansion options) ---
+    if mention_downsizing:
+        lines.append(
+            "\nDownsizing your dataset (sampling, a smaller substitute, or a CORD "
+            "subset) is also an option — but it is just one choice alongside the "
+            "expansion paths above, not the only way forward."
+        )
+
+    return "\n".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -290,11 +468,35 @@ def _utc_now_iso() -> str:
 # ---------------------------------------------------------------------------
 
 
-def get_license_guidance(tier: str | None) -> str | None:
+def get_license_guidance(
+    tier: str | None,
+    *,
+    capacity: int | None = None,
+    validity: str | None = None,
+    submit_feedback_available: bool = False,
+    has_existing_license: bool = False,
+) -> str | None:
     """Generate license guidance text for the given tier.
+
+    Refactored to own no hardcoded Senzing facts: the demo tier no longer
+    embeds a hardcoded record figure, and non-demo tiers delegate to
+    :func:`build_license_framing` so the canonical "default license + expansion
+    paths" wording cannot drift. The Senzing MCP server URL never appears in the
+    output (it lives only in ``mcp.json``); Senzing facts are passed in by the
+    agent from the MCP server and are omitted when unavailable.
+
+    The keyword-only fact/flag parameters default to the safe
+    figure-omitted, in-flow-omitted framing, matching the behavior when the MCP
+    server's facts are unavailable.
 
     Args:
         tier: Volume tier string, or None if not set.
+        capacity: Record capacity from the MCP server, or None when unavailable.
+        validity: Validity period from the MCP server, or None when unavailable.
+        submit_feedback_available: Whether the in-flow MCP ``submit_feedback``
+            tool is available (from ``get_capabilities``).
+        has_existing_license: Whether the bootcamper already has a Senzing
+            license.
 
     Returns:
         Formatted guidance string, or None if tier is not set (skip).
@@ -303,18 +505,29 @@ def get_license_guidance(tier: str | None) -> str | None:
         return None
 
     if tier == TIER_DEMO:
+        # Demo tier (<= built-in evaluation limit): the built-in evaluation
+        # license is sufficient for the stated volume. Include the specific
+        # figure only when the agent supplies it from the MCP server.
+        if capacity is not None:
+            figure = (
+                f" (it currently covers up to {capacity} records, as reported by "
+                "the Senzing MCP server)"
+            )
+        else:
+            figure = ""
         return (
-            "**License guidance:** The built-in 500-record evaluation license is sufficient "
-            "for your stated volume. No additional license action is needed."
+            "**License guidance:** The built-in evaluation license you already "
+            f"have is sufficient for your stated volume{figure}. No additional "
+            "license action is needed."
         )
 
-    # small, medium, large all require production license
-    return (
-        "**License guidance:** A production license is required for your stated volume. "
-        "License capacity scales with record count.\n\n"
-        "After completing the bootcamp, you can:\n"
-        "- Request an evaluation license through the MCP server at mcp.senzing.com\n"
-        "- Contact Senzing sales for production licensing"
+    # small, medium, large: present the canonical default-license + expansion
+    # paths framing, sourced from the Senzing MCP server (never hardcoded).
+    return build_license_framing(
+        capacity=capacity,
+        validity=validity,
+        submit_feedback_available=submit_feedback_available,
+        has_existing_license=has_existing_license,
     )
 
 

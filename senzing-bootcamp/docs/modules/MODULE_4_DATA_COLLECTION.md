@@ -21,6 +21,14 @@ After understanding the business problem in Module 1, users need to gather the a
 3. Store data in the proper location
 4. Document data source information
 
+## Evaluation License and Dataset Size
+
+The Senzing SDK ships with a **built-in evaluation license you already have** by default — it covers around 500 records. If a dataset is, or might be, larger than the evaluation license allows, that's a choice point, not a wall.
+
+You can **keep your full dataset and expand capacity** through the Module 1 licensing paths — apply an existing Senzing license, request an evaluation license through Senzing support, or (when available) request one in-flow via the Senzing MCP server. Or you can **work with a smaller slice** (sampling, a CORD subset, or a smaller substitute dataset). Downsizing is only ever one option among these, never the only path forward.
+
+The agent defers the licensing-path availability checks and any specific record-capacity or validity figure to the Module 1 Phase 1 discovery flow (Steps 6a–6e), sourcing the current values from the Senzing MCP server at request time. If the MCP server does not return a figure, the agent omits the number rather than restating a remembered one.
+
 ## Workflow
 
 ### Step 1: Identify Data Sources
@@ -117,9 +125,9 @@ Module 4 is complete when:
 
 ## Common Issues
 
-### Issue: Dataset Too Large
+### Issue: Dataset Larger Than the Evaluation License
 
-**Solution:** Create a representative sample of 1000-10000 records instead of loading the entire dataset
+**Solution:** This is a choice, not a blocker. The bootcamper can keep the full dataset and expand capacity via the Module 1 licensing paths (apply an existing license, request one through Senzing support, or — when available — request one in-flow via the Senzing MCP server), or work with a smaller slice by creating a representative sample (e.g., 1000-10000 records). Present sampling as one option alongside the expansion paths, not as the only way forward.
 
 ### Issue: Data Not Accessible
 

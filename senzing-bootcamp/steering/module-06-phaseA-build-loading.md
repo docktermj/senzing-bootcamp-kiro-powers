@@ -63,6 +63,11 @@ inclusion: manual
    >    4. 10,000,000+ (large production)
    > 5. If the follow-up response is still unparseable: default to the demo tier, inform the bootcamper that demo/evaluation has been selected as the default, and proceed.
 
+   > **Agent instruction — License framing (default + expansion paths):** After the tier is classified, present licensing as a default the bootcamper already has, never as a hard cap. Build the wording with `volume_utils.get_license_guidance(tier, capacity=<from MCP>, validity=<from MCP>, submit_feedback_available=<from gate>, has_existing_license=<from prefs>)` and present its output.
+   > - Frame the built-in evaluation license as the default the bootcamper already has, and present the expansion paths (apply an existing license, request one through the external channel, and — when available — request one in-flow via the Senzing MCP server) before any mention of downsizing. Downsizing (sampling or a smaller subset) is one option among these, not the only path.
+   > - Source the record capacity and validity period from a Senzing MCP server tool during this session and present exactly what it returns. If a value is unavailable or the MCP server cannot be reached, omit the figure and say the value is currently unavailable from the MCP server — never substitute a remembered figure.
+   > - Gate the in-flow path exactly as Module 1 Step 6d does: check `submit_feedback` availability via `get_capabilities` (wait up to 30s), and omit the in-flow path when it is unavailable, errors, or does not respond. If the bootcamper already has a license (`license` set in `config/bootcamp_preferences.yaml`), route them to the apply-an-existing-license path and omit the in-flow option. Refer to the Senzing MCP server by name only — do not state any URL.
+
    **Checkpoint:** Write step 1 to `config/bootcamp_progress.json`.
 
 2. **Identify the input data:** Determine where the Senzing-formatted JSON records are for the first data source:

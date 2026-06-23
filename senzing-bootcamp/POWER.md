@@ -60,7 +60,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 
 **Don't have data handy?** No problem — Senzing provides [CORD (Collections Of Relatable Data)](https://senzing.com/senzing-ready-data-collections-cord/), curated real-world-like datasets designed specifically for entity resolution evaluation. CORD includes three ready-made datasets — Las Vegas, London, and Moscow — that you can use throughout the bootcamp. Use `get_sample_data` to download them. If CORD data doesn't meet your specific needs, test data can also be generated at any point as a fallback.
 
-**Licensing:** Senzing includes a built-in evaluation license that allows 500 records, which is enough for the bootcamp. If you have your own license (or need more capacity), you can configure it during Module 2.
+**Licensing:** Senzing ships with a built-in evaluation license you already have — it covers around 500 records, which is enough to complete the bootcamp. If you need to process more, you have options: apply an existing Senzing license, request an evaluation license through Senzing support, or (when available) request one in-flow during the bootcamp. You can configure an existing license during Module 2, and the agent sources the current capacity from the Senzing MCP server.
 
 ## Quick Start
 

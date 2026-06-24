@@ -368,7 +368,7 @@ file_metadata:
     token_count: 291
     size_category: small
   graduation.md:
-    token_count: 3761
+    token_count: 4047
     size_category: large
   hook-architecture.md:
     token_count: 2149
@@ -589,6 +589,9 @@ file_metadata:
   project-structure.md:
     token_count: 764
     size_category: medium
+  qa-transcript.md:
+    token_count: 1115
+    size_category: medium
   recovery-from-mistakes.md:
     token_count: 1227
     size_category: medium
@@ -636,7 +639,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 182027
+  total_tokens: 183428
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -8,7 +8,7 @@ This steering file guides the agent through transitioning a completed bootcamp p
 
 The workflow has a preparatory step followed by five sequential steps:
 
-0. **Recap PDF Generation** — Generate a PDF of the bootcamp recap document (non-blocking)
+0. **Recap PDF & Q&A Transcript Generation** — Generate a PDF of the bootcamp recap document and the ordered Q&A transcript (both non-blocking)
 1. **Production Project Structure** — Copy production-relevant code into a clean `production/` directory, excluding bootcamp scaffolding
 2. **Production Configuration Files** — Generate `.env.production`, `.env.example`, `docker-compose.yml`, a CI/CD pipeline, and `.gitignore`
 3. **Production README** — Generate a production-ready `README.md` with no bootcamp language
@@ -57,7 +57,7 @@ Before generating the PDF, validate that the recap document exists and is usable
 
    c. **If progress data is NOT available** (progress file missing or `modules_completed` is empty):
       - Display message to the bootcamper: "⚠️ Cannot generate recap PDF — the recap document is missing and there is insufficient progress data to reconstruct it. Skipping PDF generation."
-      - Skip PDF generation entirely and proceed to Step 1.
+      - Skip PDF generation entirely and proceed to Step 0d.
 
 3. **If `docs/bootcamp_recap.md` exists:** Proceed to Step 0b (validation).
 
@@ -77,7 +77,7 @@ Before generating the PDF, validate that the recap document contains content mat
 
    b. **If progress data is available:** Regenerate `docs/bootcamp_recap.md` from progress data and module artifacts. Display message: "⚠️ Recap document was incomplete and has been reconstructed from available progress data."
 
-   c. **If progress data is NOT available:** Display message: "⚠️ Cannot generate recap PDF — the recap document has no valid module sections and there is insufficient progress data to reconstruct it. Skipping PDF generation." Skip PDF generation and proceed to Step 1.
+   c. **If progress data is NOT available:** Display message: "⚠️ Cannot generate recap PDF — the recap document has no valid module sections and there is insufficient progress data to reconstruct it. Skipping PDF generation." Skip PDF generation and proceed to Step 0d.
 
 ### Step 0c: PDF Generation
 
@@ -90,10 +90,30 @@ Before generating the PDF, validate that the recap document contains content mat
    This converts `docs/bootcamp_recap.md` into `docs/bootcamp_recap.pdf`, rendering a cover page (bootcamp title, bootcamper name, completion date, total duration) and per-module pages with formatted headings, lists, and code blocks.
 
 2. **Handle errors gracefully:**
-   - If the script reports `fpdf2` is not installed: Inform the bootcamper that PDF generation was skipped and suggest `pip install fpdf2` to enable it. Proceed to Step 1.
-   - If the script fails for any other reason: Inform the bootcamper of the failure reason and proceed to Step 1.
+   - If the script reports `fpdf2` is not installed: Inform the bootcamper that PDF generation was skipped and suggest `pip install fpdf2` to enable it. Proceed to Step 0d.
+   - If the script fails for any other reason: Inform the bootcamper of the failure reason and proceed to Step 0d.
 
 3. On success, inform the bootcamper: "📄 Recap PDF generated at `docs/bootcamp_recap.pdf`."
+
+Proceed to Step 0d.
+
+### Step 0d: Q&A Transcript Generation
+
+Generate the ordered question→answer transcript from the session log for replay and audit. This step is **non-blocking** — graduation continues regardless of the outcome.
+
+1. Run the transcript renderer:
+
+   ```bash
+   python scripts/generate_transcript.py
+   ```
+
+   This reads `config/session_log.jsonl` and regenerates `docs/bootcamp_transcript.md`, an ordered Q&A record grouped by module. Regeneration overwrites any existing transcript rather than appending to stale content.
+
+2. **Handle outcomes gracefully:**
+   - If the script warns there are no Q&A events to render: no transcript is written. Inform the bootcamper and proceed to Step 1.
+   - If the script fails for any other reason: inform the bootcamper of the failure reason and proceed to Step 1.
+
+3. On success, inform the bootcamper: "📝 Q&A transcript generated at `docs/bootcamp_transcript.md`."
 
 Proceed to Step 1.
 
@@ -182,6 +202,8 @@ Present completion:
 > 🎓 **Graduation complete!** Your production project is ready in `production/`.
 >
 > Check `production/GRADUATION_REPORT.md` for a full summary, and work through `production/MIGRATION_CHECKLIST.md` to prepare for deployment.
+>
+> Your bootcamp record also includes `docs/bootcamp_recap.md`, `docs/completion_summary.md`, and the ordered Q&A transcript at `docs/bootcamp_transcript.md`.
 
 ### Feedback Submission Reminder
 

@@ -410,10 +410,10 @@ file_metadata:
     token_count: 463
     size_category: small
   hook-registry-module-any.md:
-    token_count: 3846
+    token_count: 3376
     size_category: large
   hook-registry.md:
-    token_count: 1914
+    token_count: 1946
     size_category: medium
   inline-status.md:
     token_count: 460
@@ -578,7 +578,7 @@ file_metadata:
     token_count: 3866
     size_category: large
   onboarding-phase1b-intro-language.md:
-    token_count: 2055
+    token_count: 2126
     size_category: large
   onboarding-phase2-track-setup.md:
     token_count: 991
@@ -636,7 +636,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 182394
+  total_tokens: 182027
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

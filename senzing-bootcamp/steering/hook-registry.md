@@ -43,7 +43,7 @@ inclusion: manual
 | git-commit-reminder | any | userTriggered → askAgent | Reminds the user to commit their work after completing a module. Triggered manually via button click. |
 | module-completion-celebration | any | agentStop → askAgent | Detects module completion boundaries and displays a brief celebration with next-step guidance. |
 | module-recap-append | any | agentStop → askAgent | Appends a structured recap section to docs/bootcamp_recap.md when a module is completed. |
-| session-log-events | any | postToolUse → askAgent | Logs file create, modify, delete, and MCP tool call actions to the session log after write operations complete, enabling progressive session tracking for the completion summary. |
+| session-log-events | any | postToolUse → runCommand | Logs a session event after write operations complete. The IDE appends the log line directly via a runCommand (no agent round-trip), invoking senzing-bootcamp/scripts/log_write_event.py, which records a generic write action (timestamp + current module) to config/session_log.jsonl for the completion summary. |
 
 ## Hook Creation
 

@@ -70,7 +70,7 @@ Present the overview before track selection. Cover all points naturally:
 - Goal: comfortable generating Senzing SDK code. Finish with running code as foundation for real use.
 - Module overview table (1-11): what each does and why it matters
 - Tracks let you skip to what matters
-- Built-in 500-record eval license; bring your own for more
+- Licensing: you already have a built-in 500-record evaluation license — plenty for the bootcamp's demos. If you need more capacity you have options: apply an existing license, or ask the Senzing MCP server to issue a temporary evaluation license for you. Module 1 walks through these options and checks which are available in your session.
 - Senzing provides CORD (Collections Of Relatable Data) — curated data collections designed for entity resolution evaluation. Three CORD datasets are available: Las Vegas, London, Moscow. Ask me and I'll look up the current CORD details from the Senzing documentation on demand. If CORD data doesn't meet your specific needs, test data can also be generated.
 - If you encounter unfamiliar terms (like Senzing Entity Specification, DATA_SOURCE, entity resolution), just ask me to explain — I'll look up the current definition from the Senzing documentation on demand
 - If you noticed hook files (like `.kiro.hook` files) appearing in your editor panel during setup — those are automated quality checks that run in the background. They do not require your review. You can safely close them, but please do not delete them — they help maintain code quality throughout the bootcamp.

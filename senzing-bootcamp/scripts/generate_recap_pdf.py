@@ -538,6 +538,78 @@ def _render_list_items(pdf: "FPDF", items: list[str], numbered: bool = False) ->
     pdf.set_font("Helvetica", "", 11)
 
 
+def _build_qa_lines(questions: list[str], answers: list[str]) -> list[str]:
+    """Build the ordered Q/A line sequence for the merged section.
+
+    Pairs questions and answers by index, emitting ``Q: <question>`` immediately
+    followed by ``A: <answer>`` for each index. Iterates over the longer of the
+    two lists so unequal lengths never drop content; a missing counterpart emits
+    an explicit placeholder (``A: (no answer recorded)`` /
+    ``Q: (no question recorded)``) rather than misaligning later pairs.
+
+    This is a pure helper with no PDF side effects, so the ordering and pairing
+    can be unit-tested without rendering binary PDF output.
+
+    Args:
+        questions: Question strings in order.
+        answers: Answer strings in order (parallel to ``questions`` by index).
+
+    Returns:
+        Ordered list of label-prefixed line strings (e.g. ``['Q: ...', 'A: ...']``)
+        with the answer for index ``i`` immediately following its question.
+    """
+    lines: list[str] = []
+    for i in range(max(len(questions), len(answers))):
+        if i < len(questions):
+            lines.append(f"Q: {questions[i]}")
+        else:
+            lines.append("Q: (no question recorded)")
+        if i < len(answers):
+            lines.append(f"A: {answers[i]}")
+        else:
+            lines.append("A: (no answer recorded)")
+    return lines
+
+
+def _render_qa_pairs(  # noqa: F821
+    pdf: "FPDF",
+    questions: list[str],
+    answers: list[str],
+) -> None:
+    """Render questions and answers as inline Q/A pairs under one section.
+
+    Pairs by index: question ``i`` is rendered as ``Q: <question>`` immediately
+    followed by ``A: <answer>``. Iterates over the longer of the two lists so
+    nothing is dropped; a missing counterpart renders an explicit placeholder
+    (``A: (no answer recorded)`` / ``Q: (no question recorded)``) rather than
+    misaligning later pairs. Reuses the inline-code handling used by
+    ``_render_list_items`` so backtick spans render in the monospace font.
+
+    Args:
+        pdf: The FPDF instance.
+        questions: Question strings in order.
+        answers: Answer strings in order (parallel to ``questions`` by index).
+    """
+    pdf.set_font("Helvetica", "", 11)
+    for line in _build_qa_lines(questions, answers):
+        # Handle inline code (backtick content) with monospace font. The
+        # "Q: "/"A: " prefixes contain no backticks, so splitting the whole
+        # line keeps any inline code inside the content rendering in monospace.
+        parts = re.split(r"`([^`]+)`", line)
+        pdf.set_x(pdf.l_margin + 6)
+        for i, part in enumerate(parts):
+            if i % 2 == 0:
+                # Normal text
+                pdf.set_font("Helvetica", "", 11)
+                pdf.write(6, _safe_text(part))
+            else:
+                # Code span — monospace
+                pdf.set_font("Courier", "", 10)
+                pdf.write(6, _safe_text(part))
+        pdf.ln(6)
+    pdf.set_font("Helvetica", "", 11)
+
+
 def _render_generic_blocks(pdf: "FPDF", blocks: list[str]) -> None:  # noqa: F821
     """Render Generic_Content blocks (prose, code, other headings) as PDF text.
 
@@ -600,19 +672,10 @@ def _render_module_page(pdf: "FPDF", section: RecapSection) -> None:  # noqa: F8
         pdf.cell(0, 6, "None", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
 
-    # Questions Asked
-    _render_heading(pdf, "Questions Asked", level=3)
-    if section.questions_asked:
-        _render_list_items(pdf, section.questions_asked, numbered=True)
-    else:
-        pdf.set_font("Helvetica", "I", 11)
-        pdf.cell(0, 6, "None", new_x="LMARGIN", new_y="NEXT")
-    pdf.ln(2)
-
-    # Answers Given
-    _render_heading(pdf, "Answers Given", level=3)
-    if section.answers_given:
-        _render_list_items(pdf, section.answers_given, numbered=True)
+    # Questions and responses — questions paired inline with their answers
+    _render_heading(pdf, "Questions and responses", level=3)
+    if section.questions_asked or section.answers_given:
+        _render_qa_pairs(pdf, section.questions_asked, section.answers_given)
     else:
         pdf.set_font("Helvetica", "I", 11)
         pdf.cell(0, 6, "None", new_x="LMARGIN", new_y="NEXT")

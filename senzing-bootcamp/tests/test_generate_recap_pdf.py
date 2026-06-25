@@ -28,6 +28,8 @@ from generate_recap_pdf import (
     RecapDocument,
     RecapHeader,
     RecapSection,
+    _build_qa_lines,
+    _render_module_page,
     format_recap_document,
     format_recap_section,
     main,
@@ -1881,4 +1883,566 @@ class TestPreservationGracefulDegradation:
         assert rc == 1, f"Expected exit code 1 for empty input, got {rc}"
         assert "empty" in stderr.lower(), (
             f"Expected an 'empty' error on stderr, got: {stderr!r}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Recording PDF stub for the merged-section render path (recap-qa-pair-merge)
+# ---------------------------------------------------------------------------
+
+
+class _RecordingPDF:
+    """Minimal FPDF stand-in that records the text passed to the renderer.
+
+    Exercises the real ``_render_module_page`` render path without requiring
+    fpdf2 or parsing binary PDF output. ``_render_heading`` emits heading text
+    via ``multi_cell``; list items and Q/A pairs use ``write``; empty-state and
+    single-value fields use ``cell``. The stub records text from each so a test
+    can assert on the rendered headings and body separately.
+    """
+
+    def __init__(self) -> None:
+        self.l_margin = 10
+        self.headings: list[str] = []  # text rendered via multi_cell (headings)
+        self.body: list[str] = []  # text rendered via cell/write
+
+    def add_page(self, *args: object, **kwargs: object) -> None:
+        return None
+
+    def set_font(self, *args: object, **kwargs: object) -> None:
+        return None
+
+    def ln(self, *args: object, **kwargs: object) -> None:
+        return None
+
+    def set_x(self, *args: object, **kwargs: object) -> None:
+        return None
+
+    def multi_cell(self, w: object, h: object, text: str = "", *args: object, **kwargs: object) -> None:  # noqa: E501
+        self.headings.append(text)
+
+    def cell(self, w: object, h: object, text: str = "", *args: object, **kwargs: object) -> None:  # noqa: E501
+        self.body.append(text)
+
+    def write(self, h: object, text: str = "", *args: object, **kwargs: object) -> None:
+        self.body.append(text)
+
+
+def _render_section_headings_and_body(section: RecapSection) -> tuple[list[str], str]:
+    """Render a section via the real renderer and return (headings, body_text).
+
+    Returns the list of heading strings (from ``_render_heading``) and the
+    concatenation of all non-heading text rendered for the module.
+    """
+    pdf = _RecordingPDF()
+    _render_module_page(pdf, section)
+    return pdf.headings, "".join(pdf.body)
+
+
+# ---------------------------------------------------------------------------
+# Property 1: Single merged "Questions and responses" section (Task 3.1)
+# ---------------------------------------------------------------------------
+
+
+class TestMergedSectionSingleHeading:
+    """Property 1: the merged section replaces the two separate headings.
+
+    **Validates: Requirements 5.1, 1.1, 1.4**
+
+    For a module that has questions, the rendered PDF body contains a single
+    "Questions and responses" heading and does NOT contain the old "Questions
+    Asked" or "Answers Given" headings.
+    """
+
+    def test_single_merged_heading_for_module_with_questions(self) -> None:
+        """A module with questions renders one "Questions and responses"
+        heading and neither old heading.
+
+        **Validates: Requirements 5.1, 1.1, 1.4**
+        """
+        section = RecapSection(
+            module_number=3,
+            module_name="Entity Resolution",
+            timestamp="2025-01-01T00:00:00+00:00",
+            questions_asked=["What is an entity?", "How does matching work?"],
+            answers_given=["A resolved record.", "By comparing features."],
+            duration="1h 5m",
+        )
+
+        headings, _body = _render_section_headings_and_body(section)
+
+        assert "Questions and responses" in headings, (
+            f"Expected merged 'Questions and responses' heading, got: {headings!r}"
+        )
+        assert headings.count("Questions and responses") == 1, (
+            f"Expected exactly one merged heading, got: {headings!r}"
+        )
+        assert "Questions Asked" not in headings, (
+            f"Old 'Questions Asked' heading should not be rendered, got: {headings!r}"
+        )
+        assert "Answers Given" not in headings, (
+            f"Old 'Answers Given' heading should not be rendered, got: {headings!r}"
+        )
+
+    @given(section=st_recap_section())
+    def test_merged_heading_present_no_old_headings(
+        self, section: RecapSection
+    ) -> None:
+        """For any generated module, the rendered headings include the merged
+        "Questions and responses" heading and never the old separate headings.
+
+        **Validates: Requirements 5.1, 1.1, 1.4**
+        """
+        headings, _body = _render_section_headings_and_body(section)
+
+        assert "Questions and responses" in headings, (
+            f"Expected merged 'Questions and responses' heading, got: {headings!r}"
+        )
+        assert "Questions Asked" not in headings, (
+            f"Old 'Questions Asked' heading should not be rendered, got: {headings!r}"
+        )
+        assert "Answers Given" not in headings, (
+            f"Old 'Answers Given' heading should not be rendered, got: {headings!r}"
+        )
+
+# ---------------------------------------------------------------------------
+# Property 2: Inline pairing by index (Task 3.2)
+# ---------------------------------------------------------------------------
+
+
+@st.composite
+def st_equal_length_qa(draw: st.DrawFn) -> tuple[list[str], list[str]]:
+    """Generate equal-length question/answer lists for inline-pairing tests.
+
+    Reuses the project's round-trip-safe text strategy so questions and answers
+    contain no label-breaking characters, and constrains both lists to the same
+    length so each question has a corresponding answer at the same index.
+    """
+    count = draw(st.integers(min_value=0, max_value=10))
+    item_strategy = _non_whitespace_only_text(min_size=1, max_size=100)
+    questions = draw(st.lists(item_strategy, min_size=count, max_size=count))
+    answers = draw(st.lists(item_strategy, min_size=count, max_size=count))
+    return questions, answers
+
+
+class TestMergedSectionInlinePairing:
+    """Property 2: each answer immediately follows its question, in index order.
+
+    **Validates: Requirements 5.2, 1.2, 1.3, 2.1**
+
+    For equal-length question/answer lists, the ordered Q/A line sequence built
+    by ``_build_qa_lines`` is ``Q: q0, A: a0, Q: q1, A: a1, ...`` -- the answer
+    at index i immediately follows the question at index i, and question order
+    is preserved.
+    """
+
+    def test_inline_pairing_exact_sequence(self) -> None:
+        """A concrete equal-length module pairs each Q with its A in order.
+
+        **Validates: Requirements 5.2, 1.2, 1.3, 2.1**
+        """
+        questions = ["What is an entity?", "How does matching work?"]
+        answers = ["A resolved record.", "By comparing features."]
+
+        lines = _build_qa_lines(questions, answers)
+
+        assert lines == [
+            "Q: What is an entity?",
+            "A: A resolved record.",
+            "Q: How does matching work?",
+            "A: By comparing features.",
+        ], f"Expected interleaved Q/A pairs in order, got: {lines!r}"
+
+    @given(qa=st_equal_length_qa())
+    def test_answer_immediately_follows_question_by_index(
+        self, qa: tuple[list[str], list[str]]
+    ) -> None:
+        """For equal-length lists, line 2*i is ``Q: q{i}`` and line 2*i+1 is
+        ``A: a{i}`` -- the answer immediately follows its question, in order.
+
+        **Validates: Requirements 5.2, 1.2, 1.3, 2.1**
+        """
+        questions, answers = qa
+
+        lines = _build_qa_lines(questions, answers)
+
+        # Two lines per pair, nothing dropped or added.
+        assert len(lines) == 2 * len(questions), (
+            f"Expected {2 * len(questions)} lines for {len(questions)} pairs, "
+            f"got {len(lines)}: {lines!r}"
+        )
+
+        for i, (q, a) in enumerate(zip(questions, answers)):
+            assert lines[2 * i] == f"Q: {q}", (
+                f"Question at index {i} mislabeled or out of order: "
+                f"{lines[2 * i]!r} (expected 'Q: {q}')"
+            )
+            assert lines[2 * i + 1] == f"A: {a}", (
+                f"Answer at index {i} does not immediately follow its question: "
+                f"{lines[2 * i + 1]!r} (expected 'A: {a}')"
+            )
+
+    @given(qa=st_equal_length_qa())
+    def test_expected_interleaved_sequence(
+        self, qa: tuple[list[str], list[str]]
+    ) -> None:
+        """The full emitted sequence equals the interleaved
+        ``Q: q0, A: a0, Q: q1, A: a1, ...`` construction.
+
+        **Validates: Requirements 5.2, 1.2, 1.3, 2.1**
+        """
+        questions, answers = qa
+
+        lines = _build_qa_lines(questions, answers)
+
+        expected: list[str] = []
+        for q, a in zip(questions, answers):
+            expected.append(f"Q: {q}")
+            expected.append(f"A: {a}")
+
+        assert lines == expected, (
+            f"Emitted sequence does not match interleaved pairing: "
+            f"{lines!r} != {expected!r}"
+        )
+
+# ---------------------------------------------------------------------------
+# Property 3: No content dropped on unequal lengths (Task 3.3)
+# ---------------------------------------------------------------------------
+
+
+_Q_PLACEHOLDER = "Q: (no question recorded)"
+_A_PLACEHOLDER = "A: (no answer recorded)"
+
+
+@st.composite
+def st_unequal_length_qa(draw: st.DrawFn) -> tuple[list[str], list[str]]:
+    """Generate question/answer lists of differing lengths.
+
+    Reuses the project's round-trip-safe text strategy so questions and answers
+    contain no label-breaking characters, then draws two distinct lengths so the
+    lists are guaranteed unequal (covering both "more questions than answers"
+    and "more answers than questions"). At least one list is non-empty.
+    """
+    item_strategy = _non_whitespace_only_text(min_size=1, max_size=100)
+    q_count = draw(st.integers(min_value=0, max_value=10))
+    a_count = draw(
+        st.integers(min_value=0, max_value=10).filter(lambda n: n != q_count)
+    )
+    questions = draw(st.lists(item_strategy, min_size=q_count, max_size=q_count))
+    answers = draw(st.lists(item_strategy, min_size=a_count, max_size=a_count))
+    return questions, answers
+
+
+class TestMergedSectionUnequalLengths:
+    """Property 3: unequal-length lists drop no content and stay aligned.
+
+    **Validates: Requirements 5.3, 2.2, 2.3**
+
+    For question/answer lists of differing lengths, every question text and
+    every answer text appears in the ordered Q/A line sequence built by
+    ``_build_qa_lines``; missing counterparts are filled with explicit
+    placeholders and later pairs are not misaligned.
+    """
+
+    def test_more_questions_than_answers_keeps_all_and_pads_answers(self) -> None:
+        """Extra questions render with explicit answer placeholders, in order.
+
+        **Validates: Requirements 5.3, 2.2**
+        """
+        questions = ["What is an entity?", "How does matching work?", "Why ER?"]
+        answers = ["A resolved record."]
+
+        lines = _build_qa_lines(questions, answers)
+
+        assert lines == [
+            "Q: What is an entity?",
+            "A: A resolved record.",
+            "Q: How does matching work?",
+            _A_PLACEHOLDER,
+            "Q: Why ER?",
+            _A_PLACEHOLDER,
+        ], f"Expected every question with answer placeholders, got: {lines!r}"
+
+    def test_more_answers_than_questions_keeps_all_and_pads_questions(self) -> None:
+        """Surplus answers render with explicit question placeholders, in order.
+
+        **Validates: Requirements 5.3, 2.3**
+        """
+        questions = ["What is an entity?"]
+        answers = ["A resolved record.", "By comparing features.", "For dedup."]
+
+        lines = _build_qa_lines(questions, answers)
+
+        assert lines == [
+            "Q: What is an entity?",
+            "A: A resolved record.",
+            _Q_PLACEHOLDER,
+            "A: By comparing features.",
+            _Q_PLACEHOLDER,
+            "A: For dedup.",
+        ], f"Expected every answer with question placeholders, got: {lines!r}"
+
+    @given(qa=st_unequal_length_qa())
+    def test_every_question_and_answer_text_appears(
+        self, qa: tuple[list[str], list[str]]
+    ) -> None:
+        """For unequal-length lists, every question and answer text is present
+        in the emitted lines (nothing is dropped).
+
+        **Validates: Requirements 5.3, 2.2, 2.3**
+        """
+        questions, answers = qa
+
+        lines = _build_qa_lines(questions, answers)
+
+        for i, q in enumerate(questions):
+            assert f"Q: {q}" in lines, (
+                f"Question at index {i} was dropped: {q!r} not in {lines!r}"
+            )
+        for i, a in enumerate(answers):
+            assert f"A: {a}" in lines, (
+                f"Answer at index {i} was dropped: {a!r} not in {lines!r}"
+            )
+
+    @given(qa=st_unequal_length_qa())
+    def test_placeholders_fill_missing_counterparts(
+        self, qa: tuple[list[str], list[str]]
+    ) -> None:
+        """The number of placeholder lines equals the difference in list
+        lengths -- exactly one placeholder per missing counterpart.
+
+        **Validates: Requirements 5.3, 2.2, 2.3**
+        """
+        questions, answers = qa
+
+        lines = _build_qa_lines(questions, answers)
+
+        missing_answers = max(len(questions) - len(answers), 0)
+        missing_questions = max(len(answers) - len(questions), 0)
+
+        assert lines.count(_A_PLACEHOLDER) == missing_answers, (
+            f"Expected {missing_answers} answer placeholder(s), got "
+            f"{lines.count(_A_PLACEHOLDER)}: {lines!r}"
+        )
+        assert lines.count(_Q_PLACEHOLDER) == missing_questions, (
+            f"Expected {missing_questions} question placeholder(s), got "
+            f"{lines.count(_Q_PLACEHOLDER)}: {lines!r}"
+        )
+
+    @given(qa=st_unequal_length_qa())
+    def test_later_pairs_not_misaligned(
+        self, qa: tuple[list[str], list[str]]
+    ) -> None:
+        """Pairing stays index-aligned through the shorter list: for every
+        index that has both a question and an answer, line 2*i is its question
+        and line 2*i+1 is its answer -- no shifting after a missing counterpart.
+
+        **Validates: Requirements 5.3, 2.2, 2.3**
+        """
+        questions, answers = qa
+
+        lines = _build_qa_lines(questions, answers)
+
+        # Two lines emitted per index, over the longer of the two lists.
+        assert len(lines) == 2 * max(len(questions), len(answers)), (
+            f"Expected {2 * max(len(questions), len(answers))} lines, "
+            f"got {len(lines)}: {lines!r}"
+        )
+
+        for i in range(min(len(questions), len(answers))):
+            assert lines[2 * i] == f"Q: {questions[i]}", (
+                f"Question at index {i} misaligned: {lines[2 * i]!r}"
+            )
+            assert lines[2 * i + 1] == f"A: {answers[i]}", (
+                f"Answer at index {i} misaligned: {lines[2 * i + 1]!r}"
+            )
+
+
+# ---------------------------------------------------------------------------
+# Empty-state rendering for the merged section (Task 3.4)
+# ---------------------------------------------------------------------------
+
+
+class TestMergedSectionEmptyState:
+    """A module with no questions and no answers renders the "None" empty-state.
+
+    **Validates: Requirements 2.4**
+
+    For a module that has neither questions nor answers, ``_render_module_page``
+    still renders the merged "Questions and responses" heading and falls back to
+    the existing "None" empty-state (the same rendering used by the other empty
+    subsections) -- it emits no ``Q:``/``A:`` pair lines.
+    """
+
+    def test_empty_qa_renders_none_under_merged_heading(self) -> None:
+        """No questions and no answers => merged heading plus the "None"
+        empty-state, with no Q/A pair lines.
+
+        Information Shared and Actions Taken are populated so the only
+        empty-state "None" in the body comes from the merged section.
+
+        **Validates: Requirements 2.4**
+        """
+        section = RecapSection(
+            module_number=3,
+            module_name="Entity Resolution",
+            timestamp="2025-01-01T00:00:00+00:00",
+            information_shared=["Loaded sample records."],
+            questions_asked=[],
+            answers_given=[],
+            actions_taken=["Ran the resolver."],
+            duration="1h 5m",
+        )
+
+        headings, body = _render_section_headings_and_body(section)
+
+        # The merged heading is still rendered above the empty-state.
+        assert "Questions and responses" in headings, (
+            f"Expected merged 'Questions and responses' heading, got: {headings!r}"
+        )
+
+        # The existing "None" empty-state is rendered exactly once -- only for
+        # the merged section (Information Shared / Actions Taken are populated).
+        assert body.count("None") == 1, (
+            f"Expected a single 'None' empty-state for the merged section, "
+            f"got body: {body!r}"
+        )
+
+        # No inline Q/A pair lines (including placeholders) are emitted.
+        assert "Q:" not in body, (
+            f"No 'Q:' lines should be rendered for an empty module, got: {body!r}"
+        )
+        assert "A:" not in body, (
+            f"No 'A:' lines should be rendered for an empty module, got: {body!r}"
+        )
+
+    def test_fully_empty_module_renders_none_and_no_pairs(self) -> None:
+        """A module with every list empty still renders the merged heading and
+        the "None" empty-state, with no Q/A pair lines.
+
+        **Validates: Requirements 2.4**
+        """
+        section = RecapSection(
+            module_number=1,
+            module_name="Getting Started",
+            timestamp="2025-01-01T00:00:00+00:00",
+            duration="0h 30m",
+        )
+
+        headings, body = _render_section_headings_and_body(section)
+
+        assert "Questions and responses" in headings, (
+            f"Expected merged 'Questions and responses' heading, got: {headings!r}"
+        )
+        assert "None" in body, (
+            f"Expected the 'None' empty-state in the body, got: {body!r}"
+        )
+        assert "Q:" not in body, (
+            f"No 'Q:' lines should be rendered for an empty module, got: {body!r}"
+        )
+        assert "A:" not in body, (
+            f"No 'A:' lines should be rendered for an empty module, got: {body!r}"
+        )
+        # The old separate headings must never appear.
+        assert "Questions Asked" not in headings
+        assert "Answers Given" not in headings
+
+
+# ---------------------------------------------------------------------------
+# Properties 2 & 3 (unified): pairing and no-drop over arbitrary lengths
+# (Task 3.5)
+# ---------------------------------------------------------------------------
+
+
+@st.composite
+def st_arbitrary_qa(draw: st.DrawFn) -> tuple[list[str], list[str]]:
+    """Generate arbitrary question/answer lists of independent lengths.
+
+    Unlike ``st_equal_length_qa`` (always equal) and ``st_unequal_length_qa``
+    (always differing), this draws the two list lengths independently so a
+    single strategy covers every shape in one place: equal lengths, more
+    questions than answers, more answers than questions, and either list empty.
+    Reuses the project's round-trip-safe text strategy so questions and answers
+    contain no label-breaking characters.
+    """
+    item_strategy = _non_whitespace_only_text(min_size=1, max_size=100)
+    q_count = draw(st.integers(min_value=0, max_value=10))
+    a_count = draw(st.integers(min_value=0, max_value=10))
+    questions = draw(st.lists(item_strategy, min_size=q_count, max_size=q_count))
+    answers = draw(st.lists(item_strategy, min_size=a_count, max_size=a_count))
+    return questions, answers
+
+
+class TestMergedSectionPairingAndNoDrop:
+    """Properties 2 & 3 unified over arbitrary question/answer lengths.
+
+    **Validates: Requirements 2.1, 2.2, 2.3**
+
+    For arbitrary question/answer lists (equal *and* unequal lengths drawn in a
+    single strategy), the ordered Q/A line sequence built by ``_build_qa_lines``
+    satisfies the combined invariant:
+
+    - Through the shorter list, each answer immediately follows its question by
+      index and question order is preserved (Property 2 / Req 2.1).
+    - Across the full longer list, no question or answer text is dropped;
+      missing counterparts are filled with explicit placeholders so later pairs
+      never shift out of alignment (Property 3 / Req 2.2, 2.3).
+    """
+
+    @given(qa=st_arbitrary_qa())
+    def test_answer_follows_question_by_index_and_no_text_dropped(
+        self, qa: tuple[list[str], list[str]]
+    ) -> None:
+        """For arbitrary lengths, the answer follows its question by index and
+        every question and answer text survives in the emitted lines.
+
+        **Validates: Requirements 2.1, 2.2, 2.3**
+        """
+        questions, answers = qa
+
+        lines = _build_qa_lines(questions, answers)
+
+        # Two lines emitted per index, iterating the longer of the two lists --
+        # so nothing is dropped regardless of which list is longer.
+        assert len(lines) == 2 * max(len(questions), len(answers)), (
+            f"Expected {2 * max(len(questions), len(answers))} lines, "
+            f"got {len(lines)}: {lines!r}"
+        )
+
+        # Property 2: through the shorter list, the answer at index i
+        # immediately follows the question at index i, in order.
+        for i in range(min(len(questions), len(answers))):
+            assert lines[2 * i] == f"Q: {questions[i]}", (
+                f"Question at index {i} mislabeled or out of order: "
+                f"{lines[2 * i]!r} (expected 'Q: {questions[i]}')"
+            )
+            assert lines[2 * i + 1] == f"A: {answers[i]}", (
+                f"Answer at index {i} does not immediately follow its question: "
+                f"{lines[2 * i + 1]!r} (expected 'A: {answers[i]}')"
+            )
+
+        # Property 3: no text dropped -- every question and every answer text
+        # appears exactly at its index position (line 2*i / 2*i+1).
+        for i, q in enumerate(questions):
+            assert lines[2 * i] == f"Q: {q}", (
+                f"Question at index {i} dropped or misplaced: {q!r} "
+                f"not at line {2 * i}: {lines!r}"
+            )
+        for i, a in enumerate(answers):
+            assert lines[2 * i + 1] == f"A: {a}", (
+                f"Answer at index {i} dropped or misplaced: {a!r} "
+                f"not at line {2 * i + 1}: {lines!r}"
+            )
+
+        # Missing counterparts are filled with explicit placeholders -- one per
+        # index beyond the shorter list -- so later pairs stay aligned.
+        missing_answers = max(len(questions) - len(answers), 0)
+        missing_questions = max(len(answers) - len(questions), 0)
+        assert lines.count(_A_PLACEHOLDER) == missing_answers, (
+            f"Expected {missing_answers} answer placeholder(s), got "
+            f"{lines.count(_A_PLACEHOLDER)}: {lines!r}"
+        )
+        assert lines.count(_Q_PLACEHOLDER) == missing_questions, (
+            f"Expected {missing_questions} question placeholder(s), got "
+            f"{lines.count(_Q_PLACEHOLDER)}: {lines!r}"
         )

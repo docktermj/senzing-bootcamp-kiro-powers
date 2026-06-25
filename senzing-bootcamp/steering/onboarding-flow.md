@@ -105,7 +105,7 @@ Execute these setup actions in order. Do not narrate the details to the user.
    | ---- | -------------- |
    | ask-bootcamper | "Session summaries, closing questions, and post-completion feedback reminders will not be automatically generated when the agent stops." |
    | code-style-check | "Code style will not be automatically checked on save." |
-   | commonmark-validation | "Markdown files will not be automatically checked for CommonMark compliance." |
+   | commonmark-validation | "Markdown files will not be checked for CommonMark compliance during the graduation normalization pass (or when the hook is run manually from the Agent Hooks panel)." |
    | review-bootcamper-input | "Feedback trigger phrases will not be automatically detected on message submission." |
    | write-policy-gate | "Write policy violations (direct SQL, compound questions, external paths) will not be automatically detected and blocked." |
 

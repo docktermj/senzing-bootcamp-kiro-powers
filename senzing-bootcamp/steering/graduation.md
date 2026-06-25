@@ -6,9 +6,10 @@ inclusion: manual
 
 This steering file guides the agent through transitioning a completed bootcamp project into a production-ready codebase. Load it when the bootcamper accepts the graduation offer at track completion, or when they say "run graduation" or "graduate."
 
-The workflow has a preparatory step followed by five sequential steps:
+The workflow has two preparatory steps followed by five sequential steps:
 
-0. **Recap PDF & Q&A Transcript Generation** — Generate a PDF of the bootcamp recap document and the ordered Q&A transcript (both non-blocking)
+0. **Markdown Normalization Pass** — Normalize the bootcamp's Markdown artifacts into the schema their consumers expect, before any derived artifact is generated (non-blocking)
+0b. **Recap PDF & Q&A Transcript Generation** — Generate a PDF of the now-normalized bootcamp recap document and the ordered Q&A transcript (both non-blocking)
 1. **Production Project Structure** — Copy production-relevant code into a clean `production/` directory, excluding bootcamp scaffolding
 2. **Production Configuration Files** — Generate `.env.production`, `.env.example`, `docker-compose.yml`, a CI/CD pipeline, and `.gitignore`
 3. **Production README** — Generate a production-ready `README.md` with no bootcamp language
@@ -31,15 +32,39 @@ Before starting any steps, gather the bootcamper's context:
 
 Store these values for use throughout the workflow. Proceed to Step 0.
 
-## Step 0: Recap PDF Generation
+## Step 0: Markdown Normalization Pass
 
-Generate a PDF version of the bootcamper's recap document for sharing. This step is **non-blocking** — graduation continues regardless of the outcome.
+Before generating any derived artifact (recap PDF, reports), run a single normalization pass over the bootcamp's Markdown artifacts. During the modules, Markdown is written free-form; this step rewrites each artifact into the schema its consumer expects and applies CommonMark style fixes once, across all files. This step is **non-blocking** — graduation continues regardless of the outcome, in the same spirit as the recap PDF step and the always-generated `GRADUATION_REPORT.md`.
+
+**Procedure:**
+
+1. Run the normalization script over the known Markdown artifacts:
+
+   ```bash
+   python scripts/normalize_markdown.py
+   ```
+
+   With no arguments the script targets the known artifacts that exist: `docs/bootcamp_recap.md`, `docs/bootcamp_journal.md`, the mapper docs, and other `docs/*.md` artifacts. Files with a known consumer schema (today: `docs/bootcamp_recap.md`) are rewritten to conform to that schema; all other files are style-normalized only and never have content dropped. Writes are atomic (temp file then replace), so a mid-write failure cannot corrupt or truncate the original.
+
+2. **Report a one-line summary** of how many files were normalized, plus any per-file warnings the script emitted (for example, content that could not be confidently mapped into a consumer schema and was retained verbatim).
+
+3. **Handle outcomes gracefully (warn and continue):**
+   - If the script reports warnings for individual files: surface them in the summary and proceed. Warnings never block graduation.
+   - If the script fails for any reason: inform the bootcamper of the failure reason, leave the original files untouched, and proceed to Step 0b anyway.
+
+**Fallback when normalization is skipped or fails:** If this pass does not run, or fails for `docs/bootcamp_recap.md`, the recap PDF step (Step 0b) still runs against the original file and relies on the tolerant parser and raw-Markdown fallback delivered by the paired `recap-pdf-content-loss-fix` work, so a schema or style mismatch never silently drops content.
+
+Proceed to Step 0b.
+
+## Step 0b: Recap PDF Generation
+
+Generate a PDF version of the bootcamper's recap document for sharing. This step consumes the normalized `docs/bootcamp_recap.md` produced by Step 0 (or, if normalization was skipped or failed, the original file via the tolerant parser/raw-Markdown fallback). This step is **non-blocking** — graduation continues regardless of the outcome.
 
 **Note:** Independent of this recap PDF, the completion-summary document (`docs/completion_summary.md`) is **always** generated during the post-completion/graduation flow via `generate_completion_summary.py` (triggered by `completion-summary-offer.md`). That generation is **non-blocking** — in the same spirit as this recap PDF step and the always-generated `GRADUATION_REPORT.md`, any failure logs a warning and graduation continues.
 
 **Procedure:**
 
-### Step 0a: Recap Document Recovery
+### Step 0b.1: Recap Document Recovery
 
 Before generating the PDF, validate that the recap document exists and is usable. Do NOT silently skip — treat a missing recap as a recoverable error.
 
@@ -53,15 +78,15 @@ Before generating the PDF, validate that the recap document exists and is usable
       - Regenerate `docs/bootcamp_recap.md` from the progress data and module artifacts produced during the bootcamp.
       - For each module in `modules_completed`, reconstruct a recap section using available module artifacts (files created, code produced, documentation generated during that module).
       - Display message to the bootcamper: "⚠️ Recap document was not found and has been reconstructed from available progress data."
-      - Proceed to Step 0b (validation).
+      - Proceed to Step 0b.2 (validation).
 
    c. **If progress data is NOT available** (progress file missing or `modules_completed` is empty):
       - Display message to the bootcamper: "⚠️ Cannot generate recap PDF — the recap document is missing and there is insufficient progress data to reconstruct it. Skipping PDF generation."
-      - Skip PDF generation entirely and proceed to Step 0d.
+      - Skip PDF generation entirely and proceed to Step 0b.4.
 
-3. **If `docs/bootcamp_recap.md` exists:** Proceed to Step 0b (validation).
+3. **If `docs/bootcamp_recap.md` exists:** Proceed to Step 0b.2 (validation).
 
-### Step 0b: Recap Document Validation
+### Step 0b.2: Recap Document Validation
 
 Before generating the PDF, validate that the recap document contains content matching the bootcamper's progress.
 
@@ -69,7 +94,7 @@ Before generating the PDF, validate that the recap document contains content mat
 
 2. Check that `docs/bootcamp_recap.md` contains at least one markdown heading matching the pattern `## Module N:` where N is a module number present in the `modules_completed` array.
 
-3. **If valid** (at least one matching `## Module N:` heading found): Proceed to Step 0c (PDF generation).
+3. **If valid** (at least one matching `## Module N:` heading found): Proceed to Step 0b.3 (PDF generation).
 
 4. **If invalid** (no matching `## Module N:` headings found):
 
@@ -77,9 +102,9 @@ Before generating the PDF, validate that the recap document contains content mat
 
    b. **If progress data is available:** Regenerate `docs/bootcamp_recap.md` from progress data and module artifacts. Display message: "⚠️ Recap document was incomplete and has been reconstructed from available progress data."
 
-   c. **If progress data is NOT available:** Display message: "⚠️ Cannot generate recap PDF — the recap document has no valid module sections and there is insufficient progress data to reconstruct it. Skipping PDF generation." Skip PDF generation and proceed to Step 0d.
+   c. **If progress data is NOT available:** Display message: "⚠️ Cannot generate recap PDF — the recap document has no valid module sections and there is insufficient progress data to reconstruct it. Skipping PDF generation." Skip PDF generation and proceed to Step 0b.4.
 
-### Step 0c: PDF Generation
+### Step 0b.3: PDF Generation
 
 1. Run the PDF generation script:
 
@@ -90,14 +115,14 @@ Before generating the PDF, validate that the recap document contains content mat
    This converts `docs/bootcamp_recap.md` into `docs/bootcamp_recap.pdf`, rendering a cover page (bootcamp title, bootcamper name, completion date, total duration) and per-module pages with formatted headings, lists, and code blocks.
 
 2. **Handle errors gracefully:**
-   - If the script reports `fpdf2` is not installed: Inform the bootcamper that PDF generation was skipped and suggest `pip install fpdf2` to enable it. Proceed to Step 0d.
-   - If the script fails for any other reason: Inform the bootcamper of the failure reason and proceed to Step 0d.
+   - If the script reports `fpdf2` is not installed: Inform the bootcamper that PDF generation was skipped and suggest `pip install fpdf2` to enable it. Proceed to Step 0b.4.
+   - If the script fails for any other reason: Inform the bootcamper of the failure reason and proceed to Step 0b.4.
 
 3. On success, inform the bootcamper: "📄 Recap PDF generated at `docs/bootcamp_recap.pdf`."
 
-Proceed to Step 0d.
+Proceed to Step 0b.4.
 
-### Step 0d: Q&A Transcript Generation
+### Step 0b.4: Q&A Transcript Generation
 
 Generate the ordered question→answer transcript from the session log for replay and audit. This step is **non-blocking** — graduation continues regardless of the outcome.
 

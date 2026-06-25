@@ -593,7 +593,7 @@ is running. These hooks enforce cross-cutting concerns:
 | `ask-bootcamper` | Owns all closing questions at step boundaries |
 | `review-bootcamper-input` | Routes feedback and status trigger phrases |
 | `code-style-check` | Enforces language-appropriate coding standards |
-| `commonmark-validation` | Checks Markdown files for CommonMark compliance |
+| `commonmark-validation` | Checks Markdown for CommonMark compliance at graduation (manually triggered) |
 | `write-policy-gate` | Enforces feedback path, working-directory, single-question, and direct-SQL write policies |
 
 #### Module Hooks (created when the associated module starts)

@@ -280,12 +280,12 @@ A source code file was just edited. Check it for language-appropriate coding sta
 - name: `to check code style`
 - description: `Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions.`
 
-**commonmark-validation** (fileEdited → askAgent, filePatterns: `**/*.md`)
+**commonmark-validation** (userTriggered → askAgent)
 
 Prompt:
 
 ````text
-The markdown file that was just edited should be validated for CommonMark compliance. Please check for:
+The user wants to validate Markdown style across the project in one pass. Review every Markdown file (all *.md files) for CommonMark compliance. For each file, check for:
 
 1. MD022: Headings should be surrounded by blank lines
 2. MD040: Fenced code blocks should have a language specified
@@ -295,16 +295,16 @@ The markdown file that was just edited should be validated for CommonMark compli
 
 EXCEPTION: If the file is CHANGELOG.md, ignore MD024 (duplicate headings) — repeated ### Added, ### Changed, ### Fixed, ### Removed headings under different version sections are standard Keep a Changelog format and should not be flagged.
 
-If any issues are found, fix them automatically to maintain CommonMark compliance across all documentation.
+If any issues are found, fix them automatically to maintain CommonMark compliance across all documentation. Apply the fixes across all Markdown files in this single pass rather than one file at a time.
 
-After fixing issues: briefly state what was corrected (one sentence), then end with a contextual 👉 forward-moving question that guides the bootcamper to the next step in the current module workflow. Check `config/bootcamp_progress.json` for the current module and step to determine what comes next.
+After fixing issues: briefly summarize what was corrected across the files (one sentence), then end with a contextual 👉 forward-moving question that guides the bootcamper to the next step in the current workflow. Check `config/bootcamp_progress.json` for the current module and step to determine what comes next.
 
 If no issues are found: output nothing. Proceed silently.
 ````
 
 - id: `commonmark-validation`
 - name: `to check Markdown style`
-- description: `Validates that all Markdown files conform to CommonMark standards when edited`
+- description: `Validates that all Markdown files conform to CommonMark standards in a single pass. Triggered manually via the Agent Hooks panel button or as part of the graduation normalization step — no longer fires on every Markdown save.`
 
 **review-bootcamper-input** (promptSubmit → askAgent)
 

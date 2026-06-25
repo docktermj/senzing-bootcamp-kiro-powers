@@ -850,11 +850,21 @@ class TestNoHookModification:
         _DOCS_FILE_PLACEMENT_HOOKS = {
             "write-policy-gate.kiro.hook",
         }
+        # Hook intentionally edited by the graduation-markdown-normalization spec
+        # (task 7.1): the commonmark-validation hook was re-scoped from a per-save
+        # fileEdited(**/*.md) trigger to userTriggered so CommonMark style validation
+        # runs once at graduation instead of on every Markdown save. The then.askAgent
+        # prompt and its checks are preserved; only the trigger and version changed.
+        # Unrelated to the token budget optimization, so it is excluded here.
+        _GRADUATION_NORMALIZATION_HOOKS = {
+            "commonmark-validation.kiro.hook",
+        }
         _ALLOWED_MODIFIED = (
             _CONSOLIDATED_HOOKS
             | _AGENTSTOP_GUARD_HOOKS
             | _CONSISTENCY_FIX_HOOKS
             | _DOCS_FILE_PLACEMENT_HOOKS
+            | _GRADUATION_NORMALIZATION_HOOKS
         )
         # Filter for .kiro.hook files in the output, excluding hooks modified by
         # other specs. (Unrelated protections stay intact: any hook not in this

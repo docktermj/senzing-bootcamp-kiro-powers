@@ -201,11 +201,16 @@ _REPEAT_POLICY_EXCERPT = (
     "bootcamp journey."
 )
 
-# graduation.md Step 0a/0b/0c recap-PDF attempt.
+# graduation.md recap-PDF attempt. The graduation-markdown-normalization spec
+# inserted a new "## Step 0: Markdown Normalization Pass" before the recap-PDF
+# step and renumbered the recap-PDF step to "## Step 0b: Recap PDF Generation",
+# with its recovery/validation/generation sub-steps becoming 0b.1/0b.2/0b.3.
+# The meaningful invariant (the recovery -> validation -> PDF-generation procedure
+# remains present and ordered) is unchanged; only the heading labels moved.
 _GRAD_STEP0_EXCERPTS = [
-    "### Step 0a: Recap Document Recovery",
-    "### Step 0b: Recap Document Validation",
-    "### Step 0c: PDF Generation",
+    "### Step 0b.1: Recap Document Recovery",
+    "### Step 0b.2: Recap Document Validation",
+    "### Step 0b.3: PDF Generation",
     "python scripts/generate_recap_pdf.py",
 ]
 
@@ -392,26 +397,27 @@ class TestGraduationStep0AndReportUntouched:
     """
 
     def test_step0_recap_pdf_attempt_preserved(self) -> None:
-        """Step 0a/0b/0c recap-PDF block keeps its markers in the required order."""
+        """Step 0b.1/0b.2/0b.3 recap-PDF block keeps its markers in the required order."""
         content = _read(_GRADUATION_FILE)
         block = _extract_inclusive(
             content,
-            "### Step 0a: Recap Document Recovery",
+            "### Step 0b.1: Recap Document Recovery",
             "Proceed to Step 1.",
         )
-        assert block, "Step 0a/0b/0c recap-PDF block must be present"
+        assert block, "Step 0b.1/0b.2/0b.3 recap-PDF block must be present"
         # Section content invariant (replaces SHA-256 snapshot): every recap-PDF marker
-        # must remain present, and the 0a -> 0b -> 0c procedure order must be preserved.
+        # must remain present, and the recovery -> validation -> generation procedure
+        # order must be preserved.
         for excerpt in _GRAD_STEP0_EXCERPTS:
             assert excerpt in block, f"Step 0 block missing excerpt: {excerpt!r}"
         assert _ordered(
             block,
             [
-                "### Step 0a: Recap Document Recovery",
-                "### Step 0b: Recap Document Validation",
-                "### Step 0c: PDF Generation",
+                "### Step 0b.1: Recap Document Recovery",
+                "### Step 0b.2: Recap Document Validation",
+                "### Step 0b.3: PDF Generation",
             ],
-        ), "Step 0a/0b/0c recap-PDF procedure ordering changed"
+        ), "recap-PDF recovery/validation/generation procedure ordering changed"
 
     def test_graduation_report_preserved(self) -> None:
         """`## Graduation Report` keeps its always-generate sentinel."""

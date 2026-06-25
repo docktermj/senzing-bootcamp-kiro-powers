@@ -2,6 +2,30 @@
 inclusion: manual
 ---
 
+## Markdown Authoring: Free-Form During the Bootcamp, Normalized at Graduation
+
+While the bootcamper is working through the modules, write every Markdown_Artifact
+(`docs/bootcamp_recap.md`, `docs/bootcamp_journal.md`, mapper docs, progress notes) **free-form**:
+capture the content first and defer structural formatting. Do **not** stop to make in-flight Markdown
+match a downstream tool's exact schema (for example the recap-PDF heading/subsection schema), and do
+**not** gate or block a module step on an artifact conforming to a Consumer_Schema. Getting the right
+content down naturally matters more than matching a rigid shape mid-session.
+
+A single **normalization pass at graduation** rewrites each artifact into the schema its consumer
+expects, applies CommonMark style fixes once across all files, and only then generates derived
+artifacts (the recap PDF). See `steering/graduation.md` Step 0 (Markdown Normalization Pass) and the
+`scripts/normalize_markdown.py` script for the graduation-time behavior.
+
+This deferral is safe because it is paired with the tolerant recap parser and raw-Markdown fallback
+delivered by the `recap-pdf-content-loss-fix` spec: even if normalization is skipped or only partially
+maps a file to its schema, the downstream parser falls back to the raw Markdown so a schema or style
+mismatch **never silently drops content**. The two changes are designed as a pair — free-form authoring
+here, tolerant consumption plus a graduation normalization pass there.
+
+Keep capturing all the content the modules rely on during the run: the recap section, the journal
+entry, and mapper docs are still written for every completed module exactly as described below. Only
+the *structural formatting* moves to graduation; nothing about *what* gets captured changes.
+
 ## Backfill for Already-Completed Modules
 
 On a completion boundary — and before appending the new module's artifacts — reconcile the artifact set for **all** already-completed modules so modules finished before the artifact logic existed (or skipped by an earlier partial run) are not left behind.

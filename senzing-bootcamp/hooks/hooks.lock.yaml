@@ -1,6 +1,6 @@
 # AUTO-GENERATED — do not edit manually.
 # Run: python3 senzing-bootcamp/scripts/sync_hook_registry.py --write
-generated_at: "2026-06-24T17:29:13Z"
+generated_at: "2026-06-24T22:01:31Z"
 hooks:
   - id: analyze-after-mapping
     version: "1.0.0"
@@ -23,9 +23,9 @@ hooks:
     category: critical
     event_type: fileEdited
   - id: commonmark-validation
-    version: "1.0.0"
+    version: "2.0.0"
     category: critical
-    event_type: fileEdited
+    event_type: userTriggered
   - id: data-quality-check
     version: "2.0.0"
     category: module

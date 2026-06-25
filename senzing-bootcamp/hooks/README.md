@@ -37,9 +37,9 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 
 ### 4. CommonMark Validation (`commonmark-validation.kiro.hook`) ⭐
 
-**Trigger:** When Markdown files are edited
-**Action:** Checks for CommonMark compliance and auto-fixes issues
-**Use case:** Ensures consistent Markdown formatting across all documentation
+**Trigger:** Manually triggered (`userTriggered`) — runs as part of the graduation-time Markdown normalization pass, not on every save
+**Action:** Checks all Markdown for CommonMark compliance and auto-fixes issues in a single pass
+**Use case:** Ensures consistent Markdown formatting across all documentation without per-edit agent round-trips
 
 ### 5. Write Policy Gate (`write-policy-gate.kiro.hook`) ⭐
 

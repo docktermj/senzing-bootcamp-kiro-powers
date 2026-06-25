@@ -12,7 +12,7 @@ inclusion: manual
 |---------|-----------|-------------|
 | ask-bootcamper | agentStop → askAgent | Consolidated agentStop hook with four phases: (1) closing question with feedback nudge, (2) step sequencing enforcement with answer processing retry (all question types) and not-waiting detection, (3) MCP-first compliance audit, (4) compound question detection with silent self-correction. |
 | code-style-check | fileEdited → askAgent | Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions. |
-| commonmark-validation | fileEdited → askAgent | Validates that all Markdown files conform to CommonMark standards when edited |
+| commonmark-validation | userTriggered → askAgent | Validates that all Markdown files conform to CommonMark standards in a single pass. Triggered manually via the Agent Hooks panel button or as part of the graduation normalization step — no longer fires on every Markdown save. |
 | review-bootcamper-input | promptSubmit → askAgent | Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture. |
 | write-policy-gate | preToolUse → askAgent | Consolidated preToolUse write hook that performs four policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, (3) validates file path policies including append-only guard for the feedback file, (4) enforces root file placement rules. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions). |
 

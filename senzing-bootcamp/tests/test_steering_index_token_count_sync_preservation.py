@@ -133,7 +133,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # — all recomputed to exact counts by measure_steering.py into file_metadata
     # and the budget total. Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "584c3a2d5d351d14cbe33c4ba18334360ebcb13c2128afe3e2d57e7b3119091b",
+    # Re-baselined once more (185282 -> 186004) for the
+    # graduation-recap-pdf-resilience spec: graduation.md grew (4672 -> 5394)
+    # when Step 0b.3 was rewritten into a resilient helper-first / inline-fallback
+    # PDF-generation decision tree (graceful degradation + no-false-success
+    # messaging), recomputed by measure_steering.py into file_metadata and the
+    # budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "12dbf43e376e04ed4541afd290e92235f6783811b87cefe7a95ef2a2c5252f01",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -507,9 +514,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (181773), so the hash cannot silently re-pin a stale value.
+        # (186004), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 185282" in budget_block
+        assert "total_tokens: 186004" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

@@ -368,7 +368,7 @@ file_metadata:
     token_count: 291
     size_category: small
   graduation.md:
-    token_count: 4672
+    token_count: 5394
     size_category: large
   hook-architecture.md:
     token_count: 2149
@@ -639,7 +639,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 185282
+  total_tokens: 186004
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

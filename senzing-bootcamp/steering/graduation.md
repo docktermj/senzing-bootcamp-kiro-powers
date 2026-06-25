@@ -106,7 +106,11 @@ Before generating the PDF, validate that the recap document contains content mat
 
 ### Step 0b.3: PDF Generation
 
-1. Run the PDF generation script:
+Generate `docs/bootcamp_recap.pdf` from `docs/bootcamp_recap.md` using a helper-first, inline-fallback decision. The bundled helper lives in the installed power's directory and may not resolve at a workspace-relative path, so never assume it ran — confirm a PDF was actually written before claiming success. This step pairs with the `recap-pdf-content-loss-fix` (tolerant parser + raw-Markdown fallback) and `graduation-markdown-normalization` (Step 0 normalization) work.
+
+A PDF was written only when the script prints a `PDF generated:` line to stdout and exits 0; any other outcome (exit 1, no `PDF generated:` line) means no PDF exists.
+
+1. **Prefer the bundled helper.** Attempt:
 
    ```bash
    python scripts/generate_recap_pdf.py
@@ -114,13 +118,33 @@ Before generating the PDF, validate that the recap document contains content mat
 
    This converts `docs/bootcamp_recap.md` into `docs/bootcamp_recap.pdf`, rendering a cover page (bootcamp title, bootcamper name, completion date, total duration) and per-module pages with formatted headings, lists, and code blocks.
 
-2. **Handle errors gracefully:**
-   - If the script reports `fpdf2` is not installed: Inform the bootcamper that PDF generation was skipped and suggest `pip install fpdf2` to enable it. Proceed to Step 0b.4.
-   - If the script fails for any other reason: Inform the bootcamper of the failure reason and proceed to Step 0b.4.
+   - If it runs and writes the PDF (exit 0 with a `PDF generated:` line), inform the bootcamper: "📄 Recap PDF generated at `docs/bootcamp_recap.pdf`." Proceed to Step 0b.4.
+   - If the bundled script cannot be located or run — the path does not resolve, the file is missing, or it errors before writing a PDF — do not stop and do not report success. Fall back inline (step 2).
+   - If it reports `fpdf2` is not installed, go to graceful degradation (step 3).
 
-3. On success, inform the bootcamper: "📄 Recap PDF generated at `docs/bootcamp_recap.pdf`."
+2. **Fall back to the inline generator.** When the bundled helper is unavailable or did not write a PDF (for a reason other than missing `fpdf2`), run the self-contained inline fallback against the existing recap Markdown:
 
-Proceed to Step 0b.4.
+   ```bash
+   python scripts/generate_recap_pdf_inline.py --input docs/bootcamp_recap.md --output docs/bootcamp_recap.pdf
+   ```
+
+   This path does not depend on the bundled `generate_recap_pdf.py` being importable from the workspace; it reads `docs/bootcamp_recap.md` and renders the same recap content (reusing the shared renderer when available, otherwise an embedded raw-Markdown renderer so no content is dropped). Its success signal is the same: a `PDF generated:` line on stdout and exit 0.
+
+   - On success, state plainly that an inline generation path was used: "📄 Recap PDF generated at `docs/bootcamp_recap.pdf` (generated via the inline fallback path)." Do not imply the bundled script ran. Proceed to Step 0b.4.
+   - If the inline generator reports `fpdf2` is not installed, go to graceful degradation (step 3).
+   - If it fails for any other reason (exit 1, no `PDF generated:` line), follow the skip/failure messaging (step 4).
+
+3. **Graceful degradation when `fpdf2` is absent.** If either path reports that `fpdf2` is not installed, PDF generation is skipped — this is expected and never blocks graduation. Inform the bootcamper that the PDF was not generated because the optional `fpdf2` dependency is missing, and suggest `pip install fpdf2` to enable it. Then follow the skip/failure messaging (step 4).
+
+4. **Skip/failure messaging — always point to the Markdown recap.** In every case where no PDF was written (bundled helper and inline fallback both unavailable, `fpdf2` absent, or any other error), tell the bootcamper:
+   - that the PDF was not generated, and the reason, and
+   - that their recap content already exists at `docs/bootcamp_recap.md`.
+
+   Then proceed to Step 0b.4.
+
+5. **No false success.** Only emit the "📄 Recap PDF generated" message when a PDF file was actually written (a `PDF generated:` line with exit 0). Never report PDF success when no PDF exists.
+
+Regardless of outcome, this step is **non-blocking**: proceed to Step 0b.4 and then to Step 1.
 
 ### Step 0b.4: Q&A Transcript Generation
 

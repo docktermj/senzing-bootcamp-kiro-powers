@@ -44,10 +44,26 @@ def load_workflow() -> dict:
         return yaml.safe_load(f)
 
 
-def get_workflow_steps() -> list[dict]:
-    """Return the list of steps from the validate job."""
+def get_job_steps(job_name: str) -> list[dict]:
+    """Return the list of steps for the named job in the CI workflow.
+
+    Args:
+        job_name: The job key under ``jobs`` (e.g., ``"gates"`` or ``"tests"``).
+
+    Returns:
+        The list of step dicts defined for that job.
+    """
     workflow = load_workflow()
-    return workflow["jobs"]["validate"]["steps"]
+    return workflow["jobs"][job_name]["steps"]
+
+
+def get_workflow_steps() -> list[dict]:
+    """Return the list of steps from the version-independent ``gates`` job.
+
+    The ruff lint step lives in the ``gates`` job after the CI workflow was
+    split into a single-run ``gates`` job and a matrixed ``tests`` job.
+    """
+    return get_job_steps("gates")
 
 
 # ===========================================================================
@@ -147,22 +163,27 @@ class TestWorkflowLintStep:
     """
 
     def test_workflow_contains_lint_step(self):
-        """Workflow YAML contains a step named "Lint Python (ruff)".
+        """The gates job contains a step named "Lint Python (ruff)".
 
         **Validates: Requirements 2.1, 2.2**
         """
-        steps = get_workflow_steps()
+        steps = get_job_steps("gates")
         step_names = [s.get("name", "") for s in steps]
         assert "Lint Python (ruff)" in step_names, (
-            f'"Lint Python (ruff)" step not found. Steps: {step_names}'
+            f'"Lint Python (ruff)" step not found in gates job. Steps: {step_names}'
         )
 
-    def test_lint_step_after_setup_python_before_tests(self):
-        """Lint step appears after setup-python and before "Run tests".
+    def test_lint_step_after_setup_python_and_no_pytest_in_gates(self):
+        """Lint runs after setup-python in the gates job, which has no pytest step.
+
+        The CI workflow was split into a single-run ``gates`` job (version-independent
+        gates, including ruff) and a matrixed ``tests`` job (pytest). The lint step
+        must still run after setup-python, and because pytest now lives in a separate
+        job, the gates job must contain no "Run tests"/pytest step.
 
         **Validates: Requirements 2.4**
         """
-        steps = get_workflow_steps()
+        steps = get_job_steps("gates")
         step_names = [s.get("name", "") for s in steps]
 
         # Find setup-python by its uses field
@@ -173,7 +194,7 @@ class TestWorkflowLintStep:
                 setup_python_idx = i
                 break
 
-        assert setup_python_idx is not None, "setup-python step not found"
+        assert setup_python_idx is not None, "setup-python step not found in gates job"
 
         lint_idx = step_names.index("Lint Python (ruff)")
         assert lint_idx > setup_python_idx, (
@@ -181,20 +202,21 @@ class TestWorkflowLintStep:
             f"setup-python (index {setup_python_idx})"
         )
 
-        # Find "Run tests" step
-        assert "Run tests" in step_names, '"Run tests" step not found'
-        test_idx = step_names.index("Run tests")
-        assert lint_idx < test_idx, (
-            f"Lint step (index {lint_idx}) must appear before "
-            f"Run tests (index {test_idx})"
+        # pytest moved to the tests job; the gates job must not run it.
+        assert "Run tests" not in step_names, (
+            '"Run tests" must not be in the gates job (pytest moved to the tests job)'
         )
+        for step in steps:
+            assert "pytest" not in step.get("run", ""), (
+                "gates job must not invoke pytest (it moved to the tests job)"
+            )
 
     def test_lint_step_no_suppression_flags(self):
-        """Lint step does not contain --exit-zero or continue-on-error.
+        """Lint step in the gates job does not contain --exit-zero or continue-on-error.
 
         **Validates: Requirements 4.2**
         """
-        steps = get_workflow_steps()
+        steps = get_job_steps("gates")
         lint_step = None
         for step in steps:
             if step.get("name") == "Lint Python (ruff)":

@@ -85,7 +85,7 @@ The generated `index.html` is a single file with embedded CSS and JavaScript. D3
 | `src/system_verification/web_service/write_html.py` | Python generator script: triple-quoted HTML string → writes `index.html` |
 | `src/system_verification/web_service/server.py` | Python stdlib HTTP server (`http.server.HTTPServer` + `BaseHTTPRequestHandler`) with request routing |
 | `src/system_verification/web_service/stats_builder.py` | Statistics computation from `export_json_entity_report` |
-| `src/system_verification/web_service/graph_builder.py` | Graph node/edge construction from SDK |
+| `src/system_verification/web_service/graph_builder.py` | Graph node/edge construction from SDK. **Edges require explicit relationship discovery** — a default `export_json_entity_report` does NOT include relationships, so reading `RELATED_ENTITIES` off a plain export yields zero edges. Discover relationships by calling `find_network_by_entity_id` for multi-record/related entities (it returns the relationship network with match keys) AND/OR by requesting the entity export/report with the relationship-inclusion flag (confirm the exact flag name — e.g. `SZ_ENTITY_INCLUDE_ALL_RELATIONS` — via the Senzing MCP server) so `RELATED_ENTITIES` is populated. Build one `edge` per relationship: `match_key` from the relationship match-key string, `relationship_type` from the relationship kind (possible match / disclosed / discovered); de-duplicate edges and only create an edge when both endpoints appear in the node set. |
 | `src/system_verification/web_service/merges_builder.py` | Multi-record entity extraction from SDK |
 | `src/system_verification/web_service/search_builder.py` | Search-by-attributes wrapper with entity enrichment: calls `search_by_attributes`, then `get_entity_by_entity_id` for each matched entity (up to 10) to retrieve match keys, feature scores, and resolution rules (full enrichment spec in the API reference companion) |
 | `src/system_verification/web_service/index.html` | Generated output from `write_html.py` (single-page visualization, D3.js v7 CDN, embedded CSS/JS) |
@@ -97,7 +97,7 @@ response schemas, field tables, and the `search_builder.py` enrichment specifica
 live in the API reference companion (see below):
 
 - **`GET /api/stats`** — Aggregate entity resolution statistics. Required fields: `records_total`, `entities_total`, `multi_record_entities`, `cross_source_entities`, `relationships_total`, `histogram` (record-count buckets 1/2/3/4+ → entity counts).
-- **`GET /api/graph`** — Entity nodes and relationship edges. Each node: `entity_id`, `entity_name`, `record_count`, `data_sources`, `records`. Each edge: `source_entity_id`, `target_entity_id`, `match_key`, `relationship_type`.
+- **`GET /api/graph`** — Entity nodes and relationship edges. Each node: `entity_id`, `entity_name`, `record_count`, `data_sources`, `records`. Each edge: `source_entity_id`, `target_entity_id`, `match_key`, `relationship_type`. Edges are **discovered via relationship discovery, not a default export**: call `find_network_by_entity_id` for multi-record/related entities and/or request the entity export with the relationship-inclusion flag (e.g. `SZ_ENTITY_INCLUDE_ALL_RELATIONS`, confirmed via the Senzing MCP server). Edges are de-duplicated and limited to entities present in the node set.
 - **`GET /api/merges`** — Multi-record entities (2+ records only) with constituent records. Each entity: `entity_id`, `entity_name`, `match_key`, `records`; each record: `data_source`, `record_id`, `name`, `address`, `phone`, `identifiers`.
 - **`GET /api/search`** — Search entities with enriched resolution reasoning. Each result has base fields (`entity_id`, `entity_name`, `record_count`, `data_sources`) plus enrichment fields: `match_keys` (`entity_level` + `per_record`), `feature_scores`, `resolution_rules`, and `enrichment_error`. Enrichment is capped at 10 entities; on per-entity enrichment failure the result carries null enrichment fields and a non-empty `enrichment_error`.
 - **Error response (all endpoints):** HTTP 500 with `{"error": "<description>"}` on SDK failure.
@@ -220,7 +220,7 @@ Follow the Web Service Delivery Sequence from `visualization-guide.md`:
    | Endpoint | Success Criteria |
    |----------|-----------------|
    | `GET /api/stats` | HTTP 200, valid JSON with all required fields (`records_total`, `entities_total`, `multi_record_entities`, `cross_source_entities`, `relationships_total`, `histogram`) |
-   | `GET /api/graph` | HTTP 200, valid JSON with at least one node and one edge |
+   | `GET /api/graph` | HTTP 200, valid JSON with at least one node and one edge — this must hold on the loaded TruthSet data (relationship discovery, per `graph_builder.py` above, produces the edges) |
    | `GET /api/merges` | HTTP 200, valid JSON with at least one multi-record entity (2+ records) |
 
 3. **Present to bootcamper:**

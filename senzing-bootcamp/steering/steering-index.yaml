@@ -470,7 +470,7 @@ file_metadata:
     token_count: 604
     size_category: medium
   module-03-visualization-api-reference.md:
-    token_count: 1711
+    token_count: 2050
     size_category: medium
   module-04-data-collection.md:
     token_count: 4049
@@ -639,7 +639,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 184635
+  total_tokens: 184974
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

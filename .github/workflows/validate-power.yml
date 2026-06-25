@@ -99,4 +99,6 @@ jobs:
       - name: Install pinned CI tools
         run: pip install -r requirements-dev.txt
       - name: Run tests
+        env:
+          HYPOTHESIS_PROFILE: thorough
         run: python -m pytest senzing-bootcamp/tests/ tests/ -v --tb=short

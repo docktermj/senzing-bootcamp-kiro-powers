@@ -4,24 +4,21 @@ import os
 import sys
 from pathlib import Path
 
+import hypothesis_profiles
 import pytest
-from hypothesis import HealthCheck, settings
 
 # ---------------------------------------------------------------------------
 # Hypothesis profile — deterministic under variable CI/local machine load
 # ---------------------------------------------------------------------------
-# Repo-level property tests can do per-example filesystem I/O that exceeds
-# Hypothesis's default 200 ms deadline or trips the ``too_slow`` health check
-# under machine load. Those are timing artifacts, not logic failures. Disable
-# the deadline and suppress the timing health check so the suite is
-# deterministic; per-test ``@settings`` still take precedence. Assertions are
-# unaffected.
-settings.register_profile(
-    "bootcamp",
-    deadline=None,
-    suppress_health_check=[HealthCheck.too_slow],
-)
-settings.load_profile("bootcamp")
+# Profiles are defined once in the repo-root ``hypothesis_profiles`` module so
+# both collection roots (``senzing-bootcamp/tests/`` and ``tests/``) stay in
+# sync. The active profile is selected from the ``HYPOTHESIS_PROFILE``
+# environment variable; every profile disables the deadline and suppresses the
+# ``too_slow`` health check so the suite stays deterministic under variable
+# machine load. Per-test ``@settings`` still take precedence and assertions are
+# unaffected. The repo root is already on ``sys.path`` via the
+# ``_PROJECT_ROOT`` insert below.
+hypothesis_profiles.load_active_profile()
 
 # ---------------------------------------------------------------------------
 # Ensure the project root is the cwd for every test.

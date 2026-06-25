@@ -367,7 +367,7 @@ def check_mcp_tool_inventory():
     Belt-and-suspenders guard mirroring the pytest drift guard so the same
     check also runs in the validate_power.py CI gate. Sourced from
     scripts/mcp_tool_inventory.py (confirmed live against
-    get_capabilities(version="current"), server v1.24.0): POWER.md "Available
+    get_capabilities(version="current"), server v1.24.0, re-confirmed v1.26.8): POWER.md "Available
     MCP Tools" and ARCHITECTURE.md "MCP Tool Categories" must each list exactly
     ALL_TOOLS, and ARCHITECTURE.md must state the TOTAL_COUNT. Fails if a real
     tool is dropped, a phantom tool (e.g. lint_record) is added, or a stale

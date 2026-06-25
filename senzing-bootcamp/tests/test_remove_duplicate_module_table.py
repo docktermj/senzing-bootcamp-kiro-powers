@@ -276,19 +276,23 @@ class TestPreservationStep5TrackOptions:
 
 
 class TestPreservationStep5Module2Note:
-    """Verify Step 5 preserves the Module 2 auto-insertion note.
+    """Verify Step 5 no longer carries the Module 2 auto-insertion note.
 
-    **Validates: Requirements 3.3**
+    The standalone note "Module 2 is automatically inserted before any module
+    that needs the SDK." was removed from track selection by the
+    track-selection-drop-module2-note bugfix — it added cognitive load to the
+    track choice and is already explained later in onboarding-flow.md when the
+    first SDK-dependent module is reached.
     """
 
-    def test_step5_contains_module2_note(self) -> None:
-        """Step 5 should contain 'Module 2 is automatically inserted'.
+    def test_step5_omits_module2_note(self) -> None:
+        """Step 5 should NOT contain the standalone Module 2 auto-insertion note.
 
-        **Validates: Requirements 3.3**"""
+        **Validates: track-selection-drop-module2-note Requirement 2.1**"""
         content = _read_onboarding_phase2()
         step5 = _extract_step5(content)
-        assert "Module 2 is automatically inserted" in step5, (
-            "Step 5 is missing the Module 2 auto-insertion note.\n"
+        assert "Module 2 is automatically inserted" not in step5, (
+            "Step 5 still carries the removed Module 2 auto-insertion note.\n"
             f"Step 5 content:\n{step5[:500]}..."
         )
 
@@ -331,7 +335,6 @@ class TestPreservationProperty:
     _ALL_PRESERVED_CONTENT = [
         "**Core Bootcamp**",
         "**Advanced Topics**",
-        "Module 2 is automatically inserted before any module that needs the SDK.",
         "Bare number→clarify track vs module.",
     ]
 

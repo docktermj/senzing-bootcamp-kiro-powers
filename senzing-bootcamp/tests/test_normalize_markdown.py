@@ -179,7 +179,6 @@ class TestCommonmarkIdempotence:
 # are already importable via the sys.path insertion at the top of this module.
 import generate_recap_pdf  # noqa: E402
 
-
 # ---------------------------------------------------------------------------
 # Recap schema normalization (Consumer_Schema: docs/bootcamp_recap.md)
 # ---------------------------------------------------------------------------

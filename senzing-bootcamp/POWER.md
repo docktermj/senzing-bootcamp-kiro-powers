@@ -1,7 +1,7 @@
 ---
 name: "senzing-bootcamp"
 displayName: "Senzing Bootcamp"
-version: "0.12.1"
+version: "1.0.0"
 description: "Guided 11-module bootcamp for learning Senzing entity resolution, from first demo to production deployment."
 keywords: ["senzing", "bootcamp", "entity-resolution", "senzing-bootcamp", "learning-track"]
 author: "Senzing"
@@ -18,6 +18,14 @@ This power provides a guided bootcamp for learning Senzing entity resolution thr
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
 This power works best with Claude Opus 4.8 or similar.
+
+## What's New in 1.0.0
+
+- First production release. The full CI validation suite is green across every gate — power integrity, steering token budget, CommonMark, module and MCP-tool inventory, hook registry/prompt sync, prerequisites, governance, external links, ruff, and the conversational eval harness — with pytest at 5,708 passed / 0 failed / 88 skipped
+- Added two inventory CI gates: `check_mcp_tool_inventory()` pins POWER.md / ARCHITECTURE.md to the canonical 13-tool list in `scripts/mcp_tool_inventory.py`, and `check_module_inventory()` cross-checks the POWER.md module table and every script module-name map against `config/module-dependencies.yaml` — CI now fails on any MCP-tool or module-number drift
+- Corrected module numbering/naming drift across docs, diagrams, and scripts to the canonical ascending roster (1 → 2 → … → 11); HTML dashboards now compute completion against the live roster instead of a phantom 12th module
+- MCP tool inventory re-confirmed live against the Senzing MCP server (`sz-mcp-coworker` v1.26.8): 13 tools, names matching the pinned inventory
+- Normalized the `analyze_record` call signature to `analyze_record(file_paths=[...], workspace_dir="<dir>", version="current")` across steering and module docs
 
 ## What's New in 0.12.1
 
@@ -129,9 +137,9 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `environment-setup.md` | 658 | medium |
 | `feedback-workflow.md` | 1239 | medium |
 | `file-placement.md` | 291 | small |
-| `graduation.md` | 3761 | large |
+| `graduation.md` | 4672 | large |
 | `hook-architecture.md` | 2149 | large |
-| `hook-registry-critical.md` | 8517 | large |
+| `hook-registry-critical.md` | 8592 | large |
 | `hook-registry-module-01.md` | 474 | small |
 | `hook-registry-module-02.md` | 261 | small |
 | `hook-registry-module-03.md` | 2341 | large |
@@ -143,8 +151,8 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `hook-registry-module-09.md` | 268 | small |
 | `hook-registry-module-10.md` | 286 | small |
 | `hook-registry-module-11.md` | 463 | small |
-| `hook-registry-module-any.md` | 3846 | large |
-| `hook-registry.md` | 1914 | medium |
+| `hook-registry-module-any.md` | 3376 | large |
+| `hook-registry.md` | 1984 | medium |
 | `inline-status.md` | 460 | small |
 | `lang-csharp.md` | 1642 | medium |
 | `lang-java.md` | 1688 | medium |
@@ -160,10 +168,10 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-01-phase2-document-confirm.md` | 1853 | medium |
 | `module-02-sdk-setup.md` | 4491 | large |
 | `module-03-phase1-verification.md` | 3536 | large |
-| `module-03-phase2-visualization.md` | 4411 | large |
+| `module-03-phase2-visualization.md` | 4738 | large |
 | `module-03-phase3-report-close.md` | 1751 | medium |
 | `module-03-system-verification.md` | 604 | medium |
-| `module-03-visualization-api-reference.md` | 1711 | medium |
+| `module-03-visualization-api-reference.md` | 2050 | large |
 | `module-04-data-collection.md` | 4049 | large |
 | `module-05-data-quality-mapping.md` | 689 | medium |
 | `module-05-phase1-quality-assessment.md` | 1710 | medium |
@@ -191,18 +199,19 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-11-deployment.md` | 479 | small |
 | `module-11-phase1-packaging.md` | 2870 | large |
 | `module-11-phase2-deploy.md` | 850 | medium |
-| `module-completion-artifacts.md` | 2902 | large |
+| `module-completion-artifacts.md` | 3349 | large |
 | `module-completion-error-handling.md` | 604 | medium |
 | `module-completion-next-steps.md` | 702 | medium |
 | `module-completion-track.md` | 1277 | medium |
 | `module-completion.md` | 1394 | medium |
 | `module-prerequisites.md` | 1394 | medium |
 | `module-transitions.md` | 1751 | medium |
-| `onboarding-flow.md` | 3866 | large |
-| `onboarding-phase1b-intro-language.md` | 2055 | large |
-| `onboarding-phase2-track-setup.md` | 991 | medium |
+| `onboarding-flow.md` | 3888 | large |
+| `onboarding-phase1b-intro-language.md` | 2126 | large |
+| `onboarding-phase2-track-setup.md` | 972 | medium |
 | `phase-loading-guide.md` | 890 | medium |
 | `project-structure.md` | 764 | medium |
+| `qa-transcript.md` | 1115 | medium |
 | `recovery-from-mistakes.md` | 1227 | medium |
 | `security-privacy.md` | 278 | small |
 | `session-resume-phase2-mapping.md` | 656 | medium |
@@ -219,7 +228,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2195 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 182394 tokens
+**Total budget:** 185282 tokens
 
 <!-- END GENERATED: steering-files -->
 

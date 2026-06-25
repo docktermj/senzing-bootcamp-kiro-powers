@@ -29,7 +29,7 @@ _ONBOARDING_INTRO: Path = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
 
 # The expected bullet substrings in order for the three reordered bullets.
 _TRACKS_BULLET = "Tracks let you skip to what matters"
-_LICENSE_BULLET = "Built-in 500-record eval license; bring your own for more"
+_LICENSE_BULLET = "500-record evaluation license"
 _TEST_DATA_BULLET = "CORD"
 
 # Preamble and glossary markers

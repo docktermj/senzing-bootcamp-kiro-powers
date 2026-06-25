@@ -63,19 +63,26 @@ class TestHookFileStructure:
         assert isinstance(tool_types, list), "toolTypes must be a list"
         assert "write" in tool_types, "toolTypes must contain 'write'"
 
-    def test_then_type_is_ask_agent(self) -> None:
-        """then.type is 'askAgent'."""
-        content = _HOOK_FILE.read_text(encoding="utf-8")
-        hook = json.loads(content)
-        assert hook["then"]["type"] == "askAgent"
+    def test_then_type_is_run_command(self) -> None:
+        """then.type is 'runCommand'.
 
-    def test_then_prompt_is_non_empty_string(self) -> None:
-        """then.prompt is a non-empty string."""
+        The session-log-events hook logs writes via a direct runCommand (no agent
+        round-trip) per the session-log-hook-performance fix.
+        """
         content = _HOOK_FILE.read_text(encoding="utf-8")
         hook = json.loads(content)
-        prompt = hook["then"]["prompt"]
-        assert isinstance(prompt, str), "prompt must be a string"
-        assert len(prompt) > 0, "prompt must not be empty"
+        assert hook["then"]["type"] == "runCommand"
+
+    def test_then_command_invokes_log_script(self) -> None:
+        """then.command is a non-empty string that invokes log_write_event.py."""
+        content = _HOOK_FILE.read_text(encoding="utf-8")
+        hook = json.loads(content)
+        command = hook["then"]["command"]
+        assert isinstance(command, str), "command must be a string"
+        assert command.strip(), "command must not be empty"
+        assert "log_write_event.py" in command, (
+            "command must invoke log_write_event.py"
+        )
 
     def test_name_is_non_empty_string(self) -> None:
         """name field is a non-empty string."""

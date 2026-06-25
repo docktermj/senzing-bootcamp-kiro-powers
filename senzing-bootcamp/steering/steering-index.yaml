@@ -461,7 +461,7 @@ file_metadata:
     token_count: 3536
     size_category: large
   module-03-phase2-visualization.md:
-    token_count: 4411
+    token_count: 4738
     size_category: large
   module-03-phase3-report-close.md:
     token_count: 1751
@@ -471,7 +471,7 @@ file_metadata:
     size_category: medium
   module-03-visualization-api-reference.md:
     token_count: 2050
-    size_category: medium
+    size_category: large
   module-04-data-collection.md:
     token_count: 4049
     size_category: large
@@ -581,7 +581,7 @@ file_metadata:
     token_count: 2126
     size_category: large
   onboarding-phase2-track-setup.md:
-    token_count: 991
+    token_count: 972
     size_category: medium
   phase-loading-guide.md:
     token_count: 890
@@ -639,7 +639,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 184974
+  total_tokens: 185282
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

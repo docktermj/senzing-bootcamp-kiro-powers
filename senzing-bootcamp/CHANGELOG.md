@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-06-24
+
+### Production release
+
+- First production (`1.0.0`) release. Full CI validation suite green across all
+  gates; pytest at 5,708 passed / 0 failed / 88 skipped. Ruff gate confirmed
+  clean against current ruff (0.15.19). MCP tool inventory re-confirmed live
+  against `sz-mcp-coworker` v1.26.8 (13 tools, names matching the pinned
+  inventory in `scripts/mcp_tool_inventory.py`).
+
 ### Added
 
 - `scripts/mcp_tool_inventory.py` — canonical single source of truth for the
@@ -25,6 +35,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- CI green-up after the post-0.12.1 spec batch (qa-transcript, graduation-markdown
+  normalization, module3-entity-graph-relationships, onboarding-license-request-option,
+  recap-pdf-content-loss-fix, session-log-hook-performance, track-selection-drop-module2-note)
+  left four gates red:
+  - Regenerated the POWER.md generated regions (`generate_power_docs.py --write`) —
+    the steering-files table was missing `qa-transcript.md` and carried stale token
+    counts; resynced `steering/steering-index.yaml` to exact counts via
+    `measure_steering.py` (budget total 182394 → 185282) and re-baselined the budget
+    block hash / total assertion in `test_steering_index_token_count_sync_preservation.py`
+  - Regenerated `.kiro/SPEC_CATALOG.md` (`generate_spec_catalog.py`) — 7 new specs
+    (224 → 231 implemented) were unindexed
+  - Cleared 3 ruff violations in new test files (`test_generate_transcript.py` E501;
+    `test_normalize_markdown.py`, `test_normalize_recap_pdf_integration.py` I001)
+  - Fixed 21 failing tests: generalized the generic hook-structural/schema validators
+    to accept the new `session-log-events` `runCommand` hook (askAgent→prompt,
+    runCommand→command) via a new action-aware `required_fields_for_action()` helper
+    in `tests/hook_test_helpers.py`, and refreshed onboarding preservation tests to the
+    current copy ("500-record evaluation license"; Module 2 auto-insertion note removed
+    from track selection per the bugfix). pytest now at 5708 passed / 0 failed
 - Module numbering/naming drift across docs and scripts: corrected the POWER.md
   "Module Progression" narrative (the stale `1 → 4 → 5 → 2 → 6 → 7` order and
   "topic labels" framing now read as the canonical ascending `1 → 2 → … → 7`),

@@ -20,7 +20,7 @@ _TESTS_DIR = str(Path(__file__).resolve().parent)
 if _TESTS_DIR not in sys.path:
     sys.path.insert(0, _TESTS_DIR)
 
-from hook_test_helpers import parse_categories_yaml
+from hook_test_helpers import parse_categories_yaml, required_fields_for_action
 
 # ---------------------------------------------------------------------------
 # Module-level constants
@@ -334,8 +334,11 @@ class TestJsonStructure:
 
     @pytest.mark.parametrize("filename,data", _hook_data, ids=_hook_ids)
     def test_required_fields_present(self, filename: str, data: dict):
-        """Each hook has all required fields (Req 1.2)."""
-        missing = validate_required_fields(data)
+        """Each hook has all required fields for its action type (Req 1.2).
+
+        askAgent hooks require then.prompt; runCommand hooks require then.command.
+        """
+        missing = required_fields_for_action(data)
         assert not missing, (
             f'"{filename}" missing required field(s): {", ".join(missing)}'
         )
@@ -364,16 +367,32 @@ class TestJsonStructure:
 
     @pytest.mark.parametrize("filename,data", _hook_data, ids=_hook_ids)
     def test_then_type_is_ask_agent(self, filename: str, data: dict):
-        """Every hook's then.type is askAgent (Req 1.5)."""
+        """Every hook's then.type is askAgent or runCommand (Req 1.5).
+
+        Most hooks use askAgent; session-log-events uses runCommand to log writes
+        in-process with no agent round-trip. runCommand hooks must carry a command.
+        """
         actual = data.get("then", {}).get("type")
-        assert actual == "askAgent", (
-            f'"{filename}" then.type is "{actual}", expected "askAgent"'
+        assert actual in ("askAgent", "runCommand"), (
+            f'"{filename}" then.type is "{actual}", expected "askAgent" or "runCommand"'
         )
+        if actual == "runCommand":
+            command = data.get("then", {}).get("command", "")
+            assert isinstance(command, str) and command.strip(), (
+                f'"{filename}" is a runCommand hook but has no then.command'
+            )
 
     @pytest.mark.parametrize("filename,data", _hook_data, ids=_hook_ids)
     def test_prompt_minimum_length(self, filename: str, data: dict):
-        """Every hook's then.prompt is at least 20 characters (Req 1.6)."""
-        prompt = data.get("then", {}).get("prompt", "")
+        """askAgent prompts are >= 20 chars; runCommand hooks carry a command (Req 1.6)."""
+        then = data.get("then", {})
+        if then.get("type") == "runCommand":
+            command = then.get("command", "")
+            assert isinstance(command, str) and command.strip(), (
+                f'"{filename}" is a runCommand hook but has no then.command'
+            )
+            return
+        prompt = then.get("prompt", "")
         assert len(prompt) >= 20, (
             f'"{filename}" prompt is {len(prompt)} chars, minimum is 20'
         )

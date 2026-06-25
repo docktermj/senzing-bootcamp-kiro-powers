@@ -43,7 +43,6 @@ if _SCRIPTS_DIR not in sys.path:
 import generate_recap_pdf
 import normalize_markdown
 
-
 # ---------------------------------------------------------------------------
 # Fixtures / helpers
 # ---------------------------------------------------------------------------

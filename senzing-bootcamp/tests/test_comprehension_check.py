@@ -366,7 +366,7 @@ class TestExistingStepPreservation:
             "Bootcamp Introduction missing 'test data' or 'sample data' terminology"
         )
         assert "Las Vegas, London, Moscow" in section
-        assert "500-record eval license" in section
+        assert "500-record evaluation license" in section
 
     def test_step_4_glossary_reference(self) -> None:
         """Bootcamp Introduction (now phase1b Step 5) provides term-definition guidance."""

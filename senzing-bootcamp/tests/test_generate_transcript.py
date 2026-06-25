@@ -35,7 +35,14 @@ import generate_transcript  # noqa: E402
 _QA_EVENT_TYPES = {"question", "answer"}
 
 # Event types that are explicitly NOT Q&A events (used to build non-Q&A lines).
-_NON_QA_EVENT_TYPES = ["turn", "correction", "module_start", "module_complete", "action", "artifact"]
+_NON_QA_EVENT_TYPES = [
+    "turn",
+    "correction",
+    "module_start",
+    "module_complete",
+    "action",
+    "artifact",
+]
 
 
 # ---------------------------------------------------------------------------

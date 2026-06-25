@@ -353,7 +353,7 @@ _STEP_4_KEY_CONTENT = [
     "guided discovery",
     "Senzing SDK code",
     "Las Vegas, London, Moscow",
-    "500-record eval license",
+    "500-record evaluation license",
     "unfamiliar terms",
     "team_name",
     "member_count",

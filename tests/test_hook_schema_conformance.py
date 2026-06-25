@@ -69,23 +69,35 @@ def validate_hook_schema(data: dict) -> list[str]:
     elif not isinstance(when["type"], str):
         errors.append(f"when.type must be a string, got {type(when['type']).__name__}")
 
-    # then.type and then.prompt
+    # then.type and then.prompt / then.command
     then = data.get("then")
     if not isinstance(then, dict):
         errors.append("missing required field: then (must be an object)")
     else:
+        then_type = then.get("type")
         if "type" not in then:
             errors.append("missing required field: then.type")
-        elif not isinstance(then["type"], str):
+        elif not isinstance(then_type, str):
             errors.append(f"then.type must be a string, got {type(then['type']).__name__}")
 
-        if "prompt" not in then:
-            errors.append("missing required field: then.prompt")
-        elif then.get("type") == "askAgent" and not isinstance(then["prompt"], str):
-            errors.append(
-                f"then.prompt must be a string when then.type is 'askAgent', "
-                f"got {type(then['prompt']).__name__}"
-            )
+        # askAgent hooks require a string prompt; runCommand hooks require a
+        # string command (e.g. the session-log-events postToolUse logger).
+        if then_type == "askAgent":
+            if "prompt" not in then:
+                errors.append("missing required field: then.prompt")
+            elif not isinstance(then["prompt"], str):
+                errors.append(
+                    f"then.prompt must be a string when then.type is 'askAgent', "
+                    f"got {type(then['prompt']).__name__}"
+                )
+        elif then_type == "runCommand":
+            if "command" not in then:
+                errors.append("missing required field: then.command")
+            elif not isinstance(then["command"], str):
+                errors.append(
+                    f"then.command must be a string when then.type is 'runCommand', "
+                    f"got {type(then['command']).__name__}"
+                )
 
     return errors
 
@@ -176,6 +188,10 @@ class TestHookJsonSchemaConformance:
             if then.get("type") == "askAgent":
                 assert then.get("prompt", "").strip(), (
                     f'"{path.name}" then.prompt must be non-empty when then.type is "askAgent"'
+                )
+            elif then.get("type") == "runCommand":
+                assert then.get("command", "").strip(), (
+                    f'"{path.name}" then.command must be non-empty when then.type is "runCommand"'
                 )
 
 

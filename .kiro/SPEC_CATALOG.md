@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 224
+- implemented: 231
 - superseded: 2
 - abandoned: 0
 - unknown: 1
@@ -91,6 +91,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/bootcamp-consistency-fixes/](.kiro/specs/bootcamp-consistency-fixes/)
+
+### bootcamp-qa-transcript
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/bootcamp-qa-transcript/](.kiro/specs/bootcamp-qa-transcript/)
 
 ### bootcamp-record-export
 
@@ -512,6 +519,13 @@
 - Workflow: fast-task
 - Directory: [.kiro/specs/graduation-certificate/](.kiro/specs/graduation-certificate/)
 
+### graduation-markdown-normalization
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/graduation-markdown-normalization/](.kiro/specs/graduation-markdown-normalization/)
+
 ### graduation-workflow
 
 - Status: implemented
@@ -927,6 +941,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/module3-default-on/](.kiro/specs/module3-default-on/)
 
+### module3-entity-graph-relationships
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/module3-entity-graph-relationships/](.kiro/specs/module3-entity-graph-relationships/)
+
 ### module3-visualization-fixes
 
 - Status: implemented
@@ -1017,6 +1038,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/onboarding-flow-restructuring/](.kiro/specs/onboarding-flow-restructuring/)
+
+### onboarding-license-request-option
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/onboarding-license-request-option/](.kiro/specs/onboarding-license-request-option/)
 
 ### onboarding-ux-improvements
 
@@ -1115,6 +1143,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/query-requirements-context/](.kiro/specs/query-requirements-context/)
+
+### recap-pdf-content-loss-fix
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/recap-pdf-content-loss-fix/](.kiro/specs/recap-pdf-content-loss-fix/)
 
 ### record-volume-guidance
 
@@ -1252,6 +1287,13 @@
 - Type: unknown
 - Workflow: unknown
 - Directory: [.kiro/specs/senzing-bootcamp-power/](.kiro/specs/senzing-bootcamp-power/)
+
+### session-log-hook-performance
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/session-log-hook-performance/](.kiro/specs/session-log-hook-performance/)
 
 ### session-persistence
 
@@ -1483,6 +1525,13 @@
 - Type: feature
 - Workflow: fast-task
 - Directory: [.kiro/specs/token-budget-optimization/](.kiro/specs/token-budget-optimization/)
+
+### track-selection-drop-module2-note
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/track-selection-drop-module2-note/](.kiro/specs/track-selection-drop-module2-note/)
 
 ### transformation-lineage
 

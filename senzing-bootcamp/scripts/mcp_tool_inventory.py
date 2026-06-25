@@ -8,7 +8,8 @@ inventory (a real tool dropped, a phantom tool such as ``lint_record`` added,
 or a stale 12/14-tool count reintroduced) fails CI against this single source.
 
 The values below were confirmed against a live ``get_capabilities(version="current")``
-call to the Senzing MCP server (``sz-mcp-coworker`` v1.24.0), which reported
+call to the Senzing MCP server (``sz-mcp-coworker`` — first recorded against v1.24.0,
+re-confirmed against v1.26.8 for the 1.0.0 release), which reported
 ``tool_count: 13`` with the 13 tool names listed in ``ALL_TOOLS`` and NO
 ``lint_record`` tool. ``analyze_record`` is the data-mapping validation tool.
 

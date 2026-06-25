@@ -22,7 +22,6 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-
 # ---------------------------------------------------------------------------
 # Data structures
 # ---------------------------------------------------------------------------
@@ -93,6 +92,45 @@ def extract_keywords(requirement: str) -> list[str]:
     tokens = requirement.split(",")
     result = [t.strip().lower() for t in tokens]
     return [t for t in result if t]
+
+
+# Connective/filler words that are not meaningful gate keywords on their own.
+_KEYWORD_STOPWORDS = frozenset(
+    {"the", "a", "an", "and", "or", "including", "with", "to", "of", "in", "for", "be"}
+)
+
+
+def keyword_satisfied(keyword: str, content_lower: str) -> bool:
+    """Return whether a gate keyword is satisfied by steering content.
+
+    A keyword is satisfied when it appears verbatim in the content, or — as a
+    fallback for descriptive phrases that intersperse keywords with prose — when
+    every *significant* word it contains appears in the content. Parenthetical
+    asides (e.g. ``"(cannot be skipped)"``) are explanatory, not keywords, and
+    are stripped before the word-level check; short tokens (< 3 chars) and
+    common connective stopwords are ignored. A genuinely absent token (with no
+    significant word present in the content) still fails, so real mismatches are
+    still reported.
+
+    Args:
+        keyword: A normalized (lowercased) gate requirement keyword.
+        content_lower: Lowercased steering content for the source module.
+
+    Returns:
+        True if the keyword is satisfied by the content, False otherwise.
+    """
+    if keyword in content_lower:
+        return True
+    # Strip parenthetical asides, then check significant words individually.
+    stripped = re.sub(r"\([^)]*\)", " ", keyword)
+    words = [
+        w
+        for w in re.findall(r"[a-z0-9]+", stripped)
+        if len(w) >= 3 and w not in _KEYWORD_STOPWORDS
+    ]
+    if not words:
+        return False
+    return all(w in content_lower for w in words)
 
 
 # ---------------------------------------------------------------------------
@@ -530,7 +568,7 @@ def _validate_keyword_presence(
         for req in gate_info.requires:
             keywords = extract_keywords(req)
             for keyword in keywords:
-                if keyword not in content_lower:
+                if not keyword_satisfied(keyword, content_lower):
                     findings.append(Finding(
                         "WARNING",
                         f"Gate '{gate_key}': keyword '{keyword}' not found "

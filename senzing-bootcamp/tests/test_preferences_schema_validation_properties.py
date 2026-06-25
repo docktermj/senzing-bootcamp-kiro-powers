@@ -17,7 +17,6 @@ if _SCRIPTS_DIR not in sys.path:
 
 from preferences_utils import parse_yaml
 
-
 # ---------------------------------------------------------------------------
 # Strategies for YAML round-trip (Property 8)
 # ---------------------------------------------------------------------------
@@ -591,7 +590,6 @@ class TestUnknownTopLevelKeys:
 from preferences_utils import (
     CONVERSATION_STYLE_KEYS,
     PRODUCTION_SPECS_KEYS,
-    validate_preferences_schema,
 )
 
 
@@ -683,17 +681,15 @@ class TestUnknownNestedKeys:
 # ---------------------------------------------------------------------------
 
 from preferences_utils import (
-    validate_preferences_schema,
     CONVERSATION_STYLE_KEYS,
     PRODUCTION_SPECS_KEYS,
-    VALID_MAPPING_VERBOSITY,
     VALID_HARDWARE_TARGET,
-    VALID_VERBOSITY_PRESET,
+    VALID_MAPPING_VERBOSITY,
+    VALID_PACING,
     VALID_QUESTION_FRAMING,
     VALID_TONE,
-    VALID_PACING,
+    VALID_VERBOSITY_PRESET,
 )
-
 
 # ---------------------------------------------------------------------------
 # Strategies for valid preferences (Property 1)
@@ -972,13 +968,10 @@ class TestAllErrorsCollected:
 # ---------------------------------------------------------------------------
 
 from preferences_utils import (
-    validate_preferences_schema,
-    VALID_MAPPING_VERBOSITY,
-    VALID_HARDWARE_TARGET,
-    VALID_VERBOSITY_PRESET,
+    VALID_PACING,
     VALID_QUESTION_FRAMING,
     VALID_TONE,
-    VALID_PACING,
+    VALID_VERBOSITY_PRESET,
 )
 
 

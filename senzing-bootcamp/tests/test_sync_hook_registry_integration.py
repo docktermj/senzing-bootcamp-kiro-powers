@@ -11,21 +11,16 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-
 # Make scripts importable
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from sync_hook_registry import (
-    parse_all_hooks,
-    load_category_mapping,
     categorize_hooks,
     generate_registry_summary,
-    generate_registry_critical,
-    generate_registry_modules,
-    write_registry,
+    load_category_mapping,
+    parse_all_hooks,
     verify_registry,
 )
 

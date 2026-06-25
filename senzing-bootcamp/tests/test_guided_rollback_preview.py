@@ -82,11 +82,14 @@ class TestRollbackPreviewOutput:
 
 
 class TestModuleCompletionSteering:
-    """Verify module-completion.md instructs agent to run preview before rollback."""
+    """Verify module-completion guidance instructs agent to run preview before rollback."""
 
     @pytest.fixture()
     def module_completion(self) -> str:
-        path = _STEERING_DIR / "module-completion.md"
+        # The steering-budget-headroom spec sliced module-completion.md into a
+        # router plus concern slices; the rollback preview/confirmation guidance
+        # moved (unchanged) into the next-step-options slice.
+        path = _STEERING_DIR / "module-completion-next-steps.md"
         return path.read_text(encoding="utf-8")
 
     def test_contains_preview_instruction(self, module_completion: str) -> None:
@@ -110,7 +113,7 @@ class TestRollbackSafetyAssessment:
         """format_dry_run_report includes Safety Assessment section."""
         sys.path.insert(0, str(_SCRIPTS_DIR))
         try:
-            from rollback_module import format_dry_run_report, ModuleArtifacts
+            from rollback_module import ModuleArtifacts, format_dry_run_report
             artifacts = ModuleArtifacts(
                 files=["src/load/load.py", "docs/loading_strategy.md"],
                 directories=["src/load"],

@@ -10,16 +10,14 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 from team_config_validator import (
+    PathResolver,
     TeamConfig,
     TeamConfigError,
-    TeamMember,
-    PathResolver,
     load_and_validate,
 )
 
@@ -29,16 +27,15 @@ MODULE_NAMES = {
     3: "System Verification",
     4: "Data Collection",
     5: "Data Quality & Mapping",
-    6: "Single Source Loading",
-    7: "Multi-Source Orchestration",
-    8: "Query, Visualize & Validate",
-    9: "Performance Testing",
-    10: "Security Hardening",
-    11: "Monitoring",
-    12: "Deployment",
+    6: "Data Processing",
+    7: "Query, Visualize, and Discover",
+    8: "Performance Testing & Benchmarking",
+    9: "Security Hardening",
+    10: "Monitoring & Observability",
+    11: "Package & Deploy",
 }
 
-TOTAL_MODULES = 12
+TOTAL_MODULES = 11
 
 
 # ── Data collection ───────────────────────────────────────────────────────
@@ -111,7 +108,7 @@ def compute_team_stats(member_data: list[dict]) -> dict:
     # Total modules completed across all members
     total = sum(len(m.get("modules_completed", [])) for m in member_data)
 
-    # Fully completed count (all 12 modules)
+    # Fully completed count (all modules)
     fully = sum(
         1
         for m in member_data
@@ -219,14 +216,14 @@ def render_dashboard_html(
             )
 
     # ── Build heatmap rows ──
-    heatmap_header = "".join(f"<th>M{i}</th>" for i in range(1, 13))
+    heatmap_header = "".join(f"<th>M{i}</th>" for i in range(1, TOTAL_MODULES + 1))
     heatmap_rows = ""
     for m in member_data:
         name = _esc(m["member_name"])
         completed = set(m.get("modules_completed", []))
         cur = m.get("current_module", 0)
         cells = ""
-        for mod in range(1, 13):
+        for mod in range(1, TOTAL_MODULES + 1):
             if mod in completed:
                 cells += '<td class="mod-done">&#10003;</td>'
             elif mod == cur and m["status"] != "No data available":
@@ -379,17 +376,23 @@ _HTML_TEMPLATE = """\
   <section id="summary">
     <h2>Team Summary</h2>
     <div class="stats-grid">
-      <div class="stat-card"><div class="value">{member_count}</div><div class="label">Members</div></div>
-      <div class="stat-card"><div class="value">{avg_pct}%</div><div class="label">Avg Completion</div></div>
-      <div class="stat-card"><div class="value">{total_mods}</div><div class="label">Total Modules Done</div></div>
-      <div class="stat-card"><div class="value">{lowest_mod}</div><div class="label">Lowest Completion Module</div></div>
-      <div class="stat-card"><div class="value">{fully_done}</div><div class="label">Fully Completed</div></div>
+      <div class="stat-card"><div class="value">{member_count}</div>\
+<div class="label">Members</div></div>
+      <div class="stat-card"><div class="value">{avg_pct}%</div>\
+<div class="label">Avg Completion</div></div>
+      <div class="stat-card"><div class="value">{total_mods}</div>\
+<div class="label">Total Modules Done</div></div>
+      <div class="stat-card"><div class="value">{lowest_mod}</div>\
+<div class="label">Lowest Completion Module</div></div>
+      <div class="stat-card"><div class="value">{fully_done}</div>\
+<div class="label">Fully Completed</div></div>
     </div>
   </section>
   <section id="members">
     <h2>Member Progress</h2>
     <table>
-      <thead><tr><th>Member</th><th>Current Module</th><th>Completed</th><th>Language</th><th>Completion</th></tr></thead>
+      <thead><tr><th>Member</th><th>Current Module</th>\
+<th>Completed</th><th>Language</th><th>Completion</th></tr></thead>
       <tbody>
 {member_rows}
       </tbody>
@@ -407,7 +410,9 @@ _HTML_TEMPLATE = """\
   <section id="er-comparison">
     <h2>ER Comparison</h2>
     <table>
-      <thead><tr><th>Member</th><th>Records Loaded</th><th>Entities Resolved</th><th>Duplicates</th><th>Cross-Source</th><th>Data Sources</th></tr></thead>
+      <thead><tr><th>Member</th><th>Records Loaded</th>\
+<th>Entities Resolved</th><th>Duplicates</th>\
+<th>Cross-Source</th><th>Data Sources</th></tr></thead>
       <tbody>
 {er_rows}
       </tbody>
@@ -429,7 +434,10 @@ def main() -> None:
     """CLI entry point: load config, collect data, render, write file."""
     parser = argparse.ArgumentParser(
         description="Generate team bootcamp dashboard",
-        epilog="See Also: status.py (individual progress), analyze_sessions.py (historical analytics)",
+        epilog=(
+            "See Also: status.py (individual progress), "
+            "analyze_sessions.py (historical analytics)"
+        ),
     )
     parser.add_argument(
         "--output",

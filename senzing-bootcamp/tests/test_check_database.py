@@ -27,10 +27,8 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-import check_database  # noqa: E402
 from check_database import DatabaseCheckResult, DatabaseHealthChecker, main  # noqa: E402
 from preflight import check_database as preflight_check_database  # noqa: E402
-
 
 # ---------------------------------------------------------------------------
 # Task 4.1 — Property 1: Corruption detection
@@ -392,7 +390,7 @@ class TestCLIBehavior:
                     status="fail",
                     message="PRAGMA integrity_check: corruption",
                 )
-                exit_code = main(argv=["--db-path", str(db_file), "--repair"])
+                main(argv=["--db-path", str(db_file), "--repair"])
                 mock_repair.assert_called_once()
 
     def test_json_produces_valid_json_output(self, tmp_path: Path, capsys) -> None:

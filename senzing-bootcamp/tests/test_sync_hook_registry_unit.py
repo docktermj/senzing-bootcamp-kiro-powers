@@ -5,7 +5,6 @@ Feature: hook-registry-source-of-truth
 
 import ast
 import json
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -18,18 +17,11 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from sync_hook_registry import (
-    HookEntry,
-    CategoryMapping,
-    discover_hook_files,
-    parse_hook_file,
-    parse_all_hooks,
-    load_category_mapping,
     categorize_hooks,
-    format_hook_entry,
     generate_registry_summary,
-    generate_registry_critical,
-    generate_registry_modules,
-    write_registry,
+    load_category_mapping,
+    parse_all_hooks,
+    parse_hook_file,
     verify_registry,
 )
 
@@ -55,7 +47,7 @@ class TestParseRealHookFile:
 
         assert entry.hook_id == "ask-bootcamper"
         assert entry.name == "to wait for your answer"
-        assert "bootcamper" in entry.description.lower()
+        assert "agentstop" in entry.description.lower()
         assert entry.event_type == "agentStop"
         assert entry.action_type == "askAgent"
         assert entry.prompt is not None

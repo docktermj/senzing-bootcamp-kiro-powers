@@ -14,7 +14,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -25,9 +25,10 @@ _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _STEERING_DIR = _BOOTCAMP_DIR / "steering"
 _HOOKS_DIR = _BOOTCAMP_DIR / "hooks"
 
-_MODULE_01 = _STEERING_DIR / "module-01-business-problem.md"
+_MODULE_01 = _STEERING_DIR / "module-01-phase1-discovery.md"
 _MODULE_01_PHASE2 = _STEERING_DIR / "module-01-phase2-document-confirm.md"
 _ONBOARDING = _STEERING_DIR / "onboarding-flow.md"
+_ONBOARDING_PHASE1B = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
 _ONBOARDING_PHASE2 = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 _AGENT_INSTRUCTIONS = _STEERING_DIR / "agent-instructions.md"
 _HOOK_REGISTRY = _STEERING_DIR / "hook-registry.md"
@@ -41,7 +42,7 @@ _DEPLOY_K8S = _STEERING_DIR / "deployment-kubernetes.md"
 
 # All affected steering files for frontmatter checks
 _ALL_AFFECTED_FILES: list[tuple[Path, str]] = [
-    (_MODULE_01, "module-01-business-problem.md"),
+    (_MODULE_01, "module-01-phase1-discovery.md"),
     (_MODULE_01_PHASE2, "module-01-phase2-document-confirm.md"),
     (_ONBOARDING, "onboarding-flow.md"),
     (_ONBOARDING_PHASE2, "onboarding-phase2-track-setup.md"),
@@ -87,7 +88,7 @@ def _extract_yaml_frontmatter(content: str) -> str | None:
 
 
 def _extract_step_module01(markdown: str, step_number: int) -> str:
-    """Extract a numbered step from module-01-business-problem.md."""
+    """Extract a numbered step from module-01-phase1-discovery.md."""
     step_pattern = re.compile(
         rf"^{step_number}\.\s+\*\*", re.MULTILINE
     )
@@ -168,16 +169,25 @@ def _extract_onboarding_step(markdown: str, step_id: str) -> str:
 
 
 def _extract_onboarding_step_both_files(step_id: str) -> str:
-    """Extract a step from either onboarding Phase 1 or Phase 2 file.
+    """Extract a step from any onboarding phase file.
 
-    Searches Phase 1 (onboarding-flow.md) first, then Phase 2
-    (onboarding-phase2-track-setup.md) if not found.
+    Searches Phase 1 (onboarding-flow.md) first, then the
+    Phase 1b intro/language file (onboarding-phase1b-intro-language.md),
+    then Phase 2 (onboarding-phase2-track-setup.md) if not found.
+
+    The onboarding flow was split across multiple phase files; a step
+    may now live in any of them, so all three are searched in load order.
     """
     content = _read_file(_ONBOARDING)
     result = _extract_onboarding_step(content, step_id)
     if result:
         return result
-    # Step not in Phase 1 — try Phase 2
+    # Step not in Phase 1 — try Phase 1b (intro / language selection)
+    content = _read_file(_ONBOARDING_PHASE1B)
+    result = _extract_onboarding_step(content, step_id)
+    if result:
+        return result
+    # Still not found — try Phase 2
     content = _read_file(_ONBOARDING_PHASE2)
     return _extract_onboarding_step(content, step_id)
 
@@ -202,10 +212,14 @@ _UNFIXED_PHASE2_STEPS: dict[int, str] = {
     for n in _PHASE2_NON_QUESTION_STEPS
 }
 
-# Onboarding non-question steps: 0, 1, 1b, 3, 4
+# Onboarding non-question steps: 0, 1, 1b, 2, 5
+# (post-restructuring numbering: prerequisite check is now Step 2 in
+# onboarding-flow.md, and bootcamp introduction is now Step 5 in
+# onboarding-phase1b-intro-language.md)
 _UNFIXED_ONBOARDING = _read_file(_ONBOARDING)
+_UNFIXED_ONBOARDING_PHASE1B = _read_file(_ONBOARDING_PHASE1B)
 _UNFIXED_ONBOARDING_PHASE2 = _read_file(_ONBOARDING_PHASE2)
-_ONBOARDING_NON_QUESTION_STEP_IDS = ["0", "1", "1b", "3", "4"]
+_ONBOARDING_NON_QUESTION_STEP_IDS = ["0", "1", "1b", "2", "5"]
 _UNFIXED_ONBOARDING_STEPS: dict[str, str] = {
     sid: _extract_onboarding_step_both_files(sid)
     for sid in _ONBOARDING_NON_QUESTION_STEP_IDS
@@ -434,12 +448,16 @@ class TestPhase2NonQuestionStepsPreserved:
 
 
 class TestOnboardingNonQuestionStepsPreserved:
-    """Onboarding non-question steps (0, 1, 1b, 3, 4, 4c) unchanged.
+    """Onboarding non-question steps (0, 1, 1b, 2, 5) unchanged.
 
     **Validates: Requirements 3.1, 3.2, 3.4**
 
     These steps contain setup, prerequisite, and informational
     content that must not gain stop-and-wait directives.
+
+    Note: after the onboarding restructuring, the prerequisite check
+    is Step 2 (onboarding-flow.md) and the bootcamp introduction is
+    Step 5 (onboarding-phase1b-intro-language.md).
     """
 
     def test_step0_content_unchanged(self) -> None:
@@ -475,24 +493,24 @@ class TestOnboardingNonQuestionStepsPreserved:
             f"Got: {current[:300]}"
         )
 
-    def test_step3_content_unchanged(self) -> None:
-        """Step 3 (prerequisite check) is unchanged."""
-        current = _extract_onboarding_step_both_files("3")
-        baseline = _UNFIXED_ONBOARDING_STEPS["3"]
-        assert baseline, "Baseline for Step 3 is empty"
+    def test_step2_content_unchanged(self) -> None:
+        """Step 2 (prerequisite check) is unchanged."""
+        current = _extract_onboarding_step_both_files("2")
+        baseline = _UNFIXED_ONBOARDING_STEPS["2"]
+        assert baseline, "Baseline for Step 2 is empty"
         assert current == baseline, (
-            f"Step 3 content changed.\n"
+            f"Step 2 content changed.\n"
             f"Expected: {baseline[:300]}\n"
             f"Got: {current[:300]}"
         )
 
-    def test_step4_content_unchanged(self) -> None:
-        """Step 4 (bootcamp introduction) is unchanged."""
-        current = _extract_onboarding_step_both_files("4")
-        baseline = _UNFIXED_ONBOARDING_STEPS["4"]
-        assert baseline, "Baseline for Step 4 is empty"
+    def test_step5_content_unchanged(self) -> None:
+        """Step 5 (bootcamp introduction) is unchanged."""
+        current = _extract_onboarding_step_both_files("5")
+        baseline = _UNFIXED_ONBOARDING_STEPS["5"]
+        assert baseline, "Baseline for Step 5 is empty"
         assert current == baseline, (
-            f"Step 4 content changed.\n"
+            f"Step 5 content changed.\n"
             f"Expected: {baseline[:300]}\n"
             f"Got: {current[:300]}"
         )

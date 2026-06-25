@@ -18,6 +18,20 @@ MODULE_03 = STEERING_DIR / "module-03-system-verification.md"
 MODULE_TRANSITIONS = STEERING_DIR / "module-transitions.md"
 MODULE_COMPLETION = STEERING_DIR / "module-completion.md"
 
+# The steering-budget-headroom spec relocated the next-step options (including
+# the Explore option and the Module 3 special-case note) out of
+# module-completion.md and into the module-completion-next-steps.md slice. The
+# completion workflow content is now spread across the lightweight Root plus
+# four cohesive slices, so assertions about completion content read the Root
+# combined with all four slices.
+MODULE_COMPLETION_SLICES = (
+    MODULE_COMPLETION,
+    STEERING_DIR / "module-completion-artifacts.md",
+    STEERING_DIR / "module-completion-error-handling.md",
+    STEERING_DIR / "module-completion-next-steps.md",
+    STEERING_DIR / "module-completion-track.md",
+)
+
 
 @pytest.fixture
 def module_03_content():
@@ -31,7 +45,7 @@ def module_transitions_content():
 
 @pytest.fixture
 def module_completion_content():
-    return MODULE_COMPLETION.read_text()
+    return "\n".join(path.read_text() for path in MODULE_COMPLETION_SLICES)
 
 
 # ---------------------------------------------------------------------------

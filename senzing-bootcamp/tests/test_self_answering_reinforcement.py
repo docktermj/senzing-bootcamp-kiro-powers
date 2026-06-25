@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 
 import pytest
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
@@ -38,7 +38,12 @@ class TestOnboardingStopMarkers:
 
     @pytest.fixture()
     def onboarding(self) -> str:
-        return (_STEERING_DIR / "onboarding-flow.md").read_text(encoding="utf-8")
+        # The verbosity preference and comprehension check questions moved out
+        # of onboarding-flow.md into onboarding-phase1b-intro-language.md
+        # (shipped Steps 5a/5b), so the STOP markers are asserted there.
+        return (_STEERING_DIR / "onboarding-phase1b-intro-language.md").read_text(
+            encoding="utf-8"
+        )
 
     @pytest.fixture()
     def onboarding_phase2(self) -> str:

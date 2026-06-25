@@ -355,6 +355,34 @@ mapping_workflow(
 )
 ```
 
+The `mapping_workflow` download writes its resources into a scratch
+`workspace_dir` (for example `data/temp/mapping/`). As soon as that download
+completes — and before any further mapping work proceeds — the organize step
+runs to relocate the reusable resources out of the scratch directory and into
+their policy-correct project locations:
+
+```bash
+python3 senzing-bootcamp/scripts/organize_mapping_files.py \
+  --source <workspace_dir> \
+  --project-root <bootcamper_project_root>
+```
+
+Running the organize step right after the download (rather than later in the
+workflow) is what keeps reusable scripts and reference documents from sitting
+buried in the scratch directory while you continue working — they land where
+the structure guide promises (`.py` → `src/`, reference `.md`/`.json` →
+their policy-correct homes) from the start. Transient run artifacts produced
+later in the run (profiling, validation, and transformation output) stay in the
+`workspace_dir` for the workflow's continued use.
+
+The Senzing entity specification, `senzing_entity_specification.md`, is one of
+those relocated reference documents. After the organize step completes, its
+canonical home is `docs/reference/` — that is, `docs/reference/senzing_entity_specification.md`.
+Look for it there rather than in the scratch `workspace_dir`: once the organize
+step has run, the specification no longer lives in the workspace, so you can
+open it directly at `docs/reference/` without inspecting where the workflow
+downloaded it.
+
 #### Step 2: Interactive Mapping
 
 The workflow guides you through 7 steps:
@@ -392,14 +420,25 @@ Use `analyze_record` to check format and quality:
 
 ```text
 analyze_record(
-    record=transformed_record,
-    data_source="CUSTOMERS"
+    file_paths=["data/transformed/output.jsonl"],
+    workspace_dir="data/transformed",
+    version="current"
 )
 ```
 
 The `analyze_record` tool validates records against the Entity Specification and examines feature distribution, attribute coverage, and data quality.
 
 Quality score should be > 70% after mapping.
+
+##### Resilient Validation — Optional/Best-Effort Checks
+
+The `mapping_workflow` advertises three validation scripts. They are run by availability — none of them is a hard blocking gate that you cannot clear:
+
+- **`sz_json_analyzer.py` (primary validation):** Structural + Entity-Specification validation. This is the primary mapping validation and is currently hosted. When it is available, its result is the authoritative check, and a passing result is **sufficient to proceed** even when the other two scripts are unavailable.
+- **`sz_verbatim_check.py` (verbatim-fidelity, optional/best-effort):** If the script is available, the verbatim-fidelity check runs as before. If it is unavailable (HTTP 404 / no working inline fallback), the agent tells you the check is being **skipped because the script is unavailable**, treats it as optional/best-effort, and proceeds — it does not block the workflow.
+- **`sz_routing_report.py` (routing-coverage, optional/best-effort):** Same handling — if available it runs the routing-coverage report; if unavailable it is announced as skipped, treated as optional/best-effort, and the workflow continues.
+
+In short: validation is anchored on `sz_json_analyzer.py`. The verbatim and routing checks degrade to optional/best-effort when their scripts are unavailable, so a 404 never leaves you blocked at the validation step.
 
 #### Step 6: Generate Full Dataset
 
@@ -548,6 +587,21 @@ Track how data flows through transformations:
 
 **Quality Improvement:** 65 → 82 (+17 points)
 ```
+
+### After Mapping Approval: The Step 5 Decision
+
+Once a source's mapping is approved, `mapping_workflow` returns its Step 5 (`detect_environment`) with a four-option menu. This is a decision point, not a dead end — the agent explains the menu and relays a recommendation so you always know the next action.
+
+**Steps 5–8 are optional sandbox validation.** They let you trial-load the mapped source into a throwaway sandbox to preview entity resolution (this is Phase 3 below). They are **not** the production load — the real load happens in **Module 6**. The four `detect_environment` options are:
+
+- **skip** — skip the per-source sandbox test load and move on. **Recommended when one or more unmapped sources remain.**
+- **test_load** — run the optional sandbox test load (enters Phase 3, Steps 5–8) for this source.
+- **load+resolve** — run the optional sandbox test load and resolve entities (enters Phase 3, Steps 5–8) for this source.
+- **done** — finish the mapping workflow for this source without a sandbox test load.
+
+**When sources remain (recommended path):** If one or more data sources are still unmapped, the agent recommends **skip** — since the real load is deferred to Module 6, a per-source sandbox test load adds little here — and automatically continues to the next unmapped source by starting its own `mapping_workflow` run.
+
+**When you choose to validate:** If you explicitly choose **test_load** or **load+resolve**, the workflow follows that path into Phase 3 (Steps 5–8) unchanged. Either way, the real production load still happens in Module 6.
 
 ---
 

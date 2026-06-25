@@ -10,7 +10,6 @@ Correctness Properties (from design.md):
 import json
 from pathlib import Path
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
@@ -428,12 +427,22 @@ class TestHookFileStructuralValidity:
     @given(hook_path=st_hook_file)
     @settings(max_examples=10)
     def test_hook_then_type_is_ask_agent(self, hook_path: Path):
-        """Each hook's then.type must be 'askAgent'.
+        """Each hook's then.type must be 'askAgent' or 'runCommand'.
+
+        Most hooks use askAgent; session-log-events uses runCommand to log writes
+        directly (no agent round-trip). runCommand hooks must carry a command.
 
         **Validates: Requirements 2.4, 6.3**
         """
         data = _load_hook(hook_path)
-        then_type = data["then"]["type"]
-        assert then_type == "askAgent", (
-            f"{hook_path.name} has then.type={then_type!r}, expected 'askAgent'"
+        then = data["then"]
+        then_type = then["type"]
+        assert then_type in ("askAgent", "runCommand"), (
+            f"{hook_path.name} has then.type={then_type!r}, "
+            f"expected 'askAgent' or 'runCommand'"
         )
+        if then_type == "runCommand":
+            command = then.get("command", "")
+            assert isinstance(command, str) and command.strip(), (
+                f"{hook_path.name} is a runCommand hook but has no then.command"
+            )

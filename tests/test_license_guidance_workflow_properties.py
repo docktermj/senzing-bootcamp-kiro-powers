@@ -22,7 +22,15 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 STEERING_DIR = Path("senzing-bootcamp/steering")
-MODULE_01 = STEERING_DIR / "module-01-business-problem.md"
+# NOTE: The module-router-standardization spec split the former inline
+# `module-01-business-problem.md` into a thin phase ROUTER plus phase files.
+# All Step 1–9 discovery content — including the Step 6 inference categories
+# (A–F), the license-guidance workflow (Steps 6a–6e), the Step 7 gap-filling
+# sub-steps, and the verbatim Phase 2 reference line — was relocated into
+# `module-01-phase1-discovery.md`. These tests therefore read the phase-1 file,
+# which is the new home of the content they assert. The original test intent is
+# preserved; only the source path changed.
+MODULE_01 = STEERING_DIR / "module-01-phase1-discovery.md"
 
 
 # ---------------------------------------------------------------------------
@@ -31,7 +39,11 @@ MODULE_01 = STEERING_DIR / "module-01-business-problem.md"
 
 
 def _load_module_01_content() -> str:
-    """Load the full content of module-01-business-problem.md."""
+    """Load the full content of module-01-phase1-discovery.md.
+
+    Phase 1 holds the relocated Steps 1–9 discovery content (formerly inline in
+    module-01-business-problem.md before the module-router-standardization split).
+    """
     return MODULE_01.read_text(encoding="utf-8")
 
 
@@ -48,7 +60,7 @@ def _extract_step_6_and_transition(content: str) -> str:
         content,
         re.DOTALL,
     )
-    assert match, "Could not locate Step 6 in module-01-business-problem.md"
+    assert match, "Could not locate Step 6 in module-01-phase1-discovery.md"
     return match.group(1)
 
 
@@ -298,9 +310,35 @@ class TestBugConditionLicenseGuidance:
 
 MODULE_02 = STEERING_DIR / "module-02-sdk-setup.md"
 
-# SHA-256 hash of module-02-sdk-setup.md at the time preservation tests were written.
-# Used to verify byte-identical content (Module 2 Step 5 independence).
-MODULE_02_SHA256 = "03214ded373212228a71386b6cfe9610859b53d8ea5299d54854934c187b052c"
+# Structural markers that replace the former whole-file SHA-256 snapshot of
+# module-02-sdk-setup.md (the old ``MODULE_02_SHA256`` digest-equality check).
+# That snapshot pinned the entire file byte-for-byte so the Module 2 Step 5
+# license gate could not silently regress, but it broke on every benign,
+# unrelated edit to the file — it had already been re-baselined once after the
+# intentional commit b2bccbb Step 5 wording change — without telling us whether
+# the protected license-guidance behavior actually changed. These markers assert
+# the behavioral invariant the snapshot was really protecting (Req 5.1, 6.6):
+# the key Step 5 license facts must stay present.
+MODULE_02_STEP5_LICENSE_MARKERS: tuple[tuple[str, str], ...] = (
+    (
+        "built-in evaluation license limited to 500 records",
+        "Step 5 must still reference the built-in 500-record evaluation license.",
+    ),
+    (
+        "licenses/g2.lic",
+        "Step 5 must still reference the project-local licenses/g2.lic path.",
+    ),
+    (
+        "support@senzing.com",
+        "Step 5 must still reference the support@senzing.com contact for "
+        "evaluation licenses.",
+    ),
+    (
+        "search_docs(",
+        "Step 5 must still include the MCP search_docs guidance for license "
+        "requests (intentional commit b2bccbb wording change).",
+    ),
+)
 
 # The five inference categories in Step 6 (labeled A–F in the steering file,
 # but the task spec lists five named categories plus INTEGRATION TARGETS).
@@ -338,7 +376,7 @@ def _extract_step_6_section(content: str) -> str:
         content,
         re.DOTALL,
     )
-    assert match, "Could not locate Step 6 in module-01-business-problem.md"
+    assert match, "Could not locate Step 6 in module-01-phase1-discovery.md"
     return match.group(1)
 
 
@@ -349,18 +387,19 @@ def _extract_step_7_section(content: str) -> str:
         content,
         re.DOTALL,
     )
-    assert match, "Could not locate Step 7 in module-01-business-problem.md"
+    assert match, "Could not locate Step 7 in module-01-phase1-discovery.md"
     return match.group(1)
 
 
 def _extract_steps_1_to_5(content: str) -> str:
     """Extract Steps 1–5 content."""
     match = re.search(
-        r"(1\.\s+\*\*Initialize version control\*\*.*?)(?=6\.\s+\*\*Infer details from response\*\*)",
+        r"(1\.\s+\*\*Initialize version control\*\*.*?)"
+        r"(?=6\.\s+\*\*Infer details from response\*\*)",
         content,
         re.DOTALL,
     )
-    assert match, "Could not locate Steps 1–5 in module-01-business-problem.md"
+    assert match, "Could not locate Steps 1–5 in module-01-phase1-discovery.md"
     return match.group(1)
 
 
@@ -371,7 +410,7 @@ def _extract_steps_8_to_9(content: str) -> str:
         content,
         re.DOTALL,
     )
-    assert match, "Could not locate Steps 8–9 in module-01-business-problem.md"
+    assert match, "Could not locate Steps 8–9 in module-01-phase1-discovery.md"
     return match.group(1)
 
 
@@ -387,7 +426,7 @@ class TestPreservationLicenseGuidance:
 
     @pytest.fixture
     def module_01_content(self) -> str:
-        """Load the full module-01-business-problem.md content."""
+        """Load the full module-01-phase1-discovery.md content."""
         return _load_module_01_content()
 
     # -------------------------------------------------------------------
@@ -545,24 +584,33 @@ class TestPreservationLicenseGuidance:
     # Test 6 — Module 2 Step 5 Independence
     # -------------------------------------------------------------------
 
-    def test_module_2_byte_identical(self):
-        """Module 2 steering file (module-02-sdk-setup.md) must be
-        byte-identical to its original content. The license gate in
-        Module 2 Step 5 must be unaffected by any changes.
+    def test_module_2_step5_license_gate_preserved(self):
+        """Module 2 Step 5 (Configure License) license gate must remain intact.
 
-        **Validates: Requirements 3.4**
+        Original intent (Req 3.4): a whole-file SHA-256 snapshot
+        (``MODULE_02_SHA256``) pinned module-02-sdk-setup.md byte-for-byte so the
+        license gate in Module 2 Step 5 could not silently regress. That snapshot
+        broke on every benign, unrelated edit to the file — it had already been
+        re-baselined once after the intentional commit b2bccbb Step 5 wording
+        change — without telling us whether the protected license-guidance
+        behavior actually changed.
+
+        Structural replacement (Req 5.1, 6.6): assert the key Step 5 license facts
+        — the built-in 500-record evaluation license, the project-local
+        licenses/g2.lic path, the support@senzing.com contact, and the MCP
+        search_docs guidance — are still present. These are the invariants the
+        snapshot was really protecting; they tolerate benign edits but still fail
+        if the license gate is removed.
+
+        **Validates: Requirements 3.4, 6.6**
         """
-        import hashlib
+        text = MODULE_02.read_text(encoding="utf-8")
 
-        content = MODULE_02.read_bytes()
-        actual_hash = hashlib.sha256(content).hexdigest()
-
-        assert actual_hash == MODULE_02_SHA256, (
-            f"module-02-sdk-setup.md has been modified!\n"
-            f"  Expected SHA-256: {MODULE_02_SHA256}\n"
-            f"  Actual SHA-256:   {actual_hash}\n"
-            f"Module 2 Step 5 (Configure License) must remain unchanged."
-        )
+        # The key Step 5 license facts must still be present, so a regression of
+        # the protected license-guidance region is caught while benign,
+        # unrelated edits to the file no longer force a hash re-baseline.
+        for marker, message in MODULE_02_STEP5_LICENSE_MARKERS:
+            assert marker in text, message
 
     # -------------------------------------------------------------------
     # Test 7 — Record Count ≤ 500 No License Mention
@@ -595,7 +643,8 @@ class TestPreservationLicenseGuidance:
         else:
             # Fallback: extract from **A. RECORD TYPES** to **F. INTEGRATION TARGETS** end
             inference_match = re.search(
-                r"(\*\*A\. RECORD TYPES\*\*.*?\*\*F\. INTEGRATION TARGETS\*\*.*?)(?=\n\s*\*\*Checkpoint)",
+                r"(\*\*A\. RECORD TYPES\*\*.*?\*\*F\. INTEGRATION TARGETS\*\*.*?)"
+                r"(?=\n\s*\*\*Checkpoint)",
                 step_6,
                 re.DOTALL,
             )
@@ -658,7 +707,8 @@ class TestPreservationLicenseGuidance:
         else:
             # Fallback: extract from **A. to **F. end
             inference_match = re.search(
-                r"(\*\*A\. RECORD TYPES\*\*.*?\*\*F\. INTEGRATION TARGETS\*\*.*?)(?=\n\s*\*\*Checkpoint)",
+                r"(\*\*A\. RECORD TYPES\*\*.*?\*\*F\. INTEGRATION TARGETS\*\*.*?)"
+                r"(?=\n\s*\*\*Checkpoint)",
                 step_6,
                 re.DOTALL,
             )

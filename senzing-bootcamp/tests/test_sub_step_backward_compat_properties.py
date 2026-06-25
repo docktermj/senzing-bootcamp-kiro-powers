@@ -19,7 +19,6 @@ if _SCRIPTS_DIR not in sys.path:
 
 from progress_utils import validate_progress_schema, write_checkpoint
 
-
 # ---------------------------------------------------------------------------
 # Strategies
 # ---------------------------------------------------------------------------

@@ -1,0 +1,42 @@
+# BUG 1 — Onboarding-split preservation baselines (observation-first, UNFIXED tree)
+#
+# Captured by Task 4 (Phase B preservation baseline) on the UNFIXED tree.
+# Property 2: Preservation — Steering Content and Previously-Passing Tests Unchanged
+# Requirements: 3.1, 3.2, 3.3, 3.6
+#
+# PURPOSE: Lock down the byte-level state of the two onboarding steering files so
+# Task 7.6 can prove BUG 1 is "tests-only" — both .md files MUST stay byte-identical
+# after the fix. NO steering .md file is modified for BUG 1.
+#
+# Re-verify (Task 7.6) with:
+#   sha256sum senzing-bootcamp/steering/onboarding-flow.md \
+#             senzing-bootcamp/steering/onboarding-phase1b-intro-language.md
+# and compare against the digests below.
+
+## SHA-256 byte-level baselines
+onboarding-flow.md                      sha256=fd03ebcc58464f6022e6a2990dad0318ed29a09bb9d672cb6fc3decb7de2a8c9  bytes=13965
+onboarding-phase1b-intro-language.md    sha256=4631a4eaccdfadaf12d8a8c6f2d53eafbf5d372744da95abebff8d36e739f86e  bytes=8918
+
+## Content observations (post-split layout, present verbatim on the UNFIXED tree)
+#
+# onboarding-phase1b-intro-language.md (the phase file now OWNS the moved content):
+#   - "## 3. Entity Resolution Introduction"            (Step 3 heading)
+#   - "## 4. Programming Language Selection"            (Step 4 heading — language prompt)
+#   - "## 5. Bootcamp Introduction"                     (Step 5 heading — welcome banner section)
+#   - "### 5a. Verbosity Preference"                    (Step 5a heading)
+#   - "### 5b. Comprehension Check"                     (Step 5b heading)
+#   - Welcome banner line: '🎓🎓🎓  WELCOME TO THE SENZING BOOTCAMP!  🎓🎓🎓'
+#   - Language prompt phrasing: always use the phrase "programming language" (never the
+#     bare word "language" alone) to avoid ambiguity with natural/spoken languages.
+#
+# onboarding-flow.md (cross-reference INTACT after the split):
+#   - 'After Step 2d, load `onboarding-phase1b-intro-language.md`' (cross-reference present)
+
+## Whole-suite passing baseline (UNFIXED tree)
+# Command: python3 -m pytest senzing-bootcamp/tests/ tests/
+# Authoritative baseline (from Task 1): 4648 passed, 147 failed, 86 skipped
+# Known flaky: senzing-bootcamp/tests/test_track_reorganization.py
+#   ::TestProperty1NoLegacyIdentifiersInFiles::test_no_legacy_id_in_bootcamp_files
+#   (intermittent hypothesis.errors.DeadlineExceeded ~248ms vs 200ms; unrelated to drift,
+#    accounts for 146-vs-147 variance between runs).
+# The 4648 passed count MUST NOT drop after the BUG 1 fix (Task 7.6 re-verifies).

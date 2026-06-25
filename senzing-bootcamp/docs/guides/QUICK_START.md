@@ -21,7 +21,7 @@ Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 
 **Don't have data?** Senzing provides [CORD (Collections Of Relatable Data)](https://senzing.com/senzing-ready-data-collections-cord/) — curated, real-world-like datasets designed for entity resolution evaluation. Use the `get_sample_data` tool to download a CORD dataset (Las Vegas, London, or Moscow). If CORD data doesn't meet your specific needs, test data can be generated as a fallback.
 
-**Licensing:** Senzing includes a built-in evaluation license for 500 records. Bring your own license for more capacity.
+**Licensing:** Senzing ships with a built-in evaluation license you already have — it covers roughly 500 records, which is plenty to work through the bootcamp. Need to process more? You have options: apply an existing Senzing license, request an evaluation license through Senzing support, or (when available) request one in-flow during the bootcamp. The agent walks you through these paths and sources the current capacity from the Senzing MCP server.
 
 ## Quick Commands
 

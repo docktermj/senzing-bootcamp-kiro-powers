@@ -16,9 +16,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings
 import hypothesis.strategies as st
+from hypothesis import given, settings
 
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:

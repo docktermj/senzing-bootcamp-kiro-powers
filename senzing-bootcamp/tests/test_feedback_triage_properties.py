@@ -10,8 +10,7 @@ import uuid
 from io import StringIO
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, assume, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -20,20 +19,18 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from triage_feedback import (
-    FeedbackEntry,
-    TriageResult,
     VALID_CATEGORIES,
     VALID_PRIORITIES,
-    to_kebab_case,
-    extract_field,
-    parse_feedback_file,
-    generate_bugfix_skeleton,
-    generate_requirements_skeleton,
-    generate_config,
+    FeedbackEntry,
+    TriageResult,
     create_spec_directory,
+    generate_bugfix_skeleton,
+    generate_config,
+    generate_requirements_skeleton,
+    parse_feedback_file,
     print_triage_report,
+    to_kebab_case,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies

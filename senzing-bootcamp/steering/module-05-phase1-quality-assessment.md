@@ -18,26 +18,22 @@ inclusion: manual
 
    **Checkpoint:** Write step 2 to `config/bootcamp_progress.json`.
 
-3. **Understand the Senzing Generic Entity Specification**: Call `search_docs` with query "generic entity specification" or "Entity Specification format" to retrieve current documentation about the standard format. Key Entity Specification attributes include:
-   - **Identity attributes**: `NAME_FULL`, `NAME_FIRST`, `NAME_LAST`, `NAME_ORG`, `DATE_OF_BIRTH`, `PASSPORT_NUMBER`, `DRIVERS_LICENSE_NUMBER`, `SSN_NUMBER`, `NATIONAL_ID_NUMBER`
-   - **Contact attributes**: `ADDR_FULL`, `ADDR_LINE1`, `ADDR_CITY`, `ADDR_STATE`, `ADDR_POSTAL_CODE`, `PHONE_NUMBER`, `EMAIL_ADDRESS`, `WEBSITE_ADDRESS`
-   - **Required fields**: `DATA_SOURCE`, `RECORD_ID`
-   - **Relationship attributes**: `REL_ANCHOR_DOMAIN`, `REL_ANCHOR_KEY`, `REL_POINTER_DOMAIN`, `REL_POINTER_KEY`, `REL_POINTER_ROLE`
+3. **Understand the Senzing Generic Entity Specification**: Call `download_resource(filename="senzing_entity_specification.md")` to retrieve the current Senzing Generic Entity Specification. Use this as the authoritative reference for all attribute names, types, and structures in this step and subsequent steps.
 
    **Checkpoint:** Write step 3 to `config/bootcamp_progress.json`.
 
-4. **Compare each data source with the Entity Specification**: For each data source provided:
-   - Identify which fields map directly to Entity Specification attributes (e.g., "full_name" → `NAME_FULL`)
-   - Identify fields that need transformation (e.g., separate "first_name" and "last_name" → `NAME_FULL`)
-   - Identify fields with non-standard names (e.g., "company" → `NAME_ORG`)
-   - Note any missing critical fields
+4. **Compare each data source with the Entity Specification**: Using the Entity Specification retrieved in Step 3 as the reference, compare each data source's fields against the specification's attribute names. For each data source provided:
+   - Identify which fields map directly to attributes defined in the Entity Specification
+   - Identify fields that need transformation (e.g., combining or splitting fields to match the specification's expected structure)
+   - Identify fields with non-standard names that correspond to attributes in the Entity Specification
+   - Note any missing critical fields defined in the Entity Specification
    - Check if `DATA_SOURCE` and `RECORD_ID` are present or can be derived
 
    **Checkpoint:** Write step 4 to `config/bootcamp_progress.json`.
 
-5. **Categorize each data source**:
-   - **Entity Specification-compliant**: Data already uses standard Senzing attribute names and structure. Can proceed directly to Module 2 (SDK setup) and Module 6 (loading).
-   - **Needs mapping**: Data uses different field names or structures. Continue to Phase 2 (data mapping) below.
+5. **Categorize each data source** (using the Entity Specification retrieved in Step 3 as the source of truth for what constitutes compliant attribute names):
+   - **Entity Specification-compliant**: Data already uses attribute names and structures that match the Entity Specification. Can proceed directly to Module 2 (SDK setup) and Module 6 (loading).
+   - **Needs mapping**: Data uses different field names or structures than those defined in the Entity Specification. Continue to Phase 2 (data mapping) below.
    - **Needs enrichment**: Data is missing critical attributes. Discuss with user whether additional data sources can provide missing information.
 
    **Checkpoint:** Write step 5 to `config/bootcamp_progress.json`.

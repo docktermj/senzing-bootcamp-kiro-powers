@@ -15,7 +15,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -26,19 +26,43 @@ _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _MODULE_COMPLETION = _BOOTCAMP_DIR / "steering" / "module-completion.md"
 _MODULE_03 = _BOOTCAMP_DIR / "steering" / "module-03-system-verification.md"
 
+# After the module-03 monolith was split into a dispatcher + phase sub-files
+# (same-branch refactor), Step 12 (Module Close) moved into the Phase 3
+# report-&-close file. Its instructions are unchanged — only the owning file
+# moved.
+_MODULE_03_PHASE3 = _BOOTCAMP_DIR / "steering" / "module-03-phase3-report-close.md"
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
 
 def _read_module_completion() -> str:
-    """Read the full content of module-completion.md."""
-    return _MODULE_COMPLETION.read_text(encoding="utf-8")
+    """Read the module-completion router plus every concern slice, combined.
+
+    The steering-budget-headroom spec sliced module-completion.md into a router
+    plus cohesive concern slices (content moved, not changed). The preserved
+    sections below now live across those slices, so read the router plus every
+    slice to assert them at their new locations.
+    """
+    steering = _BOOTCAMP_DIR / "steering"
+    names = ["module-completion.md", *sorted(
+        p.name for p in steering.glob("module-completion-*.md")
+    )]
+    return "\n".join((steering / name).read_text(encoding="utf-8") for name in names)
 
 
 def _read_module_03() -> str:
     """Read the full content of module-03-system-verification.md."""
     return _MODULE_03.read_text(encoding="utf-8")
+
+
+def _read_module_03_phase3() -> str:
+    """Read the full content of module-03-phase3-report-close.md.
+
+    Step 12 (Module Close) lives here after the module-03 dispatcher split.
+    """
+    return _MODULE_03_PHASE3.read_text(encoding="utf-8")
 
 
 def _extract_section(markdown: str, heading: str) -> str:
@@ -116,7 +140,8 @@ PRESERVED_SECTIONS_MODULE_COMPLETION: dict[str, dict] = {
             r"\*\*What was produced:\*\*",
             r"\*\*Why it matters:\*\*",
         ],
-        "description": "Journal template with module name, date, what we did, what was produced, why it matters",
+        "description": "Journal template with module name, date, what we did, "
+        "what was produced, why it matters",
     },
     "module_completion_certificate": {
         "heading": "## Module Completion Certificate",
@@ -137,7 +162,8 @@ PRESERVED_SECTIONS_MODULE_COMPLETION: dict[str, dict] = {
             r"\*\*Undo:\*\*",
             r"\*\*Share:\*\*",
         ],
-        "description": "Next-step options with all five choices (Proceed, Iterate, Explore, Undo, Share)",
+        "description": "Next-step options with all five choices "
+        "(Proceed, Iterate, Explore, Undo, Share)",
     },
     "immediate_execution": {
         "heading": "### ⛔ Immediate Execution on Affirmative Response",
@@ -156,7 +182,8 @@ PRESERVED_SECTIONS_MODULE_COMPLETION: dict[str, dict] = {
             r"Module 7",
             r"Module 11",
         ],
-        "description": "Path completion detection table with Core Bootcamp and Advanced Topics tracks",
+        "description": "Path completion detection table with Core Bootcamp and "
+        "Advanced Topics tracks",
     },
     "path_completion_celebration": {
         "heading": "## Path Completion Celebration",
@@ -270,10 +297,10 @@ class TestModule03Step12Preservation:
     ) -> None:
         """For any subset of preserved step 12 instructions, each instruction
         exists in the step 12 section."""
-        content = _read_module_03()
+        content = _read_module_03_phase3()
         step12 = _extract_step_by_heading(content, 12)
         assert step12, (
-            "Step 12 section not found in module-03-system-verification.md"
+            "Step 12 section not found in module-03-phase3-report-close.md"
         )
 
         for key in instruction_keys:

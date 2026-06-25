@@ -13,7 +13,7 @@ import json
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -22,6 +22,10 @@ from hypothesis import strategies as st
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _ONBOARDING_FLOW = _BOOTCAMP_DIR / "steering" / "onboarding-flow.md"
+# After the onboarding split, the Bootcamp Introduction (welcome banner +
+# overview bullets) moved from "Step 4" of onboarding-flow.md into "Step 5"
+# of onboarding-phase1b-intro-language.md. Content markers are read from there.
+_ONBOARDING_PHASE1B = _BOOTCAMP_DIR / "steering" / "onboarding-phase1b-intro-language.md"
 _ONBOARDING_PHASE2 = _BOOTCAMP_DIR / "steering" / "onboarding-phase2-track-setup.md"
 _HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "ask-bootcamper.kiro.hook"
 _HOOK_REGISTRY = _BOOTCAMP_DIR / "steering" / "hook-registry.md"
@@ -145,62 +149,64 @@ class TestSetupStepsNoGate:
 
 
 class TestStep4ContentMarkers:
-    """Step 4 contains key introduction content markers.
+    """Bootcamp Introduction contains key introduction content markers.
 
     **Validates: Requirements 3.2**
 
-    Step 4 (Bootcamp Introduction) must contain the guided discovery
-    framing, module overview, test data mention, eval license info,
-    and glossary reference.
+    The Bootcamp Introduction (Step 5 of ``onboarding-phase1b-intro-language.md``
+    after the onboarding split — formerly "Step 4. Bootcamp Introduction" in
+    ``onboarding-flow.md``) must contain the guided discovery framing, module
+    overview, test data mention, eval license info, and glossary reference.
+    The content moved unchanged; only its file location and step number changed.
     """
 
     def test_step4_contains_guided_discovery(self) -> None:
-        """Assert Step 4 mentions guided discovery."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
-        step4 = _extract_section(content, "4. Bootcamp Introduction")
-        assert step4, "Step 4 section not found"
+        """Assert the Bootcamp Introduction mentions guided discovery."""
+        content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
+        step4 = _extract_section(content, "5. Bootcamp Introduction")
+        assert step4, "Bootcamp Introduction section not found"
         assert re.search(r"guided discovery", step4, re.IGNORECASE), (
-            "Step 4 missing 'guided discovery' content marker"
+            "Bootcamp Introduction missing 'guided discovery' content marker"
         )
 
     def test_step4_contains_module_overview(self) -> None:
-        """Assert Step 4 mentions module overview table."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
-        step4 = _extract_section(content, "4. Bootcamp Introduction")
-        assert step4, "Step 4 section not found"
+        """Assert the Bootcamp Introduction mentions module overview table."""
+        content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
+        step4 = _extract_section(content, "5. Bootcamp Introduction")
+        assert step4, "Bootcamp Introduction section not found"
         assert re.search(r"[Mm]odule overview", step4, re.IGNORECASE), (
-            "Step 4 missing 'module overview' content marker"
+            "Bootcamp Introduction missing 'module overview' content marker"
         )
 
     def test_step4_contains_test_data(self) -> None:
-        """Assert Step 4 mentions test data or sample data."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
-        step4 = _extract_section(content, "4. Bootcamp Introduction")
-        assert step4, "Step 4 section not found"
+        """Assert the Bootcamp Introduction mentions test data or sample data."""
+        content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
+        step4 = _extract_section(content, "5. Bootcamp Introduction")
+        assert step4, "Bootcamp Introduction section not found"
         assert re.search(r"[Tt]est data|[Ss]ample data", step4, re.IGNORECASE), (
-            "Step 4 missing 'test data' or 'sample data' content marker"
+            "Bootcamp Introduction missing 'test data' or 'sample data' content marker"
         )
 
     def test_step4_contains_eval_license_info(self) -> None:
-        """Assert Step 4 mentions eval license or 500-record limit."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
-        step4 = _extract_section(content, "4. Bootcamp Introduction")
-        assert step4, "Step 4 section not found"
+        """Assert the Bootcamp Introduction mentions eval license or 500-record limit."""
+        content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
+        step4 = _extract_section(content, "5. Bootcamp Introduction")
+        assert step4, "Bootcamp Introduction section not found"
         has_eval = re.search(r"eval license", step4, re.IGNORECASE)
         has_500 = re.search(r"500-record", step4, re.IGNORECASE)
         assert has_eval or has_500, (
-            "Step 4 missing eval license / 500-record content marker"
+            "Bootcamp Introduction missing eval license / 500-record content marker"
         )
 
     def test_step4_contains_glossary_reference(self) -> None:
-        """Assert Step 4 provides term-definition guidance."""
-        content = _ONBOARDING_FLOW.read_text(encoding="utf-8")
-        step4 = _extract_section(content, "4. Bootcamp Introduction")
-        assert step4, "Step 4 section not found"
+        """Assert the Bootcamp Introduction provides term-definition guidance."""
+        content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
+        step4 = _extract_section(content, "5. Bootcamp Introduction")
+        assert step4, "Bootcamp Introduction section not found"
         has_terms = re.search(r"unfamiliar terms", step4, re.IGNORECASE)
         has_glossary = re.search(r"glossary", step4, re.IGNORECASE)
         assert has_terms or has_glossary, (
-            "Step 4 missing term-definition guidance"
+            "Bootcamp Introduction missing term-definition guidance"
         )
 
 

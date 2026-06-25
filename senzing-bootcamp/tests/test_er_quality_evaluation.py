@@ -9,10 +9,8 @@ Feature: er-quality-evaluation-loop
 
 from __future__ import annotations
 
-from pathlib import Path
 import re
-
-import pytest
+from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # Path constants
@@ -20,7 +18,7 @@ import pytest
 
 _POWER_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 
-MODULE_07_PATH = _POWER_ROOT / "steering" / "module-07-query-visualize-discover.md"
+MODULE_07_PATH = _POWER_ROOT / "steering" / "module-07-phase1-query-visualize.md"
 TRANSITIONS_PATH = _POWER_ROOT / "steering" / "module-transitions.md"
 
 

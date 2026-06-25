@@ -8,9 +8,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-
-
 SCRIPT_PATH = Path(__file__).resolve().parent.parent / "scripts" / "lint_steering.py"
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -89,6 +86,7 @@ class TestNoThirdPartyImports:
         # Standard library modules used by the script
         stdlib_modules = {
             "argparse", "json", "re", "sys", "dataclasses", "pathlib",
+            "importlib",
         }
 
         for line in import_lines:

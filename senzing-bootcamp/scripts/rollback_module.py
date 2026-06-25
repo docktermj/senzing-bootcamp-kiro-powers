@@ -51,16 +51,44 @@ class ModuleArtifacts:
     modifies_database: bool
 
 ARTIFACT_MANIFEST = {
-    1:  ModuleArtifacts(files=["docs/business_problem.md"], directories=[], modifies_database=False),
-    2:  ModuleArtifacts(files=["database/G2C.db", "config/bootcamp_preferences.yaml"], directories=[], modifies_database=False),
+    1:  ModuleArtifacts(
+        files=["docs/business_problem.md"], directories=[], modifies_database=False,
+    ),
+    2:  ModuleArtifacts(
+        files=["database/G2C.db", "config/bootcamp_preferences.yaml"],
+        directories=[],
+        modifies_database=False,
+    ),
     3:  ModuleArtifacts(files=[], directories=["src/quickstart_demo"], modifies_database=False),
-    4:  ModuleArtifacts(files=["docs/data_source_locations.md"], directories=["data/raw"], modifies_database=False),
-    5:  ModuleArtifacts(files=["docs/data_source_evaluation.md", "docs/data_quality_report.md"], directories=["src/transform", "data/transformed"], modifies_database=False),
-    6:  ModuleArtifacts(files=["docs/loading_strategy.md"], directories=["src/load"], modifies_database=True),
-    7:  ModuleArtifacts(files=["docs/results_validation.md"], directories=["src/query"], modifies_database=False),
-    8:  ModuleArtifacts(files=["docs/performance_requirements.md", "docs/performance_report.md"], directories=["tests/performance"], modifies_database=False),
-    9:  ModuleArtifacts(files=["docs/security_checklist.md"], directories=[], modifies_database=False),
-    10: ModuleArtifacts(files=["docs/monitoring_setup.md"], directories=["monitoring"], modifies_database=False),
+    4:  ModuleArtifacts(
+        files=["docs/data_source_locations.md"], directories=["data/raw"],
+        modifies_database=False,
+    ),
+    5:  ModuleArtifacts(
+        files=["docs/data_source_evaluation.md", "docs/data_quality_report.md"],
+        directories=["src/transform", "data/transformed"],
+        modifies_database=False,
+    ),
+    6:  ModuleArtifacts(
+        files=["docs/loading_strategy.md"], directories=["src/load"],
+        modifies_database=True,
+    ),
+    7:  ModuleArtifacts(
+        files=["docs/results_validation.md"], directories=["src/query"],
+        modifies_database=False,
+    ),
+    8:  ModuleArtifacts(
+        files=["docs/performance_requirements.md", "docs/performance_report.md"],
+        directories=["tests/performance"],
+        modifies_database=False,
+    ),
+    9:  ModuleArtifacts(
+        files=["docs/security_checklist.md"], directories=[], modifies_database=False,
+    ),
+    10: ModuleArtifacts(
+        files=["docs/monitoring_setup.md"], directories=["monitoring"],
+        modifies_database=False,
+    ),
     11: ModuleArtifacts(files=["docs/deployment_plan.md"], directories=[], modifies_database=False),
 }
 
@@ -68,8 +96,8 @@ MODULE_NAMES = {
     1: "Business Problem", 2: "SDK Setup", 3: "System Verification",
     4: "Data Collection", 5: "Data Quality & Mapping",
     6: "Data Processing", 7: "Query, Visualize, and Discover",
-    8: "Performance Testing", 9: "Security Hardening",
-    10: "Monitoring", 11: "Deployment",
+    8: "Performance Testing & Benchmarking", 9: "Security Hardening",
+    10: "Monitoring & Observability", 11: "Package & Deploy",
 }
 PREREQUISITES = {
     3:  [2],
@@ -303,7 +331,9 @@ def format_dry_run_report(module, artifacts, existing_files, existing_dirs,
                           progress_changes):
     """Return a formatted string previewing all planned rollback actions. Pure function."""
     lines = []
-    lines.append(f"Dry-run: Module {module} ({MODULE_NAMES.get(module, 'Unknown')}) rollback preview")
+    lines.append(
+        f"Dry-run: Module {module} ({MODULE_NAMES.get(module, 'Unknown')}) rollback preview"
+    )
     lines.append("=" * 50)
     lines.append("")
 
@@ -488,7 +518,8 @@ def main(argv=None):
         for m in missing_items:
             print(f"  Skip (missing): {m}")
         if artifacts.modifies_database:
-            print(f"  Database: {'restore from ' + backup_path if backup_path else 'no backup available'}")
+            db_note = "restore from " + backup_path if backup_path else "no backup available"
+            print(f"  Database: {db_note}")
         resp = input("\nProceed with rollback? (y/N): ").strip()
         if resp not in ("y", "Y"):
             print("Rollback cancelled.")
@@ -517,7 +548,9 @@ def main(argv=None):
                     warnings.append("Database restoration failed")
             else:
                 print(yellow("Warning: Loaded records remain in the database."))
-                print(yellow("  Consider running backup_project.py and manually resetting the database."))
+                print(yellow(
+                    "  Consider running backup_project.py and manually resetting the database."
+                ))
                 warnings.append("User declined database restoration")
         else:
             print(yellow("Warning: No backup available for database restoration."))
@@ -537,7 +570,10 @@ def main(argv=None):
     if vr.status == "passed":
         print(green(f"  ✅ Verification passed: Module {module} is back to 'not started' state."))
     elif vr.status == "failed":
-        print(yellow(f"  ⚠ Verification warning: {len(vr.leftover_checks)} check(s) still passing after rollback:"))
+        print(yellow(
+            f"  ⚠ Verification warning: {len(vr.leftover_checks)} "
+            f"check(s) still passing after rollback:"
+        ))
         for desc in vr.leftover_checks:
             print(yellow(f"    - {desc}"))
     else:

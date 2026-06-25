@@ -1,0 +1,15 @@
+{
+  "scenario": "module_transition_completeness",
+  "description": "After the bootcamper confirms readiness, the transition turn produces a full module start (banner + journey map + before/after + first step), not a bare acknowledgment. Exercises the Module Transition Protocol minimum-content requirement.",
+  "rule_ref": "conversation-protocol.md#module-transition-protocol; module-transitions.md",
+  "turns": [
+    {"role": "bootcamper", "content": "Yes, ready for Module 2."},
+    {
+      "role": "agent",
+      "content": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nMODULE 2: SDK Setup\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n| Module | Name | Status |\n|--------|------|--------|\n| 1 | Business Problem | done |\n| 2 | SDK Setup | in progress |\n\nBefore: you have a documented problem but no working SDK. After: the Senzing SDK is installed and verified in your chosen language.\n\nStep 1 — Detect existing SDK. I'll start by checking whether the Senzing SDK is already installed so we don't reinstall it.",
+      "assertions": [
+        {"type": "transition_response_completeness"}
+      ]
+    }
+  ]
+}

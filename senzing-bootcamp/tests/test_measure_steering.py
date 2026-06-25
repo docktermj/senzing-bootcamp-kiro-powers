@@ -6,7 +6,6 @@ unit / integration tests for the context-budget-tracking feature.
 
 import importlib
 import io
-import os
 import re
 import shutil
 import sys
@@ -14,10 +13,8 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-from hypothesis import given, settings, assume
 import hypothesis.strategies as st
-
+from hypothesis import given, settings
 
 # ---------------------------------------------------------------------------
 # Helper: import (or reload) measure_steering
@@ -63,7 +60,8 @@ class TestProperty1ScanCompletenessAndStructure:
     **Validates: Requirements 1.1, 1.2, 2.4, 2.5**
     """
 
-    # Feature: context-budget-tracking, Property 1: Scan produces complete, correctly-structured metadata
+    # Feature: context-budget-tracking, Property 1: Scan produces complete,
+    # correctly-structured metadata
 
     @given(
         filenames=_filename_set_st,
@@ -129,7 +127,8 @@ class TestProperty3TokenCountFormula:
     **Validates: Requirements 2.1**
     """
 
-    # Feature: context-budget-tracking, Property 3: Token count equals rounded character-count-over-four
+    # Feature: context-budget-tracking, Property 3: Token count equals rounded
+    # character-count-over-four
 
     @given(content=st.text(min_size=0, max_size=5000))
     @settings(max_examples=10)
@@ -316,7 +315,8 @@ class TestProperty7CheckModeThresholdDetection:
     **Validates: Requirements 2.7**
     """
 
-    # Feature: context-budget-tracking, Property 7: Check mode detects mismatches exceeding 10% tolerance
+    # Feature: context-budget-tracking, Property 7: Check mode detects mismatches
+    # exceeding 10% tolerance
 
     @given(
         stored=st.integers(min_value=0, max_value=100_000),
@@ -377,7 +377,8 @@ class TestProperty8ValidatorDetectsMalformedMetadata:
     **Validates: Requirements 5.2, 5.3**
     """
 
-    # Feature: context-budget-tracking, Property 8: Validator detects missing or malformed metadata entries
+    # Feature: context-budget-tracking, Property 8: Validator detects missing or
+    # malformed metadata entries
 
     @given(
         filenames=_filename_set_st,
@@ -469,7 +470,7 @@ class TestCheckModeDoesNotModifyYAML:
 
             # Record content before check
             content_before = index_path.read_text(encoding="utf-8")
-            mtime_before = index_path.stat().st_mtime
+            index_path.stat().st_mtime
 
             # Run check
             mismatches = mod.check_counts(index_path, metadata)
@@ -478,6 +479,43 @@ class TestCheckModeDoesNotModifyYAML:
             content_after = index_path.read_text(encoding="utf-8")
             assert content_before == content_after
             assert mismatches == []
+        finally:
+            shutil.rmtree(td, ignore_errors=True)
+
+    def test_check_mode_no_modification_with_phases(self):
+        """--check leaves the YAML byte-identical even when validating phases.
+
+        Builds an index that has a phases block (so check_phase_counts runs) and
+        confirms the new phase-validation path is read-only — both for an
+        in-tolerance phase and a drifted phase.
+
+        **Validates: Requirements 2.2, 3.1**
+        """
+        mod = _load_measure_steering()
+
+        td = tempfile.mkdtemp()
+        try:
+            steering_dir = Path(td) / "steering"
+            steering_dir.mkdir()
+            index_path = steering_dir / "steering-index.yaml"
+
+            fname = "synth-phase.md"
+            content = "a" * 2000  # measured = 500
+            measured = round(len(content) / 4)
+
+            # Drifted phase so check_phase_counts has a mismatch to report.
+            _build_phase_index(
+                steering_dir, index_path, fname, content,
+                phase_count=2 * measured, phase_cat=mod.classify_size(2 * measured),
+                fm_count=measured, fm_cat=mod.classify_size(measured),
+            )
+
+            content_before = index_path.read_text(encoding="utf-8")
+            exit_code, _out = _run_check_cli(steering_dir, index_path)
+            content_after = index_path.read_text(encoding="utf-8")
+
+            assert content_before == content_after, "--check modified the YAML file"
+            assert exit_code != 0  # drifted phase => non-zero, but still no write
         finally:
             shutil.rmtree(td, ignore_errors=True)
 
@@ -540,8 +578,8 @@ class TestIntegrationRealSteering:
         steering_dir = Path("senzing-bootcamp/steering")
         assert steering_dir.is_dir(), "Real steering directory not found"
 
-        index_path = steering_dir / "steering-index.yaml"
-        assert index_path.exists(), "steering-index.yaml not found"
+        real_index_path = steering_dir / "steering-index.yaml"
+        assert real_index_path.exists(), "steering-index.yaml not found"
 
         # Scan the real steering directory
         metadata = mod.scan_steering_files(steering_dir)
@@ -549,9 +587,357 @@ class TestIntegrationRealSteering:
 
         total = sum(m["token_count"] for m in metadata.values())
 
-        # Update the index
-        mod.update_index(index_path, metadata, total)
+        # Operate on a temp COPY of the real index so the test never mutates the
+        # tracked steering-index.yaml. update_index now reconciles phase counts
+        # too, so writing the real file in-place could dirty the working tree.
+        td = tempfile.mkdtemp()
+        try:
+            index_path = Path(td) / "steering-index.yaml"
+            index_path.write_text(
+                real_index_path.read_text(encoding="utf-8"), encoding="utf-8"
+            )
 
-        # Now --check should pass (no mismatches)
-        mismatches = mod.check_counts(index_path, metadata)
-        assert mismatches == [], f"Unexpected mismatches after update: {mismatches}"
+            # Update the (temp) index
+            mod.update_index(index_path, metadata, total, steering_dir)
+
+            # Now --check should pass (no mismatches) for both file_metadata
+            # and the phases map.
+            mismatches = mod.check_counts(index_path, metadata)
+            assert mismatches == [], f"Unexpected mismatches after update: {mismatches}"
+
+            phase_mismatches = mod.check_phase_counts(index_path, steering_dir)
+            assert phase_mismatches == [], (
+                f"Unexpected phase mismatches after update: {phase_mismatches}"
+            )
+        finally:
+            shutil.rmtree(td, ignore_errors=True)
+
+
+# ---------------------------------------------------------------------------
+# Phase token-count code paths — check_phase_counts / rewrite_phase_counts
+# (steering-index-token-count-sync bugfix)
+# ---------------------------------------------------------------------------
+
+# Strategies (st_-prefixed per python-conventions.md)
+
+
+def st_measured():
+    """Generate a positive measured token count (1..10000)."""
+    return st.integers(min_value=1, max_value=10_000)
+
+
+def st_drift_factor():
+    """Generate a drift multiplier straddling the 10% tolerance boundary."""
+    return st.floats(
+        min_value=0.0, max_value=3.0, allow_nan=False, allow_infinity=False
+    )
+
+
+def _run_check_cli(steering_dir, index_path):
+    """Run measure_steering.main() in --check mode, return (exit_code, stdout)."""
+    mod = _load_measure_steering()
+    buf = io.StringIO()
+    argv = [
+        "measure_steering.py",
+        "--check",
+        "--steering-dir",
+        str(steering_dir),
+        "--index-path",
+        str(index_path),
+    ]
+    with patch.object(sys, "argv", argv):
+        with patch("sys.stdout", buf):
+            try:
+                mod.main()
+            except SystemExit as exc:
+                code = exc.code
+                return (int(code) if code is not None else 0, buf.getvalue())
+    return (0, buf.getvalue())
+
+
+def _build_phase_index(
+    steering_dir, index_path, fname, content, phase_count, phase_cat, fm_count, fm_cat
+):
+    """Write a temp steering file + index (one module/phase + file_metadata).
+
+    The phases block sits above file_metadata (mirroring the real index layout),
+    so phase entries are parsed/validated independently of file_metadata.
+    """
+    (Path(steering_dir) / fname).write_text(content, encoding="utf-8")
+    index_text = (
+        "modules:\n"
+        "  1:\n"
+        f"    root: {fname}\n"
+        "    phases:\n"
+        "      phase1:\n"
+        f"        file: {fname}\n"
+        f"        token_count: {phase_count}\n"
+        f"        size_category: {phase_cat}\n"
+        "        step_range: [1, 9]\n"
+        "\n"
+        "file_metadata:\n"
+        f"  {fname}:\n"
+        f"    token_count: {fm_count}\n"
+        f"    size_category: {fm_cat}\n"
+        "\n"
+        "budget:\n"
+        f"  total_tokens: {fm_count}\n"
+        "  reference_window: 200000\n"
+        "  warn_threshold_pct: 60\n"
+        "  critical_threshold_pct: 80\n"
+    )
+    Path(index_path).write_text(index_text, encoding="utf-8")
+
+
+class TestCheckPhaseCountsDetectsDrift:
+    """check_phase_counts + --check detect drifted phase entries.
+
+    Complements the file_metadata-only cases (TestProperty7 / TestProperty8) by
+    validating the phases map: a drifted phase is reported and makes --check exit
+    non-zero, while an in-tolerance phase is not flagged and --check exits 0.
+
+    **Validates: Requirements 2.2, 2.6**
+    """
+
+    def test_check_phase_counts_flags_drifted_phase(self):
+        mod = _load_measure_steering()
+        td = tempfile.mkdtemp()
+        try:
+            steering_dir = Path(td) / "steering"
+            steering_dir.mkdir()
+            index_path = steering_dir / "steering-index.yaml"
+
+            fname = "synth-phase.md"
+            content = "a" * 2000  # measured = round(2000 / 4) = 500
+            measured = round(len(content) / 4)
+            phase_count = 2 * measured  # 100% drift, far beyond 10%
+
+            _build_phase_index(
+                steering_dir, index_path, fname, content,
+                phase_count=phase_count, phase_cat=mod.classify_size(phase_count),
+                fm_count=measured, fm_cat=mod.classify_size(measured),
+            )
+
+            mismatches = mod.check_phase_counts(index_path, steering_dir)
+            assert any(m[0] == fname for m in mismatches), (
+                f"expected drifted phase {fname} flagged, got {mismatches}"
+            )
+        finally:
+            shutil.rmtree(td, ignore_errors=True)
+
+    def test_check_phase_counts_ignores_in_tolerance_phase(self):
+        mod = _load_measure_steering()
+        td = tempfile.mkdtemp()
+        try:
+            steering_dir = Path(td) / "steering"
+            steering_dir.mkdir()
+            index_path = steering_dir / "steering-index.yaml"
+
+            fname = "synth-phase.md"
+            content = "a" * 2000  # measured = 500
+            measured = round(len(content) / 4)
+
+            _build_phase_index(
+                steering_dir, index_path, fname, content,
+                phase_count=measured, phase_cat=mod.classify_size(measured),
+                fm_count=measured, fm_cat=mod.classify_size(measured),
+            )
+
+            mismatches = mod.check_phase_counts(index_path, steering_dir)
+            assert mismatches == [], f"in-tolerance phase flagged: {mismatches}"
+        finally:
+            shutil.rmtree(td, ignore_errors=True)
+
+    def test_check_cli_exits_nonzero_on_drifted_phase(self):
+        mod = _load_measure_steering()
+        td = tempfile.mkdtemp()
+        try:
+            steering_dir = Path(td) / "steering"
+            steering_dir.mkdir()
+            index_path = steering_dir / "steering-index.yaml"
+
+            fname = "synth-phase.md"
+            content = "a" * 2000  # measured = 500
+            measured = round(len(content) / 4)
+            phase_count = 2 * measured
+
+            # file_metadata kept in sync so ONLY the phase is out of tolerance —
+            # this isolates the new phase-validation path from check_counts.
+            _build_phase_index(
+                steering_dir, index_path, fname, content,
+                phase_count=phase_count, phase_cat=mod.classify_size(phase_count),
+                fm_count=measured, fm_cat=mod.classify_size(measured),
+            )
+
+            exit_code, out = _run_check_cli(steering_dir, index_path)
+            assert exit_code != 0, f"--check exited {exit_code}; output: {out!r}"
+            assert "Phase token count mismatches" in out, (
+                f"expected phase mismatch report in output: {out!r}"
+            )
+        finally:
+            shutil.rmtree(td, ignore_errors=True)
+
+    def test_check_cli_exits_zero_when_phase_in_tolerance(self):
+        mod = _load_measure_steering()
+        td = tempfile.mkdtemp()
+        try:
+            steering_dir = Path(td) / "steering"
+            steering_dir.mkdir()
+            index_path = steering_dir / "steering-index.yaml"
+
+            fname = "synth-phase.md"
+            content = "a" * 2000  # measured = 500
+            measured = round(len(content) / 4)
+
+            _build_phase_index(
+                steering_dir, index_path, fname, content,
+                phase_count=measured, phase_cat=mod.classify_size(measured),
+                fm_count=measured, fm_cat=mod.classify_size(measured),
+            )
+
+            exit_code, out = _run_check_cli(steering_dir, index_path)
+            assert exit_code == 0, f"--check exited {exit_code}; output: {out!r}"
+            assert "within 10% tolerance" in out
+        finally:
+            shutil.rmtree(td, ignore_errors=True)
+
+    @given(measured=st_measured(), factor=st_drift_factor())
+    @settings(max_examples=20)
+    def test_check_phase_counts_flags_exactly_out_of_tolerance(self, measured, factor):
+        mod = _load_measure_steering()
+        stored = round(measured * factor)
+        td = tempfile.mkdtemp()
+        try:
+            steering_dir = Path(td) / "steering"
+            steering_dir.mkdir()
+            index_path = steering_dir / "steering-index.yaml"
+
+            fname = "synth-phase.md"
+            content = "a" * (4 * measured)  # round(len / 4) == measured
+
+            _build_phase_index(
+                steering_dir, index_path, fname, content,
+                phase_count=stored, phase_cat=mod.classify_size(stored),
+                fm_count=measured, fm_cat=mod.classify_size(measured),
+            )
+
+            mismatches = mod.check_phase_counts(index_path, steering_dir)
+            flagged = any(m[0] == fname for m in mismatches)
+            drift = abs(stored - measured) / max(measured, 1)
+            if drift > 0.10:
+                assert flagged, (
+                    f"expected flag for stored={stored}, measured={measured} "
+                    f"(drift={drift:.2%})"
+                )
+            else:
+                assert not flagged, (
+                    f"unexpected flag for stored={stored}, measured={measured} "
+                    f"(drift={drift:.2%})"
+                )
+        finally:
+            shutil.rmtree(td, ignore_errors=True)
+
+
+class TestRewritePhaseCounts:
+    """rewrite_phase_counts corrects drift, preserves in-tolerance, fixes category.
+
+    Covers the three behaviors called out in the design: a drifted phase is
+    reconciled to the measured count (and back within tolerance), an in-tolerance
+    phase is left byte-identical, and a corrected count crossing the 2000 boundary
+    recomputes size_category medium -> large.
+
+    **Validates: Requirements 2.1, 2.3, 2.5**
+    """
+
+    def test_drifted_phase_corrected(self):
+        mod = _load_measure_steering()
+        td = tempfile.mkdtemp()
+        try:
+            steering_dir = Path(td) / "steering"
+            steering_dir.mkdir()
+            index_path = steering_dir / "steering-index.yaml"
+
+            fname = "synth-phase.md"
+            content = "a" * 2000  # measured = 500
+            measured = round(len(content) / 4)
+            drifted = 4 * measured  # 300% drift
+
+            _build_phase_index(
+                steering_dir, index_path, fname, content,
+                phase_count=drifted, phase_cat=mod.classify_size(drifted),
+                fm_count=measured, fm_cat=mod.classify_size(measured),
+            )
+
+            original = index_path.read_text(encoding="utf-8")
+            rewritten = mod.rewrite_phase_counts(original, steering_dir)
+
+            entries = mod._parse_phase_entries(rewritten)
+            phase = next((e for e in entries if e.filename == fname), None)
+            assert phase is not None, "phase entry vanished after rewrite"
+            assert phase.token_count == measured, (
+                f"expected reconciled token_count={measured}, got {phase.token_count}"
+            )
+            assert phase.size_category == mod.classify_size(measured)
+            # Reconciled value is now within tolerance.
+            assert abs(phase.token_count - measured) / max(measured, 1) <= 0.10
+        finally:
+            shutil.rmtree(td, ignore_errors=True)
+
+    def test_in_tolerance_phase_byte_identical(self):
+        mod = _load_measure_steering()
+        td = tempfile.mkdtemp()
+        try:
+            steering_dir = Path(td) / "steering"
+            steering_dir.mkdir()
+            index_path = steering_dir / "steering-index.yaml"
+
+            fname = "synth-phase.md"
+            content = "a" * 2000  # measured = 500
+            measured = round(len(content) / 4)
+
+            _build_phase_index(
+                steering_dir, index_path, fname, content,
+                phase_count=measured, phase_cat=mod.classify_size(measured),
+                fm_count=measured, fm_cat=mod.classify_size(measured),
+            )
+
+            original = index_path.read_text(encoding="utf-8")
+            rewritten = mod.rewrite_phase_counts(original, steering_dir)
+            assert rewritten == original, "in-tolerance phase was not byte-identical"
+        finally:
+            shutil.rmtree(td, ignore_errors=True)
+
+    def test_size_category_recomputed_across_2000_boundary(self):
+        mod = _load_measure_steering()
+        td = tempfile.mkdtemp()
+        try:
+            steering_dir = Path(td) / "steering"
+            steering_dir.mkdir()
+            index_path = steering_dir / "steering-index.yaml"
+
+            fname = "synth-phase.md"
+            content = "a" * 12000  # measured = 3000 -> large (over the 2000 boundary)
+            measured = round(len(content) / 4)
+            drifted = 1894  # medium, below the 2000 boundary (mirrors module-05)
+
+            assert mod.classify_size(drifted) == "medium"
+            assert mod.classify_size(measured) == "large"
+
+            _build_phase_index(
+                steering_dir, index_path, fname, content,
+                phase_count=drifted, phase_cat=mod.classify_size(drifted),
+                fm_count=drifted, fm_cat=mod.classify_size(drifted),
+            )
+
+            original = index_path.read_text(encoding="utf-8")
+            rewritten = mod.rewrite_phase_counts(original, steering_dir)
+
+            entries = mod._parse_phase_entries(rewritten)
+            phase = next((e for e in entries if e.filename == fname), None)
+            assert phase is not None
+            assert phase.token_count == measured
+            assert phase.size_category == "large", (
+                f"expected medium -> large reclassification, got {phase.size_category}"
+            )
+        finally:
+            shutil.rmtree(td, ignore_errors=True)

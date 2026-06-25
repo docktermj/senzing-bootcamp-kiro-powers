@@ -4,12 +4,9 @@ Feature: automated-feedback-triage
 """
 
 import json
-import os
 import sys
 from pathlib import Path
 from unittest.mock import patch
-
-import pytest
 
 # Make scripts importable
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
@@ -17,22 +14,16 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from triage_feedback import (
-    FeedbackEntry,
-    TriageResult,
-    VALID_CATEGORIES,
-    VALID_PRIORITIES,
     DEFAULT_FEEDBACK_FILE,
-    to_kebab_case,
-    extract_field,
-    parse_feedback_file,
-    generate_bugfix_skeleton,
-    generate_requirements_skeleton,
-    generate_config,
+    FeedbackEntry,
     create_spec_directory,
-    print_triage_report,
+    generate_bugfix_skeleton,
+    generate_config,
+    generate_requirements_skeleton,
     main,
+    parse_feedback_file,
+    to_kebab_case,
 )
-
 
 # ---------------------------------------------------------------------------
 # Sample feedback markdown for testing
@@ -212,7 +203,7 @@ class TestDefaultFilePath:
         feedback_file.write_text("# Empty feedback\n", encoding="utf-8")
 
         # Run main with no path argument, from tmp_path
-        with patch("triage_feedback.Path") as mock_path_cls:
+        with patch("triage_feedback.Path"):
             # We just verify the argparse default is correct
             import argparse
             parser = argparse.ArgumentParser()

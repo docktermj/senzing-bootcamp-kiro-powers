@@ -48,9 +48,15 @@ If Senzing is found:
 
 Here's what you need to know about licensing before you start loading data.
 
-The Senzing SDK includes a **built-in evaluation license limited to 500 records**. No license file is needed — the SDK uses this automatically when no custom license is present. This is enough for the bootcamp's demo modules and small datasets.
+The Senzing SDK ships with a **built-in evaluation license you already have** by default — it covers around 500 records, which is enough for the bootcamp's demo modules and small datasets. No license file is needed; the SDK uses this evaluation license automatically when no custom license is present.
 
-If you load more than 500 records, the SDK returns a **SENZ9000** error at record 501. For larger datasets, you need a custom license file placed at `licenses/g2.lic`.
+The 500-record figure is a default, not a wall. The SDK enforces it with a **SENZ9000** error at record 501, so if your data is larger you have options to process more rather than having to shrink it:
+
+- **Apply an existing Senzing license** — place your `.lic` file at `licenses/g2.lic` (see below).
+- **Request an evaluation license through Senzing support** — see *Obtaining a License* below.
+- **Request one in-flow during the bootcamp** — when available, the agent can request an evaluation license without you leaving the workflow.
+
+Downsizing your dataset is just one option among these, never the only path forward. The agent sources the current record capacity and validity period from the Senzing MCP server at request time.
 
 > **Note:** The agent asks about your license during the bootcamp setup (before Module 2). If you've already configured your license, you can skip this section.
 

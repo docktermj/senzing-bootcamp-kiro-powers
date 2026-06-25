@@ -31,6 +31,13 @@ _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 _ONBOARDING_FLOW = _STEERING_DIR / "onboarding-flow.md"
 _ONBOARDING_PHASE2 = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 
+# After the onboarding split (same-branch refactor), the Bootcamp Introduction
+# (welcome banner + module overview) moved out of onboarding-flow.md into
+# onboarding-phase1b-intro-language.md, where it is now Step 5 (was Step 4).
+# The "Module overview table (1-11)" bullet moved unchanged — only its owning
+# file and step number changed.
+_ONBOARDING_PHASE1B = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
+
 # The introductory sentence that precedes the duplicate table in Step 5
 _QUICK_REF_INTRO = (
     "Display this quick-reference module table before presenting the tracks "
@@ -218,14 +225,26 @@ class TestPreservationStep4:
     """
 
     def test_step4_contains_module_overview_instruction(self) -> None:
-        """Step 4 should contain 'Module overview table (1-11)'.
+        """Bootcamp Introduction should contain 'Module overview table (1-11)'.
+
+        After the onboarding split, the Bootcamp Introduction (with the module
+        overview bullet) moved from onboarding-flow.md Step 4 into
+        onboarding-phase1b-intro-language.md as Step 5. The bullet text is
+        unchanged — only its owning file/step number moved.
 
         **Validates: Requirements 3.1**"""
-        content = _read_onboarding_flow()
-        step4 = _extract_step4(content)
-        assert "Module overview table (1-11)" in step4, (
-            "Step 4 is missing the module overview instruction.\n"
-            f"Step 4 content:\n{step4[:500]}..."
+        content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
+        step5 = _extract_section(content, "## 5. Bootcamp Introduction")
+        assert "Module overview table (1-11)" in step5, (
+            "Bootcamp Introduction (phase1b Step 5) is missing the module "
+            "overview instruction.\n"
+            f"Step 5 content:\n{step5[:500]}..."
+        )
+        # Independent content assertion: the welcome banner moved together with
+        # the overview into the same Step 5 section (relocation, not change).
+        assert "WELCOME TO THE SENZING BOOTCAMP" in step5, (
+            "Bootcamp Introduction (phase1b Step 5) must still contain the "
+            "welcome banner alongside the module overview"
         )
 
 
@@ -257,19 +276,23 @@ class TestPreservationStep5TrackOptions:
 
 
 class TestPreservationStep5Module2Note:
-    """Verify Step 5 preserves the Module 2 auto-insertion note.
+    """Verify Step 5 no longer carries the Module 2 auto-insertion note.
 
-    **Validates: Requirements 3.3**
+    The standalone note "Module 2 is automatically inserted before any module
+    that needs the SDK." was removed from track selection by the
+    track-selection-drop-module2-note bugfix — it added cognitive load to the
+    track choice and is already explained later in onboarding-flow.md when the
+    first SDK-dependent module is reached.
     """
 
-    def test_step5_contains_module2_note(self) -> None:
-        """Step 5 should contain 'Module 2 is automatically inserted'.
+    def test_step5_omits_module2_note(self) -> None:
+        """Step 5 should NOT contain the standalone Module 2 auto-insertion note.
 
-        **Validates: Requirements 3.3**"""
+        **Validates: track-selection-drop-module2-note Requirement 2.1**"""
         content = _read_onboarding_phase2()
         step5 = _extract_step5(content)
-        assert "Module 2 is automatically inserted" in step5, (
-            "Step 5 is missing the Module 2 auto-insertion note.\n"
+        assert "Module 2 is automatically inserted" not in step5, (
+            "Step 5 still carries the removed Module 2 auto-insertion note.\n"
             f"Step 5 content:\n{step5[:500]}..."
         )
 
@@ -312,7 +335,6 @@ class TestPreservationProperty:
     _ALL_PRESERVED_CONTENT = [
         "**Core Bootcamp**",
         "**Advanced Topics**",
-        "Module 2 is automatically inserted before any module that needs the SDK.",
         "Bare number→clarify track vs module.",
     ]
 

@@ -15,7 +15,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -29,20 +29,27 @@ _PROJECT_STRUCTURE = _BOOTCAMP_DIR / "steering" / "project-structure.md"
 # Observed Constants — recorded verbatim from the UNFIXED steering file
 # ---------------------------------------------------------------------------
 
-# Observation: The Linux/macOS mkdir -p brace-expansion command text
+# Observation: The Linux/macOS mkdir -p brace-expansion command text.
+# Re-baselined by the docs-file-placement bugfix (Change 4): the project-structure
+# convention dropped the top-level ``scripts`` directory in favor of ``src/scripts``
+# and added the ``docs/{mapping,reference,progress}`` subdirectories. The command
+# STRUCTURE (brace expansion, single invocation) is preserved; only the directory
+# list content tracks the approved convention change.
 OBSERVED_MKDIR_COMMAND = (
     "mkdir -p data/{raw,transformed,samples,backups,temp} database licenses "
-    "src/{transform,load,query,utils} tests backups docs/feedback config logs "
-    "monitoring scripts"
+    "src/{transform,load,query,utils,scripts} tests backups "
+    "docs/{feedback,mapping,reference,progress} config logs monitoring"
 )
 
-# Observation: The Python os.makedirs loop content (verbatim)
+# Observation: The Python os.makedirs loop content (verbatim). Re-baselined by the
+# docs-file-placement bugfix (Change 4) — see the note on OBSERVED_MKDIR_COMMAND.
 OBSERVED_PYTHON_LOOP = '''```python
 import os
 for d in [
     "data/raw", "data/transformed", "data/samples", "data/backups", "data/temp",
     "database", "licenses", "src/transform", "src/load", "src/query", "src/utils",
-    "tests", "backups", "docs/feedback", "config", "logs", "monitoring", "scripts",
+    "src/scripts", "tests", "backups", "docs/feedback", "docs/mapping",
+    "docs/reference", "docs/progress", "config", "logs", "monitoring",
 ]:
     os.makedirs(d, exist_ok=True)
 ```'''
@@ -50,7 +57,9 @@ for d in [
 # Observation: YAML frontmatter inclusion setting
 OBSERVED_FRONTMATTER_INCLUSION = "inclusion: auto"
 
-# Observation: All 18 required directory paths present in the file
+# Observation: All required directory paths present in the file. Re-baselined by the
+# docs-file-placement bugfix (Change 4): ``scripts`` -> ``src/scripts`` and the
+# ``docs/{mapping,reference,progress}`` subdirectories were added.
 ALL_REQUIRED_DIRS: list[str] = [
     "data/raw",
     "data/transformed",
@@ -63,13 +72,16 @@ ALL_REQUIRED_DIRS: list[str] = [
     "src/load",
     "src/query",
     "src/utils",
+    "src/scripts",
     "tests",
     "backups",
     "docs/feedback",
+    "docs/mapping",
+    "docs/reference",
+    "docs/progress",
     "config",
     "logs",
     "monitoring",
-    "scripts",
 ]
 
 # ---------------------------------------------------------------------------

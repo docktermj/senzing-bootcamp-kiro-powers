@@ -17,7 +17,6 @@ if _SCRIPTS_DIR not in sys.path:
 
 from cord_metadata import CordMetadata, SourceMetadata, parse_metadata, serialize_metadata
 
-
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
 # ---------------------------------------------------------------------------
@@ -578,9 +577,8 @@ class TestFreshnessDetection:
 # Property 3: Non-blocking advisory behavior
 # ---------------------------------------------------------------------------
 
-import tempfile
 
-from cord_metadata import check_freshness, FreshnessResult
+from cord_metadata import FreshnessResult
 
 
 class TestNonBlockingBehavior:

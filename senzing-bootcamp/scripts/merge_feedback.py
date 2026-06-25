@@ -16,12 +16,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from team_config_validator import (
-    TeamConfig,
-    TeamConfigError,
     PathResolver,
+    TeamConfigError,
     load_and_validate,
 )
-
 
 # ── Data model ────────────────────────────────────────────────────────────
 
@@ -74,7 +72,6 @@ def parse_feedback_file(
         priority = ""
         category = ""
         body_lines: list[str] = []
-        in_body = False
 
         for line in lines[1:]:
             stripped = line.strip()

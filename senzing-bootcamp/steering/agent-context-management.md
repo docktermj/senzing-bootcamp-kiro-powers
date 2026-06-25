@@ -1,5 +1,6 @@
 ---
 inclusion: auto
+description: Context reset communication rules and message formatting
 ---
 
 # Context & Pacing Management
@@ -12,7 +13,7 @@ At module start, read `config/session_log.jsonl` and classify completed modules:
 
 - **struggled** (correction density > 0.3 or time > 2× median): increase explanation depth for this module — fuller "why" framing before each step, proactive offer of alternative explanations
 - **comfortable** (correction density < 0.1 and time < median): streamline delivery — shorter lead-ins, skip optional context unless asked
-- **normal**: use standard pacing per verbosity setting
+- **normal:** use standard pacing per verbosity setting
 
 Check `config/bootcamp_preferences.yaml` for `pacing_overrides` — manual overrides ("slow down" → struggled, "speed up" → comfortable) take precedence over computed classifications.
 
@@ -20,7 +21,7 @@ Adaptive pacing adjusts the baseline but never reduces below explicit verbosity 
 
 ## Context Budget Management
 
-Maintain a mental model of which steering files are currently loaded and their token costs (from `steering-index.yaml` `file_metadata`).
+Maintain a mental model of which steering files are currently loaded and their token costs (from `steering-index.yaml` `file_metadata`). When loading a `large` file, announce the token cost.
 
 **Unload candidates** — a file is eligible for unloading when ALL of these are true:
 
@@ -54,3 +55,51 @@ Maintain a mental model of which steering files are currently loaded and their t
 **Override:** If the bootcamper says "keep everything loaded", suppress automatic unloading for the current session (not persisted). Still show warnings but don't act.
 
 **Reload on demand:** Unloaded files can be reloaded if the bootcamper revisits a completed module or asks about earlier content.
+
+## Context Reset Communication
+
+Rules for communicating context window limitations to the bootcamper. These ensure the message is clear, actionable, and never implies a waiting period.
+
+### Trigger Condition
+
+Initiate a context reset message when EITHER of these conditions is met:
+
+1. Context window reaches **80% capacity**
+2. Agent detects **degraded response quality** due to context length (e.g., forgetting earlier instructions, repeating itself, losing track of module state)
+
+### Required Message Elements
+
+Every context reset message MUST contain all four elements in a single response:
+
+1. **Technical reason** — Explain why using language like: "My conversation memory is getting full from our work so far"
+2. **Immediacy clarification** — State that starting a new chat can be done immediately with no waiting period
+3. **Progress reassurance** — State that all progress is saved in project files and will be available in the new session
+4. **Continuation phrase** — Provide a phrase enclosed in quotation marks that includes the current module number, e.g., "continue the bootcamp from module 3"
+
+### Module Number
+
+The continuation phrase MUST reference the current module number from the Progress_File (`config/bootcamp_progress.json`). Read the `current_module` field to determine the correct number.
+
+### Forbidden Temporal Phrases
+
+The context reset message MUST NOT contain any of the following phrases:
+
+- "come back later"
+- "come back tomorrow"
+- "take a break"
+- "try again in a while"
+- "when you're ready"
+- "try again later"
+- "wait a moment"
+- "give it some time"
+
+### Format Constraints
+
+- **Maximum 4 sentences** — The entire message must be at most 4 sentences
+- **Single uninterrupted message** — All information must be in one response; do not split across multiple responses or require intervening user input
+- **No questions** — Do not ask questions or request additional input from the bootcamper
+- **Continuation phrase in quotation marks** — The phrase the bootcamper should paste into the new chat must be enclosed in quotation marks
+
+### Example Message
+
+> My conversation memory is getting full from our work so far. You can start a fresh chat right now — no waiting needed. All your progress is saved in the project files and will be picked up automatically. Just say "continue the bootcamp from module 5" in the new chat.

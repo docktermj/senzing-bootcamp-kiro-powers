@@ -4,15 +4,31 @@ inclusion: manual
 
 # Onboarding Flow
 
-Load when starting a fresh bootcamp. Sequence: directory creation → language selection → prerequisites → introduction → track selection.
+Load when starting a fresh bootcamp. Sequence: directory creation → prerequisites → entity resolution → language selection → introduction → track selection.
 
 **Note:** The `ask-bootcamper` hook fires on every `agentStop` and generates a contextual 👉 closing question. Do NOT include inline closing questions or WAIT instructions at the end of steps — present the information and stop. **Exception — Mandatory gates:** Steps marked with ⛔ are mandatory gates where the agent MUST stop and MUST NOT proceed without real user input. These are the only steps where an explicit stop instruction overrides the general rule.
+
+## Phase Sub-Files
+
+- **Phase 1b — Entity Resolution Intro & Language Selection** (steps 3–5b): `onboarding-phase1b-intro-language.md`
 
 ## 0. Setup Preamble
 
 Before doing any setup work, tell the user:
 
 "I'm going to do some quick administrative setup — creating your project directory, installing hooks, and checking your environment. You'll see me working for a moment. When I'm done, you'll see a big **WELCOME TO THE SENZING BOOTCAMP** banner — that's when the bootcamp officially starts and I'll begin asking you questions."
+
+## 0a. Why You May See "Rejected"/"Accepted" Messages
+
+During setup and throughout the bootcamp, you may occasionally see a pair of messages like "Rejected creation of ..." followed immediately by "Accepted edits to ...". This is expected and harmless — nothing has gone wrong.
+
+Here is what is happening: the `write-policy-gate` safety check briefly holds each write for inspection before it is applied. While a write is held, the IDE surfaces it as "Rejected". The agent then immediately re-issues the identical write, which completes and surfaces as "Accepted edits".
+
+- Your writes **succeed on retry** — nothing fails.
+- **No data is lost** during the intercept-then-retry cycle.
+- The cycle is **expected and harmless**, so there is no need to act on these messages.
+
+Routine internal bookkeeping files (such as the progress and preference files the bootcamp manages for you) no longer trigger this message, so any remaining "Rejected" → "Accepted" pairs are rare and still harmless.
 
 ## 0b. MCP Health Check
 
@@ -89,11 +105,13 @@ Execute these setup actions in order. Do not narrate the details to the user.
    | ---- | -------------- |
    | ask-bootcamper | "Session summaries, closing questions, and post-completion feedback reminders will not be automatically generated when the agent stops." |
    | code-style-check | "Code style will not be automatically checked on save." |
-   | commonmark-validation | "Markdown files will not be automatically checked for CommonMark compliance." |
+   | commonmark-validation | "Markdown files will not be checked for CommonMark compliance during the graduation normalization pass (or when the hook is run manually from the Agent Hooks panel)." |
    | review-bootcamper-input | "Feedback trigger phrases will not be automatically detected on message submission." |
    | write-policy-gate | "Write policy violations (direct SQL, compound questions, external paths) will not be automatically detected and blocked." |
 
    **Verify hooks:** Check that each Critical Hook exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.
+
+   **Capture-critical hooks:** In addition to the Critical Hooks above, also create `module-recap-append` and `session-log-events` from `hook-registry-module-any.md` using `createHook` during onboarding — do NOT defer these to module start. Together with `ask-bootcamper` (a Critical Hook), these three are the **capture-critical** hooks the completion summary and journey recap depend on. After installation, verify all three capture-critical hooks (`ask-bootcamper`, `module-recap-append`, `session-log-events`) exist in `.kiro/hooks/`; if any is missing, retry its creation once via `createHook`.
 
 3. Generate foundational steering files (`product.md`, `tech.md`, `structure.md`) at `.kiro/steering/`. Each MUST include `inclusion` and `description` in the YAML frontmatter. Use `auto` for `structure.md`, `always` for the others.
 
@@ -129,32 +147,7 @@ Team: {team_name} ({member_count} members)
 - Persist the selected member ID to `config/bootcamp_preferences.yaml` (or `config/preferences_{member_id}.yaml` in co-located mode) under a `team_member_id` key.
 - Store the team mode state so subsequent steps (welcome banner, progress tracking) use team-aware paths.
 
-## 2. Programming Language Selection
-
-Detect the user's platform (`platform.system()`), then call `get_capabilities` or `sdk_guide` on the Senzing MCP server for the supported languages on that platform. The hard gate in Step 0b guarantees MCP is available — call the tool directly and present the returned programming language list to the bootcamper.
-
-When presenting this question, always use the phrase "programming language" — never the bare word "language" alone — to avoid ambiguity with natural/spoken languages.
-
-The agent MUST use the phrase "programming language" (not just "language") when presenting the selection question to the bootcamper.
-
-👉 Present the MCP-returned programming language list. If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly and suggest alternatives. For example: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
-
-🛑 STOP — Wait for the bootcamper's programming language choice before proceeding.
-
-> **Note:** All listed languages produce working code via the MCP server's
-> `generate_scaffold` tool. However, the depth of supplementary examples
-> (via `find_examples`) may vary — Python and Java currently have the most
-> extensive example coverage. This does not affect the bootcamp workflow.
-
-Persist the selection to `config/bootcamp_preferences.yaml`.
-
-Load language steering file immediately after confirmation (`lang-python.md`, `lang-java.md`, etc.).
-
-> ⛔ **MANDATORY GATE** — Programming language selection requires the bootcamper's actual choice. Do NOT assume or fabricate a programming language preference. MUST stop and wait for real input.
->
-> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not say "I'll go with X." Do not proceed to the next step. Wait for the bootcamper's real input.
-
-## 3. Prerequisite Check (Mandatory Gate)
+## 2. Prerequisite Check (Mandatory Gate)
 
 Run the consolidated preflight script to verify the environment before proceeding:
 
@@ -172,7 +165,7 @@ Present the full report to the bootcamper. Then act on the verdict:
 
 **Note:** This step replaces the previous inline `shutil.which()` checks. All environment verification is now handled by `preflight.py`.
 
-### 3a. Windows Prerequisite Installation Offers
+### 2a. Windows Prerequisite Installation Offers
 
 **Condition:** The bootcamper's platform is Windows AND the preflight report contains a "Package Manager" check with status "warn" (Scoop not found).
 
@@ -191,17 +184,17 @@ If this condition is met, present the following offer to the bootcamper:
 
 ⛔ **MUST NOT install without explicit bootcamper confirmation.** Wait for a clear acceptance before executing any installation command.
 
-**If accepted:** Run `irm get.scoop.sh | iex` in PowerShell, then verify with `scoop --version`. On success, report the version and proceed to Step 3b. On failure, display the error, suggest manual install from <https://scoop.sh>, and proceed without blocking.
+**If accepted:** Run `irm get.scoop.sh | iex` in PowerShell, then verify with `scoop --version`. On success, report the version and proceed to Step 2b. On failure, display the error, suggest manual install from the official Scoop site (scoop.sh), and proceed without blocking.
 
 **If declined:** Inform the bootcamper Module 2 will handle it. Proceed with WARN behavior.
 
 🛑 STOP — Wait for the bootcamper's response before proceeding to runtime installation.
 
-### 3b. Windows Runtime Installation via Scoop
+### 2b. Windows Runtime Installation via Scoop
 
-**Condition:** The bootcamper's platform is Windows AND Scoop is available (either already installed or just installed in Step 3a) AND the bootcamper's chosen language runtime check has status "warn" (runtime not found).
+**Condition:** The bootcamper's platform is Windows AND Scoop is available (either already installed or just installed in Step 2a) AND the bootcamper's chosen language runtime check has status "warn" (runtime not found).
 
-**If Scoop is NOT available** (bootcamper declined Scoop installation in Step 3a): Skip this section entirely. Defer runtime installation to Module 2.
+**If Scoop is NOT available** (bootcamper declined Scoop installation in Step 2a): Skip this section entirely. Defer runtime installation to Module 2.
 
 If the condition is met, present the following offer to the bootcamper:
 
@@ -229,21 +222,21 @@ If the condition is met, present the following offer to the bootcamper:
 
 **If accepted:**
 
-1. **For Java only** — First add the required Scoop bucket: `scoop bucket add java`. If it fails, suggest <https://adoptium.net> as alternative and proceed without blocking.
+1. **For Java only** — First add the required Scoop bucket: `scoop bucket add java`. If it fails, suggest adoptium.net as alternative and proceed without blocking.
 2. Execute the appropriate Scoop install command for the chosen runtime (from the table above).
 3. Verify the installation using the runtime's verify command (from the table above).
-4. **If verification succeeds:** Report the installed version (e.g., "✅ [Runtime] installed — version X.Y.Z"). Record in preferences (see Step 3d).
+4. **If verification succeeds:** Report the installed version (e.g., "✅ [Runtime] installed — version X.Y.Z"). Record in preferences (see Step 2d).
 5. **If verification fails:** Display the error, suggest alternative downloads (Adoptium for Java, dotnet.microsoft.com for .NET, rustup.rs for Rust, nodejs.org for Node.js), and proceed with WARN behavior.
 
 **If declined:** Inform the bootcamper Module 2 will handle it. Proceed with WARN behavior.
 
-### 3c. Re-run Preflight After Installation
+### 2c. Re-run Preflight After Installation
 
-**After any successful installation** (Scoop in Step 3a or runtime in Step 3b), re-run `python3 senzing-bootcamp/scripts/preflight.py` and present the updated report before proceeding to Step 4.
+**After any successful installation** (Scoop in Step 2a or runtime in Step 2b), re-run `python3 senzing-bootcamp/scripts/preflight.py` and present the updated report before proceeding to Step 3.
 
-### 3d. Record Installation Preferences
+### 2d. Record Installation Preferences
 
-After completing Steps 3a–3c, record the installation outcomes in `config/bootcamp_preferences.yaml`. Do NOT overwrite existing content — append or merge new keys.
+After completing Steps 2a–2c, record the installation outcomes in `config/bootcamp_preferences.yaml`. Do NOT overwrite existing content — append or merge new keys.
 
 **After successful Scoop installation:**
 
@@ -269,97 +262,6 @@ prerequisite_installation_deferred: true
 
 **Module 2 integration:** When Module 2 begins, the agent SHOULD check `config/bootcamp_preferences.yaml` for `scoop_installed_during_onboarding` and `runtimes_installed_during_onboarding` keys. If these indicate that Scoop or a runtime was already installed during onboarding, Module 2 should skip re-installation of those items.
 
-## 4. Bootcamp Introduction
-
-**Display the welcome banner — make it impossible to miss.**
-
-**Standard (single-user) banner:**
-
-```text
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎓🎓🎓  WELCOME TO THE SENZING BOOTCAMP!  🎓🎓🎓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-**Team mode banner** (when `config/team.yaml` was detected in Step 1b):
-
-```text
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎓🎓🎓  WELCOME TO THE SENZING BOOTCAMP!  🎓🎓🎓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-👥 Team: {team_name}  •  {member_count} members
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-This signals to the user that setup is done and the bootcamp is starting. Everything before this was administrative.
-
-Present the overview before track selection. Cover all points naturally:
-
-- This bootcamp is a **guided discovery** of how to use Senzing. It's not a race — feel free to take it slow, read what the bootcamp is telling you, and ask questions at any point to help with your understanding. Be curious. The bootcamp is here to help you learn, not just to produce code.
-- Goal: comfortable generating Senzing SDK code. Finish with running code as foundation for real use.
-- Module overview table (1-11): what each does and why it matters
-- Tracks let you skip to what matters
-- Built-in 500-record eval license; bring your own for more
-- Senzing provides CORD (Collections Of Relatable Data) — curated data collections designed for entity resolution evaluation. Three CORD datasets are available: Las Vegas, London, Moscow. Learn more: <https://senzing.com/senzing-ready-data-collections-cord/>. If CORD data doesn't meet your specific needs, test data can also be generated.
-- If you encounter unfamiliar terms (like Senzing Entity Specification, DATA_SOURCE, entity resolution), just ask me to explain — I'll look up the current definition from the Senzing documentation on demand
-
-### 4a. What Is Entity Resolution?
-
-#[[file:senzing-bootcamp/steering/entity-resolution-intro.md]]
-
-### 4b. Verbosity Preference
-
-👉 After presenting the overview, ask the bootcamper how much detail they want in the bootcamp output. Present the three presets:
-
-- **concise** — Minimal explanations, no code walkthroughs, brief recaps. Best for experienced developers.
-- **standard** *(recommended)* — Balanced "what and why" explanations, block-level code summaries, before/after framing. Good for most learners.
-- **detailed** — Full explanations with workflow connections, line-by-line code walkthroughs, SDK internals. Best for deep learners.
-
-🛑 STOP — Wait for bootcamper response before persisting the selection.
-
-Persist the selection to the `verbosity` key in the preferences file (`config/bootcamp_preferences.yaml`, or `config/preferences_{member_id}.yaml` in team mode) using this format:
-
-```yaml
-verbosity:
-  preset: standard
-  categories:
-    explanations: 2
-    code_walkthroughs: 2
-    step_recaps: 2
-    technical_details: 2
-    code_execution_framing: 2
-```
-
-After the bootcamper selects a preset, confirm the choice and tell them:
-
-"You can change your verbosity level at any time by saying 'change verbosity' or by fine-tuning specific categories like 'I want more code walkthroughs'."
-
-If the bootcamper skips without answering, apply the `standard` preset as the default and inform them: "I've set your verbosity to **standard** (balanced detail). You can change this anytime."
-
-This is NOT a mandatory gate (⛔) — the bootcamper can skip it.
-
-> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
-
-### 4c. Comprehension Check
-
-Before moving on to track selection, give the bootcamper a moment to absorb everything from the overview. Present a warm, conversational check-in — this is an invitation, not a quiz.
-
-Output format: your output MUST begin with 👉 followed by the comprehension check question. Example:
-
-```text
-👉 That was a lot of ground to cover — does everything so far make sense?
-```
-
-If you paraphrase or reformulate the question, the 👉 prefix is still mandatory.
-
-🛑 STOP — Wait for bootcamper response.
-
-**Acknowledgment handling:** If the bootcamper responds with an acknowledgment — phrases like "looks good," "makes sense," "no questions," "let's go," "ready," "all clear," or "got it" — proceed directly to Step 5 (Track Selection). Do not ask follow-up questions about the overview.
-
-**Clarification handling:** If the bootcamper asks a clarification question, answer it using the bootcamper's current verbosity settings from the preferences file. After answering, check whether the bootcamper has any more questions before proceeding to Step 5. Repeat this cycle — answer, then check for additional questions — until the bootcamper signals they are ready to move on.
-
-**Note:** This step is NOT a gate — it is not mandatory, and the bootcamper can skip it or acknowledge quickly. The `ask-bootcamper` hook handles the closing question on `agentStop`, so do not include inline closing questions here.
-
 ---
 
-After Step 4c, load `onboarding-phase2-track-setup.md` for track selection.
+After Step 2d, load `onboarding-phase1b-intro-language.md` to continue with the entity resolution introduction and programming language selection.

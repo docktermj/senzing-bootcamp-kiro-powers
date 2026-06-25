@@ -8,8 +8,8 @@ Usage:
     python senzing-bootcamp/scripts/validate_power.py
 """
 
+import importlib
 import json
-import os
 import re
 import sys
 from pathlib import Path
@@ -19,7 +19,14 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from version import VersionError, read_version, read_version_from_frontmatter, validate_version
+import mcp_tool_inventory as inventory  # noqa: E402
+import track_switcher  # noqa: E402
+from version import (  # noqa: E402
+    VersionError,
+    read_version,
+    read_version_from_frontmatter,
+    validate_version,
+)
 
 
 def color(code, text):
@@ -91,7 +98,6 @@ def check_hook_categories_sync():
     content = categories_path.read_text(encoding="utf-8")
     category_ids: set = set()
     current_top_key = None
-    current_sub_key = None
 
     for line in content.splitlines():
         stripped = line.strip()
@@ -102,14 +108,16 @@ def check_hook_categories_sync():
         if indent == 0 and stripped.endswith(":"):
             key = stripped[:-1].strip()
             current_top_key = key
-            current_sub_key = None
             continue
 
-        if current_top_key == "metadata":
+        # Skip non-category blocks. `agentstop_order` is a list-of-mappings
+        # (`- id:` / `order:` / `rationale:`), not a category → hook membership
+        # list, so its `- id: <hook>` entries must not be treated as hook ids.
+        if current_top_key in ("metadata", "agentstop_order"):
             continue
 
         if indent > 0 and stripped.endswith(":") and not stripped.startswith("- "):
-            current_sub_key = stripped[:-1].strip()
+            stripped[:-1].strip()
             continue
 
         if stripped.startswith("- "):
@@ -295,13 +303,226 @@ def check_steering_index_metadata():
     check(has_budget, "budget mapping exists in steering-index.yaml")
 
     if has_budget:
-        budget_fields = ["total_tokens", "reference_window", "warn_threshold_pct", "critical_threshold_pct"]
+        budget_fields = [
+            "total_tokens", "reference_window", "warn_threshold_pct", "critical_threshold_pct"
+        ]
         for field in budget_fields:
             field_match = re.search(rf"^\s+{re.escape(field)}:\s*(\d+)", content, re.MULTILINE)
             check(field_match is not None, f"budget.{field} exists and is an integer")
 
 
+def _extract_section(text, heading):
+    """Return the body of a Markdown section starting at `heading`.
+
+    The section runs from `heading` to the next heading of the same or a
+    higher level (or end of file).
+
+    Args:
+        text: Full Markdown text.
+        heading: The exact heading line to anchor on (e.g. "## Available MCP Tools").
+
+    Returns:
+        The section text including its heading, or "" when not found.
+    """
+    level = len(heading) - len(heading.lstrip("#"))
+    pattern = re.compile(rf"^{re.escape(heading)}\s*$", re.MULTILINE)
+    match = pattern.search(text)
+    if not match:
+        return ""
+    start = match.start()
+    next_pattern = re.compile(rf"^#{{1,{level}}} ", re.MULTILINE)
+    nxt = next_pattern.search(text, match.end())
+    return text[start:nxt.start()] if nxt else text[start:]
+
+
+def _power_md_tool_bullets(text):
+    """Return the tool names from POWER.md's "Available MCP Tools" bullet list.
+
+    Args:
+        text: Full POWER.md text.
+
+    Returns:
+        The ordered list of bulleted tool names.
+    """
+    section = _extract_section(text, "## Available MCP Tools")
+    return re.findall(r"^- `([a-z_]+)`", section, re.MULTILINE)
+
+
+def _architecture_category_tools(text):
+    """Return the tool names listed in ARCHITECTURE.md "MCP Tool Categories".
+
+    Args:
+        text: Full ARCHITECTURE.md text.
+
+    Returns:
+        The list of tool names from the category tables (one per table row).
+    """
+    section = _extract_section(text, "### MCP Tool Categories")
+    return re.findall(r"^\| `([a-z_]+)` \|", section, re.MULTILINE)
+
+
+def check_mcp_tool_inventory():
+    """Cross-check the documented MCP tool inventory against the canonical source.
+
+    Belt-and-suspenders guard mirroring the pytest drift guard so the same
+    check also runs in the validate_power.py CI gate. Sourced from
+    scripts/mcp_tool_inventory.py (confirmed live against
+    get_capabilities(version="current"), server v1.24.0, re-confirmed v1.26.8): POWER.md "Available
+    MCP Tools" and ARCHITECTURE.md "MCP Tool Categories" must each list exactly
+    ALL_TOOLS, and ARCHITECTURE.md must state the TOTAL_COUNT. Fails if a real
+    tool is dropped, a phantom tool (e.g. lint_record) is added, or a stale
+    12/14-tool total is reintroduced.
+    """
+    print("\n=== MCP Tool Inventory ===")
+    power_md = POWER_DIR / "POWER.md"
+    architecture = POWER_DIR / "docs" / "guides" / "ARCHITECTURE.md"
+
+    expected = set(inventory.ALL_TOOLS)
+
+    # POWER.md "Available MCP Tools" lists exactly ALL_TOOLS.
+    if not power_md.exists():
+        check(False, "POWER.md exists for MCP tool inventory check")
+    else:
+        bullets = _power_md_tool_bullets(power_md.read_text(encoding="utf-8"))
+        check(
+            len(bullets) == inventory.TOTAL_COUNT,
+            f"POWER.md lists exactly {inventory.TOTAL_COUNT} MCP tools "
+            f"(found {len(bullets)})",
+        )
+        check(
+            set(bullets) == expected,
+            "POWER.md 'Available MCP Tools' lists exactly the canonical inventory"
+            + (
+                f" — unexpected: {sorted(set(bullets) - expected)}, "
+                f"missing: {sorted(expected - set(bullets))}"
+                if set(bullets) != expected
+                else ""
+            ),
+        )
+
+    # ARCHITECTURE.md "MCP Tool Categories" lists exactly ALL_TOOLS and states TOTAL_COUNT.
+    if not architecture.exists():
+        check(False, "ARCHITECTURE.md exists for MCP tool inventory check")
+    else:
+        arch_text = architecture.read_text(encoding="utf-8")
+        tools = _architecture_category_tools(arch_text)
+        check(
+            len(tools) == inventory.TOTAL_COUNT,
+            f"ARCHITECTURE.md categories list exactly {inventory.TOTAL_COUNT} MCP "
+            f"tools (found {len(tools)})",
+        )
+        check(
+            set(tools) == expected,
+            "ARCHITECTURE.md 'MCP Tool Categories' lists exactly the canonical inventory"
+            + (
+                f" — unexpected: {sorted(set(tools) - expected)}, "
+                f"missing: {sorted(expected - set(tools))}"
+                if set(tools) != expected
+                else ""
+            ),
+        )
+        check(
+            f"exposes {inventory.TOTAL_COUNT} tools" in arch_text,
+            f"ARCHITECTURE.md states the MCP server exposes {inventory.TOTAL_COUNT} tools",
+        )
+
+
+_SCRIPTS_WITH_MODULE_MAPS = (
+    "status",
+    "export_results",
+    "repair_progress",
+    "team_dashboard",
+    "rollback_module",
+    "assess_entry_point",
+    "generate_graduation_certificate",
+    "validate_module",
+)
+
+
+def _power_md_module_table(text):
+    """Return {module_number: name} from POWER.md's generated modules table."""
+    m = re.search(
+        r"<!-- BEGIN GENERATED: modules -->(.*?)<!-- END GENERATED: modules -->",
+        text, re.DOTALL,
+    )
+    section = m.group(1) if m else ""
+    table = {}
+    for num, name in re.findall(r"^\|\s*(\d+)\s*\|\s*(.+?)\s*\|", section, re.MULTILINE):
+        table[int(num)] = name.strip()
+    return table
+
+
+def _find_module_name_maps(module):
+    """Find module-level dicts mapping a contiguous 1..N int range to strings."""
+    maps = []
+    for value in vars(module).values():
+        if not isinstance(value, dict) or len(value) < 5:
+            continue
+        if not all(isinstance(k, int) for k in value):
+            continue
+        if not all(isinstance(v, str) for v in value.values()):
+            continue
+        if set(value) == set(range(1, len(value) + 1)):
+            maps.append(value)
+    return maps
+
+
+def check_module_inventory():
+    """Cross-check module number↔name mappings against the canonical source.
+
+    config/module-dependencies.yaml is the single source of truth for the
+    module roster. This gate fails CI if POWER.md's generated module table or
+    any script's module-name map drifts from it — a renamed module, a wrong
+    name for a number, or a stale "Module 12" reintroduced after the 0.11.0
+    collapse of Module 12 into Module 11.
+    """
+    print("\n=== Module Inventory ===")
+    yaml_path = POWER_DIR / "config" / "module-dependencies.yaml"
+    if not yaml_path.exists():
+        check(False, "config/module-dependencies.yaml exists for module inventory check")
+        return
+
+    try:
+        canonical = track_switcher.load_module_names(yaml_path)
+    except (ValueError, OSError) as exc:
+        check(False, f"module-dependencies.yaml module names are parseable — {exc}")
+        return
+
+    count = len(canonical)
+    check(count > 0, f"module-dependencies.yaml defines a module roster (found {count})")
+
+    # POWER.md generated modules table matches the canonical roster.
+    power_md = POWER_DIR / "POWER.md"
+    if power_md.exists():
+        table = _power_md_module_table(power_md.read_text(encoding="utf-8"))
+        check(
+            table == canonical,
+            "POWER.md modules table matches module-dependencies.yaml"
+            + (f" — POWER.md: {table}, canonical: {canonical}" if table != canonical else ""),
+        )
+
+    # Each registered script's module-name map matches the canonical roster.
+    for name in _SCRIPTS_WITH_MODULE_MAPS:
+        try:
+            module = importlib.import_module(name)
+        except Exception as exc:
+            check(False, f"{name}.py imports cleanly for module-map check — {exc}")
+            continue
+        maps = _find_module_name_maps(module)
+        check(bool(maps), f"{name}.py defines a module number→name map")
+        for mod_map in maps:
+            check(
+                mod_map == canonical,
+                f"{name}.py module-name map matches module-dependencies.yaml"
+                + (
+                    f" — script: {mod_map}, canonical: {canonical}"
+                    if mod_map != canonical else ""
+                ),
+            )
+
+
 def check_diagrams():
+    print("\n=== Diagrams ===")
     print("\n=== Diagrams ===")
     diagrams_dir = POWER_DIR / "docs" / "diagrams"
     expected = ["module-flow.md", "data-flow.md", "system-architecture.md"]
@@ -387,6 +608,8 @@ def main():
     check_policies()
     check_diagrams()
     check_steering_index_metadata()
+    check_mcp_tool_inventory()
+    check_module_inventory()
     check_version_file()
     check_version_sync()
 

@@ -17,7 +17,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -25,7 +25,12 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-_ONBOARDING_FILE = _BOOTCAMP_DIR / "steering" / "onboarding-flow.md"
+# After the onboarding split, the Comprehension Check moved out of
+# onboarding-flow.md (where it was "Step 4c") into
+# onboarding-phase1b-intro-language.md as "Step 5b" — its content (the
+# 👉 output-format directive, the in-template marker, and the paraphrase
+# constraint) moved unchanged. These tests therefore read the phase file.
+_ONBOARDING_FILE = _BOOTCAMP_DIR / "steering" / "onboarding-phase1b-intro-language.md"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -40,12 +45,13 @@ def _read_onboarding() -> str:
 
 
 def _extract_step_4c(markdown: str) -> str:
-    """Extract the Step 4c (Comprehension Check) section.
+    """Extract the Comprehension Check section (Step 5b in the phase file).
 
-    Returns everything from the ``### 4c.`` heading up to the next
-    heading of the same or higher level.
+    Returns everything from the ``### 5b.`` heading up to the next
+    heading of the same or higher level. (Historically this was "Step 4c"
+    in onboarding-flow.md before the onboarding split.)
     """
-    pattern = re.compile(r"^(#{2,3})\s+4c\.\s", re.MULTILINE)
+    pattern = re.compile(r"^(#{2,3})\s+5b\.\s", re.MULTILINE)
     match = pattern.search(markdown)
     if not match:
         return ""

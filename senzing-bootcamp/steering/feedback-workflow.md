@@ -99,6 +99,7 @@ Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists in the projec
 
 ### Step 4: Append to Feedback File
 
+- **ALWAYS use fs_append** to add the formatted entry. NEVER use fs_write on this file after initial creation — it would destroy all previous feedback entries.
 - Add the formatted entry to the "Your Feedback" section.
 - Preserve any existing feedback entries.
 

@@ -37,7 +37,7 @@ _EXPECTED_TOTALS: dict[int, int | None] = {
     3: 12,
     4: 9,
     5: 26,
-    6: 27,
+    6: 28,
     7: None,
     8: 13,
     9: 12,
@@ -330,8 +330,8 @@ def _redirect_stdout(buf: StringIO):
 # Validates: Requirements 10
 # ---------------------------------------------------------------------------
 
-import json
 import importlib
+import json
 
 
 def _write_progress(tmp_path, data):

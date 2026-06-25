@@ -5,6 +5,16 @@ description: "Turn-taking, question handling, and module transition protocols fo
 
 # Conversation Protocol
 
+## Answer Processing Priority
+
+Processing a bootcamper's answer to a 👉 question is the **highest-priority action** in any turn. No other work — content generation, context management, hook evaluation, or status updates — may proceed until the pending answer has been fully processed.
+
+**Substantive output requirement:** When the bootcamper's message is a response to a pending 👉 question, you SHALL produce substantive output that acknowledges and acts upon the answer before the turn ends. A minimal acknowledgment (e.g., ".", "OK", empty output) is never acceptable as a response to a pending answer.
+
+**Treat-as-answer rule:** If `config/.question_pending` exists at the start of a turn, treat the bootcamper's message as an answer to that pending question regardless of message content. Do not reinterpret, redirect, or ignore the message — process it as the answer.
+
+**No-substantive-output-while-pending rule:** While `config/.question_pending` exists, produce no substantive output other than processing the bootcamper's answer to the pending question. Do not advance the workflow, present new content, or ask new questions until the pending answer has been processed and the file deleted.
+
 ## End-of-Turn Protocol
 
 When you complete work that does NOT end with a 👉 question:
@@ -15,7 +25,10 @@ When you complete work that does NOT end with a 👉 question:
 
 When you DO end with a 👉 question:
 
-- Write the file `config/.question_pending` containing the question text
+- Write the file `config/.question_pending` using the structured format:
+  - **Line 1:** Question type — one of: `track_selection`, `module_transition`, `step_question`, `confirmation`, `choice`
+  - **Lines 2+:** Full question text (may be multi-line)
+  - If you cannot determine the appropriate type, default to `step_question`
 - The ask-bootcamper hook will fire but produce no output (this is correct)
 
 When processing the bootcamper's next message:
@@ -26,17 +39,26 @@ The ask-bootcamper hook is a safety net only — do not rely on it for closing q
 
 When you complete the LAST sub-step in a gap-filling sequence (all undetermined items resolved): writing the checkpoint is NOT the end of your turn. You must also present the next numbered step's 👉 question. The checkpoint marks sub-step completion; the 👉 question marks turn completion.
 
+### Intercept-Recovery Continuity
+
+When a turn's primary action was a write **re-issued after a `write-policy-gate` intercept**, the turn is NOT complete until you have appended exactly one 👉 leading question reflecting the next step in the guided flow AND written `config/.question_pending`. A re-issued write is work completed in the turn — it carries the same closing-question obligation as any other yielding turn.
+
+Ending such a turn on bare tool activity or a bare acknowledgment (".", empty output) is a **protocol violation** equivalent to a dead-end response. The intercept/retry cycle never separates the completed work from the next instruction, and you must not wait for the bootcamper to prompt for the next question.
+
+This closing question is YOUR responsibility and is not deferred to a hook. The One Question Rule and Question Stop Protocol below continue to govern the *shape* of that question.
+
 ## Question Stop Protocol
 
 Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question text — produce no further tokens. Do not answer, assume a response, proceed to the next step, or write checkpoints.
 
-After asking a 👉 question, write the file `config/.question_pending` with the question text before ending your turn.
+After asking a 👉 question, write the file `config/.question_pending` using the structured format (type on first line, question text on subsequent lines) before ending your turn.
 
 At the start of every turn where you process bootcamper input, check for and delete `config/.question_pending` if it exists.
 
 ### Numbered Step Execution Boundary
 
 Every numbered step containing a 👉 question is a mandatory execution boundary with the same absolute precedence as ⛔ mandatory gates. The agent SHALL:
+
 - Execute each numbered step individually in sequential order
 - Never advance `current_step` by more than 1 without writing intermediate checkpoints
 - Never skip a 👉 step for any internal reason (context budget, session length, redundancy)
@@ -90,7 +112,7 @@ All JSON displayed in chat must use ` ```json ` code blocks with 2-space indenta
 
 ⚠️ **CRITICAL — ZERO TOLERANCE** ⚠️
 
-Each turn contains **exactly one** 👉 question. This is the single most important conversation rule in the bootcamp. Violations destroy bootcamper trust.
+Every yielding turn ends with **exactly one** 👉 leading question. A turn ending with **zero** 👉 questions, or with **two or more** 👉 questions, violates this rule. This is the single most important conversation rule in the bootcamp. Violations destroy bootcamper trust.
 
 **The rule is absolute:** One question. One question mark. One unambiguous meaning for "yes." One unambiguous meaning for "no." No exceptions. No edge cases. No "just this once."
 
@@ -309,7 +331,13 @@ If any answer is yes (across all 5 checks), revise the turn before sending.
 
 ## Mandatory question_pending
 
-Writing `config/.question_pending` is mandatory for every 👉 question — not optional, not best-effort. If you output a 👉 question and do not write the file, you have violated the protocol. The file enforces the wait: while it exists, you must not generate response content until the bootcamper provides input and the file is deleted.
+Writing `config/.question_pending` is mandatory for every 👉 question — not optional, not best-effort. If you output a 👉 question and do not write the file, you have violated the protocol. The file must use the structured format: question type on the first line (one of: `track_selection`, `module_transition`, `step_question`, `confirmation`, `choice`), full question text on subsequent lines. Default to `step_question` when the type is undetermined. The file enforces the wait: while it exists, you must not generate response content until the bootcamper provides input and the file is deleted.
+
+## Final-Message Invariant
+
+Every input-expecting (yielding) turn ends with exactly one **live** 👉 pending question as the **final message** shown to the bootcamper, with `config/.question_pending` written for it. The live 👉 pending question must be the final message of an input-expecting turn — nothing may appear after it.
+
+A recap or confirmation emission must never be the final message of an input-expecting turn. If any recap/confirmation runs after the 👉 question (for example a per-module recap step), the live 👉 pending question must be re-surfaced as the final message and `config/.question_pending` (re)written for it, so the bootcamper always ends the turn looking at one actionable question.
 
 ## Module Transition Protocol
 

@@ -4,175 +4,52 @@ inclusion: manual
 
 # Module Completion Workflow
 
-Load this after completing any module. Handles journal entries, certificates, and path completion.
+Load this after completing any module. This file is the **Module_Completion_Root** — a lightweight router. It holds the completion-step ordering overview and the Shared Boundary-Detection Trigger rules, then points to the cohesive slices that carry each completion concern (artifact generation, non-blocking error handling, next-step flow, and track completion).
 
-## Bootcamp Journal
+## Completion Step Ordering
 
-Append to `docs/bootcamp_journal.md` (create if needed):
+The module completion process executes the following steps in a **fixed, invariant order** regardless of which module is being completed:
 
-```markdown
-## Module N: [Name] — Completed [date]
-**What we did:** [1-2 sentences]
-**What was produced:** [files/artifacts]
-**Why it matters:** [enables next step]
-**Bootcamper's takeaway:** N/A
-```
+1. **progress_update** — Mark the module complete in `config/bootcamp_progress.json`
+2. **recap_append** — Append a recap section to `docs/bootcamp_recap.md` (create file if first completion)
+3. **journal_entry** — Append a journal entry to `docs/bootcamp_journal.md` (create file if first completion)
+4. **completion_certificate** — Generate `docs/progress/MODULE_N_COMPLETE.md` and update the summary index
+5. **next_step_options** — Present the bootcamper with concrete next-step choices
 
-## Module Completion Certificate
+### Ordering Rules
 
-After the journal entry, generate a completion certificate:
+- Each step **must complete** (or be skipped due to error) before the next step begins.
+- This ordering is invariant — it applies to every module completion (Module 1 through Module 11), whether the module was completed normally or skipped.
+- If a step fails (file system error, timeout exceeding 30 seconds, or unhandled exception), skip it with a logged warning and proceed to the next step. A failed predecessor does not block subsequent steps.
 
-1. Create `docs/progress/MODULE_N_COMPLETE.md` (create `docs/progress/` directory if it doesn't exist)
-2. Use the bootcamper's chosen language from `config/bootcamp_preferences.yaml` in artifact descriptions
+## Shared Boundary-Detection Trigger
 
-### Certificate Template
+The **recap_append**, **journal_entry**, and **completion_certificate** steps all fire from the **same boundary-detection trigger** — the comparison of the current `modules_completed` array against the prior state. There is no longer a split where the recap is appended by a hook while the journal entry and certificate run only when the bootcamper explicitly invokes this workflow. When boundary detection observes a newly completed module, all three artifact steps run together (followed by `next_step_options`), so a completed module never ends up with only a subset of its artifacts.
 
-```markdown
-# Module [N]: [Title] — Complete ✅
+### Trigger Rules
 
-**Completed**: [ISO 8601 date]
-**Time Spent**: [duration from session analytics, or "not tracked"]
-**Language**: [chosen language]
+- **Fire on every new entry.** Whenever a module number is added to `modules_completed`, run the recap section, journal entry, and completion certificate for that module — in the fixed step order above.
+- **Include the final module of a track.** Track completion (graduation or celebration) MUST NOT suppress the per-module artifact path. If the newly completed module is the last module of the bootcamper's track (Module 7 for Core, Module 11 for Advanced), still produce its recap section, journal entry, and certificate exactly as for any other module. The celebration path runs in addition to — never instead of — the per-module artifacts.
+- **Defer when a question is pending.** If `config/.question_pending` exists at completion-check time, produce no completion-artifact output at all (no recap, journal, or certificate) and defer to `ask-bootcamper`. This deferral is unchanged.
+- **No-op when nothing new completed.** If `modules_completed` has not gained a new entry since the previous state, produce no recap, journal, or certificate output — no spurious duplicate artifacts. This no-op behavior is unchanged.
 
-## Key Concepts Learned
+### Final-Message Ordering (recap vs. forward transition)
 
-- [Concept 1 — derived from module steering file steps]
-- [Concept 2]
-- [Concept 3]
-- [Concept 4 (if applicable)]
-- [Concept 5 (if applicable)]
+A module-completion turn that expects input must end with exactly one live pending question (👉) as its **final message** (per the Final-Message Invariant in `conversation-protocol.md`). Run the recap/confirmation BEFORE the forward transition question, or re-surface the forward "Ready for Module X" prompt (👉) as the final message after any recap/confirmation, with `config/.question_pending` (re)written for it. A recap/confirmation line (e.g., "Recap updated for Module N") must never be the final message of a completion turn.
 
-## Artifacts Produced
+This ordering rule does not change the fixed completion step order above, the defer-when-pending / no-op trigger rules, or the affirmative-transition commitment: an affirmative answer to "Ready for Module X?" still immediately starts the next module in the same turn with its banner, journey map, before/after framing, and Step 1.
 
-| File | Description |
-|------|-------------|
-| [actual file path] | [language-aware description] |
+## Completion Slice Manifest
 
-## What This Enables
+The detailed completion behavior lives in cohesive slices under `senzing-bootcamp/steering/`. Each completion concern maps to exactly **one** slice. Load only the slice you need for the concern at hand:
 
-Now that you've completed Module [N], you can:
-- [Capability — derived from module-dependencies.yaml unlocked modules]
+| Slice file | Single concern |
+|---|---|
+| `module-completion-artifacts.md` | Artifact generation — backfill, recap append, bootcamp journal entry, module completion certificate, and summary index |
+| `module-completion-error-handling.md` | Non-blocking error handling — per-step file-system error handling, the 30-second timeout, predecessor-failure independence, and retry-on-next-completion |
+| `module-completion-next-steps.md` | Per-module next-step flow — next-step options and immediate execution on an affirmative response |
+| `module-completion-track.md` | Track completion — path/track completion detection and the path completion celebration (export, record, analytics, certificate, graduation, and feedback offers) |
 
-## Session Stats
+### Slice Fallback
 
-| Metric | Value |
-|--------|-------|
-| Total turns | [from session analytics] |
-| Corrections | [from session analytics] |
-
----
-*Generated by Senzing Bootcamp Power*
-```
-
-### Content Derivation Rules
-
-- **Key Concepts:** Derive from the module's steering file section headings and step descriptions (3-5 concepts)
-- **Artifacts:** Scan the file system for files created/modified during this module in the module's output directories
-- **What This Enables:** Read `config/module-dependencies.yaml` to find which modules are now unlocked
-- **Language:** Use the bootcamper's language in descriptions (e.g., "Built a Python loading script" not "Built a loading script")
-- **Session Stats:** Include only if `config/session_log.jsonl` exists and has entries for this module. Omit the section entirely if no analytics are available.
-
-### Summary Index
-
-After generating the certificate, create or update `docs/progress/README.md`:
-
-```markdown
-# Bootcamp Progress
-
-## Completed Modules
-
-| Module | Title | Completed | Time |
-|--------|-------|-----------|------|
-| [N] | [Title] | [date] | [duration] |
-
-## Track Progress
-
-**[Track Name] ([Letter])**: [X]/[Y] modules complete ([Z]%)
-
-## Total Time Invested
-
-[total duration] across [count] modules
-```
-
-### Error Handling
-
-Certificate generation should not block the completion flow. If it fails for any reason (file system error, missing data), log a warning and continue to the next-step options.
-
-## Next-Step Options
-
-After the journal entry, present 3-4 concrete options based on the module just completed. Don't just say "proceed to Module N" — give the user choices:
-
-- **Proceed:** "Ready to move on to Module [N] ([name])?"
-- **Iterate:** "Would you like to improve anything from this module first?"
-- **Explore:** "Would you like to explore further — visualize entities, examine match explanations, or search by attributes? (For other modules: dig deeper into what we just produced.)"
-- **Undo:** "Roll back this module's work with `python3 scripts/rollback_module.py --module N`"
-- **Share:** "Would you like to prepare a summary to share with your team?"
-
-When the bootcamper asks to roll back a module, always run `rollback_module.py --preview --module N` first and present the results conversationally (files affected, safety assessment, downstream impact) before asking whether they want to proceed. Only execute `rollback_module.py --yes --module N` after explicit confirmation.
-
-Present these as a single list for the bootcamper to choose from.
-
-### ⛔ Immediate Execution on Affirmative Response
-
-**When the bootcamper says "yes" to "Ready to move on to Module [N]?", the agent MUST immediately execute the next module's startup sequence:**
-
-1. Display the module banner
-2. Show the journey map
-3. Begin Step 1
-
-**There are ZERO permitted steps between the affirmative response and the module startup sequence.**
-
-⛔ **PROHIBITED between affirmative response and module startup:**
-
-- Intermediate acknowledgment (e.g., "Great! Let's get started...", "Awesome, moving on...")
-- Progress-saving behavior (e.g., "Let me save your progress first...", "Let me note where we left off...")
-- Session-ending behavior (e.g., "We can pick this up next time...", "Let me wrap up this session...")
-- Any text output that is not the module banner
-
-The affirmative response IS the trigger. The module banner IS the next thing the bootcamper sees. Nothing else.
-
-**Module 3 special case:** The visualization offer (web page with interactive features) should already have been presented before reaching this workflow. If the user declined, the Explore option above gives them another chance.
-
-## Path Completion Detection
-
-After each module, check if the user finished their track's last module:
-
-| Track | Complete after |
-|-------|----------------|
-| Core Bootcamp    | Module 7  |
-| Advanced Topics  | Module 11 |
-
-## Path Completion Celebration
-
-When track is complete, present:
-
-- 🎉 "You've completed the [track name]!"
-- Summary of all artifacts built (code, data, docs)
-- Where everything lives (src/, data/transformed/, docs/, config/, database/)
-- Reference to `docs/bootcamp_journal.md`
-- Next options: switch to longer track (modules carry forward), harden for production, or start using the code
-- Export option: "Would you like to export a shareable report of your bootcamp results?" — when accepted, run `python3 scripts/export_results.py` and present the output path to the bootcamper. This option appears only at track completion, not after every module.
-- Record export offer (after the export option, before the analytics offer): "📋 Would you like a record of your bootcamp journey? You can share it with your team or use it to replay the same setup on another project." — when accepted, run `python3 scripts/record_export.py` and present the output path (`docs/bootcamp_record.yaml`) to the bootcamper. When declined, proceed to the next step without generating any export file.
-- Analytics offer (after the record export offer, before the graduation offer): "📊 Would you like to see analytics on your bootcamp journey? I can show you time distribution, friction points, and how your pace compares to baselines." — when accepted, run `python3 scripts/bootcamp_analytics.py` and present the output conversationally.
-- Graduation offer (after the analytics offer, before the feedback reminder):
-  1. Read `skip_graduation` from `config/bootcamp_preferences.yaml`. If `skip_graduation` is `true`, skip the graduation offer entirely.
-  2. If not skipped, present: "🎓 Would you like to run the graduation workflow? It will help you turn your bootcamp project into a production-ready codebase — clean structure, production configs, CI/CD pipeline, and a migration checklist."
-  3. If accepted: load `steering/graduation.md` and begin the workflow.
-  4. If declined: ask "Would you like me to remember this choice so I don't ask again?" If the bootcamper confirms, set `skip_graduation: true` in `config/bootcamp_preferences.yaml`. Then continue with the remaining post-completion options.
-- Feedback Submission Reminder (after the graduation offer sequence, before the retrospective):
-  1. Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists.
-  2. If it exists, read the file and check for at least one `## Improvement:` heading below the `## Your Feedback` section (headings outside fenced code blocks count as real entries; the template block inside a fenced code block does not).
-  3. If feedback entries exist, display: "📋 You have feedback saved in `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md`. Would you like to share it with the power author?"
-  4. If the bootcamper accepts, present the sharing options:
-
-     **How would you like to share your feedback?**
-
-     1. **Email** — Send to <support@senzing.com> with subject "Senzing Bootcamp Power Feedback". I can format the content for easy copy-paste.
-     2. **GitHub Issue** — Create an issue on the senzing-bootcamp power repository. I can format it as a markdown-ready issue body.
-     3. **Copy path** — I'll show you the full file path so you can share it however you prefer.
-
-     Do not automatically send emails or create GitHub issues — wait for explicit bootcamper confirmation before taking any external action.
-  5. If the bootcamper declines (says "no", "skip", "not now", or any declining response), proceed to the next step without re-prompting about feedback. Do not ask about feedback sharing again during this track completion sequence.
-  6. If the feedback file does not exist or contains no entries beyond the template header, display the fallback: "Say 'bootcamp feedback' to share your experience"
-
-Load `lessons-learned.md` and offer the retrospective.
+If a referenced slice cannot be found at its expected path under `senzing-bootcamp/steering/`, fall back to this Root: use the ordering and trigger rules above to proceed as best you can, and report that the slice is missing (name the expected file path) so the gap can be fixed. Never silently skip a completion concern because its slice is absent.

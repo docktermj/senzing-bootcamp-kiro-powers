@@ -1,0 +1,14 @@
+{
+  "name": "to log session events after write operations",
+  "version": "1.0.0",
+  "description": "Logs a session event after write operations complete. The IDE appends the log line directly via a runCommand (no agent round-trip), invoking senzing-bootcamp/scripts/log_write_event.py, which records a generic write action (timestamp + current module) to config/session_log.jsonl for the completion summary.",
+  "when": {
+    "type": "postToolUse",
+    "toolTypes": ["write"]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "python3 senzing-bootcamp/scripts/log_write_event.py",
+    "timeout": 10
+  }
+}

@@ -8,27 +8,28 @@ import argparse
 import json
 import os
 import re
-import sys
 import tempfile
 from io import StringIO
-from pathlib import Path
 from unittest import mock
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from status import (
-    QualityScoreData,
-    PerformanceData,
+    MODULE_NAMES,
+    DashboardData,
+    DashboardDataCollector,
+    DashboardRenderer,
     EntityStatsData,
     HealthCheckItem,
-    DashboardData,
-    DashboardRenderer,
-    DashboardDataCollector,
+    PerformanceData,
+    QualityScoreData,
     generate_dashboard,
-    MODULE_NAMES,
 )
+
+#: Canonical bootcamp module count (single source: status.MODULE_NAMES).
+_MODULE_COUNT = len(MODULE_NAMES)
 
 # ---------------------------------------------------------------------------
 # Task 5.1: Hypothesis strategies
@@ -47,10 +48,22 @@ def _quality_score_data():
             blacklist_characters="\x00",
         )),
         overall=st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
-        completeness=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        consistency=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        format_compliance=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        uniqueness=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
+        completeness=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        consistency=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        format_compliance=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        uniqueness=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
     )
 
 
@@ -58,11 +71,23 @@ def _performance_data():
     """Strategy for PerformanceData with valid ranges."""
     return st.builds(
         PerformanceData,
-        loading_throughput_rps=st.one_of(st.none(), st.floats(min_value=0.0, max_value=10000.0, allow_nan=False, allow_infinity=False)),
-        query_avg_ms=st.one_of(st.none(), st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False)),
-        query_p95_ms=st.one_of(st.none(), st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False)),
+        loading_throughput_rps=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=10000.0, allow_nan=False, allow_infinity=False),
+        ),
+        query_avg_ms=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False),
+        ),
+        query_p95_ms=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False),
+        ),
         database_type=st.one_of(st.none(), st.sampled_from(_DB_TYPES)),
-        wall_clock_seconds=st.one_of(st.none(), st.floats(min_value=0.0, max_value=86400.0, allow_nan=False, allow_infinity=False)),
+        wall_clock_seconds=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=86400.0, allow_nan=False, allow_infinity=False),
+        ),
     )
 
 
@@ -104,8 +129,8 @@ def _iso_timestamps():
 
 def _completion_timestamps():
     """Strategy for completion_timestamps dict (module_number -> ISO string)."""
-    keys = st.sampled_from(list(range(1, 13)))
-    return st.dictionaries(keys, _iso_timestamps(), min_size=0, max_size=12)
+    keys = st.sampled_from(list(range(1, _MODULE_COUNT + 1)))
+    return st.dictionaries(keys, _iso_timestamps(), min_size=0, max_size=_MODULE_COUNT)
 
 
 def _dashboard_data():
@@ -113,11 +138,14 @@ def _dashboard_data():
     return st.builds(
         _build_dashboard_data,
         modules_completed=st.lists(
-            st.integers(min_value=1, max_value=12), unique=True, max_size=12,
+            st.integers(min_value=1, max_value=_MODULE_COUNT), unique=True,
+            max_size=_MODULE_COUNT,
         ).map(sorted),
-        current_module=st.integers(min_value=1, max_value=12),
+        current_module=st.integers(min_value=1, max_value=_MODULE_COUNT),
         status=st.sampled_from(_STATUSES),
-        language=st.one_of(st.none(), st.sampled_from(["Python", "Java", "Go", "C#", "JavaScript"])),
+        language=st.one_of(
+            st.none(), st.sampled_from(["Python", "Java", "Go", "C#", "JavaScript"])
+        ),
         completion_pct_override=st.none(),  # will be computed
         completion_timestamps=_completion_timestamps(),
         quality_scores=st.lists(_quality_score_data(), min_size=0, max_size=3),
@@ -135,7 +163,7 @@ def _build_dashboard_data(
     performance, entity_stats, health_checks, generated_at, has_progress_data,
 ):
     """Build DashboardData with computed fields."""
-    completion_pct = len(modules_completed) * 100 // 12
+    completion_pct = len(modules_completed) * 100 // _MODULE_COUNT
     health_score = sum(1 for h in health_checks if h.exists)
     health_total = len(health_checks)
     return DashboardData(
@@ -181,7 +209,9 @@ class TestProperty1SelfContainedHTML:
         """**Validates: Requirements 2.1, 2.2, 2.3**"""
         html = _render(data)
         # No <link rel="stylesheet" href="http...">
-        assert not re.search(r'<link[^>]+rel=["\']stylesheet["\'][^>]+href=["\']http', html, re.IGNORECASE)
+        assert not re.search(
+            r'<link[^>]+rel=["\']stylesheet["\'][^>]+href=["\']http', html, re.IGNORECASE
+        )
         # No <script src="...">
         assert not re.search(r'<script[^>]+src=', html, re.IGNORECASE)
         # No <link href="http...">
@@ -232,12 +262,12 @@ class TestProperty3ProgressBar:
     def test_progress_bar_percentage_and_fraction(self, data):
         """**Validates: Requirements 4.1, 4.2**"""
         html = _render(data)
-        expected_pct = len(data.modules_completed) * 100 // 12
+        expected_pct = len(data.modules_completed) * 100 // _MODULE_COUNT
         n = len(data.modules_completed)
         # The percentage should appear in the progress section
         assert f"{expected_pct}%" in html
-        # The fraction "N / 12" should appear
-        assert f"{n} / 12" in html
+        # The fraction "N / <count>" should appear
+        assert f"{n} / {_MODULE_COUNT}" in html
 
 
 # ---------------------------------------------------------------------------
@@ -253,9 +283,9 @@ class TestProperty4ModuleCards:
     def test_twelve_module_cards_with_correct_status(self, data):
         """**Validates: Requirements 4.3, 4.4, 4.5, 4.6**"""
         html = _render(data)
-        # Exactly 12 module cards
+        # Exactly one module card per module
         card_matches = re.findall(r'class="card\s+(completed|in-progress|not-started)"', html)
-        assert len(card_matches) == 12
+        assert len(card_matches) == _MODULE_COUNT
 
         # Extract individual cards by splitting on card boundaries
         # Each card is a <div class="card ...">...</div>
@@ -273,9 +303,9 @@ class TestProperty4ModuleCards:
             if mod_match:
                 card_status_map[int(mod_match.group(1))] = card_class
 
-        assert len(card_status_map) == 12
+        assert len(card_status_map) == _MODULE_COUNT
 
-        for num in range(1, 13):
+        for num in range(1, _MODULE_COUNT + 1):
             card_class = card_status_map[num]
             if num in data.modules_completed:
                 assert card_class == "completed", f"Module {num} should be completed"
@@ -596,7 +626,9 @@ class TestCLIArgumentParsing:
         parser.add_argument("--html", action="store_true")
         parser.add_argument("--output", type=str, default=None)
         parser.add_argument("--no-open", action="store_true")
-        args = parser.parse_args(["--html", "--output", os.path.join(tempfile.gettempdir(), "my_dash.html")])
+        args = parser.parse_args(
+            ["--html", "--output", os.path.join(tempfile.gettempdir(), "my_dash.html")]
+        )
         assert args.output == os.path.join(tempfile.gettempdir(), "my_dash.html")
 
     def test_no_open_flag(self):
@@ -887,4 +919,8 @@ class TestErrorHandling:
             assert data.modules_completed == []
             # Warning should have been printed
             err_output = captured_err.getvalue()
-            assert "Warning" in err_output or "invalid JSON" in err_output.lower() or "warning" in err_output.lower()
+            assert (
+                "Warning" in err_output
+                or "invalid JSON" in err_output.lower()
+                or "warning" in err_output.lower()
+            )

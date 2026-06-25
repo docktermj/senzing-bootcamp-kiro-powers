@@ -12,10 +12,22 @@ Feature: no-direct-sql
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
+
+# ---------------------------------------------------------------------------
+# Canonical MCP tool inventory — single source of truth
+# Scripts aren't packages, so add scripts/ to sys.path before importing.
+# ---------------------------------------------------------------------------
+
+_SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
+
+from mcp_tool_inventory import ACTIVE_TOOLS  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Paths — relative to this test file's location
@@ -74,25 +86,13 @@ _FILE_IO_PATTERNS = [
 
 # ---------------------------------------------------------------------------
 # MCP tool patterns (should remain unchanged)
-# These are the 12 MCP tools actually referenced in the decision tree file.
-# Note: SDK methods like get_entity, search_by_attributes are NOT in the
-# decision tree — they are SDK-level methods accessed via MCP tools.
+# Sourced from the canonical inventory (``ACTIVE_TOOLS``) so the routable tool
+# list stays in sync with the single source of truth rather than a frozen
+# literal. Note: SDK methods like get_entity, search_by_attributes are NOT in
+# the decision tree — they are SDK-level methods accessed via MCP tools.
 # ---------------------------------------------------------------------------
 
-_MCP_TOOL_PATTERNS = [
-    "mapping_workflow",
-    "generate_scaffold",
-    "sdk_guide",
-    "get_sdk_reference",
-    "explain_error_code",
-    "search_docs",
-    "find_examples",
-    "reporting_guide",
-    "get_capabilities",
-    "analyze_record",
-    "get_sample_data",
-    "download_resource",
-]
+_MCP_TOOL_PATTERNS = list(ACTIVE_TOOLS)
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -307,7 +307,7 @@ class TestMCPToolGuidanceUnchanged:
             )
 
     def test_decision_tree_references_all_tools(self) -> None:
-        """Assert decision tree references all 12 MCP tools."""
+        """Assert decision tree references every tool in the canonical inventory."""
         content = _read_decision_tree()
         for tool in _MCP_TOOL_PATTERNS:
             assert tool in content, (

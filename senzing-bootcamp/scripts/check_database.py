@@ -22,7 +22,6 @@ import os
 import sqlite3
 import sys
 
-
 # ---------------------------------------------------------------------------
 # Data models
 # ---------------------------------------------------------------------------
@@ -114,7 +113,10 @@ class DatabaseHealthChecker:
                     name="Connection",
                     status="fail",
                     message=f"Not a valid SQLite database: {exc}",
-                    fix="Database file is corrupted. Rebuild from scratch using the loading program.",
+                    fix=(
+                        "Database file is corrupted. "
+                        "Rebuild from scratch using the loading program."
+                    ),
                 )
             if "locked" in msg:
                 return DatabaseCheckResult(
@@ -161,7 +163,10 @@ class DatabaseHealthChecker:
                 name="Integrity check",
                 status="fail",
                 message=f"PRAGMA integrity_check: {result}",
-                fix="Run with --repair to attempt WAL checkpoint and vacuum, or rebuild the database.",
+                fix=(
+                    "Run with --repair to attempt WAL checkpoint and vacuum, "
+                    "or rebuild the database."
+                ),
             )
         except Exception as exc:
             return DatabaseCheckResult(
@@ -196,7 +201,10 @@ class DatabaseHealthChecker:
                 return DatabaseCheckResult(
                     name="Entity count",
                     status="warn",
-                    message="Table RES_ENT_OKEY does not exist (database may be freshly initialized)",
+                    message=(
+                        "Table RES_ENT_OKEY does not exist "
+                        "(database may be freshly initialized)"
+                    ),
                     fix="Run the loading program to create Senzing tables and load data.",
                 )
             return DatabaseCheckResult(
@@ -355,7 +363,7 @@ def _format_human(report: DatabaseHealthReport) -> str:
         icon = _STATUS_ICON.get(cr.status, "?")
         lines.append(f"    {icon}  {cr.name}: {cr.message}")
         if cr.fixed:
-            lines.append(f"        ↳ Fixed by --repair")
+            lines.append("        ↳ Fixed by --repair")
         elif cr.status in ("warn", "fail") and cr.fix:
             lines.append(f"        ↳ {cr.fix}")
 

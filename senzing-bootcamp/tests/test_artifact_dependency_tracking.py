@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 
 import pytest
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -31,11 +31,10 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from validate_module import (
+    VALID_ARTIFACT_TYPES,
     check_artifact_on_disk,
     parse_module_artifacts_yaml,
-    VALID_ARTIFACT_TYPES,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers

@@ -10,9 +10,9 @@ import json
 import re
 from pathlib import Path
 
+import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
-import pytest
 
 # ---------------------------------------------------------------------------
 # Module-level constants
@@ -40,13 +40,23 @@ TOOL_EVENT_TYPES = {"preToolUse", "postToolUse"}
 
 
 def _parse_all_category_ids(path: Path) -> list[str]:
-    """Extract all hook IDs from hook-categories.yaml."""
+    """Extract all hook IDs from hook-categories.yaml.
+
+    Handles two list-item shapes present in the file:
+      * Plain list items under ``critical`` / ``modules`` — e.g. ``- ask-bootcamper``.
+      * Mapping list items under ``agentstop_order`` — e.g. ``- id: ask-bootcamper``,
+        where the hook ID is the value of the ``id:`` key (sibling ``order:`` /
+        ``rationale:`` lines are not list items and are skipped naturally).
+    """
     text = path.read_text(encoding="utf-8")
     ids: list[str] = []
     for line in text.splitlines():
         stripped = line.strip()
         if stripped.startswith("- ") and not stripped.endswith(":"):
             hook_id = stripped[2:].strip()
+            # agentstop_order entries are mappings: "- id: <hook-id>".
+            if hook_id.startswith("id:"):
+                hook_id = hook_id[len("id:"):].strip()
             if hook_id and not hook_id.endswith(":"):
                 ids.append(hook_id)
     return ids

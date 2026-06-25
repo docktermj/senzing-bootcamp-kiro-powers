@@ -18,6 +18,13 @@ inclusion: manual
 
 **Purpose**: Collect the actual data files from each identified data source and store them in the project for analysis and mapping.
 
+> **Agent instruction — Evaluation license and dataset size (canonical framing):** The Senzing SDK ships with a built-in evaluation license that the bootcamper already has by default; it processes data up to a documented record count. Whenever a dataset is — or might be — larger than the evaluation license allows, present that as a choice, not a wall. The bootcamper can keep their full dataset and expand capacity, or work with a smaller slice — and downsizing is only ever one option among several, never the only path forward.
+>
+> - **Keep the full dataset and expand:** route to the Module 1 licensing paths — apply an existing license, request one through the external channel, or (when available) request one in-flow via the Senzing MCP server. Use the Module 1 Phase 1 discovery flow (Steps 6a–6e) for the tool-availability checks and branching; do not duplicate that logic here.
+> - **Work with a smaller slice (optional):** sampling, a CORD subset, or a smaller substitute dataset.
+>
+> Retrieve any specific record-capacity or validity figure from the Senzing MCP server at request time, exactly as the Module 1 flow does. If the MCP server does not return a figure or cannot be reached, omit the number and say the current value is unavailable from the MCP server — never restate a remembered or hardcoded figure here.
+
 1. **Review identified data sources**: Recap the data sources identified in Module 1. Review `docs/business_problem.md` for the complete list.
 
    **Checkpoint:** Write step 1 to `config/bootcamp_progress.json`.
@@ -193,10 +200,17 @@ inclusion: manual
 
 6. **Create sample files if needed**:
 
-   - If full dataset is very large (>1GB), create smaller sample files
+   A smaller working file can be useful in two situations: a very large dataset (e.g., >1GB) that is unwieldy to handle, or a dataset larger than the built-in evaluation license allows. In **both** cases sampling is one option, not a requirement.
+
+   If the dataset may exceed the evaluation license, apply the canonical framing from the top of this module: the built-in evaluation license is a default the bootcamper already has, and they can keep their full dataset and expand capacity via the Module 1 licensing paths, or work with a smaller slice. Do not steer them to a smaller substitute as the only path. Defer the licensing-path availability checks and any capacity figure to the Module 1 Phase 1 discovery flow (Steps 6a–6e) and the Senzing MCP server.
+
+   **If the bootcamper chooses to work with a smaller slice:**
+   - Create smaller sample files (sampling, a CORD subset, or a smaller substitute dataset)
    - Save samples to `data/samples/[datasource_name]_sample.[extension]`
    - Document sampling method (first N records, random sample, etc.)
-   - Ensure sample is representative of full dataset
+   - Ensure the sample is representative of the full dataset
+
+   **If the bootcamper chooses to keep the full dataset:** continue the collection workflow with the complete files — there is no requirement to reduce the dataset.
 
    **Checkpoint:** Write step 6 to `config/bootcamp_progress.json`.
 

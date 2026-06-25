@@ -46,7 +46,8 @@
 ┌──────────────────┐
 │data/transformed/ │
 │                  │
-│  Senzing Entity  │
+│  Senzing Generic │
+│  Entity          │
 │  Specification   │
 │  (SGES) format:  │
 │  • customers.    │
@@ -65,7 +66,7 @@
 │  • Resolve       │
 └────────┬─────────┘
          │
-         │ Module 8: Querying
+         │ Module 7: Querying
          ▼
 ┌──────────────────┐
 │  RESOLVED DATA   │
@@ -207,7 +208,7 @@ SOURCE 1: CRM          SOURCE 2: Orders       SOURCE 3: Support
 └──────┬───────┘      └──────┬───────┘      └──────┬───────┘
        │                     │                     │
        │ Load                │ Load                │ Load
-       │ (Module 6)          │ (Module 7)          │ (Module 7)
+       │ (Module 6)          │ (Module 6)          │ (Module 6)
        └─────────────────────┴─────────────────────┘
                              │
                              ▼

@@ -9,7 +9,6 @@ from __future__ import annotations
 import json
 import re
 import string
-from fnmatch import fnmatch
 from pathlib import Path
 
 from hypothesis import strategies as st
@@ -50,9 +49,6 @@ CRITICAL_HOOKS: list[str] = [
     "ask-bootcamper",
     "code-style-check",
     "commonmark-validation",
-    "enforce-step-and-transition",
-    "mcp-first-invariant",
-    "question-format-gate",
     "review-bootcamper-input",
     "write-policy-gate",
 ]
@@ -164,6 +160,12 @@ def parse_categories_yaml(path: Path | None = None) -> dict[str, list[str]]:
                 categories["critical"] = []
             continue
 
+        # Skip the `agentstop_order` block: it is a list-of-mappings
+        # (`- id:` / `order:` / `rationale:`) describing agentStop precedence,
+        # not a category → hook-list mapping, so its entries are not hook ids.
+        if current_top_key == "agentstop_order":
+            continue
+
         # Module sub-key (2-space indent): "  1:" or "  any:"
         if indent == 2 and stripped.endswith(":") and current_top_key == "modules":
             key_name = stripped.strip()[:-1]
@@ -203,6 +205,66 @@ def validate_required_fields(hook_data: dict) -> list[str]:
     """
     missing = []
     for field in REQUIRED_FIELDS:
+        parts = field.split(".")
+        obj = hook_data
+        found = True
+        for part in parts:
+            if isinstance(obj, dict) and part in obj:
+                obj = obj[part]
+            else:
+                found = False
+                break
+        if not found:
+            missing.append(field)
+    return missing
+
+
+# Action-specific required field. Every hook needs BASE_REQUIRED_FIELDS; an
+# askAgent hook additionally requires then.prompt, and a runCommand hook requires
+# then.command. validate_required_fields() (above) keeps the historical flat
+# contract — it always expects then.prompt — because the synthetic property tests
+# in test_hook_prompt_properties / test_hook_validator_properties /
+# test_module_completion_celebration assert that exact behavior. Real hook files
+# (which may use either action) are validated against their action type via
+# required_fields_for_action() instead.
+BASE_REQUIRED_FIELDS: list[str] = [
+    "name",
+    "version",
+    "description",
+    "when.type",
+    "then.type",
+]
+
+ACTION_REQUIRED_FIELD: dict[str, str] = {
+    "askAgent": "then.prompt",
+    "runCommand": "then.command",
+}
+
+
+def required_fields_for_action(hook_data: dict) -> list[str]:
+    """Return missing required fields for a real hook, aware of its then.type.
+
+    Base fields are always required. The action-specific field is required based
+    on then.type: ``then.prompt`` for ``askAgent`` hooks, ``then.command`` for
+    ``runCommand`` hooks. Use this for validating real ``.kiro.hook`` files, which
+    may legitimately be either action (e.g. the ``session-log-events`` postToolUse
+    logger runs a command directly with no agent round-trip).
+
+    Args:
+        hook_data: Parsed hook JSON dict.
+
+    Returns:
+        List of missing dot-notation field names (empty if all present).
+    """
+    then = hook_data.get("then")
+    then_type = then.get("type") if isinstance(then, dict) else None
+    fields = list(BASE_REQUIRED_FIELDS)
+    action_field = ACTION_REQUIRED_FIELD.get(then_type)
+    if action_field:
+        fields.append(action_field)
+
+    missing: list[str] = []
+    for field in fields:
         parts = field.split(".")
         obj = hook_data
         found = True

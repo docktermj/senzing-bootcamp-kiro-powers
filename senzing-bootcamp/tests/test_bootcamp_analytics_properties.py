@@ -21,16 +21,12 @@ if _SCRIPTS_DIR not in sys.path:
 
 from bootcamp_analytics import (
     AnalyticsReport,
-    FrictionPoint,
-    ModuleMetrics,
     SkipRecord,
     compute_module_metrics,
     detect_friction_points,
     format_json_report,
-    format_text_report,
     parse_session_log,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
@@ -222,8 +218,8 @@ class TestParseSessionLogProperties:
         For any arbitrary text content written to a file, parse_session_log
         always returns a list gracefully without raising an exception.
         """
-        import tempfile
         import os
+        import tempfile
 
         fd, tmp_path = tempfile.mkstemp(suffix=".jsonl")
         try:

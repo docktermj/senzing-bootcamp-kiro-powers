@@ -62,6 +62,13 @@ Use minimum version constraints to get latest compatible versions.
 
 Pin exact versions for reproducible builds.
 
+## Power Tooling Scripts (this repository)
+
+The bootcamp's own Python tooling in `senzing-bootcamp/scripts/` is standard-library only, with two narrow exceptions:
+
+- **PyYAML** — used only by `validate_dependencies.py`.
+- **fpdf2** (`import fpdf`) — an OPTIONAL, lazily-imported dependency used only by the two PDF-generation scripts, `generate_recap_pdf.py` and `generate_completion_summary.py`. It is imported lazily inside the rendering functions (never at module top level), so the scripts import and run their markdown/parsing paths without it. When `fpdf2` is absent the scripts degrade gracefully: they keep the Markdown output and print an install hint (`pip install fpdf2`) instead of failing. `fpdf2` MUST NOT be promoted to a hard/top-level dependency, and the stdlib-only import audit (in `tests/test_eval_conversations.py`) covers `eval_conversations.py` only — it does not apply to these two generators.
+
 ## Related Documentation
 
 - `CODE_QUALITY_STANDARDS.md` — Coding standards by language

@@ -11,13 +11,9 @@ Feature: split-session-resume
 
 from __future__ import annotations
 
-import re
-import subprocess
-import sys
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, HealthCheck, assume
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -256,7 +252,7 @@ class TestProperty2ContentCompleteness:
                 )
 
         assert violations == [], (
-            f"Content completeness violations:\n"
+            "Content completeness violations:\n"
             + "\n".join(f"  - {v}" for v in violations)
         )
 
@@ -273,7 +269,7 @@ class TestProperty2ContentCompleteness:
                 )
 
         assert duplications == [], (
-            f"Instruction blocks duplicated across files:\n"
+            "Instruction blocks duplicated across files:\n"
             + "\n".join(f"  - {d}" for d in duplications)
         )
 
@@ -870,10 +866,34 @@ class TestUnitTokenBudgets:
     """
 
     def test_phase1_token_budget(self) -> None:
-        """Phase-1 file token count ≤ 2,700."""
+        """Phase-1 file token count ≤ 3,400.
+
+        The session-resume split + the added "Preference Loading on Session
+        Start" content grew the phase-1 file (session-resume.md) past the
+        original 2,700 budget. The shipped steering-index.yaml records this
+        file as ``token_count: 3380`` / ``size_category: large``. The threshold
+        is raised ONLY to match that intentional shipped split (3,380 tokens,
+        rounded up to a 3,400 ceiling); the per-file ±10% budget enforcement in
+        measure_steering.py is unchanged. Paired with an independent content
+        assertion below so the relaxed ceiling can never mask unbounded growth.
+        """
         token_count = _calculate_token_count(_PHASE1_FILE)
-        assert token_count <= 2700, (
-            f"Phase-1 file has {token_count} tokens, exceeds budget of 2,700"
+        assert token_count <= 3400, (
+            f"Phase-1 file has {token_count} tokens, exceeds budget of 3,400"
+        )
+
+        # Independent content assertion: the shipped steering-index.yaml declares
+        # the same token_count for session-resume.md, confirming 3,380 is the
+        # intentional shipped value (relocation/split artifact), not drift.
+        index = _read_steering_index()
+        assert "session-resume.md:" in index, (
+            "steering-index.yaml must contain a session-resume.md entry"
+        )
+        idx_pos = index.find("session-resume.md:")
+        entry = index[idx_pos:idx_pos + 200]
+        assert "token_count: 3380" in entry, (
+            "steering-index.yaml must record session-resume.md token_count: 3380 "
+            "(the shipped post-split value)"
         )
 
     def test_phase2_mapping_token_budget(self) -> None:
@@ -893,11 +913,21 @@ class TestUnitTokenBudgets:
         )
 
     def test_phase2_setup_recovery_token_budget(self) -> None:
-        """Phase-2 Setup Recovery file token count ≤ 750."""
+        """Phase-2 Setup Recovery file token count ≤ 1,050.
+
+        Budget raised from 750 to 1,050 to accommodate the capture-critical
+        warn-on-absence check (Requirements 10.4, 10.6 of the
+        hook-architecture-improvements spec). That content — inspecting
+        `.kiro/hooks`, naming all three capture-critical hooks, and the
+        install options — is required by `tests/test_capture_critical_coverage.py`
+        and cannot coexist with the file's existing setup-recovery content
+        (Guard Condition, Hook Installation, MCP Health Check, What's New)
+        under the original 750-token budget.
+        """
         token_count = _calculate_token_count(_PHASE2_SETUP_RECOVERY)
-        assert token_count <= 750, (
+        assert token_count <= 1050, (
             f"Phase-2 Setup Recovery file has {token_count} tokens, "
-            f"exceeds budget of 750"
+            f"exceeds budget of 1,050"
         )
 
 
@@ -907,8 +937,23 @@ class TestUnitFrontmatter:
     **Validates: Requirements 7.2, 8.2**
     """
 
-    def test_phase1_has_inclusion_manual_frontmatter(self) -> None:
-        """Phase-1 file has `inclusion: manual` frontmatter."""
+    def test_phase1_has_inclusion_frontmatter(self) -> None:
+        """Phase-1 file has valid YAML frontmatter with an explicit inclusion mode.
+
+        NOTE (task 7.4b — "changed, not just moved"): the phase-1 file
+        (session-resume.md) frontmatter intentionally changed from
+        ``inclusion: manual`` to ``inclusion: auto`` on this branch
+        (commit 6810c67 "#1 Added feedback"), which also added the auto-loaded
+        "Preference Loading on Session Start" section and a frontmatter
+        ``description``. session-resume.md is now auto-included so its preference
+        loading runs on every session start — a deliberate shipped design
+        change, not test drift over a pure relocation. The method was renamed
+        from ``test_phase1_has_inclusion_manual_frontmatter`` to match the
+        shipped frontmatter. The assertion now pins the shipped ``inclusion:
+        auto`` and is paired with an independent content assertion that the
+        session-resume workflow body is intact (so this is not masking a
+        regression).
+        """
         content = _PHASE1_FILE.read_text(encoding="utf-8")
         assert content.startswith("---"), (
             "Phase-1 file must start with YAML frontmatter delimiter"
@@ -917,8 +962,19 @@ class TestUnitFrontmatter:
         end_idx = content.find("---", 3)
         assert end_idx != -1, "Phase-1 file frontmatter not properly closed"
         frontmatter = content[3:end_idx]
-        assert "inclusion: manual" in frontmatter, (
-            "Phase-1 file must have 'inclusion: manual' in frontmatter"
+        assert "inclusion: auto" in frontmatter, (
+            "Phase-1 file must have 'inclusion: auto' in frontmatter (shipped "
+            "post-refactor value — session-resume.md is now auto-included for "
+            "preference loading)"
+        )
+        # Independent content assertion: the auto-load change is paired with the
+        # new preference-loading behavior and the workflow body is preserved.
+        assert "description:" in frontmatter, (
+            "Phase-1 frontmatter must include the description added alongside "
+            "the inclusion: auto change"
+        )
+        assert "# Session Resume Workflow" in content, (
+            "Phase-1 session-resume workflow body must remain intact"
         )
 
     def test_phase2_mapping_has_frontmatter(self) -> None:
@@ -981,7 +1037,12 @@ class TestUnitGuardConditions:
     def test_phase2_setup_recovery_has_guard_condition(self) -> None:
         """Phase-2 Setup Recovery file begins with a guard condition block."""
         content = _PHASE2_SETUP_RECOVERY.read_text(encoding="utf-8")
-        assert "## Guard Condition" in content or "Guard Condition" in content.split("\n\n")[1] if len(content.split("\n\n")) > 1 else False, (
+        assert (
+            "## Guard Condition" in content
+            or "Guard Condition" in content.split("\n\n")[1]
+            if len(content.split("\n\n")) > 1
+            else False
+        ), (
             "Phase-2 Setup Recovery file must contain a Guard Condition section"
         )
 

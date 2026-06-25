@@ -4,11 +4,10 @@ Feature: session-resume-behavioral-rules
 """
 
 import re
-import sys
 from pathlib import Path
 
 import yaml
-from hypothesis import given, settings, HealthCheck
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 # Paths to steering files under test

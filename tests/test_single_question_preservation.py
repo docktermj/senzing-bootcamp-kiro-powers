@@ -16,12 +16,9 @@ outputs.
 from __future__ import annotations
 
 import re
-import string
 
-import pytest
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
-
 
 # ---------------------------------------------------------------------------
 # Compound-question detection logic (mirrors what enforcement will use)

@@ -18,7 +18,7 @@ Call `generate_scaffold(language='<chosen_language>', workflow='add_records', ve
 
 ## Step 6: Benchmark Query Latency
 
-Benchmark all query patterns from Module 7 (Query and Visualize): search by name, search by name+address, get entity by ID, get entity by record, why entity, how entity. Measure p50/p95/p99 over 100 iterations with warm-up. Save to `tests/performance/bench_query.[ext]`.
+Benchmark all query patterns from Module 7 (Query, Visualize, and Discover): search by name, search by name+address, get entity by ID, get entity by record, why entity, how entity. Measure p50/p95/p99 over 100 iterations with warm-up. Save to `tests/performance/bench_query.[ext]`.
 
 **Checkpoint:** Write step 6 to `config/bootcamp_progress.json`.
 

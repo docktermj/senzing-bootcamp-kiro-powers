@@ -4,7 +4,7 @@ inclusion: manual
 
 # MCP Tool Decision Tree
 
-This file maps common bootcamp tasks to the correct Senzing MCP tool. Use it when deciding which tool to call for a given bootcamper request. The decision tree covers all 12 MCP tools organized by task category, with anti-pattern warnings and call-pattern examples.
+This file maps common bootcamp tasks to the correct Senzing MCP tool. Use it when deciding which tool to call for a given bootcamper request. The decision tree covers all 12 MCP tools organized by task category, with anti-pattern warnings and call-pattern examples. (A 13th tool, `submit_feedback`, is the disabled-by-default tool listed in `disabledTools` in `mcp.json`, so this routing covers the 12 active tools.)
 
 ## Session Start
 
@@ -151,7 +151,7 @@ Diagnose a Senzing error code — get meaning, common causes, and fix steps.
 ### analyze_record
 
 ```json
-{ "tool": "analyze_record", "record": "{\"DATA_SOURCE\":\"TEST\",\"RECORD_ID\":\"1\",\"NAME_FULL\":\"John Smith\"}" }
+{ "tool": "analyze_record", "file_paths": ["data/transformed/output.jsonl"], "workspace_dir": "data/transformed", "version": "current" }
 ```
 
 Validate a mapped record for correctness and attribute coverage.

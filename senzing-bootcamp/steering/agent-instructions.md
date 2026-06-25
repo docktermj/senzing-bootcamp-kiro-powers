@@ -6,6 +6,14 @@ inclusion: always
 
 On session start: check `config/bootcamp_progress.json`. If exists, load `session-resume.md`. If not, load `onboarding-flow.md`.
 
+## Answer Processing Priority
+
+Processing a bootcamper's answer to a pending 👉 question takes **absolute precedence** over all other agent actions — including hook evaluation, context management, and content generation. No other work may begin until the pending answer is fully processed.
+
+**Delete-and-process rule:** WHEN `config/.question_pending` exists and the bootcamper has provided a response, the agent SHALL delete `config/.question_pending` and process the bootcamper's answer as the **first action** of the turn before any other work.
+
+**Protocol violation:** IF the agent produces Minimal_Output (dot, empty, whitespace-only, <50 chars, or single-word acknowledgment) after a bootcamper responds to a pending 👉 question, the agent has committed a critical protocol violation equivalent to a ⛔ mandatory gate violation. This is never acceptable regardless of context budget, token limits, or any other agent-internal reasoning.
+
 ## File Placement
 
 | Content       | Location   | Content       | Location     |
@@ -19,20 +27,7 @@ On session start: check `config/bootcamp_progress.json`. If exists, load `sessio
 
 If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 
-### Root Prohibitions
-
-🚫 **NEVER place these file types in the project root:**
-
-| Blocked Type | Reason | Correct Location |
-|---|---|---|
-| `.py` files | Source code belongs in `src/` or `scripts/` | `src/transform/`, `src/load/`, `src/query/`, or `scripts/` |
-| `.md` files (except `README.md`) | Documentation belongs in `docs/` | `docs/` |
-| `.jsonl` files | Data files belong in `data/` | `data/raw/`, `data/transformed/`, `data/samples/`, `data/temp/` |
-| `.csv` files | Data files belong in `data/` | `data/raw/`, `data/transformed/`, `data/samples/`, `data/temp/` |
-| Non-config `.json` files | Data payloads belong in `data/` | `data/` or `config/` |
-
-✅ **Only these files are permitted in the project root:**
-`.gitignore`, `.env`, `.env.example`, `README.md`, `requirements.txt`, `pom.xml`, `*.csproj`, `Cargo.toml`, `package.json`
+Project-root prohibitions (blocked file types per extension) and the permitted-root whitelist: load `file-placement.md` (trigger: *file placement* / *root prohibitions* / writing a project file).
 
 ## MCP Rules
 
@@ -47,42 +42,13 @@ If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
 - Never generate direct SQL (SELECT, INSERT, UPDATE, DELETE) against the Senzing database (`database/G2C.db`) or its internal tables (RES_ENT, OBS_ENT, DSRC_RECORD, LIB_FEAT, RES_FEAT_STAT, RES_REL, etc.). All Senzing data access must go through SDK methods via MCP tools.
 - SQL-tempting question redirects: "count entities" → `reporting_guide` | "find duplicates" → `search_by_attributes` | "show entity details" → `get_entity`/`get_entity_by_record_id` | "why did these match" → `why_entities`/`why_records` | "how was entity built" → `how_entity` | "export entity data" → iterate SDK methods via MCP tools
 
-### SDK Method Discovery
-
-When the bootcamper's request could map to multiple SDK methods in the same category, follow the discover-then-disambiguate flow:
-
-1. **Trigger**: The bootcamper's request is ambiguous — it could be satisfied by more than one SDK method in a category.
-2. **Discover**: Call `get_sdk_reference` with a category/topic filter to enumerate all available methods in that category.
-3. **Disambiguate**: If multiple methods could satisfy the request, ask a single 👉 clarifying question presenting the options as a numbered choice list with brief descriptions of what each method provides.
-4. **Proceed**: If only one method matches, proceed directly with that method, noting other available methods for the bootcamper's awareness.
-
-**SDK method categories with multiple alternatives:**
-
-- **Why/How category**: `how_entity`, `why_entities`, `why_records`, `why_record_in_entity` — different granularity levels for understanding entity resolution decisions
-- **Entity retrieval**: `get_entity`, `get_entity_by_record_id` — different lookup keys
-- **Search**: `search_by_attributes`, `search_by_record_id` — different search inputs
-
-**When to skip discovery (skip conditions — when discovery is NOT needed):**
-
-- Bootcamper explicitly names a specific SDK method (e.g., "use how_entity") — proceed directly
-- Request unambiguously maps to exactly one method with no alternatives in the category
-- Methods for this category already discovered in the current module session — reuse cached knowledge
+- SDK method discovery & disambiguation flow: load `mcp-usage-reference.md` (trigger: *sdk method discovery*).
 
 ### MCP-First Invariant
 
 **This rule has the same absolute precedence as ⛔ mandatory gates.** No agent-internal reasoning — context pressure, perceived simplicity, cached knowledge from training data, session length, or token budget — can justify bypassing MCP consultation.
 
-**Pre-response checklist** (evaluate before presenting ANY Senzing content):
-1. Does my response contain Senzing SDK method names, attribute names, config options, error codes, or entity resolution technical details?
-2. If YES: Did I call at least one MCP tool (search_docs, get_sdk_reference, generate_scaffold, sdk_guide, explain_error_code, find_examples, mapping_workflow, get_capabilities) in this turn to retrieve that information?
-3. If NO to #2: STOP. Call the appropriate MCP tool before continuing.
-
-**Violation examples** (each is a breach of the MCP-first invariant):
-- Stating that `add_record` accepts a `LOAD_ID` parameter without calling `get_sdk_reference`
-- Generating code with `sz_engine.add_record(...)` without calling `generate_scaffold` or `sdk_guide`
-- Explaining that `NAME_FULL` maps to a person's full name without calling `mapping_workflow` or `search_docs`
-- Describing error code SENZ0002 without calling `explain_error_code`
-- Recommending entity resolution thresholds without calling `search_docs`
+Full pre-response checklist and concrete violation examples: load `mcp-usage-reference.md` (trigger: *mcp usage*).
 
 ## MCP Failure
 
@@ -102,15 +68,7 @@ Load per-module steering file when user starts that module (1→`module-01-busin
 
 ## Track Switching
 
-When the bootcamper says any of these trigger phrases, load `track-switching.md`:
-
-- "switch track"
-- "change track"
-- "move to core"
-- "upgrade to advanced"
-- "go back to system verification"
-
-The steering file handles confirmation, preview, and application. Do not compute track switches inline — always invoke the `track_switcher.py` script as instructed by the steering file.
+Track switch triggers (*switch track*, *change track*, …): load `track-switching.md`.
 
 ## State & Progress
 
@@ -142,6 +100,10 @@ The steering file handles confirmation, preview, and application. Do not compute
 
 Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question — do not answer, do not assume a response, do not proceed to the next step.
 
+### Question_Pending File Format
+
+When writing `config/.question_pending`, use the structured format (question type on line 1 — one of `track_selection`, `module_transition`, `step_question`, `confirmation`, `choice`; full question text on subsequent lines; default to `step_question`). Full format spec with example: see `conversation-protocol.md`.
+
 ## Module Transition Execution
 
 When a bootcamper responds affirmatively to a module transition question ("Ready for Module X?"), the ONLY valid response is to start that module immediately:
@@ -172,6 +134,10 @@ Steps marked with ⛔ are mandatory gates. This rule takes **absolute precedence
 
 Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks. **Always use the exact `name` from the `- name:` line in `hook-registry-critical.md` — the `name` field is user-facing (UI shows "Ask Kiro Hook {name}") and must follow the "to {verb phrase}" pattern.**
 
+**Capture-critical hooks created at session start:** The capture-critical hooks — `ask-bootcamper`, `module-recap-append`, and `session-log-events` — MUST all be created via `createHook` during onboarding/session start, not deferred to module start, so the completion summary and journey recap are never silently incomplete. `ask-bootcamper` is a critical hook (definition in `hook-registry-critical.md`); `module-recap-append` and `session-log-events` are defined in `hook-registry-module-any.md` but are added to the onboarding createHook-from-registry set alongside `ask-bootcamper`. Capture-critical coverage is required on **both** the createHook-from-registry path and the `install_hooks.py --essential` file-copy path.
+
+**Session-start warn-on-absence:** On session resume, after the `hooks_installed` check, the agent inspects `.kiro/hooks` and warns which capture-critical hooks (`session-log-events`, `module-recap-append`, `ask-bootcamper`) are absent and how to install them (createHook from the registry, or `python3 senzing-bootcamp/scripts/install_hooks.py --essential`). The warning is advisory and never blocks the session. See `session-resume-phase2-setup-recovery.md` (Capture-Critical Warn-on-Absence Check) for the full behavior.
+
 **🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero visible
 tokens — no acknowledgment, no reasoning, no status, no summary. Only produce output when the
 hook identifies a problem requiring corrective action. When a hook produces corrective output
@@ -198,10 +164,4 @@ The agent owns closing questions (see `conversation-protocol.md`); the `ask-boot
 
 ## Context Budget
 
-Check `steering-index.yaml` `file_metadata` for `token_count` and `size_category` before loading. For split modules, use phase-level `token_count` from the `phases` map. Track cumulative tokens.
-
-- **Warn (60% of context budget):** Load only files relevant to current module/question.
-- **Critical (80% of context budget):** Unload non-essential files first.
-- **Retention priority:** `agent-instructions.md` > current module > language file > troubleshooting > everything else.
-
-When loading a `large` file, announce the token cost. See `agent-context-management.md` for detailed unloading rules and adaptive pacing.
+Context Budget: check `steering-index.yaml` `file_metadata` `token_count`/`size_category` before loading; for split modules use phase-level `token_count` from the `phases` map. Warn/critical/unload detail: load `agent-context-management.md` (trigger: *context budget*).

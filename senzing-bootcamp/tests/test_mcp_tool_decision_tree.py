@@ -5,7 +5,7 @@ examples, steering index registration, and agent-instructions cross-reference.
 
 Correctness Properties (from requirements.md):
   1.1, 1.2 — File exists with correct frontmatter
-  2.1 — All 12 MCP tools covered
+  2.1 — All active MCP tools covered
   4.1–4.7 — Anti-pattern entries present
   5.1 — Call-pattern examples for each tool
   6.1, 6.2 — Steering index registration
@@ -16,7 +16,15 @@ Correctness Properties (from requirements.md):
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
+
+# Import scripts via sys.path manipulation (scripts aren't packages).
+_SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
+
+from mcp_tool_inventory import ACTIVE_TOOLS  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -26,21 +34,6 @@ _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _DECISION_TREE_PATH = _BOOTCAMP_DIR / "steering" / "mcp-tool-decision-tree.md"
 _STEERING_INDEX_PATH = _BOOTCAMP_DIR / "steering" / "steering-index.yaml"
 _AGENT_INSTRUCTIONS_PATH = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
-
-_ALL_TOOLS = [
-    "get_capabilities",
-    "mapping_workflow",
-    "generate_scaffold",
-    "get_sample_data",
-    "search_docs",
-    "explain_error_code",
-    "analyze_record",
-    "sdk_guide",
-    "find_examples",
-    "get_sdk_reference",
-    "reporting_guide",
-    "download_resource",
-]
 
 
 def _read_decision_tree() -> str:
@@ -106,12 +99,16 @@ class TestFileStructure:
 
 
 class TestToolCoverage:
-    """All 12 MCP tools must appear in at least one decision node path."""
+    """All active MCP tools must appear in at least one decision node path."""
 
-    def test_all_12_tools_present(self) -> None:
-        """Every MCP tool name must appear in the decision tree file."""
+    def test_all_active_tools_present(self) -> None:
+        """Every active MCP tool name must appear in the decision tree file.
+
+        The expected set is the canonical ``ACTIVE_TOOLS`` inventory
+        (``len(ACTIVE_TOOLS)`` tools) rather than a frozen literal count.
+        """
         text = _read_decision_tree()
-        missing = [tool for tool in _ALL_TOOLS if tool not in text]
+        missing = [tool for tool in ACTIVE_TOOLS if tool not in text]
         assert not missing, (
             f"Missing tools in decision tree: {missing}"
         )
@@ -176,7 +173,7 @@ class TestAntiPatterns:
 
 
 class TestCallPatternExamples:
-    """Each of the 12 tools must have at least one code-block example."""
+    """Each active tool must have at least one code-block example."""
 
     def test_each_tool_has_code_block_example(self) -> None:
         """Every tool must appear inside a code block in the examples section."""
@@ -192,7 +189,7 @@ class TestCallPatternExamples:
         code_blocks = re.findall(r"```[^\n]*\n(.*?)```", examples_section, re.DOTALL)
         code_text = "\n".join(code_blocks)
 
-        missing = [tool for tool in _ALL_TOOLS if tool not in code_text]
+        missing = [tool for tool in ACTIVE_TOOLS if tool not in code_text]
         assert not missing, (
             f"Tools missing from code-block examples: {missing}"
         )

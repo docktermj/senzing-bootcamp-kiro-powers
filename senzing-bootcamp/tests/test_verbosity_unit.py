@@ -13,17 +13,13 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from verbosity import (
-    VerbosityPreferences,
     CATEGORIES,
-    PRESETS,
     NL_TERM_MAP,
-    resolve_preset,
-    detect_preset,
+    PRESETS,
     adjust_category,
     match_nl_term,
+    resolve_preset,
     validate_preferences,
-    serialize_preferences,
-    deserialize_preferences,
 )
 
 

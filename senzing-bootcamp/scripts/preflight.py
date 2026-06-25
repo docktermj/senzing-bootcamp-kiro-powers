@@ -24,7 +24,6 @@ import subprocess
 import sys
 from typing import List, Optional
 
-
 # ---------------------------------------------------------------------------
 # Color helpers (matches existing NO_COLOR convention)
 # ---------------------------------------------------------------------------
@@ -635,8 +634,14 @@ def check_required_tools() -> list[CheckResult]:
                         name="VS Build Tools",
                         category=cat,
                         status="warn",
-                        message="Visual Studio Build Tools not found (needed for TypeScript native addons)",
-                        fix='Install: winget install Microsoft.VisualStudio.2022.BuildTools --override "--add Microsoft.VisualStudio.Workload.VCTools"',
+                        message=(
+                            "Visual Studio Build Tools not found "
+                            "(needed for TypeScript native addons)"
+                        ),
+                        fix=(
+                            'Install: winget install Microsoft.VisualStudio.2022.BuildTools '
+                            '--override "--add Microsoft.VisualStudio.Workload.VCTools"'
+                        ),
                     ))
             except Exception:
                 results.append(CheckResult(
@@ -644,7 +649,10 @@ def check_required_tools() -> list[CheckResult]:
                     category=cat,
                     status="warn",
                     message="Could not check for Visual Studio Build Tools",
-                    fix='Install: winget install Microsoft.VisualStudio.2022.BuildTools --override "--add Microsoft.VisualStudio.Workload.VCTools"',
+                    fix=(
+                        'Install: winget install Microsoft.VisualStudio.2022.BuildTools '
+                        '--override "--add Microsoft.VisualStudio.Workload.VCTools"'
+                    ),
                 ))
         else:
             results.append(CheckResult(
@@ -652,7 +660,10 @@ def check_required_tools() -> list[CheckResult]:
                 category=cat,
                 status="warn",
                 message="vswhere not found — cannot verify Visual Studio Build Tools",
-                fix='Install: winget install Microsoft.VisualStudio.2022.BuildTools --override "--add Microsoft.VisualStudio.Workload.VCTools"',
+                fix=(
+                    'Install: winget install Microsoft.VisualStudio.2022.BuildTools '
+                    '--override "--add Microsoft.VisualStudio.Workload.VCTools"'
+                ),
             ))
 
     return results

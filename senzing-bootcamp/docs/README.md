@@ -65,8 +65,7 @@ The following files remain in the root `senzing-bootcamp/` directory:
 - `POWER.md` - Main power definition file (required by Kiro)
 - `icon.png` - Power icon (required by Kiro)
 - `mcp.json` - MCP server configuration (required by Kiro)
-- `README.md` - Main README (if exists)
-- `LICENSE` - License file (if exists)
+- `LICENSE` - License file
 
 ## Navigation
 
@@ -97,11 +96,6 @@ The following files remain in the root `senzing-bootcamp/` directory:
 5. **docs/feedback/** - Feedback template for users
 6. **steering/** - Agent steering files and workflows
 7. **hooks/** - Kiro hook definitions
-
-## Version History
-
-- **v1.0.0**: Original flat structure
-- **v2.0.0**: Organized into subdirectories (2026-03-17)
 
 ## Related Documentation
 

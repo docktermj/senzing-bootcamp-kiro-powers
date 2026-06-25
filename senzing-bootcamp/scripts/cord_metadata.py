@@ -5,7 +5,8 @@ Captures and verifies CORD dataset metadata for freshness checks between
 Module 4 (data collection) and Module 6 (data loading).
 
 Usage:
-    python scripts/cord_metadata.py capture --dataset cord-las-vegas --files data/raw/cord-las-vegas.jsonl
+    python scripts/cord_metadata.py capture --dataset cord-las-vegas \
+--files data/raw/cord-las-vegas.jsonl
     python scripts/cord_metadata.py check
     python scripts/cord_metadata.py check --metadata config/cord_metadata.yaml
 
@@ -21,7 +22,6 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-
 
 # ── Data Structures ──────────────────────────────────────────────────────
 

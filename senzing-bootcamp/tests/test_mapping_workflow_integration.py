@@ -241,7 +241,7 @@ class TestModule6ProductionFocus:
 
 class TestModule7ProductionFocus:
     """Verify combined Module 6 steering file and docs reflect production-quality orchestration.
-    
+
     Note: After combining Modules 6+7, the orchestration content that was in the old
     Module 7 is now in the combined Module 6 (module-06-data-processing.md).
     """

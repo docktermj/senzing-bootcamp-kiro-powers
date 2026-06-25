@@ -150,7 +150,7 @@ For PostgreSQL: check for orphaned transactions (`SELECT * FROM pg_stat_activity
 
 <a id="module-7"></a>
 
-## Module 7: Query and Visualize
+## Module 7: Query, Visualize, and Discover
 
 | Pitfall                                      | Fix                                                                                                                      |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |

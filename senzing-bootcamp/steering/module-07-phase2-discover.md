@@ -5,7 +5,7 @@ inclusion: manual
 # Module 7 — Phase 2: Discover (Part A)
 
 > **Phase file:** This file implements Steps 4a–4c (Discover Phase) of Module 7.
-> Load when the agent reaches step 4 in `module-07-query-visualize-discover.md`.
+> Load when the agent reaches step 4 in `module-07-phase1-query-visualize.md`.
 > When steps 4a–4c are complete, load `module-07-phase2b-discover.md` for steps 4d–4e.
 
 > **Agent instruction (session resumption):** On load, read
@@ -28,8 +28,8 @@ can decline or exit early at any demonstration point.
 > want to proceed.
 >
 > If the bootcamper declines, write `discover_phase: "skipped"` to
-> `config/bootcamp_progress.json` under `module_7_query` and return to the
-> root file for the Query Completeness Gate.
+> `config/bootcamp_progress.json` under `module_7_query` and return to
+> `module-07-phase1-query-visualize.md` for the Query Completeness Gate.
 >
 > If the bootcamper agrees to proceed, write `discover_phase: "in_progress"`
 > to `config/bootcamp_progress.json` under `module_7_query` and continue to
@@ -186,8 +186,8 @@ entities, and relationship clusters found in the bootcamper's data.
 > demonstration (How Analysis — seeing how this entity was built step by
 > step), or proceed to module completion?"
 > If the bootcamper chooses to exit, write `discover_phase: "skipped"` to
-> `config/bootcamp_progress.json` and return to the root file for the
-> Query Completeness Gate.
+> `config/bootcamp_progress.json` and return to
+> `module-07-phase1-query-visualize.md` for the Query Completeness Gate.
 
 **Checkpoint:** Write step 4b to `config/bootcamp_progress.json` under
 `module_7_query.steps.4b`. Use this structure:
@@ -263,8 +263,8 @@ demonstration.
 > demonstration (Relationship Networks — exploring how entities connect
 > to each other), or proceed to module completion?"
 > If the bootcamper chooses to exit, write `discover_phase: "skipped"` to
-> `config/bootcamp_progress.json` and return to the root file for the
-> Query Completeness Gate.
+> `config/bootcamp_progress.json` and return to
+> `module-07-phase1-query-visualize.md` for the Query Completeness Gate.
 
 **Checkpoint:** Write step 4c to `config/bootcamp_progress.json` under
 `module_7_query.steps.4c`. Use this structure:

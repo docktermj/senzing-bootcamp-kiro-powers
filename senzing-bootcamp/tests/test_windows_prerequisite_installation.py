@@ -33,7 +33,6 @@ from preflight import (
     check_scoop,
 )
 
-
 # ---------------------------------------------------------------------------
 # Property 1 — Scoop detection is platform-conditional and status-correct
 # ---------------------------------------------------------------------------
@@ -456,7 +455,9 @@ class TestSteeringFileStructure:
         """
         content = self._read_steering()
         has_section_header = "### 3a" in content
-        has_scoop_installation = "Scoop installation" in content or "Scoop is not installed" in content
+        has_scoop_installation = (
+            "Scoop installation" in content or "Scoop is not installed" in content
+        )
         has_package_manager_warn = "Package Manager" in content and "warn" in content
 
         assert has_section_header or has_scoop_installation or has_package_manager_warn, (

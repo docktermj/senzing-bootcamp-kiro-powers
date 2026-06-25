@@ -14,7 +14,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -108,7 +108,7 @@ def st_non_windows_platform(draw: st.DrawFn) -> dict[str, str]:
         "platform": platform,
         "install_method": install_method,
         "username": username,
-        "senzing_dir": f"/opt/senzing/er" if "linux" in platform else f"/usr/local/senzing/er",
+        "senzing_dir": "/opt/senzing/er" if "linux" in platform else "/usr/local/senzing/er",
     }
 
 
@@ -125,7 +125,7 @@ def st_windows_non_scoop_platform(draw: st.DrawFn) -> dict[str, str]:
         "platform": "windows",
         "install_method": install_method,
         "username": username,
-        "senzing_dir": f"C:\\Program Files\\Senzing\\er",
+        "senzing_dir": "C:\\Program Files\\Senzing\\er",
         "standard_path_exists": True,
     }
 
@@ -179,7 +179,7 @@ def st_any_non_bug_condition(draw: st.DrawFn) -> dict[str, str]:
             "install_method": install_method,
             "username": username,
             "senzing_dir": (
-                f"/opt/senzing/er" if "linux" in platform else "/usr/local/senzing/er"
+                "/opt/senzing/er" if "linux" in platform else "/usr/local/senzing/er"
             ),
             "standard_path_exists": True,
             "is_bug_condition": False,

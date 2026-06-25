@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -22,20 +22,16 @@ if _SCRIPTS_DIR not in sys.path:
 from split_steering import (
     Phase,
     SplitResult,
-    parse_phases,
+    _size_category,
+    _token_count,
     build_root_file,
     build_sub_file,
-    split_module,
-    update_steering_index,
     get_split_candidates,
-    step_to_phase,
+    parse_phases,
     resolve_sub_file,
-    _token_count,
-    _size_category,
-    _make_slug,
-    MODULE_CONFIG,
+    step_to_phase,
+    update_steering_index,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
@@ -85,7 +81,10 @@ def module_content_strategy(draw):
         for step in range(step_start, step_end + 1):
             line = draw(_safe_text())
             lines.append(f"{step}. {line}")
-            lines.append(f"   **Checkpoint:** Write step {step} to `config/bootcamp_progress.json`.\n")
+            lines.append(
+                f"   **Checkpoint:** Write step {step} to "
+                f"`config/bootcamp_progress.json`.\n"
+            )
 
         phases_content.append("\n".join(lines) + "\n\n")
         step_ranges.append((step_start, step_end))
@@ -163,7 +162,9 @@ class TestProperty1ContentPreservation:
                 manifest_idx = i
                 break
 
-        preamble_text = "\n".join(root_lines_list[:manifest_idx]).strip() if manifest_idx else root_body
+        preamble_text = (
+            "\n".join(root_lines_list[:manifest_idx]).strip() if manifest_idx else root_body
+        )
 
         sub_bodies = [strip_fm(sc).strip() for sc in sub_contents]
         reconstructed = preamble_text + "\n\n" + "\n\n".join(sub_bodies)
@@ -417,7 +418,10 @@ class TestProperty6StepToPhaseMapping:
                 lines.append(f"      {phase.slug}:")
                 lines.append(f"        file: test-module-99-{phase.slug}.md")
                 lines.append(f"        token_count: {_token_count(phase.content)}")
-                lines.append(f"        size_category: {_size_category(_token_count(phase.content))}")
+                lines.append(
+                    f"        size_category: "
+                    f"{_size_category(_token_count(phase.content))}"
+                )
                 lines.append(f"        step_range: [{phase.step_start}, {phase.step_end}]")
 
             lines.append("")
@@ -495,8 +499,8 @@ class TestProperty7FallbackBehavior:
             for phase in phases:
                 lines.append(f"      {phase.slug}:")
                 lines.append(f"        file: test-module-99-{phase.slug}.md")
-                lines.append(f"        token_count: 100")
-                lines.append(f"        size_category: small")
+                lines.append("        token_count: 100")
+                lines.append("        size_category: small")
                 lines.append(f"        step_range: [{phase.step_start}, {phase.step_end}]")
 
             lines.append("")
@@ -638,7 +642,6 @@ class TestUnitAgentInstructionsUpdated:
 # Integration tests (Task 10)
 # ---------------------------------------------------------------------------
 
-import shutil
 import subprocess
 
 

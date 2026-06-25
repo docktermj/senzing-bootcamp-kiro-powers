@@ -4,19 +4,26 @@ on:
   pull_request:
     paths:
       - 'senzing-bootcamp/**'
+      - 'tests/**'
+      - '.github/workflows/**'
+      - '.kiro/specs/**'
+      - '.kiro/spec-catalog.yaml'
+      - '.kiro/SPEC_CATALOG.md'
   push:
     branches: [main]
-    paths:
-      - 'senzing-bootcamp/**'
 
 jobs:
   validate:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python-version }}
       - name: Validate power integrity
         run: python senzing-bootcamp/scripts/validate_power.py
       - name: Validate steering token counts
@@ -25,24 +32,60 @@ jobs:
         run: python senzing-bootcamp/scripts/validate_commonmark.py
       - name: Validate module dependencies
         run: python senzing-bootcamp/scripts/validate_dependencies.py
+      - name: Verify composed hook prompts are in sync
+        run: |
+          python senzing-bootcamp/scripts/compose_hook_prompts.py --verify || {
+            echo "::error::Composed hook prompts drifted. Run: python senzing-bootcamp/scripts/compose_hook_prompts.py --write"
+            exit 1
+          }
       - name: Verify hook registry is in sync
         run: |
           python senzing-bootcamp/scripts/sync_hook_registry.py --verify || {
             echo "::error::Hook registry is out of sync. Run: python senzing-bootcamp/scripts/sync_hook_registry.py --write"
             exit 1
           }
+      # Enforces the thin Router_Root convention: lint_steering.py runs
+      # check_router_convention inside run_all_checks, so a regressing root
+      # (over-ceiling or root-doubles-as-phase) emits an ERROR and exits non-zero,
+      # failing the PR. Runs on the full 3.11/3.12/3.13 matrix above.
+      - name: Lint steering files
+        run: python senzing-bootcamp/scripts/lint_steering.py
       - name: Validate module prerequisites
         run: python senzing-bootcamp/scripts/validate_prerequisites.py
       - name: Validate progress schema
         run: python senzing-bootcamp/scripts/validate_progress_ci.py
+      - name: Validate preferences schema
+        run: python senzing-bootcamp/scripts/validate_preferences_ci.py
       - name: Validate mandatory gates
         run: python senzing-bootcamp/scripts/validate_mandatory_gates.py
+      - name: Validate governance rules
+        run: python senzing-bootcamp/scripts/validate_governance_rules.py
       - name: Validate YAML schemas
         run: python senzing-bootcamp/scripts/validate_yaml_schemas.py
+      - name: Validate external links
+        run: python senzing-bootcamp/scripts/validate_links.py --timeout 10
       - name: Lint Python (ruff)
         run: |
           pip install ruff
           ruff check senzing-bootcamp/scripts/ senzing-bootcamp/tests/ tests/
+      - name: Conversational eval harness
+        run: python senzing-bootcamp/scripts/eval_conversations.py
+      - name: Verify generated POWER.md docs are in sync
+        run: |
+          python senzing-bootcamp/scripts/generate_power_docs.py --verify || {
+            echo "::error::Generated POWER.md docs are out of sync. Run: python senzing-bootcamp/scripts/generate_power_docs.py --write"
+            exit 1
+          }
+      - name: Verify spec catalog index is in sync
+        run: |
+          python senzing-bootcamp/scripts/generate_spec_catalog.py --check || {
+            echo "::error::Spec catalog index is out of sync. Run: python senzing-bootcamp/scripts/generate_spec_catalog.py"
+            exit 1
+          }
+      - name: Validate example-coverage record and disclosure
+        run: python senzing-bootcamp/scripts/example_coverage_report.py --check
+      - name: Scan for brittle test assertions
+        run: python senzing-bootcamp/scripts/scan_brittle_assertions.py --check
       - name: Run tests
         run: |
           pip install pytest hypothesis

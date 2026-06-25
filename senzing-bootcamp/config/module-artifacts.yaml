@@ -63,6 +63,7 @@ modules:
         required: true
     requires_from:
       1: ["config/data_sources.yaml"]
+      # Module 3 is a prerequisite — runs before Module 4 by default; only an explicit bootcamper skip omits it
       3: ["docs/progress/MODULE_3_COMPLETE.md"]
   5:
     produces:

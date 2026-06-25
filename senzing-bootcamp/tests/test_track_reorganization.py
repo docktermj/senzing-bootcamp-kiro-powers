@@ -10,6 +10,7 @@ plus unit tests asserting the Track_Registry structure and POWER.md content.
 
 from __future__ import annotations
 
+import functools
 import os
 import re
 import sys
@@ -29,11 +30,11 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from export_results import (
+    TRACK_DISPLAY_NAMES,
     ArtifactManifest,
     ExportMetrics,
     ProgressData,
     SummaryGenerator,
-    TRACK_DISPLAY_NAMES,
 )
 from validate_dependencies import (
     validate_no_legacy_identifiers,
@@ -53,6 +54,59 @@ _LEGACY_TRACK_IDS = {
     "Path A", "Path B", "Path C", "Path D",
     "Track A", "Track B", "Track C", "Track D",
 }
+
+# ---------------------------------------------------------------------------
+# Corpus scan configuration (shared by Property 1 detection)
+# ---------------------------------------------------------------------------
+
+# Directories scanned for legacy identifiers, relative to _BOOTCAMP_ROOT.
+_SCAN_SUBDIRS = ("config", "steering", "docs", "scripts", "tests")
+
+# Files that intentionally define legacy identifiers for detection purposes.
+_EXCLUDED_FILES = {
+    "scripts/validate_dependencies.py",
+    "tests/test_track_reorganization.py",
+}
+
+
+@functools.lru_cache(maxsize=1)
+def _load_bootcamp_corpus() -> tuple[tuple[str, str], ...]:
+    """Read every scannable bootcamp file once and cache the result.
+
+    Walks the five scan directories (``config/``, ``steering/``, ``docs/``,
+    ``scripts/``, ``tests/``) relative to the bootcamp root, skips the excluded
+    files (compared by relative path) and any binary/undecodable file, and
+    returns the UTF-8 contents.
+
+    The result is cached for the lifetime of the process so the per-example
+    body of the property test only runs the word-boundary regex over already
+    decoded content instead of re-walking and re-reading the filesystem. The
+    cache is populated on first call within a given test run, so a file
+    injected before the run starts is still included.
+
+    Returns:
+        A tuple of ``(rel_path, content)`` pairs, where ``rel_path`` is the
+        path relative to the bootcamp root.
+    """
+    corpus: list[tuple[str, str]] = []
+    for subdir in _SCAN_SUBDIRS:
+        scan_dir = _BOOTCAMP_ROOT / subdir
+        if not scan_dir.is_dir():
+            continue
+        for dirpath, _dirs, files in os.walk(scan_dir):
+            for fname in files:
+                fpath = Path(dirpath) / fname
+                # Skip files that define legacy identifiers for detection
+                rel_path = str(fpath.relative_to(_BOOTCAMP_ROOT))
+                if rel_path in _EXCLUDED_FILES:
+                    continue
+                # Skip binary files
+                try:
+                    content = fpath.read_text(encoding="utf-8")
+                except (UnicodeDecodeError, OSError):
+                    continue
+                corpus.append((rel_path, content))
+    return tuple(corpus)
 
 # ---------------------------------------------------------------------------
 # Task 8.1 — Hypothesis strategies for track identifiers
@@ -101,45 +155,26 @@ class TestProperty1NoLegacyIdentifiersInFiles:
     **Validates: Requirements 2.1, 9.5**
     """
 
-    # Files that intentionally define legacy identifiers for detection purposes
-    _EXCLUDED_FILES = {
-        "scripts/validate_dependencies.py",
-        "tests/test_track_reorganization.py",
-    }
+    # Excluded files and scan dirs are defined at module scope
+    # (_EXCLUDED_FILES, _SCAN_SUBDIRS) and consumed by _load_bootcamp_corpus().
 
     @given(legacy_id=st_legacy_scannable_id())
-    @settings(max_examples=10)
+    @settings(max_examples=10, deadline=None)
     def test_no_legacy_id_in_bootcamp_files(self, legacy_id: str) -> None:
-        """For any legacy identifier, no bootcamp file contains it."""
-        pattern = re.compile(rf"\b{re.escape(legacy_id)}\b")
-        scan_dirs = [
-            _BOOTCAMP_ROOT / "config",
-            _BOOTCAMP_ROOT / "steering",
-            _BOOTCAMP_ROOT / "docs",
-            _BOOTCAMP_ROOT / "scripts",
-            _BOOTCAMP_ROOT / "tests",
-        ]
+        """For any legacy identifier, no bootcamp file contains it.
 
-        for scan_dir in scan_dirs:
-            if not scan_dir.is_dir():
-                continue
-            for dirpath, _dirs, files in os.walk(scan_dir):
-                for fname in files:
-                    fpath = Path(dirpath) / fname
-                    # Skip files that define legacy identifiers for detection
-                    rel_path = str(fpath.relative_to(_BOOTCAMP_ROOT))
-                    if rel_path in self._EXCLUDED_FILES:
-                        continue
-                    # Skip binary files
-                    try:
-                        content = fpath.read_text(encoding="utf-8")
-                    except (UnicodeDecodeError, OSError):
-                        continue
-                    match = pattern.search(content)
-                    assert match is None, (
-                        f"Legacy identifier {legacy_id!r} found in "
-                        f"{rel_path} at position {match.start()}"
-                    )
+        Corpus reads are hoisted to a module-level cache (``_load_bootcamp_corpus``)
+        built once, so the per-example body only runs the word-boundary regex over
+        the cached ``(rel_path, content)`` pairs — no per-example filesystem I/O.
+        """
+        pattern = re.compile(rf"\b{re.escape(legacy_id)}\b")
+
+        for rel_path, content in _load_bootcamp_corpus():
+            match = pattern.search(content)
+            assert match is None, (
+                f"Legacy identifier {legacy_id!r} found in "
+                f"{rel_path} at position {match.start()}"
+            )
 
 
 # ===========================================================================

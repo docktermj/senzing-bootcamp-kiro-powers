@@ -7,11 +7,10 @@ prompt length, version format, and hook file count.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pytest
-
-import sys
 
 _TESTS_DIR = str(Path(__file__).resolve().parent)
 if _TESTS_DIR not in sys.path:
@@ -19,15 +18,12 @@ if _TESTS_DIR not in sys.path:
 
 from hook_test_helpers import (
     FILE_EVENT_TYPES,
-    HOOKS_DIR,
-    REQUIRED_FIELDS,
     SEMVER_PATTERN,
     TOOL_EVENT_TYPES,
     VALID_EVENT_TYPES,
     get_hook_files,
     load_all_hooks,
-    validate_conditional_fields,
-    validate_required_fields,
+    required_fields_for_action,
 )
 
 # ---------------------------------------------------------------------------
@@ -58,8 +54,11 @@ class TestHookJsonStructure:
 
     @pytest.mark.parametrize("hook_id,data", _hook_data, ids=_hook_ids)
     def test_contains_all_required_fields(self, hook_id: str, data: dict):
-        """Each hook contains all required fields (Req 2.2)."""
-        missing = validate_required_fields(data)
+        """Each hook contains all required fields for its action type (Req 2.2).
+
+        askAgent hooks require then.prompt; runCommand hooks require then.command.
+        """
+        missing = required_fields_for_action(data)
         assert not missing, (
             f'"{hook_id}" missing required field(s): {", ".join(missing)}'
         )
@@ -86,12 +85,19 @@ class TestHookEventTypes:
 # ===========================================================================
 
 class TestHookPromptLength:
-    """Verify every hook's then.prompt is non-empty with at least 20 characters."""
+    """Verify askAgent hooks have a >= 20 char prompt; runCommand hooks have a command."""
 
     @pytest.mark.parametrize("hook_id,data", _hook_data, ids=_hook_ids)
     def test_prompt_at_least_20_chars(self, hook_id: str, data: dict):
-        """Each hook's then.prompt is non-empty and >= 20 chars (Req 2.4)."""
-        prompt = data.get("then", {}).get("prompt", "")
+        """askAgent prompts are >= 20 chars; runCommand hooks carry a command instead (Req 2.4)."""
+        then = data.get("then", {})
+        if then.get("type") == "runCommand":
+            command = then.get("command", "")
+            assert isinstance(command, str) and command.strip(), (
+                f'"{hook_id}" is a runCommand hook but has no then.command'
+            )
+            return
+        prompt = then.get("prompt", "")
         assert isinstance(prompt, str) and len(prompt) >= 20, (
             f'"{hook_id}" prompt is {len(prompt)} chars, minimum is 20'
         )

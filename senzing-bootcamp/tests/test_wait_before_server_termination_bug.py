@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -21,7 +21,11 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _VISUALIZATION_GUIDE = _BOOTCAMP_DIR / "steering" / "visualization-guide.md"
 _MODULE_03_PHASE2 = _BOOTCAMP_DIR / "steering" / "module-03-phase2-visualization.md"
-_MODULE_03_SYSTEM = _BOOTCAMP_DIR / "steering" / "module-03-system-verification.md"
+# Step 11 (Cleanup, with the wait-before-termination gate) moved out of the
+# module-03 monolith into the phase-3 sub-file during the module-03 dispatcher
+# refactor. The content moved unchanged, so this is re-targeted to its shipped
+# location.
+_MODULE_03_SYSTEM = _BOOTCAMP_DIR / "steering" / "module-03-phase3-report-close.md"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -89,7 +93,9 @@ def _extract_step_94_section3(content: str) -> str:
     # Find the next ### heading to bound the 9.4 section
     next_heading = re.compile(r"^###\s+", re.MULTILINE)
     next_match = next_heading.search(content, heading_match.end())
-    section_94 = content[section_start:next_match.start()] if next_match else content[section_start:]
+    section_94 = (
+        content[section_start:next_match.start()] if next_match else content[section_start:]
+    )
 
     # Find item 3 within 9.4 — "3. **Present to bootcamper"
     item3_pattern = re.compile(r"^3\.\s+\*\*Present\s+to\s+bootcamper", re.MULTILINE)

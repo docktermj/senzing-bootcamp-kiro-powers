@@ -13,8 +13,8 @@ inclusion: manual
 **Implementation constraints:**
 
 - Python stdlib HTTP server only (`http.server.HTTPServer` + `BaseHTTPRequestHandler`) — no Flask, FastAPI, or third-party HTTP frameworks
-- D3.js v7 loaded from CDN (`https://d3js.org/d3.v7.min.js`) — no other external JavaScript dependencies
-- Single HTML file with embedded CSS and JavaScript (aside from D3.js CDN import)
+- D3.js v7 loaded from the d3js.org CDN (`d3js.org/d3.v7.min.js`) — no other external JavaScript dependencies
+- Single HTML file with embedded CSS and JavaScript (aside from the D3.js CDN import)
 - All artifacts reside in `src/system_verification/web_service/`
 - All data derived from SDK calls: `export_json_entity_report`, `get_entity_by_entity_id`, `search_by_attributes`, `find_network_by_entity_id`
 - Works with three TruthSet data sources: CUSTOMERS, REFERENCE, WATCHLIST
@@ -28,9 +28,42 @@ inclusion: manual
 5. **D3.js callback syntax** — Use `function(){}` for all D3.js callbacks, NOT arrow functions. Arrow functions break `this` binding to DOM elements.
 6. **Explicit SVG dimensions** — Set `width` and `height` attributes on SVG elements. Do not rely on CSS-only sizing.
 
+---
+
+## ⚠️ DO NOT SKIP — Phase 2 Execution Is Mandatory
+
+> ⛔ **MANDATORY GATE — UNCONDITIONAL EXECUTION REQUIREMENT**
+>
+> **This phase is MANDATORY. It is NOT optional. NEVER skip it.** This is an
+> absolute, non-negotiable rule.
+>
+> Phase 2 visualization generation MUST be executed in full, regardless of ANY
+> internal consideration. No agent-initiated skip is permitted under any
+> circumstance. DO NOT transition to Module 4 until Phase 2 is complete and the
+> bootcamper has confirmed they have explored the visualization.
+>
+> **Prohibited rationalizations (the agent must NEVER use these as justification to skip):**
+>
+> - Session length ("given the length of this session")
+> - Context budget pressure ("running low on context")
+> - Perceived redundancy ("similar to what was already demonstrated")
+> - Time constraints ("to save time")
+> - Any other agent-internal reasoning
+>
+> **NEVER clause:** There is NO condition, threshold, or scenario under which the agent
+> may self-initiate a skip of this step. The ⛔ designation is absolute. Only the
+> bootcamper can attempt a skip via the skip-step protocol — and the protocol itself
+> refuses mandatory gates. The agent cannot override, deprioritize, or rationalize
+> around this constraint.
+>
+> Skipping Phase 2 deprives the bootcamper of their first "wow moment" with entity
+> resolution results.
+
+---
+
 ## Step 9: Web Service + Visualization Page
 
-Generate and verify a web service with three API endpoints and a single-page visualization with four interactive tabs.
+Generate and verify a web service with four API endpoints and a single-page visualization with four interactive tabs.
 
 ### 9.1 Generate Web Service
 
@@ -43,7 +76,7 @@ Generate the web service artifacts in `src/system_verification/web_service/`. Us
 3. Create `server.py` using Python stdlib HTTP server (`http.server.HTTPServer` + `BaseHTTPRequestHandler`) — no Flask, FastAPI, or third-party HTTP frameworks.
 4. Create builder modules (`stats_builder.py`, `graph_builder.py`, `merges_builder.py`, `search_builder.py`) for data computation.
 
-The generated `index.html` is a single file with embedded CSS and JavaScript. D3.js v7 is loaded from CDN (`https://d3js.org/d3.v7.min.js`) — no other external JavaScript dependencies.
+The generated `index.html` is a single file with embedded CSS and JavaScript. D3.js v7 is loaded from the d3js.org CDN (`d3js.org/d3.v7.min.js`) — no other external JavaScript dependencies.
 
 **Required files:**
 
@@ -52,61 +85,29 @@ The generated `index.html` is a single file with embedded CSS and JavaScript. D3
 | `src/system_verification/web_service/write_html.py` | Python generator script: triple-quoted HTML string → writes `index.html` |
 | `src/system_verification/web_service/server.py` | Python stdlib HTTP server (`http.server.HTTPServer` + `BaseHTTPRequestHandler`) with request routing |
 | `src/system_verification/web_service/stats_builder.py` | Statistics computation from `export_json_entity_report` |
-| `src/system_verification/web_service/graph_builder.py` | Graph node/edge construction from SDK |
+| `src/system_verification/web_service/graph_builder.py` | Graph node/edge construction from SDK. **Edges require explicit relationship discovery** — a default `export_json_entity_report` does NOT include relationships, so reading `RELATED_ENTITIES` off a plain export yields zero edges. Discover relationships by calling `find_network_by_entity_id` for multi-record/related entities (it returns the relationship network with match keys) AND/OR by requesting the entity export/report with the relationship-inclusion flag (confirm the exact flag name — e.g. `SZ_ENTITY_INCLUDE_ALL_RELATIONS` — via the Senzing MCP server) so `RELATED_ENTITIES` is populated. Build one `edge` per relationship: `match_key` from the relationship match-key string, `relationship_type` from the relationship kind (possible match / disclosed / discovered); de-duplicate edges and only create an edge when both endpoints appear in the node set. |
 | `src/system_verification/web_service/merges_builder.py` | Multi-record entity extraction from SDK |
-| `src/system_verification/web_service/search_builder.py` | Search-by-attributes wrapper |
+| `src/system_verification/web_service/search_builder.py` | Search-by-attributes wrapper with entity enrichment: calls `search_by_attributes`, then `get_entity_by_entity_id` for each matched entity (up to 10) to retrieve match keys, feature scores, and resolution rules (full enrichment spec in the API reference companion) |
 | `src/system_verification/web_service/index.html` | Generated output from `write_html.py` (single-page visualization, D3.js v7 CDN, embedded CSS/JS) |
 
 ### 9.2 API Endpoints
 
-The server SHALL expose these endpoints:
+The server SHALL expose four endpoints. Compact summaries follow — the full JSON
+response schemas, field tables, and the `search_builder.py` enrichment specification
+live in the API reference companion (see below):
 
-**`GET /api/stats`** — Aggregate entity resolution statistics
+- **`GET /api/stats`** — Aggregate entity resolution statistics. Required fields: `records_total`, `entities_total`, `multi_record_entities`, `cross_source_entities`, `relationships_total`, `histogram` (record-count buckets 1/2/3/4+ → entity counts).
+- **`GET /api/graph`** — Entity nodes and relationship edges. Each node: `entity_id`, `entity_name`, `record_count`, `data_sources`, `records`. Each edge: `source_entity_id`, `target_entity_id`, `match_key`, `relationship_type`. Edges are **discovered via relationship discovery, not a default export**: call `find_network_by_entity_id` for multi-record/related entities and/or request the entity export with the relationship-inclusion flag (e.g. `SZ_ENTITY_INCLUDE_ALL_RELATIONS`, confirmed via the Senzing MCP server). Edges are de-duplicated and limited to entities present in the node set.
+- **`GET /api/merges`** — Multi-record entities (2+ records only) with constituent records. Each entity: `entity_id`, `entity_name`, `match_key`, `records`; each record: `data_source`, `record_id`, `name`, `address`, `phone`, `identifiers`.
+- **`GET /api/search`** — Search entities with enriched resolution reasoning. Each result has base fields (`entity_id`, `entity_name`, `record_count`, `data_sources`) plus enrichment fields: `match_keys` (`entity_level` + `per_record`), `feature_scores`, `resolution_rules`, and `enrichment_error`. Enrichment is capped at 10 entities; on per-entity enrichment failure the result carries null enrichment fields and a non-empty `enrichment_error`.
+- **Error response (all endpoints):** HTTP 500 with `{"error": "<description>"}` on SDK failure.
 
-```json
-{
-  "records_total": 510,
-  "entities_total": 395,
-  "multi_record_entities": 87,
-  "cross_source_entities": 42,
-  "relationships_total": 156,
-  "histogram": {"1": 308, "2": 65, "3": 17, "4+": 5}
-}
-```
-
-Required fields: `records_total`, `entities_total`, `multi_record_entities`, `cross_source_entities`, `relationships_total`, `histogram`. The `histogram` maps record-count buckets (1, 2, 3, 4+) to entity counts.
-
-**`GET /api/graph`** — Entity nodes and relationship edges
-
-```json
-{
-  "nodes": [
-    {"entity_id": 1, "entity_name": "Robert Smith", "record_count": 3, "data_sources": ["CUSTOMERS", "REFERENCE"], "records": [{"data_source": "CUSTOMERS", "record_id": "1001"}]}
-  ],
-  "edges": [
-    {"source_entity_id": 1, "target_entity_id": 2, "match_key": "+NAME+ADDRESS", "relationship_type": "possible_match"}
-  ]
-}
-```
-
-Each node: `entity_id`, `entity_name`, `record_count`, `data_sources`, `records`. Each edge: `source_entity_id`, `target_entity_id`, `match_key`, `relationship_type`.
-
-**`GET /api/merges`** — Multi-record entities with constituent records
-
-```json
-[
-  {
-    "entity_id": 1, "entity_name": "Robert Smith", "match_key": "+NAME+ADDRESS",
-    "records": [
-      {"data_source": "CUSTOMERS", "record_id": "1001", "name": "Robert Smith", "address": "123 Main St", "phone": "555-0100", "identifiers": {"SSN": "123-45-6789"}}
-    ]
-  }
-]
-```
-
-Each entity: `entity_id`, `entity_name`, `match_key`, `records`. Each record: `data_source`, `record_id`, `name`, `address`, `phone`, `identifiers`. Only entities with 2+ records are returned.
-
-**Error response (all endpoints):** HTTP 500 with `{"error": "<description>"}` on SDK failure.
+> **Full response schemas (all four endpoints), the `search_builder.py` enrichment
+> specification (enrichment flow, the 10-entity cap, extraction functions, and graceful
+> degradation), and the error-case / single-record response examples are in the API
+> reference companion. Load it on demand:**
+>
+> #[[file:senzing-bootcamp/steering/module-03-visualization-api-reference.md]]
 
 ### 9.3 Visualization Page Components
 
@@ -130,6 +131,17 @@ Presented left-to-right with arrow indicators conveying the resolution pipeline 
    - Edges labeled with Match_Key strings (e.g., +NAME+ADDRESS, +PHONE)
    - Tooltip on hover: entity name, entity ID, record count, data sources
    - Fetches from `GET /api/graph`
+
+   **Graph container height:** The `#graph-container` element SHALL use viewport-relative height:
+
+   ```css
+   #graph-container {
+     height: calc(100vh - 120px);
+     /* 120px offset = fixed header (~50px) + summary banner (~40px) + tab navigation (~30px) */
+   }
+   ```
+
+   Do NOT use a fixed pixel height (e.g., `600px`) for the graph container. The graph must fill the remaining viewport space below the fixed UI elements.
 
    **Entity Graph UX Features:**
 
@@ -168,11 +180,32 @@ Presented left-to-right with arrow indicators conveying the resolution pipeline 
    - Labeled axes and count annotations on bars
    - Fetches from `GET /api/stats`
 
-4. **Probe_Panel** — One-click TruthSet entities and search
+4. **Probe_Panel** — One-click TruthSet entities and search with resolution reasoning
    - Pre-configured buttons for canonical TruthSet entity pairs (e.g., Robert Smith / Bob Smith)
    - Search input accepting name, address, or phone attributes
-   - On click/search: query `GET /api/search` and display resolved entity with records and relationships
+   - On click/search: query `GET /api/search` and display resolved entity with records, relationships, and resolution reasoning
    - "No matching entities found" message for empty results
+
+   **Resolution Reasoning Display:**
+
+   For each search result, the Probe_Panel SHALL display match keys, feature scores, and resolution rules from the enriched `/api/search` response:
+
+   **Match Key Chips:**
+   - Display the entity-level match key string for each resolved entity (e.g., `+NAME+DOB+PHONE`)
+   - Each individual feature indicator within a match key (e.g., `+NAME`, `+DOB`, `+PHONE`) SHALL be rendered as a separate inline `<span>` element with a visible border and background color distinguishing it from adjacent indicators and surrounding text
+   - If a resolved entity contains multiple records, display per-record match keys indicating which features linked each record into the entity
+   - If a resolved entity contains only one record, omit the per-record match key section for that entity
+   - If an entity has no match key data available (i.e., `match_keys` is null), display a placeholder label: "No match key information available"
+
+   **Feature Scores:**
+   - Display feature scores for the search match comparison as a structured list
+   - Each feature score SHALL show the feature name, numeric percentage, and classification label (e.g., `NAME: 97% CLOSE`)
+   - When multiple features were compared, list all scored features in a structured format, one per line
+
+   **Resolution Rules:**
+   - Display the resolution rule applied to each record within the entity (e.g., `CNAME_CFF_CEXCL`)
+   - Per-record rule strings SHALL be displayed in monospace/code-style format (e.g., `<code>` or `font-family: monospace`) to distinguish them from natural language text
+   - When an entity contains multiple records, show the resolution rule next to each constituent record with its data source and record ID
 
 Summary_Banner remains visible above tabs regardless of active tab. Tab switching without page reload.
 
@@ -187,13 +220,43 @@ Follow the Web Service Delivery Sequence from `visualization-guide.md`:
    | Endpoint | Success Criteria |
    |----------|-----------------|
    | `GET /api/stats` | HTTP 200, valid JSON with all required fields (`records_total`, `entities_total`, `multi_record_entities`, `cross_source_entities`, `relationships_total`, `histogram`) |
-   | `GET /api/graph` | HTTP 200, valid JSON with at least one node and one edge |
+   | `GET /api/graph` | HTTP 200, valid JSON with at least one node and one edge — this must hold on the loaded TruthSet data (relationship discovery, per `graph_builder.py` above, produces the edges) |
    | `GET /api/merges` | HTTP 200, valid JSON with at least one multi-record entity (2+ records) |
 
 3. **Present to bootcamper:**
    - URL: "Your visualization is running — open `http://localhost:8080` in your browser"
    - Manual restart: "If you need to restart, run the `src/system_verification/web_service/server.py` entry point with python3"
    - Stop: "To stop the server, I can stop the background process for you, or press Ctrl+C if running manually"
+
+**Guided Tour — deliver the following as a single structured chat message
+(no interactive pauses):**
+
+Present this guided tour to the bootcamper immediately after confirming
+the URL is accessible:
+
+---
+
+🗺️ **What You're Looking At — A Quick Tour**
+
+**Entity Graph tab (default view):**
+
+- **Cross-source matches:** Nodes with multiple colors represent entities
+  resolved across data sources (e.g., a CUSTOMERS record matched to a
+  REFERENCE record). These are Senzing's highest-value findings.
+- **Name variations:** Senzing resolves name variants automatically —
+  look for entities like "Robert Smith" that merged records originally
+  entered as "Bob Smith" or "R. Smith".
+- **Relationship edges:** Lines between nodes show relationships.
+  The labels (e.g., +NAME+ADDRESS, +PHONE) are match keys — they tell
+  you which features Senzing used to link those entities.
+
+**Merge Statistics tab:**
+
+- The **records-per-entity histogram** shows how many records collapsed
+  into each entity. A tall "1" bar means many unique entities; bars at
+  "2", "3", "4+" show where Senzing found duplicates across sources.
+
+---
 
    👉 Take your time exploring the visualization. Let me know when you're ready and I'll continue with cleanup.
 

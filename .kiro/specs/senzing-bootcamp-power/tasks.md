@@ -37,7 +37,7 @@ This spec documents the power as-built (v0.12.0). All tasks reflect implemented 
 - [x] 3.6 Context budget tracking with percentage-based 60%/80% thresholds and retention priority (in agent-context-management.md)
 - [x] 3.7 Consolidated visualization steering: visualization-guide.md (protocol + reference merged) + visualization-web-service.md
 
-## Task 4: Hook System (28 hooks)
+## Task 4: Hook System (29 hooks)
 
 - [x] 4.1 7 critical hooks created during onboarding: ask-bootcamper, block-direct-sql, review-bootcamper-input, code-style-check, commonmark-validation, enforce-file-path-policies, enforce-single-question
 - [x] 4.2 Module 1 hook: validate-business-problem
@@ -52,7 +52,7 @@ This spec documents the power as-built (v0.12.0). All tasks reflect implemented 
 - [x] 4.11 Module 10 hook: validate-alert-config
 - [x] 4.12 Module 11 hook: deployment-phase-gate
 - [x] 4.13 Any-module hooks: backup-project-on-request, error-recovery-context, git-commit-reminder, module-completion-celebration
-- [x] 4.14 hook-categories.yaml, hook-registry.md, and hook-registry-detail.md kept in sync via sync_hook_registry.py
+- [x] 4.14 hook-categories.yaml, hook-registry.md, hook-registry-critical.md, and the per-module hook-registry-module-NN.md files (plus hook-registry-module-any.md) kept in sync via sync_hook_registry.py
 - [x] 4.15 tests/test_hook_structural_validation.py for structural validation (JSON validity, required fields, event types, patterns, registry consistency)
 
 ## Task 5: Platform and Language Support

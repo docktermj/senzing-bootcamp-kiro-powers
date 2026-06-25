@@ -6,12 +6,14 @@ inclusion: manual
 
 > **Phase file:** This file implements Steps 4d–4e (Discover Phase) of Module 7.
 > Load after completing steps 4a–4c in `module-07-phase2-discover.md`.
-> When complete, return to the root file for the Query Completeness Gate.
+> When complete, return to `module-07-phase1-query-visualize.md` for the Query Completeness Gate.
 
 > **Agent instruction (session resumption):** On load, read
 > `config/bootcamp_progress.json` and check which step 4x sub-steps are
 > already completed. Resume from the first incomplete step. Do not re-run
 > completed demonstrations.
+
+## Steps 4d–4e: Discover (continued)
 
 ### Step 4d: Relationship Network Exploration
 
@@ -131,8 +133,8 @@ inclusion: manual
 > demonstration (Visualization Suggestions — data-specific analytical
 > views), or proceed to module completion?"
 > If the bootcamper chooses to exit, write `discover_phase: "skipped"` to
-> `config/bootcamp_progress.json` and return to the root file for the
-> Query Completeness Gate.
+> `config/bootcamp_progress.json` and return to
+> `module-07-phase1-query-visualize.md` for the Query Completeness Gate.
 
 **Checkpoint:** Write step 4d to `config/bootcamp_progress.json` under
 `module_7_query.steps.4d`. Use this structure:
@@ -212,8 +214,8 @@ Include the `reason` field only when the step is skipped.
 > or re-offer visualizations after a decline.
 >
 > **6. Transition:**
-> After visualization generation (or decline), return to the root file
-> (`module-07-query-visualize-discover.md`) for the Query Completeness Gate.
+> After visualization generation (or decline), return to
+> `module-07-phase1-query-visualize.md` for the Query Completeness Gate.
 
 **Checkpoint:** Write step 4e to `config/bootcamp_progress.json` under
 `module_7_query.steps.4e`. Use this structure:
@@ -252,7 +254,7 @@ Include the `reason` field only when the step is skipped.
 > }
 > ```
 >
-> After updating the `discover_phase` status, return to the root file
-> (`module-07-query-visualize-discover.md`) for the Query Completeness Gate.
+> After updating the `discover_phase` status, return to
+> `module-07-phase1-query-visualize.md` for the Query Completeness Gate.
 
 **Success:** Discover phase completed (or explicitly skipped) — data patterns analyzed, why/how analysis demonstrated, relationship networks explored, and visualization suggestions offered.

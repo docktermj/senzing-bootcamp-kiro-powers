@@ -1,8 +1,10 @@
-"""Tests for the onboarding comprehension check feature (Step 4c).
+"""Tests for the onboarding comprehension check feature (Step 5b).
 
 This module verifies structural placement and content preservation for the
-comprehension check sub-step added between Step 4b (Verbosity Preference)
-and Step 5 (Track Selection) in onboarding-flow.md.
+comprehension check sub-step. After the onboarding split, the comprehension
+check is Step 5b (following Step 5a Verbosity Preference) in
+onboarding-phase1b-intro-language.md, before track selection (Step 5 in
+onboarding-phase2-track-setup.md).
 
 Feature: onboarding-comprehension-check
 """
@@ -32,6 +34,12 @@ _ONBOARDING_FILE = (
     Path(__file__).resolve().parent.parent / "steering" / "onboarding-flow.md"
 )
 
+_ONBOARDING_PHASE1B_FILE = (
+    Path(__file__).resolve().parent.parent
+    / "steering"
+    / "onboarding-phase1b-intro-language.md"
+)
+
 _ONBOARDING_PHASE2_FILE = (
     Path(__file__).resolve().parent.parent
     / "steering"
@@ -44,11 +52,29 @@ def _read_onboarding() -> str:
     return _ONBOARDING_FILE.read_text(encoding="utf-8")
 
 
+def _read_phase1b() -> str:
+    """Return the full text of onboarding-phase1b-intro-language.md.
+
+    After the onboarding split this phase file owns Step 3 (Entity
+    Resolution Introduction), Step 4 (Programming Language Selection),
+    Step 5 (Bootcamp Introduction), Step 5a (Verbosity Preference), and
+    Step 5b (Comprehension Check).
+    """
+    return _ONBOARDING_PHASE1B_FILE.read_text(encoding="utf-8")
+
+
 def _read_onboarding_combined() -> str:
-    """Return the combined text of both onboarding phase files."""
+    """Return the combined text of all three onboarding phase files.
+
+    The onboarding flow is split across ``onboarding-flow.md`` (Steps
+    0–2d), ``onboarding-phase1b-intro-language.md`` (Steps 3–5b), and
+    ``onboarding-phase2-track-setup.md`` (track selection). Concatenating
+    them reconstructs the full step sequence for heading-order checks.
+    """
     phase1 = _ONBOARDING_FILE.read_text(encoding="utf-8")
+    phase1b = _ONBOARDING_PHASE1B_FILE.read_text(encoding="utf-8")
     phase2 = _ONBOARDING_PHASE2_FILE.read_text(encoding="utf-8")
-    return phase1 + "\n" + phase2
+    return phase1 + "\n" + phase1b + "\n" + phase2
 
 
 def _read_phase2() -> str:
@@ -155,45 +181,62 @@ class TestStepHeadingSequence:
     """
 
     def test_heading_sequence_contains_4c(self) -> None:
-        """The heading list must include step 4c."""
-        text = _read_onboarding()
+        """The comprehension-check step (now 5b) is in the phase1b sequence.
+
+        After the onboarding split, the comprehension check moved out of
+        onboarding-flow.md and is now Step 5b in
+        onboarding-phase1b-intro-language.md.
+        """
+        text = _read_phase1b()
         headings = _extract_step_headings(text)
-        assert "4c" in headings, (
-            f"Step 4c not found in heading sequence.\nHeadings: {headings}"
+        assert "5b" in headings, (
+            f"Step 5b (Comprehension Check) not found in heading sequence.\n"
+            f"Headings: {headings}"
         )
 
     def test_4c_appears_between_4b_and_5(self) -> None:
-        """Step 4c must appear after 4b and before 5 in the heading order.
+        """Comprehension Check (5b) follows Verbosity (5a) and precedes Track Selection.
 
-        Note: After the onboarding split, Step 5 is in the Phase 2 file.
-        We check the combined heading sequence across both files.
+        After the onboarding split, verbosity is Step 5a and the
+        comprehension check is Step 5b — both in
+        onboarding-phase1b-intro-language.md — while Track Selection is
+        Step 5 in onboarding-phase2-track-setup.md.
         """
-        text = _read_onboarding_combined()
-        headings = _extract_step_headings(text)
-        assert "4b" in headings, f"Step 4b not found. Headings: {headings}"
-        assert "4c" in headings, f"Step 4c not found. Headings: {headings}"
-        assert "5" in headings, f"Step 5 not found. Headings: {headings}"
+        phase1b_headings = _extract_step_headings(_read_phase1b())
+        assert "5a" in phase1b_headings, (
+            f"Step 5a not found. Headings: {phase1b_headings}"
+        )
+        assert "5b" in phase1b_headings, (
+            f"Step 5b not found. Headings: {phase1b_headings}"
+        )
 
-        idx_4b = headings.index("4b")
-        idx_4c = headings.index("4c")
-        idx_5 = headings.index("5")
+        idx_5a = phase1b_headings.index("5a")
+        idx_5b = phase1b_headings.index("5b")
+        assert idx_5a < idx_5b, (
+            f"Step 5b (Comprehension Check) must appear after Step 5a "
+            f"(Verbosity Preference).\n"
+            f"  5a at index {idx_5a}, 5b at index {idx_5b}\n"
+            f"  Headings: {phase1b_headings}"
+        )
 
-        assert idx_4b < idx_4c < idx_5, (
-            f"Step 4c is not between 4b and 5.\n"
-            f"  4b at index {idx_4b}, 4c at index {idx_4c}, 5 at index {idx_5}\n"
-            f"  Headings: {headings}"
+        # Track Selection follows in the Phase 2 file.
+        assert "## 5. Track Selection" in _read_phase2(), (
+            "Track Selection (Step 5) not found in onboarding-phase2-track-setup.md"
         )
 
     def test_heading_sequence_preserves_existing_order(self) -> None:
-        """The existing step order (0, 1, 1b, 2, 3, 4, 4b, ..., 5) is preserved.
+        """The post-split step order (0, 1, 1b, 2, 3, 4, 5, 5a, 5b) is preserved.
 
-        Note: After the onboarding split, Step 5 is in the Phase 2 file.
-        We check the combined heading sequence across both files.
+        After the onboarding split the steps span three files:
+        onboarding-flow.md (0–2d), onboarding-phase1b-intro-language.md
+        (3, 4, 5, 5a, 5b), and onboarding-phase2-track-setup.md (track
+        selection). We check the combined heading sequence across all
+        three files.
         """
         text = _read_onboarding_combined()
         headings = _extract_step_headings(text)
 
-        expected_numbered = ["0", "1", "1b", "2", "3", "4", "4b", "5"]
+        expected_numbered = ["0", "1", "1b", "2", "3", "4", "5", "5a", "5b"]
         actual_numbered = [h for h in headings if re.match(r"^\d+[a-z]?$", h)]
 
         for step in expected_numbered:
@@ -201,7 +244,7 @@ class TestStepHeadingSequence:
                 f"Step {step} missing from numbered headings: {actual_numbered}"
             )
 
-        # Verify relative order of existing steps
+        # Verify relative order of existing steps (first occurrence of each).
         indices = [actual_numbered.index(s) for s in expected_numbered]
         assert indices == sorted(indices), (
             f"Existing step order is not preserved.\n"
@@ -278,80 +321,80 @@ class TestExistingStepPreservation:
     # -- Step 2: Language Selection (mandatory gate) --
 
     def test_step_2_language_detection(self) -> None:
-        """Step 2 references platform detection and MCP server query."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"2\.\s+Programming Language Selection")
+        """Programming Language Selection (now phase1b Step 4) references platform + MCP."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"4\.\s+Programming Language Selection")
         assert "platform.system()" in section
         assert "MCP server" in section
 
     def test_step_2_gate_marker(self) -> None:
-        """Step 2 contains the mandatory gate marker ⛔."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"2\.\s+Programming Language Selection")
-        assert "⛔" in section, "Step 2 missing mandatory gate marker ⛔"
+        """Programming Language Selection (now phase1b Step 4) has the gate marker ⛔."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"4\.\s+Programming Language Selection")
+        assert "⛔" in section, "Step 4 missing mandatory gate marker ⛔"
         assert "MANDATORY GATE" in section
 
-    # -- Step 3: Prerequisite Check --
+    # -- Prerequisite Check (now onboarding-flow Step 2) --
 
     def test_step_3_preflight(self) -> None:
-        """Step 3 references preflight.py and verdict handling."""
+        """Prerequisite Check (now Step 2) references preflight.py and verdict handling."""
         text = _read_onboarding()
-        section = _extract_section(text, r"3\.\s+Prerequisite Check")
+        section = _extract_section(text, r"2\.\s+Prerequisite Check")
         assert "preflight.py" in section
         for verdict in ("FAIL:", "WARN:", "PASS:"):
-            assert verdict in section, f"Step 3 missing verdict '{verdict}'"
+            assert verdict in section, f"Prerequisite Check missing verdict '{verdict}'"
 
-    # -- Step 4: Bootcamp Introduction --
+    # -- Bootcamp Introduction (now phase1b Step 5) --
 
     def test_step_4_welcome_banner(self) -> None:
-        """Step 4 contains the welcome banner text."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4\.\s+Bootcamp Introduction")
+        """Bootcamp Introduction (now phase1b Step 5) contains the welcome banner text."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"5\.\s+Bootcamp Introduction")
         assert "WELCOME TO THE SENZING BOOTCAMP" in section
 
     def test_step_4_guided_discovery(self) -> None:
-        """Step 4 describes guided discovery framing."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4\.\s+Bootcamp Introduction")
+        """Bootcamp Introduction (now phase1b Step 5) describes guided discovery framing."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"5\.\s+Bootcamp Introduction")
         assert "guided discovery" in section
 
     def test_step_4_test_data_and_license(self) -> None:
-        """Step 4 mentions test data / sample data cities and eval license."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4\.\s+Bootcamp Introduction")
+        """Bootcamp Introduction (now phase1b Step 5) mentions test data and eval license."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"5\.\s+Bootcamp Introduction")
         assert "test data" in section.lower() or "sample data" in section.lower(), (
-            "Step 4 missing 'test data' or 'sample data' terminology"
+            "Bootcamp Introduction missing 'test data' or 'sample data' terminology"
         )
         assert "Las Vegas, London, Moscow" in section
-        assert "500-record eval license" in section
+        assert "500-record evaluation license" in section
 
     def test_step_4_glossary_reference(self) -> None:
-        """Step 4 provides term-definition guidance (ask the agent)."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4\.\s+Bootcamp Introduction")
+        """Bootcamp Introduction (now phase1b Step 5) provides term-definition guidance."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"5\.\s+Bootcamp Introduction")
         assert "unfamiliar terms" in section
 
-    # -- Step 4b: Verbosity Preference --
+    # -- Verbosity Preference (now phase1b Step 5a) --
 
     def test_step_4b_verbosity_presets(self) -> None:
-        """Step 4b describes the three verbosity presets."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4b\.\s+Verbosity Preference")
+        """Verbosity Preference (now phase1b Step 5a) describes the three presets."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"5a\.\s+Verbosity Preference")
         for preset in ("concise", "standard", "detailed"):
             assert preset in section, (
-                f"Step 4b missing verbosity preset '{preset}'"
+                f"Step 5a missing verbosity preset '{preset}'"
             )
 
     def test_step_4b_preferences_persistence(self) -> None:
-        """Step 4b references preferences file persistence."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4b\.\s+Verbosity Preference")
+        """Verbosity Preference (now phase1b Step 5a) references preferences persistence."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"5a\.\s+Verbosity Preference")
         assert "bootcamp_preferences.yaml" in section
 
     def test_step_4b_not_mandatory_gate(self) -> None:
-        """Step 4b explicitly states it is NOT a mandatory gate."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4b\.\s+Verbosity Preference")
+        """Verbosity Preference (now phase1b Step 5a) explicitly states it is NOT a gate."""
+        text = _read_phase1b()
+        section = _extract_section(text, r"5a\.\s+Verbosity Preference")
         assert "NOT a mandatory gate" in section
 
     # -- Step 5: Track Selection (mandatory gate) --
@@ -422,8 +465,8 @@ class TestStep4cContentMarkers:
 
     def test_prompt_contains_makes_sense_phrasing(self) -> None:
         """Step 4c prompt asks whether the introduction makes sense."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         section_lower = section.lower()
         assert "makes sense" in section_lower, (
             "Step 4c missing 'makes sense' phrasing in prompt"
@@ -431,8 +474,8 @@ class TestStep4cContentMarkers:
 
     def test_prompt_contains_questions_phrasing(self) -> None:
         """Step 4c prompt invites the bootcamper to ask questions."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         section_lower = section.lower()
         assert "question" in section_lower, (
             "Step 4c missing 'question(s)' phrasing in prompt"
@@ -440,8 +483,8 @@ class TestStep4cContentMarkers:
 
     def test_prompt_references_track_selection(self) -> None:
         """Step 4c references the upcoming track selection step."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         section_lower = section.lower()
         assert "track" in section_lower, (
             "Step 4c missing reference to upcoming track selection"
@@ -449,8 +492,8 @@ class TestStep4cContentMarkers:
 
     def test_acknowledgment_handling_instructions(self) -> None:
         """Step 4c contains acknowledgment handling with example phrases."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         section_lower = section.lower()
 
         # Must contain acknowledgment handling instructions
@@ -472,8 +515,8 @@ class TestStep4cContentMarkers:
 
     def test_clarification_handling_instructions(self) -> None:
         """Step 4c contains clarification handling with check-for-more logic."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         section_lower = section.lower()
 
         # Must contain clarification handling instructions
@@ -494,8 +537,8 @@ class TestStep4cContentMarkers:
 
     def test_references_verbosity_settings(self) -> None:
         """Step 4c references verbosity settings for answering clarifications."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         section_lower = section.lower()
         assert "verbosity" in section_lower, (
             "Step 4c missing reference to verbosity settings "
@@ -504,8 +547,8 @@ class TestStep4cContentMarkers:
 
     def test_not_mandatory_gate_note(self) -> None:
         """Step 4c notes it is NOT a mandatory gate."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         section_lower = section.lower()
         # Accept either the exact phrase "NOT a mandatory gate" or the
         # split phrasing "NOT a gate" + "not mandatory" which avoids the
@@ -519,8 +562,8 @@ class TestStep4cContentMarkers:
 
     def test_hook_handles_closing_question_note(self) -> None:
         """Step 4c notes that the ask-bootcamper hook handles closing questions."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         section_lower = section.lower()
         assert "ask-bootcamper" in section_lower or "hook" in section_lower, (
             "Step 4c missing note about hook handling closing questions"
@@ -548,16 +591,16 @@ class TestStep4cNonGate:
 
     def test_no_gate_emoji(self) -> None:
         """Step 4c must not contain the ⛔ mandatory gate marker."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         assert "⛔" not in section, (
             "Step 4c contains ⛔ gate marker but is not a mandatory gate"
         )
 
     def test_no_must_stop_keyword(self) -> None:
         """Step 4c must not contain 'MUST stop' gate language."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         assert "MUST stop" not in section, (
             "Step 4c contains 'MUST stop' gate language "
             "but is not a mandatory gate"
@@ -565,8 +608,8 @@ class TestStep4cNonGate:
 
     def test_no_mandatory_gate_keyword(self) -> None:
         """Step 4c must not contain 'mandatory gate' language."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         section_lower = section.lower()
         assert "mandatory gate" not in section_lower, (
             "Step 4c contains 'mandatory gate' language "
@@ -575,8 +618,8 @@ class TestStep4cNonGate:
 
     def test_no_must_not_proceed_keyword(self) -> None:
         """Step 4c must not contain 'MUST NOT proceed' gate language."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         assert "MUST NOT proceed" not in section, (
             "Step 4c contains 'MUST NOT proceed' gate language "
             "but is not a mandatory gate"
@@ -598,8 +641,8 @@ class TestStep4cNonGate:
         questions. The one-question-per-turn rule applies to the agent's
         actual output, not to the steering file's instructional content.
         """
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         # 👉 may appear multiple times in Step 4c: once in the format
         # directive instruction, once in the code block example, and once
         # in the paraphrase constraint. All are meta-references describing
@@ -613,8 +656,8 @@ class TestStep4cNonGate:
 
     def test_no_wait_instruction(self) -> None:
         """Step 4c must not contain WAIT instructions."""
-        text = _read_onboarding()
-        section = _extract_section(text, r"4c\.\s+Comprehension Check")
+        text = _read_phase1b()
+        section = _extract_section(text, r"5b\.\s+Comprehension Check")
         assert "WAIT" not in section, (
             "Step 4c contains WAIT instruction "
             "but the ask-bootcamper hook handles closing questions"
@@ -632,20 +675,23 @@ _INLINE_QUESTION_MARKERS = ("👉",)
 _WAIT_KEYWORDS = ("WAIT",)
 
 # Non-gate step identifiers — these steps must never contain gate
-# markers or WAIT instructions.
-# Note: 4c is excluded because the conversation-ux-rules spec (Requirements
-# 4.1, 7.4) requires 👉 prefixes on ALL bootcamper-directed questions,
-# including non-gate steps like 4c.
-_NON_GATE_STEP_IDS: list[str] = ["0", "1", "1b", "4"]
+# markers or WAIT instructions. After the onboarding split, onboarding-flow.md
+# retains the non-gate informational steps 0, 1, and 1b; the Bootcamp
+# Introduction (now Step 5) and the comprehension check (now Step 5b) moved to
+# onboarding-phase1b-intro-language.md.
+# Note: the comprehension check (5b) is excluded because the
+# conversation-ux-rules spec (Requirements 4.1, 7.4) requires 👉 prefixes on
+# ALL bootcamper-directed questions, including non-gate steps like 5b.
+_NON_GATE_STEP_IDS: list[str] = ["0", "1", "1b"]
 
 
 @st.composite
 def st_non_gate_step_id(draw: st.DrawFn) -> str:
-    """Generate a non-gate step identifier.
+    """Generate a non-gate step identifier from onboarding-flow.md.
 
-    Samples from steps that are explicitly NOT mandatory gates:
-    0 (Setup Preamble), 1 (Directory Structure), 1b (Team Detection),
-    4 (Bootcamp Introduction), and 4c (Comprehension Check).
+    Samples from steps that are explicitly NOT mandatory gates and still
+    live in onboarding-flow.md after the split:
+    0 (Setup Preamble), 1 (Directory Structure), and 1b (Team Detection).
     """
     return draw(st.sampled_from(_NON_GATE_STEP_IDS))
 

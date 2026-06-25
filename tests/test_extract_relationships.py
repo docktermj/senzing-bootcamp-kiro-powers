@@ -5,13 +5,9 @@ from __future__ import annotations
 import json
 import logging
 
-import pytest
-
 from src.query.generate_visualization import (
-    RelationshipEdge,
     extract_relationships,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers — mock Senzing engine

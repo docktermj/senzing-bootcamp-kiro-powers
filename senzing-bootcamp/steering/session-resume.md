@@ -1,10 +1,67 @@
 ---
-inclusion: manual
+inclusion: auto
+description: Session resume preference loading and recovery behavior
 ---
 
 # Session Resume Workflow
 
 Load this steering file when `config/bootcamp_progress.json` exists at session start. This means the bootcamper has a previous session to resume.
+
+## Preference Loading on Session Start
+
+On every new session start, the agent reads the preferences file using `load_preferences()`. This function returns a `LoadResult` containing the parsed preferences dict, a list of missing required fields, and an optional error message.
+
+### Confirmation Message
+
+When preferences are successfully loaded (no error, no missing required fields), display a confirmation message of **at most 2 sentences** summarizing the active language, track, and verbosity. Example:
+
+> Resuming with Python, standard verbosity, Core track. All your preferences are loaded and ready.
+
+The confirmation must mention all three values (language, track, verbosity) and must not exceed 2 sentences.
+
+### Language Steering Resolution
+
+When the `language` field is present in loaded preferences, resolve the corresponding language steering file by calling `resolve_language_steering()`. This maps the persisted language value (case-insensitive) to the appropriate steering file:
+
+- `python` → `lang-python.md`
+- `java` → `lang-java.md`
+- `csharp` / `c#` → `lang-csharp.md`
+- `rust` → `lang-rust.md`
+- `typescript` → `lang-typescript.md`
+
+Load the resolved steering file immediately after preference confirmation.
+
+### Unrecognized Language Handling
+
+If `resolve_language_steering()` returns `None` (the persisted language value does not map to a supported steering file), inform the bootcamper that the saved language is unrecognized and prompt for a new language selection. All other loaded preferences (track, verbosity, conversation_style, etc.) are preserved unchanged. Once the bootcamper provides a valid language, persist it via `write_preference()` before the next response.
+
+## Preference Recovery Flow
+
+When `load_preferences()` reports an error or missing required fields, enter the recovery flow.
+
+### File Missing or Corrupt
+
+If the preferences file is missing or contains invalid YAML (the `LoadResult.error` field is non-None and `preferences` is None):
+
+1. Inform the bootcamper that preferences could not be loaded
+2. Do NOT assume default values silently
+3. Prompt for each required preference **one at a time** in this order:
+   - Language
+   - Track
+   - Verbosity
+4. After each answer, persist the value immediately via `write_preference()` before the next response
+
+### Partial Preferences (Missing Fields)
+
+If the preferences file is valid but some required fields are missing (`LoadResult.missing_required` is non-empty while `preferences` is not None):
+
+1. Preserve all successfully loaded values — do not re-ask for fields that are already present
+2. Prompt only for each missing field individually, in order: language, track, verbosity (skipping any that are already loaded)
+3. After each answer, persist the value immediately via `write_preference()` before the next response
+
+### Persistence Before Next Response
+
+Every recovered preference value MUST be persisted to the preferences file via `write_preference()` before the agent produces its next response. This ensures that even if the session is interrupted, partially recovered preferences are not lost.
 
 ## Fast Path Check
 
@@ -91,37 +148,43 @@ Before proceeding to Step 3, confirm that `conversation-protocol.md` is loaded (
 After asking any 👉 question, produce zero additional tokens. Do not answer the question. Do not assume the bootcamper's response.
 
 **WRONG** — Agent answers its own question:
-```
+
+```text
 👉 Which language would you like to use for the bootcamp?
 I'd recommend Python since it has the best SDK support...
 ```
 
 **CORRECT** — Agent stops after the question:
-```
+
+```text
 👉 Which language would you like to use for the bootcamp?
 🛑 STOP
 ```
 
 **WRONG** — Agent assumes the response:
-```
+
+```text
 👉 Ready to continue with Module 3?
 Great, let's get started with the system verification...
 ```
 
 **CORRECT** — Agent waits for confirmation:
-```
+
+```text
 👉 Ready to continue with Module 3?
 🛑 STOP
 ```
 
 **WRONG** — Agent provides unsolicited follow-up:
-```
+
+```text
 👉 Would you like to see the entity resolution results?
 While you decide, here are some things to look for in the output...
 ```
 
 **CORRECT** — Agent produces zero tokens after the question:
-```
+
+```text
 👉 Would you like to see the entity resolution results?
 🛑 STOP
 ```

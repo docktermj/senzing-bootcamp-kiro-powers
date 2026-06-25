@@ -41,7 +41,77 @@ inclusion: manual
 
    > **🔒 Agent Instruction — Per-Source Mapping Requirement**
    >
-   > Each data source **must** complete its own full `mapping_workflow` run from start to finish. Do NOT reuse the mapping output, field mappings, or mapping specification from one source for another source — even if the schemas appear similar. Every source gets its own independent `mapping_workflow` execution and its own mapping specification markdown (`docs/{source_name}_mapper.md`). Mapper code may be shared across sources if schemas are identical, but mapping documentation is always per-source.
+   > Each data source **must** complete its own full `mapping_workflow` run from start to finish. Do NOT reuse the mapping output, field mappings, or mapping specification from one source for another source — even if the schemas appear similar. Every source gets its own independent `mapping_workflow` execution and its own mapping specification markdown (`docs/mapping/{source_name}_mapper.md`). Mapper code may be shared across sources if schemas are identical, but mapping documentation is always per-source.
+
+   > **Agent instruction — Organize downloaded resources immediately after download:**
+   >
+   > As soon as `mapping_workflow(action='start')` finishes downloading its
+   > workflow resources into the workspace directory — and **before any further
+   > mapping work proceeds** (profiling, planning, mapping) — run the organizer
+   > to relocate the just-downloaded reusable resources (the workflow `.py`
+   > scripts and the reference `.md`/`.json` files) to their policy-correct
+   > project locations:
+   >
+   > ```bash
+   > python3 senzing-bootcamp/scripts/organize_mapping_files.py \
+   >   --source <workspace_dir> \
+   >   --project-root <bootcamper_project_root>
+   > ```
+   >
+   > Where `<workspace_dir>` is the directory passed to `mapping_workflow` as
+   > `workspace_dir` and `<bootcamper_project_root>` is the bootcamper's project
+   > root directory.
+   >
+   > Review the organizer summary output to confirm files landed at the expected
+   > locations: `.py` scripts → `src/`, the entity specification
+   > (`senzing_entity_specification.md`) → `docs/reference/`, and reference
+   > `.md`/`.json` files → their policy-correct homes. Only then continue with
+   > the rest of the mapping workflow.
+
+   > **Agent instruction — Rely on the organizer's existing routing; handle
+   > unrouted files and blocked writes gracefully:**
+   >
+   > This guidance relies entirely on the organizer's **existing routing rules**
+   > to place reusable resources. Do **NOT** introduce alternative placement
+   > destinations or force a file to a location the organizer did not choose —
+   > the organizer already routes each file to its policy-correct home (`.py` →
+   > `src/`, the entity specification → `docs/reference/`, non-README `.md` →
+   > `docs/`, data → `data/`, config JSON → `config/`).
+   >
+   > When reviewing the organizer summary, handle these two cases by deferring to
+   > the summary rather than overriding the outcome:
+   >
+   > - **Unrouted files:** If a downloaded file matches no routing rule, the
+   >   organizer leaves it in `<workspace_dir>` and reports it as a warning in the
+   >   summary. Surface that warning to the bootcamper and leave the file where it
+   >   is — do **NOT** invent a destination for it.
+   > - **Blocked writes:** If the `write-policy-gate` blocks a write during the
+   >   organize step, the organizer leaves the affected file in `<workspace_dir>`
+   >   and reports the blocked destination as an error in the summary. Treat this
+   >   as a signal to review the summary — do **NOT** retry the write against a
+   >   different location to force the file through.
+   >
+   > In both cases the file simply stays in `<workspace_dir>`; review the summary
+   > and report the outcome rather than working around the organizer.
+
+   > **Agent instruction — Leave transient run artifacts in the workspace:**
+   >
+   > The post-download organizer relocates only the **reusable resources** that
+   > exist at download time. Later steps (profiling, planning, mapping,
+   > transformation) produce **transient run artifacts** that the workflow reads
+   > and writes for its own use during the run. These are NOT reusable resources
+   > and must stay in `<workspace_dir>`:
+   >
+   > - `profile_report.md`
+   > - `schema_hints.md`
+   > - `JOURNAL.md`
+   > - generated JSONL output
+   >
+   > While the `mapping_workflow` run is in progress, do **NOT** relocate, delete,
+   > or redirect these transient artifacts out of `<workspace_dir>` — the workflow
+   > needs them in place to keep functioning. Because they are produced *after*
+   > the post-download organize step, they are not present when the organizer runs
+   > and are therefore left untouched in the workspace by design.
 
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 
@@ -70,6 +140,37 @@ inclusion: manual
    > - **Verbose:** Show the full mapping table with a rationale column explaining the reasoning for each mapping decision and a confidence score per field (e.g., "first_name → NAME_FIRST — standard given name field, confidence: high").
    > - **Concise:** Show the mapping table with source field → Senzing attribute only, no rationale column or confidence scores (e.g., "first_name → NAME_FIRST").
 
+   > **Agent instruction — Availability-aware mapping validation (Step 4):**
+   >
+   > `mapping_workflow` advertises three validation scripts. Run them by availability — do NOT treat any one of them as a hard blocking gate that the bootcamper cannot clear.
+   >
+   > 1. **`sz_json_analyzer.py` (primary validation):** This is the primary mapping validation — structural + Entity-Specification validation — and is currently hosted (HTTP 200). When it is available, run it and use its result as the authoritative check. It is **sufficient to proceed**: when the verbatim/routing scripts below are unavailable, a passing `sz_json_analyzer.py` result lets you continue the mapping workflow.
+   >
+   > 2. **`sz_verbatim_check.py` (verbatim-fidelity, optional/best-effort):**
+   >    - **If available:** run the verbatim-fidelity check as before and report its result.
+   >    - **If unavailable** (HTTP 404 / no working inline fallback): tell the bootcamper the verbatim-fidelity check is being **skipped because the script is unavailable**, treat it as **optional/best-effort**, and **proceed** — do NOT block on it.
+   >
+   > 3. **`sz_routing_report.py` (routing-coverage, optional/best-effort):**
+   >    - **If available:** run the routing-coverage report as before and report its result.
+   >    - **If unavailable** (HTTP 404 / no working inline fallback): tell the bootcamper the routing-coverage report is being **skipped because the script is unavailable**, treat it as **optional/best-effort**, and **proceed** — do NOT block on it.
+   >
+   > In short: anchor validation on `sz_json_analyzer.py`; degrade the verbatim and routing checks to optional/best-effort when their scripts are unavailable, and never leave the bootcamper blocked at Step 4 because of a 404.
+
+   > **Agent instruction — Step 5 `detect_environment` menu handling (after Step 4 approval):**
+   >
+   > After a source's mapping is approved at Step 4, `mapping_workflow` returns Step 5 (`detect_environment`) with a four-option menu. Do NOT stop here — explain the menu and relay a recommendation so the bootcamper never hits a dead end.
+   >
+   > **Steps 5–8 are optional sandbox validation.** They let you trial-load the mapped source into a throwaway sandbox to preview entity resolution. They are NOT the production load — the real load happens in **Module 6**. The four `detect_environment` options are:
+   >
+   > - **skip** — skip the per-source sandbox test load and move on. **Recommended when one or more unmapped sources remain.**
+   > - **test_load** — run the optional sandbox test load (enters Phase 3, Steps 5–8) for this source.
+   > - **load+resolve** — run the optional sandbox test load and resolve entities (enters Phase 3, Steps 5–8) for this source.
+   > - **done** — finish the mapping workflow for this source without a sandbox test load.
+   >
+   > **Multi-source continuation (recommended path):** When one or more unmapped data sources remain, recommend the **skip** option — note that the real load is deferred to **Module 6**, so a per-source sandbox test load adds little here — and automatically continue to the next unmapped source by starting its own `mapping_workflow` run. Tell the bootcamper: "Steps 5–8 are an optional sandbox preview; since you still have sources to map and the real load happens in Module 6, I'll skip the per-source test load and move on to the next unmapped source."
+   >
+   > **Explicit choice is preserved:** If the bootcamper explicitly chooses **test_load** or **load+resolve**, follow that path into Phase 3 (Steps 5–8) unchanged — see #[[file:senzing-bootcamp/steering/module-05-phase3-test-load.md]]. The real production load still happens in Module 6 regardless.
+
    **Checkpoint:** Write step 11 to `config/bootcamp_progress.json`.
 
 5. **Generate starter code:** Advance with `action='paths'`. **Tell user:** Show a sample target JSON record so they see the output format.
@@ -80,6 +181,34 @@ inclusion: manual
    > - **Concise:** State the output file path and format only (e.g., "Output: data/transformed/customers.jsonl — one JSON record per line").
 
    **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
+
+   > **Agent instruction — Organize mapping output files:**
+   >
+   > After `mapping_workflow` generates output files into the workspace directory,
+   > run the organizer script to sort them into the correct project subdirectories:
+   >
+   > ```bash
+   > python3 senzing-bootcamp/scripts/organize_mapping_files.py \
+   >   --source <workspace_dir> \
+   >   --project-root <bootcamper_project_root>
+   > ```
+   >
+   > Where `<workspace_dir>` is the directory passed to `mapping_workflow` as
+   > `workspace_dir` and `<bootcamper_project_root>` is the bootcamper's project
+   > root directory. Review the output summary to confirm files landed correctly.
+
+   > **Agent instruction — Refresh the docs index:**
+   >
+   > After running the organizer, regenerate the documentation index so the
+   > bootcamper's `docs/README.md` lists every document under `docs/`:
+   >
+   > ```bash
+   > python3 senzing-bootcamp/scripts/generate_docs_index.py \
+   >   --project-root <bootcamper_project_root>
+   > ```
+   >
+   > This creates or refreshes `docs/README.md`. Regenerate the index whenever
+   > documents are added across modules so it stays current.
 
 6. **Build transformation program:** Use `generate_scaffold` or mapping workflow output as foundation. Handle: input reading, field mapping, type conversion, cleansing, `DATA_SOURCE`/`RECORD_ID`, error handling. Save to `src/transform/transform_[name].[ext]`. **Tell user:** File path, what it reads/writes, what it handles.
 
@@ -101,7 +230,7 @@ inclusion: manual
    > - **Verbose:** Show the overall quality score, per-feature coverage breakdown with matching implications (e.g., "NAME coverage 98% — strong for matching" / "ADDR coverage 42% — may reduce match accuracy"), and all issues found with explanations.
    > - **Concise:** Show the overall quality score, a count of mapped vs. unmapped fields, and warnings only (e.g., "Quality: 85/100. 8 mapped, 3 unmapped. ⚠️ Low address coverage may affect matching.").
 
-   **Offer visualization:** "Would you like me to create a web page showing the quality analysis? It'll have coverage charts and the field mapping summary." If yes, generate HTML and save to `docs/mapping_[name]_quality.html`.
+   **Offer visualization:** "Would you like me to create a web page showing the quality analysis? It'll have coverage charts and the field mapping summary." If yes, generate HTML and save to `docs/mapping/mapping_[name]_quality.html`.
 
    **Checkpoint:** Write step 15 to `config/bootcamp_progress.json`.
 
@@ -120,9 +249,11 @@ inclusion: manual
 
     > **Agent instruction — Data Source Registry:** Update the source's `mapping_status` to `complete` in `config/data_sources.yaml` and set `updated_at`. If a transformed file was created, update `file_path` to the `data/transformed/` output.
 
-11. **Save and document:** Program in `src/transform/`, docs in `docs/mapping_[name].md` (field mappings, logic, quality, how to run), sample output in `data/transformed/[name]_sample.jsonl`. **Transformation lineage:** Have the bootcamper copy the transformation lineage template (#[[file:senzing-bootcamp/templates/transformation_lineage.md]]) to `docs/transformation_lineage_[name].md` and fill it in for this data source — covering source file info, transformation program, output file info, field mappings, format changes, filters, quality improvements, and before/after record counts.
+11. **Save and document:** Program in `src/transform/`, docs in `docs/mapping/mapping_[name].md` (field mappings, logic, quality, how to run), sample output in `data/transformed/[name]_sample.jsonl`. **Transformation lineage:** Have the bootcamper copy the transformation lineage template (#[[file:senzing-bootcamp/templates/transformation_lineage.md]]) to `docs/mapping/transformation_lineage_[name].md` and fill it in for this data source — covering source file info, transformation program, output file info, field mappings, format changes, filters, quality improvements, and before/after record counts.
 
-    **Per-source mapping specification:** Save a mapping specification markdown to `docs/{source_name}_mapper.md` for this data source. This file is always per-source, even when the transformation program is shared. Use the following structure:
+    **Entity specification reference:** The Senzing entity specification reference is written only to `docs/reference/senzing_entity_specification.md` — a single canonical copy. Do NOT create a copy in the `docs/` root; if one already exists there, remove it (or leave it to the organizer's dedup pass, which keeps the single `docs/reference/` copy).
+
+    **Per-source mapping specification:** Save a mapping specification markdown to `docs/mapping/{source_name}_mapper.md` for this data source. This file is always per-source, even when the transformation program is shared. Use the following structure:
 
     ```markdown
     # Mapping Specification: {SOURCE_NAME}
@@ -153,13 +284,16 @@ inclusion: manual
 
     > **🚫 MANDATORY GATE — Do NOT Write Module Completion Checkpoint Until This Passes:**
     >
-    > **BEFORE writing the module completion checkpoint:** List ALL files in `data/transformed/` and verify that EACH has a corresponding `docs/{source_name}_mapper.md`. If any are missing, create them NOW. Do NOT write the module completion checkpoint until all mapping specs exist. This is a hard requirement — the module is not complete without per-source mapping specifications for every transformed data source.
+    > **BEFORE writing the module completion checkpoint:** List ALL files in `data/transformed/` and verify that EACH has a corresponding `docs/mapping/{source_name}_mapper.md`. If any are missing, create them NOW. Do NOT write the module completion checkpoint until all mapping specs exist. This is a hard requirement — the module is not complete without per-source mapping specifications for every transformed data source.
 
-    **Per-source completion checkpoint:** Before marking a source as complete, verify that `docs/{source_name}_mapper.md` exists for that source. Do not proceed to the next source or mark the current source as done until its mapping specification markdown is saved. When all sources are mapped, confirm that every completed source has its own `docs/{source_name}_mapper.md` file.
+    **Per-source completion checkpoint:** Before marking a source as complete, verify that `docs/mapping/{source_name}_mapper.md` exists for that source. Do not proceed to the next source or mark the current source as done until its mapping specification markdown is saved. When all sources are mapped, confirm that every completed source has its own `docs/mapping/{source_name}_mapper.md` file.
 
     **Checkpoint:** Write step 19 to `config/bootcamp_progress.json`.
 
-13. **Transition** to Module 2 (SDK Setup) once all sources mapped.
+13. **Transition** once all sources are mapped. Choose the next module by whether the Senzing SDK is already set up — check `config/bootcamp_progress.json` for Module 2 completion before deciding:
+
+    - **If Module 2 (SDK Setup) is already complete** (e.g., the bootcamper ran the optional Module 3 System Verification, which requires a working SDK, or the SDK was installed during onboarding): skip Module 2 and transition directly to **Module 6 (Data Processing)** to load the mapped data.
+    - **If Module 2 is not yet complete:** transition to **Module 2 (SDK Setup)** — it is the next module that needs the SDK, and loading in Module 6 depends on it.
 
     **Checkpoint:** Write step 20 to `config/bootcamp_progress.json`.
 

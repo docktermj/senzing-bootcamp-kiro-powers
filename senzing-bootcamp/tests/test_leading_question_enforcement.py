@@ -17,7 +17,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -25,7 +25,7 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-_MODULE_01 = _BOOTCAMP_DIR / "steering" / "module-01-business-problem.md"
+_MODULE_01 = _BOOTCAMP_DIR / "steering" / "module-01-phase1-discovery.md"
 _MODULE_TRANSITIONS = _BOOTCAMP_DIR / "steering" / "module-transitions.md"
 _CONVERSATION_PROTOCOL = _BOOTCAMP_DIR / "steering" / "conversation-protocol.md"
 
@@ -128,11 +128,11 @@ def _contains_step_chaining_instruction(text: str, next_step: int) -> bool:
         rf"continue.*to\s+Step\s+{next_step}",
         rf"Step\s+{next_step}.*👉\s*question",
         rf"👉\s*question.*Step\s+{next_step}",
-        rf"next\s+numbered\s+step",
-        rf"immediately\s+proceed",
-        rf"same\s+turn",
-        rf"do\s+NOT\s+end\s+your\s+turn",
-        rf"All\s+sub-steps\s+complete",
+        r"next\s+numbered\s+step",
+        r"immediately\s+proceed",
+        r"same\s+turn",
+        r"do\s+NOT\s+end\s+your\s+turn",
+        r"All\s+sub-steps\s+complete",
     ]
     combined = "|".join(patterns)
     return bool(re.search(combined, text, re.IGNORECASE))
@@ -249,7 +249,7 @@ class TestModule01StepChainingInstruction:
 
     **Validates: Requirements 1.1, 1.2**
 
-    Parse module-01-business-problem.md, extract the Step 7d section, and
+    Parse module-01-phase1-discovery.md, extract the Step 7d section, and
     assert it contains an explicit instruction directing the agent to proceed
     to Step 8's 👉 question after the checkpoint. On unfixed content this
     will FAIL because no such instruction exists — Step 7d contains only

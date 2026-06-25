@@ -1,10 +1,10 @@
 ```text
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚀🚀🚀  MODULE 1: UNDERSTAND BUSINESS PROBLEM  🚀🚀🚀
+🚀🚀🚀  MODULE 1: BUSINESS PROBLEM  🚀🚀🚀
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-# Module 1: Understand Business Problem
+# Module 1: Business Problem
 
 > **Agent workflow:** The agent follows `steering/module-01-business-problem.md` for this module's step-by-step workflow.
 

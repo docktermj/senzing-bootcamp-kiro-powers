@@ -20,15 +20,27 @@ _TESTS_DIR = str(Path(__file__).resolve().parent)
 if _TESTS_DIR not in sys.path:
     sys.path.insert(0, _TESTS_DIR)
 
-from hook_test_helpers import parse_categories_yaml
+from hook_test_helpers import parse_categories_yaml, required_fields_for_action
 
 # ---------------------------------------------------------------------------
 # Module-level constants
 # ---------------------------------------------------------------------------
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
-REGISTRY_CRITICAL_PATH = Path("senzing-bootcamp/steering/hook-registry-critical.md")
-REGISTRY_MODULES_PATH = Path("senzing-bootcamp/steering/hook-registry-modules.md")
+STEERING_DIR = Path("senzing-bootcamp/steering")
+REGISTRY_CRITICAL_PATH = STEERING_DIR / "hook-registry-critical.md"
+# The single hook-registry-modules.md monolith was replaced by per-module
+# registry slices (hook-registry-module-NN.md / hook-registry-module-any.md).
+MODULE_SLICE_GLOB = "hook-registry-module-*.md"
+
+
+def module_slice_paths() -> list[Path]:
+    """Return the per-module registry slice paths in sorted order.
+
+    Returns:
+        Sorted list of ``hook-registry-module-*.md`` paths under the steering dir.
+    """
+    return sorted(STEERING_DIR.glob(MODULE_SLICE_GLOB))
 
 
 def _expected_hook_count() -> int:
@@ -41,6 +53,25 @@ def _expected_hook_count() -> int:
 
 
 EXPECTED_HOOK_COUNT = _expected_hook_count()
+
+
+def _expected_registry_entry_count() -> int:
+    """Derive the expected number of detailed registry entries.
+
+    The detailed registries (hook-registry-critical.md + the per-module
+    hook-registry-module-*.md slices)
+    list a hook once per category bucket it belongs to. A hook mapped to multiple
+    modules in hook-categories.yaml (e.g. ``enforce-visualization-offers`` under
+    modules 3, 5, 7, 8) therefore appears once under EACH of those module sections,
+    so the total entry count is the sum of all category memberships — not the number
+    of unique hooks. Unique-hook coverage is asserted separately against
+    EXPECTED_HOOK_COUNT.
+    """
+    categories = parse_categories_yaml()
+    return sum(len(ids) for ids in categories.values())
+
+
+EXPECTED_REGISTRY_ENTRY_COUNT = _expected_registry_entry_count()
 
 VALID_EVENT_TYPES = {
     "promptSubmit",
@@ -151,7 +182,7 @@ def parse_registry(
         List of RegistryEntry objects.
     """
     if registry_paths is None:
-        registry_paths = [REGISTRY_CRITICAL_PATH, REGISTRY_MODULES_PATH]
+        registry_paths = [REGISTRY_CRITICAL_PATH, *module_slice_paths()]
 
     entries: list[RegistryEntry] = []
 
@@ -303,8 +334,11 @@ class TestJsonStructure:
 
     @pytest.mark.parametrize("filename,data", _hook_data, ids=_hook_ids)
     def test_required_fields_present(self, filename: str, data: dict):
-        """Each hook has all required fields (Req 1.2)."""
-        missing = validate_required_fields(data)
+        """Each hook has all required fields for its action type (Req 1.2).
+
+        askAgent hooks require then.prompt; runCommand hooks require then.command.
+        """
+        missing = required_fields_for_action(data)
         assert not missing, (
             f'"{filename}" missing required field(s): {", ".join(missing)}'
         )
@@ -333,16 +367,32 @@ class TestJsonStructure:
 
     @pytest.mark.parametrize("filename,data", _hook_data, ids=_hook_ids)
     def test_then_type_is_ask_agent(self, filename: str, data: dict):
-        """Every hook's then.type is askAgent (Req 1.5)."""
+        """Every hook's then.type is askAgent or runCommand (Req 1.5).
+
+        Most hooks use askAgent; session-log-events uses runCommand to log writes
+        in-process with no agent round-trip. runCommand hooks must carry a command.
+        """
         actual = data.get("then", {}).get("type")
-        assert actual == "askAgent", (
-            f'"{filename}" then.type is "{actual}", expected "askAgent"'
+        assert actual in ("askAgent", "runCommand"), (
+            f'"{filename}" then.type is "{actual}", expected "askAgent" or "runCommand"'
         )
+        if actual == "runCommand":
+            command = data.get("then", {}).get("command", "")
+            assert isinstance(command, str) and command.strip(), (
+                f'"{filename}" is a runCommand hook but has no then.command'
+            )
 
     @pytest.mark.parametrize("filename,data", _hook_data, ids=_hook_ids)
     def test_prompt_minimum_length(self, filename: str, data: dict):
-        """Every hook's then.prompt is at least 20 characters (Req 1.6)."""
-        prompt = data.get("then", {}).get("prompt", "")
+        """askAgent prompts are >= 20 chars; runCommand hooks carry a command (Req 1.6)."""
+        then = data.get("then", {})
+        if then.get("type") == "runCommand":
+            command = then.get("command", "")
+            assert isinstance(command, str) and command.strip(), (
+                f'"{filename}" is a runCommand hook but has no then.command'
+            )
+            return
+        prompt = then.get("prompt", "")
         assert len(prompt) >= 20, (
             f'"{filename}" prompt is {len(prompt)} chars, minimum is 20'
         )
@@ -466,12 +516,22 @@ class TestHookCount:
         )
 
     def test_registry_entry_count(self):
-        """Exactly 24 registry entries exist (Req 5.2, 5.3)."""
+        """Registry entries cover every hook, with multi-module hooks listed per module.
+
+        Multi-module hooks (e.g. enforce-visualization-offers under modules 3, 5, 7, 8)
+        appear once under each module section, so the total entry count equals the sum
+        of category memberships; unique-hook coverage equals EXPECTED_HOOK_COUNT.
+        """
 
         entries = parse_registry()
         actual = len(entries)
-        assert actual == EXPECTED_HOOK_COUNT, (
-            f"Expected {EXPECTED_HOOK_COUNT} registry entries, found {actual}"
+        assert actual == EXPECTED_REGISTRY_ENTRY_COUNT, (
+            f"Expected {EXPECTED_REGISTRY_ENTRY_COUNT} registry entries, found {actual}"
+        )
+        unique_ids = {entry.id for entry in entries}
+        assert len(unique_ids) == EXPECTED_HOOK_COUNT, (
+            f"Expected {EXPECTED_HOOK_COUNT} unique hooks documented, "
+            f"found {len(unique_ids)}"
         )
 
 
@@ -524,8 +584,15 @@ class TestRealHookFiles:
         assert len(get_hook_files()) == EXPECTED_HOOK_COUNT
 
     def test_registry_entry_count_is_25(self):
-        """Registry entry count is exactly 25 (Req 5.2)."""
-        assert len(parse_registry()) == EXPECTED_HOOK_COUNT
+        """Registry entry count equals the sum of category memberships.
+
+        Multi-module hooks are listed once per module, so the detailed registries
+        contain EXPECTED_REGISTRY_ENTRY_COUNT entries covering EXPECTED_HOOK_COUNT
+        unique hooks.
+        """
+        entries = parse_registry()
+        assert len(entries) == EXPECTED_REGISTRY_ENTRY_COUNT
+        assert len({entry.id for entry in entries}) == EXPECTED_HOOK_COUNT
 
     def test_valid_event_types_has_10_entries(self):
         """VALID_EVENT_TYPES constant contains all 10 expected event type strings (Req 7.1)."""
@@ -578,5 +645,6 @@ class TestRealHookFiles:
             file_desc = _hook_data_by_id[hook_id]["description"]
             registry_desc = _registry_by_id[hook_id].description
             assert file_desc == registry_desc, (
-                f'"{hook_id}" description mismatch — file: "{file_desc}", registry: "{registry_desc}"'
+                f'"{hook_id}" description mismatch — file: "{file_desc}", '
+                f'registry: "{registry_desc}"'
             )

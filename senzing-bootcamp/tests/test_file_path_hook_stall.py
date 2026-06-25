@@ -20,7 +20,7 @@ import json
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -162,7 +162,8 @@ class TestMissingRetryMandate:
             "hooks. Only the silence rule exists ('produce zero output') which "
             "requires the agent to infer that it should retry. Under cumulative "
             "attention load, this inferential step fails and the agent stalls. "
-            f"Hooks section excerpt: {content[content.find('## Hooks'):content.find('## Hooks') + 500]}"
+            f"Hooks section excerpt: "
+            f"{content[content.find('## Hooks'):content.find('## Hooks') + 500]}"
         )
 
     def test_agent_instructions_contains_pretooluse_retry_rule(self) -> None:
@@ -331,7 +332,9 @@ class TestExternalPathBlockingPreserved:
                 path_prefix = prefix
                 break
 
-        assert path_prefix is not None, f"Test setup error: {path} doesn't match any external prefix"
+        assert path_prefix is not None, (
+            f"Test setup error: {path} doesn't match any external prefix"
+        )
         assert path_prefix in prompt, (
             f"Hook prompt must reference external path prefix '{path_prefix}' "
             f"to block writes to paths like '{path}'. "

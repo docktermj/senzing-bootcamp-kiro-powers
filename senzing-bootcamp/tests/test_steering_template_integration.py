@@ -8,8 +8,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pytest
-
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 LINTER_SCRIPT = REPO_ROOT / "senzing-bootcamp" / "scripts" / "lint_steering.py"
 
@@ -83,7 +81,7 @@ class TestSkipTemplateSuppressesOutput:
 
         # Filter to only lines that are template-specific
         skip_lines = stdout_skip.splitlines()
-        template_lines = [
+        [
             line for line in skip_lines
             if any(msg in line for msg in template_messages)
             # Exclude existing Rule 4 checkpoint violations (not template rules)
@@ -93,7 +91,7 @@ class TestSkipTemplateSuppressesOutput:
         # The --skip-template output should have fewer template-specific lines
         # than the standard run
         with_lines = stdout_with.splitlines()
-        with_template_lines = [
+        [
             line for line in with_lines
             if any(msg in line for msg in template_messages[:6])
         ]
@@ -112,7 +110,7 @@ class TestSkipTemplateSuppressesOutput:
             ])
         ]
         assert len(skip_template_specific) == 0, (
-            f"Found template-specific violations with --skip-template:\n"
+            "Found template-specific violations with --skip-template:\n"
             + "\n".join(skip_template_specific[:5])
         )
 
@@ -136,6 +134,7 @@ class TestStdlibOnly:
             "dataclasses", "collections", "typing", "textwrap",
             "string", "io", "functools", "itertools", "enum",
             "abc", "copy", "math", "operator", "contextlib",
+            "importlib",
         }
 
         non_stdlib = []

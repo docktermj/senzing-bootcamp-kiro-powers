@@ -6,7 +6,6 @@ groups covering CLI parsing, journal handling, HTML structure, and ZIP output.
 
 from __future__ import annotations
 
-import io
 import json
 import os
 import re
@@ -17,27 +16,30 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 from export_results import (
+    MODULE_NAMES,
+    VALID_ARTIFACT_TYPES,
     ArtifactDiscovery,
     ArtifactEntry,
     ArtifactManifest,
     EntityStatistics,
     ExportMetrics,
     HTMLRenderer,
-    MetricsExtractor,
     ModuleFilter,
     PerformanceMetrics,
     ProgressData,
     QualityScore,
     SummaryGenerator,
-    VALID_ARTIFACT_TYPES,
     ZIPAssembler,
     _parse_args,
     main,
 )
+
+#: Canonical bootcamp module count (single source: export_results.MODULE_NAMES).
+_MODULE_COUNT = len(MODULE_NAMES)
 
 # ---------------------------------------------------------------------------
 # Task 8.1 — Hypothesis strategies for all data types
@@ -57,7 +59,7 @@ def st_artifact_entry() -> st.SearchStrategy[ArtifactEntry]:
             min_size=3, max_size=60,
         ).filter(lambda p: p.strip() != "" and "/" not in p[:1]),
         artifact_type=st.sampled_from(_ARTIFACT_TYPES),
-        module=st.one_of(st.none(), st.integers(min_value=1, max_value=12)),
+        module=st.one_of(st.none(), st.integers(min_value=1, max_value=_MODULE_COUNT)),
         file_size=st.integers(min_value=0, max_value=10_000_000),
         description=st.text(min_size=1, max_size=120),
     )
@@ -77,9 +79,10 @@ def st_progress_data() -> st.SearchStrategy[ProgressData]:
     return st.builds(
         ProgressData,
         modules_completed=st.lists(
-            st.integers(min_value=1, max_value=12), unique=True, max_size=12,
+            st.integers(min_value=1, max_value=_MODULE_COUNT), unique=True,
+            max_size=_MODULE_COUNT,
         ),
-        current_module=st.one_of(st.none(), st.integers(min_value=1, max_value=12)),
+        current_module=st.one_of(st.none(), st.integers(min_value=1, max_value=_MODULE_COUNT)),
         language=st.sampled_from(_LANGUAGES),
         data_sources=st.just([]),
         track=st.sampled_from(_TRACKS),
@@ -92,10 +95,22 @@ def st_quality_score() -> st.SearchStrategy[QualityScore]:
         QualityScore,
         source_name=st.text(min_size=1, max_size=30),
         overall=st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
-        completeness=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        consistency=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        format_compliance=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
-        uniqueness=st.one_of(st.none(), st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False)),
+        completeness=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        consistency=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        format_compliance=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
+        uniqueness=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        ),
     )
 
 
@@ -103,8 +118,14 @@ def st_performance_metrics() -> st.SearchStrategy[PerformanceMetrics]:
     """Strategy producing random PerformanceMetrics instances."""
     return st.builds(
         PerformanceMetrics,
-        loading_throughput_rps=st.one_of(st.none(), st.floats(min_value=0.0, max_value=10000.0, allow_nan=False, allow_infinity=False)),
-        query_response_ms=st.one_of(st.none(), st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False)),
+        loading_throughput_rps=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=10000.0, allow_nan=False, allow_infinity=False),
+        ),
+        query_response_ms=st.one_of(
+            st.none(),
+            st.floats(min_value=0.0, max_value=5000.0, allow_nan=False, allow_infinity=False),
+        ),
         database_type=st.one_of(st.none(), st.sampled_from(["sqlite", "postgresql"])),
     )
 
@@ -158,13 +179,13 @@ class TestProperty1ModuleValidation:
         """Feature: export-results, Property 1: Module number validation partitions correctly"""
         valid, invalid = ModuleFilter.validate_modules(modules)
 
-        # Every valid is in 1-12
+        # Every valid is in 1.._MODULE_COUNT
         for v in valid:
-            assert 1 <= v <= 12, f"{v} should be in 1-12"
+            assert 1 <= v <= _MODULE_COUNT, f"{v} should be in 1-{_MODULE_COUNT}"
 
-        # Every invalid is outside 1-12
+        # Every invalid is outside 1.._MODULE_COUNT
         for i in invalid:
-            assert not (1 <= i <= 12), f"{i} should be outside 1-12"
+            assert not (1 <= i <= _MODULE_COUNT), f"{i} should be outside 1-{_MODULE_COUNT}"
 
         # Union preserves multiplicity
         assert sorted(valid + invalid) == sorted(modules)
@@ -283,7 +304,12 @@ class TestProperty3VisualizationDetection:
                 content = f"<html><body>{filler} {marker} {filler}</body></html>"
             else:
                 # Ensure no markers appear in filler
-                safe_filler = re.sub(r"\b(d3|force|graph|dashboard|entity|svg)\b", "xxxx", filler, flags=re.IGNORECASE)
+                safe_filler = re.sub(
+                    r"\b(d3|force|graph|dashboard|entity|svg)\b",
+                    "xxxx",
+                    filler,
+                    flags=re.IGNORECASE,
+                )
                 content = f"<html><body>{safe_filler}</body></html>"
 
             (tmp_path / "test_viz.html").write_text(content, encoding="utf-8")
@@ -295,7 +321,9 @@ class TestProperty3VisualizationDetection:
             if has_marker:
                 assert "test_viz.html" in viz_paths, "File with marker should be a visualization"
             else:
-                assert "test_viz.html" not in viz_paths, "File without marker should not be a visualization"
+                assert "test_viz.html" not in viz_paths, (
+                    "File without marker should not be a visualization"
+                )
         finally:
             shutil.rmtree(tmp_path, ignore_errors=True)
 
@@ -320,7 +348,9 @@ class TestProperty4ManifestMetadata:
         """Feature: export-results, Property 4: Manifest entries have complete metadata"""
         for entry in manifest.artifacts:
             assert entry.path, "path must be non-empty"
-            assert entry.artifact_type in VALID_ARTIFACT_TYPES, f"invalid type: {entry.artifact_type}"
+            assert entry.artifact_type in VALID_ARTIFACT_TYPES, (
+                f"invalid type: {entry.artifact_type}"
+            )
             assert entry.file_size >= 0, "file_size must be non-negative"
             assert entry.description, "description must be non-empty"
 
@@ -356,9 +386,9 @@ class TestProperty5ModuleCompletionTable:
         renderer = HTMLRenderer()
         html = renderer._render_module_table(progress)
 
-        # Exactly 12 <tr> data rows in tbody (exclude header row)
+        # Exactly one <tr> data row per module in tbody (exclude header row)
         rows = re.findall(r"<tr><td>.*?</td></tr>", html, re.DOTALL)
-        assert len(rows) == 12, f"Expected 12 rows, got {len(rows)}"
+        assert len(rows) == _MODULE_COUNT, f"Expected {_MODULE_COUNT} rows, got {len(rows)}"
 
         # Each completed module marked
         for m in progress.modules_completed:
@@ -371,7 +401,7 @@ class TestProperty5ModuleCompletionTable:
 
         # Progress percentage
         n = len(progress.modules_completed)
-        pct = n * 100 / 12
+        pct = n * 100 / _MODULE_COUNT
         assert f"{pct:.0f}%" in html
 
         # Language displayed if provided
@@ -541,7 +571,8 @@ class TestProperty9ModuleFilter:
         manifest=st_artifact_manifest(),
         modules=st.one_of(
             st.none(),
-            st.lists(st.integers(min_value=1, max_value=12), unique=True, max_size=12),
+            st.lists(st.integers(min_value=1, max_value=_MODULE_COUNT), unique=True,
+                     max_size=_MODULE_COUNT),
         ),
     )
     @settings(max_examples=10)
@@ -925,9 +956,15 @@ class TestZIPReportAndModuleDefault:
     def test_no_modules_includes_all_artifacts(self):
         """When modules is None, filter returns all artifacts."""
         arts = [
-            ArtifactEntry(path="a.py", artifact_type="source_code", module=1, file_size=10, description="a"),
-            ArtifactEntry(path="b.py", artifact_type="source_code", module=5, file_size=20, description="b"),
-            ArtifactEntry(path="c.md", artifact_type="journal", module=None, file_size=30, description="c"),
+            ArtifactEntry(
+                path="a.py", artifact_type="source_code", module=1, file_size=10, description="a"
+            ),
+            ArtifactEntry(
+                path="b.py", artifact_type="source_code", module=5, file_size=20, description="b"
+            ),
+            ArtifactEntry(
+                path="c.md", artifact_type="journal", module=None, file_size=30, description="c"
+            ),
         ]
         manifest = ArtifactManifest(artifacts=arts, scan_timestamp="2025-01-15T10:00:00Z")
         filtered = ModuleFilter.filter(manifest, None)

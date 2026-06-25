@@ -14,7 +14,6 @@ import re
 import sys
 from dataclasses import dataclass
 
-
 # ── Constants ─────────────────────────────────────────────────────────────
 
 CURRENT_SCHEMA_VERSION: str = "2"

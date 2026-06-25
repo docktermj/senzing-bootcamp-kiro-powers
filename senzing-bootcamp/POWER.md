@@ -1,7 +1,7 @@
 ---
 name: "senzing-bootcamp"
 displayName: "Senzing Bootcamp"
-version: "0.12.0"
+version: "1.0.0"
 description: "Guided 11-module bootcamp for learning Senzing entity resolution, from first demo to production deployment."
 keywords: ["senzing", "bootcamp", "entity-resolution", "senzing-bootcamp", "learning-track"]
 author: "Senzing"
@@ -17,15 +17,30 @@ This power provides a guided bootcamp for learning Senzing entity resolution thr
 
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
-This power works best with Claude Opus 4.6 or similar.
+This power works best with Claude Opus 4.8 or similar.
+
+## What's New in 1.0.0
+
+- First production release. The full CI validation suite is green across every gate — power integrity, steering token budget, CommonMark, module and MCP-tool inventory, hook registry/prompt sync, prerequisites, governance, external links, ruff, and the conversational eval harness — with pytest at 5,708 passed / 0 failed / 88 skipped
+- Added two inventory CI gates: `check_mcp_tool_inventory()` pins POWER.md / ARCHITECTURE.md to the canonical 13-tool list in `scripts/mcp_tool_inventory.py`, and `check_module_inventory()` cross-checks the POWER.md module table and every script module-name map against `config/module-dependencies.yaml` — CI now fails on any MCP-tool or module-number drift
+- Corrected module numbering/naming drift across docs, diagrams, and scripts to the canonical ascending roster (1 → 2 → … → 11); HTML dashboards now compute completion against the live roster instead of a phantom 12th module
+- MCP tool inventory re-confirmed live against the Senzing MCP server (`sz-mcp-coworker` v1.26.8): 13 tools, names matching the pinned inventory
+- Normalized the `analyze_record` call signature to `analyze_record(file_paths=[...], workspace_dir="<dir>", version="current")` across steering and module docs
+
+## What's New in 0.12.1
+
+- "Lint Python (ruff)" CI gate brought from 438 violations to 0 — the full CI suite is now green, with pytest at 4,830 passed / 0 failed
+- Fixed 3 correctness defects the ruff gate surfaced: two duplicate test functions that silently shadowed earlier definitions, and a duplicate dict key that dropped a fixture entry
+- Style-only ruff remediation (long-line reflow, import-order suppression for the documented `sys.path` pattern, unused-variable/whitespace cleanup, ambiguous-name renames) with no runtime behavior change to any script
+- External-link checking (`validate_links.py`) wired into the CI gate sequence
 
 ## What's New in 0.12.0
 
-- Production-readiness pass: all CI validation steps green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `validate_dependencies`, `sync_hook_registry --verify`, `validate_prerequisites`, `validate_progress_ci`); pytest at 2,603 passed / 0 failed / 0 errors
-- CommonMark compliance across all 491 markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
+- Production-readiness pass: CI validation steps green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `validate_dependencies`, `sync_hook_registry --verify`, `validate_prerequisites`, `validate_progress_ci`); pytest at 4,830 passed / 0 failed / 0 errors
+- CommonMark compliance across all shipped markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
 - Consolidated visualization steering: merged visualization-protocol and visualization-reference into `visualization-guide.md` (saves ~3,000 tokens of context budget)
 - User-state config files (`bootcamp_progress.json`, `bootcamp_preferences.yaml`, `er_baseline_vendors.json`) no longer tracked in git — `.example` templates provided instead
-- Hook count reconciled to 28 (consolidated `enforce-file-path-policies`, `enforce-single-question`, and `block-direct-sql` into `write-policy-gate`; added `enforce-mandatory-gate` and `enforce-gate-on-stop` to documentation)
+- Hook count reconciled to 29 (consolidated `enforce-file-path-policies`, `enforce-single-question`, and `block-direct-sql` into `write-policy-gate`; added `enforce-mandatory-gate`, `enforce-gate-on-stop`, and `session-log-events` to documentation)
 
 See the CHANGELOG for the full release history.
 
@@ -43,7 +58,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 | 2 — SDK Setup                           | Installs and configures the Senzing SDK on your machine                   | Everything else depends on a working SDK installation                                                            |
 | 3 — System Verification                 | Runs entity resolution on Senzing TruthSet data and verifies expected entity counts | Validates your entire setup end-to-end against a known-good reference dataset — proving the system works before you use your own data |
 | 4 — Data Collection                     | Gets your data files into the project                                     | You can't resolve entities without data to work with                                                             |
-| 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Entity Specification format. Optional Phase 3 test-loads and evaluates results using `mapping_workflow` steps 5–8 | Identifies issues before they cause bad matches, gets data into the format Senzing needs, and optionally validates entity resolution quality before production loading |
+| 5 — Data Quality & Mapping              | Scores data quality, then transforms your data into Senzing Generic Entity Specification (SGES) format. Optional Phase 3 test-loads and evaluates results using `mapping_workflow` steps 5–8 | Identifies issues before they cause bad matches, gets data into the format Senzing needs, and optionally validates entity resolution quality before production loading |
 | 6 — Data Processing                     | Loads all data sources, processes redo records, and validates entity resolution results | Your data is loaded and entity resolution is running — duplicates matched, cross-source connections found |
 | 7 — Query, Visualize, and Discover       | Builds query programs and visualizations for your resolved entities       | Proves the system answers your business questions                                                                |
 | 8 — Performance Testing & Benchmarking  | Benchmarks and optimizes for your data volume                             | Ensures the system handles production-scale data                                                                 |
@@ -53,7 +68,7 @@ The bootcamp is a series of modules. Each module builds on the previous ones, pr
 
 **Don't have data handy?** No problem — Senzing provides [CORD (Collections Of Relatable Data)](https://senzing.com/senzing-ready-data-collections-cord/), curated real-world-like datasets designed specifically for entity resolution evaluation. CORD includes three ready-made datasets — Las Vegas, London, and Moscow — that you can use throughout the bootcamp. Use `get_sample_data` to download them. If CORD data doesn't meet your specific needs, test data can also be generated at any point as a fallback.
 
-**Licensing:** Senzing includes a built-in evaluation license that allows 500 records, which is enough for the bootcamp. If you have your own license (or need more capacity), you can configure it during Module 2.
+**Licensing:** Senzing ships with a built-in evaluation license you already have — it covers around 500 records, which is enough to complete the bootcamp. If you need to process more, you have options: apply an existing Senzing license, request an evaluation license through Senzing support, or (when available) request one in-flow during the bootcamp. You can configure an existing license during Module 2, and the agent sources the current capacity from the Senzing MCP server.
 
 ## Quick Start
 
@@ -68,7 +83,7 @@ Module 2 (SDK Setup) is inserted automatically before any module that needs it.
 
 After completing any track, the agent offers a **graduation workflow** that transitions your bootcamp project into a production-ready codebase — clean directory structure, production configs, CI/CD pipeline, and a migration checklist. Say "run graduation" or "graduate" at any time to start it manually.
 
-**Experienced users:** Skip to Module 5 (have Entity Specification data), Module 6 (SDK + data ready), or Module 7 (data loaded).
+**Experienced users:** Skip to Module 5 (have Senzing Generic Entity Specification (SGES) data), Module 6 (SDK + data ready), or Module 7 (data loaded).
 
 ## Relationship to Senzing Power
 
@@ -85,17 +100,137 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 
 **Module Workflows (load the one you need):**
 
-- `module-01-business-problem.md` — Module 1: Business Problem (split: `module-01-phase2-document-confirm.md`)
+- `module-01-business-problem.md` — Module 1: Business Problem (split: `module-01-phase1-discovery.md`, `module-01-phase2-document-confirm.md`)
 - `module-02-sdk-setup.md` — Module 2: SDK Setup
-- `module-03-system-verification.md` — Module 3: System Verification (split: `module-03-phase2-visualization.md`)
+- `module-03-system-verification.md` — Module 3: System Verification (split: `module-03-phase1-verification.md`, `module-03-phase2-visualization.md`, `module-03-phase3-report-close.md`)
 - `module-04-data-collection.md` — Module 4: Data Collection
-- `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping
-- `module-06-data-processing.md` — Module 6: Data Processing
-- `module-07-query-visualize-discover.md` — Module 7: Query, Visualize, and Discover
-- `module-08-performance.md` — Module 8: Performance Testing
-- `module-09-security.md` — Module 9: Security Hardening
-- `module-10-monitoring.md` — Module 10: Monitoring
-- `module-11-deployment.md` — Module 11: Deployment (split: `module-11-phase2-deploy.md`)
+- `module-05-data-quality-mapping.md` — Module 5: Data Quality & Mapping (split: `module-05-phase1-quality-assessment.md`, `module-05-phase2-data-mapping.md`, `module-05-phase3-test-load.md`)
+- `module-06-data-processing.md` — Module 6: Data Processing (split: `module-06-phaseA-build-loading.md`, `module-06-phaseB-load-first-source.md`, `module-06-phaseC-multi-source.md`, `module-06-phaseD-validation.md`)
+- `module-07-query-visualize-discover.md` — Module 7: Query, Visualize, and Discover (split: `module-07-phase1-query-visualize.md`, `module-07-phase2-discover.md`, `module-07-phase2b-discover.md`)
+- `module-08-performance.md` — Module 8: Performance Testing (split: `module-08-phaseA-requirements.md`, `module-08-phaseB-benchmarking.md`, `module-08-phaseC-optimization.md`)
+- `module-09-security.md` — Module 9: Security Hardening (split: `module-09-phaseA-assessment.md`, `module-09-phaseB-hardening.md`)
+- `module-10-monitoring.md` — Module 10: Monitoring (split: `module-10-phaseA-setup.md`, `module-10-phaseB-operations.md`)
+- `module-11-deployment.md` — Module 11: Deployment (split: `module-11-phase1-packaging.md`, `module-11-phase2-deploy.md`)
+
+<!-- BEGIN GENERATED: steering-files -->
+
+| Steering File | Tokens | Size |
+|---|---|---|
+| `agent-behavior-rules.md` | 760 | medium |
+| `agent-context-management.md` | 1326 | medium |
+| `agent-instructions.md` | 4376 | large |
+| `cloud-provider-setup.md` | 784 | medium |
+| `common-pitfalls.md` | 4612 | large |
+| `completion-summary-offer.md` | 1867 | medium |
+| `complexity-estimator.md` | 606 | medium |
+| `conversation-examples.md` | 536 | medium |
+| `conversation-protocol.md` | 4199 | large |
+| `data-lineage.md` | 603 | medium |
+| `data-processing-reference.md` | 1174 | medium |
+| `deployment-aws.md` | 1323 | medium |
+| `deployment-azure.md` | 965 | medium |
+| `deployment-gcp.md` | 956 | medium |
+| `deployment-kubernetes.md` | 1397 | medium |
+| `deployment-onpremises.md` | 952 | medium |
+| `design-patterns.md` | 749 | medium |
+| `entity-resolution-intro.md` | 1864 | medium |
+| `environment-setup.md` | 658 | medium |
+| `feedback-workflow.md` | 1239 | medium |
+| `file-placement.md` | 291 | small |
+| `graduation.md` | 4672 | large |
+| `hook-architecture.md` | 2149 | large |
+| `hook-registry-critical.md` | 8592 | large |
+| `hook-registry-module-01.md` | 474 | small |
+| `hook-registry-module-02.md` | 261 | small |
+| `hook-registry-module-03.md` | 2341 | large |
+| `hook-registry-module-04.md` | 282 | small |
+| `hook-registry-module-05.md` | 1390 | medium |
+| `hook-registry-module-06.md` | 519 | medium |
+| `hook-registry-module-07.md` | 544 | medium |
+| `hook-registry-module-08.md` | 760 | medium |
+| `hook-registry-module-09.md` | 268 | small |
+| `hook-registry-module-10.md` | 286 | small |
+| `hook-registry-module-11.md` | 463 | small |
+| `hook-registry-module-any.md` | 3376 | large |
+| `hook-registry.md` | 1984 | medium |
+| `inline-status.md` | 460 | small |
+| `lang-csharp.md` | 1642 | medium |
+| `lang-java.md` | 1688 | medium |
+| `lang-python.md` | 1655 | medium |
+| `lang-rust.md` | 1698 | medium |
+| `lang-typescript.md` | 1887 | medium |
+| `lessons-learned.md` | 434 | small |
+| `mcp-response-caching.md` | 1442 | medium |
+| `mcp-tool-decision-tree.md` | 2310 | large |
+| `mcp-usage-reference.md` | 905 | medium |
+| `module-01-business-problem.md` | 500 | medium |
+| `module-01-phase1-discovery.md` | 5027 | large |
+| `module-01-phase2-document-confirm.md` | 1853 | medium |
+| `module-02-sdk-setup.md` | 4491 | large |
+| `module-03-phase1-verification.md` | 3536 | large |
+| `module-03-phase2-visualization.md` | 4738 | large |
+| `module-03-phase3-report-close.md` | 1751 | medium |
+| `module-03-system-verification.md` | 604 | medium |
+| `module-03-visualization-api-reference.md` | 2050 | large |
+| `module-04-data-collection.md` | 4049 | large |
+| `module-05-data-quality-mapping.md` | 689 | medium |
+| `module-05-phase1-quality-assessment.md` | 1710 | medium |
+| `module-05-phase2-data-mapping.md` | 5355 | large |
+| `module-05-phase3-test-load.md` | 2947 | large |
+| `module-06-data-processing.md` | 652 | medium |
+| `module-06-phaseA-build-loading.md` | 2860 | large |
+| `module-06-phaseB-load-first-source.md` | 1193 | medium |
+| `module-06-phaseC-multi-source.md` | 1428 | medium |
+| `module-06-phaseD-validation.md` | 2109 | large |
+| `module-07-phase1-query-visualize.md` | 3233 | large |
+| `module-07-phase2-discover.md` | 3453 | large |
+| `module-07-phase2b-discover.md` | 3174 | large |
+| `module-07-query-visualize-discover.md` | 545 | medium |
+| `module-08-performance.md` | 617 | medium |
+| `module-08-phaseA-requirements.md` | 2169 | large |
+| `module-08-phaseB-benchmarking.md` | 429 | small |
+| `module-08-phaseC-optimization.md` | 746 | medium |
+| `module-09-phaseA-assessment.md` | 1221 | medium |
+| `module-09-phaseB-hardening.md` | 928 | medium |
+| `module-09-security.md` | 571 | medium |
+| `module-10-monitoring.md` | 568 | medium |
+| `module-10-phaseA-setup.md` | 808 | medium |
+| `module-10-phaseB-operations.md` | 451 | small |
+| `module-11-deployment.md` | 479 | small |
+| `module-11-phase1-packaging.md` | 2870 | large |
+| `module-11-phase2-deploy.md` | 850 | medium |
+| `module-completion-artifacts.md` | 3349 | large |
+| `module-completion-error-handling.md` | 604 | medium |
+| `module-completion-next-steps.md` | 702 | medium |
+| `module-completion-track.md` | 1277 | medium |
+| `module-completion.md` | 1394 | medium |
+| `module-prerequisites.md` | 1394 | medium |
+| `module-transitions.md` | 1751 | medium |
+| `onboarding-flow.md` | 3888 | large |
+| `onboarding-phase1b-intro-language.md` | 2126 | large |
+| `onboarding-phase2-track-setup.md` | 972 | medium |
+| `phase-loading-guide.md` | 890 | medium |
+| `project-structure.md` | 764 | medium |
+| `qa-transcript.md` | 1115 | medium |
+| `recovery-from-mistakes.md` | 1227 | medium |
+| `security-privacy.md` | 278 | small |
+| `session-resume-phase2-mapping.md` | 656 | medium |
+| `session-resume-phase2-setup-recovery.md` | 997 | medium |
+| `session-resume-phase2-state-repair.md` | 547 | medium |
+| `session-resume.md` | 3380 | large |
+| `skip-step-protocol.md` | 799 | medium |
+| `track-switching.md` | 766 | medium |
+| `troubleshooting-commands.md` | 672 | medium |
+| `troubleshooting-decision-tree.md` | 1606 | medium |
+| `uat-framework.md` | 576 | medium |
+| `verbosity-control.md` | 2048 | large |
+| `visualization-guide.md` | 4334 | large |
+| `visualization-web-service.md` | 2195 | large |
+| `whats-new.md` | 602 | medium |
+
+**Total budget:** 185282 tokens
+
+<!-- END GENERATED: steering-files -->
 
 ## MCP Server Configuration
 
@@ -105,6 +240,7 @@ Connects to the Senzing MCP server (no API keys required):
 {
   "mcpServers": {
     "senzing-mcp-server": {
+      "type": "http",
       "url": "https://mcp.senzing.com/mcp",
       "disabled": false,
       "autoApprove": [],
@@ -124,19 +260,23 @@ Always call `get_capabilities` first when starting a session.
 
 **Core tools:**
 
+<!-- BEGIN GENERATED: mcp-tools -->
+
 - `get_capabilities` — Discover all tools and workflows
 - `mapping_workflow` — Interactive 8-step data mapping to Senzing JSON
+- `analyze_record` — Analyze and validate mapped data against the Senzing Entity Specification
+- `download_resource` — Download workflow resources (entity spec, analyzer script)
+- `explain_error_code` — Diagnose Senzing errors (456 error codes)
+- `search_docs` — Search indexed Senzing documentation
+- `find_examples` — Working code from 27 Senzing GitHub repositories
 - `generate_scaffold` — Generate SDK code (Python, Java, C#, Rust, TypeScript)
 - `get_sample_data` — Download sample datasets (Las Vegas, London, Moscow)
-- `search_docs` — Search indexed Senzing documentation
-- `explain_error_code` — Diagnose Senzing errors (456 error codes)
-- `analyze_record` — Analyze and validate mapped data against the Senzing Entity Specification
-- `sdk_guide` — Platform-specific SDK installation and setup
-- `find_examples` — Working code from 27 Senzing GitHub repositories
 - `get_sdk_reference` — SDK method signatures and flags
+- `sdk_guide` — Platform-specific SDK installation and setup
 - `reporting_guide` — Reporting, visualization, and dashboard guidance
-- `download_resource` — Download workflow resources (entity spec, analyzer script)
 - `submit_feedback` — Report issues or suggestions
+
+<!-- END GENERATED: mcp-tools -->
 
 **Key rules:**
 
@@ -159,15 +299,45 @@ See `steering/mcp-tool-decision-tree.md` for the full decision tree with all too
 
 ## Module Progression
 
-Modules are progressive but iterative. Skip ahead options: have Entity Specification data (skip to 6), not deploying to production (skip 8-11). Modules 8-11 are production-focused and optional for learning/evaluation.
+Modules are progressive but iterative. Skip ahead options: have Senzing Generic Entity Specification (SGES) data (skip to 6), not deploying to production (skip 8-11). Modules 8-11 are production-focused and optional for learning/evaluation.
+
+**Modules run in ascending numeric order by default.** SDK Setup (Module 2) and System Verification (Module 3) are preparatory steps that complete before solution-building begins at Module 4 (Data Collection) — collecting data depends on a verified environment, and verification depends on the SDK. So the Core path runs **1 → 2 → 3 → 4 → 5 → 6 → 7**. The agent tracks prerequisites for you: if you skip ahead (for example, you already have Senzing Generic Entity Specification (SGES) data), it still inserts SDK Setup automatically before the first module that needs it, and System Verification is omitted only when you explicitly ask to skip it.
 
 The goal is for you to finish the bootcamp with running code that is the basis of your real-world use of Senzing.
+
+<!-- BEGIN GENERATED: modules -->
+
+| # | Module |
+|---|---|
+| 1 | Business Problem |
+| 2 | SDK Setup |
+| 3 | System Verification |
+| 4 | Data Collection |
+| 5 | Data Quality & Mapping |
+| 6 | Data Processing |
+| 7 | Query, Visualize, and Discover |
+| 8 | Performance Testing & Benchmarking |
+| 9 | Security Hardening |
+| 10 | Monitoring & Observability |
+| 11 | Package & Deploy |
+
+Total: 11 modules.
+
+<!-- END GENERATED: modules -->
 
 ## Code Generation
 
 All code templates are generated dynamically by the Senzing MCP server using `generate_scaffold`, `sdk_guide`, and `mapping_workflow` in your chosen programming language. No static templates are shipped — this ensures generated code always matches the current SDK version and follows current best practices.
 
 > **Note:** The depth of supplementary example coverage (via `find_examples`) varies across languages — Python and Java currently have the most extensive example coverage. This does not affect `generate_scaffold` or `sdk_guide` output quality, which produce equivalent results for all supported languages.
+
+<!-- BEGIN GENERATED: example-coverage -->
+
+> **Note:** Based on the tracked coverage snapshot, `python` currently has the most extensive supplementary example coverage (availability observed via `find_examples`).
+> This tracked coverage signal reflects supplementary example availability only.
+> `generate_scaffold` and `sdk_guide` produce equivalent results for all supported languages.
+
+<!-- END GENERATED: example-coverage -->
 
 ## Code Quality Standards
 
@@ -183,11 +353,15 @@ python3 senzing-bootcamp/scripts/install_hooks.py
 
 Or manually copy hook files into `.kiro/hooks/`.
 
-Available (30 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `enforce-step-and-transition` ⭐, `mcp-first-invariant` ⭐, `question-format-gate` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `backup-project-on-request`, `data-quality-check`, `deployment-phase-gate`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `git-commit-reminder`, `module-completion-celebration`, `run-tests-after-change`, `security-scan-on-save`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
+<!-- BEGIN GENERATED: hooks -->
+
+Available (29 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `backup-project-on-request`, `data-quality-check`, `deployment-phase-gate`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `git-commit-reminder`, `module-completion-celebration`, `module-recap-append`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
+
+<!-- END GENERATED: hooks -->
 
 ## Project Directory Structure
 
-The agent creates an organized directory structure in the bootcamper's working directory at bootcamp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `logs/`, `monitoring/`. During Module 4 the agent creates `config/data_sources.yaml` in the bootcamper's project — a registry tracking each data source's quality, mapping, and load status across modules. Load `project-structure.md` for details.
+The agent creates an organized directory structure in the bootcamper's working directory at bootcamp start. Key directories: `data/`, `database/`, `src/`, `docs/`, `config/`, `logs/`, `monitoring/`. Module 1 initializes `config/data_sources.yaml` in the bootcamper's project from the data sources and matching criteria identified in the business problem, and Module 4 (Data Collection) populates each entry as sources are collected — a registry tracking each data source's quality, mapping, and load status across modules. Load `project-structure.md` for details.
 
 ## Entity Resolution Design Patterns
 
@@ -250,6 +424,6 @@ For the complete script reference with all flags and options, see `docs/guides/S
 
 ## Senzing Contact Information
 
-- Support: <support@senzing.com> / <https://senzing.com/support/>
+- Support: <support@senzing.com> / <https://senzing.com/contact/>
 - Sales: <sales@senzing.com> / <https://senzing.com/contact/>
 - Docs: <https://docs.senzing.com>

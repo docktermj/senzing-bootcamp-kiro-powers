@@ -7,7 +7,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -16,18 +16,17 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from validate_prerequisites import (
-    parse_gate_key,
-    extract_keywords,
     Finding,
-    ModuleInfo,
     GateInfo,
-    count_checkpoints,
-    has_success_criteria,
-    _validate_module_references,
-    _validate_keyword_presence,
+    ModuleInfo,
     _validate_checkpoint_coverage,
+    _validate_keyword_presence,
+    _validate_module_references,
+    count_checkpoints,
+    extract_keywords,
+    has_success_criteria,
+    parse_gate_key,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
@@ -77,12 +76,16 @@ def st_dependency_graph(draw):
         modules[i] = ModuleInfo(name=f"Module {i}", requires=sorted(reqs))
 
     # Generate gates between existing modules
-    num_gates = draw(st.integers(min_value=0, max_value=min(4, num_modules - 1) if num_modules > 1 else 0))
+    num_gates = draw(
+        st.integers(min_value=0, max_value=min(4, num_modules - 1) if num_modules > 1 else 0)
+    )
     gates: dict[str, GateInfo] = {}
     if num_modules > 1:
         for _ in range(num_gates):
             src = draw(st.integers(min_value=1, max_value=num_modules))
-            dst = draw(st.integers(min_value=1, max_value=num_modules).filter(lambda x, s=src: x != s))
+            dst = draw(
+                st.integers(min_value=1, max_value=num_modules).filter(lambda x, s=src: x != s)
+            )
             key = f"{src}->{dst}"
             if key not in gates:
                 num_reqs = draw(st.integers(min_value=0, max_value=3))

@@ -16,7 +16,6 @@ if _TESTS_DIR not in sys.path:
     sys.path.insert(0, _TESTS_DIR)
 
 from hook_test_helpers import (
-    CATEGORIES_PATH,
     CRITICAL_HOOKS,
     HOOKS_DIR,
     get_hook_files,

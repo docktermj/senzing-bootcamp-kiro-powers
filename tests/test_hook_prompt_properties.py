@@ -5,18 +5,18 @@ test_hook_prompt_standards behave correctly across a wide input space.
 """
 
 import string
-
-import pytest
-from hypothesis import given, settings, assume
-from hypothesis import strategies as st
-
 import sys
 from pathlib import Path
+
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 # Make the tests directory importable
 _TESTS_DIR = str(Path(__file__).resolve().parent)
 if _TESTS_DIR not in sys.path:
     sys.path.insert(0, _TESTS_DIR)
+
+import re
 
 from test_hook_prompt_standards import (
     CLOSING_QUESTION_PATTERNS,
@@ -31,8 +31,6 @@ from test_hook_prompt_standards import (
     validate_conditional_fields,
     validate_required_fields,
 )
-
-import re
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies

@@ -7,22 +7,17 @@ integration with the main rollback flow.
 Uses Hypothesis for property-based tests and pytest for example-based tests.
 """
 
-import dataclasses
 import json
-import sys
 from io import StringIO
 from pathlib import Path
 from unittest import mock
 
-import pytest
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from rollback_module import (
     ARTIFACT_MANIFEST,
-    MODULE_NAMES,
     RemovalResult,
-    RollbackLogEntry,
     VerificationResult,
     build_log_entry,
     format_dry_run_report,

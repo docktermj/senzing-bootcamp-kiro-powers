@@ -6,7 +6,7 @@ Feature: bootcamp-verbosity-control
 import sys
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -15,18 +15,17 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from verbosity import (
-    VerbosityPreferences,
     CATEGORIES,
-    PRESETS,
     NL_TERM_MAP,
-    resolve_preset,
-    serialize_preferences,
-    deserialize_preferences,
+    PRESETS,
+    VerbosityPreferences,
     adjust_category,
+    deserialize_preferences,
     detect_preset,
     match_nl_term,
+    resolve_preset,
+    serialize_preferences,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies

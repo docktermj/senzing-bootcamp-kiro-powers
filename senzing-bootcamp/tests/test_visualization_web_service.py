@@ -22,7 +22,7 @@ _POWER_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 _VIZ_GUIDE = _POWER_ROOT / "steering" / "visualization-guide.md"
 _VIZ_WEB_SERVICE = _POWER_ROOT / "steering" / "visualization-web-service.md"
 _MODULE_03 = _POWER_ROOT / "steering" / "module-03-system-verification.md"
-_MODULE_07 = _POWER_ROOT / "steering" / "module-07-query-visualize-discover.md"
+_MODULE_07 = _POWER_ROOT / "steering" / "module-07-phase1-query-visualize.md"
 
 
 def _read(path: Path) -> str:
@@ -323,13 +323,13 @@ class TestModule03VisualizationPrompt:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# 4.6 — module-07-query-visualize-discover.md Visualization Protocol References
+# 4.6 — module-07-phase1-query-visualize.md Visualization Protocol References
 # Validates: Requirements 5.3
 # ═══════════════════════════════════════════════════════════════════════════
 
 
 class TestModule07VisualizationPrompt:
-    """Verify module-07-query-visualize-discover.md references the Visualization Protocol."""
+    """Verify module-07-phase1-query-visualize.md references the Visualization Protocol."""
 
     @pytest.fixture(autouse=True)
     def _load(self):
@@ -426,7 +426,7 @@ class TestPreservation:
         assert "System Verification" in self.module_03
         assert "TruthSet" in self.module_03
 
-    # --- module-07-query-visualize-discover.md preservation ---
+    # --- module-07-phase1-query-visualize.md preservation ---
 
     def test_module07_query_requirements_preserved(self):
         """Module 7 query requirements content is preserved."""

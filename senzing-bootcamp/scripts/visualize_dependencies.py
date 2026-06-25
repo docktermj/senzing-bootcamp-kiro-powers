@@ -16,7 +16,6 @@ import json
 import re
 from pathlib import Path
 
-
 # ---------------------------------------------------------------------------
 # YAML mini-parser (stdlib only, no PyYAML)
 # ---------------------------------------------------------------------------
@@ -185,10 +184,10 @@ def _default_modules() -> dict[int, dict]:
         5: {"name": "Data Quality & Mapping", "requires": [4]},
         6: {"name": "Data Processing", "requires": [2, 5]},
         7: {"name": "Query, Visualize, and Discover", "requires": [6]},
-        8: {"name": "Performance", "requires": [7]},
-        9: {"name": "Security", "requires": [8]},
-        10: {"name": "Monitoring", "requires": [9]},
-        11: {"name": "Deployment", "requires": [10]},
+        8: {"name": "Performance Testing & Benchmarking", "requires": [7]},
+        9: {"name": "Security Hardening", "requires": [8]},
+        10: {"name": "Monitoring & Observability", "requires": [9]},
+        11: {"name": "Package & Deploy", "requires": [10]},
     }
 
 

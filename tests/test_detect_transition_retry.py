@@ -14,7 +14,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
@@ -192,7 +191,7 @@ _HOOK_FILE: Path = (
     Path(__file__).resolve().parent.parent
     / "senzing-bootcamp"
     / "hooks"
-    / "enforce-step-and-transition.kiro.hook"
+    / "ask-bootcamper.kiro.hook"
 )
 
 

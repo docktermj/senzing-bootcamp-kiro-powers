@@ -106,6 +106,10 @@ class ValidationResult:
 # Module 3 Step 9 requires these checkpoints to be present with "passed" status
 _MODULE3_STEP9_CHECKPOINTS = ["web_service", "web_page"]
 
+# Mandatory gates whose checkpoints CANNOT be bypassed by a skipped_steps entry.
+# The Module 3 Step 9 visualization gate ("3.9") is unconditional (Governing Rule 15).
+NON_SKIPPABLE_GATES = {"3.9"}
+
 
 # ---------------------------------------------------------------------------
 # Parsing
@@ -154,15 +158,29 @@ def _parse_gates_from_file(content: str, file_path: Path) -> list[MandatoryGate]
         return gates
     module_num = int(module_match.group(1))
 
-    # Find all step sections and check for ⛔ markers
-    step_pattern = re.compile(r"^###\s+Step\s+(\d+):", re.MULTILINE)
+    # Find all step sections and check for ⛔ markers. Match both H2 ("## Step N:")
+    # and H3 ("### Step N:") headings so shipped gates under either level are visible.
+    step_pattern = re.compile(r"^#{2,3}\s+Step\s+(\d+):", re.MULTILINE)
     step_matches = list(step_pattern.finditer(content))
+
+    # H2 headings ("## ...") used to associate an immediately-preceding
+    # non-Step/non-Phase preamble block (e.g. "## ⚠️ DO NOT SKIP") with the step
+    # that follows it, so a gate marker living in that preamble is attributed to it.
+    h2_matches = list(re.finditer(r"^##\s+(.*)$", content, re.MULTILINE))
 
     for i, match in enumerate(step_matches):
         step_num = int(match.group(1))
         start = match.start()
 
-        # Find end of this step section
+        # Extend the section start backwards to include an immediately-preceding
+        # non-Step/non-Phase "## " preamble block (bounded by the previous step
+        # heading). This attributes a gate marker sitting in a preamble ABOVE the
+        # step heading (e.g. Module 3 Step 9's "## ⚠️ DO NOT SKIP" block) to the step.
+        lower_bound = step_matches[i - 1].start() if i > 0 else -1
+        preamble_start = _find_preamble_start(h2_matches, start, lower_bound)
+        section_start = preamble_start if preamble_start is not None else start
+
+        # Find end of this step section (unchanged: ends at next Step/Phase or EOF).
         if i + 1 < len(step_matches):
             end = step_matches[i + 1].start()
         else:
@@ -170,10 +188,11 @@ def _parse_gates_from_file(content: str, file_path: Path) -> list[MandatoryGate]
             next_phase = re.search(r"^##\s+Phase", content[start + 1:], re.MULTILINE)
             end = (start + 1 + next_phase.start()) if next_phase else len(content)
 
-        section = content[start:end]
+        section = content[section_start:end]
 
-        # Check for ⛔ MANDATORY GATE pattern
-        if re.search(r"⛔\s*MANDATORY\s*GATE", section):
+        # Check for ⛔ MANDATORY GATE pattern, tolerating the bold-blockquote form
+        # (e.g. "> ⛔ **MANDATORY GATE") in addition to the plain inline marker.
+        if re.search(r"⛔\s*\**\s*MANDATORY\s*GATE", section):
             gate = MandatoryGate(
                 module=module_num,
                 step=step_num,
@@ -183,6 +202,47 @@ def _parse_gates_from_file(content: str, file_path: Path) -> list[MandatoryGate]
             gates.append(gate)
 
     return gates
+
+
+def _find_preamble_start(
+    h2_matches: list[re.Match[str]],
+    step_start: int,
+    lower_bound: int,
+) -> int | None:
+    """Find the start offset of an immediately-preceding preamble H2 block.
+
+    A preamble block is a "## ..." heading that is NOT itself a "Step N"/"Phase"
+    heading and that sits directly before the step heading (with no intervening
+    step heading). It lets a gate marker placed in such a block — e.g. the
+    "## ⚠️ DO NOT SKIP" section above Module 3's "## Step 9:" — be attributed to
+    the step that follows it.
+
+    Args:
+        h2_matches: All H2 ("## ...") heading matches in the file, in order.
+        step_start: Start offset of the step heading being scoped.
+        lower_bound: Offset below which preamble association is not allowed
+            (the previous step heading's start, or -1 if there is none).
+
+    Returns:
+        The start offset of the preamble heading, or None if there is no
+        eligible preamble block immediately preceding the step.
+    """
+    candidate: re.Match[str] | None = None
+    for h2 in h2_matches:
+        if h2.start() >= step_start:
+            break
+        if h2.start() <= lower_bound:
+            continue
+        candidate = h2
+
+    if candidate is None:
+        return None
+
+    heading_text = candidate.group(1).strip()
+    if re.match(r"(Step\s+\d+|Phase)\b", heading_text):
+        return None
+
+    return candidate.start()
 
 
 def _get_required_checkpoints(module: int, step: int) -> list[str]:
@@ -261,7 +321,7 @@ def _check_gate(progress: dict, gate: MandatoryGate) -> Violation | None:
     # Check if skipped_steps entry exists (bootcamper-initiated skip)
     skipped_steps = progress.get("skipped_steps", {})
     skip_key = f"{gate.module}.{gate.step}"
-    if skip_key in skipped_steps:
+    if skip_key in skipped_steps and skip_key not in NON_SKIPPABLE_GATES:
         return None
 
     # Check if required checkpoints exist with "passed" status
@@ -331,7 +391,9 @@ def main(argv: list[str] | None = None) -> None:
     bootcamp_root = Path(__file__).resolve().parent.parent
     steering_dir = Path(args.steering) if args.steering else bootcamp_root / "steering"
     progress_path = (
-        Path(args.progress) if args.progress else bootcamp_root / "config" / "bootcamp_progress.json"
+        Path(args.progress)
+        if args.progress
+        else bootcamp_root / "config" / "bootcamp_progress.json"
     )
 
     # Parse mandatory gates from steering files

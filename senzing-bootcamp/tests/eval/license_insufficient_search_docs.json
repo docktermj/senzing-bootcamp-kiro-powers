@@ -1,0 +1,17 @@
+{
+  "scenario": "license_insufficient_search_docs",
+  "description": "When the bootcamper has no license and the dataset exceeds the 500-record evaluation limit, the agent consults search_docs for current guidance rather than relying on prose alone. Exercises Module 1 Step 6d / Module 2 Step 5a-5c.",
+  "rule_ref": "module-01-business-problem.md#step-6d; module-02-sdk-setup.md#step-5",
+  "turns": [
+    {"role": "bootcamper", "content": "No, I don't have a Senzing license, and I have about 50,000 records."},
+    {
+      "role": "agent",
+      "content": "Because your total record count exceeds the 500-record evaluation limit, the built-in license is insufficient. Let me consult the Senzing documentation for current guidance — calling search_docs(query='temporary or larger evaluation license for more than 500 records') to retrieve the latest options before we go further.\n\nHere is what the current guidance recommends, followed by the email request path to support.\n\n👉 Would you like to defer license configuration and continue with Module 1 now?\n\n🛑 STOP — End your response here and wait for the bootcamper's real input.",
+      "assertions": [
+        {"type": "mentions_tool", "tool": "search_docs"},
+        {"type": "exactly_one_pointer"},
+        {"type": "ends_with_question_then_stop"}
+      ]
+    }
+  ]
+}

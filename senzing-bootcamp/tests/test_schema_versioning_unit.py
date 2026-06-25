@@ -19,15 +19,12 @@ if _SCRIPTS_DIR not in sys.path:
 
 from data_sources import (
     CURRENT_SCHEMA_VERSION,
-    MIGRATION_CHAIN,
     apply_migrations,
     main,
     migrate_v1_to_v2,
     parse_registry_yaml,
-    serialize_registry_yaml,
     validate_registry,
 )
-
 
 # ---------------------------------------------------------------------------
 # Sample v1 registry YAML for tests

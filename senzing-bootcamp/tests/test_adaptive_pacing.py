@@ -22,7 +22,6 @@ if str(_SCRIPTS_DIR) not in sys.path:
 
 from analyze_sessions import classify_pacing, merge_with_overrides
 
-
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
 # ---------------------------------------------------------------------------
@@ -87,8 +86,12 @@ class TestClassifyPacingProperties:
             assert mod in modules_in_entries
 
     @given(
-        computed=st.dictionaries(st_module, st.sampled_from(["struggled", "comfortable", "normal"])),
-        overrides=st.dictionaries(st_module, st.sampled_from(["struggled", "comfortable", "normal"])),
+        computed=st.dictionaries(
+            st_module, st.sampled_from(["struggled", "comfortable", "normal"])
+        ),
+        overrides=st.dictionaries(
+            st_module, st.sampled_from(["struggled", "comfortable", "normal"])
+        ),
     )
     @settings(max_examples=10)
     def test_overrides_take_precedence(

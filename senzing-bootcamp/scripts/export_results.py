@@ -34,10 +34,13 @@ VALID_ARTIFACT_TYPES = frozenset({
 MODULE_NAMES = {
     1: "Business Problem", 2: "SDK Setup", 3: "System Verification",
     4: "Data Collection", 5: "Data Quality & Mapping",
-    6: "Single Source Loading", 7: "Multi-Source Orchestration",
-    8: "Query, Visualize & Validate", 9: "Performance Testing",
-    10: "Security Hardening", 11: "Monitoring", 12: "Deployment",
+    6: "Data Processing", 7: "Query, Visualize, and Discover",
+    8: "Performance Testing & Benchmarking", 9: "Security Hardening",
+    10: "Monitoring & Observability", 11: "Package & Deploy",
 }
+
+#: Total number of bootcamp modules (derived from MODULE_NAMES, single source).
+_MODULE_COUNT = len(MODULE_NAMES)
 
 LANG_EXTENSIONS: dict[str, list[str]] = {
     "python": [".py"], "java": [".java"], "csharp": [".cs"],
@@ -164,9 +167,9 @@ class ProgressData:
 class ModuleFilter:
     @staticmethod
     def validate_modules(modules: list[int]) -> tuple[list[int], list[int]]:
-        """Partition *modules* into (valid, invalid). Valid means 1–12."""
-        valid = [m for m in modules if 1 <= m <= 12]
-        invalid = [m for m in modules if not (1 <= m <= 12)]
+        """Partition *modules* into (valid, invalid). Valid means 1–11."""
+        valid = [m for m in modules if 1 <= m <= _MODULE_COUNT]
+        invalid = [m for m in modules if not (1 <= m <= _MODULE_COUNT)]
         return valid, invalid
 
     @staticmethod
@@ -278,7 +281,10 @@ class ArtifactDiscovery:
             # Skip hidden dirs and common noise
             rel = dp.relative_to(self.root)
             parts = rel.parts
-            if any(p.startswith(".") or p in ("node_modules", "__pycache__", "database") for p in parts):
+            if any(
+                p.startswith(".") or p in ("node_modules", "__pycache__", "database")
+                for p in parts
+            ):
                 continue
             for fname in sorted(files):
                 if not fname.lower().endswith(".html"):
@@ -354,7 +360,11 @@ class ArtifactDiscovery:
                 atype, mod = "quality_report", 5
             elif "performance" in name_lower:
                 atype, mod = "performance_report", 9
-            elif "entity" in name_lower or "resolution" in name_lower or "results_validation" in name_lower:
+            elif (
+                "entity" in name_lower
+                or "resolution" in name_lower
+                or "results_validation" in name_lower
+            ):
                 atype, mod = "entity_stats", 8
             else:
                 atype, mod = "documentation", None
@@ -484,8 +494,13 @@ class MetricsExtractor:
                     match_count = ival
                 elif "duplicate" in ll:
                     duplicate_count = ival
-        if any(v is not None for v in (total_records, total_entities, match_count, cross_source, duplicate_count)):
-            return EntityStatistics(total_records, total_entities, match_count, cross_source, duplicate_count)
+        if any(
+            v is not None
+            for v in (total_records, total_entities, match_count, cross_source, duplicate_count)
+        ):
+            return EntityStatistics(
+                total_records, total_entities, match_count, cross_source, duplicate_count
+            )
         return None
 
 
@@ -505,7 +520,7 @@ class SummaryGenerator:
         else:
             track_str = "the bootcamp"
         parts.append(f"This report summarises work completed during {track_str}.")
-        parts.append(f"{n} of 12 modules have been completed.")
+        parts.append(f"{n} of {_MODULE_COUNT} modules have been completed.")
         # Quality bands
         for qs in metrics.quality_scores:
             band_word = {"green": "high", "yellow": "moderate", "red": "low"}.get(qs.band, qs.band)
@@ -553,30 +568,53 @@ class HTMLRenderer:
         summary_html = SummaryGenerator.generate(progress, metrics, manifest)
         sections.append(("executive-summary", "Executive Summary", summary_html))
         # Module table — always present
-        sections.append(("module-completion", "Module Completion", self._render_module_table(progress)))
+        sections.append(
+            ("module-completion", "Module Completion", self._render_module_table(progress))
+        )
         # Conditional sections
         if metrics.quality_scores:
-            sections.append(("quality-scores", "Quality Scores", self._render_quality_section(metrics.quality_scores)))
+            sections.append((
+                "quality-scores", "Quality Scores",
+                self._render_quality_section(metrics.quality_scores),
+            ))
         if metrics.performance:
-            sections.append(("performance", "Performance Metrics", self._render_performance_section(metrics.performance)))
+            sections.append((
+                "performance", "Performance Metrics",
+                self._render_performance_section(metrics.performance),
+            ))
         if metrics.entity_stats:
-            sections.append(("entity-stats", "Entity Resolution Statistics", self._render_entity_stats_section(metrics.entity_stats)))
+            sections.append((
+                "entity-stats", "Entity Resolution Statistics",
+                self._render_entity_stats_section(metrics.entity_stats),
+            ))
         if journal_html:
-            sections.append(("journal", "Bootcamp Journal", self._render_journal_section(journal_html)))
+            sections.append((
+                "journal", "Bootcamp Journal",
+                self._render_journal_section(journal_html),
+            ))
         # Achievements (module completion certificates)
         achievements_html = self._render_achievements_section()
         if achievements_html:
             sections.append(("achievements", "Achievements", achievements_html))
         viz = manifest.by_type("visualization")
         if viz:
-            sections.append(("visualizations", "Visualizations", self._render_visualizations_section(viz)))
+            sections.append((
+                "visualizations", "Visualizations",
+                self._render_visualizations_section(viz),
+            ))
 
         head = self._render_head()
         toc = self._render_toc([(sid, title) for sid, title, _ in sections])
         filter_note = ""
         if modules_filter:
-            filter_note = f'<p class="filter-note">Filtered to modules: {", ".join(str(m) for m in sorted(modules_filter))}</p>'
-        body_parts = [f'<section id="{sid}"><h2>{title}</h2>\n{html}\n</section>' for sid, title, html in sections]
+            filter_note = (
+                f'<p class="filter-note">Filtered to modules: '
+                f'{", ".join(str(m) for m in sorted(modules_filter))}</p>'
+            )
+        body_parts = [
+            f'<section id="{sid}"><h2>{title}</h2>\n{html}\n</section>'
+            for sid, title, html in sections
+        ]
         footer = self._render_footer()
         return (
             "<!DOCTYPE html>\n<html lang=\"en\">\n" + head
@@ -595,7 +633,8 @@ class HTMLRenderer:
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
             "<title>Senzing Bootcamp Report</title>\n"
             "<style>\n"
-            "body{font-family:system-ui,sans-serif;max-width:960px;margin:0 auto;padding:1rem;color:#24292f;line-height:1.6}\n"
+            "body{font-family:system-ui,sans-serif;max-width:960px;"
+            "margin:0 auto;padding:1rem;color:#24292f;line-height:1.6}\n"
             "h1{border-bottom:2px solid #d0d7de;padding-bottom:.3em}\n"
             "h2{border-bottom:1px solid #d0d7de;padding-bottom:.2em}\n"
             "table{border-collapse:collapse;width:100%}\n"
@@ -608,7 +647,8 @@ class HTMLRenderer:
             "a:hover{text-decoration:underline}\n"
             ".band-green{color:#2d8a4e}.band-yellow{color:#b08800}.band-red{color:#cf222e}\n"
             ".filter-note{background:#fff8c5;padding:.5em;border-radius:4px}\n"
-            "footer{margin-top:2em;padding-top:1em;border-top:1px solid #d0d7de;font-size:.85em;color:#656d76}\n"
+            "footer{margin-top:2em;padding-top:1em;border-top:1px solid #d0d7de;"
+            "font-size:.85em;color:#656d76}\n"
             "@media print{nav{display:none}body{max-width:100%}}\n"
             "</style>\n</head>\n"
         )
@@ -619,9 +659,9 @@ class HTMLRenderer:
 
     def _render_module_table(self, progress: ProgressData) -> str:
         n = len(progress.modules_completed)
-        pct = n * 100 / 12 if True else 0
+        pct = n * 100 / _MODULE_COUNT if True else 0
         rows = ""
-        for m in range(1, 13):
+        for m in range(1, _MODULE_COUNT + 1):
             name = MODULE_NAMES.get(m, f"Module {m}")
             if m in progress.modules_completed:
                 status = "✅ Completed"
@@ -630,9 +670,13 @@ class HTMLRenderer:
             else:
                 status = "⬜ Not Started"
             rows += f"<tr><td>{m}</td><td>{name}</td><td>{status}</td></tr>\n"
-        lang_row = f"<p>Language: <strong>{progress.language}</strong></p>" if progress.language else ""
+        lang_row = (
+            f"<p>Language: <strong>{progress.language}</strong></p>"
+            if progress.language
+            else ""
+        )
         return (
-            f"<p>Progress: <strong>{n}/12 ({pct:.0f}%)</strong></p>\n"
+            f"<p>Progress: <strong>{n}/{_MODULE_COUNT} ({pct:.0f}%)</strong></p>\n"
             + lang_row
             + "<table><thead><tr><th>#</th><th>Module</th><th>Status</th></tr></thead>\n<tbody>\n"
             + rows + "</tbody></table>"
@@ -659,9 +703,14 @@ class HTMLRenderer:
     def _render_performance_section(self, perf: PerformanceMetrics) -> str:
         items: list[str] = []
         if perf.loading_throughput_rps is not None:
-            items.append(f"<li>Loading throughput: <strong>{perf.loading_throughput_rps:,.1f}</strong> records/sec</li>")
+            items.append(
+                f"<li>Loading throughput: <strong>{perf.loading_throughput_rps:,.1f}</strong>"
+                f" records/sec</li>"
+            )
         if perf.query_response_ms is not None:
-            items.append(f"<li>Avg query response: <strong>{perf.query_response_ms:,.1f}</strong> ms</li>")
+            items.append(
+                f"<li>Avg query response: <strong>{perf.query_response_ms:,.1f}</strong> ms</li>"
+            )
         if perf.database_type:
             items.append(f"<li>Database: <strong>{perf.database_type}</strong></li>")
         return "<ul>\n" + "\n".join(items) + "\n</ul>"
@@ -671,11 +720,15 @@ class HTMLRenderer:
         if stats.total_records is not None:
             items.append(f"<li>Total records loaded: <strong>{stats.total_records:,}</strong></li>")
         if stats.total_entities is not None:
-            items.append(f"<li>Total entities resolved: <strong>{stats.total_entities:,}</strong></li>")
+            items.append(
+                f"<li>Total entities resolved: <strong>{stats.total_entities:,}</strong></li>"
+            )
         if stats.match_count is not None:
             items.append(f"<li>Match count: <strong>{stats.match_count:,}</strong></li>")
         if stats.cross_source_matches is not None:
-            items.append(f"<li>Cross-source matches: <strong>{stats.cross_source_matches:,}</strong></li>")
+            items.append(
+                f"<li>Cross-source matches: <strong>{stats.cross_source_matches:,}</strong></li>"
+            )
         if stats.duplicate_count is not None:
             items.append(f"<li>Duplicates: <strong>{stats.duplicate_count:,}</strong></li>")
         return "<ul>\n" + "\n".join(items) + "\n</ul>"
@@ -707,7 +760,8 @@ class HTMLRenderer:
 
     def _render_visualizations_section(self, viz_artifacts: list[ArtifactEntry]) -> str:
         items = "".join(
-            f"<li><strong>{Path(a.path).name}</strong> — {a.description}</li>" for a in viz_artifacts
+            f"<li><strong>{Path(a.path).name}</strong> — {a.description}</li>"
+            for a in viz_artifacts
         )
         return f"<ul>{items}</ul>"
 
@@ -893,11 +947,15 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         valid, invalid = ModuleFilter.validate_modules(raw)
         for inv in invalid:
-            print(f"Warning: ignoring invalid module number {inv} (must be 1-12).", file=sys.stderr)
+            print(f"Warning: ignoring invalid module number {inv} (must be 1-{_MODULE_COUNT}).",
+                  file=sys.stderr)
         if valid:
             modules_filter = valid
         else:
-            print("Warning: no valid module numbers provided, including all modules.", file=sys.stderr)
+            print(
+                "Warning: no valid module numbers provided, including all modules.",
+                file=sys.stderr,
+            )
 
     # Discover artifacts
     print("Scanning for bootcamp artifacts...")
@@ -927,7 +985,9 @@ def main(argv: list[str] | None = None) -> int:
 
     # Extract metrics
     metrics = ExportMetrics(
-        quality_scores=MetricsExtractor.extract_quality_scores(manifest.artifacts, file_reader_text),
+        quality_scores=MetricsExtractor.extract_quality_scores(
+            manifest.artifacts, file_reader_text
+        ),
         performance=MetricsExtractor.extract_performance(manifest.artifacts, file_reader_text),
         entity_stats=MetricsExtractor.extract_entity_stats(manifest.artifacts, file_reader_text),
     )
@@ -962,11 +1022,17 @@ def main(argv: list[str] | None = None) -> int:
         if args.format == "zip":
             assembler = ZIPAssembler()
             size = assembler.assemble(html, manifest, output_path, file_reader_bytes)
-            print(f"ZIP archive created: {output_path} ({size:,} bytes, {len(manifest.artifacts)} artifacts)")
+            print(
+                f"ZIP archive created: {output_path} "
+                f"({size:,} bytes, {len(manifest.artifacts)} artifacts)"
+            )
         else:
             out.write_text(html, encoding="utf-8")
             size = out.stat().st_size
-            print(f"HTML report created: {output_path} ({size:,} bytes, {len(manifest.artifacts)} artifacts)")
+            print(
+                f"HTML report created: {output_path} "
+                f"({size:,} bytes, {len(manifest.artifacts)} artifacts)"
+            )
     except OSError as exc:
         print(f"Error writing output: {exc}", file=sys.stderr)
         return 1

@@ -6,7 +6,7 @@ inclusion: manual
 
 Critical hook definitions with prompt text for use with the `createHook` tool during onboarding. These hooks are created in Step 1.
 
-For module-specific hooks, see `hook-registry-modules.md`.
+For module-specific hooks, see `hook-registry.md`, which routes to the per-module slice for your current module.
 For a quick reference of all hooks, see `hook-registry.md`.
 
 ## Critical Hooks (created during onboarding)
@@ -17,16 +17,16 @@ Prompt:
 
 ````text
 DEFAULT OUTPUT: .
-If BOTH phases below produce no output, your COMPLETE response is a single period character: .
+If ALL phases below produce no output, your COMPLETE response is a single period character: .
 Do NOT explain your reasoning. Do NOT describe condition checks. Do NOT output phrases like 'Phase 1 silenced' or 'No output needed'. Just output: .
 
 CRITICAL: NEVER generate text beginning with 'Human:' or any text that represents what the bootcamper might say. If you detect yourself about to fabricate a user response, output only: .
 
-This hook has two independent phases. Evaluate each phase separately.
+This hook has four phases. Phase 2 contains three sub-phases (2A: Sequential Step Enforcement, 2B: Answer Processing Retry, 2C: Not-Waiting Detection). Evaluate each phase in order. If Phase 2 or Phase 3 detects a violation, that takes priority over Phase 1's closing question. Phase 4 operates on the output that would be shown to the bootcamper, so it runs last.
 
----
-
-PHASE 1: CLOSING QUESTION
+════════════════════════════════════════════════════════════════════════════════
+PHASE 1: CLOSING QUESTION (Closing_Question_Phase)
+════════════════════════════════════════════════════════════════════════════════
 
 Before producing ANY Phase 1 output, verify ALL of these conditions:
 1. The file config/.question_pending does NOT exist
@@ -49,18 +49,16 @@ If ANY pattern matches, rewrite the closing question as a neutral lead question 
 
 Additionally, if the bootcamper has completed or is on the final step of their current track, append a brief nudge: 'By the way, if you have feedback about the bootcamp experience, just say "bootcamp feedback" anytime.' Otherwise, do NOT mention feedback in Phase 1.
 
----
+FEEDBACK SUBMISSION REMINDER (sub-phase of Phase 1):
 
-PHASE 2: FEEDBACK SUBMISSION REMINDER
+This sub-phase operates independently. Even if the main Phase 1 produced no output, evaluate this on its own.
 
-Phase 2 operates independently of Phase 1. Even if Phase 1 produced no output, evaluate Phase 2 on its own.
+Before producing ANY feedback reminder output, verify ALL of these conditions:
+1. Track completion detected: Read config/bootcamp_progress.json. Check if the bootcamper has completed their chosen track (all modules in the track are now in modules_completed) or if graduation was completed. If no track completion or graduation detected, feedback reminder output is none.
+2. Deduplication: Check the conversation history for the 📋 emoji marker. If 📋 already appears in a previous assistant message in this session, the reminder was already shown — feedback reminder output is none.
+3. Feedback exists: Check if docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md exists AND contains at least one '## Improvement:' heading (indicating real feedback entries, not just the template). If the file does not exist or contains no ## Improvement: headings, feedback reminder output is none.
 
-Before producing ANY Phase 2 output, verify ALL of these conditions:
-1. Track completion detected: Read config/bootcamp_progress.json. Check if the bootcamper has completed their chosen track (all modules in the track are now in modules_completed) or if graduation was completed. If no track completion or graduation detected, Phase 2 output is none.
-2. Deduplication: Check the conversation history for the 📋 emoji marker. If 📋 already appears in a previous assistant message in this session, the reminder was already shown — Phase 2 output is none.
-3. Feedback exists: Check if docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md exists AND contains at least one '## Improvement:' heading (indicating real feedback entries, not just the template). If the file does not exist or contains no ## Improvement: headings, Phase 2 output is none.
-
-If ALL three Phase 2 conditions pass, append:
+If ALL three feedback reminder conditions pass, append:
 
 📋 You have saved feedback in docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md. To share it with the Senzing team, you can:
 - Email it to support@senzing.com with subject 'Senzing Bootcamp Power Feedback'
@@ -69,71 +67,17 @@ If ALL three Phase 2 conditions pass, append:
 
 Do not automatically send email or create GitHub issues — wait for explicit bootcamper confirmation. If the bootcamper declines (no, skip, not now), accept without re-prompting about feedback sharing again.
 
----
+════════════════════════════════════════════════════════════════════════════════
+PHASE 2: STEP SEQUENCING (Step_Sequencing_Phase)
+════════════════════════════════════════════════════════════════════════════════
 
-REMEMBER: If both phases produced no output, your COMPLETE response is: .
-````
-
-- id: `ask-bootcamper`
-- name: `to wait for your answer`
-- description: `Silence-first agentStop hook with dual responsibility: (1) Phase 1 produces a recap + closing question only when no question is already pending, with a near-completion feedback nudge; (2) Phase 2 independently reminds the bootcamper to share saved feedback after track completion.`
-
-**code-style-check** (fileEdited → askAgent, filePatterns: `src/**/*.py, src/**/*.java, src/**/*.cs, src/**/*.rs, src/**/*.ts, src/**/*.js`)
-
-Prompt:
-
-````text
-A source code file was just edited. Check it for language-appropriate coding standards (Python: PEP-8 with max line length 100; Java: standard conventions; C#: .NET conventions; Rust: rustfmt/clippy; TypeScript: ESLint conventions). If violations are found, suggest specific fixes. If compliant, acknowledge briefly and continue.
-````
-
-- id: `code-style-check`
-- name: `to check code style`
-- description: `Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions.`
-
-**commonmark-validation** (fileEdited → askAgent, filePatterns: `**/*.md`)
-
-Prompt:
-
-````text
-The markdown file that was just edited should be validated for CommonMark compliance. Please check for:
-
-1. MD022: Headings should be surrounded by blank lines
-2. MD040: Fenced code blocks should have a language specified
-3. Bold text followed by colons should use format: **Label:** (with space before colon)
-4. MD031: Fenced code blocks should be surrounded by blank lines
-5. MD032: Lists should be surrounded by blank lines
-
-EXCEPTION: If the file is CHANGELOG.md, ignore MD024 (duplicate headings) — repeated ### Added, ### Changed, ### Fixed, ### Removed headings under different version sections are standard Keep a Changelog format and should not be flagged.
-
-If any issues are found, fix them automatically to maintain CommonMark compliance across all documentation.
-
-After fixing issues: briefly state what was corrected (one sentence), then end with a contextual 👉 forward-moving question that guides the bootcamper to the next step in the current module workflow. Check `config/bootcamp_progress.json` for the current module and step to determine what comes next.
-
-If no issues are found: output nothing. Proceed silently.
-````
-
-- id: `commonmark-validation`
-- name: `to check Markdown style`
-- description: `Validates that all Markdown files conform to CommonMark standards when edited`
-
-**enforce-step-and-transition** (agentStop → askAgent)
-
-Prompt:
-
-````text
-DEFAULT OUTPUT: .
-If BOTH phases below produce no output, your COMPLETE response is a single period character: .
-Do NOT explain your reasoning. Do NOT describe condition checks. Just output: .
-
----
-
-PHASE 1: SEQUENTIAL STEP ENFORCEMENT
+SUB-PHASE 2A: SEQUENTIAL STEP ENFORCEMENT
 
 Read `config/bootcamp_progress.json` and check if `config/.question_pending` exists. Evaluate:
 
 1. Extract `current_module`, `current_step`, and `step_history[<current_module>].last_completed_step`.
 
-2. If `current_step` is null OR `step_history` has no entry for the current module: Phase 1 output is none. Skip to Phase 2.
+2. If `current_step` is null OR `step_history` has no entry for the current module: Sub-phase 2A output is none. Skip to Sub-phase 2B.
 
 3. Parse the parent step number from both `current_step` and `last_completed_step`:
    - Integer steps: use the value directly (e.g., 5 → 5)
@@ -148,26 +92,15 @@ Read `config/bootcamp_progress.json` and check if `config/.question_pending` exi
 6. If `config/.question_pending` exists AND current_step has advanced beyond last_completed_step: Output exactly:
    ⚠️ QUESTION PENDING VIOLATION DETECTED: current_step advanced to [current] while a 👉 question is still pending (file config/.question_pending exists). The agent must not advance past a step until the bootcamper responds. Wait for the bootcamper's response before proceeding.
 
-7. Otherwise: Phase 1 output is none. Continue to Phase 2.
+7. Otherwise: Sub-phase 2A output is none. Continue to Sub-phase 2B.
 
----
+SUB-PHASE 2B: ANSWER PROCESSING RETRY
 
-PHASE 2: MODULE TRANSITION RETRY
+STEP 1: Check activation conditions.
 
-STEP 1: Determine if the bootcamper's most recent message is a Transition_Confirmation.
-
-A message is a Transition_Confirmation if BOTH conditions are true:
-  A) The conversation context contains a recent assistant question matching any of these patterns (case-insensitive):
-     - "Ready for Module"
-     - "move on to Module"
-     - "proceed to Module"
-  B) The bootcamper's most recent response is an affirmative phrase matching any of these (case-insensitive, may appear with surrounding text):
-     - "yes", "sure", "ready", "let's go", "let's do it", "yep", "yeah", "absolutely", "go ahead", "proceed", "ok", "okay", "sounds good", "let's", "do it", "I'm ready", "go for it"
-
-If the message is NOT a Transition_Confirmation:
-  → Phase 2 output is none.
-
-STEP 2: If the message IS a Transition_Confirmation, evaluate the agent's most recent output.
+Both conditions must be true for Sub-phase 2B to activate:
+  A) The file `config/.question_pending` exists
+  B) The agent's most recent output is Minimal_Output
 
 The output is Minimal_Output if ANY of these are true:
   - Output is exactly "."
@@ -175,37 +108,66 @@ The output is Minimal_Output if ANY of these are true:
   - Output length is fewer than 50 characters
   - Output is a single-word acknowledgment (e.g., "OK", "Sure", "Got it", "Understood", "Great")
 
-If the output is NOT Minimal_Output (exceeds 50 characters with substantive content):
-  → Phase 2 output is none.
+If EITHER condition fails (file does not exist OR output is not minimal):
+  → Sub-phase 2B output is none.
 
-STEP 3: If the output IS Minimal_Output after a Transition_Confirmation:
+STEP 2: Extract the question type from `config/.question_pending`.
 
-The agent failed to start the confirmed module. Output the following retry instructions:
+Read the first line of the file. If the first line matches one of the known types (track_selection, module_transition, step_question, confirmation, choice), use that as the question type. Otherwise, use "unknown" as the question type.
 
-You just received a module transition confirmation from the bootcamper but produced minimal or empty output. This is a protocol violation. You MUST now start the confirmed module immediately. Do the following:
+STEP 3: Issue type-specific retry instructions based on the question type.
 
-1. Display the Module Start Banner (━━━ header with 🚀🚀🚀 MODULE N: NAME 🚀🚀🚀 format)
-2. Display the journey map table (Module | Name | Status columns showing all modules in the selected path)
-3. Display the before/after framing (what the bootcamper has now vs. what they will have when this module is done)
-4. Begin Step 1 with its introductory content ("Next up: [action]. This matters because [reason].")
+The agent failed to process the bootcamper's answer to a pending 👉 question. This is a protocol violation. Based on the question type, issue the appropriate retry instructions:
 
-Do NOT output just a period or acknowledgment. Do NOT ask another question. Start the module NOW with all four required elements above.
+If type is "track_selection":
+  Read the bootcamper's track choice from their most recent message. Update config/bootcamp_progress.json with the selected track. Save preferences to config/bootcamp_preferences.yaml. Begin Module 1.
 
----
+If type is "module_transition":
+  Display the module start banner (━━━ header with 🚀🚀🚀 MODULE N: NAME 🚀🚀🚀 format). Display the journey map table. Display the before/after framing. Begin Step 1.
 
-REMEMBER: If both phases produced no output, your COMPLETE response is: .
-````
+If type is "step_question":
+  Read the bootcamper's answer from their most recent message. Incorporate the answer into the current step's workflow. Update progress. Present the next action or question.
 
-- id: `enforce-step-and-transition`
-- name: `to enforce step sequencing and detect transition failures`
-- description: `agentStop hook with two phases: (1) verifies current_step has not advanced by more than one step since the last checkpoint, detecting step-skipping violations; (2) checks if the bootcamper's last message was a module transition confirmation and validates the agent produced substantive output, forcing retry if minimal.`
+If type is "confirmation":
+  Treat the bootcamper's response as a confirmation. Proceed with the confirmed action.
 
-**mcp-first-invariant** (agentStop → askAgent)
+If type is "choice":
+  Read the bootcamper's selection from the numbered choice list. Acknowledge the choice. Proceed with the selected option.
 
-Prompt:
+If type is "unknown" (fallback):
+  Re-read the bootcamper's most recent message. Treat it as an answer to the pending question. Produce a substantive response.
 
-````text
-PHASE 1 — SENZING CONTENT DETECTION
+Do NOT output just a period or acknowledgment. Process the bootcamper's answer NOW and produce substantive output.
+
+SUB-PHASE 2C: NOT-WAITING DETECTION
+
+STEP 1: Check activation conditions.
+
+ALL of the following conditions must be true for Sub-phase 2C to activate:
+  A) The file `config/.question_pending` exists
+  B) The agent's most recent output is NOT Minimal_Output (it is substantive)
+  C) The agent's most recent output contains workflow-advancing content: step headers (e.g., '## Step N', '**Step N**'), module banners (e.g., '━━━', '🚀🚀🚀 MODULE'), or new 👉 questions
+  D) The file `config/.question_pending` was NOT deleted during this turn (it still exists)
+
+If ANY condition fails:
+  → Sub-phase 2C output is none.
+
+STEP 2: Issue not-waiting violation recovery instructions.
+
+The agent advanced the workflow while a question is still pending. This is a not-waiting violation.
+
+⚠️ NOT-WAITING VIOLATION DETECTED: The agent produced workflow-advancing output (step content, module content, or new questions) while config/.question_pending still exists. The agent must not advance past a pending 👉 question without the bootcamper's response.
+
+REQUIRED ACTION:
+1. Discard the premature output — do NOT show it to the bootcamper.
+2. Acknowledge that a question is still pending and awaiting the bootcamper's response.
+3. Wait for the bootcamper's response before producing any further workflow content.
+
+════════════════════════════════════════════════════════════════════════════════
+PHASE 3: MCP-FIRST COMPLIANCE (MCP_First_Phase)
+════════════════════════════════════════════════════════════════════════════════
+
+SUB-PHASE 3A — SENZING CONTENT DETECTION
 
 Examine your most recent assistant response for ANY of the following Senzing content indicators:
 
@@ -226,27 +188,21 @@ resolved entity, entity resolution, candidate scoring, feature scoring, generic 
 
 Note: ER terms only count as Senzing content when used in a technical explanation or recommendation context — not when merely quoting the bootcamper's question or referencing them in passing.
 
-If NONE of the above indicators are present in your most recent response: produce ZERO output tokens. No output. No acknowledgment. Zero tokens means zero tokens.
+If NONE of the above indicators are present in your most recent response: Phase 3 output is none.
 
----
+SUB-PHASE 3B — MCP TOOL CALL VERIFICATION
 
-PHASE 2 — MCP TOOL CALL VERIFICATION
-
-If Senzing content WAS detected in Phase 1, check whether ANY of the following MCP tools were called during this same turn:
+If Senzing content WAS detected in Sub-phase 3A, check whether ANY of the following MCP tools were called during this same turn:
 
 search_docs, get_sdk_reference, generate_scaffold, sdk_guide, explain_error_code, find_examples, mapping_workflow, get_capabilities, reporting_guide
 
-If at least one MCP tool from the list above was called in this turn: produce ZERO output tokens. The response is compliant. No output. No acknowledgment. Zero tokens means zero tokens.
-
----
+If at least one MCP tool from the list above was called in this turn: Phase 3 output is none. The response is compliant.
 
 DECISION:
 
-- No Senzing content detected → zero tokens (silent fast path)
-- Senzing content detected AND MCP tool called → zero tokens (compliant)
+- No Senzing content detected → Phase 3 output is none (silent fast path)
+- Senzing content detected AND MCP tool called → Phase 3 output is none (compliant)
 - Senzing content detected AND NO MCP tool called → output self-correction instructions below
-
----
 
 SELF-CORRECTION OUTPUT (only if Senzing content present AND no MCP tool was called):
 
@@ -264,28 +220,17 @@ REQUIRED ACTION:
    - Entity resolution terms → search_docs
 2. Regenerate your response using the MCP-verified information.
 3. Do NOT repeat the previous response verbatim — rebuild it from MCP facts.
-````
 
-- id: `mcp-first-invariant`
-- name: `to verify MCP-first compliance`
-- description: `Audits every agent response for MCP-first invariant compliance. Silent when compliant; triggers self-correction when Senzing content is presented without prior MCP tool consultation.`
+════════════════════════════════════════════════════════════════════════════════
+PHASE 4: QUESTION FORMAT (Question_Format_Phase — Silent_Self_Correction)
+════════════════════════════════════════════════════════════════════════════════
 
-**question-format-gate** (agentStop → askAgent)
+Scan the most recent assistant message for any 👉 question with prose-joined alternatives.
 
-Prompt:
-
-````text
-⚠️ SILENCE RULE: No-rewrite → output exactly ".". Rewrite → output ONLY the corrected question. Never output reasoning.
-
-QUESTION FORMAT GATE — Inspect the most recent assistant message for compound 👉 questions.
-
-DETECTION: Scan the output for any line or sentence beginning with 👉 that contains a question. If a 👉 question is found, check whether it contains prose-joined alternatives using these patterns:
-
+DETECTION PATTERNS:
 1. Sentence-starter 'Or': The question is followed by 'Or shall we...', 'Or would you...', 'Or should we...', 'Or can we...' — two alternatives joined by 'Or' as a sentence starter.
 2. Inline prose 'or': The question contains '[option A] or [option B]?' where two distinct actions or choices are joined by 'or' in a single sentence.
 3. Appended alternative: A confirmation question followed by ', or would you rather...', ', or shall we...', ', or if you prefer...' — an alternative appended after the main question.
-
-A question is compound if it has multiple alternatives joined by prose conjunctions ('or') and is NOT already formatted as a numbered list.
 
 NOT COMPOUND (do not flag):
 - Simple yes/no questions with a single action (e.g., '👉 Ready to move on to Module 3?')
@@ -294,42 +239,72 @@ NOT COMPOUND (do not flag):
 - Informational prose containing 'or' but no 👉 question
 - Non-question content
 
-ACTION:
-- If NO compound question detected: output only a single period character: .
-  Do NOT output "The question is not compound", "No rewrite needed",
-  "Scanning for compound questions", or any description of your detection process.
-- If a compound question IS detected: rewrite the agent's closing question using the correct format. Replace the compound question with a neutral lead question followed by a numbered list of alternatives. Example:
+If NO compound question detected: Phase 4 output is none.
+
+If compound question IS detected:
+REGENERATE your entire last response. Replace the compound 👉 question with a neutral lead question followed by a numbered list. The bootcamper must only see the clean version — suppress the original compound question entirely.
+Do NOT output the rewrite as a separate message. Rebuild the full response inline.
+Do NOT output "This is a compound question", "Let me rewrite", "The question contains 'or' joining alternatives", or any explanation of the detection.
+Output ONLY the regenerated full response with the corrected question in place.
+
+EXAMPLE:
   BEFORE: '👉 Would you like me to create a summary? Or shall we skip that and move on to Module 3?'
-  AFTER: '👉 What would you like to do next?\n1. Create a summary\n2. Skip and move on to Module 3'
-  Do NOT output "This is a compound question", "Let me rewrite",
-  "The question contains 'or' joining alternatives", or any explanation of the detection.
-  Output ONLY the corrected question text.
+  AFTER (full response regenerated with): '👉 What would you like to do next?\n1. Create a summary\n2. Skip and move on to Module 3'
 
 RULES:
-- Do NOT interfere with non-compound outputs. If there is no compound question, your complete response is: .
-- Do NOT add explanations about why you are rewriting. Just output the corrected question.
+- Do NOT interfere with non-compound outputs.
+- Do NOT add explanations about why you are rewriting.
 - Do NOT restructure content that is not a 👉 question.
-- Preserve all other content in the message — only rewrite the compound question portion.
+- Preserve all other content in the response — only replace the compound question portion.
 
----
+════════════════════════════════════════════════════════════════════════════════
+OUTPUT RULES
+════════════════════════════════════════════════════════════════════════════════
 
-OUTPUT FORMAT (STRICT):
-- No compound question found → Output exactly: .
-- Compound question found → Output ONLY the rewritten question (neutral lead + numbered list).
-  Preserve all non-question content from the original message.
-FORBIDDEN output (never produce these):
-  • "The question is not compound"
-  • "No rewrite needed"
-  • "Scanning for compound questions"
-  • "This is a compound question"
-  • "Let me rewrite"
-  • "The question contains 'or' joining alternatives"
-  • Any text describing, summarizing, or narrating the detection process
+REMEMBER: If ALL phases produced no output, your COMPLETE response is: .
 ````
 
-- id: `question-format-gate`
-- name: `to enforce single-question format on agent output`
-- description: `agentStop hook that inspects every agent response for compound 👉 questions with prose-joined alternatives. If detected, instructs the agent to rewrite using numbered list format. Non-compound outputs pass through unchanged.`
+- id: `ask-bootcamper`
+- name: `to wait for your answer`
+- description: `Consolidated agentStop hook with four phases: (1) closing question with feedback nudge, (2) step sequencing enforcement with answer processing retry (all question types) and not-waiting detection, (3) MCP-first compliance audit, (4) compound question detection with silent self-correction.`
+
+**code-style-check** (fileEdited → askAgent, filePatterns: `src/**/*.py, src/**/*.java, src/**/*.cs, src/**/*.rs, src/**/*.ts, src/**/*.js`)
+
+Prompt:
+
+````text
+A source code file was just edited. Check it for language-appropriate coding standards (Python: PEP-8 with max line length 100; Java: standard conventions; C#: .NET conventions; Rust: rustfmt/clippy; TypeScript: ESLint conventions). If violations are found, suggest specific fixes. If compliant, acknowledge briefly and continue.
+````
+
+- id: `code-style-check`
+- name: `to check code style`
+- description: `Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions.`
+
+**commonmark-validation** (userTriggered → askAgent)
+
+Prompt:
+
+````text
+The user wants to validate Markdown style across the project in one pass. Review every Markdown file (all *.md files) for CommonMark compliance. For each file, check for:
+
+1. MD022: Headings should be surrounded by blank lines
+2. MD040: Fenced code blocks should have a language specified
+3. Bold text followed by colons should use format: **Label:** (with space before colon)
+4. MD031: Fenced code blocks should be surrounded by blank lines
+5. MD032: Lists should be surrounded by blank lines
+
+EXCEPTION: If the file is CHANGELOG.md, ignore MD024 (duplicate headings) — repeated ### Added, ### Changed, ### Fixed, ### Removed headings under different version sections are standard Keep a Changelog format and should not be flagged.
+
+If any issues are found, fix them automatically to maintain CommonMark compliance across all documentation. Apply the fixes across all Markdown files in this single pass rather than one file at a time.
+
+After fixing issues: briefly summarize what was corrected across the files (one sentence), then end with a contextual 👉 forward-moving question that guides the bootcamper to the next step in the current workflow. Check `config/bootcamp_progress.json` for the current module and step to determine what comes next.
+
+If no issues are found: output nothing. Proceed silently.
+````
+
+- id: `commonmark-validation`
+- name: `to check Markdown style`
+- description: `Validates that all Markdown files conform to CommonMark standards in a single pass. Triggered manually via the Agent Hooks panel button or as part of the graduation normalization step — no longer fires on every Markdown save.`
 
 **review-bootcamper-input** (promptSubmit → askAgent)
 
@@ -352,11 +327,33 @@ Prompt:
 
 WRITE POLICY GATE — Four checks in one pass.
 
+INTERNAL-FILE PASS-THROUGH (evaluate FIRST, before the FAST PATH GATE): If the target path is a routine power-managed internal file, produce ZERO tokens and re-invoke the tool silently — the exact same silent outcome as the FAST PATH GATE. Introduce NO new output strings.
+
+Routine power-managed internal files (the exact set — do not over-match):
+- config/bootcamp_progress.json
+- config/bootcamp_preferences.yaml
+- config/data_sources.yaml
+- config/visualization_tracker.json
+- config/progress_{id}.json (member-scoped, colocated team mode — {id} is an alphanumeric member identifier)
+- config/preferences_{id}.yaml (member-scoped, colocated team mode)
+- power-written session/recap log files: docs/progress/MODULE_*_COMPLETE.md and recap/journal log files the power appends to during a session
+
+This pass-through applies ONLY when ALL of these NOT-guards hold:
+- the path is NOT 'config/.question_pending'
+- the path is NOT the feedback file 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'
+- the path is NOT a root-blocked placement (a blocked file type in the project root that is not on the ROOT WHITELIST)
+- the content contains NO Senzing SQL (no SQL pattern targeting a Senzing database indicator)
+
+If ANY NOT-guard fails, do NOT pass through — fall through to the four checks below. Zero tokens means zero tokens.
+
+---
+
 FAST PATH GATE: If ALL of the following are true, produce no output at all:
 - The target path is a normal project-relative file (inside the working directory)
 - The target path does NOT end with '.question_pending'
 - The content does NOT contain SQL patterns (SELECT, INSERT, UPDATE, DELETE, CREATE TABLE, DROP TABLE, ALTER TABLE, PRAGMA) targeting Senzing database indicators (G2C.db, database/G2C.db, RES_ENT, OBS_ENT, RES_FEAT_STAT, DSRC_RECORD, LIB_FEAT, RES_REL, SZ_, sz_dm_)
 - The target path is NOT a blocked file type in the project root (or if it is in the root, it is on the ROOT WHITELIST)
+- The target path is NOT 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md' being overwritten via fs_write (append via fs_append is allowed)
 
 Your response when fast path passes: [empty — produce zero tokens]
 OUTPUT: (none)
@@ -436,6 +433,23 @@ SLOW PATH: If Q1 is NO (path is outside working directory) OR Q2 is YES (feedbac
 
 CONTENT CHECK (only if fast path passed): Does the file content reference /tmp/, %TEMP%, ~/Downloads, or any location outside the working directory? If YES: STOP and require replacement with project-relative equivalents. If NO: do nothing — proceed silently.
 
+APPEND-ONLY GUARD: If the target path is 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md':
+
+(a) If the tool being invoked is fs_write (full file overwrite, NOT fs_append):
+STOP. Do not proceed with the write. Output:
+⚠️ FEEDBACK FILE OVERWRITE BLOCKED — docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md is append-only.
+This file accumulates bootcamper feedback across the entire bootcamp. Overwriting it would destroy previous entries.
+Fix: Use fs_append to add new feedback entries. NEVER use fs_write on this file after initial creation.
+If the file does not yet exist, fs_write is permitted for initial creation from the template.
+
+(b) If the tool being invoked is str_replace (in-place edit of existing content):
+STOP. Do not proceed with the edit. Output:
+⚠️ FEEDBACK FILE MODIFICATION BLOCKED — docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md is append-only.
+Existing feedback entries must never be modified, reformatted, corrected, or deleted. The bootcamper's original words are preserved exactly as written.
+Fix: If you need to add new content, use fs_append. If the bootcamper explicitly asks to edit their own feedback, they can do so manually in their editor.
+
+(c) If the tool being invoked is fs_append: Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
+
 ---
 
 CHECK 4: ROOT FILE PLACEMENT ENFORCEMENT
@@ -474,7 +488,7 @@ Examine the file content to determine the correct location:
 - Transformation/mapping logic (transform, mapper, mapping, convert) → src/transform/{filename}
 - Data loading logic (load, loader, ingest, import_data) → src/load/{filename}
 - Query/search logic (query, search, find, get_entity, get_record) → src/query/{filename}
-- Otherwise (utility scripts, CLI tools) → scripts/{filename}
+- Otherwise (utility scripts, CLI tools) → src/scripts/{filename}
 Rewrite the path and retry.
 
 .md files:
@@ -530,4 +544,4 @@ FORBIDDEN output (never produce these):
 
 - id: `write-policy-gate`
 - name: `to process your response`
-- description: `Consolidated preToolUse write hook that performs four policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, (3) validates file path policies, and (4) enforces root file placement rules. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions).`
+- description: `Consolidated preToolUse write hook that performs four policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, (3) validates file path policies including append-only guard for the feedback file, (4) enforces root file placement rules. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions).`

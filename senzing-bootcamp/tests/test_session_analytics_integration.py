@@ -11,8 +11,6 @@ import json
 import sys
 from pathlib import Path
 
-import pytest
-
 # ---------------------------------------------------------------------------
 # Make scripts importable
 # ---------------------------------------------------------------------------
@@ -20,9 +18,9 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from session_logger import build_log_entry, append_entry
-from analyze_sessions import parse_log, compute_summary, format_json, main as analyze_main
-
+from analyze_sessions import compute_summary, parse_log
+from analyze_sessions import main as analyze_main
+from session_logger import append_entry, build_log_entry
 
 # ---------------------------------------------------------------------------
 # 10.1 End-to-end: write 10 entries then analyse

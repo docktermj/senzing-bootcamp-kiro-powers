@@ -24,7 +24,9 @@ _MODULE_DEPS: Path = _BASE_DIR / "config" / "module-dependencies.yaml"
 _MODULE_PREREQS: Path = _BASE_DIR / "steering" / "module-prerequisites.md"
 _DOCS_MODULES_README: Path = _BASE_DIR / "docs" / "modules" / "README.md"
 _MODULE_FLOW: Path = _BASE_DIR / "docs" / "diagrams" / "module-flow.md"
-_STEERING_MODULE3: Path = _BASE_DIR / "steering" / "module-03-system-verification.md"
+# The Opt-Out Gate moved out of the module-03 root dispatcher into the Phase 1
+# verification file when module-router-standardization split Module 3.
+_STEERING_MODULE3: Path = _BASE_DIR / "steering" / "module-03-phase1-verification.md"
 
 
 # ---------------------------------------------------------------------------
@@ -124,25 +126,40 @@ class TestModule3DefaultOnUnit:
                 f"contain '(Optional)', got: {entry}"
             )
 
-    def test_module_dependencies_soft_requires(self) -> None:
-        """module-dependencies.yaml Module 4 has soft_requires: [3].
+    def test_module_dependencies_module4_hard_requires_module3(self) -> None:
+        """module-dependencies.yaml Module 4 hard-requires Module 3 (and Module 1).
 
-        Validates: Requirements 6, 9
+        Module 3 (System Verification) is promoted from a soft prerequisite to a
+        hard ``requires`` edge of Module 4, so a dependency-respecting order can no
+        longer place Module 4 before Module 3 or silently omit Module 3. Module 3
+        must not appear as a soft requirement.
+
+        Validates: Requirements 2.2, 3.2
         """
         deps = _read_module_deps()
         module_4 = deps["modules"][4]
 
-        assert "soft_requires" in module_4, (
-            "Module 4 should have a 'soft_requires' field in "
-            "module-dependencies.yaml"
+        requires = module_4.get("requires") or []
+        assert 1 in requires, (
+            f"Module 4 requires should include 1, got: {requires}"
         )
-        assert 3 in module_4["soft_requires"], (
-            f"Module 4 soft_requires should include 3, "
-            f"got: {module_4['soft_requires']}"
+        assert 3 in requires, (
+            f"Module 4 should hard-require Module 3 (requires should include 3), "
+            f"got: {requires}"
         )
 
-    def test_gate_3_4_explicitly_skipped(self) -> None:
-        """Gate 3→4 text references 'explicitly skipped'.
+        soft_requires = module_4.get("soft_requires") or []
+        assert 3 not in soft_requires, (
+            f"Module 4 should no longer list Module 3 as a soft requirement, "
+            f"got soft_requires: {soft_requires}"
+        )
+
+    def test_gate_3_4_non_skippable_visualization(self) -> None:
+        """Gate 3→4 text presents the Step 9 visualization as non-skippable.
+
+        After the module3-visualization-no-skip bugfix, the gate 3->4 requires
+        text no longer presents the visualization as skippable. It now states
+        the Step 9 web service + visualization cannot be skipped.
 
         Validates: Requirements 5, 9
         """
@@ -150,8 +167,16 @@ class TestModule3DefaultOnUnit:
         gate_3_4 = deps["gates"]["3->4"]
         requires_text = " ".join(gate_3_4["requires"]).lower()
 
-        assert "explicitly skipped" in requires_text, (
-            f"Gate 3->4 should reference 'explicitly skipped', "
+        expected = (
+            "system verification passed, including the step 9 web service "
+            "+ visualization (cannot be skipped)"
+        )
+        assert expected in requires_text, (
+            f"Gate 3->4 should state the Step 9 visualization cannot be skipped, "
+            f"got: {gate_3_4['requires']}"
+        )
+        assert "explicitly skipped" not in requires_text, (
+            f"Gate 3->4 should no longer reference 'explicitly skipped', "
             f"got: {gate_3_4['requires']}"
         )
 

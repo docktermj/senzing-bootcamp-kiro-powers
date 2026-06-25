@@ -24,16 +24,12 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from validate_data_files import (
-    CheckResult,
-    ValidationReport,
     check_encoding,
     check_existence,
     check_format,
     check_records,
     main,
-    validate_file,
 )
-
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Task 10.1 — Remediation message exact text

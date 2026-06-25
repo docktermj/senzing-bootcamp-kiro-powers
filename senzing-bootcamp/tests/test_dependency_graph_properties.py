@@ -7,8 +7,7 @@ import re
 import sys
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -20,10 +19,9 @@ from validate_dependencies import (
     Violation,
     validate_no_cycles,
     validate_references,
-    validate_topological_order,
     validate_schema,
+    validate_topological_order,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
@@ -62,7 +60,13 @@ def st_dag_modules(draw):
     modules: dict[int, dict] = {}
     for i in range(1, n + 1):
         possible_reqs = list(range(1, i))
-        reqs = draw(st.lists(st.sampled_from(possible_reqs) if possible_reqs else st.nothing(), max_size=min(3, len(possible_reqs)), unique=True))
+        reqs = draw(
+            st.lists(
+                st.sampled_from(possible_reqs) if possible_reqs else st.nothing(),
+                max_size=min(3, len(possible_reqs)),
+                unique=True,
+            )
+        )
         modules[i] = {
             "name": f"Module {i}",
             "requires": sorted(reqs),
@@ -108,7 +112,7 @@ def st_module_refs_with_dangles(draw):
             "skip_if": None,
         }
 
-    valid_ids = set(modules.keys())
+    set(modules.keys())
 
     # Add some dangling references in requires
     dangling_ids = draw(

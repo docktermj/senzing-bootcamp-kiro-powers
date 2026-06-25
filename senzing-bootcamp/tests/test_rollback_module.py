@@ -5,18 +5,17 @@ inputs, plus pytest unit tests for specific examples and edge cases.
 """
 
 import dataclasses
-import importlib
 import json
 import os
 import sys
 import tempfile
 import zipfile
-from io import BytesIO, StringIO
+from io import StringIO
 from pathlib import Path
 from unittest import mock
 
 import pytest
-from hypothesis import given, settings, assume
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 # Ensure scripts dir is on sys.path so we can import rollback_module
@@ -26,15 +25,12 @@ if _scripts_dir not in sys.path:
 
 from rollback_module import (
     ARTIFACT_MANIFEST,
-    MODULE_NAMES,
     PREREQUISITES,
     ModuleArtifacts,
     RemovalResult,
     RollbackLogEntry,
-    build_log_entry,
     compute_progress_update,
     find_latest_backup,
-    format_dry_run_report,
     get_completed_downstream,
     get_downstream_modules,
     main,
@@ -1002,7 +998,11 @@ class TestErrorScenarios:
 
             assert exit_code == 0
             output = buf.getvalue()
-            assert "Warning" in output or "not found" in output.lower() or "not updated" in output.lower()
+            assert (
+                "Warning" in output
+                or "not found" in output.lower()
+                or "not updated" in output.lower()
+            )
 
     def test_invalid_json_progress_file(self):
         """Invalid JSON in progress file prints warning."""
@@ -1090,7 +1090,7 @@ class TestDatabaseScenarios:
         """Backup found + user confirms → database restored."""
         with tempfile.TemporaryDirectory() as td:
             fake_script = self._setup_db_module(td)
-            root = Path(td)
+            Path(td)
 
             buf = StringIO()
             # Two prompts: confirmation + db restore

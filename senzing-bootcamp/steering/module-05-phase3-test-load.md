@@ -5,6 +5,8 @@ inclusion: manual
 
 > **This phase is optional.** Bootcampers who prefer to write custom loading programs can skip Phase 3 and proceed directly to Module 6. Phase 3 uses `mapping_workflow` steps 5–8 to give immediate feedback on entity resolution quality without leaving Module 5.
 
+> **Entry from the Step 5 `detect_environment` menu:** Phase 3 is entered from the Step 5 menu handled in #[[file:senzing-bootcamp/steering/module-05-phase2-data-mapping.md]]. When the bootcamper explicitly chooses **test_load** or **load+resolve** at that menu, follow the Phase 3 workflow below (`mapping_workflow` steps 5–8, Steps 21–26) unchanged. When sources remain unmapped, the Phase 2 guidance instead recommends **skip** and continues to the next source — the real production load is still deferred to Module 6 in either case.
+
 **Before starting Phase 3:** The Senzing SDK must be installed and configured (Module 2). If the SDK is not yet set up, inform the bootcamper: "Phase 3 requires the Senzing SDK (Module 2). You can skip Phase 3 and proceed to Module 6, or complete Module 2 first and return here." If the bootcamper chooses to skip, update the Data Source Registry with `test_load_status: skipped` for each source and proceed to Module 6.
 
 ### Workflow (per data source that completed Phase 2)
@@ -91,6 +93,22 @@ inclusion: manual
     - **If rejected:** Keep the existing baseline unchanged. Inform the bootcamper they can return to Phase 2 to adjust their mapping and re-run Phase 3 to see updated results.
 
     > **Agent instruction:** Only present the accept/reject gate when a prior baseline existed (i.e., this is not the first test load). On the first test load, the baseline is saved automatically in step 24b without asking.
+
+> **Agent instruction — Organize mapping output files:**
+>
+> After `mapping_workflow` steps 5–8 generate output files into the workspace
+> directory, run the organizer script to sort them into the correct project
+> subdirectories:
+>
+> ```bash
+> python3 senzing-bootcamp/scripts/organize_mapping_files.py \
+>   --source <workspace_dir> \
+>   --project-root <bootcamper_project_root>
+> ```
+>
+> Where `<workspace_dir>` is the directory passed to `mapping_workflow` as
+> `workspace_dir` and `<bootcamper_project_root>` is the bootcamper's project
+> root directory. Review the output summary to confirm files landed correctly.
 
 25. **Present results and decision gate:** Present the Phase 3 results summary for this data source. Include: records loaded, entities created, deduplication rate, quality assessment, and any issues found. Ask the bootcamper to review the results before proceeding.
 

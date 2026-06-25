@@ -12,7 +12,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -22,7 +22,10 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _VISUALIZATION_GUIDE = _BOOTCAMP_DIR / "steering" / "visualization-guide.md"
 _MODULE_03_PHASE2 = _BOOTCAMP_DIR / "steering" / "module-03-phase2-visualization.md"
-_MODULE_03_SYSTEM = _BOOTCAMP_DIR / "steering" / "module-03-system-verification.md"
+# Steps 10–12 (Report & Close) moved out of the module-03 monolith into the
+# phase-3 sub-file during the module-03 dispatcher refactor. The content moved
+# unchanged, so the baselines are re-targeted to its shipped location.
+_MODULE_03_SYSTEM = _BOOTCAMP_DIR / "steering" / "module-03-phase3-report-close.md"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -202,7 +205,7 @@ class TestDeliverySequenceSteps1to3Preservation:
             (num, text) for num, text in current_steps if num <= 3
         ]
 
-        assert len(baseline_steps_1_3) == 3, (
+        assert len(baseline_steps_1_3) == 3, (  # brittle-allow: steps 1-3 count, not suite count
             f"Expected 3 baseline steps (1-3), found {len(baseline_steps_1_3)}"
         )
         assert len(current_steps_1_3) == 3, (

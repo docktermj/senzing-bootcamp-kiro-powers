@@ -5,6 +5,23 @@ import sys
 from pathlib import Path
 
 import pytest
+from hypothesis import HealthCheck, settings
+
+# ---------------------------------------------------------------------------
+# Hypothesis profile — deterministic under variable CI/local machine load
+# ---------------------------------------------------------------------------
+# Repo-level property tests can do per-example filesystem I/O that exceeds
+# Hypothesis's default 200 ms deadline or trips the ``too_slow`` health check
+# under machine load. Those are timing artifacts, not logic failures. Disable
+# the deadline and suppress the timing health check so the suite is
+# deterministic; per-test ``@settings`` still take precedence. Assertions are
+# unaffected.
+settings.register_profile(
+    "bootcamp",
+    deadline=None,
+    suppress_health_check=[HealthCheck.too_slow],
+)
+settings.load_profile("bootcamp")
 
 # ---------------------------------------------------------------------------
 # Ensure the project root is the cwd for every test.

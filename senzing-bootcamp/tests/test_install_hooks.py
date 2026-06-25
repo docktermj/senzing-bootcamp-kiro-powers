@@ -1,14 +1,9 @@
 """Tests for senzing-bootcamp/scripts/install_hooks.py."""
 
 import importlib
-import os
 import shutil
-import sys
 import tempfile
 from pathlib import Path
-from unittest.mock import patch
-
-import pytest
 
 
 def _load_install_hooks():
@@ -53,7 +48,7 @@ class TestDiscoverHooks:
         filename, name, desc = result[0]
         assert filename == "my-custom-hook.kiro.hook"
         assert name == "My Custom Hook"
-        assert "no description" in desc.lower() or "add to HOOKS" in desc
+        assert "no description" in desc.lower() or "add to HOOK_METADATA" in desc
 
 
 class TestInstallHooks:
@@ -131,8 +126,8 @@ class TestInstallHooks:
 # Property-based tests  (Tasks 9.2, 9.3, 9.4)
 # ---------------------------------------------------------------------------
 
-from hypothesis import given, settings, assume
 import hypothesis.strategies as st
+from hypothesis import given, settings
 
 # Strategy: generate valid hook filenames
 hook_name_parts = st.from_regex(r"[a-z][a-z0-9]{1,8}", fullmatch=True)
@@ -180,12 +175,13 @@ class TestProperty10HookDiscoveryCompleteness:
             shutil.rmtree(td, ignore_errors=True)
 
 
-# Strategy: generate hook filenames NOT in the known HOOKS list
+# Strategy: generate hook filenames NOT in the known HOOK_METADATA overlay
 def _known_hook_filenames():
     mod = _load_install_hooks()
-    return {filename for filename, _, _ in mod.HOOKS}
+    return set(mod.HOOK_METADATA.keys())
 
 
+# Strategy: generate hook filenames NOT in the known HOOK_METADATA overlay
 unknown_hook_filenames = st.builds(
     lambda parts: "-".join(parts) + ".kiro.hook",
     st.lists(hook_name_parts, min_size=1, max_size=3),
@@ -197,7 +193,7 @@ class TestProperty11UnknownHookNameDerivation:
 
     **Validates: Requirements 9.2**
 
-    For any filename not in HOOKS, display name is derived by
+    For any filename not in HOOK_METADATA, display name is derived by
     removing suffix, replacing hyphens, title-casing.
     """
 

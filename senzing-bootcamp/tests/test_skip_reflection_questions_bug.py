@@ -12,7 +12,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -22,6 +22,14 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _MODULE_COMPLETION = _BOOTCAMP_DIR / "steering" / "module-completion.md"
 _MODULE_03 = _BOOTCAMP_DIR / "steering" / "module-03-system-verification.md"
+
+# After the module-03 monolith was split into a dispatcher + phase sub-files
+# (same-branch refactor), Step 12 (Module Close) moved into the Phase 3
+# report-&-close file and the Success Criteria section moved into the Phase 1
+# verification file. Their instructions are unchanged — only the owning files
+# moved.
+_MODULE_03_PHASE1 = _BOOTCAMP_DIR / "steering" / "module-03-phase1-verification.md"
+_MODULE_03_PHASE3 = _BOOTCAMP_DIR / "steering" / "module-03-phase3-report-close.md"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -36,6 +44,22 @@ def _read_module_completion() -> str:
 def _read_module_03() -> str:
     """Read the full content of module-03-system-verification.md."""
     return _MODULE_03.read_text(encoding="utf-8")
+
+
+def _read_module_03_phase1() -> str:
+    """Read the full content of module-03-phase1-verification.md.
+
+    The Success Criteria section lives here after the module-03 dispatcher split.
+    """
+    return _MODULE_03_PHASE1.read_text(encoding="utf-8")
+
+
+def _read_module_03_phase3() -> str:
+    """Read the full content of module-03-phase3-report-close.md.
+
+    Step 12 (Module Close) lives here after the module-03 dispatcher split.
+    """
+    return _MODULE_03_PHASE3.read_text(encoding="utf-8")
 
 
 def _extract_step_by_heading(markdown: str, step_number: int) -> str:
@@ -192,15 +216,15 @@ class TestModule3Step12ReflectionInstruction:
     """
 
     def test_step12_has_no_reflection_question_instruction(self) -> None:
-        content = _read_module_03()
+        content = _read_module_03_phase3()
         step12 = _extract_step_by_heading(content, 12)
-        assert step12, "Step 12 section not found in module-03-system-verification.md"
+        assert step12, "Step 12 section not found in module-03-phase3-report-close.md"
 
         reflection_match = re.search(
             r"Reflection question:", step12, re.IGNORECASE
         )
         assert reflection_match is None, (
-            "module-03-system-verification.md step 12 contains a "
+            "module-03-phase3-report-close.md step 12 contains a "
             "'Reflection question:' instruction. The module close workflow "
             "should NOT instruct the agent to present a reflection question. "
             f"Found at: '{step12[reflection_match.start():reflection_match.start()+100]}'"
@@ -217,16 +241,16 @@ class TestModule3SuccessCriteriaReflection:
 
     **Validates: Requirements 1.3**
 
-    Parse module-03-system-verification.md success criteria and assert it
+    Parse module-03-phase1-verification.md success criteria and assert it
     does NOT contain "answered the reflection question". On unfixed code
     this will FAIL because the success criteria require a reflection answer.
     """
 
     def test_success_criteria_no_reflection_requirement(self) -> None:
-        content = _read_module_03()
+        content = _read_module_03_phase1()
         success_criteria = _extract_success_criteria(content)
         assert success_criteria, (
-            "Success Criteria section not found in module-03-system-verification.md"
+            "Success Criteria section not found in module-03-phase1-verification.md"
         )
 
         reflection_match = re.search(
@@ -235,7 +259,7 @@ class TestModule3SuccessCriteriaReflection:
             re.IGNORECASE,
         )
         assert reflection_match is None, (
-            "module-03-system-verification.md Success Criteria contains "
+            "module-03-phase1-verification.md Success Criteria contains "
             "'answered the reflection question' as a completion condition. "
             "The success criteria should NOT require a reflection answer."
         )

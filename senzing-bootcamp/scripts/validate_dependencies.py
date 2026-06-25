@@ -19,7 +19,6 @@ from pathlib import Path
 
 import yaml
 
-
 # ---------------------------------------------------------------------------
 # Data structures
 # ---------------------------------------------------------------------------
@@ -282,7 +281,8 @@ def validate_references(graph: dict) -> list[Violation]:
                 violations.append(
                     Violation(
                         "ERROR",
-                        f"Dangling reference in modules.{mod_num}.requires: module {req} does not exist",
+                        f"Dangling reference in modules.{mod_num}.requires: "
+                        f"module {req} does not exist",
                     )
                 )
 
@@ -300,7 +300,8 @@ def validate_references(graph: dict) -> list[Violation]:
                     violations.append(
                         Violation(
                             "ERROR",
-                            f"Dangling reference in tracks.{track_key}.modules: module {mod_ref} does not exist",
+                            f"Dangling reference in tracks.{track_key}.modules: "
+                            f"module {mod_ref} does not exist",
                         )
                     )
 
@@ -317,14 +318,16 @@ def validate_references(graph: dict) -> list[Violation]:
                     violations.append(
                         Violation(
                             "ERROR",
-                            f"Dangling reference in gates key '{gate_key}': module {src} does not exist",
+                            f"Dangling reference in gates key '{gate_key}': "
+                            f"module {src} does not exist",
                         )
                     )
                 if dst not in valid_modules:
                     violations.append(
                         Violation(
                             "ERROR",
-                            f"Dangling reference in gates key '{gate_key}': module {dst} does not exist",
+                            f"Dangling reference in gates key '{gate_key}': "
+                            f"module {dst} does not exist",
                         )
                     )
 
@@ -364,7 +367,8 @@ def validate_topological_order(graph: dict) -> list[Violation]:
                     violations.append(
                         Violation(
                             "ERROR",
-                            f"Track '{track_key}': module {mod_num} appears before its prerequisite {req}",
+                            f"Track '{track_key}': module {mod_num} "
+                            f"appears before its prerequisite {req}",
                         )
                     )
 
@@ -389,7 +393,8 @@ def validate_steering_files(graph: dict, steering_dir: Path) -> list[Violation]:
             violations.append(
                 Violation(
                     "ERROR",
-                    f"No steering file found for module {mod_num} (expected {steering_dir}/module-{int(mod_num):02d}-*.md)",
+                    f"No steering file found for module {mod_num} "
+                    f"(expected {steering_dir}/module-{int(mod_num):02d}-*.md)",
                 )
             )
 
@@ -405,7 +410,11 @@ def validate_prerequisites_file(graph: dict, prereqs_path: Path) -> list[Violati
 
     if not prereqs_path.exists():
         violations.append(
-            Violation("WARNING", f"module-prerequisites.md not found at {prereqs_path}, skipping cross-reference check")
+            Violation(
+                "WARNING",
+                f"module-prerequisites.md not found at {prereqs_path}, "
+                f"skipping cross-reference check",
+            )
         )
         return violations
 
@@ -428,7 +437,9 @@ def validate_prerequisites_file(graph: dict, prereqs_path: Path) -> list[Violati
         requires_text = match.group(2).strip()
         # Parse requires field
         req_list: list[int] = []
-        if requires_text and requires_text.lower() not in ("none", "none (first technical module)", "—", "-"):
+        if requires_text and requires_text.lower() not in (
+            "none", "none (first technical module)", "—", "-"
+        ):
             # Extract module numbers from text like "Module 2", "Module 4, files in data/raw/"
             # or "Module 2 + Module 5, ..."
             mod_refs = re.findall(r"Module\s+(\d+)", requires_text)
@@ -454,7 +465,8 @@ def validate_prerequisites_file(graph: dict, prereqs_path: Path) -> list[Violati
             violations.append(
                 Violation(
                     "ERROR",
-                    f"Module {mod_num} prerequisites mismatch: graph has {graph_all_requires}, file has {file_reqs}",
+                    f"Module {mod_num} prerequisites mismatch: "
+                    f"graph has {graph_all_requires}, file has {file_reqs}",
                 )
             )
 
@@ -486,7 +498,11 @@ def validate_onboarding_flow(graph: dict, onboarding_path: Path) -> list[Violati
 
     if not content_parts:
         violations.append(
-            Violation("WARNING", f"onboarding-flow.md not found at {onboarding_path}, skipping cross-reference check")
+            Violation(
+                "WARNING",
+                f"onboarding-flow.md not found at {onboarding_path}, "
+                f"skipping cross-reference check",
+            )
         )
         return violations
 
@@ -511,7 +527,8 @@ def validate_onboarding_flow(graph: dict, onboarding_path: Path) -> list[Violati
         # Only process if this matches a known track display name
         if track_name not in display_to_key:
             continue
-        # Parse module numbers from "Modules 2, 3" or "Modules 1–11" or "Modules 1, 2, 3, 4, 5, 6, 7"
+        # Parse module numbers from "Modules 2, 3" or "Modules 1–11" or
+        # "Modules 1, 2, 3, 4, 5, 6, 7"
         if "–" in modules_text or "-" in modules_text:
             # Range format: "Modules 1–11"
             range_match = re.search(r"(\d+)\s*[–-]\s*(\d+)", modules_text)
@@ -532,7 +549,7 @@ def validate_onboarding_flow(graph: dict, onboarding_path: Path) -> list[Violati
         if not isinstance(track_data, dict):
             continue
         track_name = track_data.get("name", "")
-        graph_modules = track_data.get("modules", [])
+        track_data.get("modules", [])
 
         # Find matching track in file
         file_mods = file_tracks.get(track_name)
@@ -588,7 +605,8 @@ def validate_no_legacy_identifiers(graph: dict, onboarding_path: Path) -> list[V
                         violations.append(
                             Violation(
                                 "ERROR",
-                                f"Legacy track phrase '{phrase}' found in track name for '{track_key}'",
+                                f"Legacy track phrase '{phrase}' "
+                                f"found in track name for '{track_key}'",
                             )
                         )
 
@@ -670,7 +688,7 @@ def run_all_checks(
     )
 
     error_count = sum(1 for v in violations if v.level == "ERROR")
-    warning_count = sum(1 for v in violations if v.level == "WARNING")
+    sum(1 for v in violations if v.level == "WARNING")
     exit_code = 1 if error_count > 0 else 0
     return violations, exit_code
 

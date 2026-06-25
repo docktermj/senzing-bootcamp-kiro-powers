@@ -19,11 +19,16 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-
 POWER_DIR = Path(__file__).resolve().parent.parent
 URL_PATTERN = re.compile(r"https?://[^\s\)>\]\"'`]+")
 
-# URLs that are expected to be unreachable in CI (e.g., localhost examples)
+# URLs that are intentionally not checked:
+#   - localhost / example / placeholder hosts used in documentation snippets
+#   - illustrative vendor API and CRM endpoints in the Module 4 data-collection
+#     docs (they are examples, not live services)
+#   - XML namespace identifiers that look like URLs but are not web pages
+#   - hosts that block automated HEAD/GET link checkers with HTTP 403 even
+#     though the page is reachable in a browser
 SKIP_PATTERNS = [
     "localhost",
     "127.0.0.1",
@@ -31,6 +36,13 @@ SKIP_PATTERNS = [
     "your-",
     "<your-",
     "placeholder",
+    # Illustrative example endpoints (not live services)
+    "api.vendor.com",
+    "company.salesforce.com",
+    # XML namespace identifiers in pom.xml examples (not real web pages)
+    "maven.apache.org/POM",
+    # Reachable in a browser but blocks automated checkers with HTTP 403
+    "dotnet.microsoft.com",
 ]
 
 
@@ -53,8 +65,14 @@ def yellow(t: str) -> str:
 
 
 def find_markdown_files() -> list[Path]:
-    """Find all .md files in the power directory."""
-    return sorted(POWER_DIR.rglob("*.md"))
+    """Find all .md files in the power directory.
+
+    Excludes CHANGELOG files: they are a historical record and legitimately
+    cite URLs that have since changed or been removed, which are not
+    actionable broken links.
+    """
+    excluded = {"CHANGELOG.md", "CHANGELOG-ARCHIVE.md"}
+    return sorted(p for p in POWER_DIR.rglob("*.md") if p.name not in excluded)
 
 
 def extract_urls(path: Path) -> list[tuple[int, str]]:

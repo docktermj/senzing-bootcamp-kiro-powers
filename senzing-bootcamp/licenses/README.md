@@ -74,6 +74,23 @@ You can always add a license later by placing it in `licenses/g2.lic`.
    - This allows different projects to use different licenses
    - Useful for separating evaluation and production environments
 
+### Option 4: Request Through the MCP Server (In-Flow)
+
+**For an in-flow path that does not require leaving the bootcamp**, you can obtain an evaluation license directly through the Senzing MCP server. This is the same evaluation license as Option 1, but the request is submitted for you by the agent during the Module 1 licensing flow.
+
+1. **How it works**:
+   - The agent invokes the `submit_feedback` MCP tool with the `license_request` category to generate an evaluation license through the MCP server.
+   - The evaluation license is delivered by email, and the email includes a download link for the license file.
+
+2. **Enable the tool first**:
+   - The `submit_feedback` tool is **disabled by default**.
+   - To enable this option, open `senzing-bootcamp/mcp.json`, remove `submit_feedback` from the `disabledTools` array, and save the file.
+   - After saving, the agent re-checks tool availability before submitting the request.
+
+3. **Install the license**:
+   - When the email arrives, download the `g2.lic` file using the link provided.
+   - Save it to this directory (`licenses/g2.lic`) following the placement steps in Option 1.
+
 ## Decoding a Base64-Encoded License
 
 Sometimes you receive your Senzing license as a Base64-encoded string rather than a binary file — for example, pasted into an email body or copied from a licensing portal. You need to decode it to a binary file before the SDK can use it.
@@ -317,7 +334,7 @@ Typically **1-2 business days** after contacting Senzing. Plan ahead!
 ### Senzing Support
 
 - **Email**: [support@senzing.com](mailto:support@senzing.com)
-- **Website**: [https://senzing.com/support/](https://senzing.com/support/)
+- **Website**: [https://senzing.com/contact/](https://senzing.com/contact/)
 
 ### Senzing Sales
 

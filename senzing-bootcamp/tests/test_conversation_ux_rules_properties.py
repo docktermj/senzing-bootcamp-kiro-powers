@@ -200,7 +200,8 @@ def st_spec_modified_file() -> st.SearchStrategy[Path]:
 
 
 class TestProperty1UniversalPointingPrefix:
-    """Feature: conversation-ux-rules, Property 1: Universal 👉 prefix on bootcamper-directed questions
+    """Feature: conversation-ux-rules, Property 1: Universal 👉 prefix on \
+bootcamper-directed questions
 
     For any steering file that contains a question with an adjacent 🛑 STOP
     marker or ⛔ gate, the question text SHALL be prefixed with 👉.
@@ -252,13 +253,14 @@ class TestProperty1UniversalPointingPrefix:
                     )
 
         assert violations == [], (
-            f"Questions with STOP/gate markers missing 👉 prefix:\n"
+            "Questions with STOP/gate markers missing 👉 prefix:\n"
             + "\n".join(violations)
         )
 
 
 class TestProperty2StopMarkerBetweenQuestions:
-    """Feature: conversation-ux-rules, Property 2: STOP marker follows every 👉 question before next question
+    """Feature: conversation-ux-rules, Property 2: STOP marker follows every 👉 \
+question before next question
 
     For any steering file with multiple 👉 questions, there SHALL be a 🛑
     STOP marker (or EOF) between each pair.
@@ -316,7 +318,7 @@ class TestProperty2StopMarkerBetweenQuestions:
                 )
 
         assert violations == [], (
-            f"Missing 🛑 STOP markers between 👉 questions:\n"
+            "Missing 🛑 STOP markers between 👉 questions:\n"
             + "\n".join(violations)
         )
 
@@ -397,7 +399,8 @@ class TestProperty3BehavioralRulesReload:
 
 
 class TestProperty4ViolationExamplesCoverage:
-    """Feature: conversation-ux-rules, Property 4: Violation Examples section covers all five rule categories
+    """Feature: conversation-ux-rules, Property 4: Violation Examples section covers \
+all five rule categories
 
     conversation-protocol.md SHALL have a "Violation Examples" section with
     examples for all five categories: multi-question, not-waiting, dead-end,
@@ -479,7 +482,8 @@ class TestProperty4ViolationExamplesCoverage:
 
 
 class TestProperty5SelfCheckCompleteness:
-    """Feature: conversation-ux-rules, Property 5: Self-Check section contains all verification questions
+    """Feature: conversation-ux-rules, Property 5: Self-Check section contains all \
+verification questions
 
     conversation-protocol.md SHALL have a "Self-Check" section with all four
     verification questions: (a) multiple 👉 questions, (b) missing prefix,

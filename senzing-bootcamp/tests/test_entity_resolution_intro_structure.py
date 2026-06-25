@@ -52,8 +52,14 @@ REPO_ROOT: Path = Path(__file__).resolve().parent.parent.parent
 #: The steering file under refresh.
 TARGET_FILE: Path = REPO_ROOT / "senzing-bootcamp" / "steering" / "entity-resolution-intro.md"
 
-#: The onboarding flow that loads ``TARGET_FILE`` via ``#[[file:]]`` at Step 4a.
-ONBOARDING_FLOW: Path = REPO_ROOT / "senzing-bootcamp" / "steering" / "onboarding-flow.md"
+#: The onboarding phase file that loads ``TARGET_FILE`` via ``#[[file:]]``.
+#: After the onboarding split, the entity-resolution-intro loader moved out of
+#: onboarding-flow.md into onboarding-phase1b-intro-language.md (Step 3), where
+#: the ``#[[file:senzing-bootcamp/steering/entity-resolution-intro.md]]`` loader
+#: line now lives. The loader content moved unchanged; only its owning file changed.
+ONBOARDING_FLOW: Path = (
+    REPO_ROOT / "senzing-bootcamp" / "steering" / "onboarding-phase1b-intro-language.md"
+)
 
 #: The steering directory whose ``.md`` files ``measure_steering.scan_steering_files``
 #: enumerates to rebuild ``file_metadata``.

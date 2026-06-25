@@ -22,7 +22,6 @@ import json
 import re
 from pathlib import Path
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
@@ -32,7 +31,7 @@ from hook_test_helpers import parse_categories_yaml
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/mcp-first-invariant.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.kiro.hook")
 AGENT_INSTRUCTIONS_PATH = Path("senzing-bootcamp/steering/agent-instructions.md")
 CATEGORIES_PATH = Path("senzing-bootcamp/hooks/hook-categories.yaml")
 
@@ -119,10 +118,35 @@ CONVERSATIONAL_PHRASES: list[str] = [
 
 
 def load_hook_prompt() -> str:
-    """Load and return the then.prompt field from the hook file."""
+    """Load and return the MCP_First_Phase section from the consolidated hook.
+
+    Extracts the Phase 3 (MCP-First Compliance) section from the consolidated
+    ask-bootcamper.kiro.hook prompt, since the original mcp-first-invariant hook
+    was merged into this phase. Also includes the hook preamble which contains
+    the zero-output directive governing all phases.
+    """
     with open(HOOK_PATH, encoding="utf-8") as f:
         data = json.load(f)
-    return data["then"]["prompt"]
+    full_prompt = data["then"]["prompt"]
+
+    # Extract preamble (before Phase 1) which contains zero-output directives
+    preamble_match = re.search(
+        r"^(.*?)(?=═{10,}\nPHASE 1:)",
+        full_prompt,
+        re.DOTALL,
+    )
+    preamble = preamble_match.group(1) if preamble_match else ""
+
+    # Extract Phase 3 section (MCP_First_Phase) from the consolidated prompt
+    phase3_match = re.search(
+        r"(PHASE 3: MCP-FIRST COMPLIANCE.*?)(?=═{10,}\nPHASE 4:|\Z)",
+        full_prompt,
+        re.DOTALL,
+    )
+    phase3 = phase3_match.group(1) if phase3_match else ""
+
+    # Combine preamble + Phase 3 to preserve zero-output directive context
+    return preamble + phase3 if (preamble or phase3) else full_prompt
 
 
 def load_agent_instructions() -> str:
@@ -328,7 +352,7 @@ class TestSelfCorrectionInstructions:
         violation_section = extract_violation_output(prompt)
 
         assert violation_section, (
-            f"Hook prompt does not contain a self-correction/violation output section"
+            "Hook prompt does not contain a self-correction/violation output section"
         )
 
         # The violation section must reference at least one of the expected tools
@@ -394,18 +418,18 @@ class TestNoBypassInvariantLanguage:
 
 
 class TestCriticalOnlyRegistration:
-    """Verify mcp-first-invariant is in critical and NOT in module categories.
+    """Verify ask-bootcamper is in critical and NOT in module categories.
 
     **Validates: Requirements 6.1, 6.3**
 
-    Property 6: Verify `mcp-first-invariant` appears in `critical` category
+    Property 6: Verify `ask-bootcamper` appears in `critical` category
     and NOT in any module-specific category.
     """
 
-    @given(st.just("mcp-first-invariant"))
+    @given(st.just("ask-bootcamper"))
     @settings(max_examples=5)
     def test_hook_in_critical_category(self, hook_id: str):
-        """The mcp-first-invariant hook SHALL appear in the critical category."""
+        """The ask-bootcamper hook SHALL appear in the critical category."""
         categories = parse_categories_yaml(CATEGORIES_PATH)
         assert "critical" in categories, (
             "hook-categories.yaml does not contain a 'critical' category"
@@ -415,10 +439,10 @@ class TestCriticalOnlyRegistration:
             f"Critical hooks: {categories['critical']}"
         )
 
-    @given(st.just("mcp-first-invariant"))
+    @given(st.just("ask-bootcamper"))
     @settings(max_examples=5)
     def test_hook_not_in_module_categories(self, hook_id: str):
-        """The mcp-first-invariant hook SHALL NOT appear in any module category."""
+        """The ask-bootcamper hook SHALL NOT appear in any module category."""
         categories = parse_categories_yaml(CATEGORIES_PATH)
 
         module_categories = {

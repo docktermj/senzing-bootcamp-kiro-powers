@@ -1,0 +1,171 @@
+# BUG 2 — Token-budget aggregate preservation baselines (observation-first, UNFIXED tree)
+#
+# Captured by Task 5 (Phase B preservation baseline) on the UNFIXED tree.
+# Property 4: Preservation — Per-File / Per-Phase Counts and Existing Checks Unchanged
+# Requirements: 3.5, 3.7
+#
+# PURPOSE: Lock down every per-file token_count, every per-phase
+# token_count/size_category, and the non-total budget sub-keys so Task 8.5 can
+# prove the BUG 2 fix changes ONLY budget.total_tokens (169633 -> 169576) and
+# nothing else. The per-file +/-10% tolerance check and the per-phase tolerance
+# check must behave identically before and after the fix.
+#
+# Re-verify (Task 8.5):
+#   - every per-file token_count below is byte-for-byte unchanged in file_metadata
+#   - every per-phase token_count/size_category below is unchanged
+#   - budget.reference_window / warn_threshold_pct / critical_threshold_pct /
+#     split_threshold_tokens are unchanged
+#   - only budget.total_tokens changes: 169633 -> 169576
+#   - `python3 senzing-bootcamp/scripts/measure_steering.py --check` exits 0 once
+#     declared == sum (after the fix); on the UNFIXED tree it ALSO exits 0 because
+#     the aggregate check is not yet present.
+
+## Aggregate facts (UNFIXED tree)
+file_metadata_entries                 = 91
+sum(file_metadata.token_count)        = 169576
+declared budget.total_tokens          = 169633   # off by +57 (BUG 2 — corrected by Task 8.1)
+phase_entries                         = 33
+
+## measure_steering.py --check on the UNFIXED tree
+# Command: python3 senzing-bootcamp/scripts/measure_steering.py --check
+# Output : "All token counts are within 10% tolerance."
+# Exit   : 0   (per-file +/-10% and per-phase checks PASS; aggregate NOT yet checked)
+
+## budget sub-keys (only total_tokens changes; all others preserved)
+budget.total_tokens                   = 169633   # -> 169576 after fix (Task 8.1)
+budget.reference_window               = 200000   # UNCHANGED
+budget.warn_threshold_pct             = 60       # UNCHANGED
+budget.critical_threshold_pct         = 80       # UNCHANGED
+budget.split_threshold_tokens         = 5000     # UNCHANGED
+
+## PER-FILE file_metadata baselines (91 entries) — filename  token_count  size_category
+agent-behavior-rules.md                         602     medium
+agent-context-management.md                     1326    medium
+agent-instructions.md                           4814    large
+cloud-provider-setup.md                         784     medium
+common-pitfalls.md                              4610    large
+completion-summary-offer.md                     1867    medium
+complexity-estimator.md                         606     medium
+conversation-examples.md                        536     medium
+conversation-protocol.md                        3765    large
+data-lineage.md                                 603     medium
+data-processing-reference.md                    1174    medium
+deployment-aws.md                               1323    medium
+deployment-azure.md                             965     medium
+deployment-gcp.md                               956     medium
+deployment-kubernetes.md                        1397    medium
+deployment-onpremises.md                        952     medium
+design-patterns.md                              749     medium
+entity-resolution-intro.md                      1864    medium
+environment-setup.md                            658     medium
+feedback-workflow.md                            1239    medium
+graduation.md                                   3584    large
+hook-architecture.md                            2149    large
+hook-registry-critical.md                       8169    large
+hook-registry-modules.md                        8474    large
+hook-registry.md                                1772    medium
+inline-status.md                                460     small
+lang-csharp.md                                  1642    medium
+lang-java.md                                    1688    medium
+lang-python.md                                  1655    medium
+lang-rust.md                                    1698    medium
+lang-typescript.md                              1887    medium
+lessons-learned.md                              434     small
+mcp-response-caching.md                         1442    medium
+mcp-tool-decision-tree.md                       2268    large
+mcp-usage-reference.md                          580     medium
+module-01-business-problem.md                   4527    large
+module-01-phase2-document-confirm.md            1853    medium
+module-02-sdk-setup.md                          4491    large
+module-03-phase1-verification.md                2695    large
+module-03-phase2-visualization.md               4411    large
+module-03-phase3-report-close.md                1751    medium
+module-03-system-verification.md                1448    medium
+module-03-visualization-api-reference.md        1711    medium
+module-04-data-collection.md                    3460    large
+module-05-data-quality-mapping.md               689     medium
+module-05-phase1-quality-assessment.md          1710    medium
+module-05-phase2-data-mapping.md                3128    large
+module-05-phase3-test-load.md                   2813    large
+module-06-data-processing.md                    1583    medium
+module-06-phaseA-build-loading.md               1219    medium
+module-06-phaseB-load-first-source.md           1193    medium
+module-06-phaseC-multi-source.md                1428    medium
+module-06-phaseD-validation.md                  1952    medium
+module-07-phase2-discover.md                    3436    large
+module-07-phase2b-discover.md                   3171    large
+module-07-query-visualize-discover.md           3591    large
+module-08-performance.md                        1352    medium
+module-08-phaseA-requirements.md                1487    medium
+module-08-phaseB-benchmarking.md                426     small
+module-08-phaseC-optimization.md                746     medium
+module-09-phaseA-assessment.md                  1221    medium
+module-09-phaseB-hardening.md                   928     medium
+module-09-security.md                           571     medium
+module-10-monitoring.md                         568     medium
+module-10-phaseA-setup.md                       808     medium
+module-10-phaseB-operations.md                  451     small
+module-11-deployment.md                         3289    large
+module-11-phase2-deploy.md                      850     medium
+module-completion.md                            4703    large
+module-prerequisites.md                         1344    medium
+module-transitions.md                           1534    medium
+onboarding-flow.md                              3468    large
+onboarding-phase1b-intro-language.md            2055    large
+onboarding-phase2-track-setup.md                991     medium
+phase-loading-guide.md                          464     small
+project-structure.md                            700     medium
+recovery-from-mistakes.md                       1227    medium
+security-privacy.md                             278     small
+session-resume-phase2-mapping.md                656     medium
+session-resume-phase2-setup-recovery.md         996     medium
+session-resume-phase2-state-repair.md           547     medium
+session-resume.md                               3380    large
+skip-step-protocol.md                           799     medium
+track-switching.md                              766     medium
+troubleshooting-commands.md                     658     medium
+troubleshooting-decision-tree.md                1606    medium
+uat-framework.md                                576     medium
+verbosity-control.md                            2048    large
+visualization-guide.md                          4334    large
+visualization-web-service.md                    2195    large
+whats-new.md                                    602     medium
+
+## PER-PHASE baselines (33 entries) — phase file  token_count  size_category
+# Parsed from modules.*.phases.*, onboarding.*.phases.*, session-resume.*.phases.*
+# NOTE: phase token_count values are independent of file_metadata values (e.g.
+# module-01-phase2-document-confirm.md is 1871 here vs 1853 in file_metadata) and
+# are NOT added to budget.total_tokens. They must remain unchanged by the BUG 2 fix.
+module-01-business-problem.md                   4527    large
+module-01-phase2-document-confirm.md            1871    medium
+module-02-sdk-setup.md                          4306    large
+module-03-phase1-verification.md                2695    large
+module-03-phase2-visualization.md               4411    large
+module-03-phase3-report-close.md                1751    medium
+module-04-data-collection.md                    3370    large
+module-05-phase1-quality-assessment.md          1725    medium
+module-05-phase2-data-mapping.md                3128    large
+module-05-phase3-test-load.md                   2654    large
+module-06-phaseA-build-loading.md               1219    medium
+module-06-phaseB-load-first-source.md           1193    medium
+module-06-phaseC-multi-source.md                1428    medium
+module-06-phaseD-validation.md                  1950    medium
+module-07-query-visualize-discover.md           3591    large
+module-07-phase2-discover.md                    3436    large
+module-07-phase2b-discover.md                   3162    large
+module-08-phaseA-requirements.md                1508    medium
+module-08-phaseB-benchmarking.md                426     small
+module-08-phaseC-optimization.md                746     medium
+module-09-phaseA-assessment.md                  1221    medium
+module-09-phaseB-hardening.md                   928     medium
+module-10-phaseA-setup.md                       808     medium
+module-10-phaseB-operations.md                  451     small
+module-11-deployment.md                         3214    large
+module-11-phase2-deploy.md                      850     medium
+onboarding-flow.md                              3468    large
+onboarding-phase1b-intro-language.md            2055    large
+onboarding-phase2-track-setup.md                991     medium
+session-resume.md                               3380    large
+session-resume-phase2-mapping.md                649     medium
+session-resume-phase2-state-repair.md           540     medium
+session-resume-phase2-setup-recovery.md         996     medium

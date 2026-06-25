@@ -12,8 +12,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, HealthCheck
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -21,9 +20,9 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-PHASE1_STEERING = _BOOTCAMP_DIR / "steering" / "module-01-business-problem.md"
+PHASE1_STEERING = _BOOTCAMP_DIR / "steering" / "module-01-phase1-discovery.md"
 PHASE2_STEERING = _BOOTCAMP_DIR / "steering" / "module-01-phase2-document-confirm.md"
-MODULE8_STEERING = _BOOTCAMP_DIR / "steering" / "module-08-performance.md"
+MODULE8_STEERING = _BOOTCAMP_DIR / "steering" / "module-08-phaseA-requirements.md"
 
 # ---------------------------------------------------------------------------
 # Helpers — Step 9 extraction and conditional branch parsing

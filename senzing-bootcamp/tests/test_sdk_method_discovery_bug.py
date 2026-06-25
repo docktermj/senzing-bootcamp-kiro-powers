@@ -13,8 +13,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import pytest
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -24,6 +23,13 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _AGENT_INSTRUCTIONS = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
 _MCP_DECISION_TREE = _BOOTCAMP_DIR / "steering" / "mcp-tool-decision-tree.md"
+# The detailed SDK method discovery protocol (category taxonomy, clarification
+# instruction, skip conditions) was moved out of the agent-instructions.md MCP
+# Rules section into this dedicated on-demand reference file (loaded via the
+# "SDK method discovery & disambiguation flow" pointer in MCP Rules). The
+# content moved unchanged in substance, so these baselines read it from its
+# current shipped location.
+_MCP_USAGE_REFERENCE = _BOOTCAMP_DIR / "steering" / "mcp-usage-reference.md"
 
 
 # ---------------------------------------------------------------------------
@@ -54,6 +60,18 @@ def _get_mcp_rules_section() -> str:
     """Extract the MCP Rules section from agent-instructions.md."""
     content = _AGENT_INSTRUCTIONS.read_text(encoding="utf-8")
     return _extract_section(content, "MCP Rules")
+
+
+def _get_sdk_discovery_section() -> str:
+    """Extract the SDK Method Discovery section from mcp-usage-reference.md.
+
+    The discovery protocol (taxonomy, disambiguation, skip conditions) was
+    moved out of the agent-instructions.md MCP Rules section into this
+    dedicated on-demand reference file. Read the protocol from its current
+    shipped location.
+    """
+    content = _MCP_USAGE_REFERENCE.read_text(encoding="utf-8")
+    return _extract_section(content, "SDK Method Discovery")
 
 
 def _get_all_section_headings(markdown: str, level: int = 2) -> list[str]:
@@ -89,10 +107,10 @@ _CATEGORY_TAXONOMY_KEYWORDS = re.compile(
 )
 
 _CLARIFICATION_KEYWORDS = re.compile(
-    r"👉.*clarif.*question.*multiple.*method|"
-    r"clarif.*question.*multiple.*discover|"
-    r"ask.*👉.*clarif.*method|"
-    r"multiple.*methods.*👉.*clarif",
+    r"disambiguate.*👉 question|"
+    r"multiple matches.*👉 question|"
+    r"ask a single 👉 question.*numbered choice|"
+    r"multiple.*method.*👉.*numbered choice",
     re.IGNORECASE | re.DOTALL,
 )
 
@@ -161,13 +179,28 @@ class TestMissingCategoryTaxonomy:
     """
 
     def test_agent_instructions_contains_category_taxonomy(self) -> None:
-        content = _AGENT_INSTRUCTIONS.read_text(encoding="utf-8")
-        assert _CATEGORY_TAXONOMY_KEYWORDS.search(content), (
-            "agent-instructions.md does not contain SDK method category definitions "
-            "grouping related methods (e.g., why/how category with how_entity, "
-            "why_entities, why_records, why_record_in_entity). "
-            f"File preview:\n{content[:500]}"
+        discovery_section = _get_sdk_discovery_section()
+        assert discovery_section, (
+            "SDK Method Discovery section not found in mcp-usage-reference.md"
         )
+        assert _CATEGORY_TAXONOMY_KEYWORDS.search(discovery_section), (
+            "SDK Method Discovery section does not contain SDK method category "
+            "definitions grouping related methods (e.g., why/how category with "
+            "how_entity, why_entities, why_records, why_record_in_entity). "
+            f"Section preview:\n{discovery_section[:500]}"
+        )
+        # Independent content assertion: the moved-unchanged why/how methods are
+        # all present, confirming the taxonomy moved without substantive change.
+        for method in (
+            "how_entity",
+            "why_entities",
+            "why_records",
+            "why_record_in_entity",
+        ):
+            assert method in discovery_section, (
+                f"Expected method '{method}' in the why/how category taxonomy."
+            )
+        assert "Categories with multiple alternatives" in discovery_section
 
 
 # ---------------------------------------------------------------------------
@@ -187,13 +220,19 @@ class TestMissingClarificationInstruction:
     """
 
     def test_mcp_rules_contains_clarification_instruction(self) -> None:
-        mcp_section = _get_mcp_rules_section()
-        assert mcp_section, "MCP Rules section not found in agent-instructions.md"
-        assert _CLARIFICATION_KEYWORDS.search(mcp_section), (
-            "MCP Rules section does not contain an instruction to ask a 👉 clarifying "
-            "question when multiple discovered methods could satisfy the request. "
-            f"Section preview:\n{mcp_section[:500]}"
+        discovery_section = _get_sdk_discovery_section()
+        assert discovery_section, (
+            "SDK Method Discovery section not found in mcp-usage-reference.md"
         )
+        assert _CLARIFICATION_KEYWORDS.search(discovery_section), (
+            "SDK Method Discovery section does not contain an instruction to ask a "
+            "👉 question when multiple discovered methods could satisfy the request. "
+            f"Section preview:\n{discovery_section[:500]}"
+        )
+        # Independent content assertion: the disambiguation step pairs a 👉
+        # question with a numbered choice list (moved unchanged in substance).
+        assert "👉" in discovery_section
+        assert "numbered choice list" in discovery_section
 
 
 # ---------------------------------------------------------------------------
@@ -213,14 +252,21 @@ class TestMissingSkipConditions:
     """
 
     def test_mcp_rules_contains_skip_conditions(self) -> None:
-        mcp_section = _get_mcp_rules_section()
-        assert mcp_section, "MCP Rules section not found in agent-instructions.md"
-        assert _SKIP_CONDITION_KEYWORDS.search(mcp_section), (
-            "MCP Rules section does not define explicit skip conditions for the "
-            "discovery protocol (when bootcamper names a method, when request is "
-            "unambiguous, when discovery was already performed in the session). "
-            f"Section preview:\n{mcp_section[:500]}"
+        discovery_section = _get_sdk_discovery_section()
+        assert discovery_section, (
+            "SDK Method Discovery section not found in mcp-usage-reference.md"
         )
+        assert _SKIP_CONDITION_KEYWORDS.search(discovery_section), (
+            "SDK Method Discovery section does not define explicit skip conditions "
+            "for the discovery protocol (when bootcamper names a method, when "
+            "request is unambiguous, when discovery was already performed in the "
+            f"session). Section preview:\n{discovery_section[:500]}"
+        )
+        # Independent content assertion: the three skip conditions moved unchanged.
+        assert "Skip discovery when" in discovery_section
+        assert "explicitly names a method" in discovery_section
+        assert "unambiguously maps to one method" in discovery_section
+        assert "already discovered in current module session" in discovery_section
 
 
 # ---------------------------------------------------------------------------

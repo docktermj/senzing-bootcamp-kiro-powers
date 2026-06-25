@@ -1,0 +1,22 @@
+# Data Source Registry
+# Tracks each data source's lifecycle through the bootcamp pipeline (Modules 4-7).
+# Module 1 initializes this registry from the data sources and matching criteria
+# identified in the business problem. Module 4 (Data Collection) populates each
+# entry with the collected file and load metadata, and it is updated automatically
+# as sources move through quality assessment, mapping, and loading.
+# Copy this file to data_sources.yaml to use as a starting point.
+
+version: "1"
+sources:
+  # Example entry — replace with your actual data sources:
+  # CUSTOMERS_CRM:
+  #   name: "Customer CRM Export"
+  #   file_path: "data/raw/customers_crm.csv"
+  #   format: csv
+  #   record_count: null
+  #   file_size_bytes: null
+  #   quality_score: null
+  #   mapping_status: pending
+  #   load_status: not_loaded
+  #   added_at: "2025-07-01T10:00:00Z"
+  #   updated_at: "2025-07-01T10:00:00Z"

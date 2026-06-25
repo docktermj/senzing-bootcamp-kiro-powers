@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
 # Make scripts importable
@@ -31,7 +31,6 @@ from data_sources import (
     serialize_registry_yaml,
     validate_registry,
 )
-
 
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
@@ -81,13 +80,21 @@ def st_source_entry_v1(
             "updated_at": draw(st_date_string()),
         }
 
-        do_tls = draw(st.booleans()) if include_test_load_status is None else include_test_load_status
+        do_tls = (
+            draw(st.booleans())
+            if include_test_load_status is None
+            else include_test_load_status
+        )
         if do_tls:
             entry["test_load_status"] = draw(
                 st.sampled_from([None] + sorted(VALID_TEST_LOAD_STATUSES))
             )
 
-        do_tec = draw(st.booleans()) if include_test_entity_count is None else include_test_entity_count
+        do_tec = (
+            draw(st.booleans())
+            if include_test_entity_count is None
+            else include_test_entity_count
+        )
         if do_tec:
             entry["test_entity_count"] = draw(
                 st.one_of(st.none(), st.integers(min_value=0, max_value=100000))

@@ -18,7 +18,6 @@ import json
 import re
 from pathlib import Path
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
@@ -27,7 +26,7 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
-QUESTION_FORMAT_GATE_HOOK = HOOKS_DIR / "question-format-gate.kiro.hook"
+QUESTION_FORMAT_GATE_HOOK = HOOKS_DIR / "ask-bootcamper.kiro.hook"
 
 
 # ---------------------------------------------------------------------------
@@ -84,10 +83,11 @@ def enforcement_detects_compound(output: str) -> bool:
     compound questions in direct agent output. So this always returns False
     for direct output — confirming the enforcement gap.
 
-    On FIXED code: The question-format-gate.kiro.hook (agentStop) would
-    intercept and detect compound questions in agent output.
+    On FIXED code: The consolidated ask-bootcamper.kiro.hook (agentStop)
+    contains a Question_Format_Phase (Phase 4) that intercepts and detects
+    compound questions in agent output via silent self-correction.
     """
-    # Check if the question-format-gate hook exists (the fix)
+    # Check if the consolidated hook exists (the fix)
     if not QUESTION_FORMAT_GATE_HOOK.exists():
         # No enforcement hook exists for agent output — gap confirmed
         return False
@@ -101,9 +101,20 @@ def enforcement_detects_compound(output: str) -> bool:
     if hook_type != "agentStop":
         return False
 
-    # The hook prompt must contain compound question detection logic
+    # Extract the Question_Format_Phase (Phase 4) section from the consolidated prompt
+    phase4_match = re.search(
+        r"PHASE 4:.*?Question_Format_Phase.*?(?=═{4,}|\Z)",
+        prompt,
+        re.DOTALL,
+    )
+    if not phase4_match:
+        return False
+
+    phase4_text = phase4_match.group()
+
+    # The Phase 4 section must contain compound question detection logic
     detection_keywords = ["compound", "or", "alternative", "numbered list"]
-    has_detection = any(kw in prompt.lower() for kw in detection_keywords)
+    has_detection = any(kw in phase4_text.lower() for kw in detection_keywords)
 
     return has_detection
 

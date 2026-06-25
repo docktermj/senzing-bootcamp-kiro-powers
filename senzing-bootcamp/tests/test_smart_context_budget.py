@@ -51,15 +51,34 @@ class TestAgentInstructionsContextBudget:
         assert "critical threshold (80%)" in context_management.lower() or \
                "At critical threshold (80%)" in context_management
 
-    def test_uses_percentage_not_absolute_in_budget_section(self, agent_instructions: str) -> None:
-        # The Context Budget section should use percentages, not absolute values
+    def test_uses_percentage_not_absolute_in_budget_section(
+        self, agent_instructions: str, context_management: str
+    ) -> None:
+        # The Context Budget detail (warn/critical thresholds) was relocated from
+        # agent-instructions.md into agent-context-management.md when
+        # agent-instructions.md was condensed (same-branch refactor). The detail
+        # moved unchanged in substance: it still expresses the thresholds as
+        # percentages (60% / 80%), never absolute token values. Only the owning
+        # file moved.
+        #
+        # Independent content assertion: agent-instructions.md's condensed
+        # "## Context Budget" section retains the routing pointer to
+        # agent-context-management.md (trigger: *context budget*) and still does
+        # NOT reuse the old absolute references.
         budget_section_start = agent_instructions.find("## Context Budget")
         budget_section = agent_instructions[budget_section_start:]
-        assert "60% of context budget" in budget_section
-        assert "80% of context budget" in budget_section
-        # Should NOT contain old absolute references
+        assert "agent-context-management.md" in budget_section, (
+            "Condensed agent-instructions.md Context Budget section must route "
+            "to agent-context-management.md for warn/critical detail"
+        )
         assert "120k" not in budget_section
         assert "160k" not in budget_section
+
+        # The relocated detail uses percentages (60% / 80%), not absolute values.
+        assert "warn threshold (60%)" in context_management.lower()
+        assert "critical threshold (80%)" in context_management.lower()
+        assert "120k" not in context_management
+        assert "160k" not in context_management
 
 
 class TestMeasureSteeringSimulate:

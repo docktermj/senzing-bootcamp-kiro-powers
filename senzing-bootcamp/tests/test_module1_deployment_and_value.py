@@ -12,7 +12,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -20,10 +20,10 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-_PHASE1_FILE = _BOOTCAMP_DIR / "steering" / "module-01-business-problem.md"
+_PHASE1_FILE = _BOOTCAMP_DIR / "steering" / "module-01-phase1-discovery.md"
 _PHASE2_FILE = _BOOTCAMP_DIR / "steering" / "module-01-phase2-document-confirm.md"
-_MODULE_8_FILE = _BOOTCAMP_DIR / "steering" / "module-08-performance.md"
-_MODULE_11_FILE = _BOOTCAMP_DIR / "steering" / "module-11-deployment.md"
+_MODULE_8_FILE = _BOOTCAMP_DIR / "steering" / "module-08-phaseA-requirements.md"
+_MODULE_11_FILE = _BOOTCAMP_DIR / "steering" / "module-11-phase1-packaging.md"
 _STEERING_INDEX = _BOOTCAMP_DIR / "steering" / "steering-index.yaml"
 
 # ---------------------------------------------------------------------------
@@ -32,7 +32,7 @@ _STEERING_INDEX = _BOOTCAMP_DIR / "steering" / "steering-index.yaml"
 
 
 def _read_phase1() -> str:
-    """Read the full content of module-01-business-problem.md."""
+    """Read the full content of module-01-phase1-discovery.md."""
     return _PHASE1_FILE.read_text(encoding="utf-8")
 
 
@@ -277,7 +277,7 @@ class TestProperty1Phase1StepCheckpoints:
     Step-Checkpoint Matching
 
     *For any* step number found in the Phase 1 file
-    (``module-01-business-problem.md``), there SHALL exist a
+    (``module-01-phase1-discovery.md``), there SHALL exist a
     corresponding checkpoint instruction that references that same step
     number, formatted as
     ``Write step N to config/bootcamp_progress.json``.

@@ -13,7 +13,6 @@ import hashlib
 import json
 from pathlib import Path
 
-
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
@@ -150,7 +149,6 @@ def cache_lookup(
 
 import random
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
@@ -465,8 +463,6 @@ class TestModuleTransitionClearsAllEntries:
             shutil.rmtree(cache_dir)
 
 
-import shutil
-import tempfile
 
 
 class TestNoStaleFallbackOnFailure:

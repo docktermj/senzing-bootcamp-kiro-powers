@@ -12,7 +12,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -20,7 +20,7 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-_MODULE_01 = _BOOTCAMP_DIR / "steering" / "module-01-business-problem.md"
+_MODULE_01 = _BOOTCAMP_DIR / "steering" / "module-01-phase1-discovery.md"
 _HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "ask-bootcamper.kiro.hook"
 
 # ---------------------------------------------------------------------------
@@ -29,7 +29,7 @@ _HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "ask-bootcamper.kiro.hook"
 
 
 def _read_module_01() -> str:
-    """Read the full content of module-01-business-problem.md."""
+    """Read the full content of module-01-phase1-discovery.md."""
     return _MODULE_01.read_text(encoding="utf-8")
 
 

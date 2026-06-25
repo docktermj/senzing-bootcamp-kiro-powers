@@ -24,7 +24,6 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 
-
 # ---------------------------------------------------------------------------
 # Data Models
 # ---------------------------------------------------------------------------
@@ -560,10 +559,10 @@ _MODULE_NAMES: dict[int, str] = {
     5: "Data Quality & Mapping",
     6: "Data Processing",
     7: "Query, Visualize, and Discover",
-    8: "Performance",
-    9: "Security",
-    10: "Monitoring",
-    11: "Deployment",
+    8: "Performance Testing & Benchmarking",
+    9: "Security Hardening",
+    10: "Monitoring & Observability",
+    11: "Package & Deploy",
 }
 
 
@@ -594,7 +593,7 @@ def recommend_entry_point(
         if mod2 is not None and not mod2.complete:
             return Recommendation(
                 module_number=2,
-                module_name=_MODULE_NAMES.get(2, f"Module 2"),
+                module_name=_MODULE_NAMES.get(2, "Module 2"),
                 reason="Senzing SDK is not available; complete SDK Setup first",
             )
 
@@ -604,7 +603,7 @@ def recommend_entry_point(
             return Recommendation(
                 module_number=ms.number,
                 module_name=_MODULE_NAMES.get(ms.number, f"Module {ms.number}"),
-                reason=f"First incomplete module in sequence",
+                reason="First incomplete module in sequence",
             )
 
     # Rule 3: All modules are complete → graduation

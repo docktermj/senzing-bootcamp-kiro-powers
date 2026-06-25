@@ -4,12 +4,9 @@ Feature: steering-file-template
 """
 
 import re
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
-
-import pytest
 
 # Make scripts importable
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
@@ -17,16 +14,15 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from lint_steering import (
-    LintViolation,
-    check_module_frontmatter,
-    check_first_read_instruction,
+    SECTION_ORDER,
     check_before_after_block,
     check_checkpoint_completeness,
-    check_success_indicator,
+    check_first_read_instruction,
+    check_module_frontmatter,
     check_section_order,
+    check_success_indicator,
     get_module_steering_files,
     run_all_checks,
-    SECTION_ORDER,
 )
 
 # ---------------------------------------------------------------------------
@@ -60,7 +56,8 @@ inclusion: manual
 
 # Module 01 — Test Module
 
-**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — display the module start banner.
+**🚀 First:** Read `config/bootcamp_progress.json` and follow `module-transitions.md` — \
+display the module start banner.
 
 > **User reference:** See docs.
 
@@ -154,11 +151,17 @@ class TestTemplateSections:
                 positions["frontmatter"] = i
             if "**🚀 First:**" in line and "first_read" not in positions:
                 positions["first_read"] = i
-            if re.search(r"\*\*Before/After\b", line, re.IGNORECASE) and "before_after" not in positions:
+            if (
+                re.search(r"\*\*Before/After\b", line, re.IGNORECASE)
+                and "before_after" not in positions
+            ):
                 positions["before_after"] = i
             if re.match(r"^\d+\.\s", line) and "workflow_steps" not in positions:
                 positions["workflow_steps"] = i
-            if re.search(r"\*\*Success indicator\b", line, re.IGNORECASE) and "success_indicator" not in positions:
+            if (
+                re.search(r"\*\*Success indicator\b", line, re.IGNORECASE)
+                and "success_indicator" not in positions
+            ):
                 positions["success_indicator"] = i
 
         # Verify all sections found
@@ -246,17 +249,68 @@ class TestRealModuleFirstRead:
     """Validates: Requirements 3.1, 3.2"""
 
     def test_real_root_modules_have_first_read(self):
-        """All root module files have first-read instruction."""
+        """All root *workflow* module files have a first-read instruction.
+
+        The module-03 monolith was split into a dispatcher
+        (module-03-system-verification.md) plus phase sub-files
+        (module-03-phaseN-*.md) and an on-demand reference file
+        (module-03-visualization-api-reference.md). Phase sub-files already
+        carry "-phase" in their name and are excluded. The reference file is
+        NOT a workflow module — it is pure reference material ("loaded on demand
+        from module-03-phase2-visualization.md") with no first-read step, so it
+        is classified out alongside the phase sub-files (same treatment the
+        linter gives non-workflow sub-files). The dispatcher itself still
+        carries the first-read instruction and is asserted to do so below.
+        """
         violations = check_first_read_instruction(STEERING_DIR)
+
+        def _is_workflow_module(file_path: str) -> bool:
+            name = Path(file_path).name
+            # Exclude phase sub-files and on-demand reference files — they are
+            # not standalone workflow modules and have no first-read step.
+            return "-phase" not in name and "-reference" not in name
+
         root_violations = [
             v for v in violations
-            if "-phase" not in v.file
+            if _is_workflow_module(v.file)
             and v.level == "ERROR"
         ]
         assert len(root_violations) == 0, (
             f"Root module first-read violations: "
             f"{[v.format() for v in root_violations]}"
         )
+
+        # Independent content assertion: every shipped root *workflow* module
+        # (a module-NN-*.md that the linter treats as a module and is not an
+        # on-demand reference file) actually contains the first-read marker.
+        # `get_module_steering_files` already excludes phase sub-files and
+        # non-module files (module-completion/-prerequisites/-transitions); we
+        # additionally exclude the reference file. This guards the re-targeting
+        # so that excluding the reference file can never mask a genuine missing
+        # first-read on a real workflow module.
+        workflow_modules = [
+            f for f in get_module_steering_files(STEERING_DIR)
+            if "-reference" not in f.name
+        ]
+        assert workflow_modules, "Expected to find root workflow module files"
+        missing = [
+            f.name for f in workflow_modules
+            if "**\U0001f680 First:**" not in f.read_text(encoding="utf-8")
+        ]
+        assert not missing, (
+            f"Root workflow modules missing first-read instruction: {missing}"
+        )
+
+        # Independent content assertion: the excluded reference file really is
+        # on-demand reference material (relocation artifact of the split), not a
+        # mis-classified workflow module.
+        ref_file = STEERING_DIR / "module-03-visualization-api-reference.md"
+        if ref_file.exists():
+            ref_text = ref_file.read_text(encoding="utf-8")
+            assert "reference" in ref_text.lower(), (
+                "module-03-visualization-api-reference.md should describe itself "
+                "as reference material"
+            )
 
 
 # ---------------------------------------------------------------------------

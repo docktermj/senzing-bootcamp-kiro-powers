@@ -12,8 +12,8 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import yaml
 import pytest
+import yaml
 
 # ---------------------------------------------------------------------------
 # Paths to steering files under test
@@ -64,7 +64,8 @@ def validate_conversation_style(profile: dict) -> list[str]:
     if "verbosity_preset" in profile:
         if not isinstance(profile["verbosity_preset"], str):
             errors.append(
-                f"verbosity_preset must be a string, got {type(profile['verbosity_preset']).__name__}"
+                f"verbosity_preset must be a string, "
+                f"got {type(profile['verbosity_preset']).__name__}"
             )
         elif profile["verbosity_preset"] not in VALID_VERBOSITY_PRESETS:
             errors.append(
@@ -74,7 +75,8 @@ def validate_conversation_style(profile: dict) -> list[str]:
     if "question_framing" in profile:
         if not isinstance(profile["question_framing"], str):
             errors.append(
-                f"question_framing must be a string, got {type(profile['question_framing']).__name__}"
+                f"question_framing must be a string, "
+                f"got {type(profile['question_framing']).__name__}"
             )
         elif profile["question_framing"] not in VALID_QUESTION_FRAMINGS:
             errors.append(

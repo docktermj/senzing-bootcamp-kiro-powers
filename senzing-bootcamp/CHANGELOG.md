@@ -7,15 +7,103 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+## [1.0.0] - 2026-06-24
 
-- `module-transitions.md` reverted from `inclusion: fileMatch` back to `inclusion: always` — the file is needed on every module start/completion, and conditional loading caused missed banners when progress file wasn't the trigger
-- Renamed `tests/test_module12_phase_gate.py` → `tests/test_hook_schema_conformance.py` — the test validates hook JSON schema generically, not Module-12-specific logic (Module 12 was collapsed into Module 11 in 0.11.0)
-- `steering-index.yaml` Module 4 entry expanded from bare string to phases map with `token_count` and `size_category` for consistency with all other modules
+### Production release
+
+- First production (`1.0.0`) release. Full CI validation suite green across all
+  gates; pytest at 5,708 passed / 0 failed / 88 skipped. Ruff gate confirmed
+  clean against current ruff (0.15.19). MCP tool inventory re-confirmed live
+  against `sz-mcp-coworker` v1.26.8 (13 tools, names matching the pinned
+  inventory in `scripts/mcp_tool_inventory.py`).
+
+### Added
+
+- `scripts/mcp_tool_inventory.py` — canonical single source of truth for the
+  13-tool MCP inventory (ALL_TOOLS + TOTAL_COUNT), confirmed live against
+  get_capabilities(version="current") on sz-mcp-coworker v1.24.0
+- `tests/test_mcp_tool_inventory.py` — pins the 13-tool inventory and the
+  absence of any lint_record tool
+- `check_mcp_tool_inventory()` gate in `scripts/validate_power.py` — fails CI if
+  POWER.md / ARCHITECTURE.md tool listings drift from mcp_tool_inventory.py
+- `check_module_inventory()` gate in `scripts/validate_power.py` — cross-checks
+  the POWER.md generated module table and every script module-name map against
+  `config/module-dependencies.yaml` (the single source of truth); fails CI on a
+  renamed module, a wrong name for a number, or a stale "Module 12"
+- `tests/test_module_inventory.py` — pins the canonical 11-module roster and
+  asserts all eight script module-name maps and the POWER.md table match it
 
 ### Fixed
 
+- CI green-up after the post-0.12.1 spec batch (qa-transcript, graduation-markdown
+  normalization, module3-entity-graph-relationships, onboarding-license-request-option,
+  recap-pdf-content-loss-fix, session-log-hook-performance, track-selection-drop-module2-note)
+  left four gates red:
+  - Regenerated the POWER.md generated regions (`generate_power_docs.py --write`) —
+    the steering-files table was missing `qa-transcript.md` and carried stale token
+    counts; resynced `steering/steering-index.yaml` to exact counts via
+    `measure_steering.py` (budget total 182394 → 185282) and re-baselined the budget
+    block hash / total assertion in `test_steering_index_token_count_sync_preservation.py`
+  - Regenerated `.kiro/SPEC_CATALOG.md` (`generate_spec_catalog.py`) — 7 new specs
+    (224 → 231 implemented) were unindexed
+  - Cleared 3 ruff violations in new test files (`test_generate_transcript.py` E501;
+    `test_normalize_markdown.py`, `test_normalize_recap_pdf_integration.py` I001)
+  - Fixed 21 failing tests: generalized the generic hook-structural/schema validators
+    to accept the new `session-log-events` `runCommand` hook (askAgent→prompt,
+    runCommand→command) via a new action-aware `required_fields_for_action()` helper
+    in `tests/hook_test_helpers.py`, and refreshed onboarding preservation tests to the
+    current copy ("500-record evaluation license"; Module 2 auto-insertion note removed
+    from track selection per the bugfix). pytest now at 5708 passed / 0 failed
+- Module numbering/naming drift across docs and scripts: corrected the POWER.md
+  "Module Progression" narrative (the stale `1 → 4 → 5 → 2 → 6 → 7` order and
+  "topic labels" framing now read as the canonical ascending `1 → 2 → … → 7`),
+  and refreshed `docs/diagrams/module-flow.md`, `docs/diagrams/module-prerequisites.md`,
+  `docs/diagrams/data-flow.md`, `docs/diagrams/system-architecture.md`,
+  `docs/guides/PROGRESS_TRACKER.md`, and `templates/stakeholder_summary.md` to the
+  current roster (6 = Data Processing, 7 = Query/Visualize/Discover, 8 = Performance,
+  9 = Security, 10 = Monitoring, 11 = Package & Deploy)
+- Stale module-name maps and a phantom "Module 12" in `scripts/export_results.py`,
+  `scripts/repair_progress.py`, and `scripts/team_dashboard.py`; normalized the
+  display names in `status.py`, `rollback_module.py`, `assess_entry_point.py`,
+  `validate_module.py`, and `visualize_dependencies.py` to the canonical roster
+- HTML dashboards (`status.py`, `export_results.py`, `team_dashboard.py`) computed
+  completion against 12 modules (so all 11 done showed 91%) and rendered a phantom
+  12th card; the count is now derived from the module roster (`len(MODULE_NAMES)` /
+  `TOTAL_MODULES`) so it stays correct
+
+### Changed
+
+- Normalized the `analyze_record` call signature to
+  `analyze_record(file_paths=[...], workspace_dir="<dir>", version="current")`
+  across `steering/mcp-tool-decision-tree.md`,
+  `docs/modules/MODULE_5_DATA_QUALITY_AND_MAPPING.md`, and
+  `steering/troubleshooting-commands.md`
+
+## [0.12.1] - 2026-06-08
+
+### Changed
+
+- `validate_links.py` external-link check wired into the CI gate sequence (after `validate_yaml_schemas`); intentional example endpoints, XML-namespace identifiers, and bot-blocking hosts added to its ignore list so the gate flags only genuine breakage
+- `module-transitions.md` reverted from `inclusion: fileMatch` back to `inclusion: always` — the file is needed on every module start/completion, and conditional loading caused missed banners when progress file wasn't the trigger
+- Renamed `tests/test_module12_phase_gate.py` → `tests/test_hook_schema_conformance.py` — the test validates hook JSON schema generically, not Module-12-specific logic (Module 12 was collapsed into Module 11 in 0.11.0)
+- `steering-index.yaml` Module 4 entry expanded from bare string to phases map with `token_count` and `size_category` for consistency with all other modules
+- `lint_steering.py` now resolves registered hooks against the **union** of registry sources (`hook-categories.yaml` plus the `hooks/` directory) instead of a single source, so hooks present in either place are recognized and stop producing false "unregistered hook" findings
+- `measure_steering.py --check` gained an additive aggregate check: a new `parse_budget_total` helper reads `budget.total_tokens` and the run now emits a `Budget total mismatch` line (and exits non-zero) when the declared aggregate diverges from `sum(file_metadata)` token counts — per-file and per-phase verdicts are unchanged
+- Onboarding-split test target re-pointed to the current 147-test layout after the onboarding-question suite was split, so the count assertion tracks the live 147 tests
+- Remediated 435 style-only ruff violations to drive the "Lint Python (ruff)" CI gate from 438 violations to 0: E501 long lines reflowed to ≤100 chars (source layout only, emitted strings/output unchanged), E402 module-import-not-at-top suppressed for the documented `sys.path`-before-import pattern via scoped `per-file-ignores` / `# noqa: E402`, F841 unused assignments and W293 whitespace auto-fixed, and E741 ambiguous single-char names renamed to descriptive identifiers — no runtime behavior change to any script
+
+### Fixed
+
+- Resolved 3 correctness defects surfaced by the "Lint Python (ruff)" gate: 2× F811 duplicate test functions in `test_module_closing_question_ownership.py` that silently shadowed the earlier `test_module_07_no_inline_questions` / `test_module_07_no_wait_instructions` definitions (both now execute) and 1× F601 duplicate dict key `6` in `test_validate_module.py` that dropped a fixture entry (collapsed to the complete 3-lambda superset including `loading_strategy.md`); 4,830 passing tests and all other CI gates preserved with no runtime behavior changes to scripts
 - Added preservation test `tests/test_module_transitions_always_inclusion.py` pinning `module-transitions.md` to `inclusion: always` — prevents accidental regression
+- `steering-index.yaml` `budget.total_tokens` corrected from `169633` to `169576` to match the live `sum(file_metadata)` token total, clearing the aggregate drift now enforced by `measure_steering.py`
+- `preferences_utils.py` boolean-string round-trip fidelity (A1): values that serialize to `"true"`/`"false"` now survive a write-then-read cycle without being coerced to native booleans or altered casing, so persisted preferences round-trip exactly
+- `validate_mandatory_gates.py` mandatory-gate parsing made non-vacuous (B): the parser now recognizes gates declared under H2/H3 headings, inside blockquotes, and in section preambles, so the validator detects the shipped gates instead of passing on an empty set — covered by a new regression test that runs the validator's own parser against the real steering corpus and fails if zero gates are found
+- `validate_prerequisites.py` no longer emits the spurious `3 -> 4` prerequisites keyword-mismatch warning (D); the false positive for the Module 3→4 gate is removed
+- Stabilized property tests (A2–A5): tightened test-logic and generators and de-flaked timing-sensitive assertions so the previously failing/flaky property tests run deterministically
+- Corrected the broken Senzing support URL (`https://senzing.com/support/` returned 404) to `https://senzing.com/contact/` in `POWER.md` and `licenses/README.md`
+- Updated the recommended-model note in `POWER.md` (Claude Opus 4.6 → 4.8)
+- Reattributed the "lint (ruff) green" milestone to `0.12.1` in the `POWER.md` "What's New" section; the `0.12.0` entry no longer claims the ruff gate was green (it was still red at 0.12.0)
 
 ## [0.12.0] - 2026-05-18
 

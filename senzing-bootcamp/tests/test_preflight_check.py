@@ -5,14 +5,8 @@ the current preflight.py script (preflight_check.py was deprecated and removed).
 """
 
 import importlib
-import io
-import os
-import sys
 from collections import namedtuple
-from pathlib import Path
 from unittest.mock import patch
-
-import pytest
 
 
 def _load_preflight():

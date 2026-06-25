@@ -12,7 +12,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from hypothesis import given, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 # ---------------------------------------------------------------------------
@@ -22,7 +22,7 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _AGENT_INSTRUCTIONS = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
 _MCP_DECISION_TREE = _BOOTCAMP_DIR / "steering" / "mcp-tool-decision-tree.md"
-_MODULE_07 = _BOOTCAMP_DIR / "steering" / "module-07-query-visualize-discover.md"
+_MODULE_07 = _BOOTCAMP_DIR / "steering" / "module-07-phase1-query-visualize.md"
 
 
 # ---------------------------------------------------------------------------
@@ -79,16 +79,34 @@ def _extract_bullet_points(section: str) -> list[str]:
 
 # MCP Rules bullet points observed in the unfixed agent-instructions.md
 _OBSERVED_MCP_BULLETS = [
-    "All Senzing facts from MCP tools — never training data. Call `get_capabilities` first each session.",
-    "Attribute names → `mapping_workflow` | SDK code → `generate_scaffold`/`sdk_guide` | Signatures → `get_sdk_reference` | Errors → `explain_error_code` | Docs → `search_docs` | Examples → `find_examples`",
-    "SDK method calls that accept flags: look up available flags via get_sdk_reference(topic='flags'), select flags matching the bootcamper's intent, and explain the choice in one sentence. Reuse flag knowledge within a module session. Default flags are acceptable for simple lookups but note that detailed flags exist.",
-    "Uncertain which tool? Load `mcp-tool-decision-tree.md` for the full decision tree with anti-patterns and call examples.",
+    "All Senzing facts from MCP tools — never training data. "
+    "Call `get_capabilities` first each session.",
+    "Attribute names → `mapping_workflow` | SDK code → `generate_scaffold`/`sdk_guide` "
+    "| Signatures → `get_sdk_reference` | Errors → `explain_error_code` "
+    "| Docs → `search_docs` | Examples → `find_examples`",
+    "SDK method calls that accept flags: look up available flags via "
+    "get_sdk_reference(topic='flags'), select flags matching the bootcamper's intent, "
+    "and explain the choice in one sentence. Reuse flag knowledge within a module session. "
+    "Default flags are acceptable for simple lookups but note that detailed flags exist.",
+    "Uncertain which tool? Load `mcp-tool-decision-tree.md` for the full decision tree "
+    "with anti-patterns and call examples.",
     "Never hand-code Senzing JSON mappings or SDK method names",
-    "Third-party software: consult Senzing MCP (`search_docs`) before recommending tools in a Senzing integration context.",
-    "Reuse MCP responses within a module; re-query across module boundaries. No answer? Say so, suggest <https://docs.senzing.com> / <support@senzing.com> — never fabricate.",
-    "MCP skepticism: flag data mart tables (`sz_dm_report`), beta features, or non-core SDK references",
-    "Never generate direct SQL (SELECT, INSERT, UPDATE, DELETE) against the Senzing database (`database/G2C.db`) or its internal tables (RES_ENT, OBS_ENT, DSRC_RECORD, LIB_FEAT, RES_FEAT_STAT, RES_REL, etc.). All Senzing data access must go through SDK methods via MCP tools.",
-    'SQL-tempting question redirects: "count entities" → `reporting_guide` | "find duplicates" → `search_by_attributes` | "show entity details" → `get_entity`/`get_entity_by_record_id` | "why did these match" → `why_entities`/`why_records` | "how was entity built" → `how_entity` | "export entity data" → iterate SDK methods via MCP tools',
+    "Third-party software: consult Senzing MCP (`search_docs`) before recommending tools "
+    "in a Senzing integration context.",
+    "Reuse MCP responses within a module; re-query across module boundaries. "
+    "No answer? Say so, suggest <https://docs.senzing.com> / <support@senzing.com> "
+    "— never fabricate.",
+    "MCP skepticism: flag data mart tables (`sz_dm_report`), "
+    "beta features, or non-core SDK references",
+    "Never generate direct SQL (SELECT, INSERT, UPDATE, DELETE) against the Senzing "
+    "database (`database/G2C.db`) or its internal tables (RES_ENT, OBS_ENT, DSRC_RECORD, "
+    "LIB_FEAT, RES_FEAT_STAT, RES_REL, etc.). All Senzing data access must go through "
+    "SDK methods via MCP tools.",
+    'SQL-tempting question redirects: "count entities" → `reporting_guide` | '
+    '"find duplicates" → `search_by_attributes` | "show entity details" → '
+    '`get_entity`/`get_entity_by_record_id` | "why did these match" → '
+    '`why_entities`/`why_records` | "how was entity built" → `how_entity` | '
+    '"export entity data" → iterate SDK methods via MCP tools',
 ]
 
 # Decision tree sections observed in the unfixed mcp-tool-decision-tree.md

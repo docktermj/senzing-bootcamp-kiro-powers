@@ -25,7 +25,7 @@ SCHEMA_REGISTRY: dict[str, set[str]] = {
         "budget",
     },
     "config/module-dependencies.yaml": {"metadata", "modules", "tracks", "gates"},
-    "hooks/hook-categories.yaml": {"critical", "metadata", "modules"},
+    "hooks/hook-categories.yaml": {"critical", "metadata", "modules", "agentstop_order"},
     "config/module-artifacts.yaml": {"version", "modules"},
 }
 

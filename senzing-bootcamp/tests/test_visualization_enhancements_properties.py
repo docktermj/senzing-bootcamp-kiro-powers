@@ -12,7 +12,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
@@ -139,7 +138,8 @@ class TestCriticalLessonsCompleteness:
 
 
 class TestFeatureGuidanceCompleteness:
-    """Feature: visualization-enhancements, Property 2: Feature Guidance contains all required features"""
+    """Feature: visualization-enhancements, Property 2: Feature Guidance contains all \
+required features"""
 
     @given(feature=st.sampled_from(REQUIRED_ENTITY_GRAPH_FEATURES))
     @settings(
@@ -299,7 +299,8 @@ class TestScaffoldRemovalAndGenerator:
         )
 
     def test_critical_lessons_heading_in_viz_guide(self) -> None:
-        """Verify CRITICAL LESSONS FOR VISUALIZATION GENERATION heading exists in Visualization Guide.
+        """Verify CRITICAL LESSONS FOR VISUALIZATION GENERATION heading exists in \
+Visualization Guide.
 
         **Validates: Requirements 2.2**
         """

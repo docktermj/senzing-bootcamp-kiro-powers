@@ -10,8 +10,6 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 
 def _load_repair():
     """Import / reload repair_progress module."""
@@ -46,7 +44,6 @@ def _create_artifact(root, module_num):
     if creator is None:
         return
     # Ensure parent dirs exist
-    p = root  # just for reference
     creator_needs_dirs = {
         1: ["docs"], 2: ["database"], 3: ["src", "quickstart_demo"],
         4: ["data", "raw"], 5: ["docs"], 6: ["src", "load"],
@@ -119,8 +116,8 @@ class TestDiscrepancyReporting:
 # Property-based tests  (Tasks 3.2 & 3.3)
 # ---------------------------------------------------------------------------
 
-from hypothesis import given, settings
 import hypothesis.strategies as st
+from hypothesis import given, settings
 
 # Modules we can create artifacts for (excluding 7 which needs JSON state)
 TESTABLE_MODULES = sorted(ARTIFACT_CREATORS.keys())

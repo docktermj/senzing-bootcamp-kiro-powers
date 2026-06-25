@@ -2,14 +2,8 @@
 
 import importlib
 import os
-import shutil
-import sys
-import tempfile
 import zipfile
-from pathlib import Path
 from unittest.mock import patch
-
-import pytest
 
 
 def _load_backup():
@@ -130,8 +124,8 @@ class TestIsExcluded:
 # Property-based tests  (Task 5.2)
 # ---------------------------------------------------------------------------
 
-from hypothesis import given, settings, assume
 import hypothesis.strategies as st
+from hypothesis import given, settings
 
 # Strategy: generate path components that match exclusion patterns
 # Note: "data/temp" is excluded because it's a multi-component pattern

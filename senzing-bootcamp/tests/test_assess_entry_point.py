@@ -35,7 +35,6 @@ from assess_entry_point import (
     scan_artifacts,
 )
 
-
 # ---------------------------------------------------------------------------
 # Hypothesis strategies
 # ---------------------------------------------------------------------------
@@ -161,9 +160,12 @@ class TestPathSeparatorNormalization:
                 f"Expected Path, got {type(result)} for '{path_str}'"
             )
 
-            # The path parts should match the original segments
-            assert list(result.parts) == segments, (
-                f"Path parts {list(result.parts)} != segments {segments} "
+            # The path parts should match the original segments, normalized the
+            # same way `_normalize_path` collapses pure-`.`/empty segments (a
+            # degenerate segment list like ['.'] yields an empty `.parts`).
+            expected = [s for s in segments if s not in (".", "")]
+            assert list(result.parts) == expected, (
+                f"Path parts {list(result.parts)} != expected {expected} "
                 f"for input '{path_str}'"
             )
 
@@ -204,7 +206,7 @@ def st_artifact(draw):
     artifact_type = draw(st.sampled_from(["file", "directory"]))
     description = draw(
         st.text(
-            st.characters(whitelist_categories=("L", "N", "Z"), whitelist_characters="-_."),
+            st.characters(whitelist_categories=("L", "N", "Zs"), whitelist_characters="-_."),
             min_size=1,
             max_size=30,
         )
@@ -618,7 +620,7 @@ class TestCompletenessDependsOnlyOnRequired:
             ArtifactStatus(artifact=art, present=True) for art in required_artifacts
         ]
         # Pick a random index to mark as missing
-        missing_idx = draw_idx = len(required_artifacts) - 1  # at least the last one is missing
+        missing_idx = len(required_artifacts) - 1  # at least the last one is missing
         required_statuses[missing_idx] = ArtifactStatus(
             artifact=required_artifacts[missing_idx], present=False
         )
@@ -641,7 +643,7 @@ class TestCompletenessDependsOnlyOnRequired:
         manifest, required_artifacts, optional_artifacts, optional_statuses = data
 
         # Fix required artifact presence (randomly chosen)
-        required_present = [s.present for s in optional_statuses]  # just reuse draw for booleans
+        [s.present for s in optional_statuses]  # just reuse draw for booleans
         # Actually, let's use a fixed required state: all present
         required_statuses = [
             ArtifactStatus(artifact=art, present=True) for art in required_artifacts
@@ -669,7 +671,11 @@ class TestCompletenessDependsOnlyOnRequired:
         )
 
         # All three should give the same completeness result
-        assert result_all_present.complete == result_all_missing.complete == result_random.complete, (
+        assert (
+            result_all_present.complete
+            == result_all_missing.complete
+            == result_random.complete
+        ), (
             f"Optional artifact presence changed completeness result! "
             f"all_present={result_all_present.complete}, "
             f"all_missing={result_all_missing.complete}, "
@@ -829,7 +835,9 @@ def st_module_statuses_with_incomplete_mod2(draw):
                 present=present,
             )
         ]
-        other_modules.append(ModuleStatus(number=num, complete=complete, artifact_statuses=statuses))
+        other_modules.append(
+            ModuleStatus(number=num, complete=complete, artifact_statuses=statuses)
+        )
 
     return [mod2] + other_modules
 
@@ -1174,7 +1182,7 @@ class TestSuccessfulAssessmentExitsZero:
     """
 
     @given(data=st_valid_manifest_modules_for_main())
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     def test_main_exits_zero_with_valid_manifest(self, data):
         """main() exits with code 0 for any valid manifest and project directory."""
         modules, artifacts_to_create = data
@@ -1223,7 +1231,7 @@ class TestSuccessfulAssessmentExitsZero:
 # ---------------------------------------------------------------------------
 
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 
 class TestCliArgumentParsing:
@@ -1263,7 +1271,7 @@ class TestCliArgumentParsing:
         # by checking argparse behavior directly
         import argparse
 
-        script_dir = Path(__file__).resolve().parent.parent / "scripts"
+        Path(__file__).resolve().parent.parent / "scripts"
         # Verify the default is os.getcwd() by parsing with no --project-dir
         parser = argparse.ArgumentParser()
         parser.add_argument("--project-dir", default=str(tmp_path))

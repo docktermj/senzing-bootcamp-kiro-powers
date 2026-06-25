@@ -9,6 +9,7 @@ indicates a regression in content that should have been preserved.
 """
 
 import os
+
 import pytest
 
 STEERING_DIR = os.path.join(
@@ -74,11 +75,34 @@ class TestModuleTransitionsPreservation:
 # ---------------------------------------------------------------------------
 
 class TestModuleCompletionPreservation:
-    """Preserve journal template, reflection, options, and path completion."""
+    """Preserve journal template, reflection, options, and path completion.
+
+    The ``steering-budget-headroom`` spec refactored ``module-completion.md``
+    into a lightweight Module_Completion_Root plus four cohesive slices. No
+    content was deleted — the journal template, next-step options, and
+    path-completion sections were relocated into:
+
+    - ``module-completion-artifacts.md`` (journal/recap/certificate fields)
+    - ``module-completion-error-handling.md`` (non-blocking error handling)
+    - ``module-completion-next-steps.md`` (next-step options)
+    - ``module-completion-track.md`` (path completion detection + celebration)
+
+    To preserve the original intent — the content still exists and is reachable
+    via the completion workflow — these assertions run against the Root combined
+    with all four slices.
+    """
+
+    _COMPLETION_FILES = (
+        "module-completion.md",
+        "module-completion-artifacts.md",
+        "module-completion-error-handling.md",
+        "module-completion-next-steps.md",
+        "module-completion-track.md",
+    )
 
     @pytest.fixture(autouse=True)
     def load_content(self):
-        self.content = _read("module-completion.md")
+        self.content = "\n".join(_read(name) for name in self._COMPLETION_FILES)
 
     # Journal template fields
     def test_journal_field_what_we_did(self):
@@ -105,10 +129,22 @@ class TestModuleCompletionPreservation:
         assert "## Reflection Question" not in self.content
 
     def test_reflection_question_text(self):
-        """Reflection question text removed — takeaway field is auto-filled N/A."""
-        # The skip-reflection-questions spec removed the reflection question.
-        # The journal template's takeaway field is now "N/A" by default.
-        assert "**Bootcamper's takeaway:** N/A" in self.content
+        """Reflection question removed — takeaway is now a template placeholder
+        that falls back to N/A.
+
+        The skip-reflection-questions spec removed the reflection question. The
+        journal template's takeaway field is now the placeholder
+        ``{takeaway or N/A}`` (module-completion-process feature, commit 6810c67),
+        which auto-fills the bootcamper's stated takeaway when provided and
+        otherwise falls back to ``N/A`` — preserving the auto-fill / skip-reflection
+        intent.
+        """
+        # Pinned literal: the shipped takeaway template form.
+        assert "**Bootcamper's takeaway:** {takeaway or N/A}" in self.content
+        # Independent content assertion: the takeaway field still falls back to
+        # N/A (the placeholder explicitly encodes the N/A default), confirming
+        # the auto-fill / skip-reflection intent is preserved.
+        assert "{takeaway or N/A}" in self.content
 
     # Next-step options: Proceed, Iterate, Share must survive
     # (Explore will be enhanced but not removed)
@@ -152,15 +188,20 @@ class TestModuleCompletionPreservation:
 
 
 # ---------------------------------------------------------------------------
-# onboarding-flow.md — Welcome banner must be untouched
+# onboarding-phase1b-intro-language.md — Welcome banner must be untouched
 # ---------------------------------------------------------------------------
 
 class TestOnboardingFlowPreservation:
-    """The 🎓 welcome banner must remain exactly as-is."""
+    """The 🎓 welcome banner must remain exactly as-is.
+
+    The welcome banner (Bootcamp Introduction) was moved out of
+    onboarding-flow.md into onboarding-phase1b-intro-language.md (shipped
+    Step 5), so the banner is asserted in the phase file.
+    """
 
     @pytest.fixture(autouse=True)
     def load_content(self):
-        self.content = _read("onboarding-flow.md")
+        self.content = _read("onboarding-phase1b-intro-language.md")
 
     def test_welcome_banner_text(self):
         """Welcome banner with 🎓 emojis must be untouched."""

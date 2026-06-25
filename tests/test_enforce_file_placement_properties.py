@@ -29,7 +29,6 @@ from test_enforce_file_placement import (
     ROOT_WHITELIST_EXACT,
     ROOT_WHITELIST_PATTERNS,
     has_blocked_extension,
-    is_root_path,
     is_whitelisted,
 )
 
@@ -44,6 +43,9 @@ HOOK_PROMPT: str = _HOOK_DATA["then"]["prompt"]
 
 _AGENT_INSTRUCTIONS_PATH = REPO_ROOT / "senzing-bootcamp" / "steering" / "agent-instructions.md"
 AGENT_INSTRUCTIONS: str = _AGENT_INSTRUCTIONS_PATH.read_text(encoding="utf-8")
+
+_FILE_PLACEMENT_PATH = REPO_ROOT / "senzing-bootcamp" / "steering" / "file-placement.md"
+FILE_PLACEMENT: str = _FILE_PLACEMENT_PATH.read_text(encoding="utf-8")
 
 _PROJECT_STRUCTURE_PATH = REPO_ROOT / "senzing-bootcamp" / "steering" / "project-structure.md"
 PROJECT_STRUCTURE: str = _PROJECT_STRUCTURE_PATH.read_text(encoding="utf-8")
@@ -246,9 +248,9 @@ class TestPropertySteeringWhitelistEntries:
     @given(filename=st.sampled_from(sorted(ROOT_WHITELIST_EXACT)))
     @settings(max_examples=20)
     def test_agent_instructions_contains_whitelist_entry(self, filename: str) -> None:
-        """agent-instructions.md contains each exact whitelist entry."""
-        # Steering files use backtick-wrapped filenames
-        assert filename in AGENT_INSTRUCTIONS or f"`{filename}`" in AGENT_INSTRUCTIONS
+        """agent-instructions.md (via file-placement.md) contains each exact whitelist entry."""
+        # Root whitelist relocated to file-placement.md; agent-instructions points to it.
+        assert filename in FILE_PLACEMENT or f"`{filename}`" in FILE_PLACEMENT
 
     @given(filename=st.sampled_from(sorted(ROOT_WHITELIST_EXACT)))
     @settings(max_examples=20)
@@ -259,8 +261,8 @@ class TestPropertySteeringWhitelistEntries:
     @given(pattern=st.sampled_from(ROOT_WHITELIST_PATTERNS))
     @settings(max_examples=20)
     def test_agent_instructions_contains_whitelist_pattern(self, pattern: str) -> None:
-        """agent-instructions.md contains each whitelist pattern."""
-        assert pattern in AGENT_INSTRUCTIONS or f"`{pattern}`" in AGENT_INSTRUCTIONS
+        """agent-instructions.md (via file-placement.md) contains each whitelist pattern."""
+        assert pattern in FILE_PLACEMENT or f"`{pattern}`" in FILE_PLACEMENT
 
     @given(pattern=st.sampled_from(ROOT_WHITELIST_PATTERNS))
     @settings(max_examples=20)

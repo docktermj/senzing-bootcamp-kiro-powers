@@ -10,7 +10,8 @@ Also validates that the question-format-gate hook prompt contains dual suppressi
 reinforcement (front-loaded preamble + closing OUTPUT FORMAT section) with explicit
 anti-narration directives and rewrite-only output constraints.
 
-**Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 4.1, 4.2, 4.3, 6.3, 6.4, 6.5, 8.3**
+**Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, \
+4.1, 4.2, 4.3, 6.3, 6.4, 6.5, 8.3**
 """
 
 from __future__ import annotations
@@ -19,7 +20,6 @@ import json
 import re
 from pathlib import Path
 
-import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
@@ -633,14 +633,12 @@ class TestPreservationProperties:
 # ---------------------------------------------------------------------------
 
 QUESTION_FORMAT_GATE_HOOK_PATH = Path(
-    "senzing-bootcamp/hooks/question-format-gate.kiro.hook"
+    "senzing-bootcamp/hooks/ask-bootcamper.kiro.hook"
 )
 
-# Forbidden narration phrases for the Question Format Gate.
+# Forbidden narration phrases for the Question Format Phase (consolidated hook).
+# These are the phrases explicitly forbidden in the Phase 4 "Do NOT output" directive.
 QUESTION_FORMAT_GATE_FORBIDDEN_PHRASES = [
-    "The question is not compound",
-    "No rewrite needed",
-    "Scanning for compound questions",
     "This is a compound question",
     "Let me rewrite",
     "The question contains 'or' joining alternatives",
@@ -653,15 +651,23 @@ QUESTION_FORMAT_GATE_FORBIDDEN_PHRASES = [
 
 
 def load_question_format_gate_data() -> dict:
-    """Load and return the full parsed JSON from the question-format-gate hook file."""
+    """Load and return the full parsed JSON from the consolidated ask-bootcamper hook file."""
     with open(QUESTION_FORMAT_GATE_HOOK_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 
 def load_question_format_gate_prompt() -> str:
-    """Load and return the then.prompt field from the question-format-gate hook file."""
+    """Load and return the Phase 4 (Question Format) section from the consolidated hook."""
     data = load_question_format_gate_data()
-    return data["then"]["prompt"]
+    full_prompt = data["then"]["prompt"]
+    # Extract Phase 4 section from the consolidated prompt
+    phase4_start = full_prompt.find("PHASE 4:")
+    assert phase4_start != -1, "Consolidated hook missing PHASE 4 section"
+    # Phase 4 ends at the OUTPUT RULES section or end of prompt
+    output_rules_pos = full_prompt.find("OUTPUT RULES", phase4_start + 1)
+    if output_rules_pos != -1:
+        return full_prompt[phase4_start:output_rules_pos]
+    return full_prompt[phase4_start:]
 
 
 # ---------------------------------------------------------------------------
@@ -687,37 +693,41 @@ class TestQuestionFormatGateSuppression:
     def test_property_5_front_loaded_suppression_preamble(
         self, forbidden_phrase: str
     ):
-        """For any valid Question_Format_Gate prompt, the first 200 characters SHALL
-        contain an explicit output constraint directive referencing "." for no-rewrite
-        and "corrected question" for rewrite, with "never" reasoning.
+        """For any valid Question_Format_Phase prompt, the section SHALL contain
+        an explicit output constraint: "Output ONLY" directive for rewrite case
+        and "none" for no-rewrite case, with anti-narration instructions.
 
         **Validates: Requirements 3.2, 6.3, 6.5**
 
-        Property 5: The suppression preamble must appear within the first 200
-        characters to ensure the LLM processes it before any detection logic.
+        Property 5: The suppression directives must appear in Phase 4 to ensure
+        the LLM produces only the corrected output or nothing.
         """
         prompt = load_question_format_gate_prompt()
-        first_200 = prompt[:200]
 
-        # Must reference "." for no-rewrite case
-        assert "." in first_200, (
-            f"First 200 characters do not reference '.' for no-rewrite case. "
-            f"First 200 chars: '{first_200}' "
+        # Must reference "none" or "no output" for no-rewrite case
+        has_no_output = (
+            "output is none" in prompt.lower()
+            or "no output" in prompt.lower()
+        )
+        assert has_no_output, (
+            f"Phase 4 does not reference 'none'/'no output' for no-rewrite case. "
             f"(tested with forbidden phrase: '{forbidden_phrase}')"
         )
 
-        # Must reference "corrected question" for rewrite case
-        assert "corrected question" in first_200.lower(), (
-            f"First 200 characters do not reference 'corrected question' for rewrite case. "
-            f"First 200 chars: '{first_200}' "
+        # Must reference "corrected question" or "regenerated" for rewrite case
+        has_rewrite_ref = (
+            "corrected question" in prompt.lower()
+            or "regenerated" in prompt.lower()
+        )
+        assert has_rewrite_ref, (
+            f"Phase 4 does not reference 'corrected question' or 'regenerated' "
+            f"for rewrite case. "
             f"(tested with forbidden phrase: '{forbidden_phrase}')"
         )
 
-        # Must contain "never" or "Never" reasoning constraint
-        has_never = "never" in first_200.lower()
-        assert has_never, (
-            f"First 200 characters do not contain 'never' reasoning constraint. "
-            f"First 200 chars: '{first_200}' "
+        # Must contain anti-narration: "Do NOT" directives
+        assert "Do NOT" in prompt, (
+            f"Phase 4 does not contain 'Do NOT' anti-narration directives. "
             f"(tested with forbidden phrase: '{forbidden_phrase}')"
         )
 
@@ -728,68 +738,51 @@ class TestQuestionFormatGateSuppression:
     def test_property_6_closing_output_format_section(
         self, forbidden_phrase: str
     ):
-        """For any valid Question_Format_Gate prompt, there SHALL exist an "OUTPUT FORMAT"
-        section that appears after the RULES section and contains both the period-only
-        directive for no-rewrite and the corrected-question-only directive for rewrite,
-        plus a list of forbidden narration patterns.
+        """For any valid Question_Format_Phase prompt, there SHALL exist a "RULES"
+        section that contains anti-narration directives and the prompt SHALL contain
+        both the no-output directive for no-rewrite and the output-only directive
+        for rewrite, plus forbidden narration patterns.
 
         **Validates: Requirements 3.3, 3.4, 6.4**
 
-        Property 6: The OUTPUT FORMAT section must exist after RULES and contain
-        both output directives and forbidden phrases.
+        Property 6: The RULES section must exist and contain output directives
+        and forbidden phrases.
         """
         prompt = load_question_format_gate_prompt()
-
-        # OUTPUT FORMAT section must exist
-        assert "OUTPUT FORMAT" in prompt, (
-            f"Prompt does not contain 'OUTPUT FORMAT' section. "
-            f"(tested with forbidden phrase: '{forbidden_phrase}')"
-        )
 
         # RULES section must exist
         rules_pos = prompt.find("RULES:")
         assert rules_pos != -1, (
-            f"Prompt does not contain 'RULES:' section. "
+            f"Phase 4 does not contain 'RULES:' section. "
             f"(tested with forbidden phrase: '{forbidden_phrase}')"
         )
 
-        # OUTPUT FORMAT must appear after RULES
-        output_format_pos = prompt.find("OUTPUT FORMAT")
-        assert output_format_pos > rules_pos, (
-            f"OUTPUT FORMAT section (pos {output_format_pos}) does not appear "
-            f"after RULES section (pos {rules_pos}). "
+        # Must contain no-output directive for no-rewrite case
+        has_no_output_directive = (
+            "output is none" in prompt.lower()
+            or "no output" in prompt.lower()
+            or "no compound" in prompt.lower()
+        )
+        assert has_no_output_directive, (
+            f"Phase 4 does not contain no-output directive for no-rewrite. "
             f"(tested with forbidden phrase: '{forbidden_phrase}')"
         )
 
-        # Extract the OUTPUT FORMAT section (from "OUTPUT FORMAT" to end)
-        output_format_section = prompt[output_format_pos:]
-
-        # Must contain period-only directive for no-rewrite
-        has_period_directive = (
-            "." in output_format_section
-            and ("no compound" in output_format_section.lower()
-                 or "no rewrite" in output_format_section.lower()
-                 or "not found" in output_format_section.lower())
-        )
-        assert has_period_directive, (
-            f"OUTPUT FORMAT section does not contain period-only directive for no-rewrite. "
-            f"(tested with forbidden phrase: '{forbidden_phrase}')"
-        )
-
-        # Must contain corrected-question-only directive for rewrite
+        # Must contain output-only directive for rewrite case
         has_rewrite_directive = (
-            "rewritten question" in output_format_section.lower()
-            or "corrected question" in output_format_section.lower()
-            or "only the rewritten" in output_format_section.lower()
+            "output only" in prompt.lower()
+            or "corrected question" in prompt.lower()
+            or "regenerated full response" in prompt.lower()
         )
         assert has_rewrite_directive, (
-            f"OUTPUT FORMAT section does not contain corrected-question-only directive. "
+            f"Phase 4 does not contain output-only directive for rewrite. "
             f"(tested with forbidden phrase: '{forbidden_phrase}')"
         )
 
-        # Must contain the specific forbidden phrase
-        assert forbidden_phrase in output_format_section, (
-            f"OUTPUT FORMAT section does not contain forbidden phrase: "
+        # Must contain the specific forbidden phrase somewhere in the prompt
+        # (as part of the anti-narration "Do NOT output" enumeration)
+        assert forbidden_phrase in prompt, (
+            f"Phase 4 does not contain forbidden phrase: "
             f"'{forbidden_phrase}'"
         )
 
@@ -800,7 +793,7 @@ class TestQuestionFormatGateSuppression:
     def test_property_7_rewrite_only_output_directive(
         self, forbidden_phrase: str
     ):
-        """For any valid Question_Format_Gate prompt, the prompt text SHALL contain
+        """For any valid Question_Format_Phase prompt, the prompt text SHALL contain
         explicit instructions forbidding preamble or explanation when outputting a
         rewritten question, and SHALL instruct preservation of non-question content.
 
@@ -812,43 +805,42 @@ class TestQuestionFormatGateSuppression:
         prompt = load_question_format_gate_prompt()
 
         # Must contain instruction forbidding preamble/explanation for rewrites
-        # Check for anti-narration directives in the rewrite case
         rewrite_anti_narration_patterns = [
             r"Do NOT output.*This is a compound question",
             r"Do NOT output.*Let me rewrite",
-            r"Output ONLY the corrected question",
-            r"no preamble.*explanation",
+            r"Output ONLY the regenerated",
+            r"Do NOT.*add explanations",
         ]
         has_rewrite_anti_narration = any(
             re.search(pattern, prompt, re.IGNORECASE | re.DOTALL)
             for pattern in rewrite_anti_narration_patterns
         )
         assert has_rewrite_anti_narration, (
-            f"Prompt does not contain explicit instructions forbidding preamble "
+            f"Phase 4 does not contain explicit instructions forbidding preamble "
             f"or explanation when outputting a rewritten question. "
             f"(tested with forbidden phrase: '{forbidden_phrase}')"
         )
 
         # Must instruct preservation of non-question content
         preservation_patterns = [
-            r"[Pp]reserve.*non-question content",
             r"[Pp]reserve all other content",
-            r"only rewrite the compound question portion",
-            r"[Pp]reserve all non-question content",
+            r"only replace the compound question",
+            r"Do NOT restructure content that is not",
+            r"Do NOT interfere with non-compound",
         ]
         has_preservation = any(
             re.search(pattern, prompt, re.IGNORECASE)
             for pattern in preservation_patterns
         )
         assert has_preservation, (
-            f"Prompt does not contain instruction to preserve non-question content. "
+            f"Phase 4 does not contain instruction to preserve non-question content. "
             f"(tested with forbidden phrase: '{forbidden_phrase}')"
         )
 
         # Must contain the forbidden phrase somewhere in the prompt
         # (as part of the anti-narration directive enumeration)
         assert forbidden_phrase in prompt, (
-            f"Prompt does not contain forbidden phrase '{forbidden_phrase}' "
+            f"Phase 4 does not contain forbidden phrase '{forbidden_phrase}' "
             f"in its anti-narration directives."
         )
 

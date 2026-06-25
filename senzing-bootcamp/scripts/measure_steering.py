@@ -16,11 +16,35 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+from dataclasses import dataclass
 from pathlib import Path
-
 
 DEFAULT_STEERING_DIR = Path("senzing-bootcamp/steering")
 DEFAULT_INDEX_PATH = Path("senzing-bootcamp/steering/steering-index.yaml")
+
+
+@dataclass
+class PhaseEntry:
+    """A phase entry parsed from the modules/onboarding/session-resume maps.
+
+    Each phase block (``modules.*.phases.*``, ``onboarding.*.phases.*``, or
+    ``session-resume.*.phases.*``) has a ``file:`` line plus sibling
+    ``token_count:`` and ``size_category:`` lines. The line indices are 0-based
+    positions in the full content's line list so an in-place rewrite is possible.
+
+    Attributes:
+        filename: Steering markdown filename from the phase's ``file:`` line.
+        token_count: Stored ``token_count`` value, or None if absent.
+        size_category: Stored ``size_category`` value, or None if absent.
+        token_count_line: 0-based line index of the ``token_count:`` line, or None.
+        size_category_line: 0-based line index of the ``size_category:`` line, or None.
+    """
+
+    filename: str
+    token_count: int | None
+    size_category: str | None
+    token_count_line: int | None
+    size_category_line: int | None
 
 
 def calculate_token_count(filepath):
@@ -110,21 +134,56 @@ def _find_section_start(content, section_name):
     return match.start() if match else -1
 
 
-def update_index(index_path, file_metadata, total_tokens):
+def update_index(index_path, file_metadata, total_tokens, steering_dir=DEFAULT_STEERING_DIR):
     """Write file_metadata and budget sections into the YAML file.
 
-    Preserves all existing content above the file_metadata section.
-    Uses string manipulation (no PyYAML) to keep existing YAML byte-identical.
+    Preserves all existing content above the file_metadata section, except that
+    out-of-tolerance phase entries in that preserved region have their
+    ``token_count`` / ``size_category`` reconciled to the measured value via
+    ``rewrite_phase_counts``. In-tolerance phases and all non-phase content
+    (``budget``, ``keywords``, ``languages``, ``deployment``, module ``root`` /
+    ``step_range``) are left byte-identical. The ``file_metadata`` / ``budget``
+    rebuild, ``split_threshold_tokens`` preservation, and ``router_ceiling``
+    preservation (defaulting to ``1000`` when absent) are unchanged, and
+    ``total_tokens`` remains the sum of ``file_metadata`` counts only (phase
+    counts are never added to the budget total).
+
+    The ``steering_dir`` argument keeps the old positional call sites working
+    (it defaults to ``DEFAULT_STEERING_DIR``), so existing direct callers such as
+    ``update_index(index_path, metadata, total)`` continue to reconcile phase
+    counts against the standard steering directory. Phase reconciliation only
+    rewrites out-of-tolerance phases, so an index with no drifted phases is left
+    byte-identical above ``file_metadata``.
+
+    Uses string manipulation (no PyYAML) to keep existing YAML byte-identical
+    where no value changed.
+
+    Args:
+        index_path: Path to steering-index.yaml.
+        file_metadata: dict from scan_steering_files() ({filename: {...}}).
+        total_tokens: Sum of file_metadata token counts (budget.total_tokens).
+        steering_dir: Path to the steering directory holding the phase .md files,
+            used to measure phase files when reconciling phase counts. Defaults
+            to ``DEFAULT_STEERING_DIR`` so existing callers keep working.
     """
     index_path = Path(index_path)
     split_threshold = None
+    router_ceiling = None
 
     if index_path.exists():
         content = load_yaml_content(index_path)
+        # Reconcile out-of-tolerance phase token counts in the preserved region
+        # (above file_metadata) before composing the new file. In-tolerance
+        # phases and all non-phase content stay byte-identical.
+        content = rewrite_phase_counts(content, steering_dir)
         # Check for split_threshold_tokens before truncating
         threshold_match = re.search(r"split_threshold_tokens:\s*(\d+)", content)
         if threshold_match:
             split_threshold = threshold_match.group(1)
+        # Check for router_ceiling before truncating
+        ceiling_match = re.search(r"router_ceiling:\s*(\d+)", content)
+        if ceiling_match:
+            router_ceiling = ceiling_match.group(1)
         # Find where file_metadata starts (if it already exists) and truncate there
         fm_pos = _find_section_start(content, "file_metadata")
         if fm_pos >= 0:
@@ -155,6 +214,12 @@ def update_index(index_path, file_metadata, total_tokens):
     # Preserve split_threshold_tokens if it existed in the original content
     if split_threshold is not None:
         lines.append(f"  split_threshold_tokens: {split_threshold}")
+
+    # Preserve router_ceiling if it existed; default to 1000 when absent
+    if router_ceiling is not None:
+        lines.append(f"  router_ceiling: {router_ceiling}")
+    else:
+        lines.append("  router_ceiling: 1000")
 
     lines.append("")
 
@@ -202,6 +267,103 @@ def _parse_stored_metadata(content):
     return metadata
 
 
+def parse_budget_total(content: str) -> int | None:
+    """Extract budget.total_tokens from YAML content via a localized regex.
+
+    Uses the same minimal-regex approach as ``simulate_context_load`` (which reads
+    ``reference_window`` with ``re.search(r"reference_window:\\s*(\\d+)")``), matching
+    the ``total_tokens:`` line in the budget section. This is the declared aggregate
+    that the ``--check`` mode compares against the sum of per-file ``token_count``
+    values.
+
+    Args:
+        content: Raw YAML text of steering-index.yaml.
+
+    Returns:
+        The declared ``budget.total_tokens`` value, or None if not found.
+    """
+    match = re.search(r"total_tokens:\s*(\d+)", content)
+    return int(match.group(1)) if match else None
+
+
+def _parse_phase_entries(content: str) -> list[PhaseEntry]:
+    """Parse phase entries from the region above the file_metadata section.
+
+    Walks the YAML text line by line. Each ``file:`` line marks the start of a
+    phase block (``modules.*.phases.*``, ``onboarding.*.phases.*``, or
+    ``session-resume.*.phases.*``); the immediately-following sibling lines at the
+    same indentation supply the stored ``token_count:`` and ``size_category:``
+    values. Keying on ``file:`` lines naturally excludes ``root:`` entries (no
+    ``file:`` line) and ``file_metadata`` entries (keyed by filename, no ``file:``
+    field), and the walk is bounded above the ``file_metadata`` section so its
+    entries are never reached.
+
+    Args:
+        content: Raw YAML text of steering-index.yaml.
+
+    Returns:
+        A list of PhaseEntry records, one per ``file:`` line found above
+        file_metadata, in document order.
+    """
+    lines = content.splitlines()
+
+    # Bound the walk to the region above file_metadata (if present).
+    fm_pos = _find_section_start(content, "file_metadata")
+    if fm_pos >= 0:
+        # Number of lines before the file_metadata section.
+        limit = content[:fm_pos].count("\n")
+    else:
+        limit = len(lines)
+
+    file_pattern = re.compile(r"^(\s+)file:\s+([\w.-]+\.md)\s*$")
+    tc_pattern = re.compile(r"^(\s+)token_count:\s*(\d+)\s*$")
+    sc_pattern = re.compile(r"^(\s+)size_category:\s*(\w+)\s*$")
+
+    entries: list[PhaseEntry] = []
+    for idx in range(limit):
+        file_match = file_pattern.match(lines[idx])
+        if not file_match:
+            continue
+
+        indent = file_match.group(1)
+        filename = file_match.group(2)
+        token_count: int | None = None
+        size_category: str | None = None
+        token_count_line: int | None = None
+        size_category_line: int | None = None
+
+        # Scan sibling lines within this phase block (same indent), stopping at
+        # the next dedent or the next file: line (start of another phase block).
+        for sib in range(idx + 1, limit):
+            sib_line = lines[sib]
+            if not sib_line.strip():
+                continue
+            sib_indent = len(sib_line) - len(sib_line.lstrip())
+            if sib_indent < len(indent) or file_pattern.match(sib_line):
+                break
+            tc_match = tc_pattern.match(sib_line)
+            if tc_match:
+                token_count = int(tc_match.group(2))
+                token_count_line = sib
+                continue
+            sc_match = sc_pattern.match(sib_line)
+            if sc_match:
+                size_category = sc_match.group(2)
+                size_category_line = sib
+
+        entries.append(
+            PhaseEntry(
+                filename=filename,
+                token_count=token_count,
+                size_category=size_category,
+                token_count_line=token_count_line,
+                size_category_line=size_category_line,
+            )
+        )
+
+    return entries
+
+
 def check_counts(index_path, calculated):
     """Compare stored vs calculated token counts, return mismatches >10%.
 
@@ -240,6 +402,117 @@ def check_counts(index_path, calculated):
             mismatches.append((filename, stored[filename].get("token_count"), None))
 
     return mismatches
+
+
+def check_phase_counts(
+    index_path, steering_dir
+) -> list[tuple[str, int | None, int | None]]:
+    """Compare stored vs measured phase token counts, return mismatches >10%.
+
+    Parses every phase entry (``modules.*.phases.*``, ``onboarding.*.phases.*``,
+    and ``session-resume.*.phases.*``) from the index above the file_metadata
+    section and compares each stored ``token_count`` against the freshly measured
+    count of its ``file`` using the same 10% tolerance applied to file_metadata.
+    A phase whose ``file`` does not exist on disk is reported as a mismatch
+    (mirroring file_metadata removed-file detection in ``check_counts``). This
+    function performs a pure read and never modifies the index.
+
+    Args:
+        index_path: Path to steering-index.yaml.
+        steering_dir: Path to the steering directory holding the phase .md files.
+
+    Returns:
+        list of (filename, stored_count, measured_count) tuples for mismatches.
+        For a phase whose file is missing on disk, measured_count is None.
+    """
+    content = load_yaml_content(index_path)
+    entries = _parse_phase_entries(content)
+    steering_path = Path(steering_dir)
+
+    mismatches: list[tuple[str, int | None, int | None]] = []
+    for entry in entries:
+        stored_count = entry.token_count
+        phase_path = steering_path / entry.filename
+        if not phase_path.is_file():
+            mismatches.append((entry.filename, stored_count, None))
+            continue
+        measured = calculate_token_count(phase_path)
+        if stored_count is None:
+            mismatches.append((entry.filename, None, measured))
+            continue
+        denominator = max(measured, 1)
+        if abs(stored_count - measured) / denominator > 0.10:
+            mismatches.append((entry.filename, stored_count, measured))
+
+    return mismatches
+
+
+def rewrite_phase_counts(content: str, steering_dir) -> str:
+    """Return content with out-of-tolerance phase token_count/size_category fixed.
+
+    For each phase record from ``_parse_phase_entries``, measures the phase file's
+    token count and applies the same 10% tolerance test used by
+    ``check_phase_counts`` (``abs(stored - measured) / max(measured, 1) > 0.10``).
+    Only phases that are OUT of tolerance are rewritten: that block's
+    ``token_count:`` value line is set to the measured count and its
+    ``size_category:`` value line to ``classify_size(measured)``. A phase already
+    WITHIN tolerance is left byte-identical, which keeps update mode from
+    disturbing in-tolerance phase entries (Requirements 3.2, 3.6). A phase whose
+    stored ``token_count`` is missing/None cannot be tolerance-checked and is
+    treated as drifted (reconciled to the measured value), mirroring how
+    ``check_phase_counts`` reports a None stored count as a mismatch.
+
+    The edit re-derives each line's existing leading whitespace, so indentation,
+    the surrounding ``file:`` / ``step_range:`` lines, module/phase structure, and
+    ordering are all preserved. A phase whose ``file`` does not exist on disk is
+    left unchanged (no crash). This function does not write to disk.
+
+    Args:
+        content: Raw YAML text of steering-index.yaml.
+        steering_dir: Path to the steering directory holding the phase .md files.
+
+    Returns:
+        The updated YAML text. Returns byte-identical content when no phase value
+        is out of tolerance.
+    """
+    entries = _parse_phase_entries(content)
+    steering_path = Path(steering_dir)
+
+    # Preserve the original trailing newline (splitlines drops it) so the rebuilt
+    # text is byte-identical when nothing changes.
+    lines = content.splitlines()
+    trailing_newline = content.endswith("\n")
+
+    for entry in entries:
+        phase_path = steering_path / entry.filename
+        if not phase_path.is_file():
+            continue
+        measured = calculate_token_count(phase_path)
+
+        # Gate on tolerance: leave in-tolerance phases byte-identical. A None
+        # stored count can't be compared, so treat it as drifted (reconcile).
+        stored = entry.token_count
+        if stored is not None:
+            denominator = max(measured, 1)
+            if abs(stored - measured) / denominator <= 0.10:
+                continue
+
+        new_cat = classify_size(measured)
+
+        if entry.token_count_line is not None:
+            old_line = lines[entry.token_count_line]
+            indent = old_line[: len(old_line) - len(old_line.lstrip())]
+            lines[entry.token_count_line] = f"{indent}token_count: {measured}"
+
+        if entry.size_category_line is not None:
+            old_line = lines[entry.size_category_line]
+            indent = old_line[: len(old_line) - len(old_line.lstrip())]
+            lines[entry.size_category_line] = f"{indent}size_category: {new_cat}"
+
+    rebuilt = "\n".join(lines)
+    if trailing_newline:
+        rebuilt += "\n"
+    return rebuilt
 
 
 def _parse_modules_section(content: str) -> dict[int, list[str]]:
@@ -379,18 +652,42 @@ def main():
         simulate_context_load(args.index_path, file_metadata)
     elif args.check:
         mismatches = check_counts(args.index_path, file_metadata)
+        phase_mismatches = check_phase_counts(args.index_path, args.steering_dir)
+        # Additive aggregate check: declared budget.total_tokens must equal the
+        # sum of per-file token_count values. Reuse _parse_stored_metadata so the
+        # "sum" definition matches check_counts exactly (exact equality, not ±10%).
+        content = load_yaml_content(args.index_path)
+        declared_total = parse_budget_total(content)
+        stored_metadata = _parse_stored_metadata(content) or {}
+        expected_total = sum(
+            meta.get("token_count", 0) for meta in stored_metadata.values()
+        )
+        budget_mismatch = declared_total != expected_total
         if mismatches:
             print("Token count mismatches (>10% difference):")
             for filename, stored, calculated in mismatches:
                 stored_str = str(stored) if stored is not None else "MISSING"
                 calc_str = str(calculated) if calculated is not None else "REMOVED"
                 print(f"  {filename}: stored={stored_str}, calculated={calc_str}")
+        if phase_mismatches:
+            print("Phase token count mismatches (>10% difference):")
+            for filename, stored, measured in phase_mismatches:
+                stored_str = str(stored) if stored is not None else "MISSING"
+                measured_str = str(measured) if measured is not None else "REMOVED"
+                print(f"  {filename}: stored={stored_str}, calculated={measured_str}")
+        if budget_mismatch:
+            declared_str = str(declared_total) if declared_total is not None else "MISSING"
+            print(
+                f"Budget total mismatch: declared={declared_str}, "
+                f"sum(file_metadata)={expected_total}"
+            )
+        if mismatches or phase_mismatches or budget_mismatch:
             sys.exit(1)
         else:
             print("All token counts are within 10% tolerance.")
             sys.exit(0)
     else:
-        update_index(args.index_path, file_metadata, total_tokens)
+        update_index(args.index_path, file_metadata, total_tokens, args.steering_dir)
         print_summary(file_metadata, total_tokens)
 
 

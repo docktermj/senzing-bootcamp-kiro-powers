@@ -277,7 +277,7 @@ class TestVerifySdkSetup:
     2. Verify database/G2C.db exists
     3. Verify Senzing engine can initialize
     4. Produce no output if not in Module 2
-    5. Suggest preflight.py on failure
+    5. Suggest verify_sdk.py on failure
     """
 
     @pytest.fixture(autouse=True)
@@ -302,6 +302,6 @@ class TestVerifySdkSetup:
         assert "not in Module 2" in self.prompt
         assert "no output" in self.prompt.lower()
 
-    def test_suggests_preflight_on_failure(self):
-        """Prompt suggests running preflight.py on verification failure."""
-        assert "preflight.py" in self.prompt
+    def test_suggests_verify_sdk_on_failure(self):
+        """Prompt suggests running verify_sdk.py on verification failure."""
+        assert "verify_sdk.py" in self.prompt

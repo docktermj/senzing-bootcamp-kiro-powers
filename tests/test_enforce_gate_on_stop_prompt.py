@@ -1,15 +1,18 @@
 """Prompt logic verification for enforce-gate-on-stop hook.
 
-Verifies that the agentStop hook prompt contains all 4 required logic checks:
+Verifies that the agentStop hook prompt contains the required logic checks:
 1. Checks current_module equal to 3
 2. Checks current_step greater than or equal to 9
-3. Checks CONDITION A (web_service + web_page passed) and CONDITION B (skipped_steps "3.9")
-4. Outputs blocking/violation message only when NEITHER condition A nor B is met
+3. Checks CONDITION A (web_service + web_page passed) — the ONLY way to satisfy
+   the gate. The former CONDITION B (skipped_steps "3.9") escape hatch was
+   intentionally removed by the `module3-visualization-no-skip` bugfix (req 2.3),
+   so the gate can no longer be bypassed via a skip entry. These tests assert
+   that escape hatch stays absent.
+4. Outputs blocking/violation message when CONDITION A is not met
 """
 
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
@@ -79,7 +82,7 @@ class TestEnforceGateOnStopPromptLogic:
         )
 
     # ------------------------------------------------------------------
-    # Check 3: CONDITION A and CONDITION B
+    # Check 3: CONDITION A present; CONDITION B escape hatch absent
     # ------------------------------------------------------------------
 
     def test_checks_condition_a_web_service_passed(self, prompt: str):
@@ -97,23 +100,33 @@ class TestEnforceGateOnStopPromptLogic:
             "Prompt does not reference 'web_page'"
         )
 
-    def test_checks_condition_b_skipped_steps(self, prompt: str):
-        """Prompt checks skipped_steps contains 3.9 (Condition B)."""
-        assert "skipped_steps" in prompt, (
-            "Prompt does not reference 'skipped_steps'"
-        )
-        assert "3.9" in prompt, (
-            "Prompt does not reference step '3.9' in skipped_steps check"
+    def test_no_condition_b_skipped_steps_escape_hatch(self, prompt: str):
+        """Prompt must NOT contain the removed skipped_steps "3.9" escape hatch.
+
+        The `module3-visualization-no-skip` bugfix (req 2.3) removed CONDITION B
+        so the Module 3 visualization gate can be satisfied ONLY by the real
+        Step 9 checkpoints (CONDITION A). Re-introducing a `skipped_steps`
+        bypass would reopen the escape hatch, so it must stay absent.
+        """
+        assert "skipped_steps" not in prompt, (
+            "Prompt reintroduces the removed 'skipped_steps' escape hatch — "
+            "the Module 3 gate must only be satisfied by CONDITION A checkpoints"
         )
 
-    def test_labels_conditions_a_and_b(self, prompt: str):
-        """Prompt explicitly labels CONDITION A and CONDITION B."""
+    def test_labels_condition_a_without_condition_b(self, prompt: str):
+        """Prompt labels CONDITION A but not the removed CONDITION B.
+
+        CONDITION A must remain the named, sole gate-satisfying condition.
+        CONDITION B was the explicit-skip escape hatch removed by the
+        `module3-visualization-no-skip` bugfix and must not return.
+        """
         prompt_upper = prompt.upper()
         assert "CONDITION A" in prompt_upper, (
             "Prompt does not label 'CONDITION A'"
         )
-        assert "CONDITION B" in prompt_upper, (
-            "Prompt does not label 'CONDITION B'"
+        assert "CONDITION B" not in prompt_upper, (
+            "Prompt reintroduces the removed 'CONDITION B' explicit-skip "
+            "escape hatch — only CONDITION A may satisfy the gate"
         )
 
     # ------------------------------------------------------------------

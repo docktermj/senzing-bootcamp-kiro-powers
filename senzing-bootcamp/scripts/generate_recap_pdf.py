@@ -9,6 +9,29 @@ Usage:
     python senzing-bootcamp/scripts/generate_recap_pdf.py
     python senzing-bootcamp/scripts/generate_recap_pdf.py --input recap.md
     python senzing-bootcamp/scripts/generate_recap_pdf.py --output recap.pdf
+
+Recap schema:
+    The parser recognizes module sections by a level-2 heading of the form::
+
+        ## Module N: <name> [— <timestamp>]
+
+    where ``N`` is the module number, ``<name>`` is the module title, and the
+    optional ``— <timestamp>`` suffix uses an em-dash (U+2014). Headings written
+    without the suffix (``## Module N: <name>``) are recognized too, parsing with
+    an empty timestamp.
+
+    Within a module, five ``###`` subsections are recognized by name:
+
+        - Information Shared
+        - Questions Asked
+        - Answers Given
+        - Actions Taken
+        - Duration
+
+    Any other content under a module — prose paragraphs, code blocks, or other
+    headings — is not discarded. It renders generically as "Additional Notes"
+    rather than being dropped. When no module sections parse at all, the raw
+    Markdown body is rendered as a fallback so that no content is silently lost.
 """
 
 from __future__ import annotations
@@ -45,6 +68,7 @@ class RecapSection:
     answers_given: list[str] = field(default_factory=list)
     actions_taken: list[str] = field(default_factory=list)
     duration: str = ""
+    generic_content: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -65,6 +89,13 @@ _HEADER_DURATION_RE = re.compile(r"^\*\*Total Duration:\*\*\s*(.+)$", re.MULTILI
 
 _MODULE_HEADING_RE = re.compile(
     r"^##\s+Module\s+(\d+):\s+(.+?)\s+—\s+(.+)$", re.MULTILINE
+)
+
+# Tolerant fallback: a module heading without the " — <timestamp>" suffix,
+# e.g. "## Module 1: Business Problem". Used only when the strict pattern
+# matches nothing so Strict_Schema recaps keep identical behavior.
+_MODULE_HEADING_LOOSE_RE = re.compile(
+    r"^##\s+Module\s+(\d+):\s+(.+?)\s*$", re.MULTILINE
 )
 
 
@@ -113,29 +144,109 @@ def _extract_list_items(text: str) -> list[str]:
     return items
 
 
-def _split_subsections(section_text: str) -> dict[str, str]:
-    """Split a module section into its ### subsections.
+# Subsection names recognized by the strict schema (lowercased).
+_KNOWN_SUBSECTIONS = frozenset(
+    {
+        "information shared",
+        "questions asked",
+        "answers given",
+        "actions taken",
+        "duration",
+    }
+)
+
+
+def _split_into_blocks(text: str) -> list[str]:
+    """Split arbitrary Markdown text into renderable blocks.
+
+    Groups consecutive non-blank lines into paragraph blocks and keeps fenced
+    code blocks (delimited by ```) intact as single blocks, even when they
+    contain blank lines.
+
+    Args:
+        text: Raw Markdown text.
+
+    Returns:
+        List of non-empty block strings in document order.
+    """
+    blocks: list[str] = []
+    current: list[str] = []
+    in_fence = False
+
+    def flush() -> None:
+        if current:
+            block = "\n".join(current).strip("\n")
+            if block.strip():
+                blocks.append(block)
+            current.clear()
+
+    for line in text.splitlines():
+        if line.lstrip().startswith("```"):
+            if in_fence:
+                current.append(line)
+                in_fence = False
+                flush()
+            else:
+                flush()
+                in_fence = True
+                current.append(line)
+            continue
+
+        if in_fence:
+            current.append(line)
+            continue
+
+        if not line.strip():
+            flush()
+        else:
+            current.append(line)
+
+    flush()
+    return blocks
+
+
+def _split_subsections(section_text: str) -> tuple[dict[str, str], list[str]]:
+    """Split a module section into its ### subsections and leftover content.
 
     Args:
         section_text: Text of a single module section (after the ## heading).
 
     Returns:
-        Dict mapping subsection name (lowercase) to its body text.
+        Tuple of (subsections, generic_blocks) where ``subsections`` maps the
+        subsection name (lowercase) to its body text, and ``generic_blocks`` is
+        the renderable leftover content not belonging to a known subsection —
+        the preamble before the first ``###`` plus any unrecognized
+        ``### `` subsection (heading included), split into blocks.
     """
     subsections: dict[str, str] = {}
     parts = re.split(r"^###\s+(.+)$", section_text, flags=re.MULTILINE)
-    # parts[0] is text before first ###, then alternating name/body pairs
+
+    # parts[0] is text before the first ###; it is always generic content.
+    leftover = parts[0]
+
+    # Then alternating name/body pairs.
     i = 1
     while i < len(parts) - 1:
-        name = parts[i].strip().lower()
+        raw_name = parts[i].strip()
+        name = raw_name.lower()
         body = parts[i + 1]
-        subsections[name] = body
+        if name in _KNOWN_SUBSECTIONS:
+            subsections[name] = body
+        else:
+            # Unrecognized heading — preserve it as generic content.
+            leftover += f"\n### {raw_name}\n{body}"
         i += 2
-    return subsections
+
+    return subsections, _split_into_blocks(leftover)
 
 
 def _parse_sections(content: str) -> list[RecapSection]:
     """Parse all module sections from the recap markdown.
+
+    Tries the strict heading pattern first so Strict_Schema recaps parse
+    exactly as before. When no strict headings match, falls back to the
+    tolerant pattern (headings without the " — <timestamp>" suffix) and
+    records an empty ``timestamp``. This function never raises.
 
     Args:
         content: Full markdown content.
@@ -145,16 +256,22 @@ def _parse_sections(content: str) -> list[RecapSection]:
     """
     sections: list[RecapSection] = []
 
-    # Find all module heading positions
+    # Find all module heading positions, preferring the strict pattern.
     headings = list(_MODULE_HEADING_RE.finditer(content))
+    loose = False
+    if not headings:
+        headings = list(_MODULE_HEADING_LOOSE_RE.finditer(content))
+        loose = True
     if not headings:
         return sections
 
     for idx, heading_match in enumerate(headings):
+        # The loose pattern has no timestamp group; use an empty timestamp.
+        timestamp = "" if loose else heading_match.group(3).strip()
         section = RecapSection(
             module_number=int(heading_match.group(1)),
             module_name=heading_match.group(2).strip(),
-            timestamp=heading_match.group(3).strip(),
+            timestamp=timestamp,
         )
 
         # Determine the text block for this section
@@ -166,8 +283,9 @@ def _parse_sections(content: str) -> list[RecapSection]:
 
         section_text = content[start:end]
 
-        # Split into subsections
-        subsections = _split_subsections(section_text)
+        # Split into subsections (plus leftover Generic_Content)
+        subsections, generic_content = _split_subsections(section_text)
+        section.generic_content = generic_content
 
         section.information_shared = _extract_list_items(
             subsections.get("information shared", "")
@@ -420,6 +538,35 @@ def _render_list_items(pdf: "FPDF", items: list[str], numbered: bool = False) ->
     pdf.set_font("Helvetica", "", 11)
 
 
+def _render_generic_blocks(pdf: "FPDF", blocks: list[str]) -> None:  # noqa: F821
+    """Render Generic_Content blocks (prose, code, other headings) as PDF text.
+
+    Fenced code blocks (delimited by ```) render in a monospace font with the
+    fences stripped; everything else renders as wrapped paragraph text.
+
+    Args:
+        pdf: The FPDF instance.
+        blocks: Generic_Content block strings in document order.
+    """
+    for block in blocks:
+        lines = block.splitlines()
+        if lines and lines[0].lstrip().startswith("```"):
+            # Fenced code block — drop the opening/closing fence lines.
+            code_lines = lines[1:]
+            if code_lines and code_lines[-1].lstrip().startswith("```"):
+                code_lines = code_lines[:-1]
+            pdf.set_font("Courier", "", 10)
+            pdf.multi_cell(
+                0, 5, _safe_text("\n".join(code_lines)), new_x="LMARGIN", new_y="NEXT"
+            )
+        else:
+            pdf.set_font("Helvetica", "", 11)
+            pdf.multi_cell(
+                0, 6, _safe_text(block), new_x="LMARGIN", new_y="NEXT"
+            )
+        pdf.ln(2)
+
+
 def _render_module_page(pdf: "FPDF", section: RecapSection) -> None:  # noqa: F821
     """Render a single module section on a new page.
 
@@ -491,16 +638,68 @@ def _render_module_page(pdf: "FPDF", section: RecapSection) -> None:  # noqa: F8
         new_y="NEXT",
     )
 
+    # Generic_Content — prose, code blocks, and other headings the strict
+    # parser would otherwise discard. Rendered after the five known subsections.
+    if section.generic_content:
+        _render_heading(pdf, "Additional Notes", level=3)
+        _render_generic_blocks(pdf, section.generic_content)
 
-def render_pdf(doc: RecapDocument, output_path: str) -> None:
+
+def render_markdown_body(pdf: "FPDF", body_text: str) -> None:  # noqa: F821
+    """Render arbitrary Markdown body text as PDF blocks (Raw_Body_Fallback).
+
+    Used when no structured module sections can be parsed from a non-empty recap
+    body, so the content is rendered rather than silently dropped. Handles ATX
+    headings (``#``..``######``), fenced code blocks, bulleted/numbered lists,
+    and prose paragraphs, reusing the shared block-splitting and rendering
+    helpers.
+
+    Args:
+        pdf: The FPDF instance to render into.
+        body_text: Raw Markdown body text.
+    """
+    for block in _split_into_blocks(body_text):
+        lines = block.splitlines()
+        first = lines[0].lstrip() if lines else ""
+
+        # Fenced code block — defer to the generic-block renderer.
+        if first.startswith("```"):
+            _render_generic_blocks(pdf, [block])
+            continue
+
+        # ATX heading (single-line block beginning with one to six '#').
+        heading_match = re.match(r"^(#{1,6})\s+(.+)$", first)
+        if heading_match and len(lines) == 1:
+            level = len(heading_match.group(1))
+            _render_heading(pdf, heading_match.group(2).strip(), level=2 if level <= 2 else 3)
+            continue
+
+        # List block — every non-blank line is a bullet or numbered item.
+        item_lines = [ln.strip() for ln in lines if ln.strip()]
+        if item_lines and all(re.match(r"^(?:-|\*|\d+\.)\s+", ln) for ln in item_lines):
+            numbered = bool(re.match(r"^\d+\.\s+", item_lines[0]))
+            items = [re.sub(r"^(?:-|\*|\d+\.)\s+", "", ln) for ln in item_lines]
+            _render_list_items(pdf, items, numbered=numbered)
+            continue
+
+        # Prose paragraph.
+        _render_generic_blocks(pdf, [block])
+
+
+def render_pdf(doc: RecapDocument, output_path: str, body_text: str = "") -> None:
     """Render a RecapDocument as a formatted PDF file.
 
     Imports fpdf2 lazily so the module can be imported for parsing-only use
-    without requiring fpdf2 to be installed.
+    without requiring fpdf2 to be installed. When the document has structured
+    sections they are rendered per-module exactly as before. When no sections
+    were parsed but ``body_text`` is non-empty, the raw Markdown body is rendered
+    after the cover page (Raw_Body_Fallback) so no content is silently dropped.
 
     Args:
         doc: Parsed recap document to render.
         output_path: File path for the generated PDF.
+        body_text: Raw recap Markdown used for the fallback when no structured
+            sections are present. Ignored when ``doc.sections`` is non-empty.
 
     Raises:
         ImportError: If fpdf2 is not installed.
@@ -514,9 +713,14 @@ def render_pdf(doc: RecapDocument, output_path: str) -> None:
     # Cover page
     _render_cover_page(pdf, doc)
 
-    # Per-module pages
-    for section in doc.sections:
-        _render_module_page(pdf, section)
+    if doc.sections:
+        # Structured path — unchanged when sections are present.
+        for section in doc.sections:
+            _render_module_page(pdf, section)
+    elif body_text.strip():
+        # Raw_Body_Fallback — render the raw Markdown so nothing is dropped.
+        pdf.add_page()
+        render_markdown_body(pdf, body_text)
 
     pdf.output(output_path)
 
@@ -577,9 +781,18 @@ def main(argv: list[str] | None = None) -> int:
     # Parse markdown content
     doc = parse_recap_markdown(content)
 
-    # Render PDF — catch missing fpdf2 and write failures
+    # Detect under-population: compare the module headings present in the source
+    # (counted with the tolerant pattern, which also matches strict headings) to
+    # the number of sections the parser actually produced. A shortfall — or zero
+    # sections for a non-empty body — means content was rendered via the
+    # Raw_Body_Fallback or some modules were dropped, so warn (Req 2.4).
+    detected_headings = len(_MODULE_HEADING_LOOSE_RE.findall(content))
+    parsed_sections = len(doc.sections)
+
+    # Render PDF — catch missing fpdf2 and write failures. Passing the raw
+    # content routes the Raw_Body_Fallback when no structured sections parse.
     try:
-        render_pdf(doc, args.output)
+        render_pdf(doc, args.output, body_text=content)
     except ImportError:
         print(
             "fpdf2 is required. Install with: pip install fpdf2",
@@ -589,6 +802,23 @@ def main(argv: list[str] | None = None) -> int:
     except (OSError, Exception) as exc:  # noqa: BLE001
         print(f"Failed to write PDF: {exc}", file=sys.stderr)
         return 1
+
+    # Emit the under-population warning to stderr only, preserving the stdout
+    # `PDF generated:` contract and the exit-code-0 success path (Req 2.4, 3.1).
+    if parsed_sections == 0:
+        print(
+            f"Warning: no module sections were parsed from {args.input}; "
+            "the recap body was rendered as raw Markdown. Check that module "
+            "headings use the form '## Module N: <name> [\u2014 <timestamp>]'.",
+            file=sys.stderr,
+        )
+    elif parsed_sections < detected_headings:
+        print(
+            f"Warning: parsed only {parsed_sections} of {detected_headings} "
+            f"module heading(s) in {args.input}; some content may not be fully "
+            "structured in the PDF.",
+            file=sys.stderr,
+        )
 
     print(f"PDF generated: {args.output}")
     return 0

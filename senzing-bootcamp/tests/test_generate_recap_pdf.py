@@ -9,8 +9,11 @@ added in subsequent tasks.
 
 from __future__ import annotations
 
+import contextlib
+import io
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 from hypothesis import given, settings
@@ -27,6 +30,7 @@ from generate_recap_pdf import (
     RecapSection,
     format_recap_document,
     format_recap_section,
+    main,
     parse_recap_markdown,
 )
 
@@ -1453,3 +1457,428 @@ class TestEdgeCases:
         assert "🔍" in ps.questions_asked[0]
         assert "📊" in ps.answers_given[0]
         assert "📁" in ps.actions_taken[0]
+
+
+# ---------------------------------------------------------------------------
+# Property 1: Bug Condition — Content Silently Dropped by Strict Parser
+# ---------------------------------------------------------------------------
+#
+# These tests encode the EXPECTED (post-fix) behavior for inputs that satisfy
+# isBugCondition(X): a valid header plus N loose module headings of the form
+# `## Module N: <name>` (no ` — <timestamp>` suffix) interleaved with prose
+# paragraphs and fenced code blocks.
+#
+# On UNFIXED code the strict `_MODULE_HEADING_RE` does not match loose headings,
+# so `_parse_sections` returns [], producing a cover-page-only result that loses
+# all body content. These tests are therefore EXPECTED TO FAIL on unfixed code —
+# the failure confirms the bug exists. They will PASS once the tolerant parser,
+# Generic_Content capture, and Raw_Body_Fallback are implemented.
+
+# Strategy for distinctive renderable tokens: ascii-letter words unlikely to
+# collide with fixed prose or markdown syntax.
+_st_token = st.text(
+    alphabet="abcdefghijklmnopqrstuvwxyz", min_size=4, max_size=12
+)
+
+
+# Local mirror of the strict-schema heading pattern (em-dash + trailing
+# timestamp). Defined here so the precondition does not depend on importing a
+# private symbol from the module under test.
+_STRICT_MODULE_HEADING_RE = re.compile(
+    r"^##\s+Module\s+(\d+):\s+(.+?)\s+\u2014\s+(.+)$", re.MULTILINE
+)
+
+
+def _strict_module_headings(content: str) -> list[str]:
+    """Return the strict-schema (`## Module N: <name> — <ts>`) heading matches."""
+    return _STRICT_MODULE_HEADING_RE.findall(content)
+
+
+def _rendered_body_text(doc: RecapDocument) -> str:
+    """Collect the renderable body text the generator would emit (parse/render seam).
+
+    This excludes cover-page header fields and gathers everything that would be
+    rendered below the cover page: per-module headings, the five known
+    subsections, durations, and any captured Generic_Content. `generic_content`
+    is read defensively via getattr so the helper works on both unfixed code
+    (no such field) and fixed code.
+
+    Args:
+        doc: Parsed recap document.
+
+    Returns:
+        Newline-joined renderable body text (empty when only a cover page exists).
+    """
+    parts: list[str] = []
+    for s in doc.sections:
+        parts.append(s.module_name)
+        parts.append(s.timestamp)
+        parts.extend(s.information_shared)
+        parts.extend(s.questions_asked)
+        parts.extend(s.answers_given)
+        parts.extend(s.actions_taken)
+        parts.append(s.duration)
+        parts.extend(getattr(s, "generic_content", []) or [])
+    return "\n".join(p for p in parts if p)
+
+
+@st.composite
+def st_loose_recap(draw: st.DrawFn) -> tuple[str, list[str]]:
+    """Generate a free-form recap satisfying isBugCondition(X).
+
+    Produces a valid header plus N (1-7) loose module headings
+    (`## Module N: <name>` with no ` — <timestamp>` suffix) interleaved with a
+    prose paragraph and a fenced code block per module. None of the headings use
+    the em-dash form, so the strict parser matches zero sections and silently
+    drops the body — the defining bug condition.
+
+    Returns:
+        Tuple of (recap_markdown, sentinel_tokens) where sentinel_tokens are the
+        distinctive prose/code words that must survive into the rendered body.
+    """
+    header = draw(st_recap_header())
+    n = draw(st.integers(min_value=1, max_value=7))
+
+    lines: list[str] = [
+        "# Senzing Bootcamp Recap",
+        "",
+        f"**Bootcamper:** {header.bootcamper}",
+        f"**Started:** {header.started}",
+        f"**Total Duration:** {header.total_duration}",
+        "",
+        "---",
+        "",
+    ]
+    sentinels: list[str] = []
+    for i in range(1, n + 1):
+        name = draw(_st_token)
+        prose_word = draw(_st_token)
+        code_word = draw(_st_token)
+        sentinels.extend([prose_word, code_word])
+        lines.append(f"## Module {i}: {name}")
+        lines.append("")
+        lines.append(f"This module covered {prose_word} in detail.")
+        lines.append("")
+        lines.append("```python")
+        lines.append(f"value = '{code_word}'")
+        lines.append("```")
+        lines.append("")
+
+    return "\n".join(lines), sentinels
+
+
+class TestBugConditionContentLoss:
+    """Property 1: content is never silently dropped for loose-heading recaps.
+
+    **Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2, 2.3**
+
+    For all recaps X where isBugCondition(X) holds (non-empty body whose
+    renderable content the strict parser loses), the generated result has a
+    non-empty rendered body that contains the input's renderable text tokens —
+    loose headings recognized, Generic_Content rendered, or Raw_Body_Fallback
+    used (containsRenderableContentOf(result, X)).
+    """
+
+    @given(data=st_loose_recap())
+    @settings(max_examples=50, deadline=None)
+    def test_loose_recap_body_not_silently_dropped(
+        self, data: tuple[str, list[str]]
+    ) -> None:
+        """Free-form recaps with loose headings + prose + code must render a
+        non-empty body containing their renderable content.
+
+        **Validates: Requirements 2.1, 2.2, 2.3**
+        """
+        markdown, sentinels = data
+
+        # Precondition: this input genuinely satisfies isBugCondition(X) —
+        # it has a non-empty body but the strict parser matches no sections.
+        assert markdown.strip()
+        assert _strict_module_headings(markdown) == []
+
+        doc = parse_recap_markdown(markdown)
+        body = _rendered_body_text(doc)
+
+        # Expected behavior: rendered body is non-empty (not cover-page-only).
+        assert body.strip(), (
+            "Rendered body is empty — loose-heading recap content was "
+            "silently dropped (strict parser matched zero sections)"
+        )
+
+        # Expected behavior: every renderable prose/code token is present.
+        missing = [tok for tok in sentinels if tok not in body]
+        assert not missing, (
+            f"Renderable content silently dropped: tokens {missing} from the "
+            f"recap body never appear in the rendered output"
+        )
+
+    def test_seven_loose_modules_plus_prose_not_dropped(self) -> None:
+        """Deterministic counterexample: a header with seven `## Module N: <name>`
+        sections plus prose must not produce a cover-page-only result.
+
+        **Validates: Requirements 1.1, 1.2, 1.3, 2.1, 2.2, 2.3**
+        """
+        module_names = [
+            "Business Problem",
+            "First Demo",
+            "Data Mapping",
+            "Loading Records",
+            "Querying Entities",
+            "Tuning Results",
+            "Production Deployment",
+        ]
+        sentinels: list[str] = []
+        lines = [
+            "# Senzing Bootcamp Recap",
+            "",
+            "**Bootcamper:** Alex Doe",
+            "**Started:** 2025-06-01T10:00:00+00:00",
+            "**Total Duration:** 7h 30m",
+            "",
+            "---",
+            "",
+        ]
+        for i, name in enumerate(module_names, 1):
+            prose_word = f"prose{i}token"
+            code_word = f"code{i}token"
+            sentinels.extend([prose_word, code_word])
+            lines.append(f"## Module {i}: {name}")
+            lines.append("")
+            lines.append(f"We explored {prose_word} across the session.")
+            lines.append("")
+            lines.append("```bash")
+            lines.append(f"echo {code_word}")
+            lines.append("```")
+            lines.append("")
+        markdown = "\n".join(lines)
+
+        # Precondition: strict parser matches nothing (isBugCondition holds).
+        assert _strict_module_headings(markdown) == []
+
+        doc = parse_recap_markdown(markdown)
+        body = _rendered_body_text(doc)
+
+        assert body.strip(), (
+            "Seven-module loose-heading recap produced an empty body — "
+            "all content was silently dropped (cover-page-only PDF)"
+        )
+
+        # Loose headings should be recognized as sections.
+        assert len(doc.sections) == 7, (
+            f"Expected 7 recognized module sections, got {len(doc.sections)}"
+        )
+
+        # Every prose/code token must survive into the rendered body.
+        missing = [tok for tok in sentinels if tok not in body]
+        assert not missing, (
+            f"Renderable content silently dropped: tokens {missing} never "
+            f"appear in the rendered output"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Property 2: Preservation — Strict-Schema Recaps Unchanged
+# ---------------------------------------------------------------------------
+#
+# These tests lock in the BASELINE behavior the fix must preserve. They cover
+# inputs where isBugCondition(X) is FALSE: strict-schema recaps with
+# `## Module N: <name> — <timestamp>` headings and the five `### ` subsections,
+# plus the CLI's graceful degradation paths (fpdf2 absent, missing/empty input).
+#
+# Observation-first methodology: every assertion below documents behavior that
+# already holds on UNFIXED code. They are EXPECTED TO PASS today; re-running
+# them after the fix (task 3.7) confirms no regression.
+
+
+@contextlib.contextmanager
+def _fpdf_import_absent() -> "contextlib.AbstractContextManager[None]":  # type: ignore[type-arg]
+    """Force ``from fpdf import FPDF`` to raise ImportError.
+
+    Inserts ``None`` for the ``fpdf`` entry in ``sys.modules`` so the lazy
+    import inside ``render_pdf`` raises ImportError regardless of whether
+    ``fpdf2`` is actually installed. Restores the original state on exit.
+
+    Yields:
+        None. Within the context, importing ``fpdf`` raises ImportError.
+    """
+    sentinel = object()
+    original = sys.modules.get("fpdf", sentinel)
+    sys.modules["fpdf"] = None  # type: ignore[assignment]
+    try:
+        yield
+    finally:
+        if original is sentinel:
+            sys.modules.pop("fpdf", None)
+        else:
+            sys.modules["fpdf"] = original  # type: ignore[assignment]
+
+
+def _run_main_capturing_stderr(argv: list[str]) -> tuple[int, str]:
+    """Run ``main`` with the given argv, capturing stderr.
+
+    Args:
+        argv: Command-line arguments passed to ``main``.
+
+    Returns:
+        Tuple of (exit_code, captured_stderr_text).
+    """
+    err = io.StringIO()
+    with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
+        rc = main(argv)
+    return rc, err.getvalue()
+
+
+def st_whitespace_only() -> st.SearchStrategy[str]:
+    """Generate strings that are empty or contain only whitespace."""
+    return st.text(alphabet=" \t\n\r\f\v", min_size=0, max_size=20)
+
+
+class TestPreservationStrictSchema:
+    """Strict-schema recaps parse and render exactly as before the fix.
+
+    **Validates: Requirements 3.1, 3.2, 3.5**
+
+    For all recap inputs X where NOT isBugCondition(X) — i.e. documents whose
+    module headings use the strict `## Module N: <name> — <timestamp>` form —
+    the format→parse round-trip preserves header fields, section count, section
+    identity fields, list contents, Q&A pairing, and durations. This is the
+    Preservation property: F(X) behavior the fix must keep byte-for-byte.
+    """
+
+    @given(doc=st_recap_document())
+    @settings(max_examples=50, deadline=None)
+    def test_strict_schema_round_trip_equivalence(
+        self, doc: RecapDocument
+    ) -> None:
+        """Strict-schema documents round-trip with full structural fidelity.
+
+        Precondition: the formatted markdown uses strict module headings, so
+        the strict parser matches every section and NOT isBugCondition(X).
+        The round-trip preserves header fields, section count, identity fields,
+        list contents, Q&A pairing, and durations.
+
+        **Validates: Requirements 3.1, 3.2, 3.5**
+        """
+        markdown = format_recap_document(doc)
+
+        # Precondition: NOT isBugCondition(X) — strict headings match every
+        # section, so the strict parser does not lose body content.
+        strict_headings = _strict_module_headings(markdown)
+        assert len(strict_headings) == len(doc.sections), (
+            "Generated strict-schema document did not produce strict module "
+            "headings — precondition NOT isBugCondition(X) violated"
+        )
+
+        parsed = parse_recap_markdown(markdown)
+
+        # Header fields preserved (Req 3.2)
+        assert parsed.header.bootcamper == doc.header.bootcamper
+        assert parsed.header.started == doc.header.started
+        assert parsed.header.total_duration == doc.header.total_duration
+
+        # Section count preserved (Req 3.1)
+        assert len(parsed.sections) == len(doc.sections)
+
+        for original, roundtripped in zip(doc.sections, parsed.sections):
+            # Section identity fields preserved (Req 3.2)
+            assert roundtripped.module_number == original.module_number
+            assert roundtripped.module_name == original.module_name
+            assert roundtripped.timestamp == original.timestamp
+
+            # List contents preserved (Req 3.2)
+            assert roundtripped.information_shared == original.information_shared
+            assert roundtripped.actions_taken == original.actions_taken
+
+            # Q&A pairing preserved (Req 3.2)
+            assert roundtripped.questions_asked == original.questions_asked
+            assert roundtripped.answers_given == original.answers_given
+            assert len(roundtripped.questions_asked) == len(
+                roundtripped.answers_given
+            )
+
+            # Durations preserved (Req 3.2)
+            assert roundtripped.duration == original.duration
+
+
+class TestPreservationGracefulDegradation:
+    """CLI degradation paths behave exactly as before the fix.
+
+    **Validates: Requirements 3.3, 3.4**
+
+    For all environments without fpdf2 and for all missing/empty inputs, the
+    generator keeps its existing behavior: it prints the install hint or the
+    existing error message and exits with code 1 (no traceback).
+    """
+
+    @given(doc=st_recap_document())
+    @settings(max_examples=25, deadline=None)
+    def test_fpdf_absent_prints_hint_and_exits_1(
+        self, doc: RecapDocument
+    ) -> None:
+        """With fpdf2 absent, a valid recap still exits 1 with the install hint.
+
+        Writes a valid strict-schema recap, forces the ``fpdf`` import to raise
+        ImportError, and asserts ``main`` reports the ``pip install fpdf2`` hint
+        and returns exit code 1 (graceful degradation, no traceback).
+
+        **Validates: Requirements 3.3**
+        """
+        markdown = format_recap_document(doc)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = Path(tmp) / "recap.md"
+            output_path = Path(tmp) / "recap.pdf"
+            input_path.write_text(markdown, encoding="utf-8")
+
+            with _fpdf_import_absent():
+                rc, stderr = _run_main_capturing_stderr(
+                    ["--input", str(input_path), "--output", str(output_path)]
+                )
+
+        assert rc == 1, f"Expected exit code 1 when fpdf2 absent, got {rc}"
+        assert "pip install fpdf2" in stderr, (
+            f"Expected 'pip install fpdf2' hint on stderr, got: {stderr!r}"
+        )
+
+    @given(name=_st_token)
+    @settings(max_examples=25, deadline=None)
+    def test_missing_input_reports_error_and_exits_1(self, name: str) -> None:
+        """A non-existent input path reports the 'not found' error and exits 1.
+
+        **Validates: Requirements 3.4**
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            missing_path = Path(tmp) / f"{name}_does_not_exist.md"
+            # Precondition: the file genuinely does not exist.
+            assert not missing_path.exists()
+
+            rc, stderr = _run_main_capturing_stderr(
+                ["--input", str(missing_path)]
+            )
+
+        assert rc == 1, f"Expected exit code 1 for missing input, got {rc}"
+        assert "not found" in stderr.lower(), (
+            f"Expected a 'not found' error on stderr, got: {stderr!r}"
+        )
+
+    @given(content=st_whitespace_only())
+    @settings(max_examples=25, deadline=None)
+    def test_empty_input_reports_error_and_exits_1(self, content: str) -> None:
+        """An empty or whitespace-only input reports 'empty' and exits 1.
+
+        **Validates: Requirements 3.4**
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = Path(tmp) / "empty_recap.md"
+            input_path.write_text(content, encoding="utf-8")
+            # Precondition: the content has no meaningful body.
+            assert not content.strip()
+
+            rc, stderr = _run_main_capturing_stderr(
+                ["--input", str(input_path)]
+            )
+
+        assert rc == 1, f"Expected exit code 1 for empty input, got {rc}"
+        assert "empty" in stderr.lower(), (
+            f"Expected an 'empty' error on stderr, got: {stderr!r}"
+        )

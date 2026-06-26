@@ -208,10 +208,11 @@ class TestGracefulDegradationWithoutFpdf2:
     1, and writes no PDF — without letting a traceback/exception propagate.
 
     Both render paths import ``fpdf`` lazily: the bundled-renderer delegate
-    (``generate_recap_pdf.render_pdf``) and the embedded renderer
-    (``_render_inline_pdf``). Forcing ``sys.modules['fpdf'] = None`` makes any
-    ``import fpdf`` / ``from fpdf import ...`` raise ``ImportError`` regardless
-    of which path runs, so the test reliably triggers the degradation branch.
+    (``generate_recap_pdf.render_pdf``) and the shared raw renderer
+    (``recap_pdf_render.render_markdown_pdf``). Forcing ``sys.modules['fpdf'] =
+    None`` makes any ``import fpdf`` / ``from fpdf import ...`` raise
+    ``ImportError`` regardless of which path runs, so the test reliably triggers
+    the degradation branch.
     """
 
     def test_missing_fpdf2_prints_hint_exits_one_no_pdf(
@@ -258,13 +259,14 @@ class TestHelperIndependence:
     **Validates: Requirements 5.3, 2.2**
 
     For workspaces where ``generate_recap_pdf`` is not importable, the inline
-    fallback still produces a non-empty PDF (when ``fpdf2`` is present) using its
-    embedded renderer rather than the bundled helper's shared renderer.
+    fallback still produces a non-empty PDF (when ``fpdf2`` is present) using the
+    shared raw renderer (``recap_pdf_render.render_markdown_pdf``) rather than the
+    bundled helper's structured renderer.
 
     Simulation strategy: forcing ``sys.modules['generate_recap_pdf'] = None``
     makes any ``from generate_recap_pdf import ...`` raise ``ImportError``, which
     drives ``_import_bundled_renderer()`` to return ``None`` and routes
-    ``generate_inline`` through the embedded ``_render_inline_pdf`` path. The
+    ``generate_inline`` through the shared ``render_markdown_pdf`` path. The
     ``monkeypatch`` fixture auto-undoes the patch after the test, and the
     module-level ``RecapDocument`` / ``parse_recap_markdown`` names imported at
     load time remain bound (only *new* imports are affected).
@@ -451,7 +453,7 @@ import tempfile  # noqa: E402
 from hypothesis import given, settings  # noqa: E402
 from hypothesis import strategies as st  # noqa: E402
 
-from generate_recap_pdf_inline import _split_blocks  # noqa: E402
+from recap_pdf_render import split_blocks  # noqa: E402
 
 
 @st.composite
@@ -508,7 +510,7 @@ class TestInlineBodyContentProperty:
     and fenced code), ``generate_inline`` exits 0, writes a non-empty valid PDF
     (starts with ``%PDF``), and the input's distinctive renderable tokens survive
     into the renderable body. Token survival is checked through the renderer's
-    block seam (``_split_blocks``) — the same content the inline renderer emits
+    block seam (``split_blocks``) — the same content the inline renderer emits
     verbatim — which is robust against lossy PDF text extraction.
     """
 
@@ -541,7 +543,7 @@ class TestInlineBodyContentProperty:
 
         # Rendering seam: the renderer is fed the full Markdown body; the blocks
         # it emits must be non-empty and carry every injected token.
-        rendered_body = "\n".join(_split_blocks(markdown))
+        rendered_body = "\n".join(split_blocks(markdown))
         assert rendered_body.strip(), "Rendered body is empty for a non-empty input"
 
         missing = [tok for tok in tokens if tok not in rendered_body]

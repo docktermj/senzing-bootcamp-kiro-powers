@@ -8,9 +8,9 @@ the bundled helper cannot be located or run.
 
 When the sibling ``generate_recap_pdf`` module is importable, this script reuses
 its shared parser/renderer so the output matches the bundled helper. Otherwise
-it renders the raw Markdown body with an embedded minimal renderer so no recap
-content is dropped. The optional ``fpdf2`` dependency (``import fpdf``) is
-imported lazily inside the render path and degrades gracefully when absent.
+it renders the raw Markdown body with the shared ``recap_pdf_render`` module so
+no recap content is dropped. The optional ``fpdf2`` dependency (``import fpdf``)
+is imported lazily inside the render path and degrades gracefully when absent.
 
 Usage:
     python senzing-bootcamp/scripts/generate_recap_pdf_inline.py
@@ -21,10 +21,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import re
 import sys
 from pathlib import Path
 from typing import Callable
+
+from recap_pdf_render import render_markdown_pdf
 
 # Hint surfaced when the optional fpdf2 dependency is missing.
 _FPDF_HINT = "fpdf2 is required. Install with: pip install fpdf2"
@@ -57,132 +58,6 @@ def _import_bundled_renderer() -> (
     except ImportError:
         return None
     return parse_recap_markdown, render_pdf
-
-
-# ---------------------------------------------------------------------------
-# Embedded minimal renderer (used when generate_recap_pdf is NOT importable)
-# ---------------------------------------------------------------------------
-
-
-def _safe_text(text: str) -> str:
-    """Ensure text is safe for PDF core fonts (Latin-1 encoding).
-
-    Characters outside the Latin-1 range are replaced with ``?`` to prevent
-    encoding errors with the Helvetica/Courier core fonts.
-
-    Args:
-        text: Input text that may contain non-Latin-1 characters.
-
-    Returns:
-        Text safe for rendering with PDF core fonts.
-    """
-    return text.encode("latin-1", errors="replace").decode("latin-1")
-
-
-def _split_blocks(text: str) -> list[str]:
-    """Split Markdown text into renderable blocks.
-
-    Groups consecutive non-blank lines into paragraph blocks and keeps fenced
-    code blocks (delimited by ```` ``` ````) intact as single blocks even when
-    they contain blank lines.
-
-    Args:
-        text: Raw Markdown text.
-
-    Returns:
-        List of non-empty block strings in document order.
-    """
-    blocks: list[str] = []
-    current: list[str] = []
-    in_fence = False
-
-    def flush() -> None:
-        if current:
-            block = "\n".join(current).strip("\n")
-            if block.strip():
-                blocks.append(block)
-            current.clear()
-
-    for line in text.splitlines():
-        if line.lstrip().startswith("```"):
-            if in_fence:
-                current.append(line)
-                in_fence = False
-                flush()
-            else:
-                flush()
-                in_fence = True
-                current.append(line)
-            continue
-        if in_fence:
-            current.append(line)
-            continue
-        if not line.strip():
-            flush()
-        else:
-            current.append(line)
-
-    flush()
-    return blocks
-
-
-def _render_inline_pdf(body_text: str, output_path: str) -> None:
-    """Render raw recap Markdown to a PDF using an embedded minimal renderer.
-
-    Emits a cover line followed by the raw Markdown body as wrapped text and
-    monospace code blocks so no recap content is dropped. ``fpdf2`` is imported
-    lazily here so the module never imports it at top level.
-
-    Args:
-        body_text: Raw recap Markdown body.
-        output_path: File path for the generated PDF.
-
-    Raises:
-        ImportError: If ``fpdf2`` is not installed.
-        OSError: If the PDF cannot be written to ``output_path``.
-    """
-    from fpdf import FPDF  # noqa: PLC0415
-
-    pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=20)
-    pdf.add_page()
-
-    # Cover line.
-    pdf.set_font("Helvetica", "B", 20)
-    pdf.multi_cell(0, 10, _safe_text("Senzing Bootcamp Recap"), new_x="LMARGIN", new_y="NEXT")
-    pdf.ln(6)
-
-    # Body — wrapped text with monospace fenced code blocks and headings.
-    for block in _split_blocks(body_text):
-        lines = block.splitlines()
-        first = lines[0].lstrip() if lines else ""
-
-        if first.startswith("```"):
-            code_lines = lines[1:]
-            if code_lines and code_lines[-1].lstrip().startswith("```"):
-                code_lines = code_lines[:-1]
-            pdf.set_font("Courier", "", 10)
-            pdf.multi_cell(
-                0, 5, _safe_text("\n".join(code_lines)), new_x="LMARGIN", new_y="NEXT"
-            )
-            pdf.ln(2)
-            continue
-
-        heading_match = re.match(r"^(#{1,6})\s+(.+)$", first)
-        if heading_match and len(lines) == 1:
-            level = len(heading_match.group(1))
-            pdf.set_font("Helvetica", "B", 16 if level <= 2 else 13)
-            pdf.multi_cell(
-                0, 7, _safe_text(heading_match.group(2).strip()), new_x="LMARGIN", new_y="NEXT"
-            )
-            pdf.ln(2)
-            continue
-
-        pdf.set_font("Helvetica", "", 11)
-        pdf.multi_cell(0, 6, _safe_text(block), new_x="LMARGIN", new_y="NEXT")
-        pdf.ln(2)
-
-    pdf.output(output_path)
 
 
 # ---------------------------------------------------------------------------
@@ -224,7 +99,7 @@ def generate_inline(input_path: str, output_path: str) -> int:
             doc = parse_recap_markdown(content)
             render_pdf(doc, output_path, body_text=content)
         else:
-            _render_inline_pdf(content, output_path)
+            render_markdown_pdf(content, output_path)
     except ImportError:
         # fpdf2 absent — degrade gracefully with a hint, no traceback.
         print(_FPDF_HINT, file=sys.stderr)

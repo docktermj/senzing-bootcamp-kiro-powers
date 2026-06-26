@@ -42,6 +42,23 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
+# Canonical raw-Markdown → PDF rendering primitives (Shared_Renderer_Module).
+# Scripts are not packages, so ensure this script's directory is importable to
+# resolve the sibling module whether this file is run directly or imported via
+# the documented sys.path pattern.
+_SCRIPTS_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
+
+from recap_pdf_render import (  # noqa: E402
+    render_generic_blocks,
+    render_heading,
+    render_list_items,
+    render_markdown_body,
+    safe_text,
+    split_blocks,
+)
+
 # ---------------------------------------------------------------------------
 # Data Models
 # ---------------------------------------------------------------------------
@@ -156,55 +173,6 @@ _KNOWN_SUBSECTIONS = frozenset(
 )
 
 
-def _split_into_blocks(text: str) -> list[str]:
-    """Split arbitrary Markdown text into renderable blocks.
-
-    Groups consecutive non-blank lines into paragraph blocks and keeps fenced
-    code blocks (delimited by ```) intact as single blocks, even when they
-    contain blank lines.
-
-    Args:
-        text: Raw Markdown text.
-
-    Returns:
-        List of non-empty block strings in document order.
-    """
-    blocks: list[str] = []
-    current: list[str] = []
-    in_fence = False
-
-    def flush() -> None:
-        if current:
-            block = "\n".join(current).strip("\n")
-            if block.strip():
-                blocks.append(block)
-            current.clear()
-
-    for line in text.splitlines():
-        if line.lstrip().startswith("```"):
-            if in_fence:
-                current.append(line)
-                in_fence = False
-                flush()
-            else:
-                flush()
-                in_fence = True
-                current.append(line)
-            continue
-
-        if in_fence:
-            current.append(line)
-            continue
-
-        if not line.strip():
-            flush()
-        else:
-            current.append(line)
-
-    flush()
-    return blocks
-
-
 def _split_subsections(section_text: str) -> tuple[dict[str, str], list[str]]:
     """Split a module section into its ### subsections and leftover content.
 
@@ -237,7 +205,7 @@ def _split_subsections(section_text: str) -> tuple[dict[str, str], list[str]]:
             leftover += f"\n### {raw_name}\n{body}"
         i += 2
 
-    return subsections, _split_into_blocks(leftover)
+    return subsections, split_blocks(leftover)
 
 
 def _parse_sections(content: str) -> list[RecapSection]:
@@ -424,21 +392,6 @@ def format_recap_document(doc: RecapDocument) -> str:
 # ---------------------------------------------------------------------------
 
 
-def _safe_text(text: str) -> str:
-    """Ensure text is safe for PDF core fonts (Latin-1 encoding).
-
-    Characters outside the Latin-1 range are replaced with '?' to prevent
-    encoding errors with Helvetica/Courier core fonts.
-
-    Args:
-        text: Input text that may contain non-Latin-1 characters.
-
-    Returns:
-        Text safe for rendering with PDF core fonts.
-    """
-    return text.encode("latin-1", errors="replace").decode("latin-1")
-
-
 def _render_cover_page(pdf: "FPDF", doc: RecapDocument) -> None:  # noqa: F821
     """Render the cover page with title, bootcamper name, dates, and duration.
 
@@ -459,7 +412,7 @@ def _render_cover_page(pdf: "FPDF", doc: RecapDocument) -> None:  # noqa: F821
     pdf.cell(
         0,
         10,
-        _safe_text(doc.header.bootcamper),
+        safe_text(doc.header.bootcamper),
         new_x="LMARGIN",
         new_y="NEXT",
         align="C",
@@ -472,7 +425,7 @@ def _render_cover_page(pdf: "FPDF", doc: RecapDocument) -> None:  # noqa: F821
         pdf.cell(
             0,
             8,
-            f"Started: {_safe_text(doc.header.started)}",
+            f"Started: {safe_text(doc.header.started)}",
             new_x="LMARGIN",
             new_y="NEXT",
             align="C",
@@ -485,57 +438,11 @@ def _render_cover_page(pdf: "FPDF", doc: RecapDocument) -> None:  # noqa: F821
         pdf.cell(
             0,
             8,
-            f"Total Duration: {_safe_text(doc.header.total_duration)}",
+            f"Total Duration: {safe_text(doc.header.total_duration)}",
             new_x="LMARGIN",
             new_y="NEXT",
             align="C",
         )
-
-
-def _render_heading(pdf: "FPDF", text: str, level: int) -> None:  # noqa: F821
-    """Render a heading at the given level.
-
-    Args:
-        pdf: The FPDF instance.
-        text: Heading text.
-        level: Heading level (2 for module heading, 3 for subsection).
-    """
-    if level == 2:
-        pdf.set_font("Helvetica", "B", 16)
-        pdf.ln(6)
-    else:
-        pdf.set_font("Helvetica", "B", 13)
-        pdf.ln(4)
-    pdf.multi_cell(0, 7, _safe_text(text), new_x="LMARGIN", new_y="NEXT")
-    pdf.ln(2)
-
-
-def _render_list_items(pdf: "FPDF", items: list[str], numbered: bool = False) -> None:  # noqa: F821, E501
-    """Render a list of items as bulleted or numbered entries.
-
-    Args:
-        pdf: The FPDF instance.
-        items: List of text items.
-        numbered: If True, use numbered list; otherwise use bullet points.
-    """
-    pdf.set_font("Helvetica", "", 11)
-    for idx, item in enumerate(items, 1):
-        prefix = f"{idx}. " if numbered else "- "
-        # Handle inline code (backtick content) with monospace font
-        parts = re.split(r"`([^`]+)`", item)
-        pdf.set_x(pdf.l_margin + 6)
-        pdf.write(6, prefix)
-        for i, part in enumerate(parts):
-            if i % 2 == 0:
-                # Normal text
-                pdf.set_font("Helvetica", "", 11)
-                pdf.write(6, _safe_text(part))
-            else:
-                # Code span — monospace
-                pdf.set_font("Courier", "", 10)
-                pdf.write(6, _safe_text(part))
-        pdf.ln(6)
-    pdf.set_font("Helvetica", "", 11)
 
 
 def _build_qa_lines(questions: list[str], answers: list[str]) -> list[str]:
@@ -583,7 +490,7 @@ def _render_qa_pairs(  # noqa: F821
     nothing is dropped; a missing counterpart renders an explicit placeholder
     (``A: (no answer recorded)`` / ``Q: (no question recorded)``) rather than
     misaligning later pairs. Reuses the inline-code handling used by
-    ``_render_list_items`` so backtick spans render in the monospace font.
+    ``render_list_items`` so backtick spans render in the monospace font.
 
     Args:
         pdf: The FPDF instance.
@@ -601,42 +508,13 @@ def _render_qa_pairs(  # noqa: F821
             if i % 2 == 0:
                 # Normal text
                 pdf.set_font("Helvetica", "", 11)
-                pdf.write(6, _safe_text(part))
+                pdf.write(6, safe_text(part))
             else:
                 # Code span — monospace
                 pdf.set_font("Courier", "", 10)
-                pdf.write(6, _safe_text(part))
+                pdf.write(6, safe_text(part))
         pdf.ln(6)
     pdf.set_font("Helvetica", "", 11)
-
-
-def _render_generic_blocks(pdf: "FPDF", blocks: list[str]) -> None:  # noqa: F821
-    """Render Generic_Content blocks (prose, code, other headings) as PDF text.
-
-    Fenced code blocks (delimited by ```) render in a monospace font with the
-    fences stripped; everything else renders as wrapped paragraph text.
-
-    Args:
-        pdf: The FPDF instance.
-        blocks: Generic_Content block strings in document order.
-    """
-    for block in blocks:
-        lines = block.splitlines()
-        if lines and lines[0].lstrip().startswith("```"):
-            # Fenced code block — drop the opening/closing fence lines.
-            code_lines = lines[1:]
-            if code_lines and code_lines[-1].lstrip().startswith("```"):
-                code_lines = code_lines[:-1]
-            pdf.set_font("Courier", "", 10)
-            pdf.multi_cell(
-                0, 5, _safe_text("\n".join(code_lines)), new_x="LMARGIN", new_y="NEXT"
-            )
-        else:
-            pdf.set_font("Helvetica", "", 11)
-            pdf.multi_cell(
-                0, 6, _safe_text(block), new_x="LMARGIN", new_y="NEXT"
-            )
-        pdf.ln(2)
 
 
 def _render_module_page(pdf: "FPDF", section: RecapSection) -> None:  # noqa: F821
@@ -650,30 +528,30 @@ def _render_module_page(pdf: "FPDF", section: RecapSection) -> None:  # noqa: F8
 
     # Module heading
     heading = f"Module {section.module_number}: {section.module_name}"
-    _render_heading(pdf, heading, level=2)
+    render_heading(pdf, heading, level=2)
 
     # Timestamp
     pdf.set_font("Helvetica", "I", 10)
     pdf.cell(
         0,
         6,
-        f"Completed: {_safe_text(section.timestamp)}",
+        f"Completed: {safe_text(section.timestamp)}",
         new_x="LMARGIN",
         new_y="NEXT",
     )
     pdf.ln(4)
 
     # Information Shared
-    _render_heading(pdf, "Information Shared", level=3)
+    render_heading(pdf, "Information Shared", level=3)
     if section.information_shared:
-        _render_list_items(pdf, section.information_shared, numbered=False)
+        render_list_items(pdf, section.information_shared, numbered=False)
     else:
         pdf.set_font("Helvetica", "I", 11)
         pdf.cell(0, 6, "None", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
 
     # Questions and responses — questions paired inline with their answers
-    _render_heading(pdf, "Questions and responses", level=3)
+    render_heading(pdf, "Questions and responses", level=3)
     if section.questions_asked or section.answers_given:
         _render_qa_pairs(pdf, section.questions_asked, section.answers_given)
     else:
@@ -682,21 +560,21 @@ def _render_module_page(pdf: "FPDF", section: RecapSection) -> None:  # noqa: F8
     pdf.ln(2)
 
     # Actions Taken
-    _render_heading(pdf, "Actions Taken", level=3)
+    render_heading(pdf, "Actions Taken", level=3)
     if section.actions_taken:
-        _render_list_items(pdf, section.actions_taken, numbered=False)
+        render_list_items(pdf, section.actions_taken, numbered=False)
     else:
         pdf.set_font("Helvetica", "I", 11)
         pdf.cell(0, 6, "None", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
 
     # Duration
-    _render_heading(pdf, "Duration", level=3)
+    render_heading(pdf, "Duration", level=3)
     pdf.set_font("Helvetica", "", 11)
     pdf.cell(
         0,
         6,
-        _safe_text(section.duration) or "N/A",
+        safe_text(section.duration) or "N/A",
         new_x="LMARGIN",
         new_y="NEXT",
     )
@@ -704,49 +582,8 @@ def _render_module_page(pdf: "FPDF", section: RecapSection) -> None:  # noqa: F8
     # Generic_Content — prose, code blocks, and other headings the strict
     # parser would otherwise discard. Rendered after the five known subsections.
     if section.generic_content:
-        _render_heading(pdf, "Additional Notes", level=3)
-        _render_generic_blocks(pdf, section.generic_content)
-
-
-def render_markdown_body(pdf: "FPDF", body_text: str) -> None:  # noqa: F821
-    """Render arbitrary Markdown body text as PDF blocks (Raw_Body_Fallback).
-
-    Used when no structured module sections can be parsed from a non-empty recap
-    body, so the content is rendered rather than silently dropped. Handles ATX
-    headings (``#``..``######``), fenced code blocks, bulleted/numbered lists,
-    and prose paragraphs, reusing the shared block-splitting and rendering
-    helpers.
-
-    Args:
-        pdf: The FPDF instance to render into.
-        body_text: Raw Markdown body text.
-    """
-    for block in _split_into_blocks(body_text):
-        lines = block.splitlines()
-        first = lines[0].lstrip() if lines else ""
-
-        # Fenced code block — defer to the generic-block renderer.
-        if first.startswith("```"):
-            _render_generic_blocks(pdf, [block])
-            continue
-
-        # ATX heading (single-line block beginning with one to six '#').
-        heading_match = re.match(r"^(#{1,6})\s+(.+)$", first)
-        if heading_match and len(lines) == 1:
-            level = len(heading_match.group(1))
-            _render_heading(pdf, heading_match.group(2).strip(), level=2 if level <= 2 else 3)
-            continue
-
-        # List block — every non-blank line is a bullet or numbered item.
-        item_lines = [ln.strip() for ln in lines if ln.strip()]
-        if item_lines and all(re.match(r"^(?:-|\*|\d+\.)\s+", ln) for ln in item_lines):
-            numbered = bool(re.match(r"^\d+\.\s+", item_lines[0]))
-            items = [re.sub(r"^(?:-|\*|\d+\.)\s+", "", ln) for ln in item_lines]
-            _render_list_items(pdf, items, numbered=numbered)
-            continue
-
-        # Prose paragraph.
-        _render_generic_blocks(pdf, [block])
+        render_heading(pdf, "Additional Notes", level=3)
+        render_generic_blocks(pdf, section.generic_content)
 
 
 def render_pdf(doc: RecapDocument, output_path: str, body_text: str = "") -> None:

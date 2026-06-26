@@ -49,6 +49,11 @@ def _recover_stale_cwd():
     restored directory was a temp dir that got cleaned up, the cwd
     becomes invalid and subsequent ``monkeypatch.chdir`` calls fail.
     Also restores to the project root if cwd was changed to a temp dir.
+
+    Process-local and therefore correct under pytest-xdist: each xdist worker
+    is a separate OS process with its own cwd, so this autouse fixture runs
+    independently inside every worker and preserves per-test cwd recovery
+    without modification. No xdist-specific change is needed.
     """
     try:
         cwd = os.getcwd()
@@ -581,3 +586,24 @@ def patch_commonmark(monkeypatch):
     """
     disable_commonmark(monkeypatch)
     return None
+
+
+# ---------------------------------------------------------------------------
+# Auto-tag Hypothesis property tests with the registered ``property`` marker.
+# ---------------------------------------------------------------------------
+# Hypothesis wraps every ``@given`` test and sets ``is_hypothesis_test = True``
+# on the resulting callable. Detecting that attribute at collection time lets
+# the registered ``property`` marker (see ``[tool.pytest.ini_options]`` in the
+# repo-root pyproject.toml) be applied to every property test under this root
+# without per-file decorator churn, so selective runs stay meaningful:
+#   pytest -m property              # only Hypothesis tests
+#   pytest -m "not property"        # skip generative tests for a quick smoke run
+# This hook is conftest-local, so it only tags items collected under
+# ``senzing-bootcamp/tests/``; the repo-root ``tests/`` has an identical hook.
+
+
+def pytest_collection_modifyitems(config, items):
+    """Apply the ``property`` marker to every collected Hypothesis test."""
+    for item in items:
+        if getattr(getattr(item, "obj", None), "is_hypothesis_test", False):
+            item.add_marker("property")

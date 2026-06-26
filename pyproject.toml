@@ -15,3 +15,27 @@ select = ["F", "E", "W", "I"]
 [tool.ruff.lint.per-file-ignores]
 "senzing-bootcamp/tests/*" = ["E402"]
 "tests/*" = ["E402"]
+
+[tool.pytest.ini_options]
+# Default discovery roots so a bare `pytest` collects exactly the two roots
+# (Requirements 2.3, 2.4).
+testpaths = ["senzing-bootcamp/tests", "tests"]
+# Consistent defaults for every invocation. Preserves today's "-v --tb=short"
+# output behavior (Requirement 2.5) and enforces strict markers (Requirement 3.2).
+# `-n` is intentionally NOT here: the suite stays serial-by-default for readable
+# tracebacks and `pdb` during debugging (Requirement 1.4); parallelism is opted
+# into explicitly by CI and by developers.
+addopts = "-v --tb=short --strict-markers"
+# Registered marker taxonomy (Requirements 2.2, 3.1).
+# `xdist_group` is normally provided by the pytest-xdist plugin, but it is
+# registered here too so that strict-marker collection stays clean even when
+# xdist is not installed in the local environment (e.g. a serial debug run on a
+# machine without the dev tooling). Registering it in both places is harmless:
+# pytest deduplicates marker registrations, so no conflict arises when xdist is
+# present (Requirements 3.2, 6.3).
+markers = [
+    "slow: long-running tests that dominate wall-clock time",
+    "property: Hypothesis property-based tests",
+    "serial: tests that must not run concurrently with colliding peers (pinned to one worker via xdist_group)",
+    "xdist_group: pin tests sharing a group name onto a single worker under --dist loadgroup (provided by pytest-xdist; registered here so --strict-markers stays clean when xdist is absent)",
+]

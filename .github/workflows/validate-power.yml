@@ -101,4 +101,4 @@ jobs:
       - name: Run tests
         env:
           HYPOTHESIS_PROFILE: thorough
-        run: python -m pytest senzing-bootcamp/tests/ tests/ -v --tb=short
+        run: python -m pytest senzing-bootcamp/tests/ tests/ -n auto --dist loadgroup

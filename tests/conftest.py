@@ -35,7 +35,13 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 @pytest.fixture(autouse=True)
 def _restore_project_root_cwd():
-    """Snap cwd back to the project root before each test."""
+    """Snap cwd back to the project root before each test.
+
+    Process-local and therefore correct under pytest-xdist: each xdist worker
+    is a separate OS process with its own cwd, so this autouse fixture runs
+    independently inside every worker and preserves per-test cwd isolation
+    without modification. No xdist-specific change is needed.
+    """
     try:
         cwd = os.getcwd()
     except (FileNotFoundError, OSError):
@@ -55,3 +61,24 @@ if _TESTS_DIR not in sys.path:
 _PROJECT_ROOT_STR = str(_PROJECT_ROOT)
 if _PROJECT_ROOT_STR not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT_STR)
+
+
+# ---------------------------------------------------------------------------
+# Auto-tag Hypothesis property tests with the registered ``property`` marker.
+# ---------------------------------------------------------------------------
+# Hypothesis wraps every ``@given`` test and sets ``is_hypothesis_test = True``
+# on the resulting callable. Detecting that attribute at collection time lets
+# the registered ``property`` marker (see ``[tool.pytest.ini_options]`` in
+# pyproject.toml) be applied to every property test across this root without
+# per-file decorator churn, so selective runs stay meaningful:
+#   pytest -m property              # only Hypothesis tests
+#   pytest -m "not property"        # skip generative tests for a quick smoke run
+# This hook is conftest-local, so it only tags items collected under ``tests/``;
+# the senzing-bootcamp root has an identical hook in its own conftest.
+
+
+def pytest_collection_modifyitems(config, items):
+    """Apply the ``property`` marker to every collected Hypothesis test."""
+    for item in items:
+        if getattr(getattr(item, "obj", None), "is_hypothesis_test", False):
+            item.add_marker("property")

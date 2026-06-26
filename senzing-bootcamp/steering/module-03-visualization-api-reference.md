@@ -40,6 +40,8 @@ Required fields: `records_total`, `entities_total`, `multi_record_entities`, `cr
 
 Each node: `entity_id`, `entity_name`, `record_count`, `data_sources`, `records`. Each edge: `source_entity_id`, `target_entity_id`, `match_key`, `relationship_type`.
 
+> `source_entity_id`/`target_entity_id` are the unchanged API contract; mapping to D3's `source`/`target` is a client-side concern handled in `drawGraph` (see the Critical Lesson in the Phase 2 steering).
+
 **Edge discovery.** The example JSON above shows the edge shape only — it does not imply edges come from a default export. `graph_builder.py` SHALL discover relationships explicitly (a plain `export_json_entity_report` does not include relationship data by default, so reading `RELATED_ENTITIES` from it yields an empty `edges` array). Obtain relationships using either or both of:
 
 - **`find_network_by_entity_id`** — for multi-record/related entities, call `find_network_by_entity_id` to retrieve the relationship network and derive edges from the returned links.

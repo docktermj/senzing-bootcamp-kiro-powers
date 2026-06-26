@@ -31,7 +31,7 @@ modules:
         step_range: [1, 8]
       phase2-visualization:
         file: module-03-phase2-visualization.md
-        token_count: 4411
+        token_count: 5240
         size_category: large
         step_range: [9, 9]
       phase3-report-close:
@@ -461,7 +461,7 @@ file_metadata:
     token_count: 3536
     size_category: large
   module-03-phase2-visualization.md:
-    token_count: 4738
+    token_count: 5239
     size_category: large
   module-03-phase3-report-close.md:
     token_count: 1751
@@ -470,7 +470,7 @@ file_metadata:
     token_count: 604
     size_category: medium
   module-03-visualization-api-reference.md:
-    token_count: 2050
+    token_count: 2101
     size_category: large
   module-04-data-collection.md:
     token_count: 4049
@@ -639,7 +639,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 186004
+  total_tokens: 186556
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

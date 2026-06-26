@@ -140,7 +140,15 @@ _BASELINE_HASHES: dict[str, str] = {
     # messaging), recomputed by measure_steering.py into file_metadata and the
     # budget total. Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "12dbf43e376e04ed4541afd290e92235f6783811b87cefe7a95ef2a2c5252f01",
+    # Re-baselined once more (186004 -> 186556) for the
+    # entity-graph-edge-key-mismatch bugfix: module-03-phase2-visualization.md
+    # (4738 -> 5239) gained Critical Lesson 7 (edge-key mapping), a Step 9.3
+    # edge-map note, and the Step 9.4 graph-render smoke check, and
+    # module-03-visualization-api-reference.md (2050 -> 2101) gained the
+    # client-side mapping cross-note, all recomputed by measure_steering.py into
+    # file_metadata and the budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "dd63d2ddbac8913658ef1568d456d7d3b61e2628c8f598551e6bb0762eb991c3",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -514,9 +522,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (186004), so the hash cannot silently re-pin a stale value.
+        # (186556), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 186004" in budget_block
+        assert "total_tokens: 186556" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

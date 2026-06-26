@@ -27,6 +27,7 @@ inclusion: manual
 4. **Quote discipline** — Inside Python triple-quoted strings: use double quotes for JavaScript strings, single quotes for HTML attributes.
 5. **D3.js callback syntax** — Use `function(){}` for all D3.js callbacks, NOT arrow functions. Arrow functions break `this` binding to DOM elements.
 6. **Explicit SVG dimensions** — Set `width` and `height` attributes on SVG elements. Do not rely on CSS-only sizing.
+7. **Map graph edge keys for D3 `forceLink`** — `/api/graph` returns edges keyed by `source_entity_id`/`target_entity_id` (the API contract). D3's `forceLink` resolves each edge against node ids via `source`/`target`. In `drawGraph`, map every edge to expose `source`/`target` (set from `source_entity_id`/`target_entity_id`) **before** passing edges to `forceLink().links(...)`. Skipping this map is a **silent failure**: no console error is raised and the Entity Graph renders empty even though `/api/graph` returned nodes and edges. Preserve node `id`/`entity_id` so the mapped `source`/`target` values resolve to nodes.
 
 ---
 
@@ -166,6 +167,7 @@ Presented left-to-right with arrow indicators conveying the resolution pipeline 
 
 - **Use `function(){}` syntax for all D3.js callbacks** — Do NOT use arrow functions (`() => {}`) in D3.js event handlers, `.each()`, `.attr()` callbacks, or any other D3 method that binds `this` to the DOM element. Arrow functions break `this` binding to DOM elements in D3 callbacks, causing silent failures when accessing the current element via `d3.select(this)`.
 - **Explicit `width` and `height` attributes on SVG elements** — Always set `width` and `height` as attributes on `<svg>` elements (e.g., `.attr('width', width).attr('height', height)`). Do NOT rely on CSS-only sizing (e.g., `width: 100%` in a stylesheet without corresponding attributes). CSS-only sizing causes rendering issues in some browsers and when SVG is embedded in flex containers.
+- **Map graph edges to `source`/`target` before the force simulation** — In `drawGraph`, map each `/api/graph` edge to expose `source`/`target` (from `source_entity_id`/`target_entity_id`) before passing edges to `forceLink`, or the graph renders empty (see Critical Lesson 7).
 
 2. **Record_Merges_View** — Card-based display of multi-record entities
    - One card per entity with side-by-side constituent records
@@ -227,6 +229,17 @@ Follow the Web Service Delivery Sequence from `visualization-guide.md`:
    - URL: "Your visualization is running — open `http://localhost:8080` in your browser"
    - Manual restart: "If you need to restart, run the `src/system_verification/web_service/server.py` entry point with python3"
    - Stop: "To stop the server, I can stop the background process for you, or press Ctrl+C if running manually"
+
+**Graph render smoke check** (run after `index.html` is generated, before the Guided Tour — do **not** present the graph until it passes):
+
+   - **Generated-code check (static, always runs):** Inspect the generated `index.html` `drawGraph` and confirm it maps each edge to expose `source`/`target` (set from `source_entity_id`/`target_entity_id`) **before** `forceLink().links(...)`. If the mapping is absent, fail.
+   - **Rendered/data check (dynamic):** Using the `GET /api/graph` ≥1 node / ≥1 edge result above as precondition, when `/api/graph` returns ≥1 node the rendered graph must show visible node elements (SVG `circle`/node-group count > 0).
+
+   | Check | Success Criteria |
+   |---|---|
+   | Graph edge-key mapping | Generated `index.html` `drawGraph` maps `source_entity_id`/`target_entity_id` → `source`/`target` before `forceLink`; rendered graph shows visible nodes when `/api/graph` returns ≥1 node |
+
+   **Fix_Instruction (on failure):** add the edge-key mapping per Critical Lesson 7, regenerate `index.html`, and re-verify. Do not proceed to the Guided Tour until the graph passes.
 
 **Guided Tour — deliver the following as a single structured chat message
 (no interactive pauses):**

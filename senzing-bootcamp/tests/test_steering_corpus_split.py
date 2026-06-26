@@ -112,12 +112,28 @@ GENERATED_FILES: frozenset[str] = frozenset(
 # to 5394 tokens — just past the 5000 split_threshold. Rather than fragment a
 # workflow that must be read as a whole (or drop required resilience behavior),
 # it is exempted with this justification; it remains indexed in file_metadata.
+#
+# module-03-phase2-visualization.md (entity-graph-edge-key-mismatch bugfix): this
+# is the Module 3 Step 9 visualization generation+verification phase — a single
+# cohesive, sequential workflow (generate artifacts -> 9.3 component specs ->
+# 9.4 start/verify endpoints -> graph-render smoke check -> guided tour) whose
+# steps are interdependent and must load together; it already sits one phase deep
+# (step_range [9, 9]) and is not further sub-divisible without harming agent
+# comprehension of the generation+verification sequence. The
+# entity-graph-edge-key-mismatch bugfix added Critical Lesson 7 (map edge
+# `source_entity_id`/`target_entity_id` -> D3 `source`/`target` before
+# `forceLink`), a Step 9.3 edge-map note, and the Step 9.4 post-generation
+# graph-render smoke check (Requirements 2.1-2.3), growing the file from 4738 to
+# 5239 tokens — just past the 5000 split_threshold. Rather than fragment a
+# workflow that must be read as a whole, it is exempted with this justification;
+# it remains indexed in file_metadata.
 EXEMPTIONS: frozenset[str] = frozenset(
     {
         "module-completion.md",
         "module-01-phase1-discovery.md",
         "module-05-phase2-data-mapping.md",
         "graduation.md",
+        "module-03-phase2-visualization.md",
     }
 )
 

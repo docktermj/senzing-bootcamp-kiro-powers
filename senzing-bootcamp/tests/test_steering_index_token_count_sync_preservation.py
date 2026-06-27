@@ -148,7 +148,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # client-side mapping cross-note, all recomputed by measure_steering.py into
     # file_metadata and the budget total. Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "dd63d2ddbac8913658ef1568d456d7d3b61e2628c8f598551e6bb0762eb991c3",
+    # Re-baselined once more (186556 -> 187577) for the surface-mcp-license-request
+    # spec: module-02-sdk-setup.md (4491 -> 5512) gained the Step 5c in-flow MCP
+    # License_Request_Option (capability gate, three selectable licensing paths,
+    # disabled-by-default enable instructions, single invocation, MCP-sourced
+    # facts) mirroring the Module 1 Step 6d branch, recomputed by
+    # measure_steering.py into file_metadata and the budget total. Only the budget
+    # block changed; keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "f3e0446d364e0d84dee199f9a162cef4e1801436a3f3f4316c56dfbe3aa8ffd4",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -522,9 +529,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (186556), so the hash cannot silently re-pin a stale value.
+        # (187577), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 186556" in budget_block
+        assert "total_tokens: 187577" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

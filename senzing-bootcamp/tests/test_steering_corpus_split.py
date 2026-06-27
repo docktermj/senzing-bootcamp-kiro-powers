@@ -127,6 +127,24 @@ GENERATED_FILES: frozenset[str] = frozenset(
 # 5239 tokens — just past the 5000 split_threshold. Rather than fragment a
 # workflow that must be read as a whole, it is exempted with this justification;
 # it remains indexed in file_metadata.
+#
+# module-02-sdk-setup.md (surface-mcp-license-request spec): the Module 2 Step 5
+# Configure-License flow gained the Step 5c in-flow MCP License_Request_Option
+# (capability gate with the 30s window, three individually-selectable licensing
+# paths, disabled-by-default `submit_feedback` enable instructions, single
+# `license_request` invocation, and MCP-sourced validity/capacity facts) mirroring
+# the canonical Module 1 Step 6d branch (Requirement 7). These additions grew the
+# file from 4491 to 5512 tokens — just past the 5000 split_threshold. The Step 5
+# SDK-setup flow is a single cohesive, sequential configure-license workflow whose
+# 5a/5b/5c/5d branches must load together (the in-flow option lives inside the 5c
+# no-license branch and routes into 5d), and the surfaced wording is fully asserted
+# by test_module2_license_request_option.py and mirrors Module 1 for cross-module
+# consistency, so it cannot be trimmed without dropping required phrases. The
+# split_threshold_tokens budget value is held at 5000 across the corpus; rather
+# than fragment a workflow that must be read as a whole — and mirroring the
+# sibling module-01-phase1-discovery.md exemption for the same in-flow option
+# pattern — this single unit is exempted with this justification. It remains
+# indexed in file_metadata.
 EXEMPTIONS: frozenset[str] = frozenset(
     {
         "module-completion.md",
@@ -134,6 +152,7 @@ EXEMPTIONS: frozenset[str] = frozenset(
         "module-05-phase2-data-mapping.md",
         "graduation.md",
         "module-03-phase2-visualization.md",
+        "module-02-sdk-setup.md",
     }
 )
 

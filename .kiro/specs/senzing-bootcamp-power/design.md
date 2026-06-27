@@ -29,8 +29,8 @@ senzing-bootcamp/                    # The distributed power root
 │   ├── policies/                    # Agent policies (code quality, file storage, Senzing info, dependency management)
 │   └── diagrams/                    # Architecture and flow diagrams (Mermaid + ASCII)
 ├── hooks/                           # 29 .kiro.hook JSON files + hook-categories.yaml + README.md
-├── scripts/                         # 65 Python CLI tools (stdlib only)
-├── steering/                        # 109 steering files + steering-index.yaml
+├── scripts/                         # 72 Python CLI tools (stdlib only)
+├── steering/                        # 111 steering files + steering-index.yaml
 │   ├── agent-instructions.md        # Always-on core rules (140 lines)
 │   ├── module-transitions.md        # Always-on transition protocol (84 lines)
 │   ├── security-privacy.md          # Always-on PII policy (27 lines)
@@ -50,8 +50,8 @@ senzing-bootcamp/                    # The distributed power root
 │   ├── conversation-examples.md     # Manual: violation examples reference
 │   └── ...                          # Manual: workflows, troubleshooting, etc.
 ├── templates/                       # User templates (checklists, lineage, UAT, lessons learned)
-└── tests/                           # pytest + Hypothesis test suites (252 files)
-tests/                               # Repo-level tests (73 files, hook validation)
+└── tests/                           # pytest + Hypothesis test suites (280 files)
+tests/                               # Repo-level tests (84 files, hook validation)
 ```
 
 ### Steering Architecture
@@ -61,11 +61,11 @@ The steering system follows the "Steering Kiro: Best Practices" guidelines:
 | Inclusion Mode | Files | Purpose |
 |---|---|---|
 | always | 3 | Universal rules (file placement, MCP, communication, gates) |
-| auto | 9 | Context loaded when relevant (budget management, conversation protocol, session resume) |
+| auto | 11 | Context loaded when relevant (budget management, conversation protocol, session resume) |
 | fileMatch | 5 | Language-specific SDK guidance + troubleshooting |
 | manual | 92 | Module workflows, deployment, troubleshooting, visualization, references |
 
-**Context budget:** Total steering ~136k tokens tracked in `steering-index.yaml`. Warn at 60%, critical at 80% (percentage-based, derived from `reference_window` of 200k). Phase-splitting keeps individual loads small. Detailed unloading rules in `agent-context-management.md`.
+**Context budget:** Total steering ~185k tokens tracked in `steering-index.yaml`. Warn at 60%, critical at 80% (percentage-based, derived from `reference_window` of 200k). Phase-splitting keeps individual loads small. Detailed unloading rules in `agent-context-management.md`.
 
 ### Module Phase Architecture
 
@@ -105,6 +105,7 @@ The Senzing MCP server (required — hard gate at onboarding) provides:
 - `get_sample_data` — Sample datasets (Las Vegas, London, Moscow)
 - `reporting_guide` — Reporting and visualization guidance
 - `download_resource` — Workflow resources (entity spec, analyzer script)
+- `submit_feedback` — Report issues or suggestions (disabled by default to keep feedback local)
 
 The agent never fabricates Senzing information. If MCP is unavailable after one retry, the bootcamp blocks until connectivity is restored.
 
@@ -134,7 +135,7 @@ GitHub Actions pipeline (`validate-power.yml`):
 6. `validate_prerequisites.py` — Module prerequisite consistency
 7. `validate_progress_ci.py` — Progress schema validation
 8. `validate_mandatory_gates.py` — Mandatory gate enforcement
-9. `pytest senzing-bootcamp/tests/ tests/` — 325 test files with property-based testing (Hypothesis)
+9. `pytest senzing-bootcamp/tests/ tests/` — 364 test files with property-based testing (Hypothesis)
 
 ### Team Mode
 

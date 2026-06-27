@@ -61,16 +61,29 @@ Tell the user: "Senzing SDK is not installed yet. Let's set it up — this is a 
 
 ## Step 2: Determine Platform
 
-Ask: "What platform are you using? Linux, macOS, or Windows?"
+Ask: "What operating system are you on? Linux, macOS, or Windows?" For macOS, also ask whether it is Apple Silicon (M1/M2/M3/M4) or Intel.
 
-Use `sdk_guide` with `topic='install'` and the user's platform to get current installation commands. Pass the bootcamper's chosen language as the `language` parameter. The MCP server always has the latest instructions.
+Then resolve the `sdk_guide` platform value using the rules below. Do **not** assume native install — several OS + language combinations require Docker. The MCP server is authoritative; if uncertain, call `sdk_guide(topic='install')` with no platform to get the live decision tree.
 
 **Platform options for `sdk_guide`:**
 
-- `platform='linux_apt'` — Ubuntu/Debian
-- `platform='linux_yum'` — RHEL/CentOS/Fedora
-- `platform='macos_arm'` — macOS (Apple Silicon)
-- `platform='windows'` — Windows
+- `platform='linux_apt'` — Debian/Ubuntu/Mint (apt/dpkg)
+- `platform='linux_yum'` — RHEL/Fedora/Amazon Linux (yum/dnf)
+- `platform='macos_arm'` — macOS Apple Silicon (Homebrew cask)
+- `platform='windows'` — Windows 10/11 (Scoop)
+- `platform='docker'` — Platform-independent container; the fallback and the **required** path for several cases below
+
+**Routing rules (apply in order):**
+
+1. **Chosen language is Python AND OS is macOS or Windows → `platform='docker'`.** The Python SDK is only supported on Linux; on macOS/Windows it must run in a container.
+2. **macOS Intel → `platform='docker'`.** There is no native Intel-Mac install — the Homebrew tap is Apple Silicon (ARM64) only.
+3. **macOS Apple Silicon (non-Python) → `platform='macos_arm'`.**
+4. **Windows without Scoop (non-Python) → `platform='docker'`.** With Scoop available → `platform='windows'`.
+5. **Linux → `platform='linux_apt'` or `platform='linux_yum'`** based on the package manager.
+
+When a learner lands on Docker because of these rules, briefly explain why (e.g., "The Senzing Python SDK is Linux-only, so on macOS we'll run it in a container") so the redirect doesn't feel arbitrary.
+
+Use `sdk_guide` with `topic='install'`, the resolved `platform`, and the bootcamper's chosen language as the `language` parameter to get current installation commands. The MCP server always has the latest instructions.
 
 **Checkpoint:** Write step 2 to `config/bootcamp_progress.json`.
 
@@ -82,8 +95,18 @@ Follow the platform-specific instructions from `sdk_guide`. The installation has
 
 **Phase 1 — Install the SDK package (execute without stopping):**
 
+For native installs (`linux_apt`, `linux_yum`, `macos_arm`, `windows`):
+
 1. Add the Senzing package repository
 2. Install the Senzing SDK package
+
+For the `docker` path (Intel Mac, Python on macOS/Windows, or Windows without Scoop):
+
+- **Do not use the pre-built `senzing/senzingsdk-tools` images** — they require PostgreSQL and do not support SQLite, which is the bootcamp default (Step 7). Instead, run a plain Linux container (e.g., `debian:bookworm-slim`) and follow the `linux_apt` steps inside it so SQLite keeps working.
+- Mount the bootcamper's project directory into the container so all artifacts (database, config, source) land in the working directory, not inside an ephemeral container layer.
+- Call `sdk_guide(topic='install', platform='docker', language='<chosen_language>')` for the current container commands and image names.
+- Never drive interactive Senzing CLI tools (`sz_configtool`, `sz_explorer`) — they require human input. Generate SDK code via `generate_scaffold` instead.
+- Senzing publishes native ARM64 images, so no x86 emulation is needed on Apple Silicon.
 
 **Phase 2 — EULA acceptance (requires bootcamper input):**
 

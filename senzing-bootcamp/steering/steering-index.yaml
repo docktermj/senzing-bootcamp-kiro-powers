@@ -455,7 +455,7 @@ file_metadata:
     token_count: 1853
     size_category: medium
   module-02-sdk-setup.md:
-    token_count: 5512
+    token_count: 6103
     size_category: large
   module-03-phase1-verification.md:
     token_count: 3536
@@ -639,7 +639,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 187577
+  total_tokens: 188168
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -268,8 +268,12 @@ def _extract_m1_substep(content: str, sub_id: str) -> str | None:
 _BASELINE_HASHES: dict[str, str] = {
     # Module 2 non-license sections (Steps 1-4 and 6-9)
     "m2_step1": "68d4a9cd86708c3ac65c2fd2613b0e79c8770ae7cc455d580c0275a721c8d5d7",
-    "m2_step2": "d699ce64d2b9f6f8f834466b7886611343554f5d3e7f1bf89c39ad7d58cf92a0",
-    "m2_step3": "3591982547aded6cd5da8870c3c6d8ffa6476f92fa00ea21c9fa1299f6cf4088",
+    # m2_step2 / m2_step3 re-baselined for the OS-platforms batch (kept in sync
+    # with _STEP_HASHES in test_module2_license_question.py): Step 2 gained the
+    # platform routing/options content (de-bolded so the routing list is not
+    # misread as numbered steps) and Step 3 gained Docker-path install guidance.
+    "m2_step2": "44100571bfe4bf1b3d7351a589c993a24f367595084e07f51a124412cb158966",
+    "m2_step3": "5cff1cbca271f3f706f637ad54f018093d16b18490e927f4abbd37b479ee5841",
     "m2_step4": "5ee5168b5bfe301fcf7f6841ef78f3ab334dfc1b413e7440cc598fc72d69e6be",
     "m2_step6": "67f0d91f31c40a0ef08336845a0a001ab959d4dc38c8ef5864e7a0141df4837f",
     "m2_step7": "e70acaae1640b0259e3cc5927f5ea27c88a98b3625cc2d5a6eca36ca367bb7a2",

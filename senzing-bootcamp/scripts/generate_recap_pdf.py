@@ -478,8 +478,8 @@ def _build_qa_lines(questions: list[str], answers: list[str]) -> list[str]:
     return lines
 
 
-def _render_qa_pairs(  # noqa: F821
-    pdf: "FPDF",
+def _render_qa_pairs(
+    pdf: "FPDF",  # noqa: F821
     questions: list[str],
     answers: list[str],
 ) -> None:

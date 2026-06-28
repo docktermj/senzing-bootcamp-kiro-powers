@@ -155,7 +155,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # facts) mirroring the Module 1 Step 6d branch, recomputed by
     # measure_steering.py into file_metadata and the budget total. Only the budget
     # block changed; keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "f3e0446d364e0d84dee199f9a162cef4e1801436a3f3f4316c56dfbe3aa8ffd4",
+    # Re-baselined once more (187577 -> 188168) for the OS-platforms batch:
+    # module-02-sdk-setup.md (5512 -> 6103) gained per-OS platform setup guidance,
+    # recomputed by measure_steering.py into file_metadata and the budget total.
+    # Then 188168 -> 188169 when the module-02 platform "Routing rules" list was
+    # de-bolded (single-question-per-step fix), nudging its measured count
+    # 6103 -> 6104. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "1cd9118a94ad3725be8524c01c7fb7efb4b1aa35ac3d4ef9f3bd9f92611c06fa",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -529,9 +536,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (187577), so the hash cannot silently re-pin a stale value.
+        # (188169), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 187577" in budget_block
+        assert "total_tokens: 188169" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

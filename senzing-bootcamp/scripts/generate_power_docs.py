@@ -834,7 +834,7 @@ TOOL_DESCRIPTIONS: dict[str, str] = {
     "download_resource": "Download workflow resources (entity spec, analyzer script)",
     "explain_error_code": "Diagnose Senzing errors (456 error codes)",
     "search_docs": "Search indexed Senzing documentation",
-    "find_examples": "Working code from 27 Senzing GitHub repositories",
+    "find_examples": "Working code from 37 Senzing GitHub repositories",
     "generate_scaffold": "Generate SDK code (Python, Java, C#, Rust, TypeScript)",
     "get_sample_data": "Download sample datasets (Las Vegas, London, Moscow)",
     "get_sdk_reference": "SDK method signatures and flags",

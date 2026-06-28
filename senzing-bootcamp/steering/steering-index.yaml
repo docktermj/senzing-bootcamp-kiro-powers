@@ -303,6 +303,17 @@ deployment:
   gcp: deployment-gcp.md
   kubernetes: deployment-kubernetes.md
 
+# Files intentionally exempt from the split_threshold_tokens budget. Each entry is
+# a justified, cohesive single-unit file where further splitting would harm the
+# guided workflow. Placed above file_metadata so measure_steering.py preserves it.
+split_allowlist:
+  hook-registry-critical.md: Authoritative single-unit registry of every critical always-on hook; the agent loads it whole when resolving critical-hook behavior, so fragmenting it across files would break lookups and duplicate shared context.
+  module-01-phase1-discovery.md: Already the discovery-phase leaf of the module-01 split and only marginally over threshold; a further split would fracture the single guided business-problem discovery conversation.
+  module-02-sdk-setup.md: Single linear SDK install-and-license workflow that must stay contiguous so the per-OS platform guidance and license step read as one flow; splitting would scatter tightly coupled setup steps.
+  module-03-phase2-visualization.md: Already the visualization-phase leaf of the module-03 split; the graph build, edge-key mapping lessons, and render smoke check form one continuous procedure that should not be split again.
+  module-05-phase2-data-mapping.md: Already the data-mapping-phase leaf of the module-05 split; the mapping_workflow steps form one uninterruptible procedure where a further split would break checkpoint resume.
+  graduation.md: Single end-to-end graduation workflow (directory restructure, prod configs, CI/CD, migration checklist) invoked as one unit; splitting would fragment a cohesive one-shot procedure.
+
 file_metadata:
   agent-behavior-rules.md:
     token_count: 760
@@ -455,7 +466,7 @@ file_metadata:
     token_count: 1853
     size_category: medium
   module-02-sdk-setup.md:
-    token_count: 6103
+    token_count: 6104
     size_category: large
   module-03-phase1-verification.md:
     token_count: 3536
@@ -639,7 +650,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 188168
+  total_tokens: 188169
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

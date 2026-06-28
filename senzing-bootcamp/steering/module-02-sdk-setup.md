@@ -75,11 +75,11 @@ Then resolve the `sdk_guide` platform value using the rules below. Do **not** as
 
 **Routing rules (apply in order):**
 
-1. **Chosen language is Python AND OS is macOS or Windows → `platform='docker'`.** The Python SDK is only supported on Linux; on macOS/Windows it must run in a container.
-2. **macOS Intel → `platform='docker'`.** There is no native Intel-Mac install — the Homebrew tap is Apple Silicon (ARM64) only.
-3. **macOS Apple Silicon (non-Python) → `platform='macos_arm'`.**
-4. **Windows without Scoop (non-Python) → `platform='docker'`.** With Scoop available → `platform='windows'`.
-5. **Linux → `platform='linux_apt'` or `platform='linux_yum'`** based on the package manager.
+1. Chosen language is Python AND OS is macOS or Windows → **`platform='docker'`**. The Python SDK is only supported on Linux; on macOS/Windows it must run in a container.
+2. macOS Intel → **`platform='docker'`**. There is no native Intel-Mac install — the Homebrew tap is Apple Silicon (ARM64) only.
+3. macOS Apple Silicon (non-Python) → **`platform='macos_arm'`**.
+4. Windows without Scoop (non-Python) → **`platform='docker'`**. With Scoop available → **`platform='windows'`**.
+5. Linux → **`platform='linux_apt'` or `platform='linux_yum'`** based on the package manager.
 
 When a learner lands on Docker because of these rules, briefly explain why (e.g., "The Senzing Python SDK is Linux-only, so on macOS we'll run it in a container") so the redirect doesn't feel arbitrary.
 

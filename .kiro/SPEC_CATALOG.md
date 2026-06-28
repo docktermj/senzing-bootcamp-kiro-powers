@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 231
+- implemented: 240
 - superseded: 2
 - abandoned: 0
 - unknown: 1
@@ -147,6 +147,13 @@
 - Type: feature
 - Workflow: fast-task
 - Directory: [.kiro/specs/ci-python-linting/](.kiro/specs/ci-python-linting/)
+
+### ci-workflow-restructure
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/ci-workflow-restructure/](.kiro/specs/ci-workflow-restructure/)
 
 ### completion-summary
 
@@ -372,6 +379,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/enforce-visualization-step/](.kiro/specs/enforce-visualization-step/)
 
+### entity-graph-edge-key-mismatch
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/entity-graph-edge-key-mismatch/](.kiro/specs/entity-graph-edge-key-mismatch/)
+
 ### entity-resolution-conceptual-intro
 
 - Status: implemented
@@ -526,6 +540,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/graduation-markdown-normalization/](.kiro/specs/graduation-markdown-normalization/)
 
+### graduation-recap-pdf-resilience
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/graduation-recap-pdf-resilience/](.kiro/specs/graduation-recap-pdf-resilience/)
+
 ### graduation-workflow
 
 - Status: implemented
@@ -609,6 +630,13 @@
 - Type: feature
 - Workflow: fast-task
 - Directory: [.kiro/specs/hook-visual-noise-reduction/](.kiro/specs/hook-visual-noise-reduction/)
+
+### hypothesis-settings-centralization
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/hypothesis-settings-centralization/](.kiro/specs/hypothesis-settings-centralization/)
 
 ### incremental-loading-guide
 
@@ -1151,6 +1179,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/recap-pdf-content-loss-fix/](.kiro/specs/recap-pdf-content-loss-fix/)
 
+### recap-qa-pair-merge
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/recap-qa-pair-merge/](.kiro/specs/recap-qa-pair-merge/)
+
 ### record-volume-guidance
 
 - Status: implemented
@@ -1316,6 +1351,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/session-resume-behavioral-rules/](.kiro/specs/session-resume-behavioral-rules/)
 
+### shared-markdown-renderer-refactor
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/shared-markdown-renderer-refactor/](.kiro/specs/shared-markdown-renderer-refactor/)
+
 ### silent-hook-architecture
 
 - Status: implemented
@@ -1456,6 +1498,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/steering-optimization/](.kiro/specs/steering-optimization/)
 
+### steering-split-threshold-enforcement
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/steering-split-threshold-enforcement/](.kiro/specs/steering-split-threshold-enforcement/)
+
 ### steering-structural-validation
 
 - Status: implemented
@@ -1498,6 +1547,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/suppress-policy-pass-output/](.kiro/specs/suppress-policy-pass-output/)
 
+### surface-mcp-license-request
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/surface-mcp-license-request/](.kiro/specs/surface-mcp-license-request/)
+
 ### test-data-terminology
 
 - Status: implemented
@@ -1511,6 +1567,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/test-suite-debrittling/](.kiro/specs/test-suite-debrittling/)
+
+### test-suite-parallelization
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/test-suite-parallelization/](.kiro/specs/test-suite-parallelization/)
 
 ### thorough-senzing-install-check
 

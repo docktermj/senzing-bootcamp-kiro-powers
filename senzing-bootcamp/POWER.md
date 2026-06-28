@@ -137,7 +137,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `environment-setup.md` | 658 | medium |
 | `feedback-workflow.md` | 1239 | medium |
 | `file-placement.md` | 291 | small |
-| `graduation.md` | 4672 | large |
+| `graduation.md` | 5394 | large |
 | `hook-architecture.md` | 2149 | large |
 | `hook-registry-critical.md` | 8592 | large |
 | `hook-registry-module-01.md` | 474 | small |
@@ -166,12 +166,12 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-01-business-problem.md` | 500 | medium |
 | `module-01-phase1-discovery.md` | 5027 | large |
 | `module-01-phase2-document-confirm.md` | 1853 | medium |
-| `module-02-sdk-setup.md` | 4491 | large |
+| `module-02-sdk-setup.md` | 6104 | large |
 | `module-03-phase1-verification.md` | 3536 | large |
-| `module-03-phase2-visualization.md` | 4738 | large |
+| `module-03-phase2-visualization.md` | 5239 | large |
 | `module-03-phase3-report-close.md` | 1751 | medium |
 | `module-03-system-verification.md` | 604 | medium |
-| `module-03-visualization-api-reference.md` | 2050 | large |
+| `module-03-visualization-api-reference.md` | 2101 | large |
 | `module-04-data-collection.md` | 4049 | large |
 | `module-05-data-quality-mapping.md` | 689 | medium |
 | `module-05-phase1-quality-assessment.md` | 1710 | medium |
@@ -228,7 +228,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2195 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 185282 tokens
+**Total budget:** 188169 tokens
 
 <!-- END GENERATED: steering-files -->
 
@@ -268,7 +268,7 @@ Always call `get_capabilities` first when starting a session.
 - `download_resource` — Download workflow resources (entity spec, analyzer script)
 - `explain_error_code` — Diagnose Senzing errors (456 error codes)
 - `search_docs` — Search indexed Senzing documentation
-- `find_examples` — Working code from 27 Senzing GitHub repositories
+- `find_examples` — Working code from 37 Senzing GitHub repositories
 - `generate_scaffold` — Generate SDK code (Python, Java, C#, Rust, TypeScript)
 - `get_sample_data` — Download sample datasets (Las Vegas, London, Moscow)
 - `get_sdk_reference` — SDK method signatures and flags

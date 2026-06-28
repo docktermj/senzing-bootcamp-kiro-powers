@@ -927,7 +927,7 @@ categories:
 | ---- | ------- |
 | `generate_scaffold` | Generate SDK code (Python, Java, C#, Rust, TS) |
 | `sdk_guide` | Platform-specific SDK install and config guidance |
-| `find_examples` | Working code from 27 Senzing GitHub repositories |
+| `find_examples` | Working code from 37 Senzing GitHub repositories |
 
 #### Reference
 

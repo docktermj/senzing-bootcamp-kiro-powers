@@ -18,6 +18,7 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from validate_yaml_schemas import (  # noqa: E402
+    OPTIONAL_KEYS,
     SCHEMA_REGISTRY,
     ValidationResult,
     format_result,
@@ -427,11 +428,12 @@ class TestSteeringIndexSchema:
 
     _REL_PATH = "steering/steering-index.yaml"
     _EXPECTED_KEYS = SCHEMA_REGISTRY[_REL_PATH]
+    _OPTIONAL_KEYS = OPTIONAL_KEYS.get(_REL_PATH, set())
 
     def test_real_file_passes_validation(self):
         """The real steering-index.yaml passes validation with its expected keys."""
         full_path = str(_POWER_ROOT / self._REL_PATH)
-        result = validate_file(full_path, self._EXPECTED_KEYS)
+        result = validate_file(full_path, self._EXPECTED_KEYS, self._OPTIONAL_KEYS)
 
         assert result.passed, (
             f"Expected PASS for {self._REL_PATH}, got FAIL: "
@@ -442,10 +444,38 @@ class TestSteeringIndexSchema:
     def test_real_file_pass_output_format(self):
         """PASS output starts with 'PASS: steering-index.yaml'."""
         full_path = str(_POWER_ROOT / self._REL_PATH)
-        result = validate_file(full_path, self._EXPECTED_KEYS)
+        result = validate_file(full_path, self._EXPECTED_KEYS, self._OPTIONAL_KEYS)
         output = format_result(result)
 
         assert output == "PASS: steering-index.yaml"
+
+    def test_optional_split_allowlist_present_passes(self, tmp_path):
+        """An index carrying the optional ``split_allowlist`` key validates clean."""
+        lines = [f"{key}: {{}}" for key in sorted(self._EXPECTED_KEYS)]
+        lines.append("split_allowlist:")
+        lines.append("  graduation.md: justified")
+        tmp_file = tmp_path / "steering-index.yaml"
+        tmp_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+        result = validate_file(str(tmp_file), self._EXPECTED_KEYS, self._OPTIONAL_KEYS)
+
+        assert result.passed, (
+            f"missing={result.missing_keys}, unexpected={result.unexpected_keys}"
+        )
+        assert "split_allowlist" not in result.unexpected_keys
+
+    def test_optional_split_allowlist_absent_passes(self, tmp_path):
+        """An index omitting the optional ``split_allowlist`` key still validates clean."""
+        lines = [f"{key}: {{}}" for key in sorted(self._EXPECTED_KEYS)]
+        tmp_file = tmp_path / "steering-index.yaml"
+        tmp_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+        result = validate_file(str(tmp_file), self._EXPECTED_KEYS, self._OPTIONAL_KEYS)
+
+        assert result.passed, (
+            f"missing={result.missing_keys}, unexpected={result.unexpected_keys}"
+        )
+        assert "split_allowlist" not in result.missing_keys
 
     def test_extra_key_produces_fail(self, tmp_path):
         """Adding an extra key to steering-index.yaml content produces FAIL."""

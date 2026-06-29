@@ -29,6 +29,15 @@ SCHEMA_REGISTRY: dict[str, set[str]] = {
     "config/module-artifacts.yaml": {"version", "modules"},
 }
 
+# Optional top-level keys: permitted but not required. A key listed here is not
+# flagged as "unexpected" when present, and not flagged as "missing" when absent.
+# ``split_allowlist`` is a lint-only Split_Check exemption section consumed by
+# lint_steering.py; it exists only while one or more steering files are
+# intentionally over the split_threshold, so it must not be mandatory.
+OPTIONAL_KEYS: dict[str, set[str]] = {
+    "steering/steering-index.yaml": {"split_allowlist"},
+}
+
 
 @dataclass
 class ValidationResult:
@@ -98,12 +107,20 @@ def format_result(result: ValidationResult) -> str:
     return f"FAIL: {filename} \u2014 {'; '.join(reasons)}"
 
 
-def validate_file(file_path: str, expected_keys: set[str]) -> ValidationResult:
+def validate_file(
+    file_path: str,
+    expected_keys: set[str],
+    optional_keys: set[str] | None = None,
+) -> ValidationResult:
     """Validate a single YAML file against its expected top-level keys.
 
     Args:
         file_path: Path to the YAML file.
         expected_keys: Set of required top-level keys.
+        optional_keys: Keys that are permitted but not required. When present in
+            the file they are not reported as unexpected; when absent they are
+            not reported as missing. Defaults to ``None`` (strict: only the
+            ``expected_keys`` are allowed).
 
     Returns:
         ValidationResult with pass/fail status and key differences.
@@ -131,7 +148,7 @@ def validate_file(file_path: str, expected_keys: set[str]) -> ValidationResult:
         )
 
     missing = expected_keys - actual_keys
-    unexpected = actual_keys - expected_keys
+    unexpected = actual_keys - expected_keys - (optional_keys or set())
     passed = not missing and not unexpected
 
     return ValidationResult(
@@ -198,7 +215,9 @@ def main(argv: list[str] | None = None) -> int:
     results: list[ValidationResult] = []
     for rel_path, expected_keys in targets.items():
         full_path = str(power_root / rel_path)
-        results.append(validate_file(full_path, expected_keys))
+        results.append(
+            validate_file(full_path, expected_keys, OPTIONAL_KEYS.get(rel_path))
+        )
 
     for result in results:
         print(format_result(result))

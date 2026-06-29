@@ -4,10 +4,10 @@ Feature: generated-power-docs
 
 Validates that the real ``.github/workflows/validate-power.yml`` wires the
 generated-POWER.md drift gate (``generate_power_docs.py --verify``) into the
-``validate`` job as a required step sequenced *before* the pytest ("Run tests")
-step, that the failing branch echoes the exact ``--write`` regeneration command
-as a ``::error::`` message, and that the job runs across the
-``['3.11', '3.12', '3.13']`` matrix with ``fail-fast: false``.
+``gates`` job as a required step, that pytest ("Run tests") runs in the separate
+matrixed ``tests`` job, that the failing branch echoes the exact ``--write``
+regeneration command as a ``::error::`` message, and that the ``tests`` job runs
+across the ``['3.11', '3.12', '3.13']`` matrix with ``fail-fast: false``.
 
 Requirements validated: 7.1, 7.4, 7.5
 
@@ -55,14 +55,32 @@ def load_workflow() -> dict:
         return yaml.safe_load(f)
 
 
-def get_validate_job() -> dict:
-    """Return the ``validate`` job definition from the workflow."""
-    return load_workflow()["jobs"]["validate"]
+def get_gates_job() -> dict:
+    """Return the ``gates`` job definition from the workflow."""
+    return load_workflow()["jobs"]["gates"]
 
 
-def get_validate_steps() -> list[dict]:
-    """Return the list of steps from the ``validate`` job."""
-    return get_validate_job()["steps"]
+def get_gates_steps() -> list[dict]:
+    """Return the list of steps from the ``gates`` job."""
+    return get_gates_job()["steps"]
+
+
+def get_tests_job() -> dict:
+    """Return the ``tests`` job definition from the workflow."""
+    return load_workflow()["jobs"]["tests"]
+
+
+def get_tests_steps() -> list[dict]:
+    """Return the list of steps from the matrixed ``tests`` job."""
+    return get_tests_job()["steps"]
+
+
+def find_pytest_step(steps: list[dict]) -> dict | None:
+    """Return the step that runs pytest ("Run tests"), if any."""
+    for step in steps:
+        if step.get("name") == "Run tests" or "pytest" in step.get("run", ""):
+            return step
+    return None
 
 
 def find_verify_step(steps: list[dict]) -> dict | None:
@@ -91,50 +109,48 @@ class TestCiGeneratePowerDocsVerify:
             f"CI workflow not found: {WORKFLOW_PATH}"
         )
 
-    def test_verify_step_present_in_validate_job(self) -> None:
-        """The validate job runs generate_power_docs.py --verify (Req 7.1).
+    def test_verify_step_present_in_gates_job(self) -> None:
+        """The gates job runs generate_power_docs.py --verify (Req 7.1).
 
         **Validates: Requirements 7.1**
         """
-        steps = get_validate_steps()
+        steps = get_gates_steps()
         assert find_verify_step(steps) is not None, (
             "validate-power.yml must run "
-            f"'{VERIFY_CMD}' as a step in the validate job"
+            f"'{VERIFY_CMD}' as a step in the gates job"
         )
 
-    def test_verify_step_before_run_tests(self) -> None:
-        """The verify step is sequenced before the pytest "Run tests" step (Req 7.1).
+    def test_verify_step_is_required_gate(self) -> None:
+        """The verify step is a required gate in the gates job and pytest lives in
+        the tests job (Req 7.1).
+
+        The CI workflow was split into a single-run ``gates`` job (which owns the
+        verify gate) and a matrixed ``tests`` job (which owns pytest). They run
+        independently because the gates job declares no ``needs:`` dependency.
+        The preserved invariant: the verify gate still runs as a required
+        (non-continue-on-error) step, and a pytest step still exists in the tests job.
 
         **Validates: Requirements 7.1**
         """
-        steps = get_validate_steps()
-
-        verify_idx = next(
-            (i for i, s in enumerate(steps) if VERIFY_CMD in s.get("run", "")),
-            None,
-        )
-        assert verify_idx is not None, (
-            f"'{VERIFY_CMD}' step not found in the validate job"
+        gates_steps = get_gates_steps()
+        verify_step = find_verify_step(gates_steps)
+        assert verify_step is not None, (
+            f"'{VERIFY_CMD}' step not found in the gates job"
         )
 
-        # Locate the pytest step: prefer the "Run tests" name, fall back to a
-        # step whose run invokes pytest.
-        test_idx = next(
-            (
-                i
-                for i, s in enumerate(steps)
-                if s.get("name") == "Run tests" or "pytest" in s.get("run", "")
-            ),
-            None,
-        )
-        assert test_idx is not None, (
-            'pytest / "Run tests" step not found in the validate job'
+        # The verify gate must be required (not soft-failed).
+        assert verify_step.get("continue-on-error") is not True, (
+            "verify step must be a required gate (continue-on-error must not be true)"
         )
 
-        assert verify_idx < test_idx, (
-            "generate_power_docs.py --verify step (index "
-            f"{verify_idx}) must appear before the pytest step "
-            f"(index {test_idx})"
+        # The gates job runs independently of tests: it declares no `needs:`.
+        assert "needs" not in get_gates_job(), (
+            "gates job must not declare a `needs:` dependency so it runs independently"
+        )
+
+        # pytest now lives in the tests job.
+        assert find_pytest_step(get_tests_steps()) is not None, (
+            'pytest / "Run tests" step not found in the tests job'
         )
 
     def test_failing_branch_echoes_exact_write_command_as_error(self) -> None:
@@ -143,10 +159,10 @@ class TestCiGeneratePowerDocsVerify:
 
         **Validates: Requirements 7.4**
         """
-        steps = get_validate_steps()
+        steps = get_gates_steps()
         verify_step = find_verify_step(steps)
         assert verify_step is not None, (
-            f"'{VERIFY_CMD}' step not found in the validate job"
+            f"'{VERIFY_CMD}' step not found in the gates job"
         )
 
         run_content = verify_step.get("run", "")
@@ -177,16 +193,16 @@ class TestCiGeneratePowerDocsVerify:
         )
 
     def test_matrix_is_three_python_versions_with_fail_fast_false(self) -> None:
-        """The validate job runs the 3.11/3.12/3.13 matrix with
+        """The tests job runs the 3.11/3.12/3.13 matrix with
         fail-fast: false (Req 7.5).
 
         **Validates: Requirements 7.5**
         """
-        job = get_validate_job()
+        job = get_tests_job()
         strategy = job.get("strategy", {})
 
         assert strategy.get("fail-fast") is False, (
-            "validate job strategy must set fail-fast: false so each matrix "
+            "tests job strategy must set fail-fast: false so each matrix "
             f"job reports independently; got {strategy.get('fail-fast')!r}"
         )
 

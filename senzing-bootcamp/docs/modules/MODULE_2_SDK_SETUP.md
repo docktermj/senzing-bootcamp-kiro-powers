@@ -54,11 +54,19 @@ The 500-record figure is a default, not a wall. The SDK enforces it with a **SEN
 
 - **Apply an existing Senzing license** — place your `.lic` file at `licenses/g2.lic` (see below).
 - **Request an evaluation license through Senzing support** — see *Obtaining a License* below.
-- **Request one in-flow during the bootcamp** — when available, the agent can request an evaluation license without you leaving the workflow.
+- **Request one in-flow during the bootcamp** — the agent can request an evaluation license for you without leaving the workflow (see *Requesting a License In-Flow* below).
 
 Downsizing your dataset is just one option among these, never the only path forward. The agent sources the current record capacity and validity period from the Senzing MCP server at request time.
 
 > **Note:** The agent asks about your license during the bootcamp setup (before Module 2). If you've already configured your license, you can skip this section.
+
+### Requesting a License In-Flow
+
+Beyond the external channels above, the Senzing MCP server can request an **evaluation license** for you in-flow. This is an MCP-driven path available **outside the Step 5 conversational flow** — you are not limited to requesting a license only while the agent is walking you through Step 5, so you can reach for it whenever you need a license during the bootcamp.
+
+The agent obtains the license by invoking the `submit_feedback` MCP tool with the `license_request` category. Once the request succeeds, the evaluation license is **delivered by email**, and that email includes a **download link** for the license file. After it arrives, install it with the steps in *Installing a License File* below.
+
+The `submit_feedback` tool is **disabled by default**, so the in-flow request is non-functional until you explicitly enable it. To enable it, open `senzing-bootcamp/mcp.json`, remove `submit_feedback` from the `disabledTools` array, and save the file. The agent sources the evaluation license's record capacity and validity period from the Senzing MCP server at request time rather than from fixed figures.
 
 ### Obtaining a License
 

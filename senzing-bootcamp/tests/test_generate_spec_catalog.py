@@ -1607,6 +1607,7 @@ class TestProperty9SummaryRoundTrip:
             }
 
 
+@pytest.mark.slow
 class TestProperty10DeterministicGeneration:
     """Property 10: Deterministic, byte-identical generation (Req 7.1).
 

@@ -61,16 +61,29 @@ Tell the user: "Senzing SDK is not installed yet. Let's set it up — this is a 
 
 ## Step 2: Determine Platform
 
-Ask: "What platform are you using? Linux, macOS, or Windows?"
+Ask: "What operating system are you on? Linux, macOS, or Windows?" For macOS, also ask whether it is Apple Silicon (M1/M2/M3/M4) or Intel.
 
-Use `sdk_guide` with `topic='install'` and the user's platform to get current installation commands. Pass the bootcamper's chosen language as the `language` parameter. The MCP server always has the latest instructions.
+Then resolve the `sdk_guide` platform value using the rules below. Do **not** assume native install — several OS + language combinations require Docker. The MCP server is authoritative; if uncertain, call `sdk_guide(topic='install')` with no platform to get the live decision tree.
 
 **Platform options for `sdk_guide`:**
 
-- `platform='linux_apt'` — Ubuntu/Debian
-- `platform='linux_yum'` — RHEL/CentOS/Fedora
-- `platform='macos_arm'` — macOS (Apple Silicon)
-- `platform='windows'` — Windows
+- `platform='linux_apt'` — Debian/Ubuntu/Mint (apt/dpkg)
+- `platform='linux_yum'` — RHEL/Fedora/Amazon Linux (yum/dnf)
+- `platform='macos_arm'` — macOS Apple Silicon (Homebrew cask)
+- `platform='windows'` — Windows 10/11 (Scoop)
+- `platform='docker'` — Platform-independent container; the fallback and the **required** path for several cases below
+
+**Routing rules (apply in order):**
+
+1. Chosen language is Python AND OS is macOS or Windows → **`platform='docker'`**. The Python SDK is only supported on Linux; on macOS/Windows it must run in a container.
+2. macOS Intel → **`platform='docker'`**. There is no native Intel-Mac install — the Homebrew tap is Apple Silicon (ARM64) only.
+3. macOS Apple Silicon (non-Python) → **`platform='macos_arm'`**.
+4. Windows without Scoop (non-Python) → **`platform='docker'`**. With Scoop available → **`platform='windows'`**.
+5. Linux → **`platform='linux_apt'` or `platform='linux_yum'`** based on the package manager.
+
+When a learner lands on Docker because of these rules, briefly explain why (e.g., "The Senzing Python SDK is Linux-only, so on macOS we'll run it in a container") so the redirect doesn't feel arbitrary.
+
+Use `sdk_guide` with `topic='install'`, the resolved `platform`, and the bootcamper's chosen language as the `language` parameter to get current installation commands. The MCP server always has the latest instructions.
 
 **Checkpoint:** Write step 2 to `config/bootcamp_progress.json`.
 
@@ -82,8 +95,18 @@ Follow the platform-specific instructions from `sdk_guide`. The installation has
 
 **Phase 1 — Install the SDK package (execute without stopping):**
 
+For native installs (`linux_apt`, `linux_yum`, `macos_arm`, `windows`):
+
 1. Add the Senzing package repository
 2. Install the Senzing SDK package
+
+For the `docker` path (Intel Mac, Python on macOS/Windows, or Windows without Scoop):
+
+- **Do not use the pre-built `senzing/senzingsdk-tools` images** — they require PostgreSQL and do not support SQLite, which is the bootcamp default (Step 7). Instead, run a plain Linux container (e.g., `debian:bookworm-slim`) and follow the `linux_apt` steps inside it so SQLite keeps working.
+- Mount the bootcamper's project directory into the container so all artifacts (database, config, source) land in the working directory, not inside an ephemeral container layer.
+- Call `sdk_guide(topic='install', platform='docker', language='<chosen_language>')` for the current container commands and image names.
+- Never drive interactive Senzing CLI tools (`sz_configtool`, `sz_explorer`) — they require human input. Generate SDK code via `generate_scaffold` instead.
+- Senzing publishes native ARM64 images, so no x86 emulation is needed on Apple Silicon.
 
 **Phase 2 — EULA acceptance (requires bootcamper input):**
 
@@ -183,7 +206,32 @@ Confirm: "License file placed at `licenses/g2.lic`."
 
 Confirm: "No problem — the built-in 500-record evaluation license is active automatically. That's enough for the bootcamp demo modules."
 
-Mention: "If you need a free evaluation license for larger datasets later, contact <support@senzing.com> (typically 1–2 business days, 30–90 day validity). For production licenses, contact <sales@senzing.com>. If you need a larger evaluation license, **consult the Senzing MCP server** — call `search_docs(query='larger evaluation license for datasets over 500 records')` and present the returned guidance. See `licenses/README.md` for details."
+If the bootcamper wants a license for larger datasets, present the licensing paths below. **Consult the Senzing MCP server first** — call `search_docs(query='larger evaluation license for datasets over 500 records')` and present the returned guidance. See `licenses/README.md` for details.
+
+**Check the in-flow option's availability before presenting choices.** Within this same licensing interaction, call `get_capabilities` on the Senzing MCP server to determine whether the `submit_feedback` tool is reported as available. Wait up to 30 seconds for a response, then apply this decision:
+
+- **`submit_feedback` reported available** → present all three licensing paths below (in-flow MCP request, external request, and apply-an-existing-license).
+- **`submit_feedback` reported unavailable, an error response is returned, or no response arrives within 30 seconds** → omit the in-flow MCP request path, present only the external request and apply-an-existing-license paths, and tell the bootcamper the in-session license-request capability is unavailable for the current session.
+
+Present the available paths as distinct, individually selectable options:
+
+1. **Request an evaluation license through the MCP server (in-flow)** — *present this option only when `submit_feedback` is reported available.* This path asks the Senzing MCP server to generate an evaluation license for you by invoking the `submit_feedback` tool with the `license_request` category. The evaluation license is delivered by email, and the email contains a download link. This option requires the `submit_feedback` tool, which is **disabled by default** — it is listed in the `disabledTools` array in `senzing-bootcamp/mcp.json`.
+2. **Request a license through the external channel** — Contact <support@senzing.com> to request an evaluation license. Mention that you are using the Senzing Bootcamp and provide your name, organization, expected record count, and use case description. Expect a response within 1–2 business days. For production licenses, contact <sales@senzing.com>.
+3. **Apply an existing license** — if you already have, or later obtain, a `.lic` file or Base64-encoded license string, follow the Step 5d configuration steps to save and wire it.
+
+When presenting the evaluation license's validity period or record capacity, retrieve those values from a Senzing MCP server tool during this session and present exactly what the tool returns. If the tool does not return a value, or the MCP server cannot be reached, omit the specific figure and tell the bootcamper that the current value is unavailable from the MCP server — never substitute a hardcoded or remembered figure.
+
+Ask the bootcamper which path they would like to take.
+
+Once the bootcamper responds, act on their choice:
+
+- **In-flow MCP request:** If `submit_feedback` is still listed in `disabledTools`, tell the bootcamper this option requires the `submit_feedback` tool and that it is disabled by default: open `senzing-bootcamp/mcp.json`, remove `submit_feedback` from the `disabledTools` array, and save the file. After they confirm they have re-enabled it, re-verify availability by calling `get_capabilities` again before invoking. If they decline to re-enable it, present only the remaining paths (external request and apply existing). When availability is confirmed, invoke `submit_feedback` exactly once with the `license_request` category. On a response with no error, instruct the bootcamper to check the email associated with their request for the evaluation license and its download link; once they confirm receipt, follow the Step 5d configuration steps. If the invocation returns an error or no response within 30 seconds, tell the bootcamper the license request did not complete, present the remaining paths (external request and apply existing), and do not automatically re-invoke `submit_feedback`.
+- **External request:** request via the external channel above; follow the Step 5d configuration steps once you have the license file.
+- **Apply an existing license:** follow the configuration steps in Step 5d.
+
+If at any point the bootcamper reveals they already have a Senzing license — or indicated in Step 5b that they have a `.lic` file or Base64-encoded license key — omit the in-flow MCP request option and route them to the apply-an-existing-license path in Step 5d.
+
+If the bootcamper's response does not match any presented path, tell them the prior response was not recognized, re-present the same options unchanged, and do not advance past Step 5c.
 
 Record in `config/bootcamp_preferences.yaml`: `license: evaluation`.
 

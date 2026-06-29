@@ -12,18 +12,21 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  validate:
+  gates:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.11', '3.12', '3.13']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: requirements-dev.txt
+      - name: Install pinned CI tools
+        run: pip install -r requirements-dev.txt
       - name: Validate power integrity
         run: python senzing-bootcamp/scripts/validate_power.py
       - name: Validate steering token counts
@@ -44,10 +47,6 @@ jobs:
             echo "::error::Hook registry is out of sync. Run: python senzing-bootcamp/scripts/sync_hook_registry.py --write"
             exit 1
           }
-      # Enforces the thin Router_Root convention: lint_steering.py runs
-      # check_router_convention inside run_all_checks, so a regressing root
-      # (over-ceiling or root-doubles-as-phase) emits an ERROR and exits non-zero,
-      # failing the PR. Runs on the full 3.11/3.12/3.13 matrix above.
       - name: Lint steering files
         run: python senzing-bootcamp/scripts/lint_steering.py
       - name: Validate module prerequisites
@@ -65,9 +64,7 @@ jobs:
       - name: Validate external links
         run: python senzing-bootcamp/scripts/validate_links.py --timeout 10
       - name: Lint Python (ruff)
-        run: |
-          pip install ruff
-          ruff check senzing-bootcamp/scripts/ senzing-bootcamp/tests/ tests/
+        run: ruff check senzing-bootcamp/scripts/ senzing-bootcamp/tests/ tests/
       - name: Conversational eval harness
         run: python senzing-bootcamp/scripts/eval_conversations.py
       - name: Verify generated POWER.md docs are in sync
@@ -86,7 +83,22 @@ jobs:
         run: python senzing-bootcamp/scripts/example_coverage_report.py --check
       - name: Scan for brittle test assertions
         run: python senzing-bootcamp/scripts/scan_brittle_assertions.py --check
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: requirements-dev.txt
+      - name: Install pinned CI tools
+        run: pip install -r requirements-dev.txt
       - name: Run tests
-        run: |
-          pip install pytest hypothesis
-          python -m pytest senzing-bootcamp/tests/ tests/ -v --tb=short
+        env:
+          HYPOTHESIS_PROFILE: thorough
+        run: python -m pytest senzing-bootcamp/tests/ tests/ -n auto --dist loadgroup

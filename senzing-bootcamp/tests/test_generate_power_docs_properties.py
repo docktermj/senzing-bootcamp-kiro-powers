@@ -524,10 +524,15 @@ class TestProperty7VerifyNeverMutatesFilesystem:
             shutil.rmtree(base_dir, ignore_errors=True)
 
 
+@pytest.mark.slow
 class TestProperty11WrittenOutputIsCommonMarkValid:
     """Property 11: Write_Mode output passes ``validate_commonmark.py``.
 
     Validates: Requirements 5.1.
+
+    Marked ``slow``: each example shells out to the markdownlint-backed
+    CommonMark validator, making this the single longest-running test in the
+    suite (~28s on the fast profile, far longer on ``thorough``).
     """
 
     @settings(

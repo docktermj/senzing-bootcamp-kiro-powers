@@ -6,24 +6,24 @@ import sys
 from pathlib import Path
 
 import pytest
-from hypothesis import HealthCheck, settings
 
 # ---------------------------------------------------------------------------
-# Hypothesis profile — deterministic under variable CI/local machine load
+# Hypothesis profile — centralized in the repo-root ``hypothesis_profiles``
 # ---------------------------------------------------------------------------
-# Many property tests do real per-example filesystem I/O (tempfile, write_text,
-# mkdir) or run a CLI ``main()``, which can exceed Hypothesis's default 200 ms
-# deadline or trip the ``too_slow`` input-generation health check when the
-# machine is under load. Those are timing artifacts, not logic failures. This
-# profile disables the per-example deadline and suppresses the timing-related
-# health checks so the suite is deterministic. Per-test ``@settings`` still take
-# precedence for any key they specify. Assertions are unaffected.
-settings.register_profile(
-    "bootcamp",
-    deadline=None,
-    suppress_health_check=[HealthCheck.too_slow],
-)
-settings.load_profile("bootcamp")
+# Profile registration and selection live in the repo-root ``hypothesis_profiles``
+# module so both collection roots (``senzing-bootcamp/tests/`` and ``tests/``)
+# stay in sync. It registers the profiles, resolves the active one from the
+# ``HYPOTHESIS_PROFILE`` environment variable, and loads it. Every profile sets
+# ``deadline=None`` and suppresses the ``too_slow`` health check, preserving the
+# previous timing behavior under variable CI/local machine load. Per-test
+# ``@settings`` still take precedence for any key they specify.
+_REPO_ROOT = str(Path(__file__).resolve().parents[2])
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
+import hypothesis_profiles
+
+hypothesis_profiles.load_active_profile()
 
 # ---------------------------------------------------------------------------
 # Make senzing-bootcamp/scripts/ importable
@@ -49,6 +49,11 @@ def _recover_stale_cwd():
     restored directory was a temp dir that got cleaned up, the cwd
     becomes invalid and subsequent ``monkeypatch.chdir`` calls fail.
     Also restores to the project root if cwd was changed to a temp dir.
+
+    Process-local and therefore correct under pytest-xdist: each xdist worker
+    is a separate OS process with its own cwd, so this autouse fixture runs
+    independently inside every worker and preserves per-test cwd recovery
+    without modification. No xdist-specific change is needed.
     """
     try:
         cwd = os.getcwd()
@@ -581,3 +586,24 @@ def patch_commonmark(monkeypatch):
     """
     disable_commonmark(monkeypatch)
     return None
+
+
+# ---------------------------------------------------------------------------
+# Auto-tag Hypothesis property tests with the registered ``property`` marker.
+# ---------------------------------------------------------------------------
+# Hypothesis wraps every ``@given`` test and sets ``is_hypothesis_test = True``
+# on the resulting callable. Detecting that attribute at collection time lets
+# the registered ``property`` marker (see ``[tool.pytest.ini_options]`` in the
+# repo-root pyproject.toml) be applied to every property test under this root
+# without per-file decorator churn, so selective runs stay meaningful:
+#   pytest -m property              # only Hypothesis tests
+#   pytest -m "not property"        # skip generative tests for a quick smoke run
+# This hook is conftest-local, so it only tags items collected under
+# ``senzing-bootcamp/tests/``; the repo-root ``tests/`` has an identical hook.
+
+
+def pytest_collection_modifyitems(config, items):
+    """Apply the ``property`` marker to every collected Hypothesis test."""
+    for item in items:
+        if getattr(getattr(item, "obj", None), "is_hypothesis_test", False):
+            item.add_marker("property")

@@ -307,8 +307,13 @@ import hashlib
 
 _STEP_HASHES: dict[str, str] = {
     "Step 1": "68d4a9cd86708c3ac65c2fd2613b0e79c8770ae7cc455d580c0275a721c8d5d7",
-    "Step 2": "d699ce64d2b9f6f8f834466b7886611343554f5d3e7f1bf89c39ad7d58cf92a0",
-    "Step 3": "3591982547aded6cd5da8870c3c6d8ffa6476f92fa00ea21c9fa1299f6cf4088",
+    # Step 2 & Step 3 re-baselined for the OS-platforms batch: the platform
+    # "Routing rules" / "Platform options" content (Step 2) and the Docker-path
+    # install guidance (Step 3) were added/expanded, and the Step 2 routing list
+    # was de-bolded so it is no longer misread as numbered workflow steps
+    # (single-question-per-step fix). Hashes recomputed from current content.
+    "Step 2": "44100571bfe4bf1b3d7351a589c993a24f367595084e07f51a124412cb158966",
+    "Step 3": "5cff1cbca271f3f706f637ad54f018093d16b18490e927f4abbd37b479ee5841",
     "Step 4": "5ee5168b5bfe301fcf7f6841ef78f3ab334dfc1b413e7440cc598fc72d69e6be",
     "Step 6": "67f0d91f31c40a0ef08336845a0a001ab959d4dc38c8ef5864e7a0141df4837f",
     "Step 7": "e70acaae1640b0259e3cc5927f5ea27c88a98b3625cc2d5a6eca36ca367bb7a2",

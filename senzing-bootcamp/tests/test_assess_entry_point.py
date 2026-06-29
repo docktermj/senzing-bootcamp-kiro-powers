@@ -1171,6 +1171,7 @@ def st_valid_manifest_modules_for_main(draw):
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.slow
 class TestSuccessfulAssessmentExitsZero:
     """Property 8 — Successful Assessment Exits Zero.
 
@@ -1179,6 +1180,9 @@ class TestSuccessfulAssessmentExitsZero:
     For any valid manifest file and accessible project directory (regardless of
     which artifacts are present or missing), `main()` SHALL complete without
     raising an unhandled exception and exit with code 0.
+
+    Marked ``slow``: each example drives the full ``main()`` entry point
+    end-to-end, making it one of the heavier tests under the ``thorough`` profile.
     """
 
     @given(data=st_valid_manifest_modules_for_main())

@@ -34,6 +34,11 @@ INDEX_PATH = Path("senzing-bootcamp/steering/steering-index.yaml")
 VALID_INCLUSIONS = {"always", "auto", "fileMatch", "manual"}
 VALID_SIZE_CATEGORIES = {"small", "medium", "large"}
 
+# Split_Check fallback (Requirements 1.3, 1.4, 1.5, 1.7): the Default_Threshold
+# used when budget.split_threshold_tokens is missing or invalid. This is the only
+# hardcoded Split_Threshold value permitted in the linter.
+DEFAULT_SPLIT_THRESHOLD = 5000
+
 # Environment guard (Requirements 6.4, 6.6): the linter requires Python 3.11+
 # with these standard-library modules importable. The runtime is verified at the
 # start of main() so an unsupported interpreter fails loudly instead of silently
@@ -445,6 +450,240 @@ def get_router_ceiling(index_path: Path) -> int:
     content = index_path.read_text(encoding="utf-8")
     match = re.search(r"router_ceiling:\s*(\d+)", content)
     return int(match.group(1)) if match else 1000
+
+
+def get_split_threshold(index_path: Path) -> int:
+    """Read ``budget.split_threshold_tokens`` from the steering index.
+
+    Uses the same localized-regex approach as ``get_router_ceiling`` and
+    ``measure_steering``. The ``\\d+`` capture inherently excludes non-numeric and
+    negative values (a leading ``-`` is not captured); zero is excluded by the
+    explicit ``>= 1`` check. Matches are scanned in document order so the first
+    positive-integer value wins when the key appears more than once
+    (Requirements 1.1, 1.2, 1.6).
+
+    Args:
+        index_path: Path to steering-index.yaml.
+
+    Returns:
+        The configured Split_Threshold, or ``DEFAULT_SPLIT_THRESHOLD`` (5000)
+        when the file is missing, the key is absent, or no match is a positive
+        integer (Requirements 1.3, 1.4, 1.5).
+    """
+    if not index_path.exists():
+        return DEFAULT_SPLIT_THRESHOLD
+    content = index_path.read_text(encoding="utf-8")
+    for match in re.finditer(r"split_threshold_tokens:\s*(\d+)", content):
+        value = int(match.group(1))
+        if value >= 1:
+            return value
+    return DEFAULT_SPLIT_THRESHOLD
+
+
+@dataclass
+class SplitAllowlistEntry:
+    """One Split_Check allowlist exemption parsed from the steering index.
+
+    Attributes:
+        filename: Exact, case-sensitive steering filename to exempt.
+        justification: Raw justification text as written in the index; preserved
+            as-is (including the empty string) so ``check_split_threshold`` can
+            validate it downstream.
+    """
+
+    filename: str
+    justification: str
+
+
+def parse_split_allowlist(index_path: Path) -> list[SplitAllowlistEntry]:
+    """Parse the ``split_allowlist:`` section of the steering index.
+
+    Uses the same minimal, indentation-based line parsing as
+    ``parse_steering_index`` (no PyYAML). The allowlist is a top-level
+    ``split_allowlist:`` section whose entries are two-space-indented
+    ``<filename>: <justification>`` lines. The raw justification (including the
+    empty string when omitted) is preserved so validation happens downstream in
+    ``check_split_threshold``; parsing does not itself reject malformed entries
+    (Requirement 4.1).
+
+    Args:
+        index_path: Path to steering-index.yaml.
+
+    Returns:
+        The parsed allowlist entries in document order, or ``[]`` when the file
+        is missing or the ``split_allowlist:`` section is absent or empty.
+    """
+    if not index_path.exists():
+        return []
+
+    content = index_path.read_text(encoding="utf-8")
+    lines = content.splitlines()
+
+    entries: list[SplitAllowlistEntry] = []
+    in_allowlist = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        # Skip comments and blank lines.
+        if not stripped or stripped.startswith("#"):
+            continue
+
+        # Top-level (non-indented) lines start or end the allowlist section.
+        if not line[0].isspace():
+            in_allowlist = stripped == "split_allowlist:"
+            continue
+
+        if not in_allowlist:
+            continue
+
+        # Allowlist entries: "  <filename>: <justification>" (two-space indent).
+        indent = len(line) - len(line.lstrip())
+        if indent == 2 and ":" in stripped:
+            key, _, val = stripped.partition(":")
+            filename = key.strip()
+            justification = val.strip()
+            if filename:
+                entries.append(SplitAllowlistEntry(filename, justification))
+
+    return entries
+
+
+def normalize_split_severity(value: str | None) -> str:
+    """Validate and canonicalize a Split_Check severity override.
+
+    Centralizes severity validation for the Split_Check (Requirement 3.7).
+    ``None`` means no override was supplied and resolves to the default
+    ``"WARNING"`` severity. Any other value must be exactly ``"WARNING"`` or
+    ``"ERROR"``; an invalid value raises ``ValueError`` so the caller surfaces an
+    error indication rather than silently defaulting.
+
+    Args:
+        value: The configured severity override, or ``None`` for no override.
+
+    Returns:
+        The canonical severity string, either ``"WARNING"`` or ``"ERROR"``.
+
+    Raises:
+        ValueError: If ``value`` is neither ``None``, ``"WARNING"``, nor
+            ``"ERROR"``.
+    """
+    if value is None:
+        return "WARNING"
+    if value in ("WARNING", "ERROR"):
+        return value
+    raise ValueError(
+        f"Invalid Split_Check severity {value!r}; expected 'WARNING' or 'ERROR'"
+    )
+
+
+def check_split_threshold(
+    file_metadata: dict,
+    split_threshold: int,
+    allowlist: list[SplitAllowlistEntry],
+    severity: str = "WARNING",
+) -> list[LintViolation]:
+    """Rule: classify steering files against the Split_Threshold (Requirements 2, 4).
+
+    Pure classification logic over the already-parsed ``file_metadata`` mapping,
+    mirroring ``check_router_convention``'s structure and MISSING handling. Each
+    ``file_metadata`` entry is evaluated exactly once, in sorted filename order, so
+    output is deterministic.
+
+    Allowlist handling runs first:
+
+    - Each allowlist entry is validated: its justification must be present and
+      1–280 characters. An invalid entry yields an ERROR ``LintViolation`` and is
+      **excluded** from the exempt set, so its file remains enforced
+      (Requirement 4.6). Valid entries form the ``exempt_filenames`` set
+      (Requirements 4.1, 4.2).
+    - Each allowlist filename absent from ``file_metadata`` yields an ERROR
+      ``LintViolation`` identifying the obsolete exemption; the remaining entries
+      still apply (Requirement 4.5).
+
+    Then each ``file_metadata`` entry is classified:
+
+    - Exempt files produce no over-threshold violation; a missing/invalid count on
+      an exempt file is also skipped, since the file is intentionally unmanaged
+      (Requirement 4.2).
+    - An absent or non-integer ``token_count`` yields exactly one MISSING
+      ``LintViolation`` naming the file (cannot classify), mirroring
+      ``check_router_convention`` (Requirement 2.4).
+    - A ``token_count`` strictly greater than ``split_threshold`` yields exactly one
+      over-threshold ``LintViolation`` at ``severity`` level, naming the filename,
+      the integer ``token_count``, and the Split_Threshold (Requirement 2.2).
+    - A ``token_count`` at or below the threshold (including equality) yields no
+      violation (Requirement 2.3).
+
+    Allowlist-validation and stale-entry violations use ``ERROR`` level (they
+    indicate a misconfigured index); over-threshold violations use the configurable
+    ``severity``. Every finding is emitted via
+    ``LintViolation(level, file=str(INDEX_PATH), line=0, message=...)`` so output
+    formatting and exit-code handling are unchanged (Requirement 3.6).
+
+    Args:
+        file_metadata: ``file_metadata`` mapping from the steering index (filename
+            → ``{"token_count": int|str, "size_category": str}``).
+        split_threshold: The resolved Split_Threshold.
+        allowlist: Parsed allowlist entries (filename → justification).
+        severity: Level used for over-threshold violations; ``"WARNING"`` (default)
+            or ``"ERROR"``.
+
+    Returns:
+        List of ``LintViolation`` instances; empty when no findings.
+    """
+    violations: list[LintViolation] = []
+    index_path_str = str(INDEX_PATH)
+
+    # Step 1 + 2: validate allowlist entries and detect stale exemptions. Only
+    # entries with a valid justification join the exempt set; invalid or stale
+    # entries are reported and never exempt a file.
+    exempt_filenames: set[str] = set()
+    for entry in allowlist:
+        justification = entry.justification
+        if not justification or len(justification) > 280:
+            violations.append(LintViolation(
+                "ERROR", index_path_str, 0,
+                f"Split_Check allowlist entry '{entry.filename}' has an invalid "
+                f"justification (must be 1-280 characters); the file is NOT "
+                f"exempt and remains enforced against the Split_Threshold "
+                f"({split_threshold})"
+            ))
+            continue
+        if entry.filename not in file_metadata:
+            violations.append(LintViolation(
+                "ERROR", index_path_str, 0,
+                f"Split_Check allowlist entry '{entry.filename}' is stale: the "
+                f"file is not present in file_metadata; remove this obsolete "
+                f"exemption from split_allowlist"
+            ))
+            continue
+        exempt_filenames.add(entry.filename)
+
+    # Step 3: classify each file_metadata entry exactly once, in sorted order.
+    for filename in sorted(file_metadata):
+        if filename in exempt_filenames:
+            continue
+
+        token_count = file_metadata[filename].get("token_count")
+        if not isinstance(token_count, int):
+            violations.append(LintViolation(
+                "ERROR", index_path_str, 0,
+                f"Steering file '{filename}' has no measured token_count in "
+                f"file_metadata and cannot be classified against the "
+                f"Split_Threshold ({split_threshold})"
+            ))
+            continue
+
+        if token_count > split_threshold:
+            violations.append(LintViolation(
+                severity, index_path_str, 0,
+                f"Steering file '{filename}' token_count {token_count} exceeds "
+                f"the Split_Threshold {split_threshold}; split it into phases "
+                f"via split_steering.py or add a justified split_allowlist entry"
+            ))
+
+    return violations
 
 
 def check_router_convention(
@@ -1825,6 +2064,7 @@ def run_all_checks(
     index_path: Path,
     warnings_as_errors: bool = False,
     skip_template: bool = False,
+    split_severity: str = "WARNING",
 ) -> tuple:
     """Run all lint rules and return (violations, exit_code).
 
@@ -1834,6 +2074,8 @@ def run_all_checks(
         index_path: Path to steering-index.yaml
         warnings_as_errors: If True, treat WARNING as ERROR for exit code.
         skip_template: If True, skip all template conformance checks.
+        split_severity: Severity for over-threshold Split_Check violations,
+            ``"WARNING"`` (default) or ``"ERROR"`` (Requirements 3.2, 3.4, 3.5).
 
     Returns:
         Tuple of (all_violations, exit_code).
@@ -1892,6 +2134,20 @@ def run_all_checks(
     router_ceiling = get_router_ceiling(index_path)
     violations.extend(check_router_convention(
         router_info, index_data.get("file_metadata", {}), router_ceiling
+    ))
+
+    # Split_Check rule (Requirements 3.2, 3.4, 3.5, 5.1, 5.3, 5.4). Reads the
+    # Split_Threshold and allowlist from the index, then classifies every
+    # file_metadata entry. Over-threshold violations are emitted at the resolved
+    # severity (default WARNING); the existing exit-code logic below handles them
+    # (ERROR always fails; WARNING fails only under --warnings-as-errors).
+    split_threshold = get_split_threshold(index_path)
+    split_allowlist = parse_split_allowlist(index_path)
+    violations.extend(check_split_threshold(
+        index_data.get("file_metadata", {}),
+        split_threshold,
+        split_allowlist,
+        severity=normalize_split_severity(split_severity),
     ))
 
     # Template conformance rules (unless skipped)
@@ -1999,6 +2255,12 @@ def main() -> None:
         action="store_true",
         help="Skip all template conformance checks for module steering files",
     )
+    parser.add_argument(
+        "--split-severity",
+        choices=["WARNING", "ERROR"],
+        default="WARNING",
+        help="Severity for over-threshold Split_Check violations (default: WARNING)",
+    )
     args = parser.parse_args()
 
     violations, exit_code = run_all_checks(
@@ -2007,6 +2269,7 @@ def main() -> None:
         args.index_path,
         args.warnings_as_errors,
         args.skip_template,
+        args.split_severity,
     )
 
     # Print violations

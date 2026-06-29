@@ -99,11 +99,60 @@ GENERATED_FILES: frozenset[str] = frozenset(
 # (a single sequential mapping procedure) that already sits one phase deep and
 # is not further sub-divisible without harming agent comprehension. Exempted
 # with the same threshold-held rationale; it remains indexed in file_metadata.
+#
+# graduation.md (graduation-recap-pdf-resilience spec): the graduation flow is a
+# single cohesive, sequential workflow (Step 0 normalization -> Step 0a recap
+# recovery -> Step 0b.1/0b.2/0b.3/0b.4 recap+PDF+Q&A generation -> graduation
+# report -> Step 1) whose steps are interdependent and must load together; it is
+# not splittable into independently-loadable units without harming agent
+# comprehension of the end-to-end graduation sequence. The
+# graduation-recap-pdf-resilience spec rewrote Step 0b.3 into a resilient
+# helper-first / inline-fallback decision tree with explicit graceful-degradation
+# and no-false-success messaging (Requirements 1-4), growing the file from 4672
+# to 5394 tokens — just past the 5000 split_threshold. Rather than fragment a
+# workflow that must be read as a whole (or drop required resilience behavior),
+# it is exempted with this justification; it remains indexed in file_metadata.
+#
+# module-03-phase2-visualization.md (entity-graph-edge-key-mismatch bugfix): this
+# is the Module 3 Step 9 visualization generation+verification phase — a single
+# cohesive, sequential workflow (generate artifacts -> 9.3 component specs ->
+# 9.4 start/verify endpoints -> graph-render smoke check -> guided tour) whose
+# steps are interdependent and must load together; it already sits one phase deep
+# (step_range [9, 9]) and is not further sub-divisible without harming agent
+# comprehension of the generation+verification sequence. The
+# entity-graph-edge-key-mismatch bugfix added Critical Lesson 7 (map edge
+# `source_entity_id`/`target_entity_id` -> D3 `source`/`target` before
+# `forceLink`), a Step 9.3 edge-map note, and the Step 9.4 post-generation
+# graph-render smoke check (Requirements 2.1-2.3), growing the file from 4738 to
+# 5239 tokens — just past the 5000 split_threshold. Rather than fragment a
+# workflow that must be read as a whole, it is exempted with this justification;
+# it remains indexed in file_metadata.
+#
+# module-02-sdk-setup.md (surface-mcp-license-request spec): the Module 2 Step 5
+# Configure-License flow gained the Step 5c in-flow MCP License_Request_Option
+# (capability gate with the 30s window, three individually-selectable licensing
+# paths, disabled-by-default `submit_feedback` enable instructions, single
+# `license_request` invocation, and MCP-sourced validity/capacity facts) mirroring
+# the canonical Module 1 Step 6d branch (Requirement 7). These additions grew the
+# file from 4491 to 5512 tokens — just past the 5000 split_threshold. The Step 5
+# SDK-setup flow is a single cohesive, sequential configure-license workflow whose
+# 5a/5b/5c/5d branches must load together (the in-flow option lives inside the 5c
+# no-license branch and routes into 5d), and the surfaced wording is fully asserted
+# by test_module2_license_request_option.py and mirrors Module 1 for cross-module
+# consistency, so it cannot be trimmed without dropping required phrases. The
+# split_threshold_tokens budget value is held at 5000 across the corpus; rather
+# than fragment a workflow that must be read as a whole — and mirroring the
+# sibling module-01-phase1-discovery.md exemption for the same in-flow option
+# pattern — this single unit is exempted with this justification. It remains
+# indexed in file_metadata.
 EXEMPTIONS: frozenset[str] = frozenset(
     {
         "module-completion.md",
         "module-01-phase1-discovery.md",
         "module-05-phase2-data-mapping.md",
+        "graduation.md",
+        "module-03-phase2-visualization.md",
+        "module-02-sdk-setup.md",
     }
 )
 

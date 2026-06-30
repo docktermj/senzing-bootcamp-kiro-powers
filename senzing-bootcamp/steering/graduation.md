@@ -9,7 +9,7 @@ This steering file guides the agent through transitioning a completed bootcamp p
 The workflow has two preparatory steps followed by five sequential steps:
 
 0. **Markdown Normalization Pass** — Normalize the bootcamp's Markdown artifacts into the schema their consumers expect, before any derived artifact is generated (non-blocking)
-0b. **Recap PDF & Q&A Transcript Generation** — Generate a PDF of the now-normalized bootcamp recap document and the ordered Q&A transcript (both non-blocking)
+0b. **Recap PDF, Q&A Transcript & Docs Index Generation** — Generate a PDF of the now-normalized bootcamp recap document, the ordered Q&A transcript, and the `docs/` index (all non-blocking)
 1. **Production Project Structure** — Copy production-relevant code into a clean `production/` directory, excluding bootcamp scaffolding
 2. **Production Configuration Files** — Generate `.env.production`, `.env.example`, `docker-compose.yml`, a CI/CD pipeline, and `.gitignore`
 3. **Production README** — Generate a production-ready `README.md` with no bootcamp language
@@ -163,6 +163,26 @@ Generate the ordered question→answer transcript from the session log for repla
    - If the script fails for any other reason: inform the bootcamper of the failure reason and proceed to Step 1.
 
 3. On success, inform the bootcamper: "📝 Q&A transcript generated at `docs/bootcamp_transcript.md`."
+
+Proceed to Step 0b.5.
+
+### Step 0b.5: Docs Index Generation
+
+Generate `docs/README.md` — a table of contents describing every top-level file and immediate subdirectory under `docs/` — so the documentation set is self-describing for handoff. This step is **non-blocking** — graduation continues regardless of the outcome, in the same spirit as the recap PDF and Q&A transcript steps.
+
+1. **If `docs/` does not exist**, report that the index was not generated (for example, "📑 Docs index not generated — no `docs/` directory was found.") and proceed to Step 1. This is a success, not an error. When `docs/` does exist, do **not** ask for confirmation that it was found — proceed directly to generation.
+
+2. Otherwise, run the docs index generator:
+
+   ```bash
+   python scripts/generate_docs_index.py
+   ```
+
+   This enumerates the actual top-level contents of `docs/` at graduation time and regenerates `docs/README.md` as a Markdown table of contents, replacing any existing index. The write is atomic and validated, so a failure never leaves a partial or malformed `docs/README.md`.
+
+3. **Handle outcomes gracefully (warn and continue):**
+   - On success (exit 0 with a `Wrote docs index:` line on stdout), inform the bootcamper: "📑 Docs index generated at `docs/README.md`." then report the script's one-line summary.
+   - If the script fails for any reason (exit 1, or the index was written but its one-line summary cannot be reported), record the failure reason for the "⚠️ Issues Encountered" section of `production/GRADUATION_REPORT.md` and proceed to Step 1 anyway. A failure never blocks graduation.
 
 Proceed to Step 1.
 

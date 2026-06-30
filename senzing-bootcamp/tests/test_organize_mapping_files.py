@@ -1276,14 +1276,22 @@ class TestIntegrationFullSweepAndIndex:
         assert readme.exists(), "docs/README.md was not generated"
         index_text = readme.read_text()
 
-        # Every doc under docs/ is listed: the mapper spec, the entity spec, and
-        # the generic reference doc.
-        for rel in (
-            "mapping/playpalace_mapper.md",
-            "reference/senzing_entity_specification.md",
-            "mapping/profile_report.md",
+        # The docs index enumerates the depth-1 contents of docs/: each
+        # immediate subdirectory appears exactly once as a single entry (with a
+        # trailing "/" indicator). The nested docs live under mapping/ and
+        # reference/, so both subdirectory entries must be listed.
+        for entry in ("mapping/", "reference/"):
+            assert entry in index_text, f"{entry} missing from generated docs index"
+        # Depth-1 enumeration never recurses, so nested file names do not appear
+        # as their own index entries.
+        for nested in (
+            "playpalace_mapper.md",
+            "senzing_entity_specification.md",
+            "profile_report.md",
         ):
-            assert rel in index_text, f"{rel} missing from generated docs index"
+            assert nested not in index_text, (
+                f"{nested} should not be listed; the index enumerates depth-1 only"
+            )
 
         # The freshly written index is reported in sync by --check.
         assert (

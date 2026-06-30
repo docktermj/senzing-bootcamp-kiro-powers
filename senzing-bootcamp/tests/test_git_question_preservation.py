@@ -314,12 +314,16 @@ class TestCheckpointCountPreservation:
         Step 7 was split into sub-steps 7a-7d, each with a checkpoint (4 total).
         Step 1 also has a sub-step checkpoint.
         Step 6 has sub-step checkpoints for 6c, 6d, 6e (3 total).
-        Total: 16 checkpoints.
+        The module1-business-case-offer feature added two more checkpoints:
+        Step 5a (Business Case Offer acceptance handling) and Step 5b (CORD
+        sourcing for the Generated_Scenario via MCP), each with its own
+        "**Checkpoint:** Write step 5X" line.
+        Total: 18 checkpoints.
         """
         content = _read_module_01()
         count = len(_CHECKPOINT_RE.findall(content))
-        assert count == 16, (
-            f"Expected 16 checkpoints, found {count}."
+        assert count == 18, (
+            f"Expected 18 checkpoints, found {count}."
         )
 
 

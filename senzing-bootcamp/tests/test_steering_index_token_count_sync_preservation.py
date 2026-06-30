@@ -183,7 +183,15 @@ _BASELINE_HASHES: dict[str, str] = {
     # note), all recomputed by measure_steering.py into file_metadata and the
     # budget total. Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "f506514201c81c9963f2b84decd9b95f0600f064c1893b6ff85e8f4d38c511e5",
+    # Re-baselined once more (192179 -> 192418) for the
+    # module2-license-acquisition-info spec: module-02-sdk-setup.md grew when its
+    # Step 5a explanation was reconstructed in the hybrid resolution — restoring
+    # the original "500 records" / "SENZ9000 error at record 501" evaluation-
+    # license text and the enforced `search_docs` consultation directive while
+    # keeping the new three-path in-flow MCP license-request block — recomputed by
+    # measure_steering.py into file_metadata and the budget total. Only the budget
+    # block changed; keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "d4515503d500e57088e1ee476f3e18e045cad91f0a398c576df2ee81ef53f1b1",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -557,9 +565,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (191808), so the hash cannot silently re-pin a stale value.
+        # (192418), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 191808" in budget_block
+        assert "total_tokens: 192418" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

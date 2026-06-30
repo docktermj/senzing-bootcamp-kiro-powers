@@ -155,7 +155,19 @@ Before checking for license files or asking the bootcamper anything, proactively
 
 If you load more than 500 records, the SDK returns a **SENZ9000 error at record 501**. For larger datasets, you need a custom license file placed at `licenses/g2.lic`."
 
+When presenting the evaluation license's record capacity or validity period, retrieve those values from a Senzing MCP server tool during this session and present exactly what the tool returns. The **500 records** figure above is the current published value — confirm it against the Senzing MCP server rather than presenting it as an authoritative figure from training data. Wait up to 30 seconds for a response; if the tool does not return a value, or the MCP server cannot be reached within that time, omit the specific figure and tell the bootcamper that the current value is unavailable from the MCP server — never substitute a hardcoded or remembered figure.
+
 If a larger or temporary evaluation license is needed, **consult the Senzing MCP server**: call `search_docs(query='request a larger or temporary evaluation license')` and present the returned guidance — this avoids waiting for email responses.
+
+**If you need more than the built-in evaluation license allows**, there are three ways to obtain a license. This is informational only — you'll choose and carry out a path later, at the no-license branch of Step 5c; nothing needs to be selected here.
+
+1. **Request a temporary evaluation license through the MCP server (in-flow)** — the bootcamp can ask the Senzing MCP server to generate a temporary evaluation license for you by invoking the `submit_feedback` tool with the `license_request` category, which avoids waiting for email responses. This path depends on the `submit_feedback` tool being both enabled and reported as available by the MCP server. `submit_feedback` is **disabled by default** — it is listed in the `disabledTools` array in `senzing-bootcamp/mcp.json` — so this path may be unavailable in a given session and is not guaranteed.
+2. **Apply a license you already have** — if you already hold a `.lic` file or a Base64-encoded license key, you can place it at `licenses/g2.lic`.
+3. **Request a license through Senzing support** — request an evaluation license through Senzing support's external channel.
+
+Selecting and carrying out one of these paths happens at the Step 5c no-license branch, not here.
+
+**When you summarize this explanation aloud (rather than reading it verbatim), your summary must keep the in-flow option and its caveat.** State that, when more than the evaluation license's record limit is needed, the bootcamp can help request a temporary evaluation license in-flow through the MCP server — in addition to applying a license you already have and requesting one through Senzing support. And carry the caveat that this in-flow path depends on the `submit_feedback` tool being available and may be unavailable in a given session.
 
 ### 5b. Ask about the bootcamper's license situation
 

@@ -1,14 +1,14 @@
 {
   "name": "to log session events after write operations",
   "version": "1.0.0",
-  "description": "Logs a session event after write operations complete. The IDE appends the log line directly via a runCommand (no agent round-trip), invoking senzing-bootcamp/scripts/log_write_event.py, which records a generic write action (timestamp + current module) to config/session_log.jsonl for the completion summary.",
+  "description": "Logs a session event after write operations complete. The IDE appends the log line directly via a runCommand (no agent round-trip). When the bundled senzing-bootcamp/scripts/log_write_event.py is present it is invoked unchanged; when it is absent a self-contained inline stdlib appender records an equivalent generic write action (timestamp + current module) to config/session_log.jsonl, so logging never emits a file-not-found error and always exits 0.",
   "when": {
     "type": "postToolUse",
     "toolTypes": ["write"]
   },
   "then": {
     "type": "runCommand",
-    "command": "python3 senzing-bootcamp/scripts/log_write_event.py",
+    "command": "if [ -f senzing-bootcamp/scripts/log_write_event.py ]; then python3 senzing-bootcamp/scripts/log_write_event.py; else python3 -c '\nimport json, datetime, pathlib\nmodule = 0\ntry:\n    raw = pathlib.Path(\"config/bootcamp_progress.json\").read_text(encoding=\"utf-8\")\n    value = json.loads(raw)[\"current_module\"]\n    if isinstance(value, int) and not isinstance(value, bool):\n        module = max(0, min(11, value))\nexcept Exception:\n    module = 0\ntry:\n    log_path = pathlib.Path(\"config/session_log.jsonl\")\n    log_path.parent.mkdir(parents=True, exist_ok=True)\n    entry = {\n        \"event_type\": \"action\",\n        \"module\": module,\n        \"timestamp\": datetime.datetime.now(datetime.timezone.utc).isoformat(),\n        \"data\": {\"action_type\": \"command_run\", \"description\": \"write operation\"},\n    }\n    with log_path.open(\"a\", encoding=\"utf-8\") as handle:\n        handle.write(json.dumps(entry, separators=(\",\", \":\")) + \"\\n\")\nexcept Exception:\n    pass\n'; fi",
     "timeout": 10
   }
 }

@@ -163,6 +163,14 @@ Present the full report to the bootcamper. Then act on the verdict:
 
 **If the Senzing SDK is already installed and working (V4.0+):** Tell the user: "Senzing SDK is already installed." When Module 2 is reached (either explicitly or auto-inserted), the module's Step 1 check will detect this and skip installation. Do not re-install.
 
+**Bundled scripts materialization (Mandatory):** The preflight report includes a "Bundled Scripts" check that verifies `senzing-bootcamp/scripts/` exists and contains the required scripts (`log_write_event.py`, `session_logger.py`, the recap generators, etc.). Hooks (e.g. `session-log-events`) and bootcamp/graduation steps shell out to these scripts, so they MUST be present before any of those run. If this check reports `warn` (directory or required scripts missing), run the self-repair before proceeding:
+
+```bash
+python3 senzing-bootcamp/scripts/preflight.py --fix
+```
+
+This materializes/restores the bundled scripts directory idempotently — already-present, valid scripts are left byte-for-byte unchanged (no clobber). Re-run the report and confirm the "Bundled Scripts" check is `pass` before continuing to language selection. Run this verification before installing hooks or invoking any step that depends on the scripts directory.
+
 **Note:** This step replaces the previous inline `shutil.which()` checks. All environment verification is now handled by `preflight.py`.
 
 ### 2a. Windows Prerequisite Installation Offers

@@ -150,13 +150,17 @@ class TestProfileCountsAndSelection:
         assert hypothesis_profiles.FAST in names
         assert hypothesis_profiles.THOROUGH in names
 
-    def test_fast_profile_max_examples_is_ten(self) -> None:
-        """The ``fast`` profile sets ``max_examples == 10``.
+    def test_fast_profile_max_examples_matches_constant(self) -> None:
+        """The ``fast`` profile sets ``max_examples == FAST_MAX_EXAMPLES`` (5).
 
         Validates: Requirements 1.2, 8.1
         """
         hypothesis_profiles.register_profiles()
-        assert settings.get_profile(hypothesis_profiles.FAST).max_examples == 10
+        assert (
+            settings.get_profile(hypothesis_profiles.FAST).max_examples
+            == hypothesis_profiles.FAST_MAX_EXAMPLES
+            == 5
+        )
 
     def test_thorough_profile_max_examples_is_hundred(self) -> None:
         """The ``thorough`` profile sets ``max_examples == 100``.

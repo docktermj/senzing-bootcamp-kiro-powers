@@ -379,7 +379,7 @@ file_metadata:
     token_count: 291
     size_category: small
   graduation.md:
-    token_count: 5804
+    token_count: 6242
     size_category: large
   hook-architecture.md:
     token_count: 2149
@@ -421,11 +421,11 @@ file_metadata:
     token_count: 463
     size_category: small
   hook-registry-module-any.md:
-    token_count: 3376
+    token_count: 3412
     size_category: large
   hook-registry.md:
-    token_count: 1984
-    size_category: medium
+    token_count: 2021
+    size_category: large
   inline-status.md:
     token_count: 460
     size_category: small
@@ -586,7 +586,7 @@ file_metadata:
     token_count: 1751
     size_category: medium
   onboarding-flow.md:
-    token_count: 3888
+    token_count: 4124
     size_category: large
   onboarding-phase1b-intro-language.md:
     token_count: 2126
@@ -650,7 +650,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 188579
+  total_tokens: 189326
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

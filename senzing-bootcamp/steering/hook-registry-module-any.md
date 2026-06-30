@@ -189,4 +189,4 @@ CONSTRAINTS:
 
 - id: `session-log-events`
 - name: `to log session events after write operations`
-- description: `Logs a session event after write operations complete. The IDE appends the log line directly via a runCommand (no agent round-trip), invoking senzing-bootcamp/scripts/log_write_event.py, which records a generic write action (timestamp + current module) to config/session_log.jsonl for the completion summary.`
+- description: `Logs a session event after write operations complete. The IDE appends the log line directly via a runCommand (no agent round-trip). When the bundled senzing-bootcamp/scripts/log_write_event.py is present it is invoked unchanged; when it is absent a self-contained inline stdlib appender records an equivalent generic write action (timestamp + current module) to config/session_log.jsonl, so logging never emits a file-not-found error and always exits 0.`

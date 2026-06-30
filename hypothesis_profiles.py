@@ -7,7 +7,7 @@ roots (``senzing-bootcamp/tests/`` and ``tests/``) import this module and call
 :func:`load_active_profile`, so the two roots never drift apart.
 
 Profiles:
-    fast      max_examples=10  -- local default for quick iteration
+    fast      max_examples=5   -- local default for quick iteration
     thorough  max_examples=100 -- CI / full local run (== Hypothesis default)
     bootcamp  alias of thorough -- backward-compatible legacy name
 
@@ -35,14 +35,14 @@ DEFAULT_PROFILE: str = FAST
 ENV_VAR: str = "HYPOTHESIS_PROFILE"
 
 BASELINE_EXAMPLE_COUNT: int = 20  # documented convention value
-FAST_MAX_EXAMPLES: int = 10
+FAST_MAX_EXAMPLES: int = 5  # reduced for faster local iteration
 THOROUGH_MAX_EXAMPLES: int = 100  # == Hypothesis default; never weakens CI
 
 
 def register_profiles() -> None:
     """Register every profile (fast, thorough, bootcamp alias).
 
-    Registers the ``fast`` profile (``max_examples=10``), the ``thorough``
+    Registers the ``fast`` profile (``max_examples=5``), the ``thorough``
     profile (``max_examples=100``), and the ``bootcamp`` alias which shares the
     thorough settings. Every profile sets ``deadline=None`` and suppresses the
     ``too_slow`` health check, preserving today's timing behavior.

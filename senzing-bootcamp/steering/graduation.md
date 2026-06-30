@@ -106,9 +106,15 @@ Before generating the PDF, validate that the recap document contains content mat
 
 ### Step 0b.3: PDF Generation
 
-Generate `docs/bootcamp_recap.pdf` from `docs/bootcamp_recap.md` using a helper-first, inline-fallback decision. The bundled helper lives in the installed power's directory and may not resolve at a workspace-relative path, so never assume it ran — confirm a PDF was actually written before claiming success. This step pairs with the `recap-pdf-content-loss-fix` (tolerant parser + raw-Markdown fallback) and `graduation-markdown-normalization` (Step 0 normalization) work.
+Generate `docs/bootcamp_recap.pdf` from `docs/bootcamp_recap.md` using a helper-first, inline-fallback decision. The bundled helper lives in the installed power's directory and may not resolve at a workspace-relative path, so never assume it ran — confirm a PDF was actually written before claiming success. This step pairs with the `recap-pdf-content-loss-fix` (tolerant parser + raw-Markdown fallback), `graduation-markdown-normalization` (Step 0 normalization), and `missing-bundled-scripts` (graceful degradation + file-independent inline render) work.
 
 A PDF was written only when the script prints a `PDF generated:` line to stdout and exits 0; any other outcome (exit 1, no `PDF generated:` line) means no PDF exists.
+
+**Preference order (most → least structured), each non-blocking:**
+
+1. **Bundled `generate_recap_pdf.py`** — full structured render (cover page + per-module pages). Preferred first; used whenever it can run and write a PDF.
+2. **`generate_recap_pdf_inline.py`** — self-contained inline generator. It reuses the shared `generate_recap_pdf` parser/renderer when that module is importable, otherwise it falls through to the file-independent path below. Used when the bundled helper does not write a PDF for a reason other than missing `fpdf2`.
+3. **File-independent inline render** — `recap_pdf_render.render_markdown_pdf`, reached from inside the inline generator when no bundled generator file is importable. It renders the raw recap Markdown straight to PDF with **no dependency on any bundled generator file**, so a recap PDF is still produced when both bundled generators are absent (as long as `fpdf2` is installed). `fpdf` is imported lazily inside this render path only; when `fpdf2` is absent the path degrades gracefully (Markdown recap retained, `pip install fpdf2` hint printed) and never hard-fails.
 
 1. **Prefer the bundled helper.** Attempt:
 
@@ -128,7 +134,7 @@ A PDF was written only when the script prints a `PDF generated:` line to stdout 
    python scripts/generate_recap_pdf_inline.py --input docs/bootcamp_recap.md --output docs/bootcamp_recap.pdf
    ```
 
-   This path does not depend on the bundled `generate_recap_pdf.py` being importable from the workspace; it reads `docs/bootcamp_recap.md` and renders the same recap content (reusing the shared renderer when available, otherwise an embedded raw-Markdown renderer so no content is dropped). Its success signal is the same: a `PDF generated:` line on stdout and exit 0.
+   This path does not depend on the bundled `generate_recap_pdf.py` being importable from the workspace; it reads `docs/bootcamp_recap.md` and renders the same recap content (reusing the shared renderer when available, otherwise the file-independent `recap_pdf_render.render_markdown_pdf` raw-Markdown render path so no content is dropped and no bundled generator file is required). Its success signal is the same: a `PDF generated:` line on stdout and exit 0.
 
    - On success, state plainly that an inline generation path was used: "📄 Recap PDF generated at `docs/bootcamp_recap.pdf` (generated via the inline fallback path)." Do not imply the bundled script ran. Proceed to Step 0b.4.
    - If the inline generator reports `fpdf2` is not installed, go to graceful degradation (step 3).
@@ -172,13 +178,13 @@ Generate `docs/README.md` — a table of contents describing every top-level fil
 
 1. **If `docs/` does not exist**, report that the index was not generated (for example, "📑 Docs index not generated — no `docs/` directory was found.") and proceed to Step 1. This is a success, not an error. When `docs/` does exist, do **not** ask for confirmation that it was found — proceed directly to generation.
 
-2. Otherwise, run the docs index generator:
+2. Otherwise, run the docs index generator through the guarded bundled-script runner:
 
    ```bash
-   python scripts/generate_docs_index.py
+   python senzing-bootcamp/scripts/run_bundled_script.py generate_docs_index.py
    ```
 
-   This enumerates the actual top-level contents of `docs/` at graduation time and regenerates `docs/README.md` as a Markdown table of contents, replacing any existing index. The write is atomic and validated, so a failure never leaves a partial or malformed `docs/README.md`.
+   The runner performs an existence check before shelling out: when the bundled `generate_docs_index.py` is present it executes unchanged and propagates its own exit code; when it is absent it runs the onboarding self-repair (`preflight.py --fix`) once and re-checks, then degrades to a graceful no-op (exit 0, one-line skip notice) rather than a raw `No such file or directory` error. This enumerates the actual top-level contents of `docs/` at graduation time and regenerates `docs/README.md` as a Markdown table of contents, replacing any existing index. The write is atomic and validated, so a failure never leaves a partial or malformed `docs/README.md`.
 
 3. **Handle outcomes gracefully (warn and continue):**
    - On success (exit 0 with a `Wrote docs index:` line on stdout), inform the bootcamper: "📑 Docs index generated at `docs/README.md`." then report the script's one-line summary.

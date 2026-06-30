@@ -167,7 +167,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # Generation step (Step 0b after the Q&A transcript), recomputed by
     # measure_steering.py into file_metadata and the budget total. Only the budget
     # block changed; keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "37a4dcb75ada5d0218256e7362e1d6de2d640a04b0dec64c0361aee9a1aee785",
+    # Re-baselined once more (188579 -> 189326) for the missing-bundled-scripts
+    # bugfix (task 3.2): the session-log-events hook description was expanded to
+    # document the inline-stdlib-appender fallback for a missing
+    # log_write_event.py, which regenerated hook-registry.md (5804 -> 6242) and
+    # hook-registry-module-any.md, all recomputed by measure_steering.py into
+    # file_metadata and the budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "98b09278da2597c9f5ee29c919d700d107e412dea6dfbc748025f612c1cde135",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -541,9 +548,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (188579), so the hash cannot silently re-pin a stale value.
+        # (189326), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 188579" in budget_block
+        assert "total_tokens: 189326" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

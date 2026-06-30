@@ -859,12 +859,24 @@ class TestNoHookModification:
         _GRADUATION_NORMALIZATION_HOOKS = {
             "commonmark-validation.kiro.hook",
         }
+        # Hook intentionally edited by the missing-bundled-scripts bugfix (task 3.2):
+        # the session-log-events runCommand was changed so a missing bundled
+        # log_write_event.py no longer emits a file-not-found error — an existence
+        # guard routes to a self-contained inline stdlib appender that records an
+        # equivalent {ts, action, module} event to config/session_log.jsonl and exits
+        # 0. The JSON schema (name, version, when, then) stays valid; only then and
+        # the description text changed. Unrelated to the token budget optimization, so
+        # it is excluded here.
+        _MISSING_BUNDLED_SCRIPTS_HOOKS = {
+            "session-log-events.kiro.hook",
+        }
         _ALLOWED_MODIFIED = (
             _CONSOLIDATED_HOOKS
             | _AGENTSTOP_GUARD_HOOKS
             | _CONSISTENCY_FIX_HOOKS
             | _DOCS_FILE_PLACEMENT_HOOKS
             | _GRADUATION_NORMALIZATION_HOOKS
+            | _MISSING_BUNDLED_SCRIPTS_HOOKS
         )
         # Filter for .kiro.hook files in the output, excluding hooks modified by
         # other specs. (Unrelated protections stay intact: any hook not in this

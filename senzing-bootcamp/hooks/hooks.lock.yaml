@@ -1,6 +1,6 @@
 # AUTO-GENERATED — do not edit manually.
 # Run: python3 senzing-bootcamp/scripts/sync_hook_registry.py --write
-generated_at: "2026-06-30T17:36:49Z"
+generated_at: "2026-06-30T21:37:34Z"
 hooks:
   - id: analyze-after-mapping
     version: "1.0.0"
@@ -67,7 +67,7 @@ hooks:
     category: module
     event_type: agentStop
   - id: module-recap-append
-    version: "1.1.0"
+    version: "1.2.0"
     category: module
     event_type: agentStop
   - id: review-bootcamper-input

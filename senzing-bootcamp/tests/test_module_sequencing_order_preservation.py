@@ -62,9 +62,15 @@ _DATA_LOADING_MODULE: int = 6
 _BASELINE_GRAPH_REGIONS_SHA256: str = (
     "6dac398bb43906109221ee606e61c01df44f78b0b6422880d0602c8711c867aa"
 )
-# SHA-256 of module-completion-track.md, which the fix does not edit.
+# SHA-256 of module-completion-track.md. Re-baselined for the
+# recap-completeness-and-pdf spec: task 3.4 legitimately edited this file to add
+# the "Recap Reconciliation & Backfill (Path A final safety net)" section that
+# wires track-completion recap reconciliation. That edit is unrelated to the
+# module-sequencing-order fix this suite guards, so the baseline is moved
+# observation-first to the current file contents to keep the preservation
+# snapshot honest.
 _BASELINE_COMPLETION_TRACK_SHA256: str = (
-    "b553c7b3610056970f109e5350d4dc96124544d0fcdb8fbfe625ed465a6a5807"
+    "2ddf831282d18c1bcc676d2d47177e2df257b2315586c1e71bb326364e818032"
 )
 
 

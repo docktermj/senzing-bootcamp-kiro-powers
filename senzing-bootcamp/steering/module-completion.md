@@ -11,7 +11,7 @@ Load this after completing any module. This file is the **Module_Completion_Root
 The module completion process executes the following steps in a **fixed, invariant order** regardless of which module is being completed:
 
 1. **progress_update** — Mark the module complete in `config/bootcamp_progress.json`
-2. **recap_append** — Append a recap section to `docs/bootcamp_recap.md` (create file if first completion)
+2. **recap_append** — Synchronously append a recap section to `docs/bootcamp_recap.md` (create file if first completion), then verify the `## Module N:` heading persisted and backfill it if absent before reporting success
 3. **journal_entry** — Append a journal entry to `docs/bootcamp_journal.md` (create file if first completion)
 4. **completion_certificate** — Generate `docs/progress/MODULE_N_COMPLETE.md` and update the summary index
 5. **next_step_options** — Present the bootcamper with concrete next-step choices

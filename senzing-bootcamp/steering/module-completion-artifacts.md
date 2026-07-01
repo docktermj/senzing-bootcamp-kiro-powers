@@ -49,7 +49,9 @@ On a completion boundary — and before appending the new module's artifacts —
 
 ## Recap Append
 
-The `hooks/module-recap-append.kiro.hook` hook handles this automatically as a `postTaskExecution` hook. When a module is marked complete in `config/bootcamp_progress.json`, the hook gathers session content and appends a structured Recap_Section to `docs/bootcamp_recap.md`.
+The recap append is a **synchronous, verified step of the module-completion workflow** (step 2 in the fixed order), not solely an asynchronous `agentStop` hook. The `hooks/module-recap-append.kiro.hook` hook still appends the structured section on boundary detection, but the workflow now treats the append as complete only after it has **read back** the file and confirmed the section persisted — so a write that does not persist across a session boundary, or a hook invocation that does not write on the final module, is detected and repaired instead of silently lost.
+
+When a module is marked complete in `config/bootcamp_progress.json`, gather session content and append a structured Recap_Section to `docs/bootcamp_recap.md`, then verify and (if needed) backfill before reporting success.
 
 ### What is gathered
 
@@ -59,13 +61,29 @@ The `hooks/module-recap-append.kiro.hook` hook handles this automatically as a `
 - **Actions Taken:** File creations, modifications, code generation, and commands executed
 - **Duration:** The per-module elapsed time and cumulative `Total Duration` come from `scripts/completion_artifacts.py` (computed from the ISO 8601 timestamps in `step_history` and the top-level `started_at`), never from session context. When the planner returns no value for a module, omit the `### Duration` field entirely rather than writing a placeholder such as "Module N session".
 
+### Synchronous verification and backfill (before reporting success)
+
+After appending (or after the hook reports it appended), confirm the section actually landed:
+
+1. Read `docs/bootcamp_recap.md` and check for a `## Module N:` heading for the **just-completed** module N.
+2. If the heading is **present**, the append is verified — display the confirmation line and proceed.
+3. If the heading is **absent** (write lost, hook miss, or session boundary), do NOT report success. Backfill it deterministically by running the applier, which appends a `## Module N:` section for every completed module that is missing one (append-around, never rewriting existing bytes; idempotent when nothing is missing):
+
+   ```text
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --backfill
+   ```
+
+   The applier exits non-zero and prints which modules remain missing if verification still fails after the write, so a silent gap can never be reported as success. Re-read the file and confirm the `## Module N:` heading is now present before continuing.
+
+This append-and-verify cycle applies to **every** completed module, **including the final module of a track**: track completion (graduation or celebration) MUST NOT suppress the per-module recap section. The final module's section is appended and verified exactly as for any other module (see `module-completion-track.md`).
+
 ### Workflow position
 
-The recap append executes after the progress file update (module marked complete) and before the journal entry below. It completes without requiring additional bootcamper confirmation and displays a single confirmation line (e.g., "Recap updated for Module N: [Name].").
+The recap append executes after the progress file update (module marked complete) and before the journal entry below. It completes without requiring additional bootcamper confirmation and displays a single confirmation line (e.g., "Recap updated for Module N: [Name].") only after the section is verified present.
 
 ### Non-blocking behavior
 
-If the recap append fails for any reason (file system error, missing data), it logs a warning and continues the module completion flow. It does not halt execution, raise errors, or alter the behavior of existing hooks or the journal entry process.
+If the recap append or its backfill fails for any reason (file system error, missing data), it logs a warning and continues the module completion flow. It does not halt execution, raise errors, or alter the behavior of existing hooks or the journal entry process. The track-completion reconciliation pass (see below and `module-completion-track.md`) is the final safety net: it re-runs the same applier so any section still missing at graduation is backfilled before the deliverable is rendered.
 
 ### Recap File Creation
 

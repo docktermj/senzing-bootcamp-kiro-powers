@@ -1903,6 +1903,7 @@ class _RecordingPDF:
 
     def __init__(self) -> None:
         self.l_margin = 10
+        self.epw = 190  # effective page width (mm); mirrors fpdf2 A4 default
         self.headings: list[str] = []  # text rendered via multi_cell (headings)
         self.body: list[str] = []  # text rendered via cell/write
 

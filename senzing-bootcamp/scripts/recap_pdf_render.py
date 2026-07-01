@@ -20,6 +20,26 @@ Bundled_Generator.
 from __future__ import annotations
 
 import re
+import zlib
+from pathlib import Path
+
+# Minimum number of distinct body lines that must survive into a rendered recap
+# PDF before the generators report success. The round-trip verification
+# (verify_rendered_pdf) treats a PDF that carries fewer surviving body lines than
+# this floor (when the source has at least this many) as a dropped-content
+# failure — the outline-only-PDF defect this bugfix addresses. The floor is
+# capped at the number of body lines the source actually has, so a legitimately
+# short recap is never rejected for simply having little content.
+MIN_BODY_LINES = 3
+
+
+class PdfVerificationError(Exception):
+    """Raised when a written PDF fails round-trip text verification.
+
+    Signals that the rendered PDF is missing an expected per-module section or
+    dropped body content, so the caller must fail loudly rather than reporting
+    success for an incomplete artifact (Req 2.6, 2.7).
+    """
 
 
 def safe_text(text: str) -> str:
@@ -100,7 +120,12 @@ def render_heading(pdf: "FPDF", text: str, level: int) -> None:  # noqa: F821
     else:
         pdf.set_font("Helvetica", "B", 13)
         pdf.ln(4)
-    pdf.multi_cell(0, 7, safe_text(text), new_x="LMARGIN", new_y="NEXT")
+    # Render at full width from the left margin so wrapping always has the full
+    # effective page width (a prior cell may have advanced x toward the right
+    # margin; multi_cell(0, ...) would otherwise derive too little width and
+    # raise FPDFException for content that should fit).
+    pdf.set_x(pdf.l_margin)
+    pdf.multi_cell(pdf.epw, 7, safe_text(text), new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
 
 
@@ -130,6 +155,9 @@ def render_list_items(pdf: "FPDF", items: list[str], numbered: bool = False) -> 
                 pdf.write(6, safe_text(part))
         pdf.ln(6)
     pdf.set_font("Helvetica", "", 11)
+    # Reset x to the left margin so the write-based indentation cannot leave x
+    # advanced toward the right margin for the next cell's wrapping.
+    pdf.set_x(pdf.l_margin)
 
 
 def render_generic_blocks(pdf: "FPDF", blocks: list[str]) -> None:  # noqa: F821
@@ -150,13 +178,15 @@ def render_generic_blocks(pdf: "FPDF", blocks: list[str]) -> None:  # noqa: F821
             if code_lines and code_lines[-1].lstrip().startswith("```"):
                 code_lines = code_lines[:-1]
             pdf.set_font("Courier", "", 10)
+            pdf.set_x(pdf.l_margin)
             pdf.multi_cell(
-                0, 5, safe_text("\n".join(code_lines)), new_x="LMARGIN", new_y="NEXT"
+                pdf.epw, 5, safe_text("\n".join(code_lines)), new_x="LMARGIN", new_y="NEXT"
             )
         else:
             pdf.set_font("Helvetica", "", 11)
+            pdf.set_x(pdf.l_margin)
             pdf.multi_cell(
-                0, 6, safe_text(block), new_x="LMARGIN", new_y="NEXT"
+                pdf.epw, 6, safe_text(block), new_x="LMARGIN", new_y="NEXT"
             )
         pdf.ln(2)
 
@@ -233,10 +263,132 @@ def render_markdown_pdf(
 
     # Cover line.
     pdf.set_font("Helvetica", "B", 20)
-    pdf.multi_cell(0, 10, safe_text(title), new_x="LMARGIN", new_y="NEXT")
+    pdf.set_x(pdf.l_margin)
+    pdf.multi_cell(pdf.epw, 10, safe_text(title), new_x="LMARGIN", new_y="NEXT")
     pdf.ln(6)
 
     # Body.
     render_markdown_body(pdf, body_text)
 
     pdf.output(output_path)
+
+
+# ---------------------------------------------------------------------------
+# Round-trip verification (Req 2.6, 2.7)
+# ---------------------------------------------------------------------------
+
+
+def extract_pdf_text(pdf_bytes: bytes) -> str:
+    """Extract visible text from a simple fpdf2-generated PDF using stdlib only.
+
+    Decompresses each content stream (FlateDecode / zlib) when possible and
+    collects the literal strings passed to the text-showing operators (the
+    parenthesised operands of ``Tj``/``TJ``/``'``). The literals are joined with
+    newlines so each text-show operator becomes its own line, which is enough to
+    assert the presence of distinctive section headings and body-line tokens. It
+    is not a general-purpose PDF parser and never imports ``fpdf``.
+
+    Args:
+        pdf_bytes: Raw bytes of a written PDF file.
+
+    Returns:
+        The newline-joined literal text content found in the PDF's streams.
+    """
+    chunks: list[str] = []
+    # Capture the stream body up to ``endstream`` rather than requiring an
+    # explicit ``\r?\n`` immediately before it. A binary FlateDecode stream can
+    # legitimately end with a ``0x0D`` (\r) byte; the old ``\r?\nendstream``
+    # boundary let ``\r?`` steal that trailing data byte, truncating the zlib
+    # stream so ``zlib.decompress`` raised and the whole stream's text was lost
+    # (a false negative on valid PDFs). ``decompressobj().decompress`` decodes
+    # the zlib data and tolerates the trailing EOL bytes we now retain, whereas
+    # ``zlib.decompress`` would reject that trailing data.
+    for match in re.finditer(rb"stream\r?\n(.*?)endstream", pdf_bytes, re.DOTALL):
+        raw = match.group(1)
+        try:
+            data = zlib.decompressobj().decompress(raw)
+        except zlib.error:
+            data = raw
+        for token in re.finditer(rb"\((?:\\.|[^\\)])*\)", data):
+            literal = (
+                token.group(0)[1:-1]
+                .replace(b"\\(", b"(")
+                .replace(b"\\)", b")")
+                .replace(b"\\\\", b"\\")
+            )
+            chunks.append(literal.decode("latin-1", "replace"))
+    return "\n".join(chunks)
+
+
+def _distinctive_token(line: str) -> str | None:
+    """Return the longest whitespace-delimited token of a body line, or ``None``.
+
+    Wrapping only ever splits a rendered line at whitespace, so an individual
+    word token survives intact into the extracted PDF text even when the line
+    wraps. Picking the longest token (length >= 2, Latin-1-safe to mirror what
+    the renderer emits) gives a wrap-robust, low-false-positive marker for
+    asserting that a source body line actually rendered.
+
+    Args:
+        line: A source body line (list item, Q/A line, duration, or block).
+
+    Returns:
+        The longest token of length >= 2, or ``None`` when the line has none.
+    """
+    tokens = [tok for tok in safe_text(line).split() if len(tok) >= 2]
+    if not tokens:
+        return None
+    return max(tokens, key=len)
+
+
+def verify_rendered_pdf(
+    pdf_path: str,
+    module_numbers: list[int],
+    expected_body_lines: list[str],
+    *,
+    min_body_lines: int = MIN_BODY_LINES,
+) -> None:
+    """Verify a written PDF by round-tripping its text before reporting success.
+
+    Re-opens the PDF at ``pdf_path``, extracts its text, and asserts that it
+    contains a ``Module N`` section for every completed module and that at least
+    ``min_body_lines`` distinct source body lines survived into the PDF (capped
+    at the number of body lines the source actually has, so a short-but-complete
+    recap is never rejected). A failure means content was dropped during
+    rendering while the file was still written, so the caller must fail loudly
+    rather than report success (Req 2.6, 2.7).
+
+    Args:
+        pdf_path: Path to the written PDF to verify.
+        module_numbers: Module numbers that must each have a ``Module N`` section.
+        expected_body_lines: Source body lines that should have rendered.
+        min_body_lines: Minimum surviving body-line floor. Defaults to
+            :data:`MIN_BODY_LINES`.
+
+    Raises:
+        PdfVerificationError: If a per-module section is missing or too few body
+            lines survived into the rendered PDF.
+        OSError: If the PDF cannot be read back from ``pdf_path``.
+    """
+    text = extract_pdf_text(Path(pdf_path).read_bytes())
+
+    missing = [n for n in module_numbers if f"Module {n}" not in text]
+    if missing:
+        raise PdfVerificationError(
+            "rendered PDF is missing per-module section(s) for module(s) "
+            f"{missing}: round-trip text extraction found no 'Module N' heading."
+        )
+
+    text_tokens = set(text.split())
+    candidate_tokens = [
+        token for line in expected_body_lines if (token := _distinctive_token(line))
+    ]
+    present = sum(1 for token in candidate_tokens if token in text_tokens)
+    required = min(min_body_lines, len(candidate_tokens))
+    if required and present < required:
+        raise PdfVerificationError(
+            f"rendered PDF body verification failed: only {present} of "
+            f"{len(candidate_tokens)} expected body line(s) survived into the PDF "
+            f"text (require at least {required}). Body content was dropped during "
+            "rendering."
+        )

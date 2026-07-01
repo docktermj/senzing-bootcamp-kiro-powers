@@ -39,16 +39,27 @@ from recap_pdf_render import render_generic_blocks
 class _FakeFPDF:
     """Minimal FPDF-like recorder capturing text passed to ``multi_cell``.
 
-    ``render_generic_blocks`` only calls ``set_font``, ``multi_cell``, and
-    ``ln`` on its ``pdf`` argument. This stub records every ``multi_cell`` text
-    payload so the test can assert what the renderer emitted.
+    ``render_generic_blocks`` now renders every cell at full width from the left
+    margin: it calls ``set_x(l_margin)`` then ``multi_cell(epw, ...)`` (plus
+    ``set_font`` and ``ln``). This stub exposes ``l_margin``/``epw`` numeric
+    attributes and a no-op ``set_x`` mirroring how fpdf2 behaves, and records
+    every ``multi_cell`` text payload so the test can assert what the renderer
+    emitted.
     """
 
     def __init__(self) -> None:
         self.cells: list[str] = []
+        # Mirror fpdf2's default A4 geometry (mm): 10mm left margin and an
+        # effective page width of ~190mm, so full-width multi_cell calls have
+        # real horizontal space.
+        self.l_margin = 10.0
+        self.epw = 190.0
 
     def set_font(self, *args: object, **kwargs: object) -> None:
         """Accept and ignore font selection."""
+
+    def set_x(self, *args: object, **kwargs: object) -> None:
+        """Accept and ignore horizontal cursor positioning."""
 
     def ln(self, *args: object, **kwargs: object) -> None:
         """Accept and ignore vertical spacing."""

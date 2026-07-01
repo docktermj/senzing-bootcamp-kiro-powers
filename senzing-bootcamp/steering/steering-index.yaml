@@ -379,7 +379,7 @@ file_metadata:
     token_count: 291
     size_category: small
   graduation.md:
-    token_count: 6242
+    token_count: 6960
     size_category: large
   hook-architecture.md:
     token_count: 2149
@@ -421,10 +421,10 @@ file_metadata:
     token_count: 463
     size_category: small
   hook-registry-module-any.md:
-    token_count: 3412
+    token_count: 3732
     size_category: large
   hook-registry.md:
-    token_count: 2021
+    token_count: 2037
     size_category: large
   inline-status.md:
     token_count: 460
@@ -565,7 +565,7 @@ file_metadata:
     token_count: 850
     size_category: medium
   module-completion-artifacts.md:
-    token_count: 3349
+    token_count: 3928
     size_category: large
   module-completion-error-handling.md:
     token_count: 604
@@ -574,10 +574,10 @@ file_metadata:
     token_count: 702
     size_category: medium
   module-completion-track.md:
-    token_count: 1277
+    token_count: 1726
     size_category: medium
   module-completion.md:
-    token_count: 1394
+    token_count: 1423
     size_category: medium
   module-prerequisites.md:
     token_count: 1394
@@ -650,7 +650,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 192418
+  total_tokens: 194529
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

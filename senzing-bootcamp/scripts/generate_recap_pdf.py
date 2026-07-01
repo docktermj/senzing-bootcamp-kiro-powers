@@ -51,12 +51,14 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from recap_pdf_render import (  # noqa: E402
+    PdfVerificationError,
     render_generic_blocks,
     render_heading,
     render_list_items,
     render_markdown_body,
     safe_text,
     split_blocks,
+    verify_rendered_pdf,
 )
 
 # ---------------------------------------------------------------------------
@@ -625,6 +627,43 @@ def render_pdf(doc: RecapDocument, output_path: str, body_text: str = "") -> Non
     pdf.output(output_path)
 
 
+def collect_verification_targets(
+    doc: RecapDocument, body_text: str = ""
+) -> tuple[list[int], list[str]]:
+    """Collect the per-module numbers and body lines a rendered PDF must contain.
+
+    Mirrors what :func:`render_pdf` emits: when the document has structured
+    sections, every section contributes its module number plus its body lines
+    (Information Shared, Questions/Answers, Actions Taken, Duration, and any
+    captured Generic_Content). When no sections parsed, the raw Markdown body is
+    rendered via the fallback, so the renderable blocks of ``body_text`` are the
+    expected body lines and there are no per-module sections to assert.
+
+    Args:
+        doc: Parsed recap document to render.
+        body_text: Raw recap Markdown used for the Raw_Body_Fallback. Ignored
+            when ``doc.sections`` is non-empty.
+
+    Returns:
+        A ``(module_numbers, expected_body_lines)`` tuple for
+        :func:`recap_pdf_render.verify_rendered_pdf`.
+    """
+    if doc.sections:
+        module_numbers = [section.module_number for section in doc.sections]
+        body_lines: list[str] = []
+        for section in doc.sections:
+            body_lines.extend(section.information_shared)
+            body_lines.extend(section.questions_asked)
+            body_lines.extend(section.answers_given)
+            body_lines.extend(section.actions_taken)
+            if section.duration:
+                body_lines.append(section.duration)
+            body_lines.extend(section.generic_content)
+        return module_numbers, body_lines
+
+    return [], split_blocks(body_text)
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -689,8 +728,11 @@ def main(argv: list[str] | None = None) -> int:
     detected_headings = len(_MODULE_HEADING_LOOSE_RE.findall(content))
     parsed_sections = len(doc.sections)
 
-    # Render PDF — catch missing fpdf2 and write failures. Passing the raw
-    # content routes the Raw_Body_Fallback when no structured sections parse.
+    # Render PDF — degrade gracefully when fpdf2 is absent and report genuine
+    # write failures, but let rendering exceptions (e.g. FPDFException) propagate
+    # so a content-dropping failure is loud rather than silently swallowed by a
+    # broad catch-all that still let success be reported (Req 2.6). Passing the
+    # raw content routes the Raw_Body_Fallback when no structured sections parse.
     try:
         render_pdf(doc, args.output, body_text=content)
     except ImportError:
@@ -699,8 +741,19 @@ def main(argv: list[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 1
-    except (OSError, Exception) as exc:  # noqa: BLE001
+    except OSError as exc:
         print(f"Failed to write PDF: {exc}", file=sys.stderr)
+        return 1
+
+    # Round-trip verification: re-open the written PDF and confirm it contains a
+    # section for every completed module plus at least MIN_BODY_LINES body lines
+    # before reporting success, so a render that dropped body content can never
+    # be reported as a successful PDF (Req 2.7).
+    module_numbers, expected_body_lines = collect_verification_targets(doc, content)
+    try:
+        verify_rendered_pdf(args.output, module_numbers, expected_body_lines)
+    except PdfVerificationError as exc:
+        print(f"PDF verification failed: {exc}", file=sys.stderr)
         return 1
 
     # Emit the under-population warning to stderr only, preserving the stdout

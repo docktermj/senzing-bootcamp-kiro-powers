@@ -17,6 +17,22 @@ After each module, check if the user finished their track's last module:
 
 > **Note:** The completion-summary document (`docs/completion_summary.md`) is always created at track completion; the completion-summary offer in its existing position (between the celebration and the export option) governs only the shareable PDF/share, not the document's creation.
 
+### Recap Reconciliation & Backfill (Path A final safety net)
+
+Before presenting the celebration, reconcile the recap deliverable against the recorded progress so the final per-module recap is complete. Each module's section is appended-and-verified synchronously at module completion (see `module-completion-artifacts.md`); this pass is the **final safety net** that catches any section still missing at track completion — a write lost across a session boundary or a final-module hook miss.
+
+1. Reconcile `docs/bootcamp_recap.md` against `config/bootcamp_progress.json` `modules_completed` and backfill any missing per-module `## Module N:` section:
+
+   ```bash
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --backfill
+   ```
+
+   The applier uses a pure set difference, so it appends only the sections that are missing — existing sections are preserved byte-for-byte (Req 3.1) and a re-run on an already-consistent recap makes no changes (Req 3.2). It exits non-zero naming any module whose section it could not produce, so a silent gap is never reported as complete.
+
+2. This step is **non-blocking**: if the applier cannot run or reports a remaining gap, log a warning (naming the still-missing modules) and continue the celebration. It runs silently when nothing needs backfilling.
+
+3. **Ordering relative to the recap PDF:** this reconciliation runs *before* the recap PDF is rendered. The PDF is produced later, in the graduation flow (`graduation.md` Step 0a re-runs this same reconciliation as its own final safety net, then Step 0b renders the PDF), so every completed module has a `## Module N:` section in the final PDF deliverable.
+
 When track is complete, present:
 
 - 🎉 "You've completed the [track name]!"

@@ -191,7 +191,24 @@ _BASELINE_HASHES: dict[str, str] = {
     # keeping the new three-path in-flow MCP license-request block — recomputed by
     # measure_steering.py into file_metadata and the budget total. Only the budget
     # block changed; keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "d4515503d500e57088e1ee476f3e18e045cad91f0a398c576df2ee81ef53f1b1",
+    # Re-baselined once more (192418 -> 193362) for the recap-completeness-and-pdf
+    # bugfix (task 3.3): module-completion.md and module-completion-artifacts.md
+    # grew when the recap append was made a synchronous, verified step (heading
+    # read-back + deterministic backfill via completion_artifacts.py --backfill),
+    # and the module-recap-append hook prompt gained a verify-and-backfill step
+    # (regenerating the hook-registry slices). All recomputed by
+    # measure_steering.py into file_metadata and the budget total. Only the budget
+    # block changed; keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (193362 -> 194529) for the recap-completeness-and-pdf
+    # bugfix (task 3.4): the track-completion reconciliation wiring grew
+    # module-completion-track.md (1277 -> 1726) with the "Recap Reconciliation &
+    # Backfill (Path A final safety net)" section, and graduation.md (6242 -> 6960)
+    # with Step 0a (recap reconciliation before the PDF is rendered); the paired
+    # synchronous-append edits also nudged module-completion-artifacts.md,
+    # module-completion.md, and the hook-registry slices, all recomputed by
+    # measure_steering.py into file_metadata and the budget total. Only the budget
+    # block changed; keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "aced7d9c51bb52d1612665fe16110d61431c0aa04bb6477acdebcf1930e723fb",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -565,9 +582,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (192418), so the hash cannot silently re-pin a stale value.
+        # (194529), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 192418" in budget_block
+        assert "total_tokens: 194529" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

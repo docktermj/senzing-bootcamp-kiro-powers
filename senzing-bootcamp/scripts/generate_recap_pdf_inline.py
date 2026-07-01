@@ -25,7 +25,12 @@ import sys
 from pathlib import Path
 from typing import Callable
 
-from recap_pdf_render import render_markdown_pdf
+from recap_pdf_render import (
+    PdfVerificationError,
+    render_markdown_pdf,
+    split_blocks,
+    verify_rendered_pdf,
+)
 
 # Hint surfaced when the optional fpdf2 dependency is missing.
 _FPDF_HINT = "fpdf2 is required. Install with: pip install fpdf2"
@@ -37,7 +42,8 @@ _FPDF_HINT = "fpdf2 is required. Install with: pip install fpdf2"
 
 
 def _import_bundled_renderer() -> (
-    tuple[Callable[[str], object], Callable[..., None]] | None
+    tuple[Callable[[str], object], Callable[..., None], Callable[..., tuple[list[int], list[str]]]]
+    | None
 ):
     """Attempt to import the shared recap parser/renderer from the sibling module.
 
@@ -47,17 +53,21 @@ def _import_bundled_renderer() -> (
     the caller falls back to the embedded renderer.
 
     Returns:
-        A ``(parse_recap_markdown, render_pdf)`` tuple when importable, else
-        ``None``.
+        A ``(parse_recap_markdown, render_pdf, collect_verification_targets)``
+        tuple when importable, else ``None``.
     """
     scripts_dir = str(Path(__file__).resolve().parent)
     if scripts_dir not in sys.path:
         sys.path.insert(0, scripts_dir)
     try:
-        from generate_recap_pdf import parse_recap_markdown, render_pdf  # noqa: PLC0415
+        from generate_recap_pdf import (  # noqa: PLC0415
+            collect_verification_targets,
+            parse_recap_markdown,
+            render_pdf,
+        )
     except ImportError:
         return None
-    return parse_recap_markdown, render_pdf
+    return parse_recap_markdown, render_pdf, collect_verification_targets
 
 
 # ---------------------------------------------------------------------------
@@ -95,11 +105,13 @@ def generate_inline(input_path: str, output_path: str) -> int:
     renderer = _import_bundled_renderer()
     try:
         if renderer is not None:
-            parse_recap_markdown, render_pdf = renderer
+            parse_recap_markdown, render_pdf, collect_targets = renderer
             doc = parse_recap_markdown(content)
             render_pdf(doc, output_path, body_text=content)
+            module_numbers, expected_body_lines = collect_targets(doc, content)
         else:
             render_markdown_pdf(content, output_path)
+            module_numbers, expected_body_lines = [], split_blocks(content)
     except ImportError:
         # fpdf2 absent — degrade gracefully with a hint, no traceback.
         print(_FPDF_HINT, file=sys.stderr)
@@ -111,6 +123,17 @@ def generate_inline(input_path: str, output_path: str) -> int:
     # Only report success when a PDF file was actually written.
     if not Path(output_path).exists():
         print(f"Failed to write PDF: no output produced at {output_path}", file=sys.stderr)
+        return 1
+
+    # Round-trip verification: confirm the written PDF carries a section for every
+    # completed module plus at least MIN_BODY_LINES body lines before reporting
+    # success, so a render that dropped body content fails loudly rather than
+    # reporting a successful PDF (Req 2.6, 2.7). The full-width fix is inherited
+    # from the Shared_Renderer.
+    try:
+        verify_rendered_pdf(output_path, module_numbers, expected_body_lines)
+    except PdfVerificationError as exc:
+        print(f"PDF verification failed: {exc}", file=sys.stderr)
         return 1
 
     print(f"PDF generated: {output_path}")

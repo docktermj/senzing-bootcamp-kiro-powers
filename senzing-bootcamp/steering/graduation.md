@@ -6,10 +6,11 @@ inclusion: manual
 
 This steering file guides the agent through transitioning a completed bootcamp project into a production-ready codebase. Load it when the bootcamper accepts the graduation offer at track completion, or when they say "run graduation" or "graduate."
 
-The workflow has two preparatory steps followed by five sequential steps:
+The workflow has three preparatory steps followed by five sequential steps:
 
 0. **Markdown Normalization Pass** — Normalize the bootcamp's Markdown artifacts into the schema their consumers expect, before any derived artifact is generated (non-blocking)
-0b. **Recap PDF, Q&A Transcript & Docs Index Generation** — Generate a PDF of the now-normalized bootcamp recap document, the ordered Q&A transcript, and the `docs/` index (all non-blocking)
+0a. **Recap Reconciliation & Backfill** — Reconcile `docs/bootcamp_recap.md` against `config/bootcamp_progress.json` `modules_completed` and backfill any missing per-module `## Module N:` section, so every completed module is present **before** the PDF is rendered (non-blocking, idempotent)
+0b. **Recap PDF, Q&A Transcript & Docs Index Generation** — Generate a PDF of the now-normalized, reconciled bootcamp recap document, the ordered Q&A transcript, and the `docs/` index (all non-blocking)
 1. **Production Project Structure** — Copy production-relevant code into a clean `production/` directory, excluding bootcamp scaffolding
 2. **Production Configuration Files** — Generate `.env.production`, `.env.example`, `docker-compose.yml`, a CI/CD pipeline, and `.gitignore`
 3. **Production README** — Generate a production-ready `README.md` with no bootcamp language
@@ -54,11 +55,34 @@ Before generating any derived artifact (recap PDF, reports), run a single normal
 
 **Fallback when normalization is skipped or fails:** If this pass does not run, or fails for `docs/bootcamp_recap.md`, the recap PDF step (Step 0b) still runs against the original file and relies on the tolerant parser and raw-Markdown fallback delivered by the paired `recap-pdf-content-loss-fix` work, so a schema or style mismatch never silently drops content.
 
+Proceed to Step 0a.
+
+## Step 0a: Recap Reconciliation & Backfill
+
+This is the **final safety net for per-module recap completeness (Path A)**. Each module's recap section is appended-and-verified synchronously at module completion (see `module-completion-artifacts.md`) and the track-completion celebration already runs the same reconciliation pass (see `module-completion-track.md`). This step re-runs that reconciliation here, immediately **before** the PDF is rendered, so any section still missing at graduation — a write lost across a session boundary, a final-module hook miss, or a recap reconstructed in Step 0b.1 — is backfilled before the deliverable is produced. This step is **non-blocking** and **idempotent**: on an already-consistent recap it makes no changes.
+
+**Ordering invariant:** reconcile/backfill the recap (this step) **then** render the PDF (Step 0b). The PDF is never rendered from an unreconciled recap.
+
+**Procedure:**
+
+1. Reconcile `docs/bootcamp_recap.md` against `config/bootcamp_progress.json` `modules_completed` and backfill any missing per-module section by running the recap backfill applier:
+
+   ```bash
+   python scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --backfill
+   ```
+
+   The applier computes a pure set difference (`plan_backfill`): it appends a `## Module N:` section for every completed module that lacks one — appending around existing content, **never rewriting** the bytes of sections that already persisted (Req 3.1) — and re-runs cleanly on a consistent recap with no changes (Req 3.2). It self-creates the recap file with a minimal header if it does not yet exist. After writing it verifies that every completed module now has a section and **exits non-zero**, naming the still-missing modules, if any gap remains — so a silent gap can never pass through to the PDF.
+
+   - If it reports `Backfilled recap sections for modules: [...]`, inform the bootcamper: "🧩 Reconciled the recap — backfilled sections for modules: [...]."
+   - If it reports `Recap already complete; no sections backfilled.`, proceed silently.
+
+2. **Handle outcomes gracefully (warn and continue):** if the applier cannot run or exits non-zero (file-system error, or a gap it could not close), log a warning naming the reason (and any still-missing modules) and proceed to Step 0b anyway — the recap Markdown and the tolerant PDF parser remain the backstop. Reconciliation never blocks graduation.
+
 Proceed to Step 0b.
 
 ## Step 0b: Recap PDF Generation
 
-Generate a PDF version of the bootcamper's recap document for sharing. This step consumes the normalized `docs/bootcamp_recap.md` produced by Step 0 (or, if normalization was skipped or failed, the original file via the tolerant parser/raw-Markdown fallback). This step is **non-blocking** — graduation continues regardless of the outcome.
+Generate a PDF version of the bootcamper's recap document for sharing. This step consumes the normalized, reconciled `docs/bootcamp_recap.md` produced by Steps 0 and 0a (or, if normalization was skipped or failed, the original file via the tolerant parser/raw-Markdown fallback). This step is **non-blocking** — graduation continues regardless of the outcome.
 
 **Note:** Independent of this recap PDF, the completion-summary document (`docs/completion_summary.md`) is **always** generated during the post-completion/graduation flow via `generate_completion_summary.py` (triggered by `completion-summary-offer.md`). That generation is **non-blocking** — in the same spirit as this recap PDF step and the always-generated `GRADUATION_REPORT.md`, any failure logs a warning and graduation continues.
 

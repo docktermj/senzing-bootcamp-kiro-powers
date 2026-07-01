@@ -26,7 +26,7 @@ modules:
     phases:
       phase1-verification:
         file: module-03-phase1-verification.md
-        token_count: 3536
+        token_count: 4194
         size_category: large
         step_range: [1, 8]
       phase2-visualization:
@@ -85,8 +85,8 @@ modules:
         step_range: [12, 20]
       phase4-validation:
         file: module-06-phaseD-validation.md
-        token_count: 1952
-        size_category: medium
+        token_count: 2248
+        size_category: large
         step_range: [21, 28]
   7:
     root: module-07-query-visualize-discover.md
@@ -469,7 +469,7 @@ file_metadata:
     token_count: 6714
     size_category: large
   module-03-phase1-verification.md:
-    token_count: 3536
+    token_count: 4194
     size_category: large
   module-03-phase2-visualization.md:
     token_count: 5348
@@ -511,10 +511,10 @@ file_metadata:
     token_count: 1428
     size_category: medium
   module-06-phaseD-validation.md:
-    token_count: 2109
+    token_count: 2248
     size_category: large
   module-07-phase1-query-visualize.md:
-    token_count: 3233
+    token_count: 3372
     size_category: large
   module-07-phase2-discover.md:
     token_count: 3453
@@ -640,7 +640,7 @@ file_metadata:
     token_count: 2048
     size_category: large
   visualization-guide.md:
-    token_count: 4334
+    token_count: 4660
     size_category: large
   visualization-web-service.md:
     token_count: 2195
@@ -650,7 +650,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 195160
+  total_tokens: 196422
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

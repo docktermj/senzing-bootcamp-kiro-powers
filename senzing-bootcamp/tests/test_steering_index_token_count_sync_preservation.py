@@ -228,7 +228,16 @@ _BASELINE_HASHES: dict[str, str] = {
     # recomputed both counts into file_metadata and the budget total. Only the
     # budget block changed; keywords/languages/deployment/root_step_range are
     # byte-identical.
-    "budget": "8c3ac11f07f355d8c64392d4777524fd55535fdc99a67bd853b987069a3790e1",
+    # Re-baselined once more (195160 -> 196422) for the
+    # module3-first-visualization-guarantee spec: module-03-phase1-verification.md
+    # grew when the Opt-Out Gate recorded the owed first-visualization marker and
+    # offered the standalone demo (3536 -> 4194), visualization-guide.md
+    # (4334 -> 4660) and module-06-phaseD-validation.md (2109 -> 2248) /
+    # module-07-phase1-query-visualize.md (3233 -> 3372) grew from the deferred
+    # first-visualization guarantee wiring, all recomputed by measure_steering.py
+    # into file_metadata and the budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "d77d49974d833402a872106231834b28bac9e9ae96d7c67ce8b4993d80504fa1",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -602,9 +611,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (195160), so the hash cannot silently re-pin a stale value.
+        # (196422), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 195160" in budget_block
+        assert "total_tokens: 196422" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

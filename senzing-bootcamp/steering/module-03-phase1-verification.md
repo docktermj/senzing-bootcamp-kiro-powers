@@ -20,7 +20,9 @@ Before starting Module 3 steps, check if the bootcamper has explicitly requested
    {"module_3_verification": {"status": "skipped", "reason": "bootcamper_opted_out"}}
    ```
 
-2. Display warning:
+2. Record that a first visualization is still owed. Call `mark_first_visualization_owed(reason="module_3_opt_out")` from `scripts/progress_utils.py`. This writes a `first_visualization: owed` marker to `config/bootcamp_progress.json`. The call is idempotent and monotonic — it never regresses an already-`satisfied` marker back to `owed`.
+
+3. Display warning:
 
    ```text
    ⚠️ Skipping system verification. If you encounter issues in later modules
@@ -28,9 +30,31 @@ Before starting Module 3 steps, check if the bootcamper has explicitly requested
    Say "run verification" at any time to come back.
    ```
 
-3. Update gate 3→4 to "skipped" and proceed to Module 4.
+4. **Offer the Standalone Demo Visualization (an offer, NOT a forced step).** Because the bootcamper is skipping Module 3, Step 9 will not run — so offer a minimal TruthSet-backed "wow moment" here. Use the visualization-guide offer template (do not invent a new one): present it as a question and wait for the bootcamper's input. The Standalone Demo Visualization reuses the **Step 9 web-service constraints** exactly — no new visualization mechanism is introduced:
 
-**If NOT triggered:** Proceed with Module 3 normally (default path).
+   - Python stdlib HTTP server (`http.server.HTTPServer` + `BaseHTTPRequestHandler`).
+   - D3.js v7 loaded from the D3 CDN; no other external JS.
+   - A single self-contained HTML file produced by a `write_html.py` generator script.
+   - All artifacts created inside the working directory.
+
+   Offer prompt (visualization-guide offer template framing):
+
+   ```text
+   You're skipping verification, so you won't see the Module 3 visualization.
+   Would you like me to create a quick standalone visualization of the Senzing
+   TruthSet entity resolution results instead? It's optional — just say the word.
+   ```
+
+   > 🛑 STOP — End your response here. Wait for the bootcamper's input.
+
+   - **If the bootcamper accepts:** Generate the Standalone Demo Visualization using the Step 9 web-service pattern above (a single graph or results view is sufficient). On successful generation, call `clear_first_visualization_owed(satisfied_by="standalone_demo")` to mark the owed obligation satisfied.
+   - **If the bootcamper declines:** Acknowledge in a single sentence and do NOT re-offer here. The owed marker persists and the **deferred guarantee** takes over — the first later module with resolved data (Module 6 results dashboard, or Module 7 entity graph) treats its existing visualization offer as the guaranteed first visualization and clears the owed marker when it is generated.
+
+5. Update gate 3→4 to "skipped" and proceed to Module 4.
+
+> **Journey-level guarantee vs. Step 9 (keep this distinction explicit):** Step 9 is an unconditional mandatory gate **whenever Module 3 runs** — this opt-out flow does NOT weaken, alter, or replace it. This journey-level first-visualization guarantee covers the **opt-out case only**, where Step 9 never executes. The two mechanisms are separate.
+
+**If NOT triggered:** Proceed with Module 3 normally (default path). Step 9 remains the unconditional mandatory gate and produces the first visualization in-module.
 
 ## Agent Rules
 

@@ -23,6 +23,9 @@ VALID_TRACKS = ("core_bootcamp", "advanced_topics")
 MODULE_RANGE = range(1, 12)  # 1–11 inclusive
 STEP_HISTORY_KEY_RANGE = range(1, 13)  # 1–12 inclusive
 
+# Valid values for first_visualization.status (journey-level guarantee marker).
+VALID_FIRST_VISUALIZATION_STATUSES = ("owed", "satisfied")
+
 
 # ---------------------------------------------------------------------------
 # Schema dataclass
@@ -53,6 +56,9 @@ class ProgressSchema:
     started_at: str | None = None  # ISO 8601
     last_activity: str | None = None  # ISO 8601
     step_history: dict[str, dict] | None = None
+    # Journey-level first-visualization guarantee marker (backward-compatible).
+    # Absence means "not owed". See validate_progress_schema for field rules.
+    first_visualization: dict | None = None
 
 
 _DOTTED_SUB_STEP_RE = re.compile(r"^\d+\.\d+$")
@@ -115,6 +121,105 @@ def clear_step(
     _write_progress(progress_path, data)
 
 
+# ---------------------------------------------------------------------------
+# First-visualization guarantee marker (journey-level)
+# ---------------------------------------------------------------------------
+
+
+def mark_first_visualization_owed(
+    reason: str = "module_3_opt_out",
+    progress_path: str = "config/bootcamp_progress.json",
+) -> None:
+    """Record that a first entity-resolution visualization is still owed.
+
+    Writes a ``first_visualization`` marker with ``status = "owed"`` to the
+    progress file. Missing or empty progress files are treated as an empty
+    dict and the marker is created (the parent directory is auto-created on
+    write).
+
+    Idempotent and monotonic: if the marker is already ``"satisfied"``, the
+    status is never regressed back to ``"owed"`` (the satisfied "wow moment"
+    is preserved). If the marker is already ``"owed"``, it is left unchanged.
+
+    Args:
+        reason: Why the visualization became owed (e.g. ``"module_3_opt_out"``).
+            Recorded only when the marker is first created.
+        progress_path: Path to the progress JSON file.
+    """
+    data = _read_progress(progress_path)
+    marker = data.get("first_visualization")
+
+    # Monotonic: never regress a satisfied marker back to owed.
+    if isinstance(marker, dict) and marker.get("status") == "satisfied":
+        return
+
+    # Already owed: leave the existing marker (and its owed_at) unchanged.
+    if isinstance(marker, dict) and marker.get("status") == "owed":
+        return
+
+    data["first_visualization"] = {
+        "status": "owed",
+        "reason": reason,
+        "owed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "satisfied_by": None,
+        "satisfied_at": None,
+    }
+    _write_progress(progress_path, data)
+
+
+def clear_first_visualization_owed(
+    satisfied_by: str,
+    progress_path: str = "config/bootcamp_progress.json",
+) -> None:
+    """Mark the owed first visualization as satisfied.
+
+    Sets the ``first_visualization`` marker's ``status`` to ``"satisfied"``
+    and records ``satisfied_by`` plus an ISO 8601 UTC ``satisfied_at``
+    timestamp.
+
+    Idempotent: clearing a marker that was never owed (absent marker) or is
+    already ``"satisfied"`` is a no-op — no ``owed -> satisfied`` history is
+    fabricated for a marker that never existed.
+
+    Args:
+        satisfied_by: The source that satisfied the obligation (e.g.
+            ``"standalone_demo"``, ``"module_6_deferred"``,
+            ``"module_7_deferred"``).
+        progress_path: Path to the progress JSON file.
+    """
+    data = _read_progress(progress_path)
+    marker = data.get("first_visualization")
+
+    # No-op when there is no owed marker to clear.
+    if not isinstance(marker, dict):
+        return
+    if marker.get("status") != "owed":
+        return
+
+    marker["status"] = "satisfied"
+    marker["satisfied_by"] = satisfied_by
+    marker["satisfied_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    _write_progress(progress_path, data)
+
+
+def is_first_visualization_owed(progress: dict) -> bool:
+    """Return True iff a first visualization is currently owed (not satisfied).
+
+    Args:
+        progress: A progress dict (as returned by ``_read_progress``).
+
+    Returns:
+        ``True`` when a ``first_visualization`` marker is present and its
+        status is not ``"satisfied"`` (i.e. owed). ``False`` when the marker
+        is absent (backward compatible: absence means "not owed") or already
+        satisfied.
+    """
+    marker = progress.get("first_visualization")
+    if not isinstance(marker, dict):
+        return False
+    return marker.get("status") != "satisfied"
+
+
 def _is_valid_iso8601(value: str) -> bool:
     """Return True if *value* is a valid ISO 8601 datetime string."""
     try:
@@ -173,6 +278,13 @@ def validate_progress_schema(data: dict) -> list[str]:
     - ``step_history`` (if present): must be a dict whose keys are string
       representations of integers 1–12 and whose values each contain
       ``last_completed_step`` and ``updated_at``.
+    - ``first_visualization`` (if present): must be a dict. When present,
+      ``status`` (if present) must be one of
+      VALID_FIRST_VISUALIZATION_STATUSES; ``owed_at`` / ``satisfied_at`` (if
+      present and non-null) must be valid ISO 8601; ``satisfied_by`` (if
+      present and non-null) must be a non-empty string. When
+      ``status == "satisfied"``, ``satisfied_by`` and ``satisfied_at`` must be
+      non-null. Absence of the whole object means "not owed".
 
     All fields are optional — legacy files that lack fields pass validation
     (backward compatible). The validator never short-circuits; all fields are
@@ -380,6 +492,62 @@ def validate_progress_schema(data: dict) -> list[str]:
                     errors.append(
                         f"step_history['{key}'].updated_at is not valid ISO 8601: "
                         f"'{entry['updated_at']}'"
+                    )
+
+    # --- first_visualization ---
+    if "first_visualization" in data:
+        fv = data["first_visualization"]
+        if not isinstance(fv, dict):
+            errors.append(
+                f"first_visualization must be a dict, got {type(fv).__name__}"
+            )
+        else:
+            status = fv.get("status")
+            if "status" in fv and status not in VALID_FIRST_VISUALIZATION_STATUSES:
+                errors.append(
+                    f"first_visualization.status must be one of "
+                    f"{VALID_FIRST_VISUALIZATION_STATUSES}, got {status!r}"
+                )
+
+            # owed_at / satisfied_at: if present and non-null, must be ISO 8601
+            for ts_field in ("owed_at", "satisfied_at"):
+                if ts_field in fv and fv[ts_field] is not None:
+                    ts_val = fv[ts_field]
+                    if not isinstance(ts_val, str):
+                        errors.append(
+                            f"first_visualization.{ts_field} must be a string or null, "
+                            f"got {type(ts_val).__name__}"
+                        )
+                    elif not _is_valid_iso8601(ts_val):
+                        errors.append(
+                            f"first_visualization.{ts_field} is not valid ISO 8601: {ts_val!r}"
+                        )
+
+            # satisfied_by: if present and non-null, must be a non-empty string
+            if "satisfied_by" in fv and fv["satisfied_by"] is not None:
+                sb = fv["satisfied_by"]
+                if not isinstance(sb, str):
+                    errors.append(
+                        f"first_visualization.satisfied_by must be a non-empty string or "
+                        f"null, got {type(sb).__name__}"
+                    )
+                elif sb == "":
+                    errors.append(
+                        "first_visualization.satisfied_by must be a non-empty string or "
+                        "null, got ''"
+                    )
+
+            # When satisfied, satisfied_by and satisfied_at must be non-null
+            if status == "satisfied":
+                if fv.get("satisfied_by") is None:
+                    errors.append(
+                        "first_visualization.satisfied_by must be non-null when "
+                        "status is 'satisfied'"
+                    )
+                if fv.get("satisfied_at") is None:
+                    errors.append(
+                        "first_visualization.satisfied_at must be non-null when "
+                        "status is 'satisfied'"
                     )
 
     return errors

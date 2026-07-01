@@ -86,6 +86,8 @@ inclusion: manual
     - If they say **no** or **not now**: Acknowledge and proceed.
     - If they are **unsure**: Briefly explain the value, then wait for their decision.
 
+    > **Deferred first-visualization guarantee:** After generating the dashboard, if `first_visualization` is `owed` in `config/bootcamp_progress.json` (Module 3 was opted out and the standalone demo declined), also call `clear_first_visualization_owed(satisfied_by="module_6_deferred")` from `scripts/progress_utils.py`. Check with `is_first_visualization_owed(progress)`; the clear is idempotent. This is the journey-level guarantee only — it does not change the Module 3 Step 9 gate. See `visualization-guide.md` → Deferred First-Visualization Guarantee.
+
     **Checkpoint:** Write step 27 to `config/bootcamp_progress.json`.
 
 ---

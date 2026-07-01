@@ -421,7 +421,7 @@ file_metadata:
     token_count: 463
     size_category: small
   hook-registry-module-any.md:
-    token_count: 3732
+    token_count: 4200
     size_category: large
   hook-registry.md:
     token_count: 2037
@@ -650,7 +650,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 194529
+  total_tokens: 194997
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -37,8 +37,10 @@ Recap schema:
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import sys
+import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -51,9 +53,13 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from recap_pdf_render import (  # noqa: E402
+    INDENT_UNIT,
     PdfVerificationError,
+    extract_pdf_text,
+    format_qr_section,
     render_generic_blocks,
     render_heading,
+    render_indented_list_items,
     render_list_items,
     render_markdown_body,
     safe_text,
@@ -76,6 +82,20 @@ class RecapHeader:
 
 
 @dataclass
+class QRPair:
+    """One question and its corresponding response within a QR_Section.
+
+    Attributes:
+        question: Question text after the ``- **Q:** `` prefix, verbatim.
+        response: Response text after the ``- **R:** `` prefix, verbatim (or a
+            placeholder when the recorded response was absent/whitespace-only).
+    """
+
+    question: str = ""
+    response: str = ""
+
+
+@dataclass
 class RecapSection:
     """A single module recap section."""
 
@@ -83,8 +103,13 @@ class RecapSection:
     module_name: str = ""
     timestamp: str = ""
     information_shared: list[str] = field(default_factory=list)
+    # Paired_Schema: interspersed question/response pairs.
+    qr_pairs: list[QRPair] = field(default_factory=list)
+    # Split_List_Schema (legacy, retained for backward compatibility).
     questions_asked: list[str] = field(default_factory=list)
     answers_given: list[str] = field(default_factory=list)
+    # Which schema this section was classified as: "paired" | "split" | "none".
+    schema: str = "none"
     actions_taken: list[str] = field(default_factory=list)
     duration: str = ""
     generic_content: list[str] = field(default_factory=list)
@@ -169,10 +194,117 @@ _KNOWN_SUBSECTIONS = frozenset(
         "information shared",
         "questions asked",
         "answers given",
+        "questions & responses",
         "actions taken",
         "duration",
     }
 )
+
+# Paired_Schema list-item prefixes (mirror the literals in recap_pdf_render).
+_QR_QUESTION_PREFIX = "- **Q:** "
+_QR_RESPONSE_PREFIX = "- **R:** "
+
+# Split_List_Schema placeholder for an unmatched question or answer (a
+# question/answer numbered N with no counterpart of the same number). Renders
+# in place of the missing counterpart so the item is never dropped
+# (Requirement 5.4).
+_SPLIT_UNMATCHED_PLACEHOLDER = "(no matching entry)"
+
+# Module-section heading detectors used for per-section schema classification.
+_QR_HEADING_RE = re.compile(
+    r"^###\s+Questions & Responses\s*$", re.MULTILINE | re.IGNORECASE
+)
+_QUESTIONS_ASKED_HEADING_RE = re.compile(
+    r"^###\s+Questions Asked\s*$", re.MULTILINE | re.IGNORECASE
+)
+_ANSWERS_GIVEN_HEADING_RE = re.compile(
+    r"^###\s+Answers Given\s*$", re.MULTILINE | re.IGNORECASE
+)
+
+
+def classify_section(section_text: str) -> str:
+    """Classify a module section as Paired_Schema, Split_List_Schema, or none.
+
+    Classification is per section (never per document) so a recap mixing the
+    new and legacy formats renders each section by its own headings
+    (Requirement 5.5):
+
+    * ``"paired"`` when the section has a ``### Questions & Responses`` heading.
+    * ``"split"`` when it has both ``### Questions Asked`` and
+      ``### Answers Given`` headings.
+    * ``"none"`` otherwise.
+
+    Args:
+        section_text: Text of a single module section (after the ## heading).
+
+    Returns:
+        The schema label: ``"paired"``, ``"split"``, or ``"none"``.
+    """
+    if _QR_HEADING_RE.search(section_text):
+        return "paired"
+    if _QUESTIONS_ASKED_HEADING_RE.search(
+        section_text
+    ) and _ANSWERS_GIVEN_HEADING_RE.search(section_text):
+        return "split"
+    return "none"
+
+
+def parse_qr_section(text: str) -> list[QRPair]:
+    """Parse a ``### Questions & Responses`` body into ordered QR_Pairs.
+
+    Pairs each Question_Item (a line whose leading spaces are followed by the
+    ``- **Q:** `` prefix) with the immediately following Response_Item (the
+    ``- **R:** `` prefix). The ``- **Q:** `` / ``- **R:** `` prefixes and the
+    response indentation are dropped while the remaining text is preserved
+    character-for-character. Continuation lines of a multi-line response (the
+    indented lines following its Response_Item) fold back into the response with
+    their canonical four-space indent removed, so ``parse_qr_section`` is the
+    exact inverse of :func:`recap_pdf_render.format_qr_section` over substantive
+    pairs. A ``- None`` body yields zero pairs. Responses indented by more than
+    four spaces are tolerated (only leading ASCII spaces are stripped).
+
+    Args:
+        text: The QR_Section body (the text after the
+            ``### Questions & Responses`` heading).
+
+    Returns:
+        The QR_Pairs in first-to-last document order.
+    """
+    pairs: list[QRPair] = []
+    question: str | None = None
+    response_lines: list[str] | None = None
+
+    def commit() -> None:
+        nonlocal question, response_lines
+        if question is not None and response_lines is not None:
+            pairs.append(
+                QRPair(question=question, response="\n".join(response_lines))
+            )
+        question = None
+        response_lines = None
+
+    # Split on "\n" only — the exact line separator `format_qr_section` joins
+    # with — so `parse_qr_section` is a true inverse. `str.splitlines()` would
+    # over-split on Latin-1 line-boundary control characters (e.g. U+0085 NEL,
+    # 0x0B, 0x0C, 0x1C-0x1E) that the formatter treats as ordinary in-line text,
+    # injecting a spurious break between a Question_Item and its Response_Item.
+    for line in text.split("\n"):
+        content = line.lstrip(" ")
+        if content.startswith(_QR_QUESTION_PREFIX):
+            commit()
+            question = content[len(_QR_QUESTION_PREFIX):]
+        elif content.startswith(_QR_RESPONSE_PREFIX) and question is not None:
+            response_lines = [content[len(_QR_RESPONSE_PREFIX):]]
+        elif response_lines is not None and line.startswith(" "):
+            # Indented continuation line of the current multi-line response;
+            # strip the canonical four-space indent, preserving deeper indents.
+            response_lines.append(line[INDENT_UNIT:])
+        else:
+            # A blank line or unrelated content ends the current pair.
+            commit()
+
+    commit()
+    return pairs
 
 
 def _split_subsections(section_text: str) -> tuple[dict[str, str], list[str]]:
@@ -257,6 +389,9 @@ def _parse_sections(content: str) -> list[RecapSection]:
         subsections, generic_content = _split_subsections(section_text)
         section.generic_content = generic_content
 
+        # Per-section schema classification (Requirement 5.5).
+        section.schema = classify_section(section_text)
+
         section.information_shared = _extract_list_items(
             subsections.get("information shared", "")
         )
@@ -269,6 +404,12 @@ def _parse_sections(content: str) -> list[RecapSection]:
         section.actions_taken = _extract_list_items(
             subsections.get("actions taken", "")
         )
+
+        # Paired_Schema QR_Pairs (Requirements 4.1, 4.3, 4.4).
+        if "questions & responses" in subsections:
+            section.qr_pairs = parse_qr_section(
+                subsections["questions & responses"]
+            )
 
         # Duration is plain text, not a list
         duration_text = subsections.get("duration", "").strip()
@@ -328,19 +469,31 @@ def format_recap_section(section: RecapSection) -> str:
             lines.append(f"- {item}")
     lines.append("")
 
-    # Questions Asked
-    lines.append("### Questions Asked")
-    if section.questions_asked:
-        for i, item in enumerate(section.questions_asked, 1):
-            lines.append(f"{i}. {item}")
-    lines.append("")
+    # Questions & Responses (Paired_Schema) or the legacy split lists.
+    if section.schema == "paired":
+        # Re-emit the QR_Section verbatim via the canonical formatter so a
+        # normalization round-trip preserves the Paired_Schema intact and is
+        # idempotent (Requirements 4.1, 4.3, 4.4, 5.5).
+        lines.append(
+            format_qr_section(
+                [(pair.question, pair.response) for pair in section.qr_pairs]
+            )
+        )
+        lines.append("")
+    else:
+        # Questions Asked
+        lines.append("### Questions Asked")
+        if section.questions_asked:
+            for i, item in enumerate(section.questions_asked, 1):
+                lines.append(f"{i}. {item}")
+        lines.append("")
 
-    # Answers Given
-    lines.append("### Answers Given")
-    if section.answers_given:
-        for i, item in enumerate(section.answers_given, 1):
-            lines.append(f"{i}. {item}")
-    lines.append("")
+        # Answers Given
+        lines.append("### Answers Given")
+        if section.answers_given:
+            for i, item in enumerate(section.answers_given, 1):
+                lines.append(f"{i}. {item}")
+        lines.append("")
 
     # Actions Taken
     lines.append("### Actions Taken")
@@ -453,8 +606,8 @@ def _build_qa_lines(questions: list[str], answers: list[str]) -> list[str]:
     Pairs questions and answers by index, emitting ``Q: <question>`` immediately
     followed by ``A: <answer>`` for each index. Iterates over the longer of the
     two lists so unequal lengths never drop content; a missing counterpart emits
-    an explicit placeholder (``A: (no answer recorded)`` /
-    ``Q: (no question recorded)``) rather than misaligning later pairs.
+    the explicit placeholder ``(no matching entry)`` (Requirement 5.4) rather
+    than misaligning later pairs.
 
     This is a pure helper with no PDF side effects, so the ordering and pairing
     can be unit-tested without rendering binary PDF output.
@@ -472,11 +625,11 @@ def _build_qa_lines(questions: list[str], answers: list[str]) -> list[str]:
         if i < len(questions):
             lines.append(f"Q: {questions[i]}")
         else:
-            lines.append("Q: (no question recorded)")
+            lines.append(f"Q: {_SPLIT_UNMATCHED_PLACEHOLDER}")
         if i < len(answers):
             lines.append(f"A: {answers[i]}")
         else:
-            lines.append("A: (no answer recorded)")
+            lines.append(f"A: {_SPLIT_UNMATCHED_PLACEHOLDER}")
     return lines
 
 
@@ -489,10 +642,10 @@ def _render_qa_pairs(
 
     Pairs by index: question ``i`` is rendered as ``Q: <question>`` immediately
     followed by ``A: <answer>``. Iterates over the longer of the two lists so
-    nothing is dropped; a missing counterpart renders an explicit placeholder
-    (``A: (no answer recorded)`` / ``Q: (no question recorded)``) rather than
-    misaligning later pairs. Reuses the inline-code handling used by
-    ``render_list_items`` so backtick spans render in the monospace font.
+    nothing is dropped; a missing counterpart renders the explicit placeholder
+    ``(no matching entry)`` (Requirement 5.4) rather than misaligning later
+    pairs. Reuses the inline-code handling used by ``render_list_items`` so
+    backtick spans render in the monospace font.
 
     Args:
         pdf: The FPDF instance.
@@ -517,6 +670,30 @@ def _render_qa_pairs(
                 pdf.write(6, safe_text(part))
         pdf.ln(6)
     pdf.set_font("Helvetica", "", 11)
+
+
+def _render_qr_pairs(
+    pdf: "FPDF",  # noqa: F821
+    qr_pairs: list[QRPair],
+) -> None:
+    """Render Paired_Schema QR_Pairs through the indent-aware renderer.
+
+    Each QR_Pair becomes two ``(level, text)`` render items: the Question_Item
+    at level 0 (``- **Q:** <question>``) immediately followed by its
+    Response_Item at level 1 (``- **R:** <response>``), so the response nests
+    visibly beneath its question in the PDF (Requirements 3.2, 4.4). First-to-
+    last order and question/response adjacency are preserved. The ``- **Q:** ``
+    / ``- **R:** `` prefix literals mirror the Paired_Schema authored Markdown.
+
+    Args:
+        pdf: The FPDF instance.
+        qr_pairs: The module's QR_Pairs in first-to-last order.
+    """
+    items: list[tuple[int, str]] = []
+    for pair in qr_pairs:
+        items.append((0, f"{_QR_QUESTION_PREFIX}{pair.question}"))
+        items.append((1, f"{_QR_RESPONSE_PREFIX}{pair.response}"))
+    render_indented_list_items(pdf, items)
 
 
 def _render_module_page(pdf: "FPDF", section: RecapSection) -> None:  # noqa: F821
@@ -552,13 +729,27 @@ def _render_module_page(pdf: "FPDF", section: RecapSection) -> None:  # noqa: F8
         pdf.cell(0, 6, "None", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
 
-    # Questions and responses — questions paired inline with their answers
-    render_heading(pdf, "Questions and responses", level=3)
-    if section.questions_asked or section.answers_given:
-        _render_qa_pairs(pdf, section.questions_asked, section.answers_given)
+    # Questions and responses — rendered per this section's classified schema.
+    if section.schema == "paired":
+        # Paired_Schema: interspersed QR_Pairs under a single heading, each
+        # response nested one level beneath its question (Requirements 3.2,
+        # 3.5, 4.4).
+        render_heading(pdf, "Questions & Responses", level=3)
+        if section.qr_pairs:
+            _render_qr_pairs(pdf, section.qr_pairs)
+        else:
+            pdf.set_font("Helvetica", "I", 11)
+            pdf.cell(0, 6, "None", new_x="LMARGIN", new_y="NEXT")
     else:
-        pdf.set_font("Helvetica", "I", 11)
-        pdf.cell(0, 6, "None", new_x="LMARGIN", new_y="NEXT")
+        # Split_List_Schema (or none): pair answer N with question N, in
+        # ascending numeric order, with the (no matching entry) placeholder for
+        # any unmatched counterpart (Requirements 5.1, 5.3, 5.4).
+        render_heading(pdf, "Questions and responses", level=3)
+        if section.questions_asked or section.answers_given:
+            _render_qa_pairs(pdf, section.questions_asked, section.answers_given)
+        else:
+            pdf.set_font("Helvetica", "I", 11)
+            pdf.cell(0, 6, "None", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
 
     # Actions Taken
@@ -653,6 +844,12 @@ def collect_verification_targets(
         body_lines: list[str] = []
         for section in doc.sections:
             body_lines.extend(section.information_shared)
+            # Paired_Schema QR_Pairs contribute their question and response text
+            # so a dropped pair fails verification; Split_List_Schema sections
+            # contribute their two numbered lists.
+            for pair in section.qr_pairs:
+                body_lines.append(pair.question)
+                body_lines.append(pair.response)
             body_lines.extend(section.questions_asked)
             body_lines.extend(section.answers_given)
             body_lines.extend(section.actions_taken)
@@ -662,6 +859,75 @@ def collect_verification_targets(
         return module_numbers, body_lines
 
     return [], split_blocks(body_text)
+
+
+def _distinctive_token(line: str) -> str | None:
+    """Return the longest Latin-1-safe token (length >= 2) of a body line.
+
+    Mirrors :func:`recap_pdf_render._distinctive_token` so the offending-content
+    identifier below uses the same wrap-robust marker the verifier relies on.
+
+    Args:
+        line: A source body line (question, response, or numbered item).
+
+    Returns:
+        The longest whitespace-delimited token of length >= 2, or ``None`` when
+        the line has no such token.
+    """
+    tokens = [tok for tok in safe_text(line).split() if len(tok) >= 2]
+    if not tokens:
+        return None
+    return max(tokens, key=len)
+
+
+def identify_unrendered_content(pdf_path: str, doc: RecapDocument) -> str | None:
+    """Best-effort: name the first QR_Pair / numbered item missing from a PDF.
+
+    Re-opens the rendered (temporary) PDF, extracts its text, and returns a
+    human-readable description of the first QR_Pair (Paired_Schema) or numbered
+    question/answer (Split_List_Schema) whose distinctive token did not survive
+    into the rendered text. Used to enrich the stderr error on a verification
+    failure (Requirements 4.2, 5.2). Returns ``None`` when nothing specific can
+    be pinpointed (e.g. the PDF text cannot be read back).
+
+    Args:
+        pdf_path: Path to the rendered PDF to inspect.
+        doc: The parsed recap document whose content was rendered.
+
+    Returns:
+        A description of the offending content, or ``None`` when none can be
+        identified.
+    """
+    try:
+        text = extract_pdf_text(Path(pdf_path).read_bytes())
+    except (OSError, ValueError):
+        return None
+    text_tokens = set(text.split())
+
+    def missing(line: str) -> bool:
+        token = _distinctive_token(line)
+        return token is not None and token not in text_tokens
+
+    for section in doc.sections:
+        mod = section.module_number
+        for idx, pair in enumerate(section.qr_pairs, 1):
+            if missing(pair.question):
+                return (
+                    f"Module {mod}, QR_Pair #{idx} question: "
+                    f"{pair.question!r}"
+                )
+            if missing(pair.response):
+                return (
+                    f"Module {mod}, QR_Pair #{idx} response: "
+                    f"{pair.response!r}"
+                )
+        for idx, question in enumerate(section.questions_asked, 1):
+            if missing(question):
+                return f"Module {mod}, question #{idx}: {question!r}"
+        for idx, answer in enumerate(section.answers_given, 1):
+            if missing(answer):
+                return f"Module {mod}, answer #{idx}: {answer!r}"
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -728,33 +994,54 @@ def main(argv: list[str] | None = None) -> int:
     detected_headings = len(_MODULE_HEADING_LOOSE_RE.findall(content))
     parsed_sections = len(doc.sections)
 
-    # Render PDF — degrade gracefully when fpdf2 is absent and report genuine
-    # write failures, but let rendering exceptions (e.g. FPDFException) propagate
-    # so a content-dropping failure is loud rather than silently swallowed by a
-    # broad catch-all that still let success be reported (Req 2.6). Passing the
-    # raw content routes the Raw_Body_Fallback when no structured sections parse.
+    # Render + verify + publish atomically. Render into a temporary file in the
+    # same directory as the output, run round-trip verification against that
+    # temp file, and only move it into place on success (os.replace is atomic on
+    # the same filesystem). On verification failure the temp file is removed so
+    # NO recap PDF is written or overwritten, an error identifying the offending
+    # QR_Pair / numbered item is printed to stderr, and we return 1
+    # (Requirements 4.1, 4.2, 5.1, 5.2). Degrade gracefully when fpdf2 is absent
+    # (leave the Markdown intact) and report genuine write/move failures.
+    module_numbers, expected_body_lines = collect_verification_targets(doc, content)
+    output_path = Path(args.output)
+    directory = output_path.parent if str(output_path.parent) else Path(".")
+
+    tmp_path: str | None = None
     try:
-        render_pdf(doc, args.output, body_text=content)
+        # mkstemp raises OSError (e.g. the target directory is missing), matching
+        # the previous direct-write OSError contract.
+        fd, tmp_path = tempfile.mkstemp(
+            dir=str(directory), prefix=f"{output_path.name}.", suffix=".tmp"
+        )
+        os.close(fd)
+        render_pdf(doc, tmp_path, body_text=content)
+        verify_rendered_pdf(tmp_path, module_numbers, expected_body_lines)
+        os.replace(tmp_path, str(output_path))
+        tmp_path = None  # Published — nothing left to clean up.
     except ImportError:
         print(
             "fpdf2 is required. Install with: pip install fpdf2",
             file=sys.stderr,
         )
         return 1
+    except PdfVerificationError as exc:
+        offending = (
+            identify_unrendered_content(tmp_path, doc) if tmp_path else None
+        )
+        detail = f" Offending content: {offending}" if offending else ""
+        print(f"PDF verification failed: {exc}{detail}", file=sys.stderr)
+        return 1
     except OSError as exc:
         print(f"Failed to write PDF: {exc}", file=sys.stderr)
         return 1
-
-    # Round-trip verification: re-open the written PDF and confirm it contains a
-    # section for every completed module plus at least MIN_BODY_LINES body lines
-    # before reporting success, so a render that dropped body content can never
-    # be reported as a successful PDF (Req 2.7).
-    module_numbers, expected_body_lines = collect_verification_targets(doc, content)
-    try:
-        verify_rendered_pdf(args.output, module_numbers, expected_body_lines)
-    except PdfVerificationError as exc:
-        print(f"PDF verification failed: {exc}", file=sys.stderr)
-        return 1
+    finally:
+        # Always clean up the temp file on any failure path so a rejected render
+        # never lingers beside the recap.
+        if tmp_path is not None:
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
 
     # Emit the under-population warning to stderr only, preserving the stdout
     # `PDF generated:` contract and the exit-code-0 success path (Req 2.4, 3.1).

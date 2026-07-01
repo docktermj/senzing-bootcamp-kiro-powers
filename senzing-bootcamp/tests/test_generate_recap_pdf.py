@@ -2111,8 +2111,8 @@ class TestMergedSectionInlinePairing:
 # ---------------------------------------------------------------------------
 
 
-_Q_PLACEHOLDER = "Q: (no question recorded)"
-_A_PLACEHOLDER = "A: (no answer recorded)"
+_Q_PLACEHOLDER = "Q: (no matching entry)"
+_A_PLACEHOLDER = "A: (no matching entry)"
 
 
 @st.composite

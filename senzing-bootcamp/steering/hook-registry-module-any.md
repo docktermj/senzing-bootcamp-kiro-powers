@@ -110,8 +110,7 @@ You are checking whether the bootcamper just completed a module and, if so, appe
 
 3. GATHER SESSION CONTENT: Review the current session context to collect:
    - Information Shared: key concepts, explanations, and reference material presented to the bootcamper during this module
-   - Questions Asked: all substantive questions the agent posed to the bootcamper (exclude rhetorical or transitional prompts)
-   - Answers Given: the bootcamper's responses to each question, maintaining 1:1 correspondence with questions
+   - Questions & Responses: an ORDERED LIST OF PAIRS, one pair per substantive question the agent posed to the bootcamper (exclude rhetorical or transitional prompts), each pair holding the question and the bootcamper's response to that question. Preserve the ascending sequence in which the questions were asked during the module. A substantive question is one whose text contains at least one non-whitespace character after leading and trailing whitespace is removed. Keep each question adjacent to its own response — do NOT collect questions and responses as two separate parallel lists.
    - Actions Taken: all file creations, modifications, code generation, configuration changes, and commands executed during the module
 
 4. COMPUTE DURATION (no placeholders): Obtain the per-module Duration and the cumulative Total Duration from the deterministic planner instead of from session context. Run:
@@ -146,13 +145,11 @@ You are checking whether the bootcamper just completed a module and, if so, appe
    - [Concept or explanation presented]
    - [Reference material shared]
 
-   ### Questions Asked
-   1. [Agent question to bootcamper]
-   2. [Agent question to bootcamper]
-
-   ### Answers Given
-   1. [Bootcamper response to question 1]
-   2. [Bootcamper response to question 2]
+   ### Questions & Responses
+   - **Q:** [Agent question to bootcamper]
+       - **R:** [Bootcamper response to that question]
+   - **Q:** [Next agent question to bootcamper]
+       - **R:** [Bootcamper response to that question]
 
    ### Actions Taken
    - Created `[file path]`
@@ -164,6 +161,14 @@ You are checking whether the bootcamper just completed a module and, if so, appe
 
    ---
    ```
+
+   QUESTIONS & RESPONSES FORMAT (follow exactly — this must match what `format_qr_section` produces):
+   - Emit exactly ONE `### Questions & Responses` heading per module. NEVER emit a `### Questions Asked` heading or an `### Answers Given` heading.
+   - For each pair, in ascending ask order, write the question on its own line beginning with the literal prefix `- **Q:**` (zero leading spaces), immediately followed on the next line by its response beginning with exactly four leading space characters (ASCII 0x20, no tabs) and the literal prefix `- **R:**`. The response line is nested four spaces beneath its question so the Response_Item Indent_Depth is exactly 4 and the Question_Item Indent_Depth is exactly 0.
+   - Keep each response immediately after its own question — never group all questions then all responses.
+   - If a question's response is absent or contains only whitespace, write the response line as `    - **R:** (no response recorded)`.
+   - If a response spans more than one line, prefix every continuation line with at least four leading spaces so it stays nested beneath the question.
+   - If the module has zero substantive questions, write the `### Questions & Responses` heading followed by exactly one list item consisting of the literal text `- None` and no question/response pairs.
 
 8. UPDATE TOTAL DURATION: If the file header contains a **Total Duration** line and the planner returned a non-null `total_duration`, update it to that value. The total duration is rolled up from the real per-module elapsed times and must be monotonically non-decreasing. If the planner returned null for `total_duration`, leave the header without a Total Duration value rather than writing a placeholder.
 
@@ -181,7 +186,7 @@ CONSTRAINTS:
 - All timestamps MUST use ISO 8601 format with timezone offset (e.g., 2026-05-23T10:30:00-05:00).
 - Preserve all existing file content byte-for-byte when appending.
 - Duration and Total Duration values come ONLY from `completion_artifacts.py`; never derive them from session context and never write a placeholder such as "Module N session". When the planner omits a value, omit the corresponding field.
-- If any section has no content (e.g., no questions were asked), include the subsection heading with a single item "None" or "N/A". This does NOT apply to the `### Duration` field, which is omitted entirely when the planner returns no value.
+- If any section has no content (e.g., no actions were taken), include the subsection heading with a single item "None" or "N/A". This does NOT apply to the `### Duration` field, which is omitted entirely when the planner returns no value, and it does NOT apply to the `### Questions & Responses` section, which follows its own rule above (heading followed by exactly `- None` when there are zero substantive questions).
 - If the file cannot be written due to a file system error, log a warning message and continue without blocking the module completion flow. Do NOT raise an error or halt execution.
 - Do NOT alter the behavior of any other hooks (celebration, journal entry, etc.).
 - Keep the recap factual and concise — summarize rather than reproduce entire conversations.

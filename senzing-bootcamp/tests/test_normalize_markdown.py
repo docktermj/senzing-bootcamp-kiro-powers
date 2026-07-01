@@ -369,6 +369,10 @@ def st_recap_section() -> st.SearchStrategy["generate_recap_pdf.RecapSection"]:
         answers_given=st_recap_list(),
         actions_taken=st_recap_list(),
         duration=st_recap_text(),
+        # ``format_recap_document`` always emits the legacy ``### Questions
+        # Asked`` / ``### Answers Given`` headings for a non-paired section, so
+        # a canonical round-trip classifies these sections as Split_List_Schema.
+        schema=st.just("split"),
     )
 
 

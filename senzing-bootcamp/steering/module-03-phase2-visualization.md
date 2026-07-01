@@ -59,6 +59,12 @@ inclusion: manual
 >
 > Skipping Phase 2 deprives the bootcamper of their first "wow moment" with entity
 > resolution results.
+>
+> **Scope note:** Governing Rule 15 ("always create the visualization") applies whenever
+> Module 3 runs. Once Module 3 is underway, Step 9 is unconditional and the agent never
+> presents it as optional. The only path that yields no visualization is the bootcamper
+> choosing to opt out of the entire Module 3 at the Phase 1 Opt-Out Gate, before verification
+> begins — a whole-module decision the agent never initiates or suggests.
 
 ---
 

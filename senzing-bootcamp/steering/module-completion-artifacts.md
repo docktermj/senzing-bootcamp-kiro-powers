@@ -56,8 +56,7 @@ When a module is marked complete in `config/bootcamp_progress.json`, gather sess
 ### What is gathered
 
 - **Information Shared:** Key concepts, explanations, and reference material presented during the module
-- **Questions Asked:** All substantive questions the agent posed to the bootcamper
-- **Answers Given:** The bootcamper's responses, maintaining 1:1 correspondence with questions
+- **Questions & Responses:** Each substantive question the agent posed, immediately paired with the bootcamper's response, in ascending ask order. This is rendered as the single `### Questions & Responses` section of interleaved `- **Q:**` / `- **R:**` pairs that the `module-recap-append` hook and `format_qr_section` emit (never as separate "Questions Asked" / "Answers Given" headings).
 - **Actions Taken:** File creations, modifications, code generation, and commands executed
 - **Duration:** The per-module elapsed time and cumulative `Total Duration` come from `scripts/completion_artifacts.py` (computed from the ISO 8601 timestamps in `step_history` and the top-level `started_at`), never from session context. When the planner returns no value for a module, omit the `### Duration` field entirely rather than writing a placeholder such as "Module N session".
 

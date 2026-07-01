@@ -472,7 +472,7 @@ file_metadata:
     token_count: 3536
     size_category: large
   module-03-phase2-visualization.md:
-    token_count: 5239
+    token_count: 5348
     size_category: large
   module-03-phase3-report-close.md:
     token_count: 1751
@@ -565,7 +565,7 @@ file_metadata:
     token_count: 850
     size_category: medium
   module-completion-artifacts.md:
-    token_count: 3928
+    token_count: 3982
     size_category: large
   module-completion-error-handling.md:
     token_count: 604
@@ -650,7 +650,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 194997
+  total_tokens: 195160
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

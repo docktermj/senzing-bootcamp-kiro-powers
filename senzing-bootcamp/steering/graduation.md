@@ -176,23 +176,37 @@ A PDF was written only when the script prints a `PDF generated:` line to stdout 
 
 Regardless of outcome, this step is **non-blocking**: proceed to Step 0b.4 and then to Step 1.
 
-### Step 0b.4: Q&A Transcript Generation
+### Step 0b.4: Q&A Transcript Reconciliation & Generation
 
 Generate the ordered question→answer transcript from the session log for replay and audit. This step is **non-blocking** — graduation continues regardless of the outcome.
 
-1. Run the transcript renderer:
+The logged Q&A events are emitted voluntarily by the agent (per `qa-transcript.md`) and are **not** backed by a write-tool hook, so they can silently under-represent the session. Before rendering, reconcile the log against the enforced recap source — mirroring how Step 0a reconciles the recap before the recap PDF is rendered — so the transcript is as complete as the recap's captured Q&A content.
+
+**Ordering invariant:** reconcile the transcript (sub-step 1) **then** render it (sub-step 2). The transcript is never rendered from an unreconciled log.
+
+1. Reconcile the session log against the recap's `### Questions & Responses` pairs by running the transcript reconciliation pass:
+
+   ```bash
+   python scripts/reconcile_transcript.py
+   ```
+
+   With no arguments the script uses the canonical paths (`docs/bootcamp_recap.md` and `config/session_log.jsonl`). It counts logged `question` events against the recap's Q&R pairs per module and, on a material shortfall, backfills the missing pairs into `config/session_log.jsonl` (reusing the existing `session_logger` completion-event schema) so the subsequent render is complete. The pass is **idempotent** (a no-op when the counts already agree, or when the recap has no Q&R content) and **non-blocking**: it never adds a per-write hook or per-write process spawn, and runs only here at graduation / stopping points.
+
+   This step is **non-blocking regardless of the reconcile script's exit code** — whether it succeeds, no-ops, or exits non-zero after an internally handled error, always proceed to the render in sub-step 2. On a non-zero exit or any warning, log the reason and continue; the render falls back to the existing log content.
+
+2. Run the transcript renderer:
 
    ```bash
    python scripts/generate_transcript.py
    ```
 
-   This reads `config/session_log.jsonl` and regenerates `docs/bootcamp_transcript.md`, an ordered Q&A record grouped by module. Regeneration overwrites any existing transcript rather than appending to stale content.
+   This reads the (now-reconciled) `config/session_log.jsonl` and regenerates `docs/bootcamp_transcript.md`, an ordered Q&A record grouped by module. Regeneration overwrites any existing transcript rather than appending to stale content.
 
-2. **Handle outcomes gracefully:**
+3. **Handle outcomes gracefully:**
    - If the script warns there are no Q&A events to render: no transcript is written. Inform the bootcamper and proceed to Step 1.
    - If the script fails for any other reason: inform the bootcamper of the failure reason and proceed to Step 1.
 
-3. On success, inform the bootcamper: "📝 Q&A transcript generated at `docs/bootcamp_transcript.md`."
+4. On success, inform the bootcamper: "📝 Q&A transcript generated at `docs/bootcamp_transcript.md`."
 
 Proceed to Step 0b.5.
 

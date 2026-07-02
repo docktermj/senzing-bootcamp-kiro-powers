@@ -88,6 +88,16 @@ Generate a PDF version of the bootcamper's recap document for sharing. This step
 
 **Procedure:**
 
+### Step 0b.0: fpdf2 Preflight Note
+
+Before attempting the recap PDF, run the preflight helper so the bootcamper learns up front whether a PDF will be produced:
+
+```bash
+python3 senzing-bootcamp/scripts/fpdf2_preflight.py
+```
+
+If it prints a line, surface that line to the bootcamper; if it prints nothing, continue silently. This step is **non-blocking regardless of exit code** — the recap PDF render (Step 0b.1 onward) always runs afterward whether or not a note was shown, and the PDF scripts' own graceful degradation remains the final fallback.
+
 ### Step 0b.1: Recap Document Recovery
 
 Before generating the PDF, validate that the recap document exists and is usable. Do NOT silently skip — treat a missing recap as a recoverable error.

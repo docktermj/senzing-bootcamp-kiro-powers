@@ -33,6 +33,16 @@ Before presenting the celebration, reconcile the recap deliverable against the r
 
 3. **Ordering relative to the recap PDF:** this reconciliation runs *before* the recap PDF is rendered. The PDF is produced later, in the graduation flow (`graduation.md` Step 0a re-runs this same reconciliation as its own final safety net, then Step 0b renders the PDF), so every completed module has a `## Module N:` section in the final PDF deliverable.
 
+### fpdf2 Preflight Note (before the completion-summary PDF / export offer)
+
+At track completion, before the completion-summary PDF offer and the export option below, run the preflight helper so the bootcamper learns up front whether a PDF will be produced:
+
+```bash
+python3 senzing-bootcamp/scripts/fpdf2_preflight.py
+```
+
+If it prints a line, surface that line to the bootcamper; if it prints nothing, continue silently. This step is **non-blocking regardless of exit code** — the completion-summary PDF and export offers always run afterward whether or not a note was shown, and the PDF scripts' existing graceful degradation is unchanged.
+
 When track is complete, present:
 
 - 🎉 "You've completed the [track name]!"

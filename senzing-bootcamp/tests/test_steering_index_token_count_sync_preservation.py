@@ -263,7 +263,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # total (197386 -> 198225 = sum of file_metadata counts). Only the budget
     # block changed; keywords/languages/deployment/root_step_range are
     # byte-identical.
-    "budget": "896125289be962ca460e1a83ee281008e2fe5e7967ab8ded65a2d943d021d8d3",
+    # Re-baselined once more (198225 -> 198523) for the fpdf2-preflight-note spec:
+    # graduation.md grew (added Step 0b.0 fpdf2 Preflight Note) and
+    # module-completion-track.md grew (added the fpdf2 Preflight Note invocation
+    # before the completion-summary/export offer), both recomputed by
+    # measure_steering.py into file_metadata and the budget total
+    # (198523 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "2bf41668f4e43a4579ef45fb431bec0bf885facf79683414736fa3b407457470",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -625,6 +632,10 @@ class TestNonPhaseBlocksBytePreserved:
         license guidance was reframed as a default evaluation license with
         expansion paths, all recomputed by ``measure_steering.py`` into
         ``file_metadata`` and the budget total.
+        Most recently, the fpdf2-preflight-note spec re-baselines again
+        (198225 -> 198523): ``graduation.md`` and ``module-completion-track.md``
+        grew (the fpdf2 preflight invocation was added), all recomputed by
+        ``measure_steering.py`` into ``file_metadata`` and the budget total.
         Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
@@ -641,9 +652,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (198225), so the hash cannot silently re-pin a stale value.
+        # (198523), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 198225" in budget_block
+        assert "total_tokens: 198523" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

@@ -270,7 +270,13 @@ _BASELINE_HASHES: dict[str, str] = {
     # measure_steering.py into file_metadata and the budget total
     # (198523 = sum of file_metadata counts). Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "2bf41668f4e43a4579ef45fb431bec0bf885facf79683414736fa3b407457470",
+    # Re-baselined once more (198523 -> 198794) for the
+    # module4-record-count-license-backfill spec: module-04-data-collection.md
+    # grew (4049 -> 4320) when Step 8a (the record-count license back-fill
+    # invocation) was added, recomputed by measure_steering.py into file_metadata
+    # and the budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "d1491a67b4aadcef5b95e46f6c98396127d3abafb83728e5105931a14c06e8c1",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -652,9 +658,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (198523), so the hash cannot silently re-pin a stale value.
+        # (198794), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 198523" in budget_block
+        assert "total_tokens: 198794" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

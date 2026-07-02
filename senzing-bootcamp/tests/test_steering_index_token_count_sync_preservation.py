@@ -248,7 +248,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # phase2-track-setup's step_range grew [5, 5] -> [5, "5c"] to cover the new
     # 5c section (the only root/step_range line to change), so its baseline is
     # re-pinned below too. keywords/languages/deployment are byte-identical.
-    "budget": "133706e9e790d6a0047f7a253b6636c7345a52764a4de242ab98befa56fa0498",
+    # Re-baselined once more (133706e9 -> b0fc1e9a) for the
+    # always-loaded-steering-budget-check feature: a new
+    # `always_loaded_ceiling_pct: 25` key was added to the budget block (between
+    # critical_threshold_pct and split_threshold_tokens), which changed the
+    # budget block's SHA-256. Only the new key was added; total_tokens is
+    # unchanged (197386 = sum of file_metadata counts) and
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "b0fc1e9a575b32c73362fadccbaeb355dee4214e72cdf18bae72461f93f79b3f",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -632,6 +639,7 @@ class TestNonPhaseBlocksBytePreserved:
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block
+        assert "always_loaded_ceiling_pct: 25" in budget_block
         assert "split_threshold_tokens: 5000" in budget_block
         assert "router_ceiling: 1000" in budget_block
 

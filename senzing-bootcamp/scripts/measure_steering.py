@@ -47,6 +47,34 @@ class PhaseEntry:
     size_category_line: int | None
 
 
+@dataclass
+class AlwaysLoadedResult:
+    """Outcome of the always-loaded baseline check.
+
+    Attributes:
+        always_loaded: The authoritative Always_Loaded_Set (sorted filenames
+            declaring ``inclusion: always``).
+        footprint_tokens: The Baseline_Footprint — summed measured
+            ``token_count`` of the always-loaded files.
+        warn_threshold_tokens: The Warn_Threshold in tokens
+            (``warn_threshold_pct/100 * reference_window``).
+        ceiling_pct: The configured ``budget.always_loaded_ceiling_pct``.
+        ceiling_tokens: The ceiling in tokens
+            (``ceiling_pct/100 * warn_threshold_tokens``).
+        pct_of_warn: Percentage of the Warn_Threshold consumed
+            (``footprint_tokens / warn_threshold_tokens * 100``).
+        over_budget: True when ``footprint_tokens`` exceeds ``ceiling_tokens``.
+    """
+
+    always_loaded: list[str]
+    footprint_tokens: int
+    warn_threshold_tokens: int
+    ceiling_pct: int
+    ceiling_tokens: int
+    pct_of_warn: float
+    over_budget: bool
+
+
 def calculate_token_count(filepath):
     """Read a file and return approximate token count: round(len(content) / 4)."""
     content = Path(filepath).read_text(encoding="utf-8")
@@ -89,6 +117,95 @@ def scan_steering_files(steering_dir):
         except PermissionError:
             print(f"Warning: cannot read {md_file.name}, skipping", file=sys.stderr)
     return file_metadata
+
+
+def parse_inclusion(filepath) -> str | None:
+    """Return the ``inclusion`` value from a steering file's YAML frontmatter.
+
+    Reads only the leading frontmatter block delimited by ``---`` fences and
+    extracts the ``inclusion:`` value (``always`` | ``fileMatch`` | ``manual`` |
+    ``auto``), tolerating surrounding whitespace and optional quotes. Uses a
+    minimal stdlib regex (no PyYAML). Never raises on a missing or malformed
+    frontmatter block — returns None when the file has no frontmatter or no
+    ``inclusion`` key. Read errors (e.g. ``PermissionError``) are allowed to
+    propagate so callers can handle them like ``scan_steering_files``.
+
+    Args:
+        filepath: Path to a steering markdown file.
+
+    Returns:
+        The ``inclusion`` value, or None when absent/malformed.
+    """
+    content = Path(filepath).read_text(encoding="utf-8")
+
+    lines = content.splitlines()
+    # Frontmatter must be the leading block, opening with a `---` fence.
+    if not lines or lines[0].strip() != "---":
+        return None
+
+    inclusion_pattern = re.compile(r"^\s*inclusion:\s*[\"']?(\w+)[\"']?\s*$")
+    for line in lines[1:]:
+        if line.strip() == "---":
+            break  # end of frontmatter block
+        match = inclusion_pattern.match(line)
+        if match:
+            return match.group(1)
+    return None
+
+
+def collect_always_loaded_set(steering_dir) -> list[str]:
+    """Return the sorted filenames of steering files declaring ``inclusion: always``.
+
+    Scans ``*.md`` files in ``steering_dir`` (mirroring ``scan_steering_files``'s
+    globbing), calls ``parse_inclusion`` on each, and returns the names whose
+    inclusion is exactly ``always``. This is the single authoritative
+    Always_Loaded_Set that drives both ``--simulate`` and
+    ``check_always_loaded_budget``. Unreadable files are skipped with a stderr
+    warning, mirroring the ``PermissionError`` handling in ``scan_steering_files``.
+
+    Args:
+        steering_dir: Path to the steering directory.
+
+    Returns:
+        Sorted list of filenames whose frontmatter ``inclusion`` is ``always``.
+    """
+    steering_path = Path(steering_dir)
+    if not steering_path.is_dir():
+        print(f"Error: steering directory not found: {steering_path}", file=sys.stderr)
+        sys.exit(1)
+
+    always_loaded: list[str] = []
+    for md_file in sorted(steering_path.glob("*.md")):
+        try:
+            if parse_inclusion(md_file) == "always":
+                always_loaded.append(md_file.name)
+        except PermissionError:
+            print(f"Warning: cannot read {md_file.name}, skipping", file=sys.stderr)
+    return sorted(always_loaded)
+
+
+def compute_baseline_footprint(always_loaded: list[str], file_metadata: dict) -> int:
+    """Sum the measured token_count of the always-loaded files.
+
+    Uses the measured ``file_metadata`` (from ``scan_steering_files``) so the
+    footprint reflects the files on disk, not stored values. Files absent from
+    ``file_metadata`` contribute 0, and the result is independent of the order of
+    ``always_loaded``.
+
+    Args:
+        always_loaded: Filenames of the Always_Loaded_Set (from
+            ``collect_always_loaded_set``).
+        file_metadata: dict from ``scan_steering_files`` mapping filename to a
+            metadata dict containing ``token_count``.
+
+    Returns:
+        The Baseline_Footprint: the summed ``token_count`` of the always-loaded
+        files present in ``file_metadata``.
+    """
+    return sum(
+        file_metadata.get(name, {}).get("token_count", 0)
+        for name in always_loaded
+    )
 
 
 def print_summary(file_metadata, total_tokens):
@@ -143,8 +260,10 @@ def update_index(index_path, file_metadata, total_tokens, steering_dir=DEFAULT_S
     ``rewrite_phase_counts``. In-tolerance phases and all non-phase content
     (``budget``, ``keywords``, ``languages``, ``deployment``, module ``root`` /
     ``step_range``) are left byte-identical. The ``file_metadata`` / ``budget``
-    rebuild, ``split_threshold_tokens`` preservation, and ``router_ceiling``
-    preservation (defaulting to ``1000`` when absent) are unchanged, and
+    rebuild, ``split_threshold_tokens`` preservation, ``router_ceiling``
+    preservation (defaulting to ``1000`` when absent), and
+    ``always_loaded_ceiling_pct`` preservation (defaulting to ``25`` when
+    absent) are unchanged, and
     ``total_tokens`` remains the sum of ``file_metadata`` counts only (phase
     counts are never added to the budget total).
 
@@ -169,6 +288,7 @@ def update_index(index_path, file_metadata, total_tokens, steering_dir=DEFAULT_S
     index_path = Path(index_path)
     split_threshold = None
     router_ceiling = None
+    always_loaded_ceiling = None
 
     if index_path.exists():
         content = load_yaml_content(index_path)
@@ -184,6 +304,12 @@ def update_index(index_path, file_metadata, total_tokens, steering_dir=DEFAULT_S
         ceiling_match = re.search(r"router_ceiling:\s*(\d+)", content)
         if ceiling_match:
             router_ceiling = ceiling_match.group(1)
+        # Check for always_loaded_ceiling_pct before truncating
+        always_loaded_match = re.search(
+            r"always_loaded_ceiling_pct:\s*(\d+)", content
+        )
+        if always_loaded_match:
+            always_loaded_ceiling = always_loaded_match.group(1)
         # Find where file_metadata starts (if it already exists) and truncate there
         fm_pos = _find_section_start(content, "file_metadata")
         if fm_pos >= 0:
@@ -210,6 +336,12 @@ def update_index(index_path, file_metadata, total_tokens, steering_dir=DEFAULT_S
     lines.append("  reference_window: 200000")
     lines.append("  warn_threshold_pct: 60")
     lines.append("  critical_threshold_pct: 80")
+
+    # Preserve always_loaded_ceiling_pct if it existed; default to 25 when absent
+    if always_loaded_ceiling is not None:
+        lines.append(f"  always_loaded_ceiling_pct: {always_loaded_ceiling}")
+    else:
+        lines.append("  always_loaded_ceiling_pct: 25")
 
     # Preserve split_threshold_tokens if it existed in the original content
     if split_threshold is not None:
@@ -284,6 +416,27 @@ def parse_budget_total(content: str) -> int | None:
     """
     match = re.search(r"total_tokens:\s*(\d+)", content)
     return int(match.group(1)) if match else None
+
+
+def parse_always_loaded_ceiling_pct(content: str, default: int = 25) -> int:
+    """Extract budget.always_loaded_ceiling_pct from YAML content via a localized regex.
+
+    Uses the same minimal-regex approach as ``parse_budget_total`` (and
+    ``simulate_context_load``'s ``reference_window`` read), matching the
+    ``always_loaded_ceiling_pct:`` line in the budget section. This is the ceiling,
+    expressed as a percentage of the warn threshold, that the always-loaded baseline
+    footprint must stay under. Returning the documented default when the key is absent
+    keeps the check operable before the key is added to ``steering-index.yaml``.
+
+    Args:
+        content: Raw YAML text of steering-index.yaml.
+        default: Ceiling percentage to use when the key is absent (documented default 25).
+
+    Returns:
+        The declared ``budget.always_loaded_ceiling_pct`` value, or ``default`` if not found.
+    """
+    match = re.search(r"always_loaded_ceiling_pct:\s*(\d+)", content)
+    return int(match.group(1)) if match else default
 
 
 def _parse_phase_entries(content: str) -> list[PhaseEntry]:
@@ -447,6 +600,115 @@ def check_phase_counts(
     return mismatches
 
 
+def check_always_loaded_budget(
+    index_path, steering_dir, file_metadata
+) -> AlwaysLoadedResult:
+    """Compute the always-loaded baseline result (pure read).
+
+    Derives the authoritative Always_Loaded_Set (``collect_always_loaded_set``),
+    the Baseline_Footprint (``compute_baseline_footprint`` over the measured
+    ``file_metadata``), the Warn_Threshold in tokens (from ``reference_window``
+    times ``warn_threshold_pct``, read with the same localized-regex approach
+    used by ``simulate_context_load`` and defaulting to ``200000`` / ``60`` when
+    absent), and the ceiling (``parse_always_loaded_ceiling_pct``). Sets
+    ``over_budget`` when the footprint exceeds ``ceiling_pct/100 *
+    warn_threshold_tokens``. This function does not print or exit — ``main``
+    renders the report and aggregates the result into the exit decision.
+
+    Args:
+        index_path: Path to steering-index.yaml.
+        steering_dir: Path to the steering directory holding the .md files.
+        file_metadata: dict from ``scan_steering_files`` mapping filename to a
+            metadata dict containing ``token_count``.
+
+    Returns:
+        An ``AlwaysLoadedResult`` describing the footprint, thresholds, and the
+        pass/fail decision.
+    """
+    content = load_yaml_content(index_path)
+
+    # Warn threshold in tokens: warn_threshold_pct/100 * reference_window,
+    # read with the same localized regex approach as simulate_context_load and
+    # defaulting to 200000 / 60 for robustness when the keys are absent.
+    rw_match = re.search(r"reference_window:\s*(\d+)", content)
+    reference_window = int(rw_match.group(1)) if rw_match else 200000
+    wt_match = re.search(r"warn_threshold_pct:\s*(\d+)", content)
+    warn_threshold_pct = int(wt_match.group(1)) if wt_match else 60
+    warn_threshold_tokens = round(warn_threshold_pct / 100 * reference_window)
+
+    ceiling_pct = parse_always_loaded_ceiling_pct(content)
+    ceiling_tokens = round(ceiling_pct / 100 * warn_threshold_tokens)
+
+    always_loaded = collect_always_loaded_set(steering_dir)
+    footprint_tokens = compute_baseline_footprint(always_loaded, file_metadata)
+
+    # Guard divide-by-zero when the warn threshold resolves to 0 tokens.
+    pct_of_warn = (
+        footprint_tokens / warn_threshold_tokens * 100
+        if warn_threshold_tokens
+        else 0.0
+    )
+    over_budget = footprint_tokens > ceiling_tokens
+
+    return AlwaysLoadedResult(
+        always_loaded=always_loaded,
+        footprint_tokens=footprint_tokens,
+        warn_threshold_tokens=warn_threshold_tokens,
+        ceiling_pct=ceiling_pct,
+        ceiling_tokens=ceiling_tokens,
+        pct_of_warn=pct_of_warn,
+        over_budget=over_budget,
+    )
+
+
+def format_always_loaded_report(
+    result: AlwaysLoadedResult, file_metadata: dict | None = None
+) -> list[str]:
+    """Render the always-loaded baseline check report as a list of lines.
+
+    Always renders the Baseline_Footprint in tokens, the Warn_Threshold in
+    tokens, the percentage of the Warn_Threshold consumed, and the configured
+    ceiling (Requirement 3.1). When ``result.over_budget`` is true, additionally
+    names each contributing always-loaded file (Requirement 3.2). Per-file token
+    counts are shown when ``file_metadata`` is provided (the same measured map
+    used to compute the footprint); when it is ``None`` or a file is absent from
+    it, the filename is listed without a count.
+
+    Args:
+        result: The ``AlwaysLoadedResult`` from ``check_always_loaded_budget``.
+        file_metadata: Optional dict from ``scan_steering_files`` mapping filename
+            to a metadata dict containing ``token_count``. When provided, each
+            contributing file is named with its measured token count on failure.
+
+    Returns:
+        A list of report lines suitable for printing one per line.
+    """
+    status = "OVER BUDGET" if result.over_budget else "within budget"
+    lines = [
+        f"Always-loaded baseline check: {status}",
+        f"  Baseline footprint: {result.footprint_tokens} tokens",
+        f"  Warn threshold: {result.warn_threshold_tokens} tokens",
+        f"  Percent of warn threshold consumed: {result.pct_of_warn:.1f}%",
+        (
+            f"  Ceiling: {result.ceiling_pct}% of warn threshold "
+            f"({result.ceiling_tokens} tokens)"
+        ),
+    ]
+
+    if result.over_budget:
+        lines.append("  Contributing always-loaded files:")
+        for name in result.always_loaded:
+            token_count = None
+            if file_metadata is not None:
+                token_count = file_metadata.get(name, {}).get("token_count")
+            if token_count is not None:
+                lines.append(f"    - {name}: {token_count} tokens")
+            else:
+                lines.append(f"    - {name}")
+
+    return lines
+
+
 def rewrite_phase_counts(content: str, steering_dir) -> str:
     """Return content with out-of-tolerance phase token_count/size_category fixed.
 
@@ -548,12 +810,23 @@ def _parse_modules_section(content: str) -> dict[int, list[str]]:
     return modules
 
 
-def simulate_context_load(index_path: Path, file_metadata: dict) -> None:
+def simulate_context_load(
+    index_path: Path, file_metadata: dict, steering_dir=DEFAULT_STEERING_DIR
+) -> None:
     """Simulate per-module context load and show token usage with/without unloading.
 
+    The always-loaded baseline is sourced from ``collect_always_loaded_set`` so
+    ``--simulate`` and ``check_always_loaded_budget`` share one authoritative
+    definition (the steering files declaring ``inclusion: always``). The
+    representative language file (``lang-python.md``) remains a simulation-only
+    assumption and is not part of the enforced baseline.
+
     Args:
-        index_path: Path to steering-index.yaml
-        file_metadata: dict from scan_steering_files()
+        index_path: Path to steering-index.yaml.
+        file_metadata: dict from scan_steering_files().
+        steering_dir: Path to the steering directory used to derive the
+            always-loaded set. Defaults to ``DEFAULT_STEERING_DIR`` so existing
+            call sites keep working.
     """
     content = load_yaml_content(index_path)
 
@@ -561,8 +834,9 @@ def simulate_context_load(index_path: Path, file_metadata: dict) -> None:
     rw_match = re.search(r"reference_window:\s*(\d+)", content)
     reference_window = int(rw_match.group(1)) if rw_match else 200000
 
-    # Always-loaded files
-    always_loaded = ["agent-instructions.md", "conversation-protocol.md", "module-transitions.md"]
+    # Always-loaded files: derived from the single authoritative source so
+    # --simulate and the always-loaded budget check never disagree.
+    always_loaded = collect_always_loaded_set(steering_dir)
     always_tokens = sum(
         file_metadata.get(f, {}).get("token_count", 0) for f in always_loaded
     )
@@ -649,7 +923,7 @@ def main():
     total_tokens = sum(m["token_count"] for m in file_metadata.values())
 
     if args.simulate:
-        simulate_context_load(args.index_path, file_metadata)
+        simulate_context_load(args.index_path, file_metadata, args.steering_dir)
     elif args.check:
         mismatches = check_counts(args.index_path, file_metadata)
         phase_mismatches = check_phase_counts(args.index_path, args.steering_dir)
@@ -663,6 +937,11 @@ def main():
             meta.get("token_count", 0) for meta in stored_metadata.values()
         )
         budget_mismatch = declared_total != expected_total
+        # Always-loaded baseline check: additive to the aggregate exit decision.
+        # It can only add a failure reason, never suppress the existing checks.
+        always_result = check_always_loaded_budget(
+            args.index_path, args.steering_dir, file_metadata
+        )
         if mismatches:
             print("Token count mismatches (>10% difference):")
             for filename, stored, calculated in mismatches:
@@ -681,7 +960,14 @@ def main():
                 f"Budget total mismatch: declared={declared_str}, "
                 f"sum(file_metadata)={expected_total}"
             )
-        if mismatches or phase_mismatches or budget_mismatch:
+        for line in format_always_loaded_report(always_result, file_metadata):
+            print(line)
+        if (
+            mismatches
+            or phase_mismatches
+            or budget_mismatch
+            or always_result.over_budget
+        ):
             sys.exit(1)
         else:
             print("All token counts are within 10% tolerance.")

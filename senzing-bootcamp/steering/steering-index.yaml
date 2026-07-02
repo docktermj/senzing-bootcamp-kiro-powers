@@ -654,5 +654,6 @@ budget:
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80
+  always_loaded_ceiling_pct: 25
   split_threshold_tokens: 5000
   router_ceiling: 1000

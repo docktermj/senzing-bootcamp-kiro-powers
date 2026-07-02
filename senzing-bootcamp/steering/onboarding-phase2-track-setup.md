@@ -23,6 +23,28 @@ Interpreting responses: "core"/"core_bootcamp"→start at Module 1, "advanced"/"
 >
 > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not say "I'll go with X." Do not proceed to the next step. Wait for the bootcamper's real input.
 
+## 5c. Advanced Track Knowledge Check
+
+This step comes right after track selection and just before Module 1 begins. It gives Advanced-track bootcampers a light gut-check that the core entity-resolution idea landed before the deeper modules build on it.
+
+**Advanced-only guard.** Run this step only when the persisted `track` in the preferences file is the Advanced track (`advanced_topics`). Skip it entirely for the Core track (`core_bootcamp`) and for any missing or unknown `track` value — those cases proceed straight to Module 1, and Core onboarding is unchanged. Do not present the question to anyone who is not on the Advanced track.
+
+When the guard passes, present a single, warm, conversational question — this is a friendly gut-check, not a quiz or an exam. Draw it from a core ER concept the bootcamper just saw in the entity resolution introduction: that entity resolution decides whether different records refer to the *same real-world entity*.
+
+Output format: your output MUST begin with 👉 followed by the one comprehension question, then stop. Example:
+
+```text
+👉 Quick gut-check before we dive in: in your own words, what is entity resolution deciding when it looks at two records?
+```
+
+If you paraphrase or reformulate the question, keep it to a single question and keep the 👉 prefix — it is still mandatory.
+
+**Correct / understanding answer:** If the bootcamper answers correctly or clearly shows they understand that ER decides whether records point at the same real-world entity, affirm briefly and proceed to Module 1.
+
+**Incorrect / unsure answer:** If the bootcamper answers incorrectly or signals they are unsure ("not sure," "I don't know"), offer a brief, plain-language Re_Explanation of the concept, then proceed to Module 1. Apply the bootcamper's current verbosity settings from the preferences file when giving the Re_Explanation.
+
+**Note:** This step is NOT a gate — it is not mandatory, and it never prevents the bootcamper from continuing regardless of their answer. The `ask-bootcamper` hook handles the closing question on `agentStop`, so do not include inline closing questions here.
+
 ## Switching Tracks
 
 All completed modules carry forward. Read the appropriate progress file — in team mode, use the member-specific progress file (`config/progress_{member_id}.json` in co-located mode, or `{repo_path}/config/bootcamp_progress.json` in distributed mode); in single-user mode, use `bootcamp_progress.json`. Show new track requirements vs. done, update preferences, resume from first incomplete module.

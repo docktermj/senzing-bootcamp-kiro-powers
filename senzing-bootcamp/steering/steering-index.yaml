@@ -179,9 +179,9 @@ onboarding:
       step_range: [3, "5b"]
     phase2-track-setup:
       file: onboarding-phase2-track-setup.md
-      token_count: 991
+      token_count: 1503
       size_category: medium
-      step_range: [5, 5]
+      step_range: [5, "5c"]
 
 session-resume:
   root: session-resume.md
@@ -592,7 +592,7 @@ file_metadata:
     token_count: 2126
     size_category: large
   onboarding-phase2-track-setup.md:
-    token_count: 972
+    token_count: 1503
     size_category: medium
   phase-loading-guide.md:
     token_count: 890
@@ -650,7 +650,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 196855
+  total_tokens: 197386
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

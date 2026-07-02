@@ -237,11 +237,26 @@ _BASELINE_HASHES: dict[str, str] = {
     # first-visualization guarantee wiring, all recomputed by measure_steering.py
     # into file_metadata and the budget total. Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "d77d49974d833402a872106231834b28bac9e9ae96d7c67ce8b4993d80504fa1",
+    # Re-baselined once more (196422 -> 197386) for the
+    # advanced-track-knowledge-check spec (task 2.1): onboarding-phase2-track-
+    # setup.md grew (972 -> 1503) when the 5c section was added, recomputed by
+    # measure_steering.py into file_metadata and the budget total. NOTE: the
+    # pinned baseline was ALSO stale on HEAD before this spec (HEAD total was
+    # 196855 while this constant still pinned 196422); this re-baseline moves the
+    # budget block to the live consistent value (197386 = sum of file_metadata
+    # counts). This spec ALSO legitimately changed the root_step_range block:
+    # phase2-track-setup's step_range grew [5, 5] -> [5, "5c"] to cover the new
+    # 5c section (the only root/step_range line to change), so its baseline is
+    # re-pinned below too. keywords/languages/deployment are byte-identical.
+    "budget": "133706e9e790d6a0047f7a253b6636c7345a52764a4de242ab98befa56fa0498",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
-    "root_step_range": "560fe6ad7e2b2b4e852bb6ad8515aca16846416084f9d204c83f2871764ffadd",
+    # Re-baselined (560fe6ad -> 3da6ba04) for the advanced-track-knowledge-check
+    # spec: phase2-track-setup's step_range extended [5, 5] -> [5, "5c"] when the
+    # 5c section was added (task 2.1); all other module root/step_range lines are
+    # byte-identical.
+    "root_step_range": "3da6ba040d3a338818dca3598b9f9447261e5469eb00bd2adc5db1d9eddcb4fe",
 }
 
 # Stable (non-phase) top-level blocks asserted byte-for-byte.
@@ -611,9 +626,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (196422), so the hash cannot silently re-pin a stale value.
+        # (197386), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 196422" in budget_block
+        assert "total_tokens: 197386" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

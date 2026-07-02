@@ -14,7 +14,8 @@ The module completion process executes the following steps in a **fixed, invaria
 2. **recap_append** — Synchronously append a recap section to `docs/bootcamp_recap.md` (create file if first completion), then verify the `## Module N:` heading persisted and backfill it if absent before reporting success
 3. **journal_entry** — Append a journal entry to `docs/bootcamp_journal.md` (create file if first completion)
 4. **completion_certificate** — Generate `docs/progress/MODULE_N_COMPLETE.md` and update the summary index
-5. **next_step_options** — Present the bootcamper with concrete next-step choices
+5. **capture_hook_safeguard** — Run `capture_hook_safeguard.py` to detect any absent capture-critical hook; a silent no-op when all three are present, or a recurring, overridable Soft_Block reminder surfaced before the module transition when any are missing (see the Capture-Critical Hook Safeguard section below)
+6. **next_step_options** — Present the bootcamper with concrete next-step choices
 
 ### Ordering Rules
 
@@ -38,6 +39,40 @@ The **recap_append**, **journal_entry**, and **completion_certificate** steps al
 A module-completion turn that expects input must end with exactly one live pending question (👉) as its **final message** (per the Final-Message Invariant in `conversation-protocol.md`). Run the recap/confirmation BEFORE the forward transition question, or re-surface the forward "Ready for Module X" prompt (👉) as the final message after any recap/confirmation, with `config/.question_pending` (re)written for it. A recap/confirmation line (e.g., "Recap updated for Module N") must never be the final message of a completion turn.
 
 This ordering rule does not change the fixed completion step order above, the defer-when-pending / no-op trigger rules, or the affirmative-transition commitment: an affirmative answer to "Ready for Module X?" still immediately starts the next module in the same turn with its banner, journey map, before/after framing, and Step 1.
+
+## Capture-Critical Hook Safeguard
+
+At the module-completion boundary — after the artifact steps and **before** the forward module-transition question is finalized — run the safeguard to catch any capture-critical hook (`session-log-events`, `module-recap-append`, `ask-bootcamper`) whose absence would silently thin the recap, transcript, and completion summary:
+
+```text
+python3 senzing-bootcamp/scripts/capture_hook_safeguard.py --module N
+```
+
+Render the resulting `ReminderPlan`:
+
+- **All three hooks present — silent no-op.** The script emits nothing. Produce no safeguard output and do not delay the transition; proceed straight to `next_step_options`.
+- **Any hook missing — Soft_Block.** The script names each missing hook, the output(s) it feeds (recap, transcript, and/or completion summary), and the two install options. Surface this as a **single live `👉` Soft_Block pending question** that is the **final message** of the turn (per the Final-Message Invariant in `conversation-protocol.md`). The question names the missing hook(s) and the degraded output(s) each feeds, offers the two install options, and offers an explicit continue:
+  - Re-create them with `createHook` from the Hook Registry (`ask-bootcamper` in `hook-registry-critical.md`; `module-recap-append` and `session-log-events` in `hook-registry-module-any.md`), **or**
+  - Run the file-copy installer: `python3 senzing-bootcamp/scripts/install_hooks.py --essential` (its `--essential` set includes all three), **or**
+  - Explicitly continue without installing.
+
+  Write `config/.question_pending` for this Soft_Block question and wait. The reminder **recurs at every subsequent module boundary** while a hook stays missing — a prior acknowledgment authorizes only the current transition and never suppresses a future reminder.
+
+### On explicit continue
+
+When the bootcamper explicitly chooses to continue without installing, re-invoke the safeguard with `--record-ack` to record the acknowledgment **before** allowing the module transition:
+
+```text
+python3 senzing-bootcamp/scripts/capture_hook_safeguard.py --module N --record-ack
+```
+
+Then proceed to the forward transition. The acknowledgment authorizes **this** transition only; the reminder still re-presents at the next boundary if the hook remains missing.
+
+### Non-blocking and defer rules
+
+- **Non-blocking regardless of exit code.** The safeguard is advisory: whether it exits 0 or 1, never let it block or stall the module transition. It is a Soft_Block, never a Mandatory_Gate (⛔), and never permanently blocks progress.
+- **Defer when a question is pending.** If `config/.question_pending` already exists at the boundary, the safeguard produces no output and defers to `ask-bootcamper`, exactly as the artifact steps do.
+- **Complements the session-start check.** This safeguard reuses the same capture-critical hook list and the same two install options as the advisory Capture-Critical Warn-on-Absence Check in `session-resume-phase2-setup-recovery.md`; it neither replaces nor weakens that check.
 
 ## Completion Slice Manifest
 

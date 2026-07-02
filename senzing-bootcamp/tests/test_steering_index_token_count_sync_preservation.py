@@ -255,7 +255,15 @@ _BASELINE_HASHES: dict[str, str] = {
     # budget block's SHA-256. Only the new key was added; total_tokens is
     # unchanged (197386 = sum of file_metadata counts) and
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "b0fc1e9a575b32c73362fadccbaeb355dee4214e72cdf18bae72461f93f79b3f",
+    # Re-baselined once more (b0fc1e9a -> 89612528) for the
+    # capture-hook-completion-safeguard feature (task 8.1): module-completion.md
+    # grew (1423 -> 2262, medium -> large) when the Capture-Hook Completion
+    # Safeguard step was wired into the module-completion boundary steering,
+    # which measure_steering.py recomputed into file_metadata and the budget
+    # total (197386 -> 198225 = sum of file_metadata counts). Only the budget
+    # block changed; keywords/languages/deployment/root_step_range are
+    # byte-identical.
+    "budget": "896125289be962ca460e1a83ee281008e2fe5e7967ab8ded65a2d943d021d8d3",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -633,9 +641,9 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (197386), so the hash cannot silently re-pin a stale value.
+        # (198225), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 197386" in budget_block
+        assert "total_tokens: 198225" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

@@ -577,8 +577,8 @@ file_metadata:
     token_count: 1726
     size_category: medium
   module-completion.md:
-    token_count: 1423
-    size_category: medium
+    token_count: 2262
+    size_category: large
   module-prerequisites.md:
     token_count: 1394
     size_category: medium
@@ -650,7 +650,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 197386
+  total_tokens: 198225
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

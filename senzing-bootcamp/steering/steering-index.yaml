@@ -70,7 +70,7 @@ modules:
     phases:
       phase1-build-loading-program:
         file: module-06-phaseA-build-loading.md
-        token_count: 2866
+        token_count: 3649
         size_category: large
         step_range: [1, 4]
       phase2-load-first-source:
@@ -502,7 +502,7 @@ file_metadata:
     token_count: 652
     size_category: medium
   module-06-phaseA-build-loading.md:
-    token_count: 2860
+    token_count: 3649
     size_category: large
   module-06-phaseB-load-first-source.md:
     token_count: 1193
@@ -650,7 +650,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 198794
+  total_tokens: 199583
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -37,6 +37,7 @@ from preferences_utils import (
     load_preferences,
     parse_yaml,
     resolve_language_steering,
+    validate_preferences_schema,
     write_preference,
 )
 
@@ -433,3 +434,176 @@ class TestContextResetMessage:
 
         # The continuation phrase must be enclosed in quotation marks
         assert f'"{result.continuation_phrase}"' in result.message
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# sqlite_volume_prompt decision marker persistence
+#
+# The Module 6 SQLite volume Hard_Prompt records the bootcamper's proceed/
+# migrate choice under the `sqlite_volume_prompt` top-level key so the prompt
+# is not re-presented for the same load (module6-sqlite-volume-hard-prompt
+# spec, Requirement 2.4). These tests verify the marker is persistable via the
+# existing preferences machinery and that malformed markers are rejected
+# gracefully by the validator (never raising).
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+class TestSqliteVolumePromptMarker:
+    """Verify the sqlite_volume_prompt decision marker round-trips and validates."""
+
+    def test_marker_round_trips_through_write_and_load(self, tmp_path: Path) -> None:
+        """A valid decision marker survives write_preference + load_preferences.
+
+        The marker dict written matches the design data model exactly and reads
+        back as an equivalent dict with preserved value types.
+        """
+        prefs_file = tmp_path / "config" / "bootcamp_preferences.yaml"
+        marker = {
+            "decided": True,
+            "choice": "proceed",
+            "tier": "medium",
+            "raw_value": 1200000,
+        }
+
+        result = write_preference(
+            "sqlite_volume_prompt", marker, preferences_path=str(prefs_file)
+        )
+
+        assert result.success is True, result.error
+        assert prefs_file.exists()
+
+        loaded = load_preferences(preferences_path=str(prefs_file))
+        assert loaded.error is None
+        assert loaded.preferences is not None
+        assert loaded.preferences["sqlite_volume_prompt"] == marker
+        # Value types are preserved through the round-trip.
+        stored = loaded.preferences["sqlite_volume_prompt"]
+        assert stored["decided"] is True
+        assert isinstance(stored["raw_value"], int)
+        assert stored["choice"] == "proceed"
+        assert stored["tier"] == "medium"
+
+    def test_migrate_marker_round_trips(self, tmp_path: Path) -> None:
+        """The 'migrate' choice and 'large' tier also round-trip cleanly."""
+        prefs_file = tmp_path / "config" / "bootcamp_preferences.yaml"
+        marker = {
+            "decided": True,
+            "choice": "migrate",
+            "tier": "large",
+            "raw_value": 50000000,
+        }
+
+        result = write_preference(
+            "sqlite_volume_prompt", marker, preferences_path=str(prefs_file)
+        )
+        assert result.success is True, result.error
+
+        loaded = load_preferences(preferences_path=str(prefs_file))
+        assert loaded.preferences["sqlite_volume_prompt"] == marker
+
+    def test_marker_written_alongside_other_keys(self, tmp_path: Path) -> None:
+        """Writing the marker preserves previously-written preferences."""
+        prefs_file = tmp_path / "config" / "bootcamp_preferences.yaml"
+
+        assert write_preference(
+            "database_type", "sqlite", preferences_path=str(prefs_file)
+        ).success
+        marker = {
+            "decided": True,
+            "choice": "proceed",
+            "tier": "medium",
+            "raw_value": 750000,
+        }
+        assert write_preference(
+            "sqlite_volume_prompt", marker, preferences_path=str(prefs_file)
+        ).success
+
+        loaded = load_preferences(preferences_path=str(prefs_file))
+        assert loaded.preferences["database_type"] == "sqlite"
+        assert loaded.preferences["sqlite_volume_prompt"] == marker
+
+    def test_valid_marker_passes_schema_validation(self) -> None:
+        """A well-formed marker produces no schema validation errors."""
+        prefs = {
+            "database_type": "sqlite",
+            "sqlite_volume_prompt": {
+                "decided": True,
+                "choice": "proceed",
+                "tier": "medium",
+                "raw_value": 1200000,
+            },
+        }
+        assert validate_preferences_schema(prefs) == []
+
+    def test_malformed_marker_is_rejected_gracefully(self) -> None:
+        """Malformed marker values yield errors without raising.
+
+        Covers a wrong container type, an unknown sub-key, a bad choice enum,
+        a bad tier enum, and a non-int raw_value (including a bool, which is a
+        subclass of int).
+        """
+        cases = [
+            # Whole marker is not a dict.
+            {"database_type": "sqlite", "sqlite_volume_prompt": "nope"},
+            # Unknown nested key.
+            {
+                "database_type": "sqlite",
+                "sqlite_volume_prompt": {"decided": True, "bogus": 1},
+            },
+            # choice outside the allowed enum.
+            {
+                "database_type": "sqlite",
+                "sqlite_volume_prompt": {"choice": "abandon"},
+            },
+            # tier outside the allowed enum.
+            {
+                "database_type": "sqlite",
+                "sqlite_volume_prompt": {"tier": "gigantic"},
+            },
+            # raw_value is a string, not an int.
+            {
+                "database_type": "sqlite",
+                "sqlite_volume_prompt": {"raw_value": "lots"},
+            },
+            # raw_value is a bool (subclass of int) — must still be rejected.
+            {
+                "database_type": "sqlite",
+                "sqlite_volume_prompt": {"raw_value": True},
+            },
+            # decided is not a bool.
+            {
+                "database_type": "sqlite",
+                "sqlite_volume_prompt": {"decided": "yes"},
+            },
+        ]
+        for prefs in cases:
+            errors = validate_preferences_schema(prefs)
+            assert errors, f"Expected validation errors for {prefs!r}"
+            assert any("sqlite_volume_prompt" in err for err in errors), (
+                f"Expected a sqlite_volume_prompt error, got: {errors!r}"
+            )
+
+    def test_none_marker_is_valid_and_removed_on_write(self, tmp_path: Path) -> None:
+        """Writing None removes the marker (deletion semantics) without error."""
+        # None value passes schema validation (nullable dict).
+        assert validate_preferences_schema(
+            {"database_type": "sqlite", "sqlite_volume_prompt": None}
+        ) == []
+
+        prefs_file = tmp_path / "config" / "bootcamp_preferences.yaml"
+        marker = {
+            "decided": True,
+            "choice": "proceed",
+            "tier": "medium",
+            "raw_value": 1200000,
+        }
+        assert write_preference(
+            "sqlite_volume_prompt", marker, preferences_path=str(prefs_file)
+        ).success
+        # Writing None deletes the key.
+        assert write_preference(
+            "sqlite_volume_prompt", None, preferences_path=str(prefs_file)
+        ).success
+
+        loaded = load_preferences(preferences_path=str(prefs_file))
+        assert "sqlite_volume_prompt" not in (loaded.preferences or {})

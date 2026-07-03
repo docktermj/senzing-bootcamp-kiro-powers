@@ -302,7 +302,18 @@ _BASELINE_HASHES: dict[str, str] = {
     # file_metadata and the budget total (201014 = sum of file_metadata counts).
     # Only the budget block changed; keywords/languages/deployment/root_step_range
     # are byte-identical.
-    "budget": "d2305d87d946f5eb7e969f4d96f1c703004ac1b878504fc8178862f6bbd2e38f",
+    # Re-baselined once more (202215 -> 202410) for the bootcamp-outcomes-audit
+    # batch (module-start step overview + scripts/ placement reconciliation):
+    # module-transitions.md gained a "Step Overview (at module start)" section and
+    # a Step Overview row in the Confirmation Response Requirements table,
+    # conversation-protocol.md and agent-instructions.md gained the matching
+    # numbered step-overview element, and agent-instructions.md /
+    # file-placement.md repointed the generated-project scripts location from a
+    # top-level `scripts/` to `src/scripts/` (aligning with project-structure.md).
+    # All recomputed by measure_steering.py into file_metadata and the budget
+    # total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "72f5bea68c8a66f7e9aee9080ee838122f4915464f1bb16369638a3d9c49d339",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -687,7 +698,7 @@ class TestNonPhaseBlocksBytePreserved:
         # (201014 after the track-completion-pdf-transcript re-sequencing), so the
         # hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 202215" in budget_block
+        assert "total_tokens: 202410" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

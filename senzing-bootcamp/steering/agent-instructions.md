@@ -18,14 +18,14 @@ Processing a bootcamper's answer to a pending 👉 question takes **absolute pre
 
 | Content       | Location   | Content       | Location     |
 | ------------- | ---------- | ------------- | ------------ |
-| Source code   | `src/`     | SQLite DB     | `database/`  |
-| Scripts       | `scripts/` | Config        | `config/`    |
-| Docs          | `docs/`    | Temp files    | `data/temp/` |
-| Data          | `data/`    | Markdown docs | `docs/`      |
+| Source code   | `src/`         | SQLite DB     | `database/`  |
+| Scripts       | `src/scripts/` | Config        | `config/`    |
+| Docs          | `docs/`        | Temp files    | `data/temp/` |
+| Data          | `data/`        | Markdown docs | `docs/`      |
 
 🚨 ALL files within working directory only. Never `/tmp`, `%TEMP%`, `~/Downloads`. Override MCP-generated paths (`/tmp/`, `ExampleEnvironment`) to project-relative equivalents. Never modify global shell config.
 
-If about to write a `.md` file to `scripts/`, redirect to `docs/` instead.
+If about to write a `.md` file to `src/scripts/`, redirect to `docs/` instead.
 
 Project-root prohibitions (blocked file types per extension) and the permitted-root whitelist: load `file-placement.md` (trigger: *file placement* / *root prohibitions* / writing a project file).
 
@@ -60,7 +60,7 @@ Load per-module steering file when user starts that module (1→`module-01-busin
 
 - Split modules (1, 3, 5, 6, 8, 9, 10, 11): check `steering-index.yaml` for `phases` map. Load `phase-loading-guide.md` for detailed loading rules.
 
-**At every module start:** Read `config/bootcamp_progress.json` first, then display the module start banner, journey map, and before/after framing (per `module-transitions.md`, which is always loaded) BEFORE doing any module-specific work. Never skip these — they orient the user. Module 11 platform files: load `deployment-aws.md`, `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target.
+**At every module start:** Read `config/bootcamp_progress.json` first, then display the module start banner, journey map, before/after framing, and a brief numbered step overview (per `module-transitions.md`, which is always loaded) BEFORE doing any module-specific work. Never skip these — they orient the user. Module 11 platform files: load `deployment-aws.md`, `deployment-onpremises.md`, `deployment-azure.md`, `deployment-gcp.md`, or `deployment-kubernetes.md` based on deployment target.
 
 **Artifact readiness check (Modules 4-11):** Before displaying the module banner, read `config/module-artifacts.yaml` and check that all `requires_from` artifacts for the current module exist on disk. If all present, proceed silently. If any are missing, report which files are missing and from which module, then offer: (a) go back to complete the prerequisite, (b) skip the check and proceed anyway, (c) run rollback. The check is advisory — the bootcamper can always skip.
 
@@ -111,7 +111,8 @@ When a bootcamper responds affirmatively to a module transition question ("Ready
 1. Display the module start banner
 2. Display the journey map
 3. Display the before/after framing
-4. Begin Step 1 with its introductory content
+4. Present a brief numbered overview of the module's steps
+5. Begin Step 1 with its introductory content
 
 **⛔ ZERO TOLERANCE:** Producing only ".", an empty response, a single-word acknowledgment, or any output under 50 characters after a Transition_Confirmation is a critical protocol violation. The detect-and-retry hook will force a retry, but the agent must not rely on the hook — produce correct output on the first attempt.
 

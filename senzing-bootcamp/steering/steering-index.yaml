@@ -322,7 +322,7 @@ file_metadata:
     token_count: 1326
     size_category: medium
   agent-instructions.md:
-    token_count: 4376
+    token_count: 4404
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -340,7 +340,7 @@ file_metadata:
     token_count: 536
     size_category: medium
   conversation-protocol.md:
-    token_count: 4199
+    token_count: 4212
     size_category: large
   data-lineage.md:
     token_count: 603
@@ -376,7 +376,7 @@ file_metadata:
     token_count: 1239
     size_category: medium
   file-placement.md:
-    token_count: 291
+    token_count: 288
     size_category: small
   graduation.md:
     token_count: 7776
@@ -583,7 +583,7 @@ file_metadata:
     token_count: 1394
     size_category: medium
   module-transitions.md:
-    token_count: 1751
+    token_count: 1908
     size_category: medium
   onboarding-flow.md:
     token_count: 4124
@@ -650,7 +650,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 202215
+  total_tokens: 202410
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

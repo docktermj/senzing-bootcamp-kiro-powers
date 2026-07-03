@@ -49,6 +49,13 @@ This default governs **forward sequencing only**. It does not override the docum
 
 Present the `Before/After` line from the module's steering file so the user knows what they have now and what they'll have when done.
 
+## Step Overview (at module start)
+
+After the Before/After framing and before starting Step 1, present a brief numbered outline of the steps this module will take, drawn from the numbered steps in the module's steering file. Keep it scannable — one short line per step — so the bootcamper knows the path ahead.
+
+- For multi-phase modules, outline the steps of the current phase and name the remaining phases.
+- This is orientation only: do NOT ask a question here and do NOT wait for input — continue directly into Step 1.
+
 ## Step-Level Progress
 
 Every step within a module, communicate three things:
@@ -79,6 +86,7 @@ When the bootcamper confirms a module transition (responds affirmatively to "Rea
 | Module Start Banner | ━━━ header with 🚀🚀🚀 MODULE N: NAME 🚀🚀🚀 | Exact format from Module Start Banner section |
 | Journey Map | Table with Module, Name, Status columns | All modules in selected path |
 | Before/After Framing | What you have now / what you'll have when done | From module steering file |
+| Step Overview | Brief numbered outline of the steps this module will take | One short line per step |
 | Step 1 Introduction | "Next up: [action]. This matters because [reason]." | At least one sentence |
 
 **Total response must exceed 50 characters.** This is a hard minimum — the actual response will be significantly longer given the required elements above.

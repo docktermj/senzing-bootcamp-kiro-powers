@@ -60,6 +60,19 @@ DEFAULT_PORT = 8080
 #
 # NOTE: this template must NOT contain a triple-double-quote sequence, because
 # it is embedded verbatim inside the generated write_html.py as an r-string.
+#
+# Provenance — Visualization_Specifics embedded verbatim in the _INDEX_HTML
+# string below (see .kiro/specs/scaffold-visualization-specifics). These are
+# Python-level comments only; they are NOT part of the emitted string, so the
+# generated index.html bytes are unchanged. Each names the constraint the
+# corresponding block inside the string satisfies:
+#   # Specific: d3-v7-cdn            -> the D3 v7 CDN <script src> in <head>
+#   # Specific: truthset-source-colors -> COLORS = { CUSTOMERS/REFERENCE/WATCHLIST }
+#   # Specific: node-radius-formula  -> nodeRadius(node) = min(max(8 + record_count*4, 8), 40)
+#   # Specific: explicit-svg-dimensions -> svg.attr("width", width).attr("height", height)
+#   # Specific: edge-key-mapping     -> DATA.edges.map(...) source/target from
+#   #                                    *_entity_id BEFORE d3.forceLink(links)
+#   # Specific: function-callbacks   -> function (event, d) {...} D3 callbacks (no arrow fns)
 # ---------------------------------------------------------------------------
 _INDEX_HTML = r"""<!DOCTYPE html>
 <html lang="en">
@@ -361,6 +374,15 @@ if __name__ == "__main__":
 
 # ---------------------------------------------------------------------------
 # Generated server.py: stdlib HTTP server bound to localhost only.
+#
+# Provenance — Visualization_Specifics embedded verbatim in the _SERVER_PY
+# string below (see .kiro/specs/scaffold-visualization-specifics). These are
+# Python-level comments only; they are NOT part of the emitted string, so the
+# generated server.py bytes are unchanged. Each names the constraint the
+# corresponding block inside the string satisfies:
+#   # Specific: stdlib-http-server  -> from http.server import HTTPServer,
+#   #                                   SimpleHTTPRequestHandler (no Flask/FastAPI)
+#   #                                   and the 127.0.0.1 (localhost) bind
 # ---------------------------------------------------------------------------
 _SERVER_PY = '''#!/usr/bin/env python3
 """Serve the standalone-demo index.html over the Python stdlib HTTP server.

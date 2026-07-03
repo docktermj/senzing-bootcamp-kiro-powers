@@ -38,10 +38,15 @@ _STEERING_CONTENT: str = _STEERING_FILE.read_text(encoding="utf-8")
 
 
 def _extract_enforcement_block(content: str) -> str:
-    """Extract the enforcement block between CRITICAL LESSONS and Step 9.
+    """Extract the mandatory-execution enforcement block preceding Step 9.
 
-    The enforcement block is the section that appears after the
-    "CRITICAL LESSONS" heading and before the "## Step 9" heading.
+    scaffold-visualization-specifics reduction: the
+    ``## CRITICAL LESSONS FOR VISUALIZATION GENERATION`` heading (the previous anchor)
+    was intentionally removed. The enforcement content — DO NOT SKIP / MANDATORY / not
+    optional / the Module 4 transition prohibition and its visual markers — is retained
+    under the ``## ⚠️ DO NOT SKIP — Phase 2 Execution Is Mandatory`` heading. This
+    extracts from that heading (inclusive, so the "DO NOT SKIP" in the heading is part of
+    the block) up to the ``## Step 9`` heading.
 
     Args:
         content: Full text of the steering file.
@@ -49,19 +54,20 @@ def _extract_enforcement_block(content: str) -> str:
     Returns:
         The enforcement block text, or empty string if not found.
     """
-    # Find the end of the CRITICAL LESSONS section
-    critical_match = re.search(
-        r"^## CRITICAL LESSONS.*$", content, re.MULTILINE
+    # Find the DO NOT SKIP enforcement heading (the block's new anchor).
+    enforcement_match = re.search(
+        r"^## .*DO NOT SKIP.*$", content, re.MULTILINE
     )
     # Find the start of Step 9
     step9_match = re.search(
         r"^## Step 9", content, re.MULTILINE
     )
 
-    if critical_match is None or step9_match is None:
+    if enforcement_match is None or step9_match is None:
         return ""
 
-    block_start = critical_match.end()
+    # Start at the heading itself so the block includes the heading's "DO NOT SKIP".
+    block_start = enforcement_match.start()
     block_end = step9_match.start()
 
     return content[block_start:block_end]

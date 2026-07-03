@@ -282,7 +282,17 @@ _BASELINE_HASHES: dict[str, str] = {
     # guidance was added, which measure_steering.py recomputed into file_metadata
     # and the budget total. Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "9f5eefbfa2d86ddee2f9400ffaf67ff940df5fde4d2d772ee92f9beb31b57244",
+    # Re-baselined once more (199583 -> 199575) for the
+    # scaffold-visualization-specifics budget reduction: Task 5.1 legitimately
+    # reduced module-03-phase2-visualization.md (it removed the CRITICAL LESSONS
+    # section and the D3.js code-style constraints block, replacing them with the
+    # shorter "Client-Rendering Constraints — Correct by Construction" Steering_Pointer
+    # section, and removed the external CDN URL from prose), which measure_steering.py
+    # recomputed into file_metadata and the budget total (199583 -> 199575 = sum of
+    # file_metadata counts, per Requirement 2.2). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    "budget": "af4a02b17868d2074d638004e88e31ccde46ff9d3bc3e70710638b69424d826d",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -664,9 +674,10 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (199583), so the hash cannot silently re-pin a stale value.
+        # (199575 after the scaffold-visualization-specifics budget reduction), so the
+        # hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 199583" in budget_block
+        assert "total_tokens: 199575" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

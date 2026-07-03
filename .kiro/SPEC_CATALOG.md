@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 240
+- implemented: 258
 - superseded: 2
 - abandoned: 0
 - unknown: 1
@@ -21,6 +21,13 @@
 - Type: unknown
 - Workflow: unknown
 - Directory: [.kiro/specs/adaptive-pacing/](.kiro/specs/adaptive-pacing/)
+
+### advanced-track-knowledge-check
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/advanced-track-knowledge-check/](.kiro/specs/advanced-track-knowledge-check/)
 
 ### agent-answer-processing-failures
 
@@ -56,6 +63,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/always-create-completion-summary/](.kiro/specs/always-create-completion-summary/)
+
+### always-loaded-steering-budget-check
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/always-loaded-steering-budget-check/](.kiro/specs/always-loaded-steering-budget-check/)
 
 ### architecture-overview-document
 
@@ -140,6 +154,13 @@
 - Type: unknown
 - Workflow: unknown
 - Directory: [.kiro/specs/budget-threshold-consistency/](.kiro/specs/budget-threshold-consistency/)
+
+### capture-hook-completion-safeguard
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/capture-hook-completion-safeguard/](.kiro/specs/capture-hook-completion-safeguard/)
 
 ### ci-python-linting
 
@@ -421,6 +442,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/environment-verification/](.kiro/specs/environment-verification/)
 
+### er-baseline-status-summary
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/er-baseline-status-summary/](.kiro/specs/er-baseline-status-summary/)
+
 ### er-quality-evaluation-loop
 
 - Status: implemented
@@ -491,6 +519,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/forward-moving-questions/](.kiro/specs/forward-moving-questions/)
 
+### fpdf2-preflight-note
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/fpdf2-preflight-note/](.kiro/specs/fpdf2-preflight-note/)
+
 ### generated-power-docs
 
 - Status: implemented
@@ -532,6 +567,13 @@
 - Type: feature
 - Workflow: fast-task
 - Directory: [.kiro/specs/graduation-certificate/](.kiro/specs/graduation-certificate/)
+
+### graduation-docs-index
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/graduation-docs-index/](.kiro/specs/graduation-docs-index/)
 
 ### graduation-markdown-normalization
 
@@ -820,6 +862,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/mid-module-session-persistence/](.kiro/specs/mid-module-session-persistence/)
 
+### missing-bundled-scripts
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/missing-bundled-scripts/](.kiro/specs/missing-bundled-scripts/)
+
 ### missing-pointer-marker
 
 - Status: implemented
@@ -955,12 +1004,26 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/module-transition-validation-tests/](.kiro/specs/module-transition-validation-tests/)
 
+### module1-business-case-offer
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/module1-business-case-offer/](.kiro/specs/module1-business-case-offer/)
+
 ### module1-license-request-option
 
 - Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/module1-license-request-option/](.kiro/specs/module1-license-request-option/)
+
+### module2-license-acquisition-info
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/module2-license-acquisition-info/](.kiro/specs/module2-license-acquisition-info/)
 
 ### module3-default-on
 
@@ -975,6 +1038,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/module3-entity-graph-relationships/](.kiro/specs/module3-entity-graph-relationships/)
+
+### module3-first-visualization-guarantee
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/module3-first-visualization-guarantee/](.kiro/specs/module3-first-visualization-guarantee/)
 
 ### module3-visualization-fixes
 
@@ -997,12 +1067,26 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/module3-wow-visualization/](.kiro/specs/module3-wow-visualization/)
 
+### module4-record-count-license-backfill
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/module4-record-count-license-backfill/](.kiro/specs/module4-record-count-license-backfill/)
+
 ### module5-mapping-workflow-guidance
 
 - Status: implemented
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/module5-mapping-workflow-guidance/](.kiro/specs/module5-mapping-workflow-guidance/)
+
+### module6-sqlite-volume-hard-prompt
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/module6-sqlite-volume-hard-prompt/](.kiro/specs/module6-sqlite-volume-hard-prompt/)
 
 ### module7-discover-phase
 
@@ -1172,6 +1256,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/query-requirements-context/](.kiro/specs/query-requirements-context/)
 
+### recap-completeness-and-pdf
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/recap-completeness-and-pdf/](.kiro/specs/recap-completeness-and-pdf/)
+
 ### recap-pdf-content-loss-fix
 
 - Status: implemented
@@ -1185,6 +1276,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/recap-qa-pair-merge/](.kiro/specs/recap-qa-pair-merge/)
+
+### recap-qr-formatting
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/recap-qr-formatting/](.kiro/specs/recap-qr-formatting/)
 
 ### record-volume-guidance
 
@@ -1255,6 +1353,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/ruff-lint-gate-fix/](.kiro/specs/ruff-lint-gate-fix/)
+
+### scaffold-visualization-specifics
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/scaffold-visualization-specifics/](.kiro/specs/scaffold-visualization-specifics/)
 
 ### script-role-clarification
 
@@ -1589,12 +1694,26 @@
 - Workflow: fast-task
 - Directory: [.kiro/specs/token-budget-optimization/](.kiro/specs/token-budget-optimization/)
 
+### track-completion-pdf-transcript
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/track-completion-pdf-transcript/](.kiro/specs/track-completion-pdf-transcript/)
+
 ### track-selection-drop-module2-note
 
 - Status: implemented
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/track-selection-drop-module2-note/](.kiro/specs/track-selection-drop-module2-note/)
+
+### transcript-reconciliation
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/transcript-reconciliation/](.kiro/specs/transcript-reconciliation/)
 
 ### transformation-lineage
 
@@ -1609,6 +1728,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/turn-answer-handling/](.kiro/specs/turn-answer-handling/)
+
+### typescript-build-failure-recovery
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/typescript-build-failure-recovery/](.kiro/specs/typescript-build-failure-recovery/)
 
 ### typescript-language-maturity
 

@@ -86,6 +86,8 @@ Generate a PDF version of the bootcamper's recap document for sharing. This step
 
 **Note:** Independent of this recap PDF, the completion-summary document (`docs/completion_summary.md`) is **always** generated during the post-completion/graduation flow via `generate_completion_summary.py` (triggered by `completion-summary-offer.md`). That generation is **non-blocking** — in the same spirit as this recap PDF step and the always-generated `GRADUATION_REPORT.md`, any failure logs a warning and graduation continues.
 
+**Note — idempotent reuse when track completion already generated these deliverables:** Track completion (`module-completion-track.md`) now renders the recap PDF (`docs/bootcamp_recap.pdf`) and the Q&A transcript (`docs/bootcamp_transcript.md`) as always-run deliverables, before the graduation offer. When graduation runs afterward, Steps 0a/0b are **not** redundant work to skip — they remain the graduation-time reconciliation safety nets and still run. Because the recap reconciliation (Step 0a) is idempotent (a no-op on an already-consistent recap), the transcript reconciliation (Step 0b.4) is idempotent (a no-op when the counts already agree), and both renderers **overwrite their output in place** rather than appending, re-running Step 0a/0b simply regenerates the **same** deliverables — refreshing them, not creating conflicting duplicates. Moving generation earlier at track completion does **not** remove or skip these graduation-time reconciliation safety nets.
+
 **Procedure:**
 
 ### Step 0b.0: fpdf2 Preflight Note

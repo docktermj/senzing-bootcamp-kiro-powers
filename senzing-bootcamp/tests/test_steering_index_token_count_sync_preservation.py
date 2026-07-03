@@ -292,7 +292,17 @@ _BASELINE_HASHES: dict[str, str] = {
     # file_metadata counts, per Requirement 2.2). Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "af4a02b17868d2074d638004e88e31ccde46ff9d3bc3e70710638b69424d826d",
+    # Re-baselined once more (199575 -> 201014) for the
+    # track-completion-pdf-transcript spec (Tasks 3 & 4): module-completion-track.md
+    # grew (1886 -> 3080) when it was re-sequenced to add a transcript
+    # reconciliation pass and the always-run "Shareable Deliverables: Recap PDF &
+    # Q&A Transcript" render subsection, and graduation.md grew (7531 -> 7776) when
+    # the Step 0b idempotent-reuse note (overwrite in place, no conflicting
+    # duplicates) was added, both recomputed by measure_steering.py into
+    # file_metadata and the budget total (201014 = sum of file_metadata counts).
+    # Only the budget block changed; keywords/languages/deployment/root_step_range
+    # are byte-identical.
+    "budget": "a34c287fd2411d4b5045b40bb7ada3b1f7712ad6bcba87682f017c2cecc6fdc7",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -674,10 +684,10 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (199575 after the scaffold-visualization-specifics budget reduction), so the
+        # (201014 after the track-completion-pdf-transcript re-sequencing), so the
         # hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 199575" in budget_block
+        assert "total_tokens: 201014" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

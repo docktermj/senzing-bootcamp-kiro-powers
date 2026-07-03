@@ -73,8 +73,15 @@ _BASELINE_GRAPH_REGIONS_SHA256: str = (
 # fpdf2 Preflight Note invocation was added before the completion-summary/export
 # offer, which is unrelated to the module-sequencing-order fix this suite guards,
 # so the baseline is moved observation-first to the current file contents.
+# Re-baselined again observation-first for the track-completion-pdf-transcript
+# spec (Task 3): module-completion-track.md was re-sequenced to add a transcript
+# reconciliation pass and an always-run "Shareable Deliverables: Recap PDF & Q&A
+# Transcript" render subsection. That edit is unrelated to the
+# module-sequencing-order fix this suite guards, so the baseline is moved
+# observation-first to the current file contents to keep the preservation
+# snapshot honest.
 _BASELINE_COMPLETION_TRACK_SHA256: str = (
-    "1e22f783a38cdda0171b7129ccd8f055e1bbe22454a2ec2148a4951b7e1f948e"
+    "aa89e5f4977b02060c1f89a437c9ef27626312ee8658f1aa651c95e84ff6f134"
 )
 
 

@@ -129,6 +129,39 @@ Once the bootcamper responds, act on their answer:
 
 **Windows-specific:** Building the TypeScript SDK from source on Windows requires Visual Studio Build Tools (not the full IDE) with the "Desktop development with C++" workload. Install via `winget install Microsoft.VisualStudio.2022.BuildTools` or download from visualstudio.microsoft.com. The Rust toolchain installer (`rustup-init.exe`) will detect the build tools automatically.
 
+### Recovery: build-from-source failures (TypeScript)
+
+> **Applies to the TypeScript from-source build only.** This branch handles a failure *during* the `sz-napi` from-source build described just above (the Rust toolchain / `napi-rs` / native-addon compile). It does not apply to other languages or to Senzing engine/runtime errors.
+
+**1. Detection and routing.** If the from-source build exits non-zero, or reports a native-addon, `node-gyp`, toolchain, or Node-version failure while compiling `sz-napi`, treat it as a mid-build failure and enter **this** recovery branch. Do **not** fall through to the module's generic Error Handling block below (the `SENZ`-code → `common-pitfalls.md` → symptom-table path). That generic path is tuned for Senzing engine/runtime errors and will not recognize a half-finished native compile. A mid-build failure is handled here.
+
+**2. Summarize before offering options.** Before presenting any options, state in plain language which build stage failed and the single most likely cause, chosen from the known-cause table below. Name the specific cause (for example, "the native addon failed to compile because the C++ build toolchain is missing") rather than pasting the raw build log. If the failure signal does not match any known cause, say so plainly ("this is an unrecognized build failure") and still continue to the options — an unrecognized failure is never a dead end.
+
+**3. Known-cause table.** Match the failure signal to one cause and use its `lang-typescript.md` "Common Environment Issues" entry for the detailed fix. Do not duplicate that content here — reference it.
+
+| Cause | Failure signal | Fix reference (`lang-typescript.md` → "Common Environment Issues") |
+|---|---|---|
+| `NODE_VERSION` | `SyntaxError` on modern syntax, `ERR_UNSUPPORTED_ESM_URL_SCHEME`, Node.js older than 18 | "Node.js Version Conflicts" |
+| `NATIVE_ADDON` | `gyp ERR! build error`, `Cannot find module '.../*.node'` | "Native Addon Build Failures (node-gyp)" |
+| `TOOLCHAIN` | missing C++ compiler, missing Rust toolchain, or missing Visual Studio Build Tools | "Native Addon Build Failures (node-gyp)" plus the Windows-specific note above in this Phase 3 |
+| `MODULE_SYSTEM` | `ERR_REQUIRE_ESM`, `Cannot use import statement outside a module` | "ESM vs CommonJS Module Resolution" |
+| `PKG_MANAGER` | `ERESOLVE unable to resolve dependency tree`, lockfile conflicts | "Package Manager Conflicts" |
+
+**4. Offer targeted options.** After the summary, always offer, at minimum, these three:
+
+- **Fix the common cause** — apply the fix for the matched cause (see sourcing in the next item), then retry.
+- **Retry the build** — re-run the from-source build sequence.
+- **Fallback_Path** — proceed without a successful from-source build (see item 6). Consistent with the maturity framing above, one Fallback_Path is switching to a language with a simpler install path (Java or C# typically have simpler install paths); another is any prebuilt/alternative install route the MCP server reports as available.
+
+**5. Sourcing (no hardcoded URLs).** For the detailed fix steps, use the referenced `lang-typescript.md` "Common Environment Issues" entry and the Senzing MCP server — `sdk_guide(topic='install', platform='<user_platform>', language='typescript')` and `search_docs(category='anti_patterns')`. Never paste external URLs into this recovery flow; all external/toolchain knowledge comes from `lang-typescript.md` or the MCP tools. If an MCP tool is unavailable, the referenced `lang-typescript.md` content and the Fallback_Path still apply, so guidance degrades gracefully rather than dead-ending.
+
+**6. Resume or continue Module 2.** Neither continuation requires deep toolchain debugging by the bootcamper:
+
+- **On a successful retry** (the build now succeeds), resume the normal sequence: continue Phase 3 (install the language bindings) and proceed to Step 4 (verify installation).
+- **On the Fallback_Path**, continue Module 2 without a successful from-source build — proceed to Step 4 verification using the prebuilt/alternative install (or the newly chosen language) so setup is never blocked on the from-source compile.
+
+**7. Never a dead end.** There is always a way forward: retry after a fix, or the Fallback_Path. If a retry fails again, re-summarize against the known-cause table (re-classifying on the new signal) and re-offer the options — do not silently loop on the same error. If every option has genuinely been exhausted, do not re-run the same failing command: state the current blocker in plain language and present the support / next-step options (for example, capture the failure details for a support request via `search_docs`, or take the Fallback_Path if not already tried). This terminal state names the blocker and the next step rather than looping.
+
 **🚨 NEVER modify the user's global shell configuration** (`~/.zshrc`, `~/.bashrc`, `~/.profile`, etc.) to set Senzing environment variables. Instead, create a project-local environment script at `scripts/senzing-env.sh` (or `.bat` for Windows) that sets `SENZING_ROOT`, library paths, and any other Senzing-specific variables. The agent should source this script before running bootcamp tasks. This keeps the bootcamp self-contained and avoids side effects on the user's system.
 
 **Checkpoint:** Write step 3 to `config/bootcamp_progress.json`.

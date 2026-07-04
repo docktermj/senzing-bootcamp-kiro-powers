@@ -86,6 +86,8 @@ python3 senzing-bootcamp/scripts/backup_project.py
 | `install_hooks.py` | Installs hook files from the power into the workspace |
 | `sync_hook_registry.py` | CI: verifies hook-registry.md matches actual hook files |
 | `compose_hook_prompts.py` | CI: composes the Module 3 gate-hook prompts from shared fragments and verifies on-disk sync |
+| `capture_hook_safeguard.py` | Module-completion check for absent capture-critical hooks (`session-log-events`, `module-recap-append`, `ask-bootcamper`); renders an overridable reminder, never installs on the bootcamper's behalf |
+| `run_bundled_script.py` | Guarded runner for bundled scripts — a missing script degrades gracefully instead of raising a raw file-not-found error |
 
 ```text
 python3 senzing-bootcamp/scripts/install_hooks.py
@@ -93,6 +95,9 @@ python3 senzing-bootcamp/scripts/sync_hook_registry.py --verify
 python3 senzing-bootcamp/scripts/sync_hook_registry.py --write
 python3 senzing-bootcamp/scripts/compose_hook_prompts.py --verify
 python3 senzing-bootcamp/scripts/compose_hook_prompts.py --write
+python3 senzing-bootcamp/scripts/capture_hook_safeguard.py --module N
+python3 senzing-bootcamp/scripts/capture_hook_safeguard.py --module N --record-ack
+python3 senzing-bootcamp/scripts/run_bundled_script.py generate_docs_index.py
 ```
 
 ## Analysis and Reporting
@@ -184,6 +189,8 @@ python3 senzing-bootcamp/scripts/validate_completion_artifacts.py --progress con
 | `check_database.py` | Checks Senzing database health — entity count, record count, data sources |
 | `record_export.py` | Exports records from the Senzing database in various formats |
 | `visualize_dependencies.py` | Generates a visual dependency graph of module relationships |
+| `baseline_status.py` | Read-only summary of which registered data sources have an accepted ER baseline (never creates, modifies, or deletes anything) |
+| `record_count_backfill.py` | Module 4: infers the collected record total and surfaces Module 1 license guidance when it exceeds the built-in evaluation limit (non-blocking) |
 
 ```text
 python3 senzing-bootcamp/scripts/compare_results.py --baseline <file> --current <file>
@@ -193,6 +200,9 @@ python3 senzing-bootcamp/scripts/cord_metadata.py
 python3 senzing-bootcamp/scripts/check_database.py
 python3 senzing-bootcamp/scripts/record_export.py --format jsonl
 python3 senzing-bootcamp/scripts/visualize_dependencies.py
+python3 senzing-bootcamp/scripts/baseline_status.py
+python3 senzing-bootcamp/scripts/record_count_backfill.py
+python3 senzing-bootcamp/scripts/record_count_backfill.py --row-count
 ```
 
 ## Track Management
@@ -224,7 +234,11 @@ python3 senzing-bootcamp/scripts/track_switcher.py --from advanced_topics --to c
 | `generate_graduation_certificate.py` | Generates a graduation certificate in Markdown and HTML |
 | `generate_artifact_inventory.py` | Generates the "Complete Artifact Inventory" graduation-report section — every artifact grouped by phase with why-it-matters notes and carry-forward/leave-behind tags, derived from progress + files on disk |
 | `generate_recap_pdf.py` | Renders `docs/bootcamp_recap.md` to PDF (optional `fpdf2`; keeps Markdown when absent) |
+| `generate_recap_pdf_inline.py` | Self-contained inline recap-PDF fallback used by graduation when the bundled helper can't be located or run |
 | `generate_completion_summary.py` | Builds a module completion summary in Markdown (optional PDF via `fpdf2`) |
+| `generate_standalone_demo.py` | Generates a minimal, TruthSet-backed standalone ER visualization (stdlib HTTP server + D3.js) — the journey-level "first visualization" fallback when Module 3 is opted out |
+| `fpdf2_preflight.py` | Non-blocking Track_Completion note that installing optional `fpdf2` will produce a PDF; shown only when `fpdf2` is absent |
+| `reconcile_transcript.py` | Idempotent, non-blocking pre-render pass that backfills Q&A transcript shortfalls before `generate_transcript.py` renders |
 
 ```text
 python3 senzing-bootcamp/scripts/eval_conversations.py
@@ -236,7 +250,11 @@ python3 senzing-bootcamp/scripts/progress_dashboard.py
 python3 senzing-bootcamp/scripts/generate_graduation_certificate.py
 python3 senzing-bootcamp/scripts/generate_artifact_inventory.py
 python3 senzing-bootcamp/scripts/generate_recap_pdf.py --input docs/bootcamp_recap.md
+python3 senzing-bootcamp/scripts/generate_recap_pdf_inline.py --input docs/bootcamp_recap.md
 python3 senzing-bootcamp/scripts/generate_completion_summary.py
+python3 senzing-bootcamp/scripts/generate_standalone_demo.py --port 8080
+python3 senzing-bootcamp/scripts/fpdf2_preflight.py
+python3 senzing-bootcamp/scripts/reconcile_transcript.py
 ```
 
 ## Libraries (not standalone CLI tools)
@@ -255,3 +273,5 @@ These scripts are imported by other scripts or the agent — they are not intend
 | `preferences_utils.py` | Preferences schema, minimal YAML parser, and validator — used by `validate_preferences_ci.py` |
 | `volume_utils.py` | Record-volume parsing, tier classification, and Module 6 guidance generation |
 | `hook_prompt_fragments.py` | Single-source shared Module 3 gate-hook prompt fragments — expanded by `compose_hook_prompts.py` |
+| `recap_pdf_render.py` | Canonical shared raw-Markdown→PDF renderer imported by `generate_recap_pdf.py` and `generate_recap_pdf_inline.py` (lazy `fpdf` import) |
+| `business_case_offer.py` | Module 1 Business Case Offer logic — validates a generated multi-source scenario, renders `docs/business_problem.md`, and records sources into the registry (pure logic; no MCP/agent calls) |

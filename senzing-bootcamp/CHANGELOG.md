@@ -7,6 +7,74 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-07-03
+
+### Added
+
+- Module 1 Business Case Offer — `scripts/business_case_offer.py` models a
+  Generated_Scenario for bootcampers who have no business case to share (or
+  one they can't share), validates its invariants (multi-source, mapping
+  complexity, recognized category, completeness), renders
+  `docs/business_problem.md`, and records Scenario_Data sources into
+  `config/data_sources.yaml`. Backed by a CORD dataset or synthetic data per
+  the Step 5b MCP decision
+- `scripts/generate_standalone_demo.py` — a minimal, TruthSet-backed
+  standalone entity-resolution visualization (stdlib HTTP server + D3.js v7,
+  single self-contained `index.html`) offered as the journey-level "first
+  visualization" when a bootcamper opts out of Module 3
+- `scripts/record_count_backfill.py` — Module 4 record-count license
+  back-fill: infers the collected record total from the registry, compares it
+  against the built-in 500-record evaluation limit, and surfaces the existing
+  Module 1 license guidance when exceeded (non-blocking, delegates wording to
+  `volume_utils.build_license_framing`)
+- `scripts/baseline_status.py` — read-only ER baseline status summary
+  reporting which registered data sources have an accepted baseline; never
+  creates, modifies, or deletes any file
+- `scripts/capture_hook_safeguard.py` — module-completion safeguard that
+  detects any absent capture-critical hook (`session-log-events`,
+  `module-recap-append`, `ask-bootcamper`) and renders an overridable
+  Soft_Block reminder (never a Mandatory_Gate); shares its id list with
+  `install_hooks.CAPTURE_CRITICAL`
+- `scripts/recap_pdf_render.py` — canonical shared raw-Markdown→PDF renderer
+  imported by both `generate_recap_pdf.py` and the new inline generator,
+  eliminating a duplicated renderer; `fpdf` imported lazily, degrades
+  gracefully when absent
+- `scripts/generate_recap_pdf_inline.py` — self-contained inline recap-PDF
+  fallback used by graduation when the bundled helper cannot be located or run
+- `scripts/fpdf2_preflight.py` — non-blocking Track_Completion note that
+  installing optional `fpdf2` produces a PDF (Markdown is produced regardless);
+  shown only when `fpdf2` is absent
+- `scripts/reconcile_transcript.py` — idempotent, non-blocking pre-render pass
+  that backfills Q&A transcript shortfalls from the enforced recap source
+  before `generate_transcript.py` renders
+- `scripts/run_bundled_script.py` — guarded runner for bundled scripts so a
+  script not materialized in the bootcamper's workspace degrades gracefully
+  instead of surfacing a raw file-not-found error
+- Advanced-track knowledge check, always-loaded steering-budget check, Module 2
+  license-acquisition guidance, and a Module 6 SQLite volume prompt
+
+### Changed
+
+- Recommended model updated to Claude Opus 4.8
+- CI workflow restructured; Hypothesis example counts centralized into
+  registered profiles (`fast`/`thorough`/`bootcamp`) in the repo-root
+  `hypothesis_profiles.py`; test suite parallelized (`pytest -n auto`)
+- Graduation and module-completion flows now generate a docs index and route
+  recap/transcript rendering through the shared renderer for content-complete
+  output with or without `fpdf2`
+- Steering split-threshold enforcement and shared-Markdown-renderer refactor;
+  pytest now at 6,338 passed / 0 failed / 88 skipped
+
+### Fixed
+
+- Module 3 entity-graph edge-key mismatch — `drawGraph` maps
+  `source_entity_id`/`target_entity_id` → `source`/`target` before `forceLink`
+  so the rendered force-directed graph shows visible nodes
+- TypeScript build-failure recovery guidance added for the SDK setup flow
+- Recap completeness and PDF content-loss fixes, including Q&A pair merge and
+  QR formatting, so no recap content is dropped in either the Markdown or PDF
+  output paths
+
 ## [1.0.0] - 2026-06-24
 
 ### Production release

@@ -1,7 +1,7 @@
 ---
 name: "senzing-bootcamp"
 displayName: "Senzing Bootcamp"
-version: "1.0.0"
+version: "1.1.0"
 description: "Guided 11-module bootcamp for learning Senzing entity resolution, from first demo to production deployment."
 keywords: ["senzing", "bootcamp", "entity-resolution", "senzing-bootcamp", "learning-track"]
 author: "Senzing"
@@ -18,6 +18,20 @@ This power provides a guided bootcamp for learning Senzing entity resolution thr
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
 This power works best with Claude Opus 4.8 or similar.
+
+## What's New in 1.1.0
+
+- Module 1 **Business Case Offer** — bootcampers with no case to share (or one they can't share) can have the bootcamp generate a realistic, multi-source, mapping-complexity-rich scenario to work through, backed by CORD data or synthetic data (`scripts/business_case_offer.py`)
+- Module 3 **first-visualization** improvements — a standalone TruthSet-backed force-directed graph demo is offered even when Module 3 is opted out, so every bootcamper gets a first visualization (`scripts/generate_standalone_demo.py`); entity-graph edge-key mapping corrected so rendered graphs show nodes
+- Module 4 **record-count license back-fill** — after data collection, the bootcamp infers the real record total and surfaces the existing Module 1 license guidance when the volume exceeds the built-in evaluation limit (`scripts/record_count_backfill.py`)
+- **ER baseline status summary** — a read-only report of which data sources have an accepted entity-resolution baseline (`scripts/baseline_status.py`)
+- **Capture-critical hook safeguard** — module completion now detects any absent capture-critical hook (`session-log-events`, `module-recap-append`, `ask-bootcamper`) and surfaces an overridable reminder rather than silently losing session capture (`scripts/capture_hook_safeguard.py`)
+- **Graduation recap/transcript resilience** — a shared Markdown→PDF renderer, an inline PDF fallback, an `fpdf2` preflight note, and a Q&A transcript reconciliation pass so the recap and transcript render completely with or without the optional `fpdf2` dependency (`scripts/recap_pdf_render.py`, `scripts/generate_recap_pdf_inline.py`, `scripts/fpdf2_preflight.py`, `scripts/reconcile_transcript.py`)
+- **Missing-bundled-script resilience** — a guarded runner so a bundled script that isn't materialized in the workspace degrades gracefully instead of erroring (`scripts/run_bundled_script.py`)
+- Advanced-track knowledge check, always-loaded steering budget check, Module 2 license-acquisition guidance, Module 6 SQLite volume prompt, and TypeScript build-failure recovery guidance
+- Recommended model updated to Claude Opus 4.8; CI workflow restructured with Hypothesis profiles centralized and the test suite parallelized; pytest at 6,338 passed / 0 failed / 88 skipped
+
+See the CHANGELOG for the full release history.
 
 ## What's New in 1.0.0
 

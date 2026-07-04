@@ -26,8 +26,8 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
+from generate_recap_pdf import QRPair, parse_qr_section  # noqa: E402
 from recap_pdf_render import format_qr_section  # noqa: E402
-from generate_recap_pdf import parse_qr_section, QRPair  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Strategies

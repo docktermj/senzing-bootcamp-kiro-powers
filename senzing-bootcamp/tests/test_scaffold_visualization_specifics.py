@@ -46,7 +46,6 @@ import generate_standalone_demo  # noqa: E402,F401
 import measure_steering  # noqa: E402
 import progress_utils  # noqa: E402
 
-
 # ---------------------------------------------------------------------------
 # Data model: one Visualization_Specific and where it is guaranteed to live
 # ---------------------------------------------------------------------------

@@ -798,7 +798,8 @@ class TestStructuralGuardrails:
         preference_key_literals = literals & known_keys
         assert preference_key_literals <= _ALLOWED_LICENSE_MARKERS, (
             "record_count_backfill.py references preference keys beyond the two "
-            f"Module 1 license markers: {sorted(preference_key_literals - _ALLOWED_LICENSE_MARKERS)}"
+            "Module 1 license markers: "
+            f"{sorted(preference_key_literals - _ALLOWED_LICENSE_MARKERS)}"
         )
 
         # Guard against a new bespoke deferral/guidance marker key: any literal
@@ -1568,13 +1569,17 @@ class TestNamedScenarios:
 
             # With row-count disabled the sources stay unknown (never zeroed).
             without = rcb.compute_collected_count(registry)
-            assert without.known_total == 0  # brittle-allow: domain record count, not a suite test count
+            assert (
+                without.known_total == 0
+            )  # brittle-allow: domain record count, not a suite test count
             assert set(without.unknown_sources) == {"Csv Source", "Jsonl Source"}
             assert all(sc.counted_from == "unknown" for sc in without.sources)
 
             # With row-count enabled the unknowns resolve via row counting.
             with_rows = rcb.compute_collected_count(registry, row_count=True)
-            assert with_rows.known_total == 7  # brittle-allow: domain record count (3 csv + 4 jsonl)
+            assert (
+                with_rows.known_total == 7
+            )  # brittle-allow: domain record count (3 csv + 4 jsonl)
             assert with_rows.unknown_sources == []
             counted = {sc.name: sc for sc in with_rows.sources}
             assert counted["Csv Source"].counted_from == "row_count"
@@ -1724,7 +1729,9 @@ class TestEndToEndIntegration:
             registry = _dict_to_registry(raw)
 
             collected = rcb.compute_collected_count(registry)
-            assert collected.known_total == 700  # brittle-allow: domain record count, not a suite test count
+            assert (
+                collected.known_total == 700
+            )  # brittle-allow: domain record count, not a suite test count
 
             load_result = preferences_utils.load_preferences(prefs_path)
             assert load_result.error is None

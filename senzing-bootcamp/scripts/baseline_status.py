@@ -37,12 +37,11 @@ if _SCRIPTS_DIR not in sys.path:
 # Reused, unmodified:
 from compare_results import baseline_path  # noqa: E402 — Req 3.1, canonical location
 from data_sources import (  # noqa: E402 — Req 3.2, registry source list
-    parse_registry_yaml,
-    apply_migrations,
-    validate_registry,
     _dict_to_registry,
+    apply_migrations,
+    parse_registry_yaml,
+    validate_registry,
 )
-
 
 # ---------------------------------------------------------------------------
 # Data Models

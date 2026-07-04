@@ -44,7 +44,6 @@ from progress_utils import (
     is_first_visualization_owed,
 )
 
-
 # ---------------------------------------------------------------------------
 # Strategies (st_ prefix per python-conventions)
 # ---------------------------------------------------------------------------

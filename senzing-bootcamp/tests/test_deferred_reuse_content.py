@@ -147,7 +147,9 @@ class TestDeferredSectionPresent:
     def test_visualization_guide_present(self) -> None:
         """The visualization guide steering file exists and is non-empty."""
         assert _VISUALIZATION_GUIDE.is_file(), f"Missing steering file: {_VISUALIZATION_GUIDE}"
-        assert _read(_VISUALIZATION_GUIDE).strip(), f"Steering file is empty: {_VISUALIZATION_GUIDE}"
+        assert _read(_VISUALIZATION_GUIDE).strip(), (
+            f"Steering file is empty: {_VISUALIZATION_GUIDE}"
+        )
 
     def test_deferred_section_present(self, deferred_section: str) -> None:
         """The deferred-guarantee subsection is present and non-empty."""
@@ -277,14 +279,20 @@ class TestDeferredClearCalls:
 
     def test_calls_clear_for_module_6_deferred(self, deferred_section: str) -> None:
         """Calls ``clear_first_visualization_owed`` for ``module_6_deferred``."""
-        assert 'clear_first_visualization_owed(satisfied_by="module_6_deferred")' in deferred_section, (
+        assert (
+            'clear_first_visualization_owed(satisfied_by="module_6_deferred")'
+            in deferred_section
+        ), (
             "deferred guarantee: missing "
             'clear_first_visualization_owed(satisfied_by="module_6_deferred") call.'
         )
 
     def test_calls_clear_for_module_7_deferred(self, deferred_section: str) -> None:
         """Calls ``clear_first_visualization_owed`` for ``module_7_deferred``."""
-        assert 'clear_first_visualization_owed(satisfied_by="module_7_deferred")' in deferred_section, (
+        assert (
+            'clear_first_visualization_owed(satisfied_by="module_7_deferred")'
+            in deferred_section
+        ), (
             "deferred guarantee: missing "
             'clear_first_visualization_owed(satisfied_by="module_7_deferred") call.'
         )
@@ -332,5 +340,6 @@ class TestModule6And7SteeringDeferredNotes:
         """Module 7 steering references the ``m7_exploratory_queries`` checkpoint."""
         text = _read(_MODULE_07_PHASE1)
         assert "m7_exploratory_queries" in text, (
-            "module-07-phase1-query-visualize.md: missing m7_exploratory_queries checkpoint reference."
+            "module-07-phase1-query-visualize.md: missing "
+            "m7_exploratory_queries checkpoint reference."
         )

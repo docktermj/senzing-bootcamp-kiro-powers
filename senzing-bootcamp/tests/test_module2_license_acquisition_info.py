@@ -458,7 +458,10 @@ class TestStep5aMcpSourcedFigures:
         assert "record capacity or validity period" in region, (
             "Step 5a must address the record capacity and validity period figures"
         )
-        assert "retrieve those values from a senzing mcp server tool during this session" in region, (
+        assert (
+            "retrieve those values from a senzing mcp server tool during this session"
+            in region
+        ), (
             "Step 5a must source those figures from an MCP server tool at runtime"
         )
         assert "present exactly what the tool returns" in region, (
@@ -499,7 +502,10 @@ class TestStep5aMcpSourcedFigures:
         region = _extract_5a_region()
         lower = region.lower()
         # The runtime MCP-sourcing directive must be present.
-        assert "retrieve those values from a senzing mcp server tool during this session" in lower, (
+        assert (
+            "retrieve those values from a senzing mcp server tool during this session"
+            in lower
+        ), (
             "Step 5a must source the record/validity figures from an MCP server tool at runtime"
         )
         # The illustrative figure must be explicitly confirmed via the MCP server,

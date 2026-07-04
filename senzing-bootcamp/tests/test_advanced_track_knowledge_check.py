@@ -297,7 +297,8 @@ class TestProperty3IncorrectUnsureReExplanation:
     ``re_explanation`` branch and still proceeds to Module 1.
     """
 
-    # Feature: advanced-track-knowledge-check, Property 3: Incorrect or unsure answers trigger a Re_Explanation and proceed
+    # Feature: advanced-track-knowledge-check, Property 3: Incorrect or unsure
+    # answers trigger a Re_Explanation and proceed
     @given(answer=st.sampled_from(["incorrect", "unsure", None]))
     def test_incorrect_unsure_triggers_re_explanation(
         self, answer: str | None
@@ -480,7 +481,9 @@ class TestSingleQuestionToneAndBranches:
         assert "module 1" in lowered
 
     def test_section_documents_re_explanation_and_proceed_path(self) -> None:
-        """The section documents a Re_Explanation before proceeding on incorrect/unsure (Req 2.3)."""
+        """Section documents a Re_Explanation before proceeding on
+        incorrect/unsure (Req 2.3).
+        """
         section = _extract_section(
             _read_phase2(), r"5c\. Advanced Track Knowledge Check"
         )

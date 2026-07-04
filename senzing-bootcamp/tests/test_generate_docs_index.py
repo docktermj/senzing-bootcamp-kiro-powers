@@ -26,11 +26,10 @@ if _SCRIPTS_DIR not in sys.path:
 
 import generate_docs_index  # noqa: E402
 from generate_docs_index import (  # noqa: E402
-    DEFAULT_DOCS_ROOT,
+    _LIST_ITEM_RE,
     INDEX_FILENAME,
     PURPOSE_MAP,
     SUBDIR_INDICATOR,
-    _LIST_ITEM_RE,
     generate_index,
     main,
     scan_entries,
@@ -139,7 +138,8 @@ def _materialize_docs_tree(docs_root: Path, tree: dict) -> None:
 
 
 class TestProperty1EnumerationMatchesEligibleEntries:
-    """Feature: graduation-docs-index, Property 1: Enumeration matches the eligible top-level entries.
+    """Feature: graduation-docs-index, Property 1: Enumeration matches the
+    eligible top-level entries.
 
     For any ``docs/`` directory tree, the set of entry names produced by the
     generator equals exactly the eligible depth-1 entries: every top-level
@@ -198,7 +198,8 @@ def st_dot_name():
 
 
 class TestProperty2IndexFileAndDotEntriesExcluded:
-    """Feature: graduation-docs-index, Property 2: The index file and dot-prefixed entries are always excluded.
+    """Feature: graduation-docs-index, Property 2: The index file and
+    dot-prefixed entries are always excluded.
 
     For any ``docs/`` directory tree — including one that already contains a
     ``docs/README.md`` and arbitrary dot-prefixed files or directories — no entry
@@ -275,7 +276,8 @@ class TestProperty2IndexFileAndDotEntriesExcluded:
 
 
 class TestProperty3EntryOrderDeterministicAndCaseInsensitive:
-    """Feature: graduation-docs-index, Property 3: Entry order is deterministic and case-insensitive.
+    """Feature: graduation-docs-index, Property 3: Entry order is deterministic
+    and case-insensitive.
 
     For any ``docs/`` directory tree, the entries are listed in case-insensitive
     alphabetical order by name, and regenerating the index from identical
@@ -309,7 +311,8 @@ class TestProperty3EntryOrderDeterministicAndCaseInsensitive:
 
 
 class TestProperty6EveryEntryWellFormedDescription:
-    """Feature: graduation-docs-index, Property 6: Every entry has exactly one well-formed description.
+    """Feature: graduation-docs-index, Property 6: Every entry has exactly one
+    well-formed description.
 
     For any ``docs/`` directory tree, every listed entry shows its name together
     with exactly one purpose description rendered on a single line of 1 to 120
@@ -384,7 +387,8 @@ class TestProperty6EveryEntryWellFormedDescription:
 
 
 class TestProperty7SubdirectoriesCarryVisualIndicator:
-    """Feature: graduation-docs-index, Property 7: Subdirectories carry a visual indicator that files never carry.
+    """Feature: graduation-docs-index, Property 7: Subdirectories carry a visual
+    indicator that files never carry.
 
     For any ``docs/`` directory tree, every subdirectory entry renders with the
     consistent visual indicator (a trailing ``/`` — ``SUBDIR_INDICATOR``) and
@@ -463,7 +467,8 @@ class TestProperty7SubdirectoriesCarryVisualIndicator:
 
 
 class TestProperty4RegenerationFullyReplacesAndIsIdempotent:
-    """Feature: graduation-docs-index, Property 4: Regeneration fully replaces prior content and is idempotent.
+    """Feature: graduation-docs-index, Property 4: Regeneration fully replaces
+    prior content and is idempotent.
 
     For any ``docs/`` directory tree and any pre-existing ``docs/README.md``
     content, after generation the on-disk index content equals a fresh
@@ -515,7 +520,8 @@ class TestProperty4RegenerationFullyReplacesAndIsIdempotent:
 
 
 class TestProperty5RenderedIndexRoundTripsAsValidToc:
-    """Feature: graduation-docs-index, Property 5: Rendered index round-trips as a valid Markdown table of contents.
+    """Feature: graduation-docs-index, Property 5: Rendered index round-trips as
+    a valid Markdown table of contents.
 
     For any ``docs/`` directory tree, the rendered Markdown parses as a table of
     contents whose listed entries are exactly the enumerated entries — parsing

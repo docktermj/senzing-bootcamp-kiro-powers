@@ -37,7 +37,6 @@ import generate_recap_pdf  # noqa: E402
 import reconcile_transcript  # noqa: E402
 from recap_pdf_render import format_qr_section  # noqa: E402
 
-
 # ---------------------------------------------------------------------------
 # Synthetic input models
 # ---------------------------------------------------------------------------

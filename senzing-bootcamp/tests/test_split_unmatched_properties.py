@@ -26,7 +26,7 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from generate_recap_pdf import _build_qa_lines, _SPLIT_UNMATCHED_PLACEHOLDER  # noqa: E402
+from generate_recap_pdf import _SPLIT_UNMATCHED_PLACEHOLDER, _build_qa_lines  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Strategies

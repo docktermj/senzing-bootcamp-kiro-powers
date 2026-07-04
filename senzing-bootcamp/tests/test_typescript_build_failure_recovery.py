@@ -357,7 +357,8 @@ class TestRoutingToRecoveryBranch:
     Validates: Requirements 1.1
     """
 
-    # Feature: typescript-build-failure-recovery, Property 1: Every Mid_Build_Failure routes to the Recovery_Branch
+    # Feature: typescript-build-failure-recovery, Property 1: Every
+    # Mid_Build_Failure routes to the Recovery_Branch
     @given(st_failure_signal())
     def test_every_mid_build_failure_routes_to_recovery(self, signal: str) -> None:
         """Any Mid_Build_Failure signal routes to State.RECOVERY, not generic error handling.
@@ -373,7 +374,8 @@ class TestSummaryNamesMatchedCause:
     Validates: Requirements 1.2, 1.3
     """
 
-    # Feature: typescript-build-failure-recovery, Property 2: The summary names the matched common cause
+    # Feature: typescript-build-failure-recovery, Property 2: The summary names
+    # the matched common cause
     @given(st_cause_class())
     def test_summary_names_the_matched_cause(self, cause: CauseClass) -> None:
         """build_recovery(cause) yields a non-empty summary naming that cause.
@@ -406,7 +408,8 @@ class TestRecoveryOffersTriad:
     Validates: Requirements 2.1
     """
 
-    # Feature: typescript-build-failure-recovery, Property 3: Every recovery offers the fix / retry / fallback triad
+    # Feature: typescript-build-failure-recovery, Property 3: Every recovery
+    # offers the fix / retry / fallback triad
     @given(st_cause_class())
     def test_recovery_offers_fix_retry_fallback_triad(self, cause: CauseClass) -> None:
         """build_recovery(cause).options is a superset of {FIX, RETRY, FALLBACK}.
@@ -428,7 +431,8 @@ class TestChosenPathsContinueModule2:
     Validates: Requirements 2.2, 2.3
     """
 
-    # Feature: typescript-build-failure-recovery, Property 4: Chosen recovery paths continue Module 2
+    # Feature: typescript-build-failure-recovery, Property 4: Chosen recovery
+    # paths continue Module 2
     @given(st.booleans())
     def test_chosen_paths_continue_module2(self, retry_ok: bool) -> None:
         """Retry-on-success resumes Module 2; Fallback_Path continues it regardless of retry.
@@ -491,7 +495,8 @@ class TestExhaustionTerminalState:
     Validates: Requirements 4.2
     """
 
-    # Feature: typescript-build-failure-recovery, Property 6: Exhausting options reaches a distinct, non-looping terminal state
+    # Feature: typescript-build-failure-recovery, Property 6: Exhausting options
+    # reaches a distinct, non-looping terminal state
     @given(st.booleans())
     def test_exhausting_options_reaches_distinct_non_looping_terminal_state(
         self, retry_ok: bool
@@ -605,7 +610,8 @@ class TestRecoverySourcingNoHardcodedUrls:
     Validates: Requirements 2.4
     """
 
-    # Feature: typescript-build-failure-recovery, Property 7: Recovery guidance is MCP/lang-typescript-sourced with no hardcoded URLs
+    # Feature: typescript-build-failure-recovery, Property 7: Recovery guidance
+    # is MCP/lang-typescript-sourced with no hardcoded URLs
     @given(st.sampled_from(_RECOVERY_SUBSECTION_LINES))
     def test_no_hardcoded_urls_in_recovery_subsection(self, line: str) -> None:
         """No line of the real Recovery_Branch subsection contains an http(s):// URL.
@@ -724,7 +730,8 @@ class TestNamedCauseMapsToLangTypescriptEntry:
     Validates: Requirements 3.1
     """
 
-    # Feature: typescript-build-failure-recovery, Property 8: Every named cause maps to a lang-typescript.md troubleshooting entry
+    # Feature: typescript-build-failure-recovery, Property 8: Every named cause
+    # maps to a lang-typescript.md troubleshooting entry
     @given(st_cause_class())
     def test_named_cause_maps_to_troubleshooting_entry(
         self, cause: CauseClass

@@ -318,7 +318,8 @@ class TestSelectedPatternCategory:
 class TestMultiSourceProvenance:
     """Property 3 — scenario data is multi-source with known provenance."""
 
-    # Feature: module1-business-case-offer, Property 3: Scenario data is multi-source with known provenance
+    # Feature: module1-business-case-offer, Property 3: Scenario data is
+    # multi-source with known provenance
     @given(
         sources=st_scenario_data(),
         provenance=st.sampled_from(["cord", "generated"]),
@@ -497,7 +498,8 @@ class TestMappingComplexity:
 class TestBusinessProblemCompleteness:
     """Property 5 — business problem document is complete and marked generated."""
 
-    # Feature: module1-business-case-offer, Property 5: Business problem document is complete and marked generated
+    # Feature: module1-business-case-offer, Property 5: Business problem
+    # document is complete and marked generated
     @given(scenario=st_scenario())
     def test_business_problem_completeness(
         self, scenario: GeneratedScenario

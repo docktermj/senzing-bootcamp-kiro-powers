@@ -25,9 +25,5 @@ mapping_verbosity: null
 # Installed hooks (populated during onboarding and module starts)
 hooks_installed: []
 
-# Write-policy-gate auto-approve offer decision (set during onboarding Step 1.2a)
-# Values: accepted, declined, or null (not yet offered)
-write_policy_gate_auto_approve: null
-
 # Pacing adjustments (updated mid-session)
 pacing_overrides: null

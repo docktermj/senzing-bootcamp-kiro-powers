@@ -145,6 +145,21 @@ GENERATED_FILES: frozenset[str] = frozenset(
 # sibling module-01-phase1-discovery.md exemption for the same in-flow option
 # pattern — this single unit is exempted with this justification. It remains
 # indexed in file_metadata.
+#
+# onboarding-flow.md (auto-approve-write-policy-gate spec): the onboarding entry
+# flow is a single cohesive, sequential guided-setup conversation (Step 0 setup
+# preamble -> 0a intercept-cycle explanation -> 0b MCP health -> 0c version ->
+# 1 directory + critical-hook install -> 1.2a Auto-Approve Offer -> 1b team
+# detection -> 2 prerequisite gate) that the agent loads as one unit to run the
+# guided setup dialogue. The auto-approve-write-policy-gate spec added the "## 0a."
+# alignment and the "### 1.2a Auto-Approve Offer" sub-step, growing the file from
+# ~5374 to 5624 tokens — just past the 5000 split_threshold. The steps are
+# interdependent (1.2a's precondition is the Step 1.2 hook install; 0a forward-
+# references the 1.2a offer) and must load together, so splitting would fracture
+# the guided setup conversation. Rather than fragment a flow that must be read as
+# a whole, it is exempted with this justification; it remains indexed in
+# file_metadata (and is mirrored by the split_allowlist entry in
+# steering-index.yaml consumed by lint_steering.py).
 EXEMPTIONS: frozenset[str] = frozenset(
     {
         "module-completion.md",
@@ -153,6 +168,7 @@ EXEMPTIONS: frozenset[str] = frozenset(
         "graduation.md",
         "module-03-phase2-visualization.md",
         "module-02-sdk-setup.md",
+        "onboarding-flow.md",
     }
 )
 

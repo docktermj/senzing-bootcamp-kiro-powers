@@ -220,7 +220,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-completion.md` | 2262 | large |
 | `module-prerequisites.md` | 1394 | medium |
 | `module-transitions.md` | 1908 | medium |
-| `onboarding-flow.md` | 4124 | large |
+| `onboarding-flow.md` | 5624 | large |
 | `onboarding-phase1b-intro-language.md` | 2126 | large |
 | `onboarding-phase2-track-setup.md` | 1503 | medium |
 | `phase-loading-guide.md` | 890 | medium |
@@ -242,7 +242,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2195 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 202410 tokens
+**Total budget:** 203910 tokens
 
 <!-- END GENERATED: steering-files -->
 

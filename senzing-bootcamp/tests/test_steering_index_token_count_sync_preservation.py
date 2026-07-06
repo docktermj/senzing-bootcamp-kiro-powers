@@ -313,7 +313,15 @@ _BASELINE_HASHES: dict[str, str] = {
     # All recomputed by measure_steering.py into file_metadata and the budget
     # total. Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "72f5bea68c8a66f7e9aee9080ee838122f4915464f1bb16369638a3d9c49d339",
+    # Re-baselined once more (202410 -> 203910) for the auto-approve-write-policy-gate
+    # spec: onboarding-flow.md grew when the "## 0a." intercept-cycle section was
+    # aligned with the new offer and the "### 1.2a Auto-Approve Offer" sub-step was
+    # added (then reworded to drop the reserved gate/inline-question glyphs), which
+    # measure_steering.py's update-mode re-sync recomputed into file_metadata and
+    # the budget total (202410 -> 203910 = sum of file_metadata counts). Only the
+    # budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "76531c226cb77b24631de78bd62a322c559d4f6e1a0601b4d5bdf16bd6e16e56",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -698,7 +706,7 @@ class TestNonPhaseBlocksBytePreserved:
         # (201014 after the track-completion-pdf-transcript re-sequencing), so the
         # hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 202410" in budget_block
+        assert "total_tokens: 203910" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 258
+- implemented: 259
 - superseded: 2
 - abandoned: 0
 - unknown: 1
@@ -77,6 +77,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/architecture-overview-document/](.kiro/specs/architecture-overview-document/)
+
+### auto-approve-write-policy-gate
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/auto-approve-write-policy-gate/](.kiro/specs/auto-approve-write-policy-gate/)
 
 ### auto-load-error-recovery
 

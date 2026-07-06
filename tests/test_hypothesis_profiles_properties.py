@@ -12,6 +12,7 @@ the format: ``Feature: hypothesis-settings-centralization, Property {number}``.
 from __future__ import annotations
 
 import ast
+import os
 import sys
 from pathlib import Path
 
@@ -81,29 +82,36 @@ class TestPreservedTimingSettings:
         Args:
             name: A profile name drawn from the registered set.
         """
-        hypothesis_profiles.register_profiles()
+        # Profiles are registered at module level by the conftest
+        # ``load_active_profile()`` import-time call; just inspect them here.
         profile = settings.get_profile(name)
         assert profile.deadline is None
         assert HealthCheck.too_slow in profile.suppress_health_check
 
 
 class TestIdempotentRegistration:
-    """Property tests for idempotent profile registration."""
+    """Example-based test for idempotent profile registration.
+
+    This is intentionally not a ``@given`` test: exercising the idempotency
+    contract requires calling ``register_profiles()`` directly, and an active
+    ``@settings`` override would make the current settings differ from the
+    current profile, which Hypothesis deprecates for ``register_profile``. The
+    loop below re-loads the active profile before each registration so the
+    current settings match the current profile — the same aligned, module-level
+    condition under which the two conftest roots register.
+    """
 
     # Feature: hypothesis-settings-centralization, Property 4: Profile registration is idempotent
-    @settings(max_examples=100)
-    @given(count=st.integers(min_value=1, max_value=10))
-    def test_register_profiles_is_idempotent(self, count: int) -> None:
+    def test_register_profiles_is_idempotent(self) -> None:
         """Repeated registration never raises and yields identical settings.
 
-        Captures a baseline by registering once and recording each profile's key
-        settings, then re-registers ``count`` more times and asserts the
+        Profiles are registered at module level by the conftest
+        ``load_active_profile()`` import-time call. This captures that baseline,
+        re-registers several times (each preceded by loading the active profile
+        so registration happens under aligned settings), and asserts the
         registered names and per-profile settings are unchanged.
 
         Validates: Requirements 2.4
-
-        Args:
-            count: The number of additional registration calls to make.
         """
 
         def snapshot() -> dict[str, tuple[int, object, frozenset[HealthCheck]]]:
@@ -122,11 +130,17 @@ class TestIdempotentRegistration:
                 for name in hypothesis_profiles.registered_profile_names()
             }
 
-        hypothesis_profiles.register_profiles()
+        active = hypothesis_profiles.resolve_profile_name(
+            os.environ.get(hypothesis_profiles.ENV_VAR)
+        )
         baseline_names = hypothesis_profiles.registered_profile_names()
         baseline = snapshot()
 
-        for _ in range(count):
+        for _ in range(5):
+            # Align current settings with the current profile before
+            # registering so ``register_profile`` is never called under a
+            # differing @settings context (module-level registration condition).
+            settings.load_profile(active)
             hypothesis_profiles.register_profiles()
 
         assert hypothesis_profiles.registered_profile_names() == baseline_names
@@ -155,7 +169,8 @@ class TestProfileCountsAndSelection:
 
         Validates: Requirements 1.2, 8.1
         """
-        hypothesis_profiles.register_profiles()
+        # Registered at module level by the conftest ``load_active_profile()``
+        # import-time call; inspect the already-registered profile.
         assert (
             settings.get_profile(hypothesis_profiles.FAST).max_examples
             == hypothesis_profiles.FAST_MAX_EXAMPLES
@@ -167,7 +182,8 @@ class TestProfileCountsAndSelection:
 
         Validates: Requirements 1.3, 8.1
         """
-        hypothesis_profiles.register_profiles()
+        # Registered at module level by the conftest ``load_active_profile()``
+        # import-time call; inspect the already-registered profile.
         assert settings.get_profile(hypothesis_profiles.THOROUGH).max_examples == 100
 
     def test_thorough_meets_or_exceeds_baseline(self) -> None:

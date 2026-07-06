@@ -30,6 +30,11 @@ Here is what is happening: the `write-policy-gate` safety check briefly holds ea
 
 Routine internal bookkeeping files (such as the progress and preference files the bootcamp manages for you) no longer trigger this message, so any remaining "Rejected" → "Accepted" pairs are rare and still harmless.
 
+In a moment — right after the safety hooks are installed — you'll be offered the option to silence these messages. This is the `Auto_Approve_Offer`: accepting it removes the visible "Rejected"/"Accepted" messages for all subsequent `write-policy-gate` operations during onboarding, while keeping every safety check fully active.
+
+- If you **accept** the `Auto_Approve_Offer`, the intercept cycle is **suppressed for the remainder of onboarding** — you will no longer see these message pairs.
+- If you **do not accept** the `Auto_Approve_Offer`, the intercept cycle remains the **ongoing expected behavior** for the remainder of onboarding — the pairs stay visible and stay harmless.
+
 ## 0b. MCP Health Check
 
 Before starting the bootcamp, verify that the Senzing MCP server is reachable. The MCP server is required for the bootcamp — it generates SDK code in your chosen language, looks up Senzing facts and configuration details, and provides working examples on demand.
@@ -112,6 +117,78 @@ Execute these setup actions in order. Do not narrate the details to the user.
    **Verify hooks:** Check that each Critical Hook exists in `.kiro/hooks/`. If any are missing, retry creation once using `createHook`. Record the hook installation status (list of installed hook names and timestamp) in `config/bootcamp_preferences.yaml` under a `hooks_installed` key.
 
    **Capture-critical hooks:** In addition to the Critical Hooks above, also create `module-recap-append` and `session-log-events` from `hook-registry-module-any.md` using `createHook` during onboarding — do NOT defer these to module start. Together with `ask-bootcamper` (a Critical Hook), these three are the **capture-critical** hooks the completion summary and journey recap depend on. After installation, verify all three capture-critical hooks (`ask-bootcamper`, `module-recap-append`, `session-log-events`) exist in `.kiro/hooks/`; if any is missing, retry its creation once via `createHook`.
+
+### 1.2a Auto-Approve Offer
+
+Run this sub-step immediately after Step 1.2 (Install Critical Hooks) completes, before continuing to the next setup action.
+
+**Preconditions — when to present the offer:**
+
+- Present the Auto-Approve Offer only if `write-policy-gate` is confirmed installed — that is, it appears in the `hooks_installed` verification recorded in Step 1.2.
+- If `write-policy-gate` failed to install (it is absent from `hooks_installed`), skip this sub-step entirely. Do NOT present the offer. The Step 1.2 failure-impact message already covers that case.
+
+**Idempotency guard — skip if already decided:**
+
+- Before presenting, read `config/bootcamp_preferences.yaml`.
+- If the `write_policy_gate_auto_approve` key already holds a decision (`accepted` or `declined`), do NOT present the offer again during this onboarding. Leave the recorded value unchanged and continue with the next setup action.
+- Only present the offer when `write_policy_gate_auto_approve` is unset (missing or `null`).
+
+**Present the offer (stop-and-wait step):** This is a mandatory stop-and-wait step: present the fixed offer block below verbatim, then STOP and wait for the bootcamper's explicit choice before continuing. Do NOT advance to the next setup action, and do NOT rely on the `ask-bootcamper` closing-question hook to gather the response — this step waits for an explicit choice on its own.
+
+Display this block exactly:
+
+```text
+The write-policy-gate safety check briefly intercepts each file write, which
+shows up as a "Rejected ..." → "Accepted edits ..." message pair. You can silence
+this visible intercept cycle by auto-approving the hook.
+
+Auto-approving keeps ALL four safety checks fully active:
+  1. Senzing SQL blocking
+  2. Single-question enforcement
+  3. File-path policy
+  4. Root-placement policy
+Any safety-check violation is still detected and blocked after auto-approval —
+only the visible "Rejected"/"Accepted" intercept cycle goes away.
+
+Choose one:
+  1. Auto-approve write-policy-gate — I'll show you how to enable it in the Agent Hooks panel.
+  2. Keep the messages — leave things as they are.
+```
+
+Present exactly these two choices (accept / decline) and no others.
+
+**Branch on the bootcamper's response:**
+
+- **Accepts (chooses "Auto-approve write-policy-gate"):** Guide the bootcamper through auto-approving the hook via the Agent Hooks panel, in this order:
+  1. Open the Agent Hooks panel: in the Kiro feature panel, select **Agent Hooks**.
+  2. Locate the `write-policy-gate` hook in the list — it is displayed as **"Ask Kiro Hook to process your response"**.
+  3. Enable auto-approve for that hook (add it to the auto-approve list) using the panel's auto-approve control.
+
+  Make clear the bootcamper performs the toggle themselves — these steps are guidance only. Then record the decision as `accepted` (see the preference-recording instructions below).
+
+- **Declines (chooses "Keep the messages"):** Continue onboarding unchanged — the intercept cycle stays active exactly as before. Tell the bootcamper that auto-approval can be enabled later at any time from the Agent Hooks panel (Kiro feature panel → Agent Hooks → the `write-policy-gate` hook shown as "Ask Kiro Hook to process your response"). Then record the decision as `declined` (see the preference-recording instructions below).
+
+- **Unrecognized response (neither a clear accept nor a clear decline):** Re-present the offer block above and keep waiting for an explicit acceptance or decline. Do NOT change the auto-approve list and do NOT record any preference — leave all state unchanged.
+
+- **Awaiting / no selection yet:** Stay on this sub-step. Keep the intercept cycle behavior active and make no change to the auto-approve list or to `write_policy_gate_auto_approve`. Do not advance to the next setup action until an explicit accept or decline is given.
+
+**Record the decision in `config/bootcamp_preferences.yaml`:**
+
+When the bootcamper accepts or declines, record the outcome under the dedicated `write_policy_gate_auto_approve` key:
+
+- **Accept →** set `write_policy_gate_auto_approve: accepted`.
+- **Decline →** set `write_policy_gate_auto_approve: declined`.
+
+These are the only two recorded values, and they are always distinct.
+
+Follow the same "merge, don't clobber" convention used elsewhere in onboarding (see Step 2d):
+
+- **Merge only this key.** Read the existing file, set only `write_policy_gate_auto_approve`, and write it back preserving every other key and value byte-for-byte. Do NOT drop, reorder, or rewrite any other content.
+- **File missing →** if `config/bootcamp_preferences.yaml` does not exist, create it containing only the `write_policy_gate_auto_approve` key set to the recorded decision.
+- **Write failure →** if the file cannot be written (for example, a permission or I/O error), leave the existing file content intact and tell the bootcamper the decision could not be saved. Do NOT partially overwrite the file.
+- **Unparseable YAML →** if the existing file cannot be parsed as YAML, do NOT overwrite it. Preserve its current content as-is and tell the bootcamper the decision could not be saved.
+
+Because `config/bootcamp_preferences.yaml` is on the `write-policy-gate` internal-file pass-through allowlist, recording the decision does not itself produce a visible intercept cycle.
 
 3. Generate foundational steering files (`product.md`, `tech.md`, `structure.md`) at `.kiro/steering/`. Each MUST include `inclusion` and `description` in the YAML frontmatter. Use `auto` for `structure.md`, `always` for the others.
 

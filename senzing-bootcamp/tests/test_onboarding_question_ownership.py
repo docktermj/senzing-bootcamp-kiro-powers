@@ -582,3 +582,121 @@ class TestPreservation:
         # agent-context-management.md for warn/critical/unload detail.
         assert "Context Budget" in content
         assert "agent-context-management.md" in content
+
+
+# ---------------------------------------------------------------------------
+# Helpers — Auto-Approve Offer (Step 1.2a) structure
+# ---------------------------------------------------------------------------
+
+
+def _extract_h3_section(full_text: str, heading_pattern: str) -> str:
+    """Extract an H3 (``### ``) subsection from the markdown by its heading.
+
+    Returns everything from the matched ``### `` heading up to (but not
+    including) the next heading of level 3 or higher (``### `` or ``## ``).
+    """
+    pattern = rf"(^{heading_pattern}.*$)"
+    match = re.search(pattern, full_text, re.MULTILINE)
+    if not match:
+        pytest.fail(f"Could not find subsection matching: {heading_pattern}")
+
+    start = match.start()
+    # Find the next ### or ## heading after this one.
+    next_heading = re.search(r"^#{2,3} ", full_text[match.end() :], re.MULTILINE)
+    if next_heading:
+        end = match.end() + next_heading.start()
+    else:
+        end = len(full_text)
+
+    return full_text[start:end]
+
+
+# The four Write_Policy_Gate safety checks the offer must enumerate, exactly as
+# they appear in the Step 1.2a offer block (Req 3.1).
+_SAFETY_CHECKS = (
+    "Senzing SQL blocking",
+    "Single-question enforcement",
+    "File-path policy",
+    "Root-placement policy",
+)
+
+
+# ---------------------------------------------------------------------------
+# Tests — Auto-Approve Offer (Step 1.2a) + Section 0a alignment
+# ---------------------------------------------------------------------------
+
+
+class TestAutoApproveOffer:
+    """Structure tests for the onboarding Auto-Approve Offer (Step 1.2a) and
+    the Section 0a alignment with that offer.
+
+    **Validates: Requirements 1.2, 1.3, 1.4, 5.1, 5.4**
+    """
+
+    def test_step_1_2a_heading_exists(self) -> None:
+        """The Step 1.2a Auto-Approve Offer heading exists in onboarding-flow.md."""
+        text = _read_onboarding()
+        assert re.search(
+            r"^### 1\.2a Auto-Approve Offer\s*$", text, re.MULTILINE
+        ), "onboarding-flow.md is missing the '### 1.2a Auto-Approve Offer' heading"
+
+    def test_step_1_2a_names_all_four_safety_checks(self) -> None:
+        """Step 1.2a enumerates exactly the four safety checks (Req 3.1, 1.3)."""
+        text = _read_onboarding()
+        section = _extract_h3_section(text, r"### 1\.2a Auto-Approve Offer")
+        for check in _SAFETY_CHECKS:
+            assert check in section, (
+                f"Step 1.2a offer is missing safety check: '{check}'"
+            )
+
+    def test_step_1_2a_presents_exactly_two_choices(self) -> None:
+        """Step 1.2a presents exactly two selectable choices — one accept, one
+        decline — and no others (Req 1.4)."""
+        text = _read_onboarding()
+        section = _extract_h3_section(text, r"### 1\.2a Auto-Approve Offer")
+
+        # Isolate the "Choose one:" block: from the "Choose one:" marker to the
+        # end of the fenced code block that contains it.
+        choose_idx = section.find("Choose one:")
+        assert choose_idx != -1, "Step 1.2a offer is missing the 'Choose one:' block"
+        after_choose = section[choose_idx:]
+        fence_idx = after_choose.find("```")
+        choices_block = after_choose[:fence_idx] if fence_idx != -1 else after_choose
+
+        # Count numbered selectable choices (e.g. "  1. ...", "  2. ...").
+        numbered = re.findall(r"^\s*(\d+)\.\s+\S", choices_block, re.MULTILINE)
+        assert numbered == ["1", "2"], (
+            "Step 1.2a must present exactly two selectable choices numbered "
+            f"1 and 2; found choice numbers: {numbered}"
+        )
+
+        # The two choices are one accept and one decline.
+        assert "Auto-approve write-policy-gate" in choices_block, (
+            "Step 1.2a is missing the accept choice"
+        )
+        assert "Keep the messages" in choices_block, (
+            "Step 1.2a is missing the decline choice"
+        )
+
+    def test_section_0a_references_auto_approve_offer_term(self) -> None:
+        """Section 0a contains the exact glossary term 'Auto_Approve_Offer'
+        (Req 5.4)."""
+        text = _read_onboarding()
+        section = _extract_section(text, r'## 0a\. Why You May See')
+        assert "Auto_Approve_Offer" in section, (
+            "Section 0a must contain the exact string 'Auto_Approve_Offer'"
+        )
+
+    def test_section_0a_references_message_removal(self) -> None:
+        """Section 0a references that accepting the offer removes the visible
+        messages (Req 5.1)."""
+        text = _read_onboarding()
+        section = _extract_section(text, r'## 0a\. Why You May See')
+        assert "removes the visible" in section, (
+            "Section 0a must reference removal of the visible messages"
+        )
+        # The removed messages are the "Rejected"/"Accepted" pair.
+        assert '"Rejected"/"Accepted"' in section or "Rejected" in section, (
+            "Section 0a message-removal reference should name the "
+            '"Rejected"/"Accepted" messages'
+        )

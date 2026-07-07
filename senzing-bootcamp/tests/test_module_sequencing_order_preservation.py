@@ -80,8 +80,14 @@ _BASELINE_GRAPH_REGIONS_SHA256: str = (
 # module-sequencing-order fix this suite guards, so the baseline is moved
 # observation-first to the current file contents to keep the preservation
 # snapshot honest.
+# Re-baselined again observation-first for the guaranteed-graduation-artifacts
+# spec (Task 5.2): module-completion-track.md was updated to note that the
+# always-run recap PDF / transcript renders are backed by the enforced guarantee
+# and the HTML fallback (preserving reconcile-then-render ordering). That edit is
+# unrelated to the module-sequencing-order fix this suite guards, so the baseline
+# is moved observation-first to the current file contents.
 _BASELINE_COMPLETION_TRACK_SHA256: str = (
-    "aa89e5f4977b02060c1f89a437c9ef27626312ee8658f1aa651c95e84ff6f134"
+    "70a512d0003abe93e65308a9578c985c1407fe671cb1c467128ed73447d9569c"
 )
 
 

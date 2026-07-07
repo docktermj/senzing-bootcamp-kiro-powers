@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 258
+- implemented: 259
 - superseded: 2
 - abandoned: 0
 - unknown: 1
@@ -595,6 +595,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/graduation-workflow/](.kiro/specs/graduation-workflow/)
+
+### guaranteed-graduation-artifacts
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/guaranteed-graduation-artifacts/](.kiro/specs/guaranteed-graduation-artifacts/)
 
 ### guided-rollback-preview
 

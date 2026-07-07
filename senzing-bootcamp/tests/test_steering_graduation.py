@@ -131,3 +131,116 @@ class TestGraduationNoExternalUrls:
         """The steering file contains no ``http://`` or ``https://`` URLs."""
         urls = re.findall(r"https?://\S+", _GRADUATION_TEXT)
         assert urls == [], f"Unexpected external URL(s) in graduation.md: {urls}"
+
+
+# ---------------------------------------------------------------------------
+# Feature: guaranteed-graduation-artifacts (Task 5.3)
+#
+# Task 5.1 added the "Mandatory Closing Step: Guaranteed Recap &
+# Post-Graduation Announcement" section to graduation.md. These tests keep the
+# shipped steering file in agreement with Requirements 5.2, 5.3, and 5.4.
+# ---------------------------------------------------------------------------
+
+# The mandatory closing step section, isolated so ordering/uniqueness
+# assertions do not accidentally match earlier (non-blocking Step 0b) text.
+_CLOSING_HEADING: str = (
+    "## Mandatory Closing Step: Guaranteed Recap & Post-Graduation Announcement"
+)
+_CLOSING_SECTION: str = (
+    _GRADUATION_TEXT.split(_CLOSING_HEADING, 1)[1]
+    if _CLOSING_HEADING in _GRADUATION_TEXT
+    else ""
+)
+
+
+class TestGraduationMandatoryClosingAnnouncement:
+    """The mandatory post-graduation announcement is present and correct.
+
+    The closing step must run the enforced guarantee
+    (``ensure_graduation_artifacts.py``) exactly once — regeneration first —
+    then announce the recap, naming its path and the rendered-recap paths, and
+    stating the three per-module labeled sections.
+
+    Validates: Requirements 5.2, 5.3, 5.4
+    """
+
+    def test_mandatory_closing_step_section_present(self) -> None:
+        """The "Mandatory Closing Step" section heading is present.
+
+        Validates: Requirement 5.4
+        """
+        assert _CLOSING_HEADING in _GRADUATION_TEXT
+
+    def test_closing_step_runs_the_guarantee_orchestrator(self) -> None:
+        """The closing step runs ``ensure_graduation_artifacts.py``.
+
+        Validates: Requirement 5.4
+        """
+        assert "ensure_graduation_artifacts.py" in _CLOSING_SECTION
+
+    def test_closing_step_runs_exactly_once(self) -> None:
+        """The announcement is stated to run exactly once (regeneration-first).
+
+        Validates: Requirement 5.4
+        """
+        # Runs exactly once ...
+        assert "exactly once" in _CLOSING_SECTION.lower()
+        # ... and regenerates any missing/empty/stale artifact *first*, before
+        # the announcement is emitted (regeneration-first behavior, Req 5.4).
+        assert "Run the enforced guarantee first" in _CLOSING_SECTION
+        assert "do not re-run generation more than once" in _CLOSING_SECTION
+
+    def test_closing_step_names_recap_markdown_path(self) -> None:
+        """The announcement names the recap path ``docs/bootcamp_recap.md``.
+
+        Validates: Requirement 5.2
+        """
+        assert "docs/bootcamp_recap.md" in _CLOSING_SECTION
+
+    def test_closing_step_names_rendered_recap_pdf_path(self) -> None:
+        """The announcement names the rendered-recap PDF path.
+
+        Validates: Requirement 5.2
+        """
+        assert "docs/bootcamp_recap.pdf" in _CLOSING_SECTION
+
+    def test_closing_step_names_rendered_recap_html_fallback(self) -> None:
+        """The announcement names the ``.html`` rendered-recap fallback path.
+
+        Validates: Requirement 5.2
+        """
+        assert "docs/bootcamp_recap.html" in _CLOSING_SECTION
+        # The fallback is explicitly tied to fpdf2 availability.
+        assert "fpdf2" in _CLOSING_SECTION
+
+    def test_closing_step_states_information_shared_section(self) -> None:
+        """The announcement states the per-module "Information Shared" section.
+
+        Validates: Requirement 5.3
+        """
+        assert "Information Shared" in _CLOSING_SECTION
+
+    def test_closing_step_states_questions_and_responses_section(self) -> None:
+        """The announcement states the per-module "Questions & Responses" section.
+
+        Validates: Requirement 5.3
+        """
+        assert "Questions & Responses" in _CLOSING_SECTION
+
+    def test_closing_step_states_actions_taken_section(self) -> None:
+        """The announcement states the per-module "Actions Taken" section.
+
+        Validates: Requirement 5.3
+        """
+        assert "Actions Taken" in _CLOSING_SECTION
+
+    def test_closing_step_states_all_three_sections_per_module(self) -> None:
+        """All three labeled sections are named for every completed module.
+
+        Validates: Requirement 5.3
+        """
+        for label in ("Information Shared", "Questions & Responses", "Actions Taken"):
+            assert label in _CLOSING_SECTION, (
+                f"Mandatory closing announcement must name the '{label}' "
+                "per-module section"
+            )

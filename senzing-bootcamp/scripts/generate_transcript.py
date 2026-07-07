@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from dataclasses import dataclass, field
@@ -291,6 +292,70 @@ def render_markdown(model: TranscriptModel, generated_at: str) -> str:
     return "\n".join(lines) + "\n"
 
 
+def render_empty_transcript(generated_at: str) -> str:
+    """Render a non-empty placeholder transcript for the no-Q&A-history case.
+
+    Produces the same metadata header as ``render_markdown`` (with zero
+    question/answer totals) followed by an explicit record stating that no Q&A
+    history was available. Used by ``--ensure`` mode so a Non_Empty transcript
+    is always written even when no Q&A source data exists (Req 1.7, 1.8).
+
+    Args:
+        generated_at: ISO 8601 generation timestamp for the metadata header.
+
+    Returns:
+        The complete, non-empty Markdown document as a string.
+    """
+    lines: list[str] = []
+
+    # Metadata header, matching render_markdown with zero totals.
+    lines.append("# Bootcamp Q&A Transcript")
+    lines.append("")
+    lines.append(f"- **Generated at:** {generated_at}")
+    lines.append("- **Total questions:** 0")
+    lines.append("- **Answered questions:** 0")
+    lines.append("")
+
+    # Explicit "no Q&A history" record (Req 1.8).
+    lines.append("## No Q&A History Available")
+    lines.append("")
+    lines.append(
+        "_No Q&A history was available when this transcript was generated. No "
+        "question-and-answer events were found in any always-present source._"
+    )
+
+    return "\n".join(lines) + "\n"
+
+
+def _write_transcript(output_path: Path, document: str) -> None:
+    """Write a transcript document without partially overwriting on failure.
+
+    Writes to a temporary file in the same directory and atomically replaces the
+    destination, so a failed write leaves any existing transcript unchanged
+    (Req 1.9).
+
+    Args:
+        output_path: Destination path for the transcript.
+        document: The full transcript document to write.
+
+    Raises:
+        OSError: If writing the temporary file or replacing the destination
+            fails. The existing destination file is left unchanged.
+    """
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = output_path.with_name(f"{output_path.name}.tmp")
+    try:
+        tmp_path.write_text(document, encoding="utf-8")
+        os.replace(tmp_path, output_path)
+    except OSError:
+        # Clean up the temp file so no partial artifact is left behind.
+        try:
+            tmp_path.unlink()
+        except OSError:
+            pass
+        raise
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse command-line arguments.
 
@@ -316,6 +381,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=OUTPUT_PATH_DEFAULT,
         help=f"Path to write the transcript (default: {OUTPUT_PATH_DEFAULT}).",
     )
+    parser.add_argument(
+        "--ensure",
+        action="store_true",
+        help=(
+            "Guarantee a non-empty transcript: when there are no Q&A events, "
+            "write a 'no Q&A history was available' record instead of writing "
+            "nothing."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -325,8 +399,12 @@ def main(argv: list[str] | None = None) -> int:
     Reads Q&A events from the session log, builds the transcript model, and
     writes the rendered Markdown to the output path by full overwrite (never
     appending to stale content). When there are no Q&A events (including a
-    missing log file), emits a warning to stderr and does not write a
-    misleading transcript file.
+    missing log file), the default behavior emits a warning to stderr and does
+    not write a misleading transcript file. When ``--ensure`` is set, the
+    no-events case instead writes a non-empty "no Q&A history was available"
+    record so a Non_Empty transcript is always produced (Req 1.7, 1.8).
+
+    On any write failure, an existing transcript is left unchanged (Req 1.9).
 
     Args:
         argv: Optional argument list (defaults to ``sys.argv[1:]``).
@@ -336,22 +414,39 @@ def main(argv: list[str] | None = None) -> int:
     """
     args = parse_args(argv)
 
+    output_path = Path(args.output)
+    generated_at = datetime.now(timezone.utc).isoformat()
+
     events = read_events(args.log)
     if not events:
-        print(
-            f"No Q&A events found in '{args.log}'; no transcript written.",
-            file=sys.stderr,
-        )
+        if not args.ensure:
+            # Default behavior (backward compatible): write nothing.
+            print(
+                f"No Q&A events found in '{args.log}'; no transcript written.",
+                file=sys.stderr,
+            )
+            return 0
+        # Ensure mode: guarantee a non-empty transcript (Req 1.7, 1.8).
+        document = render_empty_transcript(generated_at)
+        try:
+            _write_transcript(output_path, document)
+        except OSError as exc:
+            # Leave any existing transcript unchanged (Req 1.9).
+            print(f"Failed to write transcript to {output_path}: {exc}", file=sys.stderr)
+            return 1
+        print(f"Wrote empty (no-Q&A-history) transcript to {output_path}")
         return 0
 
     model = build_model(events)
-    generated_at = datetime.now(timezone.utc).isoformat()
     document = render_markdown(model, generated_at)
 
-    output_path = Path(args.output)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    # Full regeneration: overwrite any stale content rather than appending (Req 7.3).
-    output_path.write_text(document, encoding="utf-8")
+    # Full regeneration via atomic replace: overwrite stale content without
+    # partially overwriting an existing transcript on failure (Req 1.9, 7.3).
+    try:
+        _write_transcript(output_path, document)
+    except OSError as exc:
+        print(f"Failed to write transcript to {output_path}: {exc}", file=sys.stderr)
+        return 1
 
     print(f"Wrote transcript to {output_path}")
     return 0

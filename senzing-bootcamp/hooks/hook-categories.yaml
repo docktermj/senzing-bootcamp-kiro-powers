@@ -45,6 +45,7 @@ modules:
     - deployment-phase-gate
   any:
     - backup-project-on-request
+    - enforce-critical-artifacts
     - error-recovery-context
     - git-commit-reminder
     - module-completion-celebration
@@ -67,3 +68,6 @@ agentstop_order:
   - id: enforce-visualization-offers
     order: 5
     rationale: "Lowest-stakes nudge; offers missed visualizations only when nothing higher fired."
+  - id: enforce-critical-artifacts
+    order: 6
+    rationale: "Runs last so its blocking output appears only after higher-priority gate output clears; must run after module-recap-append (so the recap section exists to reconstruct/verify from) and after the celebration/gate hooks."

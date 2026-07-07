@@ -89,6 +89,13 @@ Kiro's agentic chat will guide you through the Bootcamp.
   Unfortunately, there's no way to turn off those boxes.
 - Numerous "Read power steering" boxes will appear.
   These boxes are noise.
+- Often, you'll see
+  > Rejected creation of ...
+  Followed by
+  > Accepted creation of ...
+  For a given file.
+  This is not an issue.
+  It is related to Kiro's internal processing.
 - If Kiro seems to be stuck, ask
 
   ```console

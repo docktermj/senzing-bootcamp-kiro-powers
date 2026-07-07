@@ -5,15 +5,15 @@ that yields zero output while a question is pending: a reference to
 ``config/.question_pending`` paired with a no-output / defer-to-``ask-bootcamper``
 clause.
 
-The four hooks edited in task 1.4 (`module-recap-append`,
+The guard-clause hooks (`module-recap-append`,
 `module-completion-celebration`, `enforce-gate-on-stop`,
-`enforce-visualization-offers`) open with the leading clause
-"If ``config/.question_pending`` exists, produce no output at all — defer to
-``ask-bootcamper``." The fifth agentStop hook, `ask-bootcamper`, owns the
+`enforce-visualization-offers`, and `enforce-critical-artifacts`) open with the
+leading clause "If ``config/.question_pending`` exists, produce no output at
+all — defer to ``ask-bootcamper``." The `ask-bootcamper` hook owns the
 closing question and expresses the same silence semantic with its own
 phrasing (it checks that ``config/.question_pending`` does NOT exist and that
 phases "produce no output" / are "none"). The assertions below are written to
-hold for ALL FIVE real agentStop hook prompts.
+hold for ALL of the real agentStop hook prompts.
 
 **Validates: Requirements 2.4**
 """
@@ -39,13 +39,17 @@ HOOKS_DIR: Path = Path(__file__).resolve().parent.parent / "senzing-bootcamp" / 
 # The exact path token every agentStop guard must reference.
 QUESTION_PENDING_REF: str = "config/.question_pending"
 
-# The five agentStop hook ids (grounded fact from requirements/design).
+# The six agentStop hook ids (grounded fact from requirements/design).
+# enforce-critical-artifacts was added by the guaranteed-graduation-artifacts
+# spec; it opens with the same "produce no output at all — defer to
+# ask-bootcamper" guard clause as the other enforcement hooks.
 EXPECTED_AGENTSTOP_IDS: set[str] = {
     "ask-bootcamper",
     "module-recap-append",
     "module-completion-celebration",
     "enforce-gate-on-stop",
     "enforce-visualization-offers",
+    "enforce-critical-artifacts",
 }
 
 # Silence / no-output / defer indicators (matched case-insensitively).
@@ -125,11 +129,11 @@ class TestAgentStopGuardText:
     **Validates: Requirements 2.4**
     """
 
-    def test_discovers_exactly_the_five_agentstop_hooks(self) -> None:
-        """Sanity check: discovery finds exactly the five known agentStop hooks."""
+    def test_discovers_exactly_the_expected_agentstop_hooks(self) -> None:
+        """Sanity check: discovery finds exactly the known agentStop hooks."""
         discovered = {p.name.replace(".kiro.hook", "") for p in AGENTSTOP_HOOK_FILES}
         assert discovered == EXPECTED_AGENTSTOP_IDS, (
-            "agentStop hook discovery drifted from the five grounded ids. "
+            "agentStop hook discovery drifted from the grounded ids. "
             f"Discovered: {sorted(discovered)}"
         )
 

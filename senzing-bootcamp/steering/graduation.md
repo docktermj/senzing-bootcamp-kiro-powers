@@ -17,7 +17,7 @@ The workflow has three preparatory steps followed by five sequential steps:
 4. **Migration Checklist** — Generate `MIGRATION_CHECKLIST.md` with conditional items based on completed modules
 5. **Git Repository Initialization** — Optionally initialize a new git repo in `production/`
 
-A graduation report (`GRADUATION_REPORT.md`) is always generated at the end, even if individual steps encountered errors.
+A graduation report (`GRADUATION_REPORT.md`) is always generated at the end, even if individual steps encountered errors. A **mandatory closing step** then runs the enforced recap guarantee and the post-graduation announcement exactly once before graduation is reported as finished (see "Mandatory Closing Step: Guaranteed Recap & Post-Graduation Announcement" at the end of this file).
 
 Each step requires bootcamper confirmation before proceeding. Do not skip ahead.
 
@@ -351,6 +351,39 @@ Before showing the fallback feedback prompt, check for saved feedback:
 7. If the feedback file does not exist, contains no entries, or the reminder was already shown, fall through to the line below.
 
 > Say "bootcamp feedback" if you'd like to share your experience.
+
+## Mandatory Closing Step: Guaranteed Recap & Post-Graduation Announcement
+
+This is the **final, mandatory closing step** of graduation. It runs **exactly once**, after the graduation report is produced and before graduation is reported as finished. Unlike the non-blocking Step 0b renders, this step is the **enforced guarantee**: it makes the crown-jewel recap artifacts exist, then announces them — but only for artifacts confirmed to exist at their stated paths.
+
+**Procedure:**
+
+1. **Run the enforced guarantee first.** Before announcing anything, run the guarantee orchestrator so any missing, empty, or stale artifact is regenerated from always-present sources before the announcement:
+
+   ```bash
+   python scripts/ensure_graduation_artifacts.py
+   ```
+
+   This guarantees `docs/bootcamp_recap.md`, the rendered recap (`docs/bootcamp_recap.pdf` when `fpdf2` is available, otherwise `docs/bootcamp_recap.html`), and the Q&A transcript. It regenerates only what is absent, empty, or stale (idempotent otherwise) and reconstructs each from always-present sources without depending on any bundled generation script.
+
+2. **Withhold the announcement until artifacts are confirmed.** Confirm each artifact exists at its stated path (use `--check` to verify with no side effects):
+
+   ```bash
+   python scripts/ensure_graduation_artifacts.py --check
+   ```
+
+   Step 1 already attempted regeneration of anything missing, so do not re-run generation more than once. If regeneration failed for an artifact, identify each failed artifact, mark the announcement **incomplete**, and preserve every artifact that was successfully generated. Never announce an artifact that is not confirmed to exist.
+
+3. **Emit the announcement exactly once.** Once artifacts are confirmed, emit a single closing announcement to the bootcamper that:
+   - states the recap **exists**,
+   - names the recap path `docs/bootcamp_recap.md` and the rendered-recap path — `docs/bootcamp_recap.pdf` when `fpdf2` is available, otherwise `docs/bootcamp_recap.html`, and
+   - states that, for every completed module, the recap contains the three labeled sections **Information Shared**, **Questions & Responses**, and **Actions Taken**.
+
+   Report only those artifacts confirmed to exist at their stated paths. Do not repeat this announcement — it is emitted once per graduation.
+
+Example announcement (adapt the rendered-recap path to the confirmed format):
+
+> 📗 **Your recap is ready.** It exists at `docs/bootcamp_recap.md`, with a shareable rendered copy at `docs/bootcamp_recap.pdf`. For every completed module it captures **Information Shared**, **Questions & Responses**, and **Actions Taken**.
 
 <!-- 
   ## Export-Results Integration Contract

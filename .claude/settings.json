@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dpkg -l)",
+      "Bash(pip list:*)",
+      "Bash(pip3 install:*)",
+      "Bash(npm list:*)",
+      "Bash(pip3 list:*)",
+      "Bash(.venv/bin/pip list:*)",
+      "Bash(.venv/bin/python3 -c \":*)",
+      "Bash(.venv/bin/python -c \":*)",
+      "Bash(python3:*)",
+      "WebFetch(domain:kiro.dev)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}

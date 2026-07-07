@@ -151,7 +151,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `environment-setup.md` | 658 | medium |
 | `feedback-workflow.md` | 1239 | medium |
 | `file-placement.md` | 288 | small |
-| `graduation.md` | 7776 | large |
+| `graduation.md` | 8509 | large |
 | `hook-architecture.md` | 2149 | large |
 | `hook-registry-critical.md` | 8592 | large |
 | `hook-registry-module-01.md` | 474 | small |
@@ -165,8 +165,8 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `hook-registry-module-09.md` | 268 | small |
 | `hook-registry-module-10.md` | 286 | small |
 | `hook-registry-module-11.md` | 463 | small |
-| `hook-registry-module-any.md` | 4200 | large |
-| `hook-registry.md` | 2037 | large |
+| `hook-registry-module-any.md` | 4905 | large |
+| `hook-registry.md` | 2130 | large |
 | `inline-status.md` | 460 | small |
 | `lang-csharp.md` | 1642 | medium |
 | `lang-java.md` | 1688 | medium |
@@ -216,7 +216,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-completion-artifacts.md` | 3982 | large |
 | `module-completion-error-handling.md` | 604 | medium |
 | `module-completion-next-steps.md` | 702 | medium |
-| `module-completion-track.md` | 3080 | large |
+| `module-completion-track.md` | 3290 | large |
 | `module-completion.md` | 2262 | large |
 | `module-prerequisites.md` | 1394 | medium |
 | `module-transitions.md` | 1908 | medium |
@@ -225,7 +225,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `onboarding-phase2-track-setup.md` | 1503 | medium |
 | `phase-loading-guide.md` | 890 | medium |
 | `project-structure.md` | 764 | medium |
-| `qa-transcript.md` | 1115 | medium |
+| `qa-transcript.md` | 1284 | medium |
 | `recovery-from-mistakes.md` | 1227 | medium |
 | `security-privacy.md` | 278 | small |
 | `session-resume-phase2-mapping.md` | 656 | medium |
@@ -242,7 +242,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2195 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 202410 tokens
+**Total budget:** 204320 tokens
 
 <!-- END GENERATED: steering-files -->
 
@@ -369,7 +369,7 @@ Or manually copy hook files into `.kiro/hooks/`.
 
 <!-- BEGIN GENERATED: hooks -->
 
-Available (29 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `backup-project-on-request`, `data-quality-check`, `deployment-phase-gate`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `git-commit-reminder`, `module-completion-celebration`, `module-recap-append`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
+Available (30 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `backup-project-on-request`, `data-quality-check`, `deployment-phase-gate`, `enforce-critical-artifacts`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `git-commit-reminder`, `module-completion-celebration`, `module-recap-append`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
 
 <!-- END GENERATED: hooks -->
 

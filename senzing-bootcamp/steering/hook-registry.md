@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-29 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
+30 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
 
 ## Critical Hooks (created during onboarding)
 
@@ -39,6 +39,7 @@ inclusion: manual
 | validate-alert-config | 10 | fileCreated → askAgent | When monitoring configuration files are created or modified during Module 10, validates alert rule syntax and completeness. |
 | deployment-phase-gate | 11 | postTaskExecution → askAgent | After packaging tasks complete in Module 11, displays a phase gate prompt asking the bootcamper whether to proceed to deployment or stop. Checks config/bootcamp_progress.json to confirm the current module is 11 before acting. |
 | backup-project-on-request | any | userTriggered → askAgent | Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead. |
+| enforce-critical-artifacts | any | agentStop → askAgent | At a track-completion or graduation stopping point, guarantees the three crown-jewel artifacts (Q&A transcript, recap Markdown, rendered recap) exist and are non-empty by running ensure_graduation_artifacts.py, and blocks the 'done' state until all three are present. Silent when the invariant already holds. |
 | error-recovery-context | any | postToolUse → askAgent | Detects shell command failures and consults common-pitfalls.md and recovery-from-mistakes.md to provide targeted error recovery guidance during bootcamp modules. |
 | git-commit-reminder | any | userTriggered → askAgent | Reminds the user to commit their work after completing a module. Triggered manually via button click. |
 | module-completion-celebration | any | agentStop → askAgent | Detects module completion boundaries and displays a brief celebration with next-step guidance. |

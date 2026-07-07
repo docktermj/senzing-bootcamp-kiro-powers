@@ -870,6 +870,14 @@ class TestNoHookModification:
         _MISSING_BUNDLED_SCRIPTS_HOOKS = {
             "session-log-events.kiro.hook",
         }
+        # Hook intentionally ADDED by the guaranteed-graduation-artifacts spec
+        # (task 4.1): enforce-critical-artifacts is a new agentStop enforcement hook
+        # that guarantees the transcript / recap / rendered-recap deliverables at a
+        # stopping point. It is a new file (not a modification) and is unrelated to
+        # the token budget optimization, so it is excluded here.
+        _GUARANTEED_ARTIFACTS_HOOKS = {
+            "enforce-critical-artifacts.kiro.hook",
+        }
         _ALLOWED_MODIFIED = (
             _CONSOLIDATED_HOOKS
             | _AGENTSTOP_GUARD_HOOKS
@@ -877,6 +885,7 @@ class TestNoHookModification:
             | _DOCS_FILE_PLACEMENT_HOOKS
             | _GRADUATION_NORMALIZATION_HOOKS
             | _MISSING_BUNDLED_SCRIPTS_HOOKS
+            | _GUARANTEED_ARTIFACTS_HOOKS
         )
         # Filter for .kiro.hook files in the output, excluding hooks modified by
         # other specs. (Unrelated protections stay intact: any hook not in this

@@ -1,6 +1,6 @@
 # Senzing Bootcamp Hooks
 
-This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 29 hooks total.
+This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 30 hooks total.
 
 ## Hook Name Style Guide
 
@@ -195,6 +195,12 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 **Trigger:** After write operations (postToolUse)
 **Action:** Logs file create, modify, delete, and MCP tool call actions to the session log after write operations complete
 **Use case:** Enables progressive session tracking for the completion summary
+
+### 30. Enforce Critical Artifacts (`enforce-critical-artifacts.kiro.hook`)
+
+**Trigger:** When the agent finishes working (agentStop) at a track-completion or graduation stopping point
+**Action:** Runs `ensure_graduation_artifacts.py` to guarantee the three crown-jewel artifacts (Q&A transcript, recap Markdown, rendered recap) exist and are non-empty, blocking the "done" state until all three are present; silent when the invariant already holds
+**Use case:** Makes the transcript, recap, and rendered recap an enforced completion invariant that cannot be silently skipped
 
 ## Installation
 

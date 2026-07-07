@@ -23,6 +23,40 @@ The user wants to back up their project. Run the backup script: python3 scripts/
 - name: `to back up your project`
 - description: `Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead.`
 
+**enforce-critical-artifacts** (agentStop → askAgent)
+
+Prompt:
+
+````text
+If `config/.question_pending` exists, produce no output at all — defer to `ask-bootcamper`.
+
+STOPPING-POINT CHECK — Read `config/bootcamp_progress.json`. Determine whether a track-completion or graduation stopping point has been reached:
+
+- The Core track end has been reached: `7` appears in the `modules_completed` array, OR
+- The Advanced track end has been reached: `11` appears in the `modules_completed` array, OR
+- The graduation workflow has completed.
+
+If NONE of these is true, this is not a stopping point: produce no output at all. Do nothing.
+
+ENSURE + VERIFY — If a stopping point HAS been reached, run this exact command from the workspace root and capture its output:
+
+`python senzing-bootcamp/scripts/ensure_graduation_artifacts.py --json`
+
+The orchestrator regenerates any artifact that is absent, empty, or stale from always-present sources, at most once per artifact, and leaves already-valid artifacts byte-for-byte unchanged. Parse the emitted JSON report. It has the shape:
+
+{ "all_satisfied": <bool>, "missing": [<artifact keys>], "artifacts": [ { "key": ..., "path": ..., "exists": ..., "non_empty": ... }, ... ] }
+
+SILENT WHEN SATISFIED — If the report's `all_satisfied` field is `true`, the invariant holds (all three artifacts exist and are non-empty). Produce no output at all. Do nothing.
+
+BLOCK ON FAILURE — If the report's `all_satisfied` field is `false`, one or more guaranteed artifacts could not be produced. The 'done' state MUST NOT be reported. Output exactly:
+
+⛔ MANDATORY GATE VIOLATION DETECTED: The bootcamp cannot be reported as 'done' — one or more guaranteed graduation artifacts are missing or empty. For each key in the report's `missing` array, name the artifact by its identity and its `path` from the report's `artifacts` list: `transcript` → docs/bootcamp_transcript.md (the Q&A transcript), `recap_md` → docs/bootcamp_recap.md (the recap), `rendered_recap` → the rendered recap (docs/bootcamp_recap.pdf or docs/bootcamp_recap.html). These deliverables are an enforced completion invariant and cannot be silently skipped. Do not report the bootcamp complete until every listed artifact exists at its stated path and is non-empty. Re-run `python senzing-bootcamp/scripts/ensure_graduation_artifacts.py` to regenerate them from their source data, then re-verify.
+````
+
+- id: `enforce-critical-artifacts`
+- name: `to enforce critical graduation artifacts on agent stop`
+- description: `At a track-completion or graduation stopping point, guarantees the three crown-jewel artifacts (Q&A transcript, recap Markdown, rendered recap) exist and are non-empty by running ensure_graduation_artifacts.py, and blocks the 'done' state until all three are present. Silent when the invariant already holds.`
+
 **error-recovery-context** (postToolUse → askAgent, toolTypes: shell)
 
 Prompt:

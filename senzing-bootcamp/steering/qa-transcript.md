@@ -80,3 +80,13 @@ hard constraints when emitting events or editing this feature:
 
 This constraint is stated here so future edits keep Q&A logging decoupled from file writes and never
 reintroduce the per-write round-trip that `session-log-hook-performance` removed.
+
+## Cross-reference — guaranteed transcript, still decoupled from writes
+
+The rendered transcript (`docs/bootcamp_transcript.md`) is now **guaranteed** at track-completion
+and graduation stopping points by the `enforce-critical-artifacts` hook via
+`ensure_graduation_artifacts.py`, which reconstructs the transcript from always-present sources
+(the session log, and the recap's `### Questions & Responses` pairs) when needed. This guarantee is
+a stopping-point reconstruction only — it does **not** change anything above: it adds no per-write
+hook or per-write process spawn, and Q&A event emission stays event-driven and decoupled from file
+writes exactly as described here.

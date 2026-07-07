@@ -313,7 +313,17 @@ _BASELINE_HASHES: dict[str, str] = {
     # All recomputed by measure_steering.py into file_metadata and the budget
     # total. Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "72f5bea68c8a66f7e9aee9080ee838122f4915464f1bb16369638a3d9c49d339",
+    # Re-baselined once more (202410 -> 204320) for the
+    # guaranteed-graduation-artifacts spec: graduation.md (7776 -> 8509) and
+    # module-completion-track.md (3080 -> 3290) grew from the enforced-guarantee
+    # closing step and reconcile-then-render wiring, qa-transcript.md
+    # (1115 -> 1284) gained the enforced-guarantee / HTML-fallback cross-reference,
+    # and the new enforce-critical-artifacts hook regenerated the hook-registry
+    # slices (hook-registry-module-any.md 4200 -> 4905, hook-registry.md
+    # 2037 -> 2130), all recomputed by measure_steering.py into file_metadata and
+    # the budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "949379689716d35e0a3fba0d9c89a3be68f1304a492e6c19bee72f0abb8f6ce8",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -698,7 +708,7 @@ class TestNonPhaseBlocksBytePreserved:
         # (201014 after the track-completion-pdf-transcript re-sequencing), so the
         # hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 202410" in budget_block
+        assert "total_tokens: 204320" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

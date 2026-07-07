@@ -81,30 +81,34 @@ class TestPreservedTimingSettings:
         Args:
             name: A profile name drawn from the registered set.
         """
-        hypothesis_profiles.register_profiles()
+        # Profiles are registered at import time in ``hypothesis_profiles`` — no
+        # in-test re-registration (which would run inside this ``@settings``
+        # context and trip Hypothesis's register-at-module-level deprecation).
         profile = settings.get_profile(name)
         assert profile.deadline is None
         assert HealthCheck.too_slow in profile.suppress_health_check
 
 
 class TestIdempotentRegistration:
-    """Property tests for idempotent profile registration."""
+    """Example-based tests for idempotent profile registration.
+
+    Kept example-based (not ``@given``) so the repeated ``register_profiles()``
+    calls under test never run inside an active ``@settings`` context — doing so
+    would trip Hypothesis's register-at-module-level deprecation. A fixed loop
+    exercises the same idempotency invariant deterministically.
+    """
 
     # Feature: hypothesis-settings-centralization, Property 4: Profile registration is idempotent
-    @settings(max_examples=100)
-    @given(count=st.integers(min_value=1, max_value=10))
-    def test_register_profiles_is_idempotent(self, count: int) -> None:
+    def test_register_profiles_is_idempotent(self) -> None:
         """Repeated registration never raises and yields identical settings.
 
         Captures a baseline by registering once and recording each profile's key
-        settings, then re-registers ``count`` more times and asserts the
+        settings, then re-registers several more times and asserts the
         registered names and per-profile settings are unchanged.
 
         Validates: Requirements 2.4
-
-        Args:
-            count: The number of additional registration calls to make.
         """
+        repeat_count = 10
 
         def snapshot() -> dict[str, tuple[int, object, frozenset[HealthCheck]]]:
             """Capture key settings for every registered profile.
@@ -126,7 +130,7 @@ class TestIdempotentRegistration:
         baseline_names = hypothesis_profiles.registered_profile_names()
         baseline = snapshot()
 
-        for _ in range(count):
+        for _ in range(repeat_count):
             hypothesis_profiles.register_profiles()
 
         assert hypothesis_profiles.registered_profile_names() == baseline_names

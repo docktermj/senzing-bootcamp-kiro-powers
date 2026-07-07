@@ -29,7 +29,7 @@ This power works best with Claude Opus 4.8 or similar.
 - **Graduation recap/transcript resilience** — a shared Markdown→PDF renderer, an inline PDF fallback, an `fpdf2` preflight note, and a Q&A transcript reconciliation pass so the recap and transcript render completely with or without the optional `fpdf2` dependency (`scripts/recap_pdf_render.py`, `scripts/generate_recap_pdf_inline.py`, `scripts/fpdf2_preflight.py`, `scripts/reconcile_transcript.py`)
 - **Missing-bundled-script resilience** — a guarded runner so a bundled script that isn't materialized in the workspace degrades gracefully instead of erroring (`scripts/run_bundled_script.py`)
 - Advanced-track knowledge check, always-loaded steering budget check, Module 2 license-acquisition guidance, Module 6 SQLite volume prompt, and TypeScript build-failure recovery guidance
-- Recommended model updated to Claude Opus 4.8; CI workflow restructured with Hypothesis profiles centralized and the test suite parallelized; pytest at 6,338 passed / 0 failed / 88 skipped
+- Recommended model updated to Claude Opus 4.8; CI workflow restructured with Hypothesis profiles centralized and the test suite parallelized; the full CI validation suite and test suite are green
 
 See the CHANGELOG for the full release history.
 

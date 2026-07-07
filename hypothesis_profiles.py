@@ -138,3 +138,14 @@ def load_active_profile(env_value: str | None = None) -> str:
     active_name = resolve_profile_name(env_value)
     settings.load_profile(active_name)
     return active_name
+
+
+# ---------------------------------------------------------------------------
+# Module-level registration
+# ---------------------------------------------------------------------------
+# Register every profile at import time — the only context Hypothesis endorses
+# for ``settings.register_profile`` (registering while an ``@settings`` override
+# is active is deprecated). Importing this module therefore guarantees the
+# profiles exist before any test runs, so callers (both conftests, and any
+# test) never need to re-register inside a ``@given``/``@settings`` context.
+register_profiles()

@@ -1,7 +1,7 @@
 ---
 name: "senzing-bootcamp"
 displayName: "Senzing Bootcamp"
-version: "1.1.0"
+version: "0.1.3"
 description: "Guided 11-module bootcamp for learning Senzing entity resolution, from first demo to production deployment."
 keywords: ["senzing", "bootcamp", "entity-resolution", "senzing-bootcamp", "learning-track"]
 author: "Senzing"
@@ -19,7 +19,7 @@ Senzing is an embeddable entity resolution engine that resolves records about pe
 
 This power works best with Claude Opus 4.8 or similar.
 
-## What's New in 1.1.0
+## What's New in 0.1.3
 
 - Module 1 **Business Case Offer** — bootcampers with no case to share (or one they can't share) can have the bootcamp generate a realistic, multi-source, mapping-complexity-rich scenario to work through, backed by CORD data or synthetic data (`scripts/business_case_offer.py`)
 - Module 3 **first-visualization** improvements — a standalone TruthSet-backed force-directed graph demo is offered even when Module 3 is opted out, so every bootcamper gets a first visualization (`scripts/generate_standalone_demo.py`); entity-graph edge-key mapping corrected so rendered graphs show nodes

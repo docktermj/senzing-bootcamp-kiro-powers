@@ -104,6 +104,17 @@ If the bootcamper declines the visualization offer:
 
 If the bootcamper explicitly requests a visualization at any point — regardless of prior declines or existing tracker entries — honor the request immediately. Update any `"declined"` tracker entry to `"offered"` and proceed.
 
+### Deferred First-Visualization Guarantee
+
+This reuses the existing offer flow above — no new offer template, tracker, or checkpoint map. When Module 3 is opted out and the standalone demo is declined, a `first_visualization: owed` marker persists in `config/bootcamp_progress.json` (see `module-03-phase1-verification.md`). The first later module with resolved data satisfies that owed marker through its existing offer.
+
+When a visualization is **generated** (the existing `config/visualization_tracker.json` entry reaches status → `generated`) at either of these existing checkpoints AND `first_visualization` is `owed`:
+
+- **Module 6 results dashboard** (the results-dashboard offer in `module-06-phaseD-validation.md`): after generating, call `clear_first_visualization_owed(satisfied_by="module_6_deferred")` from `scripts/progress_utils.py`.
+- **Module 7 `m7_exploratory_queries`** (entity graph checkpoint): after generating, call `clear_first_visualization_owed(satisfied_by="module_7_deferred")` from `scripts/progress_utils.py`.
+
+Check the owed state with `is_first_visualization_owed(progress)` before clearing; the clear is idempotent and a no-op when nothing is owed. This is journey-level only — it does not weaken the Module 3 Step 9 gate, which stays unconditional whenever Module 3 runs.
+
 ## CRITICAL LESSONS FOR VISUALIZATION GENERATION
 
 1. **Use Python generator script** — Create `write_html.py` with HTML as a triple-quoted string. Run `python3 write_html.py` to produce `index.html`. NEVER use `fs_write` or `str_replace` to write HTML+JS content directly.

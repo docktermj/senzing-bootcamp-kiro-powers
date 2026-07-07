@@ -36,7 +36,7 @@ Every script in `senzing-bootcamp/scripts/` follows this structure:
 Hypothesis example counts are centralized in registered profiles instead of being set per test. Profiles are registered once in the repo-root module `hypothesis_profiles.py` and loaded by both `conftest.py` files (`senzing-bootcamp/tests/conftest.py` and `tests/conftest.py`).
 
 - **Registered profiles** (name → `max_examples`):
-  - `fast` → 10 (local default, quick iteration)
+  - `fast` → 5 (local default, quick iteration)
   - `thorough` → 100 (CI and full local runs)
   - `bootcamp` → alias of `thorough` (backward compatibility)
 - **Selection env var**: `HYPOTHESIS_PROFILE`

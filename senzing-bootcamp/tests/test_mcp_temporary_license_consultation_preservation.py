@@ -273,7 +273,7 @@ _BASELINE_HASHES: dict[str, str] = {
     # platform routing/options content (de-bolded so the routing list is not
     # misread as numbered steps) and Step 3 gained Docker-path install guidance.
     "m2_step2": "44100571bfe4bf1b3d7351a589c993a24f367595084e07f51a124412cb158966",
-    "m2_step3": "5cff1cbca271f3f706f637ad54f018093d16b18490e927f4abbd37b479ee5841",
+    "m2_step3": "cd7fb25dd412d810ef9bef712fbf62b17af6f8fbf066a106373882ee8d6a96c0",
     "m2_step4": "5ee5168b5bfe301fcf7f6841ef78f3ab334dfc1b413e7440cc598fc72d69e6be",
     "m2_step6": "67f0d91f31c40a0ef08336845a0a001ab959d4dc38c8ef5864e7a0141df4837f",
     "m2_step7": "e70acaae1640b0259e3cc5927f5ea27c88a98b3625cc2d5a6eca36ca367bb7a2",

@@ -38,13 +38,31 @@ VIZ_GUIDE_CONTENT: str = VIZ_GUIDE_PATH.read_text(encoding="utf-8")
 # Constants: Required constraints, features, endpoints, tabs, modal fields
 # ---------------------------------------------------------------------------
 
-# 7 mandatory constraint keywords/phrases for the Critical Lessons section
+# 7 mandatory constraint keywords/phrases for the Critical Lessons section.
+# visualization-guide.md was NOT reduced by the scaffold-visualization-specifics spec
+# and remains the authoritative source for the full set.
 CRITICAL_LESSONS_CONSTRAINTS: list[str] = [
     "Python generator script",
     "fs_write",
     "node --check",
     "data-*",
     "Quote discipline",
+    "function(){}",
+    "width",
+]
+
+# Subset of constraints still carried by module-03-phase2-visualization.md after the
+# scaffold-visualization-specifics reduction. That spec removed the standalone
+# "D3.js Code Style Constraints" block and the CRITICAL LESSONS section from module03,
+# relocating the JavaScript-syntax validation ("node --check") and the literal
+# "Quote discipline" title into the correct-by-construction generator
+# (scripts/generate_standalone_demo.py) and visualization-guide.md. The constraints
+# below remain authoritative in module03's "Client-Rendering Constraints" section and
+# Step 9 prose, so module03 is only required to carry these.
+MODULE03_CRITICAL_LESSONS_CONSTRAINTS: list[str] = [
+    "Python generator script",
+    "fs_write",
+    "data-*",
     "function(){}",
     "width",
 ]
@@ -115,16 +133,25 @@ class TestCriticalLessonsCompleteness:
 
         violations: list[str] = []
 
-        if constraint_lower not in module03_lower:
-            violations.append(
-                f"Constraint '{constraint}' not found in "
-                f"module-03-phase2-visualization.md"
-            )
-
+        # visualization-guide.md was not reduced and must carry the full set.
         if constraint_lower not in viz_guide_lower:
             violations.append(
                 f"Constraint '{constraint}' not found in "
                 f"visualization-guide.md"
+            )
+
+        # module-03-phase2-visualization.md was reduced by
+        # scaffold-visualization-specifics: it is only required to carry the retained
+        # subset. Constraints intentionally relocated out of module03 (e.g.
+        # "node --check", "Quote discipline") are still enforced via viz-guide above and
+        # the correct-by-construction generator, so they are not asserted here.
+        if (
+            constraint in MODULE03_CRITICAL_LESSONS_CONSTRAINTS
+            and constraint_lower not in module03_lower
+        ):
+            violations.append(
+                f"Constraint '{constraint}' not found in "
+                f"module-03-phase2-visualization.md"
             )
 
         assert violations == [], (
@@ -288,14 +315,28 @@ class TestScaffoldRemovalAndGenerator:
             "files and referenced as the generation mechanism."
         )
 
-    def test_critical_lessons_heading_in_module03(self) -> None:
-        """Verify CRITICAL LESSONS FOR VISUALIZATION GENERATION heading exists in Module 03.
+    def test_client_rendering_constraints_section_in_module03(self) -> None:
+        """Verify the Client-Rendering Constraints Steering_Pointer section exists in Module 03.
+
+        The scaffold-visualization-specifics spec intentionally removed the
+        'CRITICAL LESSONS FOR VISUALIZATION GENERATION' heading (and the D3.js Code Style
+        Constraints block) from module03 and replaced them with a shorter
+        'Client-Rendering Constraints — Correct by Construction' section that points at
+        scripts/generate_standalone_demo.py. The client-rendering guidance now lives
+        there (correct by construction), so this asserts the new section and its
+        generator reference instead of the removed heading.
 
         **Validates: Requirements 2.1**
         """
-        assert "CRITICAL LESSONS FOR VISUALIZATION GENERATION" in MODULE03_CONTENT, (
-            "Module 03 Phase 2 steering is missing the section heading "
-            "'CRITICAL LESSONS FOR VISUALIZATION GENERATION'."
+        assert "Client-Rendering Constraints" in MODULE03_CONTENT, (
+            "Module 03 Phase 2 steering is missing the 'Client-Rendering Constraints — "
+            "Correct by Construction' section that replaced the removed CRITICAL LESSONS "
+            "heading."
+        )
+        assert "generate_standalone_demo.py" in MODULE03_CONTENT, (
+            "Module 03 Phase 2 steering's Client-Rendering Constraints section must "
+            "reference scripts/generate_standalone_demo.py as the correct-by-construction "
+            "client-rendering reference."
         )
 
     def test_critical_lessons_heading_in_viz_guide(self) -> None:

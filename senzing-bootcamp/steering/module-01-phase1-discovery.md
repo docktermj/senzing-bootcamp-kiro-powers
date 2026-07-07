@@ -64,6 +64,8 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    Ask: "Do any of these patterns match your situation? You can use one as a starting point and customize it for your specific needs."
 
+   If none of these patterns fit — or you'd rather not share a real case — you can accept the Business_Case_Offer presented in Step 5 to have the Bootcamp generate a complete, realistic multi-source scenario for you.
+
    If they select a pattern, use it as a template for their problem statement:
    - Pre-fill data source types based on the pattern
    - Suggest matching criteria from the pattern
@@ -71,19 +73,68 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **Checkpoint:** Write step 4 to `config/bootcamp_progress.json`.
 
-5. **Open-ended discovery prompt**:
+5. **Discovery prompt** — present three separately selectable paths:
 
-   Ask a single open-ended question:
+   Offer the bootcamper three distinct ways to start, and let them pick exactly one:
+
+   **Path 1 — Describe a real business case:**
 
    "Tell me about the problem you're trying to solve — what data do you have, where does it come from, and what would success look like?"
 
-   If the user selected a design pattern in Step 4:
+   **Path 2 — Adopt a design pattern:** (offer this framing when the bootcamper selected a Design_Pattern_Gallery entry in Step 4)
 
    "You picked [pattern name]. Tell me how that applies to your situation — what data do you have, where does it come from, and what would success look like?"
 
-   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+   **Path 3 — Accept the Business_Case_Offer:**
+
+   "Don't have a business case in mind, or have one but would rather not share the details? I can generate one for you. This offer applies both when you have no business case and when you have a real case but can't or won't share it. If you accept, the Bootcamp will generate a realistic, multi-source scenario — complete with mapping-complexity-rich data — so you can complete the full bootcamp without supplying or inventing a case of your own. Would you like me to do that?"
+
+   Present these as three options the bootcamper chooses among — describe a real case, adopt the Design_Pattern_Gallery entry, or accept the Business_Case_Offer.
+
+   > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not pick a path for the bootcamper. Do not generate a Generated_Scenario before the bootcamper has explicitly accepted the Business_Case_Offer. Do not continue to the next step. Wait for the bootcamper's real input.
 
    **Checkpoint:** Write step 5 to `config/bootcamp_progress.json`.
+
+5a. **Business Case Offer — acceptance handling** (branch — only after the bootcamper has explicitly responded to the Step 5 offer):
+
+   Act on the bootcamper's response to the three paths. Do nothing here until they have answered — the 🛑 STOP in Step 5 guarantees no Generated_Scenario is produced before explicit acceptance.
+
+   **On acceptance** (the bootcamper accepts the Business_Case_Offer):
+
+   Before continuing the Discovery_Flow, generate a complete Generated_Scenario within the active session:
+
+   - Produce a **non-empty problem description**, **exactly one use-case category** drawn from the recognized Module 1 set (Customer 360, Fraud Detection, Data Migration, Compliance, Marketing, Healthcare, Supply Chain, KYC, Insurance, Vendor MDM), and a **non-empty definition of success**.
+   - If the bootcamper selected a Design_Pattern_Gallery entry in Step 4 before accepting the offer, the Generated_Scenario's use-case category MUST match that selected pattern's use-case category.
+   - Determine whether to back the scenario with a CORD dataset or with synthetic Generated_Data — see Step 5b below for how to consult the Senzing MCP server, present its returned CORD facts verbatim, and when to fall back to Generated_Data. The provenance recorded for the scenario (`cord` vs. `generated`) is the outcome of that Step 5b decision.
+   - Validate the scenario's invariants before recording anything: at least two distinctly named data sources, each contributing at least one record; the data is mapping-complexity-rich (it requires at least one transformation — differing field names, fields to combine or split, or inconsistent value formatting — when mapped to the Senzing Entity Specification); the use-case category is one of the recognized set; and the problem description and definition of success are non-empty. The helper `senzing-bootcamp/scripts/business_case_offer.py` (`validate_scenario`) encodes these same invariants and returns the list of violations.
+   - **On successful validation** (no violations), proceed to record the artifacts in Phase 2 Step 12 of `module-01-phase2-document-confirm.md` — write `docs/business_problem.md` using the standard problem-statement template plus the observable bootcamp-generated marker, and record each distinct Scenario_Data source into `config/data_sources.yaml`. Then continue the Discovery_Flow (Step 6 onward) using the Generated_Scenario's details.
+
+   **On decline** (the bootcamper declines the Business_Case_Offer):
+
+   Continue the Discovery_Flow with the bootcamper's own description (Path 1 or Path 2). Do **not** produce a Generated_Scenario and do **not** write a generated `docs/business_problem.md`. Proceed to Step 6 to infer details from their own response.
+
+   **On generation failure** (scenario generation cannot complete, including any `validate_scenario` violations):
+
+   Treat scenario-validation violations as "cannot complete." Inform the bootcamper that the Bootcamp could not generate a complete scenario, and fall back to the bootcamper's own description **without** writing a generated `docs/business_problem.md`. Then continue the Discovery_Flow with their own description.
+
+   **Checkpoint:** Write step 5a to `config/bootcamp_progress.json`.
+
+5b. **CORD sourcing for the Generated_Scenario (via MCP)** (branch — runs inside the Step 5a acceptance path, after generating the scenario's problem/category/success and before recording any artifacts):
+
+   This step is how the Step 5a acceptance branch decides whether to back the Generated_Scenario with a CORD dataset (provenance `cord`) or with synthetic Generated_Data (provenance `generated`). Treat the Senzing MCP server as the only source of CORD facts during this active session — never consult training data, hardcoded text, or remembered figures for any CORD dataset name, content, or availability.
+
+   **Retrieve CORD facts from the MCP server.** Call `get_sample_data` and/or `search_docs(query='CORD datasets — names, contents, and availability for entity resolution scenarios')` to learn which CORD datasets exist, what each one contains, and whether each is currently available. Present those values exactly as the MCP server returns them — do not substitute a static, hardcoded, or remembered dataset name or record count. Wait up to 30 seconds for a response; if none arrives, retry once.
+
+   **Decide provenance from what the MCP server returns:**
+
+   - **A fitting CORD dataset is returned in time** → back the scenario with that CORD dataset and record provenance as `cord`. Use the returned names and contents verbatim when describing the data to the bootcamper.
+   - **No returned CORD dataset fits the Generated_Scenario** → produce synthetic Generated_Data instead and record provenance as `generated`.
+
+   **MCP timeout or unreachable fallback** (mirrors the Step 6d license-guidance timeout/single-retry pattern): if the MCP server does not return CORD details within 30 seconds, or cannot be reached after 1 retry attempt, **omit the unavailable CORD facts**, tell the bootcamper that CORD details are unavailable from the MCP server, and produce synthetic Generated_Data rather than CORD data (record provenance as `generated`).
+
+   Whether the data is CORD-sourced or generated, the Scenario_Data MUST still satisfy the invariants Step 5a validates: at least two distinctly named data sources, each contributing at least one record, and mapping complexity — the data requires at least one transformation (differing field names, fields to combine or split, or inconsistent value formatting) when mapped to the Senzing Entity Specification.
+
+   **Checkpoint:** Write step 5b to `config/bootcamp_progress.json`.
 
 6. **Infer details from response**:
 

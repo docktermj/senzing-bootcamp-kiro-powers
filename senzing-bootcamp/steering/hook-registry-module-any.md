@@ -23,6 +23,40 @@ The user wants to back up their project. Run the backup script: python3 scripts/
 - name: `to back up your project`
 - description: `Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead.`
 
+**enforce-critical-artifacts** (agentStop → askAgent)
+
+Prompt:
+
+````text
+If `config/.question_pending` exists, produce no output at all — defer to `ask-bootcamper`.
+
+STOPPING-POINT CHECK — Read `config/bootcamp_progress.json`. Determine whether a track-completion or graduation stopping point has been reached:
+
+- The Core track end has been reached: `7` appears in the `modules_completed` array, OR
+- The Advanced track end has been reached: `11` appears in the `modules_completed` array, OR
+- The graduation workflow has completed.
+
+If NONE of these is true, this is not a stopping point: produce no output at all. Do nothing.
+
+ENSURE + VERIFY — If a stopping point HAS been reached, run this exact command from the workspace root and capture its output:
+
+`python senzing-bootcamp/scripts/ensure_graduation_artifacts.py --json`
+
+The orchestrator regenerates any artifact that is absent, empty, or stale from always-present sources, at most once per artifact, and leaves already-valid artifacts byte-for-byte unchanged. Parse the emitted JSON report. It has the shape:
+
+{ "all_satisfied": <bool>, "missing": [<artifact keys>], "artifacts": [ { "key": ..., "path": ..., "exists": ..., "non_empty": ... }, ... ] }
+
+SILENT WHEN SATISFIED — If the report's `all_satisfied` field is `true`, the invariant holds (all three artifacts exist and are non-empty). Produce no output at all. Do nothing.
+
+BLOCK ON FAILURE — If the report's `all_satisfied` field is `false`, one or more guaranteed artifacts could not be produced. The 'done' state MUST NOT be reported. Output exactly:
+
+⛔ MANDATORY GATE VIOLATION DETECTED: The bootcamp cannot be reported as 'done' — one or more guaranteed graduation artifacts are missing or empty. For each key in the report's `missing` array, name the artifact by its identity and its `path` from the report's `artifacts` list: `transcript` → docs/bootcamp_transcript.md (the Q&A transcript), `recap_md` → docs/bootcamp_recap.md (the recap), `rendered_recap` → the rendered recap (docs/bootcamp_recap.pdf or docs/bootcamp_recap.html). These deliverables are an enforced completion invariant and cannot be silently skipped. Do not report the bootcamp complete until every listed artifact exists at its stated path and is non-empty. Re-run `python senzing-bootcamp/scripts/ensure_graduation_artifacts.py` to regenerate them from their source data, then re-verify.
+````
+
+- id: `enforce-critical-artifacts`
+- name: `to enforce critical graduation artifacts on agent stop`
+- description: `At a track-completion or graduation stopping point, guarantees the three crown-jewel artifacts (Q&A transcript, recap Markdown, rendered recap) exist and are non-empty by running ensure_graduation_artifacts.py, and blocks the 'done' state until all three are present. Silent when the invariant already holds.`
+
 **error-recovery-context** (postToolUse → askAgent, toolTypes: shell)
 
 Prompt:
@@ -110,8 +144,7 @@ You are checking whether the bootcamper just completed a module and, if so, appe
 
 3. GATHER SESSION CONTENT: Review the current session context to collect:
    - Information Shared: key concepts, explanations, and reference material presented to the bootcamper during this module
-   - Questions Asked: all substantive questions the agent posed to the bootcamper (exclude rhetorical or transitional prompts)
-   - Answers Given: the bootcamper's responses to each question, maintaining 1:1 correspondence with questions
+   - Questions & Responses: an ORDERED LIST OF PAIRS, one pair per substantive question the agent posed to the bootcamper (exclude rhetorical or transitional prompts), each pair holding the question and the bootcamper's response to that question. Preserve the ascending sequence in which the questions were asked during the module. A substantive question is one whose text contains at least one non-whitespace character after leading and trailing whitespace is removed. Keep each question adjacent to its own response — do NOT collect questions and responses as two separate parallel lists.
    - Actions Taken: all file creations, modifications, code generation, configuration changes, and commands executed during the module
 
 4. COMPUTE DURATION (no placeholders): Obtain the per-module Duration and the cumulative Total Duration from the deterministic planner instead of from session context. Run:
@@ -146,13 +179,11 @@ You are checking whether the bootcamper just completed a module and, if so, appe
    - [Concept or explanation presented]
    - [Reference material shared]
 
-   ### Questions Asked
-   1. [Agent question to bootcamper]
-   2. [Agent question to bootcamper]
-
-   ### Answers Given
-   1. [Bootcamper response to question 1]
-   2. [Bootcamper response to question 2]
+   ### Questions & Responses
+   - **Q:** [Agent question to bootcamper]
+       - **R:** [Bootcamper response to that question]
+   - **Q:** [Next agent question to bootcamper]
+       - **R:** [Bootcamper response to that question]
 
    ### Actions Taken
    - Created `[file path]`
@@ -165,15 +196,31 @@ You are checking whether the bootcamper just completed a module and, if so, appe
    ---
    ```
 
+   QUESTIONS & RESPONSES FORMAT (follow exactly — this must match what `format_qr_section` produces):
+   - Emit exactly ONE `### Questions & Responses` heading per module. NEVER emit a `### Questions Asked` heading or an `### Answers Given` heading.
+   - For each pair, in ascending ask order, write the question on its own line beginning with the literal prefix `- **Q:**` (zero leading spaces), immediately followed on the next line by its response beginning with exactly four leading space characters (ASCII 0x20, no tabs) and the literal prefix `- **R:**`. The response line is nested four spaces beneath its question so the Response_Item Indent_Depth is exactly 4 and the Question_Item Indent_Depth is exactly 0.
+   - Keep each response immediately after its own question — never group all questions then all responses.
+   - If a question's response is absent or contains only whitespace, write the response line as `    - **R:** (no response recorded)`.
+   - If a response spans more than one line, prefix every continuation line with at least four leading spaces so it stays nested beneath the question.
+   - If the module has zero substantive questions, write the `### Questions & Responses` heading followed by exactly one list item consisting of the literal text `- None` and no question/response pairs.
+
 8. UPDATE TOTAL DURATION: If the file header contains a **Total Duration** line and the planner returned a non-null `total_duration`, update it to that value. The total duration is rolled up from the real per-module elapsed times and must be monotonically non-decreasing. If the planner returned null for `total_duration`, leave the header without a Total Duration value rather than writing a placeholder.
 
-9. CONFIRMATION: Display a single brief line confirming the recap was updated, for example: "Recap updated for Module N: [Module Name]."
+9. VERIFY AND BACKFILL (synchronous, before reporting success): The append is not complete until you confirm it persisted. Re-read `docs/bootcamp_recap.md` and check for a `## Module N:` heading for the module you just completed. If the heading is present, proceed. If it is ABSENT (the write did not persist, this is the final module of a track, or the section was never written), do NOT report success: run the deterministic backfill applier, which appends a `## Module N:` section for every completed module missing one (append-around, preserving existing bytes; idempotent when nothing is missing):
+
+   ```
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --backfill
+   ```
+
+   The applier exits non-zero and names any modules still missing if verification fails after the write. Re-read the file and confirm the `## Module N:` heading is now present before continuing. If the applier cannot be run (file-system error or timeout), log a warning and continue without blocking module completion — the track-completion reconciliation pass is the final safety net.
+
+10. CONFIRMATION: Display a single brief line confirming the recap was updated, for example: "Recap updated for Module N: [Module Name]."
 
 CONSTRAINTS:
 - All timestamps MUST use ISO 8601 format with timezone offset (e.g., 2026-05-23T10:30:00-05:00).
 - Preserve all existing file content byte-for-byte when appending.
 - Duration and Total Duration values come ONLY from `completion_artifacts.py`; never derive them from session context and never write a placeholder such as "Module N session". When the planner omits a value, omit the corresponding field.
-- If any section has no content (e.g., no questions were asked), include the subsection heading with a single item "None" or "N/A". This does NOT apply to the `### Duration` field, which is omitted entirely when the planner returns no value.
+- If any section has no content (e.g., no actions were taken), include the subsection heading with a single item "None" or "N/A". This does NOT apply to the `### Duration` field, which is omitted entirely when the planner returns no value, and it does NOT apply to the `### Questions & Responses` section, which follows its own rule above (heading followed by exactly `- None` when there are zero substantive questions).
 - If the file cannot be written due to a file system error, log a warning message and continue without blocking the module completion flow. Do NOT raise an error or halt execution.
 - Do NOT alter the behavior of any other hooks (celebration, journal entry, etc.).
 - Keep the recap factual and concise — summarize rather than reproduce entire conversations.
@@ -183,10 +230,10 @@ CONSTRAINTS:
 
 - id: `module-recap-append`
 - name: `to append module recap on completion`
-- description: `Appends a structured recap section to docs/bootcamp_recap.md when a module is completed.`
+- description: `Appends a structured recap section to docs/bootcamp_recap.md when a module is completed, then verifies the section persisted and backfills it if absent.`
 
 **session-log-events** (postToolUse → runCommand, toolTypes: write)
 
 - id: `session-log-events`
 - name: `to log session events after write operations`
-- description: `Logs a session event after write operations complete. The IDE appends the log line directly via a runCommand (no agent round-trip), invoking senzing-bootcamp/scripts/log_write_event.py, which records a generic write action (timestamp + current module) to config/session_log.jsonl for the completion summary.`
+- description: `Logs a session event after write operations complete. The IDE appends the log line directly via a runCommand (no agent round-trip). When the bundled senzing-bootcamp/scripts/log_write_event.py is present it is invoked unchanged; when it is absent a self-contained inline stdlib appender records an equivalent generic write action (timestamp + current module) to config/session_log.jsonl, so logging never emits a file-not-found error and always exits 0.`

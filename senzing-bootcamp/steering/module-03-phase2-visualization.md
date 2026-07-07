@@ -13,21 +13,42 @@ inclusion: manual
 **Implementation constraints:**
 
 - Python stdlib HTTP server only (`http.server.HTTPServer` + `BaseHTTPRequestHandler`) — no Flask, FastAPI, or third-party HTTP frameworks
-- D3.js v7 loaded from the d3js.org CDN (`d3js.org/d3.v7.min.js`) — no other external JavaScript dependencies
+- D3.js v7 (loaded from a CDN in the generated artifact's HTML — see the standalone demo emitted by `scripts/generate_standalone_demo.py`) — no other external JavaScript dependencies
 - Single HTML file with embedded CSS and JavaScript (aside from the D3.js CDN import)
 - All artifacts reside in `src/system_verification/web_service/`
 - All data derived from SDK calls: `export_json_entity_report`, `get_entity_by_entity_id`, `search_by_attributes`, `find_network_by_entity_id`
 - Works with three TruthSet data sources: CUSTOMERS, REFERENCE, WATCHLIST
 
-## CRITICAL LESSONS FOR VISUALIZATION GENERATION
+## Client-Rendering Constraints — Correct by Construction
 
-1. **Use Python generator script** — Create `write_html.py` with HTML as a triple-quoted string. Run `python3 write_html.py` to produce `index.html`. NEVER use `fs_write` or `str_replace` to write HTML+JS content directly.
-2. **Validate JavaScript syntax** — After generating `index.html`, run `node --check index.html` equivalent validation or embed the JS in a way that can be syntax-checked.
-3. **No inline onclick with dynamic values** — Use `data-*` attributes and `querySelectorAll` event listeners. Inline `onclick="fn('${value}')"` causes quote-escaping failures.
-4. **Quote discipline** — Inside Python triple-quoted strings: use double quotes for JavaScript strings, single quotes for HTML attributes.
-5. **D3.js callback syntax** — Use `function(){}` for all D3.js callbacks, NOT arrow functions. Arrow functions break `this` binding to DOM elements.
-6. **Explicit SVG dimensions** — Set `width` and `height` attributes on SVG elements. Do not rely on CSS-only sizing.
-7. **Map graph edge keys for D3 `forceLink`** — `/api/graph` returns edges keyed by `source_entity_id`/`target_entity_id` (the API contract). D3's `forceLink` resolves each edge against node ids via `source`/`target`. In `drawGraph`, map every edge to expose `source`/`target` (set from `source_entity_id`/`target_entity_id`) **before** passing edges to `forceLink().links(...)`. Skipping this map is a **silent failure**: no console error is raised and the Entity Graph renders empty even though `/api/graph` returned nodes and edges. Preserve node `id`/`entity_id` so the mapped `source`/`target` values resolve to nodes.
+The client-side rendering specifics for the standalone force-directed graph are
+**demonstrated, correct by construction**, in the artifact emitted by
+`scripts/generate_standalone_demo.py`. Rather than re-derive them from prose here, use
+that generated artifact as the reference implementation. It bakes in, in one executable
+place:
+
+- the Python stdlib HTTP server (`http.server`) and single self-contained page,
+- the D3.js v7 load, `function(){}` D3 callbacks (never arrow functions — they break
+  `this` binding to DOM elements), and explicit SVG `width`/`height` attributes,
+- the TruthSet source-color map and node-radius formula, and
+- the `source_entity_id`/`target_entity_id` → `source`/`target` **edge-key mapping**.
+  Its `drawGraph` is the correct-by-construction reference for that mapping.
+
+**When hand-building the Step 9 dashboard graph**, apply the **same** edge-key mapping
+before `forceLink`: `/api/graph` returns edges keyed by
+`source_entity_id`/`target_entity_id`, but D3's `forceLink` resolves each edge against
+node ids via `source`/`target`. In `drawGraph`, map every edge to expose `source`/`target`
+(from `source_entity_id`/`target_entity_id`) **before** passing edges to
+`forceLink().links(...)`, and preserve node `id`/`entity_id` so those values resolve.
+Omitting this map is a **silent failure**: no console error is raised and the Entity Graph
+renders empty even though `/api/graph` returned nodes and edges. Verify with the render
+smoke check in Step 9.4 below.
+
+Generate the HTML via a **Python generator script** (`write_html.py`, see Step 9.1) — never
+write HTML+JS content directly with `fs_write`/`str_replace`. Inside the triple-quoted HTML
+string, use `data-*` attributes with `querySelectorAll` listeners (not inline
+`onclick="fn('${value}')"`, which causes quote-escaping failures) and keep double quotes for
+JavaScript, single quotes for HTML attributes.
 
 ---
 
@@ -59,6 +80,12 @@ inclusion: manual
 >
 > Skipping Phase 2 deprives the bootcamper of their first "wow moment" with entity
 > resolution results.
+>
+> **Scope note:** Governing Rule 15 ("always create the visualization") applies whenever
+> Module 3 runs. Once Module 3 is underway, Step 9 is unconditional and the agent never
+> presents it as optional. The only path that yields no visualization is the bootcamper
+> choosing to opt out of the entire Module 3 at the Phase 1 Opt-Out Gate, before verification
+> begins — a whole-module decision the agent never initiates or suggests.
 
 ---
 
@@ -77,7 +104,7 @@ Generate the web service artifacts in `src/system_verification/web_service/`. Us
 3. Create `server.py` using Python stdlib HTTP server (`http.server.HTTPServer` + `BaseHTTPRequestHandler`) — no Flask, FastAPI, or third-party HTTP frameworks.
 4. Create builder modules (`stats_builder.py`, `graph_builder.py`, `merges_builder.py`, `search_builder.py`) for data computation.
 
-The generated `index.html` is a single file with embedded CSS and JavaScript. D3.js v7 is loaded from the d3js.org CDN (`d3js.org/d3.v7.min.js`) — no other external JavaScript dependencies.
+The generated `index.html` is a single file with embedded CSS and JavaScript. D3.js v7 is loaded from a CDN in that HTML (the exact CDN reference lives in the generated artifact's code, per the standalone demo emitted by `scripts/generate_standalone_demo.py`) — no other external JavaScript dependencies.
 
 **Required files:**
 
@@ -163,11 +190,11 @@ Presented left-to-right with arrow indicators conveying the resolution pipeline 
      The legend is positioned in the top-right corner of the graph container.
    - **Responsive resize:** On window resize, update SVG dimensions and re-center the force simulation. Use a `resize` event listener to recalculate width/height and restart the force layout center.
 
-**D3.js Code Style Constraints:**
-
-- **Use `function(){}` syntax for all D3.js callbacks** — Do NOT use arrow functions (`() => {}`) in D3.js event handlers, `.each()`, `.attr()` callbacks, or any other D3 method that binds `this` to the DOM element. Arrow functions break `this` binding to DOM elements in D3 callbacks, causing silent failures when accessing the current element via `d3.select(this)`.
-- **Explicit `width` and `height` attributes on SVG elements** — Always set `width` and `height` as attributes on `<svg>` elements (e.g., `.attr('width', width).attr('height', height)`). Do NOT rely on CSS-only sizing (e.g., `width: 100%` in a stylesheet without corresponding attributes). CSS-only sizing causes rendering issues in some browsers and when SVG is embedded in flex containers.
-- **Map graph edges to `source`/`target` before the force simulation** — In `drawGraph`, map each `/api/graph` edge to expose `source`/`target` (from `source_entity_id`/`target_entity_id`) before passing edges to `forceLink`, or the graph renders empty (see Critical Lesson 7).
+> **Client-rendering reference:** the `function(){}` D3 callbacks, explicit SVG
+> `width`/`height` attributes, and the edge-key mapping before `forceLink` are demonstrated
+> correct by construction in the artifact emitted by `scripts/generate_standalone_demo.py`
+> (see "Client-Rendering Constraints" above). Apply the same edge-key mapping when
+> hand-building this graph, then run the Step 9.4 render smoke check.
 
 2. **Record_Merges_View** — Card-based display of multi-record entities
    - One card per entity with side-by-side constituent records
@@ -239,7 +266,7 @@ Follow the Web Service Delivery Sequence from `visualization-guide.md`:
    |---|---|
    | Graph edge-key mapping | Generated `index.html` `drawGraph` maps `source_entity_id`/`target_entity_id` → `source`/`target` before `forceLink`; rendered graph shows visible nodes when `/api/graph` returns ≥1 node |
 
-   **Fix_Instruction (on failure):** add the edge-key mapping per Critical Lesson 7, regenerate `index.html`, and re-verify. Do not proceed to the Guided Tour until the graph passes.
+   **Fix_Instruction (on failure):** add the edge-key mapping per the "Client-Rendering Constraints" section above (using the `drawGraph` in the artifact emitted by `scripts/generate_standalone_demo.py` as the reference), regenerate `index.html`, and re-verify. Do not proceed to the Guided Tour until the graph passes.
 
 **Guided Tour — deliver the following as a single structured chat message
 (no interactive pauses):**

@@ -162,11 +162,176 @@ _BASELINE_HASHES: dict[str, str] = {
     # de-bolded (single-question-per-step fix), nudging its measured count
     # 6103 -> 6104. Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "1cd9118a94ad3725be8524c01c7fb7efb4b1aa35ac3d4ef9f3bd9f92611c06fa",
+    # Re-baselined once more (188169 -> 188579) for the graduation-docs-index
+    # spec: graduation.md (5394 -> 5804) gained the non-blocking Docs Index
+    # Generation step (Step 0b after the Q&A transcript), recomputed by
+    # measure_steering.py into file_metadata and the budget total. Only the budget
+    # block changed; keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (188579 -> 189326) for the missing-bundled-scripts
+    # bugfix (task 3.2): the session-log-events hook description was expanded to
+    # document the inline-stdlib-appender fallback for a missing
+    # log_write_event.py, which regenerated hook-registry.md (5804 -> 6242) and
+    # hook-registry-module-any.md, all recomputed by measure_steering.py into
+    # file_metadata and the budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (189326 -> 191808) for the
+    # module1-business-case-offer spec: module-01-phase1-discovery.md grew from
+    # the Phase 1 discovery Steps 5a (Business Case Offer acceptance handling)
+    # and 5b (CORD sourcing for the Generated_Scenario via MCP) additions, and
+    # module-01-phase2-document-confirm.md grew from the Step 12
+    # generated-scenario branch (artifact recording + the CORD-facts-via-MCP
+    # note), all recomputed by measure_steering.py into file_metadata and the
+    # budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (192179 -> 192418) for the
+    # module2-license-acquisition-info spec: module-02-sdk-setup.md grew when its
+    # Step 5a explanation was reconstructed in the hybrid resolution — restoring
+    # the original "500 records" / "SENZ9000 error at record 501" evaluation-
+    # license text and the enforced `search_docs` consultation directive while
+    # keeping the new three-path in-flow MCP license-request block — recomputed by
+    # measure_steering.py into file_metadata and the budget total. Only the budget
+    # block changed; keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (192418 -> 193362) for the recap-completeness-and-pdf
+    # bugfix (task 3.3): module-completion.md and module-completion-artifacts.md
+    # grew when the recap append was made a synchronous, verified step (heading
+    # read-back + deterministic backfill via completion_artifacts.py --backfill),
+    # and the module-recap-append hook prompt gained a verify-and-backfill step
+    # (regenerating the hook-registry slices). All recomputed by
+    # measure_steering.py into file_metadata and the budget total. Only the budget
+    # block changed; keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (193362 -> 194529) for the recap-completeness-and-pdf
+    # bugfix (task 3.4): the track-completion reconciliation wiring grew
+    # module-completion-track.md (1277 -> 1726) with the "Recap Reconciliation &
+    # Backfill (Path A final safety net)" section, and graduation.md (6242 -> 6960)
+    # with Step 0a (recap reconciliation before the PDF is rendered); the paired
+    # synchronous-append edits also nudged module-completion-artifacts.md,
+    # module-completion.md, and the hook-registry slices, all recomputed by
+    # measure_steering.py into file_metadata and the budget total. Only the budget
+    # block changed; keywords/languages/deployment/root_step_range are byte-identical.
+    # budget total, all recomputed by measure_steering.py into file_metadata and
+    # the budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (194529 -> 194997) for the recap-qr-formatting spec:
+    # the module-recap-append hook prompt was rewritten to emit the Paired_Schema
+    # `### Questions & Responses` section (interspersed `- **Q:**` / `- **R:**`
+    # pairs), which regenerated the hook-registry slices — most notably
+    # hook-registry-module-any.md (3732 -> 4200) — recomputed by
+    # measure_steering.py into file_metadata and the budget total. Only the budget
+    # block changed; keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (194997 -> 195160) for the bootcamp-experience-review
+    # documentation batch: module-completion-artifacts.md merged its "Questions
+    # Asked"/"Answers Given" gathered-content bullets into a single "Questions &
+    # Responses" bullet (matching the shipped QR recap hook / format_qr_section),
+    # and module-03-phase2-visualization.md gained a scope note clarifying that the
+    # unconditional Step 9 gate applies whenever Module 3 runs (the whole-module
+    # Phase 1 opt-out is the only no-visualization path). measure_steering.py
+    # recomputed both counts into file_metadata and the budget total. Only the
+    # budget block changed; keywords/languages/deployment/root_step_range are
+    # byte-identical.
+    # Re-baselined once more (195160 -> 196422) for the
+    # module3-first-visualization-guarantee spec: module-03-phase1-verification.md
+    # grew when the Opt-Out Gate recorded the owed first-visualization marker and
+    # offered the standalone demo (3536 -> 4194), visualization-guide.md
+    # (4334 -> 4660) and module-06-phaseD-validation.md (2109 -> 2248) /
+    # module-07-phase1-query-visualize.md (3233 -> 3372) grew from the deferred
+    # first-visualization guarantee wiring, all recomputed by measure_steering.py
+    # into file_metadata and the budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (196422 -> 197386) for the
+    # advanced-track-knowledge-check spec (task 2.1): onboarding-phase2-track-
+    # setup.md grew (972 -> 1503) when the 5c section was added, recomputed by
+    # measure_steering.py into file_metadata and the budget total. NOTE: the
+    # pinned baseline was ALSO stale on HEAD before this spec (HEAD total was
+    # 196855 while this constant still pinned 196422); this re-baseline moves the
+    # budget block to the live consistent value (197386 = sum of file_metadata
+    # counts). This spec ALSO legitimately changed the root_step_range block:
+    # phase2-track-setup's step_range grew [5, 5] -> [5, "5c"] to cover the new
+    # 5c section (the only root/step_range line to change), so its baseline is
+    # re-pinned below too. keywords/languages/deployment are byte-identical.
+    # Re-baselined once more (133706e9 -> b0fc1e9a) for the
+    # always-loaded-steering-budget-check feature: a new
+    # `always_loaded_ceiling_pct: 25` key was added to the budget block (between
+    # critical_threshold_pct and split_threshold_tokens), which changed the
+    # budget block's SHA-256. Only the new key was added; total_tokens is
+    # unchanged (197386 = sum of file_metadata counts) and
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (b0fc1e9a -> 89612528) for the
+    # capture-hook-completion-safeguard feature (task 8.1): module-completion.md
+    # grew (1423 -> 2262, medium -> large) when the Capture-Hook Completion
+    # Safeguard step was wired into the module-completion boundary steering,
+    # which measure_steering.py recomputed into file_metadata and the budget
+    # total (197386 -> 198225 = sum of file_metadata counts). Only the budget
+    # block changed; keywords/languages/deployment/root_step_range are
+    # byte-identical.
+    # Re-baselined once more (198225 -> 198523) for the fpdf2-preflight-note spec:
+    # graduation.md grew (added Step 0b.0 fpdf2 Preflight Note) and
+    # module-completion-track.md grew (added the fpdf2 Preflight Note invocation
+    # before the completion-summary/export offer), both recomputed by
+    # measure_steering.py into file_metadata and the budget total
+    # (198523 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (198523 -> 198794) for the
+    # module4-record-count-license-backfill spec: module-04-data-collection.md
+    # grew (4049 -> 4320) when Step 8a (the record-count license back-fill
+    # invocation) was added, recomputed by measure_steering.py into file_metadata
+    # and the budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (198794 -> 199583) for the
+    # module6-sqlite-volume-hard-prompt spec: module-06-phaseA-build-loading.md
+    # grew (2860 -> 3649) when the SQLite volume-classification / hard-prompt
+    # guidance was added, which measure_steering.py recomputed into file_metadata
+    # and the budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (199583 -> 199575) for the
+    # scaffold-visualization-specifics budget reduction: Task 5.1 legitimately
+    # reduced module-03-phase2-visualization.md (it removed the CRITICAL LESSONS
+    # section and the D3.js code-style constraints block, replacing them with the
+    # shorter "Client-Rendering Constraints — Correct by Construction" Steering_Pointer
+    # section, and removed the external CDN URL from prose), which measure_steering.py
+    # recomputed into file_metadata and the budget total (199583 -> 199575 = sum of
+    # file_metadata counts, per Requirement 2.2). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (199575 -> 201014) for the
+    # track-completion-pdf-transcript spec (Tasks 3 & 4): module-completion-track.md
+    # grew (1886 -> 3080) when it was re-sequenced to add a transcript
+    # reconciliation pass and the always-run "Shareable Deliverables: Recap PDF &
+    # Q&A Transcript" render subsection, and graduation.md grew (7531 -> 7776) when
+    # the Step 0b idempotent-reuse note (overwrite in place, no conflicting
+    # duplicates) was added, both recomputed by measure_steering.py into
+    # file_metadata and the budget total (201014 = sum of file_metadata counts).
+    # Only the budget block changed; keywords/languages/deployment/root_step_range
+    # are byte-identical.
+    # Re-baselined once more (202215 -> 202410) for the bootcamp-outcomes-audit
+    # batch (module-start step overview + scripts/ placement reconciliation):
+    # module-transitions.md gained a "Step Overview (at module start)" section and
+    # a Step Overview row in the Confirmation Response Requirements table,
+    # conversation-protocol.md and agent-instructions.md gained the matching
+    # numbered step-overview element, and agent-instructions.md /
+    # file-placement.md repointed the generated-project scripts location from a
+    # top-level `scripts/` to `src/scripts/` (aligning with project-structure.md).
+    # All recomputed by measure_steering.py into file_metadata and the budget
+    # total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (202410 -> 204320) for the
+    # guaranteed-graduation-artifacts spec: graduation.md (7776 -> 8509) and
+    # module-completion-track.md (3080 -> 3290) grew from the enforced-guarantee
+    # closing step and reconcile-then-render wiring, qa-transcript.md
+    # (1115 -> 1284) gained the enforced-guarantee / HTML-fallback cross-reference,
+    # and the new enforce-critical-artifacts hook regenerated the hook-registry
+    # slices (hook-registry-module-any.md 4200 -> 4905, hook-registry.md
+    # 2037 -> 2130), all recomputed by measure_steering.py into file_metadata and
+    # the budget total. Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "949379689716d35e0a3fba0d9c89a3be68f1304a492e6c19bee72f0abb8f6ce8",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
-    "root_step_range": "560fe6ad7e2b2b4e852bb6ad8515aca16846416084f9d204c83f2871764ffadd",
+    # Re-baselined (560fe6ad -> 3da6ba04) for the advanced-track-knowledge-check
+    # spec: phase2-track-setup's step_range extended [5, 5] -> [5, "5c"] when the
+    # 5c section was added (task 2.1); all other module root/step_range lines are
+    # byte-identical.
+    "root_step_range": "3da6ba040d3a338818dca3598b9f9447261e5469eb00bd2adc5db1d9eddcb4fe",
 }
 
 # Stable (non-phase) top-level blocks asserted byte-for-byte.
@@ -520,6 +685,10 @@ class TestNonPhaseBlocksBytePreserved:
         license guidance was reframed as a default evaluation license with
         expansion paths, all recomputed by ``measure_steering.py`` into
         ``file_metadata`` and the budget total.
+        Most recently, the fpdf2-preflight-note spec re-baselines again
+        (198225 -> 198523): ``graduation.md`` and ``module-completion-track.md``
+        grew (the fpdf2 preflight invocation was added), all recomputed by
+        ``measure_steering.py`` into ``file_metadata`` and the budget total.
         Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
@@ -536,12 +705,14 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (188169), so the hash cannot silently re-pin a stale value.
+        # (201014 after the track-completion-pdf-transcript re-sequencing), so the
+        # hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 188169" in budget_block
+        assert "total_tokens: 204320" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block
+        assert "always_loaded_ceiling_pct: 25" in budget_block
         assert "split_threshold_tokens: 5000" in budget_block
         assert "router_ceiling: 1000" in budget_block
 

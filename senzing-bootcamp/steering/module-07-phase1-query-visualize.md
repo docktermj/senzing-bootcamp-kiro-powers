@@ -133,6 +133,8 @@ inclusion: manual
    **Visualization checkpoint:** Follow the Visualization Protocol.
    Load `visualization-guide.md` and execute the offer for checkpoint `m7_exploratory_queries`.
 
+   **Deferred first-visualization guarantee:** If a visualization is generated at this checkpoint AND `first_visualization` is `owed` in `config/bootcamp_progress.json` (Module 3 was opted out and the standalone demo declined), also call `clear_first_visualization_owed(satisfied_by="module_7_deferred")` from `scripts/progress_utils.py`. Check with `is_first_visualization_owed(progress)`; the clear is idempotent. Journey-level only — it does not change the Module 3 Step 9 gate. See `visualization-guide.md` → Deferred First-Visualization Guarantee.
+
    **Checkpoint:** Write step 3c to `config/bootcamp_progress.json`.
 
 3d. **Results dashboard visualization checkpoint:**

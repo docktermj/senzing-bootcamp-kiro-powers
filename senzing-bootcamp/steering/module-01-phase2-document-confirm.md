@@ -99,6 +99,18 @@ Steps 10–18 of Module 1. Continues from Phase 1 (discovery and gap-filling).
    [Any additional context, constraints, or considerations]
    ```
 
+   **Generated scenario (Business Case Offer accepted in Phase 1)**: When a Generated_Scenario is in effect — the bootcamper accepted the Business_Case_Offer in `module-01-phase1-discovery.md` rather than supplying or selecting a real case — produce the **same** artifacts a real case would (the template above and the `config/data_sources.yaml` registry), with these additions:
+
+   - **Mark the document as generated.** Write the standard `docs/business_problem.md` template above, and immediately below the `# Business Problem Statement` title insert the observable bootcamp-generated marker on its own line, exactly: `> 🤖 Bootcamp-generated business case`. This is the same literal `GENERATED_MARKER` defined in `senzing-bootcamp/scripts/business_case_offer.py`, so the steering and helper agree. The marker identifies the case as bootcamp-generated rather than bootcamper-supplied.
+   - **Record every data source.** Record each distinct Scenario_Data source into `config/data_sources.yaml` so the number of recorded entries equals the number of distinct Scenario_Data sources — exactly one registry entry per distinct source. Use the same `config/data_sources.yaml` registry a real case writes (via `scripts/data_sources.py`) so downstream modules read the generated sources through the identical code path.
+   - **Keep the document self-contained.** The `docs/business_problem.md` document MUST contain the problem description, the use-case category, the data sources, and the definition of success of the Generated_Scenario, regardless of whether the data sources were recorded in `config/data_sources.yaml`. Do not rely on the registry to carry content the document is responsible for.
+
+   Do not embed any CORD dataset names or record counts from training data — retrieve all CORD facts via the `get_sample_data` and `search_docs` MCP tools at runtime (see Phase 1, Step 5b).
+
+   **If writing an artifact fails**: If writing `docs/business_problem.md` or `config/data_sources.yaml` fails (for example, a permission or I/O error), indicate **which** artifact failed and inform the bootcamper rather than proceeding silently. Do not report Module 1 complete until the bootcamper has been told which write failed.
+
+   **If the artifacts are later missing or unreadable**: If a downstream module (after Module 1 completes) requests `docs/business_problem.md` or `config/data_sources.yaml` and the artifact is missing or unreadable, inform the bootcamper that the Generated_Scenario data is unavailable and allow them to supply real data to proceed. While the Generated_Scenario artifacts are present and readable, the bootcamper can complete every downstream module using only the Scenario_Data, without supplying real data.
+
    **Checkpoint:** Write step 12 to `config/bootcamp_progress.json`.
 
 13. **Update README.md**: Fill in the Overview and Business Problem sections with the information gathered. If a design pattern was selected, mention it in the overview.

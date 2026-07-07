@@ -1,7 +1,7 @@
 ---
 name: "senzing-bootcamp"
 displayName: "Senzing Bootcamp"
-version: "1.0.0"
+version: "0.1.3"
 description: "Guided 11-module bootcamp for learning Senzing entity resolution, from first demo to production deployment."
 keywords: ["senzing", "bootcamp", "entity-resolution", "senzing-bootcamp", "learning-track"]
 author: "Senzing"
@@ -18,6 +18,20 @@ This power provides a guided bootcamp for learning Senzing entity resolution thr
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
 This power works best with Claude Opus 4.8 or similar.
+
+## What's New in 0.1.3
+
+- Module 1 **Business Case Offer** — bootcampers with no case to share (or one they can't share) can have the bootcamp generate a realistic, multi-source, mapping-complexity-rich scenario to work through, backed by CORD data or synthetic data (`scripts/business_case_offer.py`)
+- Module 3 **first-visualization** improvements — a standalone TruthSet-backed force-directed graph demo is offered even when Module 3 is opted out, so every bootcamper gets a first visualization (`scripts/generate_standalone_demo.py`); entity-graph edge-key mapping corrected so rendered graphs show nodes
+- Module 4 **record-count license back-fill** — after data collection, the bootcamp infers the real record total and surfaces the existing Module 1 license guidance when the volume exceeds the built-in evaluation limit (`scripts/record_count_backfill.py`)
+- **ER baseline status summary** — a read-only report of which data sources have an accepted entity-resolution baseline (`scripts/baseline_status.py`)
+- **Capture-critical hook safeguard** — module completion now detects any absent capture-critical hook (`session-log-events`, `module-recap-append`, `ask-bootcamper`) and surfaces an overridable reminder rather than silently losing session capture (`scripts/capture_hook_safeguard.py`)
+- **Graduation recap/transcript resilience** — a shared Markdown→PDF renderer, an inline PDF fallback, an `fpdf2` preflight note, and a Q&A transcript reconciliation pass so the recap and transcript render completely with or without the optional `fpdf2` dependency (`scripts/recap_pdf_render.py`, `scripts/generate_recap_pdf_inline.py`, `scripts/fpdf2_preflight.py`, `scripts/reconcile_transcript.py`)
+- **Missing-bundled-script resilience** — a guarded runner so a bundled script that isn't materialized in the workspace degrades gracefully instead of erroring (`scripts/run_bundled_script.py`)
+- Advanced-track knowledge check, always-loaded steering budget check, Module 2 license-acquisition guidance, Module 6 SQLite volume prompt, and TypeScript build-failure recovery guidance
+- Recommended model updated to Claude Opus 4.8; CI workflow restructured with Hypothesis profiles centralized and the test suite parallelized; the full CI validation suite and test suite are green
+
+See the CHANGELOG for the full release history.
 
 ## What's New in 1.0.0
 
@@ -118,13 +132,13 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 |---|---|---|
 | `agent-behavior-rules.md` | 760 | medium |
 | `agent-context-management.md` | 1326 | medium |
-| `agent-instructions.md` | 4376 | large |
+| `agent-instructions.md` | 4404 | large |
 | `cloud-provider-setup.md` | 784 | medium |
 | `common-pitfalls.md` | 4612 | large |
 | `completion-summary-offer.md` | 1867 | medium |
 | `complexity-estimator.md` | 606 | medium |
 | `conversation-examples.md` | 536 | medium |
-| `conversation-protocol.md` | 4199 | large |
+| `conversation-protocol.md` | 4212 | large |
 | `data-lineage.md` | 603 | medium |
 | `data-processing-reference.md` | 1174 | medium |
 | `deployment-aws.md` | 1323 | medium |
@@ -132,12 +146,12 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `deployment-gcp.md` | 956 | medium |
 | `deployment-kubernetes.md` | 1397 | medium |
 | `deployment-onpremises.md` | 952 | medium |
-| `design-patterns.md` | 749 | medium |
+| `design-patterns.md` | 810 | medium |
 | `entity-resolution-intro.md` | 1864 | medium |
 | `environment-setup.md` | 658 | medium |
 | `feedback-workflow.md` | 1239 | medium |
-| `file-placement.md` | 291 | small |
-| `graduation.md` | 5394 | large |
+| `file-placement.md` | 288 | small |
+| `graduation.md` | 8509 | large |
 | `hook-architecture.md` | 2149 | large |
 | `hook-registry-critical.md` | 8592 | large |
 | `hook-registry-module-01.md` | 474 | small |
@@ -151,8 +165,8 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `hook-registry-module-09.md` | 268 | small |
 | `hook-registry-module-10.md` | 286 | small |
 | `hook-registry-module-11.md` | 463 | small |
-| `hook-registry-module-any.md` | 3376 | large |
-| `hook-registry.md` | 1984 | medium |
+| `hook-registry-module-any.md` | 4905 | large |
+| `hook-registry.md` | 2130 | large |
 | `inline-status.md` | 460 | small |
 | `lang-csharp.md` | 1642 | medium |
 | `lang-java.md` | 1688 | medium |
@@ -164,25 +178,25 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `mcp-tool-decision-tree.md` | 2310 | large |
 | `mcp-usage-reference.md` | 905 | medium |
 | `module-01-business-problem.md` | 500 | medium |
-| `module-01-phase1-discovery.md` | 5027 | large |
-| `module-01-phase2-document-confirm.md` | 1853 | medium |
-| `module-02-sdk-setup.md` | 6104 | large |
-| `module-03-phase1-verification.md` | 3536 | large |
-| `module-03-phase2-visualization.md` | 5239 | large |
+| `module-01-phase1-discovery.md` | 6765 | large |
+| `module-01-phase2-document-confirm.md` | 2536 | large |
+| `module-02-sdk-setup.md` | 7915 | large |
+| `module-03-phase1-verification.md` | 4194 | large |
+| `module-03-phase2-visualization.md` | 5340 | large |
 | `module-03-phase3-report-close.md` | 1751 | medium |
 | `module-03-system-verification.md` | 604 | medium |
 | `module-03-visualization-api-reference.md` | 2101 | large |
-| `module-04-data-collection.md` | 4049 | large |
+| `module-04-data-collection.md` | 4320 | large |
 | `module-05-data-quality-mapping.md` | 689 | medium |
 | `module-05-phase1-quality-assessment.md` | 1710 | medium |
 | `module-05-phase2-data-mapping.md` | 5355 | large |
 | `module-05-phase3-test-load.md` | 2947 | large |
 | `module-06-data-processing.md` | 652 | medium |
-| `module-06-phaseA-build-loading.md` | 2860 | large |
+| `module-06-phaseA-build-loading.md` | 3649 | large |
 | `module-06-phaseB-load-first-source.md` | 1193 | medium |
 | `module-06-phaseC-multi-source.md` | 1428 | medium |
-| `module-06-phaseD-validation.md` | 2109 | large |
-| `module-07-phase1-query-visualize.md` | 3233 | large |
+| `module-06-phaseD-validation.md` | 2248 | large |
+| `module-07-phase1-query-visualize.md` | 3372 | large |
 | `module-07-phase2-discover.md` | 3453 | large |
 | `module-07-phase2b-discover.md` | 3174 | large |
 | `module-07-query-visualize-discover.md` | 545 | medium |
@@ -199,19 +213,19 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-11-deployment.md` | 479 | small |
 | `module-11-phase1-packaging.md` | 2870 | large |
 | `module-11-phase2-deploy.md` | 850 | medium |
-| `module-completion-artifacts.md` | 3349 | large |
+| `module-completion-artifacts.md` | 3982 | large |
 | `module-completion-error-handling.md` | 604 | medium |
 | `module-completion-next-steps.md` | 702 | medium |
-| `module-completion-track.md` | 1277 | medium |
-| `module-completion.md` | 1394 | medium |
+| `module-completion-track.md` | 3290 | large |
+| `module-completion.md` | 2262 | large |
 | `module-prerequisites.md` | 1394 | medium |
-| `module-transitions.md` | 1751 | medium |
-| `onboarding-flow.md` | 3888 | large |
+| `module-transitions.md` | 1908 | medium |
+| `onboarding-flow.md` | 4124 | large |
 | `onboarding-phase1b-intro-language.md` | 2126 | large |
-| `onboarding-phase2-track-setup.md` | 972 | medium |
+| `onboarding-phase2-track-setup.md` | 1503 | medium |
 | `phase-loading-guide.md` | 890 | medium |
 | `project-structure.md` | 764 | medium |
-| `qa-transcript.md` | 1115 | medium |
+| `qa-transcript.md` | 1284 | medium |
 | `recovery-from-mistakes.md` | 1227 | medium |
 | `security-privacy.md` | 278 | small |
 | `session-resume-phase2-mapping.md` | 656 | medium |
@@ -224,11 +238,11 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `troubleshooting-decision-tree.md` | 1606 | medium |
 | `uat-framework.md` | 576 | medium |
 | `verbosity-control.md` | 2048 | large |
-| `visualization-guide.md` | 4334 | large |
+| `visualization-guide.md` | 4660 | large |
 | `visualization-web-service.md` | 2195 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 188169 tokens
+**Total budget:** 204320 tokens
 
 <!-- END GENERATED: steering-files -->
 
@@ -355,7 +369,7 @@ Or manually copy hook files into `.kiro/hooks/`.
 
 <!-- BEGIN GENERATED: hooks -->
 
-Available (29 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `backup-project-on-request`, `data-quality-check`, `deployment-phase-gate`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `git-commit-reminder`, `module-completion-celebration`, `module-recap-append`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
+Available (30 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `backup-project-on-request`, `data-quality-check`, `deployment-phase-gate`, `enforce-critical-artifacts`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `git-commit-reminder`, `module-completion-celebration`, `module-recap-append`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
 
 <!-- END GENERATED: hooks -->
 

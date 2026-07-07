@@ -387,3 +387,28 @@ rules:
       - type: "substring_present"
         file: "senzing-bootcamp/POWER.md"
         value: "submit_feedback"
+
+  # ----------------------------------------------------------------------
+  # module3-first-visualization-guarantee feature addition.
+  # A SEPARATE, journey-level rule (Rule 15 stays byte-stable). It pins the
+  # always-on first-visualization guarantee that covers the Module 3 opt-out
+  # case: the owed marker is set at the Phase 1 Opt-Out Gate, and the two
+  # satisfaction paths (standalone demo offer, deferred via Module 6/7) exist
+  # in steering. This does NOT weaken the unconditional Step 9 gate.
+  # ----------------------------------------------------------------------
+  - id: "rule-16-first-visualization-journey-guarantee"
+    rule: "Journey-level first-visualization guarantee: opting out of Module 3 records an owed first visualization, satisfied by a standalone demo offer or a deferred Module 6/7 visualization. Separate from — and does not weaken — the unconditional Step 9 gate (rule-15-module3-visualization-gate)."
+    category: "journey-guarantee"
+    enforced_by:
+      - "senzing-bootcamp/steering/module-03-phase1-verification.md"
+      - "senzing-bootcamp/steering/visualization-guide.md"
+    assertions:
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/module-03-phase1-verification.md"
+        value: "mark_first_visualization_owed"
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/module-03-phase1-verification.md"
+        value: "Standalone Demo Visualization"
+      - type: "substring_present"
+        file: "senzing-bootcamp/steering/visualization-guide.md"
+        value: "clear_first_visualization_owed"

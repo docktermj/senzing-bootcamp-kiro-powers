@@ -560,6 +560,263 @@ def _discover_recap_durations(content: str) -> dict[int, str]:
 
 
 # ---------------------------------------------------------------------------
+# Recap backfill applier (synchronous, verified, idempotent, append-around)
+# ---------------------------------------------------------------------------
+
+_MODULE_NAME_RE = re.compile(r"^\s{2}(\d+):\s*$")
+_NAME_FIELD_RE = re.compile(r'^\s{4}name:\s*"?(.+?)"?\s*$')
+
+_RECAP_HEADER = (
+    "# Senzing Bootcamp Recap\n"
+    "\n"
+    "**Bootcamper:** Bootcamper\n"
+    "\n"
+    "---\n"
+)
+
+
+def load_module_names(yaml_path: Path) -> dict[int, str]:
+    """Parse module number -> name from ``module-dependencies.yaml`` (stdlib-only).
+
+    Uses a minimal line scanner over the ``modules:`` block rather than a full
+    YAML parser (PyYAML is not a dependency for this script). Missing or
+    unparseable files yield an empty mapping so the caller falls back to a
+    generic module label.
+
+    Args:
+        yaml_path: Path to ``config/module-dependencies.yaml``.
+
+    Returns:
+        A mapping of module number to module name (empty when unavailable).
+    """
+    names: dict[int, str] = {}
+    if not yaml_path.is_file():
+        return names
+    try:
+        lines = yaml_path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return names
+    in_modules = False
+    current: int | None = None
+    for line in lines:
+        if line.rstrip() == "modules:":
+            in_modules = True
+            continue
+        if in_modules and line and not line[0].isspace():
+            # Dedented to a new top-level key -> end of the modules block.
+            break
+        if not in_modules:
+            continue
+        module_match = _MODULE_NAME_RE.match(line)
+        if module_match:
+            current = int(module_match.group(1))
+            continue
+        if current is not None:
+            name_match = _NAME_FIELD_RE.match(line)
+            if name_match:
+                names[current] = name_match.group(1).strip()
+                current = None
+    return names
+
+
+def render_backfill_section(
+    module: int,
+    *,
+    name: str | None = None,
+    timestamp: str | None = None,
+    duration: str | None = None,
+) -> str:
+    """Render a minimal, schema-valid ``## Module N:`` recap section for backfill.
+
+    The backfill applier does not have the original session transcript, so the
+    body subsections carry explicit ``N/A`` placeholders noting the content was
+    reconstructed. The ``### Duration`` field is included only when a reliable
+    value is supplied (mirroring the hook's no-placeholder rule).
+
+    Args:
+        module: The module number being backfilled.
+        name: The module's human-readable name, if known.
+        timestamp: The module's completion timestamp (ISO 8601), if known.
+        duration: The per-module Duration string from the planner, if reliable.
+
+    Returns:
+        The Markdown for one recap section, beginning and ending with a newline
+        so it appends cleanly after existing content without rewriting it.
+    """
+    label = name if name else f"Module {module}"
+    heading = f"## Module {module}: {label}"
+    if timestamp:
+        heading = f"{heading} \u2014 {timestamp}"
+    parts = [
+        "",
+        heading,
+        "",
+        "### Information Shared",
+        "- N/A (section backfilled at track completion; original session content unavailable)",
+        "",
+        "### Questions Asked",
+        "- N/A",
+        "",
+        "### Answers Given",
+        "- N/A",
+        "",
+        "### Actions Taken",
+        "- N/A",
+    ]
+    if duration:
+        parts += ["", "### Duration", duration]
+    parts += ["", "---", ""]
+    return "\n".join(parts)
+
+
+def _resolve_progress_and_recap(path_a: object, path_b: object) -> tuple[Path, Path]:
+    """Disambiguate which argument is the progress JSON and which is the recap.
+
+    Accepts the two paths in either order (callers and tests differ), detecting
+    the progress file as the one whose contents parse as JSON.
+
+    Args:
+        path_a: First path-like argument.
+        path_b: Second path-like argument.
+
+    Returns:
+        A ``(progress_path, recap_path)`` tuple.
+    """
+    first = Path(str(path_a))
+    second = Path(str(path_b))
+
+    def _is_progress(candidate: Path) -> bool:
+        if candidate.suffix.lower() == ".json":
+            return True
+        if candidate.suffix.lower() in {".md", ".markdown"}:
+            return False
+        if candidate.is_file():
+            try:
+                json.loads(candidate.read_text(encoding="utf-8"))
+                return True
+            except (json.JSONDecodeError, OSError):
+                return False
+        return False
+
+    if _is_progress(first):
+        return first, second
+    if _is_progress(second):
+        return second, first
+    # Neither clearly identified: assume conventional (progress, recap) order.
+    return first, second
+
+
+def _load_progress_state(progress_path: Path) -> ProgressState:
+    """Load a :class:`ProgressState` from a bootcamp progress JSON file."""
+    data = json.loads(progress_path.read_text(encoding="utf-8"))
+    modules_completed = [int(m) for m in data.get("modules_completed", [])]
+    raw_history = data.get("step_history", {})
+    step_history = raw_history if isinstance(raw_history, dict) else {}
+    return ProgressState(
+        modules_completed=modules_completed,
+        step_history=step_history,
+        started_at=data.get("started_at"),
+    )
+
+
+def _normalize_timestamp(raw: object) -> str | None:
+    """Return a trimmed ISO 8601 timestamp string, or ``None`` when unusable."""
+    if isinstance(raw, str) and raw.strip():
+        return raw.strip()
+    return None
+
+
+def backfill_recap_sections(
+    progress: object,
+    recap: object,
+    *,
+    progress_dir: object | None = None,
+    journal: object | None = None,
+    module_names: dict[int, str] | None = None,
+) -> list[int]:
+    """Append any missing per-module ``## Module N:`` recap sections in place.
+
+    This is the synchronous, verified backfill applier consumed by the
+    module-completion and track-completion workflows. It reuses :func:`plan_backfill`
+    so the set of modules written is exactly the difference between
+    ``modules_completed`` and the sections already on disk. Behavior:
+
+    - **Append-around, never rewrite:** existing recap bytes are preserved
+      exactly; new sections are appended at the end in ascending (chronological)
+      module order.
+    - **Idempotent:** when the recap already covers every completed module the
+      plan is empty and the file is left untouched (no write occurs).
+    - **Self-creating:** if the recap file does not yet exist it is created with a
+      minimal header before sections are appended.
+
+    The two positional arguments may be supplied in either order; the progress
+    JSON is detected by content so callers and tests using either convention work.
+
+    Args:
+        progress: Path to ``config/bootcamp_progress.json`` (or the recap path;
+            order is auto-detected).
+        recap: Path to ``docs/bootcamp_recap.md`` (or the progress path; order is
+            auto-detected).
+        progress_dir: Unused for recap backfill; accepted for signature
+            compatibility with the planner CLI surface.
+        journal: Unused for recap backfill; accepted for signature compatibility.
+        module_names: Optional override mapping of module number to name; when
+            omitted, names are loaded best-effort from ``module-dependencies.yaml``
+            next to the progress file.
+
+    Returns:
+        The sorted list of module numbers whose sections were appended (empty
+        when nothing needed backfilling).
+    """
+    del progress_dir, journal  # accepted for CLI-surface compatibility only
+
+    progress_path, recap_path = _resolve_progress_and_recap(progress, recap)
+    progress_state = _load_progress_state(progress_path)
+
+    existing = ""
+    if recap_path.is_file():
+        existing = recap_path.read_text(encoding="utf-8")
+
+    inventory = ArtifactInventory(
+        recap_sections=_discover_section_modules(existing),
+    )
+    plan = plan_backfill(progress_state, inventory)
+    missing = sorted(plan.recap_modules)
+    if not missing:
+        return []
+
+    if module_names is None:
+        module_names = load_module_names(progress_path.parent / "module-dependencies.yaml")
+
+    additions = "".join(
+        render_backfill_section(
+            module,
+            name=module_names.get(module),
+            timestamp=_normalize_timestamp(_updated_at(progress_state.step_history, module)),
+            duration=plan.module_durations.get(module),
+        )
+        for module in missing
+    )
+
+    if not existing:
+        new_content = _RECAP_HEADER + additions
+    else:
+        prefix = existing if existing.endswith("\n") else existing + "\n"
+        new_content = prefix + additions
+
+    recap_path.parent.mkdir(parents=True, exist_ok=True)
+    recap_path.write_text(new_content, encoding="utf-8")
+    return missing
+
+
+# Aliases — the workflow and tests resolve any of these spellings.
+reconcile_recap = backfill_recap_sections
+backfill_recap = backfill_recap_sections
+apply_backfill = backfill_recap_sections
+write_missing_recap_sections = backfill_recap_sections
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -591,6 +848,18 @@ def main(argv: list[str] | None = None) -> None:
         "--plan",
         action="store_true",
         help="Emit the backfill plan as JSON.",
+    )
+    mode.add_argument(
+        "--backfill",
+        "--apply",
+        "--reconcile",
+        "--write",
+        dest="backfill",
+        action="store_true",
+        help=(
+            "Apply the recap backfill: append a '## Module N:' section for every "
+            "completed module missing one (append-around, idempotent)."
+        ),
     )
     args = parser.parse_args(argv)
 
@@ -643,6 +912,36 @@ def main(argv: list[str] | None = None) -> None:
     recap_total = total_match.group(1).strip() if total_match else None
 
     # --- Dispatch ---
+    if args.backfill:
+        if not args.progress:
+            print("--backfill requires --progress", file=sys.stderr)
+            sys.exit(1)
+        if not args.recap:
+            print("--backfill requires --recap", file=sys.stderr)
+            sys.exit(1)
+        try:
+            written = backfill_recap_sections(args.progress, args.recap)
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"Recap backfill failed: {exc}", file=sys.stderr)
+            sys.exit(1)
+        # Verify: every completed module now has a persisted section.
+        verify_content = ""
+        if Path(args.recap).is_file():
+            verify_content = Path(args.recap).read_text(encoding="utf-8")
+        present = _discover_section_modules(verify_content)
+        still_missing = sorted(m for m in set(modules_completed) if m not in present)
+        if still_missing:
+            print(
+                f"Recap backfill incomplete: sections still missing for {still_missing}",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        if written:
+            print(f"Backfilled recap sections for modules: {written}")
+        else:
+            print("Recap already complete; no sections backfilled.")
+        sys.exit(0)
+
     if args.plan:
         plan = plan_backfill(progress_state, inventory)
         payload = {

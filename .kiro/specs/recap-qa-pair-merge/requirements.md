@@ -1,5 +1,15 @@
 # Requirements Document
 
+> **Status: Superseded by `recap-qr-formatting`.** This spec's premise — that the recap
+> Markdown keeps separate `### Questions Asked` / `### Answers Given` subsections and that the
+> `module-recap-append` hook template is left unchanged (Requirements 3.1 and 3.4) — no longer
+> holds. A later spec (`recap-qr-formatting`) rewrote the hook to emit a single merged
+> `### Questions & Responses` section of interleaved `- **Q:**` / `- **R:**` pairs. The current
+> source of truth is `scripts/recap_pdf_render.py` (`format_qr_section`) and
+> `hooks/module-recap-append.kiro.hook`, both of which forbid the two separate headings. The
+> merged rendering this spec introduced only at the PDF layer is now the schema at the Markdown
+> layer as well. This document is retained for history; do not treat Requirement 3 as current.
+
 ## Introduction
 
 In the recap PDF, each module renders two separate sections — "Questions Asked" and "Answers Given" —

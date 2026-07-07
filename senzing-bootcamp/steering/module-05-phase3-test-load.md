@@ -3,7 +3,7 @@ inclusion: manual
 ---
 ## Phase 3 — Test Load and Validate (Optional)
 
-> **This phase is optional.** Bootcampers who prefer to write custom loading programs can skip Phase 3 and proceed directly to Module 6. Phase 3 uses `mapping_workflow` steps 5–8 to give immediate feedback on entity resolution quality without leaving Module 5.
+> **This phase is optional.** Bootcampers who prefer to write custom loading programs can skip Phase 3 and proceed directly to Module 6. Phase 3 uses `mapping_workflow` steps 5–8 to give immediate feedback on ER quality without leaving Module 5.
 
 > **Entry from the Step 5 `detect_environment` menu:** Phase 3 is entered from the Step 5 menu handled in #[[file:senzing-bootcamp/steering/module-05-phase2-data-mapping.md]]. When the bootcamper explicitly chooses **test_load** or **load+resolve** at that menu, follow the Phase 3 workflow below (`mapping_workflow` steps 5–8, Steps 21–26) unchanged. When sources remain unmapped, the Phase 2 guidance instead recommends **skip** and continues to the next source — the real production load is still deferred to Module 6 in either case.
 
@@ -15,7 +15,7 @@ inclusion: manual
 
     **Checkpoint:** Write step 21 to `config/bootcamp_progress.json`.
 
-22. **Test data loading:** Advance through `mapping_workflow` step 6 — load test data into a fresh SQLite database. This uses the transformation output from Phase 2 and loads a representative sample to verify the mapping produces valid Senzing records.
+22. **Test data loading:** Advance through `mapping_workflow` step 6 — load test data into a fresh SQLite database. This loads a sample from the Phase 2 transformation output to verify the mapping produces valid Senzing records.
 
     **Checkpoint:** Write step 22 to `config/bootcamp_progress.json`.
 
@@ -87,7 +87,7 @@ inclusion: manual
 
     Ask the bootcamper whether they want to accept the current results as the new baseline:
 
-    > "Your mapping change resulted in [quality_assessment]. Would you like to accept these results as your new baseline for future comparisons, or would you prefer to iterate on the mapping and try again?"
+    > "Your mapping change resulted in [quality_assessment]. Accept these results as your new baseline, or iterate on the mapping and try again?"
 
     - **If accepted:** Copy `config/er_current_{datasource}.json` to `config/er_baseline_{datasource}.json`. Confirm: "New baseline saved. Future test loads will compare against these results."
     - **If rejected:** Keep the existing baseline unchanged. Inform the bootcamper they can return to Phase 2 to adjust their mapping and re-run Phase 3 to see updated results.
@@ -106,9 +106,8 @@ inclusion: manual
 >   --project-root <bootcamper_project_root>
 > ```
 >
-> Where `<workspace_dir>` is the directory passed to `mapping_workflow` as
-> `workspace_dir` and `<bootcamper_project_root>` is the bootcamper's project
-> root directory. Review the output summary to confirm files landed correctly.
+> `<workspace_dir>` is the `mapping_workflow` workspace and
+> `<bootcamper_project_root>` is the project root. Review the output summary.
 
 25. **Present results and decision gate:** Present the Phase 3 results summary for this data source. Include: records loaded, entities created, deduplication rate, quality assessment, and any issues found. Ask the bootcamper to review the results before proceeding.
 
@@ -134,6 +133,8 @@ inclusion: manual
     > **Agent instruction — Data Source Registry:** If Phase 3 was skipped for any source, update that source's `test_load_status` to `skipped` in `config/data_sources.yaml`. Set `updated_at`.
 
     **Checkpoint:** Write step 26 to `config/bootcamp_progress.json`.
+
+    > **Optional — Baseline status summary (advisory, non-blocking):** On Phase 3 completion you MAY run the read-only `python3 senzing-bootcamp/scripts/baseline_status.py` to surface data sources still missing an ER baseline. It never blocks the workflow, adds no hook, and only reports coverage (it never creates, modifies, or deletes a baseline). Skip it at your discretion.
 
 ---
 
@@ -164,7 +165,7 @@ On session resume: read checkpoint, show user where they left off, restart `mapp
 
 ## Interpreting `analyze_record` Results
 
-If `analyze_record` returns structural errors (e.g., flat format instead of FEATURES array, missing required fields), it may also show an empty Feature Analysis table with headers but no rows. This is not a bug — feature analysis is skipped when structural errors prevent feature extraction. Tell the user: "The Feature Analysis table is empty because there are structural issues with the record format — let's fix those first, then the feature analysis will populate." Focus on the structural errors listed above the table, fix the transformation program, and re-validate.
+Structural errors from `analyze_record` (e.g., flat format instead of a FEATURES array, missing required fields) can leave the Feature Analysis table empty with headers but no rows. This is expected, not a bug — feature analysis is skipped when structural errors block feature extraction. Fix the structural errors listed above the table in the transformation program, then re-validate.
 
 ## Encoding
 

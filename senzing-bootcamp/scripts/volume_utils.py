@@ -321,6 +321,105 @@ def classify_tier(record_count: int) -> str:
     return TIER_LARGE  # pragma: no cover
 
 
+def should_prompt(
+    tier: str | None,
+    db_type: str | None,
+    already_decided: bool = False,
+) -> bool:
+    """Decide whether the Module 6 SQLite volume Hard_Prompt should fire.
+
+    Pure, side-effect free. Returns True only for the risky combination: the
+    volume tier is Medium or Large AND the active database normalizes to SQLite
+    AND no choice has already been recorded for this load. Reuses the existing
+    tier constants (:data:`TIER_MEDIUM`, :data:`TIER_LARGE`) — it does not
+    re-derive tiers from record counts.
+
+    Args:
+        tier: Persisted volume tier (production_volume.tier), or None/unknown
+            when indeterminate.
+        db_type: Persisted database engine (database_type), or None/unknown
+            when indeterminate.
+        already_decided: True when a proceed/migrate choice was already recorded
+            for the current load (suppresses re-prompting).
+
+    Returns:
+        True iff ``tier in (TIER_MEDIUM, TIER_LARGE)`` AND the normalized
+        ``db_type == "sqlite"`` AND ``already_decided is False``. Any
+        indeterminate/unrecognized tier or db_type yields False (fall back to
+        existing advisory behavior). Never raises, never performs I/O.
+    """
+    if already_decided:
+        return False
+
+    if tier not in (TIER_MEDIUM, TIER_LARGE):
+        return False
+
+    if not isinstance(db_type, str):
+        return False
+
+    return db_type.strip().lower() == "sqlite"
+
+
+def build_hard_prompt(tier: str, record_count: int | None = None) -> str:
+    """Build the SQLite volume Hard_Prompt text for a Medium/Large tier.
+
+    Pure text builder. States that a Medium/Large load on SQLite is expected to
+    be slow, names the tier and the driving record count (when known), and
+    offers two explicit choices: the Migration_Alternative (switch to PostgreSQL
+    per the ``database-migration-guide``) and proceed-on-SQLite. The prompt is a
+    stop-and-confirm, never a Mandatory_Gate — it never emits the ⛔ marker and
+    never inlines the migration procedure (it points to the existing guide).
+
+    Args:
+        tier: The volume tier driving the warning (:data:`TIER_MEDIUM` or
+            :data:`TIER_LARGE`).
+        record_count: The persisted record count (production_volume.raw_value),
+            or None when unavailable.
+
+    Returns:
+        The prompt text. Always contains the tier label, a statement that the
+        load is expected to be slow on SQLite, a migration option that names the
+        ``database-migration-guide`` / ``DATABASE_MIGRATION.md``, and a
+        proceed-on-SQLite option. Includes the record count only when provided,
+        omitting the figure gracefully when it is None. Never raises, never
+        performs I/O.
+    """
+    lines: list[str] = []
+
+    # --- Slowdown warning, naming the tier and (when known) the record count ---
+    if record_count is not None:
+        volume_phrase = f"a {tier} volume (about {record_count} records)"
+    else:
+        volume_phrase = f"a {tier} volume"
+
+    lines.append(
+        f"**Before this load starts:** You classified your data as {volume_phrase}, "
+        "and your active database is SQLite. A "
+        f"{tier} load on SQLite is expected to be slow — SQLite allows only a single "
+        "concurrent writer, so large loads can stall for a long time before finishing."
+    )
+
+    lines.append(
+        "\nThis is a heads-up, not a hard stop — you can choose how to proceed:"
+    )
+
+    # --- Option 1: Migration_Alternative (points to the existing guide) ---
+    lines.append(
+        "- **Switch to PostgreSQL now (recommended)** — migrate before loading by "
+        "following the existing `database-migration-guide` "
+        "(`docs/guides/DATABASE_MIGRATION.md`). The migration steps are not repeated "
+        "here; the guide covers them."
+    )
+
+    # --- Option 2: Proceed on SQLite ---
+    lines.append(
+        "- **Proceed on SQLite** — continue this load on SQLite with eyes open, "
+        "accepting the expected slowdown. You will not be asked again for this load."
+    )
+
+    return "\n".join(lines)
+
+
 def should_ask_volume(preferences: dict) -> bool:
     """Determine if the volume question should be asked.
 

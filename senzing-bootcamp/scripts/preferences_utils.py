@@ -41,6 +41,7 @@ KNOWN_TOP_LEVEL_KEYS: set[str] = {
     "detail_level",
     "hardware_target",
     "production_specs",
+    "sqlite_volume_prompt",
 }
 
 CONVERSATION_STYLE_KEYS: set[str] = {
@@ -57,12 +58,29 @@ PRODUCTION_SPECS_KEYS: set[str] = {
     "database",
 }
 
+# Sub-keys for the Module 6 SQLite volume Hard_Prompt decision marker.
+# Records the bootcamper's proceed/migrate choice for a given load so the
+# prompt is not re-presented for the same load (module6-sqlite-volume-hard
+# -prompt spec, Requirement 2.4).
+SQLITE_VOLUME_PROMPT_KEYS: set[str] = {
+    "decided",
+    "choice",
+    "tier",
+    "raw_value",
+}
+
 VALID_MAPPING_VERBOSITY: tuple[str, ...] = ("verbose", "concise")
 VALID_HARDWARE_TARGET: tuple[str, ...] = ("current_machine", "different_server")
 VALID_VERBOSITY_PRESET: tuple[str, ...] = ("concise", "standard", "detailed", "custom")
 VALID_QUESTION_FRAMING: tuple[str, ...] = ("minimal", "moderate", "full")
 VALID_TONE: tuple[str, ...] = ("concise", "conversational", "detailed")
 VALID_PACING: tuple[str, ...] = ("one_concept_per_turn", "grouped_concepts")
+
+# Enum constraints for the sqlite_volume_prompt decision marker. The tier
+# vocabulary mirrors volume_utils.VALID_TIERS; it is restated here (rather than
+# imported) to keep preferences_utils dependency-free and self-contained.
+VALID_SQLITE_VOLUME_CHOICE: tuple[str, ...] = ("proceed", "migrate")
+VALID_SQLITE_VOLUME_TIER: tuple[str, ...] = ("demo", "small", "medium", "large")
 
 
 # ---------------------------------------------------------------------------
@@ -98,6 +116,7 @@ class PreferencesSchema:
     detail_level: str | None = None
     hardware_target: str | None = None
     production_specs: dict | None = None
+    sqlite_volume_prompt: dict | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -839,6 +858,20 @@ _PRODUCTION_SPECS_TYPES: dict[str, type] = {
     "database": str,
 }
 
+# Type expectations for sqlite_volume_prompt sub-keys
+_SQLITE_VOLUME_PROMPT_TYPES: dict[str, type] = {
+    "decided": bool,
+    "choice": str,
+    "tier": str,
+    "raw_value": int,
+}
+
+# Enum constraints for sqlite_volume_prompt sub-keys
+_SQLITE_VOLUME_PROMPT_ENUMS: dict[str, tuple[str, ...]] = {
+    "choice": VALID_SQLITE_VOLUME_CHOICE,
+    "tier": VALID_SQLITE_VOLUME_TIER,
+}
+
 
 def _type_name(value: object) -> str:
     """Return a human-readable type name for error messages."""
@@ -1023,6 +1056,46 @@ def validate_preferences_schema(data: dict) -> list[str]:
                             f"{expected_type.__name__}, "
                             f"got {_type_name(sub_value)}"
                         )
+
+        # --- sqlite_volume_prompt: dict | None ---
+        elif key == "sqlite_volume_prompt":
+            if value is not None and not isinstance(value, dict):
+                errors.append(
+                    f"sqlite_volume_prompt: expected dict, got {_type_name(value)}"
+                )
+            elif isinstance(value, dict):
+                # Validate nested keys are recognized
+                for sub_key in value:
+                    if sub_key not in SQLITE_VOLUME_PROMPT_KEYS:
+                        errors.append(
+                            f"sqlite_volume_prompt: unknown key '{sub_key}'"
+                        )
+                # Validate sub-key types and enum constraints
+                for sub_key in value:
+                    if sub_key not in SQLITE_VOLUME_PROMPT_KEYS:
+                        continue
+                    sub_value = value[sub_key]
+                    expected_type = _SQLITE_VOLUME_PROMPT_TYPES[sub_key]
+                    # bool is a subclass of int; reject bools where an int is
+                    # expected (raw_value) so a malformed marker is caught.
+                    if expected_type is int and isinstance(sub_value, bool):
+                        errors.append(
+                            f"sqlite_volume_prompt.{sub_key}: expected int, "
+                            f"got {_type_name(sub_value)}"
+                        )
+                    elif not isinstance(sub_value, expected_type):
+                        errors.append(
+                            f"sqlite_volume_prompt.{sub_key}: expected "
+                            f"{expected_type.__name__}, "
+                            f"got {_type_name(sub_value)}"
+                        )
+                    elif sub_key in _SQLITE_VOLUME_PROMPT_ENUMS:
+                        allowed = _SQLITE_VOLUME_PROMPT_ENUMS[sub_key]
+                        if sub_value not in allowed:
+                            errors.append(
+                                f"sqlite_volume_prompt.{sub_key}: must be one of "
+                                f"{allowed}, got '{sub_value}'"
+                            )
 
     return errors
 

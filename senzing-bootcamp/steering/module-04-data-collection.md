@@ -231,6 +231,10 @@ inclusion: manual
 
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 
+8a. **Record-count license back-fill** (after all sources are collected): Run `python senzing-bootcamp/scripts/record_count_backfill.py` to infer the real record total from `config/data_sources.yaml`. If the decision reports `present_guidance: true` (the collected total exceeds the built-in evaluation limit and Module 1 license guidance was skipped or deferred), surface the **existing** Module 1 Steps 6b–6e license guidance now — using the canonical framing at the top of this module and the Senzing MCP server for any capacity/validity figure — then update the same `license` / `license_guidance_deferred` markers Module 1 uses. If `present_guidance: false` (already delivered, or at/below the limit), do not re-present guidance. If `computable: false`, note the warning and continue on the Module 1 Prose_Count behavior. This step is non-blocking — always proceed to Step 9 regardless of the outcome. Introduce no hook and no per-write invocation; this is a single steering-flow invocation after collection.
+
+   **Checkpoint:** Write step 8a to `config/bootcamp_progress.json`.
+
 9. **Transition to Module 5**: "Great! Now that we have the data files, let's evaluate each one to see if it needs mapping or if it's already in the right format for Senzing."
 
    **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.

@@ -348,7 +348,8 @@ When you ask 'Ready for Module X' and the bootcamper responds affirmatively (yes
 1. The module start banner (━━━ header with module number and name)
 2. The journey map table (Module | Name | Status)
 3. The before/after framing
-4. Step 1's introductory content (what and why)
+4. A brief numbered overview of the module's steps
+5. Step 1's introductory content (what and why)
 
 Outputting only ".", empty content, single-word acknowledgments, or any response under 50 characters after a Transition_Confirmation is a **protocol violation**. The detect-and-retry hook will catch and correct such violations automatically.
 

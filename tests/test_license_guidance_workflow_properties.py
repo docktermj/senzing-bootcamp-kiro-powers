@@ -508,7 +508,11 @@ class TestPreservationLicenseGuidance:
         assert "Data privacy reminder" in steps_1_5, "Step 2 heading missing"
         assert "Offer design pattern gallery" in steps_1_5, "Step 3 heading missing"
         assert "If user wants to see patterns" in steps_1_5, "Step 4 heading missing"
-        assert "Open-ended discovery prompt" in steps_1_5, "Step 5 heading missing"
+        # Step 5's heading was rewritten by the module1-business-case-offer spec
+        # (commit 34d7932) from "Open-ended discovery prompt" to a three-path
+        # "Discovery prompt". This preservation assertion tracks the current
+        # intended heading.
+        assert "Discovery prompt" in steps_1_5, "Step 5 heading missing"
 
         # Verify Step 1 git check content
         assert "git rev-parse --git-dir" in steps_1_5, (

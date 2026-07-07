@@ -13,7 +13,7 @@ The always-on summary lives in `agent-instructions.md` (`## File Placement`). Th
 
 | Blocked Type | Reason | Correct Location |
 |---|---|---|
-| `.py` files | Source code belongs in `src/` or `scripts/` | `src/transform/`, `src/load/`, `src/query/`, or `scripts/` |
+| `.py` files | Source code belongs in `src/` | `src/transform/`, `src/load/`, `src/query/`, or `src/scripts/` |
 | `.md` files (except `README.md`) | Documentation belongs in `docs/` | `docs/` |
 | `.jsonl` files | Data files belong in `data/` | `data/raw/`, `data/transformed/`, `data/samples/`, `data/temp/` |
 | `.csv` files | Data files belong in `data/` | `data/raw/`, `data/transformed/`, `data/samples/`, `data/temp/` |

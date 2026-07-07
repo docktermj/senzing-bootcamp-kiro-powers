@@ -9,7 +9,7 @@ Load this steering file when `config/bootcamp_progress.json` exists at session s
 
 ## Preference Loading on Session Start
 
-On every new session start, the agent reads the preferences file using `load_preferences()`. This function returns a `LoadResult` containing the parsed preferences dict, a list of missing required fields, and an optional error message.
+On every new session start, the agent reads the preferences file using `load_preferences()`, which returns a `LoadResult` with the parsed preferences, any missing required fields, and an optional error message.
 
 ### Confirmation Message
 
@@ -17,11 +17,9 @@ When preferences are successfully loaded (no error, no missing required fields),
 
 > Resuming with Python, standard verbosity, Core track. All your preferences are loaded and ready.
 
-The confirmation must mention all three values (language, track, verbosity) and must not exceed 2 sentences.
-
 ### Language Steering Resolution
 
-When the `language` field is present in loaded preferences, resolve the corresponding language steering file by calling `resolve_language_steering()`. This maps the persisted language value (case-insensitive) to the appropriate steering file:
+When the `language` field is present in loaded preferences, resolve the corresponding language steering file by calling `resolve_language_steering()`. This maps the language value (case-insensitive) to a steering file:
 
 - `python` → `lang-python.md`
 - `java` → `lang-java.md`
@@ -33,7 +31,7 @@ Load the resolved steering file immediately after preference confirmation.
 
 ### Unrecognized Language Handling
 
-If `resolve_language_steering()` returns `None` (the persisted language value does not map to a supported steering file), inform the bootcamper that the saved language is unrecognized and prompt for a new language selection. All other loaded preferences (track, verbosity, conversation_style, etc.) are preserved unchanged. Once the bootcamper provides a valid language, persist it via `write_preference()` before the next response.
+If `resolve_language_steering()` returns `None` (the saved language does not map to a supported steering file), tell the bootcamper it is unrecognized and prompt for a new selection. All other loaded preferences are preserved unchanged. Once a valid language is provided, persist it via `write_preference()` before the next response.
 
 ## Preference Recovery Flow
 
@@ -61,7 +59,7 @@ If the preferences file is valid but some required fields are missing (`LoadResu
 
 ### Persistence Before Next Response
 
-Every recovered preference value MUST be persisted to the preferences file via `write_preference()` before the agent produces its next response. This ensures that even if the session is interrupted, partially recovered preferences are not lost.
+Every recovered preference value MUST be persisted via `write_preference()` before the agent's next response, so an interrupted session never loses partially recovered preferences.
 
 ## Fast Path Check
 
@@ -111,6 +109,8 @@ Read these files to reconstruct full context:
 
 If progress or preferences files are missing or corrupted, see `session-resume-phase2-state-repair.md` for reconstruction procedure.
 
+> **Optional — Baseline status summary (advisory, non-blocking):** On resume you MAY run the read-only `python3 senzing-bootcamp/scripts/baseline_status.py` to surface data sources still missing an ER baseline. It never blocks resume, adds no hook, and only reports coverage (it never creates, modifies, or deletes a baseline). Skip it at your discretion.
+
 ## Step 2: Load Language Steering
 
 Based on the `language` field from preferences, load the corresponding language steering file:
@@ -145,7 +145,7 @@ Before proceeding to Step 3, confirm that `conversation-protocol.md` is loaded (
 
 ### Self-Answering Prohibition
 
-After asking any 👉 question, produce zero additional tokens. Do not answer the question. Do not assume the bootcamper's response.
+After asking any 👉 question, produce zero additional tokens; never answer or assume the response.
 
 **WRONG** — Agent answers its own question:
 

@@ -397,6 +397,7 @@ RECOGNIZED_RECAP_SUBSECTIONS: frozenset[str] = frozenset(
         "information shared",
         "questions asked",
         "answers given",
+        "questions & responses",
         "actions taken",
         "duration",
     }
@@ -457,6 +458,12 @@ def _captured_recap_content(doc: "generate_recap_pdf.RecapDocument") -> set[str]
             section.actions_taken,
         ):
             captured.update(items)
+        # Paired_Schema QR_Pairs are captured in their list-item form (marker
+        # stripped) so their `- **Q:**` / `- **R:**` lines round-trip as placed
+        # content rather than being flagged as unmapped (Requirement 5.5).
+        for pair in section.qr_pairs:
+            captured.add(f"**Q:** {pair.question}")
+            captured.add(f"**R:** {pair.response}")
     captured.discard("")
     return captured
 

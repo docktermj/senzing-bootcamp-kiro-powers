@@ -134,7 +134,7 @@ class TestPerTestSettingsOverride:
             inline = settings(parent=settings.default, max_examples=7)
             assert inline.max_examples == 7
             # The inline value must differ from the active baseline to prove it
-            # is genuinely overriding (7 != 10 fast, 7 != 100 thorough).
+            # is genuinely overriding (7 != 5 fast, 7 != 100 thorough).
             assert inline.max_examples != settings.default.max_examples
 
 

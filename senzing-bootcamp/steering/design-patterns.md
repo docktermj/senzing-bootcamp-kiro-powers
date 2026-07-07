@@ -39,6 +39,8 @@ Walk through these questions:
 
 If the user's case spans multiple patterns, start with the one that delivers the most immediate business value.
 
+If the user has no case in mind — or has one but can't share it — they can accept the Business_Case_Offer (presented in Module 1 discovery) to have the Bootcamp generate a realistic, multi-source scenario instead of adopting a pattern here.
+
 ## Agent Behavior
 
 1. Call `search_docs(query="entity resolution design patterns")` to get current pattern details

@@ -708,6 +708,90 @@ def check_directories() -> list[CheckResult]:
     return results
 
 
+# -- Bundled scripts check --------------------------------------------------
+
+# The bundled scripts directory hooks and steps shell out to, relative to the
+# workspace root.
+BUNDLED_SCRIPTS_REL = os.path.join("senzing-bootcamp", "scripts")
+
+# Required bundled scripts that hooks/steps depend on at runtime. Their absence
+# is what triggers the missing-bundled-scripts bug, so the preflight check warns
+# (never fails) and the AutoFixer self-repairs the directory under ``--fix``.
+REQUIRED_BUNDLED_SCRIPTS = [
+    "log_write_event.py",
+    "session_logger.py",
+    "generate_recap_pdf.py",
+    "generate_recap_pdf_inline.py",
+    "recap_pdf_render.py",
+]
+
+# The installed power's scripts directory (this file's own location) is the
+# source-of-truth used to materialize/restore the workspace scripts directory.
+BUNDLED_SCRIPTS_SOURCE = os.path.dirname(os.path.abspath(__file__))
+
+
+def _workspace_scripts_dir() -> str:
+    """Return the workspace-relative bundled scripts directory path.
+
+    Returns:
+        The absolute path to ``<cwd>/senzing-bootcamp/scripts``.
+    """
+    return os.path.join(os.getcwd(), BUNDLED_SCRIPTS_REL)
+
+
+def check_bundled_scripts() -> list[CheckResult]:
+    """Verify the bundled ``senzing-bootcamp/scripts/`` directory is present.
+
+    Hooks (e.g. ``session-log-events``) and bootcamp/graduation steps shell out
+    to scripts under ``senzing-bootcamp/scripts/``. When that directory or a
+    required script is absent, those invocations fail with a file-not-found
+    error. This check warns (never fails) so onboarding can self-repair it via
+    ``--fix`` before any hook or step depends on it.
+
+    Returns:
+        A single CheckResult: ``pass`` when the directory and required scripts
+        exist, otherwise ``warn`` with a remediation ``fix`` message.
+    """
+    cat = "Bundled Scripts"
+    rel = BUNDLED_SCRIPTS_REL.replace("\\", "/")
+    fix_hint = (
+        f"Run 'python3 {rel}/preflight.py --fix' to materialize/restore the "
+        "bundled scripts directory."
+    )
+
+    scripts_dir = _workspace_scripts_dir()
+    if not os.path.isdir(scripts_dir):
+        return [CheckResult(
+            name="Bundled scripts directory",
+            category=cat,
+            status="warn",
+            message=f"'{rel}' is missing — hooks and steps depend on it",
+            fix=fix_hint,
+        )]
+
+    missing = [
+        name for name in REQUIRED_BUNDLED_SCRIPTS
+        if not os.path.isfile(os.path.join(scripts_dir, name))
+    ]
+    if missing:
+        return [CheckResult(
+            name="Bundled scripts",
+            category=cat,
+            status="warn",
+            message=(
+                f"'{rel}' is missing required scripts: {', '.join(missing)}"
+            ),
+            fix=fix_hint,
+        )]
+
+    return [CheckResult(
+        name="Bundled scripts",
+        category=cat,
+        status="pass",
+        message=f"'{rel}' present with required scripts",
+    )]
+
+
 # -- Database check ---------------------------------------------------------
 
 def check_database() -> list[CheckResult]:
@@ -795,7 +879,11 @@ class AutoFixer:
     @staticmethod
     def try_fix(result: CheckResult) -> Optional[CheckResult]:
         """Attempt to fix *result*.  Returns an updated CheckResult or None."""
-        # Only directory-creation fixes are supported
+        # Bundled scripts self-repair (materialize/restore the directory)
+        if result.category == "Bundled Scripts":
+            return AutoFixer._fix_bundled_scripts(result)
+
+        # Only directory-creation fixes are supported beyond this point
         if result.category != "Project Structure":
             return None
         if result.status not in ("warn", "fail"):
@@ -833,6 +921,65 @@ class AutoFixer:
                 fixed=False,
             )
 
+    @staticmethod
+    def _fix_bundled_scripts(result: CheckResult) -> Optional[CheckResult]:
+        """Materialize/restore the bundled scripts directory (idempotent).
+
+        Copies the bundled scripts from the installed power
+        (:data:`BUNDLED_SCRIPTS_SOURCE`) into the workspace's
+        ``senzing-bootcamp/scripts/`` directory. Already-present files are left
+        byte-for-byte unchanged (no clobber), so the fix is safe to re-run.
+
+        Args:
+            result: The bundled-scripts check result to repair.
+
+        Returns:
+            A ``pass``/``fixed`` CheckResult on success, the original result with
+            an appended failure reason on error, or None when not applicable.
+        """
+        if result.status not in ("warn", "fail"):
+            return None
+
+        scripts_dir = _workspace_scripts_dir()
+        source_dir = BUNDLED_SCRIPTS_SOURCE
+        rel = BUNDLED_SCRIPTS_REL.replace("\\", "/")
+
+        # When the workspace scripts directory IS the installed source, there is
+        # nothing to materialize — the scripts are already present.
+        try:
+            same_dir = os.path.realpath(scripts_dir) == os.path.realpath(source_dir)
+        except OSError:
+            same_dir = False
+
+        try:
+            if not same_dir:
+                os.makedirs(scripts_dir, exist_ok=True)
+                for entry in sorted(os.listdir(source_dir)):
+                    src = os.path.join(source_dir, entry)
+                    if not os.path.isfile(src):
+                        continue  # skip __pycache__ and other directories
+                    dest = os.path.join(scripts_dir, entry)
+                    if os.path.exists(dest):
+                        continue  # no clobber — leave present valid files intact
+                    shutil.copy2(src, dest)
+            return CheckResult(
+                name=result.name,
+                category=result.category,
+                status="pass",
+                message=f"'{rel}' materialized (present scripts left unchanged)",
+                fix=result.fix,
+                fixed=True,
+            )
+        except OSError as exc:
+            return CheckResult(
+                name=result.name,
+                category=result.category,
+                status=result.status,
+                message=result.message,
+                fix=f"{result.fix or ''} (auto-fix failed: {exc})",
+                fixed=False,
+            )
+
 
 # ---------------------------------------------------------------------------
 # CheckRunner  (Tasks 3.1, 3.3)
@@ -851,6 +998,7 @@ class CheckRunner:
         ("Senzing SDK", check_senzing_sdk),
         ("Permissions", check_write_permissions),
         ("Project Structure", check_directories),
+        ("Bundled Scripts", check_bundled_scripts),
         ("Database", check_database),
     ]
 

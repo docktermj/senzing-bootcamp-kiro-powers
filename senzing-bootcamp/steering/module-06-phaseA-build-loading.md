@@ -121,3 +121,31 @@ inclusion: manual
    **Checkpoint:** Write step 4 to `config/bootcamp_progress.json`.
 
 ---
+
+## SQLite Volume Hard_Prompt (pre-load check)
+
+> **Agent instruction — run this once at the end of Phase A, immediately before the Phase B load begins (Phase B: Load First Source). This is a stop-and-confirm heads-up, NOT a Mandatory_Gate — there is no ⛔ and the bootcamper may always proceed on SQLite.**
+>
+> **1. Read the persisted inputs.** Load `config/bootcamp_preferences.yaml` via `preferences_utils.load_preferences` (or `preferences_utils.parse_yaml` on the file contents) and read:
+>
+> - `production_volume.tier` → `tier`
+> - `production_volume.raw_value` → `raw_value`
+> - `database_type` → `db_type`
+>
+> If the file is missing/unreadable or any value is absent, treat that value as indeterminate (`None`) — do not fail. `should_prompt` returns `False` for indeterminate inputs, so the flow falls back to the existing advisory behavior and continues to the load.
+>
+> **2. Compute `already_decided` from the decision marker.** Read the `sqlite_volume_prompt` key from the same preferences file. Set `already_decided = True` **only when** that marker exists with `decided: true` AND its `tier` and `raw_value` both match the current `production_volume.tier` and `production_volume.raw_value`. Otherwise (marker missing, `decided` not true, or a tier/raw_value mismatch from a reclassified load) set `already_decided = False`. This scopes the no-reprompt suppression to *this same load* — a genuinely different volume may prompt again.
+>
+> **3. Call the predicate.** Evaluate `volume_utils.should_prompt(tier, db_type, already_decided)`.
+>
+> - **`False`** → say nothing new about volume/SQLite; continue with the existing advisory behavior and proceed to the Phase B load. (Covers Demo/Small tiers, any non-SQLite engine, indeterminate inputs, and an already-recorded choice.)
+> - **`True`** → present the output of `volume_utils.build_hard_prompt(tier, raw_value)` **verbatim** to the bootcamper, then **🛑 STOP** and wait for their choice. Do not start the load yet.
+>
+> **4. Act on the bootcamper's choice.**
+>
+> - **Migrate (switch to PostgreSQL):** Record the choice by writing the decision marker via `preferences_utils.write_preference("sqlite_volume_prompt", {"decided": True, "choice": "migrate", "tier": tier, "raw_value": raw_value})`. Then route the bootcamper to the existing migration guidance — the `database-migration-guide` at `docs/guides/DATABASE_MIGRATION.md`. Do NOT inline or restate the migration steps here; hand off to that guide.
+> - **Proceed on SQLite:** Record the choice by writing the decision marker via `preferences_utils.write_preference("sqlite_volume_prompt", {"decided": True, "choice": "proceed", "tier": tier, "raw_value": raw_value})`. Then continue to the Phase B load. Do NOT re-present this prompt for the same load.
+>
+> **Reuse and safety notes:** The tier/database logic lives entirely in `volume_utils` — do not re-derive tiers from record counts here. Refer to the migration guide by its repo-relative path (`docs/guides/DATABASE_MIGRATION.md`) only; never a URL. Refer to the Senzing MCP server by name only. Use only synthetic/persisted values — never echo credentials or connection strings.
+
+---

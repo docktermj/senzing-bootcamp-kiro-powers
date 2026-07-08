@@ -75,6 +75,8 @@ jobs:
         run: python senzing-bootcamp/scripts/validate_yaml_schemas.py
       - name: Validate external links
         run: python senzing-bootcamp/scripts/validate_links.py --timeout 10
+      - name: Validate power-owned doc references
+        run: python senzing-bootcamp/scripts/validate_doc_references.py
       - name: Lint Python (ruff)
         run: ruff check senzing-bootcamp/scripts/ senzing-bootcamp/tests/ tests/
       - name: Conversational eval harness

@@ -454,7 +454,8 @@ def check_network() -> list[CheckResult]:
             message=f"Cannot reach {host}:{port}",
             fix=(
                 f"Check internet connectivity and firewall rules for {host}:{port}. "
-                "See docs/guides/OFFLINE_MODE.md for offline usage."
+                "The bootcamp requires a live MCP connection (there is no offline "
+                "mode); see the MCP troubleshooting steps in POWER.md."
             ),
         )]
 

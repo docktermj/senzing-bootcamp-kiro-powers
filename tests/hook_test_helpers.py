@@ -160,7 +160,7 @@ def parse_categories_yaml(path: Path | None = None) -> dict[str, list[str]]:
     - Each leaf is a list of hook identifier strings
 
     Returns a flat dict mapping category names to lists of hook identifiers:
-    - "critical" -> [7 hook ids]
+    - "critical" -> [critical hook ids]
     - "module-1" -> [hook ids for module 1]
     - "module-any" -> [hook ids for 'any' module]
 

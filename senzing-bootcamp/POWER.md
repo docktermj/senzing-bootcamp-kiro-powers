@@ -45,6 +45,8 @@ See the CHANGELOG for the full release history.
 
 ## What's New in 1.0.0
 
+> **Note:** The `1.0.0` tag was premature and later withdrawn; the Power's public versioning re-based onto the `0.x` line, and the current version is `0.2.0`. This section is retained for historical context — see the CHANGELOG's versioning note.
+
 - First production release. The full CI validation suite is green across every gate — power integrity, steering token budget, CommonMark, module and MCP-tool inventory, hook registry/prompt sync, prerequisites, governance, external links, ruff, and the conversational eval harness — with pytest at 5,708 passed / 0 failed / 88 skipped
 - Added two inventory CI gates: `check_mcp_tool_inventory()` pins POWER.md / ARCHITECTURE.md to the canonical 13-tool list in `scripts/mcp_tool_inventory.py`, and `check_module_inventory()` cross-checks the POWER.md module table and every script module-name map against `config/module-dependencies.yaml` — CI now fails on any MCP-tool or module-number drift
 - Corrected module numbering/naming drift across docs, diagrams, and scripts to the canonical ascending roster (1 → 2 → … → 11); HTML dashboards now compute completion against the live roster instead of a phantom 12th module
@@ -270,7 +272,20 @@ Connects to the Senzing MCP server (no API keys required):
       "type": "http",
       "url": "https://mcp.senzing.com/mcp",
       "disabled": false,
-      "autoApprove": [],
+      "autoApprove": [
+        "get_capabilities",
+        "mapping_workflow",
+        "analyze_record",
+        "download_resource",
+        "explain_error_code",
+        "search_docs",
+        "find_examples",
+        "generate_scaffold",
+        "get_sample_data",
+        "get_sdk_reference",
+        "sdk_guide",
+        "reporting_guide"
+      ],
       "disabledTools": ["submit_feedback"]
     }
   }
@@ -279,7 +294,7 @@ Connects to the Senzing MCP server (no API keys required):
 
 **Server name:** `senzing-mcp-server`
 
-All tools are enabled by default except `submit_feedback` (disabled to keep feedback local). To re-enable it or disable other tools, edit the `disabledTools` array. See <https://kiro.dev/docs/mcp/configuration/> for full configuration options.
+All tools are enabled by default except `submit_feedback` (disabled to keep feedback local). To re-enable it or disable other tools, edit the `disabledTools` array. The `autoApprove` array lists the 12 read-only Senzing MCP tools that run without a per-call approval prompt; `submit_feedback` is intentionally omitted. See <https://kiro.dev/docs/mcp/configuration/> for full configuration options.
 
 ## Available MCP Tools
 

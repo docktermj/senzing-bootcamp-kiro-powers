@@ -5,6 +5,15 @@ All notable changes to the Senzing Bootcamp power will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+> **Versioning note.** An early `1.0.0` was set prematurely (see the
+> `## [1.0.0] - 2026-06-24` section below) and then withdrawn. The Power's
+> public versioning was re-based onto the `0.x` line for the Kiro 1.0 migration,
+> so the current shipping version is `0.2.0` and the `0.x` releases dated after
+> 2026-06-24 supersede that withdrawn `1.0.0` entry. The `1.0.0` section is kept
+> for historical continuity, which is why the version numbers below are not
+> strictly monotonic by date. `VERSION` and the POWER.md frontmatter are the
+> authoritative current version.
+
 ## [Unreleased]
 
 ## [0.2.0] - 2026-07-07
@@ -130,6 +139,10 @@ hook and permissions model and **requires Kiro 1.0 or later** — legacy
   output paths
 
 ## [1.0.0] - 2026-06-24
+
+> **Superseded / withdrawn.** This `1.0.0` was tagged prematurely and later
+> withdrawn; the Power re-based to the `0.x` line (see the Versioning note near
+> the top of this file). Retained for historical continuity only.
 
 ### Production release
 

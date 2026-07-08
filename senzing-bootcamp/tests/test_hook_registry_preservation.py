@@ -94,7 +94,7 @@ _REGISTRY_MARKERS: dict[str, tuple[str, ...]] = {
     "hook-registry-critical.md": (
         "# Hook Registry — Critical Hooks (Full Prompts)",
         "## Critical Hooks (created during onboarding)",
-        "**ask-bootcamper** (agentStop → askAgent)",
+        "**ask-bootcamper** (Stop → agent)",
         "**write-policy-gate**",
         "hook-registry.md",  # cross-reference back to the routable summary
     ),

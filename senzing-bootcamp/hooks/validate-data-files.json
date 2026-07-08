@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "to validate data files",
+      "trigger": "PostFileCreate",
+      "matcher": "^(?:data/raw/[^/]*\\.[^/]*)$",
+      "action": {
+        "type": "agent",
+        "prompt": "A new data file was added to data/raw/. Before proceeding, do a quick sanity check: (1) Can the file be read without encoding errors? Try reading the first 10 lines. (2) Is the format recognizable (CSV, JSON, JSONL, XML, TSV)? (3) Does it contain at least a few records? (4) Are there obvious issues like binary content, empty file, or corrupted data? Report what you find to the bootcamper. If the file looks good, say so briefly. If there are issues, explain what's wrong and suggest how to fix it."
+      }
+    }
+  ]
+}

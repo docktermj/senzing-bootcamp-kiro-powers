@@ -76,9 +76,9 @@ class TestAskBootcamperAntiFabrication:
 
     @pytest.fixture()
     def hook_prompt(self) -> str:
-        path = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+        path = _HOOKS_DIR / "ask-bootcamper.json"
         data = json.loads(path.read_text(encoding="utf-8"))
-        return data["then"]["prompt"]
+        return data["hooks"][0]["action"]["prompt"]
 
     def test_contains_human_colon_prohibition(self, hook_prompt: str) -> None:
         """Hook prompt prohibits generating 'Human:' text."""

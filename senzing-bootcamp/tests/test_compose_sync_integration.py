@@ -87,15 +87,15 @@ def _make_isolated_hooks_dir(tmp_path: Path) -> Path:
     tmp_hooks = tmp_path / "hooks"
     tmp_hooks.mkdir(parents=True, exist_ok=True)
     for hook_id in GATE_HOOK_IDS:
-        src = _HOOKS_DIR / f"{hook_id}.kiro.hook"
-        (tmp_hooks / f"{hook_id}.kiro.hook").write_bytes(src.read_bytes())
+        src = _HOOKS_DIR / f"{hook_id}.json"
+        (tmp_hooks / f"{hook_id}.json").write_bytes(src.read_bytes())
     return tmp_hooks
 
 
 def _snapshot_hooks(hooks_dir: Path) -> dict[str, bytes]:
     """Return the current on-disk bytes of every gate-hook file in *hooks_dir*."""
     return {
-        hook_id: (hooks_dir / f"{hook_id}.kiro.hook").read_bytes()
+        hook_id: (hooks_dir / f"{hook_id}.json").read_bytes()
         for hook_id in GATE_HOOK_IDS
     }
 
@@ -163,7 +163,7 @@ class TestComposeSyncIntegration:
         # gate-hook output file exists in the isolated dir — and the shared repo
         # hooks dir is byte-for-byte unchanged (the write touched only tmp_path).
         for hook_id in GATE_HOOK_IDS:
-            assert (tmp_hooks / f"{hook_id}.kiro.hook").exists(), (
+            assert (tmp_hooks / f"{hook_id}.json").exists(), (
                 f"compose --write must produce {hook_id} under the isolated "
                 f"tmp_path hooks dir: {tmp_hooks}"
             )
@@ -209,7 +209,7 @@ class TestComposeSyncIntegration:
         # Isolation guard (Req 5.2): every written file lives under tmp_path and
         # the shared repo hooks dir is byte-for-byte unchanged.
         for hook_id in GATE_HOOK_IDS:
-            assert (tmp_hooks / f"{hook_id}.kiro.hook").exists(), (
+            assert (tmp_hooks / f"{hook_id}.json").exists(), (
                 f"compose --write must produce {hook_id} under the isolated "
                 f"tmp_path hooks dir: {tmp_hooks}"
             )

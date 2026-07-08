@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "to enforce mandatory gate step execution before advancement",
+      "trigger": "PreToolUse",
+      "matcher": "fs_write|str_replace|fs_append",
+      "action": {
+        "type": "agent",
+        "prompt": "CHECK — Is this write updating `config/bootcamp_progress.json` to advance `current_step` past Step 9 (the ⛔ mandatory gate step for Web Service + Visualization)?\n\nIf NO (not writing to `config/bootcamp_progress.json`, or not changing `current_step`, or `current_step` is not being set to a value greater than 9): produce no output at all. Do nothing.\n\nIf YES (the write sets `current_step` to 10 or higher, advancing past the ⛔ mandatory gate Step 9): Read the CURRENT contents of `config/bootcamp_progress.json` and check TWO conditions:\n\nCONDITION A — Step 9 checkpoints exist:\n- `module_3_verification.checks.web_service.status` equals `\"passed\"`\n- `module_3_verification.checks.web_page.status` equals `\"passed\"`\n\nIf CONDITION A is true: produce no output at all. Do nothing. The mandatory gate has been satisfied.\n\nIf CONDITION A is not met: STOP. Do NOT allow this write. Block the operation. Output exactly:\n\n⛔ BLOCKED: Cannot advance past Step 9 — this is a mandatory gate step (Web Service + Visualization). The ⛔ designation means this step must be executed unconditionally. No agent-internal reason (session length, context budget, perceived redundancy) can justify skipping a mandatory gate. Load `module-03-phase2-visualization.md` and execute the full visualization step (generate web service, start server, verify 3 API endpoints, present URL to bootcamper). Only after web_service and web_page checkpoints show 'passed' in bootcamp_progress.json can current_step advance past 9.\n\nDo not proceed with the write operation."
+      }
+    }
+  ]
+}

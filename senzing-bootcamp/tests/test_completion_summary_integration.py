@@ -39,7 +39,7 @@ _POWER_ROOT: Path = Path(__file__).resolve().parent.parent
 _STEERING_DIR: Path = _POWER_ROOT / "steering"
 _HOOKS_DIR: Path = _POWER_ROOT / "hooks"
 _STEERING_FILE: Path = _STEERING_DIR / "completion-summary-offer.md"
-_HOOK_FILE: Path = _HOOKS_DIR / "session-log-events.kiro.hook"
+_HOOK_FILE: Path = _HOOKS_DIR / "session-log-events.json"
 
 
 # ---------------------------------------------------------------------------
@@ -336,20 +336,27 @@ class TestHookFileIntegration:
         assert isinstance(parsed, dict)
 
     def test_hook_file_has_required_fields(self) -> None:
-        """Hook file has required fields: name, version, when, then."""
+        """Wrapper declares version 'v1' + hooks[]; entry has name/trigger/action."""
         content = _HOOK_FILE.read_text(encoding="utf-8")
-        hook = json.loads(content)
-        required = {"name", "version", "when", "then"}
-        missing = required - set(hook.keys())
+        wrapper = json.loads(content)
+        assert wrapper.get("version") == "v1", (
+            f"Expected wrapper version 'v1', got {wrapper.get('version')!r}"
+        )
+        assert isinstance(wrapper.get("hooks"), list) and wrapper["hooks"], (
+            "Wrapper must contain a non-empty 'hooks' array"
+        )
+        entry = wrapper["hooks"][0]
+        required = {"name", "trigger", "action"}
+        missing = required - set(entry.keys())
         assert not missing, f"Missing required hook fields: {missing}"
 
     def test_hook_captures_write_operations(self) -> None:
-        """Hook toolTypes includes 'write' to capture write operations."""
+        """Hook matcher scopes write tools to capture write operations."""
         content = _HOOK_FILE.read_text(encoding="utf-8")
-        hook = json.loads(content)
-        tool_types = hook.get("when", {}).get("toolTypes", [])
-        assert "write" in tool_types, (
-            "Hook must capture write operations via toolTypes"
+        wrapper = json.loads(content)
+        matcher = wrapper["hooks"][0].get("matcher", "")
+        assert "fs_write" in matcher, (
+            "Hook must capture write operations via a write-tool matcher"
         )
 
 

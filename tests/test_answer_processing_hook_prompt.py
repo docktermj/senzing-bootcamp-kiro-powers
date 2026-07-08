@@ -21,7 +21,7 @@ from hook_test_helpers import load_hook
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.json")
 
 # The five known question types
 QUESTION_TYPES: list[str] = [
@@ -91,9 +91,9 @@ OLD_AFFIRMATIVE_PHRASES: list[str] = [
 
 
 def load_hook_prompt() -> str:
-    """Load and return the then.prompt field from the hook."""
+    """Load and return the action.prompt field from the v1 hook entry."""
     data = load_hook(HOOK_PATH)
-    return data["then"]["prompt"]
+    return data["action"]["prompt"]
 
 
 # ---------------------------------------------------------------------------

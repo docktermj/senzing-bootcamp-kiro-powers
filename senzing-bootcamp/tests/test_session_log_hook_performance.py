@@ -40,7 +40,7 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 _HOOKS_DIR: Path = _POWER_ROOT / "hooks"
-_HOOK_FILE: Path = _HOOKS_DIR / "session-log-events.kiro.hook"
+_HOOK_FILE: Path = _HOOKS_DIR / "session-log-events.json"
 
 _PROGRESS_PATH: str = "config/bootcamp_progress.json"
 _SESSION_LOG_PATH: str = "config/session_log.jsonl"
@@ -52,8 +52,8 @@ _SESSION_LOG_PATH: str = "config/session_log.jsonl"
 
 
 def _read_hook() -> dict:
-    """Parse the real session-log-events hook file as JSON."""
-    return json.loads(_HOOK_FILE.read_text(encoding="utf-8"))
+    """Parse the real session-log-events v1 hook file and return its entry (``hooks[0]``)."""
+    return json.loads(_HOOK_FILE.read_text(encoding="utf-8"))["hooks"][0]
 
 
 def _load_log_write_event():
@@ -84,22 +84,24 @@ class TestHookUsesRunCommand:
         assert _HOOK_FILE.exists(), f"hook file not found at {_HOOK_FILE}"
 
     def test_hook_uses_run_command(self) -> None:
-        """``then.type`` is ``runCommand`` and the command runs ``log_write_event.py``.
+        """``action.type`` is ``command`` and the command runs ``log_write_event.py``.
 
-        FAILS on unfixed code where ``then.type`` is still ``askAgent``.
+        Under Kiro 1.0 the legacy ``runCommand`` action type is renamed to
+        ``command``. FAILS on unfixed code where the action is still an agent
+        round-trip.
         """
         hook = _read_hook()
-        then = hook.get("then", {})
+        action = hook.get("action", {})
 
-        assert then.get("type") == "runCommand", (
-            "session-log-events hook must log via 'runCommand' (no agent "
-            f"round-trip), got then.type={then.get('type')!r}. The hook is "
-            "still an 'askAgent' hook — this confirms the performance bug."
+        assert action.get("type") == "command", (
+            "session-log-events hook must log via a 'command' action (no agent "
+            f"round-trip), got action.type={action.get('type')!r}. An 'agent' "
+            "action here would confirm the performance bug."
         )
 
-        command = then.get("command", "")
+        command = action.get("command", "")
         assert "log_write_event.py" in command, (
-            "runCommand must invoke the log_write_event.py helper, got "
+            "command action must invoke the log_write_event.py helper, got "
             f"command={command!r}"
         )
 

@@ -9,7 +9,6 @@ Feature: completion-summary
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -17,7 +16,17 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 _HOOKS_DIR: Path = Path(__file__).resolve().parent.parent / "hooks"
-_HOOK_FILE: Path = _HOOKS_DIR / "session-log-events.kiro.hook"
+_HOOK_FILE: Path = _HOOKS_DIR / "session-log-events.json"
+
+
+def _load_wrapper() -> dict:
+    """Return the full v1 wrapper (``{"version": "v1", "hooks": [...]}``)."""
+    return json.loads(_HOOK_FILE.read_text(encoding="utf-8"))
+
+
+def _load_entry() -> dict:
+    """Return the single v1 hook entry (``hooks[0]``)."""
+    return _load_wrapper()["hooks"][0]
 
 
 # ---------------------------------------------------------------------------
@@ -26,7 +35,7 @@ _HOOK_FILE: Path = _HOOKS_DIR / "session-log-events.kiro.hook"
 
 
 class TestHookFileStructure:
-    """Validate the session-log-events.kiro.hook file structure.
+    """Validate the session-log-events.json v1 hook file structure.
 
     Requirements: 1.3, 1.4
     """
@@ -37,47 +46,48 @@ class TestHookFileStructure:
 
     def test_hook_file_is_valid_json(self) -> None:
         """Hook file contains valid JSON."""
-        content = _HOOK_FILE.read_text(encoding="utf-8")
-        parsed = json.loads(content)
+        parsed = _load_wrapper()
         assert isinstance(parsed, dict)
 
     def test_hook_has_required_top_level_fields(self) -> None:
-        """Hook JSON has required top-level fields: name, version, when, then."""
-        content = _HOOK_FILE.read_text(encoding="utf-8")
-        hook = json.loads(content)
-        required_fields = {"name", "version", "when", "then"}
-        missing = required_fields - set(hook.keys())
+        """Wrapper declares version 'v1' + hooks[]; entry has name/trigger/action."""
+        wrapper = _load_wrapper()
+        assert wrapper.get("version") == "v1", (
+            f"Expected wrapper version 'v1', got {wrapper.get('version')!r}"
+        )
+        assert isinstance(wrapper.get("hooks"), list) and wrapper["hooks"], (
+            "Wrapper must contain a non-empty 'hooks' array"
+        )
+        entry = wrapper["hooks"][0]
+        required_fields = {"name", "trigger", "action"}
+        missing = required_fields - set(entry.keys())
         assert not missing, f"Missing required fields: {missing}"
 
     def test_when_type_is_post_tool_use(self) -> None:
-        """when.type is 'postToolUse'."""
-        content = _HOOK_FILE.read_text(encoding="utf-8")
-        hook = json.loads(content)
-        assert hook["when"]["type"] == "postToolUse"
+        """trigger is 'PostToolUse' (Kiro 1.0 rename of legacy postToolUse)."""
+        entry = _load_entry()
+        assert entry["trigger"] == "PostToolUse"
 
     def test_when_tool_types_contains_write(self) -> None:
-        """when.toolTypes is a list containing 'write'."""
-        content = _HOOK_FILE.read_text(encoding="utf-8")
-        hook = json.loads(content)
-        tool_types = hook["when"]["toolTypes"]
-        assert isinstance(tool_types, list), "toolTypes must be a list"
-        assert "write" in tool_types, "toolTypes must contain 'write'"
+        """matcher scopes the write tools (fs_write|str_replace|fs_append)."""
+        entry = _load_entry()
+        matcher = entry.get("matcher", "")
+        assert isinstance(matcher, str), "matcher must be a string"
+        assert "fs_write" in matcher, "matcher must scope write tools ('fs_write')"
 
     def test_then_type_is_run_command(self) -> None:
-        """then.type is 'runCommand'.
+        """action.type is 'command' (Kiro 1.0 rename of legacy runCommand).
 
-        The session-log-events hook logs writes via a direct runCommand (no agent
+        The session-log-events hook logs writes via a direct command (no agent
         round-trip) per the session-log-hook-performance fix.
         """
-        content = _HOOK_FILE.read_text(encoding="utf-8")
-        hook = json.loads(content)
-        assert hook["then"]["type"] == "runCommand"
+        entry = _load_entry()
+        assert entry["action"]["type"] == "command"
 
     def test_then_command_invokes_log_script(self) -> None:
-        """then.command is a non-empty string that invokes log_write_event.py."""
-        content = _HOOK_FILE.read_text(encoding="utf-8")
-        hook = json.loads(content)
-        command = hook["then"]["command"]
+        """action.command is a non-empty string that invokes log_write_event.py."""
+        entry = _load_entry()
+        command = entry["action"]["command"]
         assert isinstance(command, str), "command must be a string"
         assert command.strip(), "command must not be empty"
         assert "log_write_event.py" in command, (
@@ -86,21 +96,18 @@ class TestHookFileStructure:
 
     def test_name_is_non_empty_string(self) -> None:
         """name field is a non-empty string."""
-        content = _HOOK_FILE.read_text(encoding="utf-8")
-        hook = json.loads(content)
-        name = hook["name"]
+        entry = _load_entry()
+        name = entry["name"]
         assert isinstance(name, str), "name must be a string"
         assert len(name) > 0, "name must not be empty"
 
     def test_version_matches_semver_pattern(self) -> None:
-        """version field matches semver pattern (MAJOR.MINOR.PATCH)."""
-        content = _HOOK_FILE.read_text(encoding="utf-8")
-        hook = json.loads(content)
-        version = hook["version"]
+        """The v1 wrapper declares the versioned schema tag ('v1')."""
+        wrapper = _load_wrapper()
+        version = wrapper["version"]
         assert isinstance(version, str), "version must be a string"
-        semver_pattern = r"^\d+\.\d+\.\d+$"
-        assert re.match(semver_pattern, version), (
-            f"version '{version}' does not match semver pattern MAJOR.MINOR.PATCH"
+        assert version == "v1", (
+            f"version '{version}' is not the Kiro 1.0 schema tag 'v1'"
         )
 
 

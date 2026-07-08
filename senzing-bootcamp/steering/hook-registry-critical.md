@@ -11,7 +11,7 @@ For a quick reference of all hooks, see `hook-registry.md`.
 
 ## Critical Hooks (created during onboarding)
 
-**ask-bootcamper** (agentStop → askAgent)
+**ask-bootcamper** (Stop → agent)
 
 Prompt:
 
@@ -266,9 +266,10 @@ REMEMBER: If ALL phases produced no output, your COMPLETE response is: .
 
 - id: `ask-bootcamper`
 - name: `to wait for your answer`
-- description: `Consolidated agentStop hook with four phases: (1) closing question with feedback nudge, (2) step sequencing enforcement with answer processing retry (all question types) and not-waiting detection, (3) MCP-first compliance audit, (4) compound question detection with silent self-correction.`
+- trigger: `Stop`
+- action: `agent`
 
-**code-style-check** (fileEdited → askAgent, filePatterns: `src/**/*.py, src/**/*.java, src/**/*.cs, src/**/*.rs, src/**/*.ts, src/**/*.js`)
+**code-style-check** (PostFileSave → agent, matcher: `^(?:src/(?:.*/)?[^/]*\.py|src/(?:.*/)?[^/]*\.java|src/(?:.*/)?[^/]*\.cs|src/(?:.*/)?[^/]*\.rs|src/(?:.*/)?[^/]*\.ts|src/(?:.*/)?[^/]*\.js)$`)
 
 Prompt:
 
@@ -278,35 +279,11 @@ A source code file was just edited. Check it for language-appropriate coding sta
 
 - id: `code-style-check`
 - name: `to check code style`
-- description: `Automatically checks source code files for language-appropriate coding standards when edited. For Python: PEP-8. For Java: standard conventions. For C#: .NET conventions. For Rust: rustfmt/clippy. For TypeScript: ESLint conventions.`
+- trigger: `PostFileSave`
+- matcher: `^(?:src/(?:.*/)?[^/]*\.py|src/(?:.*/)?[^/]*\.java|src/(?:.*/)?[^/]*\.cs|src/(?:.*/)?[^/]*\.rs|src/(?:.*/)?[^/]*\.ts|src/(?:.*/)?[^/]*\.js)$`
+- action: `agent`
 
-**commonmark-validation** (userTriggered → askAgent)
-
-Prompt:
-
-````text
-The user wants to validate Markdown style across the project in one pass. Review every Markdown file (all *.md files) for CommonMark compliance. For each file, check for:
-
-1. MD022: Headings should be surrounded by blank lines
-2. MD040: Fenced code blocks should have a language specified
-3. Bold text followed by colons should use format: **Label:** (with space before colon)
-4. MD031: Fenced code blocks should be surrounded by blank lines
-5. MD032: Lists should be surrounded by blank lines
-
-EXCEPTION: If the file is CHANGELOG.md, ignore MD024 (duplicate headings) — repeated ### Added, ### Changed, ### Fixed, ### Removed headings under different version sections are standard Keep a Changelog format and should not be flagged.
-
-If any issues are found, fix them automatically to maintain CommonMark compliance across all documentation. Apply the fixes across all Markdown files in this single pass rather than one file at a time.
-
-After fixing issues: briefly summarize what was corrected across the files (one sentence), then end with a contextual 👉 forward-moving question that guides the bootcamper to the next step in the current workflow. Check `config/bootcamp_progress.json` for the current module and step to determine what comes next.
-
-If no issues are found: output nothing. Proceed silently.
-````
-
-- id: `commonmark-validation`
-- name: `to check Markdown style`
-- description: `Validates that all Markdown files conform to CommonMark standards in a single pass. Triggered manually via the Agent Hooks panel button or as part of the graduation normalization step — no longer fires on every Markdown save.`
-
-**review-bootcamper-input** (promptSubmit → askAgent)
+**review-bootcamper-input** (UserPromptSubmit → agent)
 
 Prompt:
 
@@ -316,9 +293,10 @@ Check if the bootcamper's message contains any of these feedback trigger phrases
 
 - id: `review-bootcamper-input`
 - name: `to review what you said`
-- description: `Reviews each message submission for feedback trigger phrases and initiates the feedback workflow with automatic context capture.`
+- trigger: `UserPromptSubmit`
+- action: `agent`
 
-**write-policy-gate** (preToolUse → askAgent, toolTypes: write)
+**write-policy-gate** (PreToolUse → agent, matcher: `fs_write|str_replace|fs_append`)
 
 Prompt:
 
@@ -544,4 +522,6 @@ FORBIDDEN output (never produce these):
 
 - id: `write-policy-gate`
 - name: `to process your response`
-- description: `Consolidated preToolUse write hook that performs four policy checks in a single interception: (1) blocks direct SQL against the Senzing database, (2) enforces single-question rule for .question_pending writes, (3) validates file path policies including append-only guard for the feedback file, (4) enforces root file placement rules. Uses a fast path for normal writes (proceeds silently) and slow paths for violations (outputs corrective instructions).`
+- trigger: `PreToolUse`
+- matcher: `fs_write|str_replace|fs_append`
+- action: `agent`

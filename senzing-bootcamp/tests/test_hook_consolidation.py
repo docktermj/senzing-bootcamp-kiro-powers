@@ -25,30 +25,28 @@ ONBOARDING_FLOW = STEERING_DIR / "onboarding-flow.md"
 ONBOARDING_PHASE2 = STEERING_DIR / "onboarding-phase2-track-setup.md"
 HOOK_CATEGORIES = HOOKS_DIR / "hook-categories.yaml"
 
-ASK_BOOTCAMPER_HOOK = HOOKS_DIR / "ask-bootcamper.kiro.hook"
-REVIEW_BOOTCAMPER_INPUT_HOOK = HOOKS_DIR / "review-bootcamper-input.kiro.hook"
+ASK_BOOTCAMPER_HOOK = HOOKS_DIR / "ask-bootcamper.json"
+REVIEW_BOOTCAMPER_INPUT_HOOK = HOOKS_DIR / "review-bootcamper-input.json"
 
-# Deleted hook files
+# Deleted hook files (neither the legacy *.kiro.hook nor the v1 *.json ships)
 DELETED_HOOKS = [
-    HOOKS_DIR / "feedback-submission-reminder.kiro.hook",
-    HOOKS_DIR / "capture-feedback.kiro.hook",
+    HOOKS_DIR / "feedback-submission-reminder.json",
+    HOOKS_DIR / "capture-feedback.json",
 ]
 
 # Deleted hook ids (used in registry/onboarding/categories checks)
 DELETED_HOOK_IDS = ["feedback-submission-reminder", "capture-feedback"]
 
-# Valid event types for hook files
+# Valid Kiro 1.0 trigger names for v1 hook files.
 VALID_EVENT_TYPES = {
-    "agentStop",
-    "promptSubmit",
-    "fileEdited",
-    "fileCreated",
-    "fileDeleted",
-    "preToolUse",
-    "postToolUse",
-    "userTriggered",
-    "postTaskExecution",
-    "preTaskExecution",
+    "Stop",
+    "UserPromptSubmit",
+    "PostFileSave",
+    "PostFileCreate",
+    "PostFileDelete",
+    "PreToolUse",
+    "PostToolUse",
+    "PostTaskExec",
 }
 
 # The six feedback trigger phrases
@@ -68,13 +66,13 @@ TRIGGER_PHRASES = [
 
 
 def _load_hook(path: Path) -> dict:
-    """Parse a .kiro.hook JSON file and return the dict."""
-    return json.loads(path.read_text(encoding="utf-8"))
+    """Parse a v1 ``<id>.json`` hook file and return its single entry (``hooks[0]``)."""
+    return json.loads(path.read_text(encoding="utf-8"))["hooks"][0]
 
 
 def _get_all_hook_files() -> list[Path]:
-    """Return all .kiro.hook files in the hooks directory."""
-    return sorted(HOOKS_DIR.glob("*.kiro.hook"))
+    """Return all v1 ``*.json`` hook files in the hooks directory."""
+    return sorted(HOOKS_DIR.glob("*.json"))
 
 
 # ===========================================================================
@@ -89,24 +87,26 @@ class TestDeletedHookFilesDoNotExist:
     """
 
     def test_feedback_submission_reminder_hook_deleted(self):
-        """feedback-submission-reminder.kiro.hook must not exist.
+        """feedback-submission-reminder must not ship (neither .kiro.hook nor .json).
 
         **Validates: Requirement 3.2**
         """
-        path = HOOKS_DIR / "feedback-submission-reminder.kiro.hook"
-        assert not path.exists(), (
-            f"Deleted hook file still exists: {path}"
-        )
+        for suffix in (".kiro.hook", ".json"):
+            path = HOOKS_DIR / f"feedback-submission-reminder{suffix}"
+            assert not path.exists(), (
+                f"Deleted hook file still exists: {path}"
+            )
 
     def test_capture_feedback_hook_deleted(self):
-        """capture-feedback.kiro.hook must not exist.
+        """capture-feedback must not ship (neither .kiro.hook nor .json).
 
         **Validates: Requirement 3.3**
         """
-        path = HOOKS_DIR / "capture-feedback.kiro.hook"
-        assert not path.exists(), (
-            f"Deleted hook file still exists: {path}"
-        )
+        for suffix in (".kiro.hook", ".json"):
+            path = HOOKS_DIR / f"capture-feedback{suffix}"
+            assert not path.exists(), (
+                f"Deleted hook file still exists: {path}"
+            )
 
 
 # ===========================================================================
@@ -256,7 +256,7 @@ class TestSilenceFirstDefault:
 
         **Validates: Requirements 1.4, 7.1**
         """
-        prompt = _load_hook(ASK_BOOTCAMPER_HOOK)["then"]["prompt"]
+        prompt = _load_hook(ASK_BOOTCAMPER_HOOK)["action"]["prompt"]
         prompt_upper = prompt.upper()
 
         # The silence instruction must be at the very start (DEFAULT OUTPUT: .)
@@ -281,7 +281,7 @@ class TestSilenceFirstDefault:
 
         **Validates: Requirements 1.4, 7.1**
         """
-        prompt = _load_hook(ASK_BOOTCAMPER_HOOK)["then"]["prompt"]
+        prompt = _load_hook(ASK_BOOTCAMPER_HOOK)["action"]["prompt"]
         first_line = prompt.split("\n")[0].strip().upper()
 
         assert "DEFAULT OUTPUT" in first_line, (
@@ -327,7 +327,7 @@ class TestTriggerPhrasesPreserved:
 
         **Validates: Requirements 2.2, 7.4**
         """
-        prompt = _load_hook(REVIEW_BOOTCAMPER_INPUT_HOOK)["then"]["prompt"]
+        prompt = _load_hook(REVIEW_BOOTCAMPER_INPUT_HOOK)["action"]["prompt"]
         prompt_lower = prompt.lower()
 
         # Verify the phrase (in any case) is present in the prompt
@@ -343,7 +343,7 @@ class TestTriggerPhrasesPreserved:
 
         **Validates: Requirements 2.2, 7.4**
         """
-        prompt = _load_hook(REVIEW_BOOTCAMPER_INPUT_HOOK)["then"]["prompt"]
+        prompt = _load_hook(REVIEW_BOOTCAMPER_INPUT_HOOK)["action"]["prompt"]
         prompt_lower = prompt.lower()
 
         assert "case-insensitive" in prompt_lower, (
@@ -355,7 +355,7 @@ class TestTriggerPhrasesPreserved:
 
         **Validates: Requirements 2.2, 7.4**
         """
-        prompt = _load_hook(REVIEW_BOOTCAMPER_INPUT_HOOK)["then"]["prompt"]
+        prompt = _load_hook(REVIEW_BOOTCAMPER_INPUT_HOOK)["action"]["prompt"]
         prompt_lower = prompt.lower()
 
         for phrase in TRIGGER_PHRASES:
@@ -376,10 +376,10 @@ st_hook_file = st.sampled_from(_get_all_hook_files())
 class TestHookFileStructuralValidity:
     """Property 3: Hook file structural validity.
 
-    For any .kiro.hook file in senzing-bootcamp/hooks/, the file SHALL parse
-    as valid JSON containing all required keys (name, version, description,
-    when, then) with when.type being a valid event type and then.type being
-    askAgent.
+    For any ``*.json`` v1 hook file in senzing-bootcamp/hooks/, the file SHALL
+    parse as valid JSON wrapping a single entry containing all required keys
+    (name, trigger, action) with trigger being a valid Kiro 1.0 trigger name
+    and action.type being ``agent`` or ``command``.
 
     **Validates: Requirements 1.5, 2.4, 6.2, 6.3**
     """
@@ -400,13 +400,13 @@ class TestHookFileStructuralValidity:
     @given(hook_path=st_hook_file)
     @settings(max_examples=10)
     def test_hook_file_has_required_keys(self, hook_path: Path):
-        """Each hook file must contain name, version, description, when, then.
+        """Each hook entry must contain name, trigger, action.
 
         **Validates: Requirements 1.5, 6.2**
         """
-        data = _load_hook(hook_path)
-        required_keys = {"name", "version", "description", "when", "then"}
-        missing = required_keys - set(data.keys())
+        entry = _load_hook(hook_path)
+        required_keys = {"name", "trigger", "action"}
+        missing = required_keys - set(entry.keys())
         assert not missing, (
             f"{hook_path.name} missing required keys: {missing}"
         )
@@ -414,35 +414,36 @@ class TestHookFileStructuralValidity:
     @given(hook_path=st_hook_file)
     @settings(max_examples=10)
     def test_hook_when_type_is_valid(self, hook_path: Path):
-        """Each hook's when.type must be a valid event type.
+        """Each hook's trigger must be a valid Kiro 1.0 trigger name.
 
         **Validates: Requirements 6.2, 6.3**
         """
-        data = _load_hook(hook_path)
-        event_type = data["when"]["type"]
-        assert event_type in VALID_EVENT_TYPES, (
-            f"{hook_path.name} has invalid when.type: {event_type!r}"
+        entry = _load_hook(hook_path)
+        trigger = entry["trigger"]
+        assert trigger in VALID_EVENT_TYPES, (
+            f"{hook_path.name} has invalid trigger: {trigger!r}"
         )
 
     @given(hook_path=st_hook_file)
     @settings(max_examples=10)
     def test_hook_then_type_is_ask_agent(self, hook_path: Path):
-        """Each hook's then.type must be 'askAgent' or 'runCommand'.
+        """Each hook's action.type must be 'agent' or 'command'.
 
-        Most hooks use askAgent; session-log-events uses runCommand to log writes
-        directly (no agent round-trip). runCommand hooks must carry a command.
+        Most hooks use ``agent``; session-log-events uses ``command`` to log
+        writes directly (no agent round-trip). ``command`` hooks must carry a
+        command.
 
         **Validates: Requirements 2.4, 6.3**
         """
-        data = _load_hook(hook_path)
-        then = data["then"]
-        then_type = then["type"]
-        assert then_type in ("askAgent", "runCommand"), (
-            f"{hook_path.name} has then.type={then_type!r}, "
-            f"expected 'askAgent' or 'runCommand'"
+        entry = _load_hook(hook_path)
+        action = entry["action"]
+        action_type = action["type"]
+        assert action_type in ("agent", "command"), (
+            f"{hook_path.name} has action.type={action_type!r}, "
+            f"expected 'agent' or 'command'"
         )
-        if then_type == "runCommand":
-            command = then.get("command", "")
+        if action_type == "command":
+            command = action.get("command", "")
             assert isinstance(command, str) and command.strip(), (
-                f"{hook_path.name} is a runCommand hook but has no then.command"
+                f"{hook_path.name} is a command hook but has no action.command"
             )

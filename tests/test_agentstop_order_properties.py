@@ -34,7 +34,7 @@ _REPO_ROOT: Path = Path(__file__).resolve().parent.parent
 HOOKS_DIR: Path = _REPO_ROOT / "senzing-bootcamp" / "hooks"
 CATEGORIES_PATH: Path = HOOKS_DIR / "hook-categories.yaml"
 
-AGENTSTOP_EVENT_TYPE: str = "agentStop"
+AGENTSTOP_EVENT_TYPE: str = "Stop"
 
 
 # ---------------------------------------------------------------------------
@@ -43,28 +43,28 @@ AGENTSTOP_EVENT_TYPE: str = "agentStop"
 
 
 def _load_hook(path: Path) -> dict:
-    """Load and parse a single ``.kiro.hook`` JSON file."""
-    return json.loads(path.read_text(encoding="utf-8"))
+    """Load and parse the single v1 hook entry (``hooks[0]``) from a hook file."""
+    return json.loads(path.read_text(encoding="utf-8"))["hooks"][0]
 
 
 def hook_id_of(path: Path) -> str:
-    """Return the hook id (filename without the ``.kiro.hook`` suffix)."""
-    return path.name.replace(".kiro.hook", "")
+    """Return the hook id (filename without the ``.json`` suffix)."""
+    return path.name.replace(".json", "")
 
 
 def get_hook_files() -> list[Path]:
-    """Return all ``.kiro.hook`` file paths in the hooks directory, sorted."""
+    """Return all ``.json`` v1 hook file paths in the hooks directory, sorted."""
     assert HOOKS_DIR.is_dir(), f"Hooks directory not found at {HOOKS_DIR}"
-    return sorted(HOOKS_DIR.glob("*.kiro.hook"))
+    return sorted(HOOKS_DIR.glob("*.json"))
 
 
 def event_type_of(path: Path) -> str:
-    """Return the ``when.type`` for a hook file (empty string if absent)."""
-    return _load_hook(path).get("when", {}).get("type", "")
+    """Return the 1.0 ``trigger`` for a hook file (empty string if absent)."""
+    return _load_hook(path).get("trigger", "")
 
 
 def agentstop_hook_ids() -> set[str]:
-    """Return the set of hook ids whose ``when.type`` is ``agentStop``."""
+    """Return the set of hook ids whose 1.0 ``trigger`` is ``Stop``."""
     return {
         hook_id_of(path)
         for path in get_hook_files()

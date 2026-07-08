@@ -32,7 +32,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-HOOK_PATH: Path = Path("senzing-bootcamp/hooks/write-policy-gate.kiro.hook")
+HOOK_PATH: Path = Path("senzing-bootcamp/hooks/write-policy-gate.json")
 
 # The major prompt blocks are separated by a blank-line-delimited horizontal
 # rule. Splitting on it yields, in order:
@@ -86,7 +86,7 @@ def load_prompt() -> str:
     Returns:
         The gate prompt string.
     """
-    return load_hook()["then"]["prompt"]
+    return load_hook()["hooks"][0]["action"]["prompt"]
 
 
 def sections() -> list[str]:

@@ -122,11 +122,11 @@ def get_expected_routing(filename: str) -> str:
 @pytest.fixture(scope="module")
 def hook_prompt() -> str:
     """Load the write-policy-gate hook prompt text."""
-    hook_path = REPO_ROOT / "senzing-bootcamp" / "hooks" / "write-policy-gate.kiro.hook"
+    hook_path = REPO_ROOT / "senzing-bootcamp" / "hooks" / "write-policy-gate.json"
     assert hook_path.exists(), f"Hook file not found: {hook_path}"
     with open(hook_path, encoding="utf-8") as f:
         data = json.load(f)
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 @pytest.fixture(scope="module")
@@ -394,14 +394,23 @@ class TestCheck4PromptStructure:
         """FAST PATH GATE includes the root placement condition."""
         assert "The target path is NOT a blocked file type in the project root" in hook_prompt
 
-    def test_four_checks_in_description(self):
-        """Hook description mentions four policy checks."""
-        hook_path = (
-            REPO_ROOT / "senzing-bootcamp" / "hooks" / "write-policy-gate.kiro.hook"
-        )
-        with open(hook_path, encoding="utf-8") as f:
-            data = json.load(f)
-        assert "four policy checks" in data["description"]
+    def test_four_checks_in_description(self, hook_prompt: str):
+        """Hook covers four policy checks.
+
+        The Kiro 1.0 ``v1`` hook entry has no ``description`` field (only
+        ``name``/``trigger``/``matcher``/``action``), so the "four policy
+        checks" intent is asserted against the composed prompt, which carries
+        all four ``CHECK N:`` sections.
+        """
+        for header in (
+            "CHECK 1: SENZING SQL BLOCKING",
+            "CHECK 2: SINGLE-QUESTION ENFORCEMENT",
+            "CHECK 3: FILE PATH POLICIES",
+            "CHECK 4: ROOT FILE PLACEMENT ENFORCEMENT",
+        ):
+            assert header in hook_prompt, (
+                f"write-policy-gate prompt missing policy check header: {header}"
+            )
 
 
 # ===========================================================================

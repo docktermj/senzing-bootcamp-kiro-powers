@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
-"""Hook self-test: structural validation of all .kiro.hook files.
+"""Hook self-test: structural validation of all v1 hook (*.json) files.
 
-Validates JSON structure, required fields, event types, action types,
-pattern validity, toolType validity, and registry consistency.
+Validates the Kiro 1.0 ``v1`` hook schema for every shipped ``hooks/*.json``
+file: JSON validity, the ``{"version": "v1", "hooks": [ ... ]}`` wrapper, the
+required ``name``/``trigger``/``action`` fields, a ``matcher`` where the trigger
+requires scoping, only the 1.0 trigger names and the ``agent``/``command``
+action types, matcher regex compilation, and registry consistency.
+
+The 1.0 accept-lists (valid triggers, valid action types, and the
+matcher-requirement classification of each trigger) are sourced from the shared
+``hook_renames`` module so the validator can never drift from the migration
+transform. The legacy ``*.kiro.hook`` files are intentionally excluded from
+discovery so this self-test validates only the migrated v1 definitions.
 
 Usage:
     python3 senzing-bootcamp/scripts/test_hooks.py
@@ -20,6 +29,13 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
+# Allow importing sibling scripts (scripts aren't packages).
+_SCRIPTS_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
+
+import hook_renames as renames  # noqa: E402
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
@@ -32,18 +48,6 @@ REGISTRY_PATH = Path("senzing-bootcamp/steering/hook-registry-critical.md")
 MODULE_SLICE_GLOB = "hook-registry-module-*.md"
 CATEGORIES_PATH = Path("senzing-bootcamp/hooks/hook-categories.yaml")
 
-VALID_EVENT_TYPES = {
-    "fileEdited", "fileCreated", "fileDeleted",
-    "userTriggered", "promptSubmit", "agentStop",
-    "preToolUse", "postToolUse",
-    "preTaskExecution", "postTaskExecution",
-}
-
-VALID_TOOL_CATEGORIES = {"read", "write", "shell", "web", "spec", "*"}
-
-FILE_EVENT_TYPES = {"fileEdited", "fileCreated", "fileDeleted"}
-TOOL_EVENT_TYPES = {"preToolUse", "postToolUse"}
-
 
 # ---------------------------------------------------------------------------
 # Data structures
@@ -51,19 +55,11 @@ TOOL_EVENT_TYPES = {"preToolUse", "postToolUse"}
 
 
 @dataclass
-class CheckResult:
-    """Result of a single validation check."""
-
-    passed: bool
-    message: str = ""
-
-
-@dataclass
 class HookTestResult:
-    """Aggregated test result for a single hook."""
+    """Aggregated test result for a single hook file."""
 
     hook_id: str
-    event_type: str = ""
+    trigger: str = ""
     action_type: str = ""
     passed: bool = True
     failures: list[str] = field(default_factory=list)
@@ -143,86 +139,126 @@ def parse_registry_hook_ids(path: Path) -> set[str]:
 
 
 # ---------------------------------------------------------------------------
-# Glob validation
+# V1 hook validation
 # ---------------------------------------------------------------------------
 
 
-def validate_glob_pattern(pattern: str) -> str | None:
-    """Check if a glob pattern is structurally valid.
+def _validate_v1_entry(hook: object, idx: int, result: HookTestResult) -> None:
+    """Validate a single V1_Hook entry against the Kiro 1.0 schema.
+
+    Applies the required-field (Req 6.2), 1.0-trigger-only (Req 6.3),
+    1.0-action-type-only (Req 6.4), matcher-when-required (Req 6.2), and
+    matcher-compiles (Req 6.5) rules, reusing the accept-lists in
+    ``hook_renames`` rather than hardcoding any trigger set. An optional
+    hook-level ``timeout`` integer is accepted rather than rejected
+    (``session-log-events`` carries ``"timeout": 10``).
+
+    Failures are appended to ``result``; the display fields (trigger,
+    action_type, prompt, command) are populated from the first entry.
 
     Args:
-        pattern: Glob pattern string.
-
-    Returns:
-        Error message if invalid, None if valid.
+        hook: The parsed hook entry (expected to be a dict).
+        idx: The entry's index within the ``hooks`` array.
+        result: The aggregated result for the file, mutated in place.
     """
-    # Check for unbalanced brackets
-    depth = 0
-    for ch in pattern:
-        if ch == "[":
-            depth += 1
-        elif ch == "]":
-            depth -= 1
-        if depth < 0:
-            return f"Unbalanced bracket in glob: {pattern}"
-    if depth != 0:
-        return f"Unbalanced bracket in glob: {pattern}"
+    prefix = "" if idx == 0 else f"hooks[{idx}]: "
 
-    # Check for empty pattern
-    if not pattern.strip():
-        return "Empty glob pattern"
+    if not isinstance(hook, dict):
+        result.passed = False
+        result.failures.append(f"{prefix}entry is not an object")
+        return
 
-    return None
+    # Req 6.6: a legacy when/then shape inside an entry is a stale definition.
+    if "when" in hook or "then" in hook:
+        result.passed = False
+        result.failures.append(f"{prefix}uses legacy when/then schema")
+        return
 
+    # Req 6.2: name present and non-empty.
+    name = hook.get("name")
+    if not (isinstance(name, str) and name.strip()):
+        result.passed = False
+        result.failures.append(f"{prefix}missing required field: name")
 
-# ---------------------------------------------------------------------------
-# ToolType validation
-# ---------------------------------------------------------------------------
+    # Req 6.2 / 6.3: trigger present and a valid 1.0 trigger name (rejects
+    # legacy names such as fileEdited/agentStop/userTriggered).
+    trigger = hook.get("trigger", "")
+    if idx == 0:
+        result.trigger = trigger if isinstance(trigger, str) else ""
+    trigger_ok = trigger in renames.VALID_V1_TRIGGERS
+    if not trigger_ok:
+        result.passed = False
+        result.failures.append(f"{prefix}invalid trigger: {trigger!r}")
 
+    # Req 6.2 / 6.4: action present with a valid 1.0 action type (rejects the
+    # legacy askAgent/runCommand types).
+    action = hook.get("action")
+    action_type = action.get("type", "") if isinstance(action, dict) else ""
+    if idx == 0:
+        result.action_type = action_type if isinstance(action_type, str) else ""
+    if action_type not in renames.VALID_V1_ACTION_TYPES:
+        result.passed = False
+        result.failures.append(f"{prefix}invalid action type: {action_type!r}")
+    else:
+        # Payload presence: an agent action carries a prompt, a command action
+        # carries a command.
+        payload_field = "prompt" if action_type == "agent" else "command"
+        payload = action.get(payload_field, "") if isinstance(action, dict) else ""
+        if not (isinstance(payload, str) and payload.strip()):
+            result.passed = False
+            result.failures.append(
+                f"{prefix}empty {payload_field} for {action_type} action"
+            )
+        elif idx == 0:
+            if action_type == "agent":
+                result.prompt = payload
+            else:
+                result.command = payload
 
-def validate_tool_type(tool_type: str) -> str | None:
-    """Validate a single toolType entry.
+    # Req 6.2 / 6.5: a matcher is required for scoped triggers (file-path or
+    # tool-name); any present matcher must compile as a regular expression.
+    matcher = hook.get("matcher")
+    if trigger_ok:
+        kind = renames.matcher_kind(trigger)
+        if kind != renames.MATCHER_KIND_UNSCOPED and not (
+            isinstance(matcher, str) and matcher.strip()
+        ):
+            result.passed = False
+            result.failures.append(f"{prefix}{trigger} requires a {kind} matcher")
+    if isinstance(matcher, str) and matcher != "":
+        try:
+            re.compile(matcher)
+        except re.error as exc:
+            result.passed = False
+            result.failures.append(f"{prefix}matcher does not compile: {exc}")
+    elif matcher is not None and not isinstance(matcher, str):
+        result.passed = False
+        result.failures.append(f"{prefix}matcher must be a string")
 
-    Valid entries are either a known category or a compilable regex.
-
-    Args:
-        tool_type: The toolType string to validate.
-
-    Returns:
-        Error message if invalid, None if valid.
-    """
-    if tool_type in VALID_TOOL_CATEGORIES:
-        return None
-
-    # Try as regex
-    try:
-        re.compile(tool_type)
-        return None
-    except re.error as e:
-        return f"Invalid toolType regex '{tool_type}': {e}"
-
-
-# ---------------------------------------------------------------------------
-# Hook validation
-# ---------------------------------------------------------------------------
+    # Accept an optional hook-level timeout (integer) without treating it as an
+    # unknown/invalid field (session-log-events carries "timeout": 10). A bool
+    # is not a valid integer timeout.
+    if "timeout" in hook:
+        timeout = hook.get("timeout")
+        if not (isinstance(timeout, int) and not isinstance(timeout, bool)):
+            result.passed = False
+            result.failures.append(f"{prefix}optional 'timeout' must be an integer")
 
 
 def validate_hook(file_path: Path) -> HookTestResult:
-    """Run all validation checks on a single hook file.
+    """Run all v1-schema validation checks on a single hook file.
 
     Args:
-        file_path: Path to the .kiro.hook file.
+        file_path: Path to the ``<id>.json`` hook file.
 
     Returns:
         HookTestResult with pass/fail status and any failure messages.
     """
-    hook_id = file_path.stem.replace(".kiro", "")
-    result = HookTestResult(hook_id=hook_id)
+    result = HookTestResult(hook_id=hook_id_from_path(file_path))
 
-    # Check 1: Valid JSON
+    # Check 1: valid JSON.
     try:
-        text = file_path.read_text(encoding="utf-8")
-        data = json.loads(text)
+        data = json.loads(file_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as e:
         result.passed = False
         result.failures.append(f"Invalid JSON: {e}")
@@ -232,105 +268,30 @@ def validate_hook(file_path: Path) -> HookTestResult:
         result.failures.append(f"Cannot read file: {e}")
         return result
 
-    # Check 2: Required fields
-    for fld in ("name", "version"):
-        if fld not in data:
-            result.passed = False
-            result.failures.append(f"Missing required field: {fld}")
-
-    when = data.get("when", {})
-    then = data.get("then", {})
-
-    if "when" not in data:
+    # Req 6.6: a legacy top-level when/then shape is a stale definition.
+    if isinstance(data, dict) and ("when" in data or "then" in data):
         result.passed = False
-        result.failures.append("Missing required field: when")
-    elif "type" not in when:
-        result.passed = False
-        result.failures.append("Missing required field: when.type")
-
-    if "then" not in data:
-        result.passed = False
-        result.failures.append("Missing required field: then")
-    elif "type" not in then:
-        result.passed = False
-        result.failures.append("Missing required field: then.type")
-
-    # If we can't get event/action type, stop here
-    event_type = when.get("type", "")
-    action_type = then.get("type", "")
-    result.event_type = event_type
-    result.action_type = action_type
-
-    if not event_type or not action_type:
+        result.failures.append("Uses legacy when/then schema (expected v1 wrapper)")
         return result
 
-    # Check 3: Valid event type
-    if event_type not in VALID_EVENT_TYPES:
+    # Req 6.1: top-level version == "v1".
+    if not isinstance(data, dict) or data.get("version") != "v1":
         result.passed = False
-        result.failures.append(f"Invalid event type: {event_type}")
+        result.failures.append("Top-level version must be 'v1'")
 
-    # Check 4: Valid action type
-    if action_type not in ("askAgent", "runCommand"):
+    # Req 6.1: top-level hooks array (non-empty).
+    hooks = data.get("hooks") if isinstance(data, dict) else None
+    if not isinstance(hooks, list):
         result.passed = False
-        result.failures.append(f"Invalid action type: {action_type}")
+        result.failures.append("Missing required field: hooks (array)")
+        return result
+    if not hooks:
+        result.passed = False
+        result.failures.append("hooks array is empty")
+        return result
 
-    # Check 5: Prompt/command presence
-    if action_type == "askAgent":
-        prompt = then.get("prompt", "")
-        result.prompt = prompt
-        if not prompt or not prompt.strip():
-            result.passed = False
-            result.failures.append("Empty prompt for askAgent hook")
-    elif action_type == "runCommand":
-        command = then.get("command", "")
-        result.command = command
-        if not command or not command.strip():
-            result.passed = False
-            result.failures.append("Empty command for runCommand hook")
-
-    # Check 6: File patterns for file-event hooks
-    if event_type in FILE_EVENT_TYPES:
-        patterns = when.get("patterns")
-        if patterns is None:
-            result.passed = False
-            result.failures.append(
-                f"Missing when.patterns for {event_type} hook"
-            )
-        elif isinstance(patterns, list):
-            for pat in patterns:
-                err = validate_glob_pattern(pat)
-                if err:
-                    result.passed = False
-                    result.failures.append(err)
-        else:
-            # patterns should be a string (comma-separated) or list
-            if isinstance(patterns, str):
-                for pat in patterns.split(","):
-                    err = validate_glob_pattern(pat.strip())
-                    if err:
-                        result.passed = False
-                        result.failures.append(err)
-
-    # Check 7: ToolTypes for tool-event hooks
-    if event_type in TOOL_EVENT_TYPES:
-        tool_types = when.get("toolTypes")
-        if tool_types is None:
-            result.passed = False
-            result.failures.append(
-                f"Missing when.toolTypes for {event_type} hook"
-            )
-        elif isinstance(tool_types, list):
-            for tt in tool_types:
-                err = validate_tool_type(tt)
-                if err:
-                    result.passed = False
-                    result.failures.append(err)
-        elif isinstance(tool_types, str):
-            for tt in tool_types.split(","):
-                err = validate_tool_type(tt.strip())
-                if err:
-                    result.passed = False
-                    result.failures.append(err)
+    for idx, hook in enumerate(hooks):
+        _validate_v1_entry(hook, idx, result)
 
     return result
 
@@ -341,7 +302,10 @@ def validate_hook(file_path: Path) -> HookTestResult:
 
 
 def discover_hooks(hooks_dir: Path) -> list[Path]:
-    """Find all .kiro.hook files in the hooks directory.
+    """Find all shipped v1 hook (*.json) files in the hooks directory.
+
+    The legacy ``*.kiro.hook`` files are intentionally excluded so this
+    self-test validates only the migrated v1 definitions.
 
     Args:
         hooks_dir: Path to the hooks directory.
@@ -351,19 +315,19 @@ def discover_hooks(hooks_dir: Path) -> list[Path]:
     """
     if not hooks_dir.exists():
         return []
-    return sorted(hooks_dir.glob("*.kiro.hook"))
+    return sorted(hooks_dir.glob("*.json"))
 
 
 def hook_id_from_path(path: Path) -> str:
-    """Extract hook ID from a hook file path.
+    """Extract hook ID from a v1 hook file path (``<id>.json`` -> ``<id>``).
 
     Args:
-        path: Path to a .kiro.hook file.
+        path: Path to a ``<id>.json`` file.
 
     Returns:
         The hook ID string.
     """
-    return path.stem.replace(".kiro", "")
+    return path.stem
 
 
 # ---------------------------------------------------------------------------
@@ -443,7 +407,7 @@ def format_results(
     lines.append("Hook Self-Test Results")
     lines.append("=" * 70)
     lines.append(
-        f"  {'ID':<30} {'Event Type':<16} {'Action':<12} {'Status'}"
+        f"  {'ID':<30} {'Trigger':<16} {'Action':<12} {'Status'}"
     )
     lines.append("-" * 70)
 
@@ -458,7 +422,7 @@ def format_results(
             failed_count += 1
 
         lines.append(
-            f"  {r.hook_id:<30} {r.event_type:<16} {r.action_type:<12} {status}"
+            f"  {r.hook_id:<30} {r.trigger:<16} {r.action_type:<12} {status}"
         )
 
         if not r.passed:
@@ -515,7 +479,7 @@ def main(argv: list[str] | None = None) -> int:
         Exit code: 0 if all pass, 1 if any fail.
     """
     parser = argparse.ArgumentParser(
-        description="Structural validation of .kiro.hook files"
+        description="Structural validation of v1 hook (*.json) files"
     )
     parser.add_argument(
         "--hook", metavar="HOOK_ID",
@@ -595,7 +559,7 @@ if __name__ == "__main__":
 
 
 def test_all_hooks_pass() -> None:
-    """Pytest wrapper: validates all hooks pass structural checks."""
+    """Pytest wrapper: validates all v1 hooks pass structural checks."""
     hook_files = discover_hooks(HOOKS_DIR)
     assert hook_files, f"No hook files found in {HOOKS_DIR}"
 

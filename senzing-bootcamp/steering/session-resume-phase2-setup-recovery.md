@@ -18,7 +18,7 @@ If none of these conditions are true, skip all content and return to Phase-1 flo
 Check `hooks_installed` in `config/bootcamp_preferences.yaml`:
 
 - If `hooks_installed` exists with hook names and timestamp → skip hook creation entirely.
-- If `hooks_installed` is missing or empty → load the Hook Registry from `onboarding-phase2-track-setup.md` and create Critical Hooks using `createHook`. **Use the exact `name` from each hook's `- name:` line in the registry (e.g., `to wait for your answer`, NOT `Ask Bootcamper`).**
+- If `hooks_installed` is missing or empty → load the Hook Registry from `onboarding-phase2-track-setup.md` and create Critical Hooks as v1 `<id>.json` definitions using `createHook`, taking each hook's `trigger`, `matcher` (only where the registry entry specifies one), and `action` type from the registry. **Use the exact `name` from each hook's `- name:` line in the registry (e.g., `to wait for your answer`, NOT `Ask Bootcamper`).**
 - If `config/bootcamp_preferences.yaml` itself is missing or corrupted → treat as no hooks installed and create Critical Hooks from the Hook Registry.
 - If any Critical Hook creation fails, log the failure and continue with remaining hooks. Report failures after all attempts (see failure impact messages in the Hook Registry).
 
@@ -26,7 +26,7 @@ Check `hooks_installed` in `config/bootcamp_preferences.yaml`:
 
 Immediately **after** the `hooks_installed` check above, inspect the bootcamper's `.kiro/hooks` directory for the three **capture-critical** hooks — `session-log-events`, `module-recap-append`, and `ask-bootcamper`. They feed the completion summary and recap; if any is missing, that output is silently incomplete.
 
-For each capture-critical hook whose `<id>.kiro.hook` file is **absent** from `.kiro/hooks`, warn the bootcamper which are missing and how to install them:
+For each capture-critical hook whose `<id>.json` file is **absent** from `.kiro/hooks`, warn the bootcamper which are missing and how to install them:
 
 - Re-create them with `createHook` from the Hook Registry (`ask-bootcamper` in `hook-registry-critical.md`; `module-recap-append` and `session-log-events` in `hook-registry-module-any.md`), **or**
 - Run the file-copy installer: `python3 senzing-bootcamp/scripts/install_hooks.py --essential` (its `--essential` set includes all three).

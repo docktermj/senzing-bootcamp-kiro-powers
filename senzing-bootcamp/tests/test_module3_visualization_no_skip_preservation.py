@@ -67,9 +67,9 @@ _HOOKS_DIR = _BOOTCAMP_DIR / "hooks"
 _STEERING_DIR = _BOOTCAMP_DIR / "steering"
 _CONFIG_DIR = _BOOTCAMP_DIR / "config"
 
-_GATE_HOOK = _HOOKS_DIR / "gate-module3-visualization.kiro.hook"
-_ENFORCE_GATE_HOOK = _HOOKS_DIR / "enforce-mandatory-gate.kiro.hook"
-_ENFORCE_STOP_HOOK = _HOOKS_DIR / "enforce-gate-on-stop.kiro.hook"
+_GATE_HOOK = _HOOKS_DIR / "gate-module3-visualization.json"
+_ENFORCE_GATE_HOOK = _HOOKS_DIR / "enforce-mandatory-gate.json"
+_ENFORCE_STOP_HOOK = _HOOKS_DIR / "enforce-gate-on-stop.json"
 _SKIP_PROTOCOL = _STEERING_DIR / "skip-step-protocol.md"
 
 # The three hooks the fix edits (prompt + some descriptions change; structural
@@ -271,17 +271,17 @@ def st_other_gate(draw: st.DrawFn) -> tuple[vmg.MandatoryGate, dict]:
 # unrelated hook/script/steering/config file — is still detected.
 # Paths are relative to the bootcamp root.
 _UNRELATED_FILE_MARKERS: dict[str, tuple[str, ...]] = {
-    # ask-bootcamper hook: agentStop → askAgent trigger and its closing-question
+    # ask-bootcamper hook: Kiro 1.0 Stop → agent trigger and its closing-question
     # ownership must survive untouched.
-    "hooks/ask-bootcamper.kiro.hook": (
-        '"agentStop"',
-        '"askAgent"',
+    "hooks/ask-bootcamper.json": (
+        '"Stop"',
+        '"agent"',
         "\U0001f449",  # 👉 closing-question marker
     ),
-    # git-commit-reminder hook: userTriggered → askAgent commit reminder.
-    "hooks/git-commit-reminder.kiro.hook": (
-        '"to remind you to commit"',
-        '"userTriggered"',
+    # git-commit-reminder is no longer a shipped hook under Kiro 1.0 — it became
+    # the /git-commit slash-command steering file. Its commit-reminder prompt
+    # text must survive the relocation untouched.
+    "steering/slash-git-commit.md": (
         "git commit",
     ),
     # progress_utils.py: the progress read/write/validate API surface.
@@ -337,37 +337,37 @@ def _read_text(path: Path) -> str:
 # ---------------------------------------------------------------------------
 
 _HOOK_STRUCTURAL_BASELINES: dict[str, dict] = {
-    "gate-module3-visualization.kiro.hook": {
+    "gate-module3-visualization.json": {
         "name": "to gate Module 3 completion on visualization step",
-        "version": "1.0.0",
-        "when": {"type": "preToolUse", "toolTypes": ["write"]},
-        "then_type": "askAgent",
+        "trigger": "PreToolUse",
+        "matcher": "fs_write|str_replace|fs_append",
+        "action_type": "agent",
     },
-    "enforce-mandatory-gate.kiro.hook": {
+    "enforce-mandatory-gate.json": {
         "name": "to enforce mandatory gate step execution before advancement",
-        "version": "1.0.0",
-        "when": {"type": "preToolUse", "toolTypes": ["write"]},
-        "then_type": "askAgent",
+        "trigger": "PreToolUse",
+        "matcher": "fs_write|str_replace|fs_append",
+        "action_type": "agent",
     },
-    "enforce-gate-on-stop.kiro.hook": {
+    "enforce-gate-on-stop.json": {
         "name": "to enforce mandatory gate execution on agent stop",
-        "version": "1.0.0",
-        "when": {"type": "agentStop"},
-        "then_type": "askAgent",
+        "trigger": "Stop",
+        "matcher": None,
+        "action_type": "agent",
     },
 }
 
 
 def _load_hook(path: Path) -> dict:
-    """Parse a .kiro.hook JSON file.
+    """Parse a v1 ``<id>.json`` hook file and return its single entry (``hooks[0]``).
 
     Args:
         path: The hook file path.
 
     Returns:
-        The parsed hook object.
+        The single v1 hook entry.
     """
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8"))["hooks"][0]
 
 
 # ---------------------------------------------------------------------------
@@ -617,7 +617,7 @@ class TestUnrelatedWriteNoOpPreservation:
 
     def test_gate_hook_no_op_guard_present(self) -> None:
         """gate-module3-visualization keeps its non-completion no-op guard."""
-        prompt = _load_hook(_GATE_HOOK)["then"]["prompt"]
+        prompt = _load_hook(_GATE_HOOK)["action"]["prompt"]
         assert "produce no output" in prompt, (
             "Gate hook must retain a 'produce no output' short-circuit for "
             "non-Module-3-completion writes"
@@ -628,7 +628,7 @@ class TestUnrelatedWriteNoOpPreservation:
 
     def test_enforce_gate_hook_no_op_guard_present(self) -> None:
         """enforce-mandatory-gate keeps its non-advancement no-op guard."""
-        prompt = _load_hook(_ENFORCE_GATE_HOOK)["then"]["prompt"]
+        prompt = _load_hook(_ENFORCE_GATE_HOOK)["action"]["prompt"]
         assert "produce no output" in prompt, (
             "Enforce-mandatory-gate hook must retain a 'produce no output' "
             "short-circuit for non-advancement writes"
@@ -640,7 +640,7 @@ class TestUnrelatedWriteNoOpPreservation:
 
     def test_enforce_stop_hook_no_op_guard_present(self) -> None:
         """enforce-gate-on-stop keeps its non-Module-3 no-op guard."""
-        prompt = _load_hook(_ENFORCE_STOP_HOOK)["then"]["prompt"]
+        prompt = _load_hook(_ENFORCE_STOP_HOOK)["action"]["prompt"]
         assert "produce no output" in prompt, (
             "Enforce-gate-on-stop hook must retain a 'produce no output' "
             "short-circuit when current_module != 3 or current_step < 9"
@@ -667,44 +667,44 @@ class TestHookSchemaPreservation:
     """
 
     def test_all_hooks_have_required_schema_keys(self) -> None:
-        """Each edited hook retains the required JSON schema keys."""
+        """Each edited hook entry retains the required v1 schema keys."""
         for path in _EDITED_HOOKS:
             hook = _load_hook(path)
-            for key in ("name", "version", "when", "then"):
+            for key in ("name", "trigger", "action"):
                 assert key in hook, f"{path.name} missing required key '{key}'"
 
     def test_hook_structural_fields_match_baseline(self) -> None:
-        """name / version / when / then.type match the observed baselines."""
+        """name / trigger / matcher / action.type match the observed baselines."""
         for filename, baseline in _HOOK_STRUCTURAL_BASELINES.items():
             hook = _load_hook(_HOOKS_DIR / filename)
             assert hook["name"] == baseline["name"], (
                 f"{filename}: name changed from baseline"
             )
-            assert hook["version"] == baseline["version"], (
-                f"{filename}: version changed from baseline"
+            assert hook["trigger"] == baseline["trigger"], (
+                f"{filename}: trigger changed from baseline"
             )
-            assert hook["when"] == baseline["when"], (
-                f"{filename}: when trigger changed from baseline"
+            assert hook.get("matcher") == baseline["matcher"], (
+                f"{filename}: matcher changed from baseline"
             )
-            assert hook["then"]["type"] == baseline["then_type"], (
-                f"{filename}: then.type changed from baseline"
+            assert hook["action"]["type"] == baseline["action_type"], (
+                f"{filename}: action.type changed from baseline"
             )
 
     def test_pretooluse_write_triggers_preserved(self) -> None:
         """gate-module3-visualization & enforce-mandatory-gate stay write hooks."""
         for path in (_GATE_HOOK, _ENFORCE_GATE_HOOK):
             hook = _load_hook(path)
-            assert hook["when"]["type"] == "preToolUse", (
-                f"{path.name} must stay preToolUse"
+            assert hook["trigger"] == "PreToolUse", (
+                f"{path.name} must stay PreToolUse"
             )
-            assert hook["when"].get("toolTypes") == ["write"], (
-                f"{path.name} must stay toolTypes:['write']"
+            assert hook.get("matcher") == "fs_write|str_replace|fs_append", (
+                f"{path.name} must stay matcher fs_write|str_replace|fs_append"
             )
 
     def test_agent_stop_trigger_preserved(self) -> None:
-        """enforce-gate-on-stop stays an agentStop hook."""
+        """enforce-gate-on-stop stays a Stop hook (Kiro 1.0 rename of agentStop)."""
         hook = _load_hook(_ENFORCE_STOP_HOOK)
-        assert hook["when"]["type"] == "agentStop"
+        assert hook["trigger"] == "Stop"
 
     def test_hook_names_keep_to_form(self) -> None:
         """Each hook name keeps the conversational 'to ...' form."""

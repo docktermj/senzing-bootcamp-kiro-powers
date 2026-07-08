@@ -1,6 +1,12 @@
 """Example-based unit tests for sync_hook_registry.py.
 
 Feature: hook-registry-source-of-truth
+
+These tests exercise the Kiro 1.0 ``v1`` hook model: hooks ship as ``*.json``
+files wrapping ``{"version": "v1", "hooks": [{name, trigger, matcher, action}]}``.
+There is no legacy ``file_patterns`` / ``tool_types`` split — a hook carries a
+single ``matcher`` regex (or ``None``) — and the schema has no ``description``
+field, so ``HookEntry.description`` falls back to the hook ``name``.
 """
 
 import ast
@@ -18,6 +24,7 @@ if _SCRIPTS_DIR not in sys.path:
 
 from sync_hook_registry import (
     categorize_hooks,
+    discover_hook_files,
     generate_registry_summary,
     load_category_mapping,
     parse_all_hooks,
@@ -34,7 +41,7 @@ _SCRIPT_PATH = _REPO_ROOT / "senzing-bootcamp" / "scripts" / "sync_hook_registry
 
 
 # ---------------------------------------------------------------------------
-# 8.1 Parse real ask-bootcamper.kiro.hook (Req 1.2)
+# 8.1 Parse real ask-bootcamper.json v1 hook file (Req 1.2)
 # ---------------------------------------------------------------------------
 
 
@@ -42,33 +49,36 @@ class TestParseRealHookFile:
     """Validates: Requirement 1.2"""
 
     def test_parse_ask_bootcamper(self):
-        hook_path = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+        hook_path = _HOOKS_DIR / "ask-bootcamper.json"
         entry = parse_hook_file(hook_path)
 
         assert entry.hook_id == "ask-bootcamper"
         assert entry.name == "to wait for your answer"
-        assert "agentstop" in entry.description.lower()
-        assert entry.event_type == "agentStop"
-        assert entry.action_type == "askAgent"
+        # The v1 schema has no description field, so description falls back to
+        # the hook name.
+        assert entry.description == entry.name
+        # 1.0 trigger + action type (replaces legacy agentStop / askAgent).
+        assert entry.event_type == "Stop"
+        assert entry.action_type == "agent"
         assert entry.prompt is not None
         assert "recap" in entry.prompt.lower()
-        assert entry.file_patterns is None
-        assert entry.tool_types is None
+        # ask-bootcamper is an unscoped Stop trigger — no single matcher.
+        assert entry.matcher is None
 
 
 # ---------------------------------------------------------------------------
-# 8.2 Parse all 21 real hook files without errors (Req 1.1)
+# 8.2 Parse all real v1 hook files without errors (Req 1.1)
 # ---------------------------------------------------------------------------
 
 
 class TestParseAllRealHooks:
     """Validates: Requirement 1.1"""
 
-    def test_all_19_hooks_parse_without_errors(self):
+    def test_all_hooks_parse_without_errors(self):
         entries, errors = parse_all_hooks(_HOOKS_DIR)
         assert len(errors) == 0, f"Parse errors: {errors}"
-        # Count should match number of .kiro.hook files on disk
-        expected = len(list(_HOOKS_DIR.glob("*.kiro.hook")))
+        # Count should match the number of v1 ``*.json`` hook files on disk.
+        expected = len(discover_hook_files(_HOOKS_DIR))
         assert len(entries) == expected, f"Expected {expected} hooks, got {len(entries)}"
 
 
@@ -82,7 +92,7 @@ class TestInvalidJsonSkipped:
 
     def test_invalid_json_raises_value_error(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
-            bad_file = Path(tmp_dir) / "bad-hook.kiro.hook"
+            bad_file = Path(tmp_dir) / "bad-hook.json"
             bad_file.write_text("{ not valid json }", encoding="utf-8")
 
             with pytest.raises(ValueError, match="bad-hook"):
@@ -90,16 +100,20 @@ class TestInvalidJsonSkipped:
 
     def test_invalid_json_collected_in_parse_all(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
-            # Create one valid and one invalid hook file
-            valid = Path(tmp_dir) / "good.kiro.hook"
+            # Create one valid v1 hook file and one invalid JSON file.
+            valid = Path(tmp_dir) / "good.json"
             valid.write_text(json.dumps({
-                "name": "Good Hook",
-                "description": "A good hook",
-                "when": {"type": "agentStop"},
-                "then": {"type": "askAgent"},
+                "version": "v1",
+                "hooks": [
+                    {
+                        "name": "Good Hook",
+                        "trigger": "Stop",
+                        "action": {"type": "agent", "prompt": "Do the good thing."},
+                    }
+                ],
             }), encoding="utf-8")
 
-            bad = Path(tmp_dir) / "bad.kiro.hook"
+            bad = Path(tmp_dir) / "bad.json"
             bad.write_text("not json", encoding="utf-8")
 
             entries, errors = parse_all_hooks(Path(tmp_dir))
@@ -119,24 +133,24 @@ class TestCategoryMappingLoads:
     def test_load_real_categories(self):
         mapping = load_category_mapping(_CATEGORIES_PATH)
 
-        # Should have all hooks mapped (count matches disk)
-        expected = len(list(_HOOKS_DIR.glob("*.kiro.hook")))
+        # Should have all hooks mapped (count matches disk).
+        expected = len(discover_hook_files(_HOOKS_DIR))
         assert len(mapping) == expected, f"Expected {expected} mappings, got {len(mapping)}"
 
-        # Check some known critical hooks
+        # Check some known critical hooks.
         assert mapping["ask-bootcamper"].category == "critical"
         assert mapping["review-bootcamper-input"].category == "critical"
 
-        # Check some known module hooks
+        # Check some known module hooks.
         assert mapping["data-quality-check"].category == "module"
         assert mapping["data-quality-check"].module_number == 5
 
         assert mapping["backup-before-load"].category == "module"
         assert mapping["backup-before-load"].module_number == 6
 
-        # Check "any module" hooks
-        assert mapping["backup-project-on-request"].category == "module"
-        assert mapping["backup-project-on-request"].module_number is None
+        # Check "any module" hooks (module category, no specific module number).
+        assert mapping["session-log-events"].category == "module"
+        assert mapping["session-log-events"].module_number is None
 
 
 # ---------------------------------------------------------------------------
@@ -148,11 +162,11 @@ class TestVerifyExitsZero:
     """Validates: Requirement 4.3"""
 
     def test_verify_matches_current_registry(self):
-        # Generate content from real hooks
+        # Generate content from real hooks.
         entries, errors = parse_all_hooks(_HOOKS_DIR)
         assert len(errors) == 0
         mapping = load_category_mapping(_CATEGORIES_PATH)
-        critical, modules = categorize_hooks(entries, mapping)
+        critical, modules = categorize_hooks(entries, mapping, _CATEGORIES_PATH)
         content = generate_registry_summary(
             critical, modules, len(entries), categories_path=_CATEGORIES_PATH
         )

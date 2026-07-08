@@ -11,19 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## any module Hooks
 
-**backup-project-on-request** (userTriggered → askAgent)
-
-Prompt:
-
-````text
-The user wants to back up their project. Run the backup script: python3 scripts/backup_project.py (on Linux/macOS) or python scripts/backup_project.py (on Windows). Create the backups/ directory first if it doesn't exist.
-````
-
-- id: `backup-project-on-request`
-- name: `to back up your project`
-- description: `Run project backup when user clicks the hook button. Avoids firing on every prompt — use the manual trigger button in the Agent Hooks panel instead.`
-
-**enforce-critical-artifacts** (agentStop → askAgent)
+**enforce-critical-artifacts** (Stop → agent)
 
 Prompt:
 
@@ -55,9 +43,10 @@ BLOCK ON FAILURE — If the report's `all_satisfied` field is `false`, one or mo
 
 - id: `enforce-critical-artifacts`
 - name: `to enforce critical graduation artifacts on agent stop`
-- description: `At a track-completion or graduation stopping point, guarantees the three crown-jewel artifacts (Q&A transcript, recap Markdown, rendered recap) exist and are non-empty by running ensure_graduation_artifacts.py, and blocks the 'done' state until all three are present. Silent when the invariant already holds.`
+- trigger: `Stop`
+- action: `agent`
 
-**error-recovery-context** (postToolUse → askAgent, toolTypes: shell)
+**error-recovery-context** (PostToolUse → agent, matcher: `execute_bash`)
 
 Prompt:
 
@@ -83,21 +72,11 @@ For non-zero exit codes with a valid bootcamp session:
 
 - id: `error-recovery-context`
 - name: `to help recover from errors`
-- description: `Detects shell command failures and consults common-pitfalls.md and recovery-from-mistakes.md to provide targeted error recovery guidance during bootcamp modules.`
+- trigger: `PostToolUse`
+- matcher: `execute_bash`
+- action: `agent`
 
-**git-commit-reminder** (userTriggered → askAgent)
-
-Prompt:
-
-````text
-The user wants to commit their bootcamp progress. Check config/bootcamp_progress.json for the current module number and list of completed modules. Then suggest a git commit with a descriptive message like: git add . && git commit -m "Complete Module [N]: [Module Name]". Show the user the command and ask if they'd like you to run it.
-````
-
-- id: `git-commit-reminder`
-- name: `to remind you to commit`
-- description: `Reminds the user to commit their work after completing a module. Triggered manually via button click.`
-
-**module-completion-celebration** (agentStop → askAgent)
+**module-completion-celebration** (Stop → agent)
 
 Prompt:
 
@@ -127,9 +106,10 @@ CONSTRAINTS:
 
 - id: `module-completion-celebration`
 - name: `to celebrate module completion`
-- description: `Detects module completion boundaries and displays a brief celebration with next-step guidance.`
+- trigger: `Stop`
+- action: `agent`
 
-**module-recap-append** (agentStop → askAgent)
+**module-recap-append** (Stop → agent)
 
 Prompt:
 
@@ -230,10 +210,13 @@ CONSTRAINTS:
 
 - id: `module-recap-append`
 - name: `to append module recap on completion`
-- description: `Appends a structured recap section to docs/bootcamp_recap.md when a module is completed, then verifies the section persisted and backfills it if absent.`
+- trigger: `Stop`
+- action: `agent`
 
-**session-log-events** (postToolUse → runCommand, toolTypes: write)
+**session-log-events** (PostToolUse → command, matcher: `fs_write|str_replace|fs_append`)
 
 - id: `session-log-events`
 - name: `to log session events after write operations`
-- description: `Logs a session event after write operations complete. The IDE appends the log line directly via a runCommand (no agent round-trip). When the bundled senzing-bootcamp/scripts/log_write_event.py is present it is invoked unchanged; when it is absent a self-contained inline stdlib appender records an equivalent generic write action (timestamp + current module) to config/session_log.jsonl, so logging never emits a file-not-found error and always exits 0.`
+- trigger: `PostToolUse`
+- matcher: `fs_write|str_replace|fs_append`
+- action: `command`

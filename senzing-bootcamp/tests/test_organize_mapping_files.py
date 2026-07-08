@@ -538,14 +538,14 @@ class TestCLIArgumentDefaults:
 import json  # noqa: E402
 
 _HOOK_PATH = (
-    Path(__file__).resolve().parent.parent / "hooks" / "write-policy-gate.kiro.hook"
+    Path(__file__).resolve().parent.parent / "hooks" / "write-policy-gate.json"
 )
 
 
 def _load_hook_prompt() -> str:
-    """Return the askAgent prompt text from the write-policy-gate hook."""
+    """Return the agent-action prompt text from the write-policy-gate v1 hook."""
     data = json.loads(_HOOK_PATH.read_text(encoding="utf-8"))
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 class TestBugConditionConventionalPlacement:
@@ -1175,21 +1175,26 @@ class TestRouteUnitTable:
 class TestHookSchemaValidity:
     """Feature: docs-file-placement, hook JSON schema validity.
 
-    The write-policy-gate hook parses as JSON and carries the required schema
-    fields with a preToolUse write trigger.
+    The write-policy-gate hook parses as a v1 wrapper and carries the required
+    schema fields with a PreToolUse write matcher.
 
     **Validates: Requirements 2.4**
     """
 
     def test_hook_is_valid_json_with_required_schema(self):
-        """name/version/when/then present; when targets preToolUse writes."""
+        """name/trigger/action present; trigger is PreToolUse with a write matcher."""
         data = json.loads(_HOOK_PATH.read_text(encoding="utf-8"))
 
-        for field in ("name", "version", "when", "then"):
-            assert field in data, f"hook missing required field {field!r}"
+        assert data.get("version") == "v1", "wrapper must declare version 'v1'"
+        assert isinstance(data.get("hooks"), list) and data["hooks"], (
+            "wrapper must contain a non-empty 'hooks' array"
+        )
+        entry = data["hooks"][0]
+        for field in ("name", "trigger", "action"):
+            assert field in entry, f"hook missing required field {field!r}"
 
-        assert data["when"]["type"] == "preToolUse"
-        assert data["when"]["toolTypes"] == ["write"]
+        assert entry["trigger"] == "PreToolUse"
+        assert entry.get("matcher") == "fs_write|str_replace|fs_append"
 
 
 # ===========================================================================

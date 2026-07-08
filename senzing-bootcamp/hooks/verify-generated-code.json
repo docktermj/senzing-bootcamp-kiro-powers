@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "to verify generated code",
+      "trigger": "PostFileCreate",
+      "matcher": "^(?:src/transform/[^/]*\\.[^/]*|src/load/[^/]*\\.[^/]*|src/query/[^/]*\\.[^/]*)$",
+      "action": {
+        "type": "agent",
+        "prompt": "A new bootcamp source file was created. Before moving to the next step, verify this code actually runs: (1) Execute it on a small sample (10-100 records from data/samples/ or data/raw/). (2) Check for errors or exceptions. (3) If it produces output, inspect the first few records. (4) Report the results to the bootcamper — did it work, and if not, what needs fixing? Do not skip this verification step."
+      }
+    }
+  ]
+}

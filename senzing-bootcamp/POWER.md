@@ -1,7 +1,7 @@
 ---
 name: "senzing-bootcamp"
 displayName: "Senzing Bootcamp"
-version: "0.1.3"
+version: "0.2.0"
 description: "Guided 11-module bootcamp for learning Senzing entity resolution, from first demo to production deployment."
 keywords: ["senzing", "bootcamp", "entity-resolution", "senzing-bootcamp", "learning-track"]
 author: "Senzing"
@@ -18,6 +18,16 @@ This power provides a guided bootcamp for learning Senzing entity resolution thr
 Senzing is an embeddable entity resolution engine that resolves records about people and organizations across data sources — matching, relating, and deduplicating without manual rules or model training.
 
 This power works best with Claude Opus 4.8 or similar.
+
+**This Power requires Kiro 1.0 or later.** Its Agent Hooks use the Kiro 1.0 `v1` hook schema (`.kiro/hooks/*.json`); the legacy `*.kiro.hook` files do not execute under Kiro 1.0.
+
+## What's New in 0.2.0
+
+- **Kiro 1.0 hook & permissions migration** — the Power now targets the Kiro 1.0 `v1` hook model and **requires Kiro 1.0 or later**. The 27 non-manual hooks were converted from legacy `*.kiro.hook` files to `v1` JSON (`{"version":"v1","hooks":[...]}`) with renamed triggers, restructured actions, and a single regex `matcher`
+- The 3 manual hooks (`backup-project-on-request`, `git-commit-reminder`, `commonmark-validation`) became slash-command steering files
+- Hook tooling updated to v1 — validator, registry sync + lockfile, prompt composer, and installer all read and emit the `v1` schema
+- Added a permissions guide covering the write, shell, and Senzing MCP capabilities the bootcamp requests, and populated `mcp.json` `autoApprove` with the read-only Senzing MCP tools
+- Removed the legacy `*.kiro.hook` files so only v1 definitions ship
 
 ## What's New in 0.1.3
 
@@ -132,7 +142,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 |---|---|---|
 | `agent-behavior-rules.md` | 760 | medium |
 | `agent-context-management.md` | 1326 | medium |
-| `agent-instructions.md` | 4404 | large |
+| `agent-instructions.md` | 4470 | large |
 | `cloud-provider-setup.md` | 784 | medium |
 | `common-pitfalls.md` | 4612 | large |
 | `completion-summary-offer.md` | 1867 | medium |
@@ -152,21 +162,21 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `feedback-workflow.md` | 1239 | medium |
 | `file-placement.md` | 288 | small |
 | `graduation.md` | 8509 | large |
-| `hook-architecture.md` | 2149 | large |
-| `hook-registry-critical.md` | 8592 | large |
-| `hook-registry-module-01.md` | 474 | small |
-| `hook-registry-module-02.md` | 261 | small |
-| `hook-registry-module-03.md` | 2341 | large |
-| `hook-registry-module-04.md` | 282 | small |
-| `hook-registry-module-05.md` | 1390 | medium |
-| `hook-registry-module-06.md` | 519 | medium |
-| `hook-registry-module-07.md` | 544 | medium |
-| `hook-registry-module-08.md` | 760 | medium |
-| `hook-registry-module-09.md` | 268 | small |
-| `hook-registry-module-10.md` | 286 | small |
-| `hook-registry-module-11.md` | 463 | small |
-| `hook-registry-module-any.md` | 4905 | large |
-| `hook-registry.md` | 2130 | large |
+| `hook-architecture.md` | 2325 | large |
+| `hook-registry-critical.md` | 7984 | large |
+| `hook-registry-module-01.md` | 434 | small |
+| `hook-registry-module-02.md` | 269 | small |
+| `hook-registry-module-03.md` | 2124 | large |
+| `hook-registry-module-04.md` | 272 | small |
+| `hook-registry-module-05.md` | 1322 | medium |
+| `hook-registry-module-06.md` | 538 | medium |
+| `hook-registry-module-07.md` | 504 | medium |
+| `hook-registry-module-08.md` | 698 | medium |
+| `hook-registry-module-09.md` | 276 | small |
+| `hook-registry-module-10.md` | 288 | small |
+| `hook-registry-module-11.md` | 412 | small |
+| `hook-registry-module-any.md` | 4374 | large |
+| `hook-registry.md` | 872 | medium |
 | `inline-status.md` | 460 | small |
 | `lang-csharp.md` | 1642 | medium |
 | `lang-java.md` | 1688 | medium |
@@ -213,26 +223,29 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-11-deployment.md` | 479 | small |
 | `module-11-phase1-packaging.md` | 2870 | large |
 | `module-11-phase2-deploy.md` | 850 | medium |
-| `module-completion-artifacts.md` | 3982 | large |
+| `module-completion-artifacts.md` | 3978 | large |
 | `module-completion-error-handling.md` | 604 | medium |
 | `module-completion-next-steps.md` | 702 | medium |
-| `module-completion-track.md` | 3290 | large |
+| `module-completion-track.md` | 3288 | large |
 | `module-completion.md` | 2262 | large |
 | `module-prerequisites.md` | 1394 | medium |
 | `module-transitions.md` | 1908 | medium |
-| `onboarding-flow.md` | 4124 | large |
-| `onboarding-phase1b-intro-language.md` | 2126 | large |
-| `onboarding-phase2-track-setup.md` | 1503 | medium |
+| `onboarding-flow.md` | 4230 | large |
+| `onboarding-phase1b-intro-language.md` | 2123 | large |
+| `onboarding-phase2-track-setup.md` | 1505 | medium |
 | `phase-loading-guide.md` | 890 | medium |
 | `project-structure.md` | 764 | medium |
 | `qa-transcript.md` | 1284 | medium |
 | `recovery-from-mistakes.md` | 1227 | medium |
 | `security-privacy.md` | 278 | small |
 | `session-resume-phase2-mapping.md` | 656 | medium |
-| `session-resume-phase2-setup-recovery.md` | 997 | medium |
+| `session-resume-phase2-setup-recovery.md` | 1034 | medium |
 | `session-resume-phase2-state-repair.md` | 547 | medium |
 | `session-resume.md` | 3380 | large |
-| `skip-step-protocol.md` | 799 | medium |
+| `skip-step-protocol.md` | 798 | medium |
+| `slash-backup-project.md` | 157 | small |
+| `slash-commonmark-validation.md` | 444 | small |
+| `slash-git-commit.md` | 187 | small |
 | `track-switching.md` | 766 | medium |
 | `troubleshooting-commands.md` | 672 | medium |
 | `troubleshooting-decision-tree.md` | 1606 | medium |
@@ -242,7 +255,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2195 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 204320 tokens
+**Total budget:** 202637 tokens
 
 <!-- END GENERATED: steering-files -->
 
@@ -369,7 +382,7 @@ Or manually copy hook files into `.kiro/hooks/`.
 
 <!-- BEGIN GENERATED: hooks -->
 
-Available (30 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `commonmark-validation` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `backup-project-on-request`, `data-quality-check`, `deployment-phase-gate`, `enforce-critical-artifacts`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `git-commit-reminder`, `module-completion-celebration`, `module-recap-append`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
+Available (27 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `data-quality-check`, `deployment-phase-gate`, `enforce-critical-artifacts`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `module-completion-celebration`, `module-recap-append`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
 
 <!-- END GENERATED: hooks -->
 

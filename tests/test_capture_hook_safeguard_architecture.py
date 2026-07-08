@@ -47,62 +47,65 @@ _CAPTURE_CRITICAL_HOOKS: tuple[str, ...] = (
 
 
 def _hook_files() -> list[Path]:
-    """Return all ``*.kiro.hook`` files under the hooks directory.
+    """Return all ``*.json`` v1 hook files under the hooks directory.
 
     Returns:
         Sorted list of hook file paths.
     """
-    return sorted(_HOOKS_DIR.glob("*.kiro.hook"))
+    return sorted(_HOOKS_DIR.glob("*.json"))
 
 
 def _load_hook(path: Path) -> dict:
-    """Parse a ``.kiro.hook`` JSON file.
+    """Parse a ``.json`` v1 hook file and return its single entry (hooks[0]).
 
     Args:
         path: Path to the hook file.
 
     Returns:
-        The parsed hook object.
+        The v1 hook entry object.
     """
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8"))["hooks"][0]
+
+
+_WRITE_MATCHER_TOKENS = ("fs_write", "str_replace", "fs_append")
 
 
 def _is_write_tool_hook(hook: dict) -> bool:
-    """Return True if the hook targets tool-write events (pre/postToolUse write).
+    """Return True if the entry targets tool-write events (Pre/PostToolUse write).
 
-    A "write-tool hook" is one whose ``when`` block fires on ``write`` tool
-    operations — i.e. ``when.type`` is a tool-use trigger and its ``toolTypes``
-    include ``"write"``.
+    A "write-tool hook" fires on the 1.0 ``PreToolUse``/``PostToolUse`` triggers
+    and scopes to the write-tool matcher (``fs_write|str_replace|fs_append``).
 
     Args:
-        hook: Parsed hook object.
+        hook: The v1 hook entry.
 
     Returns:
         True when the hook fires on write-tool events.
     """
-    when = hook.get("when", {})
-    when_type = when.get("type")
-    tool_types = when.get("toolTypes", []) or []
-    return when_type in {"preToolUse", "postToolUse"} and "write" in tool_types
+    trigger = hook.get("trigger")
+    matcher = hook.get("matcher") or ""
+    return trigger in {"PreToolUse", "PostToolUse"} and any(
+        token in matcher for token in _WRITE_MATCHER_TOKENS
+    )
 
 
 def _is_pre_write_tool_hook(hook: dict) -> bool:
-    """Return True if the hook is specifically a ``preToolUse`` write hook.
+    """Return True if the entry is specifically a ``PreToolUse`` write hook.
 
     Args:
-        hook: Parsed hook object.
+        hook: The v1 hook entry.
 
     Returns:
-        True when ``when.type == "preToolUse"`` and ``"write"`` is targeted.
+        True when ``trigger == "PreToolUse"`` and the write matcher is present.
     """
-    when = hook.get("when", {})
-    return when.get("type") == "preToolUse" and "write" in (
-        when.get("toolTypes", []) or []
+    matcher = hook.get("matcher") or ""
+    return hook.get("trigger") == "PreToolUse" and any(
+        token in matcher for token in _WRITE_MATCHER_TOKENS
     )
 
 
 def _hook_id(path: Path) -> str:
-    """Return the hook id (file name without the ``.kiro.hook`` suffix).
+    """Return the hook id (file name without the ``.json`` suffix).
 
     Args:
         path: Path to the hook file.
@@ -110,7 +113,7 @@ def _hook_id(path: Path) -> str:
     Returns:
         The hook id, e.g. ``session-log-events``.
     """
-    return path.name[: -len(".kiro.hook")]
+    return path.name[: -len(".json")]
 
 
 class TestNoPreToolUseWriteHookReferencesSafeguard:
@@ -199,7 +202,7 @@ class TestCaptureCriticalHooksUnchanged:
     def test_capture_critical_hook_files_exist(self) -> None:
         """Each capture-critical hook file must still be present (Req 3.3)."""
         for hook_id in _CAPTURE_CRITICAL_HOOKS:
-            path = _HOOKS_DIR / f"{hook_id}.kiro.hook"
+            path = _HOOKS_DIR / f"{hook_id}.json"
             assert path.is_file(), (
                 f"Capture-critical hook file not found: {path}. The feature must "
                 "not remove any capture-critical hook (Requirement 3.3)."
@@ -213,7 +216,7 @@ class TestCaptureCriticalHooksUnchanged:
         """
         offenders: list[str] = []
         for hook_id in _CAPTURE_CRITICAL_HOOKS:
-            raw = (_HOOKS_DIR / f"{hook_id}.kiro.hook").read_text(encoding="utf-8")
+            raw = (_HOOKS_DIR / f"{hook_id}.json").read_text(encoding="utf-8")
             if _SAFEGUARD_MARKER in raw:
                 offenders.append(hook_id)
 

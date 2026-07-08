@@ -40,7 +40,7 @@ from hook_test_helpers import (
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = HOOKS_DIR / "module-completion-celebration.kiro.hook"
+HOOK_PATH = HOOKS_DIR / "module-completion-celebration.json"
 HOOK_ID = "module-completion-celebration"
 
 
@@ -49,16 +49,22 @@ HOOK_ID = "module-completion-celebration"
 # ---------------------------------------------------------------------------
 
 @pytest.fixture
-def hook_data() -> dict:
-    """Load and parse the module-completion-celebration hook file."""
+def wrapper() -> dict:
+    """Load and parse the full v1 wrapper of the celebration hook file."""
     with open(HOOK_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 
 @pytest.fixture
+def hook_data(wrapper: dict) -> dict:
+    """Return the single v1 hook entry (hooks[0])."""
+    return wrapper["hooks"][0]
+
+
+@pytest.fixture
 def prompt(hook_data: dict) -> str:
-    """Extract the prompt text from the hook data."""
-    return hook_data["then"]["prompt"]
+    """Extract the action.prompt text from the v1 hook entry."""
+    return hook_data["action"]["prompt"]
 
 
 # ===========================================================================
@@ -72,41 +78,50 @@ class TestHookFileStructure:
         """The hook file exists on disk (Req 1.1)."""
         assert HOOK_PATH.is_file(), f"Hook file not found at {HOOK_PATH}"
 
-    def test_parses_as_valid_json(self):
-        """The hook file parses as valid JSON (Req 1.1)."""
-        with open(HOOK_PATH, encoding="utf-8") as f:
-            data = json.load(f)
-        assert isinstance(data, dict)
+    def test_parses_as_valid_json(self, wrapper: dict):
+        """The hook file parses as a valid v1 wrapper (Req 1.1)."""
+        assert isinstance(wrapper, dict)
+        assert wrapper.get("version") == "v1"
+        assert isinstance(wrapper.get("hooks"), list) and wrapper["hooks"]
 
     def test_contains_all_required_fields(self, hook_data: dict):
-        """The hook contains all required fields (Req 1.2)."""
-        missing = validate_required_fields(hook_data)
+        """The hook entry contains all required v1 fields (Req 1.2)."""
+        missing: list[str] = []
+        if not hook_data.get("name"):
+            missing.append("name")
+        if not hook_data.get("trigger"):
+            missing.append("trigger")
+        action = hook_data.get("action")
+        if not isinstance(action, dict):
+            missing.append("action")
+        elif action.get("type") == "agent" and not action.get("prompt"):
+            missing.append("action.prompt")
         assert not missing, f"Missing required fields: {', '.join(missing)}"
 
     def test_when_type_is_agent_stop(self, hook_data: dict):
-        """when.type is agentStop (Req 1.3)."""
-        assert hook_data["when"]["type"] == "agentStop"
+        """trigger is Stop (1.0 rename of agentStop) (Req 1.3)."""
+        assert hook_data["trigger"] == "Stop"
 
     def test_then_type_is_ask_agent(self, hook_data: dict):
-        """then.type is askAgent (Req 1.4)."""
-        assert hook_data["then"]["type"] == "askAgent"
+        """action.type is agent (1.0 rename of askAgent) (Req 1.4)."""
+        assert hook_data["action"]["type"] == "agent"
 
-    def test_version_is_valid_semver(self, hook_data: dict):
-        """version matches semver format (Req 1.5)."""
-        version = hook_data["version"]
-        assert validate_version(version), f"Invalid semver: {version}"
+    def test_version_is_valid_semver(self, wrapper: dict):
+        """The wrapper declares the v1 schema version (Req 1.5)."""
+        assert wrapper.get("version") == "v1"
 
-    def test_version_is_1_0_0(self, hook_data: dict):
-        """version is 1.0.0."""
-        assert hook_data["version"] == "1.0.0"
+    def test_version_is_1_0_0(self, wrapper: dict):
+        """The wrapper schema version is 'v1'."""
+        assert wrapper["version"] == "v1"
 
     def test_name_field_present(self, hook_data: dict):
         """name field is a non-empty string."""
         assert isinstance(hook_data["name"], str) and len(hook_data["name"]) > 0
 
     def test_description_field_present(self, hook_data: dict):
-        """description field is a non-empty string."""
-        assert isinstance(hook_data["description"], str) and len(hook_data["description"]) > 0
+        """The v1 entry carries a non-empty action prompt (no description field in v1)."""
+        prompt = hook_data.get("action", {}).get("prompt")
+        assert isinstance(prompt, str) and len(prompt) > 0
 
 
 # ===========================================================================

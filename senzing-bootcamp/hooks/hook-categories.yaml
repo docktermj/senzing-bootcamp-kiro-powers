@@ -6,7 +6,6 @@ metadata:
 critical:
   - ask-bootcamper
   - code-style-check
-  - commonmark-validation
   - review-bootcamper-input
   - write-policy-gate
 
@@ -44,10 +43,8 @@ modules:
   11:
     - deployment-phase-gate
   any:
-    - backup-project-on-request
     - enforce-critical-artifacts
     - error-recovery-context
-    - git-commit-reminder
     - module-completion-celebration
     - module-recap-append
     - session-log-events

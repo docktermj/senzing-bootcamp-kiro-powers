@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "to remind you to back up before loading",
+      "trigger": "PostFileSave",
+      "matcher": "^(?:src/load/[^/]*\\.[^/]*)$",
+      "action": {
+        "type": "agent",
+        "prompt": "A loading program was modified. Before running this in production, remind the user to backup the database using: python3 scripts/backup_project.py (on Linux/macOS) or python scripts/backup_project.py (on Windows)"
+      }
+    }
+  ]
+}

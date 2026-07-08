@@ -11,7 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## Module 6 Hooks
 
-**backup-before-load** (fileEdited → askAgent, filePatterns: `src/load/*.*`)
+**backup-before-load** (PostFileSave → agent, matcher: `^(?:src/load/[^/]*\.[^/]*)$`)
 
 Prompt:
 
@@ -21,9 +21,11 @@ A loading program was modified. Before running this in production, remind the us
 
 - id: `backup-before-load`
 - name: `to remind you to back up before loading`
-- description: `Remind to backup database before running loading programs`
+- trigger: `PostFileSave`
+- matcher: `^(?:src/load/[^/]*\.[^/]*)$`
+- action: `agent`
 
-**run-tests-after-change** (fileEdited → askAgent, filePatterns: `src/load/*.*, src/query/*.*, src/transform/*.*`)
+**run-tests-after-change** (PostFileSave → agent, matcher: `^(?:src/load/[^/]*\.[^/]*|src/query/[^/]*\.[^/]*|src/transform/[^/]*\.[^/]*)$`)
 
 Prompt:
 
@@ -33,9 +35,11 @@ Source code was modified. If tests exist in the tests/ directory, remind the use
 
 - id: `run-tests-after-change`
 - name: `to remind you to run tests`
-- description: `Reminds the agent to run the test suite after source code changes in loading, query, or transformation programs.`
+- trigger: `PostFileSave`
+- matcher: `^(?:src/load/[^/]*\.[^/]*|src/query/[^/]*\.[^/]*|src/transform/[^/]*\.[^/]*)$`
+- action: `agent`
 
-**verify-generated-code** (fileCreated → askAgent, filePatterns: `src/transform/*.*, src/load/*.*, src/query/*.*`)
+**verify-generated-code** (PostFileCreate → agent, matcher: `^(?:src/transform/[^/]*\.[^/]*|src/load/[^/]*\.[^/]*|src/query/[^/]*\.[^/]*)$`)
 
 Prompt:
 
@@ -45,4 +49,6 @@ A new bootcamp source file was created. Before moving to the next step, verify t
 
 - id: `verify-generated-code`
 - name: `to verify generated code`
-- description: `When bootcamp source code is created, prompts the agent to run it on sample data and report results before moving on.`
+- trigger: `PostFileCreate`
+- matcher: `^(?:src/transform/[^/]*\.[^/]*|src/load/[^/]*\.[^/]*|src/query/[^/]*\.[^/]*)$`
+- action: `agent`

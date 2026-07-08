@@ -42,9 +42,9 @@ import validate_mandatory_gates as vmg  # noqa: E402
 # ---------------------------------------------------------------------------
 
 _HOOKS_DIR = _BOOTCAMP_DIR / "hooks"
-_GATE_HOOK_PATH = _HOOKS_DIR / "gate-module3-visualization.kiro.hook"
-_ENFORCE_GATE_PATH = _HOOKS_DIR / "enforce-mandatory-gate.kiro.hook"
-_ENFORCE_STOP_PATH = _HOOKS_DIR / "enforce-gate-on-stop.kiro.hook"
+_GATE_HOOK_PATH = _HOOKS_DIR / "gate-module3-visualization.json"
+_ENFORCE_GATE_PATH = _HOOKS_DIR / "enforce-mandatory-gate.json"
+_ENFORCE_STOP_PATH = _HOOKS_DIR / "enforce-gate-on-stop.json"
 
 # The skip key for the Module 3 Step 9 visualization gate ({module}.{step} form)
 _STEP9_SKIP_KEY = "3.9"
@@ -121,16 +121,16 @@ def st_gate_state(draw: st.DrawFn) -> GateState:
 
 
 def _load_hook_prompt(path: Path) -> str:
-    """Load a hook file and return its askAgent prompt text.
+    """Load a v1 hook file and return its agent-action prompt text.
 
     Args:
-        path: Path to the `.kiro.hook` JSON file.
+        path: Path to the `<id>.json` v1 hook file.
 
     Returns:
-        The `then.prompt` string from the hook.
+        The `hooks[0].action.prompt` string from the hook.
     """
     data = json.loads(path.read_text(encoding="utf-8"))
-    return data.get("then", {}).get("prompt", "")
+    return data["hooks"][0].get("action", {}).get("prompt", "")
 
 
 def _prompt_has_condition_b(prompt: str) -> bool:

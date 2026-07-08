@@ -57,9 +57,9 @@ _ALL_AFFECTED_FILES: list[tuple[Path, str]] = [
     (_DEPLOY_K8S, "deployment-kubernetes.md"),
 ]
 
-# All hook JSON files that must remain byte-identical
+# All v1 hook JSON files that must remain byte-identical
 _HOOK_FILES: list[tuple[Path, str]] = [
-    (p, p.name) for p in sorted(_HOOKS_DIR.glob("*.kiro.hook"))
+    (p, p.name) for p in sorted(_HOOKS_DIR.glob("*.json"))
 ]
 
 
@@ -267,12 +267,12 @@ def _extract_ask_bootcamper_second_branch(content: str) -> str:
     second_match = re.search(r"SECOND\s*—", content)
     if not second_match:
         # Try reading from the hook file
-        hook_file = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+        hook_file = _HOOKS_DIR / "ask-bootcamper.json"
         if hook_file.exists():
             import json
             try:
                 hook_data = json.loads(hook_file.read_text(encoding="utf-8"))
-                prompt = hook_data.get("then", {}).get("prompt", "")
+                prompt = hook_data["hooks"][0].get("action", {}).get("prompt", "")
                 second_match = re.search(r"SECOND\s*—", prompt)
                 if second_match:
                     return prompt[second_match.start():]
@@ -709,12 +709,12 @@ class TestHookFilesUnchanged:
             )
 
     def test_ask_bootcamper_hook_unchanged(self) -> None:
-        """ask-bootcamper.kiro.hook specifically is unchanged."""
-        hook_path = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+        """ask-bootcamper.json specifically is unchanged."""
+        hook_path = _HOOKS_DIR / "ask-bootcamper.json"
         current = hook_path.read_bytes()
-        baseline = _UNFIXED_HOOK_BYTES["ask-bootcamper.kiro.hook"]
+        baseline = _UNFIXED_HOOK_BYTES["ask-bootcamper.json"]
         assert current == baseline, (
-            "ask-bootcamper.kiro.hook has been modified."
+            "ask-bootcamper.json has been modified."
         )
 
 

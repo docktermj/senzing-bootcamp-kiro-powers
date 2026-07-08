@@ -1,0 +1,989 @@
+{
+  "pbtResults": {
+    "1.4 Write property test for the write tool-type matcher": {
+      "status": "passed",
+      "lastRunTimestamp": 1783438445476
+    },
+    "1.3 Write property test for translation determinism and idempotence": {
+      "status": "passed",
+      "lastRunTimestamp": 1783438504077
+    },
+    "1.2 Write property test for glob-to-regex match-set equivalence": {
+      "status": "passed",
+      "lastRunTimestamp": 1783438935471
+    },
+    "2.5 Write property test for unscoped-trigger matcher omission": {
+      "status": "passed",
+      "lastRunTimestamp": 1783439292806
+    },
+    "2.3 Write property test for trigger and action rename totality and range": {
+      "status": "passed",
+      "lastRunTimestamp": 1783439376240
+    },
+    "2.4 Write property test for verbatim name and action-text preservation": {
+      "status": "passed",
+      "lastRunTimestamp": 1783439431823
+    },
+    "4.3 Write property test for the migrate→validate round trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1783441583215
+    },
+    "9.3 Write property test for composer byte-stability round-trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1783442251854
+    },
+    "10.2 Write property test for no-manual-hook invariant": {
+      "status": "passed",
+      "lastRunTimestamp": 1783442469727
+    },
+    "8.3 Write property test for registry generation round-trip and id consistency": {
+      "status": "passed",
+      "lastRunTimestamp": 1783445984561
+    }
+  },
+  "executionHistory": {
+    "1.1 Implement the stdlib-only Matcher_Translator": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925295
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435938054
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783438299461
+      }
+    ],
+    "1.2 Write property test for glob-to-regex match-set equivalence": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925468
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783438310293
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439108504
+      }
+    ],
+    "1.3 Write property test for translation determinism and idempotence": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925532
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783438310723
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439109650
+      }
+    ],
+    "1.4 Write property test for the write tool-type matcher": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925566
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783438311473
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439110529
+      }
+    ],
+    "1.5 Write unit tests for Matcher_Translator error handling": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925632
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783438312191
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439113982
+      }
+    ],
+    "2.1 Implement the trigger and action rename mapping tables": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925669
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435939305
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783438300531
+      }
+    ],
+    "2.2 Implement the migration transform (`scripts/migrate_hooks.py`)": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925712
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783438313424
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439115337
+      }
+    ],
+    "2.3 Write property test for trigger and action rename totality and range": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925746
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439124834
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439453185
+      }
+    ],
+    "2.4 Write property test for verbatim name and action-text preservation": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925781
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439125272
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439454104
+      }
+    ],
+    "2.5 Write property test for unscoped-trigger matcher omission": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925828
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439125996
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439455167
+      }
+    ],
+    "3.1 Emit the 27 v1 hook JSON files": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925854
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439126662
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439455951
+      }
+    ],
+    "3.2 Write example test for migration completeness": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925895
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783440344836
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441273053
+      }
+    ],
+    "4.1 Update `validate_power.py` `check_hooks` to v1": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925921
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439484981
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783440334094
+      }
+    ],
+    "4.2 Update `test_hooks.py` to v1 discovery and schema": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435925969
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783440345631
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441275630
+      }
+    ],
+    "4.3 Write property test for the migrate→validate round trip": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926011
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441296610
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441972496
+      }
+    ],
+    "4.4 Write unit tests for validator rejection paths": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926044
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441297845
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441973038
+      }
+    ],
+    "5. Checkpoint - core migration and validation": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926078
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783465842092
+      }
+    ],
+    "6.1 Create the three Slash_Command_Files": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926113
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439487458
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783440337012
+      }
+    ],
+    "6.2 Update `steering/steering-index.yaml`": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926149
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783440346204
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441272103
+      }
+    ],
+    "6.3 Remove manual hook ids from `hooks/hook-categories.yaml`": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926185
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439488319
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783440338363
+      }
+    ],
+    "7.1 Implement the write-gate governance guard": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926229
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783440346874
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441274660
+      }
+    ],
+    "7.2 Write unit tests for the governance guard": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926265
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441299115
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441974933
+      }
+    ],
+    "8.1 Update `sync_hook_registry.py` to v1": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926302
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439485671
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783440335073
+      }
+    ],
+    "8.2 Regenerate registry slices and lockfile": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926346
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783442065188
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443053182
+      }
+    ],
+    "8.3 Write property test for registry generation round-trip and id consistency": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926379
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783444045670
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783446103913
+      }
+    ],
+    "8.4 Write unit test for `--verify` success against committed output": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926417
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783444048576
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783446104568
+      }
+    ],
+    "9.1 Update `compose_hook_prompts.py` to compose v1 gate hooks": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926481
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439486641
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783440335728
+      }
+    ],
+    "9.2 Recompose the Module 3 gate hooks": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926516
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441300610
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441975529
+      }
+    ],
+    "9.3 Write property test for composer byte-stability round-trip": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926553
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783442065675
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443054983
+      }
+    ],
+    "9.4 Write unit test for `--verify` and CI ordering": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926597
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783442066395
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443056013
+      }
+    ],
+    "10.1 Update `install_hooks.py` to v1": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926631
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441301867
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441976108
+      }
+    ],
+    "10.2 Write property test for no-manual-hook invariant": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926666
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783442066977
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443057031
+      }
+    ],
+    "10.3 Write integration test for the installer": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926704
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783442067537
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443057637
+      }
+    ],
+    "11. Checkpoint - tooling in lockstep": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926745
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783465849316
+      }
+    ],
+    "12.1 Update onboarding steering to 1.0": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926779
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783444043635
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783446103266
+      }
+    ],
+    "12.2 Write example test for onboarding steering": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926816
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783449594262
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783450336219
+      }
+    ],
+    "13.1 Update `hooks/README.md`": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926854
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443066302
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443823260
+      }
+    ],
+    "13.2 Update the hook guides": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926888
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443068291
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443824268
+      }
+    ],
+    "13.3 Sweep remaining steering references to 1.0 terminology": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926919
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443069262
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443826194
+      }
+    ],
+    "13.4 Write example test for docs/steering terminology": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926955
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783446110172
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783447998530
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783449582298
+      }
+    ],
+    "14.1 Create the Permissions_Doc": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435926988
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435939331
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783438301261
+      }
+    ],
+    "14.2 Populate `mcp.json` auto-approve": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435927021
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435940415
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783438301855
+      }
+    ],
+    "14.3 Write unit test for the MCP config": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435927052
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783440347865
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441271460
+      }
+    ],
+    "15.1 Remove the legacy hook files": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435927099
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443832309
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443989111
+      }
+    ],
+    "15.2 Update version and back-compat metadata": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435927151
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443069852
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443826783
+      }
+    ],
+    "15.3 Write example test for versioning and back-compat": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435927186
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783444049255
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783446105349
+      }
+    ],
+    "16.1 Implement the stale-legacy-reference CI gate": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435927223
+      },
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783446111140
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783447999771
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783449582621
+      }
+    ],
+    "16.2 Wire the new gates into `validate-power.yml`": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435927255
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783449594972
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783450337217
+      }
+    ],
+    "16.3 Verify the full CI suite is green": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435927297
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783450528962
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783465822576
+      }
+    ],
+    "17. Final checkpoint - full migration verified": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783435927337
+      },
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783465854220
+      }
+    ],
+    "1. Build the Matcher_Translator module (`scripts/hook_matcher.py`)": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439114066
+      }
+    ],
+    "2. Implement rename tables and the one-time migration transform": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783439455226
+      }
+    ],
+    "14. Document permissions and MCP auto-approve": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441271541
+      }
+    ],
+    "6. Convert manual hooks to slash-command steering files": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441272139
+      }
+    ],
+    "3. Generate the shipped v1 hook definitions": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441273093
+      }
+    ],
+    "4. Update hook validation to the v1 schema": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441973089
+      }
+    ],
+    "7. Add the write-gate governance guard": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783441974980
+      }
+    ],
+    "9. Update the prompt composer for v1 output": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443056050
+      }
+    ],
+    "10. Update the hook installer for v1": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783443057679
+      }
+    ],
+    "8. Regenerate the registry and lockfile in v1 terms": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783446104672
+      }
+    ],
+    "15. Record the back-compat decision and version bump": [
+      {
+        "executionId": "90e060ea-8b47-45c4-a369-5666bdbc9a8a",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783446105386
+      }
+    ],
+    "13. Update documentation and steering to v1": [
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783449582367
+      }
+    ],
+    "12. Update the onboarding hook-creation path": [
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783450336286
+      }
+    ],
+    "16. Add the stale-reference gate and wire CI green": [
+      {
+        "executionId": "e4beae83-13ec-4f5d-8c3d-7d615ba575f1",
+        "chatSessionId": "sess_f6f53f78-7d0f-4c52-85b4-c28846524c53",
+        "timestamp": 1783465822636
+      }
+    ]
+  }
+}

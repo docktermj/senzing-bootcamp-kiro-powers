@@ -24,7 +24,7 @@ from hypothesis import strategies as st
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _AGENT_INSTRUCTIONS = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
 _DECISION_TREE = _BOOTCAMP_DIR / "steering" / "mcp-tool-decision-tree.md"
-_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "write-policy-gate.kiro.hook"
+_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "write-policy-gate.json"
 
 # ---------------------------------------------------------------------------
 # Constants — Bug condition components
@@ -206,11 +206,21 @@ class TestBlockDirectSqlHookExists:
                 f"Hook file is not valid JSON: {e}"
             ) from e
 
-        # Validate required fields
-        for field in ("name", "version", "when", "then"):
-            assert field in hook_data, (
-                f"Hook file missing required field '{field}'. "
-                f"Found keys: {list(hook_data.keys())}"
+        # Validate the Kiro 1.0 v1 wrapper shape: top-level version + hooks[],
+        # each entry carrying name/trigger/action.
+        assert hook_data.get("version") == "v1", (
+            f"Hook file must declare version 'v1'. Found: {hook_data.get('version')!r}"
+        )
+        hooks = hook_data.get("hooks")
+        assert isinstance(hooks, list) and hooks, (
+            "Hook file must contain a non-empty 'hooks' array. "
+            f"Found keys: {list(hook_data.keys())}"
+        )
+        entry = hooks[0]
+        for field in ("name", "trigger", "action"):
+            assert field in entry, (
+                f"Hook entry missing required field '{field}'. "
+                f"Found keys: {list(entry.keys())}"
             )
 
     def test_hook_covers_sql_keywords_and_senzing_indicators(self) -> None:

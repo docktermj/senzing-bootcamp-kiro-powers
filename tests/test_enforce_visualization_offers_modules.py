@@ -27,7 +27,7 @@ from hook_test_helpers import (
 # ---------------------------------------------------------------------------
 
 HOOK_ID = "enforce-visualization-offers"
-HOOK_PATH = HOOKS_DIR / f"{HOOK_ID}.kiro.hook"
+HOOK_PATH = HOOKS_DIR / f"{HOOK_ID}.json"
 EXPECTED_MODULES = [3, 5, 7, 8]
 
 
@@ -44,8 +44,8 @@ def hook_data() -> dict:
 
 @pytest.fixture()
 def hook_prompt(hook_data: dict) -> str:
-    """Extract the prompt text from the hook data."""
-    return hook_data["then"]["prompt"]
+    """Extract the action.prompt text from the v1 hook entry."""
+    return hook_data["action"]["prompt"]
 
 
 @pytest.fixture()
@@ -106,10 +106,10 @@ class TestEnforceVisualizationOffersModules:
             )
 
     def test_hook_uses_agent_stop_event(self, hook_data: dict) -> None:
-        """Hook uses agentStop event type for end-of-conversation checking."""
-        event_type = hook_data.get("when", {}).get("type", "")
-        assert event_type == "agentStop", (
-            f"{HOOK_ID} uses event type '{event_type}', expected 'agentStop' "
+        """Hook uses the Stop trigger for end-of-conversation checking."""
+        trigger = hook_data.get("trigger", "")
+        assert trigger == "Stop", (
+            f"{HOOK_ID} uses trigger '{trigger}', expected 'Stop' "
             f"for end-of-conversation visualization offer checking"
         )
 

@@ -4,11 +4,11 @@
 Installs bootcamp hooks into the bootcamper's ``.kiro/hooks`` directory.
 Cross-platform: works on Linux, macOS, and Windows.
 
-The authoritative set of installable hooks is derived from the
-``*.kiro.hook`` files present in the power's ``hooks`` directory — the
+The authoritative set of installable hooks is derived from the v1
+``*.json`` hook files present in the power's ``hooks`` directory — the
 hardcoded ``HOOK_METADATA`` table below is a non-authoritative display
 overlay only (it supplies friendly descriptions; display names come from
-each hook file's ``name`` field).
+each hook file's ``hooks[0].name`` field in the v1 wrapper).
 
 Usage
 -----
@@ -80,87 +80,88 @@ def red(t: str) -> str: return c("0;31", t)
 # ---------------------------------------------------------------------------
 #
 # This table is NOT the source of truth for which hooks exist; that is the
-# ``*.kiro.hook`` glob in the power hooks directory.  Entries here only supply
+# ``*.json`` glob in the power hooks directory.  Entries here only supply
 # friendly descriptions for display.  Display names are read from each hook
-# file's ``name`` field (the "to {verb phrase}" pattern), not from this table.
+# file's ``hooks[0].name`` field (the "to {verb phrase}" pattern), not from
+# this table.  The three legacy manual hooks (backup-project-on-request,
+# git-commit-reminder, commonmark-validation) are no longer shipped as hooks —
+# they are now slash-command steering files — so they are absent here.
 
 HOOK_METADATA: dict[str, str] = {
     # Critical hooks (created during onboarding)
-    "ask-bootcamper.kiro.hook":
+    "ask-bootcamper.json":
         "Owns closing questions, answer-processing, and feedback reminders",
-    "review-bootcamper-input.kiro.hook":
+    "review-bootcamper-input.json":
         "Routes feedback and status trigger phrases",
-    "code-style-check.kiro.hook":
+    "code-style-check.json":
         "Ensures code follows language-appropriate standards",
-    "commonmark-validation.kiro.hook":
-        "Validates Markdown files follow the CommonMark spec",
-    "write-policy-gate.kiro.hook":
-        "Consolidated preToolUse write gate — runs file-path, single-question, "
+    "write-policy-gate.json":
+        "Consolidated PreToolUse write gate — runs file-path, single-question, "
         "and direct-SQL policy checks in a single interception",
     # Module hooks
-    "validate-business-problem.kiro.hook":
+    "validate-business-problem.json":
         "Validates Module 1 problem definition before proceeding",
-    "verify-sdk-setup.kiro.hook":
+    "verify-sdk-setup.json":
         "Re-verifies SDK during Module 2 config changes",
-    "verify-demo-results.kiro.hook":
+    "verify-demo-results.json":
         "Verifies Module 3 system verification against the TruthSet",
-    "gate-module3-visualization.kiro.hook":
+    "gate-module3-visualization.json":
         "Blocks Module 3 completion until the visualization step is done",
-    "enforce-mandatory-gate.kiro.hook":
+    "enforce-mandatory-gate.json":
         "Blocks step advancement past a mandatory gate step before it executes",
-    "enforce-gate-on-stop.kiro.hook":
+    "enforce-gate-on-stop.json":
         "Catches Module 3 mandatory-gate violations retroactively at agent stop",
-    "validate-data-files.kiro.hook":
+    "validate-data-files.json":
         "Checks data file format and readability when added to data/raw/",
-    "data-quality-check.kiro.hook":
+    "data-quality-check.json":
         "Validates quality when transformations change",
-    "analyze-after-mapping.kiro.hook":
+    "analyze-after-mapping.json":
         "Validates transformed data quality and Entity Spec conformance",
-    "enforce-mapping-spec.kiro.hook":
+    "enforce-mapping-spec.json":
         "Blocks progression until a per-source mapping spec exists",
-    "backup-before-load.kiro.hook":
+    "backup-before-load.json":
         "Reminds you to back up before loading",
-    "run-tests-after-change.kiro.hook":
+    "run-tests-after-change.json":
         "Reminds you to run tests after code changes",
-    "verify-generated-code.kiro.hook":
+    "verify-generated-code.json":
         "Prompts the agent to run new code on sample data",
-    "enforce-visualization-offers.kiro.hook":
+    "enforce-visualization-offers.json":
         "Safety net for visualization offers in Modules 3, 5, 7, 8",
-    "validate-benchmark-results.kiro.hook":
+    "validate-benchmark-results.json":
         "Validates Module 8 benchmark output metrics",
-    "security-scan-on-save.kiro.hook":
+    "security-scan-on-save.json":
         "Re-runs the vulnerability scanner during Module 9",
-    "validate-alert-config.kiro.hook":
+    "validate-alert-config.json":
         "Validates Module 10 monitoring alert rules",
-    "deployment-phase-gate.kiro.hook":
+    "deployment-phase-gate.json":
         "Enforces the Module 11 packaging-to-deployment gate",
     # Any-module hooks
-    "backup-project-on-request.kiro.hook":
-        "Runs a project backup on manual trigger",
-    "error-recovery-context.kiro.hook":
+    "enforce-critical-artifacts.json":
+        "Enforces the graduation-artifact completion invariant at agent stop",
+    "error-recovery-context.json":
         "Consults pitfalls on non-zero shell exits",
-    "git-commit-reminder.kiro.hook":
-        "Reminds you to commit progress after completing a module",
-    "module-completion-celebration.kiro.hook":
+    "module-completion-celebration.json":
         "Celebrates module completion and points to the next step",
-    "module-recap-append.kiro.hook":
+    "module-recap-append.json":
         "Appends a structured recap section to docs/bootcamp_recap.md when a "
         "module is completed",
-    "session-log-events.kiro.hook":
+    "session-log-events.json":
         "Logs file create/modify/delete and MCP tool calls to the session log "
         "after write operations",
 }
 
 
 # ---------------------------------------------------------------------------
-# Essential / capture-critical hook sets (hook ids, no ``.kiro.hook`` suffix)
+# Essential / capture-critical hook sets (hook ids, no ``.json`` suffix)
 # ---------------------------------------------------------------------------
 
 # Fallback critical set used only if hook-categories.yaml cannot be read.
+# ``commonmark-validation`` is intentionally excluded — it is now a slash
+# command, not a shipped hook, so it is not part of the critical install set
+# (Req 9.5).
 CRITICAL_FALLBACK: set[str] = {
     "ask-bootcamper",
     "code-style-check",
-    "commonmark-validation",
     "review-bootcamper-input",
     "write-policy-gate",
 }
@@ -174,18 +175,30 @@ CAPTURE_CRITICAL: set[str] = {
 }
 
 
+# Manual hook ids that no longer ship as V1_Hooks (now slash-command steering
+# files).  They must never appear in any install set (Req 9.4), and
+# ``commonmark-validation`` must never be part of the critical set (Req 9.5).
+MANUAL_HOOK_IDS: set[str] = {
+    "backup-project-on-request",
+    "git-commit-reminder",
+    "commonmark-validation",
+}
+
+
 def load_critical_hooks(categories_path: Path = DEFAULT_CATEGORIES) -> set[str]:
     """Read the critical hook ids from ``hook-categories.yaml``.
 
     Derives the critical set from the categories file rather than a separately
     maintained duplicate list.  Falls back to :data:`CRITICAL_FALLBACK` if the
-    file is missing or unreadable so the installer stays functional.
+    file is missing or unreadable so the installer stays functional. Any
+    :data:`MANUAL_HOOK_IDS` (notably ``commonmark-validation``) are discarded
+    defensively so a manual hook can never leak into the critical set (Req 9.5).
 
     Args:
         categories_path: Path to ``hook-categories.yaml``.
 
     Returns:
-        The set of critical hook ids (without the ``.kiro.hook`` suffix).
+        The set of critical hook ids (without the ``.json`` suffix).
     """
     try:
         text = categories_path.read_text(encoding="utf-8")
@@ -206,7 +219,8 @@ def load_critical_hooks(categories_path: Path = DEFAULT_CATEGORIES) -> set[str]:
         if in_block and stripped.startswith("- "):
             critical.add(stripped[2:].strip())
 
-    return critical or set(CRITICAL_FALLBACK)
+    critical -= MANUAL_HOOK_IDS
+    return critical or (set(CRITICAL_FALLBACK) - MANUAL_HOOK_IDS)
 
 
 # Essential = critical hooks (from hook-categories.yaml) ∪ capture-critical hooks.
@@ -219,8 +233,8 @@ ESSENTIAL: set[str] = load_critical_hooks() | CAPTURE_CRITICAL
 
 
 def _hook_id(filename: str) -> str:
-    """Return the hook id (filename without the ``.kiro.hook`` suffix)."""
-    suffix = ".kiro.hook"
+    """Return the hook id (filename without the ``.json`` suffix)."""
+    suffix = ".json"
     return filename[: -len(suffix)] if filename.endswith(suffix) else filename
 
 
@@ -230,21 +244,39 @@ def _derive_display_name(filename: str) -> str:
 
 
 def _read_hook_name(hook_file: Path) -> str | None:
-    """Read the ``name`` field from a ``.kiro.hook`` file, or None on failure."""
+    """Read the display name from a v1 hook file, or None on failure.
+
+    A v1 hook file is a ``{"version": "v1", "hooks": [ ... ]}`` wrapper; the
+    display name is ``hooks[0].name``.
+
+    Args:
+        hook_file: Path to a ``*.json`` v1 hook file.
+
+    Returns:
+        The first hook's ``name`` if present and non-empty, else None.
+    """
     try:
         data = json.loads(hook_file.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return None
-    name = data.get("name")
+    hooks = data.get("hooks")
+    if not isinstance(hooks, list) or not hooks:
+        return None
+    first = hooks[0]
+    if not isinstance(first, dict):
+        return None
+    name = first.get("name")
     return name if isinstance(name, str) and name.strip() else None
 
 
 def discover_hooks(power_dir: Path) -> list[tuple[str, str, str]]:
     """Discover installable hooks from the power hooks directory.
 
-    The authoritative installed set is the ``*.kiro.hook`` glob; display names
-    come from each hook file's ``name`` field, and descriptions come from the
-    :data:`HOOK_METADATA` overlay (with a derived fallback).
+    The authoritative installed set is the v1 ``*.json`` glob; display names
+    come from each hook file's ``hooks[0].name`` field, and descriptions come
+    from the :data:`HOOK_METADATA` overlay (with a derived fallback). Because
+    the three manual hooks no longer ship as ``*.json`` files, a ``*.json``
+    glob already excludes every :data:`MANUAL_HOOK_IDS` (Req 9.4).
 
     Args:
         power_dir: Path to the power's hooks directory.
@@ -254,7 +286,7 @@ def discover_hooks(power_dir: Path) -> list[tuple[str, str, str]]:
         filename.
     """
     discovered: list[tuple[str, str, str]] = []
-    for hook_file in sorted(power_dir.glob("*.kiro.hook")):
+    for hook_file in sorted(power_dir.glob("*.json")):
         filename = hook_file.name
         name = _read_hook_name(hook_file) or _derive_display_name(filename)
         desc = HOOK_METADATA.get(filename) or (
@@ -341,7 +373,7 @@ def print_next_steps(user_dir: Path) -> None:
     print(cyan("Next Steps:"))
     print("  1. Hooks are now active in your project")
     print(f"  2. View installed hooks in: {user_dir}")
-    print("  3. Disable a hook: edit the .hook file and set 'enabled: false'")
+    print("  3. Disable a hook: edit the .json file and set '\"enabled\": false'")
     print("  4. Remove a hook: delete the file from .kiro/hooks/")
     print()
     print(green("Happy coding!"))

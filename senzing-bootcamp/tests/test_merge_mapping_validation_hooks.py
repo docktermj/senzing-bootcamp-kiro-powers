@@ -37,19 +37,19 @@ _POWER_MD_PATH = Path(__file__).resolve().parent.parent / "POWER.md"
 
 # The hook IDs preserved after merges and the require-mcp-server cleanup
 # (verify-senzing-facts, enforce-feedback-path, enforce-working-directory,
-# offer-visualization were removed).
+# offer-visualization were removed). The Kiro 1.0 migration additionally removed
+# the three manual (userTriggered) hooks — backup-project-on-request,
+# commonmark-validation, git-commit-reminder — which became manual-invocation
+# slash-command steering files, so they are no longer categorized or registered.
 PRESERVED_HOOK_IDS: list[str] = sorted([
     "analyze-after-mapping",
     "ask-bootcamper",
     "backup-before-load",
-    "backup-project-on-request",
     "review-bootcamper-input",
     "code-style-check",
-    "commonmark-validation",
     "data-quality-check",
     "deployment-phase-gate",
     "enforce-visualization-offers",
-    "git-commit-reminder",
     "run-tests-after-change",
     "validate-data-files",
     "verify-generated-code",

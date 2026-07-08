@@ -11,7 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## Module 1 Hooks
 
-**validate-business-problem** (postTaskExecution → askAgent)
+**validate-business-problem** (PostTaskExec → agent)
 
 Prompt:
 
@@ -29,4 +29,5 @@ If all three fields are present and non-empty, confirm readiness: "Your business
 
 - id: `validate-business-problem`
 - name: `to validate your business problem`
-- description: `After Module 1 tasks complete, validates that the bootcamper has identified data sources, defined matching criteria, and documented success metrics before proceeding to Module 2.`
+- trigger: `PostTaskExec`
+- action: `agent`

@@ -28,26 +28,30 @@ if _TESTS_DIR not in sys.path:
 from hook_test_helpers import (
     HOOKS_DIR,
     load_hook,
-    required_fields_for_action,
-    validate_event_type,
-    validate_version,
+    load_hook_wrapper,
 )
 
 HOOK_ID = "enforce-critical-artifacts"
-HOOK_FILE = HOOKS_DIR / f"{HOOK_ID}.kiro.hook"
+HOOK_FILE = HOOKS_DIR / f"{HOOK_ID}.json"
+
+# The Kiro 1.0 trigger set (for validating the enforcement trigger).
+_V1_TRIGGERS = {
+    "PostFileSave", "PostFileCreate", "PostFileDelete", "Stop",
+    "UserPromptSubmit", "PostTaskExec", "PreToolUse", "PostToolUse",
+}
 
 
 @pytest.fixture(scope="module")
 def hook_data() -> dict:
-    """Load and parse the enforce-critical-artifacts hook JSON."""
+    """Load and parse the enforce-critical-artifacts v1 hook entry."""
     assert HOOK_FILE.exists(), f"Hook file not found: {HOOK_FILE}"
     return load_hook(HOOK_FILE)
 
 
 @pytest.fixture(scope="module")
 def prompt(hook_data: dict) -> str:
-    """Return the then.prompt text from the hook."""
-    return hook_data["then"]["prompt"]
+    """Return the action.prompt text from the v1 hook entry."""
+    return hook_data["action"]["prompt"]
 
 
 class TestEnforceCriticalArtifactsSchema:
@@ -61,33 +65,42 @@ class TestEnforceCriticalArtifactsSchema:
         assert HOOK_FILE.exists(), f"Hook file not found at {HOOK_FILE}"
 
     def test_required_fields_present(self, hook_data: dict) -> None:
-        """name, version, when.type, then.type, then.prompt are all present."""
-        missing = required_fields_for_action(hook_data)
+        """name, trigger, action, and action.prompt are all present."""
+        missing: list[str] = []
+        if not hook_data.get("name"):
+            missing.append("name")
+        if not hook_data.get("trigger"):
+            missing.append("trigger")
+        action = hook_data.get("action")
+        if not isinstance(action, dict):
+            missing.append("action")
+        elif action.get("type") == "agent" and not action.get("prompt"):
+            missing.append("action.prompt")
         assert not missing, f"Hook missing required fields: {missing}"
 
     def test_top_level_schema_fields(self, hook_data: dict) -> None:
-        """The hook contains the four Kiro schema fields name/version/when/then."""
-        for field in ("name", "version", "when", "then"):
-            assert field in hook_data, f"Hook missing top-level field '{field}'"
+        """The wrapper declares v1 and the entry carries name/trigger/action."""
+        wrapper = load_hook_wrapper(HOOK_FILE)
+        assert wrapper.get("version") == "v1", "wrapper must declare version v1"
+        for field in ("name", "trigger", "action"):
+            assert field in hook_data, f"Hook entry missing field '{field}'"
 
     def test_version_is_valid_semver(self, hook_data: dict) -> None:
-        """The version is a valid semver string."""
-        assert validate_version(hook_data["version"]), (
-            f'Invalid semver version: "{hook_data["version"]}"'
-        )
+        """The wrapper declares the v1 schema version."""
+        assert load_hook_wrapper(HOOK_FILE).get("version") == "v1"
 
     def test_when_type_is_agent_stop(self, hook_data: dict) -> None:
-        """when.type is the agentStop enforcement trigger (Req 2.9)."""
-        when_type = hook_data["when"]["type"]
-        assert validate_event_type(when_type), f"Invalid event type: {when_type}"
-        assert when_type == "agentStop", (
-            f'Expected when.type == "agentStop", got "{when_type}"'
+        """trigger is the Stop enforcement trigger (1.0 rename of agentStop) (Req 2.9)."""
+        trigger = hook_data["trigger"]
+        assert trigger in _V1_TRIGGERS, f"Invalid trigger: {trigger}"
+        assert trigger == "Stop", (
+            f'Expected trigger == "Stop", got "{trigger}"'
         )
 
     def test_then_type_is_ask_agent(self, hook_data: dict) -> None:
-        """then.type is askAgent (the blocking-message action)."""
-        assert hook_data["then"]["type"] == "askAgent", (
-            f'Expected then.type == "askAgent", got "{hook_data["then"]["type"]}"'
+        """action.type is agent (the blocking-message action)."""
+        assert hook_data["action"]["type"] == "agent", (
+            f'Expected action.type == "agent", got "{hook_data["action"]["type"]}"'
         )
 
 

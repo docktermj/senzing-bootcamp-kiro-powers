@@ -676,15 +676,15 @@ class TestFpdfAbsentDegradation:
 
 
 def _load_hook(name: str) -> dict:
-    """Load and parse a ``.kiro.hook`` JSON file from the hooks directory.
+    """Load a v1 ``<id>.json`` hook file and return its single entry (``hooks[0]``).
 
     Args:
-        name: The hook filename (e.g. ``module-completion-celebration.kiro.hook``).
+        name: The hook filename (e.g. ``module-completion-celebration.json``).
 
     Returns:
-        The parsed hook object.
+        The single v1 hook entry (``hooks[0]``).
     """
-    return json.loads((_HOOKS_DIR / name).read_text(encoding="utf-8"))
+    return json.loads((_HOOKS_DIR / name).read_text(encoding="utf-8"))["hooks"][0]
 
 
 class TestUnrelatedHookPreservation:
@@ -702,15 +702,15 @@ class TestUnrelatedHookPreservation:
     """
 
     def test_celebration_hook_trigger_and_action_unchanged(self) -> None:
-        """The celebration hook stays an agentStop/askAgent hook."""
-        hook = _load_hook("module-completion-celebration.kiro.hook")
-        assert hook["when"]["type"] == "agentStop"
-        assert hook["then"]["type"] == "askAgent"
+        """The celebration hook stays a Stop/agent hook (Kiro 1.0 renames)."""
+        hook = _load_hook("module-completion-celebration.json")
+        assert hook["trigger"] == "Stop"
+        assert hook["action"]["type"] == "agent"
 
     def test_celebration_hook_remains_read_only(self) -> None:
         """The celebration hook still forbids writes and script execution."""
-        hook = _load_hook("module-completion-celebration.kiro.hook")
-        prompt = hook["then"]["prompt"]
+        hook = _load_hook("module-completion-celebration.json")
+        prompt = hook["action"]["prompt"]
         assert "Do NOT write any files." in prompt
         assert "Do NOT run any scripts or commands." in prompt
         # It is unrelated to the recap reconciliation path, so it must not run
@@ -719,6 +719,6 @@ class TestUnrelatedHookPreservation:
 
     def test_recap_hook_preserves_other_hooks_clause(self) -> None:
         """The recap-append hook still declares it must not alter other hooks."""
-        hook = _load_hook("module-recap-append.kiro.hook")
-        prompt = hook["then"]["prompt"]
+        hook = _load_hook("module-recap-append.json")
+        prompt = hook["action"]["prompt"]
         assert "Do NOT alter the behavior of any other hooks" in prompt

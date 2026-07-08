@@ -26,7 +26,7 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
-QUESTION_FORMAT_GATE_HOOK = HOOKS_DIR / "ask-bootcamper.kiro.hook"
+QUESTION_FORMAT_GATE_HOOK = HOOKS_DIR / "ask-bootcamper.json"
 
 
 # ---------------------------------------------------------------------------
@@ -83,7 +83,7 @@ def enforcement_detects_compound(output: str) -> bool:
     compound questions in direct agent output. So this always returns False
     for direct output — confirming the enforcement gap.
 
-    On FIXED code: The consolidated ask-bootcamper.kiro.hook (agentStop)
+    On FIXED code: The consolidated ask-bootcamper.json (Stop)
     contains a Question_Format_Phase (Phase 4) that intercepts and detects
     compound questions in agent output via silent self-correction.
     """
@@ -93,12 +93,11 @@ def enforcement_detects_compound(output: str) -> bool:
         return False
 
     # If the hook exists, verify it would catch compound questions
-    hook_data = json.loads(QUESTION_FORMAT_GATE_HOOK.read_text())
-    prompt = hook_data.get("then", {}).get("prompt", "")
+    entry = json.loads(QUESTION_FORMAT_GATE_HOOK.read_text())["hooks"][0]
+    prompt = entry.get("action", {}).get("prompt", "")
 
-    # The hook must be an agentStop hook (fires on all agent output)
-    hook_type = hook_data.get("when", {}).get("type", "")
-    if hook_type != "agentStop":
+    # The hook must be a Stop hook (fires on all agent output; 1.0 rename of agentStop)
+    if entry.get("trigger", "") != "Stop":
         return False
 
     # Extract the Question_Format_Phase (Phase 4) section from the consolidated prompt
@@ -273,6 +272,6 @@ class TestBugConditionCompoundQuestionsPassThrough:
         assert enforcement_detects_compound(compound_q), (
             f"ENFORCEMENT GAP: Generated compound question passes through "
             f"with no validation: {compound_q!r}. "
-            f"No agentStop hook exists to intercept compound questions in "
+            f"No Stop hook exists to intercept compound questions in "
             f"direct agent output."
         )

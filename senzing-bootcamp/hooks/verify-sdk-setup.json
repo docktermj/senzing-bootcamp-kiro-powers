@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "to verify SDK setup",
+      "trigger": "PostFileSave",
+      "matcher": "^(?:config/senzing_config\\.[^/]*|config/bootcamp_preferences\\.yaml|database/[^/]*\\.[^/]*)$",
+      "action": {
+        "type": "agent",
+        "prompt": "A configuration or database file was modified. If the bootcamper is in Module 2 (SDK Setup), run a quick verification: check that database/G2C.db exists and is accessible, and that the Senzing engine can initialize with the current config. If not in Module 2, produce no output. If verification fails, present the error and suggest running: python3 src/scripts/verify_sdk.py"
+      }
+    }
+  ]
+}

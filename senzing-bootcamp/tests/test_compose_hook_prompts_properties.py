@@ -14,8 +14,8 @@ Properties covered:
   markers. Validates: Requirements 6.1, 6.2
 - **Property 5** — Unknown fragment references are reported and fail (exit 1 +
   name). Validates: Requirements 6.5
-- **Property 8** — Composed hooks are schema-valid and preserve the ``when``
-  block. Validates: Requirements 8.2, 8.3
+- **Property 8** — Composed hooks are schema-valid v1 wrappers and preserve the
+  hook entry's ``trigger``/``matcher`` metadata. Validates: Requirements 8.2, 8.3
 """
 
 from __future__ import annotations
@@ -53,14 +53,26 @@ from compose_hook_prompts import (  # noqa: E402
 # copied into per-example temp dirs — never written to).
 _REAL_HOOKS_DIR = Path(__file__).resolve().parent.parent / "hooks"
 
-# Event types seen across the real hook files; used to generate when blocks.
-_EVENT_TYPES = [
-    "preToolUse",
-    "agentStop",
-    "postToolUse",
-    "fileEdited",
-    "fileCreated",
-    "promptSubmit",
+# Kiro 1.0 trigger names seen across the migrated v1 hook files; used to
+# generate a hook entry's firing metadata.
+_TRIGGER_TYPES = [
+    "PreToolUse",
+    "PostToolUse",
+    "PostFileSave",
+    "PostFileCreate",
+    "PostFileDelete",
+    "Stop",
+    "UserPromptSubmit",
+    "PostTaskExec",
+]
+
+# Representative v1 matcher regexes (the composer preserves the matcher string
+# verbatim without compiling it, so a small realistic pool suffices).
+_MATCHERS = [
+    "fs_write|str_replace|fs_append",
+    "fs_write",
+    r"^config/.*\.json$",
+    r"^src/.*\.py$",
 ]
 
 
@@ -154,28 +166,18 @@ def st_template_with_unknown(
 
 
 @st.composite
-def st_when_block(draw: st.DrawFn) -> dict[str, object]:
-    """Generate a varied but schema-plausible ``when`` block."""
-    when: dict[str, object] = {"type": draw(st.sampled_from(_EVENT_TYPES))}
+def st_v1_metadata(draw: st.DrawFn) -> dict[str, object]:
+    """Generate a v1 hook entry's firing metadata (``trigger`` + optional ``matcher``).
+
+    The v1 model has no top-level ``when`` block; a hook entry fires based on its
+    ``trigger`` and, for scoped triggers, its ``matcher`` regex. The composer
+    preserves this metadata verbatim and only recomposes ``action.prompt``, so it
+    is the v1 analogue of the legacy ``when`` block.
+    """
+    metadata: dict[str, object] = {"trigger": draw(st.sampled_from(_TRIGGER_TYPES))}
     if draw(st.booleans()):
-        when["toolTypes"] = draw(
-            st.lists(
-                st.sampled_from(["write", "read"]),
-                min_size=1,
-                max_size=2,
-                unique=True,
-            )
-        )
-    if draw(st.booleans()):
-        when["patterns"] = draw(
-            st.lists(
-                st.from_regex(r"\*\.[a-z]{1,4}", fullmatch=True),
-                min_size=1,
-                max_size=2,
-                unique=True,
-            )
-        )
-    return when
+        metadata["matcher"] = draw(st.sampled_from(_MATCHERS))
+    return metadata
 
 
 # ---------------------------------------------------------------------------
@@ -280,8 +282,8 @@ class TestUnknownFragment:
             hooks_dir.mkdir()
             for hook_id in HOOK_TEMPLATES:
                 shutil.copy(
-                    _REAL_HOOKS_DIR / f"{hook_id}.kiro.hook",
-                    hooks_dir / f"{hook_id}.kiro.hook",
+                    _REAL_HOOKS_DIR / f"{hook_id}.json",
+                    hooks_dir / f"{hook_id}.json",
                 )
 
             fragments_path = Path(td) / "partial_fragments.py"
@@ -308,13 +310,15 @@ class TestUnknownFragment:
 
 
 # ---------------------------------------------------------------------------
-# Property 8 — Composed hooks are schema-valid and preserve the when block
+# Property 8 — Composed hooks are schema-valid v1 wrappers and preserve the
+# hook entry's trigger/matcher metadata
 # ---------------------------------------------------------------------------
 
 
 class TestSchemaPreservation:
-    """Property 8: composed output is valid JSON with required fields and an
-    unchanged ``when`` block.
+    """Property 8: composed output is a schema-valid v1 wrapper whose firing
+    metadata (``trigger``/``matcher``) is preserved; only ``action.prompt`` is
+    recomposed.
 
     **Validates: Requirements 8.2, 8.3**
     """
@@ -322,25 +326,31 @@ class TestSchemaPreservation:
     # Feature: hook-architecture-improvements, Property 8
     @given(
         hook_id=st.sampled_from(sorted(HOOK_TEMPLATES)),
-        when=st_when_block(),
+        metadata=st_v1_metadata(),
     )
     @settings(max_examples=20)
-    def test_composed_hook_is_schema_valid_and_preserves_when_block(
-        self, hook_id: str, when: dict[str, object]
+    def test_composed_hook_is_schema_valid_and_preserves_metadata(
+        self, hook_id: str, metadata: dict[str, object]
     ) -> None:
         td = tempfile.mkdtemp()
         try:
             hooks_dir = Path(td) / "hooks"
             hooks_dir.mkdir()
 
-            # Start from the real hook file, then swap in the generated when block
-            # so we exercise composition against arbitrary (but schema-plausible)
-            # when blocks while keeping a valid then.prompt template to compose.
+            # Start from the real v1 hook file, then swap in the generated
+            # trigger/matcher metadata so we exercise composition against
+            # arbitrary (but schema-plausible) firing metadata while keeping a
+            # valid action.prompt template to compose.
             original = json.loads(
-                (_REAL_HOOKS_DIR / f"{hook_id}.kiro.hook").read_text(encoding="utf-8")
+                (_REAL_HOOKS_DIR / f"{hook_id}.json").read_text(encoding="utf-8")
             )
-            original["when"] = when
-            (hooks_dir / f"{hook_id}.kiro.hook").write_text(
+            entry = original["hooks"][0]
+            entry["trigger"] = metadata["trigger"]
+            if "matcher" in metadata:
+                entry["matcher"] = metadata["matcher"]
+            else:
+                entry.pop("matcher", None)
+            (hooks_dir / f"{hook_id}.json").write_text(
                 json.dumps(original, indent=2), encoding="utf-8"
             )
 
@@ -348,16 +358,30 @@ class TestSchemaPreservation:
                 hook_id, hook_prompt_fragments.FRAGMENTS, hooks_dir=hooks_dir
             )
 
-            # Required schema fields are all present.
-            for field in ("name", "version", "when", "then"):
-                assert field in composed, f"missing required field: {field}"
+            # The composed output is a well-formed v1 wrapper.
+            assert composed["version"] == "v1"
+            assert isinstance(composed["hooks"], list) and composed["hooks"]
 
-            # The when block (type + any toolTypes/patterns) is deep-equal.
-            assert composed["when"] == when
+            composed_entry = composed["hooks"][0]
 
-            # then.prompt is a self-contained string with no residual markers.
-            assert isinstance(composed["then"]["prompt"], str)
-            assert "{{fragment:" not in composed["then"]["prompt"]
+            # Required v1 hook-entry fields are all present.
+            for field in ("name", "trigger", "action"):
+                assert field in composed_entry, f"missing required field: {field}"
+            for field in ("type", "prompt"):
+                assert field in composed_entry["action"], (
+                    f"missing required action field: {field}"
+                )
+
+            # The firing metadata (trigger + any matcher) is preserved verbatim.
+            assert composed_entry["trigger"] == metadata["trigger"]
+            if "matcher" in metadata:
+                assert composed_entry["matcher"] == metadata["matcher"]
+            else:
+                assert "matcher" not in composed_entry
+
+            # action.prompt is a self-contained string with no residual markers.
+            assert isinstance(composed_entry["action"]["prompt"], str)
+            assert "{{fragment:" not in composed_entry["action"]["prompt"]
 
             # The serialized hook is valid JSON that round-trips exactly.
             serialized = serialize_hook(composed)

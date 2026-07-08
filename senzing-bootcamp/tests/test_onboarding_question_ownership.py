@@ -187,7 +187,7 @@ class TestBugConditionInlineQuestions:
 # ---------------------------------------------------------------------------
 
 _HOOK_FILE = (
-    Path(__file__).resolve().parent.parent / "hooks" / "ask-bootcamper.kiro.hook"
+    Path(__file__).resolve().parent.parent / "hooks" / "ask-bootcamper.json"
 )
 
 _AGENT_INSTRUCTIONS_FILE = (
@@ -196,7 +196,7 @@ _AGENT_INSTRUCTIONS_FILE = (
 
 
 def _read_hook() -> str:
-    """Return the full text of ask-bootcamper.kiro.hook."""
+    """Return the full text of ask-bootcamper.json."""
     return _HOOK_FILE.read_text(encoding="utf-8")
 
 
@@ -309,8 +309,8 @@ _EXPECTED_PHASE2_HEADINGS = [
 # _HOOK_BASELINE_HASH, which broke on every benign edit to the hook prompt
 # without telling us whether the protected ownership behavior changed.)
 _HOOK_OWNERSHIP_MARKERS = (
-    '"agentStop"',  # the hook fires on agent stop ...
-    '"askAgent"',  # ... and asks the agent to act
+    '"Stop"',  # the hook fires on agent stop (Kiro 1.0 trigger) ...
+    '"agent"',  # ... and asks the agent to act (Kiro 1.0 action type)
     "PHASE 1: CLOSING QUESTION",  # Phase 1 owns the 👉 closing question
     "Closing_Question_Phase",
     "👉",  # the closing-question marker itself

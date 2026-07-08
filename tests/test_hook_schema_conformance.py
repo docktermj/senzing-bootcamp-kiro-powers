@@ -1,7 +1,10 @@
 """Property-based tests for hook JSON schema conformance.
 
 Feature: hook-schema-conformance
-Validates hook JSON schema conformance across all .kiro.hook files.
+Validates Kiro 1.0 ``v1`` hook JSON schema conformance across all ``*.json``
+hook files. Each file is a ``{"version": "v1", "hooks": [entry]}`` wrapper; the
+entry carries ``name``, ``trigger``, an optional ``matcher``, and an ``action``
+(``agent`` with a ``prompt`` or ``command`` with a ``command``).
 """
 
 from __future__ import annotations
@@ -19,7 +22,19 @@ from hypothesis import strategies as st
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 
-REQUIRED_TOP_LEVEL = {"name", "version", "description"}
+# Required fields on the v1 hook entry.
+REQUIRED_ENTRY_FIELDS = {"name", "trigger", "action"}
+
+V1_TRIGGERS = {
+    "PostFileSave",
+    "PostFileCreate",
+    "PostFileDelete",
+    "Stop",
+    "UserPromptSubmit",
+    "PostTaskExec",
+    "PreToolUse",
+    "PostToolUse",
+}
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -27,77 +42,83 @@ REQUIRED_TOP_LEVEL = {"name", "version", "description"}
 
 
 def get_hook_files() -> list[Path]:
-    """Return all .kiro.hook file paths in the hooks directory."""
+    """Return all .json v1 hook file paths in the hooks directory."""
     assert HOOKS_DIR.is_dir(), f"Hooks directory not found at {HOOKS_DIR}"
-    return sorted(HOOKS_DIR.glob("*.kiro.hook"))
+    return sorted(HOOKS_DIR.glob("*.json"))
 
 
 def load_hook(path: Path) -> dict:
-    """Parse a .kiro.hook file and return the JSON dict."""
+    """Parse a .json v1 hook file and return the single hook entry (hooks[0])."""
+    with open(path, encoding="utf-8") as f:
+        wrapper = json.load(f)
+    return wrapper["hooks"][0]
+
+
+def load_wrapper(path: Path) -> dict:
+    """Parse a .json v1 hook file and return the full wrapper object."""
     with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 
 def validate_hook_schema(data: dict) -> list[str]:
-    """Validate a hook dict against the required JSON schema.
+    """Validate a v1 hook entry against the required schema.
 
     Required fields:
       - name (string)
-      - version (string)
-      - description (string)
-      - when.type (string)
-      - then.type (string)
-      - then.prompt (string, when then.type is "askAgent")
+      - trigger (string, a valid 1.0 trigger)
+      - action.type (string, "agent" or "command")
+      - action.prompt (string, when action.type is "agent")
+      - action.command (string, when action.type is "command")
+
+    Args:
+        data: A v1 hook entry (``hooks[0]``).
 
     Returns:
         List of validation error messages (empty if valid).
     """
     errors: list[str] = []
 
-    for field in REQUIRED_TOP_LEVEL:
+    for field in ("name", "trigger"):
         if field not in data:
             errors.append(f"missing required field: {field}")
         elif not isinstance(data[field], str):
             errors.append(f"{field} must be a string, got {type(data[field]).__name__}")
 
-    # when.type
-    when = data.get("when")
-    if not isinstance(when, dict):
-        errors.append("missing required field: when (must be an object)")
-    elif "type" not in when:
-        errors.append("missing required field: when.type")
-    elif not isinstance(when["type"], str):
-        errors.append(f"when.type must be a string, got {type(when['type']).__name__}")
+    if isinstance(data.get("trigger"), str) and data["trigger"] not in V1_TRIGGERS:
+        errors.append(f"invalid trigger: {data['trigger']}")
 
-    # then.type and then.prompt / then.command
-    then = data.get("then")
-    if not isinstance(then, dict):
-        errors.append("missing required field: then (must be an object)")
+    action = data.get("action")
+    if not isinstance(action, dict):
+        errors.append("missing required field: action (must be an object)")
     else:
-        then_type = then.get("type")
-        if "type" not in then:
-            errors.append("missing required field: then.type")
-        elif not isinstance(then_type, str):
-            errors.append(f"then.type must be a string, got {type(then['type']).__name__}")
+        action_type = action.get("type")
+        if "type" not in action:
+            errors.append("missing required field: action.type")
+        elif not isinstance(action_type, str):
+            errors.append(
+                f"action.type must be a string, got {type(action_type).__name__}"
+            )
 
-        # askAgent hooks require a string prompt; runCommand hooks require a
-        # string command (e.g. the session-log-events postToolUse logger).
-        if then_type == "askAgent":
-            if "prompt" not in then:
-                errors.append("missing required field: then.prompt")
-            elif not isinstance(then["prompt"], str):
+        # agent actions require a string prompt; command actions require a
+        # string command (e.g. the session-log-events PostToolUse logger).
+        if action_type == "agent":
+            if "prompt" not in action:
+                errors.append("missing required field: action.prompt")
+            elif not isinstance(action["prompt"], str):
                 errors.append(
-                    f"then.prompt must be a string when then.type is 'askAgent', "
-                    f"got {type(then['prompt']).__name__}"
+                    f"action.prompt must be a string when action.type is 'agent', "
+                    f"got {type(action['prompt']).__name__}"
                 )
-        elif then_type == "runCommand":
-            if "command" not in then:
-                errors.append("missing required field: then.command")
-            elif not isinstance(then["command"], str):
+        elif action_type == "command":
+            if "command" not in action:
+                errors.append("missing required field: action.command")
+            elif not isinstance(action["command"], str):
                 errors.append(
-                    f"then.command must be a string when then.type is 'runCommand', "
-                    f"got {type(then['command']).__name__}"
+                    f"action.command must be a string when action.type is 'command', "
+                    f"got {type(action['command']).__name__}"
                 )
+        elif isinstance(action_type, str):
+            errors.append(f"invalid action.type: {action_type}")
 
     return errors
 
@@ -125,7 +146,7 @@ st_hook_subset = st.lists(
 
 
 class TestHookJsonSchemaConformance:
-    """Property-based tests verifying all .kiro.hook files conform to the
+    """Property-based tests verifying all .json v1 hook files conform to the
     required JSON schema.
 
     Feature: hook-schema-conformance, Property 1: Hook JSON schema conformance
@@ -137,24 +158,30 @@ class TestHookJsonSchemaConformance:
     def test_hook_files_are_valid_json_with_required_fields(
         self, hook_paths: list[Path]
     ):
-        """For any subset of .kiro.hook files, each file parses as valid JSON
+        """For any subset of .json v1 hook files, each file parses as valid JSON
         and contains all required fields with correct types.
 
         **Validates: Requirements 1.7**
         """
         for path in hook_paths:
-            # Must parse as valid JSON
+            # Must parse as valid JSON with a v1 wrapper
             try:
-                data = load_hook(path)
+                wrapper = load_wrapper(path)
             except json.JSONDecodeError as exc:
                 pytest.fail(f'"{path.name}" is not valid JSON: {exc}')
 
-            assert isinstance(data, dict), (
+            assert isinstance(wrapper, dict), (
                 f'"{path.name}" top-level value must be a JSON object'
             )
+            assert wrapper.get("version") == "v1", (
+                f'"{path.name}" must declare top-level version "v1"'
+            )
+            assert isinstance(wrapper.get("hooks"), list) and wrapper["hooks"], (
+                f'"{path.name}" must contain a non-empty "hooks" array'
+            )
 
-            # Validate schema
-            errors = validate_hook_schema(data)
+            # Validate the entry schema
+            errors = validate_hook_schema(wrapper["hooks"][0])
             assert not errors, (
                 f'"{path.name}" schema violations: {"; ".join(errors)}'
             )
@@ -162,7 +189,7 @@ class TestHookJsonSchemaConformance:
     @given(hook_paths=st_hook_subset)
     @settings(max_examples=100)
     def test_hook_string_fields_are_non_empty(self, hook_paths: list[Path]):
-        """For any subset of .kiro.hook files, all required string fields
+        """For any subset of .json v1 hook files, all required string fields
         are non-empty.
 
         **Validates: Requirements 1.7**
@@ -171,27 +198,21 @@ class TestHookJsonSchemaConformance:
             data = load_hook(path)
 
             assert data.get("name", "").strip(), f'"{path.name}" name must be non-empty'
-            assert data.get("version", "").strip(), (
-                f'"{path.name}" version must be non-empty'
+            assert data.get("trigger", "").strip(), (
+                f'"{path.name}" trigger must be non-empty'
             )
-            assert data.get("description", "").strip(), (
-                f'"{path.name}" description must be non-empty'
-            )
-            assert data.get("when", {}).get("type", "").strip(), (
-                f'"{path.name}" when.type must be non-empty'
-            )
-            assert data.get("then", {}).get("type", "").strip(), (
-                f'"{path.name}" then.type must be non-empty'
+            action = data.get("action", {})
+            assert action.get("type", "").strip(), (
+                f'"{path.name}" action.type must be non-empty'
             )
 
-            then = data.get("then", {})
-            if then.get("type") == "askAgent":
-                assert then.get("prompt", "").strip(), (
-                    f'"{path.name}" then.prompt must be non-empty when then.type is "askAgent"'
+            if action.get("type") == "agent":
+                assert action.get("prompt", "").strip(), (
+                    f'"{path.name}" action.prompt must be non-empty when action.type is "agent"'
                 )
-            elif then.get("type") == "runCommand":
-                assert then.get("command", "").strip(), (
-                    f'"{path.name}" then.command must be non-empty when then.type is "runCommand"'
+            elif action.get("type") == "command":
+                assert action.get("command", "").strip(), (
+                    f'"{path.name}" action.command must be non-empty when action.type is "command"'
                 )
 
 

@@ -4,7 +4,20 @@
       "type": "http",
       "url": "https://mcp.senzing.com/mcp",
       "disabled": false,
-      "autoApprove": [],
+      "autoApprove": [
+        "get_capabilities",
+        "mapping_workflow",
+        "analyze_record",
+        "download_resource",
+        "explain_error_code",
+        "search_docs",
+        "find_examples",
+        "generate_scaffold",
+        "get_sample_data",
+        "get_sdk_reference",
+        "sdk_guide",
+        "reporting_guide"
+      ],
       "disabledTools": ["submit_feedback"]
     }
   }

@@ -323,7 +323,21 @@ _BASELINE_HASHES: dict[str, str] = {
     # 2037 -> 2130), all recomputed by measure_steering.py into file_metadata and
     # the budget total. Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "949379689716d35e0a3fba0d9c89a3be68f1304a492e6c19bee72f0abb8f6ce8",
+    # Re-baselined once more (204320 -> 202637) for the kiro-1-0-migration spec:
+    # the hook migration regenerated the hook registry (hook-registry.md
+    # 2130 -> 872 after the monolith was thinned, hook-registry-module-any.md
+    # 4905 -> 4374, hook-registry-critical.md 8592 -> 7984, and the per-module
+    # hook-registry-module-*.md slices), grew hook-architecture.md (2149 -> 2325)
+    # and the onboarding/agent files (agent-instructions.md 4404 -> 4470,
+    # onboarding-flow.md 4124 -> 4230, onboarding-phase2-track-setup.md
+    # 1503 -> 1505, session-resume-phase2-setup-recovery.md 997 -> 1034), and
+    # added three slash-command steering files (slash-backup-project.md,
+    # slash-commonmark-validation.md, slash-git-commit.md), all recomputed by
+    # measure_steering.py into file_metadata and the budget total
+    # (202637 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    "budget": "76b860b2aab915337187dd86fe47662ba85b3d1f6dedd89672f442271b747d9f",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -705,10 +719,10 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (201014 after the track-completion-pdf-transcript re-sequencing), so the
+        # (202637 after the kiro-1-0-migration hook-registry regeneration), so the
         # hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 204320" in budget_block
+        assert "total_tokens: 202637" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

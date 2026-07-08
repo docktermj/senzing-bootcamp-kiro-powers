@@ -30,7 +30,7 @@ _STEERING_DIR = _BOOTCAMP_DIR / "steering"
 _CONFIG_DIR = _BOOTCAMP_DIR / "config"
 
 # The enforcement hook that SHOULD block step advancement past mandatory gates
-_ENFORCE_HOOK_PATH = _HOOKS_DIR / "enforce-mandatory-gate.kiro.hook"
+_ENFORCE_HOOK_PATH = _HOOKS_DIR / "enforce-mandatory-gate.json"
 
 # The validation script that SHOULD detect mandatory gate violations
 _VALIDATE_SCRIPT_PATH = _SCRIPTS_DIR / "validate_mandatory_gates.py"
@@ -194,13 +194,17 @@ class TestEnforcementHookExists:
         raw = _ENFORCE_HOOK_PATH.read_text(encoding="utf-8")
         data = json.loads(raw)
 
-        # Required fields per security rules
-        assert "name" in data, "Hook missing 'name' field"
-        assert "version" in data, "Hook missing 'version' field"
-        assert "when" in data, "Hook missing 'when' field"
-        assert "then" in data, "Hook missing 'then' field"
-        assert data["when"].get("type") == "preToolUse", (
-            "Hook must be a preToolUse hook to fire BEFORE step advancement"
+        # Required fields per the Kiro 1.0 v1 schema
+        assert data.get("version") == "v1", "Wrapper must declare version 'v1'"
+        assert isinstance(data.get("hooks"), list) and data["hooks"], (
+            "Wrapper must contain a non-empty 'hooks' array"
+        )
+        entry = data["hooks"][0]
+        assert "name" in entry, "Hook missing 'name' field"
+        assert "trigger" in entry, "Hook missing 'trigger' field"
+        assert "action" in entry, "Hook missing 'action' field"
+        assert entry.get("trigger") == "PreToolUse", (
+            "Hook must be a PreToolUse hook to fire BEFORE step advancement"
         )
 
     def test_enforcement_hook_blocks_step_advancement(self) -> None:
@@ -213,7 +217,7 @@ class TestEnforcementHookExists:
         )
         raw = _ENFORCE_HOOK_PATH.read_text(encoding="utf-8")
         data = json.loads(raw)
-        prompt = data.get("then", {}).get("prompt", "")
+        prompt = data["hooks"][0].get("action", {}).get("prompt", "")
 
         # The prompt must reference mandatory gate / ⛔ enforcement
         assert re.search(r"mandatory.gate|⛔|step\s*9", prompt, re.IGNORECASE), (

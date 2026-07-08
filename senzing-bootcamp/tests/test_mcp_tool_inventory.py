@@ -234,7 +234,7 @@ import sys
 _REPO_ROOT = _BOOTCAMP_DIR.parent
 _POWER_MD = _BOOTCAMP_DIR / "POWER.md"
 _ARCHITECTURE = _BOOTCAMP_DIR / "docs" / "guides" / "ARCHITECTURE.md"
-_HOOK_ANALYZE = _BOOTCAMP_DIR / "hooks" / "analyze-after-mapping.kiro.hook"
+_HOOK_ANALYZE = _BOOTCAMP_DIR / "hooks" / "analyze-after-mapping.json"
 _SYNC_HOOK_REGISTRY = _BOOTCAMP_DIR / "scripts" / "sync_hook_registry.py"
 
 # ---------------------------------------------------------------------------
@@ -529,7 +529,7 @@ class TestAnalyzeAfterMappingHookPreserved:
     def test_hook_file_byte_for_byte_unchanged(self) -> None:
         """The hook file matches the snapshot baseline."""
         assert _HOOK_ANALYZE.read_text(encoding="utf-8") == _UNFIXED_HOOK, (
-            "analyze-after-mapping.kiro.hook changed from the baseline"
+            "analyze-after-mapping.json changed from the baseline"
         )
 
 

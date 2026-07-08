@@ -21,17 +21,14 @@ from hypothesis import strategies as st
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 CATEGORIES_PATH = HOOKS_DIR / "hook-categories.yaml"
 
-VALID_EVENT_TYPES = {
-    "promptSubmit", "preToolUse", "postToolUse",
-    "fileEdited", "fileCreated", "fileDeleted",
-    "agentStop", "userTriggered", "postTaskExecution", "preTaskExecution",
+VALID_TRIGGERS = {
+    "PostFileSave", "PostFileCreate", "PostFileDelete", "Stop",
+    "UserPromptSubmit", "PostTaskExec", "PreToolUse", "PostToolUse",
 }
 
-VALID_ACTION_TYPES = {"askAgent", "runCommand"}
+VALID_ACTION_TYPES = {"agent", "command"}
 
-VALID_TOOL_CATEGORIES = {"read", "write", "shell", "web", "spec", "*"}
-
-TOOL_EVENT_TYPES = {"preToolUse", "postToolUse"}
+TOOL_EVENT_TYPES = {"PreToolUse", "PostToolUse"}
 
 
 # ---------------------------------------------------------------------------
@@ -68,8 +65,8 @@ def _parse_all_category_ids(path: Path) -> list[str]:
 
 
 def st_hook_file() -> st.SearchStrategy[Path]:
-    """Strategy that draws from all .kiro.hook files in the hooks directory."""
-    hook_files = sorted(HOOKS_DIR.glob("*.kiro.hook"))
+    """Strategy that draws from all .json v1 hook files in the hooks directory."""
+    hook_files = sorted(HOOKS_DIR.glob("*.json"))
     return st.sampled_from(hook_files)
 
 
@@ -97,28 +94,30 @@ class TestHookStructuralValidity:
     @given(hook_path=st_hook_file())
     @settings(max_examples=100)
     def test_hook_parses_as_valid_json_with_required_fields(self, hook_path: Path):
-        """For any hook file, it parses as valid JSON with required fields."""
+        """For any hook file, it parses as a valid v1 wrapper with required fields."""
         with open(hook_path, encoding="utf-8") as f:
-            data = json.load(f)
+            wrapper = json.load(f)
 
-        # Required top-level fields
-        assert "name" in data, f"{hook_path.name}: missing 'name'"
-        assert "version" in data, f"{hook_path.name}: missing 'version'"
+        assert wrapper.get("version") == "v1", f"{hook_path.name}: missing version v1"
+        assert isinstance(wrapper.get("hooks"), list) and wrapper["hooks"], (
+            f"{hook_path.name}: missing 'hooks' array"
+        )
+        entry = wrapper["hooks"][0]
 
-        # Required nested fields
-        assert "when" in data, f"{hook_path.name}: missing 'when'"
-        assert "type" in data["when"], f"{hook_path.name}: missing 'when.type'"
-        assert "then" in data, f"{hook_path.name}: missing 'then'"
-        assert "type" in data["then"], f"{hook_path.name}: missing 'then.type'"
+        # Required entry fields
+        assert "name" in entry, f"{hook_path.name}: missing 'name'"
+        assert "trigger" in entry, f"{hook_path.name}: missing 'trigger'"
+        assert "action" in entry, f"{hook_path.name}: missing 'action'"
+        assert "type" in entry["action"], f"{hook_path.name}: missing 'action.type'"
 
-        # Valid event type
-        event_type = data["when"]["type"]
-        assert event_type in VALID_EVENT_TYPES, (
-            f"{hook_path.name}: invalid event type '{event_type}'"
+        # Valid 1.0 trigger
+        trigger = entry["trigger"]
+        assert trigger in VALID_TRIGGERS, (
+            f"{hook_path.name}: invalid trigger '{trigger}'"
         )
 
         # Valid action type
-        action_type = data["then"]["type"]
+        action_type = entry["action"]["type"]
         assert action_type in VALID_ACTION_TYPES, (
             f"{hook_path.name}: invalid action type '{action_type}'"
         )
@@ -142,8 +141,8 @@ class TestCategoryToFileBidirectionalConsistency:
     @given(hook_id=st_category_hook_id())
     @settings(max_examples=100)
     def test_category_hook_id_has_corresponding_file(self, hook_id: str):
-        """For any hook ID in categories, a .kiro.hook file exists."""
-        expected_path = HOOKS_DIR / f"{hook_id}.kiro.hook"
+        """For any hook ID in categories, a .json hook file exists."""
+        expected_path = HOOKS_DIR / f"{hook_id}.json"
         assert expected_path.is_file(), (
             f"Category entry '{hook_id}' has no corresponding file: {expected_path}"
         )
@@ -168,30 +167,26 @@ class TestToolTypeValidity:
     @given(hook_path=st_hook_file())
     @settings(max_examples=100)
     def test_tool_event_hooks_have_valid_tool_types(self, hook_path: Path):
-        """For any tool-event hook, toolTypes entries are valid categories or regex."""
-        with open(hook_path, encoding="utf-8") as f:
-            data = json.load(f)
+        """For any tool-event hook, the matcher is a non-empty compilable regex.
 
-        event_type = data["when"]["type"]
-        if event_type not in TOOL_EVENT_TYPES:
+        The legacy ``when.toolTypes`` list collapsed into the single 1.0
+        ``matcher`` tool-name regex, so tool triggers (PreToolUse/PostToolUse)
+        must carry a matcher that compiles.
+        """
+        with open(hook_path, encoding="utf-8") as f:
+            entry = json.load(f)["hooks"][0]
+
+        trigger = entry["trigger"]
+        if trigger not in TOOL_EVENT_TYPES:
             return  # Skip non-tool-event hooks
 
-        tool_types = data["when"].get("toolTypes", [])
-        assert isinstance(tool_types, list), (
-            f"{hook_path.name}: toolTypes must be a list"
+        matcher = entry.get("matcher")
+        assert isinstance(matcher, str) and matcher, (
+            f"{hook_path.name}: tool trigger {trigger} must carry a matcher"
         )
-        assert len(tool_types) > 0, (
-            f"{hook_path.name}: toolTypes must be non-empty for {event_type}"
-        )
-
-        for tt in tool_types:
-            if tt in VALID_TOOL_CATEGORIES:
-                continue  # Valid category
-            # Try as regex
-            try:
-                re.compile(tt)
-            except re.error as e:
-                pytest.fail(
-                    f"{hook_path.name}: invalid toolType '{tt}' — "
-                    f"not a valid category or regex: {e}"
-                )
+        try:
+            re.compile(matcher)
+        except re.error as e:
+            pytest.fail(
+                f"{hook_path.name}: matcher '{matcher}' is not a valid regex: {e}"
+            )

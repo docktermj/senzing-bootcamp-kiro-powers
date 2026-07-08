@@ -1,15 +1,15 @@
-"""Property-based tests for the consolidated ask-bootcamper.kiro.hook.
+"""Property-based tests for the consolidated ask-bootcamper.json v1 hook.
 
 Property 1: Consolidated hook contains all four phase markers.
 Property 2: Consolidated hook structural validity.
 
-Verifies that the `then.prompt` field contains identifiable section markers
+Verifies that the `action.prompt` field contains identifiable section markers
 for all four phases: PHASE 1 (Closing_Question_Phase), PHASE 2
 (Step_Sequencing_Phase), PHASE 3 (MCP_First_Phase), and PHASE 4
 (Question_Format_Phase).
 
-Also verifies the hook parses as valid JSON with all required keys,
-when.type == "agentStop", then.type == "askAgent", and non-empty then.prompt.
+Also verifies the hook entry has all required keys, trigger == "Stop",
+action.type == "agent", and a non-empty action.prompt.
 
 **Validates: Requirements 1.1, 1.3, 9.1, 9.2, 9.3, 9.4**
 """
@@ -27,7 +27,7 @@ from hook_test_helpers import load_hook
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.json")
 
 # Phase markers that must appear in the consolidated prompt.
 # Each tuple is (phase_number_marker, phase_name_marker) — both must be present.
@@ -45,9 +45,9 @@ PHASE_MARKERS: list[tuple[str, str]] = [
 
 
 def load_hook_prompt() -> str:
-    """Load and return the then.prompt field from the consolidated hook."""
+    """Load and return the action.prompt field from the consolidated v1 hook entry."""
     data = load_hook(HOOK_PATH)
-    return data["then"]["prompt"]
+    return data["action"]["prompt"]
 
 
 # ---------------------------------------------------------------------------
@@ -60,7 +60,7 @@ class TestConsolidatedHookPhaseMarkers:
 
     **Validates: Requirements 1.1, 9.4**
 
-    Property 1: For any valid Ask_Bootcamper_Hook file, the `then.prompt` field
+    Property 1: For any valid Ask_Bootcamper_Hook file, the `action.prompt` field
     SHALL contain identifiable section markers for all four phases:
     Closing_Question_Phase (PHASE 1), Step_Sequencing_Phase (PHASE 2),
     MCP_First_Phase (PHASE 3), and Question_Format_Phase (PHASE 4).
@@ -97,13 +97,13 @@ class TestConsolidatedHookPhaseMarkers:
     def test_prompt_has_then_prompt_field(
         self, phase: tuple[str, str]
     ):
-        """The hook SHALL have a non-empty then.prompt field containing phases."""
+        """The hook SHALL have a non-empty action.prompt field containing phases."""
         prompt = load_hook_prompt()
         assert isinstance(prompt, str), (
-            "then.prompt is not a string"
+            "action.prompt is not a string"
         )
         assert len(prompt) > 0, (
-            "then.prompt is empty"
+            "action.prompt is empty"
         )
 
 
@@ -111,7 +111,7 @@ class TestConsolidatedHookPhaseMarkers:
 # Constants for Property 2
 # ---------------------------------------------------------------------------
 
-REQUIRED_TOP_KEYS: list[str] = ["name", "version", "description", "when", "then"]
+REQUIRED_TOP_KEYS: list[str] = ["name", "trigger", "action"]
 
 
 # ---------------------------------------------------------------------------
@@ -125,9 +125,9 @@ class TestConsolidatedHookStructuralValidity:
     **Validates: Requirements 1.3, 9.1, 9.2, 9.3**
 
     Property 2: For any valid Ask_Bootcamper_Hook file, it SHALL parse as valid
-    JSON containing all required keys (name, version, description, when, then),
-    with when.type equal to "agentStop" and then.type equal to "askAgent", and
-    the then.prompt field SHALL be a non-empty string.
+    JSON containing all required keys (name, trigger, action), with trigger
+    equal to "Stop" and action.type equal to "agent", and the action.prompt
+    field SHALL be a non-empty string.
     """
 
     @given(key=st.sampled_from(REQUIRED_TOP_KEYS))
@@ -157,45 +157,43 @@ class TestConsolidatedHookStructuralValidity:
 
     @given(data=st.just(None))
     @settings(max_examples=20)
-    def test_when_type_is_agent_stop(self, data):
-        """The hook SHALL have when.type set to "agentStop".
+    def test_trigger_is_stop(self, data):
+        """The hook SHALL have trigger set to "Stop" (1.0 rename of agentStop).
 
         **Validates: Requirements 9.2**
         """
         hook_data = load_hook(HOOK_PATH)
-        assert "when" in hook_data, "Hook is missing 'when' field"
-        assert isinstance(hook_data["when"], dict), "'when' is not a dict"
-        assert hook_data["when"].get("type") == "agentStop", (
-            f"Expected when.type == 'agentStop', "
-            f"got '{hook_data['when'].get('type')}'"
+        assert "trigger" in hook_data, "Hook is missing 'trigger' field"
+        assert hook_data.get("trigger") == "Stop", (
+            f"Expected trigger == 'Stop', got '{hook_data.get('trigger')}'"
         )
 
     @given(data=st.just(None))
     @settings(max_examples=20)
-    def test_then_type_is_ask_agent(self, data):
-        """The hook SHALL have then.type set to "askAgent".
+    def test_action_type_is_agent(self, data):
+        """The hook SHALL have action.type set to "agent" (1.0 rename of askAgent).
 
         **Validates: Requirements 9.3**
         """
         hook_data = load_hook(HOOK_PATH)
-        assert "then" in hook_data, "Hook is missing 'then' field"
-        assert isinstance(hook_data["then"], dict), "'then' is not a dict"
-        assert hook_data["then"].get("type") == "askAgent", (
-            f"Expected then.type == 'askAgent', "
-            f"got '{hook_data['then'].get('type')}'"
+        assert "action" in hook_data, "Hook is missing 'action' field"
+        assert isinstance(hook_data["action"], dict), "'action' is not a dict"
+        assert hook_data["action"].get("type") == "agent", (
+            f"Expected action.type == 'agent', "
+            f"got '{hook_data['action'].get('type')}'"
         )
 
     @given(data=st.just(None))
     @settings(max_examples=20)
-    def test_then_prompt_is_non_empty_string(self, data):
-        """The hook SHALL have a then.prompt field that is a non-empty string.
+    def test_action_prompt_is_non_empty_string(self, data):
+        """The hook SHALL have an action.prompt field that is a non-empty string.
 
         **Validates: Requirements 1.3, 9.3**
         """
         hook_data = load_hook(HOOK_PATH)
-        then = hook_data.get("then", {})
-        prompt = then.get("prompt")
+        action = hook_data.get("action", {})
+        prompt = action.get("prompt")
         assert isinstance(prompt, str), (
-            f"Expected then.prompt to be a string, got {type(prompt).__name__}"
+            f"Expected action.prompt to be a string, got {type(prompt).__name__}"
         )
-        assert len(prompt) > 0, "then.prompt is empty"
+        assert len(prompt) > 0, "action.prompt is empty"

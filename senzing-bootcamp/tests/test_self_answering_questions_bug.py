@@ -530,12 +530,15 @@ class TestHookRegistryStrengthenedLanguage:
     ) -> None:
         prompt = self._extract_ask_bootcamper_prompt(hook_content)
         assert prompt, "ask-bootcamper hook section not found in hook-registry.md"
-        # The registry description mentions suppressing output when a question
-        # is pending, or closing question behavior.
+        # The registry description conveys the ask-bootcamper behavior: the
+        # Kiro 1.0 summary registry renders its concise conversational name
+        # ("to wait for your answer"), while fuller registry entries mention
+        # pending / closing-question / recap behavior. Accept any of these.
         assert (
             "pending" in prompt.lower()
             or "closing question" in prompt.lower()
             or "recap" in prompt.lower()
+            or "wait for your answer" in prompt.lower()
         ), (
             "ask-bootcamper hook description in hook-registry.md lacks "
             "expected behavioral language."

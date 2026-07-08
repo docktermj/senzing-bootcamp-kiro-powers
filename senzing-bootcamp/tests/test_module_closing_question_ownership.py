@@ -58,7 +58,7 @@ _UNAFFECTED_FILES: dict[str, Path] = {
 }
 
 # Baseline files that must not be modified
-_HOOK_FILE = _HOOKS_DIR / "ask-bootcamper.kiro.hook"
+_HOOK_FILE = _HOOKS_DIR / "ask-bootcamper.json"
 _AGENT_INSTRUCTIONS_FILE = _STEERING_DIR / "agent-instructions.md"
 _ONBOARDING_FILE = _STEERING_DIR / "onboarding-flow.md"
 
@@ -734,8 +734,8 @@ _UNAFFECTED_MARKERS: dict[str, str] = {
 # keeps its default-silence rule, and retains all four phases. (Replaces the
 # whole-file _HASH_HOOK snapshot.)
 _HOOK_OWNERSHIP_MARKERS = (
-    '"agentStop"',
-    '"askAgent"',
+    '"Stop"',
+    '"agent"',
     "PHASE 1: CLOSING QUESTION",
     "Closing_Question_Phase",
     "👉",
@@ -895,19 +895,19 @@ class TestPreservationHookFile:
     def test_hook_file_has_agent_stop_trigger(self) -> None:
         """**Validates: Requirements 3.1**
 
-        Hook fires on agentStop event."""
+        Hook fires on the Kiro 1.0 Stop event (rename of legacy agentStop)."""
         content = _read_file(_HOOK_FILE)
-        assert '"agentStop"' in content, (
-            "Hook file missing agentStop trigger"
+        assert '"Stop"' in content, (
+            "Hook file missing Stop trigger"
         )
 
     def test_hook_file_has_ask_agent_action(self) -> None:
         """**Validates: Requirements 3.1**
 
-        Hook uses askAgent action type."""
+        Hook uses the Kiro 1.0 agent action type (rename of legacy askAgent)."""
         content = _read_file(_HOOK_FILE)
-        assert '"askAgent"' in content, (
-            "Hook file missing askAgent action type"
+        assert '"agent"' in content, (
+            "Hook file missing agent action type"
         )
 
 

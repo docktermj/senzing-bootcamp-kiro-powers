@@ -28,7 +28,7 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "write-policy-gate.kiro.hook"
+_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "write-policy-gate.json"
 _AGENT_INSTRUCTIONS = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
 
 # ---------------------------------------------------------------------------
@@ -37,14 +37,18 @@ _AGENT_INSTRUCTIONS = _BOOTCAMP_DIR / "steering" / "agent-instructions.md"
 
 
 def _read_hook() -> dict:
-    """Parse the hook file as JSON and return the dict."""
+    """Parse the hook file as JSON and return the v1 wrapper dict."""
     return json.loads(_HOOK_FILE.read_text(encoding="utf-8"))
 
 
+def _read_hook_entry() -> dict:
+    """Return the single v1 hook entry (``hooks[0]``) from the hook file."""
+    return _read_hook()["hooks"][0]
+
+
 def _read_hook_prompt() -> str:
-    """Extract the then.prompt field from the hook file."""
-    hook = _read_hook()
-    return hook.get("then", {}).get("prompt", "")
+    """Extract the action.prompt field from the v1 hook entry."""
+    return _read_hook_entry().get("action", {}).get("prompt", "")
 
 
 def _read_agent_instructions() -> str:
@@ -442,33 +446,30 @@ class TestHookEventConfigPreserved:
     """
 
     def test_hook_when_type_is_pretooluse(self) -> None:
-        """The hook's when.type must be 'preToolUse'."""
-        hook = _read_hook()
-        when = hook.get("when", {})
-        assert when.get("type") == "preToolUse", (
-            f"Preservation check: Hook when.type must be 'preToolUse', "
-            f"got '{when.get('type')}'"
+        """The hook's trigger must be 'PreToolUse' (Kiro 1.0 rename of preToolUse)."""
+        entry = _read_hook_entry()
+        assert entry.get("trigger") == "PreToolUse", (
+            f"Preservation check: Hook trigger must be 'PreToolUse', "
+            f"got '{entry.get('trigger')}'"
         )
 
     def test_hook_when_tooltypes_contains_write(self) -> None:
-        """The hook's when.toolTypes must contain 'write'."""
-        hook = _read_hook()
-        when = hook.get("when", {})
-        tool_types = when.get("toolTypes", [])
-        assert "write" in tool_types, (
-            f"Preservation check: Hook when.toolTypes must contain 'write', "
-            f"got {tool_types}"
+        """The hook's matcher must scope the write tools (fs_write|str_replace|fs_append)."""
+        entry = _read_hook_entry()
+        matcher = entry.get("matcher", "")
+        assert "fs_write" in matcher, (
+            f"Preservation check: Hook matcher must scope write tools "
+            f"(contain 'fs_write'), got {matcher!r}"
         )
 
-    @given(field=st.sampled_from(["type", "toolTypes"]))
+    @given(field=st.sampled_from(["trigger", "matcher"]))
     @settings(max_examples=100, suppress_health_check=[HealthCheck.too_slow])
     def test_hook_when_config_fields_exist(self, field: str) -> None:
-        """The hook's when configuration must contain required fields."""
-        hook = _read_hook()
-        when = hook.get("when", {})
-        assert field in when, (
-            f"Preservation check: Hook 'when' config must contain field '{field}', "
-            f"got keys: {list(when.keys())}"
+        """The v1 hook entry must contain the trigger and matcher fields."""
+        entry = _read_hook_entry()
+        assert field in entry, (
+            f"Preservation check: Hook entry must contain field '{field}', "
+            f"got keys: {list(entry.keys())}"
         )
 
 
@@ -498,29 +499,29 @@ class TestHookJsonValidity:
             f"Preservation check: Hook file must be a JSON object, got {type(data).__name__}"
         )
 
-    @given(field=st.sampled_from(["name", "version", "description", "when", "then"]))
+    @given(field=st.sampled_from(["name", "trigger", "action"]))
     @settings(max_examples=100, suppress_health_check=[HealthCheck.too_slow])
     def test_hook_contains_required_fields(self, field: str) -> None:
-        """The hook JSON must contain all required top-level fields."""
-        hook = _read_hook()
-        assert field in hook, (
-            f"Preservation check: Hook JSON must contain field '{field}', "
-            f"got keys: {list(hook.keys())}"
+        """The v1 hook entry must contain all required fields."""
+        entry = _read_hook_entry()
+        assert field in entry, (
+            f"Preservation check: Hook entry must contain field '{field}', "
+            f"got keys: {list(entry.keys())}"
         )
 
     def test_hook_then_type_is_askagent(self) -> None:
-        """The hook's then.type must be 'askAgent'."""
-        hook = _read_hook()
-        then = hook.get("then", {})
-        assert then.get("type") == "askAgent", (
-            f"Preservation check: Hook then.type must be 'askAgent', "
-            f"got '{then.get('type')}'"
+        """The hook's action.type must be 'agent' (Kiro 1.0 rename of askAgent)."""
+        entry = _read_hook_entry()
+        action = entry.get("action", {})
+        assert action.get("type") == "agent", (
+            f"Preservation check: Hook action.type must be 'agent', "
+            f"got '{action.get('type')}'"
         )
 
     def test_hook_then_prompt_is_nonempty_string(self) -> None:
-        """The hook's then.prompt must be a non-empty string."""
-        hook = _read_hook()
-        prompt = hook.get("then", {}).get("prompt", "")
+        """The hook's action.prompt must be a non-empty string."""
+        entry = _read_hook_entry()
+        prompt = entry.get("action", {}).get("prompt", "")
         assert isinstance(prompt, str) and len(prompt) > 0, (
-            "Preservation check: Hook then.prompt must be a non-empty string"
+            "Preservation check: Hook action.prompt must be a non-empty string"
         )

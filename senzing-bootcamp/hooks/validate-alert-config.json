@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "to validate alert configuration",
+      "trigger": "PostFileCreate",
+      "matcher": "^(?:monitoring/alerts/[^/]*\\.[^/]*|monitoring/dashboards/[^/]*\\.[^/]*)$",
+      "action": {
+        "type": "agent",
+        "prompt": "A monitoring configuration file was just created. Validate: (1) Alert rules have required fields: name, condition, severity, and action. (2) Severity levels are one of: Critical, Warning, Info. (3) Thresholds are numeric and reasonable (e.g., error rate percentages between 0-100, latency in milliseconds). (4) Dashboard configs reference metrics that are actually collected by the metrics_collector. Report any issues to the bootcamper with suggested fixes."
+      }
+    }
+  ]
+}

@@ -27,7 +27,7 @@ from hook_test_helpers import parse_categories_yaml
 # ---------------------------------------------------------------------------
 
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
-HOOK_PATH = HOOKS_DIR / "error-recovery-context.kiro.hook"
+HOOK_PATH = HOOKS_DIR / "error-recovery-context.json"
 CATEGORIES_PATH = HOOKS_DIR / "hook-categories.yaml"
 
 
@@ -49,16 +49,22 @@ EXPECTED_HOOK_COUNT = _expected_hook_count()
 
 
 @pytest.fixture
-def hook_data() -> dict:
-    """Load and parse error-recovery-context.kiro.hook."""
+def wrapper() -> dict:
+    """Load and parse the full v1 wrapper of error-recovery-context.json."""
     with open(HOOK_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 
 @pytest.fixture
+def hook_data(wrapper: dict) -> dict:
+    """Return the single v1 hook entry (hooks[0])."""
+    return wrapper["hooks"][0]
+
+
+@pytest.fixture
 def prompt(hook_data: dict) -> str:
-    """Extract the prompt string from the hook data."""
-    return hook_data["then"]["prompt"]
+    """Extract the action.prompt string from the v1 hook entry."""
+    return hook_data["action"]["prompt"]
 
 
 # ===========================================================================
@@ -69,41 +75,45 @@ def prompt(hook_data: dict) -> str:
 class TestHookFileStructure:
     """Verify hook file parses as valid JSON with correct field values."""
 
-    def test_hook_file_is_valid_json(self):
-        """error-recovery-context.kiro.hook parses as valid JSON."""
-        with open(HOOK_PATH, encoding="utf-8") as f:
-            data = json.load(f)
-        assert isinstance(data, dict)
+    def test_hook_file_is_valid_json(self, wrapper: dict):
+        """error-recovery-context.json parses as a valid v1 wrapper."""
+        assert isinstance(wrapper, dict)
+        assert wrapper.get("version") == "v1"
+        assert isinstance(wrapper.get("hooks"), list) and wrapper["hooks"]
 
     def test_name_field(self, hook_data: dict):
         """name field equals 'to help recover from errors'."""
         assert hook_data["name"] == "to help recover from errors"
 
-    def test_version_field(self, hook_data: dict):
-        """version field equals '1.0.0'."""
-        assert hook_data["version"] == "1.0.0"
+    def test_version_field(self, wrapper: dict):
+        """The wrapper declares the v1 schema version."""
+        assert wrapper["version"] == "v1"
 
-    def test_description_contains_shell_and_pitfalls_or_recovery(self, hook_data: dict):
-        """description contains 'shell' and either 'pitfalls' or 'recovery'."""
-        desc = hook_data["description"].lower()
-        assert "shell" in desc
-        assert "pitfalls" in desc or "recovery" in desc
+    def test_description_contains_shell_and_pitfalls_or_recovery(self, prompt: str):
+        """The action prompt covers shell and either pitfalls or recovery.
+
+        The v1 entry has no ``description`` field; the shell/pitfalls/recovery
+        intent lives in the action prompt.
+        """
+        text = prompt.lower()
+        assert "shell" in text
+        assert "pitfalls" in text or "recovery" in text
 
     def test_when_type(self, hook_data: dict):
-        """when.type equals 'postToolUse'."""
-        assert hook_data["when"]["type"] == "postToolUse"
+        """trigger equals 'PostToolUse' (1.0 rename of postToolUse)."""
+        assert hook_data["trigger"] == "PostToolUse"
 
     def test_when_tool_types(self, hook_data: dict):
-        """when.toolTypes equals ['shell']."""
-        assert hook_data["when"]["toolTypes"] == ["shell"]
+        """matcher scopes to the shell/command tool (1.0 rename of toolTypes ['shell'])."""
+        assert hook_data.get("matcher") == "execute_bash"
 
     def test_then_type(self, hook_data: dict):
-        """then.type equals 'askAgent'."""
-        assert hook_data["then"]["type"] == "askAgent"
+        """action.type equals 'agent' (1.0 rename of askAgent)."""
+        assert hook_data["action"]["type"] == "agent"
 
     def test_then_prompt_is_non_empty_string(self, hook_data: dict):
-        """then.prompt is a non-empty string."""
-        prompt = hook_data["then"]["prompt"]
+        """action.prompt is a non-empty string."""
+        prompt = hook_data["action"]["prompt"]
         assert isinstance(prompt, str)
         assert len(prompt) > 0
 
@@ -260,5 +270,5 @@ class TestHookCount:
 
     def test_total_hook_file_count(self):
         """Hook file count matches unique IDs in hook-categories.yaml."""
-        hook_files = list(HOOKS_DIR.glob("*.kiro.hook"))
+        hook_files = list(HOOKS_DIR.glob("*.json"))
         assert len(hook_files) == EXPECTED_HOOK_COUNT

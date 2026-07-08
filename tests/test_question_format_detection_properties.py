@@ -21,7 +21,7 @@ from hypothesis import strategies as st
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/ask-bootcamper.json")
 
 # Detection pattern descriptions that must appear in the prompt.
 # These correspond to the three compound-question detection patterns from
@@ -57,10 +57,10 @@ SILENT_SELF_CORRECTION_PHRASES: list[str] = [
 
 
 def load_hook_prompt() -> str:
-    """Load and return the then.prompt field from the consolidated hook file."""
+    """Load and return the action.prompt field from the consolidated v1 hook."""
     with open(HOOK_PATH, encoding="utf-8") as f:
         data = json.load(f)
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 # ---------------------------------------------------------------------------

@@ -143,6 +143,12 @@ For Senzing error codes, use the MCP `explain_error_code` tool. For Senzing conc
 - Available hooks
 - Hook configuration
 
+**[PERMISSIONS_GUIDE.md](PERMISSIONS_GUIDE.md)**
+
+- Kiro 1.0 write, shell, and MCP capabilities the bootcamp requests
+- Recommended approval scope for file writes, Python scripts, and MCP calls
+- Read-only Senzing MCP tools auto-approved via `mcp.json`
+
 **Hook Installer** ⭐ NEW!
 
 ```text
@@ -259,6 +265,7 @@ docs/
 │   ├── DATA_SOURCE_REGISTRY.md
 │   ├── GETTING_HELP.md
 │   ├── HOOKS_INSTALLATION_GUIDE.md
+│   ├── PERMISSIONS_GUIDE.md
 │   ├── PERFORMANCE_BASELINES.md
 │   ├── PROGRESS_FILE_SCHEMA.md
 │   ├── PROGRESS_TRACKER.md

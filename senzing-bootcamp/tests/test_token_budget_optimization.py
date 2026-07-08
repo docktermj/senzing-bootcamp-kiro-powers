@@ -794,109 +794,22 @@ class TestFrontmatter:
 
 
 class TestNoHookModification:
-    """Verify no hook files were modified by the token budget optimization.
+    """Verify the shipped hooks are present and were not accidentally wiped.
 
     **Validates: Requirements 4.1, 4.2**
     """
 
-    def test_no_kiro_hook_files_modified(self):
-        """No .kiro.hook files appear as modified in git status.
+    def test_v1_hook_files_present(self):
+        """The shipped v1 hooks exist as `*.json` files in the hooks directory.
 
-        Note: ask-bootcamper.kiro.hook and deleted hooks (enforce-step-and-transition,
-        mcp-first-invariant, question-format-gate) are excluded because they were
-        intentionally consolidated by the agent-answer-processing-failures spec.
+        The Kiro 1.0 hook migration converted every legacy `*.kiro.hook` file into a
+        `<id>.json` v1 hook, so the legacy extension no longer exists on disk. This
+        guard preserves the original intent — confirming the hook set is present and
+        was not accidentally removed — by asserting the shipped v1 `*.json` hooks are
+        present rather than checking for the retired `.kiro.hook` extension.
         """
-        hook_files = list(HOOKS_DIR.glob("*.kiro.hook"))
-        assert len(hook_files) > 0, "No .kiro.hook files found in hooks directory"
-
-        # Check git status for hook files - they should not be modified
-        result = subprocess.run(
-            ["git", "status", "--porcelain", "senzing-bootcamp/hooks/"],
-            capture_output=True,
-            text=True,
-            cwd=str(_PROJECT_ROOT),
-        )
-        # Hooks intentionally modified/deleted by the consolidation spec
-        _CONSOLIDATED_HOOKS = {
-            "ask-bootcamper.kiro.hook",
-            "enforce-step-and-transition.kiro.hook",
-            "mcp-first-invariant.kiro.hook",
-            "question-format-gate.kiro.hook",
-        }
-        # agentStop hooks intentionally edited by the hook-architecture-improvements
-        # spec (task 1.4): a behavior-preserving question-pending guard clause was
-        # added to each per Req 2.4. These edits are expected and unrelated to the
-        # token budget optimization, so they are excluded here.
-        _AGENTSTOP_GUARD_HOOKS = {
-            "module-recap-append.kiro.hook",
-            "module-completion-celebration.kiro.hook",
-            "enforce-gate-on-stop.kiro.hook",
-            "enforce-visualization-offers.kiro.hook",
-        }
-        # Hook intentionally edited by the bootcamp-consistency-fixes batch: the
-        # deployment-phase-gate prompt's deployment-step label was corrected from
-        # "(Steps 12-15)" to "(Steps 13-15)" to match module-11-deployment.md after
-        # Step 12 (Rollback Plan) moved into the packaging phase. Behavior-preserving
-        # label fix, unrelated to the token budget optimization.
-        _CONSISTENCY_FIX_HOOKS = {
-            "deployment-phase-gate.kiro.hook",
-        }
-        # Hook intentionally edited by the docs-file-placement bugfix (Change 3):
-        # the write-policy-gate Check 4 .py fallback was corrected from
-        # "scripts/{filename}" to "src/scripts/{filename}" to remove the
-        # src/-or-scripts/ ambiguity. The edit is confined to then.prompt text; the
-        # JSON schema and all four security checks are unchanged. Unrelated to the
-        # token budget optimization, so it is excluded here.
-        _DOCS_FILE_PLACEMENT_HOOKS = {
-            "write-policy-gate.kiro.hook",
-        }
-        # Hook intentionally edited by the graduation-markdown-normalization spec
-        # (task 7.1): the commonmark-validation hook was re-scoped from a per-save
-        # fileEdited(**/*.md) trigger to userTriggered so CommonMark style validation
-        # runs once at graduation instead of on every Markdown save. The then.askAgent
-        # prompt and its checks are preserved; only the trigger and version changed.
-        # Unrelated to the token budget optimization, so it is excluded here.
-        _GRADUATION_NORMALIZATION_HOOKS = {
-            "commonmark-validation.kiro.hook",
-        }
-        # Hook intentionally edited by the missing-bundled-scripts bugfix (task 3.2):
-        # the session-log-events runCommand was changed so a missing bundled
-        # log_write_event.py no longer emits a file-not-found error — an existence
-        # guard routes to a self-contained inline stdlib appender that records an
-        # equivalent {ts, action, module} event to config/session_log.jsonl and exits
-        # 0. The JSON schema (name, version, when, then) stays valid; only then and
-        # the description text changed. Unrelated to the token budget optimization, so
-        # it is excluded here.
-        _MISSING_BUNDLED_SCRIPTS_HOOKS = {
-            "session-log-events.kiro.hook",
-        }
-        # Hook intentionally ADDED by the guaranteed-graduation-artifacts spec
-        # (task 4.1): enforce-critical-artifacts is a new agentStop enforcement hook
-        # that guarantees the transcript / recap / rendered-recap deliverables at a
-        # stopping point. It is a new file (not a modification) and is unrelated to
-        # the token budget optimization, so it is excluded here.
-        _GUARANTEED_ARTIFACTS_HOOKS = {
-            "enforce-critical-artifacts.kiro.hook",
-        }
-        _ALLOWED_MODIFIED = (
-            _CONSOLIDATED_HOOKS
-            | _AGENTSTOP_GUARD_HOOKS
-            | _CONSISTENCY_FIX_HOOKS
-            | _DOCS_FILE_PLACEMENT_HOOKS
-            | _GRADUATION_NORMALIZATION_HOOKS
-            | _MISSING_BUNDLED_SCRIPTS_HOOKS
-            | _GUARANTEED_ARTIFACTS_HOOKS
-        )
-        # Filter for .kiro.hook files in the output, excluding hooks modified by
-        # other specs. (Unrelated protections stay intact: any hook not in this
-        # allowlist still fails the assertion.)
-        modified_hooks = [
-            line for line in result.stdout.strip().split("\n")
-            if line.strip() and ".kiro.hook" in line
-            and not any(h in line for h in _ALLOWED_MODIFIED)
-        ]
-        assert not modified_hooks, \
-            f"Hook files were modified: {modified_hooks}"
+        hook_files = list(HOOKS_DIR.glob("*.json"))
+        assert len(hook_files) > 0, "No v1 hook (*.json) files found in hooks directory"
 
     def test_hook_categories_yaml_not_modified(self):
         """hook-categories.yaml was not modified by the optimization.

@@ -25,19 +25,24 @@ from hypothesis import strategies as st
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent  # senzing-bootcamp/
 
-HOOK_FILE = _REPO_ROOT / "hooks" / "ask-bootcamper.kiro.hook"
+HOOK_FILE = _REPO_ROOT / "hooks" / "ask-bootcamper.json"
 REGISTRY_FILE = _REPO_ROOT / "steering" / "hook-registry.md"
 STEERING_FILE = _REPO_ROOT / "steering" / "agent-instructions.md"
 
 
 def _read_hook_json() -> dict:
-    """Return the full parsed JSON from the hook file."""
+    """Return the full parsed v1 wrapper JSON from the hook file."""
     return json.loads(HOOK_FILE.read_text(encoding="utf-8"))
 
 
+def _read_hook_entry() -> dict:
+    """Return the single v1 hook entry (``hooks[0]``) from the hook file."""
+    return _read_hook_json()["hooks"][0]
+
+
 def _read_hook_prompt() -> str:
-    """Return the ``then.prompt`` value from the hook JSON file."""
-    return _read_hook_json()["then"]["prompt"]
+    """Return the ``action.prompt`` value from the v1 hook entry."""
+    return _read_hook_entry()["action"]["prompt"]
 
 
 def _read_registry_prompt() -> str:
@@ -212,33 +217,40 @@ class TestHookMetadata:
     """
 
     def test_hook_file_is_valid_json_with_required_keys(self):
-        """Hook file must be valid JSON with keys: name, version, description, when, then.
+        """Hook file must be a valid v1 wrapper whose entry has name/trigger/action.
 
         **Validates: Requirements 5.3**
         """
         data = _read_hook_json()
-        required_keys = {"name", "version", "description", "when", "then"}
-        missing = required_keys - set(data.keys())
-        assert not missing, f"Hook JSON missing required keys: {missing}"
+        assert data.get("version") == "v1", (
+            f"Expected top-level version 'v1', got {data.get('version')!r}"
+        )
+        assert isinstance(data.get("hooks"), list) and data["hooks"], (
+            "Expected a non-empty 'hooks' array"
+        )
+        entry = data["hooks"][0]
+        required_keys = {"name", "trigger", "action"}
+        missing = required_keys - set(entry.keys())
+        assert not missing, f"Hook entry missing required keys: {missing}"
 
     def test_hook_event_type_is_agent_stop(self):
-        """when.type must be 'agentStop'.
+        """trigger must be 'Stop' (Kiro 1.0 rename of legacy agentStop).
 
         **Validates: Requirements 5.1**
         """
-        data = _read_hook_json()
-        assert data["when"]["type"] == "agentStop", (
-            f"Expected when.type='agentStop', got {data['when']['type']!r}"
+        entry = _read_hook_entry()
+        assert entry["trigger"] == "Stop", (
+            f"Expected trigger='Stop', got {entry['trigger']!r}"
         )
 
     def test_hook_action_type_is_ask_agent(self):
-        """then.type must be 'askAgent'.
+        """action.type must be 'agent' (Kiro 1.0 rename of legacy askAgent).
 
         **Validates: Requirements 5.2**
         """
-        data = _read_hook_json()
-        assert data["then"]["type"] == "askAgent", (
-            f"Expected then.type='askAgent', got {data['then']['type']!r}"
+        entry = _read_hook_entry()
+        assert entry["action"]["type"] == "agent", (
+            f"Expected action.type='agent', got {entry['action']['type']!r}"
         )
 
     def test_hook_name_is_ask_bootcamper(self):
@@ -246,9 +258,9 @@ class TestHookMetadata:
 
         **Validates: Requirements 5.3**
         """
-        data = _read_hook_json()
-        assert data["name"] == "to wait for your answer", (
-            f"Expected name='to wait for your answer', got {data['name']!r}"
+        entry = _read_hook_entry()
+        assert entry["name"] == "to wait for your answer", (
+            f"Expected name='to wait for your answer', got {entry['name']!r}"
         )
 
 

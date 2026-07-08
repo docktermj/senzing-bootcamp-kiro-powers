@@ -76,28 +76,28 @@ SILENCE_INDICATORS: tuple[str, ...] = (
 
 
 def _load_hook(path: Path) -> dict:
-    """Load and parse a single ``.kiro.hook`` JSON file."""
-    return json.loads(path.read_text(encoding="utf-8"))
+    """Load and parse the single v1 hook entry (``hooks[0]``) from a hook file."""
+    return json.loads(path.read_text(encoding="utf-8"))["hooks"][0]
 
 
 def discover_agentstop_hook_files() -> list[Path]:
-    """Return the ``.kiro.hook`` files whose ``when.type`` is ``agentStop``.
+    """Return the ``.json`` files whose 1.0 ``trigger`` is ``Stop``.
 
     Returns:
-        Sorted list of paths to the real agentStop hook files.
+        Sorted list of paths to the real Stop-trigger hook files.
     """
     assert HOOKS_DIR.is_dir(), f"Hooks directory not found at {HOOKS_DIR}"
     matches: list[Path] = []
-    for path in sorted(HOOKS_DIR.glob("*.kiro.hook")):
-        data = _load_hook(path)
-        if data.get("when", {}).get("type") == "agentStop":
+    for path in sorted(HOOKS_DIR.glob("*.json")):
+        entry = _load_hook(path)
+        if entry.get("trigger") == "Stop":
             matches.append(path)
     return matches
 
 
 def load_prompt(path: Path) -> str:
-    """Return the ``then.prompt`` string for a hook file."""
-    return _load_hook(path)["then"]["prompt"]
+    """Return the ``action.prompt`` string for a v1 hook file."""
+    return _load_hook(path)["action"]["prompt"]
 
 
 # The five real agentStop hook files, discovered once at import time.
@@ -131,7 +131,7 @@ class TestAgentStopGuardText:
 
     def test_discovers_exactly_the_expected_agentstop_hooks(self) -> None:
         """Sanity check: discovery finds exactly the known agentStop hooks."""
-        discovered = {p.name.replace(".kiro.hook", "") for p in AGENTSTOP_HOOK_FILES}
+        discovered = {p.name.replace(".json", "") for p in AGENTSTOP_HOOK_FILES}
         assert discovered == EXPECTED_AGENTSTOP_IDS, (
             "agentStop hook discovery drifted from the grounded ids. "
             f"Discovered: {sorted(discovered)}"

@@ -11,7 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## Module 2 Hooks
 
-**verify-sdk-setup** (fileEdited → askAgent, filePatterns: `config/senzing_config.*, config/bootcamp_preferences.yaml, database/*.*`)
+**verify-sdk-setup** (PostFileSave → agent, matcher: `^(?:config/senzing_config\.[^/]*|config/bootcamp_preferences\.yaml|database/[^/]*\.[^/]*)$`)
 
 Prompt:
 
@@ -21,4 +21,6 @@ A configuration or database file was modified. If the bootcamper is in Module 2 
 
 - id: `verify-sdk-setup`
 - name: `to verify SDK setup`
-- description: `After config or environment files change during Module 2, re-verifies that the Senzing SDK setup is still valid.`
+- trigger: `PostFileSave`
+- matcher: `^(?:config/senzing_config\.[^/]*|config/bootcamp_preferences\.yaml|database/[^/]*\.[^/]*)$`
+- action: `agent`

@@ -1,11 +1,21 @@
-"""Tests for the re-scoped commonmark-validation hook.
+"""Tests for the commonmark-validation manual invocation path.
 
-Validates that the CommonMark validation hook has been re-scoped from a
-per-edit ``fileEdited`` trigger on ``**/*.md`` to a single ``userTriggered``
-graduation-time pass, that it remains a valid Kiro hook, and that it stays
-consistent with the generated hook lock file.
+Historically the CommonMark validation hook was re-scoped from a per-edit
+``fileEdited`` trigger to a single manual (``userTriggered``) graduation-time
+pass. Under the Kiro 1.0 migration the ``userTriggered`` trigger no longer
+exists, so this manual hook was converted to the ``/commonmark-validation``
+slash-command steering file (``steering/slash-commonmark-validation.md``). The
+behavioral intent is unchanged — CommonMark validation is still available as a
+single on-demand pass, never as a per-edit automatic hook.
 
-Validates: Requirements 8.3, 4.1, 4.5, 4.6
+This test preserves that intent for the v1 reality:
+
+* ``commonmark-validation`` is NOT a shipped hook (no ``.json``/``.kiro.hook``
+  file, absent from ``hooks.lock.yaml`` and ``hook-categories.yaml``).
+* The Slash_Command_File exists, is manually invoked, and preserves the
+  CommonMark instruction text.
+
+Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5
 """
 
 from __future__ import annotations
@@ -18,161 +28,101 @@ _TESTS_DIR = str(Path(__file__).resolve().parent)
 if _TESTS_DIR not in sys.path:
     sys.path.insert(0, _TESTS_DIR)
 
-from hook_test_helpers import HOOKS_DIR, load_hook, validate_required_fields
+from hook_test_helpers import HOOKS_DIR
 
 # ---------------------------------------------------------------------------
 # Module-level data
 # ---------------------------------------------------------------------------
 
 HOOK_ID = "commonmark-validation"
-HOOK_PATH: Path = HOOKS_DIR / f"{HOOK_ID}.kiro.hook"
+_REPO_ROOT: Path = Path(__file__).resolve().parent.parent
+STEERING_DIR: Path = _REPO_ROOT / "senzing-bootcamp" / "steering"
+SLASH_COMMAND_FILE: Path = STEERING_DIR / "slash-commonmark-validation.md"
 LOCKFILE_PATH: Path = HOOKS_DIR / "hooks.lock.yaml"
 
-# Fields that make a hook a valid Kiro hook (top-level + nested).
-VALID_HOOK_FIELDS: list[str] = ["name", "version", "when.type", "then.type"]
 
-
-def _strip_scalar(value: str) -> str:
-    """Strip surrounding quotes and whitespace from a YAML scalar."""
-    value = value.strip()
-    if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
-        return value[1:-1]
-    return value
-
-
-def _parse_lockfile(path: Path) -> dict[str, dict[str, str]]:
-    """Parse hooks.lock.yaml into a mapping of hook id -> field dict.
-
-    The lock file is a deterministic, machine-generated list of hook entries
-    of the form::
-
-        hooks:
-          - id: commonmark-validation
-            version: "2.0.0"
-            category: critical
-            event_type: userTriggered
-
-    Uses a minimal stdlib parser (no PyYAML) consistent with the repo's
-    custom-YAML-parser convention.
-
-    Args:
-        path: Path to the hooks.lock.yaml file.
-
-    Returns:
-        Dict mapping hook id to a dict of its scalar fields.
-    """
-    entries: dict[str, dict[str, str]] = {}
-    current_id: str | None = None
-    in_hooks_block = False
-
-    for raw_line in path.read_text(encoding="utf-8").splitlines():
-        stripped = raw_line.strip()
-        if not stripped or stripped.startswith("#"):
-            continue
-
-        # Enter the top-level `hooks:` list block.
-        if stripped == "hooks:" and not raw_line.startswith(" "):
-            in_hooks_block = True
-            continue
-        if not in_hooks_block:
-            continue
-
-        # A new list item starts with `- id: <value>`.
-        item_match = re.match(r"^-\s*id:\s*(.+)$", stripped)
-        if item_match:
-            current_id = _strip_scalar(item_match.group(1))
-            entries[current_id] = {"id": current_id}
-            continue
-
-        # Subsequent `key: value` lines belong to the current item.
-        kv_match = re.match(r"^([A-Za-z_]+):\s*(.+)$", stripped)
-        if kv_match and current_id is not None:
-            key = kv_match.group(1)
-            entries[current_id][key] = _strip_scalar(kv_match.group(2))
-
-    return entries
-
-
-_hook_data = load_hook(HOOK_PATH)
-_lock_entries = _parse_lockfile(LOCKFILE_PATH)
+def _read_slash_command() -> str:
+    """Return the slash-command steering file text."""
+    return SLASH_COMMAND_FILE.read_text(encoding="utf-8")
 
 
 # ===========================================================================
-# TestCommonmarkHookRescope — Req 8.3, 4.1, 4.5, 4.6
+# TestCommonmarkNotAShippedHook — Req 4.4
 # ===========================================================================
 
-class TestCommonmarkHookRescope:
-    """Verify the commonmark-validation hook is re-scoped to userTriggered."""
 
-    def test_hook_file_exists(self):
-        """The hook file exists on disk."""
-        assert HOOK_PATH.exists(), f"Hook file not found at {HOOK_PATH}"
+class TestCommonmarkNotAShippedHook:
+    """The former manual hook no longer ships as a hook definition."""
 
-    def test_hook_is_valid_kiro_hook(self):
-        """The hook contains name, version, when, then (valid Kiro hook) (Req 4.6)."""
-        missing = validate_required_fields(_hook_data)
-        # Ensure the core valid-hook fields are present at minimum.
-        core_missing = [
-            f for f in VALID_HOOK_FIELDS
-            if f.split(".")[0] not in _hook_data
-            or (
-                "." in f
-                and f.split(".")[1] not in _hook_data.get(f.split(".")[0], {})
+    def test_no_v1_hook_file(self):
+        """No ``commonmark-validation.json`` v1 hook file ships (Req 4.4)."""
+        assert not (HOOKS_DIR / f"{HOOK_ID}.json").exists(), (
+            "commonmark-validation must not ship as a v1 hook file — "
+            "it is now the /commonmark-validation slash command"
+        )
+
+    def test_no_legacy_hook_file(self):
+        """No legacy ``commonmark-validation.kiro.hook`` file remains (Req 4.4)."""
+        assert not (HOOKS_DIR / f"{HOOK_ID}.kiro.hook").exists(), (
+            "legacy commonmark-validation.kiro.hook must be removed"
+        )
+
+    def test_absent_from_lockfile(self):
+        """commonmark-validation is not present in hooks.lock.yaml (Req 4.4)."""
+        lock_text = LOCKFILE_PATH.read_text(encoding="utf-8")
+        assert f"id: {HOOK_ID}" not in lock_text, (
+            "commonmark-validation must not appear in hooks.lock.yaml"
+        )
+
+    def test_absent_from_categories(self):
+        """commonmark-validation is not listed in hook-categories.yaml (Req 4.4)."""
+        categories_text = (HOOKS_DIR / "hook-categories.yaml").read_text(
+            encoding="utf-8"
+        )
+        assert HOOK_ID not in categories_text, (
+            "commonmark-validation must not appear in hook-categories.yaml"
+        )
+
+
+# ===========================================================================
+# TestCommonmarkSlashCommand — Req 4.1, 4.2, 4.3
+# ===========================================================================
+
+
+class TestCommonmarkSlashCommand:
+    """The CommonMark validation intent is preserved as a slash command."""
+
+    def test_slash_command_file_exists(self):
+        """The slash-command steering file exists (Req 4.1)."""
+        assert SLASH_COMMAND_FILE.exists(), (
+            f"Slash command file not found at {SLASH_COMMAND_FILE}"
+        )
+
+    def test_manual_invocation(self):
+        """The slash command is configured for manual invocation (Req 4.3)."""
+        text = _read_slash_command()
+        assert re.search(r"^inclusion:\s*manual\s*$", text, re.MULTILINE), (
+            "Slash command file must declare `inclusion: manual` frontmatter"
+        )
+
+    def test_instruction_text_preserved(self):
+        """The CommonMark instruction text is preserved (Req 4.2)."""
+        text = _read_slash_command()
+        # Key instruction fragments from the former hook prompt must survive.
+        for fragment in (
+            "CommonMark compliance",
+            "MD022",
+            "MD040",
+            "MD031",
+            "MD032",
+        ):
+            assert fragment in text, (
+                f"Slash command must preserve instruction fragment: {fragment!r}"
             )
-        ]
-        assert not core_missing, (
-            f"Hook missing required valid-hook fields: {core_missing}"
-        )
-        # No required field (per shared helper) should be missing either.
-        assert not missing, f"Hook missing required fields: {missing}"
 
-    def test_when_type_is_user_triggered(self):
-        """when.type is userTriggered, NOT a per-edit trigger (Req 4.1)."""
-        assert _hook_data["when"]["type"] == "userTriggered", (
-            f'Expected when.type == "userTriggered", got '
-            f'"{_hook_data["when"].get("type")}"'
-        )
-
-    def test_not_file_edited_trigger(self):
-        """The hook is no longer a fileEdited trigger (Req 4.1, 4.6)."""
-        assert _hook_data["when"]["type"] != "fileEdited", (
-            "Hook must not use the per-edit fileEdited trigger"
-        )
-
-    def test_no_markdown_glob_patterns(self):
-        """The hook does not watch **/*.md patterns (Req 4.1, 4.6)."""
-        patterns = _hook_data["when"].get("patterns", [])
-        assert "**/*.md" not in patterns, (
-            f"Hook must not watch the **/*.md pattern; got patterns={patterns}"
-        )
-        # A userTriggered hook should carry no file patterns at all.
-        assert not patterns, (
-            f"userTriggered hook should have no file patterns; got {patterns}"
-        )
-
-    def test_name_matches_governance_prefix(self):
-        """The hook name starts with 'to ' per governance regex (Req 4.5)."""
-        name = _hook_data["name"]
-        assert re.match(r"^to ", name), (
-            f'Hook name must match ^to ; got "{name}"'
-        )
-
-    def test_present_in_lockfile_with_matching_event_type(self):
-        """The hook is in hooks.lock.yaml with event_type userTriggered (Req 4.5)."""
-        assert HOOK_ID in _lock_entries, (
-            f'"{HOOK_ID}" not present in {LOCKFILE_PATH}'
-        )
-        entry = _lock_entries[HOOK_ID]
-        assert entry.get("event_type") == "userTriggered", (
-            f'Lock file event_type for "{HOOK_ID}" should be "userTriggered", '
-            f'got "{entry.get("event_type")}"'
-        )
-
-    def test_lockfile_event_type_matches_hook_file(self):
-        """The lock file event_type matches the hook file's when.type (Req 4.5)."""
-        lock_event_type = _lock_entries[HOOK_ID].get("event_type")
-        hook_event_type = _hook_data["when"]["type"]
-        assert lock_event_type == hook_event_type, (
-            f"Lock file event_type ({lock_event_type}) does not match hook "
-            f"file when.type ({hook_event_type})"
+    def test_documents_replacement_of_manual_hook(self):
+        """The slash command notes it replaces the former manual hook (Req 4.1)."""
+        text = _read_slash_command()
+        assert "commonmark-validation" in text, (
+            "Slash command should reference the former commonmark-validation hook"
         )

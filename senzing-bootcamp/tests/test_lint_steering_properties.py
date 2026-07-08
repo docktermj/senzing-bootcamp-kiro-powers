@@ -408,11 +408,11 @@ class TestProperty6FileMetadataCompleteness:
 class TestProperty7HookRegistryConsistency:
     """Feature: steering-file-linter, Property 7: Bidirectional Hook Registry Consistency
 
-    For any set of hook IDs in the hook registry and set of .kiro.hook files
-    on disk, the linter shall report every ID that exists in one set but not
-    the other, and shall report an error when the event type documented in
-    the registry does not match the when.type field in the corresponding
-    hook file.
+    For any set of hook IDs in the hook registry and set of ``<id>.json`` v1
+    hook files on disk, the linter shall report every ID that exists in one set
+    but not the other, and shall report an error when the trigger documented in
+    the registry does not match the ``hooks[0].trigger`` field in the
+    corresponding hook file.
 
     **Validates: Requirements 6.2, 6.3, 6.4**
     """
@@ -435,7 +435,7 @@ class TestProperty7HookRegistryConsistency:
                 "---", "inclusion: manual", "---", "# Hook Registry — Full Prompts", ""
             ]
             for hid in registry_ids:
-                registry_lines.append(f"**{hid}** (promptSubmit → askAgent)")
+                registry_lines.append(f"**{hid}** (UserPromptSubmit → agent)")
                 registry_lines.append("")
                 registry_lines.append(f"- id: `{hid}`")
                 registry_lines.append("")
@@ -443,11 +443,16 @@ class TestProperty7HookRegistryConsistency:
 
             for hid in disk_ids:
                 hook_data = {
-                    "name": hid,
-                    "when": {"type": "promptSubmit"},
-                    "then": {"type": "askAgent", "prompt": "test"},
+                    "version": "v1",
+                    "hooks": [
+                        {
+                            "name": hid,
+                            "trigger": "UserPromptSubmit",
+                            "action": {"type": "agent", "prompt": "test"},
+                        }
+                    ],
                 }
-                (hooks / f"{hid}.kiro.hook").write_text(json.dumps(hook_data))
+                (hooks / f"{hid}.json").write_text(json.dumps(hook_data))
 
             violations = check_hook_consistency(steering, hooks)
             messages = [v.message for v in violations]

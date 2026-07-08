@@ -36,22 +36,18 @@ from sync_hook_registry import (
 # Constants
 # ---------------------------------------------------------------------------
 
-VALID_EVENT_TYPES = {
-    "promptSubmit",
-    "preToolUse",
-    "postToolUse",
-    "fileEdited",
-    "fileCreated",
-    "fileDeleted",
-    "agentStop",
-    "userTriggered",
-    "postTaskExecution",
-    "preTaskExecution",
+VALID_TRIGGERS = {
+    "PostFileSave",
+    "PostFileCreate",
+    "PostFileDelete",
+    "Stop",
+    "UserPromptSubmit",
+    "PostTaskExec",
+    "PreToolUse",
+    "PostToolUse",
 }
 
-VALID_ACTION_TYPES = {"askAgent", "runCommand"}
-
-REQUIRED_FIELDS = ["name", "version", "description", "when", "then"]
+VALID_ACTION_TYPES = {"agent", "command"}
 
 
 # ---------------------------------------------------------------------------
@@ -141,8 +137,8 @@ class TestProperty2CategoryToFileConsistency:
     @given(hook_id=st_hook_id_from_categories())
     @settings(max_examples=100)
     def test_hook_id_has_corresponding_file(self, hook_id: str):
-        """Property 2: Hook ID '{hook_id}' has a matching .kiro.hook file."""
-        expected_path = HOOKS_DIR / f"{hook_id}.kiro.hook"
+        """Property 2: Hook ID '{hook_id}' has a matching .json file."""
+        expected_path = HOOKS_DIR / f"{hook_id}.json"
         assert expected_path.is_file(), (
             f"Hook ID '{hook_id}' listed in categories but file "
             f"'{expected_path}' does not exist"
@@ -161,31 +157,33 @@ class TestProperty3HookStructuralValidity:
     @given(hook_path=st_hook_file_path())
     @settings(max_examples=100)
     def test_hook_file_is_valid_and_complete(self, hook_path: Path):
-        """Property 3: Hook file '{hook_path.name}' is structurally valid."""
-        # Must parse as valid JSON
-        text = hook_path.read_text(encoding="utf-8")
-        data = json.loads(text)
-        assert isinstance(data, dict), f"{hook_path.name} is not a JSON object"
+        """Property 3: Hook file '{hook_path.name}' is a structurally valid v1 wrapper."""
+        # Must parse as a valid v1 wrapper
+        wrapper = json.loads(hook_path.read_text(encoding="utf-8"))
+        assert isinstance(wrapper, dict), f"{hook_path.name} is not a JSON object"
+        assert wrapper.get("version") == "v1", f"{hook_path.name} missing version v1"
+        assert isinstance(wrapper.get("hooks"), list) and wrapper["hooks"], (
+            f"{hook_path.name} missing 'hooks' array"
+        )
+        entry = wrapper["hooks"][0]
 
-        # Must have all required top-level fields
-        for field in REQUIRED_FIELDS:
-            assert field in data, f"{hook_path.name} missing required field '{field}'"
+        # Must have all required v1 entry fields
+        for field in ("name", "trigger", "action"):
+            assert field in entry, f"{hook_path.name} missing required field '{field}'"
 
-        # when.type must be valid
-        when = data["when"]
-        assert "type" in when, f"{hook_path.name} missing when.type"
-        assert when["type"] in VALID_EVENT_TYPES, (
-            f"{hook_path.name} has invalid when.type: '{when['type']}'"
+        # trigger must be valid
+        assert entry["trigger"] in VALID_TRIGGERS, (
+            f"{hook_path.name} has invalid trigger: '{entry['trigger']}'"
         )
 
-        # then.type must be valid
-        then = data["then"]
-        assert "type" in then, f"{hook_path.name} missing then.type"
-        assert then["type"] in VALID_ACTION_TYPES, (
-            f"{hook_path.name} has invalid then.type: '{then['type']}'"
+        # action.type must be valid
+        action = entry["action"]
+        assert "type" in action, f"{hook_path.name} missing action.type"
+        assert action["type"] in VALID_ACTION_TYPES, (
+            f"{hook_path.name} has invalid action.type: '{action['type']}'"
         )
 
-        # If askAgent, must have non-empty prompt
-        if then["type"] == "askAgent":
-            assert "prompt" in then, f"{hook_path.name} missing then.prompt"
-            assert len(then["prompt"]) > 0, f"{hook_path.name} has empty prompt"
+        # If agent action, must have non-empty prompt
+        if action["type"] == "agent":
+            assert "prompt" in action, f"{hook_path.name} missing action.prompt"
+            assert len(action["prompt"]) > 0, f"{hook_path.name} has empty prompt"

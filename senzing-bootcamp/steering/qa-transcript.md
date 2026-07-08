@@ -70,10 +70,10 @@ hard constraints when emitting events or editing this feature:
 - **Triggered only by Q&A moves.** Emit a `question` event when you present a 👉 leading question
   and an `answer` event when the bootcamper replies — nothing else. A `fs_write`, `fs_append`, or
   `str_replace` call is **not** a trigger for Q&A logging.
-- **Do not touch write-tool hooks.** Do **not** add or modify any `postToolUse` hook on the write
+- **Do not touch write-tool hooks.** Do **not** add or modify any `PostToolUse` hook on the write
   tools (`fs_write`, `fs_append`, `str_replace`) to perform Q&A logging.
 - **Do not change `session-log-events`.** Leave the `session-log-events` hook exactly as the
-  `session-log-hook-performance` spec established it (the shell `runCommand` per-write append). Q&A
+  `session-log-hook-performance` spec established it (the shell `command` per-write append). Q&A
   logging is separate and must not alter or piggy-back on that hook.
 - **Zero cost on write-only turns.** A turn that performs many file writes but asks no question and
   receives no answer adds **zero** additional Q&A log entries.

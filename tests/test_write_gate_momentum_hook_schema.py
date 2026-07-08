@@ -23,56 +23,53 @@ _TESTS_DIR = str(Path(__file__).resolve().parent)
 if _TESTS_DIR not in sys.path:
     sys.path.insert(0, _TESTS_DIR)
 
-from hook_test_helpers import validate_required_fields  # noqa: E402
 from write_gate_momentum_baseline import load_hook  # noqa: E402
 
 
 class TestWriteGateHookSchemaConformance:
-    """Schema conformance checks for the live write-policy-gate hook.
+    """Schema conformance checks for the live write-policy-gate v1 hook.
 
     Validates: Requirements 6.1, 6.2, 6.3
     """
 
     def test_hook_parses_as_json(self) -> None:
-        """The hook file is well-formed JSON parsing to a dict (Requirement 6.3)."""
-        hook = load_hook()
-        assert isinstance(hook, dict), "Hook must parse to a JSON object"
+        """The hook file is well-formed JSON parsing to a v1 wrapper (Requirement 6.3)."""
+        wrapper = load_hook()
+        assert isinstance(wrapper, dict), "Hook must parse to a JSON object"
+        assert wrapper.get("version") == "v1", "wrapper must declare version v1"
+        assert isinstance(wrapper.get("hooks"), list) and wrapper["hooks"], (
+            "wrapper must contain a non-empty 'hooks' array"
+        )
 
     def test_when_type_is_pretooluse(self) -> None:
-        """``when.type`` is exactly ``preToolUse`` (Requirement 6.1)."""
-        hook = load_hook()
-        assert hook["when"]["type"] == "preToolUse"
+        """``trigger`` is exactly ``PreToolUse`` (Requirement 6.1)."""
+        entry = load_hook()["hooks"][0]
+        assert entry["trigger"] == "PreToolUse"
 
     def test_tool_types_is_write_only(self) -> None:
-        """``when.toolTypes`` is exactly ``["write"]`` (Requirement 6.1)."""
-        hook = load_hook()
-        assert hook["when"]["toolTypes"] == ["write"]
+        """``matcher`` is the write-tool regex (Requirement 6.1)."""
+        entry = load_hook()["hooks"][0]
+        assert entry.get("matcher") == "fs_write|str_replace|fs_append"
 
     def test_required_fields_present(self) -> None:
-        """Required hook fields are present (Requirement 6.2).
+        """Required v1 entry fields are present (Requirement 6.2).
 
-        Confirms ``name``, ``version``, ``when``, and ``then`` exist, alongside
-        the dot-notation required fields tracked by the shared helper.
+        Confirms ``name``, ``trigger``, and ``action`` exist on the entry.
         """
-        hook = load_hook()
-        for field in ("name", "version", "when", "then"):
-            assert field in hook, f"missing required field: {field}"
-
-        missing = validate_required_fields(hook)
-        assert missing == [], f"missing required dot-notation fields: {missing}"
+        entry = load_hook()["hooks"][0]
+        for field in ("name", "trigger", "action"):
+            assert field in entry, f"missing required field: {field}"
 
     def test_required_fields_non_empty(self) -> None:
-        """Required hook fields hold non-empty values (Requirement 6.2)."""
-        hook = load_hook()
+        """Required v1 entry fields hold non-empty values (Requirement 6.2)."""
+        entry = load_hook()["hooks"][0]
 
-        assert isinstance(hook["name"], str) and hook["name"].strip()
-        assert isinstance(hook["version"], str) and hook["version"].strip()
-        assert isinstance(hook["when"], dict) and hook["when"]
-        assert isinstance(hook["then"], dict) and hook["then"]
+        assert isinstance(entry["name"], str) and entry["name"].strip()
+        assert isinstance(entry["trigger"], str) and entry["trigger"].strip()
+        assert isinstance(entry["action"], dict) and entry["action"]
 
     def test_then_is_ask_agent_with_non_empty_prompt(self) -> None:
-        """``then.type`` is ``askAgent`` with a non-empty ``then.prompt`` (Requirement 6.2)."""
-        hook = load_hook()
-        then = hook["then"]
-        assert then["type"] == "askAgent"
-        assert isinstance(then["prompt"], str) and then["prompt"].strip()
+        """``action.type`` is ``agent`` with a non-empty ``action.prompt`` (Requirement 6.2)."""
+        action = load_hook()["hooks"][0]["action"]
+        assert action["type"] == "agent"
+        assert isinstance(action["prompt"], str) and action["prompt"].strip()

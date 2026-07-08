@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "to check data quality",
+      "trigger": "PostFileSave",
+      "matcher": "^(?:src/transform/[^/]*\\.[^/]*)$",
+      "action": {
+        "type": "agent",
+        "prompt": "The transformation program was just updated. Please review the changes and suggest running data quality validation tests to ensure the output still meets quality standards (>70% attribute coverage)."
+      }
+    }
+  ]
+}

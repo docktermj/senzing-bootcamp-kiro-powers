@@ -21,7 +21,7 @@ from hypothesis import strategies as st
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
 _MODULE_02 = _BOOTCAMP_DIR / "steering" / "module-02-sdk-setup.md"
-_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "ask-bootcamper.kiro.hook"
+_HOOK_FILE = _BOOTCAMP_DIR / "hooks" / "ask-bootcamper.json"
 
 # -------------------------------------------------------------------
 # Helpers
@@ -133,7 +133,7 @@ class TestHookFileUnchanged:
         """Assert the hook file has not been modified."""
         current_bytes = _HOOK_FILE.read_bytes()
         assert current_bytes == _UNFIXED_HOOK_BYTES, (
-            "ask-bootcamper.kiro.hook has been modified. "
+            "ask-bootcamper.json has been modified. "
             f"Expected {len(_UNFIXED_HOOK_BYTES)} bytes, "
             f"got {len(current_bytes)} bytes."
         )

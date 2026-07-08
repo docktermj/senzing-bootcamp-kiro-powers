@@ -43,7 +43,7 @@ If you paraphrase or reformulate the question, keep it to a single question and 
 
 **Incorrect / unsure answer:** If the bootcamper answers incorrectly or signals they are unsure ("not sure," "I don't know"), offer a brief, plain-language Re_Explanation of the concept, then proceed to Module 1. Apply the bootcamper's current verbosity settings from the preferences file when giving the Re_Explanation.
 
-**Note:** This step is NOT a gate — it is not mandatory, and it never prevents the bootcamper from continuing regardless of their answer. The `ask-bootcamper` hook handles the closing question on `agentStop`, so do not include inline closing questions here.
+**Note:** This step is NOT a gate — it is not mandatory, and it never prevents the bootcamper from continuing regardless of their answer. The `ask-bootcamper` hook handles the closing question on the `Stop` trigger, so do not include inline closing questions here.
 
 ## Switching Tracks
 

@@ -1,6 +1,13 @@
-"""Tests for senzing-bootcamp/scripts/install_hooks.py."""
+"""Tests for senzing-bootcamp/scripts/install_hooks.py (v1 ``.json`` model).
+
+These tests exercise the installer's discovery, name resolution, and copy/skip
+logic over temporary hook directories populated with Kiro 1.0 ``v1`` hook files
+(``<id>.json`` wrappers of the form ``{"version": "v1", "hooks": [ ... ]}``).
+The legacy ``*.kiro.hook`` model is no longer discovered or installed.
+"""
 
 import importlib
+import json
 import shutil
 import tempfile
 from pathlib import Path
@@ -14,41 +21,79 @@ def _load_install_hooks():
 
 
 # ---------------------------------------------------------------------------
+# v1 hook-file helpers
+# ---------------------------------------------------------------------------
+
+
+def _v1_wrapper(name: str | None) -> dict:
+    """Build a minimal v1 hook wrapper; omit ``name`` when it is None."""
+    hook: dict = {"trigger": "Stop", "action": {"type": "agent", "prompt": "Do it."}}
+    if name is not None:
+        hook["name"] = name
+    return {"version": "v1", "hooks": [hook]}
+
+
+def _write_v1_hook(power_dir: Path, filename: str, name: str | None = None) -> None:
+    """Write a schema-valid ``<id>.json`` v1 hook file.
+
+    When *name* is None the hook carries no ``name`` field, forcing the
+    installer onto its derived-display-name fallback path.
+    """
+    (power_dir / filename).write_text(
+        json.dumps(_v1_wrapper(name), indent=2), encoding="utf-8"
+    )
+
+
+# ---------------------------------------------------------------------------
 # Example-based tests  (Task 9.1)
 # ---------------------------------------------------------------------------
 
 
 class TestDiscoverHooks:
-    """Requirement 9.1 — discover_hooks returns entries for each hook file."""
+    """Requirement 9.1 — discover_hooks returns entries for each ``.json`` file."""
 
     def test_discovers_known_hooks(self, project_root):
         power_dir = project_root / "hooks"
         power_dir.mkdir()
-        # Create a known hook file
-        (power_dir / "code-style-check.kiro.hook").write_text("hook", encoding="utf-8")
-        (power_dir / "backup-before-load.kiro.hook").write_text("hook", encoding="utf-8")
+        # Create known v1 hook files.
+        _write_v1_hook(power_dir, "code-style-check.json", name="to check code style")
+        _write_v1_hook(power_dir, "backup-before-load.json", name="to back up first")
 
         mod = _load_install_hooks()
         result = mod.discover_hooks(power_dir)
 
         filenames = [entry[0] for entry in result]
-        assert "code-style-check.kiro.hook" in filenames
-        assert "backup-before-load.kiro.hook" in filenames
+        assert "code-style-check.json" in filenames
+        assert "backup-before-load.json" in filenames
         assert len(result) == 2
 
     def test_discovers_unknown_hooks(self, project_root):
         power_dir = project_root / "hooks"
         power_dir.mkdir()
-        (power_dir / "my-custom-hook.kiro.hook").write_text("hook", encoding="utf-8")
+        # No ``name`` field → the installer derives the display name.
+        _write_v1_hook(power_dir, "my-custom-hook.json", name=None)
 
         mod = _load_install_hooks()
         result = mod.discover_hooks(power_dir)
 
         assert len(result) == 1
         filename, name, desc = result[0]
-        assert filename == "my-custom-hook.kiro.hook"
+        assert filename == "my-custom-hook.json"
         assert name == "My Custom Hook"
         assert "no description" in desc.lower() or "add to HOOK_METADATA" in desc
+
+    def test_legacy_kiro_hook_files_are_not_discovered(self, project_root):
+        """Residual ``*.kiro.hook`` files are ignored by the v1 ``*.json`` glob."""
+        power_dir = project_root / "hooks"
+        power_dir.mkdir()
+        _write_v1_hook(power_dir, "code-style-check.json", name="to check code style")
+        (power_dir / "legacy-hook.kiro.hook").write_text("legacy", encoding="utf-8")
+
+        mod = _load_install_hooks()
+        result = mod.discover_hooks(power_dir)
+
+        filenames = {entry[0] for entry in result}
+        assert filenames == {"code-style-check.json"}
 
 
 class TestInstallHooks:
@@ -60,12 +105,12 @@ class TestInstallHooks:
         user_dir = project_root / "user_hooks"
         user_dir.mkdir()
 
-        (power_dir / "hook-a.kiro.hook").write_text("content-a", encoding="utf-8")
-        (power_dir / "hook-b.kiro.hook").write_text("content-b", encoding="utf-8")
+        _write_v1_hook(power_dir, "hook-a.json", name="to do a")
+        _write_v1_hook(power_dir, "hook-b.json", name="to do b")
 
         hooks_to_install = [
-            ("hook-a.kiro.hook", "Hook A", "desc a"),
-            ("hook-b.kiro.hook", "Hook B", "desc b"),
+            ("hook-a.json", "Hook A", "desc a"),
+            ("hook-b.json", "Hook B", "desc b"),
         ]
 
         mod = _load_install_hooks()
@@ -73,8 +118,8 @@ class TestInstallHooks:
 
         assert installed == 2
         assert skipped == 0
-        assert (user_dir / "hook-a.kiro.hook").exists()
-        assert (user_dir / "hook-b.kiro.hook").exists()
+        assert (user_dir / "hook-a.json").exists()
+        assert (user_dir / "hook-b.json").exists()
 
     def test_skips_existing_hooks(self, project_root, capsys):
         power_dir = project_root / "power_hooks"
@@ -82,12 +127,12 @@ class TestInstallHooks:
         user_dir = project_root / "user_hooks"
         user_dir.mkdir()
 
-        (power_dir / "hook-a.kiro.hook").write_text("content-a", encoding="utf-8")
-        # Pre-install hook-a
-        (user_dir / "hook-a.kiro.hook").write_text("already-here", encoding="utf-8")
+        _write_v1_hook(power_dir, "hook-a.json", name="to do a")
+        # Pre-install hook-a with distinct content.
+        (user_dir / "hook-a.json").write_text("already-here", encoding="utf-8")
 
         hooks_to_install = [
-            ("hook-a.kiro.hook", "Hook A", "desc a"),
+            ("hook-a.json", "Hook A", "desc a"),
         ]
 
         mod = _load_install_hooks()
@@ -95,8 +140,8 @@ class TestInstallHooks:
 
         assert installed == 0
         assert skipped == 1
-        # Content should NOT be overwritten
-        assert (user_dir / "hook-a.kiro.hook").read_text(encoding="utf-8") == "already-here"
+        # Content should NOT be overwritten.
+        assert (user_dir / "hook-a.json").read_text(encoding="utf-8") == "already-here"
 
     def test_mixed_install_and_skip(self, project_root, capsys):
         power_dir = project_root / "power_hooks"
@@ -104,14 +149,14 @@ class TestInstallHooks:
         user_dir = project_root / "user_hooks"
         user_dir.mkdir()
 
-        (power_dir / "hook-a.kiro.hook").write_text("a", encoding="utf-8")
-        (power_dir / "hook-b.kiro.hook").write_text("b", encoding="utf-8")
-        # Pre-install hook-a only
-        (user_dir / "hook-a.kiro.hook").write_text("existing", encoding="utf-8")
+        _write_v1_hook(power_dir, "hook-a.json", name="to do a")
+        _write_v1_hook(power_dir, "hook-b.json", name="to do b")
+        # Pre-install hook-a only.
+        (user_dir / "hook-a.json").write_text("existing", encoding="utf-8")
 
         hooks_to_install = [
-            ("hook-a.kiro.hook", "Hook A", "desc a"),
-            ("hook-b.kiro.hook", "Hook B", "desc b"),
+            ("hook-a.json", "Hook A", "desc a"),
+            ("hook-b.json", "Hook B", "desc b"),
         ]
 
         mod = _load_install_hooks()
@@ -121,7 +166,6 @@ class TestInstallHooks:
         assert skipped == 1
 
 
-
 # ---------------------------------------------------------------------------
 # Property-based tests  (Tasks 9.2, 9.3, 9.4)
 # ---------------------------------------------------------------------------
@@ -129,11 +173,11 @@ class TestInstallHooks:
 import hypothesis.strategies as st
 from hypothesis import given, settings
 
-# Strategy: generate valid hook filenames
+# Strategy: generate valid v1 hook filenames (``<id>.json``).
 hook_name_parts = st.from_regex(r"[a-z][a-z0-9]{1,8}", fullmatch=True)
 hook_filenames = st.lists(
     st.builds(
-        lambda parts: "-".join(parts) + ".kiro.hook",
+        lambda parts: "-".join(parts) + ".json",
         st.lists(hook_name_parts, min_size=1, max_size=3),
     ),
     min_size=1,
@@ -147,7 +191,7 @@ class TestProperty10HookDiscoveryCompleteness:
 
     **Validates: Requirements 9.1**
 
-    For any set of .kiro.hook files, discover_hooks returns
+    For any set of ``.json`` v1 hook files, discover_hooks returns
     one entry per file.
     """
 
@@ -161,7 +205,7 @@ class TestProperty10HookDiscoveryCompleteness:
             power_dir = Path(td) / "hooks"
             power_dir.mkdir()
             for fname in filenames:
-                (power_dir / fname).write_text("hook content", encoding="utf-8")
+                _write_v1_hook(power_dir, fname, name=f"to run {fname}")
 
             mod = _load_install_hooks()
             result = mod.discover_hooks(power_dir)
@@ -175,15 +219,15 @@ class TestProperty10HookDiscoveryCompleteness:
             shutil.rmtree(td, ignore_errors=True)
 
 
-# Strategy: generate hook filenames NOT in the known HOOK_METADATA overlay
+# Strategy: generate hook filenames NOT in the known HOOK_METADATA overlay.
 def _known_hook_filenames():
     mod = _load_install_hooks()
     return set(mod.HOOK_METADATA.keys())
 
 
-# Strategy: generate hook filenames NOT in the known HOOK_METADATA overlay
+# Strategy: generate hook filenames NOT in the known HOOK_METADATA overlay.
 unknown_hook_filenames = st.builds(
-    lambda parts: "-".join(parts) + ".kiro.hook",
+    lambda parts: "-".join(parts) + ".json",
     st.lists(hook_name_parts, min_size=1, max_size=3),
 ).filter(lambda f: f not in _known_hook_filenames())
 
@@ -193,8 +237,8 @@ class TestProperty11UnknownHookNameDerivation:
 
     **Validates: Requirements 9.2**
 
-    For any filename not in HOOK_METADATA, display name is derived by
-    removing suffix, replacing hyphens, title-casing.
+    For any ``.json`` file whose hook carries no ``name`` field, the display
+    name is derived by removing the suffix, replacing hyphens, and title-casing.
     """
 
     # Feature: script-test-suite, Property 11: Unknown hook name derivation
@@ -206,7 +250,8 @@ class TestProperty11UnknownHookNameDerivation:
         try:
             power_dir = Path(td) / "hooks"
             power_dir.mkdir()
-            (power_dir / filename).write_text("hook", encoding="utf-8")
+            # No ``name`` field → discovery falls back to derivation.
+            _write_v1_hook(power_dir, filename, name=None)
 
             mod = _load_install_hooks()
             result = mod.discover_hooks(power_dir)
@@ -214,8 +259,8 @@ class TestProperty11UnknownHookNameDerivation:
             assert len(result) == 1
             _, name, desc = result[0]
 
-            # Expected: remove .kiro.hook, replace hyphens with spaces, title-case
-            expected_name = filename.replace(".kiro.hook", "").replace("-", " ").title()
+            # Expected: remove .json, replace hyphens with spaces, title-case.
+            expected_name = filename[: -len(".json")].replace("-", " ").title()
             assert name == expected_name, (
                 f"For '{filename}': expected '{expected_name}', got '{name}'"
             )
@@ -240,7 +285,7 @@ class TestProperty12HookInstallCopySkipCorrectness:
     )
     @settings(max_examples=10)
     def test_installed_plus_skipped_equals_total(self, filenames, pre_installed_mask):
-        # Align mask length with filenames
+        # Align mask length with filenames.
         mask = pre_installed_mask[:len(filenames)]
         while len(mask) < len(filenames):
             mask.append(False)
@@ -254,7 +299,7 @@ class TestProperty12HookInstallCopySkipCorrectness:
 
             hooks_to_install = []
             for i, fname in enumerate(filenames):
-                (power_dir / fname).write_text(f"content-{i}", encoding="utf-8")
+                _write_v1_hook(power_dir, fname, name=f"to run {i}")
                 if mask[i]:
                     (user_dir / fname).write_text("pre-existing", encoding="utf-8")
                 hooks_to_install.append((fname, f"Hook {i}", f"desc {i}"))
@@ -273,7 +318,7 @@ class TestProperty12HookInstallCopySkipCorrectness:
             )
             assert installed + skipped == len(filenames)
 
-            # Verify all hooks exist in user_dir
+            # Verify all hooks exist in user_dir.
             for fname in filenames:
                 assert (user_dir / fname).exists()
         finally:

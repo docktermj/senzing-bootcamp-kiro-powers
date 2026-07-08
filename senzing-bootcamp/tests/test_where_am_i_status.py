@@ -100,12 +100,12 @@ class TestReviewBootcamperInputHook:
 
     @pytest.fixture()
     def hook_data(self) -> dict:
-        path = _HOOKS_DIR / "review-bootcamper-input.kiro.hook"
+        path = _HOOKS_DIR / "review-bootcamper-input.json"
         return json.loads(path.read_text(encoding="utf-8"))
 
     @pytest.fixture()
     def hook_prompt(self, hook_data: dict) -> str:
-        return hook_data["then"]["prompt"]
+        return hook_data["hooks"][0]["action"]["prompt"]
 
     def test_hook_prompt_contains_status_triggers(self, hook_prompt: str) -> None:
         """Hook prompt mentions status trigger phrases."""
@@ -139,9 +139,16 @@ class TestHookRegistryEntry:
         # Find the line containing review-bootcamper-input and check for trigger info
         start = registry_content.find("review-bootcamper-input")
         assert start != -1
-        # Check the entry mentions feedback triggers
-        section = registry_content[start:start + 500]
-        assert "feedback" in section.lower() or "trigger" in section.lower()
+        # Check the entry conveys its triggering info. The Kiro 1.0 registry
+        # renders the Event Type column as the 1.0 trigger (e.g.
+        # "UserPromptSubmit → agent") rather than prose, so accept that trigger
+        # name alongside the older "feedback"/"trigger" wording.
+        section = registry_content[start:start + 500].lower()
+        assert (
+            "feedback" in section
+            or "trigger" in section
+            or "userpromptsubmit" in section
+        )
 
 
 class TestTrackCompletionProperty:

@@ -94,7 +94,7 @@ class SourcePaths:
 
     Attributes:
         power_md: The POWER.md file to regenerate or verify.
-        hooks_dir: Directory containing ``*.kiro.hook`` files.
+        hooks_dir: Directory containing ``*.json`` hook files.
         hook_categories: The ``hook-categories.yaml`` source.
         steering_index: The ``steering-index.yaml`` source.
         module_deps: The ``module-dependencies.yaml`` source.
@@ -114,7 +114,7 @@ class HookInfo:
     """A single discovered hook and whether it is categorized as critical.
 
     Attributes:
-        hook_id: The hook identifier (the ``*.kiro.hook`` filename stem).
+        hook_id: The hook identifier (the ``*.json`` filename stem).
         is_critical: True when the hook is listed under ``critical:`` in
             ``hook-categories.yaml``.
     """
@@ -518,7 +518,10 @@ def locate_regions(doc: str, expected_ids: set[str]) -> dict[str, RegionSpan]:
 # :class:`GeneratorError` that names the offending file path and the cause, and
 # nothing is ever written.
 
-_HOOK_SUFFIX = ".kiro.hook"
+# Kiro 1.0 ships each hook as a ``<id>.json`` v1 wrapper. The hook id (used for
+# the POWER.md hooks table and the categories cross-check) is still the filename
+# stem, so discovery only needs the suffix; the wrapper body is not parsed here.
+_HOOK_SUFFIX = ".json"
 
 
 def _load_mcp_inventory() -> tuple[tuple[str, ...], int]:
@@ -603,9 +606,9 @@ def _category_hook_ids(categories: dict) -> set[str]:
 def _load_hooks(hooks_dir: Path, hook_categories: Path) -> tuple[HookInfo, ...]:
     """Discover hook files, mark which are critical, and cross-check categories.
 
-    Hooks are discovered via ``sorted(hooks_dir.glob("*.kiro.hook"))`` so the
+    Hooks are discovered via ``sorted(hooks_dir.glob("*.json"))`` so the
     returned order is deterministic. The ``hook_id`` is the filename with the
-    ``.kiro.hook`` suffix stripped. A hook is critical when its id appears in
+    ``.json`` suffix stripped. A hook is critical when its id appears in
     the top-level ``critical:`` list of ``hook-categories.yaml``.
 
     Two consistency cross-checks are enforced against the full set of hook ids
@@ -613,15 +616,15 @@ def _load_hooks(hooks_dir: Path, hook_categories: Path) -> tuple[HookInfo, ...]:
     list under ``modules:``, including the ``any:`` group):
 
     * Every hook id named in the categories file must have a matching
-      ``*.kiro.hook`` file (Requirement 10.4).
-    * Every discovered ``*.kiro.hook`` file must appear in at least one category
+      ``*.json`` file (Requirement 10.4).
+    * Every discovered ``*.json`` file must appear in at least one category
       list (Requirement 10.5).
 
     Either inconsistency names the first offending hook id (sorted, for
     determinism) and aborts; nothing is written.
 
     Args:
-        hooks_dir: Directory containing ``*.kiro.hook`` files.
+        hooks_dir: Directory containing ``*.json`` hook files.
         hook_categories: The ``hook-categories.yaml`` source.
 
     Returns:
@@ -648,14 +651,14 @@ def _load_hooks(hooks_dir: Path, hook_categories: Path) -> tuple[HookInfo, ...]:
     if orphan_categories:
         raise GeneratorError(
             f"{hook_categories}: hook '{orphan_categories[0]}' is listed in "
-            "hook-categories.yaml but has no matching *.kiro.hook file"
+            "hook-categories.yaml but has no matching *.json hook file"
         )
 
     # Req 10.5: every discovered file must appear in at least one category list.
     uncategorized_files = sorted(discovered_ids - category_ids)
     if uncategorized_files:
         raise GeneratorError(
-            f"{hook_categories}: hook file '{uncategorized_files[0]}.kiro.hook' "
+            f"{hook_categories}: hook file '{uncategorized_files[0]}.json' "
             "is not listed in any category list in hook-categories.yaml"
         )
 
@@ -909,7 +912,7 @@ class McpToolsRegion:
 # Hooks region
 # ---------------------------------------------------------------------------
 #
-# The hooks Generated_Region states how many ``*.kiro.hook`` files ship with the
+# The hooks Generated_Region states how many ``*.json`` files ship with the
 # power and lists every hook id. Critical hooks (those named under ``critical:``
 # in ``hook-categories.yaml``) are marked with a star and listed first. Both the
 # count and the list derive solely from the discovered hook files and their
@@ -930,7 +933,7 @@ class HooksRegion:
     first (alphabetical by hook id), then the remaining hooks (alphabetical) —
     a total order derived entirely from the source with the hook id as the
     deterministic tie-breaker. The count equals the number of discovered
-    ``*.kiro.hook`` files.
+    ``*.json`` files.
     """
 
     region_id: str = "hooks"
@@ -1301,7 +1304,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--hooks-dir", type=Path, default=defaults.hooks_dir,
-        help="Directory containing *.kiro.hook files.",
+        help="Directory containing *.json hook files.",
     )
     parser.add_argument(
         "--hook-categories", type=Path, default=defaults.hook_categories,

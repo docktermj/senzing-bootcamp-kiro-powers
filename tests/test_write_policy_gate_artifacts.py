@@ -4,11 +4,11 @@ These tests validate the *fixed* artifacts produced by the write-policy-gate UX
 bugfix (design Changes A and B):
 
 - The fixed hook prompt
-  (``senzing-bootcamp/hooks/write-policy-gate.kiro.hook``) contains the
+  (``senzing-bootcamp/hooks/write-policy-gate.json``) contains the
   INTERNAL-FILE PASS-THROUGH clause and its explicit NOT-guards.
-- The hook JSON remains schema-valid and still declares a ``preToolUse`` write
-  hook (``toolTypes: ["write"]``), per the security steering — the write hook is
-  never removed or weakened.
+- The hook JSON remains schema-valid and still declares a ``PreToolUse`` write
+  hook (matcher ``fs_write|str_replace|fs_append``), per the security steering —
+  the write hook is never removed or weakened.
 - Each routine power-managed internal file in the defined set maps to
   ``PASS_SILENT`` in the decision model, while ``config/.question_pending`` does
   NOT (the exclusion must not shadow a governed file).
@@ -167,40 +167,45 @@ class TestHookJsonSchema:
         assert isinstance(hook, dict)
 
     def test_hook_has_required_schema_fields(self) -> None:
-        """The hook declares ``name``, ``version``, ``when``, and ``then``.
+        """The wrapper declares ``version``/``hooks`` and the entry the v1 fields.
 
         **Validates: Requirements 3.6**
         """
-        hook = self._load_hook()
-        for field in ("name", "version", "when", "then"):
-            assert field in hook, f"hook JSON missing required field: {field}"
+        wrapper = self._load_hook()
+        assert wrapper.get("version") == "v1", "wrapper must declare version v1"
+        assert isinstance(wrapper.get("hooks"), list) and wrapper["hooks"], (
+            "wrapper must contain a non-empty 'hooks' array"
+        )
+        entry = wrapper["hooks"][0]
+        for field in ("name", "trigger", "action"):
+            assert field in entry, f"hook entry missing required field: {field}"
 
     def test_hook_declares_pretooluse_write(self) -> None:
-        """The hook still declares ``preToolUse`` with ``toolTypes: ["write"]``.
+        """The hook still declares ``PreToolUse`` with the write-tool matcher.
 
-        The security steering forbids removing or weakening the write hook.
+        The security steering forbids removing or weakening the write hook; the
+        legacy ``toolTypes: ["write"]`` collapses to the 1.0 matcher
+        ``fs_write|str_replace|fs_append``.
 
         **Validates: Requirements 3.6**
         """
-        hook = self._load_hook()
-        when = hook["when"]
-        assert when.get("type") == "preToolUse", (
-            "hook must remain a preToolUse hook"
+        entry = self._load_hook()["hooks"][0]
+        assert entry.get("trigger") == "PreToolUse", (
+            "hook must remain a PreToolUse hook"
         )
-        assert when.get("toolTypes") == ["write"], (
-            'hook must retain toolTypes: ["write"]'
+        assert entry.get("matcher") == "fs_write|str_replace|fs_append", (
+            "hook must retain the write-tool matcher fs_write|str_replace|fs_append"
         )
 
     def test_hook_then_has_prompt(self) -> None:
-        """The ``then`` block carries the gate prompt.
+        """The ``action`` block carries the gate prompt.
 
         **Validates: Requirements 3.6**
         """
-        hook = self._load_hook()
-        then = hook["then"]
-        assert "prompt" in then
-        assert isinstance(then["prompt"], str)
-        assert then["prompt"].strip() != ""
+        action = self._load_hook()["hooks"][0]["action"]
+        assert "prompt" in action
+        assert isinstance(action["prompt"], str)
+        assert action["prompt"].strip() != ""
 
 
 # ===========================================================================

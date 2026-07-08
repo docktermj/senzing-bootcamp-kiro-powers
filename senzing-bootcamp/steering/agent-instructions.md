@@ -87,7 +87,7 @@ Track switch triggers (*switch track*, *change track*, …): load `track-switchi
   - A question without the 👉 prefix is a formatting violation.
   - The `write-policy-gate` hook validates every question at write time. If it rejects your question, rewrite it — do not bypass.
   - These rules apply in ALL contexts — onboarding, feedback workflow, module steps, and session resume. See conversation-protocol.md for the full rule set.
-- Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to agentStop hooks — zero output when a 👉 question is pending.
+- Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to `Stop`-trigger hooks — zero output when a 👉 question is pending.
   - FORBIDDEN output patterns: never generate text beginning with "Human:", "User:", or any text that simulates a bootcamper response. This is a critical violation.
 - Goldilocks check: after Modules 3, 6, 9 ask if detail level is right. Store as `detail_level` in preferences. First-term explanations: define Senzing terms inline on first use by calling `search_docs` from the MCP server to retrieve current definitions.
 - Before each step: what and why. During: status updates. After: what changed, files with paths. Offer to visualize data results as a web page.
@@ -133,18 +133,18 @@ Steps marked with ⛔ are mandatory gates. This rule takes **absolute precedence
 
 ## Hooks
 
-Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks. **Always use the exact `name` from the `- name:` line in `hook-registry-critical.md` — the `name` field is user-facing (UI shows "Ask Kiro Hook {name}") and must follow the "to {verb phrase}" pattern.**
+Create hooks via `createHook` with definitions from the Hook Registry (`#[[file:]]` in `onboarding-flow.md`). Each hook is a v1 `.json` definition (`trigger`/`matcher`/`action`) written to `.kiro/hooks/<id>.json`; use the exact `trigger`, `matcher` (only where the registry entry specifies one), and `action` type from the registry. Critical hooks during onboarding; module hooks when the relevant module starts. On session resume: check `config/bootcamp_preferences.yaml` for `hooks_installed` — if present, skip creation; if absent, create Critical Hooks. **Always use the exact `name` from the `- name:` line in `hook-registry-critical.md` — the `name` field is user-facing (UI shows "Ask Kiro Hook {name}") and must follow the "to {verb phrase}" pattern.**
 
 **Capture-critical hooks created at session start:** The capture-critical hooks — `ask-bootcamper`, `module-recap-append`, and `session-log-events` — MUST all be created via `createHook` during onboarding/session start, not deferred to module start, so the completion summary and journey recap are never silently incomplete. `ask-bootcamper` is a critical hook (definition in `hook-registry-critical.md`); `module-recap-append` and `session-log-events` are defined in `hook-registry-module-any.md` but are added to the onboarding createHook-from-registry set alongside `ask-bootcamper`. Capture-critical coverage is required on **both** the createHook-from-registry path and the `install_hooks.py --essential` file-copy path.
 
-**Session-start warn-on-absence:** On session resume, after the `hooks_installed` check, the agent inspects `.kiro/hooks` and warns which capture-critical hooks (`session-log-events`, `module-recap-append`, `ask-bootcamper`) are absent and how to install them (createHook from the registry, or `python3 senzing-bootcamp/scripts/install_hooks.py --essential`). The warning is advisory and never blocks the session. See `session-resume-phase2-setup-recovery.md` (Capture-Critical Warn-on-Absence Check) for the full behavior.
+**Session-start warn-on-absence:** On session resume, after the `hooks_installed` check, the agent inspects `.kiro/hooks` for each hook's `<id>.json` file and warns which capture-critical hooks (`session-log-events`, `module-recap-append`, `ask-bootcamper`) are absent and how to install them (createHook from the registry, or `python3 senzing-bootcamp/scripts/install_hooks.py --essential`). The warning is advisory and never blocks the session. See `session-resume-phase2-setup-recovery.md` (Capture-Critical Warn-on-Absence Check) for the full behavior.
 
 **🔇 Hook silence rule:** When a hook check passes with no action needed, produce zero visible
 tokens — no acknowledgment, no reasoning, no status, no summary. Only produce output when the
 hook identifies a problem requiring corrective action. When a hook produces corrective output
 (e.g., a rewritten question, a STOP message), output ONLY the corrective content with no
 preamble or explanation of why the correction was made. This applies to ALL hook types:
-preToolUse hooks, agentStop hooks, and any future hook types added to the power.
+`PreToolUse` hooks, `Stop` hooks, and any future hook types added to the power.
 
 FORBIDDEN hook reasoning output (never produce these after any hook fires):
 
@@ -161,7 +161,7 @@ FORBIDDEN hook reasoning output (never produce these after any hook fires):
 
 The agent owns closing questions (see `conversation-protocol.md`); the `ask-bootcamper` hook is a safety net that fires only when the agent fails to provide one.
 
-**🔄 preToolUse retry rule:** When a preToolUse hook produces "policy: pass" or produces no output (zero tokens), you MUST immediately retry the original tool call with exactly the same parameters. Do not emit any acknowledgment, do not explain, do not pause — retry instantly. Only when a preToolUse hook explicitly denies access or produces corrective instructions should you NOT retry.
+**🔄 PreToolUse retry rule:** When a `PreToolUse` hook produces "policy: pass" or produces no output (zero tokens), you MUST immediately retry the original tool call with exactly the same parameters. Do not emit any acknowledgment, do not explain, do not pause — retry instantly. Only when a `PreToolUse` hook explicitly denies access or produces corrective instructions should you NOT retry.
 
 ## Context Budget
 

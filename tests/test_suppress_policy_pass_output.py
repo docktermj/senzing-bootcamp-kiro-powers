@@ -22,7 +22,7 @@ from hypothesis import strategies as st
 # Constants
 # ---------------------------------------------------------------------------
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/write-policy-gate.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/write-policy-gate.json")
 
 # Silent processing patterns (from test_hook_prompt_standards.py), excluding
 # the "policy:\s*pass" pattern itself since that IS the bug.
@@ -38,10 +38,10 @@ SILENT_PROCESSING_PATTERNS = [
 # ---------------------------------------------------------------------------
 
 def load_hook_prompt() -> str:
-    """Load and return the then.prompt field from the hook file."""
+    """Load and return the action.prompt field from the v1 hook entry."""
     with open(HOOK_PATH, encoding="utf-8") as f:
         data = json.load(f)
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 def has_silent_processing_instruction(prompt: str) -> bool:
@@ -153,14 +153,14 @@ ORIGINAL_SLOW_PATH_TEXT = (
     "SENZING_BOOTCAMP_POWER_FEEDBACK.md."
 )
 
-# Required hook JSON fields for structural validation.
-REQUIRED_HOOK_FIELDS = ["name", "version", "description", "when", "then"]
+# Required v1 hook entry fields for structural validation.
+REQUIRED_HOOK_FIELDS = ["name", "trigger", "action"]
 
 
 def load_hook_data() -> dict:
-    """Load and return the full parsed JSON from the hook file."""
+    """Load and return the single v1 hook entry (hooks[0]) from the hook file."""
     with open(HOOK_PATH, encoding="utf-8") as f:
-        return json.load(f)
+        return json.load(f)["hooks"][0]
 
 
 def extract_slow_path_section(prompt: str) -> str:
@@ -275,31 +275,32 @@ blocking instructions.
 
         **Validates: Requirements 3.3**
 
-        Property 2c: All required JSON fields (name, version, description,
-        when.type, when.toolTypes, then.type, then.prompt) are present and valid.
+        Property 2c: All required v1 entry fields (name, trigger, action) are
+        present and valid, with the 1.0 PreToolUse trigger, write matcher, and
+        agent action prompt.
         """
         data = load_hook_data()
 
-        # Top-level required field must exist
+        # Required entry field must exist
         assert field_subset in data, (
-            f"Hook JSON missing required field: '{field_subset}'"
+            f"Hook entry missing required field: '{field_subset}'"
         )
         assert data[field_subset] is not None, (
-            f"Hook JSON field '{field_subset}' is None"
+            f"Hook entry field '{field_subset}' is None"
         )
 
-        # Validate nested required fields
-        assert data["when"]["type"] == "preToolUse", (
-            f"Expected when.type='preToolUse', got '{data['when']['type']}'"
+        # Validate the 1.0 trigger, write matcher, and action
+        assert data["trigger"] == "PreToolUse", (
+            f"Expected trigger='PreToolUse', got '{data['trigger']}'"
         )
-        assert data["when"]["toolTypes"] == ["write"], (
-            f"Expected when.toolTypes=['write'], got '{data['when']['toolTypes']}'"
+        assert data.get("matcher") == "fs_write|str_replace|fs_append", (
+            f"Expected write matcher, got '{data.get('matcher')}'"
         )
-        assert data["then"]["type"] == "askAgent", (
-            f"Expected then.type='askAgent', got '{data['then']['type']}'"
+        assert data["action"]["type"] == "agent", (
+            f"Expected action.type='agent', got '{data['action']['type']}'"
         )
-        assert "prompt" in data["then"], "Hook JSON missing then.prompt field"
-        assert len(data["then"]["prompt"]) > 0, "Hook JSON then.prompt is empty"
+        assert "prompt" in data["action"], "Hook entry missing action.prompt field"
+        assert len(data["action"]["prompt"]) > 0, "Hook entry action.prompt is empty"
 
     @given(
         path=st.from_regex(r"[a-z][a-z0-9_/]*\.[a-z]+", fullmatch=True),
@@ -341,8 +342,8 @@ REQUIRED_FORBIDDEN_PATTERNS = [
     "This is a JSON configuration file",
 ]
 
-# All hook types that must be explicitly covered
-REQUIRED_HOOK_TYPES = ["preToolUse", "agentStop"]
+# All 1.0 hook triggers that must be explicitly covered
+REQUIRED_HOOK_TYPES = ["PreToolUse", "Stop"]
 
 
 def load_agent_instructions() -> str:
@@ -361,7 +362,7 @@ class TestAgentInstructionsHookSilence:
     passes", "Proceeding", "The question is not compound", "All checks pass",
     "This is a JSON configuration file"), state zero-visible-tokens for passing
     checks, state corrective-only output for violations, and explicitly apply
-    to all hook types (preToolUse, agentStop).
+    to all hook types (PreToolUse, Stop).
     """
 
     @given(
@@ -397,7 +398,7 @@ class TestAgentInstructionsHookSilence:
         **Validates: Requirements 5.5**
 
         The hook silence rule must explicitly apply to all hook types including
-        preToolUse hooks, agentStop hooks, and any future hook types.
+        PreToolUse hooks, Stop hooks, and any future hook types.
         """
         content = load_agent_instructions()
 

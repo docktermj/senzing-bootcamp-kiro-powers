@@ -79,8 +79,8 @@ def _copy_real_gate_hooks(dest: Path) -> Path:
     """
     dest.mkdir(parents=True, exist_ok=True)
     for hook_id in GATE_HOOK_IDS:
-        src = _HOOKS_DIR / f"{hook_id}.kiro.hook"
-        shutil.copy2(src, dest / f"{hook_id}.kiro.hook")
+        src = _HOOKS_DIR / f"{hook_id}.json"
+        shutil.copy2(src, dest / f"{hook_id}.json")
     return dest
 
 
@@ -120,7 +120,7 @@ class TestWriteMode:
 
         assert code == 0
         for hook_id in GATE_HOOK_IDS:
-            assert (hooks_dir / f"{hook_id}.kiro.hook").is_file()
+            assert (hooks_dir / f"{hook_id}.json").is_file()
 
     def test_written_files_are_byte_identical_to_originals(
         self, tmp_path: Path
@@ -139,17 +139,18 @@ class TestWriteMode:
 
         assert code == 0
         for hook_id in GATE_HOOK_IDS:
-            composed = (hooks_dir / f"{hook_id}.kiro.hook").read_bytes()
-            original = (_HOOKS_DIR / f"{hook_id}.kiro.hook").read_bytes()
+            composed = (hooks_dir / f"{hook_id}.json").read_bytes()
+            original = (_HOOKS_DIR / f"{hook_id}.json").read_bytes()
             assert composed == original, f"{hook_id} write was not byte-identical"
 
     def test_write_is_default_mode_when_no_flag(self, tmp_path: Path) -> None:
         # Mutate a copied hook, then run with NO mode flag; --write is the
         # default so the file is recomposed back to the canonical bytes.
         hooks_dir = _copy_real_gate_hooks(tmp_path / "hooks")
-        target = hooks_dir / f"{GATE_HOOK_IDS[0]}.kiro.hook"
+        target = hooks_dir / f"{GATE_HOOK_IDS[0]}.json"
         data = json.loads(target.read_text(encoding="utf-8"))
-        data["then"]["prompt"] = data["then"]["prompt"] + "\n\nDRIFT"
+        action = data["hooks"][0]["action"]
+        action["prompt"] = action["prompt"] + "\n\nDRIFT"
         target.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
         code = compose_hook_prompts.main(
@@ -157,7 +158,7 @@ class TestWriteMode:
         )
 
         assert code == 0
-        original = (_HOOKS_DIR / f"{GATE_HOOK_IDS[0]}.kiro.hook").read_bytes()
+        original = (_HOOKS_DIR / f"{GATE_HOOK_IDS[0]}.json").read_bytes()
         assert target.read_bytes() == original
 
 
@@ -292,9 +293,10 @@ class TestVerifyMode:
         drifted_id = "enforce-gate-on-stop"
 
         # Mutate one on-disk gate-hook prompt in the temp copy.
-        target = hooks_dir / f"{drifted_id}.kiro.hook"
+        target = hooks_dir / f"{drifted_id}.json"
         data = json.loads(target.read_text(encoding="utf-8"))
-        data["then"]["prompt"] = data["then"]["prompt"] + "\n\nUNAUTHORIZED EDIT"
+        action = data["hooks"][0]["action"]
+        action["prompt"] = action["prompt"] + "\n\nUNAUTHORIZED EDIT"
         target.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
         code = compose_hook_prompts.main(
@@ -313,9 +315,9 @@ class TestVerifyMode:
         drifted_id = "enforce-gate-on-stop"
         clean_ids = [h for h in GATE_HOOK_IDS if h != drifted_id]
 
-        target = hooks_dir / f"{drifted_id}.kiro.hook"
+        target = hooks_dir / f"{drifted_id}.json"
         data = json.loads(target.read_text(encoding="utf-8"))
-        data["then"]["prompt"] = "totally different prompt"
+        data["hooks"][0]["action"]["prompt"] = "totally different prompt"
         target.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
         code = compose_hook_prompts.main(

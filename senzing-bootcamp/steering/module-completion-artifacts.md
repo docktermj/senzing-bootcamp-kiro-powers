@@ -49,7 +49,7 @@ On a completion boundary — and before appending the new module's artifacts —
 
 ## Recap Append
 
-The recap append is a **synchronous, verified step of the module-completion workflow** (step 2 in the fixed order), not solely an asynchronous `agentStop` hook. The `hooks/module-recap-append.kiro.hook` hook still appends the structured section on boundary detection, but the workflow now treats the append as complete only after it has **read back** the file and confirmed the section persisted — so a write that does not persist across a session boundary, or a hook invocation that does not write on the final module, is detected and repaired instead of silently lost.
+The recap append is a **synchronous, verified step of the module-completion workflow** (step 2 in the fixed order), not solely an asynchronous `Stop` hook. The `hooks/module-recap-append.json` hook still appends the structured section on boundary detection, but the workflow now treats the append as complete only after it has **read back** the file and confirmed the section persisted — so a write that does not persist across a session boundary, or a hook invocation that does not write on the final module, is detected and repaired instead of silently lost.
 
 When a module is marked complete in `config/bootcamp_progress.json`, gather session content and append a structured Recap_Section to `docs/bootcamp_recap.md`, then verify and (if needed) backfill before reporting success.
 
@@ -111,7 +111,7 @@ If `docs/bootcamp_recap.md` already exists, append the new recap section at the 
 
 ### References
 
-- Hook: `hooks/module-recap-append.kiro.hook`
+- Hook: `hooks/module-recap-append.json`
 - Output: `docs/bootcamp_recap.md`
 
 ## Bootcamp Journal

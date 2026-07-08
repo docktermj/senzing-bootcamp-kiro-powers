@@ -23,7 +23,7 @@ from pathlib import Path
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-HOOK_PATH: Path = Path("senzing-bootcamp/hooks/write-policy-gate.kiro.hook")
+HOOK_PATH: Path = Path("senzing-bootcamp/hooks/write-policy-gate.json")
 
 # The major prompt blocks are separated by a blank-line-delimited horizontal
 # rule. Splitting on it yields, in order: the header + INTERNAL-FILE
@@ -33,13 +33,13 @@ _EXPECTED_SECTION_COUNT = 7
 
 
 def _load_prompt() -> str:
-    """Load the live ``then.prompt`` text from the hook file.
+    """Load the live ``action.prompt`` text from the v1 hook entry.
 
     Returns:
         The gate prompt string.
     """
     data = json.loads(HOOK_PATH.read_text(encoding="utf-8"))
-    return data["then"]["prompt"]
+    return data["hooks"][0]["action"]["prompt"]
 
 
 def _sections() -> list[str]:
@@ -179,8 +179,8 @@ class TestPassThroughIntroducesNoNewOutputStrings:
 # Task 2.3 — Hook schema-conformance and enumeration-diff example tests
 # ===========================================================================
 # These are example/unit (not property) tests. They guard two things:
-#   1. The edited hook still conforms to the required .kiro.hook schema shape
-#      (name, version, when.type/toolTypes, then.type/prompt).
+#   1. The edited hook still conforms to the required v1 schema shape
+#      (wrapper version "v1"; entry name/trigger/matcher/action).
 #   2. The pass-through enumeration gained EXACTLY the two new exact-match
 #      entries and nothing else, relative to the pre-extension baseline.
 #
@@ -203,12 +203,17 @@ _NOT_GUARD_HEADER: str = (
 
 
 def _load_hook() -> dict:
-    """Load and parse the full hook JSON document.
+    """Load and parse the full v1 wrapper JSON document.
 
     Returns:
-        The parsed hook object.
+        The parsed wrapper object (``{"version": "v1", "hooks": [entry]}``).
     """
     return json.loads(HOOK_PATH.read_text(encoding="utf-8"))
+
+
+def _load_entry() -> dict:
+    """Return the single v1 hook entry (``hooks[0]``)."""
+    return _load_hook()["hooks"][0]
 
 
 def _passthrough_enumeration_lines() -> list[str]:
@@ -249,10 +254,10 @@ def _derive_baseline_enumeration(current: list[str]) -> list[str]:
 
 
 class TestHookSchemaConformance:
-    """The edited hook still conforms to the required ``.kiro.hook`` schema.
+    """The edited hook still conforms to the required v1 schema.
 
-    Editing only the ``then.prompt`` enumeration must not disturb any
-    structural field. A ``preToolUse`` write gate with an empty prompt would
+    Editing only the ``action.prompt`` enumeration must not disturb any
+    structural field. A ``PreToolUse`` write gate with an empty prompt would
     silently stop enforcing the security checks, so the prompt must stay
     non-empty.
 
@@ -260,29 +265,32 @@ class TestHookSchemaConformance:
     """
 
     def test_required_top_level_fields_present(self):
-        """The hook retains the four required top-level fields."""
-        hook = _load_hook()
-        for field in ("name", "version", "when", "then"):
-            assert field in hook, f"missing required hook field: {field}"
+        """The wrapper declares v1 and the entry retains the required fields."""
+        wrapper = _load_hook()
+        assert wrapper.get("version") == "v1", "wrapper must declare version v1"
+        entry = wrapper["hooks"][0]
+        for field in ("name", "trigger", "action"):
+            assert field in entry, f"missing required hook entry field: {field}"
 
     def test_name_and_version_are_non_empty_strings(self):
-        """``name`` and ``version`` are present and non-empty."""
-        hook = _load_hook()
-        assert isinstance(hook["name"], str) and hook["name"].strip()
-        assert isinstance(hook["version"], str) and hook["version"].strip()
+        """The entry ``name`` is non-empty and the wrapper ``version`` is ``v1``."""
+        wrapper = _load_hook()
+        entry = wrapper["hooks"][0]
+        assert isinstance(entry["name"], str) and entry["name"].strip()
+        assert wrapper.get("version") == "v1"
 
     def test_when_is_pretooluse_write_gate(self):
-        """The trigger is a ``preToolUse`` hook scoped to write tools only."""
-        when = _load_hook()["when"]
-        assert when["type"] == "preToolUse"
-        assert when["toolTypes"] == ["write"]
+        """The trigger is a ``PreToolUse`` hook scoped to the write-tool matcher."""
+        entry = _load_entry()
+        assert entry["trigger"] == "PreToolUse"
+        assert entry.get("matcher") == "fs_write|str_replace|fs_append"
 
     def test_then_is_askagent_with_non_empty_prompt(self):
-        """The action is ``askAgent`` carrying a non-empty prompt."""
-        then = _load_hook()["then"]
-        assert then["type"] == "askAgent"
-        assert isinstance(then["prompt"], str)
-        assert then["prompt"].strip(), "then.prompt must not be empty"
+        """The action is an ``agent`` action carrying a non-empty prompt."""
+        action = _load_entry()["action"]
+        assert action["type"] == "agent"
+        assert isinstance(action["prompt"], str)
+        assert action["prompt"].strip(), "action.prompt must not be empty"
 
 
 class TestPassThroughEnumerationDiff:

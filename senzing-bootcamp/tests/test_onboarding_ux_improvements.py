@@ -104,10 +104,10 @@ class TestHookFilesNotePlacement:
         text = _read_onboarding_flow()
         between = _extract_between_unfamiliar_and_4a(text)
 
-        assert ".kiro.hook" in between, (
-            "Expected hook files note (mentioning '.kiro.hook') to appear "
-            "between the 'unfamiliar terms' bullet and '### 4a' heading in "
-            f"{ONBOARDING_FLOW.relative_to(REPO_ROOT)}"
+        assert ".json" in between, (
+            "Expected hook files note (mentioning '.json' hook files) to appear "
+            "between the 'unfamiliar terms' bullet and '### 5a' heading in "
+            f"{ONBOARDING_PHASE1B.relative_to(REPO_ROOT)}"
         )
 
     def test_hook_files_note_mentions_automated_quality_checks(self) -> None:

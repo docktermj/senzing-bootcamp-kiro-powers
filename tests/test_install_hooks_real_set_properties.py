@@ -1,9 +1,9 @@
 """Property-based tests for ``install_hooks.py`` against the REAL hooks dir.
 
-These tests validate the repaired hook installer's curated metadata, essential
-set, and discovery logic against the actual ``*.kiro.hook`` files shipped in
-``senzing-bootcamp/hooks``. Per ``structure.md``, tests that read the real hook
-files live in the repo-root ``tests/`` directory.
+These tests validate the hook installer's curated metadata, essential set, and
+discovery logic against the actual Kiro 1.0 ``v1`` ``*.json`` hook files shipped
+in ``senzing-bootcamp/hooks``. Per ``structure.md``, tests that read the real
+hook files live in the repo-root ``tests/`` directory.
 
 Properties (from the hook-architecture-improvements design):
 
@@ -78,8 +78,8 @@ def _discovered_ids() -> set[str]:
 
 
 def _real_hook_filenames() -> list[str]:
-    """Return the sorted list of real ``*.kiro.hook`` filenames."""
-    return sorted(p.name for p in REAL_HOOKS_DIR.glob("*.kiro.hook"))
+    """Return the sorted list of real ``*.json`` v1 hook filenames."""
+    return sorted(p.name for p in REAL_HOOKS_DIR.glob("*.json"))
 
 
 # ---------------------------------------------------------------------------
@@ -93,7 +93,7 @@ def st_consolidated_hook() -> st.SearchStrategy[str]:
 
 
 def st_real_hook_filename() -> st.SearchStrategy[str]:
-    """Strategy sampling a real ``*.kiro.hook`` filename from the hooks dir."""
+    """Strategy sampling a real ``*.json`` v1 hook filename from the hooks dir."""
     return st.sampled_from(_real_hook_filenames())
 
 
@@ -127,8 +127,8 @@ class TestNoConsolidatedHookReferenced:
         assert hook_id not in keys, (
             f"Consolidated hook '{hook_id}' is a HOOK_METADATA key"
         )
-        assert f"{hook_id}.kiro.hook" not in keys, (
-            f"Consolidated hook file '{hook_id}.kiro.hook' is a HOOK_METADATA key"
+        assert f"{hook_id}.json" not in keys, (
+            f"Consolidated hook file '{hook_id}.json' is a HOOK_METADATA key"
         )
 
     # Feature: hook-architecture-improvements, Property 10

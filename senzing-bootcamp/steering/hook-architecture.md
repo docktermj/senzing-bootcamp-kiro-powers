@@ -1,41 +1,45 @@
 ---
 inclusion: manual
-description: "Authoritative agentStop hook precedence, guard determinism, and capture-critical coverage for the bootcamp hook architecture"
+description: "Authoritative Stop-trigger hook precedence, guard determinism, and capture-critical coverage for the bootcamp hook architecture"
 ---
 
 # Hook Architecture
 
 This document is the authoritative, human-readable record of how the bootcamp's hooks are ordered,
-guarded, and kept reliably present. It covers the five `agentStop` hooks and their intended
+guarded, and kept reliably present. It covers the six `Stop`-trigger hooks and their intended
 precedence, the question-pending silence rule, the single-winner precedence rule, the assumption
 that the power cannot control IDE firing order, the build-time fragment-composition decision, and
 the capture-critical coverage requirement across both install paths.
 
+Under Kiro 1.0 the end-of-turn event is the `Stop` trigger (the legacy `agentStop` event renamed).
 The machine-readable companion to this document is the `agentstop_order` mapping in
 `senzing-bootcamp/hooks/hook-categories.yaml`. That mapping is the source of truth for the ordered
 ids and their one-sentence rationales; the prose here records the same order plus the surrounding
 semantics and design decisions.
 
-## agentStop Hooks — Ordered Precedence List
+## Stop-Trigger Hooks — Ordered Precedence List
 
-Exactly five hooks fire on `agentStop`. Their intended precedence, highest first, is:
+Exactly six hooks fire on the `Stop` trigger. Their intended precedence, highest first, is:
 
 1. `ask-bootcamper` — answer-processing and closing-question ownership.
 2. `module-recap-append` — capture of the just-completed module.
 3. `module-completion-celebration` — celebration of a completed module.
 4. `enforce-gate-on-stop` — mandatory-gate enforcement.
 5. `enforce-visualization-offers` — visualization-offer enforcement.
+6. `enforce-critical-artifacts` — graduation-artifact completion enforcement.
 
 The intended precedence semantics are, in order: (1) answer-processing and closing-question
 ownership belongs to `ask-bootcamper`; (2) capture (`module-recap-append`) runs next; (3) celebration
 (`module-completion-celebration`) follows; (4) gate enforcement (`enforce-gate-on-stop`) follows
-that; and (5) visualization-offer enforcement (`enforce-visualization-offers`) is last.
+that; (5) visualization-offer enforcement (`enforce-visualization-offers`) follows that; and (6)
+graduation-artifact enforcement (`enforce-critical-artifacts`) is last.
 
 This ordered list is stored machine-readably as the `agentstop_order` mapping in
-`hook-categories.yaml`, where each entry carries an integer `order` (contiguous `1..5`) and a
-`rationale` string. Tests assert that the set of ids under `agentstop_order` equals exactly the set
-of hooks whose `when.type` is `agentStop` — no more and no fewer. When the precedence changes, edit
-the YAML mapping first and keep this prose in step with it.
+`hook-categories.yaml` (the key name predates the `Stop` rename and holds the `Stop`-trigger
+ordering), where each entry carries an integer `order` (contiguous `1..6`) and a `rationale` string.
+Tests assert that the set of ids under `agentstop_order` equals exactly the set of hooks whose
+`trigger` is `Stop` — no more and no fewer. When the precedence changes, edit the YAML mapping first
+and keep this prose in step with it.
 
 ## Per-Hook Rationale
 
@@ -54,11 +58,15 @@ Each hook's position in the precedence list is justified as follows.
   violation is a correctness concern, so it outranks the celebration: in the same turn, a
   gate-violation message wins over a celebration message.
 - `enforce-visualization-offers` (order 5) — This is the lowest-stakes nudge. It offers missed
-  visualization opportunities only when nothing higher in the list has fired, so it sits last.
+  visualization opportunities only when nothing higher in the list has fired.
+- `enforce-critical-artifacts` (order 6) — This is the graduation-artifact completion safety net. It
+  runs last so its blocking output appears only after any higher-priority gate output has cleared,
+  and it must run after `module-recap-append` (so the recap section exists to reconstruct or verify
+  from) and after the celebration and gate hooks.
 
 ## Closing-Question Ownership and Conflict Resolution
 
-`ask-bootcamper` is the sole closing-question owner. All other `agentStop` hooks defer
+`ask-bootcamper` is the sole closing-question owner. All other `Stop`-trigger hooks defer
 closing-question emission to `ask-bootcamper` and never emit their own closing question. If the
 documented precedence order ever appears to conflict with the established rule that `ask-bootcamper`
 owns closing questions, the conflict is resolved in favor of `ask-bootcamper` owning closing
@@ -67,37 +75,37 @@ questions. Closing-question ownership is the higher rule; the precedence list ne
 ## Question-Pending Silence Rule
 
 While `config/.question_pending` exists (or the most recent assistant message contains a pending
-👉 question awaiting a bootcamper response), every `agentStop` hook emits zero output. No hook may
+👉 question awaiting a bootcamper response), every `Stop`-trigger hook emits zero output. No hook may
 add a competing message, a celebration, a recap, a gate notice, or a visualization offer while a
-question is pending — the turn must end cleanly so the bootcamper can answer. Each `agentStop` hook's
-prompt therefore begins with a guard clause to the effect of: if `config/.question_pending` exists,
-produce no output at all and defer to `ask-bootcamper`.
+question is pending — the turn must end cleanly so the bootcamper can answer. Each `Stop`-trigger
+hook's prompt therefore begins with a guard clause to the effect of: if `config/.question_pending`
+exists, produce no output at all and defer to `ask-bootcamper`.
 
 ## Single-Winner Precedence Rule
 
-When more than one `agentStop` hook would each produce visible output in the same turn, exactly one
-hook's output takes precedence, chosen by the ordered list above (lowest `order` number wins). The
-others stay silent for that turn.
+When more than one `Stop`-trigger hook would each produce visible output in the same turn, exactly
+one hook's output takes precedence, chosen by the ordered list above (lowest `order` number wins).
+The others stay silent for that turn.
 
 The concrete, required example: a gate-violation output from `enforce-gate-on-stop` takes precedence
 over a celebration output from `module-completion-celebration` in the same turn. In other words,
 `enforce-gate-on-stop` outranks `module-completion-celebration` whenever both would otherwise speak —
 the gate violation is shown and the celebration is suppressed.
 
-When no hook's guard condition is satisfied in a turn, the `agentStop` hooks collectively produce
+When no hook's guard condition is satisfied in a turn, the `Stop`-trigger hooks collectively produce
 zero visible output.
 
 ## No-Stacking Rule
 
-No `agentStop` hook appends its output after another `agentStop` hook's output in a way that stacks
-two separate end-of-turn messages. The end of a turn carries at most one primary message. Hooks do
+No `Stop`-trigger hook appends its output after another `Stop`-trigger hook's output in a way that
+stacks two separate end-of-turn messages. The end of a turn carries at most one primary message. Hooks do
 not concatenate; they defer. This keeps the conversation readable and avoids a wall of stacked
 notices at every turn end.
 
 ## Assumption / Non-Goal: The Power Cannot Control IDE Firing Order
 
 This feature does not modify the IDE hook-execution engine or the order in which the IDE dispatches
-`agentStop` hooks. The power cannot control IDE-level firing order, and it makes no attempt to.
+`Stop`-trigger hooks. The power cannot control IDE-level firing order, and it makes no attempt to.
 
 Determinism of the *effective* end-of-turn behavior does not depend on the engine's dispatch order.
 Instead it comes from two documented mechanisms working together:
@@ -130,7 +138,7 @@ structural choice.
 
 Three hooks are designated **capture-critical** because the completion summary and the journey recap
 depend on them: `session-log-events`, `module-recap-append`, and `ask-bootcamper`. (`session-log-events`
-is a `postToolUse` hook, not an `agentStop` hook, but it is capture-critical all the same.)
+is a `PostToolUse` hook, not a `Stop`-trigger hook, but it is capture-critical all the same.)
 
 Capture-critical coverage is required on **both** install paths:
 

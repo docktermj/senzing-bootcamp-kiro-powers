@@ -11,7 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## Module 7 Hooks
 
-**enforce-visualization-offers** (agentStop → askAgent)
+**enforce-visualization-offers** (Stop → agent)
 
 Prompt:
 
@@ -39,4 +39,5 @@ Process missed checkpoints one at a time. Do not batch multiple offers into a si
 
 - id: `enforce-visualization-offers`
 - name: `to offer visualizations`
-- description: `When the agent stops during a visualization-capable module (3, 5, 7, 8), checks the visualization tracker to verify all required offers were made. Prompts for missed offers.`
+- trigger: `Stop`
+- action: `agent`

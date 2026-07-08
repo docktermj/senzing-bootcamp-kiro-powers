@@ -1,7 +1,7 @@
-"""Property-based tests for the install_hooks.py installer logic.
+"""Property-based tests for the install_hooks.py installer logic (v1 model).
 
 Feature: hook-architecture-improvements (Theme C — capture-hook install
-reliability).
+reliability), aligned to the Kiro 1.0 ``v1`` ``.json`` hook model.
 
 These are *script-behavior* property tests exercised over temporary hook
 directories (never the real ``.kiro/hooks``), so per ``structure.md`` they live
@@ -9,7 +9,7 @@ in ``senzing-bootcamp/tests/`` rather than the repo-root ``tests/``.
 
 Properties covered:
 
-- **Property 9** — Installer discovered set equals the hook-file set.
+- **Property 9** — Installer discovered set equals the ``*.json`` hook-file set.
   Validates: Requirements 9.3, 12.1
 - **Property 13** — Non-interactive ``--all`` / ``--essential`` modes never read
   stdin and exit 0. Validates: Requirements 11.3, 11.4, 12.4
@@ -51,14 +51,14 @@ def st_hook_id() -> st.SearchStrategy[str]:
 
 
 def st_hook_filename() -> st.SearchStrategy[str]:
-    """Generate ``<hook-id>.kiro.hook`` filenames."""
-    return st_hook_id().map(lambda hook_id: f"{hook_id}.kiro.hook")
+    """Generate ``<hook-id>.json`` v1 hook filenames."""
+    return st_hook_id().map(lambda hook_id: f"{hook_id}.json")
 
 
 def st_hook_filenames(
     min_size: int = 1, max_size: int = 8
 ) -> st.SearchStrategy[list[str]]:
-    """Generate a unique list of ``*.kiro.hook`` filenames."""
+    """Generate a unique list of ``*.json`` v1 hook filenames."""
     return st.lists(
         st_hook_filename(), min_size=min_size, max_size=max_size, unique=True
     )
@@ -70,14 +70,21 @@ def st_hook_filenames(
 
 
 def _write_hook_file(power_dir: Path, filename: str) -> None:
-    """Write a minimal but schema-valid ``.kiro.hook`` JSON file."""
+    """Write a minimal but schema-valid ``.json`` v1 hook file."""
     hook_id = install_hooks._hook_id(filename)
     verb_phrase = hook_id.replace("-", " ")
     data = {
-        "name": f"to {verb_phrase}",
-        "version": "1.0.0",
-        "when": {"type": "agentStop"},
-        "then": {"type": "askAgent", "prompt": f"Do the {verb_phrase} thing."},
+        "version": "v1",
+        "hooks": [
+            {
+                "name": f"to {verb_phrase}",
+                "trigger": "Stop",
+                "action": {
+                    "type": "agent",
+                    "prompt": f"Do the {verb_phrase} thing.",
+                },
+            }
+        ],
     }
     (power_dir / filename).write_text(json.dumps(data, indent=2), encoding="utf-8")
 
@@ -131,7 +138,7 @@ def _run_main_silently(argv: list[str]) -> tuple[int, str, str]:
 
 
 class TestInstallerDiscovery:
-    """Property 9: discover_hooks returns exactly the *.kiro.hook file set.
+    """Property 9: discover_hooks returns exactly the ``*.json`` file set.
 
     **Validates: Requirements 9.3, 12.1**
     """
@@ -154,7 +161,7 @@ class TestInstallerDiscovery:
             discovered_filenames = [entry[0] for entry in discovered]
             assert len(discovered_filenames) == len(set(discovered_filenames))
 
-            # The discovered filename set equals the *.kiro.hook file set.
+            # The discovered filename set equals the ``*.json`` file set.
             assert set(discovered_filenames) == set(filenames)
         finally:
             shutil.rmtree(td, ignore_errors=True)
@@ -163,13 +170,15 @@ class TestInstallerDiscovery:
     @given(
         filenames=st_hook_filenames(),
         noise=st.lists(
-            st.from_regex(r"[a-z0-9_-]{1,12}\.(md|yaml|json|txt)", fullmatch=True),
+            # Non-``.json`` files (including residual legacy ``*.kiro.hook``)
+            # must be ignored by the v1 ``*.json`` glob.
+            st.from_regex(r"[a-z0-9_-]{1,12}(\.(md|yaml|txt)|\.kiro\.hook)", fullmatch=True),
             max_size=4,
             unique=True,
         ),
     )
     @settings(max_examples=20)
-    def test_only_kiro_hook_files_are_discovered(
+    def test_only_json_files_are_discovered(
         self, filenames: list[str], noise: list[str]
     ) -> None:
         td = tempfile.mkdtemp()

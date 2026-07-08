@@ -11,7 +11,7 @@ For critical hooks (created during onboarding), see `hook-registry-critical.md`.
 
 ## Module 10 Hooks
 
-**validate-alert-config** (fileCreated → askAgent, filePatterns: `monitoring/alerts/*.*, monitoring/dashboards/*.*`)
+**validate-alert-config** (PostFileCreate → agent, matcher: `^(?:monitoring/alerts/[^/]*\.[^/]*|monitoring/dashboards/[^/]*\.[^/]*)$`)
 
 Prompt:
 
@@ -21,4 +21,6 @@ A monitoring configuration file was just created. Validate: (1) Alert rules have
 
 - id: `validate-alert-config`
 - name: `to validate alert configuration`
-- description: `When monitoring configuration files are created or modified during Module 10, validates alert rule syntax and completeness.`
+- trigger: `PostFileCreate`
+- matcher: `^(?:monitoring/alerts/[^/]*\.[^/]*|monitoring/dashboards/[^/]*\.[^/]*)$`
+- action: `agent`

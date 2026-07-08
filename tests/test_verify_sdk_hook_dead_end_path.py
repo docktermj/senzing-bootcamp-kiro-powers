@@ -2,7 +2,7 @@
 
 Spec: .kiro/specs/sdk-verify-hook-dead-end-path
 
-The Module 2 verification hook ``senzing-bootcamp/hooks/verify-sdk-setup.kiro.hook``
+The Module 2 verification hook ``senzing-bootcamp/hooks/verify-sdk-setup.json``
 recommends ``python3 senzing-bootcamp/scripts/preflight.py`` as a remediation
 command when verification fails. That power-relative path does not resolve in the
 bootcamper's installed project workspace, producing a "No such file or directory"
@@ -30,7 +30,7 @@ if _TESTS_DIR not in sys.path:
 
 import hook_test_helpers
 
-HOOK_PATH = Path("senzing-bootcamp/hooks/verify-sdk-setup.kiro.hook")
+HOOK_PATH = Path("senzing-bootcamp/hooks/verify-sdk-setup.json")
 
 # The power-relative remediation path that does NOT resolve in the bootcamper
 # workspace (the bug), and the workspace-relative path that does (the fix).
@@ -40,9 +40,9 @@ WORKSPACE_PATH = "src/scripts/verify_sdk.py"
 
 
 def _then_prompt() -> str:
-    """Load the real hook and return its then.prompt string."""
+    """Load the real hook and return its v1 ``action.prompt`` string."""
     hook = hook_test_helpers.load_hook(HOOK_PATH)
-    return hook["then"]["prompt"]
+    return hook["action"]["prompt"]
 
 
 class TestVerifySdkRemediationPath:
@@ -116,14 +116,16 @@ class TestVerifySdkRemediationPath:
 # Preservation baseline (observed on the UNFIXED hook)
 # ---------------------------------------------------------------------------
 
-# Trigger patterns that must remain exactly unchanged (Req 3.4).
-EXPECTED_WHEN_PATTERNS = [
-    "config/senzing_config.*",
-    "config/bootcamp_preferences.yaml",
-    "database/*.*",
+# The legacy ``when.patterns`` globs collapsed into the single 1.0 matcher regex;
+# the scoping intent (config/senzing_config.*, config/bootcamp_preferences.yaml,
+# database/*.*) must be preserved as fragments of that matcher.
+EXPECTED_MATCHER_FRAGMENTS = [
+    "senzing_config",
+    "bootcamp_preferences",
+    "database/",
 ]
-EXPECTED_WHEN_TYPE = "fileEdited"
-EXPECTED_THEN_TYPE = "askAgent"
+EXPECTED_TRIGGER = "PostFileSave"
+EXPECTED_ACTION_TYPE = "agent"
 
 # Module 2 gating phrases (Req 3.3).
 GATING_IN_MODULE_2 = "If the bootcamper is in Module 2 (SDK Setup)"
@@ -176,15 +178,20 @@ class TestVerifySdkPreservation:
     **Validates: Requirements 3.1, 3.2, 3.3, 3.4**
     """
 
-    def test_when_patterns_unchanged(self):
-        """when.patterns equals the exact trigger pattern list (Req 3.4)."""
+    def test_matcher_preserves_scoping_fragments(self):
+        """The 1.0 matcher preserves the original file-scoping fragments (Req 3.4)."""
         hook = hook_test_helpers.load_hook(HOOK_PATH)
-        assert hook["when"]["patterns"] == EXPECTED_WHEN_PATTERNS
+        matcher = hook.get("matcher", "")
+        assert isinstance(matcher, str) and matcher, "hook must carry a matcher"
+        for fragment in EXPECTED_MATCHER_FRAGMENTS:
+            assert fragment in matcher, (
+                f"matcher {matcher!r} lost scoping fragment {fragment!r}"
+            )
 
-    def test_when_type_is_file_edited(self):
-        """when.type is fileEdited (Req 3.4)."""
+    def test_trigger_is_post_file_save(self):
+        """trigger is PostFileSave (1.0 rename of fileEdited) (Req 3.4)."""
         hook = hook_test_helpers.load_hook(HOOK_PATH)
-        assert hook["when"]["type"] == EXPECTED_WHEN_TYPE
+        assert hook["trigger"] == EXPECTED_TRIGGER
 
     def test_module_2_gating_preserved(self):
         """then.prompt retains the Module 2 gating and no-output branch (Req 3.3)."""
@@ -204,22 +211,23 @@ class TestVerifySdkPreservation:
         assert FAILURE_REPORTING in prompt
 
     def test_schema_integrity_preserved(self):
-        """Hook retains required fields and well-formed schema (Req 3.1-3.4)."""
+        """Hook retains required v1 fields and well-formed schema (Req 3.1-3.4)."""
         hook = hook_test_helpers.load_hook(HOOK_PATH)
-        for field in ("name", "version", "description", "when", "then"):
+        for field in ("name", "trigger", "action"):
             assert field in hook, f"missing required field {field!r}"
-        assert hook["then"]["type"] == EXPECTED_THEN_TYPE
-        prompt = hook["then"]["prompt"]
+        assert hook["action"]["type"] == EXPECTED_ACTION_TYPE
+        prompt = hook["action"]["prompt"]
         assert isinstance(prompt, str)
-        assert prompt.strip(), "then.prompt must be a non-empty string"
+        assert prompt.strip(), "action.prompt must be a non-empty string"
 
     def test_hook_file_parses_as_valid_json(self):
-        """The hook file on disk parses as valid JSON (Req 3.1-3.4)."""
+        """The hook file on disk parses as a valid v1 wrapper (Req 3.1-3.4)."""
         import json
 
-        raw = HOOK_PATH.read_text(encoding="utf-8")
-        parsed = json.loads(raw)
+        parsed = json.loads(HOOK_PATH.read_text(encoding="utf-8"))
         assert isinstance(parsed, dict)
+        assert parsed.get("version") == "v1"
+        assert isinstance(parsed.get("hooks"), list) and parsed["hooks"]
 
     @given(context=st_module_context())
     @settings(max_examples=20)

@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 259
+- implemented: 260
 - superseded: 2
 - abandoned: 0
 - unknown: 1
@@ -707,6 +707,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/json-syntax-highlighting/](.kiro/specs/json-syntax-highlighting/)
+
+### kiro-1-0-migration
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/kiro-1-0-migration/](.kiro/specs/kiro-1-0-migration/)
 
 ### language-example-coverage
 

@@ -44,7 +44,7 @@ _BOOTCAMP_ROOT = Path(__file__).resolve().parent.parent
 _STEERING_DIR = _BOOTCAMP_ROOT / "steering"
 _GOVERNANCE_YAML = _BOOTCAMP_ROOT / "config" / "governance-rules.yaml"
 _GATES_SCRIPT = _BOOTCAMP_ROOT / "scripts" / "validate_mandatory_gates.py"
-_GATE_HOOK = _BOOTCAMP_ROOT / "hooks" / "gate-module3-visualization.kiro.hook"
+_GATE_HOOK = _BOOTCAMP_ROOT / "hooks" / "gate-module3-visualization.json"
 
 # The exact decoded regex the Rule 15 pin asserts against
 # validate_mandatory_gates.py (after the registry escape table is applied).
@@ -248,7 +248,7 @@ class TestStep9GatePreservation:
         assert any(
             a.get("type") == "substring_absent"
             and a.get("file")
-            == "senzing-bootcamp/hooks/gate-module3-visualization.kiro.hook"
+            == "senzing-bootcamp/hooks/gate-module3-visualization.json"
             and a.get("value") == "CONDITION B"
             for a in assertions
         ), "rule-15 lost its pinned 'CONDITION B' substring_absent assertion"

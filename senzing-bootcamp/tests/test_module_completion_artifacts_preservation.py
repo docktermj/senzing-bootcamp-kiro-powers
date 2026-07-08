@@ -74,8 +74,8 @@ _POWER_ROOT: Path = Path(__file__).resolve().parent.parent
 _HOOKS_DIR: Path = _POWER_ROOT / "hooks"
 _STEERING_DIR: Path = _POWER_ROOT / "steering"
 
-_RECAP_HOOK: Path = _HOOKS_DIR / "module-recap-append.kiro.hook"
-_CELEBRATION_HOOK: Path = _HOOKS_DIR / "module-completion-celebration.kiro.hook"
+_RECAP_HOOK: Path = _HOOKS_DIR / "module-recap-append.json"
+_CELEBRATION_HOOK: Path = _HOOKS_DIR / "module-completion-celebration.json"
 _MODULE_COMPLETION_FILE: Path = _STEERING_DIR / "module-completion.md"
 
 # The fixed, invariant completion step order (design Req 3.3).
@@ -115,8 +115,8 @@ def _module_completion_combined() -> str:
 
 
 def _read_json(path: Path) -> dict[str, object]:
-    """Read and parse a JSON hook file."""
-    return json.loads(_read(path))
+    """Read a v1 hook file and return its single entry (``hooks[0]``)."""
+    return json.loads(_read(path))["hooks"][0]
 
 
 def _is_placeholder(text: str | None) -> bool:
@@ -294,7 +294,7 @@ class TestNoNewEntryNoOp:
     def test_hooks_preserve_no_op_instruction(self) -> None:
         """Both hooks keep the 'no new module -> produce no output' instruction."""
         for hook_path in (_RECAP_HOOK, _CELEBRATION_HOOK):
-            prompt = str(_read_json(hook_path)["then"]["prompt"])  # type: ignore[index]
+            prompt = str(_read_json(hook_path)["action"]["prompt"])  # type: ignore[index]
             assert "has not changed" in prompt and "produce no output" in prompt, (
                 f"{hook_path.name} must preserve the no-new-entry no-op instruction"
             )
@@ -362,7 +362,7 @@ class TestByteForBytePreservation:
 
     def test_recap_hook_preserves_byte_for_byte_instruction(self) -> None:
         """The recap hook keeps the byte-for-byte preservation constraint."""
-        prompt = str(_read_json(_RECAP_HOOK)["then"]["prompt"])  # type: ignore[index]
+        prompt = str(_read_json(_RECAP_HOOK)["action"]["prompt"])  # type: ignore[index]
         assert "byte-for-byte" in prompt, (
             "Recap hook must preserve the 'byte-for-byte' append constraint"
         )
@@ -408,7 +408,7 @@ class TestQuestionPendingDeferral:
     def test_hooks_preserve_question_pending_deferral(self) -> None:
         """Both hooks keep the '.question_pending -> defer, no output' instruction."""
         for hook_path in (_RECAP_HOOK, _CELEBRATION_HOOK):
-            prompt = str(_read_json(hook_path)["then"]["prompt"])  # type: ignore[index]
+            prompt = str(_read_json(hook_path)["action"]["prompt"])  # type: ignore[index]
             assert ".question_pending" in prompt, (
                 f"{hook_path.name} must reference config/.question_pending"
             )
@@ -450,7 +450,7 @@ class TestDefaultName:
 
     def test_recap_hook_preserves_default_name(self) -> None:
         """The recap hook keeps the "Bootcamper" default-name fallback."""
-        prompt = str(_read_json(_RECAP_HOOK)["then"]["prompt"])  # type: ignore[index]
+        prompt = str(_read_json(_RECAP_HOOK)["action"]["prompt"])  # type: ignore[index]
         assert "Bootcamper" in prompt, "Recap hook must preserve the default name"
 
     def test_steering_preserves_default_name(self) -> None:
@@ -563,16 +563,16 @@ class TestCelebrationHookReadOnly:
     """
 
     def test_celebration_hook_schema_is_valid(self) -> None:
-        """The celebration hook keeps a valid schema (name/version/when/then)."""
+        """The celebration hook keeps a valid v1 schema (name/trigger/action)."""
         hook = _read_json(_CELEBRATION_HOOK)
-        for key in ("name", "version", "when", "then"):
+        for key in ("name", "trigger", "action"):
             assert key in hook, f"Celebration hook must keep '{key}'"
-        assert hook["when"]["type"] == "agentStop"  # type: ignore[index]
-        assert hook["then"]["type"] == "askAgent"  # type: ignore[index]
+        assert hook["trigger"] == "Stop"  # type: ignore[index]
+        assert hook["action"]["type"] == "agent"  # type: ignore[index]
 
     def test_celebration_hook_declares_no_writes(self) -> None:
         """The celebration hook prompt forbids writing files and running commands."""
-        prompt = str(_read_json(_CELEBRATION_HOOK)["then"]["prompt"])  # type: ignore[index]
+        prompt = str(_read_json(_CELEBRATION_HOOK)["action"]["prompt"])  # type: ignore[index]
         assert "Do NOT write any files." in prompt, (
             "Celebration hook must keep the 'Do NOT write any files' constraint"
         )
@@ -582,7 +582,7 @@ class TestCelebrationHookReadOnly:
 
     def test_celebration_hook_only_reads_named_config_files(self) -> None:
         """The celebration hook restricts itself to reading three named config files."""
-        prompt = str(_read_json(_CELEBRATION_HOOK)["then"]["prompt"])  # type: ignore[index]
+        prompt = str(_read_json(_CELEBRATION_HOOK)["action"]["prompt"])  # type: ignore[index]
         assert "ONLY read these three config files" in prompt
         for cfg in (
             "config/bootcamp_progress.json",
@@ -593,7 +593,7 @@ class TestCelebrationHookReadOnly:
 
     def test_celebration_hook_does_not_perform_artifact_steps(self) -> None:
         """The celebration hook does not journal, certificate, or reflect."""
-        prompt = str(_read_json(_CELEBRATION_HOOK)["then"]["prompt"])  # type: ignore[index]
+        prompt = str(_read_json(_CELEBRATION_HOOK)["action"]["prompt"])  # type: ignore[index]
         assert "Do NOT perform journal entries, generate certificates" in prompt, (
             "Celebration hook must remain read-only and not own artifact generation"
         )

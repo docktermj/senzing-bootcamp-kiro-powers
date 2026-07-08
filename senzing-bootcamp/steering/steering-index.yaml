@@ -322,7 +322,7 @@ file_metadata:
     token_count: 1326
     size_category: medium
   agent-instructions.md:
-    token_count: 4404
+    token_count: 4470
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -382,50 +382,50 @@ file_metadata:
     token_count: 8509
     size_category: large
   hook-architecture.md:
-    token_count: 2149
+    token_count: 2325
     size_category: large
   hook-registry-critical.md:
-    token_count: 8592
+    token_count: 7984
     size_category: large
   hook-registry-module-01.md:
-    token_count: 474
+    token_count: 434
     size_category: small
   hook-registry-module-02.md:
-    token_count: 261
+    token_count: 269
     size_category: small
   hook-registry-module-03.md:
-    token_count: 2341
+    token_count: 2124
     size_category: large
   hook-registry-module-04.md:
-    token_count: 282
+    token_count: 272
     size_category: small
   hook-registry-module-05.md:
-    token_count: 1390
+    token_count: 1322
     size_category: medium
   hook-registry-module-06.md:
-    token_count: 519
+    token_count: 538
     size_category: medium
   hook-registry-module-07.md:
-    token_count: 544
+    token_count: 504
     size_category: medium
   hook-registry-module-08.md:
-    token_count: 760
+    token_count: 698
     size_category: medium
   hook-registry-module-09.md:
-    token_count: 268
+    token_count: 276
     size_category: small
   hook-registry-module-10.md:
-    token_count: 286
+    token_count: 288
     size_category: small
   hook-registry-module-11.md:
-    token_count: 463
+    token_count: 412
     size_category: small
   hook-registry-module-any.md:
-    token_count: 4905
+    token_count: 4374
     size_category: large
   hook-registry.md:
-    token_count: 2130
-    size_category: large
+    token_count: 872
+    size_category: medium
   inline-status.md:
     token_count: 460
     size_category: small
@@ -565,7 +565,7 @@ file_metadata:
     token_count: 850
     size_category: medium
   module-completion-artifacts.md:
-    token_count: 3982
+    token_count: 3978
     size_category: large
   module-completion-error-handling.md:
     token_count: 604
@@ -574,7 +574,7 @@ file_metadata:
     token_count: 702
     size_category: medium
   module-completion-track.md:
-    token_count: 3290
+    token_count: 3288
     size_category: large
   module-completion.md:
     token_count: 2262
@@ -586,13 +586,13 @@ file_metadata:
     token_count: 1908
     size_category: medium
   onboarding-flow.md:
-    token_count: 4124
+    token_count: 4230
     size_category: large
   onboarding-phase1b-intro-language.md:
-    token_count: 2126
+    token_count: 2123
     size_category: large
   onboarding-phase2-track-setup.md:
-    token_count: 1503
+    token_count: 1505
     size_category: medium
   phase-loading-guide.md:
     token_count: 890
@@ -613,7 +613,7 @@ file_metadata:
     token_count: 656
     size_category: medium
   session-resume-phase2-setup-recovery.md:
-    token_count: 997
+    token_count: 1034
     size_category: medium
   session-resume-phase2-state-repair.md:
     token_count: 547
@@ -622,8 +622,17 @@ file_metadata:
     token_count: 3380
     size_category: large
   skip-step-protocol.md:
-    token_count: 799
+    token_count: 798
     size_category: medium
+  slash-backup-project.md:
+    token_count: 157
+    size_category: small
+  slash-commonmark-validation.md:
+    token_count: 444
+    size_category: small
+  slash-git-commit.md:
+    token_count: 187
+    size_category: small
   track-switching.md:
     token_count: 766
     size_category: medium
@@ -650,7 +659,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 204320
+  total_tokens: 202637
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

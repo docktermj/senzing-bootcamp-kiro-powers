@@ -54,8 +54,13 @@ for d in [
     os.makedirs(d, exist_ok=True)
 ```'''
 
-# Observation: YAML frontmatter inclusion setting
-OBSERVED_FRONTMATTER_INCLUSION = "inclusion: auto"
+# Observation: YAML frontmatter inclusion setting. Re-baselined by the
+# steering-inclusion-auto-audit spec: project-structure.md was re-classified
+# from the non-standard ``inclusion: auto`` to the standard ``inclusion:
+# manual`` mode (Decision_Record: keyword-routed via ``project-structure``;
+# loaded on explicit reference). The frontmatter STRUCTURE is preserved; only
+# the inclusion value tracks the approved re-classification.
+OBSERVED_FRONTMATTER_INCLUSION = "inclusion: manual"
 
 # Observation: All required directory paths present in the file. Re-baselined by the
 # docs-file-placement bugfix (Change 4): ``scripts`` -> ``src/scripts`` and the
@@ -334,12 +339,14 @@ class TestFrontmatterPreservation:
 
     **Validates: Requirements 3.4**
 
-    Assert YAML frontmatter 'inclusion: auto' is preserved.
-    On unfixed code this PASSES — confirming the baseline.
+    Assert the YAML frontmatter inclusion mode (now the standard
+    ``inclusion: manual``, re-classified from the non-standard ``auto`` by the
+    steering-inclusion-auto-audit spec) is preserved across platforms. The
+    platform-specific directory-creation fix must not touch the frontmatter.
     """
 
-    def test_frontmatter_contains_inclusion_auto(self) -> None:
-        """The YAML frontmatter must contain 'inclusion: auto'."""
+    def test_frontmatter_contains_inclusion_manual(self) -> None:
+        """The YAML frontmatter must contain 'inclusion: manual'."""
         content = _read_steering_file()
         frontmatter = _extract_frontmatter(content)
         assert OBSERVED_FRONTMATTER_INCLUSION in frontmatter, (
@@ -354,7 +361,7 @@ class TestFrontmatterPreservation:
 
         **Validates: Requirements 3.4**
 
-        The frontmatter controls auto-inclusion behavior and must not
+        The frontmatter controls the file's inclusion behavior and must not
         change as part of any platform-specific fix.
         """
         content = _read_steering_file()

@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: manual
 description: "Verbosity control system — output categories, presets, adjustment instructions, and content rules by level"
 ---
 

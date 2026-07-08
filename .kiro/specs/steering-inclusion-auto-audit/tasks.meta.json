@@ -1,0 +1,343 @@
+{
+  "pbtResults": {
+    "3.2 Write property test for body and description preservation": {
+      "status": "passed",
+      "lastRunTimestamp": 1783518507734
+    },
+    "3.3 Write property test for assigned standard mode output": {
+      "status": "passed",
+      "lastRunTimestamp": 1783518851176
+    },
+    "6.2 Write property test for validator acceptance and failure naming": {
+      "status": "passed",
+      "lastRunTimestamp": 1783521198057
+    },
+    "6.3 Write property test for validator parity": {
+      "status": "passed",
+      "lastRunTimestamp": 1783521355407
+    },
+    "7.2 Confirm/extend property tests for budget accounting": {
+      "status": "passed",
+      "lastRunTimestamp": 1783522222149
+    }
+  },
+  "executionHistory": {
+    "1. Perform the runtime audit of `inclusion: auto` and record the Audit_Finding": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516763766
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516778296
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783517328205
+      }
+    ],
+    "2. Produce the Decision_Record mapping all eleven Auto_Files to standard modes": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516763916
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783517341724
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783517467743
+      }
+    ],
+    "3.1 Implement `rewrite_inclusion(content, mode, file_match_pattern=None) -> str` as a stdlib-only pure function in a test helper module under `senzing-bootcamp/tests/`.": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516763984
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783517476394
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783517980656
+      }
+    ],
+    "3.2 Write property test for body and description preservation": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764033
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783517991021
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783518527611
+      }
+    ],
+    "3.3 Write property test for assigned standard mode output": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764084
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783518532762
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783518875071
+      }
+    ],
+    "3.4 Write unit tests for `rewrite_inclusion` error handling": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764121
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783518882599
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783518981678
+      }
+    ],
+    "4. Re-classify the eleven Auto_Files to their decided standard modes": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764164
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783518984805
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783519156329
+      }
+    ],
+    "5.1 Write a corpus invariant test": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764199
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783519175962
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783519386614
+      }
+    ],
+    "5.2 Write a keyword-routing preservation test": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764239
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783519389670
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783519609555
+      }
+    ],
+    "6.1 Remove `\"auto\"` from `VALID_INCLUSIONS` in `lint_steering.py` and from the local accepted set in `validate_power.py`'s `check_steering_files`, leaving each exactly `{\"always\", \"fileMatch\", \"manual\"}` compared as case-sensitive exact strings. Keep both stdlib-only.": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764278
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783519613730
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783519702072
+      }
+    ],
+    "6.2 Write property test for validator acceptance and failure naming": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764347
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783519706976
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783521227569
+      }
+    ],
+    "6.3 Write property test for validator parity": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764384
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783521231155
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783521371719
+      }
+    ],
+    "6.4 Write unit test for validator exit code": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764423
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783521379407
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783521676583
+      }
+    ],
+    "7.1 Run `measure_steering.py` in update mode to refresh `steering-index.yaml` `file_metadata` and `budget.total_tokens` after the frontmatter edits, then run `measure_steering.py --check` and confirm the always-loaded footprint is within the configured ceiling under the finalized `always` set.": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764457
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783521680601
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783521852746
+      }
+    ],
+    "7.2 Confirm/extend property tests for budget accounting": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764496
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783521860481
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783522301812
+      }
+    ],
+    "7.3 Write baseline scenario arithmetic unit test": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764533
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783522306781
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783523027888
+      }
+    ],
+    "8. Checkpoint — final CI and regression verification": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783516764569
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783523034744
+      },
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783525181330
+      }
+    ],
+    "3. Implement and test the `rewrite_inclusion` frontmatter-rewrite helper": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783518981712
+      }
+    ],
+    "5. Verify the re-classification corpus and preserved routing": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783519609612
+      }
+    ],
+    "6. Remove `auto` from the inclusion validators": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783521676648
+      }
+    ],
+    "7. Realign budget accounting via remeasurement": [
+      {
+        "executionId": "77dec237-8bc0-4a96-8aef-21fe013dcdfc",
+        "chatSessionId": "sess_af4e3a82-1d63-4b9d-b64d-348385f37f38",
+        "timestamp": 1783523027942
+      }
+    ]
+  }
+}

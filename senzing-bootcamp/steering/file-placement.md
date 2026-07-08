@@ -1,5 +1,6 @@
 ---
-inclusion: auto
+inclusion: fileMatch
+fileMatchPattern: "**/*"
 description: "Project-root file prohibitions and whitelist — load when creating or writing any project file"
 ---
 

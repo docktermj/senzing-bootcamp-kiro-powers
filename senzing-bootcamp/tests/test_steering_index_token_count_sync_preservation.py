@@ -345,7 +345,26 @@ _BASELINE_HASHES: dict[str, str] = {
     # (203322 = sum of file_metadata counts). Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "8d77454a2e47c6bd7f789747322a547c6fa40fd6ae61f07441052e142c441061",
+    # Re-baselined once more (203322 -> 203333) for the
+    # steering-inclusion-auto-audit spec (task 7.1 re-ran measure_steering.py in
+    # update mode): re-classifying the eleven former `inclusion: auto` files to
+    # standard modes rewrote only their frontmatter (e.g. session-resume.md
+    # auto -> manual, +2 chars -> token_count 3384 -> 3385), which
+    # measure_steering.py recomputed into file_metadata and the budget total
+    # (203333 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (203333 -> 203334) for the follow-up
+    # steering-inclusion-auto-audit documentation fix: session-resume.md's
+    # Protocol Confirmation parenthetical was refreshed from the now-stale
+    # `inclusion: auto` to `inclusion: always` (conversation-protocol.md is
+    # classified `always`), a two-character body change that nudged
+    # session-resume.md's measured token_count 3385 -> 3386, which
+    # measure_steering.py recomputed into file_metadata and the budget total
+    # (203334 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    "budget": "b4050c317baad805283cf3b7ba3f6a31c4ed12fc08f304ecb9cfab4d4a75eed1",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -712,7 +731,18 @@ class TestNonPhaseBlocksBytePreserved:
         ``**`` emphasis markers were added across many steering files and
         ``conversation-protocol.md`` gained rule/checklist/self-check content,
         all recomputed by ``measure_steering.py`` into ``file_metadata`` and the
-        budget total. Pinning the hash alone could
+        budget total. Most recently, the steering-inclusion-auto-audit spec
+        re-baselines again (203322 -> 203333): task 7.1 re-ran
+        ``measure_steering.py`` in update mode after the eleven former
+        ``inclusion: auto`` files were re-classified to standard modes (e.g.
+        ``session-resume.md`` auto -> manual, +2 chars), all recomputed into
+        ``file_metadata`` and the budget total. Most recently, a follow-up
+        documentation fix re-baselines again (203333 -> 203334):
+        ``session-resume.md``'s Protocol Confirmation parenthetical was refreshed
+        from the stale ``inclusion: auto`` to ``inclusion: always`` (two more
+        characters), nudging its measured token_count 3385 -> 3386, recomputed by
+        ``measure_steering.py`` into ``file_metadata`` and the budget total.
+        Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
         sub-key) line by line. The two assertions together guarantee the
@@ -728,10 +758,10 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (203322 after the question-visibility bold-marker / conversation-protocol
-        # growth was re-synced), so the hash cannot silently re-pin a stale value.
+        # (203334 after the follow-up Protocol Confirmation parenthetical fix was
+        # re-synced), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 203322" in budget_block
+        assert "total_tokens: 203334" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

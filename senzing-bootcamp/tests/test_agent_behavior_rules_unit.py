@@ -477,8 +477,13 @@ class TestSteeringFileStructure:
             "Steering file must have a closing '---' YAML frontmatter delimiter"
         )
 
-    def test_yaml_frontmatter_inclusion_auto(self) -> None:
-        """Parse the YAML frontmatter and verify inclusion: auto is set."""
+    def test_yaml_frontmatter_inclusion_always(self) -> None:
+        """Parse the YAML frontmatter and verify inclusion: always is set.
+
+        agent-behavior-rules.md was re-classified from the non-standard
+        ``auto`` value to the standard ``always`` mode (Decision_Record:
+        every-session presence).
+        """
         content = _STEERING_FILE.read_text(encoding="utf-8")
         lines = content.splitlines()
         # Extract frontmatter between first and second '---'
@@ -489,8 +494,8 @@ class TestSteeringFileStructure:
                 break
             frontmatter_lines.append(line)
         frontmatter = "\n".join(frontmatter_lines)
-        assert "inclusion: auto" in frontmatter or "inclusion:auto" in frontmatter, (
-            "YAML frontmatter must contain 'inclusion: auto'"
+        assert "inclusion: always" in frontmatter or "inclusion:always" in frontmatter, (
+            "YAML frontmatter must contain 'inclusion: always'"
         )
 
     def test_yaml_frontmatter_has_description(self) -> None:

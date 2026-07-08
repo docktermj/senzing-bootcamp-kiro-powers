@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: always
 description: "Emit question/answer completion events for the replayable Q&A transcript
  when the agent asks a 👉 leading question and the bootcamper answers it"
 ---

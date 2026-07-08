@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: manual
 description: "Transparent MCP response caching within module session scope"
 ---
 

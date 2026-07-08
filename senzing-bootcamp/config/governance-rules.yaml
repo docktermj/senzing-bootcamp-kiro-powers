@@ -207,7 +207,7 @@ rules:
         value: "docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md"
 
   - id: "frontmatter-inclusion"
-    rule: "Steering files declare the expected YAML frontmatter inclusion value (always / auto / manual) for their role."
+    rule: "Steering files declare the expected YAML frontmatter inclusion value (always / fileMatch / manual) for their role."
     category: "steering-convention"
     enforced_by:
       - "senzing-bootcamp/steering/agent-instructions.md"
@@ -223,7 +223,7 @@ rules:
         pattern: "inclusion:\\s*always"
       - type: "regex_present"
         file: "senzing-bootcamp/steering/agent-behavior-rules.md"
-        pattern: "inclusion:\\s*auto"
+        pattern: "inclusion:\\s*always"
       - type: "regex_present"
         file: "senzing-bootcamp/steering/module-01-business-problem.md"
         pattern: "inclusion:\\s*manual"

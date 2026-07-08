@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 261
+- implemented: 262
 - superseded: 2
 - abandoned: 0
 - unknown: 1
@@ -1609,6 +1609,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/steering-file-template/](.kiro/specs/steering-file-template/)
+
+### steering-inclusion-auto-audit
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/steering-inclusion-auto-audit/](.kiro/specs/steering-inclusion-auto-audit/)
 
 ### steering-index-token-count-sync
 

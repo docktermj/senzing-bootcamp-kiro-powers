@@ -331,10 +331,15 @@ class TestSteeringFileSmokeTests:
         path = self._power_root() / "steering" / "verbosity-control.md"
         assert path.is_file(), f"Missing: {path}"
 
-    def test_frontmatter_contains_inclusion_auto(self):
-        """Frontmatter contains 'inclusion: auto'."""
+    def test_frontmatter_contains_inclusion_manual(self):
+        """Frontmatter contains 'inclusion: manual'.
+
+        verbosity-control.md was re-classified from the non-standard ``auto``
+        value to the standard ``manual`` mode (Decision_Record:
+        on-explicit-ref presence; keyword routing preserved).
+        """
         content = self._read_steering_file()
-        assert "inclusion: auto" in content
+        assert "inclusion: manual" in content
 
     def test_all_five_category_names_present(self):
         """All five category names appear in the steering file."""

@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: manual
 description: Session resume preference loading and recovery behavior
 ---
 
@@ -141,7 +141,7 @@ Session resume does not reduce the authority of any behavioral rule. Conversatio
 
 ### Protocol Confirmation
 
-Before proceeding to Step 3, confirm that `conversation-protocol.md` is loaded (via its `inclusion: auto` setting) and its rules are active. If unavailable, the five rules above serve as the authoritative fallback.
+Before proceeding to Step 3, confirm that `conversation-protocol.md` is loaded (via its `inclusion: always` setting) and its rules are active. If unavailable, the five rules above serve as the authoritative fallback.
 
 ### Self-Answering Prohibition
 

@@ -182,11 +182,15 @@ class TestTransitionFrontmatterIntegrity:
         self.transitions_content = _read(_MODULE_TRANSITIONS)
         self.completion_content = _read(_MODULE_COMPLETION)
 
-    def test_conversation_protocol_has_inclusion_auto(self) -> None:
-        """conversation-protocol.md has inclusion: auto."""
+    def test_conversation_protocol_has_inclusion_always(self) -> None:
+        """conversation-protocol.md has inclusion: always.
+
+        Re-classified from the non-standard ``auto`` value to the standard
+        ``always`` mode (Decision_Record: every-session presence).
+        """
         frontmatter = _extract_frontmatter(self.protocol_content)
         assert frontmatter is not None, "No YAML frontmatter found"
-        assert "inclusion: auto" in frontmatter
+        assert "inclusion: always" in frontmatter
 
     def test_module_transitions_has_inclusion_always(self) -> None:
         """module-transitions.md has inclusion: always."""

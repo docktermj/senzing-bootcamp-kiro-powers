@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: always
 description: "Four agent behavior rules: honor continuation requests, acknowledge responses, eliminate ambiguous questions, consistent pointer indicator"
 ---
 

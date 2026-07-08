@@ -376,7 +376,7 @@ file_metadata:
     token_count: 1245
     size_category: medium
   file-placement.md:
-    token_count: 288
+    token_count: 296
     size_category: small
   graduation.md:
     token_count: 8509
@@ -448,7 +448,7 @@ file_metadata:
     token_count: 434
     size_category: small
   mcp-response-caching.md:
-    token_count: 1442
+    token_count: 1443
     size_category: medium
   mcp-tool-decision-tree.md:
     token_count: 2311
@@ -580,7 +580,7 @@ file_metadata:
     token_count: 2262
     size_category: large
   module-prerequisites.md:
-    token_count: 1394
+    token_count: 1395
     size_category: medium
   module-transitions.md:
     token_count: 1908
@@ -619,7 +619,7 @@ file_metadata:
     token_count: 547
     size_category: medium
   session-resume.md:
-    token_count: 3384
+    token_count: 3386
     size_category: large
   skip-step-protocol.md:
     token_count: 799
@@ -659,7 +659,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 203322
+  total_tokens: 203334
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

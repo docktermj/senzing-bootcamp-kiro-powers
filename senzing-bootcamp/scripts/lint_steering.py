@@ -31,7 +31,7 @@ STEERING_DIR = Path("senzing-bootcamp/steering")
 HOOKS_DIR = Path("senzing-bootcamp/hooks")
 INDEX_PATH = Path("senzing-bootcamp/steering/steering-index.yaml")
 
-VALID_INCLUSIONS = {"always", "auto", "fileMatch", "manual"}
+VALID_INCLUSIONS = {"always", "fileMatch", "manual"}
 VALID_SIZE_CATEGORIES = {"small", "medium", "large"}
 
 # Split_Check fallback (Requirements 1.3, 1.4, 1.5, 1.7): the Default_Threshold

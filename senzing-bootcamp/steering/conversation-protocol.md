@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: always
 description: "Turn-taking, question handling, and module transition protocols for active bootcamp sessions"
 ---
 

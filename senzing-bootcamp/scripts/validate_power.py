@@ -66,7 +66,7 @@ def check_steering_files():
         check(False, "steering/ directory exists")
         return
 
-    valid_inclusions = {"always", "auto", "fileMatch", "manual"}
+    valid_inclusions = {"always", "fileMatch", "manual"}
     for f in sorted(steering_dir.glob("*.md")):
         with open(f) as fh:
             content = fh.read()

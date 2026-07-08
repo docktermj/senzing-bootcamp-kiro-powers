@@ -162,7 +162,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `entity-resolution-intro.md` | 1864 | medium |
 | `environment-setup.md` | 658 | medium |
 | `feedback-workflow.md` | 1245 | medium |
-| `file-placement.md` | 288 | small |
+| `file-placement.md` | 296 | small |
 | `graduation.md` | 8509 | large |
 | `hook-architecture.md` | 2325 | large |
 | `hook-registry-critical.md` | 8116 | large |
@@ -186,7 +186,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `lang-rust.md` | 1698 | medium |
 | `lang-typescript.md` | 1887 | medium |
 | `lessons-learned.md` | 434 | small |
-| `mcp-response-caching.md` | 1442 | medium |
+| `mcp-response-caching.md` | 1443 | medium |
 | `mcp-tool-decision-tree.md` | 2311 | large |
 | `mcp-usage-reference.md` | 905 | medium |
 | `module-01-business-problem.md` | 500 | medium |
@@ -230,7 +230,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-completion-next-steps.md` | 702 | medium |
 | `module-completion-track.md` | 3288 | large |
 | `module-completion.md` | 2262 | large |
-| `module-prerequisites.md` | 1394 | medium |
+| `module-prerequisites.md` | 1395 | medium |
 | `module-transitions.md` | 1908 | medium |
 | `onboarding-flow.md` | 4232 | large |
 | `onboarding-phase1b-intro-language.md` | 2125 | large |
@@ -243,7 +243,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `session-resume-phase2-mapping.md` | 656 | medium |
 | `session-resume-phase2-setup-recovery.md` | 1034 | medium |
 | `session-resume-phase2-state-repair.md` | 547 | medium |
-| `session-resume.md` | 3384 | large |
+| `session-resume.md` | 3386 | large |
 | `skip-step-protocol.md` | 799 | medium |
 | `slash-backup-project.md` | 157 | small |
 | `slash-commonmark-validation.md` | 444 | small |
@@ -257,7 +257,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 203322 tokens
+**Total budget:** 203334 tokens
 
 <!-- END GENERATED: steering-files -->
 

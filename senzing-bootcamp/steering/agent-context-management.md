@@ -1,5 +1,5 @@
 ---
-inclusion: auto
+inclusion: manual
 description: Context reset communication rules and message formatting
 ---
 

@@ -12,10 +12,10 @@ Reference examples for correct vs incorrect question patterns. Load when the `wr
 
 ## Multi-Question (CORRECT)
 
-> 👉 What language do you want?
+> 👉 **What language do you want?**
 > 🛑 STOP
 > [wait for response, then in next turn:]
-> 👉 Which track interests you?
+> 👉 **Which track interests you?**
 
 ## Not-Waiting (WRONG)
 
@@ -24,7 +24,7 @@ Reference examples for correct vs incorrect question patterns. Load when the `wr
 
 ## Not-Waiting (CORRECT)
 
-> 👉 Are you ready to continue?
+> 👉 **Are you ready to continue?**
 > 🛑 STOP
 
 ## Dead-End (WRONG)
@@ -41,7 +41,15 @@ Reference examples for correct vs incorrect question patterns. Load when the `wr
 
 ## Missing-Prefix (CORRECT)
 
+> 👉 **What language would you like to use?**
+
+## Missing-Bold (WRONG)
+
 > 👉 What language would you like to use?
+
+## Missing-Bold (CORRECT)
+
+> 👉 **What language would you like to use?**
 
 ## Self-Answering (WRONG)
 
@@ -50,7 +58,7 @@ Reference examples for correct vs incorrect question patterns. Load when the `wr
 
 ## Self-Answering (CORRECT)
 
-> 👉 Who will be working on this project?
+> 👉 **Who will be working on this project?**
 > 🛑 STOP
 
 ## Compound Confirmation (WRONG)
@@ -59,7 +67,7 @@ Reference examples for correct vs incorrect question patterns. Load when the `wr
 
 ## Compound Confirmation (CORRECT)
 
-> 👉 Does that summary capture your situation accurately?
+> 👉 **Does that summary capture your situation accurately?**
 
 ## Compound Either/Or (WRONG)
 
@@ -67,7 +75,7 @@ Reference examples for correct vs incorrect question patterns. Load when the `wr
 
 ## Compound Either/Or (CORRECT)
 
-> 👉 What would you like to do next?
+> 👉 **What would you like to do next?**
 >
 > 1. Create a one-page executive summary
 > 2. Move on to Module 2
@@ -78,7 +86,7 @@ Reference examples for correct vs incorrect question patterns. Load when the `wr
 
 ## Compound Choice (CORRECT)
 
-> 👉 Which language would you like to use?
+> 👉 **Which language would you like to use?**
 >
 > 1. Python
 > 2. Java
@@ -92,6 +100,6 @@ Reference examples for correct vs incorrect question patterns. Load when the `wr
 
 > Got it — you're looking for a clean master list. ✅ Checkpoint written.
 >
-> 👉 Will the entity resolution results need to interface with other
+> 👉 **Will the entity resolution results need to interface with other
 > software — for example, a CRM, search engine, data warehouse, or
-> downstream application?
+> downstream application?**

@@ -871,11 +871,14 @@ class TestUnitTokenBudgets:
         The session-resume split + the added "Preference Loading on Session
         Start" content grew the phase-1 file (session-resume.md) past the
         original 2,700 budget. The shipped steering-index.yaml records this
-        file as ``token_count: 3380`` / ``size_category: large``. The threshold
-        is raised ONLY to match that intentional shipped split (3,380 tokens,
-        rounded up to a 3,400 ceiling); the per-file ±10% budget enforcement in
-        measure_steering.py is unchanged. Paired with an independent content
-        assertion below so the relaxed ceiling can never mask unbounded growth.
+        file as ``token_count: 3384`` / ``size_category: large`` (re-synced by
+        the question-visibility spec's task 6.1 re-run of measure_steering.py,
+        which added bold ``**`` markers across steering files; the count moved
+        3380 -> 3384). The threshold is raised ONLY to match that intentional
+        shipped split (3,384 tokens, under a 3,400 ceiling); the per-file ±10%
+        budget enforcement in measure_steering.py is unchanged. Paired with an
+        independent content assertion below so the relaxed ceiling can never
+        mask unbounded growth.
         """
         token_count = _calculate_token_count(_PHASE1_FILE)
         assert token_count <= 3400, (
@@ -883,17 +886,17 @@ class TestUnitTokenBudgets:
         )
 
         # Independent content assertion: the shipped steering-index.yaml declares
-        # the same token_count for session-resume.md, confirming 3,380 is the
-        # intentional shipped value (relocation/split artifact), not drift.
+        # the same token_count for session-resume.md, confirming 3,384 is the
+        # intentional shipped value (relocation/split + bold-marker sync), not drift.
         index = _read_steering_index()
         assert "session-resume.md:" in index, (
             "steering-index.yaml must contain a session-resume.md entry"
         )
         idx_pos = index.find("session-resume.md:")
         entry = index[idx_pos:idx_pos + 200]
-        assert "token_count: 3380" in entry, (
-            "steering-index.yaml must record session-resume.md token_count: 3380 "
-            "(the shipped post-split value)"
+        assert "token_count: 3384" in entry, (
+            "steering-index.yaml must record session-resume.md token_count: 3384 "
+            "(the shipped post-split, post-bold-sync value)"
         )
 
     def test_phase2_mapping_token_budget(self) -> None:

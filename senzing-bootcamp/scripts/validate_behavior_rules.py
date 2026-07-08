@@ -307,6 +307,266 @@ def has_pointer_prefix(line: str) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# Bold Question Detection (Rule 4 — Bold Question Text)
+# ---------------------------------------------------------------------------
+
+# Pointer indicator (👉) marking an input-requiring prompt.
+POINTER_INDICATOR: str = "\U0001f449"
+
+# STOP marker (🛑) denoting the end-of-turn boundary after a leading question.
+STOP_MARKER: str = "\U0001f6d1"
+
+# Bold-emphasis marker (CommonMark strong emphasis).
+BOLD_MARKER: str = "**"
+
+
+def strip_bold(text: str) -> str:
+    """Remove paired bold-emphasis markers from text.
+
+    Removes every ``**`` bold-emphasis marker, returning the underlying
+    wording. This mirrors the marker-stripping step performed by the
+    write-policy-gate so that downstream checks operate on the same
+    marker-free wording.
+
+    Args:
+        text: The text that may contain ``**`` bold markers.
+
+    Returns:
+        The text with all ``**`` bold markers removed.
+    """
+    return text.replace(BOLD_MARKER, "")
+
+
+def question_text_is_bold(question_text: str) -> bool:
+    """Report whether question text is a single balanced bold span.
+
+    Returns True only when the whitespace-trimmed text is wrapped in a
+    single balanced ``**...**`` span that covers its entire content: it
+    starts with ``**``, ends with ``**``, encloses at least one character,
+    and contains no other ``**`` markers between the outer pair. Italic
+    (``*...*``), partial bold (``**What** language?``), and unbalanced
+    markers (``**text``) all return False.
+
+    Args:
+        question_text: The reconstructed question text to inspect.
+
+    Returns:
+        True if the trimmed text is a single balanced bold span covering
+        its whole content, otherwise False.
+    """
+    trimmed = question_text.strip()
+    # Need at least the opening and closing markers plus one inner character.
+    if len(trimmed) < 5:
+        return False
+    if not (trimmed.startswith(BOLD_MARKER) and trimmed.endswith(BOLD_MARKER)):
+        return False
+    inner = trimmed[len(BOLD_MARKER):-len(BOLD_MARKER)]
+    # No inner content means an empty span; extra markers mean it is not a
+    # single covering span (e.g. partial or multiple bold segments).
+    if not inner.strip():
+        return False
+    if BOLD_MARKER in inner:
+        return False
+    return True
+
+
+def _blockquote_depth_and_content(line: str) -> tuple[int, str]:
+    """Split a line into its blockquote depth and remaining content.
+
+    Counts leading ``>`` blockquote markers (each optionally followed by a
+    single space) after any leading whitespace, then returns the remaining
+    content with leading whitespace stripped.
+
+    Args:
+        line: The raw line of text.
+
+    Returns:
+        A tuple of the blockquote nesting depth and the content that follows
+        the blockquote markers.
+    """
+    depth = 0
+    rest = line
+    while True:
+        stripped = rest.lstrip()
+        if stripped.startswith(">"):
+            depth += 1
+            rest = stripped[1:]
+            if rest.startswith(" "):
+                rest = rest[1:]
+        else:
+            rest = stripped
+            break
+    return depth, rest
+
+
+def _strip_list_marker(content: str) -> str:
+    """Strip a leading list marker from content.
+
+    Removes a leading unordered (``- ``/``* ``) or ordered (``1. ``/``1) ``)
+    list marker along with the surrounding whitespace.
+
+    Args:
+        content: The content that may begin with a list marker.
+
+    Returns:
+        The content with a single leading list marker removed.
+    """
+    stripped = content.lstrip()
+    if stripped.startswith("- ") or stripped.startswith("* "):
+        return stripped[2:].lstrip()
+    ordered = re.match(r"\d+[.)]\s+", stripped)
+    if ordered:
+        return stripped[ordered.end():]
+    return stripped
+
+
+def extract_question_block(lines: list[str], index: int) -> tuple[str, int]:
+    """Reconstruct a possibly soft-wrapped pointer question.
+
+    Starting at a pointer (👉) line, strips the blockquote marker, any list
+    marker, and leading whitespace, takes the text after ``👉``, then appends
+    following lines that belong to the same paragraph/blockquote — same
+    blockquote depth, non-blank, not a new heading, not a numbered list item,
+    not a fenced-code fence, and not a new pointer question. A ``🛑 STOP``
+    line and bracketed meta lines (e.g. ``[wait for response...]``) act as
+    boundaries and are not merged into the question block.
+
+    Args:
+        lines: The file split into individual lines.
+        index: Index of the pointer line where the question begins.
+
+    Returns:
+        A tuple of the joined question text and the index of the last line
+        consumed as part of the question block.
+    """
+    depth0, content0 = _blockquote_depth_and_content(lines[index])
+    content0 = _strip_list_marker(content0)
+    if content0.startswith(POINTER_INDICATOR):
+        first = content0[len(POINTER_INDICATOR):].lstrip()
+    else:
+        first = content0
+    parts = [first.strip()]
+    last_consumed = index
+
+    j = index + 1
+    while j < len(lines):
+        depth_j, content_j = _blockquote_depth_and_content(lines[j])
+        stripped = content_j.strip()
+
+        # Blank line — paragraph boundary.
+        if not stripped:
+            break
+        # Different blockquote nesting — no longer the same block.
+        if depth_j != depth0:
+            break
+        # New heading.
+        if stripped.startswith("#"):
+            break
+        # Fenced-code fence.
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            break
+        # Numbered list item (e.g. a choice question's options).
+        if re.match(r"\d+[.)]\s", stripped):
+            break
+        # A new pointer question.
+        if _strip_list_marker(content_j).startswith(POINTER_INDICATOR):
+            break
+        # STOP marker boundary.
+        if STOP_MARKER in content_j:
+            break
+        # Bracketed meta line (e.g. "[wait for response...]").
+        if stripped.startswith("["):
+            break
+
+        parts.append(stripped)
+        last_consumed = j
+        j += 1
+
+    question = " ".join(part for part in parts if part)
+    return question, last_consumed
+
+
+def is_negative_example_context(lines: list[str], index: int) -> bool:
+    """Report whether a line sits under a WRONG-labeled heading.
+
+    Walks backward from the given index to the nearest Markdown heading and
+    reports whether that heading text contains ``WRONG`` (case-insensitive).
+    Negative examples are intentionally left un-bolded and must not be
+    flagged as violations.
+
+    Args:
+        lines: The file split into individual lines.
+        index: Index of the line to classify.
+
+    Returns:
+        True if the nearest preceding heading contains ``WRONG``
+        (case-insensitive), otherwise False.
+    """
+    for j in range(index, -1, -1):
+        _, content = _blockquote_depth_and_content(lines[j])
+        heading = re.match(r"#{1,6}\s+(.*)$", content.strip())
+        if heading:
+            return "wrong" in heading.group(1).lower()
+    return False
+
+
+def _is_fence_line(line: str) -> bool:
+    """Report whether a line opens or closes a fenced code block.
+
+    Strips any leading blockquote markers, then reports whether the remaining
+    content begins with a CommonMark code fence (three backticks or three
+    tildes). Fence lines toggle fenced-block state so that illustrative
+    content — including pointer questions shown inside ``` fences — is skipped
+    by the bold-question check.
+
+    Args:
+        line: The raw line of text.
+
+    Returns:
+        True if the line is a fenced-code fence, otherwise False.
+    """
+    _, content = _blockquote_depth_and_content(line)
+    stripped = content.strip()
+    return stripped.startswith("```") or stripped.startswith("~~~")
+
+
+def _pointer_line_starts_block(lines: list[str], index: int) -> bool:
+    """Report whether a pointer line begins a new paragraph or block.
+
+    A 👉 is a leading question only when it opens its own paragraph/block.
+    When the preceding line is a non-blank continuation at the same blockquote
+    depth, the 👉 is a soft-wrapped continuation of that paragraph — an inline
+    prose mention that merely happens to land at the start of a wrapped line —
+    and must not be treated as a leading question (R10.3).
+
+    The line begins a new block when it is the first line of the file, or the
+    preceding line is blank, a heading, a code fence, or sits at a different
+    blockquote depth.
+
+    Args:
+        lines: The file split into individual lines.
+        index: Index of the pointer line to classify.
+
+    Returns:
+        True if the pointer line opens a new paragraph/block, otherwise False.
+    """
+    if index <= 0:
+        return True
+    depth, _ = _blockquote_depth_and_content(lines[index])
+    prev_depth, prev_content = _blockquote_depth_and_content(lines[index - 1])
+    prev_stripped = prev_content.strip()
+    if not prev_stripped:
+        return True
+    if prev_depth != depth:
+        return True
+    if prev_stripped.startswith("#"):
+        return True
+    if prev_stripped.startswith("```") or prev_stripped.startswith("~~~"):
+        return True
+    return False
+
+
+# ---------------------------------------------------------------------------
 # Constants — Negation Context Detection
 # ---------------------------------------------------------------------------
 
@@ -376,8 +636,17 @@ def _is_negation_context(line: str) -> bool:
 def validate_steering_file(path: Path) -> list[Violation]:
     """Validate a steering file against behavior rules.
 
-    Skips lines where pause language appears in a negation or prohibition
-    context (e.g., "Do NOT use phrases like 'take a break'").
+    Applies two checks over the file's lines:
+
+    - **Rule 1** — flags pause/stop/defer language in agent-directed content,
+      skipping lines that use such language in a negation or prohibition
+      context (e.g., "Do NOT use phrases like 'take a break'").
+    - **Rule 4** — flags any pointer (👉) leading question whose reconstructed
+      question text is not wrapped in a single balanced bold span. Candidates
+      are only lines that carry 👉 at start-of-line after stripping blockquote
+      and list markers; content inside fenced code blocks is skipped, and
+      questions under a ``WRONG``-labeled heading (intentional negative
+      examples) are exempt.
 
     Args:
         path: Path to the steering file to validate.
@@ -402,16 +671,52 @@ def validate_steering_file(path: Path) -> list[Violation]:
         return violations
 
     lines = content.splitlines()
+    in_fenced_block = False
     for i, line in enumerate(lines, start=1):
-        # Check for pause language in agent-directed content
-        if contains_pause_language(line):
-            # Skip lines that use pause language in negation/prohibition context
-            if _is_negation_context(line):
-                continue
+        # Rule 1 — pause/stop/defer language in agent-directed content.
+        # Skip lines that use pause language in negation/prohibition context.
+        if contains_pause_language(line) and not _is_negation_context(line):
             violations.append(Violation(
                 rule=1,
                 line_number=i,
                 message=f"Line contains pause/stop/defer language: {line.strip()!r}",
+            ))
+
+        # Track fenced-code-block state — pointer questions shown inside a
+        # ``` fence are illustrative, not live leading questions, so they are
+        # skipped by the bold-question check below.
+        if _is_fence_line(line):
+            in_fenced_block = not in_fenced_block
+            continue
+        if in_fenced_block:
+            continue
+
+        # Rule 4 — every 👉 leading question's text must be wrapped in bold.
+        # Candidates are lines carrying 👉 at start-of-line after stripping
+        # blockquote and list markers; inline mentions, prose, headings, and
+        # numbered option lines never qualify.
+        _, deblockquoted = _blockquote_depth_and_content(line)
+        if not has_pointer_prefix(deblockquoted):
+            continue
+        # A 👉 that continues the previous prose line (soft-wrap) is an inline
+        # mention, not a leading question — skip it.
+        if not _pointer_line_starts_block(lines, i - 1):
+            continue
+        # Intentional (WRONG) negative examples are deliberately un-bolded.
+        if is_negative_example_context(lines, i - 1):
+            continue
+        question_text, _ = extract_question_block(lines, i - 1)
+        if not question_text_is_bold(question_text):
+            snippet = question_text.strip()
+            if len(snippet) > 80:
+                snippet = snippet[:77] + "..."
+            violations.append(Violation(
+                rule=4,
+                line_number=i,
+                message=(
+                    "Leading question text is not wrapped in bold emphasis "
+                    f"(**...**): {snippet!r}"
+                ),
             ))
 
     return violations

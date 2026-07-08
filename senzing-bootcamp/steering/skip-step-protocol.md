@@ -22,7 +22,7 @@ When a bootcamper says they want to skip a step, are stuck, or a step doesn't ap
 
 Ask ONE question to understand why:
 
-👉 "Got it — would you like to skip this because (a) it doesn't apply to your use case, (b) you've already done this outside the bootcamp, or (c) you're stuck and want to come back later?"
+👉 **"Got it — would you like to skip this because (a) it doesn't apply to your use case, (b) you've already done this outside the bootcamp, or (c) you're stuck and want to come back later?"**
 
 > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 

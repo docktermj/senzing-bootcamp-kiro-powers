@@ -12,7 +12,7 @@ Loaded after Step 4c (Comprehension Check) completes. Covers track selection, sw
 > `config/module-dependencies.yaml`. To update tracks, edit the dependency graph
 > first, then run `python3 scripts/validate_dependencies.py` to verify consistency.
 
-👉 Present tracks — not mutually exclusive, all completed modules carry forward:
+👉 **Present tracks — not mutually exclusive, all completed modules carry forward:**
 
 - **Core Bootcamp** *(recommended)* — Modules 1, 2, 3, 4, 5, 6, 7. Recommended foundation covering problem definition through query/visualize.
 - **Advanced Topics** *(not recommended for bootcamp)* — Modules 1–11. Adds production-readiness topics (performance, security hardening, monitoring, and packaging/deployment) as advanced add-ons layered on top of the core bootcamp.

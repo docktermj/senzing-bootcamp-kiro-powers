@@ -32,7 +32,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **If not a repo:** Ask the bootcamper:
 
-   👉 "If you don't know what 'git' is, just skip this. This is optional, but would you like me to initialize a git repository for version control? You can skip this without affecting the bootcamp."
+   👉 **"If you don't know what 'git' is, just skip this. This is optional, but would you like me to initialize a git repository for version control? You can skip this without affecting the bootcamp."**
 
    > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
@@ -202,7 +202,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    Licensing options include applying an existing license, requesting one through the external request path, and — when available — the in-flow MCP license-request path that asks the Senzing MCP server to generate an evaluation license for you (covered in Step 6d).
 
-   👉 "Do you already have a Senzing license?"
+   👉 **"Do you already have a Senzing license?"**
 
    > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
@@ -246,7 +246,7 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    When presenting the evaluation license's validity period or record capacity, retrieve those values from a Senzing MCP server tool during this session and present exactly what the tool returns. If the tool does not return a value, or the MCP server cannot be reached, omit the specific figure and tell the bootcamper that the current value is unavailable from the MCP server — never substitute a hardcoded or remembered figure.
 
-   👉 "Which would you like to do — request an evaluation license through the MCP server, request one through the external channel, apply a license you already have, or defer and continue Module 1 for now?"
+   👉 **"Which would you like to do — request an evaluation license through the MCP server, request one through the external channel, apply a license you already have, or defer and continue Module 1 for now?"**
 
    > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 

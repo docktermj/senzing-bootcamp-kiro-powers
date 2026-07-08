@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 260
+- implemented: 261
 - superseded: 2
 - abandoned: 0
 - unknown: 1
@@ -1269,6 +1269,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/query-requirements-context/](.kiro/specs/query-requirements-context/)
+
+### question-visibility
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/question-visibility/](.kiro/specs/question-visibility/)
 
 ### recap-completeness-and-pdf
 

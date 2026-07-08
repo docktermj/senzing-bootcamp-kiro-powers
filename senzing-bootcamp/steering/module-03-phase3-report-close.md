@@ -95,7 +95,7 @@ Terminate test services and clean up verification data from the database.
 
 Before proceeding with termination, confirm the bootcamper has finished exploring the visualization. Ask the bootcamper for confirmation before terminating the web service or performing any cleanup:
 
-> 👉 Have you finished exploring the visualization? Let me know when you're ready and I'll clean up the server.
+> 👉 **Have you finished exploring the visualization? Let me know when you're ready and I'll clean up the server.**
 
 🛑 STOP — Wait for the bootcamper to confirm they are done exploring. Do NOT proceed with termination until the bootcamper responds.
 

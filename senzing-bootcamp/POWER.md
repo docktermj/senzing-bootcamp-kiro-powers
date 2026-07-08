@@ -140,30 +140,30 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 
 | Steering File | Tokens | Size |
 |---|---|---|
-| `agent-behavior-rules.md` | 760 | medium |
+| `agent-behavior-rules.md` | 822 | medium |
 | `agent-context-management.md` | 1326 | medium |
-| `agent-instructions.md` | 4470 | large |
+| `agent-instructions.md` | 4482 | large |
 | `cloud-provider-setup.md` | 784 | medium |
 | `common-pitfalls.md` | 4612 | large |
 | `completion-summary-offer.md` | 1867 | medium |
 | `complexity-estimator.md` | 606 | medium |
-| `conversation-examples.md` | 536 | medium |
-| `conversation-protocol.md` | 4212 | large |
+| `conversation-examples.md` | 580 | medium |
+| `conversation-protocol.md` | 4600 | large |
 | `data-lineage.md` | 603 | medium |
 | `data-processing-reference.md` | 1174 | medium |
-| `deployment-aws.md` | 1323 | medium |
-| `deployment-azure.md` | 965 | medium |
-| `deployment-gcp.md` | 956 | medium |
-| `deployment-kubernetes.md` | 1397 | medium |
-| `deployment-onpremises.md` | 952 | medium |
+| `deployment-aws.md` | 1324 | medium |
+| `deployment-azure.md` | 966 | medium |
+| `deployment-gcp.md` | 957 | medium |
+| `deployment-kubernetes.md` | 1398 | medium |
+| `deployment-onpremises.md` | 953 | medium |
 | `design-patterns.md` | 810 | medium |
 | `entity-resolution-intro.md` | 1864 | medium |
 | `environment-setup.md` | 658 | medium |
-| `feedback-workflow.md` | 1239 | medium |
+| `feedback-workflow.md` | 1245 | medium |
 | `file-placement.md` | 288 | small |
 | `graduation.md` | 8509 | large |
 | `hook-architecture.md` | 2325 | large |
-| `hook-registry-critical.md` | 7984 | large |
+| `hook-registry-critical.md` | 8116 | large |
 | `hook-registry-module-01.md` | 434 | small |
 | `hook-registry-module-02.md` | 269 | small |
 | `hook-registry-module-03.md` | 2124 | large |
@@ -177,7 +177,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `hook-registry-module-11.md` | 412 | small |
 | `hook-registry-module-any.md` | 4374 | large |
 | `hook-registry.md` | 872 | medium |
-| `inline-status.md` | 460 | small |
+| `inline-status.md` | 461 | small |
 | `lang-csharp.md` | 1642 | medium |
 | `lang-java.md` | 1688 | medium |
 | `lang-python.md` | 1655 | medium |
@@ -185,15 +185,15 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `lang-typescript.md` | 1887 | medium |
 | `lessons-learned.md` | 434 | small |
 | `mcp-response-caching.md` | 1442 | medium |
-| `mcp-tool-decision-tree.md` | 2310 | large |
+| `mcp-tool-decision-tree.md` | 2311 | large |
 | `mcp-usage-reference.md` | 905 | medium |
 | `module-01-business-problem.md` | 500 | medium |
-| `module-01-phase1-discovery.md` | 6765 | large |
+| `module-01-phase1-discovery.md` | 6768 | large |
 | `module-01-phase2-document-confirm.md` | 2536 | large |
 | `module-02-sdk-setup.md` | 7915 | large |
 | `module-03-phase1-verification.md` | 4194 | large |
-| `module-03-phase2-visualization.md` | 5340 | large |
-| `module-03-phase3-report-close.md` | 1751 | medium |
+| `module-03-phase2-visualization.md` | 5342 | large |
+| `module-03-phase3-report-close.md` | 1752 | medium |
 | `module-03-system-verification.md` | 604 | medium |
 | `module-03-visualization-api-reference.md` | 2101 | large |
 | `module-04-data-collection.md` | 4320 | large |
@@ -202,19 +202,19 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-05-phase2-data-mapping.md` | 5355 | large |
 | `module-05-phase3-test-load.md` | 2947 | large |
 | `module-06-data-processing.md` | 652 | medium |
-| `module-06-phaseA-build-loading.md` | 3649 | large |
+| `module-06-phaseA-build-loading.md` | 3650 | large |
 | `module-06-phaseB-load-first-source.md` | 1193 | medium |
 | `module-06-phaseC-multi-source.md` | 1428 | medium |
 | `module-06-phaseD-validation.md` | 2248 | large |
-| `module-07-phase1-query-visualize.md` | 3372 | large |
+| `module-07-phase1-query-visualize.md` | 3374 | large |
 | `module-07-phase2-discover.md` | 3453 | large |
 | `module-07-phase2b-discover.md` | 3174 | large |
 | `module-07-query-visualize-discover.md` | 545 | medium |
 | `module-08-performance.md` | 617 | medium |
-| `module-08-phaseA-requirements.md` | 2169 | large |
+| `module-08-phaseA-requirements.md` | 2171 | large |
 | `module-08-phaseB-benchmarking.md` | 429 | small |
 | `module-08-phaseC-optimization.md` | 746 | medium |
-| `module-09-phaseA-assessment.md` | 1221 | medium |
+| `module-09-phaseA-assessment.md` | 1223 | medium |
 | `module-09-phaseB-hardening.md` | 928 | medium |
 | `module-09-security.md` | 571 | medium |
 | `module-10-monitoring.md` | 568 | medium |
@@ -230,9 +230,9 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-completion.md` | 2262 | large |
 | `module-prerequisites.md` | 1394 | medium |
 | `module-transitions.md` | 1908 | medium |
-| `onboarding-flow.md` | 4230 | large |
-| `onboarding-phase1b-intro-language.md` | 2123 | large |
-| `onboarding-phase2-track-setup.md` | 1505 | medium |
+| `onboarding-flow.md` | 4232 | large |
+| `onboarding-phase1b-intro-language.md` | 2125 | large |
+| `onboarding-phase2-track-setup.md` | 1506 | medium |
 | `phase-loading-guide.md` | 890 | medium |
 | `project-structure.md` | 764 | medium |
 | `qa-transcript.md` | 1284 | medium |
@@ -241,21 +241,21 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `session-resume-phase2-mapping.md` | 656 | medium |
 | `session-resume-phase2-setup-recovery.md` | 1034 | medium |
 | `session-resume-phase2-state-repair.md` | 547 | medium |
-| `session-resume.md` | 3380 | large |
-| `skip-step-protocol.md` | 798 | medium |
+| `session-resume.md` | 3384 | large |
+| `skip-step-protocol.md` | 799 | medium |
 | `slash-backup-project.md` | 157 | small |
 | `slash-commonmark-validation.md` | 444 | small |
 | `slash-git-commit.md` | 187 | small |
-| `track-switching.md` | 766 | medium |
+| `track-switching.md` | 769 | medium |
 | `troubleshooting-commands.md` | 672 | medium |
 | `troubleshooting-decision-tree.md` | 1606 | medium |
 | `uat-framework.md` | 576 | medium |
 | `verbosity-control.md` | 2048 | large |
-| `visualization-guide.md` | 4660 | large |
-| `visualization-web-service.md` | 2195 | large |
+| `visualization-guide.md` | 4666 | large |
+| `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 202637 tokens
+**Total budget:** 203322 tokens
 
 <!-- END GENERATED: steering-files -->
 

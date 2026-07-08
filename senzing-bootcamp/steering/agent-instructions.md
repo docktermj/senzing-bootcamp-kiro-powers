@@ -81,7 +81,7 @@ Track switch triggers (*switch track*, *change track*, …): load `track-switchi
 
 ## Communication
 
-- One question at a time, wait for response. Prefix input-required questions with "👉" in ALL modules.
+- One question at a time, wait for response. Prefix input-required questions with "👉" and wrap the question text in bold (`**...**`) in ALL modules.
   - NEVER combine questions with conjunctions (and, or, also, but first) — each is a separate turn. This is the #1 most-reported bootcamper complaint. Zero tolerance.
   - Every 👉 question must have one unambiguous meaning for "yes" and one for "no." Never append a follow-up question to a confirmation (see conversation-protocol.md Question Disambiguation). When both confirmation and correction are needed: confirm first, ask for corrections only if the answer is no.
   - A question without the 👉 prefix is a formatting violation.

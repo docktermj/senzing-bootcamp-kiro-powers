@@ -21,7 +21,7 @@ When presenting this question, always use the phrase "programming language" — 
 
 The agent MUST use the phrase "programming language" (not just "language") when presenting the selection question to the bootcamper.
 
-👉 Present the MCP-returned programming language list. If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly and suggest alternatives. For example: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"
+👉 **Present the MCP-returned programming language list. If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly and suggest alternatives. For example: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"**
 
 🛑 STOP — Wait for the bootcamper's programming language choice before proceeding.
 
@@ -77,7 +77,7 @@ Present the overview before track selection. Cover all points naturally:
 
 ### 5a. Verbosity Preference
 
-👉 After presenting the overview, ask the bootcamper how much detail they want in the bootcamp output. Present the three presets:
+👉 **After presenting the overview, ask the bootcamper how much detail they want in the bootcamp output. Present the three presets:**
 
 - **concise** — Minimal explanations, no code walkthroughs, brief recaps. Best for experienced developers.
 - **standard** *(recommended)* — Balanced "what and why" explanations, block-level code summaries, before/after framing. Good for most learners.

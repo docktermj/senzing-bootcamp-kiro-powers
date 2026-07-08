@@ -114,10 +114,10 @@ Provide the bootcamper with the exact start command for their chosen language:
 
 **After the server starts:**
 
-👉 "Open `http://localhost:8080` in your browser to view the visualization."
+👉 **"Open `http://localhost:8080` in your browser to view the visualization."**
 
 **Stopping the server:**
-👉 "Press Ctrl+C in the terminal to stop the server."
+👉 **"Press Ctrl+C in the terminal to stop the server."**
 
 **Troubleshooting:**
 

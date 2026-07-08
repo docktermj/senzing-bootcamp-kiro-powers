@@ -15,7 +15,7 @@ inclusion: manual
 >
 > - **If `mapping_verbosity` is `null` or absent:** Present the following question:
 >
->   👉 "Before we start mapping, would you like **verbose mode** (I'll show each mapping step in detail — field detection, attribute selection rationale, transformation preview) or **concise mode** (I'll map quickly and show only the final mapped record and any warnings)?"
+>   👉 **"Before we start mapping, would you like *verbose mode* (I'll show each mapping step in detail — field detection, attribute selection rationale, transformation preview) or *concise mode* (I'll map quickly and show only the final mapped record and any warnings)?"**
 >
 >   🛑 STOP — Wait for the bootcamper's answer. Persist their choice (`verbose` or `concise`) to `mapping_verbosity` in `config/bootcamp_preferences.yaml`.
 >

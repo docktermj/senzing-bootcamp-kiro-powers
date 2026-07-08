@@ -272,17 +272,30 @@ _BASELINE_HASHES: dict[str, str] = {
     # with _STEP_HASHES in test_module2_license_question.py): Step 2 gained the
     # platform routing/options content (de-bolded so the routing list is not
     # misread as numbered steps) and Step 3 gained Docker-path install guidance.
+    # m2_step3 re-baselined again for the question-visibility bold-emphasis
+    # change (task 2.1): the 👉 EULA question text in Step 3 is now wrapped in a
+    # single **...** span; only the bold markers changed.
     "m2_step2": "44100571bfe4bf1b3d7351a589c993a24f367595084e07f51a124412cb158966",
-    "m2_step3": "cd7fb25dd412d810ef9bef712fbf62b17af6f8fbf066a106373882ee8d6a96c0",
+    "m2_step3": "ecb35523a49ae44d6fce7c9acb0f4b7ecc6cce40e46a660325aff87053298fb2",
     "m2_step4": "5ee5168b5bfe301fcf7f6841ef78f3ab334dfc1b413e7440cc598fc72d69e6be",
     "m2_step6": "67f0d91f31c40a0ef08336845a0a001ab959d4dc38c8ef5864e7a0141df4837f",
     "m2_step7": "e70acaae1640b0259e3cc5927f5ea27c88a98b3625cc2d5a6eca36ca367bb7a2",
     "m2_step8": "a7589b48765763d59c3b6ebff53af14dee93bf8823d2f9e948f58334b85f3305",
-    "m2_step9": "feae2a6c6c0dc8af1450941a29336be77de8058412bd2243c9d01ec88da74fce",
+    # m2_step9 re-baselined for the question-visibility spec: the bold-conversion
+    # pass normalized `**Success indicator**:` to `**Success indicator:**` (colon
+    # inside the bold span, matching the file's `**Checkpoint:**` label style).
+    # This is the stable on-disk form and valid CommonMark; only the bold markers
+    # moved. Kept in sync with _STEP_HASHES["Step 9"] in test_module2_license_question.py.
+    "m2_step9": "92bbabbc6fe4a92f39e91c1958503558e1340b65a1bd6bfb4613268df9ba16b0",
     # Module 2 Step 5 preserved sub-regions (header gate, 5b question, 5c
     # "has license" branches, 5d LICENSEFILE config) — NOT 5a / 5c "no license"
+    # m2_5b re-baselined for the question-visibility bold-emphasis change
+    # (task 2.1): the 5b 👉 question is now `👉 **"Do you have a Senzing license
+    # file (.lic) or a Base64-encoded license key?"**` — the redundant "Ask:"
+    # lead-in was dropped so the **...** span opens right after 👉, and the
+    # question text is bolded. No other 5b content changed.
     "m2_step5_header": "3a579d5d831f98ada306970dd610bddf4811a8607d8cd3750535125ec995c0b6",
-    "m2_5b": "061344e980dfa46ac70251a75eac875cedf91ef779311a9856e942fb660f6274",
+    "m2_5b": "e0cc913787c44e5f6a6eb9bf065588c8c935e5d4ef2d1c8c817d38d2a9a095f9",
     "m2_5c_has_license": "8f4721c2c4fe42d3af9ec1e861ad6bc674ab3471e67b7acebd9285ec16eab27b",
     "m2_5d": "1656db835193fb7ee569b206b22478138d86668a2e5c2c202df8f6810892bc8f",
     # Module 1 preserved license sub-steps (6a, 6b, 6c, 6e) — NOT 6d (edited)
@@ -292,8 +305,12 @@ _BASELINE_HASHES: dict[str, str] = {
     # License_Request_Option to the Step 6b licensing-trigger reference), so the
     # 6b region legitimately changed for this spec. The other preserved
     # sub-steps (6a, 6c, 6e) remain byte-identical to baseline.
+    # m1_6b re-baselined again for the question-visibility bold-emphasis change
+    # (task 2.1): the Step 6b 👉 question is now
+    # `👉 **"Do you already have a Senzing license?"**` — only the **...** bold
+    # markers were added around the existing question text.
     "m1_6a": "06d0c151f7973f09d05f789afb572f7c788f523f2a6e0918be03a9004f76755a",
-    "m1_6b": "ef5bb1131098a3f1502c72694232ae0f758fc7d5e9a626a1b564bf47de536d91",
+    "m1_6b": "a7040094fb23f9964f9ae11c8e22be918c5c33dc3f0299239840d0d07ed70397",
     "m1_6c": "461b6fc579b83b42460e93eb8414d05bbbec48c6da76a3cc92286a83cbbbc2fc",
     "m1_6e": "28c9fdd1338c0cf4b165d10e639e8b17383b6564235f648b85c0a7a35b4846b0",
 }

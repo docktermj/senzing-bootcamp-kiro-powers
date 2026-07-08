@@ -80,9 +80,9 @@ If you acknowledge input, always append a next action in the same response.
 
 > Got it — you're looking for a clean master list. ✅ Checkpoint written.
 >
-> 👉 Will the entity resolution results need to interface with other
+> 👉 **Will the entity resolution results need to interface with other
 > software — for example, a CRM, search engine, data warehouse, or
-> downstream application?
+> downstream application?**
 
 ## Code Block Formatting
 
@@ -129,6 +129,20 @@ The phrase "But first" followed by a question is a violation — never redirect 
 - "Ready to continue? I can also show you..." → Ask only "Ready to continue?"
 - "Would you like to see examples, or should we skip ahead?" → Use a numbered choice list
 
+## Bold Question Text
+
+The question text of every 👉 leading question is wrapped in **bold** (CommonMark strong emphasis, `**...**`) so the actual interrogative is easy to spot inside a dense turn.
+
+- **Bold is additive, never a replacement for 👉.** The 👉 pointer stays at the start of the line, outside the bold span, separated from the question text by a single space. The bold span opens at the first character of the question text and closes at its last character, including the terminal question mark.
+- **Context stays plain.** Explanatory sentences that precede the question text are rendered in plain text — only the question text itself is bold.
+- **Choice questions: bold the lead only.** In a choice question, only the neutral lead question is wrapped in bold; the numbered option lines stay in plain text.
+- **Bold is presentational.** It does not alter the One Question Rule. The number of 👉 leading questions in a turn is counted solely from the 👉 occurrences and is unaffected by the presence or absence of bold markers.
+- **The 🛑 STOP marker stays plain** — never wrap 🛑 STOP in bold.
+
+### Bold Question (CORRECT)
+
+> 👉 **What language would you like to use?**
+
 ## Choice Formatting
 
 When a 👉 question presents 2 or more distinct alternatives (options the bootcamper can choose between), format them as a numbered list:
@@ -139,7 +153,7 @@ When a 👉 question presents 2 or more distinct alternatives (options the bootc
 
 ### Compound Choice (CORRECT)
 
-> 👉 Which language would you like to use?
+> 👉 **Which language would you like to use?**
 >
 > 1. Python
 > 2. Java
@@ -149,7 +163,7 @@ Simple yes/no questions or questions with a single implied action remain as inli
 
 ### Simple Question (CORRECT — no list needed)
 
-> 👉 Ready to move on to Module 3?
+> 👉 **Ready to move on to Module 3?**
 
 ## Question Disambiguation
 
@@ -173,10 +187,10 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Multi-Question (CORRECT)
 
-> 👉 What language do you want?
+> 👉 **What language do you want?**
 > 🛑 STOP
 > [wait for response, then in next turn:]
-> 👉 Which track interests you?
+> 👉 **Which track interests you?**
 
 ### Not-Waiting (WRONG)
 
@@ -185,7 +199,7 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Not-Waiting (CORRECT)
 
-> 👉 Are you ready to continue?
+> 👉 **Are you ready to continue?**
 > 🛑 STOP
 
 ### Dead-End (WRONG)
@@ -202,7 +216,7 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Missing-Prefix (CORRECT)
 
-> 👉 What language would you like to use?
+> 👉 **What language would you like to use?**
 
 ### Self-Answering (WRONG)
 
@@ -211,7 +225,7 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Self-Answering (CORRECT)
 
-> 👉 Who will be working on this project?
+> 👉 **Who will be working on this project?**
 > 🛑 STOP
 
 ### Compound Confirmation (WRONG)
@@ -220,7 +234,7 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Compound Confirmation (CORRECT)
 
-> 👉 Does that summary capture your situation accurately?
+> 👉 **Does that summary capture your situation accurately?**
 
 ### Compound Either/Or (WRONG)
 
@@ -228,7 +242,7 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 
 ### Compound Either/Or (CORRECT)
 
-> 👉 What would you like to do next?
+> 👉 **What would you like to do next?**
 >
 > 1. Create a one-page executive summary
 > 2. Move on to Module 2
@@ -247,6 +261,7 @@ Execute this checklist **before every turn** that contains a pointing-hand quest
 4. Verify no content appears after the closing question. If content follows → move it before the question or remove it.
 5. Verify you are not answering your own question. If self-answering → delete the self-answer.
 6. Verify no closing question offers to skip or bypass an upcoming mandatory gate step. If it does → remove the skip option.
+7. **Bold-question check:** Verify the closing 👉 question's text is wrapped in bold (`**...**`) before output. If the question text is not bold → wrap it in bold, keeping 👉 outside the span (for a choice question, bold only the lead question line).
 
 ### Rewrite Protocol
 
@@ -276,7 +291,7 @@ When the compound-question check (item 1) fails, rewrite the question using thes
 
 ##### CORRECT
 
-> 👉 What would you like to do next?
+> 👉 **What would you like to do next?**
 >
 > 1. Create a one-page executive summary to share with your team
 > 2. Skip ahead to Module 3
@@ -289,7 +304,7 @@ When the compound-question check (item 1) fails, rewrite the question using thes
 
 ##### CORRECT
 
-> 👉 Does that look right?
+> 👉 **Does that look right?**
 
 #### Sentence-starter "Or"
 
@@ -299,7 +314,7 @@ When the compound-question check (item 1) fails, rewrite the question using thes
 
 ##### CORRECT
 
-> 👉 What would you like to do next?
+> 👉 **What would you like to do next?**
 >
 > 1. Generate the loading program now
 > 2. Review the mapping first
@@ -312,7 +327,7 @@ When the compound-question check (item 1) fails, rewrite the question using thes
 
 ##### CORRECT
 
-> 👉 Which language would you like to use?
+> 👉 **Which language would you like to use?**
 >
 > 1. Python
 > 2. Java
@@ -326,8 +341,9 @@ Before ending any turn, verify:
 3. Is there content after a 👉 question?
 4. Am I answering my own question?
 5. Does any 👉 question offer to skip or bypass an upcoming ⛔ mandatory gate step?
+6. Does the closing 👉 question's text lack bold emphasis (`**...**`)?
 
-If any answer is yes (across all 5 checks), revise the turn before sending.
+If any answer is yes (across all 6 checks), revise the turn before sending.
 
 ## Mandatory question_pending
 

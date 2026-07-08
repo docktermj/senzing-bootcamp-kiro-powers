@@ -154,7 +154,7 @@ Using `fs_write` or `str_replace` to write HTML+JS content directly causes quote
 
 1. **Gather requirements**
 
-   👉 "Which data source(s) should the graph include?"
+   👉 **"Which data source(s) should the graph include?"**
 
    > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 
@@ -164,7 +164,7 @@ Using `fs_write` or `str_replace` to write HTML+JS content directly causes quote
 
    Extraction code must: iterate over loaded records via `get_entity_by_record_id` (never guessed entity ID ranges), deduplicate entities, use `get_entity_by_entity_id` with relationship flags for edges, classify match strength per the reference below, warn if >500 entities, log per-entity/per-relationship SDK errors and continue, write JSON matching the Graph Data Model schema. Save to `src/query/extract_graph_data.[ext]`.
 
-   👉 "Run the extraction and confirm the output JSON looks good."
+   👉 **"Run the extraction and confirm the output JSON looks good."**
 
    > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 
@@ -174,13 +174,13 @@ Using `fs_write` or `str_replace` to write HTML+JS content directly causes quote
 
    Save to `docs/entity_graph.html`.
 
-   👉 "Open the HTML file — does it look right?"
+   👉 **"Open the HTML file — does it look right?"**
 
    > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 
 4. **Iterate and refine**
 
-   👉 "Want any changes to the graph, features, or extraction?"
+   👉 **"Want any changes to the graph, features, or extraction?"**
 
    > **🛑 STOP — End your response here.** Wait for the bootcamper's real input.
 
@@ -195,7 +195,7 @@ When presenting a completed web service to the bootcamper, the server is started
 3. **Present URL, manual restart command, and stop instructions.**
 4. **Wait for user confirmation:** End your response with a 👉 question and a 🛑 STOP directive. Wait for the bootcamper to confirm they have finished exploring the visualization. Do NOT proceed to cleanup, checkpoint writes, or any subsequent steps until the bootcamper confirms they are done. Example prompt:
 
-   > 👉 Take your time exploring. Let me know when you're ready and I'll continue with cleanup.
+   > 👉 **Take your time exploring. Let me know when you're ready and I'll continue with cleanup.**
    >
    > 🛑 STOP — End your response here. Wait for the bootcamper's real input.
 5. **Fallback on failure:** Report the error, provide troubleshooting guidance, fall back to manual instructions.

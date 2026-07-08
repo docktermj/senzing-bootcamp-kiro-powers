@@ -112,7 +112,7 @@ For the `docker` path (Intel Mac, Python on macOS/Windows, or Windows without Sc
 
 The Senzing SDK requires EULA acceptance before use. Present the EULA question:
 
-👉 "Do you accept the Senzing End User License Agreement (EULA)? You can review it at <https://senzing.com/end-user-license-agreement/>. Please respond yes or no."
+👉 **"Do you accept the Senzing End User License Agreement (EULA)? You can review it at <https://senzing.com/end-user-license-agreement/>. Please respond yes or no."**
 
 **STOP and wait for the bootcamper's response.** Do not proceed until the bootcamper answers.
 
@@ -204,7 +204,7 @@ Selecting and carrying out one of these paths happens at the Step 5c no-license 
 
 ### 5b. Ask about the bootcamper's license situation
 
-👉 Ask: **"Do you have a Senzing license file (.lic) or a Base64-encoded license key?"**
+👉 **"Do you have a Senzing license file (.lic) or a Base64-encoded license key?"**
 
 **STOP and wait for the bootcamper's response.** Do not proceed until the bootcamper answers.
 
@@ -362,7 +362,7 @@ Use the MCP-generated initialization code to verify the database connection work
 
 **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.
 
-**Success indicator**: ✅ SDK installed + DB configured + test passes + engine initializes and connects without errors
+**Success indicator:** ✅ SDK installed + DB configured + test passes + engine initializes and connects without errors
 
 ## Success Criteria
 

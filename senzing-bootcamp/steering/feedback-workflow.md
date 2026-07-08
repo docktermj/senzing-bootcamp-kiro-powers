@@ -45,27 +45,27 @@ Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists in the projec
 
 ### Step 2: Gather Feedback (One Question at a Time)
 
-1. 👉 "What would you like to provide feedback about?" (present categories)
+1. 👉 **"What would you like to provide feedback about?" (present categories)**
 
    🛑 STOP — End your response here.
 
-2. 👉 "Which module is this related to?" (0-12, or general) — pre-fill from captured context
+2. 👉 **"Which module is this related to?" (0-12, or general) — pre-fill from captured context**
 
    🛑 STOP — End your response here.
 
-3. 👉 "What happened or what issue did you encounter?"
+3. 👉 **"What happened or what issue did you encounter?"**
 
    🛑 STOP — End your response here.
 
-4. 👉 "Why is this a problem? What was the impact?"
+4. 👉 **"Why is this a problem? What was the impact?"**
 
    🛑 STOP — End your response here.
 
-5. 👉 "Do you have a suggested fix or improvement?"
+5. 👉 **"Do you have a suggested fix or improvement?"**
 
    🛑 STOP — End your response here.
 
-6. 👉 "What priority would you assign?" (High/Medium/Low)
+6. 👉 **"What priority would you assign?" (High/Medium/Low)**
 
    🛑 STOP — End your response here.
 
@@ -74,10 +74,10 @@ Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists in the projec
 ```markdown
 ## Improvement: [Brief title based on user's description]
 
-**Date**: YYYY-MM-DD
-**Module**: [Module number or "General"]
-**Priority**: [High/Medium/Low]
-**Category**: [Documentation/Workflow/Tools/UX/Bug/Performance/Security]
+**Date:** YYYY-MM-DD
+**Module:** [Module number or "General"]
+**Priority:** [High/Medium/Low]
+**Category:** [Documentation/Workflow/Tools/UX/Bug/Performance/Security]
 
 ### What Happened
 [User's description of the issue]
@@ -92,9 +92,9 @@ Check if `docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md` exists in the projec
 [If user found a workaround, or "None"]
 
 ### Context When Reported
-- **Current Module**: [From bootcamp_progress.json, or "Unknown"]
-- **What You Were Doing**: [Summary from recent conversation]
-- **Open Files**: [List of files open in editor]
+- **Current Module:** [From bootcamp_progress.json, or "Unknown"]
+- **What You Were Doing:** [Summary from recent conversation]
+- **Open Files:** [List of files open in editor]
 ```
 
 ### Step 4: Append to Feedback File

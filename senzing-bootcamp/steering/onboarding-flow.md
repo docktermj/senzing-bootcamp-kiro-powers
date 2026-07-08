@@ -184,7 +184,7 @@ If this condition is met, present the following offer to the bootcamper:
 
 **Scoop is not installed.** Scoop is a command-line installer for Windows that the bootcamp uses to install prerequisites like Java, .NET SDK, Rust, Node.js, and the Senzing SDK. Without it, you'll need to install these tools manually later in Module 2.
 
-👉 Would you like to install Scoop now?
+👉 **Would you like to install Scoop now?**
 
 - **Install Scoop now** — I'll run the official installer and verify it works.
 - **Skip for later** — Module 2 will walk you through installation when needed.
@@ -211,7 +211,7 @@ If the condition is met, present the following offer to the bootcamper:
 
 **Your chosen runtime is not installed.** I can install it now using Scoop so your environment is ready before we begin.
 
-👉 Would you like to install the runtime now?
+👉 **Would you like to install the runtime now?**
 
 - **Install [runtime] now** — I'll run the Scoop installer and verify it works.
 - **Skip for later** — Module 2 will walk you through installation when needed.

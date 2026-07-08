@@ -45,6 +45,7 @@ Prefix every input-requiring prompt with 👉 at the start of the line.
 - Each prompt in a multi-prompt response gets its own 👉.
 - Omission is a formatting violation — correct before completing the response.
 - Module close calls-to-action must include the 👉 prefix.
+- Wrap the question text of every leading question in bold (`**...**`) in addition to the 👉 pointer, never as a replacement for it. The 👉 stays at the start of the line and outside the bold span; the bold span covers the question text that follows.
 
 **Leading-question guarantee.** Every yielding turn ends with exactly one 👉 leading question. This closing question is YOUR responsibility — do not depend on a hook to provide it. Per the One Question Rule, exactly one 👉 question per yielding turn: ending a yielding turn with zero 👉 questions, or with two or more, is a violation.
 

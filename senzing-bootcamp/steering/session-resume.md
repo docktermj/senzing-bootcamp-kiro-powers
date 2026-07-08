@@ -157,7 +157,7 @@ I'd recommend Python since it has the best SDK support...
 **CORRECT** — Agent stops after the question:
 
 ```text
-👉 Which language would you like to use for the bootcamp?
+👉 **Which language would you like to use for the bootcamp?**
 🛑 STOP
 ```
 
@@ -171,7 +171,7 @@ Great, let's get started with the system verification...
 **CORRECT** — Agent waits for confirmation:
 
 ```text
-👉 Ready to continue with Module 3?
+👉 **Ready to continue with Module 3?**
 🛑 STOP
 ```
 
@@ -185,7 +185,7 @@ While you decide, here are some things to look for in the output...
 **CORRECT** — Agent produces zero tokens after the question:
 
 ```text
-👉 Would you like to see the entity resolution results?
+👉 **Would you like to see the entity resolution results?**
 🛑 STOP
 ```
 
@@ -248,7 +248,7 @@ If mapping checkpoints exist, display the mapping checkpoint summary. When multi
 - **Skip** — skip mapping and proceed to the next module step
 
 ```text
-👉 Ready to continue with Module [N], or would you like to do something else?
+👉 **Ready to continue with Module [N], or would you like to do something else?**
 ```
 
 Write `config/.question_pending` with the question text above.

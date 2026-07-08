@@ -373,7 +373,7 @@ CHECK 2: SINGLE-QUESTION ENFORCEMENT
 
 Examine the file being written. If the target path does NOT end with '.question_pending', this check does not apply. Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
 
-If the target path DOES end with '.question_pending', validate the question content against ALL of these rules:
+If the target path DOES end with '.question_pending', FIRST strip bold markers, THEN validate. STRIP BOLD MARKERS (do this before evaluating any rule below): remove ALL '**' bold-emphasis markers from the question content, and perform every count and detection in the rules below — the question-mark count in rule 1 and the joining-conjunction detection in rule 2 — on that marker-stripped wording only. The '**' markers are presentational; they contain no question mark and no conjunction words and act as word boundaries, so they MUST NOT change the verdict. Then validate the marker-stripped question content against ALL of these rules:
 
 1. EXACTLY ONE QUESTION: The content must contain exactly one question mark. Two or more question marks means multiple questions — VIOLATION.
 2. NO CONJUNCTIONS JOINING QUESTIONS: The content must not use 'and', 'or', 'also', 'but first', 'alternatively', 'or if you prefer', 'or would you rather' to join separate choices in prose. Exception: 'or' inside a numbered list of options is allowed.

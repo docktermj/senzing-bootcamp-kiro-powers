@@ -508,10 +508,17 @@ def validate_onboarding_flow(graph: dict, onboarding_path: Path) -> list[Violati
 
     content = "\n".join(content_parts)
 
-    # Parse track definitions from the bullet list in section 5
+    # Parse track definitions from the bullet list in section 5.
     # New format: "- **Quick Demo** — Modules 2, 3." or "- **Core Bootcamp** *(recommended)* — ..."
+    # A genuine track bullet keeps the bold name, the optional *(recommendation)*
+    # marker, and the em/en/hyphen separator all on the SAME line. The horizontal
+    # whitespace classes ([^\S\n]*) between the closing "**" and the separator must
+    # NOT cross a newline: a plain \s* there would let a bolded lead-in question
+    # (e.g. "**Present tracks ...:**") swallow the "-" bullet marker of the following
+    # track line and consume that track, hiding it from detection.
     track_pattern = re.compile(
-        r"\*\*(.+?)\*\*\s*(?:\*\([^)]*\)\*\s*)?[—–-]\s*(.+?)\.?\s*(?:\.|$)", re.MULTILINE
+        r"\*\*(.+?)\*\*[^\S\n]*(?:\*\([^)]*\)\*[^\S\n]*)?[—–-][^\S\n]*(.+?)\.?\s*(?:\.|$)",
+        re.MULTILINE,
     )
 
     # Map display names to track keys for comparison

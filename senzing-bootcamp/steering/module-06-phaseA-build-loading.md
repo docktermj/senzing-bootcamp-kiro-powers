@@ -42,7 +42,7 @@ inclusion: manual
 
 1. **Assess production record volume:**
 
-   👉 How many records do you expect to load in a production system?
+   👉 **How many records do you expect to load in a production system?**
 
    🛑 STOP — do not proceed until the bootcamper responds.
 

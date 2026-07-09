@@ -10,7 +10,7 @@ The workflow has three preparatory steps followed by five sequential steps:
 
 0. **Markdown Normalization Pass** — Normalize the bootcamp's Markdown artifacts into the schema their consumers expect, before any derived artifact is generated (non-blocking)
 0a. **Recap Reconciliation & Backfill** — Reconcile `docs/bootcamp_recap.md` against `config/bootcamp_progress.json` `modules_completed` and backfill any missing per-module `## Module N:` section, so every completed module is present **before** the PDF is rendered (non-blocking, idempotent)
-0b. **Recap PDF, Q&A Transcript & Docs Index Generation** — Generate a PDF of the now-normalized, reconciled bootcamp recap document, the ordered Q&A transcript, and the `docs/` index (all non-blocking)
+0b. **Recap PDF, Q&A Transcript, Docs/Source/Data Indexes & README Index** — Generate a PDF of the now-normalized, reconciled bootcamp recap document, the ordered Q&A transcript, the `docs/`/`src/`/`data/` per-directory indexes, and the top-level README project index (all non-blocking)
 1. **Production Project Structure** — Copy production-relevant code into a clean `production/` directory, excluding bootcamp scaffolding
 2. **Production Configuration Files** — Generate `.env.production`, `.env.example`, `docker-compose.yml`, a CI/CD pipeline, and `.gitignore`
 3. **Production README** — Generate a production-ready `README.md` with no bootcamp language
@@ -238,7 +238,65 @@ Generate `docs/README.md` — a table of contents describing every top-level fil
 
 3. **Handle outcomes gracefully (warn and continue):**
    - On success (exit 0 with a `Wrote docs index:` line on stdout), inform the bootcamper: "📑 Docs index generated at `docs/README.md`." then report the script's one-line summary.
-   - If the script fails for any reason (exit 1, or the index was written but its one-line summary cannot be reported), record the failure reason for the "⚠️ Issues Encountered" section of `production/GRADUATION_REPORT.md` and proceed to Step 1 anyway. A failure never blocks graduation.
+   - If the script fails for any reason (exit 1, or the index was written but its one-line summary cannot be reported), record the failure reason for the "⚠️ Issues Encountered" section of `production/GRADUATION_REPORT.md` and proceed to Step 0b.6 anyway. A failure never blocks graduation.
+
+Proceed to Step 0b.6.
+
+### Step 0b.6: Src Index Generation
+
+Generate `src/README.md` — a table of contents describing every top-level file and immediate subdirectory under `src/` — so the source set is self-describing for handoff. This step is **non-blocking** — graduation continues regardless of the outcome, in the same spirit as the recap PDF and Q&A transcript steps.
+
+1. **If `src/` does not exist**, report that the index was not generated (for example, "📑 Source index not generated — no `src/` directory was found.") and proceed to Step 0b.7. This is a success, not an error. When `src/` does exist, do **not** ask for confirmation that it was found — proceed directly to generation.
+
+2. Otherwise, run the source index generator through the guarded bundled-script runner:
+
+   ```bash
+   python senzing-bootcamp/scripts/run_bundled_script.py generate_directory_index.py --target-root src
+   ```
+
+   The runner performs an existence check before shelling out: when the bundled `generate_directory_index.py` is present it executes unchanged and propagates its own exit code; when it is absent it runs the onboarding self-repair (`preflight.py --fix`) once and re-checks, then degrades to a graceful no-op (exit 0, one-line skip notice) rather than a raw `No such file or directory` error. This enumerates the actual top-level contents of `src/` at graduation time and regenerates `src/README.md` as a Markdown table of contents, replacing any existing index. The write is atomic and validated, so a failure never leaves a partial or malformed `src/README.md`.
+
+3. **Handle outcomes gracefully (warn and continue):**
+   - On success (exit 0 with a `Wrote directory index:` line on stdout), inform the bootcamper: "📑 Source index generated at `src/README.md`." then report the script's one-line summary.
+   - If the script fails for any reason (exit 1, or the index was written but its one-line summary cannot be reported), record the failure reason for the "⚠️ Issues Encountered" section of `production/GRADUATION_REPORT.md` and proceed to Step 0b.7 anyway. A failure never blocks graduation.
+
+Proceed to Step 0b.7.
+
+### Step 0b.7: Data Index Generation
+
+Generate `data/README.md` — a table of contents describing every top-level file and immediate subdirectory under `data/` — so the data set is self-describing for handoff. This step is **non-blocking** — graduation continues regardless of the outcome, in the same spirit as the recap PDF and Q&A transcript steps.
+
+1. **If `data/` does not exist**, report that the index was not generated (for example, "📑 Data index not generated — no `data/` directory was found.") and proceed to Step 0b.8. This is a success, not an error. When `data/` does exist, do **not** ask for confirmation that it was found — proceed directly to generation.
+
+2. Otherwise, run the data index generator through the guarded bundled-script runner:
+
+   ```bash
+   python senzing-bootcamp/scripts/run_bundled_script.py generate_directory_index.py --target-root data
+   ```
+
+   The runner performs an existence check before shelling out: when the bundled `generate_directory_index.py` is present it executes unchanged and propagates its own exit code; when it is absent it runs the onboarding self-repair (`preflight.py --fix`) once and re-checks, then degrades to a graceful no-op (exit 0, one-line skip notice) rather than a raw `No such file or directory` error. This enumerates the actual top-level contents of `data/` at graduation time and regenerates `data/README.md` as a Markdown table of contents, replacing any existing index. The write is atomic and validated, so a failure never leaves a partial or malformed `data/README.md`.
+
+3. **Handle outcomes gracefully (warn and continue):**
+   - On success (exit 0 with a `Wrote directory index:` line on stdout), inform the bootcamper: "📑 Data index generated at `data/README.md`." then report the script's one-line summary.
+   - If the script fails for any reason (exit 1, or the index was written but its one-line summary cannot be reported), record the failure reason for the "⚠️ Issues Encountered" section of `production/GRADUATION_REPORT.md` and proceed to Step 0b.8 anyway. A failure never blocks graduation.
+
+Proceed to Step 0b.8.
+
+### Step 0b.8: README Index Update
+
+Update the top-level `README.md` with a managed project-index section pointing to whichever per-directory indexes exist, so the front page links out to the docs, source, and data indexes. This step is **non-blocking** — graduation continues regardless of the outcome, in the same spirit as the recap PDF and Q&A transcript steps.
+
+1. Run the README index updater through the guarded bundled-script runner:
+
+   ```bash
+   python senzing-bootcamp/scripts/run_bundled_script.py update_readme_index.py
+   ```
+
+   The runner performs an existence check before shelling out: when the bundled `update_readme_index.py` is present it executes unchanged and propagates its own exit code; when it is absent it runs the onboarding self-repair (`preflight.py --fix`) once and re-checks, then degrades to a graceful no-op (exit 0, one-line skip notice) rather than a raw `No such file or directory` error. This inserts or replaces a managed section — bounded by stable HTML-comment markers — linking to `docs/README.md`, `src/README.md`, and `data/README.md`, including only those that exist, while preserving all top-level `README.md` content outside the managed section. The write is atomic and validated, so a failure never leaves a partial or malformed `README.md`.
+
+2. **Handle outcomes gracefully (warn and continue):**
+   - On success (exit 0 with an `Updated README index:` or `Created README index:` line on stdout), inform the bootcamper: "📑 Top-level README updated with project index."
+   - If the script fails for any reason (exit 1, or the managed section was written but its result cannot be reported), record the failure reason for the "⚠️ Issues Encountered" section of `production/GRADUATION_REPORT.md` and proceed to Step 1 anyway. A failure never blocks graduation.
 
 Proceed to Step 1.
 
@@ -376,14 +434,18 @@ This is the **final, mandatory closing step** of graduation. It runs **exactly o
 
 3. **Emit the announcement exactly once.** Once artifacts are confirmed, emit a single closing announcement to the bootcamper that:
    - states the recap **exists**,
-   - names the recap path `docs/bootcamp_recap.md` and the rendered-recap path — `docs/bootcamp_recap.pdf` when `fpdf2` is available, otherwise `docs/bootcamp_recap.html`, and
+   - names the recap path `docs/bootcamp_recap.md`, identifying it as the single per-module recap that **also** carries the narrative journal content (as a `### Journal` subsection), rather than referencing a separate `docs/bootcamp_journal.md` file,
+   - names the rendered-recap path — `docs/bootcamp_recap.pdf` when `fpdf2` is available, otherwise `docs/bootcamp_recap.html`,
+   - names the per-directory and top-level project indexes — `docs/README.md`, `src/README.md`, `data/README.md`, and the top-level `README.md` — confirming each exists at its stated path before naming it, and
    - states that, for every completed module, the recap contains the three labeled sections **Information Shared**, **Questions & Responses**, and **Actions Taken**.
 
-   Report only those artifacts confirmed to exist at their stated paths. Do not repeat this announcement — it is emitted once per graduation.
+   Report only those artifacts confirmed to exist at their stated paths, and omit from the announcement any artifact — recap, rendered recap, or index — not confirmed to exist. This is an extension of the single closing announcement, not a second one: do not add a separate or competing closing announcement, and do not repeat it — it is emitted once per graduation.
 
-Example announcement (adapt the rendered-recap path to the confirmed format):
+Example announcement (adapt the rendered-recap path to the confirmed format, and list only the indexes confirmed to exist):
 
-> 📗 **Your recap is ready.** It exists at `docs/bootcamp_recap.md`, with a shareable rendered copy at `docs/bootcamp_recap.pdf`. For every completed module it captures **Information Shared**, **Questions & Responses**, and **Actions Taken**.
+> 📗 **Your recap is ready.** It exists at `docs/bootcamp_recap.md` — your single per-module recap, which also carries your narrative journal as a `### Journal` subsection — with a shareable rendered copy at `docs/bootcamp_recap.pdf`. For every completed module it captures **Information Shared**, **Questions & Responses**, and **Actions Taken**. Navigate your project from its indexes: `docs/README.md`, `src/README.md`, `data/README.md`, and the top-level `README.md`.
+
+In the example above the agent lists only the artifacts and indexes confirmed to exist at their stated paths; any that are absent are omitted from the announcement.
 
 <!-- 
   ## Export-Results Integration Contract

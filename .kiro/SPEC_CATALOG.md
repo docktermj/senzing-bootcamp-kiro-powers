@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 4
-- implemented: 264
+- in-progress: 3
+- implemented: 265
 - superseded: 2
 - abandoned: 0
 - unknown: 3
@@ -591,7 +591,7 @@
 
 ### graduation-enrichment
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/graduation-enrichment/](.kiro/specs/graduation-enrichment/)

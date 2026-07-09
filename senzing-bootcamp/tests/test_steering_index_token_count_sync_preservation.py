@@ -384,7 +384,15 @@ _BASELINE_HASHES: dict[str, str] = {
     # total (205367 = sum of file_metadata counts). Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "5f8763f26477060bd582376bcdd0b0b9ea19e71d47193097e5ff9a7658fc562e",
+    # Re-baselined once more (205367 -> 207168) for the graduation-enrichment
+    # spec: graduation.md grew (8509 -> 10310, still large) when the Src/Data
+    # index-generation steps (0b.6/0b.7), the README index-update step (0b.8),
+    # and the Artifact_Announcement extension were added, which measure_steering.py
+    # recomputed into file_metadata and the budget total (207168 = sum of
+    # file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    "budget": "2342ef406e8bec38a672a4285c4cb38edaca410317cde2997771c742d1f1a6f7",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -794,11 +802,12 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (205367 after the file-placement-conventions Canonical Contract grew
-        # file-placement.md and Tasks 5.2/6.1 made within-tolerance edits), so the
-        # hash cannot silently re-pin a stale value.
+        # (207168 after the graduation-enrichment spec grew graduation.md with the
+        # Src/Data index-generation steps, the README index-update step, and the
+        # Artifact_Announcement extension), so the hash cannot silently re-pin a
+        # stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 205367" in budget_block
+        assert "total_tokens: 207168" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

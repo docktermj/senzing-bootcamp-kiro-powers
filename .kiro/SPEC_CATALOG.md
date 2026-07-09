@@ -8,10 +8,10 @@
 ## Status Summary
 
 - in-progress: 4
-- implemented: 263
+- implemented: 264
 - superseded: 2
 - abandoned: 0
-- unknown: 4
+- unknown: 3
 
 ## Specs
 
@@ -507,7 +507,7 @@
 
 ### file-placement-conventions
 
-- Status: unknown
+- Status: implemented
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/file-placement-conventions/](.kiro/specs/file-placement-conventions/)

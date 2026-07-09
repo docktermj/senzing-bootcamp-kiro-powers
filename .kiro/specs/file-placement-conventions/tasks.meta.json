@@ -1,0 +1,320 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Exploration test FAILED on unfixed code as expected (bug confirmed). Counterexamples from route() in organize_mapping_files.py:\n- route(\"sz_json_analyzer.py\")      == \"src/mapping\"  (expected \"src/resources\")\n- route(\"sz_verbatim_check.py\")     == \"src/mapping\"  (expected \"src/resources\")\n- route(\"sz_routing_report.py\")     == \"src/mapping\"  (expected \"src/resources\")\n- route(\"customers_sample.jsonl\")   == \"data\"         (expected \"data/mapping\")\n- route(\"transactions_sample.jsonl\")== \"data\"         (expected \"data/mapping\")\n- route(\"customers_mapping_spec.json\")== \"config\"      (expected \"data/mapping\")\n- route(\"customers.jsonl\")          == \"data\"         (expected \"data/transformed\")\nHypothesis falsifying examples: test_resource_scripts_route_to_src_resources(name='sz_json_analyzer.py'); test_sample_jsonl_routes_to_data_mapping(name='a_sample.jsonl'). 9 failed in 0.54s.",
+      "lastRunTimestamp": 1783599472192
+    },
+    "2. Write preservation property tests (BEFORE implementing fix)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783599989417
+    },
+    "8.1 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1783601504217
+    },
+    "8.2 Verify preservation tests still pass": {
+      "status": "passed",
+      "lastRunTimestamp": 1783601594284
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599279624
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599292753
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599493871
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599279764
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599499636
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783603815202
+      }
+    ],
+    "3.1 Update `senzing-bootcamp/steering/module-01-phase2-document-confirm.md` step 17": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599279847
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600067256
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600166484
+      }
+    ],
+    "3.2 Update `senzing-bootcamp/templates/stakeholder_summary.md` MODULE 1 guidance block": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599279899
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600176045
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600223028
+      }
+    ],
+    "4.1 Update `senzing-bootcamp/steering/module-05-phase2-data-mapping.md`": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599279940
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600237443
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600371005
+      }
+    ],
+    "5.1 Update `senzing-bootcamp/steering/file-placement.md`": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599279975
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600376485
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600685198
+      }
+    ],
+    "5.2 Update `senzing-bootcamp/steering/agent-instructions.md` File Placement table": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599280012
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600688226
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600912036
+      }
+    ],
+    "6.1 Update `senzing-bootcamp/steering/project-structure.md`": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599280048
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600927194
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601133072
+      }
+    ],
+    "7.1 Add resource script routing rules to `ROUTING_RULE_LIST`": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599280090
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601137307
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601275512
+      }
+    ],
+    "7.2 Add mapping data routing rules to `ROUTING_RULE_LIST`": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599280128
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601283518
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601367615
+      }
+    ],
+    "7.3 Update generic `.jsonl` rule destination": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599280167
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601371280
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601429618
+      }
+    ],
+    "8.1 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599280230
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601433264
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601523425
+      }
+    ],
+    "8.2 Verify preservation tests still pass": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599280268
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601530055
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601617581
+      }
+    ],
+    "8.3 Write integration test for end-to-end file organization": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599280301
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601621354
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783602068123
+      }
+    ],
+    "9. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783599280342
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783602117900
+      },
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783603787796
+      }
+    ],
+    "3. Fix steering text: stakeholder summary path": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600223067
+      }
+    ],
+    "4. Fix steering text: module-05 post-run relocation guidance": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600371062
+      }
+    ],
+    "5. Fix steering text: file-placement contract and agent-instructions": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783600912096
+      }
+    ],
+    "6. Fix steering text: project-structure directories": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601133112
+      }
+    ],
+    "7. Fix script: organize_mapping_files.py routing rules": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783601429659
+      }
+    ],
+    "8. Verify fix": [
+      {
+        "executionId": "1f8add48-89f6-4550-b7b3-46678b24d24c",
+        "chatSessionId": "sess_22160753-8d13-4e20-bffc-7e17c6693204",
+        "timestamp": 1783602068179
+      }
+    ]
+  }
+}

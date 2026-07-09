@@ -145,7 +145,7 @@ Steps 10–18 of Module 1. Continues from Phase 1 (discovery and gap-filling).
 
     > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
 
-    If yes, read the template: #[[file:senzing-bootcamp/templates/stakeholder_summary.md]] Follow the **MODULE 1** guidance block in the template to fill each placeholder with Module 1 context (problem definition from `docs/business_problem.md`, identified data sources, planned approach, expected outcomes). Save the filled summary to `docs/stakeholder_summary_module1.md`.
+    If yes, read the template: #[[file:senzing-bootcamp/templates/stakeholder_summary.md]] Follow the **MODULE 1** guidance block in the template to fill each placeholder with Module 1 context (problem definition from `docs/business_problem.md`, identified data sources, planned approach, expected outcomes). Save the filled summary to `docs/stakeholder_summary.md`.
 
     **Checkpoint:** Write step 17 to `config/bootcamp_progress.json`.
 

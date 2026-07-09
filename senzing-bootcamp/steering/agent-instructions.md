@@ -16,12 +16,13 @@ Processing a bootcamper's answer to a pending 👉 question takes **absolute pre
 
 ## File Placement
 
-| Content       | Location   | Content       | Location     |
-| ------------- | ---------- | ------------- | ------------ |
-| Source code   | `src/`         | SQLite DB     | `database/`  |
-| Scripts       | `src/scripts/` | Config        | `config/`    |
-| Docs          | `docs/`        | Temp files    | `data/temp/` |
-| Data          | `data/`        | Markdown docs | `docs/`      |
+| Content       | Location         | Content       | Location        |
+| ------------- | ---------------- | ------------- | --------------- |
+| Source code   | `src/`           | SQLite DB     | `database/`     |
+| Scripts       | `src/scripts/`   | Config        | `config/`       |
+| Docs          | `docs/`          | Temp files    | `data/temp/`    |
+| Data          | `data/`          | Markdown docs | `docs/`         |
+| Resources     | `src/resources/` | Mapping data  | `data/mapping/` |
 
 🚨 ALL files within working directory only. Never `/tmp`, `%TEMP%`, `~/Downloads`. Override MCP-generated paths (`/tmp/`, `ExampleEnvironment`) to project-relative equivalents. Never modify global shell config.
 

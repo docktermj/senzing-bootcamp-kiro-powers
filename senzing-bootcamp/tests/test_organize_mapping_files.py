@@ -58,6 +58,58 @@ def st_unrecognized_files():
     ).map(lambda pairs: [f"{name}{ext}" for name, ext in pairs])
 
 
+# Filenames whose routing is decided by a filename-specific rule rather than by
+# the plain extension default (see organize_mapping_files.ROUTING_RULE_LIST):
+#   sz_json_analyzer.py / sz_verbatim_check.py / sz_routing_report.py
+#                                     -> src/resources
+#   *_sample.jsonl                    -> data/mapping
+#   *_mapping_spec.json               -> data/mapping
+#   senzing_entity_specification.md   -> docs/reference
+# Generic-extension properties exclude these so "generic {ext} -> <default>"
+# remains a true, meaningful statement under the filename-aware contract.
+_RESOURCE_SCRIPT_NAMES = frozenset(
+    {"sz_json_analyzer.py", "sz_verbatim_check.py", "sz_routing_report.py"}
+)
+
+
+def _routes_by_extension_default(filename: str) -> bool:
+    """Return True unless a filename triggers a filename-specific routing rule.
+
+    The filename-aware ``route()`` overrides the plain extension default for the
+    downloaded resource scripts (``src/resources``), ``*_sample.jsonl``
+    (``data/mapping``), ``*_mapping_spec.json`` (``data/mapping``), and the
+    entity specification (``docs/reference``). Generic-extension properties use
+    this predicate to exclude such names.
+
+    Args:
+        filename: The base file name to classify.
+
+    Returns:
+        False when a filename-specific rule applies; True otherwise.
+    """
+    if filename in _RESOURCE_SCRIPT_NAMES:
+        return False
+    if filename == "senzing_entity_specification.md":
+        return False
+    if filename.endswith("_sample.jsonl"):
+        return False
+    if filename.endswith("_mapping_spec.json"):
+        return False
+    return True
+
+
+def st_generic_recognized_files():
+    """Recognized files that route purely by their extension default.
+
+    Filters out names that trigger a filename-specific routing rule so the
+    extension-based routing properties stay valid and meaningful under the
+    filename-aware contract.
+    """
+    return st_recognized_files().filter(
+        lambda names: all(_routes_by_extension_default(n) for n in names)
+    )
+
+
 # ---------------------------------------------------------------------------
 # Property 1: Extension-based routing correctness
 # ---------------------------------------------------------------------------
@@ -73,10 +125,15 @@ class TestProperty1ExtensionBasedRouting:
     **Validates: Requirements 1.1, 1.2, 1.3, 1.4**
     """
 
-    @given(filenames=st_recognized_files())
+    @given(filenames=st_generic_recognized_files())
     @settings(max_examples=20)
     def test_files_routed_to_correct_subdirectory(self, filenames):
-        """Each recognized file moves to the correct target subdirectory."""
+        """Each recognized file moves to its extension-default target subdirectory.
+
+        Filename-specific names (resource scripts, *_sample.jsonl,
+        *_mapping_spec.json, the entity spec) are excluded so the destination is
+        fully determined by the extension (the ROUTING_RULES compat table).
+        """
         tmp = Path(tempfile.mkdtemp())
         try:
             source = tmp / "source"
@@ -171,13 +228,17 @@ class TestProperty3ConflictDetection:
     **Validates: Requirements 2.1**
     """
 
-    @given(filenames=st_recognized_files())
+    @given(filenames=st_generic_recognized_files())
     @settings(
         max_examples=20,
         suppress_health_check=[HealthCheck.function_scoped_fixture],
     )
     def test_conflict_prevents_overwrite(self, filenames, capsys):
-        """Files with conflicts at destination are not moved or overwritten."""
+        """Files with conflicts at destination are not moved or overwritten.
+
+        Uses extension-default names so the pre-populated conflict is created at
+        the same subdirectory route() resolves to (ROUTING_RULES[ext]).
+        """
         tmp = Path(tempfile.mkdtemp())
         try:
             source = tmp / "source"
@@ -484,8 +545,9 @@ class TestCLIArgumentDefaults:
         exit_code = main(["--source", str(source)])
 
         assert exit_code == 0
-        # File should be moved to data/ relative to cwd (tmp_path)
-        assert (tmp_path / "data" / "data_file.jsonl").exists()
+        # A generic .jsonl deliverable is moved to data/transformed/ relative to
+        # cwd (tmp_path) under the file-placement-conventions contract.
+        assert (tmp_path / "data" / "transformed" / "data_file.jsonl").exists()
 
     def test_error_when_source_is_file(self, tmp_path, capsys):
         """Error message when --source points to a file, not a directory."""
@@ -560,16 +622,25 @@ class TestBugConditionConventionalPlacement:
 
     # --- Case 1 — Python helper routing (defect 1.1) -----------------------
 
-    def test_python_helper_routes_to_src_mapping(self):
-        """route("sz_json_analyzer.py") -> "src/mapping" (unfixed: "scripts")."""
+    def test_resource_script_routes_to_src_resources(self):
+        """route("sz_json_analyzer.py") -> "src/resources".
+
+        The file-placement-conventions bugfix routes downloaded Senzing resource
+        scripts to src/resources (previously src/mapping).
+        """
         from organize_mapping_files import route
 
-        assert route("sz_json_analyzer.py") == "src/mapping"
+        assert route("sz_json_analyzer.py") == "src/resources"
 
-    @given(base=st_basename())
+    @given(base=st_basename().filter(lambda b: _routes_by_extension_default(f"{b}.py")))
     @settings(max_examples=20)
     def test_any_python_file_routes_to_src_mapping(self, base):
-        """For any basename, route("{base}.py") -> "src/mapping" (defect 1.1)."""
+        """For any generic (non-resource-script) basename, route("{base}.py") -> "src/mapping".
+
+        The sz_* downloaded-resource scripts are excluded because the
+        file-placement-conventions fix routes them to "src/resources"; every
+        other .py file still routes to src/mapping (defect 1.1).
+        """
         from organize_mapping_files import route
 
         assert route(f"{base}.py") == "src/mapping"
@@ -670,24 +741,36 @@ def _routed_subdir(filename: str, project_root: Path) -> str | None:
 class TestPreservationDataConfigRouting:
     """Feature: docs-file-placement, Property 2: Preservation — data/config routing.
 
-    The organizer's `.jsonl -> data` and `.json -> config` routing is unchanged
-    by the fix. These pass on unfixed code and must keep passing afterward.
+    Generic `.jsonl -> data/transformed` and non-mapping-spec `.json -> config`
+    routing. (The file-placement-conventions bugfix later moved generic `.jsonl`
+    from `data` to `data/transformed`; these assertions track that corrected
+    contract.)
 
     **Validates: Requirements 3.3, 3.5**
     """
 
     _PROJECT_ROOT = Path("/__preservation_project__")
 
-    @given(base=st_basename())
+    @given(base=st_basename().filter(lambda b: _routes_by_extension_default(f"{b}.jsonl")))
     @settings(max_examples=20)
-    def test_jsonl_routes_to_data(self, base):
-        """For any basename, a .jsonl file routes to the data/ subdir (3.5)."""
-        assert _routed_subdir(f"{base}.jsonl", self._PROJECT_ROOT) == "data"
+    def test_generic_jsonl_routes_to_data_transformed(self, base):
+        """For any generic (non-_sample) basename, a .jsonl file routes to data/transformed.
 
-    @given(base=st_basename())
+        `*_sample.jsonl` is excluded because the file-placement-conventions fix
+        routes mapping sample data to data/mapping (3.5).
+        """
+        assert (
+            _routed_subdir(f"{base}.jsonl", self._PROJECT_ROOT) == "data/transformed"
+        )
+
+    @given(base=st_basename().filter(lambda b: _routes_by_extension_default(f"{b}.json")))
     @settings(max_examples=20)
     def test_json_routes_to_config(self, base):
-        """For any basename, a .json file routes to the config/ subdir (3.5)."""
+        """For any non-mapping-spec basename, a .json file routes to the config/ subdir.
+
+        `*_mapping_spec.json` is excluded because the file-placement-conventions
+        fix routes mapping metadata to data/mapping (3.5).
+        """
         assert _routed_subdir(f"{base}.json", self._PROJECT_ROOT) == "config"
 
     def test_identifier_crosswalk_json_routes_to_config(self):
@@ -1143,9 +1226,13 @@ class TestRouteUnitTable:
     **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
     """
 
-    def test_python_helper_routes_to_src_mapping(self):
-        """A Python helper (.py) routes to src/mapping."""
-        assert route("sz_json_analyzer.py") == "src/mapping"
+    def test_resource_script_routes_to_src_resources(self):
+        """A downloaded Senzing resource script (sz_*.py) routes to src/resources."""
+        assert route("sz_json_analyzer.py") == "src/resources"
+
+    def test_generic_py_routes_to_src_mapping(self):
+        """A generic (non-resource-script) .py helper routes to src/mapping."""
+        assert route("transform_customers.py") == "src/mapping"
 
     def test_mapper_spec_routes_to_docs_mapping(self):
         """A mapper spec (*_mapper.md) routes to docs/mapping."""
@@ -1159,12 +1246,12 @@ class TestRouteUnitTable:
         """A generic reference .md routes to docs/mapping."""
         assert route("profile_report.md") == "docs/mapping"
 
-    def test_jsonl_routes_to_data(self):
-        """A .jsonl file routes to data."""
-        assert route("customers.jsonl") == "data"
+    def test_generic_jsonl_routes_to_data_transformed(self):
+        """A generic (non-_sample) .jsonl deliverable routes to data/transformed."""
+        assert route("customers.jsonl") == "data/transformed"
 
     def test_json_routes_to_config(self):
-        """A .json file routes to config."""
+        """A non-mapping-spec .json file routes to config."""
         assert route("identifier_crosswalk.json") == "config"
 
     def test_unrouted_extension_returns_none(self):
@@ -1236,11 +1323,11 @@ class TestIntegrationFullSweepAndIndex:
 
     # Source filename -> conventional destination subdirectory.
     _EXPECTED_PLACEMENT: dict[str, str] = {
-        "sz_json_analyzer.py": "src/mapping",
+        "sz_json_analyzer.py": "src/resources",
         "playpalace_mapper.md": "docs/mapping",
         "senzing_entity_specification.md": "docs/reference",
         "profile_report.md": "docs/mapping",
-        "customers.jsonl": "data",
+        "customers.jsonl": "data/transformed",
         "identifier_crosswalk.json": "config",
     }
 

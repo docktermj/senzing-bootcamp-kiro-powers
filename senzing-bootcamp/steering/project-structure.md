@@ -6,10 +6,10 @@ inclusion: manual
 
 ```text
 my-senzing-project/
-├── data/{raw,transformed,samples,backups,temp}
+├── data/{raw,transformed,samples,backups,temp,mapping}
 ├── database/G2C.db
 ├── licenses/
-├── src/{quickstart_demo,transform,load,query,utils,scripts}
+├── src/{quickstart_demo,transform,load,query,utils,scripts,resources}
 ├── tests/
 ├── backups/
 ├── docs/{mapping,reference,progress,feedback}
@@ -52,20 +52,20 @@ Detect the operating system first. Use the platform-specific command below that 
 import os
 for d in [
     "data/raw", "data/transformed", "data/samples", "data/backups", "data/temp",
-    "database", "licenses", "src/transform", "src/load", "src/query", "src/utils",
-    "src/scripts", "tests", "backups", "docs/feedback", "docs/mapping",
-    "docs/reference", "docs/progress", "config", "logs", "monitoring",
+    "data/mapping", "database", "licenses", "src/transform", "src/load", "src/query",
+    "src/utils", "src/scripts", "src/resources", "tests", "backups", "docs/feedback",
+    "docs/mapping", "docs/reference", "docs/progress", "config", "logs", "monitoring",
 ]:
     os.makedirs(d, exist_ok=True)
 ```
 
 ### On Linux / macOS
 
-Linux/macOS: `mkdir -p data/{raw,transformed,samples,backups,temp} database licenses src/{transform,load,query,utils,scripts} tests backups docs/{feedback,mapping,reference,progress} config logs monitoring`
+Linux/macOS: `mkdir -p data/{raw,transformed,samples,backups,temp,mapping} database licenses src/{transform,load,query,utils,scripts,resources} tests backups docs/{feedback,mapping,reference,progress} config logs monitoring`
 
 ### On Windows (PowerShell)
 
-`'data/raw','data/transformed','data/samples','data/backups','data/temp','database','licenses','src/transform','src/load','src/query','src/utils','src/scripts','tests','backups','docs/feedback','docs/mapping','docs/reference','docs/progress','config','logs','monitoring' | ForEach-Object { New-Item -ItemType Directory -Force -Path $_ | Out-Null }`
+`'data/raw','data/transformed','data/samples','data/backups','data/temp','data/mapping','database','licenses','src/transform','src/load','src/query','src/utils','src/scripts','src/resources','tests','backups','docs/feedback','docs/mapping','docs/reference','docs/progress','config','logs','monitoring' | ForEach-Object { New-Item -ItemType Directory -Force -Path $_ | Out-Null }`
 
 NEVER use `mkdir path1 path2 path3` on Windows — PowerShell's mkdir does not accept multiple positional arguments.
 

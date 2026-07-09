@@ -144,7 +144,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 |---|---|---|
 | `agent-behavior-rules.md` | 822 | medium |
 | `agent-context-management.md` | 1326 | medium |
-| `agent-instructions.md` | 4482 | large |
+| `agent-instructions.md` | 4509 | large |
 | `cloud-provider-setup.md` | 784 | medium |
 | `common-pitfalls.md` | 4612 | large |
 | `completion-summary-offer.md` | 1867 | medium |
@@ -162,7 +162,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `entity-resolution-intro.md` | 1864 | medium |
 | `environment-setup.md` | 658 | medium |
 | `feedback-workflow.md` | 1245 | medium |
-| `file-placement.md` | 296 | small |
+| `file-placement.md` | 515 | medium |
 | `graduation.md` | 8509 | large |
 | `hook-architecture.md` | 2325 | large |
 | `hook-registry-critical.md` | 8116 | large |
@@ -191,7 +191,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `mcp-usage-reference.md` | 905 | medium |
 | `module-01-business-problem.md` | 500 | medium |
 | `module-01-phase1-discovery.md` | 6768 | large |
-| `module-01-phase2-document-confirm.md` | 2536 | large |
+| `module-01-phase2-document-confirm.md` | 2534 | large |
 | `module-02-sdk-setup.md` | 7915 | large |
 | `module-03-phase1-verification.md` | 4194 | large |
 | `module-03-phase2-visualization.md` | 5342 | large |
@@ -201,7 +201,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-04-data-collection.md` | 4492 | large |
 | `module-05-data-quality-mapping.md` | 712 | medium |
 | `module-05-phase1-quality-assessment.md` | 2853 | large |
-| `module-05-phase2-data-mapping.md` | 5447 | large |
+| `module-05-phase2-data-mapping.md` | 5781 | large |
 | `module-05-phase3-test-load.md` | 2947 | large |
 | `module-06-data-processing.md` | 652 | medium |
 | `module-06-phaseA-build-loading.md` | 3650 | large |
@@ -236,7 +236,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `onboarding-phase1b-intro-language.md` | 2125 | large |
 | `onboarding-phase2-track-setup.md` | 1506 | medium |
 | `phase-loading-guide.md` | 890 | medium |
-| `project-structure.md` | 764 | medium |
+| `project-structure.md` | 789 | medium |
 | `qa-transcript.md` | 1284 | medium |
 | `recovery-from-mistakes.md` | 1227 | medium |
 | `security-privacy.md` | 278 | small |
@@ -257,7 +257,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 204764 tokens
+**Total budget:** 205367 tokens
 
 <!-- END GENERATED: steering-files -->
 

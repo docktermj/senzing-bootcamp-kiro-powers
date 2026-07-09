@@ -322,7 +322,7 @@ file_metadata:
     token_count: 1326
     size_category: medium
   agent-instructions.md:
-    token_count: 4482
+    token_count: 4509
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -376,8 +376,8 @@ file_metadata:
     token_count: 1245
     size_category: medium
   file-placement.md:
-    token_count: 296
-    size_category: small
+    token_count: 515
+    size_category: medium
   graduation.md:
     token_count: 8509
     size_category: large
@@ -463,7 +463,7 @@ file_metadata:
     token_count: 6768
     size_category: large
   module-01-phase2-document-confirm.md:
-    token_count: 2536
+    token_count: 2534
     size_category: large
   module-02-sdk-setup.md:
     token_count: 7915
@@ -493,7 +493,7 @@ file_metadata:
     token_count: 2853
     size_category: large
   module-05-phase2-data-mapping.md:
-    token_count: 5447
+    token_count: 5781
     size_category: large
   module-05-phase3-test-load.md:
     token_count: 2947
@@ -598,7 +598,7 @@ file_metadata:
     token_count: 890
     size_category: medium
   project-structure.md:
-    token_count: 764
+    token_count: 789
     size_category: medium
   qa-transcript.md:
     token_count: 1284
@@ -659,7 +659,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 204764
+  total_tokens: 205367
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

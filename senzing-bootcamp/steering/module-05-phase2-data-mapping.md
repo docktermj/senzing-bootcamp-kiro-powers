@@ -120,7 +120,30 @@ inclusion: manual
    > or redirect these transient artifacts out of `<workspace_dir>` — the workflow
    > needs them in place to keep functioning. Because they are produced *after*
    > the post-download organize step, they are not present when the organizer runs
-   > and are therefore left untouched in the workspace by design.
+   > and are therefore left untouched in the workspace by design. Once the
+   > `mapping_workflow` run for a source is complete (after the iterate/finalize
+   > step), relocate these artifacts to their durable homes per the file-placement
+   > contract.
+
+   > **Agent instruction — Relocate run artifacts to durable homes after the run completes:**
+   >
+   > Once the `mapping_workflow` run for a source is complete — after the
+   > iterate/finalize step (step 10) — the transient artifacts above are no longer
+   > being read or written by the workflow and MUST be relocated from
+   > `<workspace_dir>` to their durable homes so mapping documentation and working
+   > data are discoverable and survive session compaction:
+   >
+   > - Relocate mapping-phase Markdown — `profile_report.md`, `schema_hints.md`,
+   >   `JOURNAL.md` — from `<workspace_dir>` to `docs/mapping/`.
+   > - Relocate mapping working data — `*_mapping_spec.json`, the per-source
+   >   `{source}_sample.jsonl`, and intermediate analyzer JSONL — from
+   >   `<workspace_dir>` to `data/mapping/`.
+   > - Final transformed, load-ready JSONL remains in `data/transformed/` — it is
+   >   already routed there by the organize step (step 5) and does NOT move to
+   >   `data/mapping/`.
+   >
+   > Do this only *after* the run completes; do not relocate while the run is in
+   > progress (see the transient-artifacts instruction above).
 
    **Checkpoint:** Write step 8 to `config/bootcamp_progress.json`.
 

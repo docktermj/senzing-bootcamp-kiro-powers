@@ -8,10 +8,10 @@
 ## Status Summary
 
 - in-progress: 2
-- implemented: 266
+- implemented: 267
 - superseded: 2
 - abandoned: 0
-- unknown: 3
+- unknown: 1
 
 ## Specs
 
@@ -773,7 +773,7 @@
 
 ### license-aware-sampling
 
-- Status: unknown
+- Status: implemented
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/license-aware-sampling/](.kiro/specs/license-aware-sampling/)
@@ -1374,13 +1374,6 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/remove-verification-track/](.kiro/specs/remove-verification-track/)
-
-### rename-module-6
-
-- Status: unknown
-- Type: unknown
-- Workflow: unknown
-- Directory: [.kiro/specs/rename-module-6/](.kiro/specs/rename-module-6/)
 
 ### rename-module-6-data-processing
 

@@ -182,6 +182,10 @@ If verification fails, use `explain_error_code` for any SENZ error codes and `se
 
 ### 5a. Explain the built-in evaluation license
 
+**Custom-license guard — check first.** Read `config/bootcamp_progress.json`. If a `license_record_limit` field is present, a custom license has already been configured (its limit was detected in Step 5e, this session or a prior one). In that case, present the detected `recordLimit` as the authoritative limit — "Your license allows up to N records," or "Your license has no record cap (unlimited)" when it is `0` — and do **NOT** restate the 500-record figure or the "SENZ9000 error at record 501" claim as the authoritative limit. Skip the built-in evaluation explanation below; it applies only when no custom license is active. Confirm any SDK facts you present against the Senzing MCP server rather than training data.
+
+When no `license_record_limit` field is present — only the built-in evaluation license is active — proceed with the explanation below.
+
 Before checking for license files or asking the bootcamper anything, proactively present this information:
 
 "Here's what you need to know about Senzing licensing before we continue. Senzing includes a **built-in evaluation license limited to 500 records**. No license file is needed — the SDK uses this automatically when no custom license is present. This is enough for the bootcamp's demo modules and small datasets.
@@ -291,6 +295,24 @@ When a project-local license exists at `licenses/g2.lic`, add `LICENSEFILE` to t
 Record in `config/bootcamp_preferences.yaml`: `license: custom`.
 
 If no custom license was placed, skip this — the SDK uses the built-in evaluation license automatically.
+
+### 5e. Detect the active license's record limit
+
+**Only run this sub-step when a custom license was configured in Step 5d** (`license: custom` in `config/bootcamp_preferences.yaml` — a `.lic` file was placed at `licenses/g2.lic`). If no custom license was placed, skip 5e entirely: the built-in evaluation license needs no detection, and later modules fall back to the evaluation capacity automatically.
+
+When a custom license is active, read its real record limit now so every later capacity or sampling decision (Modules 1, 4, 6, and 8) uses the license the bootcamper actually supplied instead of the built-in evaluation figure.
+
+**Confirm the SDK facts from the Senzing MCP server first.** Do not rely on training data for how `SzProduct.get_license()` behaves or what `recordLimit` means. Call `sdk_guide(topic='configure', platform='<user_platform>', language='<chosen_language>', version='current')` — and `search_docs` if needed — to confirm the `get_license()` call and that `recordLimit` is the active cap, where **0 means no record cap (unlimited)** and a positive integer is the cap.
+
+1. **Generate a scaffold that reads the license.** Start from `generate_scaffold(language='<chosen_language>', workflow='initialize', version='current')` and adapt it to call `SzProduct.get_license()` and print the returned JSON. Save that JSON to `config/license.json`.
+2. **Persist the detected limit.** Feed the JSON to the bundled helper, which parses `recordLimit` and writes a `license_record_limit` field into `config/bootcamp_progress.json` (`0` = unlimited, positive = cap):
+
+   ```bash
+   python senzing-bootcamp/scripts/run_bundled_script.py detect_license_limit.py config/license.json --progress config/bootcamp_progress.json
+   ```
+
+   The helper prints the detected limit to stdout. It also reads the JSON on stdin, e.g. `... run_bundled_script.py detect_license_limit.py - < config/license.json`.
+3. **Report the detected limit to the bootcamper.** Present exactly what was detected — for example, "Your license allows up to 50,000 records" or, when `recordLimit` is `0`, "Your license has no record cap (unlimited)." Once a custom license is active, do not restate the built-in evaluation figure as the authoritative limit.
 
 **Checkpoint:** Write step 5 to `config/bootcamp_progress.json`.
 

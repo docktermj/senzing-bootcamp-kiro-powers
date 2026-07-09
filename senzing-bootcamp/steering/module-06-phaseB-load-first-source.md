@@ -27,6 +27,12 @@ inclusion: manual
    - Note loading statistics (time, throughput, error rate)
    - If errors exceed 5%, pause and investigate before continuing
 
+   > **Agent instruction — License capacity before loading:** Before warning that the load will stop at the built-in evaluation limit (a SENZ9000 error at the licensed cap), **read `license_record_limit` from `config/bootcamp_progress.json`** (Module 2 Step 5e persists it via `detect_license_limit.py` after a custom license is configured) and drive the decision from that effective limit, never a remembered or hardcoded figure:
+   >
+   > - **`0` (no cap), or ≥ the dataset size** — the active license permits the full load: **omit** the SENZ9000/evaluation-capacity warning and proceed.
+   > - **Positive and below the dataset size** — the dataset genuinely exceeds the cap: present the Module 1 licensing paths (apply an existing license, the external request, or the in-flow MCP request when available) as choices, not a wall; do not force downsizing.
+   > - **Absent or null** (no custom license detected) — keep the existing behavior: warn that the evaluation license halts the load at its cap with a SENZ9000 error, confirming the current capacity figure and SENZ9000 behavior from the Senzing MCP server at request time. If no figure is returned, say it is currently unavailable rather than restating a remembered one.
+
    > **Agent instruction — Data Source Registry:** On success, update `load_status` to `loaded` and `record_count` to the actual loaded count in `config/data_sources.yaml`. On failure, set `load_status` to `failed` and add an `issues` entry describing the error. Update `updated_at` in either case.
 
    **⚠️ SQLite performance note:** On SQLite with single-threaded loading, entity resolution gets progressively slower as the database grows. For the bootcamp learning experience, recommend loading ≤1,000 records initially. This is enough to see meaningful entity resolution results without long waits. If the user has more data, suggest: "Let's start with the first 1,000 records so we can see results quickly. Once we validate the results here, we can load the full dataset — or switch to PostgreSQL for better performance with larger volumes (Module 8 covers this)."

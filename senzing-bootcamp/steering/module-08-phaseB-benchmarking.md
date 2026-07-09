@@ -14,6 +14,14 @@ Use `find_examples(query='performance testing')` for patterns. Generate a timed 
 
 Call `generate_scaffold(language='<chosen_language>', workflow='add_records', version='current')` for the loading pattern. If the generated scaffold uses `/tmp/`, `ExampleEnvironment`, or any path outside the working directory, override the database path to `database/G2C.db` and ensure all output files use project-relative paths. Build a benchmark that measures records/sec at multiple sample sizes with fresh DB each run. Save to `tests/performance/bench_load.[ext]`.
 
+> **Agent instruction — License capacity before capping benchmark sizes:** Before capping loading-benchmark sample sizes at the built-in evaluation limit, **read `license_record_limit` from `config/bootcamp_progress.json`** (Module 2 Step 5e persists it via `detect_license_limit.py` after a custom license is configured) and drive the ceiling from that effective limit, never a remembered or hardcoded figure:
+>
+> - **`0` (no cap), or ≥ the dataset size** — the active license permits the full dataset: do **not** cap benchmark sample sizes at 500; scale them toward the effective limit (or the dataset size) so the benchmark reflects production volume.
+> - **Positive and below the dataset size** — the dataset exceeds the cap: keep benchmark sample sizes at or below that effective limit.
+> - **Absent or null** (no custom license detected) — keep the existing benchmark guidance: confirm the current evaluation capacity from the Senzing MCP server at request time and cap the sample sizes there, rather than restating a remembered figure.
+>
+> This conditional governs only the license-driven cap. Non-license figures — the fixed throughput sample sizes (100, 1K, 10K), the Module 6 Phase A volume tiers, and any performance threshold that is not the license record limit — stay unchanged.
+
 **Checkpoint:** Write step 5 to `config/bootcamp_progress.json`.
 
 ## Step 6: Benchmark Query Latency

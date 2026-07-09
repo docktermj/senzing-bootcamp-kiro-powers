@@ -190,22 +190,22 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `mcp-tool-decision-tree.md` | 2311 | large |
 | `mcp-usage-reference.md` | 905 | medium |
 | `module-01-business-problem.md` | 500 | medium |
-| `module-01-phase1-discovery.md` | 6768 | large |
+| `module-01-phase1-discovery.md` | 6973 | large |
 | `module-01-phase2-document-confirm.md` | 2534 | large |
-| `module-02-sdk-setup.md` | 7915 | large |
+| `module-02-sdk-setup.md` | 8690 | large |
 | `module-03-phase1-verification.md` | 4194 | large |
 | `module-03-phase2-visualization.md` | 5342 | large |
 | `module-03-phase3-report-close.md` | 1752 | medium |
 | `module-03-system-verification.md` | 604 | medium |
 | `module-03-visualization-api-reference.md` | 2101 | large |
-| `module-04-data-collection.md` | 4492 | large |
+| `module-04-data-collection.md` | 4888 | large |
 | `module-05-data-quality-mapping.md` | 712 | medium |
 | `module-05-phase1-quality-assessment.md` | 2853 | large |
 | `module-05-phase2-data-mapping.md` | 5781 | large |
 | `module-05-phase3-test-load.md` | 2947 | large |
 | `module-06-data-processing.md` | 652 | medium |
 | `module-06-phaseA-build-loading.md` | 3650 | large |
-| `module-06-phaseB-load-first-source.md` | 1193 | medium |
+| `module-06-phaseB-load-first-source.md` | 1500 | medium |
 | `module-06-phaseC-multi-source.md` | 1428 | medium |
 | `module-06-phaseD-validation.md` | 2248 | large |
 | `module-07-phase1-query-visualize.md` | 3374 | large |
@@ -214,7 +214,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-07-query-visualize-discover.md` | 545 | medium |
 | `module-08-performance.md` | 617 | medium |
 | `module-08-phaseA-requirements.md` | 2171 | large |
-| `module-08-phaseB-benchmarking.md` | 429 | small |
+| `module-08-phaseB-benchmarking.md` | 753 | medium |
 | `module-08-phaseC-optimization.md` | 746 | medium |
 | `module-09-phaseA-assessment.md` | 1223 | medium |
 | `module-09-phaseB-hardening.md` | 928 | medium |
@@ -257,7 +257,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 207104 tokens
+**Total budget:** 209111 tokens
 
 <!-- END GENERATED: steering-files -->
 

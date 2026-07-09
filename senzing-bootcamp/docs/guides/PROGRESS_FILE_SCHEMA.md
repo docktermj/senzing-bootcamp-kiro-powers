@@ -4,7 +4,7 @@ The file `config/bootcamp_progress.json` is the bootcamp's session state. It tra
 
 ## Field Definitions
 
-The progress file contains seven top-level fields:
+The progress file contains eight top-level fields:
 
 | Field | JSON Type | Required / Optional | Valid Values | Description |
 |-------|-----------|---------------------|--------------|-------------|
@@ -15,6 +15,7 @@ The progress file contains seven top-level fields:
 | `data_sources` | array of strings | Optional | DATA_SOURCE keys, e.g. `["CUSTOMERS", "WATCHLIST"]` | Registered data source identifiers added during Modules 4–7 |
 | `database_type` | string | Required | `"sqlite"` or `"postgresql"` | The database engine chosen during onboarding |
 | `language` | string | Required | `"python"`, `"java"`, `"csharp"`, `"rust"`, `"typescript"` | The programming language chosen during onboarding |
+| `license_record_limit` | integer or null | Optional | `null`, `0`, or any positive integer | The active Senzing license's record cap, detected in Module 2 and reused by the capacity/sampling decisions in Modules 1, 4, 6, and 8. See [License Record Limit](#license-record-limit) |
 
 ## Step History Structure
 
@@ -33,9 +34,25 @@ The `current_step` field works together with `step_history` to track position wi
 - **`null`** means the current module has been completed and `current_step` was cleared by `progress_utils.clear_step`.
 - **Sub-step string identifiers** such as `"5.3"` or `"7a"` are supported by the mid-module session persistence feature, allowing finer-grained resume points within a step.
 
+## License Record Limit
+
+The optional `license_record_limit` field records the record cap of the active Senzing license so the capacity and sampling decisions in Modules 1, 4, 6, and 8 can reuse it without re-querying the SDK. It is detected in Module 2 after the license is configured (via `SzProduct.get_license()`, whose semantics come from the Senzing MCP server) and persisted here.
+
+The field has three meaningful states:
+
+- **`null` or absent** — the active license limit has not been detected yet. Callers fall back to the built-in evaluation capacity (confirmed via the Senzing MCP server). A legacy progress file written before this field existed is treated exactly like `null`, so it remains valid and behaves as before.
+- **`0`** — the license imposes no record cap (unlimited). No sampling is recommended for license reasons regardless of dataset size.
+- **positive integer** — the license caps loading at that many records. Sampling is recommended only when the dataset total genuinely exceeds this value.
+
 ## Validation Rules
 
-The function `progress_utils.validate_progress_schema` enforces the following rules. Legacy files that lack `current_step` or `step_history` pass validation (backward compatible).
+The function `progress_utils.validate_progress_schema` enforces the following rules. Legacy files that lack `current_step`, `step_history`, or `license_record_limit` pass validation (backward compatible).
+
+**`license_record_limit`** (if present):
+
+- Must be an `int` (`0` or positive) or `null`.
+- A negative integer produces a validation error (a limit is either `0` for unlimited or a positive cap).
+- A boolean or any other non-int, non-null type produces a validation error.
 
 **`current_step`** (if present):
 

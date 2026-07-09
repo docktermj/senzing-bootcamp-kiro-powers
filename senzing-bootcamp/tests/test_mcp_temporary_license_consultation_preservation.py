@@ -297,7 +297,13 @@ _BASELINE_HASHES: dict[str, str] = {
     "m2_step5_header": "3a579d5d831f98ada306970dd610bddf4811a8607d8cd3750535125ec995c0b6",
     "m2_5b": "e0cc913787c44e5f6a6eb9bf065588c8c935e5d4ef2d1c8c817d38d2a9a095f9",
     "m2_5c_has_license": "8f4721c2c4fe42d3af9ec1e861ad6bc674ab3471e67b7acebd9285ec16eab27b",
-    "m2_5d": "1656db835193fb7ee569b206b22478138d86668a2e5c2c202df8f6810892bc8f",
+    # m2_5d re-baselined for the license-aware-sampling bugfix (Task 3.3): a new
+    # Step 5e ("Detect the active license's record limit") was inserted between
+    # Step 5d and the Step 5 checkpoint. The _extract_5d region spans `### 5d.`
+    # up to `**Checkpoint:**`, so it now legitimately includes the new 5e block.
+    # The 5d LICENSEFILE / `license: custom` content itself is byte-identical
+    # (still asserted live below); only the appended 5e insertion changed.
+    "m2_5d": "85d63562cd418a46150d292fbeba3efa1ffc289dd0ff5f015d35762decdbdbc9",
     # Module 1 preserved license sub-steps (6a, 6b, 6c, 6e) — NOT 6d (edited)
     # NOTE (module1-license-request-option re-baseline): the m1_6b hash was
     # re-baselined observation-first from the current bytes. That spec is
@@ -309,7 +315,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # (task 2.1): the Step 6b 👉 question is now
     # `👉 **"Do you already have a Senzing license?"**` — only the **...** bold
     # markers were added around the existing question text.
-    "m1_6a": "06d0c151f7973f09d05f789afb572f7c788f523f2a6e0918be03a9004f76755a",
+    # m1_6a re-baselined for the license-aware-sampling bugfix (Task 3.5): Step
+    # 6a's record-count threshold was rewritten from a hardcoded "exceeds 500"
+    # comparison into a license-aware branch that reads `license_record_limit`
+    # from config/bootcamp_progress.json (>0 = finite cap; ==0 = unlimited, skip
+    # license guidance; absent/null = built-in evaluation fallback via the MCP
+    # server). The "<= limit skips 6b-6e -> Step 7" path is preserved (still
+    # asserted live below); only the threshold logic changed.
+    "m1_6a": "3fbf3f861b694829ca74c92c9b1d128ea25ffebf73addfb1a13a12dde957c577",
     "m1_6b": "a7040094fb23f9964f9ae11c8e22be918c5c33dc3f0299239840d0d07ed70397",
     "m1_6c": "461b6fc579b83b42460e93eb8414d05bbbec48c6da76a3cc92286a83cbbbc2fc",
     "m1_6e": "28c9fdd1338c0cf4b165d10e639e8b17383b6564235f648b85c0a7a35b4846b0",

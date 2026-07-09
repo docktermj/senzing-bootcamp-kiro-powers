@@ -18,12 +18,18 @@ inclusion: manual
 
 **Purpose**: Collect the actual data files from each identified data source and store them in the project for analysis and mapping.
 
-> **Agent instruction — Evaluation license and dataset size (canonical framing):** The Senzing SDK ships with a built-in evaluation license that the bootcamper already has by default; it processes data up to a documented record count. Whenever a dataset is — or might be — larger than the evaluation license allows, present that as a choice, not a wall. The bootcamper can keep their full dataset and expand capacity, or work with a smaller slice — and downsizing is only ever one option among several, never the only path forward.
+> **Agent instruction — License limit and dataset size (canonical framing):** By default, the bootcamper already has Senzing's **built-in evaluation license** — the capacity that applies when no custom license is configured. Treat it as the default the session already has, presented as a choice rather than a wall. Before any license-based capacity or sampling decision, **read `license_record_limit` from `config/bootcamp_progress.json`** (Module 2 Step 5e writes it via `detect_license_limit.py` after a custom license is configured) and drive the decision from that effective limit — never from a remembered or hardcoded figure:
+>
+> - **Present and greater than 0** (custom license with a finite record cap): the effective limit is that value. Recommend sampling for license reasons only when the dataset total genuinely exceeds it.
+> - **Present and equal to 0** (custom license with no record cap): the license imposes no cap — do **not** recommend sampling for license reasons, and support loading the full dataset.
+> - **Absent or null** (no custom license detected yet): fall back to the **built-in evaluation license** the bootcamper already has by default, whose capacity is confirmed via the Senzing MCP server at request time (never a hardcoded or remembered figure).
+>
+> Whenever a dataset is — or might be — larger than the effective limit allows, present that as a choice, not a wall. The bootcamper can keep their full dataset and expand capacity, or work with a smaller slice — and downsizing is only ever one option among several, never the only path forward.
 >
 > - **Keep the full dataset and expand:** route to the Module 1 licensing paths — apply an existing license, request one through the external channel, or (when available) request one in-flow via the Senzing MCP server. Use the Module 1 Phase 1 discovery flow (Steps 6a–6e) for the tool-availability checks and branching; do not duplicate that logic here.
 > - **Work with a smaller slice (optional):** sampling, a CORD subset, or a smaller substitute dataset.
 >
-> Retrieve any specific record-capacity or validity figure from the Senzing MCP server at request time, exactly as the Module 1 flow does. If the MCP server does not return a figure or cannot be reached, omit the number and say the current value is unavailable from the MCP server — never restate a remembered or hardcoded figure here.
+> Sampling also stays available for **non-license** reasons — a very large or unwieldy file (for example, >1GB) or faster iteration — independent of the effective limit. Retrieve any specific record-capacity or validity figure from the Senzing MCP server at request time, exactly as the Module 1 flow does. If the MCP server does not return a figure or cannot be reached, omit the number and say the current value is unavailable from the MCP server — never restate a remembered or hardcoded figure here.
 
 1. **Review identified data sources**: Recap the data sources identified in Module 1. Review `docs/business_problem.md` for the complete list.
 
@@ -149,7 +155,7 @@ inclusion: manual
 
    Also create or update `docs/data_source_locations.md`:
 
-   ```markdown
+   ````markdown
    # Data Source Locations
 
    ## Data Source 1: Customer CRM
@@ -198,7 +204,7 @@ inclusion: manual
      LIMIT 1000;
      ```
 
-   ```text
+   ````
 
    **Checkpoint:** Write step 4 to `config/bootcamp_progress.json`.
 
@@ -213,9 +219,9 @@ inclusion: manual
 
 6. **Create sample files if needed**:
 
-   A smaller working file can be useful in two situations: a very large dataset (e.g., >1GB) that is unwieldy to handle, or a dataset larger than the built-in evaluation license allows. In **both** cases sampling is one option, not a requirement.
+   A smaller working file can be useful in two situations: a very large dataset (e.g., >1GB) that is unwieldy to handle, or a dataset larger than the effective record limit allows. In **both** cases sampling is one option, not a requirement.
 
-   If the dataset may exceed the evaluation license, apply the canonical framing from the top of this module: the built-in evaluation license is a default the bootcamper already has, and they can keep their full dataset and expand capacity via the Module 1 licensing paths, or work with a smaller slice. Do not steer them to a smaller substitute as the only path. Defer the licensing-path availability checks and any capacity figure to the Module 1 Phase 1 discovery flow (Steps 6a–6e) and the Senzing MCP server.
+   If the dataset may exceed the effective record limit, apply the canonical framing from the top of this module: **read `license_record_limit` from `config/bootcamp_progress.json`** and drive the decision from that effective limit. When it is `0` (no cap) or greater than or equal to the dataset size, do **not** recommend sampling for license reasons — support loading the full dataset. When it is absent or null, fall back to the built-in evaluation capacity confirmed via the Senzing MCP server. When the dataset genuinely exceeds the effective limit, the bootcamper can keep their full dataset and expand capacity via the Module 1 licensing paths, or work with a smaller slice. Do not steer them to a smaller substitute as the only path. Defer the licensing-path availability checks and any capacity figure to the Module 1 Phase 1 discovery flow (Steps 6a–6e) and the Senzing MCP server.
 
    **If the bootcamper chooses to work with a smaller slice:**
    - Create smaller sample files (sampling, a CORD subset, or a smaller substitute dataset)

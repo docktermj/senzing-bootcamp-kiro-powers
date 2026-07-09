@@ -59,6 +59,12 @@ class ProgressSchema:
     # Journey-level first-visualization guarantee marker (backward-compatible).
     # Absence means "not owed". See validate_progress_schema for field rules.
     first_visualization: dict | None = None
+    # Active Senzing license record cap, detected in Module 2 and reused by the
+    # capacity/sampling decisions in Modules 1, 4, 6, and 8 (backward-compatible).
+    #   None / absent -> not yet detected (fall back to the evaluation capacity)
+    #   0             -> unlimited (the license imposes no record cap)
+    #   positive int  -> the license caps loading at that many records
+    license_record_limit: int | None = None
 
 
 _DOTTED_SUB_STEP_RE = re.compile(r"^\d+\.\d+$")
@@ -285,6 +291,11 @@ def validate_progress_schema(data: dict) -> list[str]:
       present and non-null) must be a non-empty string. When
       ``status == "satisfied"``, ``satisfied_by`` and ``satisfied_at`` must be
       non-null. Absence of the whole object means "not owed".
+    - ``license_record_limit`` (if present): must be an int (>= 0) or None.
+      ``None`` / absent means the active license limit has not been detected
+      yet (callers fall back to the evaluation capacity); ``0`` means the
+      license imposes no record cap (unlimited); a positive integer is the
+      record cap. Negative integers and non-int, non-null types are rejected.
 
     All fields are optional — legacy files that lack fields pass validation
     (backward compatible). The validator never short-circuits; all fields are
@@ -549,5 +560,24 @@ def validate_progress_schema(data: dict) -> list[str]:
                         "first_visualization.satisfied_at must be non-null when "
                         "status is 'satisfied'"
                     )
+
+    # --- license_record_limit ---
+    # Optional, backward-compatible. None/absent == not yet detected;
+    # 0 == unlimited (no cap); positive int == the record cap. Mirrors the
+    # int-field convention used above (isinstance check + range check).
+    if "license_record_limit" in data:
+        lrl = data["license_record_limit"]
+        if lrl is None:
+            pass  # valid — not yet detected
+        elif isinstance(lrl, bool) or not isinstance(lrl, int):
+            errors.append(
+                f"license_record_limit must be an int or null, got "
+                f"{type(lrl).__name__}"
+            )
+        elif lrl < 0:
+            errors.append(
+                f"license_record_limit value {lrl} is out of range "
+                "(must be 0 for unlimited or a positive record cap)"
+            )
 
     return errors

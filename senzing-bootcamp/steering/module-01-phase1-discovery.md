@@ -194,7 +194,13 @@ Use this workflow when starting the bootcamp or when a user wants to explore how
 
    **6a. Record count threshold check:**
 
-   After completing the five-category inference above, calculate the total record count across all sources mentioned by the bootcamper. If the total record count exceeds 500 (i.e., more than 500 records total), the built-in 500-record evaluation limit will be exceeded and license guidance is required — proceed to Step 6b. If the total is 500 or fewer, skip Steps 6b–6e and proceed directly to Step 7.
+   After completing the five-category inference above, calculate the total record count across all sources mentioned by the bootcamper, then decide whether license guidance is required by comparing that total against the effective record limit.
+
+   **Read** `license_record_limit` from `config/bootcamp_progress.json` (Module 2 Step 5e writes it via `detect_license_limit.py` after a custom license is configured) and branch on its value:
+
+   - **Present and greater than 0** (custom license with a finite record cap): compare the total against that limit. If the total exceeds the limit, license guidance is required — proceed to Step 6b; otherwise skip Steps 6b–6e and proceed directly to Step 7.
+   - **Present and equal to 0** (custom license with no record cap): skip license guidance entirely — proceed directly to Step 7, and do not recommend sampling for license reasons.
+   - **Absent or null** (no custom license detected yet): compare the total against the built-in evaluation capacity, confirmed via the Senzing MCP server (never a hardcoded or remembered figure). If the total exceeds that capacity, license guidance is required — proceed to Step 6b; otherwise skip Steps 6b–6e and proceed directly to Step 7.
 
    **6b. License Guidance Trigger** (conditional — only when total records exceed the 500-record evaluation limit):
 

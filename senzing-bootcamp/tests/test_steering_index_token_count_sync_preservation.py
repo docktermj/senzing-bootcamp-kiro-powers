@@ -402,7 +402,18 @@ _BASELINE_HASHES: dict[str, str] = {
     # (207104 = sum of file_metadata counts). Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "1ea948afe6e68ac693cb7758440b7a1ad08aeb3afcc73a69ff927d4b70516f49",
+    # Re-baselined once more (207104 -> 209111) for the license-aware-sampling
+    # bugfix: the steering edits grew module-01-phase1-discovery.md (Step 6a
+    # license-aware threshold), module-02-sdk-setup.md (Step 5e detect-license
+    # insertion + Step 5a guard), module-04-data-collection.md (canonical
+    # license-aware framing), module-06-phaseB-load-first-source.md (conditional
+    # SENZ9000 warning), and module-08-phaseB-benchmarking.md (benchmark cap
+    # removal), all recomputed by measure_steering.py into file_metadata and the
+    # budget total (209111 = sum of file_metadata counts). Only the budget block
+    # changed (solely the total_tokens line); keywords/languages/deployment/
+    # root_step_range are byte-identical (verified: their baseline hashes still
+    # match the live index).
+    "budget": "90aa6ca412de7682c148f8bb9e0028f169420ff1bf742da45706864a1419afec",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -821,11 +832,11 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (207104 after the journal-recap-consolidation spec's Task 10.3 resync
-        # netted -64 tokens across the hook/completion slices), so the hash cannot
-        # silently re-pin a stale value.
+        # (209111 after the license-aware-sampling bugfix reconciled the steering
+        # edits across Modules 1/2/4/6/8), so the hash cannot silently re-pin a
+        # stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 207104" in budget_block
+        assert "total_tokens: 209111" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

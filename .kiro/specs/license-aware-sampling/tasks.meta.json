@@ -1,0 +1,251 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Falsifying example from Hypothesis (test_recommend_sampling_uses_effective_limit):\n    record_limit=0,        # unlimited license\n    dataset_total=1,\n    decision_point='module1_step6a'\n\nBug confirmed: senzing-bootcamp/scripts/detect_license_limit.py does not exist, so there is no license-aware threshold logic. Every capacity decision falls back to the hardcoded 500-record evaluation limit instead of the active license's recordLimit. With recordLimit=0 (unlimited), the threshold still compares against 500 and would trigger a sampling recommendation for any dataset > 500. All 6 tests failed (module absent), demonstrating: (1) no mechanism to parse/persist recordLimit to config/bootcamp_progress.json, and (2) no evaluate_capacity_decision() that compares against the effective limit.",
+      "lastRunTimestamp": 1783629233654
+    },
+    "2. Write preservation property tests (BEFORE implementing fix)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783630146795
+    },
+    "3.9 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1783633047612
+    },
+    "3.10 Verify preservation tests still pass": {
+      "status": "passed",
+      "lastRunTimestamp": 1783633142844
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628987628
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783629000471
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783629255294
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628987779
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783629268367
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783630194337
+      }
+    ],
+    "3.1 Create `detect_license_limit.py` helper script": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628987828
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783630207515
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783630528654
+      }
+    ],
+    "3.2 Add `license_record_limit` field to `config/bootcamp_progress.json` schema": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628987887
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783630535474
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783630883128
+      }
+    ],
+    "3.3 Update steering: `module-02-sdk-setup.md` — add Step 5e (Detect License Limit)": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628987920
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783630905739
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783631281036
+      }
+    ],
+    "3.4 Update steering: `module-02-sdk-setup.md` — Step 5a messaging guard": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628987947
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783631289864
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783631530945
+      }
+    ],
+    "3.5 Update steering: `module-01-phase1-discovery.md` — Step 6a conditional threshold": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628987980
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783631544883
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783631959829
+      }
+    ],
+    "3.6 Update steering: `module-04-data-collection.md` — canonical framing update": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628988012
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783631966865
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783632242691
+      }
+    ],
+    "3.7 Update steering: `module-06-phaseB-load-first-source.md` — conditional SENZ9000 warning": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628988053
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783632246328
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783632721630
+      }
+    ],
+    "3.8 Update steering: `module-08-phaseB-benchmarking.md` — benchmark cap removal": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628988079
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783632724876
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783632959732
+      }
+    ],
+    "3.9 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628988138
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783632964389
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783633064204
+      }
+    ],
+    "3.10 Verify preservation tests still pass": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628988174
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783633074556
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783633202396
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783628988209
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783633207999
+      },
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783638924075
+      }
+    ],
+    "3. Fix for hardcoded 500-record license limit assumption": [
+      {
+        "executionId": "a833294b-df52-43fa-bd69-c3e424109f0d",
+        "chatSessionId": "sess_1902dae2-824e-4647-a129-a316c1f5ea8e",
+        "timestamp": 1783633202459
+      }
+    ]
+  }
+}

@@ -44,7 +44,7 @@ modules:
     phases:
       phase1-collection:
         file: module-04-data-collection.md
-        token_count: 4320
+        token_count: 4492
         size_category: large
         step_range: [1, 9]
   5:
@@ -52,12 +52,12 @@ modules:
     phases:
       phase1-quality-assessment:
         file: module-05-phase1-quality-assessment.md
-        token_count: 1710
-        size_category: medium
+        token_count: 2820
+        size_category: large
         step_range: [1, 7]
       phase2-data-mapping:
         file: module-05-phase2-data-mapping.md
-        token_count: 5355
+        token_count: 5447
         size_category: large
         step_range: [8, 20]
       phase3-test-load-validate:
@@ -484,16 +484,16 @@ file_metadata:
     token_count: 2101
     size_category: large
   module-04-data-collection.md:
-    token_count: 4320
+    token_count: 4492
     size_category: large
   module-05-data-quality-mapping.md:
-    token_count: 689
+    token_count: 712
     size_category: medium
   module-05-phase1-quality-assessment.md:
-    token_count: 1710
-    size_category: medium
+    token_count: 2853
+    size_category: large
   module-05-phase2-data-mapping.md:
-    token_count: 5355
+    token_count: 5447
     size_category: large
   module-05-phase3-test-load.md:
     token_count: 2947
@@ -659,7 +659,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 203334
+  total_tokens: 204764
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

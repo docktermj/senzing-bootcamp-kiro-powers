@@ -7,6 +7,15 @@ inclusion: manual
 
 **Before starting:** Confirm which data source. Track multi-source progress (In Progress / Complete / Pending).
 
+### Skip Fast-Pathed Sources
+
+> **Agent instruction — Skip fast-pathed sources:**
+>
+> Before starting the mapping workflow for a source, check its Registry_Entry in
+> `config/data_sources.yaml`. If `fast_pathed` is `true` and `mapping_status` is
+> `complete`, skip this source entirely — it has already been routed to Module 6.
+> Proceed to the next unmapped source.
+
 ### Mapping Verbosity Check
 
 > **Agent instruction — before starting the mapping workflow:**

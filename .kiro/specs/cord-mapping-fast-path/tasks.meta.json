@@ -1,0 +1,364 @@
+{
+  "pbtResults": {
+    "7.1 Write property test for registry schema backward compatibility": {
+      "status": "passed",
+      "lastRunTimestamp": 1783567591575
+    },
+    "2.2 Write property test for readiness classification correctness": {
+      "status": "passed",
+      "lastRunTimestamp": 1783567930083
+    },
+    "2.3 Write property test for bounded sample invariant": {
+      "status": "passed",
+      "lastRunTimestamp": 1783568106751
+    },
+    "2.4 Write property test for unavailable schema defaults to not-ready": {
+      "status": "passed",
+      "lastRunTimestamp": 1783568218615
+    },
+    "6.2 Write property test for fast-path lineage entry invariant": {
+      "status": "passed",
+      "lastRunTimestamp": 1783568369755
+    }
+  },
+  "executionHistory": {
+    "1.1 Add CORD Provenance Recording instruction to Module 4 steering": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530299
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565539359
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567027910
+      }
+    ],
+    "1.2 Update `config/data_sources.yaml.example` with new optional fields": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530452
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565540364
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567029384
+      }
+    ],
+    "2.1 Insert Step 5a into Module 5 Phase 1 steering": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530501
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567035290
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567166510
+      }
+    ],
+    "2.2 Write property test for readiness classification correctness": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530563
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567617750
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567953204
+      }
+    ],
+    "2.3 Write property test for bounded sample invariant": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530603
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567953390
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568123578
+      }
+    ],
+    "2.4 Write property test for unavailable schema defaults to not-ready": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530637
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568123807
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568241917
+      }
+    ],
+    "3.1 Add fast-path skip guard to Module 5 Phase 2 steering": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530672
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567036334
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567167177
+      }
+    ],
+    "3.2 Update Module 5 hub file with fast-path mention": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530706
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567036941
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567167638
+      }
+    ],
+    "4. Checkpoint — Ensure all steering changes are valid": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530744
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568869197
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568928066
+      }
+    ],
+    "5.1 Create `check_cord_readiness.py` helper script": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530772
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565541041
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567030416
+      }
+    ],
+    "5.2 Write unit tests for helper script CLI and conventions": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530806
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567183015
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567350852
+      }
+    ],
+    "6.1 Add lineage entry instructions to Step 5a steering": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530854
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567183418
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567351819
+      }
+    ],
+    "6.2 Write property test for fast-path lineage entry invariant": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530889
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568242483
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568385850
+      }
+    ],
+    "7.1 Write property test for registry schema backward compatibility": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530939
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567367890
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567616681
+      }
+    ],
+    "7.2 Write example-based unit tests for provenance and readiness scenarios": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565530976
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568388474
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568611477
+      }
+    ],
+    "8.1 Run `measure_steering.py` and update `steering-index.yaml`": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565531014
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568624521
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568858577
+      }
+    ],
+    "9. Final checkpoint — Ensure all tests pass and CI checks are green": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783565531048
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568931884
+      },
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783570478542
+      }
+    ],
+    "1. Implement Module 4 provenance recording and registry schema extension": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567029420
+      }
+    ],
+    "3. Implement Module 5 Phase 2 skip guard and hub update": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567167672
+      }
+    ],
+    "5. Implement the readiness check helper script": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783567350887
+      }
+    ],
+    "2. Implement Module 5 Phase 1 readiness check and fast-path offer": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568241968
+      }
+    ],
+    "6. Implement data lineage entry handling": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568385882
+      }
+    ],
+    "7. Implement registry schema backward compatibility test and remaining property test": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568611524
+      }
+    ],
+    "8. Update token budgets in steering-index.yaml": [
+      {
+        "executionId": "0cbbf308-c431-40bc-bae6-42545802ec30",
+        "chatSessionId": "sess_6737a664-07ab-4dc5-9119-cddef3b5fec3",
+        "timestamp": 1783568858627
+      }
+    ]
+  }
+}

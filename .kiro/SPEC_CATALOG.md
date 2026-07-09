@@ -7,11 +7,11 @@
 
 ## Status Summary
 
-- in-progress: 0
-- implemented: 262
+- in-progress: 4
+- implemented: 263
 - superseded: 2
 - abandoned: 0
-- unknown: 1
+- unknown: 4
 
 ## Specs
 
@@ -267,6 +267,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/cord-data-priority/](.kiro/specs/cord-data-priority/)
 
+### cord-mapping-fast-path
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/cord-mapping-fast-path/](.kiro/specs/cord-mapping-fast-path/)
+
 ### data-collection-template
 
 - Status: implemented
@@ -498,6 +505,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/feedback-workflow/](.kiro/specs/feedback-workflow/)
 
+### file-placement-conventions
+
+- Status: unknown
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/file-placement-conventions/](.kiro/specs/file-placement-conventions/)
+
 ### fix-file-path-hook-stall
 
 - Status: implemented
@@ -574,6 +588,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/graduation-docs-index/](.kiro/specs/graduation-docs-index/)
+
+### graduation-enrichment
+
+- Status: in-progress
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/graduation-enrichment/](.kiro/specs/graduation-enrichment/)
 
 ### graduation-markdown-normalization
 
@@ -701,6 +722,13 @@
 - Workflow: fast-task
 - Directory: [.kiro/specs/individual-progress-dashboard/](.kiro/specs/individual-progress-dashboard/)
 
+### journal-recap-consolidation
+
+- Status: in-progress
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/journal-recap-consolidation/](.kiro/specs/journal-recap-consolidation/)
+
 ### json-syntax-highlighting
 
 - Status: implemented
@@ -742,6 +770,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/leading-question-enforcement/](.kiro/specs/leading-question-enforcement/)
+
+### license-aware-sampling
+
+- Status: unknown
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/license-aware-sampling/](.kiro/specs/license-aware-sampling/)
 
 ### license-capacity-framing
 
@@ -1171,6 +1206,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/onboarding-license-request-option/](.kiro/specs/onboarding-license-request-option/)
+
+### onboarding-session-ux
+
+- Status: in-progress
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/onboarding-session-ux/](.kiro/specs/onboarding-session-ux/)
 
 ### onboarding-ux-improvements
 
@@ -1659,6 +1701,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/step-level-status-command/](.kiro/specs/step-level-status-command/)
 
+### stop-hook-ux
+
+- Status: unknown
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/stop-hook-ux/](.kiro/specs/stop-hook-ux/)
+
 ### streaming-integration-guide
 
 - Status: implemented
@@ -1749,6 +1798,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/transformation-lineage/](.kiro/specs/transformation-lineage/)
+
+### truthset-fallback-source
+
+- Status: in-progress
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/truthset-fallback-source/](.kiro/specs/truthset-fallback-source/)
 
 ### turn-answer-handling
 

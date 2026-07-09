@@ -106,6 +106,19 @@ inclusion: manual
    >
    > Replace `<dataset_name>` with the CORD dataset identifier (e.g., `cord-las-vegas`) and `<path_to_downloaded_files>` with the space-separated paths to the downloaded JSONL files in `data/raw/`. This stores metadata in `config/cord_metadata.yaml` so Module 6 can detect if files changed between download and load time.
 
+   > **Agent instruction — CORD Provenance Recording:** After each data source file is
+   > collected and its Registry_Entry created/updated in `config/data_sources.yaml`,
+   > set the `provenance` field based on the data origin:
+   >
+   > - `cord` — source obtained via `get_sample_data` MCP tool
+   > - `own` — bootcamper's own data (uploaded, URL, database, or API)
+   > - `free_data` — data from the free-data GitHub repository
+   > - `synthesized` — generated test data
+   > - `unknown` — origin cannot be determined
+   >
+   > Set `updated_at` to the current ISO 8601 timestamp when writing provenance.
+   > A source with `provenance: unknown` is never eligible for the fast-path.
+
    **Checkpoint:** Write step 2 to `config/bootcamp_progress.json`.
 
 3. **Verify data was received**:

@@ -364,7 +364,19 @@ _BASELINE_HASHES: dict[str, str] = {
     # (203334 = sum of file_metadata counts). Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "b4050c317baad805283cf3b7ba3f6a31c4ed12fc08f304ecb9cfab4d4a75eed1",
+    # Re-baselined once more (203334 -> 204764) for the cord-mapping-fast-path
+    # spec: module-05-phase1-quality-assessment.md grew when Step 5a was reworded
+    # to reuse the Step 3 schema and its intro gained a get_sample_data clause
+    # (the CORD readiness check + fast-path offer, 1710 -> 2853),
+    # module-05-data-quality-mapping.md's Phase 1 hub note was rephrased to
+    # mention the readiness check (689 -> 712), module-05-phase2-data-mapping.md
+    # gained the fast-pathed-source skip guard (5355 -> 5447), and
+    # module-04-data-collection.md gained the CORD provenance recording
+    # instruction (4320 -> 4492), all recomputed by measure_steering.py into
+    # file_metadata and the budget total (204764 = sum of file_metadata counts).
+    # Only the budget block changed; keywords/languages/deployment/root_step_range
+    # are byte-identical (verified: their baseline hashes still match the live index).
+    "budget": "18047e33b21281c37e15fba8df229a2518c8881f92bfcac69b64a2cad45ba09d",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -741,7 +753,17 @@ class TestNonPhaseBlocksBytePreserved:
         ``session-resume.md``'s Protocol Confirmation parenthetical was refreshed
         from the stale ``inclusion: auto`` to ``inclusion: always`` (two more
         characters), nudging its measured token_count 3385 -> 3386, recomputed by
-        ``measure_steering.py`` into ``file_metadata`` and the budget total.
+        ``measure_steering.py`` into ``file_metadata`` and the budget total. Most
+        recently, the cord-mapping-fast-path spec re-baselines again
+        (203334 -> 204764): ``module-05-phase1-quality-assessment.md`` gained the
+        CORD readiness check / fast-path offer (Step 5a reworded to reuse the
+        Step 3 schema plus a get_sample_data clause, 1710 -> 2853),
+        ``module-05-data-quality-mapping.md`` rephrased its Phase 1 hub note
+        (689 -> 712), ``module-05-phase2-data-mapping.md`` gained the
+        fast-pathed-source skip guard (5355 -> 5447), and
+        ``module-04-data-collection.md`` gained CORD provenance recording
+        (4320 -> 4492), all recomputed by ``measure_steering.py`` into
+        ``file_metadata`` and the budget total.
         Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
@@ -758,10 +780,10 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (203334 after the follow-up Protocol Confirmation parenthetical fix was
+        # (204764 after the cord-mapping-fast-path Module 4/5 steering edits were
         # re-synced), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 203334" in budget_block
+        assert "total_tokens: 204764" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

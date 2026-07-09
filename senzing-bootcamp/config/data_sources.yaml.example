@@ -5,6 +5,14 @@
 # entry with the collected file and load metadata, and it is updated automatically
 # as sources move through quality assessment, mapping, and loading.
 # Copy this file to data_sources.yaml to use as a starting point.
+#
+# Optional fields (additive — absence does not change any existing behavior):
+#   provenance     string   Data origin: cord, own, free_data, synthesized, unknown
+#   senzing_ready  boolean  Whether the source passed the CORD readiness check
+#   fast_pathed    boolean  Whether the source skipped mapping (CORD fast-path)
+# These fields extend the schema without altering the required fields or the
+# mapping_status / load_status value sets. Registries that omit them remain valid,
+# and existing tooling that does not read them continues to work unchanged.
 
 version: "1"
 sources:
@@ -18,5 +26,23 @@ sources:
   #   quality_score: null
   #   mapping_status: pending
   #   load_status: not_loaded
+  #   provenance: own          # optional — data origin (non-CORD sources always map)
   #   added_at: "2025-07-01T10:00:00Z"
   #   updated_at: "2025-07-01T10:00:00Z"
+
+  # Example CORD fast-path entry — a CORD source that was already in
+  # Senzing-loadable form and skipped the Module 5 mapping phase:
+  # CORD_LAS_VEGAS:
+  #   name: "CORD Las Vegas"
+  #   file_path: "data/raw/cord-las-vegas.jsonl"
+  #   format: jsonl
+  #   record_count: 8421
+  #   file_size_bytes: 4523891
+  #   quality_score: null
+  #   mapping_status: complete
+  #   load_status: not_loaded
+  #   provenance: cord         # optional — obtained via get_sample_data MCP tool
+  #   senzing_ready: true      # optional — passed the readiness check
+  #   fast_pathed: true        # optional — mapping phase skipped
+  #   added_at: "2025-07-15T14:30:00Z"
+  #   updated_at: "2025-07-15T14:35:00Z"

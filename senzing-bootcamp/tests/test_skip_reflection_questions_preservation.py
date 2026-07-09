@@ -133,16 +133,14 @@ def _extract_step_by_heading(markdown: str, step_number: int) -> str:
 # These are the sections that MUST remain intact after the fix.
 
 PRESERVED_SECTIONS_MODULE_COMPLETION: dict[str, dict] = {
-    "bootcamp_journal": {
-        "heading": "## Bootcamp Journal",
-        "expected_patterns": [
-            r"\*\*What we did:\*\*",
-            r"\*\*What was produced:\*\*",
-            r"\*\*Why it matters:\*\*",
-        ],
-        "description": "Journal template with module name, date, what we did, "
-        "what was produced, why it matters",
-    },
+    # Re-baselined for journal-recap-consolidation: the standalone
+    # "## Bootcamp Journal" section (which held the "**What we did:**",
+    # "**What was produced:**", and "**Why it matters:**" narrative template)
+    # was removed by task 8.2 of that feature. Its narrative content was folded
+    # into each Recap_Section as a "### Journal" subsection of the
+    # Consolidated_Log (docs/bootcamp_recap.md) — the content was consolidated,
+    # not deleted. So there is no longer a top-level "## Bootcamp Journal"
+    # heading to preserve, and its entry has been dropped from this registry.
     "module_completion_certificate": {
         "heading": "## Module Completion Certificate",
         "expected_patterns": [

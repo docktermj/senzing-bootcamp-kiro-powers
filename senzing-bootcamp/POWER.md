@@ -177,7 +177,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `hook-registry-module-09.md` | 276 | small |
 | `hook-registry-module-10.md` | 288 | small |
 | `hook-registry-module-11.md` | 412 | small |
-| `hook-registry-module-any.md` | 4374 | large |
+| `hook-registry-module-any.md` | 4794 | large |
 | `hook-registry.md` | 872 | medium |
 | `inline-status.md` | 461 | small |
 | `lang-csharp.md` | 1642 | medium |
@@ -225,11 +225,11 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-11-deployment.md` | 479 | small |
 | `module-11-phase1-packaging.md` | 2870 | large |
 | `module-11-phase2-deploy.md` | 850 | medium |
-| `module-completion-artifacts.md` | 3978 | large |
-| `module-completion-error-handling.md` | 604 | medium |
-| `module-completion-next-steps.md` | 702 | medium |
-| `module-completion-track.md` | 3288 | large |
-| `module-completion.md` | 2262 | large |
+| `module-completion-artifacts.md` | 3426 | large |
+| `module-completion-error-handling.md` | 637 | medium |
+| `module-completion-next-steps.md` | 705 | medium |
+| `module-completion-track.md` | 3310 | large |
+| `module-completion.md` | 2272 | large |
 | `module-prerequisites.md` | 1395 | medium |
 | `module-transitions.md` | 1908 | medium |
 | `onboarding-flow.md` | 4232 | large |
@@ -257,7 +257,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 207168 tokens
+**Total budget:** 207104 tokens
 
 <!-- END GENERATED: steering-files -->
 

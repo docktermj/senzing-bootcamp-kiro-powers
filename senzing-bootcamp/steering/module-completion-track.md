@@ -13,7 +13,7 @@ After each module, check if the user finished their track's last module:
 
 ## Path Completion Celebration
 
-> **Note:** The per-module artifacts (recap section, journal entry, completion certificate) for the final module of a track are produced by the Shared Boundary-Detection Trigger BEFORE this celebration runs. Track completion adds the celebration and next-step guidance below — it never replaces or suppresses the final module's per-module artifacts.
+> **Note:** The per-module artifacts (consolidated recap section including its `### Journal` subsection, completion certificate) for the final module of a track are produced by the Shared Boundary-Detection Trigger BEFORE this celebration runs. Track completion adds the celebration and next-step guidance below — it never replaces or suppresses the final module's per-module artifacts.
 
 > **Note:** The completion-summary document (`docs/completion_summary.md`) is always created at track completion; the completion-summary offer in its existing position (between the celebration and the export option) governs only the shareable PDF/share, not the document's creation.
 
@@ -24,7 +24,7 @@ Before presenting the celebration, reconcile the recap deliverable against the r
 1. Reconcile `docs/bootcamp_recap.md` against `config/bootcamp_progress.json` `modules_completed` and backfill any missing per-module `## Module N:` section:
 
    ```bash
-   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --backfill
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --progress-dir docs/progress --backfill
    ```
 
    The applier uses a pure set difference, so it appends only the sections that are missing — existing sections are preserved byte-for-byte (Req 3.1) and a re-run on an already-consistent recap makes no changes (Req 3.2). It exits non-zero naming any module whose section it could not produce, so a silent gap is never reported as complete.
@@ -94,7 +94,7 @@ When track is complete, present:
 - 🎉 "You've completed the [track name]!"
 - Summary of all artifacts built (code, data, docs)
 - Where everything lives (src/, data/transformed/, docs/, config/, database/)
-- Reference to `docs/bootcamp_journal.md`
+- Reference to `docs/bootcamp_recap.md` (the consolidated per-module log, including each module's `### Journal` subsection)
 - Next options: switch to longer track (modules carry forward), harden for production, or start using the code
 - Export option: "Would you like to export a shareable report of your bootcamp results?" — when accepted, run `python3 scripts/export_results.py` and present the output path to the bootcamper. This option appears only at track completion, not after every module.
 - Record export offer (after the export option, before the analytics offer): "📋 Would you like a record of your bootcamp journey? You can share it with your team or use it to replay the same setup on another project." — when accepted, run `python3 scripts/record_export.py` and present the output path (`docs/bootcamp_record.yaml`) to the bootcamper. When declined, proceed to the next step without generating any export file.

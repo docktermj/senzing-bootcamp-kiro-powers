@@ -20,7 +20,19 @@ import datetime
 import json
 import os
 import re
+import sys
 from collections.abc import Callable
+from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# sys.path insertion so sibling scripts import cleanly (scripts are not a
+# package). Mirrors the repo convention used across senzing-bootcamp/scripts.
+# ---------------------------------------------------------------------------
+_SCRIPTS_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
+
+import completion_artifacts  # noqa: E402  (path manipulated above)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -1103,36 +1115,33 @@ class DecisionCollector:
         return "Query program"
 
     def collect_business_problem(self) -> BusinessProblem | None:
-        """Extract Module 1 data from docs/bootcamp_journal.md.
+        """Extract the Module 1 business problem from the Consolidated_Log.
 
-        Reads the bootcamp journal and parses the Module 1 section to extract:
-        - Problem statement: text after a ### Problem Statement heading or
-          the first paragraph of Module 1 content
-        - Identified sources: list items after ### Data Sources or
-          ### Identified Sources
-        - Success criteria: list items after ### Success Criteria
+        Reads ``docs/bootcamp_recap.md`` (the Consolidated_Log) and parses the
+        Module 1 Recap_Section. The problem statement comes from the
+        ``### Journal`` subsection's ``**What we did:**`` field. Identified data
+        sources and success criteria come from the ``### Information Shared``
+        items: an item introduced by a success-criteria label (e.g.
+        ``Success criteria: ...``) is routed to ``success_criteria`` and any
+        other item to ``identified_sources``.
 
         Returns:
-            A BusinessProblem instance with module=1, or None if the journal
-            doesn't exist or has no Module 1 section.
+            A BusinessProblem instance with module=1, or None when the
+            Consolidated_Log is absent, has no Module 1 section, or the Module 1
+            section has no ``### Journal`` subsection.
         """
-        path = os.path.join(self.project_root, "docs", "bootcamp_journal.md")
+        path = os.path.join(self.project_root, "docs", "bootcamp_recap.md")
         content = self._read_file(path)
         if content is None:
             return None
 
-        # Extract Module 1 content between its heading and the next ## Module heading
-        module1_content = self._extract_module1_section(content)
-        if module1_content is None:
+        section = self._find_recap_section(content, 1)
+        if section is None or section.journal is None:
             return None
 
-        # Parse subsections from Module 1 content
-        problem_statement = self._extract_problem_statement(module1_content)
-        identified_sources = self._extract_list_section(
-            module1_content, ("data sources", "identified sources")
-        )
-        success_criteria = self._extract_list_section(
-            module1_content, ("success criteria",)
+        problem_statement = section.journal.what_we_did.strip() or None
+        identified_sources, success_criteria = self._split_information_shared(
+            section.information_shared
         )
 
         return BusinessProblem(
@@ -1143,186 +1152,143 @@ class DecisionCollector:
         )
 
     @staticmethod
-    def _extract_module1_section(content: str) -> str | None:
-        """Extract the Module 1 section content from the journal.
+    def _find_recap_section(
+        content: str, module_number: int
+    ) -> "completion_artifacts.ParsedRecapSection | None":
+        """Return the parsed Recap_Section for a module, or None if absent.
 
-        Looks for a heading like '## Module 1: Business Problem' or
-        '## Module 1' and captures everything until the next '## Module'
-        heading.
-
-        Args:
-            content: Full journal markdown content.
-
-        Returns:
-            The text content of the Module 1 section, or None if not found.
-        """
-        lines = content.splitlines()
-        start_idx: int | None = None
-        end_idx: int | None = None
-
-        # Pattern: ## Module 1 (optionally followed by : and description)
-        module1_pattern = re.compile(r"^##\s+Module\s+1\b", re.IGNORECASE)
-        # Pattern: ## Module N (any module heading after Module 1)
-        next_module_pattern = re.compile(r"^##\s+Module\s+\d", re.IGNORECASE)
-
-        for i, line in enumerate(lines):
-            if start_idx is None:
-                if module1_pattern.match(line.strip()):
-                    start_idx = i + 1
-            else:
-                if next_module_pattern.match(line.strip()):
-                    end_idx = i
-                    break
-
-        if start_idx is None:
-            return None
-
-        if end_idx is None:
-            end_idx = len(lines)
-
-        section = "\n".join(lines[start_idx:end_idx]).strip()
-        return section if section else None
-
-    @staticmethod
-    def _extract_problem_statement(module1_content: str) -> str | None:
-        """Extract the problem statement from Module 1 content.
-
-        Looks for a ### Problem Statement heading and takes the text after it.
-        If no such heading exists, uses the first non-empty paragraph.
+        Parses the Consolidated_Log with the shared
+        ``completion_artifacts.parse_recap_sections`` helper and returns the
+        first section whose module number matches.
 
         Args:
-            module1_content: The extracted Module 1 section text.
+            content: The full Consolidated_Log Markdown text.
+            module_number: The module number to locate.
 
         Returns:
-            The problem statement text, or None if no content found.
+            The matching ParsedRecapSection, or None when no such section
+            exists.
         """
-        lines = module1_content.splitlines()
-
-        # Look for ### Problem Statement heading
-        problem_heading_pattern = re.compile(
-            r"^###\s+Problem\s+Statement", re.IGNORECASE
-        )
-        for i, line in enumerate(lines):
-            if problem_heading_pattern.match(line.strip()):
-                # Collect text after this heading until next ### or end
-                text_lines: list[str] = []
-                for subsequent in lines[i + 1:]:
-                    if subsequent.strip().startswith("###"):
-                        break
-                    text_lines.append(subsequent)
-                # Join and strip to get the paragraph
-                text = "\n".join(text_lines).strip()
-                return text if text else None
-
-        # Fallback: use the first non-empty paragraph (before any ### heading)
-        paragraph_lines: list[str] = []
-        for line in lines:
-            stripped = line.strip()
-            if stripped.startswith("###"):
-                break
-            if stripped:
-                paragraph_lines.append(stripped)
-            elif paragraph_lines:
-                # End of first paragraph (hit empty line after content)
-                break
-
-        if paragraph_lines:
-            return " ".join(paragraph_lines)
+        for section in completion_artifacts.parse_recap_sections(content):
+            if section.module_number == module_number:
+                return section
         return None
 
-    @staticmethod
-    def _extract_list_section(
-        module1_content: str, heading_keywords: tuple[str, ...]
-    ) -> list[str]:
-        """Extract list items from a subsection matching given heading keywords.
+    # Labels the recap author may prefix an ``### Information Shared`` item with
+    # to mark it as a success criterion. The captured group holds the value with
+    # the label removed.
+    _SUCCESS_CRITERIA_LABEL_RE = re.compile(
+        r"^(?:success\s+criteri(?:a|on)|success\s+metric|acceptance\s+criteri(?:a|on)"
+        r"|criteri(?:a|on))\s*[:\-]\s*(.*)$",
+        re.IGNORECASE,
+    )
+    # Labels that mark an item as an identified data source. The value is kept
+    # without the label prefix.
+    _SOURCE_LABEL_RE = re.compile(
+        r"^(?:identified\s+sources?|data\s+sources?|sources?)\s*[:\-]\s*(.*)$",
+        re.IGNORECASE,
+    )
 
-        Looks for a ### heading containing one of the keywords, then collects
-        markdown list items (lines starting with '- ' or '* ') until the next
-        ### heading or end of content.
+    @classmethod
+    def _split_information_shared(
+        cls, items: list[str]
+    ) -> tuple[list[str], list[str]]:
+        """Split ``### Information Shared`` items into sources and criteria.
+
+        Each item is inspected for a leading label. Items introduced by a
+        success-criteria label are routed to ``success_criteria`` (with the
+        label stripped); all remaining items — including those introduced by an
+        explicit source label, which have their label stripped — are treated as
+        identified sources.
 
         Args:
-            module1_content: The extracted Module 1 section text.
-            heading_keywords: Tuple of lowercase keywords to match in headings.
+            items: The ``### Information Shared`` list items for the section.
 
         Returns:
-            List of extracted item strings. Empty list if section not found.
+            A ``(identified_sources, success_criteria)`` tuple.
         """
-        lines = module1_content.splitlines()
-        section_start: int | None = None
-
-        for i, line in enumerate(lines):
-            stripped = line.strip()
-            if stripped.startswith("###"):
-                heading_text = stripped.lstrip("#").strip().lower()
-                if any(kw in heading_text for kw in heading_keywords):
-                    section_start = i + 1
-                    break
-
-        if section_start is None:
-            return []
-
-        items: list[str] = []
-        for line in lines[section_start:]:
-            stripped = line.strip()
-            if stripped.startswith("###"):
-                break
-            if stripped.startswith("- ") or stripped.startswith("* "):
-                item_text = stripped[2:].strip()
-                if item_text:
-                    items.append(item_text)
-
-        return items
+        identified_sources: list[str] = []
+        success_criteria: list[str] = []
+        for item in items:
+            text = item.strip()
+            if not text:
+                continue
+            criteria_match = cls._SUCCESS_CRITERIA_LABEL_RE.match(text)
+            if criteria_match:
+                value = criteria_match.group(1).strip()
+                success_criteria.append(value if value else text)
+                continue
+            source_match = cls._SOURCE_LABEL_RE.match(text)
+            if source_match:
+                value = source_match.group(1).strip()
+                identified_sources.append(value if value else text)
+                continue
+            identified_sources.append(text)
+        return identified_sources, success_criteria
 
     def collect_performance_tuning(self) -> PerformanceTuning | None:
-        """Extract Module 8 performance tuning decisions if completed.
+        """Extract the Module 8 performance tuning evidence from the Consolidated_Log.
 
-        Looks for evidence of performance work:
-        - Files in tests/performance/ directory
-        - Module 8 entries in docs/bootcamp_journal.md
+        Reads ``docs/bootcamp_recap.md`` (the Consolidated_Log) and parses the
+        Module 8 Recap_Section's ``### Journal`` subsection. The four narrative
+        fields (``**What we did:**``, ``**What was produced:**``,
+        ``**Why it matters:**``, ``**Bootcamper's takeaway:**``) provide the
+        performance tuning evidence: a field mentioning a baseline or metric is
+        recorded as a baseline metric, a field mentioning an optimization or
+        improvement is recorded as an applied optimization, and any other
+        non-empty field is recorded as a tuning decision. Performance test files
+        under ``tests/performance/`` are recorded as an additional tuning
+        decision.
 
         Returns:
-            A PerformanceTuning instance with module=8, or None if no
-            performance tuning evidence is found.
+            A PerformanceTuning instance with module=8, or None when the
+            Consolidated_Log is absent, has no Module 8 section, the Module 8
+            section has no ``### Journal`` subsection, or no evidence is present.
         """
+        path = os.path.join(self.project_root, "docs", "bootcamp_recap.md")
+        content = self._read_file(path)
+        if content is None:
+            return None
+
+        section = self._find_recap_section(content, 8)
+        if section is None or section.journal is None:
+            return None
+
         tuning_decisions: list[str] = []
         optimizations_applied: list[str] = []
         baseline_metrics: dict[str, str] | None = None
 
-        # Check tests/performance/ directory for performance test files
+        # Check tests/performance/ directory for performance test files.
         perf_dir = os.path.join(self.project_root, "tests", "performance")
         perf_files = self._list_dir(perf_dir)
         perf_scripts = [f for f in perf_files if not f.startswith(".")]
-
         if perf_scripts:
             tuning_decisions.append(
                 f"Performance test files created: {', '.join(sorted(perf_scripts))}"
             )
 
-        # Check journal for Module 8 entries
-        journal_path = os.path.join(self.project_root, "docs", "bootcamp_journal.md")
-        journal_content = self._read_file(journal_path)
-        if journal_content is not None:
-            module8_content = self._extract_module_section(journal_content, 8)
-            if module8_content is not None:
-                # Extract list items as tuning decisions/optimizations
-                for line in module8_content.splitlines():
-                    stripped = line.strip()
-                    if stripped.startswith("- ") or stripped.startswith("* "):
-                        item = stripped[2:].strip()
-                        if item:
-                            # Categorize: items mentioning "baseline" or "metric"
-                            # go to metrics, others to optimizations
-                            item_lower = item.lower()
-                            if "baseline" in item_lower or "metric" in item_lower:
-                                if baseline_metrics is None:
-                                    baseline_metrics = {}
-                                baseline_metrics[f"metric_{len(baseline_metrics) + 1}"] = item
-                            elif "optimiz" in item_lower or "improv" in item_lower:
-                                optimizations_applied.append(item)
-                            else:
-                                tuning_decisions.append(item)
+        # Categorize the Module 8 ### Journal narrative fields as evidence.
+        journal = section.journal
+        for field_value in (
+            journal.what_we_did,
+            journal.what_was_produced,
+            journal.why_it_matters,
+            journal.bootcamper_takeaway,
+        ):
+            item = field_value.strip()
+            if not item or item.upper() == "N/A":
+                continue
+            item_lower = item.lower()
+            if "baseline" in item_lower or "metric" in item_lower:
+                if baseline_metrics is None:
+                    baseline_metrics = {}
+                baseline_metrics[f"metric_{len(baseline_metrics) + 1}"] = item
+            elif "optimiz" in item_lower or "improv" in item_lower:
+                optimizations_applied.append(item)
+            else:
+                tuning_decisions.append(item)
 
-        # Return None if no evidence found
+        # Return None if no evidence found.
         if not tuning_decisions and not optimizations_applied and baseline_metrics is None:
             return None
 
@@ -1659,7 +1625,7 @@ class DecisionCollector:
             business_problem = self.collect_business_problem()
             if business_problem is None:
                 warnings.append(
-                    "docs/bootcamp_journal.md not found or no Module 1 section"
+                    "docs/bootcamp_recap.md not found or no Module 1 business problem"
                 )
         except Exception as exc:
             warnings.append(f"Error collecting business_problem: {exc}")
@@ -1947,7 +1913,7 @@ class ManifestAssembler:
             and decisions.business_problem.problem_statement
         ):
             notes.append(
-                "Business problem statement was extracted from journal prose"
+                "Business problem statement was extracted from the recap narrative"
                 " — verify accuracy before replay"
             )
 

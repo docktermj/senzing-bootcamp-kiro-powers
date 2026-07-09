@@ -79,11 +79,16 @@ _CELEBRATION_HOOK: Path = _HOOKS_DIR / "module-completion-celebration.json"
 _MODULE_COMPLETION_FILE: Path = _STEERING_DIR / "module-completion.md"
 
 # The fixed, invariant completion step order (design Req 3.3).
+# After the journal-recap consolidation, the former separate ``recap_append``
+# and ``journal_entry`` steps are folded into a single ``consolidated_append``
+# (structured recap subsections plus the ``### Journal`` narrative subsection in
+# one write), and ``capture_hook_safeguard`` runs between the completion
+# certificate and next-step options.
 STEP_ORDER: list[str] = [
     "progress_update",
-    "recap_append",
-    "journal_entry",
+    "consolidated_append",
     "completion_certificate",
+    "capture_hook_safeguard",
     "next_step_options",
 ]
 
@@ -529,9 +534,9 @@ class TestNonBlockingErrorsAndStepOrder:
 
     @given(
         failing=st.sets(
-            st.sampled_from(["recap_append", "journal_entry", "completion_certificate"]),
+            st.sampled_from(["consolidated_append", "completion_certificate"]),
             min_size=0,
-            max_size=3,
+            max_size=2,
         )
     )
     @settings(max_examples=20)

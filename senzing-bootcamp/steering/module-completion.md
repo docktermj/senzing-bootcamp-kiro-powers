@@ -11,11 +11,10 @@ Load this after completing any module. This file is the **Module_Completion_Root
 The module completion process executes the following steps in a **fixed, invariant order** regardless of which module is being completed:
 
 1. **progress_update** — Mark the module complete in `config/bootcamp_progress.json`
-2. **recap_append** — Synchronously append a recap section to `docs/bootcamp_recap.md` (create file if first completion), then verify the `## Module N:` heading persisted and backfill it if absent before reporting success
-3. **journal_entry** — Append a journal entry to `docs/bootcamp_journal.md` (create file if first completion)
-4. **completion_certificate** — Generate `docs/progress/MODULE_N_COMPLETE.md` and update the summary index
-5. **capture_hook_safeguard** — Run `capture_hook_safeguard.py` to detect any absent capture-critical hook; a silent no-op when all three are present, or a recurring, overridable Soft_Block reminder surfaced before the module transition when any are missing (see the Capture-Critical Hook Safeguard section below)
-6. **next_step_options** — Present the bootcamper with concrete next-step choices
+2. **consolidated_append** — Synchronously append a single consolidated recap section to `docs/bootcamp_recap.md` (create file if first completion) — the structured recap subsections plus the `### Journal` narrative subsection in one write — then verify the `## Module N:` heading persisted and backfill it if absent before reporting success
+3. **completion_certificate** — Generate `docs/progress/MODULE_N_COMPLETE.md` and update the summary index
+4. **capture_hook_safeguard** — Run `capture_hook_safeguard.py` to detect any absent capture-critical hook; a silent no-op when all three are present, or a recurring, overridable Soft_Block reminder surfaced before the module transition when any are missing (see the Capture-Critical Hook Safeguard section below)
+5. **next_step_options** — Present the bootcamper with concrete next-step choices
 
 ### Ordering Rules
 
@@ -25,14 +24,14 @@ The module completion process executes the following steps in a **fixed, invaria
 
 ## Shared Boundary-Detection Trigger
 
-The **recap_append**, **journal_entry**, and **completion_certificate** steps all fire from the **same boundary-detection trigger** — the comparison of the current `modules_completed` array against the prior state. There is no longer a split where the recap is appended by a hook while the journal entry and certificate run only when the bootcamper explicitly invokes this workflow. When boundary detection observes a newly completed module, all three artifact steps run together (followed by `next_step_options`), so a completed module never ends up with only a subset of its artifacts.
+The **consolidated_append** and **completion_certificate** steps both fire from the **same boundary-detection trigger** — the comparison of the current `modules_completed` array against the prior state. There is no longer a split where the recap is appended by a hook while the certificate runs only when the bootcamper explicitly invokes this workflow. When boundary detection observes a newly completed module, both artifact steps run together (followed by `next_step_options`), so a completed module never ends up with only a subset of its artifacts.
 
 ### Trigger Rules
 
-- **Fire on every new entry.** Whenever a module number is added to `modules_completed`, run the recap section, journal entry, and completion certificate for that module — in the fixed step order above.
-- **Include the final module of a track.** Track completion (graduation or celebration) MUST NOT suppress the per-module artifact path. If the newly completed module is the last module of the bootcamper's track (Module 7 for Core, Module 11 for Advanced), still produce its recap section, journal entry, and certificate exactly as for any other module. The celebration path runs in addition to — never instead of — the per-module artifacts.
-- **Defer when a question is pending.** If `config/.question_pending` exists at completion-check time, produce no completion-artifact output at all (no recap, journal, or certificate) and defer to `ask-bootcamper`. This deferral is unchanged.
-- **No-op when nothing new completed.** If `modules_completed` has not gained a new entry since the previous state, produce no recap, journal, or certificate output — no spurious duplicate artifacts. This no-op behavior is unchanged.
+- **Fire on every new entry.** Whenever a module number is added to `modules_completed`, run the consolidated recap section and completion certificate for that module — in the fixed step order above.
+- **Include the final module of a track.** Track completion (graduation or celebration) MUST NOT suppress the per-module artifact path. If the newly completed module is the last module of the bootcamper's track (Module 7 for Core, Module 11 for Advanced), still produce its consolidated recap section and certificate exactly as for any other module. The celebration path runs in addition to — never instead of — the per-module artifacts.
+- **Defer when a question is pending.** If `config/.question_pending` exists at completion-check time, produce no completion-artifact output at all (no consolidated recap or certificate) and defer to `ask-bootcamper`. This deferral is unchanged.
+- **No-op when nothing new completed.** If `modules_completed` has not gained a new entry since the previous state, produce no consolidated recap or certificate output — no spurious duplicate artifacts. This no-op behavior is unchanged.
 
 ### Final-Message Ordering (recap vs. forward transition)
 
@@ -80,7 +79,7 @@ The detailed completion behavior lives in cohesive slices under `senzing-bootcam
 
 | Slice file | Single concern |
 |---|---|
-| `module-completion-artifacts.md` | Artifact generation — backfill, recap append, bootcamp journal entry, module completion certificate, and summary index |
+| `module-completion-artifacts.md` | Artifact generation — backfill, consolidated recap append (structured recap subsections plus the `### Journal` narrative subsection), module completion certificate, and summary index |
 | `module-completion-error-handling.md` | Non-blocking error handling — per-step file-system error handling, the 30-second timeout, predecessor-failure independence, and retry-on-next-completion |
 | `module-completion-next-steps.md` | Per-module next-step flow — next-step options and immediate execution on an affirmative response |
 | `module-completion-track.md` | Track completion — path/track completion detection and the path completion celebration (export, record, analytics, certificate, graduation, and feedback offers) |

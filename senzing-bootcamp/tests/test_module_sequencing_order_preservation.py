@@ -92,8 +92,15 @@ _BASELINE_GRAPH_REGIONS_SHA256: str = (
 # "enforced guarantee" note from the legacy `agentStop` to the 1.0 `Stop`
 # trigger (a one-word rename, unrelated to module sequencing). The digest is
 # moved forward to the current file contents.
+# Re-baselined again observation-first for the journal-recap-consolidation spec
+# (Task 8.5): module-completion-track.md was updated to replace the retired
+# `docs/bootcamp_journal.md` references with the Consolidated_Log and to remove
+# the `--journal` args from the example commands. That edit is unrelated to the
+# module-sequencing-order fix this suite guards, so the baseline is moved
+# observation-first to the current file contents to keep the preservation
+# snapshot honest.
 _BASELINE_COMPLETION_TRACK_SHA256: str = (
-    "0e342603ec7ef71b784f80afb8898278d1a241fd8df395ea9dea0cfe7045b92f"
+    "e85d2de7819f83eedf674733be05688797cf5c1bb6ce605dcf61b6d9d7c2885c"
 )
 
 

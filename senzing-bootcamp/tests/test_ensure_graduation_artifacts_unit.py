@@ -27,7 +27,7 @@ files in ``tmp_path``:
 All fixtures use synthetic, PII-free content; no secret-looking strings appear
 in the generated data.
 
-Validates: Requirements 2.1, 2.2, 2.3, 3.3, 4.7, 6.3
+Validates: Requirements 2.1, 2.2, 2.3, 3.3, 4.7, 6.2, 6.3, 11.1
 """
 
 from __future__ import annotations
@@ -64,6 +64,11 @@ STARTED_AT = "2025-01-10T09:00:00Z"
 def _paths(root: Path) -> ega.ArtifactPaths:
     """Build ``ArtifactPaths`` rooted under ``root`` (absolute paths).
 
+    The ``journal`` field aliases the recap path, mirroring the consolidated
+    single-source model (``ArtifactPaths.journal`` defaults to
+    ``docs/bootcamp_recap.md``): the legacy journal file is retired and its
+    content now lives in the Consolidated_Log.
+
     Args:
         root: The temporary workspace root.
 
@@ -75,7 +80,7 @@ def _paths(root: Path) -> ega.ArtifactPaths:
         recap=str(root / "docs" / "bootcamp_recap.md"),
         transcript=str(root / "docs" / "bootcamp_transcript.md"),
         progress=str(root / "config" / "bootcamp_progress.json"),
-        journal=str(root / "docs" / "bootcamp_journal.md"),
+        journal=str(root / "docs" / "bootcamp_recap.md"),
         progress_dir=str(root / "docs" / "progress"),
         pdf=str(root / "docs" / "bootcamp_recap.pdf"),
         html=str(root / "docs" / "bootcamp_recap.html"),
@@ -152,13 +157,18 @@ def _set_mtime(path: str, mtime: float) -> None:
 
 
 def _argv(paths: ega.ArtifactPaths, *extra: str) -> list[str]:
-    """Build a full CLI argv wiring every path override, plus ``extra`` flags."""
+    """Build a full CLI argv wiring every path override, plus ``extra`` flags.
+
+    The deprecated ``--journal`` flag is intentionally omitted so the default
+    argv reflects the consolidated single-source model. Tests that exercise the
+    deprecation/backward-compatibility path pass ``--journal`` explicitly via
+    ``extra``.
+    """
     return [
         "--log", paths.log,
         "--recap", paths.recap,
         "--transcript", paths.transcript,
         "--progress", paths.progress,
-        "--journal", paths.journal,
         "--progress-dir", paths.progress_dir,
         "--pdf", paths.pdf,
         "--html", paths.html,
@@ -637,3 +647,144 @@ class TestAtMostOnceRegeneration:
         )
 
         assert calls["count"] == 0
+
+
+# ===========================================================================
+# --journal is a deprecated no-op (journal-recap-consolidation, task 6.1)
+# ===========================================================================
+
+
+class TestJournalArgumentDeprecated:
+    """``--journal`` is accepted but ignored with a stderr deprecation note.
+
+    The journal is retired: its narrative content is now folded into the
+    consolidated recap (``docs/bootcamp_recap.md``). The orchestrator keeps the
+    ``--journal`` flag and the ``ArtifactPaths.journal`` field for signature
+    compatibility, but the flag is a no-op that emits a deprecation warning on
+    stderr, and the field defaults to the recap path.
+
+    Validates: Requirements 6.1, 6.2
+    """
+
+    def test_artifact_paths_journal_defaults_to_recap_path(self) -> None:
+        """The ``journal`` field defaults to the consolidated recap path."""
+        assert ega.ArtifactPaths().journal == "docs/bootcamp_recap.md"
+
+    def test_journal_flag_emits_deprecation_warning_on_stderr(
+        self, tmp_path: Path, capsys
+    ) -> None:
+        paths = _paths(tmp_path)
+        _seed_sources(paths, [1, 2, 3])
+        Path(paths.recap).write_text(_recap_text([1, 2, 3]), encoding="utf-8")
+
+        # Explicitly supplying the legacy --journal path must still succeed
+        # (or fail only on missing artifacts) while warning about deprecation.
+        legacy_journal = str(tmp_path / "docs" / "bootcamp_journal.md")
+        ega.main(_argv(paths, "--journal", legacy_journal, "--check"))
+
+        captured = capsys.readouterr()
+        assert "--journal is deprecated" in captured.err
+        assert "consolidated recap" in captured.err
+
+    def test_no_journal_flag_emits_no_deprecation_warning(
+        self, tmp_path: Path, capsys
+    ) -> None:
+        paths = _paths(tmp_path)
+        _seed_sources(paths, [1, 2, 3])
+        Path(paths.recap).write_text(_recap_text([1, 2, 3]), encoding="utf-8")
+
+        # The default argv omits --journal, so no deprecation note is emitted.
+        ega.main(_argv(paths, "--check"))
+
+        assert "--journal is deprecated" not in capsys.readouterr().err
+
+    def test_journal_flag_value_is_ignored_by_recap_reconstruction(
+        self, tmp_path: Path
+    ) -> None:
+        """A bogus ``--journal`` path never affects recap reconstruction."""
+        paths = _paths(tmp_path)
+        _seed_sources(paths, [1, 2, 3])
+        # ensure_recap_md ignores the journal argument entirely.
+        status = ega.ensure_recap_md(
+            paths.progress,
+            paths.recap,
+            "/nonexistent/legacy_journal.md",
+            paths.progress_dir,
+        )
+
+        assert status.exists and status.non_empty
+        content = Path(paths.recap).read_text(encoding="utf-8")
+        for module in (1, 2, 3):
+            assert f"## Module {module}:" in content
+
+
+# ===========================================================================
+# The orchestrator operates on the Consolidated_Log as the single source
+# (journal-recap-consolidation, task 6.2)
+# ===========================================================================
+
+
+class TestConsolidatedRecapSingleSource:
+    """The orchestrator treats the recap Markdown as the single per-module source.
+
+    After journal-recap consolidation, ``docs/bootcamp_recap.md`` (the
+    Consolidated_Log) is the one file the orchestrator reconstructs and verifies.
+    No separate journal file participates: an explicit ``--journal`` path is
+    ignored, the legacy journal file is never read or created, and a
+    present/non-empty/fresh Consolidated_Log is left unchanged (idempotent
+    no-op).
+
+    Validates: Requirements 6.2, 6.3, 11.1
+    """
+
+    def test_recap_reconstructed_as_single_source_ignoring_legacy_journal(
+        self, tmp_path: Path
+    ) -> None:
+        """Ensure mode rebuilds the recap alone; the legacy journal stays absent."""
+        paths = _paths(tmp_path)
+        _seed_sources(paths, [1, 2, 3])  # progress only; recap absent
+        legacy_journal = tmp_path / "docs" / "bootcamp_journal.md"
+        assert not Path(paths.recap).exists()
+        assert not legacy_journal.exists()
+
+        # Even with the legacy --journal path explicitly supplied, the recap is
+        # the only per-module source that gets reconstructed.
+        ega.main(_argv(paths, "--journal", str(legacy_journal)))
+
+        recap_content = Path(paths.recap).read_text(encoding="utf-8")
+        for module in (1, 2, 3):
+            assert f"## Module {module}:" in recap_content
+        # The retired journal file is never materialized as a separate source.
+        assert not legacy_journal.exists()
+
+    def test_valid_consolidated_recap_is_left_unchanged(
+        self, tmp_path: Path
+    ) -> None:
+        """A present, non-empty, fresh Consolidated_Log is an idempotent no-op."""
+        paths = _paths(tmp_path)
+        _seed_sources(paths, [1, 2, 3])
+        original = _recap_text([1, 2, 3])
+        Path(paths.recap).write_text(original, encoding="utf-8")
+        legacy_journal = str(tmp_path / "docs" / "bootcamp_journal.md")
+
+        ega.main(_argv(paths, "--journal", legacy_journal))
+
+        # The Consolidated_Log is left byte-for-byte unchanged (Req 6.3).
+        assert Path(paths.recap).read_text(encoding="utf-8") == original
+
+    def test_ensure_all_reports_recap_as_the_single_verified_source(
+        self, tmp_path: Path
+    ) -> None:
+        """``ensure_all`` verifies the recap path itself as the recap_md source."""
+        paths = _paths(tmp_path)
+        _seed_sources(paths, [1, 2, 3])
+        Path(paths.recap).write_text(_recap_text([1, 2, 3]), encoding="utf-8")
+
+        report = ega.ensure_all(paths)
+
+        recap_status = next(s for s in report.artifacts if s.key == "recap_md")
+        # The single per-module source verified is the Consolidated_Log recap
+        # path — not any separate journal file.
+        assert recap_status.path == paths.recap
+        assert recap_status.exists and recap_status.non_empty
+        assert recap_status.regenerated is False

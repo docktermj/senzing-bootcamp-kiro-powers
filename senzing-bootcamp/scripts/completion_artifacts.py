@@ -16,7 +16,6 @@ Usage:
     python senzing-bootcamp/scripts/completion_artifacts.py \\
         --progress config/bootcamp_progress.json \\
         --recap docs/bootcamp_recap.md \\
-        --journal docs/bootcamp_journal.md \\
         --progress-dir docs/progress \\
         --check
 
@@ -24,9 +23,14 @@ Usage:
     python senzing-bootcamp/scripts/completion_artifacts.py \\
         --progress config/bootcamp_progress.json \\
         --recap docs/bootcamp_recap.md \\
-        --journal docs/bootcamp_journal.md \\
         --progress-dir docs/progress \\
         --plan
+
+    # One-time: merge the legacy journal into the consolidated recap.
+    python senzing-bootcamp/scripts/completion_artifacts.py \\
+        --recap docs/bootcamp_recap.md \\
+        --journal docs/bootcamp_journal.md \\
+        --migrate
 
 Exits 0 on success, 1 on error (or when ``--check`` detects the bug condition).
 """
@@ -142,6 +146,68 @@ class BackfillPlan:
     def is_empty(self) -> bool:
         """Return True when there is nothing to backfill."""
         return not (self.recap_modules or self.journal_modules or self.certificate_modules)
+
+
+@dataclass
+class JournalFields:
+    """The four narrative fields in a ``### Journal`` subsection.
+
+    Attributes:
+        what_we_did: Summary of module activities.
+        what_was_produced: Comma-separated artifact paths.
+        why_it_matters: Explanation of module significance.
+        bootcamper_takeaway: Bootcamper's stated takeaway or ``'N/A'``.
+    """
+
+    what_we_did: str
+    what_was_produced: str
+    why_it_matters: str
+    bootcamper_takeaway: str
+
+
+@dataclass
+class ParsedRecapSection:
+    """Structured representation of one ``## Module N:`` section.
+
+    Attributes:
+        module_number: The module number.
+        module_name: The module display name.
+        timestamp: The completion timestamp string.
+        information_shared: List of items.
+        questions_responses: List of ``(question, response)`` pairs.
+        actions_taken: List of items.
+        duration: Duration string or ``None``.
+        journal: :class:`JournalFields` or ``None``.
+    """
+
+    module_number: int
+    module_name: str
+    timestamp: str
+    information_shared: list[str]
+    questions_responses: list[tuple[str, str]]
+    actions_taken: list[str]
+    duration: str | None
+    journal: JournalFields | None
+
+
+@dataclass
+class MigrationReport:
+    """Result of running the journal-to-recap migration.
+
+    Attributes:
+        modules_merged: Module numbers whose journal entries were merged
+            into existing recap sections.
+        modules_created: Module numbers for which new recap sections were
+            created (journal entry existed but no recap section).
+        already_consolidated: Module numbers skipped because they already
+            had a ``### Journal`` subsection.
+        journal_path: Path to the legacy journal file (for retirement).
+    """
+
+    modules_merged: list[int] = field(default_factory=list)
+    modules_created: list[int] = field(default_factory=list)
+    already_consolidated: list[int] = field(default_factory=list)
+    journal_path: str = ""
 
 
 # ---------------------------------------------------------------------------
@@ -400,11 +466,16 @@ def detect_artifact_gaps(
 
     Returns:
         An :class:`ArtifactGapReport` with sorted per-type missing-module lists.
+
+    Note:
+        Journal content is no longer a separately tracked artifact — it is folded
+        into each recap section as a ``### Journal`` subsection (the
+        journal-recap-consolidation feature). ``missing_journal`` is therefore
+        always empty; the field is retained only for backward compatibility.
     """
     completed = sorted({int(m) for m in modules_completed})
 
     missing_recap = [m for m in completed if m not in inventory.recap_sections]
-    missing_journal = [m for m in completed if m not in inventory.journal_entries]
 
     if inventory.certificates:
         missing_certificate = [m for m in completed if m not in inventory.certificates]
@@ -414,7 +485,7 @@ def detect_artifact_gaps(
 
     return ArtifactGapReport(
         missing_recap=missing_recap,
-        missing_journal=missing_journal,
+        missing_journal=[],
         missing_certificate=missing_certificate,
     )
 
@@ -450,7 +521,9 @@ def plan_backfill(
 
     return BackfillPlan(
         recap_modules=list(gaps.missing_recap),
-        journal_modules=list(gaps.missing_journal),
+        # Journal content is consolidated into each recap section, so it is never
+        # planned as a separate artifact. Kept empty for backward compatibility.
+        journal_modules=[],
         certificate_modules=list(gaps.missing_certificate),
         module_durations=module_durations,
         total_duration=total_duration,
@@ -484,7 +557,9 @@ def is_bug_condition(
     durations = recap_durations or {}
 
     gaps = detect_artifact_gaps(progress_state.modules_completed, inventory)
-    coverage_gap = bool(gaps.missing_recap or gaps.missing_journal or gaps.missing_certificate)
+    # Journal content is consolidated into the recap, so it no longer contributes
+    # a distinct coverage-gap clause.
+    coverage_gap = bool(gaps.missing_recap or gaps.missing_certificate)
 
     has_cert = bool(completed & inventory.certificates)
     missing_cert = bool(completed - inventory.certificates)
@@ -560,6 +635,312 @@ def _discover_recap_durations(content: str) -> dict[int, str]:
 
 
 # ---------------------------------------------------------------------------
+# Consolidated_Log parsing and rendering
+# ---------------------------------------------------------------------------
+#
+# The Consolidated_Log (``docs/bootcamp_recap.md``) holds one Recap_Section per
+# completed module. :func:`parse_recap_sections` reads the file into structured
+# :class:`ParsedRecapSection` objects and :func:`render_recap_section` writes one
+# such object back to canonical Markdown. The pair is designed to satisfy the
+# round-trip property (design Property 1): for any log,
+# ``parse(render_all(parse(log))) == parse(log)``. Rendering is therefore
+# canonical (fixed spacing, ordered subsections) and parsing is tolerant of the
+# incidental whitespace variations a hand-edited or hook-appended file may carry.
+
+# Canonical Recap_Section literals — the single source of truth for round-trip.
+# The module heading is ``## Module N: [Name]`` with an optional
+# `` \u2014 [timestamp]`` suffix. The name is captured non-greedily so the first
+# spaced em-dash delimits the (optional) timestamp; a heading without one parses
+# with an empty timestamp and re-renders without the suffix.
+_MODULE_HEADING_RE = re.compile(
+    r"^##[ \t]+Module[ \t]+(\d+):[ \t]+(.+?)(?:[ \t]+\u2014[ \t]+(.+?))?[ \t]*$",
+    re.MULTILINE,
+)
+_SUBSECTION_SPLIT_RE = re.compile(r"^###[ \t]+(.+?)[ \t]*$", re.MULTILINE)
+_LIST_ITEM_RE = re.compile(r"^[ \t]*(?:-|\d+\.)[ \t]+(.+?)[ \t]*$", re.MULTILINE)
+
+# Paired ``### Questions & Responses`` literals (mirror recap_pdf_render so the
+# hook, the PDF renderer, and this parser share one Q&R contract). A
+# Response_Item nests one level (four spaces) beneath its Question_Item.
+_QR_HEADING = "### Questions & Responses"
+_QR_QUESTION_PREFIX = "- **Q:** "
+_QR_RESPONSE_PREFIX = "- **R:** "
+_QR_EMPTY_ITEM = "- None"
+_QR_INDENT = "    "
+
+# ``### Journal`` subsection literals and its four narrative fields, in order.
+_JOURNAL_HEADING = "### Journal"
+_JOURNAL_FIELDS: tuple[tuple[str, str], ...] = (
+    ("what_we_did", "What we did"),
+    ("what_was_produced", "What was produced"),
+    ("why_it_matters", "Why it matters"),
+    ("bootcamper_takeaway", "Bootcamper's takeaway"),
+)
+
+
+def _extract_list_items(body: str) -> list[str]:
+    """Return the bulleted/numbered list items in a subsection body.
+
+    Leading ``- ``/``N. `` markers and surrounding whitespace are stripped while
+    the remaining text is preserved. Blank lines, ``---`` separators, and stray
+    prose are ignored so a subsection with no list content yields an empty list.
+
+    Args:
+        body: The text of a subsection (everything after its ``###`` heading).
+
+    Returns:
+        The item texts in document order (empty when there are no list items).
+    """
+    return [item.strip() for item in _LIST_ITEM_RE.findall(body)]
+
+
+def _split_subsections(section_text: str) -> dict[str, str]:
+    """Split a Recap_Section body into its ``###`` subsections.
+
+    Args:
+        section_text: The section text following the ``## Module N:`` heading.
+
+    Returns:
+        A map of lowercased subsection name (e.g. ``"information shared"``) to
+        its raw body text. When a name repeats, the first occurrence wins.
+    """
+    subsections: dict[str, str] = {}
+    parts = _SUBSECTION_SPLIT_RE.split(section_text)
+    # parts == [preamble, name_1, body_1, name_2, body_2, ...]; names sit at the
+    # odd indices, each followed by its body.
+    for index in range(1, len(parts) - 1, 2):
+        name = parts[index].strip().lower()
+        subsections.setdefault(name, parts[index + 1])
+    return subsections
+
+
+def _parse_qr_section(body: str) -> list[tuple[str, str]]:
+    """Parse a ``### Questions & Responses`` body into ordered ``(q, r)`` pairs.
+
+    Pairs each Question_Item (a line whose leading spaces are followed by the
+    ``- **Q:** `` prefix) with the immediately following Response_Item (the
+    ``- **R:** `` prefix). The prefixes and the response's four-space indent are
+    dropped; continuation lines of a multi-line response fold back into it with
+    that indent removed, so parsing is the exact inverse of
+    :func:`_render_qr_section`. A ``- None`` body yields zero pairs.
+
+    Args:
+        body: The QR_Section body (text after the ``### Questions & Responses``
+            heading).
+
+    Returns:
+        The ``(question, response)`` pairs in document order.
+    """
+    pairs: list[tuple[str, str]] = []
+    question: str | None = None
+    response_lines: list[str] | None = None
+
+    def commit() -> None:
+        nonlocal question, response_lines
+        if question is not None and response_lines is not None:
+            pairs.append((question, "\n".join(response_lines)))
+        question = None
+        response_lines = None
+
+    # Split on "\n" only (the exact separator the renderer joins with) so this is
+    # a true inverse; ``splitlines`` would over-split on Latin-1 line-boundary
+    # control characters the renderer treats as ordinary in-line text.
+    for line in body.split("\n"):
+        content = line.lstrip(" ")
+        if content.startswith(_QR_QUESTION_PREFIX):
+            commit()
+            question = content[len(_QR_QUESTION_PREFIX):]
+        elif content.startswith(_QR_RESPONSE_PREFIX) and question is not None:
+            response_lines = [content[len(_QR_RESPONSE_PREFIX):]]
+        elif response_lines is not None and line.startswith(" "):
+            # Indented continuation of the current multi-line response; strip the
+            # canonical four-space indent while preserving any deeper indent.
+            response_lines.append(line[len(_QR_INDENT):])
+        else:
+            commit()
+
+    commit()
+    return pairs
+
+
+def _render_qr_section(pairs: list[tuple[str, str]]) -> list[str]:
+    """Render ``(q, r)`` pairs as the ``### Questions & Responses`` lines.
+
+    Emits the heading, a blank line, then each pair as a Question_Item directly
+    followed by its four-space-indented Response_Item. A multi-line response
+    keeps every continuation line at the same indent. With no pairs, the heading
+    is followed by a single ``- None`` item.
+
+    Args:
+        pairs: Ordered ``(question, response)`` pairs.
+
+    Returns:
+        The Markdown lines for the subsection (no trailing blank line).
+    """
+    lines = [_QR_HEADING, ""]
+    if not pairs:
+        lines.append(_QR_EMPTY_ITEM)
+        return lines
+    for question, response in pairs:
+        lines.append(f"{_QR_QUESTION_PREFIX}{question}")
+        response_lines = ("" if response is None else response).split("\n")
+        lines.append(f"{_QR_INDENT}{_QR_RESPONSE_PREFIX}{response_lines[0]}")
+        for continuation in response_lines[1:]:
+            lines.append(f"{_QR_INDENT}{continuation}")
+    return lines
+
+
+def _extract_journal_subsection(section_text: str) -> JournalFields | None:
+    """Parse the ``### Journal`` subsection of a Recap_Section into fields.
+
+    Locates the ``### Journal`` heading and reads the four narrative fields
+    (``**What we did:**``, ``**What was produced:**``, ``**Why it matters:**``,
+    ``**Bootcamper's takeaway:**``) that follow it, stopping at the next ``##``/
+    ``###`` heading. Each field is optional: a missing field yields an empty
+    string so an empty-but-present ``### Journal`` still parses to a
+    :class:`JournalFields`. When no ``### Journal`` heading is present, returns
+    ``None`` (a legacy, pre-consolidation section).
+
+    Args:
+        section_text: The section text following the ``## Module N:`` heading.
+
+    Returns:
+        The parsed :class:`JournalFields`, or ``None`` when the section has no
+        ``### Journal`` subsection.
+    """
+    heading = re.search(r"^###[ \t]+Journal[ \t]*$", section_text, re.MULTILINE)
+    if heading is None:
+        return None
+    block = section_text[heading.end():]
+    # Bound the block to the next heading so a following section's fields never
+    # bleed in.
+    next_heading = re.search(r"^#{2,3}[ \t]+\S", block, re.MULTILINE)
+    if next_heading is not None:
+        block = block[: next_heading.start()]
+
+    values: dict[str, str] = {}
+    for attr, label in _JOURNAL_FIELDS:
+        field_re = re.compile(
+            r"^[ \t]*\*\*" + re.escape(label) + r":\*\*[ \t]*(.*?)[ \t]*$",
+            re.MULTILINE,
+        )
+        match = field_re.search(block)
+        values[attr] = match.group(1).strip() if match else ""
+
+    return JournalFields(
+        what_we_did=values["what_we_did"],
+        what_was_produced=values["what_was_produced"],
+        why_it_matters=values["why_it_matters"],
+        bootcamper_takeaway=values["bootcamper_takeaway"],
+    )
+
+
+def parse_recap_sections(content: str) -> list[ParsedRecapSection]:
+    """Parse a Consolidated_Log into structured :class:`ParsedRecapSection` objects.
+
+    Each ``## Module N: [Name]`` heading (with or without a `` \u2014 [timestamp]``
+    suffix) starts a section that runs until the next such heading or end of
+    file. The recap header block and any content before the first module heading
+    are ignored. Missing subsections degrade gracefully: absent list subsections
+    yield empty lists, an absent ``### Duration`` yields ``None``, and an absent
+    ``### Journal`` yields a ``None`` journal.
+
+    Args:
+        content: The full Consolidated_Log Markdown text.
+
+    Returns:
+        The sections in document order (empty when the content has no module
+        headings).
+    """
+    sections: list[ParsedRecapSection] = []
+    headings = list(_MODULE_HEADING_RE.finditer(content))
+    for index, match in enumerate(headings):
+        body_start = match.end()
+        body_end = headings[index + 1].start() if index + 1 < len(headings) else len(content)
+        section_text = content[body_start:body_end]
+
+        subsections = _split_subsections(section_text)
+
+        duration: str | None = None
+        for line in subsections.get("duration", "").splitlines():
+            stripped = line.strip()
+            if stripped:
+                duration = stripped
+                break
+
+        sections.append(
+            ParsedRecapSection(
+                module_number=int(match.group(1)),
+                module_name=match.group(2).strip(),
+                timestamp=(match.group(3) or "").strip(),
+                information_shared=_extract_list_items(
+                    subsections.get("information shared", "")
+                ),
+                questions_responses=_parse_qr_section(
+                    subsections.get("questions & responses", "")
+                ),
+                actions_taken=_extract_list_items(subsections.get("actions taken", "")),
+                duration=duration,
+                journal=_extract_journal_subsection(section_text),
+            )
+        )
+    return sections
+
+
+def render_recap_section(section: ParsedRecapSection) -> str:
+    """Render a :class:`ParsedRecapSection` back to canonical Consolidated_Log Markdown.
+
+    Produces the ``## Module N:`` heading (appending `` \u2014 [timestamp]`` only
+    when a timestamp is present), the ``### Information Shared``,
+    ``### Questions & Responses``, and ``### Actions Taken`` subsections, the
+    ``### Duration`` subsection only when a duration is set, the ``### Journal``
+    subsection only when journal fields are present, and a trailing ``---``
+    separator so consecutive sections concatenate cleanly. The output is the
+    inverse of :func:`parse_recap_sections` at the structured level.
+
+    Args:
+        section: The structured section to render.
+
+    Returns:
+        The Markdown for one Recap_Section, terminated by a ``---`` separator and
+        a trailing newline.
+    """
+    lines: list[str] = []
+
+    heading = f"## Module {section.module_number}: {section.module_name}"
+    if section.timestamp:
+        heading = f"{heading} \u2014 {section.timestamp}"
+    lines.append(heading)
+    lines.append("")
+
+    lines.append("### Information Shared")
+    lines.extend(f"- {item}" for item in section.information_shared)
+    lines.append("")
+
+    lines.extend(_render_qr_section(section.questions_responses))
+    lines.append("")
+
+    lines.append("### Actions Taken")
+    lines.extend(f"- {item}" for item in section.actions_taken)
+    lines.append("")
+
+    if section.duration is not None:
+        lines.append("### Duration")
+        lines.append(section.duration)
+        lines.append("")
+
+    if section.journal is not None:
+        lines.append(_JOURNAL_HEADING)
+        for attr, label in _JOURNAL_FIELDS:
+            lines.append(f"**{label}:** {getattr(section.journal, attr)}")
+        lines.append("")
+
+    lines.append("---")
+    lines.append("")
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
 # Recap backfill applier (synchronous, verified, idempotent, append-around)
 # ---------------------------------------------------------------------------
 
@@ -631,7 +1012,10 @@ def render_backfill_section(
     The backfill applier does not have the original session transcript, so the
     body subsections carry explicit ``N/A`` placeholders noting the content was
     reconstructed. The ``### Duration`` field is included only when a reliable
-    value is supplied (mirroring the hook's no-placeholder rule).
+    value is supplied (mirroring the hook's no-placeholder rule). Every
+    backfilled section carries a consolidated ``### Journal`` subsection whose
+    four narrative fields are all ``N/A`` scaffolds, so backfilled content shares
+    the Consolidated_Log contract (design Property 3).
 
     Args:
         module: The module number being backfilled.
@@ -665,6 +1049,8 @@ def render_backfill_section(
     ]
     if duration:
         parts += ["", "### Duration", duration]
+    parts += ["", _JOURNAL_HEADING]
+    parts += [f"**{label}:** N/A" for _, label in _JOURNAL_FIELDS]
     parts += ["", "---", ""]
     return "\n".join(parts)
 
@@ -817,6 +1203,324 @@ write_missing_recap_sections = backfill_recap_sections
 
 
 # ---------------------------------------------------------------------------
+# Legacy journal -> Consolidated_Log migration (one-time, idempotent)
+# ---------------------------------------------------------------------------
+#
+# The retired Legacy_Journal_File (``docs/bootcamp_journal.md``) carried a
+# lighter narrative entry per module: ``## Module N: [Name] \u2014 Completed
+# [timestamp]`` followed by the four ``**What we did:**`` / ``**What was
+# produced:**`` / ``**Why it matters:**`` / ``**Bootcamper's takeaway:**``
+# fields. :func:`migrate_journal_to_recap` folds each such entry into the
+# matching Recap_Section as a ``### Journal`` subsection, creating a minimal
+# section when the recap has no matching module. The merge is append-around
+# (existing recap bytes are preserved; the Journal block is spliced in before a
+# section's trailing ``---`` separator) and idempotent (a section that already
+# carries a ``### Journal`` subsection is left untouched).
+
+_LEGACY_JOURNAL_HEADING_RE = re.compile(
+    r"^##[ \t]+Module[ \t]+(\d+):[ \t]*(.*?)[ \t]*$",
+    re.MULTILINE,
+)
+_JOURNAL_FIELD_LINE_RE = re.compile(r"^[ \t]*\*\*(.+?):\*\*[ \t]*(.*)$")
+_JOURNAL_SUBSECTION_RE = re.compile(r"^###[ \t]+Journal[ \t]*$", re.MULTILINE)
+_HRULE_RE = re.compile(r"^---[ \t]*$", re.MULTILINE)
+_COMPLETED_PREFIX = "Completed "
+
+# Reverse lookup from a journal field label back to its dataclass attribute.
+_JOURNAL_LABEL_TO_ATTR = {label: attr for attr, label in _JOURNAL_FIELDS}
+
+
+@dataclass
+class _LegacyEntry:
+    """One parsed Legacy_Journal_File module entry.
+
+    Attributes:
+        name: The module display name from the journal heading (may be empty).
+        timestamp: The completion timestamp from the journal heading, with any
+            leading ``Completed `` label stripped (may be empty).
+        fields: The four parsed narrative fields.
+    """
+
+    name: str
+    timestamp: str
+    fields: JournalFields
+
+
+def _split_journal_heading_remainder(remainder: str) -> tuple[str, str]:
+    """Split ``[Name] \u2014 Completed [timestamp]`` into ``(name, timestamp)``.
+
+    The em-dash separator and a leading ``Completed `` label on the timestamp
+    are both optional; missing parts yield empty strings.
+
+    Args:
+        remainder: The heading text following ``## Module N:``.
+
+    Returns:
+        A ``(name, timestamp)`` tuple with surrounding whitespace stripped.
+    """
+    if "\u2014" in remainder:
+        name_part, _, ts_part = remainder.partition("\u2014")
+        timestamp = ts_part.strip()
+        if timestamp.startswith(_COMPLETED_PREFIX):
+            timestamp = timestamp[len(_COMPLETED_PREFIX):].strip()
+        return name_part.strip(), timestamp
+    return remainder.strip(), ""
+
+
+def _parse_journal_fields(body: str) -> JournalFields:
+    """Parse the four narrative fields from one legacy journal entry body.
+
+    Multi-line field values are folded into a single line (joined with spaces)
+    to match the canonical single-line ``### Journal`` field form. A field that
+    is absent yields an empty string.
+
+    Args:
+        body: The entry text following a ``## Module N:`` journal heading.
+
+    Returns:
+        The parsed :class:`JournalFields` (empty strings for absent fields).
+    """
+    collected: dict[str, list[str]] = {attr: [] for attr, _ in _JOURNAL_FIELDS}
+    current: str | None = None
+    for line in body.split("\n"):
+        match = _JOURNAL_FIELD_LINE_RE.match(line)
+        if match and match.group(1).strip() in _JOURNAL_LABEL_TO_ATTR:
+            current = _JOURNAL_LABEL_TO_ATTR[match.group(1).strip()]
+            first = match.group(2).strip()
+            collected[current] = [first] if first else []
+        elif current is not None:
+            stripped = line.strip()
+            if stripped.startswith("#") or stripped == "---":
+                # A new heading or a separator ends the current field's value.
+                current = None
+            elif stripped:
+                collected[current].append(stripped)
+    values = {attr: " ".join(parts).strip() for attr, parts in collected.items()}
+    return JournalFields(
+        what_we_did=values["what_we_did"],
+        what_was_produced=values["what_was_produced"],
+        why_it_matters=values["why_it_matters"],
+        bootcamper_takeaway=values["bootcamper_takeaway"],
+    )
+
+
+def _parse_legacy_journal(content: str) -> dict[int, _LegacyEntry]:
+    """Parse a Legacy_Journal_File into per-module entries.
+
+    Args:
+        content: The full ``docs/bootcamp_journal.md`` text.
+
+    Returns:
+        A mapping of module number to its parsed :class:`_LegacyEntry`. The first
+        occurrence wins if a module heading is duplicated. Content without any
+        ``## Module N:`` heading yields an empty mapping.
+    """
+    entries: dict[int, _LegacyEntry] = {}
+    headings = list(_LEGACY_JOURNAL_HEADING_RE.finditer(content))
+    for index, match in enumerate(headings):
+        module = int(match.group(1))
+        if module in entries:
+            continue
+        body_start = match.end()
+        body_end = headings[index + 1].start() if index + 1 < len(headings) else len(content)
+        name, timestamp = _split_journal_heading_remainder(match.group(2).strip())
+        entries[module] = _LegacyEntry(
+            name=name,
+            timestamp=timestamp,
+            fields=_parse_journal_fields(content[body_start:body_end]),
+        )
+    return entries
+
+
+def _render_journal_block(fields: JournalFields) -> str:
+    """Render a ``### Journal`` subsection (heading + four fields) as Markdown.
+
+    Args:
+        fields: The narrative fields to render.
+
+    Returns:
+        The subsection text ending with a single trailing newline (no trailing
+        blank line).
+    """
+    lines = [_JOURNAL_HEADING]
+    lines.extend(f"**{label}:** {getattr(fields, attr)}" for attr, label in _JOURNAL_FIELDS)
+    return "\n".join(lines) + "\n"
+
+
+def _has_journal_subsection(section_text: str) -> bool:
+    """Return True when ``section_text`` already contains a ``### Journal`` heading."""
+    return _JOURNAL_SUBSECTION_RE.search(section_text) is not None
+
+
+def _find_recap_section_span(content: str, module: int) -> tuple[int, int] | None:
+    """Locate the ``## Module N:`` section span for ``module`` in ``content``.
+
+    Args:
+        content: The Consolidated_Log text.
+        module: The module number to locate.
+
+    Returns:
+        A ``(start, end)`` character span covering the section (heading through
+        the byte before the next module heading, or end of file), or ``None`` when
+        no section for ``module`` exists.
+    """
+    headings = list(_SECTION_RE.finditer(content))
+    for index, match in enumerate(headings):
+        if int(match.group(1)) != module:
+            continue
+        start = match.start()
+        end = headings[index + 1].start() if index + 1 < len(headings) else len(content)
+        return start, end
+    return None
+
+
+def _insert_journal_block(section_text: str, journal_block: str) -> str:
+    """Splice a ``### Journal`` block into a Recap_Section, preserving its bytes.
+
+    The block is inserted immediately before the section's trailing ``---``
+    separator (or at the end of the section when no separator is present) — i.e.
+    after the last existing subsection (after ``### Duration`` when present).
+    Surrounding blank lines are normalized so the result stays valid CommonMark.
+
+    Args:
+        section_text: The full section text (``## Module N:`` heading onward).
+        journal_block: The rendered ``### Journal`` block (ends with one newline).
+
+    Returns:
+        The section text with the Journal subsection inserted.
+    """
+    separators = list(_HRULE_RE.finditer(section_text))
+    insert_at = separators[-1].start() if separators else len(section_text)
+    before = section_text[:insert_at]
+    after = section_text[insert_at:]
+
+    if before == "" or before.endswith("\n\n"):
+        pad = ""
+    elif before.endswith("\n"):
+        pad = "\n"
+    else:
+        pad = "\n\n"
+
+    return f"{before}{pad}{journal_block}\n{after}"
+
+
+def _render_migration_section(module: int, entry: _LegacyEntry) -> str:
+    """Render a minimal Recap_Section carrying a migrated ``### Journal`` block.
+
+    Used when the Legacy_Journal_File has an entry for a module the recap does
+    not yet cover. Placeholder ``N/A`` subsections stand in for the session
+    content the journal never captured; the ``### Journal`` subsection carries
+    the migrated narrative fields.
+
+    Args:
+        module: The module number.
+        entry: The parsed legacy journal entry.
+
+    Returns:
+        The section Markdown, beginning and ending with a newline so it appends
+        cleanly after existing content without rewriting it.
+    """
+    label = entry.name if entry.name else f"Module {module}"
+    heading = f"## Module {module}: {label}"
+    if entry.timestamp:
+        heading = f"{heading} \u2014 {entry.timestamp}"
+    parts = [
+        "",
+        heading,
+        "",
+        "### Information Shared",
+        "- N/A (section created during journal migration; original session content unavailable)",
+        "",
+        _QR_HEADING,
+        _QR_EMPTY_ITEM,
+        "",
+        "### Actions Taken",
+        "- N/A",
+        "",
+        _JOURNAL_HEADING,
+    ]
+    parts.extend(
+        f"**{label}:** {getattr(entry.fields, attr)}" for attr, label in _JOURNAL_FIELDS
+    )
+    parts += ["", "---", ""]
+    return "\n".join(parts)
+
+
+def migrate_journal_to_recap(recap_path: str, journal_path: str) -> MigrationReport:
+    """Merge Legacy_Journal_File entries into the Consolidated_Log recap.
+
+    Parses ``journal_path`` into per-module narrative entries and folds each into
+    the matching ``## Module N:`` section of ``recap_path`` as a ``### Journal``
+    subsection. When the recap has no matching section, a minimal one is created
+    so no journal content is lost. The operation is append-around (existing recap
+    bytes are preserved) and idempotent (a section that already carries a
+    ``### Journal`` subsection is skipped, so re-running makes no changes).
+
+    Error handling:
+        * Journal absent or unreadable: no-op; returns an empty report.
+        * Journal with no parseable entries: no-op; returns an empty report.
+        * Recap absent: created with a minimal header, then migration proceeds.
+        * Recap not writable: the underlying :class:`OSError` propagates.
+
+    Args:
+        recap_path: Path to ``docs/bootcamp_recap.md`` (the Consolidated_Log).
+        journal_path: Path to the legacy ``docs/bootcamp_journal.md``.
+
+    Returns:
+        A :class:`MigrationReport` recording the modules merged, created, and
+        skipped as already consolidated.
+
+    Raises:
+        OSError: If the recap file exists or must be created but cannot be written.
+    """
+    report = MigrationReport(journal_path=journal_path)
+
+    journal_file = Path(journal_path)
+    if not journal_file.is_file():
+        return report
+    try:
+        journal_content = journal_file.read_text(encoding="utf-8")
+    except OSError:
+        return report
+
+    entries = _parse_legacy_journal(journal_content)
+    if not entries:
+        return report
+
+    recap_file = Path(recap_path)
+    recap_content = (
+        recap_file.read_text(encoding="utf-8") if recap_file.is_file() else _RECAP_HEADER
+    )
+
+    changed = False
+    for module in sorted(entries):
+        entry = entries[module]
+        span = _find_recap_section_span(recap_content, module)
+        if span is None:
+            section = _render_migration_section(module, entry)
+            prefix = recap_content if recap_content.endswith("\n") else recap_content + "\n"
+            recap_content = prefix + section
+            report.modules_created.append(module)
+            changed = True
+            continue
+        start, end = span
+        section_text = recap_content[start:end]
+        if _has_journal_subsection(section_text):
+            report.already_consolidated.append(module)
+            continue
+        merged = _insert_journal_block(section_text, _render_journal_block(entry.fields))
+        recap_content = recap_content[:start] + merged + recap_content[end:]
+        report.modules_merged.append(module)
+        changed = True
+
+    if changed:
+        recap_file.parent.mkdir(parents=True, exist_ok=True)
+        recap_file.write_text(recap_content, encoding="utf-8")
+
+    return report
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -832,7 +1536,15 @@ def main(argv: list[str] | None = None) -> None:
     )
     parser.add_argument("--progress", help="Path to config/bootcamp_progress.json")
     parser.add_argument("--recap", help="Path to docs/bootcamp_recap.md")
-    parser.add_argument("--journal", help="Path to docs/bootcamp_journal.md")
+    parser.add_argument(
+        "--journal",
+        help=(
+            "Path to the legacy docs/bootcamp_journal.md. Deprecated and ignored "
+            "for --plan/--check/--backfill (journal content is now part of the "
+            "consolidated recap); still required by --migrate to locate the "
+            "legacy file."
+        ),
+    )
     parser.add_argument(
         "--progress-dir",
         dest="progress_dir",
@@ -861,7 +1573,43 @@ def main(argv: list[str] | None = None) -> None:
             "completed module missing one (append-around, idempotent)."
         ),
     )
+    mode.add_argument(
+        "--migrate",
+        action="store_true",
+        help=(
+            "Merge the legacy journal (--journal) into the consolidated recap "
+            "(--recap) as a '### Journal' subsection per module (idempotent)."
+        ),
+    )
     args = parser.parse_args(argv)
+
+    # --- Migration mode (independent of progress state) ---
+    if args.migrate:
+        if not args.recap:
+            print("--migrate requires --recap", file=sys.stderr)
+            sys.exit(1)
+        if not args.journal:
+            print("--migrate requires --journal", file=sys.stderr)
+            sys.exit(1)
+        try:
+            report = migrate_journal_to_recap(args.recap, args.journal)
+        except OSError as exc:
+            print(f"Journal-to-recap migration failed: {exc}", file=sys.stderr)
+            sys.exit(1)
+        print(f"Modules merged:           {report.modules_merged}")
+        print(f"Modules created:          {report.modules_created}")
+        print(f"Already consolidated:     {report.already_consolidated}")
+        sys.exit(0)
+
+    # --- Deprecation notice for the retired --journal argument ---
+    # Outside --migrate, journal content is now part of the consolidated recap,
+    # so the planner/check/plan/backfill paths ignore --journal entirely.
+    if args.journal:
+        print(
+            "Warning: --journal is deprecated; journal content is now part of "
+            "the consolidated recap.",
+            file=sys.stderr,
+        )
 
     # --- Load progress state ---
     modules_completed: list[int] = []
@@ -893,17 +1641,15 @@ def main(argv: list[str] | None = None) -> None:
     recap_content = ""
     if args.recap and Path(args.recap).is_file():
         recap_content = Path(args.recap).read_text(encoding="utf-8")
-    journal_content = ""
-    if args.journal and Path(args.journal).is_file():
-        journal_content = Path(args.journal).read_text(encoding="utf-8")
 
     certificates: set[int] = set()
     if args.progress_dir:
         certificates = _discover_certificates(Path(args.progress_dir))
 
+    # Journal entries are no longer discovered: journal content is consolidated
+    # into each recap section, so the inventory leaves journal_entries empty.
     inventory = ArtifactInventory(
         recap_sections=_discover_section_modules(recap_content),
-        journal_entries=_discover_section_modules(journal_content),
         certificates=certificates,
     )
 

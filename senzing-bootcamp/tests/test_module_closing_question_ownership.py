@@ -557,15 +557,15 @@ _HEADINGS_MODULE_COMPLETION = [
     "### Recap File Creation",
     "# Senzing Bootcamp Recap",
     "### References",
-    "## Bootcamp Journal",
-    "### Journal File Creation (First Module Completion)",
-    "# Bootcamp Journal",
-    "### Journal Entry Append",
-    "## Module N: {Name} \u2014 Completed {ISO 8601 with timezone}",
-    "### Field Derivation Rules",
-    "### Workflow Position",
-    "### Non-blocking Behavior",
-    "### References",
+    # Re-baselined for journal-recap-consolidation: the standalone
+    # "## Bootcamp Journal" section (and its "### Journal File Creation",
+    # "# Bootcamp Journal", "### Journal Entry Append", the journal
+    # "## Module N: {Name} — Completed ..." template, "### Field Derivation
+    # Rules", "### Workflow Position", "### Non-blocking Behavior", and the
+    # journal "### References" sub-headings) was removed. The journal's four
+    # narrative fields now live in a "### Journal" subsection inside each
+    # Recap_Section of the Consolidated_Log (docs/bootcamp_recap.md). Content
+    # was consolidated, not deleted.
     "## Module Completion Certificate",
     "### Certificate Template",
     "# Module [N]: [Title] \u2014 Complete \u2705",

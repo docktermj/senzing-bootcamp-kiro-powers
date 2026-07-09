@@ -421,7 +421,7 @@ file_metadata:
     token_count: 412
     size_category: small
   hook-registry-module-any.md:
-    token_count: 4374
+    token_count: 4794
     size_category: large
   hook-registry.md:
     token_count: 872
@@ -565,19 +565,19 @@ file_metadata:
     token_count: 850
     size_category: medium
   module-completion-artifacts.md:
-    token_count: 3978
+    token_count: 3426
     size_category: large
   module-completion-error-handling.md:
-    token_count: 604
+    token_count: 637
     size_category: medium
   module-completion-next-steps.md:
-    token_count: 702
+    token_count: 705
     size_category: medium
   module-completion-track.md:
-    token_count: 3288
+    token_count: 3310
     size_category: large
   module-completion.md:
-    token_count: 2262
+    token_count: 2272
     size_category: large
   module-prerequisites.md:
     token_count: 1395
@@ -659,7 +659,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 207168
+  total_tokens: 207104
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

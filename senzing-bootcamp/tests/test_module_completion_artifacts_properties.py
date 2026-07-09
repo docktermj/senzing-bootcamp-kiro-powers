@@ -22,6 +22,13 @@ Correctness Properties section, exercised against the deterministic planner in
                     left unchanged.
 
 Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.6, 3.5
+
+Also carries the journal-recap-consolidation Property 8 (duration computation is
+correct): for ordered timestamps the per-module Duration equals the true elapsed
+time and the Total Duration equals the sum of per-module durations, while missing,
+unparseable, or out-of-order timestamps are omitted (None).
+
+Validates: Requirements 5.6 (journal-recap-consolidation)
 """
 
 from __future__ import annotations
@@ -207,7 +214,6 @@ class TestBackfillCompletesSetWithoutDuplication:
         plan = plan_backfill(progress, inventory)
 
         expected_recap = sorted(completed - inventory.recap_sections)
-        expected_journal = sorted(completed - inventory.journal_entries)
         if inventory.certificates:
             expected_cert = sorted(completed - inventory.certificates)
         else:
@@ -215,7 +221,9 @@ class TestBackfillCompletesSetWithoutDuplication:
 
         # Set-difference correctness.
         assert plan.recap_modules == expected_recap
-        assert plan.journal_modules == expected_journal
+        # Journal content is consolidated into the recap, so it is never planned
+        # as a separate artifact regardless of the (ignored) journal inventory.
+        assert plan.journal_modules == []
         assert plan.certificate_modules == expected_cert
 
         # No duplicates within any plan list.
@@ -225,12 +233,10 @@ class TestBackfillCompletesSetWithoutDuplication:
 
         # Never re-emit an artifact that already exists.
         assert set(plan.recap_modules).isdisjoint(inventory.recap_sections)
-        assert set(plan.journal_modules).isdisjoint(inventory.journal_entries)
         assert set(plan.certificate_modules).isdisjoint(inventory.certificates)
 
-        # Applying the plan completes coverage for every completed module.
+        # Applying the plan completes recap coverage for every completed module.
         assert (inventory.recap_sections & completed) | set(plan.recap_modules) == completed
-        assert (inventory.journal_entries & completed) | set(plan.journal_modules) == completed
 
     @settings(max_examples=MAX_EXAMPLES)
     @given(st_state_and_inventory())
@@ -453,3 +459,131 @@ class TestPreservationNonBuggyInputsUnchanged:
         assert plan.recap_modules == []
         assert plan.journal_modules == []
         assert plan.certificate_modules == []
+
+
+# ===========================================================================
+# Property 8 (journal-recap-consolidation) — duration equals elapsed time
+# ===========================================================================
+#
+# Feature: journal-recap-consolidation, Property 8: For any set of ISO 8601
+# timestamps in step_history where consecutive modules have parseable, ordered
+# timestamps, the computed per-module Duration equals the difference between the
+# module's updated_at and its predecessor's updated_at (or started_at for the
+# first module), and the Total Duration equals the sum of all per-module
+# durations.
+
+
+@st.composite
+def st_ordered_minute_timeline(draw):
+    """Strategy: an ordered timeline whose per-module gaps are whole minutes.
+
+    Returns ``(started_at, step_history, modules, gaps)`` where ``gaps[i]`` is the
+    true elapsed seconds for module ``i + 1``. Module 1 spans ``started_at`` to its
+    own ``updated_at``; module ``k`` spans module ``k - 1``'s ``updated_at`` to its
+    own. Because each timestamp is the running sum of the gaps, every per-module
+    elapsed time equals its own gap exactly.
+
+    Gaps are multiples of 60 seconds so the human-readable Duration round-trips
+    losslessly through ``_duration_to_seconds``: the formatter only drops a
+    sub-minute remainder once minutes/hours/days are present, and minute-aligned
+    gaps have no such remainder (and their sum stays minute-aligned too).
+    """
+    n = draw(st.integers(min_value=1, max_value=8))
+    base = draw(
+        st.datetimes(min_value=datetime(2020, 1, 1), max_value=datetime(2030, 1, 1))
+    )
+    minute_gaps = draw(
+        st.lists(st.integers(min_value=0, max_value=5_000), min_size=n, max_size=n)
+    )
+    gaps = [minutes * 60 for minutes in minute_gaps]
+    started_at = base.isoformat()
+    step_history: dict[str, dict[str, object]] = {}
+    current = base
+    for index, gap in enumerate(gaps, start=1):
+        current = current + timedelta(seconds=gap)
+        step_history[str(index)] = {"updated_at": current.isoformat()}
+    return started_at, step_history, list(range(1, n + 1)), gaps
+
+
+@st.composite
+def st_reversed_pair(draw):
+    """Strategy: ``(earlier_iso, later_iso, gap)`` with ``earlier`` strictly before.
+
+    Used to build out-of-order bounds (upper timestamp preceding its lower bound).
+    """
+    base = draw(
+        st.datetimes(min_value=datetime(2020, 1, 1), max_value=datetime(2030, 1, 1))
+    )
+    gap = draw(st.integers(min_value=1, max_value=1_000_000))
+    later = base + timedelta(seconds=gap)
+    return base.isoformat(), later.isoformat(), gap
+
+
+class TestDurationComputation:
+    """Property 8: Duration computation from timestamps is correct.
+
+    Feature: journal-recap-consolidation, Property 8. For ordered timestamps the
+    per-module Duration equals the true elapsed time and the Total Duration equals
+    the sum of the per-module durations; missing, unparseable, or out-of-order
+    timestamps are omitted (None).
+
+    Validates: Requirements 5.6
+    """
+
+    @given(st_ordered_minute_timeline())
+    def test_per_module_duration_equals_elapsed(self, timeline) -> None:
+        """Each module's computed Duration equals the gap between its ``updated_at``
+        and the prior module's ``updated_at`` (or ``started_at`` for the first)."""
+        started_at, step_history, modules, gaps = timeline
+        prior_timestamp: str | None = None
+        for module, gap in zip(modules, gaps):
+            result = compute_module_duration(step_history, started_at, module, prior_timestamp)
+            assert result is not None
+            assert not is_placeholder(result)
+            assert _duration_to_seconds(result) == gap
+            prior_timestamp = step_history[str(module)]["updated_at"]  # type: ignore[assignment]
+
+    @given(st_ordered_minute_timeline())
+    def test_total_duration_equals_sum_of_modules(self, timeline) -> None:
+        """The Total Duration equals the sum of all per-module elapsed times."""
+        started_at, step_history, modules, gaps = timeline
+        total = compute_total_duration(step_history, started_at, modules)
+        assert total is not None
+        assert not is_placeholder(total)
+        assert _duration_to_seconds(total) == sum(gaps)
+
+        # Cross-check: the total equals the sum of the independently computed
+        # per-module durations, not just the sum of the generated gaps.
+        prior_timestamp: str | None = None
+        per_module_seconds = 0.0
+        for module in modules:
+            elapsed = compute_module_duration(step_history, started_at, module, prior_timestamp)
+            assert elapsed is not None
+            per_module_seconds += _duration_to_seconds(elapsed)
+            prior_timestamp = step_history[str(module)]["updated_at"]  # type: ignore[assignment]
+        assert _duration_to_seconds(total) == per_module_seconds
+
+    @given(st_reversed_pair())
+    def test_out_of_order_timestamps_return_none(self, pair) -> None:
+        """When the module's ``updated_at`` precedes its lower bound (end < start),
+        the Duration is omitted (None) rather than a negative or placeholder value."""
+        earlier_iso, later_iso, _gap = pair
+        module = 3
+        step_history = {str(module): {"updated_at": earlier_iso}}
+        # Lower bound (prior_timestamp) is later than the upper bound -> unreliable.
+        assert compute_module_duration(step_history, None, module, later_iso) is None
+
+    @given(
+        modules=st_modules_completed(min_size=1, max_size=8),
+        bad=st.sampled_from(_INVALID_TIMESTAMPS),
+    )
+    def test_missing_or_unparseable_timestamps_return_none(self, modules, bad) -> None:
+        """Missing or unparseable ``updated_at`` values omit both the per-module and
+        the total Duration."""
+        missing: dict[str, dict[str, object]] = {}
+        unparseable = {str(module): {"updated_at": bad} for module in modules}
+        for module in modules:
+            assert compute_module_duration(missing, None, module, None) is None
+            assert compute_module_duration(unparseable, None, module, None) is None
+        assert compute_total_duration(missing, None, modules) is None
+        assert compute_total_duration(unparseable, None, modules) is None

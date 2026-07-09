@@ -392,7 +392,17 @@ _BASELINE_HASHES: dict[str, str] = {
     # file_metadata counts). Only the budget block changed;
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "2342ef406e8bec38a672a4285c4cb38edaca410317cde2997771c742d1f1a6f7",
+    # Re-baselined once more (207168 -> 207104) for the journal-recap-consolidation
+    # spec (Task 10.3 resynced steering-index.yaml): the feature's steering edits
+    # netted -64 tokens across the hook/completion slices —
+    # hook-registry-module-any.md grew +420, module-completion-artifacts.md shrank
+    # -552, module-completion.md +10, module-completion-error-handling.md +33,
+    # module-completion-next-steps.md +3, module-completion-track.md +22 — all
+    # recomputed by measure_steering.py into file_metadata and the budget total
+    # (207104 = sum of file_metadata counts). Only the budget block changed;
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    "budget": "1ea948afe6e68ac693cb7758440b7a1ad08aeb3afcc73a69ff927d4b70516f49",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -785,7 +795,16 @@ class TestNonPhaseBlocksBytePreserved:
         added the "## Canonical File-Placement Contract" section and Tasks 5.2/6.1
         made smaller within-tolerance edits to other always-loaded files, all
         recomputed by ``measure_steering.py`` into ``file_metadata`` and the
-        budget total.
+        budget total. Most recently, the journal-recap-consolidation spec
+        re-baselines again (207168 -> 207104): Task 10.3 resynced
+        ``steering-index.yaml`` after the feature's steering edits netted -64
+        tokens across the hook/completion slices —
+        ``hook-registry-module-any.md`` grew +420,
+        ``module-completion-artifacts.md`` shrank -552,
+        ``module-completion.md`` +10, ``module-completion-error-handling.md``
+        +33, ``module-completion-next-steps.md`` +3, and
+        ``module-completion-track.md`` +22 — all recomputed by
+        ``measure_steering.py`` into ``file_metadata`` and the budget total.
         Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
@@ -802,12 +821,11 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (207168 after the graduation-enrichment spec grew graduation.md with the
-        # Src/Data index-generation steps, the README index-update step, and the
-        # Artifact_Announcement extension), so the hash cannot silently re-pin a
-        # stale value.
+        # (207104 after the journal-recap-consolidation spec's Task 10.3 resync
+        # netted -64 tokens across the hook/completion slices), so the hash cannot
+        # silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 207168" in budget_block
+        assert "total_tokens: 207104" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 3
-- implemented: 265
+- in-progress: 2
+- implemented: 266
 - superseded: 2
 - abandoned: 0
 - unknown: 3
@@ -724,7 +724,7 @@
 
 ### journal-recap-consolidation
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/journal-recap-consolidation/](.kiro/specs/journal-recap-consolidation/)

@@ -126,11 +126,12 @@ You are checking whether the bootcamper just completed a module and, if so, appe
    - Information Shared: key concepts, explanations, and reference material presented to the bootcamper during this module
    - Questions & Responses: an ORDERED LIST OF PAIRS, one pair per substantive question the agent posed to the bootcamper (exclude rhetorical or transitional prompts), each pair holding the question and the bootcamper's response to that question. Preserve the ascending sequence in which the questions were asked during the module. A substantive question is one whose text contains at least one non-whitespace character after leading and trailing whitespace is removed. Keep each question adjacent to its own response — do NOT collect questions and responses as two separate parallel lists.
    - Actions Taken: all file creations, modifications, code generation, configuration changes, and commands executed during the module
+   - Journal Narrative: a concise narrative summary for the `### Journal` subsection made up of four fields — `**What we did:**` (what was accomplished this module), `**What was produced:**` (the artifact paths created or updated), `**Why it matters:**` (why this module's work matters to the bootcamper's goal), and `**Bootcamper's takeaway:**` (the bootcamper's own stated takeaway, or `N/A` when none was given)
 
 4. COMPUTE DURATION (no placeholders): Obtain the per-module Duration and the cumulative Total Duration from the deterministic planner instead of from session context. Run:
 
    ```
-   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --plan
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --progress-dir docs/progress --plan
    ```
 
    Parse the emitted JSON. Use `module_durations["N"]` (where N is the completed module number) as that module's Duration, and `total_duration` as the cumulative Total Duration. These values are computed from the ISO 8601 timestamps stored in `step_history` and the top-level `started_at` in `config/bootcamp_progress.json`. If the planner does not return a value for this module (the key is absent or null), OMIT the `### Duration` field for this module entirely — do NOT write a placeholder such as "Module N session". If `total_duration` is null, OMIT the **Total Duration** value in the header rather than writing a placeholder. If the planner cannot be run (file-system error or timeout), log a warning and continue, omitting the Duration fields rather than fabricating a value.
@@ -173,6 +174,12 @@ You are checking whether the bootcamper just completed a module and, if so, appe
    ### Duration
    [module_durations["N"] from planner]
 
+   ### Journal
+   **What we did:** [summary of what was accomplished this module]
+   **What was produced:** [artifact paths created or updated]
+   **Why it matters:** [why this module's work matters]
+   **Bootcamper's takeaway:** [bootcamper's stated takeaway, or N/A]
+
    ---
    ```
 
@@ -184,12 +191,19 @@ You are checking whether the bootcamper just completed a module and, if so, appe
    - If a response spans more than one line, prefix every continuation line with at least four leading spaces so it stays nested beneath the question.
    - If the module has zero substantive questions, write the `### Questions & Responses` heading followed by exactly one list item consisting of the literal text `- None` and no question/response pairs.
 
+   JOURNAL SUBSECTION FORMAT (follow exactly): After the `### Actions Taken` subsection — and after the `### Duration` subsection when one was written — emit exactly ONE `### Journal` heading, followed on separate lines by these four narrative fields in this exact order, each starting at zero indentation with its bold label followed by a single space and the field value:
+   - `**What we did:**` — a concise summary of what was accomplished during this module.
+   - `**What was produced:**` — the artifact paths created or updated during this module.
+   - `**Why it matters:**` — why this module's work matters to the bootcamper's goal.
+   - `**Bootcamper's takeaway:**` — the bootcamper's own stated takeaway. When the module produced no takeaway value, write `N/A` for this field.
+   Every consolidated section MUST include the `### Journal` subsection with all four fields; when a field has no meaningful content, write `N/A` for that field rather than omitting it. The narrative journal content lives here in the Consolidated_Log — do NOT write a separate journal file.
+
 8. UPDATE TOTAL DURATION: If the file header contains a **Total Duration** line and the planner returned a non-null `total_duration`, update it to that value. The total duration is rolled up from the real per-module elapsed times and must be monotonically non-decreasing. If the planner returned null for `total_duration`, leave the header without a Total Duration value rather than writing a placeholder.
 
 9. VERIFY AND BACKFILL (synchronous, before reporting success): The append is not complete until you confirm it persisted. Re-read `docs/bootcamp_recap.md` and check for a `## Module N:` heading for the module you just completed. If the heading is present, proceed. If it is ABSENT (the write did not persist, this is the final module of a track, or the section was never written), do NOT report success: run the deterministic backfill applier, which appends a `## Module N:` section for every completed module missing one (append-around, preserving existing bytes; idempotent when nothing is missing):
 
    ```
-   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --journal docs/bootcamp_journal.md --progress-dir docs/progress --backfill
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --progress-dir docs/progress --backfill
    ```
 
    The applier exits non-zero and names any modules still missing if verification fails after the write. Re-read the file and confirm the `## Module N:` heading is now present before continuing. If the applier cannot be run (file-system error or timeout), log a warning and continue without blocking module completion — the track-completion reconciliation pass is the final safety net.
@@ -202,7 +216,7 @@ CONSTRAINTS:
 - Duration and Total Duration values come ONLY from `completion_artifacts.py`; never derive them from session context and never write a placeholder such as "Module N session". When the planner omits a value, omit the corresponding field.
 - If any section has no content (e.g., no actions were taken), include the subsection heading with a single item "None" or "N/A". This does NOT apply to the `### Duration` field, which is omitted entirely when the planner returns no value, and it does NOT apply to the `### Questions & Responses` section, which follows its own rule above (heading followed by exactly `- None` when there are zero substantive questions).
 - If the file cannot be written due to a file system error, log a warning message and continue without blocking the module completion flow. Do NOT raise an error or halt execution.
-- Do NOT alter the behavior of any other hooks (celebration, journal entry, etc.).
+- Do NOT alter the behavior of any other hooks (celebration, etc.).
 - Keep the recap factual and concise — summarize rather than reproduce entire conversations.
 - Do NOT include secrets, credentials, environment variable values, or connection strings in the recap content.
 - Module sections must appear in chronological order of completion timestamps.

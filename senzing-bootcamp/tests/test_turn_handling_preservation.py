@@ -415,11 +415,14 @@ class TestCompletionFixedStepOrderPreserved:
 
     def test_fixed_step_order_present(self) -> None:
         content = _MODULE_COMPLETION.read_text(encoding="utf-8")
+        # After the journal-recap consolidation the separate recap_append /
+        # journal_entry steps are folded into a single consolidated_append, and
+        # capture_hook_safeguard runs before next_step_options.
         steps = [
             "progress_update",
-            "recap_append",
-            "journal_entry",
+            "consolidated_append",
             "completion_certificate",
+            "capture_hook_safeguard",
             "next_step_options",
         ]
         positions = [content.find(step) for step in steps]

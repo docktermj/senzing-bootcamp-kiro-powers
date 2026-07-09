@@ -103,7 +103,9 @@ class ArtifactPaths:
         recap: Recap Markdown artifact (`docs/bootcamp_recap.md`).
         transcript: Q&A transcript artifact (`docs/bootcamp_transcript.md`).
         progress: Progress JSON source (`config/bootcamp_progress.json`).
-        journal: Bootcamp journal (`docs/bootcamp_journal.md`).
+        journal: Deprecated no-op retained for signature compatibility; defaults
+            to the recap path (`docs/bootcamp_recap.md`) since journal content is
+            now part of the consolidated recap.
         progress_dir: Per-module artifacts directory (`docs/progress`).
         pdf: Rendered PDF output (`docs/bootcamp_recap.pdf`).
         html: Rendered HTML fallback output (`docs/bootcamp_recap.html`).
@@ -113,7 +115,7 @@ class ArtifactPaths:
     recap: str = "docs/bootcamp_recap.md"
     transcript: str = "docs/bootcamp_transcript.md"
     progress: str = "config/bootcamp_progress.json"
-    journal: str = "docs/bootcamp_journal.md"
+    journal: str = "docs/bootcamp_recap.md"
     progress_dir: str = "docs/progress"
     pdf: str = "docs/bootcamp_recap.pdf"
     html: str = "docs/bootcamp_recap.html"
@@ -463,8 +465,9 @@ def ensure_recap_md(
     Args:
         progress: Path to the bootcamp progress JSON source.
         recap: Path to write (or verify) the recap Markdown artifact.
-        journal: Path to the bootcamp journal (accepted for signature
-            compatibility with the backfill applier).
+        journal: Deprecated no-op accepted for signature compatibility; journal
+            content is now part of the consolidated recap and this value is
+            unused.
         progress_dir: Path to the per-module artifacts directory.
 
     Returns:
@@ -472,6 +475,8 @@ def ensure_recap_md(
         the recap exists, is non-empty (with at least one ``## Module N``
         section), was regenerated this run, and any error encountered.
     """
+    del journal  # deprecated no-op; retained for signature compatibility only
+
     recap_path = Path(recap)
     progress_path = Path(progress)
     progress_dir_path = Path(progress_dir)
@@ -512,7 +517,6 @@ def ensure_recap_md(
                 progress,
                 recap,
                 progress_dir=progress_dir,
-                journal=journal,
             )
         except Exception as exc:  # noqa: BLE001 - preserve existing artifact, record error (Req 3.3)
             error = f"recap reconstruction failed: {exc}"
@@ -970,7 +974,12 @@ def _build_parser() -> argparse.ArgumentParser:
         "--progress", default=defaults.progress, help="progress JSON source"
     )
     parser.add_argument(
-        "--journal", default=defaults.journal, help="bootcamp journal"
+        "--journal",
+        default=None,
+        help=(
+            "deprecated no-op; journal content is now part of the consolidated "
+            "recap (docs/bootcamp_recap.md) and this argument is ignored"
+        ),
     )
     parser.add_argument(
         "--progress-dir",
@@ -1003,12 +1012,21 @@ def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
 
+    # The former separate journal path is retired: journal content is now part
+    # of the consolidated recap. Accept --journal for backward compatibility but
+    # ignore it, noting the deprecation on stderr (Req 6.2).
+    if args.journal is not None:
+        print(
+            "Warning: --journal is deprecated and ignored; journal content is "
+            "now part of the consolidated recap (docs/bootcamp_recap.md).",
+            file=sys.stderr,
+        )
+
     paths = ArtifactPaths(
         log=args.log,
         recap=args.recap,
         transcript=args.transcript,
         progress=args.progress,
-        journal=args.journal,
         progress_dir=args.progress_dir,
         pdf=args.pdf,
         html=args.html,

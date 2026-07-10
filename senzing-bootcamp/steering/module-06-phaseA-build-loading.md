@@ -134,7 +134,12 @@ inclusion: manual
 >
 > If the file is missing/unreadable or any value is absent, treat that value as indeterminate (`None`) — do not fail. `should_prompt` returns `False` for indeterminate inputs, so the flow falls back to the existing advisory behavior and continues to the load.
 >
-> **2. Compute `already_decided` from the decision marker.** Read the `sqlite_volume_prompt` key from the same preferences file. Set `already_decided = True` **only when** that marker exists with `decided: true` AND its `tier` and `raw_value` both match the current `production_volume.tier` and `production_volume.raw_value`. Otherwise (marker missing, `decided` not true, or a tier/raw_value mismatch from a reclassified load) set `already_decided = False`. This scopes the no-reprompt suppression to *this same load* — a genuinely different volume may prompt again.
+> **2. Compute `already_decided` from the decision marker (Module 6 match OR an applicable Module 4 decision).** Read the `sqlite_volume_prompt` key from the same preferences file into `marker`. Set `already_decided = True` when **either** branch holds:
+>
+> - **(a) Existing Module 6 match** — `marker` exists with `decided: true` AND its `tier` and `raw_value` both match the current `production_volume.tier` and `production_volume.raw_value`, **OR**
+> - **(b) Applicable Module 4 decision** — `load_time_warning.module4_decision_applies(marker, load_time_warning.compute_load_identity(registry), db_type)` returns `True`. This honors a decision the bootcamper already recorded during the Module 4 SQLite Load-Time Warning: it is `True` only for a decided Module 4 marker (`source: module4_load_time`) whose `load_identity` matches the current load's identity AND the active `db_type` normalizes to SQLite. Obtain `registry` by reading `config/data_sources.yaml` through the `data_sources` reader chain (`parse_registry_yaml` → `apply_migrations` → `_dict_to_registry`); if the registry is unavailable/unreadable, the Module 4 branch simply does not apply (treat it as `False`) and the existing branch (a) governs — keep it non-blocking.
+>
+> Otherwise (marker missing, `decided` not true, a tier/raw_value mismatch from a reclassified load, and no applicable Module 4 decision) set `already_decided = False`. This scopes the no-reprompt suppression to *this same load*: a genuinely different volume, or a Module 4 decision whose `load_identity` differs from the current load, falls back to the existing Module 6 condition and may prompt again. A Module 4 decision recorded for this same load on SQLite suppresses the redundant re-prompt.
 >
 > **3. Call the predicate.** Evaluate `volume_utils.should_prompt(tier, db_type, already_decided)`.
 >

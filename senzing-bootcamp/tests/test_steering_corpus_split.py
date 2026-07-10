@@ -145,6 +145,24 @@ GENERATED_FILES: frozenset[str] = frozenset(
 # sibling module-01-phase1-discovery.md exemption for the same in-flow option
 # pattern — this single unit is exempted with this justification. It remains
 # indexed in file_metadata.
+#
+# module-04-data-collection.md (module4-sqlite-load-time-warning spec): the
+# Module 4 collection flow gained the Step 8b in-flow SQLite Load_Time_Warning
+# (a collection-time heads-up placed after Step 8a and before the Step 9
+# transition — the should_warn_load_time trigger, the MCP-sourced TimingGuidance
+# presentation, the proceed / sample / switch-database options with the sampling
+# sub-choice, and the shared sqlite_volume_prompt decision-marker recording),
+# growing the file from 4888 to 6112 tokens — past the 5000 split_threshold. The
+# Module 4 Steps 1-9 data-collection flow is a single cohesive, sequential
+# workflow whose steps are interdependent and must load together (the load-time
+# heads-up lives in-flow after the Step 8a record-count back-fill and routes into
+# the Step 9 transition), and the surfaced wording is asserted by
+# test_load_time_steering.py, so it cannot be trimmed without dropping
+# requirement-linked steering behavior. The split_threshold_tokens budget value
+# is held at 5000 across the corpus; rather than fragment a workflow that must be
+# read as a whole — mirroring the sibling module-01-phase1-discovery.md and
+# module-02-sdk-setup.md in-flow-option exemptions — this single unit is exempted
+# with this justification. It remains indexed in file_metadata.
 EXEMPTIONS: frozenset[str] = frozenset(
     {
         "module-completion.md",
@@ -153,6 +171,7 @@ EXEMPTIONS: frozenset[str] = frozenset(
         "graduation.md",
         "module-03-phase2-visualization.md",
         "module-02-sdk-setup.md",
+        "module-04-data-collection.md",
     }
 )
 

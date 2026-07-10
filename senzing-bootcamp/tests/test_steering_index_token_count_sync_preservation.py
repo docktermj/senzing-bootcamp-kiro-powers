@@ -448,7 +448,17 @@ _BASELINE_HASHES: dict[str, str] = {
     # changed (solely the total_tokens line);
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "cb9bf52911bcc336e3efa9ad852477ecefbccb986534d7c0b03e6bf9a74d2398",
+    # Re-baselined once more (210967 -> 212484) for the
+    # module4-sqlite-load-time-warning spec: module-04-data-collection.md
+    # (4888 -> 6112) gained the Step 8b in-flow SQLite Load_Time_Warning
+    # (collection-time heads-up), and module-06-phaseA-build-loading.md
+    # (3650 -> 3943) gained the additive module4_decision_applies OR into its
+    # already_decided computation, both recomputed by measure_steering.py into
+    # file_metadata and the budget total (212484 = sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    "budget": "cec692fc7bed04e7ef6961e754b71f93341b4ec5430b64ebdaebe4e67ceb2777",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -883,11 +893,12 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (210967 after the truthset-fallback-source spec grew the Module 3
-        # verification steering files and resynced the steering token index), so
-        # the hash cannot silently re-pin a stale value.
+        # (212484 after the module4-sqlite-load-time-warning spec grew
+        # module-04-data-collection.md and module-06-phaseA-build-loading.md and
+        # resynced the steering token index), so the hash cannot silently re-pin
+        # a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 210967" in budget_block
+        assert "total_tokens: 212484" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

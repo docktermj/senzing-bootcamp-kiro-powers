@@ -1,0 +1,645 @@
+{
+  "pbtResults": {
+    "1.2 Write property test for the trigger predicate": {
+      "status": "passed",
+      "lastRunTimestamp": 1783710068349
+    },
+    "5.2 Write property test for sampling-target validation": {
+      "status": "passed",
+      "lastRunTimestamp": 1783710468733
+    },
+    "1.3 Write property test for the collected-total lower bound feeding the trigger": {
+      "status": "passed",
+      "lastRunTimestamp": 1783710582014
+    },
+    "5.4 Write property test for count-based selection": {
+      "status": "passed",
+      "lastRunTimestamp": 1783710829463
+    },
+    "5.6 Write property test for ER-demonstrating selection": {
+      "status": "passed",
+      "lastRunTimestamp": 1783710988432
+    },
+    "2.2 Write property test for the warning-text builder": {
+      "status": "passed",
+      "lastRunTimestamp": 1783711138931
+    },
+    "8.2 Write property test for the decision-marker round-trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1783712068894
+    },
+    "8.4 Write property test for identity determinism and Module 6 scoping": {
+      "status": "passed",
+      "lastRunTimestamp": 1783712311817
+    }
+  },
+  "executionHistory": {
+    "1.1 Implement `LOAD_WARNING_THRESHOLD = 75_000` and `should_warn_load_time(collected_total, db_type)`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708408564
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708419547
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783709676837
+      }
+    ],
+    "1.2 Write property test for the trigger predicate": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708408747
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783709687798
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710090328
+      }
+    ],
+    "1.3 Write property test for the collected-total lower bound feeding the trigger": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708408824
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710099444
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710603784
+      }
+    ],
+    "1.4 Write boundary/indeterminate example tests for the trigger truth table": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708408897
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710610060
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710851948
+      }
+    ],
+    "2.1 Implement the `TimingGuidance` dataclass and `build_load_time_warning(collected_total, timing, *, migration_guide_path)`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708408945
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783709688778
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710091431
+      }
+    ],
+    "2.2 Write property test for the warning-text builder": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708408993
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710859919
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711327944
+      }
+    ],
+    "2.3 Write MCP-unavailable example test": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409033
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711339721
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711812444
+      }
+    ],
+    "3. Checkpoint - Ensure all `volume_utils` helper tests pass": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409078
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714541381
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714622830
+      }
+    ],
+    "4.1 Create the module scaffold and implement `compute_load_identity(registry)`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409141
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708421485
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783709678834
+      }
+    ],
+    "5.1 Implement `validate_sample_target(target, collected_total)` and `SampleTargetValidation`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409187
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783709690760
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710093445
+      }
+    ],
+    "5.2 Write property test for sampling-target validation": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409227
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710100080
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710604768
+      }
+    ],
+    "5.3 Implement `select_first_n(total, target)` and `select_random_n(total, target, seed)`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409271
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710101330
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710605501
+      }
+    ],
+    "5.4 Write property test for count-based selection": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409322
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710612247
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710852943
+      }
+    ],
+    "5.5 Implement `select_er_demonstrating(clusters, singletons, target, seed)`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409360
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710612281
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710853529
+      }
+    ],
+    "5.6 Write property test for ER-demonstrating selection": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409407
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710860464
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711329905
+      }
+    ],
+    "5.7 Implement `write_sample`, `write_sample_manifest`, `SampleWriteResult`, and `VALID_SAMPLING_STRATEGIES`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409455
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710858863
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711329047
+      }
+    ],
+    "5.8 Write sample-I/O and sampling-vocabulary example tests": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409506
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711342269
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711812490
+      }
+    ],
+    "6. Checkpoint - Ensure all sampling helper tests pass": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409555
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714628730
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714728666
+      }
+    ],
+    "7.1 Additively extend the marker schema for the Module 4 shape": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409605
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708421559
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783709679319
+      }
+    ],
+    "7.2 Write schema unit tests for both marker shapes": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409654
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783709691003
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710093648
+      }
+    ],
+    "8.1 Implement `LOAD_MARKER_SOURCE`, `write_load_decision(choice, load_identity, preferences_path)`, and `read_load_decision(preferences_path)`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409694
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711338697
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711812589
+      }
+    ],
+    "8.2 Write property test for the decision-marker round-trip": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409743
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711823042
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783712091818
+      }
+    ],
+    "8.3 Implement `module4_decision_applies(marker, current_identity, db_type)`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409808
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711823082
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783712091175
+      }
+    ],
+    "8.4 Write property test for identity determinism and Module 6 scoping": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409855
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783712098521
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783713200931
+      }
+    ],
+    "9. Checkpoint - Ensure all decision-marker tests pass": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409906
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714732825
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714795141
+      }
+    ],
+    "10.1 Add the \"SQLite Load-Time Warning (collection-time heads-up)\" block to `steering/module-04-data-collection.md`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409947
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783713209517
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783713959402
+      }
+    ],
+    "11.1 Extend the `already_decided` computation in `steering/module-06-phaseA-build-loading.md`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708409995
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783713210367
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714399594
+      }
+    ],
+    "12.1 Complete `load_time_warning.main(argv=None)` to tie the helpers into a runnable diagnostic": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708410046
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783712098013
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783713201613
+      }
+    ],
+    "12.2 Write Module 4 steering-structure tests": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708410105
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783713973384
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714399790
+      }
+    ],
+    "12.3 Write Module 6 steering-structure test": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708410160
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714403944
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714523977
+      }
+    ],
+    "12.4 Write non-blocking fallback example test": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708410211
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783713210412
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783713960420
+      }
+    ],
+    "13. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783708410261
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714799742
+      },
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783716853091
+      }
+    ],
+    "4. Scaffold `scripts/load_time_warning.py` and the load-identity helper": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783709678886
+      }
+    ],
+    "7. Extend the shared `sqlite_volume_prompt` schema in `scripts/preferences_utils.py`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710093732
+      }
+    ],
+    "1. Add the pure trigger predicate to `scripts/volume_utils.py`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783710852008
+      }
+    ],
+    "2. Add the pure warning-text builder to `scripts/volume_utils.py`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711812554
+      }
+    ],
+    "5. Implement the sampling helpers in `scripts/load_time_warning.py`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783711812635
+      }
+    ],
+    "8. Implement decision-marker read/write and Module 6 scoping in `scripts/load_time_warning.py`": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783713200996
+      }
+    ],
+    "10. Wire the Module 4 steering block": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783713959483
+      }
+    ],
+    "11. Wire the Module 6 honor-decision change": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714399751
+      }
+    ],
+    "12. Integrate the CLI entry point and add structural/integration tests": [
+      {
+        "executionId": "4e88b030-2e0e-40ea-9267-3f0d98661455",
+        "chatSessionId": "sess_e8fcffd1-dfff-4f2b-b5b8-21ecae15798b",
+        "timestamp": 1783714524026
+      }
+    ]
+  }
+}

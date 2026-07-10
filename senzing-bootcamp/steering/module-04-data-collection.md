@@ -254,6 +254,29 @@ inclusion: manual
 
    **Checkpoint:** Write step 8a to `config/bootcamp_progress.json`.
 
+8b. **SQLite Load-Time Warning (collection-time heads-up)** (after Step 8a, before the Step 9 transition): This is a *time/performance* heads-up, deliberately **distinct** from the license-capacity sampling framing at the top of this module — it judges the Module 6 SQLite load time from the actual collected dataset and fires even when the effective license imposes no record cap. It is **NOT a Mandatory_Gate** — there is no ⛔, and the bootcamper may always proceed on SQLite with the full dataset.
+
+   > **Agent instruction — run this once at the end of collection, immediately before the Step 9 transition. Every step is non-blocking: any failure or indeterminate input continues the Module 4 flow (Requirement 7.5).**
+   >
+   > **1. Read the persisted inputs.** Read `config/data_sources.yaml` via the `data_sources` reader chain (`parse_registry_yaml` → `apply_migrations` → `validate_registry` → `_dict_to_registry`) to get the `registry`, and read `database_type` from `config/bootcamp_preferences.yaml` (via `preferences_utils.load_preferences` / `parse_yaml`) → `db_type`. Compute the collected total with `record_count_backfill.compute_collected_count(registry, row_count=True).known_total` → `known_total`. If the registry cannot be read or parsed, treat `known_total` as indeterminate (`None`) — do not fail.
+   >
+   > **2. Call the predicate.** Evaluate `volume_utils.should_warn_load_time(known_total, db_type)`.
+   >
+   > - **`False`** → say nothing about load time; continue the Module 4 flow to the Step 9 transition. (Covers a collected total at or below the threshold, any non-SQLite engine, and indeterminate inputs — Requirements 1.2, 1.3, 1.4, 2.4, 7.5.)
+   > - **`True`** → consult the **Senzing MCP server** at request time for the four `TimingGuidance` figures — `expected_throughput`, `throughput_degradation`, `expected_load_duration`, and `redo_phase_duration`. Any figure the server does not return, or that errors, stays `None` (never substitute a remembered number). Build a `volume_utils.TimingGuidance` from what the server returned, present the output of `volume_utils.build_load_time_warning(known_total, timing)` to the bootcamper, then **🛑 STOP** and wait for their choice.
+   >
+   > **3. Act on the bootcamper's choice.** Sampling is offered here as one option among proceeding and switching databases — not as the only path.
+   >
+   > - **Load all collected records on SQLite:** First obtain an **explicit confirmation** that the bootcamper accepts the expected load time before continuing with the full dataset (Requirement 4.4). Then record the decision (sub-step 4) and continue to Step 9.
+   > - **Sample down to a smaller record count:** Ask which `Sampling_Strategy` to use **before** creating the sample (Requirement 5.1) — offer first-N records (`load_time_warning.select_first_n`), random-N records (`load_time_warning.select_random_n`), and the entity-resolution-demonstrating strategy that preserves cross-source overlaps and known match clusters (`load_time_warning.select_er_demonstrating`); also accept a bootcamper-described strategy (Requirements 5.2, 5.3). Validate the target record count with `load_time_warning.validate_sample_target(target, known_total)` and re-ask until it is valid — a positive integer strictly less than the collected total (Requirements 5.5, 5.6). Create the sample with the chosen selector, write it under `data/samples/` via `load_time_warning.write_sample`, and document the strategy and target with `load_time_warning.write_sample_manifest` (Requirement 5.4). Then record the decision (sub-step 4).
+   > - **Switch to an alternative database (e.g. PostgreSQL):** Route the bootcamper to the existing `database-migration-guide` at `docs/guides/DATABASE_MIGRATION.md`. Do NOT inline or restate the migration steps here — hand off to that guide (Requirement 4.3). Then record the decision (sub-step 4).
+   >
+   > **4. Record the decision.** Write the Load_Decision_Marker via `load_time_warning.write_load_decision(choice, load_time_warning.compute_load_identity(registry))`, where `choice` is `"proceed"`, `"sample"`, or `"switch_db"` (Requirements 6.1, 6.2). This uses the shared `sqlite_volume_prompt` marker, so the Module 6 Phase A SQLite heads-up does not redundantly re-ask about this same load.
+   >
+   > **Reuse and safety notes:** The trigger and wording live in `volume_utils`; the identity, sampling, and marker helpers live in `load_time_warning`, which reuses `record_count_backfill`, `data_sources`, and `preferences_utils` — do not re-derive record counts or tiers here (Requirement 7.4). Refer to the Senzing MCP server by name only (never a URL) and to the migration guide by its repo-relative path (`docs/guides/DATABASE_MIGRATION.md`). Use only synthetic/persisted values — never echo credentials or connection strings.
+
+   **Checkpoint:** Write step 8b to `config/bootcamp_progress.json`.
+
 9. **Transition to Module 5**: "Great! Now that we have the data files, let's evaluate each one to see if it needs mapping or if it's already in the right format for Senzing."
 
    **Checkpoint:** Write step 9 to `config/bootcamp_progress.json`.

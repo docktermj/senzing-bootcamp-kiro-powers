@@ -420,6 +420,206 @@ def build_hard_prompt(tier: str, record_count: int | None = None) -> str:
     return "\n".join(lines)
 
 
+# ---------------------------------------------------------------------------
+# Module 4 SQLite Load-Time Warning — trigger predicate
+# ---------------------------------------------------------------------------
+
+# The collected-record boundary that, when strictly exceeded on SQLite, arms the
+# Module 4 Load_Time_Warning. Exactly 75,000 does not arm it (Requirement 1.2).
+LOAD_WARNING_THRESHOLD = 75_000
+
+
+def should_warn_load_time(
+    collected_total: int | None,
+    db_type: str | None,
+) -> bool:
+    """Decide whether the Module 4 SQLite Load_Time_Warning should fire.
+
+    Pure, side-effect free, and deliberately independent of the production tier
+    (no tier parameter) and of any license limit (no license parameter) — the
+    decision is derived from the collected total and the active engine only.
+
+    Args:
+        collected_total: The determinate Collected_Record_Total (the resolved
+            known_total from compute_collected_count), or None when the total
+            cannot be computed.
+        db_type: The active database engine (database_type), or None/unknown
+            when indeterminate.
+
+    Returns:
+        True iff ``collected_total`` is a real ``int`` (not ``bool``) strictly
+        greater than :data:`LOAD_WARNING_THRESHOLD` AND the normalized
+        ``db_type == "sqlite"``. Any indeterminate input (None total,
+        None/empty/unrecognized db_type) or a total at or below the threshold
+        yields False. Never raises, never performs I/O.
+    """
+    # Reject None and bool (bool is an int subclass) — only a real int total counts.
+    if not isinstance(collected_total, int) or isinstance(collected_total, bool):
+        return False
+
+    if collected_total <= LOAD_WARNING_THRESHOLD:
+        return False
+
+    if not isinstance(db_type, str):
+        return False
+
+    return db_type.strip().lower() == "sqlite"
+
+
+# ---------------------------------------------------------------------------
+# Module 4 SQLite Load-Time Warning — warning text builder
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class TimingGuidance:
+    """SQLite load-timing figures retrieved from the Senzing MCP server.
+
+    Every field is a display string the agent obtained from the MCP server at
+    request time, or None when the server did not return it or was unreachable.
+    The builder never hardcodes or substitutes a figure — None means "omit and
+    say currently unavailable".
+
+    Attributes:
+        expected_throughput: Expected initial load throughput, or None.
+        throughput_degradation: Magnitude of throughput degradation, or None.
+        expected_load_duration: Expected initial-load duration, or None.
+        redo_phase_duration: Expected entity-resolution redo-phase duration, or None.
+    """
+
+    expected_throughput: str | None = None
+    throughput_degradation: str | None = None
+    expected_load_duration: str | None = None
+    redo_phase_duration: str | None = None
+
+
+def build_load_time_warning(
+    collected_total: int,
+    timing: TimingGuidance,
+    *,
+    migration_guide_path: str = "docs/guides/DATABASE_MIGRATION.md",
+) -> str:
+    """Build the Load_Time_Warning text for a large collected dataset on SQLite.
+
+    Pure text builder. Always states that loading ``collected_total`` records on
+    SQLite in Module 6 is expected to be slow and names ``collected_total``;
+    always states that throughput degrades as the database grows, that the
+    entity-resolution redo phase needs additional time, and that a slow,
+    mostly-idle load is expected progress rather than a stall. For each
+    Timing_Guidance figure it includes the figure when present and, when the
+    figure is None, states the value is currently unavailable from the MCP
+    server (never a substituted number) — mirroring the omission style of
+    :func:`build_license_framing`. Always offers the three options — load all,
+    sample, and switch database (naming the ``database-migration-guide``) — and
+    never emits the Mandatory_Gate marker (⛔). Refers to the Senzing MCP server
+    by name only (no URLs) and to the migration guide by repo-relative path.
+
+    Args:
+        collected_total: The Collected_Record_Total driving the warning.
+        timing: The MCP-sourced Timing_Guidance figures (any subset may be None).
+        migration_guide_path: Repo-relative path to the migration guide.
+
+    Returns:
+        The warning text. Never raises, never performs I/O.
+    """
+    lines: list[str] = []
+
+    # --- Slowdown framing, naming the collected total (Req 3.1) ---
+    lines.append(
+        f"**Before you carry this dataset into Module 6:** You have collected "
+        f"{collected_total} records, and your active database is SQLite. Loading "
+        f"{collected_total} records on SQLite in Module 6 is expected to be slow."
+    )
+
+    # --- Fixed qualitative concerns (Req 3.5, 3.6, 3.7) ---
+    lines.append("\nWhat to expect during the Module 6 load:")
+    lines.append(
+        "- **Throughput degrades as the database grows** — SQLite load throughput "
+        "starts higher and is expected to degrade as more records accumulate in "
+        "the database."
+    )
+    lines.append(
+        "- **The entity-resolution redo phase needs additional time** — after the "
+        "initial load, Senzing's entity-resolution redo phase runs and requires "
+        "additional time beyond the initial load."
+    )
+    lines.append(
+        "- **A slow, mostly-idle load is expected, not stalled** — for a dataset of "
+        "this size a slow, mostly-idle load is expected and indicates the process "
+        "is still making progress rather than having stalled."
+    )
+
+    # --- MCP-sourced timing figures: include when present, else state
+    #     "currently unavailable from the MCP server" (Req 3.2, 3.3, 3.4) ---
+    lines.append("\nSpecific timing figures from the Senzing MCP server:")
+
+    if timing.expected_throughput is not None:
+        lines.append(
+            f"- **Expected load throughput:** {timing.expected_throughput}, as "
+            "reported by the Senzing MCP server."
+        )
+    else:
+        lines.append(
+            "- **Expected load throughput:** currently unavailable from the MCP "
+            "server, so no specific figure is shown here."
+        )
+
+    if timing.throughput_degradation is not None:
+        lines.append(
+            f"- **Throughput degradation:** {timing.throughput_degradation}, as "
+            "reported by the Senzing MCP server."
+        )
+    else:
+        lines.append(
+            "- **Throughput degradation:** currently unavailable from the MCP "
+            "server, so no specific figure is shown here."
+        )
+
+    if timing.expected_load_duration is not None:
+        lines.append(
+            f"- **Expected initial-load duration:** {timing.expected_load_duration}, "
+            "as reported by the Senzing MCP server."
+        )
+    else:
+        lines.append(
+            "- **Expected initial-load duration:** currently unavailable from the "
+            "MCP server, so no specific figure is shown here."
+        )
+
+    if timing.redo_phase_duration is not None:
+        lines.append(
+            f"- **Expected redo-phase duration:** {timing.redo_phase_duration}, as "
+            "reported by the Senzing MCP server."
+        )
+    else:
+        lines.append(
+            "- **Expected redo-phase duration:** currently unavailable from the MCP "
+            "server, so no specific figure is shown here."
+        )
+
+    # --- Options: load all / sample / switch database (Req 4.1, 4.2, 4.3) ---
+    # This is a heads-up, never a Mandatory_Gate — no ⛔ marker (Req 4.5).
+    lines.append(
+        "\nThis is a heads-up, not a hard stop — you can choose how to proceed:"
+    )
+    lines.append(
+        "- **Load all collected records on SQLite** — continue with the full "
+        "dataset, accepting the expected load time above."
+    )
+    lines.append(
+        "- **Sample down to a smaller record count** — reduce the dataset to a "
+        "target record count before loading, so the load finishes sooner."
+    )
+    lines.append(
+        "- **Switch to an alternative database (e.g. PostgreSQL)** — migrate before "
+        "loading by following the existing `database-migration-guide` "
+        f"(`{migration_guide_path}`). The migration steps are not repeated here; "
+        "the guide covers them."
+    )
+
+    return "\n".join(lines)
+
+
 def should_ask_volume(preferences: dict) -> bool:
     """Determine if the volume question should be asked.
 

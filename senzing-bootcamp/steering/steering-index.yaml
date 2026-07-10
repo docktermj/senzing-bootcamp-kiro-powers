@@ -44,7 +44,7 @@ modules:
     phases:
       phase1-collection:
         file: module-04-data-collection.md
-        token_count: 4492
+        token_count: 6112
         size_category: large
         step_range: [1, 9]
   5:
@@ -70,7 +70,7 @@ modules:
     phases:
       phase1-build-loading-program:
         file: module-06-phaseA-build-loading.md
-        token_count: 3649
+        token_count: 3943
         size_category: large
         step_range: [1, 4]
       phase2-load-first-source:
@@ -484,7 +484,7 @@ file_metadata:
     token_count: 2101
     size_category: large
   module-04-data-collection.md:
-    token_count: 4888
+    token_count: 6112
     size_category: large
   module-05-data-quality-mapping.md:
     token_count: 712
@@ -502,7 +502,7 @@ file_metadata:
     token_count: 652
     size_category: medium
   module-06-phaseA-build-loading.md:
-    token_count: 3650
+    token_count: 3943
     size_category: large
   module-06-phaseB-load-first-source.md:
     token_count: 1500
@@ -659,7 +659,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 210967
+  total_tokens: 212484
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

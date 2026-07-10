@@ -13,7 +13,7 @@ The module completion process executes the following steps in a **fixed, invaria
 1. **progress_update** — Mark the module complete in `config/bootcamp_progress.json`
 2. **consolidated_append** — Synchronously append a single consolidated recap section to `docs/bootcamp_recap.md` (create file if first completion) — the structured recap subsections plus the `### Journal` narrative subsection in one write — then verify the `## Module N:` heading persisted and backfill it if absent before reporting success
 3. **completion_certificate** — Generate `docs/progress/MODULE_N_COMPLETE.md` and update the summary index
-4. **capture_hook_safeguard** — Run `capture_hook_safeguard.py` to detect any absent capture-critical hook; a silent no-op when all three are present, or a recurring, overridable Soft_Block reminder surfaced before the module transition when any are missing (see the Capture-Critical Hook Safeguard section below)
+4. **capture_hook_safeguard** — Run `capture_hook_safeguard.py` to detect any absent capture-critical hook; a silent no-op when both are present, or a recurring, overridable Soft_Block reminder surfaced before the module transition when any are missing (see the Capture-Critical Hook Safeguard section below)
 5. **next_step_options** — Present the bootcamper with concrete next-step choices
 
 ### Ordering Rules
@@ -41,7 +41,7 @@ This ordering rule does not change the fixed completion step order above, the de
 
 ## Capture-Critical Hook Safeguard
 
-At the module-completion boundary — after the artifact steps and **before** the forward module-transition question is finalized — run the safeguard to catch any capture-critical hook (`session-log-events`, `module-recap-append`, `ask-bootcamper`) whose absence would silently thin the recap, transcript, and completion summary:
+At the module-completion boundary — after the artifact steps and **before** the forward module-transition question is finalized — run the safeguard to catch any capture-critical hook (`session-log-events`, `ask-bootcamper`) whose absence would silently thin the recap, transcript, and completion summary:
 
 ```text
 python3 senzing-bootcamp/scripts/capture_hook_safeguard.py --module N
@@ -49,10 +49,10 @@ python3 senzing-bootcamp/scripts/capture_hook_safeguard.py --module N
 
 Render the resulting `ReminderPlan`:
 
-- **All three hooks present — silent no-op.** The script emits nothing. Produce no safeguard output and do not delay the transition; proceed straight to `next_step_options`.
+- **Both hooks present — silent no-op.** The script emits nothing. Produce no safeguard output and do not delay the transition; proceed straight to `next_step_options`.
 - **Any hook missing — Soft_Block.** The script names each missing hook, the output(s) it feeds (recap, transcript, and/or completion summary), and the two install options. Surface this as a **single live `👉` Soft_Block pending question** that is the **final message** of the turn (per the Final-Message Invariant in `conversation-protocol.md`). The question names the missing hook(s) and the degraded output(s) each feeds, offers the two install options, and offers an explicit continue:
-  - Re-create them with `createHook` from the Hook Registry (`ask-bootcamper` in `hook-registry-critical.md`; `module-recap-append` and `session-log-events` in `hook-registry-module-any.md`), **or**
-  - Run the file-copy installer: `python3 senzing-bootcamp/scripts/install_hooks.py --essential` (its `--essential` set includes all three), **or**
+  - Re-create them with `createHook` from the Hook Registry (`ask-bootcamper` in `hook-registry-critical.md`; `session-log-events` in `hook-registry-module-any.md`), **or**
+  - Run the file-copy installer: `python3 senzing-bootcamp/scripts/install_hooks.py --essential` (its `--essential` set includes both), **or**
   - Explicitly continue without installing.
 
   Write `config/.question_pending` for this Soft_Block question and wait. The reminder **recurs at every subsequent module boundary** while a hook stays missing — a prior acknowledgment authorizes only the current transition and never suppresses a future reminder.

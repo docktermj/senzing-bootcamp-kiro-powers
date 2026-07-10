@@ -1,0 +1,200 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Exploration test correctly FAILED on unfixed code (SUCCESS case — bug confirmed). Counterexamples surfaced by tests/test_stop_hook_ux_bug_condition.py (5 failed in 0.14s):\n\nDefect 1 — dual Stop hook visibility:\n- Falsifying example: test_no_two_stop_hooks_both_surface_waiting_labels(pair=('ask-bootcamper', 'module-recap-append')) — both surface waiting labels ('to wait for your answer' and 'to append module recap on completion').\n- test_agentstop_order_has_exactly_one_visible_waiting_label: expected 1, found 2: ['ask-bootcamper', 'module-recap-append'].\n- test_module_recap_append_hook_file_absent: senzing-bootcamp/hooks/module-recap-append.json still exists as a standalone Stop hook file.\n\nDefect 2 — narration leak (weak OUTPUT RULES):\n- Falsifying example: test_output_rules_prohibit_known_narration_leaks(fragment='My last message ends with') — narration sentence not prohibited in ask-bootcamper OUTPUT RULES.\n- test_output_rules_have_at_least_three_negative_examples: ask-bootcamper OUTPUT RULES contain 0 '✗' negative-example lines (assert 0 >= 3).",
+      "lastRunTimestamp": 1783643374012
+    },
+    "2. Write preservation property tests (BEFORE implementing fix)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783643732294
+    },
+    "3.6 Verify bug condition exploration test now passes": {
+      "status": "passed",
+      "lastRunTimestamp": 1783644552463
+    },
+    "3.7 Verify preservation tests still pass": {
+      "status": "passed",
+      "lastRunTimestamp": 1783644620619
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643087260
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643093671
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643395609
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643087415
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643403362
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643758514
+      }
+    ],
+    "3.1 Add Phase 0 (Module Recap Append) to `ask-bootcamper.json`": [
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643087462
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643772460
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644014274
+      }
+    ],
+    "3.2 Strengthen OUTPUT RULES preamble in `ask-bootcamper.json`": [
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643087529
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644017392
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644203104
+      }
+    ],
+    "3.3 Delete `module-recap-append.json`": [
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643087565
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644206155
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644289886
+      }
+    ],
+    "3.4 Update `hook-categories.yaml`": [
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643087601
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644293823
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644416422
+      }
+    ],
+    "3.5 Regenerate `hooks.lock.yaml`": [
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643087642
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644419559
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644507262
+      }
+    ],
+    "3.6 Verify bug condition exploration test now passes": [
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643087676
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644510330
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644568812
+      }
+    ],
+    "3.7 Verify preservation tests still pass": [
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643087709
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644572281
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644642902
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783643087743
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644646324
+      },
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783648494548
+      }
+    ],
+    "3. Fix for dual Stop hook visibility and narration leak": [
+      {
+        "executionId": "d625536a-43c8-47b2-aac3-0f293616c853",
+        "chatSessionId": "sess_ead3fbeb-ae18-43d4-a0d5-b11fe8635d09",
+        "timestamp": 1783644642957
+      }
+    ]
+  }
+}

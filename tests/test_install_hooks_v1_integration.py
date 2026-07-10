@@ -6,7 +6,8 @@ This test drives the installer end-to-end against the REAL shipped hook set,
 installing into a temporary ``.kiro/hooks`` directory and asserting the Kiro 1.0
 ``.json`` installer contract:
 
-- ``--all`` copies every shipped v1 ``.json`` hook (the migrated set of 27), and
+- ``--all`` copies every shipped v1 ``.json`` hook (the set of 26, after the
+  stop-hook-ux bugfix folded ``module-recap-append`` into ``ask-bootcamper``), and
   every copied file is a valid ``{"version": "v1", "hooks": [ ... ]}`` wrapper
   (Req 9.1, 9.2, 9.3).
 - The install sets are derived from the shipped ``*.json`` files and the
@@ -52,8 +53,9 @@ REAL_HOOKS_DIR: Path = (
     Path(__file__).resolve().parent.parent / "senzing-bootcamp" / "hooks"
 )
 
-# The migration ships exactly 27 non-manual v1 hooks (Req 1.1).
-EXPECTED_MIGRATED_COUNT = 27
+# The migration shipped 27 non-manual v1 hooks; the stop-hook-ux bugfix folded
+# ``module-recap-append`` into ``ask-bootcamper`` (Phase 0), leaving 26 (Req 1.1).
+EXPECTED_MIGRATED_COUNT = 26
 
 # The three former manual hooks, now slash commands — never installed (Req 9.4).
 MANUAL_HOOK_IDS = {
@@ -125,7 +127,7 @@ class TestInstallerV1Integration:
     def test_all_installs_every_shipped_v1_hook_file(
         self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
     ) -> None:
-        """``--all`` copies exactly the 27 shipped v1 ``.json`` files."""
+        """``--all`` copies exactly the 26 shipped v1 ``.json`` files."""
         user_dir = tmp_path / ".kiro" / "hooks"
 
         code = install_hooks.main(

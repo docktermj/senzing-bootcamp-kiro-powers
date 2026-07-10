@@ -51,10 +51,11 @@ CONSOLIDATED_HOOKS: list[str] = [
     "block-direct-sql",
 ]
 
-# Capture-critical hooks that must be covered on both install paths.
+# Capture-critical hooks that must be covered on both install paths. The
+# stop-hook-ux bugfix folded the former ``module-recap-append`` hook into
+# ``ask-bootcamper`` (Phase 0), so ``ask-bootcamper`` now owns recap capture too.
 CAPTURE_CRITICAL_HOOKS: list[str] = [
     "session-log-events",
-    "module-recap-append",
     "ask-bootcamper",
 ]
 
@@ -208,9 +209,11 @@ class TestCaptureCriticalInBothInstallSets:
     **Validates: Requirements 10.3, 12.3**
 
     Property 12: For any capture-critical hook in
-    {session-log-events, module-recap-append, ask-bootcamper}, that hook is a
+    {session-log-events, ask-bootcamper}, that hook is a
     member of both the installer's install-all set (the discovered set from the
-    real hooks dir) and its essential set (``ESSENTIAL``).
+    real hooks dir) and its essential set (``ESSENTIAL``). (The former
+    ``module-recap-append`` recap hook was folded into ``ask-bootcamper``
+    Phase 0 by the stop-hook-ux bugfix.)
     """
 
     # Feature: hook-architecture-improvements, Property 12

@@ -10,8 +10,9 @@ Two things are asserted:
    slices and lockfile — i.e. the shipped artifacts are already in sync with
    what the generator would produce from the ``v1`` hook files.
 2. The committed lockfile (``senzing-bootcamp/hooks/hooks.lock.yaml``) records
-   exactly 27 hook entries, one per migrated Non_Manual_Hook, and every entry's
-   ``event_type`` is a valid Kiro 1.0 trigger.
+   exactly 26 hook entries (27 migrated Non_Manual_Hooks minus ``module-recap-append``,
+   folded into ``ask-bootcamper`` Phase 0 by the stop-hook-ux bugfix), and every
+   entry's ``event_type`` is a valid Kiro 1.0 trigger.
 
 ``main()`` in ``sync_hook_registry.py`` parses ``sys.argv`` directly via argparse
 and terminates with ``sys.exit()``. Rather than patch ``sys.argv`` and catch
@@ -46,8 +47,10 @@ import hook_renames  # noqa: E402  (import after sys.path manipulation)
 SYNC_SCRIPT: Path = _REPO_ROOT / "senzing-bootcamp" / "scripts" / "sync_hook_registry.py"
 LOCKFILE_PATH: Path = _REPO_ROOT / "senzing-bootcamp" / "hooks" / "hooks.lock.yaml"
 
-#: The migration converts exactly 27 Non_Manual_Hooks (Requirement 7 / 7.5).
-EXPECTED_HOOK_COUNT = 27
+#: The migration converted 27 Non_Manual_Hooks; the stop-hook-ux bugfix then
+#: folded ``module-recap-append`` into ``ask-bootcamper`` (Phase 0), leaving 26
+#: shipped hooks in the lockfile (Requirement 7 / 7.5).
+EXPECTED_HOOK_COUNT = 26
 
 
 def _parse_lockfile_entries(path: Path) -> list[dict[str, str]]:
@@ -125,7 +128,7 @@ class TestRegistryVerifyCommitted:
 
 
 class TestLockfileEntryCount:
-    """The committed lockfile records exactly 27 hook entries.
+    """The committed lockfile records exactly 26 hook entries.
 
     **Validates: Requirements 7.5**
     """
@@ -134,8 +137,8 @@ class TestLockfileEntryCount:
         """The committed lockfile is present on disk."""
         assert LOCKFILE_PATH.exists(), f"Lockfile not found at {LOCKFILE_PATH}"
 
-    def test_lockfile_has_27_entries(self) -> None:
-        """The lockfile lists one entry per migrated Non_Manual_Hook (27)."""
+    def test_lockfile_has_expected_entries(self) -> None:
+        """The lockfile lists the 26 shipped hooks (recap folded into ask-bootcamper)."""
         assert len(_LOCK_ENTRIES) == EXPECTED_HOOK_COUNT, (
             f"Expected {EXPECTED_HOOK_COUNT} lockfile entries, found "
             f"{len(_LOCK_ENTRIES)}: {[e['id'] for e in _LOCK_ENTRIES]}"

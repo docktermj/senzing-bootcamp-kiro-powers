@@ -11,9 +11,10 @@ interception. Concretely:
 - The feature adds NO new write-tool hook referencing the safeguard — in fact, no
   ``*.kiro.hook`` file references ``capture_hook_safeguard`` at all, because the
   safeguard is steering-invoked, never a hook (Requirement 3.3).
-- The three capture-critical hook files (``session-log-events``, ``module-recap-append``,
-  ``ask-bootcamper``) exist and are unchanged by this feature — none references the
-  safeguard (Requirement 3.3).
+- The capture-critical hook files (``session-log-events`` and ``ask-bootcamper``)
+  exist and are unchanged by this feature — none references the safeguard
+  (Requirement 3.3). (The former ``module-recap-append`` capture hook was folded
+  into ``ask-bootcamper`` Phase 0 by the stop-hook-ux bugfix.)
 
 Per the project structure rule, tests validating real hook files on disk live in the
 repo-root ``tests/`` directory (not ``senzing-bootcamp/tests/``).
@@ -38,10 +39,11 @@ _HOOKS_DIR: Path = _PROJECT_ROOT / "senzing-bootcamp" / "hooks"
 # into a hook / per-write interception — exactly what the design forbids.
 _SAFEGUARD_MARKER: str = "capture_hook_safeguard"
 
-# The three capture-critical hooks the feature must leave unchanged.
+# The capture-critical hooks the feature must leave unchanged. (Recap capture
+# moved into ``ask-bootcamper`` Phase 0 when the stop-hook-ux bugfix folded in
+# the former standalone ``module-recap-append`` hook.)
 _CAPTURE_CRITICAL_HOOKS: tuple[str, ...] = (
     "session-log-events",
-    "module-recap-append",
     "ask-bootcamper",
 )
 

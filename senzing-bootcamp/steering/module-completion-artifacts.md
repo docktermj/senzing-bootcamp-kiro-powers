@@ -49,14 +49,14 @@ On a completion boundary — and before appending the new module's artifacts —
 
 ## Recap Append
 
-The recap append is a **synchronous, verified step of the module-completion workflow** (step 2 in the fixed order), not solely an asynchronous `Stop` hook. The `hooks/module-recap-append.json` hook still appends the structured section on boundary detection, but the workflow now treats the append as complete only after it has **read back** the file and confirmed the section persisted — so a write that does not persist across a session boundary, or a hook invocation that does not write on the final module, is detected and repaired instead of silently lost.
+The recap append is a **synchronous, verified step of the module-completion workflow** (step 2 in the fixed order), not solely an asynchronous `Stop` hook. `ask-bootcamper` Phase 0 (the recap logic folded in from the retired standalone recap hook) still appends the structured section on boundary detection, but the workflow now treats the append as complete only after it has **read back** the file and confirmed the section persisted — so a write that does not persist across a session boundary, or a Phase 0 invocation that does not write on the final module, is detected and repaired instead of silently lost.
 
 When a module is marked complete in `config/bootcamp_progress.json`, gather session content and append a **consolidated** Recap_Section to `docs/bootcamp_recap.md`, then verify and (if needed) backfill before reporting success. A single consolidated append now carries both the structured recap content and the narrative `### Journal` subsection that was formerly written to the retired `docs/bootcamp_journal.md` — there is no separate journal step.
 
 ### What is gathered
 
 - **Information Shared:** Key concepts, explanations, and reference material presented during the module
-- **Questions & Responses:** Each substantive question the agent posed, immediately paired with the bootcamper's response, in ascending ask order. This is rendered as the single `### Questions & Responses` section of interleaved `- **Q:**` / `- **R:**` pairs that the `module-recap-append` hook and `format_qr_section` emit (never as separate "Questions Asked" / "Answers Given" headings).
+- **Questions & Responses:** Each substantive question the agent posed, immediately paired with the bootcamper's response, in ascending ask order. This is rendered as the single `### Questions & Responses` section of interleaved `- **Q:**` / `- **R:**` pairs that ask-bootcamper Phase 0 and `format_qr_section` emit (never as separate "Questions Asked" / "Answers Given" headings).
 - **Actions Taken:** File creations, modifications, code generation, and commands executed
 - **Duration:** The per-module elapsed time and cumulative `Total Duration` come from `scripts/completion_artifacts.py` (computed from the ISO 8601 timestamps in `step_history` and the top-level `started_at`), never from session context. When the planner returns no value for a module, omit the `### Duration` field entirely rather than writing a placeholder such as "Module N session".
 - **Journal:** The narrative `### Journal` subsection carrying the four fields formerly written to the Legacy_Journal_File — `**What we did:**` (1–2 sentence summary of what was accomplished), `**What was produced:**` (comma-separated artifact paths created or modified), `**Why it matters:**` (how this module enables subsequent work), and `**Bootcamper's takeaway:**` (the bootcamper's stated takeaway, or `N/A` when none was provided). See `config/module-dependencies.yaml` for module names and `config/bootcamp_preferences.yaml` for the bootcamper name used elsewhere in the header.
@@ -141,7 +141,7 @@ If `docs/bootcamp_recap.md` already exists, append the new recap section at the 
 
 ### References
 
-- Hook: `hooks/module-recap-append.json`
+- Hook: `ask-bootcamper` Phase 0 (recap append; see `hooks/ask-bootcamper.json`)
 - Output: `docs/bootcamp_recap.md`
 
 ## Module Completion Certificate

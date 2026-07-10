@@ -1,10 +1,15 @@
 """Tests for the module-recap-document-fix spec.
 
-Validates that both module-recap-append and module-completion-celebration hooks
-have correct 1.0 triggers, boundary detection, schema integrity, and prompt
+Validates that the recap-append prompt and the module-completion-celebration
+hook have correct 1.0 triggers, boundary detection, schema integrity, and prompt
 content. The legacy ``postTaskExecution → agentStop`` migration is expressed in
 Kiro 1.0 terms: the hooks now use the ``Stop`` trigger (the 1.0 rename of
 ``agentStop``) and an ``agent`` action (the 1.0 rename of ``askAgent``).
+
+The stop-hook-ux bugfix folded the standalone ``module-recap-append`` hook into
+``ask-bootcamper`` as Phase 0, so the recap-append assertions below read the
+consolidated ``ask-bootcamper.json`` prompt (its Phase 0 preserves the recap
+trigger, boundary detection, schema, and prompt-content contract).
 """
 
 from __future__ import annotations
@@ -35,7 +40,8 @@ from hook_test_helpers import (
 # Constants
 # ---------------------------------------------------------------------------
 
-RECAP_HOOK_PATH = HOOKS_DIR / "module-recap-append.json"
+# Recap-append logic now lives in ask-bootcamper.json Phase 0 (stop-hook-ux bugfix).
+RECAP_HOOK_PATH = HOOKS_DIR / "ask-bootcamper.json"
 CELEBRATION_HOOK_PATH = HOOKS_DIR / "module-completion-celebration.json"
 AFFECTED_HOOKS: list[Path] = [RECAP_HOOK_PATH, CELEBRATION_HOOK_PATH]
 

@@ -637,7 +637,7 @@ class TestSafeguardExamples:
         """
         import json
 
-        missing_ids = ["ask-bootcamper", "module-recap-append"]
+        missing_ids = ["ask-bootcamper", "session-log-events"]
         module = 7
         base_dir = Path(tempfile.mkdtemp())
         try:

@@ -98,11 +98,12 @@ HOOK_CREATION_FILES: tuple[Path, ...] = (
 # Constants
 # ---------------------------------------------------------------------------
 
-# The three capture-critical hooks the completion summary + journey recap depend
-# on. Onboarding/resume must create and verify all three as v1 hooks (Req 10.3).
+# The two capture-critical hooks the completion summary + journey recap depend
+# on. Onboarding/resume must create and verify both as v1 hooks (Req 10.3). The
+# stop-hook-ux bugfix folded the former ``module-recap-append`` recap hook into
+# ``ask-bootcamper`` Phase 0, so ``ask-bootcamper`` now owns recap capture too.
 CAPTURE_CRITICAL_HOOK_IDS: tuple[str, ...] = (
     "ask-bootcamper",
-    "module-recap-append",
     "session-log-events",
 )
 
@@ -193,17 +194,18 @@ class TestSteeringFilesPresent:
 class TestCaptureCriticalHooksCreatedAsV1:
     """Onboarding/resume creates + verifies the capture-critical hooks as v1.
 
-    The three capture-critical hooks (``ask-bootcamper``, ``module-recap-append``,
-    ``session-log-events``) must be referenced and created as v1 ``.json`` hooks,
-    with session-start presence checks looking for ``<id>.json`` in
-    ``.kiro/hooks/`` (never the legacy ``.kiro.hook`` layout).
+    The two capture-critical hooks (``ask-bootcamper`` and ``session-log-events``)
+    must be referenced and created as v1 ``.json`` hooks, with session-start
+    presence checks looking for ``<id>.json`` in ``.kiro/hooks/`` (never the
+    legacy ``.kiro.hook`` layout). The former ``module-recap-append`` recap hook
+    was folded into ``ask-bootcamper`` Phase 0 by the stop-hook-ux bugfix.
 
     Feature: kiro-1-0-migration
     **Validates: Requirements 10.3, 10.6**
     """
 
     def test_onboarding_flow_names_all_capture_critical_ids(self) -> None:
-        """onboarding-flow.md references all three capture-critical hook ids."""
+        """onboarding-flow.md references both capture-critical hook ids."""
         text = _read(ONBOARDING_FLOW)
         missing = [hid for hid in CAPTURE_CRITICAL_HOOK_IDS if hid not in text]
         assert not missing, (
@@ -212,7 +214,7 @@ class TestCaptureCriticalHooksCreatedAsV1:
         )
 
     def test_session_resume_names_all_capture_critical_ids(self) -> None:
-        """session-resume steering references all three capture-critical ids."""
+        """session-resume steering references both capture-critical ids."""
         text = _read(SESSION_RESUME)
         missing = [hid for hid in CAPTURE_CRITICAL_HOOK_IDS if hid not in text]
         assert not missing, (
@@ -235,7 +237,7 @@ class TestCaptureCriticalHooksCreatedAsV1:
         """The presence-verification step names each ``<id>.json`` file.
 
         Session-start verification must look for the 1.0 ``<id>.json`` files, so
-        the three concrete filenames must appear in the onboarding steering.
+        both concrete filenames must appear in the onboarding steering.
         """
         text = _read(ONBOARDING_FLOW)
         missing = [

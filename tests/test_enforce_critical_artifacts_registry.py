@@ -162,15 +162,16 @@ class TestEnforceCriticalArtifactsInAgentStopOrder:
         )
 
     def test_ordered_after_higher_priority_hooks(self) -> None:
-        """The hook runs after module-recap-append and the gate/celebration hooks.
+        """The hook runs after the celebration and gate hooks.
 
         Per the design, it is placed at the end so its blocking output appears
         only after higher-priority output clears and after the recap section is
-        captured.
+        captured (recap now runs inside ``ask-bootcamper`` Phase 0 after the
+        stop-hook-ux bugfix folded the standalone ``module-recap-append`` hook in).
         """
         idx = _agentstop_order_ids.index(HOOK_ID)
         for predecessor in (
-            "module-recap-append",
+            "ask-bootcamper",
             "module-completion-celebration",
             "enforce-gate-on-stop",
         ):

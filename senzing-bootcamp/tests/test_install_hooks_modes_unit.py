@@ -72,10 +72,13 @@ def _write_hook(power_dir: Path, hook_id: str, name: str | None = None) -> None:
 
 
 # The five current hooks Requirement 9.2 mandates in the metadata overlay.
+# ``ask-bootcamper`` is the recap-owning capture-critical hook (its Phase 0
+# absorbed the former ``module-recap-append`` recap hook, which the stop-hook-ux
+# bugfix deleted), so it stands in for the retired recap hook here.
 FIVE_CURRENT_HOOK_IDS = (
     "write-policy-gate",
     "session-log-events",
-    "module-recap-append",
+    "ask-bootcamper",
     "enforce-mandatory-gate",
     "enforce-gate-on-stop",
 )
@@ -281,7 +284,7 @@ class TestMetadata:
         names = {
             "write-policy-gate": "to process your response",
             "session-log-events": "to log session events after write operations",
-            "module-recap-append": "to append module recap on completion",
+            "ask-bootcamper": "to wait for your answer",
             "enforce-mandatory-gate": (
                 "to enforce mandatory gate step execution before advancement"
             ),

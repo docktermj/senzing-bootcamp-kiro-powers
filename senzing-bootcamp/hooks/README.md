@@ -1,6 +1,6 @@
 # Senzing Bootcamp Hooks
 
-This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 27 hooks total, all in the Kiro 1.0 `v1` JSON schema.
+This directory contains pre-configured Kiro hooks to support the Senzing Bootcamp workflow. There are 26 hooks total, all in the Kiro 1.0 `v1` JSON schema.
 
 Each hook ships as a `.json` file whose top-level object is the `v1` wrapper:
 
@@ -36,8 +36,8 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 
 **Trigger:** When the agent finishes working (`Stop`)
 **Matcher:** none (unscoped trigger)
-**Action:** Consolidated four-phase hook — (1) produces a recap and closing 👉 question when work was done and no question is already pending; (2) enforces step sequencing and module transition validation; (3) audits MCP-first compliance for Senzing content; (4) detects compound questions and applies silent self-correction
-**Use case:** Owns all closing questions, step sequencing enforcement, MCP-first compliance, and question format enforcement
+**Action:** Consolidated five-phase hook — (0) on module completion, appends the structured recap section to `docs/bootcamp_recap.md` (folded in from the former `module-recap-append` hook); (1) produces a recap and closing 👉 question when work was done and no question is already pending; (2) enforces step sequencing and module transition validation; (3) audits MCP-first compliance for Senzing content; (4) detects compound questions and applies silent self-correction
+**Use case:** Owns module recap capture, all closing questions, step sequencing enforcement, MCP-first compliance, and question format enforcement
 
 ### 2. Review Bootcamper Input (`review-bootcamper-input.json`) ⭐
 
@@ -204,21 +204,14 @@ Hooks marked ⭐ are installed during onboarding as critical hooks; the others a
 **Action:** On detecting a new entry in `modules_completed`, displays a brief celebration banner and offers the next module
 **Use case:** Marks module boundaries and orients the bootcamper toward the next step
 
-### 25. Module Recap Append (`module-recap-append.json`)
-
-**Trigger:** When the agent finishes working (`Stop`)
-**Matcher:** none (unscoped trigger)
-**Action:** On detecting a new entry in `modules_completed`, appends a structured recap section to `docs/bootcamp_recap.md` capturing information shared, questions asked, answers given, and actions taken
-**Use case:** Builds a running record of the bootcamp experience for PDF generation at graduation
-
-### 26. Session Log Events (`session-log-events.json`)
+### 25. Session Log Events (`session-log-events.json`)
 
 **Trigger:** After write tool calls (`PostToolUse`)
 **Matcher:** `fs_write|str_replace|fs_append`
 **Action:** Runs a command (`action.type` of `command`, with a 10-second timeout) that logs file create, modify, delete, and MCP tool call actions to the session log after write operations complete
 **Use case:** Enables progressive session tracking for the completion summary
 
-### 27. Enforce Critical Artifacts (`enforce-critical-artifacts.json`)
+### 26. Enforce Critical Artifacts (`enforce-critical-artifacts.json`)
 
 **Trigger:** When the agent finishes working (`Stop`) at a track-completion or graduation stopping point
 **Matcher:** none (unscoped trigger)
@@ -318,7 +311,6 @@ You can customize any hook by editing the `.json` file:
 - ✅ Write Policy Gate
 - ✅ Error Recovery Context
 - ✅ Module Completion Celebration
-- ✅ Module Recap Append
 - ✅ Session Log Events
 - ✅ Enforce Critical Artifacts
 

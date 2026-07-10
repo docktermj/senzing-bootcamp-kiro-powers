@@ -37,10 +37,15 @@ class TestWarnOnAbsencePreserved:
         text = self._read()
         assert "## Capture-Critical Warn-on-Absence Check" in text
 
-    def test_names_the_three_capture_critical_hooks(self) -> None:
-        """The check still names all three capture-critical hooks."""
+    def test_names_the_two_capture_critical_hooks(self) -> None:
+        """The check still names both capture-critical hooks.
+
+        The stop-hook-ux bugfix folded the former ``module-recap-append`` recap
+        hook into ``ask-bootcamper`` Phase 0, so the capture-critical set is now
+        ``session-log-events`` and ``ask-bootcamper``.
+        """
         text = self._read()
-        for hook_id in ("session-log-events", "module-recap-append", "ask-bootcamper"):
+        for hook_id in ("session-log-events", "ask-bootcamper"):
             assert hook_id in text, f"missing capture-critical hook reference: {hook_id}"
 
     def test_advisory_only_never_blocks_language_present(self) -> None:

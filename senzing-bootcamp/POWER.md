@@ -35,7 +35,7 @@ This power works best with Claude Opus 4.8 or similar.
 - Module 3 **first-visualization** improvements — a standalone TruthSet-backed force-directed graph demo is offered even when Module 3 is opted out, so every bootcamper gets a first visualization (`scripts/generate_standalone_demo.py`); entity-graph edge-key mapping corrected so rendered graphs show nodes
 - Module 4 **record-count license back-fill** — after data collection, the bootcamp infers the real record total and surfaces the existing Module 1 license guidance when the volume exceeds the built-in evaluation limit (`scripts/record_count_backfill.py`)
 - **ER baseline status summary** — a read-only report of which data sources have an accepted entity-resolution baseline (`scripts/baseline_status.py`)
-- **Capture-critical hook safeguard** — module completion now detects any absent capture-critical hook (`session-log-events`, `module-recap-append`, `ask-bootcamper`) and surfaces an overridable reminder rather than silently losing session capture (`scripts/capture_hook_safeguard.py`)
+- **Capture-critical hook safeguard** — module completion now detects any absent capture-critical hook (`session-log-events`, `ask-bootcamper`) and surfaces an overridable reminder rather than silently losing session capture (`scripts/capture_hook_safeguard.py`)
 - **Graduation recap/transcript resilience** — a shared Markdown→PDF renderer, an inline PDF fallback, an `fpdf2` preflight note, and a Q&A transcript reconciliation pass so the recap and transcript render completely with or without the optional `fpdf2` dependency (`scripts/recap_pdf_render.py`, `scripts/generate_recap_pdf_inline.py`, `scripts/fpdf2_preflight.py`, `scripts/reconcile_transcript.py`)
 - **Missing-bundled-script resilience** — a guarded runner so a bundled script that isn't materialized in the workspace degrades gracefully instead of erroring (`scripts/run_bundled_script.py`)
 - Advanced-track knowledge check, always-loaded steering budget check, Module 2 license-acquisition guidance, Module 6 SQLite volume prompt, and TypeScript build-failure recovery guidance
@@ -144,7 +144,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 |---|---|---|
 | `agent-behavior-rules.md` | 822 | medium |
 | `agent-context-management.md` | 1326 | medium |
-| `agent-instructions.md` | 4509 | large |
+| `agent-instructions.md` | 4504 | large |
 | `cloud-provider-setup.md` | 784 | medium |
 | `common-pitfalls.md` | 4612 | large |
 | `completion-summary-offer.md` | 1867 | medium |
@@ -164,8 +164,8 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `feedback-workflow.md` | 1245 | medium |
 | `file-placement.md` | 515 | medium |
 | `graduation.md` | 10310 | large |
-| `hook-architecture.md` | 2325 | large |
-| `hook-registry-critical.md` | 8116 | large |
+| `hook-architecture.md` | 2418 | large |
+| `hook-registry-critical.md` | 11208 | large |
 | `hook-registry-module-01.md` | 434 | small |
 | `hook-registry-module-02.md` | 269 | small |
 | `hook-registry-module-03.md` | 2124 | large |
@@ -177,8 +177,8 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `hook-registry-module-09.md` | 276 | small |
 | `hook-registry-module-10.md` | 288 | small |
 | `hook-registry-module-11.md` | 412 | small |
-| `hook-registry-module-any.md` | 4794 | large |
-| `hook-registry.md` | 872 | medium |
+| `hook-registry-module-any.md` | 2003 | large |
+| `hook-registry.md` | 850 | medium |
 | `inline-status.md` | 461 | small |
 | `lang-csharp.md` | 1642 | medium |
 | `lang-java.md` | 1688 | medium |
@@ -225,14 +225,14 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-11-deployment.md` | 479 | small |
 | `module-11-phase1-packaging.md` | 2870 | large |
 | `module-11-phase2-deploy.md` | 850 | medium |
-| `module-completion-artifacts.md` | 3426 | large |
+| `module-completion-artifacts.md` | 3448 | large |
 | `module-completion-error-handling.md` | 637 | medium |
 | `module-completion-next-steps.md` | 705 | medium |
 | `module-completion-track.md` | 3310 | large |
-| `module-completion.md` | 2272 | large |
+| `module-completion.md` | 2256 | large |
 | `module-prerequisites.md` | 1395 | medium |
 | `module-transitions.md` | 1908 | medium |
-| `onboarding-flow.md` | 4232 | large |
+| `onboarding-flow.md` | 4230 | large |
 | `onboarding-phase1b-intro-language.md` | 2176 | large |
 | `onboarding-phase2-track-setup.md` | 1506 | medium |
 | `phase-loading-guide.md` | 890 | medium |
@@ -257,7 +257,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 209239 tokens
+**Total budget:** 209610 tokens
 
 <!-- END GENERATED: steering-files -->
 
@@ -397,7 +397,7 @@ Or manually copy hook files into `.kiro/hooks/`.
 
 <!-- BEGIN GENERATED: hooks -->
 
-Available (27 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `data-quality-check`, `deployment-phase-gate`, `enforce-critical-artifacts`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `module-completion-celebration`, `module-recap-append`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
+Available (26 hooks): `ask-bootcamper` ⭐, `code-style-check` ⭐, `review-bootcamper-input` ⭐, `write-policy-gate` ⭐, `analyze-after-mapping`, `backup-before-load`, `data-quality-check`, `deployment-phase-gate`, `enforce-critical-artifacts`, `enforce-gate-on-stop`, `enforce-mandatory-gate`, `enforce-mapping-spec`, `enforce-visualization-offers`, `error-recovery-context`, `gate-module3-visualization`, `module-completion-celebration`, `run-tests-after-change`, `security-scan-on-save`, `session-log-events`, `validate-alert-config`, `validate-benchmark-results`, `validate-business-problem`, `validate-data-files`, `verify-demo-results`, `verify-generated-code`, `verify-sdk-setup`.
 
 <!-- END GENERATED: hooks -->
 

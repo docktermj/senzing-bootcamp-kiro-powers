@@ -80,8 +80,10 @@ INSTALL_GUIDE: Path = DOCS_DIR / "guides" / "HOOKS_INSTALLATION_GUIDE.md"
 # Constants
 # ---------------------------------------------------------------------------
 
-# The migrated hook count: 30 legacy hooks minus the 3 manual hooks (Req 1.1).
-EXPECTED_V1_HOOK_COUNT: int = 27
+# The shipped hook count: 30 legacy hooks minus the 3 manual hooks = 27 migrated,
+# minus ``module-recap-append`` (folded into ``ask-bootcamper`` Phase 0 by the
+# stop-hook-ux bugfix) = 26 (Req 1.1).
+EXPECTED_V1_HOOK_COUNT: int = 26
 
 # The 1.0 trigger names that the shipped hook set actually uses. Both target
 # files describe hooks that fire on every one of these, so each must appear.

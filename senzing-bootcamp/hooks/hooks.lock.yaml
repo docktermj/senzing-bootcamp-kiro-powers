@@ -1,6 +1,6 @@
 # AUTO-GENERATED — do not edit manually.
 # Run: python3 senzing-bootcamp/scripts/sync_hook_registry.py --write
-generated_at: "2026-07-09T18:26:20Z"
+generated_at: "2026-07-10T01:35:27Z"
 hooks:
   - id: analyze-after-mapping
     version: "v1"
@@ -55,10 +55,6 @@ hooks:
     category: module
     event_type: PreToolUse
   - id: module-completion-celebration
-    version: "v1"
-    category: module
-    event_type: Stop
-  - id: module-recap-append
     version: "v1"
     category: module
     event_type: Stop

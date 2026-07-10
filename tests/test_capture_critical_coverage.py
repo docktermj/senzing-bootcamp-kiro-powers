@@ -6,9 +6,10 @@ install paths:
 - **Requirement 10.2** — the createHook-from-registry path creates the
   capture-critical hooks at onboarding/session start. The onboarding steering
   (``senzing-bootcamp/steering/agent-instructions.md``) must document that
-  ``module-recap-append`` and ``session-log-events`` are added to the
-  onboarding ``createHook``-from-registry set alongside the existing critical
-  ``ask-bootcamper`` hook.
+  ``session-log-events`` is added to the onboarding
+  ``createHook``-from-registry set alongside the existing critical
+  ``ask-bootcamper`` hook (which now owns the module recap append in its
+  Phase 0).
 - **Requirement 10.4** — the session-start warn-on-absence behavior. The
   session-resume steering
   (``senzing-bootcamp/steering/session-resume-phase2-setup-recovery.md``) must
@@ -41,17 +42,18 @@ _SESSION_RESUME_DOC: Path = (
     _STEERING_DIR / "session-resume-phase2-setup-recovery.md"
 )
 
-# The two module-defined capture-critical hooks that must join the onboarding
+# The module-defined capture-critical hook that must join the onboarding
 # createHook set alongside the already-critical ask-bootcamper hook (Req 10.2).
+# (Recap ownership moved into ask-bootcamper Phase 0, so the former
+# ``module-recap-append`` hook is gone and ask-bootcamper is the recap-feeding
+# capture-critical hook.)
 _ONBOARDING_CAPTURE_HOOKS: tuple[str, ...] = (
-    "module-recap-append",
     "session-log-events",
 )
 
-# All three capture-critical hooks (Req 10.4 warn-on-absence set).
+# Both capture-critical hooks (Req 10.4 warn-on-absence set).
 _CAPTURE_CRITICAL: tuple[str, ...] = (
     "session-log-events",
-    "module-recap-append",
     "ask-bootcamper",
 )
 
@@ -139,20 +141,19 @@ class TestCaptureCriticalCoverage:
         )
 
     def test_capture_hooks_present_in_onboarding_doc(self) -> None:
-        """Both module-defined capture hooks must appear in onboarding doc (Req 10.2)."""
+        """The module-defined capture hook must appear in onboarding doc (Req 10.2)."""
         for hook_id in _ONBOARDING_CAPTURE_HOOKS:
             assert hook_id in self.onboarding, (
                 f"agent-instructions.md must reference '{hook_id}'"
             )
 
     def test_capture_hooks_added_to_onboarding_createhook_set(self) -> None:
-        """Both capture hooks must be documented as part of the onboarding createHook \
+        """The capture hook must be documented as part of the onboarding createHook \
 set (Req 10.2).
 
-        Each of ``module-recap-append`` and ``session-log-events`` must appear
-        near a ``createHook`` reference in an onboarding / session-start
-        context, establishing that they are created at session start (not
-        deferred to module start).
+        ``session-log-events`` must appear near a ``createHook`` reference in an
+        onboarding / session-start context, establishing that it is created at
+        session start (not deferred to module start).
         """
         for hook_id in _ONBOARDING_CAPTURE_HOOKS:
             near_createhook = _near(self.onboarding_lower, hook_id, "createhook")
@@ -211,7 +212,7 @@ ask-bootcamper (Req 10.2)."""
         )
 
     def test_resume_doc_lists_all_capture_critical_hooks(self) -> None:
-        """Warn-on-absence section must name all three capture-critical hooks (Req 10.4)."""
+        """Warn-on-absence section must name both capture-critical hooks (Req 10.4)."""
         for hook_id in _CAPTURE_CRITICAL:
             assert hook_id in self.resume, (
                 f"session-resume-phase2-setup-recovery.md must name "

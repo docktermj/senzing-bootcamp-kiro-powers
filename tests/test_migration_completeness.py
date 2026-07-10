@@ -39,10 +39,12 @@ MANUAL_HOOK_IDS: frozenset[str] = frozenset(
     }
 )
 
-# The 27 non-manual hooks that the migration ships as v1 .json files
-# (30 legacy hooks minus the 3 manual hooks). This set is self-contained: the
-# legacy *.kiro.hook files no longer exist to scan (Req 13.1), so the expected
-# shipped id set is captured here directly.
+# The 26 non-manual hooks that the migration ships as v1 .json files. The
+# migration produced 27 (30 legacy hooks minus the 3 manual hooks); the
+# stop-hook-ux bugfix then folded ``module-recap-append`` into ``ask-bootcamper``
+# (Phase 0) and deleted the standalone recap hook, leaving 26. This set is
+# self-contained: the legacy *.kiro.hook files no longer exist to scan (Req 13.1),
+# so the expected shipped id set is captured here directly.
 EXPECTED_NON_MANUAL_HOOK_IDS: frozenset[str] = frozenset(
     {
         "analyze-after-mapping",
@@ -59,7 +61,6 @@ EXPECTED_NON_MANUAL_HOOK_IDS: frozenset[str] = frozenset(
         "error-recovery-context",
         "gate-module3-visualization",
         "module-completion-celebration",
-        "module-recap-append",
         "review-bootcamper-input",
         "run-tests-after-change",
         "security-scan-on-save",
@@ -75,8 +76,9 @@ EXPECTED_NON_MANUAL_HOOK_IDS: frozenset[str] = frozenset(
     }
 )
 
-# 30 legacy hooks minus the 3 manual hooks = 27 shipped v1 hooks (Req 1.1).
-EXPECTED_V1_HOOK_COUNT: int = 27
+# 27 migrated v1 hooks minus ``module-recap-append`` (folded into ask-bootcamper
+# Phase 0 by the stop-hook-ux bugfix) = 26 shipped v1 hooks (Req 1.1).
+EXPECTED_V1_HOOK_COUNT: int = 26
 
 # The three PreToolUse write gates and the fixed 1.0 write matcher.
 WRITE_GATE_IDS: tuple[str, ...] = (
@@ -134,15 +136,16 @@ def _first_hook_entry(data: dict) -> dict:
 
 
 class TestMigrationCompleteness:
-    """The migration ships exactly 27 v1 hooks — one per non-manual legacy id —
-    and the write gates keep the fixed 1.0 write matcher.
+    """The migration ships 26 v1 hooks — the 27 migrated non-manual ids minus
+    ``module-recap-append`` (folded into ``ask-bootcamper`` Phase 0) — and the
+    write gates keep the fixed 1.0 write matcher.
 
     Feature: kiro-1-0-migration
     Validates: Requirements 1.1, 5.1, 5.2
     """
 
-    def test_exactly_27_v1_hook_files_exist(self) -> None:
-        """Exactly 27 ``hooks/*.json`` v1 files ship.
+    def test_exactly_26_v1_hook_files_exist(self) -> None:
+        """Exactly 26 ``hooks/*.json`` v1 files ship (recap folded into ask-bootcamper).
 
         **Validates: Requirements 1.1**
         """

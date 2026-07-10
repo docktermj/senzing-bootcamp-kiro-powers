@@ -4,7 +4,7 @@ inclusion: manual
 
 # Hook Registry
 
-27 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
+26 bootcamp hooks organized by category. Load `hook-registry-critical.md` for full prompt text when creating hooks.
 
 ## Critical Hooks (created during onboarding)
 
@@ -40,7 +40,6 @@ inclusion: manual
 | enforce-critical-artifacts | any | Stop → agent | to enforce critical graduation artifacts on agent stop |
 | error-recovery-context | any | PostToolUse → agent | to help recover from errors |
 | module-completion-celebration | any | Stop → agent | to celebrate module completion |
-| module-recap-append | any | Stop → agent | to append module recap on completion |
 | session-log-events | any | PostToolUse → command | to log session events after write operations |
 
 ## Hook Creation

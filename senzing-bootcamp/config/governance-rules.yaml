@@ -100,7 +100,6 @@ rules:
       - "senzing-bootcamp/hooks/error-recovery-context.json"
       - "senzing-bootcamp/hooks/gate-module3-visualization.json"
       - "senzing-bootcamp/hooks/module-completion-celebration.json"
-      - "senzing-bootcamp/hooks/module-recap-append.json"
       - "senzing-bootcamp/hooks/review-bootcamper-input.json"
       - "senzing-bootcamp/hooks/run-tests-after-change.json"
       - "senzing-bootcamp/hooks/security-scan-on-save.json"
@@ -155,9 +154,6 @@ rules:
         pattern: "\"name\":\\s*\"to\\s"
       - type: "regex_present"
         file: "senzing-bootcamp/hooks/module-completion-celebration.json"
-        pattern: "\"name\":\\s*\"to\\s"
-      - type: "regex_present"
-        file: "senzing-bootcamp/hooks/module-recap-append.json"
         pattern: "\"name\":\\s*\"to\\s"
       - type: "regex_present"
         file: "senzing-bootcamp/hooks/review-bootcamper-input.json"
@@ -267,11 +263,10 @@ rules:
   # types only; every assertion holds against the real repository.
   # ----------------------------------------------------------------------
   - id: "agentstop-hook-set"
-    rule: "Exactly six hooks fire on the Stop trigger; each of the six hook files must exist. session-log-events is PostToolUse and is NOT a member."
+    rule: "Exactly five hooks fire on the Stop trigger; each of the five hook files must exist. session-log-events is PostToolUse and is NOT a member. (The former module-recap-append Stop hook was folded into ask-bootcamper Phase 0 by the stop-hook-ux bugfix.)"
     category: "hook-architecture"
     enforced_by:
       - "senzing-bootcamp/hooks/ask-bootcamper.json"
-      - "senzing-bootcamp/hooks/module-recap-append.json"
       - "senzing-bootcamp/hooks/module-completion-celebration.json"
       - "senzing-bootcamp/hooks/enforce-gate-on-stop.json"
       - "senzing-bootcamp/hooks/enforce-visualization-offers.json"
@@ -279,8 +274,6 @@ rules:
     assertions:
       - type: "file_exists"
         file: "senzing-bootcamp/hooks/ask-bootcamper.json"
-      - type: "file_exists"
-        file: "senzing-bootcamp/hooks/module-recap-append.json"
       - type: "file_exists"
         file: "senzing-bootcamp/hooks/module-completion-celebration.json"
       - type: "file_exists"
@@ -291,11 +284,10 @@ rules:
         file: "senzing-bootcamp/hooks/enforce-critical-artifacts.json"
 
   - id: "agentstop-trigger-type"
-    rule: "Each of the six Stop hooks declares its trigger equal to Stop. session-log-events declares PostToolUse and is excluded."
+    rule: "Each of the five Stop hooks declares its trigger equal to Stop. session-log-events declares PostToolUse and is excluded. (The former module-recap-append Stop hook was folded into ask-bootcamper Phase 0 by the stop-hook-ux bugfix.)"
     category: "hook-architecture"
     enforced_by:
       - "senzing-bootcamp/hooks/ask-bootcamper.json"
-      - "senzing-bootcamp/hooks/module-recap-append.json"
       - "senzing-bootcamp/hooks/module-completion-celebration.json"
       - "senzing-bootcamp/hooks/enforce-gate-on-stop.json"
       - "senzing-bootcamp/hooks/enforce-visualization-offers.json"
@@ -303,9 +295,6 @@ rules:
     assertions:
       - type: "regex_present"
         file: "senzing-bootcamp/hooks/ask-bootcamper.json"
-        pattern: "\"trigger\":\\s*\"Stop\""
-      - type: "regex_present"
-        file: "senzing-bootcamp/hooks/module-recap-append.json"
         pattern: "\"trigger\":\\s*\"Stop\""
       - type: "regex_present"
         file: "senzing-bootcamp/hooks/module-completion-celebration.json"
@@ -321,7 +310,7 @@ rules:
         pattern: "\"trigger\":\\s*\"Stop\""
 
   - id: "agentstop-contract-doc"
-    rule: "The Stop hook contract (six-member set and intended precedence) stays documented in hook-architecture.md and machine-represented by the agentstop_order mapping in hook-categories.yaml."
+    rule: "The Stop hook contract (five-member set and intended precedence) stays documented in hook-architecture.md and machine-represented by the agentstop_order mapping in hook-categories.yaml. (The former module-recap-append Stop hook was folded into ask-bootcamper Phase 0 by the stop-hook-ux bugfix.)"
     category: "hook-architecture"
     enforced_by:
       - "senzing-bootcamp/steering/hook-architecture.md"
@@ -331,7 +320,7 @@ rules:
         file: "senzing-bootcamp/steering/hook-architecture.md"
       - type: "substring_present"
         file: "senzing-bootcamp/steering/hook-architecture.md"
-        value: "Exactly six hooks fire on the `Stop` trigger."
+        value: "Exactly five hooks fire on the `Stop` trigger."
       - type: "substring_present"
         file: "senzing-bootcamp/steering/hook-architecture.md"
         value: "Their intended precedence, highest first, is:"
@@ -341,9 +330,6 @@ rules:
       - type: "substring_present"
         file: "senzing-bootcamp/hooks/hook-categories.yaml"
         value: "id: ask-bootcamper"
-      - type: "substring_present"
-        file: "senzing-bootcamp/hooks/hook-categories.yaml"
-        value: "id: module-recap-append"
       - type: "substring_present"
         file: "senzing-bootcamp/hooks/hook-categories.yaml"
         value: "id: module-completion-celebration"

@@ -2,12 +2,14 @@
 """Senzing Bootcamp - Capture-Hook Completion Safeguard.
 
 Runs at each module-completion boundary to detect any absent
-*capture-critical* hook (``session-log-events``, ``module-recap-append``,
-``ask-bootcamper``) and return a decision the completion steering renders:
-a silent no-op when all three hooks are present, or a recurring, overridable
-Soft_Block reminder (never a Mandatory_Gate) when any are missing.
+*capture-critical* hook (``session-log-events``, ``ask-bootcamper``) and return
+a decision the completion steering renders: a silent no-op when the
+capture-critical hooks are present, or a recurring, overridable Soft_Block
+reminder (never a Mandatory_Gate) when any are missing. (The former
+``module-recap-append`` recap hook was folded into ``ask-bootcamper`` Phase 0 by
+the stop-hook-ux bugfix, so ``ask-bootcamper`` now feeds the recap too.)
 
-The three capture-critical ids come from ``install_hooks.CAPTURE_CRITICAL`` —
+The capture-critical ids come from ``install_hooks.CAPTURE_CRITICAL`` —
 the single source of truth shared with the session-start Warn_On_Absence_Check
 so the two checks can never drift apart. This script only *names* the two
 install options; it never installs on the bootcamper's behalf.
@@ -80,9 +82,8 @@ DEFAULT_PROGRESS = POWER_ROOT / "config" / "bootcamp_progress.json"
 # hook always reports a concrete degraded deliverable.
 
 HOOK_OUTPUTS: dict[str, tuple[str, ...]] = {
-    "module-recap-append": ("recap",),
     "session-log-events": ("transcript", "completion summary"),
-    "ask-bootcamper": ("transcript", "completion summary"),
+    "ask-bootcamper": ("recap", "transcript", "completion summary"),
 }
 
 
@@ -94,7 +95,7 @@ HOOK_OUTPUTS: dict[str, tuple[str, ...]] = {
 INSTALL_OPTION_RECREATE = (
     "Re-create the missing hook(s) with createHook from the hook registry "
     "(ask-bootcamper -> hook-registry-critical.md; "
-    "module-recap-append, session-log-events -> hook-registry-module-any.md)"
+    "session-log-events -> hook-registry-module-any.md)"
 )
 INSTALL_OPTION_INSTALLER = (
     "Run: python3 senzing-bootcamp/scripts/install_hooks.py --essential"
@@ -111,7 +112,7 @@ INSTALL_OPTIONS: tuple[str, str] = (INSTALL_OPTION_RECREATE, INSTALL_OPTION_INST
 class MissingHook:
     """A single absent capture-critical hook and the outputs it feeds."""
 
-    hook_id: str  # e.g. "module-recap-append"
+    hook_id: str  # e.g. "ask-bootcamper"
     outputs: tuple[str, ...]  # subset of ("recap", "transcript", "completion summary")
 
 
@@ -167,7 +168,7 @@ def outputs_for_hook(hook_id: str) -> tuple[str, ...]:
     deliverable.
 
     Args:
-        hook_id: A capture-critical hook id (e.g. ``"module-recap-append"``).
+        hook_id: A capture-critical hook id (e.g. ``"ask-bootcamper"``).
 
     Returns:
         The tuple of outputs the hook feeds.

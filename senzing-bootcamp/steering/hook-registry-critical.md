@@ -18,11 +18,131 @@ Prompt:
 ````text
 DEFAULT OUTPUT: .
 If ALL phases below produce no output, your COMPLETE response is a single period character: .
-Do NOT explain your reasoning. Do NOT describe condition checks. Do NOT output phrases like 'Phase 1 silenced' or 'No output needed'. Just output: .
+Do NOT explain your reasoning. Do NOT describe condition checks. Do NOT narrate which phases were evaluated. Do NOT output phrases like "My last message ends with..." or "No module was completed" or "Phase N silenced" or any variation. NEVER explain WHY you are outputting a period. Just output: .
+
+NEGATIVE EXAMPLES (NEVER produce output like these):
+✗ "My last message ends with a 👉 question, and no module was completed."
+✗ "Phase 1 was silenced because a question is already pending."
+✗ "No phases produced output, so responding with a period."
+✗ "All conditions checked — no action needed."
+The ONLY acceptable no-output response is the literal single character: .
 
 CRITICAL: NEVER generate text beginning with 'Human:' or any text that represents what the bootcamper might say. If you detect yourself about to fabricate a user response, output only: .
 
-This hook has four phases. Phase 2 contains three sub-phases (2A: Sequential Step Enforcement, 2B: Answer Processing Retry, 2C: Not-Waiting Detection). Evaluate each phase in order. If Phase 2 or Phase 3 detects a violation, that takes priority over Phase 1's closing question. Phase 4 operates on the output that would be shown to the bootcamper, so it runs last.
+This hook has five phases (Phase 0 through Phase 4). Phase 0 (Module Recap Append) runs first: it captures a structured recap to docs/bootcamp_recap.md when a module was just completed, and defers to a pending 👉 question. Phase 2 contains three sub-phases (2A: Sequential Step Enforcement, 2B: Answer Processing Retry, 2C: Not-Waiting Detection). Evaluate each phase in order. If Phase 2 or Phase 3 detects a violation, that takes priority over Phase 1's closing question. Phase 4 operates on the output that would be shown to the bootcamper, so it runs last.
+
+════════════════════════════════════════════════════════════════════════════════
+PHASE 0: MODULE RECAP APPEND (Module_Recap_Phase)
+════════════════════════════════════════════════════════════════════════════════
+
+If `config/.question_pending` exists, Phase 0 produces no output at all — skip the recap append entirely and continue to Phase 1 (a pending 👉 question takes absolute precedence over recap capture).
+
+This phase runs internally as part of this single Stop hook — it does NOT surface as a separate hook in the UI. In this phase you are checking whether the bootcamper just completed a module and, if so, appending a structured recap section to docs/bootcamp_recap.md. Follow these steps exactly:
+
+1. BOUNDARY DETECTION: Read `config/bootcamp_progress.json` and examine the `modules_completed` array. If `modules_completed` has not changed (no new module number was added since the previous state), produce no output at all — do nothing, do not acknowledge, do not explain. Let the conversation continue normally. This boundary detection fires for EVERY new entry added to `modules_completed`, INCLUDING the final module of a track. Track completion (graduation or celebration) MUST NOT suppress the per-module recap section: if the newly completed module is the last module of the bootcamper's track, still append its recap section exactly as for any other module.
+
+2. IDENTIFY COMPLETED MODULE: If a new module number appears in `modules_completed`, identify that module number. Read `config/module-dependencies.yaml` to find the module name corresponding to that number.
+
+3. GATHER SESSION CONTENT: Review the current session context to collect:
+   - Information Shared: key concepts, explanations, and reference material presented to the bootcamper during this module
+   - Questions & Responses: an ORDERED LIST OF PAIRS, one pair per substantive question the agent posed to the bootcamper (exclude rhetorical or transitional prompts), each pair holding the question and the bootcamper's response to that question. Preserve the ascending sequence in which the questions were asked during the module. A substantive question is one whose text contains at least one non-whitespace character after leading and trailing whitespace is removed. Keep each question adjacent to its own response — do NOT collect questions and responses as two separate parallel lists.
+   - Actions Taken: all file creations, modifications, code generation, configuration changes, and commands executed during the module
+   - Journal Narrative: a concise narrative summary for the `### Journal` subsection made up of four fields — `**What we did:**` (what was accomplished this module), `**What was produced:**` (the artifact paths created or updated), `**Why it matters:**` (why this module's work matters to the bootcamper's goal), and `**Bootcamper's takeaway:**` (the bootcamper's own stated takeaway, or `N/A` when none was given)
+
+4. COMPUTE DURATION (no placeholders): Obtain the per-module Duration and the cumulative Total Duration from the deterministic planner instead of from session context. Run:
+
+   ```
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --progress-dir docs/progress --plan
+   ```
+
+   Parse the emitted JSON. Use `module_durations["N"]` (where N is the completed module number) as that module's Duration, and `total_duration` as the cumulative Total Duration. These values are computed from the ISO 8601 timestamps stored in `step_history` and the top-level `started_at` in `config/bootcamp_progress.json`. If the planner does not return a value for this module (the key is absent or null), OMIT the `### Duration` field for this module entirely — do NOT write a placeholder such as "Module N session". If `total_duration` is null, OMIT the **Total Duration** value in the header rather than writing a placeholder. If the planner cannot be run (file-system error or timeout), log a warning and continue, omitting the Duration fields rather than fabricating a value.
+
+5. GET BOOTCAMPER NAME: Read `config/bootcamp_preferences.yaml` and extract the bootcamper's name. If the file does not exist or the name field is missing, use "Bootcamper" as the default.
+
+6. CREATE OR VERIFY FILE: Check if `docs/bootcamp_recap.md` exists.
+   - If it does NOT exist, create it with this header (include the **Total Duration** line only when the planner returned a non-null `total_duration`; otherwise omit that line entirely):
+     ```
+     # Senzing Bootcamp Recap
+
+     **Bootcamper:** [Name]
+     **Started:** [ISO 8601 timestamp with timezone of current time]
+     **Total Duration:** [total_duration from planner]
+
+     ---
+     ```
+   - If it already exists, do NOT overwrite or modify any existing content.
+
+7. APPEND RECAP SECTION: Append the following structured section to the end of `docs/bootcamp_recap.md`. Include the `### Duration` heading and value ONLY when the planner returned a value for this module; when no reliable duration was computed, omit the `### Duration` heading and its value entirely:
+   ```
+
+   ## Module N: [Module Name] — [ISO 8601 timestamp with timezone]
+
+   ### Information Shared
+   - [Concept or explanation presented]
+   - [Reference material shared]
+
+   ### Questions & Responses
+   - **Q:** [Agent question to bootcamper]
+       - **R:** [Bootcamper response to that question]
+   - **Q:** [Next agent question to bootcamper]
+       - **R:** [Bootcamper response to that question]
+
+   ### Actions Taken
+   - Created `[file path]`
+   - Modified `[file path]`
+   - Ran `[command]`
+
+   ### Duration
+   [module_durations["N"] from planner]
+
+   ### Journal
+   **What we did:** [summary of what was accomplished this module]
+   **What was produced:** [artifact paths created or updated]
+   **Why it matters:** [why this module's work matters]
+   **Bootcamper's takeaway:** [bootcamper's stated takeaway, or N/A]
+
+   ---
+   ```
+
+   QUESTIONS & RESPONSES FORMAT (follow exactly — this must match what `format_qr_section` produces):
+   - Emit exactly ONE `### Questions & Responses` heading per module. NEVER emit a `### Questions Asked` heading or an `### Answers Given` heading.
+   - For each pair, in ascending ask order, write the question on its own line beginning with the literal prefix `- **Q:**` (zero leading spaces), immediately followed on the next line by its response beginning with exactly four leading space characters (ASCII 0x20, no tabs) and the literal prefix `- **R:**`. The response line is nested four spaces beneath its question so the Response_Item Indent_Depth is exactly 4 and the Question_Item Indent_Depth is exactly 0.
+   - Keep each response immediately after its own question — never group all questions then all responses.
+   - If a question's response is absent or contains only whitespace, write the response line as `    - **R:** (no response recorded)`.
+   - If a response spans more than one line, prefix every continuation line with at least four leading spaces so it stays nested beneath the question.
+   - If the module has zero substantive questions, write the `### Questions & Responses` heading followed by exactly one list item consisting of the literal text `- None` and no question/response pairs.
+
+   JOURNAL SUBSECTION FORMAT (follow exactly): After the `### Actions Taken` subsection — and after the `### Duration` subsection when one was written — emit exactly ONE `### Journal` heading, followed on separate lines by these four narrative fields in this exact order, each starting at zero indentation with its bold label followed by a single space and the field value:
+   - `**What we did:**` — a concise summary of what was accomplished during this module.
+   - `**What was produced:**` — the artifact paths created or updated during this module.
+   - `**Why it matters:**` — why this module's work matters to the bootcamper's goal.
+   - `**Bootcamper's takeaway:**` — the bootcamper's own stated takeaway. When the module produced no takeaway value, write `N/A` for this field.
+   Every consolidated section MUST include the `### Journal` subsection with all four fields; when a field has no meaningful content, write `N/A` for that field rather than omitting it. The narrative journal content lives here in the Consolidated_Log — do NOT write a separate journal file.
+
+8. UPDATE TOTAL DURATION: If the file header contains a **Total Duration** line and the planner returned a non-null `total_duration`, update it to that value. The total duration is rolled up from the real per-module elapsed times and must be monotonically non-decreasing. If the planner returned null for `total_duration`, leave the header without a Total Duration value rather than writing a placeholder.
+
+9. VERIFY AND BACKFILL (synchronous, before reporting success): The append is not complete until you confirm it persisted. Re-read `docs/bootcamp_recap.md` and check for a `## Module N:` heading for the module you just completed. If the heading is present, proceed. If it is ABSENT (the write did not persist, this is the final module of a track, or the section was never written), do NOT report success: run the deterministic backfill applier, which appends a `## Module N:` section for every completed module missing one (append-around, preserving existing bytes; idempotent when nothing is missing):
+
+   ```
+   python senzing-bootcamp/scripts/completion_artifacts.py --progress config/bootcamp_progress.json --recap docs/bootcamp_recap.md --progress-dir docs/progress --backfill
+   ```
+
+   The applier exits non-zero and names any modules still missing if verification fails after the write. Re-read the file and confirm the `## Module N:` heading is now present before continuing. If the applier cannot be run (file-system error or timeout), log a warning and continue without blocking module completion — the track-completion reconciliation pass is the final safety net.
+
+10. CONFIRMATION: Display a single brief line confirming the recap was updated, for example: "Recap updated for Module N: [Module Name]."
+
+CONSTRAINTS:
+- All timestamps MUST use ISO 8601 format with timezone offset (e.g., 2026-05-23T10:30:00-05:00).
+- Preserve all existing file content byte-for-byte when appending.
+- Duration and Total Duration values come ONLY from `completion_artifacts.py`; never derive them from session context and never write a placeholder such as "Module N session". When the planner omits a value, omit the corresponding field.
+- If any section has no content (e.g., no actions were taken), include the subsection heading with a single item "None" or "N/A". This does NOT apply to the `### Duration` field, which is omitted entirely when the planner returns no value, and it does NOT apply to the `### Questions & Responses` section, which follows its own rule above (heading followed by exactly `- None` when there are zero substantive questions).
+- If the file cannot be written due to a file system error, log a warning message and continue without blocking the module completion flow. Do NOT raise an error or halt execution.
+- Do NOT alter the behavior of any other hooks (celebration, etc.).
+- Keep the recap factual and concise — summarize rather than reproduce entire conversations.
+- Do NOT include secrets, credentials, environment variable values, or connection strings in the recap content.
+- Module sections must appear in chronological order of completion timestamps.
+
+After Phase 0 completes, is skipped (a question is pending), or is a no-op (no new module was completed), continue to Phase 1. Phase 0's recap-append actions do not by themselves count as the hook's user-visible output.
 
 ════════════════════════════════════════════════════════════════════════════════
 PHASE 1: CLOSING QUESTION (Closing_Question_Phase)

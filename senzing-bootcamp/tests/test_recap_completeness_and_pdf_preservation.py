@@ -718,7 +718,11 @@ class TestUnrelatedHookPreservation:
         assert "completion_artifacts.py" not in prompt
 
     def test_recap_hook_preserves_other_hooks_clause(self) -> None:
-        """The recap-append hook still declares it must not alter other hooks."""
-        hook = _load_hook("module-recap-append.json")
+        """The recap-append logic still declares it must not alter other hooks.
+
+        Recap-append moved into ``ask-bootcamper`` Phase 0 (stop-hook-ux bugfix),
+        which preserves the "do not alter other hooks" constraint verbatim.
+        """
+        hook = _load_hook("ask-bootcamper.json")
         prompt = hook["action"]["prompt"]
         assert "Do NOT alter the behavior of any other hooks" in prompt

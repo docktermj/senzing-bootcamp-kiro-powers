@@ -5,8 +5,7 @@ that yields zero output while a question is pending: a reference to
 ``config/.question_pending`` paired with a no-output / defer-to-``ask-bootcamper``
 clause.
 
-The guard-clause hooks (`module-recap-append`,
-`module-completion-celebration`, `enforce-gate-on-stop`,
+The guard-clause hooks (`module-completion-celebration`, `enforce-gate-on-stop`,
 `enforce-visualization-offers`, and `enforce-critical-artifacts`) open with the
 leading clause "If ``config/.question_pending`` exists, produce no output at
 all — defer to ``ask-bootcamper``." The `ask-bootcamper` hook owns the
@@ -39,13 +38,14 @@ HOOKS_DIR: Path = Path(__file__).resolve().parent.parent / "senzing-bootcamp" / 
 # The exact path token every agentStop guard must reference.
 QUESTION_PENDING_REF: str = "config/.question_pending"
 
-# The six agentStop hook ids (grounded fact from requirements/design).
+# The five agentStop hook ids (grounded fact from requirements/design).
 # enforce-critical-artifacts was added by the guaranteed-graduation-artifacts
 # spec; it opens with the same "produce no output at all — defer to
-# ask-bootcamper" guard clause as the other enforcement hooks.
+# ask-bootcamper" guard clause as the other enforcement hooks. The stop-hook-ux
+# bugfix folded the former ``module-recap-append`` Stop hook into
+# ``ask-bootcamper`` (Phase 0), so it is no longer a separate agentStop hook.
 EXPECTED_AGENTSTOP_IDS: set[str] = {
     "ask-bootcamper",
-    "module-recap-append",
     "module-completion-celebration",
     "enforce-gate-on-stop",
     "enforce-visualization-offers",

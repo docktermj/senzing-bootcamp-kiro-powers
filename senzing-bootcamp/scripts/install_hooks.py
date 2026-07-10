@@ -90,7 +90,8 @@ def red(t: str) -> str: return c("0;31", t)
 HOOK_METADATA: dict[str, str] = {
     # Critical hooks (created during onboarding)
     "ask-bootcamper.json":
-        "Owns closing questions, answer-processing, and feedback reminders",
+        "Appends the module recap on completion (Phase 0), and owns closing "
+        "questions, answer-processing, and feedback reminders",
     "review-bootcamper-input.json":
         "Routes feedback and status trigger phrases",
     "code-style-check.json":
@@ -142,9 +143,6 @@ HOOK_METADATA: dict[str, str] = {
         "Consults pitfalls on non-zero shell exits",
     "module-completion-celebration.json":
         "Celebrates module completion and points to the next step",
-    "module-recap-append.json":
-        "Appends a structured recap section to docs/bootcamp_recap.md when a "
-        "module is completed",
     "session-log-events.json":
         "Logs file create/modify/delete and MCP tool calls to the session log "
         "after write operations",
@@ -168,9 +166,11 @@ CRITICAL_FALLBACK: set[str] = {
 
 # Capture-critical hooks: the completion-summary / journey-fidelity capture
 # hooks plus the closing-question owner.  Both install paths must cover these.
+# The stop-hook-ux bugfix folded the former ``module-recap-append`` recap hook
+# into ``ask-bootcamper`` (Phase 0), so ``ask-bootcamper`` now owns recap capture
+# in addition to the transcript / completion-summary capture it already fed.
 CAPTURE_CRITICAL: set[str] = {
     "session-log-events",
-    "module-recap-append",
     "ask-bootcamper",
 }
 

@@ -74,7 +74,8 @@ _POWER_ROOT: Path = Path(__file__).resolve().parent.parent
 _HOOKS_DIR: Path = _POWER_ROOT / "hooks"
 _STEERING_DIR: Path = _POWER_ROOT / "steering"
 
-_RECAP_HOOK: Path = _HOOKS_DIR / "module-recap-append.json"
+# Recap-append logic now lives in ask-bootcamper.json Phase 0 (stop-hook-ux bugfix).
+_RECAP_HOOK: Path = _HOOKS_DIR / "ask-bootcamper.json"
 _CELEBRATION_HOOK: Path = _HOOKS_DIR / "module-completion-celebration.json"
 _MODULE_COMPLETION_FILE: Path = _STEERING_DIR / "module-completion.md"
 
@@ -411,18 +412,28 @@ class TestQuestionPendingDeferral:
     """
 
     def test_hooks_preserve_question_pending_deferral(self) -> None:
-        """Both hooks keep the '.question_pending -> defer, no output' instruction."""
+        """Both keep the '.question_pending -> defer, no output' instruction.
+
+        Recap-append moved into ``ask-bootcamper`` Phase 0 (stop-hook-ux bugfix);
+        Phase 0 defers to its own pending-question handling rather than naming an
+        external ``ask-bootcamper`` hook, so the ``.question_pending`` + no-output
+        deferral is asserted for both prompts while the external defer-to
+        ``ask-bootcamper`` reference is asserted only for the celebration hook.
+        """
         for hook_path in (_RECAP_HOOK, _CELEBRATION_HOOK):
             prompt = str(_read_json(hook_path)["action"]["prompt"])  # type: ignore[index]
             assert ".question_pending" in prompt, (
                 f"{hook_path.name} must reference config/.question_pending"
             )
-            assert "ask-bootcamper" in prompt, (
-                f"{hook_path.name} must defer to ask-bootcamper"
-            )
             assert "produce no output" in prompt, (
                 f"{hook_path.name} must produce no output while a question is pending"
             )
+        celebration_prompt = str(
+            _read_json(_CELEBRATION_HOOK)["action"]["prompt"]  # type: ignore[index]
+        )
+        assert "ask-bootcamper" in celebration_prompt, (
+            "module-completion-celebration must defer to ask-bootcamper"
+        )
 
     @given(
         prev=st.lists(

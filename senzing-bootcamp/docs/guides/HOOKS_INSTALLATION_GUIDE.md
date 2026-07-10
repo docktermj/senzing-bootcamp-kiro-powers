@@ -8,10 +8,10 @@ Hooks are created automatically during onboarding. The agent reads the V1 hook d
 - **matcher:** a single regular expression that scopes the hook — a file-path regex for file triggers or a tool-name regex such as `fs_write|str_replace|fs_append` for tool triggers. Unscoped triggers (`Stop`, `UserPromptSubmit`, `PostTaskExec`) omit the matcher.
 - **action:** either `{"type": "agent", "prompt": "..."}` or `{"type": "command", "command": "..."}`.
 
-The migrated set is 27 hooks:
+The shipped set is 26 hooks:
 
 - **Critical Hooks** (4) are created during initial setup.
-- **Module Hooks** (23) are created when you reach the relevant module.
+- **Module Hooks** (22) are created when you reach the relevant module.
 
 No files are copied. The `createHook` tool creates hooks programmatically, so hooks work whether the power was installed via Kiro's power system or cloned from the source repository.
 
@@ -27,13 +27,13 @@ The agent will read the Hook Registry (`hook-registry.md`) and recreate all Crit
 
 ## What Gets Installed
 
-27 pre-configured V1 hooks, shipped as `.json` files under `senzing-bootcamp/hooks/`.
+26 pre-configured V1 hooks, shipped as `.json` files under `senzing-bootcamp/hooks/`.
 
 ### Critical Hooks (created during onboarding)
 
 | Hook | Trigger | Purpose |
 | ---- | ------- | ------- |
-| ask-bootcamper | Agent stops (Stop) | Recaps accomplishments, owns the closing question, and reminds about saved feedback |
+| ask-bootcamper | Agent stops (Stop) | Appends the module recap on completion (Phase 0), recaps accomplishments, owns the closing question, and reminds about saved feedback |
 | code-style-check | Save source code (PostFileSave) | Check language-appropriate coding standards |
 | review-bootcamper-input | Every message (UserPromptSubmit) | Detect feedback and status trigger phrases |
 | write-policy-gate | Before write (PreToolUse) | Enforce SQL blocking, single-question, path, and root-placement policies |
@@ -63,7 +63,6 @@ The agent will read the Hook Registry (`hook-registry.md`) and recreate all Crit
 | enforce-critical-artifacts | Any | Agent stops (Stop) | Enforce the graduation-artifact completion invariant |
 | error-recovery-context | Any | After shell command (PostToolUse) | Consult pitfalls on non-zero shell exits |
 | module-completion-celebration | Any | Agent stops (Stop) | Celebrate module completion and point to the next step |
-| module-recap-append | Any | Agent stops (Stop) | Append a structured recap section to docs/bootcamp_recap.md |
 | session-log-events | Any | After write (PostToolUse) | Log write operations to the session log |
 
 ## Slash Commands (formerly manual hooks)

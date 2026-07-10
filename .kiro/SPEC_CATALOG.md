@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 1
-- implemented: 269
+- in-progress: 0
+- implemented: 270
 - superseded: 2
 - abandoned: 0
 - unknown: 0
@@ -1794,7 +1794,7 @@
 
 ### truthset-fallback-source
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/truthset-fallback-source/](.kiro/specs/truthset-fallback-source/)

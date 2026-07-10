@@ -1,0 +1,39 @@
+# fallback_sources.yaml
+# ---------------------------------------------------------------------------
+# Sanctioned Fallback Source Registry
+#
+# This file is the SINGLE, reviewed place where an external fallback data
+# source is declared for the Senzing Bootcamp power. The workspace security
+# posture allows only the Senzing MCP server as an external endpoint;
+# every other external URL is an explicit, reviewable exception recorded here.
+#
+# Purpose: Module 3 (System Verification) normally acquires a deterministic
+# TruthSet from the MCP server's get_sample_data tool. On MCP server versions
+# that expose only CORD collections (no named TruthSet), the module falls back
+# to the official Senzing `truth-sets` repository so that deterministic
+# verification (expected entity counts, known matches) can still run.
+#
+# SECURITY RULE: this registry is the ONLY place the raw fallback URL is
+# declared. Every steering file and script that needs the fallback source MUST
+# reference it by its registry identifier (e.g. `senzing_truthset_demo`),
+# never by embedding the raw URL. The fallback path fetches TruthSet DATA only;
+# all Senzing SDK facts, method signatures, and expected-behavior definitions
+# continue to come from the MCP server.
+# ---------------------------------------------------------------------------
+
+version: "1"
+sources:
+  senzing_truthset_demo:
+    name: "Senzing TruthSet Demo"
+    purpose: "Fallback TruthSet data for Module 3 deterministic verification"
+    rationale: "Official Senzing-published deterministic data with ground-truth key"
+    base_url: "https://raw.githubusercontent.com/Senzing/truth-sets/main/truthsets/demo"
+    files:
+      records:
+        - "customers.jsonl"
+        - "watchlist.jsonl"
+        - "reference.jsonl"
+      truth_key: "actual_truthset_key.csv"
+    timeout_seconds: 30
+    approved_by: "power-maintainer"
+    approved_date: "2026-07-01"

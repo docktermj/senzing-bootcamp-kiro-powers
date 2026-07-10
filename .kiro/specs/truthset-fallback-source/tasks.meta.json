@@ -1,0 +1,478 @@
+{
+  "pbtResults": {
+    "2.5 Write property test for normalization round-trip (Property 4)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783651163467
+    },
+    "2.6 Write property test for JSONL validation error detection (Property 5)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783651393904
+    },
+    "2.7 Write property test for expected results structural completeness (Property 6)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783651701479
+    },
+    "2.8 Write property test for HTTP error classification (Property 3)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783651921420
+    },
+    "4.5 Write property test for TruthSet availability classification (Property 1)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783653387097
+    },
+    "4.6 Write property test for path selection and provenance consistency (Property 2)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783653639930
+    },
+    "4.7 Write property test for degraded status propagation (Property 8)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783653915386
+    },
+    "6.2 Write property test for URL governance — single source of truth (Property 7)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783654722487
+    },
+    "6.3 Write property test for provenance persistence completeness (Property 9)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783655101804
+    }
+  },
+  "executionHistory": {
+    "1.1 Create `senzing-bootcamp/config/fallback_sources.yaml` registry file": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649301529
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649309872
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649472461
+      }
+    ],
+    "2.1 Create `senzing-bootcamp/scripts/fetch_fallback_truthset.py` with registry reader and HTTP fetcher": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649301677
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649476057
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649852253
+      }
+    ],
+    "2.2 Implement record normalizer within the fetcher script": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649301741
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649862877
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783650245651
+      }
+    ],
+    "2.3 Implement JSONL validator within the fetcher script": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649301785
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783650252008
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783650594814
+      }
+    ],
+    "2.4 Implement expected results deriver within the fetcher script": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649301817
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783650598753
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783650811417
+      }
+    ],
+    "2.5 Write property test for normalization round-trip (Property 4)": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649301851
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783650817372
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783651193544
+      }
+    ],
+    "2.6 Write property test for JSONL validation error detection (Property 5)": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649301884
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783651197782
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783651411347
+      }
+    ],
+    "2.7 Write property test for expected results structural completeness (Property 6)": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649301937
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783651414615
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783651722060
+      }
+    ],
+    "2.8 Write property test for HTTP error classification (Property 3)": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649301974
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783651726285
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783651938589
+      }
+    ],
+    "3. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302002
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783651973435
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783652040390
+      }
+    ],
+    "4.1 Modify `senzing-bootcamp/steering/module-03-phase1-verification.md` Step 2 to add fallback branch": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302048
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783652067579
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783652552167
+      }
+    ],
+    "4.2 Modify `senzing-bootcamp/steering/module-03-phase1-verification.md` to add graceful degradation handling": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302085
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783652555869
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783652839721
+      }
+    ],
+    "4.3 Modify `senzing-bootcamp/steering/module-03-system-verification.md` Error Handling section": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302118
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783652067620
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783652552446
+      }
+    ],
+    "4.4 Add provenance to Verification Report structure in steering": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302149
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783652843058
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783653079000
+      }
+    ],
+    "4.5 Write property test for TruthSet availability classification (Property 1)": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302192
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783653085403
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783653407227
+      }
+    ],
+    "4.6 Write property test for path selection and provenance consistency (Property 2)": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302220
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783653410670
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783653667587
+      }
+    ],
+    "4.7 Write property test for degraded status propagation (Property 8)": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302273
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783653671392
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783653937868
+      }
+    ],
+    "5. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302303
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783653946222
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783654055601
+      }
+    ],
+    "6.1 Implement URL governance validation (Property 7)": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302336
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783654059037
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783654446960
+      }
+    ],
+    "6.2 Write property test for URL governance — single source of truth (Property 7)": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302375
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783654453703
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783654921589
+      }
+    ],
+    "6.3 Write property test for provenance persistence completeness (Property 9)": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302403
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783654927038
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783655122160
+      }
+    ],
+    "6.4 Write unit tests for registry YAML parsing and specific edge cases": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302437
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783654455205
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783654923523
+      }
+    ],
+    "6.5 Write integration tests for end-to-end fallback flow": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302469
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783654455382
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783654923653
+      }
+    ],
+    "7. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649302503
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783655126059
+      },
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783659037413
+      }
+    ],
+    "1. Create Sanctioned Source Registry and core interfaces": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783649472499
+      }
+    ],
+    "2. Implement Fallback Fetcher Script": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783651938626
+      }
+    ],
+    "4. Implement steering modifications": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783653937904
+      }
+    ],
+    "6. URL governance and provenance persistence": [
+      {
+        "executionId": "98c2167a-7432-4f73-874a-0d11e2be17fe",
+        "chatSessionId": "sess_a2e3ee5a-5437-4d0e-a7d0-5660ca1415dd",
+        "timestamp": 1783655122187
+      }
+    ]
+  }
+}

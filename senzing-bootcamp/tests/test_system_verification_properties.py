@@ -240,7 +240,24 @@ class TestSystemVerificationProperties:
             )
 
         # Verify CORD/Las Vegas/London/Moscow only appear in prohibition
-        # context (preceded by "Do not use" or "not") — never as options
+        # context (preceded by "Do not use" or "not") — never as options.
+        #
+        # Documented carve-out (truthset-fallback-source feature, Requirements
+        # 7.2/7.3): when BOTH the MCP TruthSet and the sanctioned GitHub
+        # fallback source are unavailable, Module 3's Step 2a offers a clearly
+        # labeled NON-DETERMINISTIC CORD substitute — a degraded path that is
+        # recorded as `non_deterministic` (never `passed`) and leaves Module 3
+        # `incomplete`. Such a line names a CORD collection as a sanctioned
+        # substitute rather than prohibiting it, so it is allowed only when it
+        # ALSO carries the non-deterministic / substitute framing. This mirrors
+        # the on-demand-lookup carve-out precedent in test_cord_data_priority.py
+        # and stays narrow: genuine dataset-selection prompts are still caught by
+        # the choice_patterns block above, which this carve-out does not relax.
+        prohibition_pattern = (
+            r"do not use|not|shall not|no dataset choice|"
+            r"never|must not|don.t"
+        )
+        cord_substitute_carveout = r"non[- ]?deterministic|substitute"
         dataset_names = ["CORD", "Las Vegas", "London", "Moscow"]
         for name in dataset_names:
             # Find all lines containing the dataset name
@@ -250,13 +267,15 @@ class TestSystemVerificationProperties:
                 if name in line
             ]
             for line in lines_with_name:
-                # Each mention must be in a prohibition/negative context
-                assert re.search(
-                    r"(do not use|not|shall not|no dataset choice|"
-                    r"never|must not|don.t)",
-                    line,
-                    re.IGNORECASE,
-                ), (
+                # Each mention must be in a prohibition/negative context, OR be
+                # the sanctioned non-deterministic CORD substitute (carve-out).
+                in_prohibition = re.search(
+                    prohibition_pattern, line, re.IGNORECASE
+                )
+                is_sanctioned_substitute = re.search(
+                    cord_substitute_carveout, line, re.IGNORECASE
+                )
+                assert in_prohibition or is_sanctioned_substitute, (
                     f"Dataset name '{name}' appears outside prohibition "
                     f"context: {line!r}"
                 )

@@ -435,7 +435,20 @@ _BASELINE_HASHES: dict[str, str] = {
     # counts). Only the budget block changed (solely the total_tokens line);
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "d2da552c3bf3f00f61d5995694f08d5ddb0f86d17650eedbbd91d8bdb67d71dc",
+    # Re-baselined once more (209610 -> 210967) for the truthset-fallback-source
+    # spec (final steering resync): the Module 3 fallback-source steering edits
+    # grew module-03-phase1-verification.md (4194 -> 4928, the get_sample_data
+    # availability classification + GitHub fallback branch + graceful-degradation
+    # handling), module-03-system-verification.md (604 -> 913, the fallback path
+    # documented under Error Handling with its registry-identifier reference and
+    # approval rationale), and module-03-phase3-report-close.md (1752 -> 2066,
+    # medium -> large, the TruthSet_Source_Provenance addition to the verification
+    # report), all recomputed by measure_steering.py into file_metadata and the
+    # budget total (210967 = sum of file_metadata counts). Only the budget block
+    # changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    "budget": "cb9bf52911bcc336e3efa9ad852477ecefbccb986534d7c0b03e6bf9a74d2398",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -845,6 +858,15 @@ class TestNonPhaseBlocksBytePreserved:
         ``hook-registry-module-any.md``) and the coupled steering edits removed
         the ``module-recap-append`` references, all recomputed by
         ``measure_steering.py`` into ``file_metadata`` and the budget total.
+        Most recently, the truthset-fallback-source spec re-baselines again
+        (209610 -> 210967): the Module 3 fallback-source steering edits grew
+        ``module-03-phase1-verification.md`` (4194 -> 4928, the get_sample_data
+        availability classification + GitHub fallback branch + graceful
+        degradation), ``module-03-system-verification.md`` (604 -> 913, the
+        fallback path documented under Error Handling), and
+        ``module-03-phase3-report-close.md`` (1752 -> 2066, the
+        TruthSet_Source_Provenance report addition), all recomputed by
+        ``measure_steering.py`` into ``file_metadata`` and the budget total.
         Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
@@ -861,11 +883,11 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (209610 after the stop-hook-ux bugfix folded the recap logic into
-        # ask-bootcamper Phase 0 and resynced the steering token index), so the
-        # hash cannot silently re-pin a stale value.
+        # (210967 after the truthset-fallback-source spec grew the Module 3
+        # verification steering files and resynced the steering token index), so
+        # the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 209610" in budget_block
+        assert "total_tokens: 210967" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

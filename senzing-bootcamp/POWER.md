@@ -193,10 +193,10 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-01-phase1-discovery.md` | 6973 | large |
 | `module-01-phase2-document-confirm.md` | 2534 | large |
 | `module-02-sdk-setup.md` | 8690 | large |
-| `module-03-phase1-verification.md` | 4194 | large |
+| `module-03-phase1-verification.md` | 4928 | large |
 | `module-03-phase2-visualization.md` | 5342 | large |
-| `module-03-phase3-report-close.md` | 1752 | medium |
-| `module-03-system-verification.md` | 604 | medium |
+| `module-03-phase3-report-close.md` | 2066 | large |
+| `module-03-system-verification.md` | 913 | medium |
 | `module-03-visualization-api-reference.md` | 2101 | large |
 | `module-04-data-collection.md` | 4888 | large |
 | `module-05-data-quality-mapping.md` | 712 | medium |
@@ -257,7 +257,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 209610 tokens
+**Total budget:** 210967 tokens
 
 <!-- END GENERATED: steering-files -->
 

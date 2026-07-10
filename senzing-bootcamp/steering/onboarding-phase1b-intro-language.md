@@ -42,6 +42,8 @@ Load language steering file immediately after confirmation (`lang-python.md`, `l
 
 ## 5. Bootcamp Introduction
 
+Immediately before displaying the welcome banner, state that administrative setup is complete and the bootcamp is now starting — for example: "Administrative setup is complete. The bootcamp is starting."
+
 **Display the welcome banner — make it impossible to miss.**
 
 **Standard (single-user) banner:**

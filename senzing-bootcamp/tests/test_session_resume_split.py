@@ -866,43 +866,48 @@ class TestUnitTokenBudgets:
     """
 
     def test_phase1_token_budget(self) -> None:
-        """Phase-1 file token count ≤ 3,400.
+        """Phase-1 file token count ≤ 3,463.
 
         The session-resume split + the added "Preference Loading on Session
         Start" content grew the phase-1 file (session-resume.md) past the
         original 2,700 budget. The shipped steering-index.yaml records this
-        file as ``token_count: 3386`` / ``size_category: large``. The value
+        file as ``token_count: 3463`` / ``size_category: large``. The value
         moved 3384 -> 3385 when the steering-inclusion-auto-audit spec
         re-classified session-resume.md from the non-standard ``inclusion:
         auto`` to the standard ``inclusion: manual`` (the two extra characters
         nudge ``round(len(content) / 4)`` up by one), then 3385 -> 3386 when a
         follow-up doc fix refreshed the stale Protocol Confirmation parenthetical
         (``inclusion: auto`` -> ``inclusion: always``, two more characters) and
-        measure_steering.py was re-run in update mode to re-sync the index. The
-        threshold stays at 3,400 to match that intentional shipped value (3,386
-        tokens, under the 3,400 ceiling); the per-file ±10% budget enforcement in
-        measure_steering.py is unchanged. Paired with an independent content
-        assertion below so the ceiling can never mask unbounded growth.
+        measure_steering.py was re-run in update mode to re-sync the index. Most
+        recently, the onboarding-session-ux spec added Rule 6 (the bold-question
+        convention) to session-resume.md Step 2b's Core Rules to satisfy
+        Requirement 4.x — the convention must be stated inline / self-contained
+        so it survives context compaction (Req 4.3), so it is not trimmed —
+        growing the file 3386 -> 3463 tokens, re-measured by measure_steering.py
+        and re-synced into steering-index.yaml. The threshold moves to 3,463 to
+        match that intentional shipped value (3,463 tokens); the per-file ±10%
+        budget enforcement in measure_steering.py is unchanged. Paired with an
+        independent content assertion below so the ceiling can never mask
+        unbounded growth.
         """
         token_count = _calculate_token_count(_PHASE1_FILE)
-        assert token_count <= 3400, (
-            f"Phase-1 file has {token_count} tokens, exceeds budget of 3,400"
+        assert token_count <= 3463, (
+            f"Phase-1 file has {token_count} tokens, exceeds budget of 3,463"
         )
 
         # Independent content assertion: the shipped steering-index.yaml declares
-        # the same token_count for session-resume.md, confirming 3,386 is the
-        # intentional shipped value (re-classification auto -> manual, then the
-        # follow-up Protocol Confirmation parenthetical fix auto -> always plus
-        # the measure_steering.py re-sync), not drift.
+        # the same token_count for session-resume.md, confirming 3,463 is the
+        # intentional shipped value (the onboarding-session-ux Rule 6 bold-question
+        # convention added inline to Step 2b, re-measured and re-synced), not drift.
         index = _read_steering_index()
         assert "session-resume.md:" in index, (
             "steering-index.yaml must contain a session-resume.md entry"
         )
         idx_pos = index.find("session-resume.md:")
         entry = index[idx_pos:idx_pos + 200]
-        assert "token_count: 3386" in entry, (
-            "steering-index.yaml must record session-resume.md token_count: 3386 "
-            "(the shipped post-reclassification, post-remeasurement value)"
+        assert "token_count: 3463" in entry, (
+            "steering-index.yaml must record session-resume.md token_count: 3463 "
+            "(the shipped post-Rule-6 bold-question-convention value)"
         )
 
     def test_phase2_mapping_token_budget(self) -> None:

@@ -413,7 +413,16 @@ _BASELINE_HASHES: dict[str, str] = {
     # changed (solely the total_tokens line); keywords/languages/deployment/
     # root_step_range are byte-identical (verified: their baseline hashes still
     # match the live index).
-    "budget": "90aa6ca412de7682c148f8bb9e0028f169420ff1bf742da45706864a1419afec",
+    # Re-baselined once more (209111 -> 209239) for the onboarding-session-ux
+    # spec: session-resume.md grew (3386 -> 3463) when Rule 6 (the bold-question
+    # convention) was added inline to Step 2b's Core Rules to satisfy Requirement
+    # 4.x — the convention is stated self-contained so it survives context
+    # compaction (Req 4.3) and is not trimmed — which measure_steering.py
+    # recomputed into file_metadata and the budget total (209239 = sum of
+    # file_metadata counts). Only the budget block changed (solely the
+    # total_tokens line); keywords/languages/deployment/root_step_range are
+    # byte-identical (verified: their baseline hashes still match the live index).
+    "budget": "78d1e8c8a3b207fdbf3a03cdc6b9e58603484cbbb2a6f563812bd90c8413f49f",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -816,6 +825,12 @@ class TestNonPhaseBlocksBytePreserved:
         +33, ``module-completion-next-steps.md`` +3, and
         ``module-completion-track.md`` +22 — all recomputed by
         ``measure_steering.py`` into ``file_metadata`` and the budget total.
+        Most recently, the onboarding-session-ux spec re-baselines again
+        (209111 -> 209239): ``session-resume.md`` grew (3386 -> 3463) when Rule 6
+        (the bold-question convention) was added inline to Step 2b's Core Rules
+        to satisfy Requirement 4.x — stated self-contained so it survives context
+        compaction (Req 4.3) and is not trimmed — recomputed by
+        ``measure_steering.py`` into ``file_metadata`` and the budget total.
         Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
@@ -832,11 +847,11 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (209111 after the license-aware-sampling bugfix reconciled the steering
-        # edits across Modules 1/2/4/6/8), so the hash cannot silently re-pin a
-        # stale value.
+        # (209239 after the onboarding-session-ux spec added Rule 6 inline to
+        # session-resume.md Step 2b, growing it 3386 -> 3463), so the hash cannot
+        # silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 209111" in budget_block
+        assert "total_tokens: 209239" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 2
-- implemented: 267
+- in-progress: 1
+- implemented: 268
 - superseded: 2
 - abandoned: 0
 - unknown: 1
@@ -1209,7 +1209,7 @@
 
 ### onboarding-session-ux
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/onboarding-session-ux/](.kiro/specs/onboarding-session-ux/)

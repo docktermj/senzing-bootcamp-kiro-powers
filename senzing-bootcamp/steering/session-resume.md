@@ -125,7 +125,7 @@ Based on the `language` field from preferences, load the corresponding language 
 
 **`conversation-protocol.md` is the authoritative source for all turn-taking and question-handling rules. These rules apply without exception after session resume.**
 
-Before interacting with the bootcamper, re-assert the five core conversation rules. These are summarized below — see `conversation-protocol.md` for complete definitions.
+Before interacting with the bootcamper, re-assert the six core conversation rules. These are summarized below — see `conversation-protocol.md` for complete definitions.
 
 ### Core Rules
 
@@ -134,6 +134,7 @@ Before interacting with the bootcamper, re-assert the five core conversation rul
 3. **STOP markers as absolute end-of-turn boundaries** — 🛑 STOP means produce zero additional tokens. Wait for the bootcamper's response (wait-for-response rule). Enforcement: any tokens after 🛑 STOP are discarded.
 4. **No self-answering** — Never generate text that answers, assumes, or implies a response to your own 👉 question. Enforcement: if self-answering is detected, truncate the response at the 👉 question.
 5. **No dead-end responses** — Every turn must advance the conversation with a next action. Enforcement: if no forward action is present, append a contextual 👉 question.
+6. **Bold question text** — Every 👉 leading question's text is wrapped in CommonMark bold (`**...**`). The 👉 pointer is outside the bold span. Explanatory context before the question stays plain. Numbered option lines stay plain. Enforcement: if a 👉 question's text lacks bold emphasis, wrap it before sending.
 
 ### Equal Priority Statement
 
@@ -141,7 +142,7 @@ Session resume does not reduce the authority of any behavioral rule. Conversatio
 
 ### Protocol Confirmation
 
-Before proceeding to Step 3, confirm that `conversation-protocol.md` is loaded (via its `inclusion: always` setting) and its rules are active. If unavailable, the five rules above serve as the authoritative fallback.
+Before proceeding to Step 3, confirm that `conversation-protocol.md` is loaded (via its `inclusion: always` setting) and its rules are active. If unavailable, the six rules above serve as the authoritative fallback.
 
 ### Self-Answering Prohibition
 

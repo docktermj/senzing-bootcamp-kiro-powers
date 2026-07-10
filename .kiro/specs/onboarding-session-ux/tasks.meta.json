@@ -1,0 +1,222 @@
+{
+  "pbtResults": {
+    "3.3 Write property test for choice question lead/option bold separation": {
+      "status": "passed",
+      "lastRunTimestamp": 1783640326812
+    },
+    "3.4 Write property test for bold-marker-transparent validation": {
+      "status": "passed",
+      "lastRunTimestamp": 1783640384754
+    }
+  },
+  "executionHistory": {
+    "1.1 Add setup-complete statement to WELCOME banner section in `onboarding-phase1b-intro-language.md`": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639636190
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639646150
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639839410
+      }
+    ],
+    "1.2 Add Rule 6 (bold question convention) to `session-resume.md` Step 2b Core Rules": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639636335
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639646801
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639840155
+      }
+    ],
+    "1.3 Update token counts in `steering-index.yaml`": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639636371
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639844183
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640074850
+      }
+    ],
+    "2. Checkpoint - Verify steering edits": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639636443
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640524264
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640633829
+      }
+    ],
+    "3.1 Create the bold question formatting module at `senzing-bootcamp/tests/helpers/bold_format.py`": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639636477
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639845023
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640074017
+      }
+    ],
+    "3.2 Write property test for question formatting idempotence": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639636508
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640105750
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640410809
+      }
+    ],
+    "3.3 Write property test for choice question lead/option bold separation": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639636550
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640106810
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640411637
+      }
+    ],
+    "3.4 Write property test for bold-marker-transparent validation": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639636581
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640108812
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640412979
+      }
+    ],
+    "4.1 Create `senzing-bootcamp/tests/test_onboarding_session_ux.py` with structural validation tests": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639636608
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640109097
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640413109
+      }
+    ],
+    "4.2 Write token budget validation test": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639636658
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640417789
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640511196
+      }
+    ],
+    "5. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783639636691
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640637401
+      },
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783641789274
+      }
+    ],
+    "1. Edit steering files for onboarding and session-resume improvements": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640074885
+      }
+    ],
+    "3. Implement formatting helper functions and tests": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640413076
+      }
+    ],
+    "4. Write structural unit tests for steering file content": [
+      {
+        "executionId": "a2f22806-5b9d-4caf-9736-96141c3be89a",
+        "chatSessionId": "sess_817aa37a-ab92-454e-ac42-625aeb3dc093",
+        "timestamp": 1783640511234
+      }
+    ]
+  }
+}

@@ -100,7 +100,11 @@ _BASELINE_GRAPH_REGIONS_SHA256: str = (
 # observation-first to the current file contents to keep the preservation
 # snapshot honest.
 _BASELINE_COMPLETION_TRACK_SHA256: str = (
-    "e85d2de7819f83eedf674733be05688797cf5c1bb6ce605dcf61b6d9d7c2885c"
+    # Re-baselined observation-first for the question-format-consistency bugfix
+    # (Task 3.2): module-completion-track.md gained the "Bootcamp-Completion
+    # Closing Question" subsection (an unconditional 👉 + bold closing question).
+    # That edit is unrelated to the module-sequencing-order fix this suite guards.
+    "0502c5f46cd68ed7294991a5aefdeb4d8ddce1ffbbba93969aa3fcf6cff8a74d"
 )
 
 

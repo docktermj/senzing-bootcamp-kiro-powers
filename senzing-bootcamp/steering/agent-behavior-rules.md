@@ -50,3 +50,7 @@ Prefix every input-requiring prompt with 👉 at the start of the line.
 **Leading-question guarantee.** Every yielding turn ends with exactly one 👉 leading question. This closing question is YOUR responsibility — do not depend on a hook to provide it. Per the One Question Rule, exactly one 👉 question per yielding turn: ending a yielding turn with zero 👉 questions, or with two or more, is a violation.
 
 A `write-policy-gate` intercept/retry cycle does not relieve you of this obligation. A re-issued write following an intercept is work completed in the turn and still requires exactly one closing 👉 leading question before yielding (see Intercept-Recovery Continuity in `conversation-protocol.md`).
+
+**Session-Recreation Re-Rendering.** When re-presenting a pending question stored in `config/.question_pending` after a session boundary (new session creation), re-render the stored question text with the 👉 prefix and bold formatting. Do not echo raw stored text without presentational formatting.
+
+**Track-Completion / Graduation Terminal Turn.** The track-completion and graduation-final turns are subject to the same 👉 + bold formatting convention as all other yielding turns. The terminal question closing the bootcamp carries the 👉 prefix regardless of any celebratory emoji present.

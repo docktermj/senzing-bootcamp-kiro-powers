@@ -126,3 +126,15 @@ When track is complete, present:
   6. If the feedback file does not exist or contains no entries beyond the template header, display the fallback: "Say 'bootcamp feedback' to share your experience"
 
 Load `lessons-learned.md` and offer the retrospective.
+
+### Bootcamp-Completion Closing Question
+
+Once every offer above is resolved — including the retrospective offered from `lessons-learned.md` — close the track-completion turn with exactly one clearly marked question. This closing question is **unconditional**: it is always presented at the end of the celebration, even when every offer was declined, so the bootcamper always receives an explicit signal that the bootcamp is complete and an invitation to raise anything else.
+
+Present it through the standard question renderer — the 👉 pointer at the start of the line, **outside** the bold span, with the question text wrapped in CommonMark bold:
+
+```text
+👉 **The Senzing Bootcamp is complete. Do you have anything else you would like to discuss?**
+```
+
+A celebratory emoji (for example 🎉 or 🎓) MAY appear before or inside the bold span, but it does NOT replace the 👉 — the pointer always leads the line. This terminal turn carries the same One Question Rule as every other yielding turn: emit exactly one 👉 question, write it to `config/.question_pending`, and stop immediately after (🛑 STOP). Do not append any statement, offer, or follow-up after this question.

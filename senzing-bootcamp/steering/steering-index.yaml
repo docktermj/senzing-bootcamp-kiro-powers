@@ -196,7 +196,7 @@ session-resume:
       size_category: medium
     phase2-state-repair:
       file: session-resume-phase2-state-repair.md
-      token_count: 547
+      token_count: 793
       size_category: medium
     phase2-setup-recovery:
       file: session-resume-phase2-setup-recovery.md
@@ -316,7 +316,7 @@ split_allowlist:
 
 file_metadata:
   agent-behavior-rules.md:
-    token_count: 822
+    token_count: 970
     size_category: medium
   agent-context-management.md:
     token_count: 1326
@@ -379,7 +379,7 @@ file_metadata:
     token_count: 515
     size_category: medium
   graduation.md:
-    token_count: 10310
+    token_count: 10562
     size_category: large
   hook-architecture.md:
     token_count: 2418
@@ -574,7 +574,7 @@ file_metadata:
     token_count: 705
     size_category: medium
   module-completion-track.md:
-    token_count: 3310
+    token_count: 3601
     size_category: large
   module-completion.md:
     token_count: 2256
@@ -616,7 +616,7 @@ file_metadata:
     token_count: 1034
     size_category: medium
   session-resume-phase2-state-repair.md:
-    token_count: 547
+    token_count: 793
     size_category: medium
   session-resume.md:
     token_count: 3463
@@ -659,7 +659,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 212484
+  total_tokens: 213421
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

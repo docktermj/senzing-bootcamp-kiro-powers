@@ -447,6 +447,12 @@ Example announcement (adapt the rendered-recap path to the confirmed format, and
 
 In the example above the agent lists only the artifacts and indexes confirmed to exist at their stated paths; any that are absent are omitted from the announcement.
 
+4. **End the graduation-final turn with the mandatory closing question.** The recap/announcement lines above are informational and carry no 👉 (see Regression Prevention Req 3.4). After emitting the announcement, the graduation-final turn MUST end with **exactly one** 👉 leading question — the same One Question Rule obligation that applies to every other yielding turn. The 👉 is at the **start of the line, outside the bold span**; the question text is wrapped in bold (`**...**`). Do **not** omit the 👉, and do **not** let the celebratory `📗` announcement stand in for it — a celebratory emoji never replaces the 👉. Present exactly one closing question in this form:
+
+   > 👉 **Is there anything else you would like to discuss or explore?**
+
+   Write this question to `config/.question_pending` (unchanged `.question_pending` lifecycle) and stop immediately after. This is the single closing question for the entire bootcamp — do not add a second 👉 question, and do not close the turn with a plain statement.
+
 <!-- 
   ## Export-Results Integration Contract
   

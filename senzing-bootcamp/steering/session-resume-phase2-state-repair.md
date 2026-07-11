@@ -42,3 +42,15 @@ If `bootcamp_progress.json` exists but contains inconsistencies (e.g., claims Mo
 | `current_step: 7` | Module steering has only 5 steps | Clear `current_step`, use artifact scan |
 
 After corrections are applied, return to the Phase-1 flow at Step 3 (Summarize and Confirm) with the corrected state.
+
+## Pending Question Re-Rendering
+
+When `config/.question_pending` exists from a prior session, an unanswered decision-point question was stored there in the structured format (type on line 1, raw question text on lines 2+). That raw text carries no presentation formatting, so echoing it verbatim would drop the 👉 prefix and bold styling.
+
+When returning to the Phase-1 flow at Step 3 (Summarize and Confirm), re-render the stored question instead of echoing it:
+
+1. Read the stored question text from lines 2+ of `config/.question_pending`.
+2. Re-render it canonically as `👉 **{stored question text}**` — the 👉 at the start of the line, outside the bold span, and the text in CommonMark bold.
+3. Present it as the turn's single closing 👉 question, replacing the default "Ready to continue…?" question.
+
+Do not rewrite or delete `config/.question_pending` here — it stays in place. On the bootcamper's next response the treat-as-answer and delete-and-process rules apply unchanged.

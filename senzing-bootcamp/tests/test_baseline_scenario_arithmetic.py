@@ -7,11 +7,11 @@ reasons about against the token counts measured from the real, shipped
 
 * the finalized projected always-set baseline (Decision_Record, Req 2.5) — the
   three pre-existing ``inclusion: always`` files plus the three Auto_Files
-  promoted to ``always`` — which must sum to exactly 13,396 tokens and equal
+  promoted to ``always`` — which must sum to exactly 13,544 tokens and equal
   ``measure_steering``'s computed Baseline_Footprint for the real corpus; and
 * the hypothetical ``loads-always`` scenario (Audit_Finding informational note,
   Req 1.5) — the three pre-existing ``always`` files plus all eleven Auto_Files
-  counted as always-loaded — stated as ≈25,113 tokens.
+  counted as always-loaded — stated as ≈25,261 tokens.
 
 Token counts are read from the index via ``measure_steering`` helpers (the same
 parsing the shipped tooling uses) rather than hardcoded, and cross-checked
@@ -20,8 +20,8 @@ shifts. Later specs have since grown a few always-loaded files — most notably
 file-placement.md (+219 tokens, small -> medium, from the
 file-placement-conventions Canonical Contract) plus small within-tolerance edits
 to a pre-existing ``always`` file — so the baselines below were re-pinned to the
-current measured reality: the finalized always-set is 13,396 tokens and the
-``loads-always`` figure is asserted against ≈25,113 within a small tolerance
+current measured reality: the finalized always-set is 13,544 tokens and the
+``loads-always`` figure is asserted against ≈25,261 within a small tolerance
 while the exact current sum is pinned via the arithmetic identity
 (sum of parts == whole).
 
@@ -91,9 +91,17 @@ AUTO_FILES: tuple[str, ...] = (
 # file-placement-conventions Tasks 5.2/6.1) and +219 tokens on file-placement.md
 # (the Canonical File-Placement Contract), the latter counted only in the
 # loads-always scenario.
-DOCUMENTED_FINALIZED_BASELINE = 13_396   # finalized always-set (Decision_Record baseline, Req 2.5)
+# Re-pinned once more (13,396 -> 13,544 / 25,113 -> 25,261) for the
+# question-format-consistency bugfix: agent-behavior-rules.md — one of the six
+# finalized `always` files AND one of the eleven Auto_Files — grew 822 -> 970
+# tokens when Rule 4 gained the Session-Recreation Re-Rendering and
+# Track-Completion / Graduation Terminal Turn clauses, so both the finalized
+# always-set baseline (+148) and the loads-always footprint (+148) moved by the
+# same amount. The three pre-existing `always` files were untouched, so
+# DOCUMENTED_PRE_EXISTING_ALWAYS stays 6,690.
+DOCUMENTED_FINALIZED_BASELINE = 13_544   # finalized always-set (Decision_Record baseline, Req 2.5)
 DOCUMENTED_PRE_EXISTING_ALWAYS = 6_690   # three pre-existing `always` files
-DOCUMENTED_LOADS_ALWAYS = 25_113         # loads-always footprint (Audit_Finding note, Req 1.5)
+DOCUMENTED_LOADS_ALWAYS = 25_261         # loads-always footprint (Audit_Finding note, Req 1.5)
 
 # "≈" tolerance for the loads-always note: 1% of the stated figure. The two
 # Task 4/7.1 frontmatter edits move the true sum by only a handful of tokens,
@@ -129,16 +137,16 @@ class TestBaselineScenarioArithmetic:
     """Baseline scenario arithmetic over the real corpus (Req 1.5, Req 2.5)."""
 
     def test_finalized_always_baseline_equals_measured_sum(self):
-        """Finalized always-set sums to 13,396 across the index and the corpus.
+        """Finalized always-set sums to 13,544 across the index and the corpus.
 
         Validates: Requirements 2.5, 1.5
 
         Reads the per-file ``token_count`` from the shipped ``steering-index.yaml``
         ``file_metadata`` and asserts the six finalized ``always`` files sum to
-        exactly the current baseline of 13,396 tokens; confirms the same
+        exactly the current baseline of 13,544 tokens; confirms the same
         figure equals ``measure_steering``'s computed Baseline_Footprint for the
         real corpus (the ``inclusion: always`` set); and pins the composition
-        identity 6,690 (pre-existing) + 6,706 (newly promoted) == 13,396.
+        identity 6,690 (pre-existing) + 6,854 (newly promoted) == 13,544.
         """
         stored = measure_steering._parse_stored_metadata(
             measure_steering.load_yaml_content(_INDEX_PATH)
@@ -174,7 +182,7 @@ class TestBaselineScenarioArithmetic:
         pre-existing ``always`` files plus all eleven Auto_Files counted as
         always-loaded — satisfies the arithmetic identity (pre-existing sum +
         Auto_Files sum == combined sum) and lands within tolerance of the
-        re-pinned baseline of ≈25,113 tokens. The exact current measured sum is
+        re-pinned baseline of ≈25,261 tokens. The exact current measured sum is
         pinned via the identity rather than a brittle literal, and cross-checked
         against the on-disk measurement.
         """

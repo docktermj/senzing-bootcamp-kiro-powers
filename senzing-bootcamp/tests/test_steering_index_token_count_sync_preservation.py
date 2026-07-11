@@ -458,7 +458,20 @@ _BASELINE_HASHES: dict[str, str] = {
     # Only the budget block changed (solely the total_tokens line);
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "cec692fc7bed04e7ef6961e754b71f93341b4ec5430b64ebdaebe4e67ceb2777",
+    # Re-baselined once more (212484 -> 213421) for the question-format-consistency
+    # bugfix: agent-behavior-rules.md (822 -> 970, Rule 4's Session-Recreation
+    # Re-Rendering + Track-Completion / Graduation Terminal Turn clauses),
+    # graduation.md (10310 -> 10562, the Mandatory Closing Step 👉 question),
+    # module-completion-track.md (3310 -> 3601, the Bootcamp-Completion Closing
+    # Question), and session-resume-phase2-state-repair.md (547 -> 793, the
+    # relocated Pending Question Re-Rendering guidance) grew, all recomputed by
+    # measure_steering.py into file_metadata and the budget total
+    # (213421 = sum of file_metadata counts). session-resume.md is unchanged
+    # (3463 — the re-rendering guidance was relocated out of its Step 3). Only the
+    # budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    "budget": "dca1abe2018128b1afefb3dc3a884f32de456690faa68a83e214558b13d45273",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -893,12 +906,12 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (212484 after the module4-sqlite-load-time-warning spec grew
-        # module-04-data-collection.md and module-06-phaseA-build-loading.md and
-        # resynced the steering token index), so the hash cannot silently re-pin
-        # a stale value.
+        # (213421 after the question-format-consistency bugfix grew
+        # agent-behavior-rules.md, graduation.md, module-completion-track.md, and
+        # session-resume-phase2-state-repair.md and resynced the steering token
+        # index), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 212484" in budget_block
+        assert "total_tokens: 213421" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

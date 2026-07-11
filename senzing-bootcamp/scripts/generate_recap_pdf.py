@@ -547,57 +547,132 @@ def format_recap_document(doc: RecapDocument) -> str:
 # ---------------------------------------------------------------------------
 
 
-def _render_cover_page(pdf: "FPDF", doc: RecapDocument) -> None:  # noqa: F821
-    """Render the cover page with title, bootcamper name, dates, and duration.
+# Font size for the optional labeled Cover_Page fields (Started / Total
+# Duration). Sized between the bootcamper name and the body text so the fields
+# read as supporting detail beneath the name.
+_COVER_FIELD_FONT_SIZE = 14
+
+
+def _render_cover_field(pdf: "FPDF", label: str, value: str) -> None:  # noqa: F821
+    """Render one optional labeled Cover_Page field, skipping empty or failed.
+
+    Renders ``"{label}: {value}"`` centered in the body color when ``value`` is
+    non-empty. An empty or whitespace-only value is skipped silently. Any
+    exception raised while rendering the field is caught so a single field
+    failure skips that field rather than aborting the rest of the Cover_Page
+    (Requirement 2.8).
 
     Args:
         pdf: The FPDF instance to render into.
-        doc: Parsed recap document.
+        label: The field label (for example ``"Started"``).
+        value: The field value; skipped when empty or whitespace-only.
     """
-    pdf.add_page()
-    pdf.ln(40)
+    if not value or not value.strip():
+        return
+    try:
+        # Plain layout constant (no fpdf dependency), imported lazily to keep
+        # this generator's top-level import surface unchanged.
+        from recap_pdf_render import BODY_COLOR  # noqa: PLC0415
 
-    # Title
-    pdf.set_font("Helvetica", "B", 28)
-    pdf.cell(0, 14, "Senzing Bootcamp Recap", new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.ln(20)
-
-    # Bootcamper name
-    pdf.set_font("Helvetica", "", 18)
-    pdf.cell(
-        0,
-        10,
-        safe_text(doc.header.bootcamper),
-        new_x="LMARGIN",
-        new_y="NEXT",
-        align="C",
-    )
-    pdf.ln(10)
-
-    # Started date
-    if doc.header.started:
-        pdf.set_font("Helvetica", "", 14)
+        pdf.set_font("Helvetica", "", _COVER_FIELD_FONT_SIZE)
+        pdf.set_text_color(*BODY_COLOR)
         pdf.cell(
             0,
             8,
-            f"Started: {safe_text(doc.header.started)}",
+            safe_text(f"{label}: {value}"),
             new_x="LMARGIN",
             new_y="NEXT",
             align="C",
         )
         pdf.ln(4)
+    except Exception:  # noqa: BLE001 - Req 2.8: a field failure must not abort the cover.
+        return
 
-    # Total duration
-    if doc.header.total_duration:
-        pdf.set_font("Helvetica", "", 14)
+
+def _render_cover_page(pdf: "FPDF", doc: RecapDocument) -> None:  # noqa: F821
+    """Render a professional cover page with title, subtitle, name, and stats.
+
+    Renders the document title (accent color), a completion-recap subtitle, the
+    bootcamper name, the optional Started and Total Duration fields, and a
+    Headline_Stats line showing the count of module sections present in the
+    recap. Every field is optional: an empty value is simply skipped without
+    aborting. The Started and Total Duration fields are rendered through
+    :func:`_render_cover_field`, which skips a field whose rendering fails rather
+    than aborting the Cover_Page (Requirement 2.8).
+
+    Args:
+        pdf: The FPDF instance to render into.
+        doc: Parsed recap document.
+    """
+    # Plain layout constants (no fpdf dependency) imported lazily to keep this
+    # generator's top-level import surface unchanged.
+    from recap_pdf_render import (  # noqa: PLC0415
+        ACCENT_COLOR,
+        BODY_COLOR,
+        BOOTCAMPER_FONT_SIZE,
+        SUBTITLE_FONT_SIZE,
+        TITLE_FONT_SIZE,
+    )
+
+    pdf.add_page()
+    pdf.ln(40)
+
+    # Title — large, bold, accent color, centered.
+    pdf.set_font("Helvetica", "B", TITLE_FONT_SIZE)
+    pdf.set_text_color(*ACCENT_COLOR)
+    pdf.cell(
+        0,
+        16,
+        safe_text("Senzing Bootcamp Recap"),
+        new_x="LMARGIN",
+        new_y="NEXT",
+        align="C",
+    )
+    pdf.ln(4)
+
+    # Subtitle — identifies the document as a bootcamp completion recap.
+    pdf.set_font("Helvetica", "", SUBTITLE_FONT_SIZE)
+    pdf.set_text_color(*BODY_COLOR)
+    pdf.cell(
+        0,
+        10,
+        safe_text("Bootcamp Completion Recap"),
+        new_x="LMARGIN",
+        new_y="NEXT",
+        align="C",
+    )
+    pdf.ln(16)
+
+    # Bootcamper name — optional, skipped when empty.
+    if doc.header.bootcamper and doc.header.bootcamper.strip():
+        pdf.set_font("Helvetica", "", BOOTCAMPER_FONT_SIZE)
+        pdf.set_text_color(*BODY_COLOR)
         pdf.cell(
             0,
-            8,
-            f"Total Duration: {safe_text(doc.header.total_duration)}",
+            12,
+            safe_text(doc.header.bootcamper),
             new_x="LMARGIN",
             new_y="NEXT",
             align="C",
         )
+        pdf.ln(10)
+
+    # Optional labeled fields — each skips on empty value or render failure.
+    _render_cover_field(pdf, "Started", doc.header.started)
+    _render_cover_field(pdf, "Total Duration", doc.header.total_duration)
+
+    # Headline_Stats — the count of module sections present in the recap.
+    pdf.ln(6)
+    pdf.set_font("Helvetica", "", SUBTITLE_FONT_SIZE)
+    pdf.set_text_color(*BODY_COLOR)
+    pdf.cell(
+        0,
+        10,
+        safe_text(f"Modules completed: {len(doc.sections)}"),
+        new_x="LMARGIN",
+        new_y="NEXT",
+        align="C",
+    )
 
 
 def _build_qa_lines(questions: list[str], answers: list[str]) -> list[str]:
@@ -798,10 +873,21 @@ def render_pdf(doc: RecapDocument, output_path: str, body_text: str = "") -> Non
         ImportError: If fpdf2 is not installed.
         OSError: If the PDF cannot be written to the output path.
     """
-    from fpdf import FPDF  # noqa: PLC0415
+    # RecapPDF is a professional-layout FPDF subclass whose base class is
+    # fpdf.FPDF. Build it via _build_recap_pdf_class() (imported here, never at
+    # module top level) rather than importing the cached RecapPDF attribute:
+    # the factory runs `from fpdf import FPDF` on EVERY call, so a genuine — or
+    # test-simulated — absence of fpdf2 always raises ImportError here and the
+    # caller degrades gracefully with the `pip install fpdf2` hint (Req 11.1,
+    # 11.2). Importing the module-level RecapPDF attribute would instead serve a
+    # class cached on first access, silently skipping the fpdf re-import once the
+    # class had been built earlier in the process.
+    from recap_pdf_render import _build_recap_pdf_class  # noqa: PLC0415
 
-    pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=20)
+    # RecapPDF.__init__ sets generous all-sides margins and auto page break, so
+    # no manual set_auto_page_break call is needed here.
+    recap_pdf_cls = _build_recap_pdf_class()
+    pdf = recap_pdf_cls()
 
     # Cover page
     _render_cover_page(pdf, doc)

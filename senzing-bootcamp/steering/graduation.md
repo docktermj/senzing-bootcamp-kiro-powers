@@ -186,6 +186,16 @@ A PDF was written only when the script prints a `PDF generated:` line to stdout 
 
 5. **No false success.** Only emit the "📄 Recap PDF generated" message when a PDF file was actually written (a `PDF generated:` line with exit 0). Never report PDF success when no PDF exists.
 
+6. **Visual review loop — verify recap quality before reporting it distribution-ready.** When a PDF was actually written (a `PDF generated:` line with exit 0), run the visual review loop before treating the recap PDF as distribution-ready. This loop layers a quality check on top of the content gate — it never replaces the gate, and it never blocks graduation.
+
+   a. **Content_Verification is the mandatory gate.** The round-trip content check (`verify_rendered_pdf`) is already embedded in `generate_recap_pdf.py` and runs before the PDF is published, so a PDF that reaches this step has already confirmed that, for every completed module, its three Required_Detail_Sections — **Information Shared**, **Questions & Responses**, and **Actions Taken** — survived rendering. This text-based verification is the mandatory gate: it is sufficient on its own, and the optional image review below only adds confidence rather than removing this requirement. Do not report the recap PDF as generated unless this gate has confirmed each completed module's three sections are present.
+
+   b. **Optional image-based review when tooling is available.** If PDF-to-image tooling (`pdf2image` or `pymupdf`) can be imported — checked lazily, never installed by this flow — render the first and last content pages of `docs/bootcamp_recap.pdf` to images and inspect them for the Required_Detail_Section headings. If neither library is importable, skip this review silently and rely on the Content_Verification gate above.
+
+   c. **A missing or condensed section means not distribution-ready.** If the image-based review finds that a Required_Detail_Section is missing or has been condensed, treat the recap PDF as **not** distribution-ready: log a warning naming the affected section, point the bootcamper to the full recap content at `docs/bootcamp_recap.md`, and do **not** report the recap PDF as successfully generated.
+
+   d. **Non-blocking.** The visual review loop is **non-blocking**: any failure — tooling absent, an image-rendering error, or an inconclusive inspection — logs a warning, points the bootcamper to the existing recap Markdown at `docs/bootcamp_recap.md`, and allows graduation to continue. As in step 5, never report the recap PDF as generated when no PDF was written.
+
 Regardless of outcome, this step is **non-blocking**: proceed to Step 0b.4 and then to Step 1.
 
 ### Step 0b.4: Q&A Transcript Reconciliation & Generation

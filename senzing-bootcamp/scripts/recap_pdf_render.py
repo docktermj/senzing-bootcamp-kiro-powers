@@ -44,6 +44,107 @@ INDENT_UNIT = 4
 # (Requirements 3.1, 3.2).
 PER_LEVEL_INDENT_MM = 6.0
 
+# ---------------------------------------------------------------------------
+# Professional layout constants (recap-pdf-professional-design)
+# ---------------------------------------------------------------------------
+# A single accent color (Senzing blue) is applied to every heading so the
+# document reads as designed rather than plain, while body text uses a distinct
+# near-black. Margins and font sizes are centralized here so the RecapPDF
+# subclass and the shared rendering primitives share one source of truth.
+ACCENT_COLOR = (0, 90, 156)          # Senzing blue — headings
+BODY_COLOR = (40, 40, 40)            # Near-black — body text
+MARGINS_MM = 20.0                    # All-sides page margin
+TITLE_FONT_SIZE = 32                 # Cover page title
+SUBTITLE_FONT_SIZE = 16              # Cover page subtitle
+BOOTCAMPER_FONT_SIZE = 20            # Cover page bootcamper name
+MODULE_HEADING_FONT_SIZE = 18        # Module-level headings
+SUBSECTION_HEADING_FONT_SIZE = 14    # Subsection-level headings
+BODY_FONT_SIZE = 11                  # Body text
+CODE_FONT_SIZE = 10                  # Code blocks / inline code
+FOOTER_FONT_SIZE = 9                 # Page footer
+
+
+def _build_recap_pdf_class() -> type:
+    """Build and return the ``RecapPDF`` class, importing ``fpdf`` lazily.
+
+    ``fpdf`` is an optional dependency and MUST NOT be imported at module top
+    level, so the ``RecapPDF`` subclass cannot be defined at import time (its
+    base class is ``fpdf.FPDF``). This factory imports ``fpdf`` and defines the
+    subclass on demand; the module-level :func:`__getattr__` caches the result
+    so ``recap_pdf_render.RecapPDF`` resolves lazily on first access while the
+    module still imports cleanly when ``fpdf2`` is absent.
+
+    Returns:
+        The ``RecapPDF`` class (a subclass of ``fpdf.FPDF``).
+
+    Raises:
+        ImportError: If ``fpdf2`` is not installed.
+    """
+    from fpdf import FPDF  # noqa: PLC0415
+
+    class RecapPDF(FPDF):
+        """Professional-layout FPDF subclass with page footers and margins.
+
+        Sets generous all-sides margins and auto page break in ``__init__`` and
+        renders a centered ``Page N`` footer on every Content_Page via the
+        fpdf2 :meth:`footer` hook. The footer is suppressed on the Cover_Page
+        (page 1) so the cover reads as a clean title page.
+        """
+
+        def __init__(self) -> None:
+            """Initialize the document with professional margins and page break."""
+            super().__init__()
+            self.set_margins(MARGINS_MM, MARGINS_MM, MARGINS_MM)
+            self.set_auto_page_break(auto=True, margin=MARGINS_MM)
+
+        def is_cover_page(self) -> bool:
+            """Return ``True`` when the current page is the Cover_Page (page 1).
+
+            Returns:
+                ``True`` if ``self.page_no() == 1``, otherwise ``False``.
+            """
+            return self.page_no() == 1
+
+        def footer(self) -> None:
+            """Render the ``Page N`` footer centered at the bottom of the page.
+
+            Called automatically by fpdf2 on every page. On the Cover_Page the
+            footer is suppressed so page 1 carries no page number.
+            """
+            if self.is_cover_page():
+                return
+            self.set_y(-15)
+            self.set_font("Helvetica", "", FOOTER_FONT_SIZE)
+            self.set_text_color(*BODY_COLOR)
+            self.cell(0, 10, safe_text(f"Page {self.page_no()}"), align="C")
+
+    return RecapPDF
+
+
+def __getattr__(name: str):
+    """Resolve ``RecapPDF`` lazily so the module imports without ``fpdf2``.
+
+    PEP 562 module ``__getattr__`` hook: when ``RecapPDF`` is first accessed the
+    subclass is built (importing ``fpdf``) and cached in the module namespace so
+    subsequent accesses are direct attribute lookups.
+
+    Args:
+        name: The attribute name being resolved.
+
+    Returns:
+        The built ``RecapPDF`` class when ``name == "RecapPDF"``.
+
+    Raises:
+        AttributeError: For any other attribute name.
+        ImportError: If ``name == "RecapPDF"`` but ``fpdf2`` is not installed.
+    """
+    if name == "RecapPDF":
+        cls = _build_recap_pdf_class()
+        globals()["RecapPDF"] = cls
+        return cls
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
 # Paired_Schema literals — the single machine-verifiable source of truth for the
 # `### Questions & Responses` section the module-recap-append hook emits.
 _QR_SECTION_HEADING = "### Questions & Responses"
@@ -129,6 +230,12 @@ def format_qr_section(pairs: list[tuple[str, str]]) -> str:
 
 _LIST_MARKER_RE = re.compile(r"^(\s*)(?:-|\*|\d+\.)\s+(.*)$")
 _NUMBERED_MARKER_RE = re.compile(r"^\s*\d+\.\s+")
+
+# A Markdown pipe-table alignment/separator row is composed solely of pipes,
+# whitespace, colons, and dashes (e.g. ``| :--- | ---: |``). It carries no cell
+# content and must be skipped so it is never rendered as a data row
+# (Requirement 6.4).
+_TABLE_SEPARATOR_RE = re.compile(r"^[|\s:\-]+$")
 
 
 def indent_depth(line: str) -> int:
@@ -370,7 +477,15 @@ def split_blocks(text: str) -> list[str]:
 
 
 def render_heading(pdf: "FPDF", text: str, level: int) -> None:  # noqa: F821
-    """Render a heading at the given level.
+    """Render a heading at the given level in the accent color.
+
+    Module-level headings (level 2) render at :data:`MODULE_HEADING_FONT_SIZE`
+    and subsection-level headings (level 3) at :data:`SUBSECTION_HEADING_FONT_SIZE`,
+    both bold and in :data:`ACCENT_COLOR` so headings read as designed and share
+    one font size per level (Requirements 3.1-3.3, 5.1-5.3). The text color is
+    reset to :data:`BODY_COLOR` afterward so following body text is distinct from
+    the accent. Vertical spacing is preserved: ``ln(6)`` before a module heading,
+    ``ln(4)`` before a subsection heading, and ``ln(2)`` after.
 
     Args:
         pdf: The FPDF instance.
@@ -378,17 +493,19 @@ def render_heading(pdf: "FPDF", text: str, level: int) -> None:  # noqa: F821
         level: Heading level (2 for module heading, 3 for subsection).
     """
     if level == 2:
-        pdf.set_font("Helvetica", "B", 16)
+        pdf.set_font("Helvetica", "B", MODULE_HEADING_FONT_SIZE)
         pdf.ln(6)
     else:
-        pdf.set_font("Helvetica", "B", 13)
+        pdf.set_font("Helvetica", "B", SUBSECTION_HEADING_FONT_SIZE)
         pdf.ln(4)
+    pdf.set_text_color(*ACCENT_COLOR)
     # Render at full width from the left margin so wrapping always has the full
     # effective page width (a prior cell may have advanced x toward the right
     # margin; multi_cell(0, ...) would otherwise derive too little width and
     # raise FPDFException for content that should fit).
     pdf.set_x(pdf.l_margin)
     pdf.multi_cell(pdf.epw, 7, safe_text(text), new_x="LMARGIN", new_y="NEXT")
+    pdf.set_text_color(*BODY_COLOR)
     pdf.ln(2)
 
 
@@ -454,6 +571,206 @@ def render_generic_blocks(pdf: "FPDF", blocks: list[str]) -> None:  # noqa: F821
         pdf.ln(2)
 
 
+def _split_table_row(line: str) -> list[str]:
+    """Split one Markdown pipe-table row into its cell texts.
+
+    The optional leading and trailing pipe delimiters are dropped, the row is
+    split on unescaped ``|`` separators, escaped pipes (``\\|``) are unescaped
+    back to a literal pipe, and each cell is stripped of surrounding
+    whitespace. A row with no interior pipes yields a single-cell list.
+
+    Args:
+        line: A raw pipe-table row line (indentation and delimiters preserved).
+
+    Returns:
+        The cell texts in left-to-right order.
+    """
+    stripped = line.strip()
+    if stripped.startswith("|"):
+        stripped = stripped[1:]
+    if stripped.endswith("|") and not stripped.endswith("\\|"):
+        stripped = stripped[:-1]
+    cells = re.split(r"(?<!\\)\|", stripped)
+    return [cell.replace("\\|", "|").strip() for cell in cells]
+
+
+def render_table(pdf: "FPDF", block: str) -> None:  # noqa: F821
+    """Render a Markdown pipe table as a bordered PDF grid.
+
+    Parses the pipe-delimited ``block`` into rows and cells, skips the
+    alignment/separator row (``| --- | :--: |``), and lays the remaining rows
+    out in a uniform grid. Column widths are allocated proportionally to each
+    column's widest cell across the available page width, so text-heavy columns
+    get more room while the grid always spans the full content width. The first
+    row is rendered in bold as the header and the remaining rows in normal
+    weight; every cell's text is emitted through :func:`safe_text` and
+    ``multi_cell`` so no cell is omitted and long cell text wraps within its
+    column rather than being truncated (Requirement 6.4).
+
+    Page breaks are managed manually while the table renders so a tall,
+    multi-line row is moved to a new page as a unit rather than overprinting the
+    Page_Footer; the document's auto page-break setting, draw color, font, and
+    text color are restored afterward.
+
+    Args:
+        pdf: The FPDF instance to render into.
+        block: The raw pipe-table block (one row per line).
+    """
+    line_height = 6.0
+
+    rows: list[list[str]] = []
+    for raw_line in block.splitlines():
+        if not raw_line.strip():
+            continue
+        # Skip the alignment/separator row — it carries no cell content.
+        if "-" in raw_line and _TABLE_SEPARATOR_RE.match(raw_line.strip()):
+            continue
+        rows.append(_split_table_row(raw_line))
+
+    if not rows:
+        return
+
+    num_cols = max(len(row) for row in rows)
+    # Pad short rows so every logical column has a cell and none is dropped.
+    rows = [row + [""] * (num_cols - len(row)) for row in rows]
+
+    # Column widths are derived from the rendered string widths of the cells,
+    # measured at the weight each row uses (bold for the header row). For every
+    # column we track two figures: ``ideal`` (the width that fits the widest
+    # whole cell on one line) and ``floor`` (the width of the widest single word,
+    # measured so a word is never broken mid-token when it can fit on the page).
+    available = pdf.epw
+    cell_padding = 2.0
+
+    def _string_width(text: str, *, bold: bool) -> float:
+        pdf.set_font("Helvetica", "B" if bold else "", BODY_FONT_SIZE)
+        return pdf.get_string_width(safe_text(text))
+
+    col_ideal = [0.0] * num_cols
+    col_floor = [0.0] * num_cols
+    for row_index, row in enumerate(rows):
+        bold = row_index == 0
+        for col in range(num_cols):
+            cell = row[col]
+            col_ideal[col] = max(col_ideal[col], _string_width(cell, bold=bold) + cell_padding)
+            widest_word = max(
+                (_string_width(word, bold=bold) for word in safe_text(cell).split()),
+                default=0.0,
+            )
+            col_floor[col] = max(col_floor[col], widest_word + cell_padding)
+
+    total_ideal = sum(col_ideal)
+    if total_ideal <= 0:
+        # Every cell is empty — fall back to equal columns spanning the width.
+        col_widths = [available / num_cols] * num_cols
+    elif total_ideal <= available:
+        # Everything fits on one line per cell — scale up to fill the page width.
+        scale = available / total_ideal
+        col_widths = [width * scale for width in col_ideal]
+    else:
+        total_floor = sum(col_floor)
+        if total_floor <= available:
+            # Give each column its no-break floor, then distribute the leftover
+            # width in proportion to how much more each column ideally wants.
+            leftover = available - total_floor
+            wants = [max(col_ideal[c] - col_floor[c], 0.0) for c in range(num_cols)]
+            wants_total = sum(wants)
+            if wants_total > 0:
+                col_widths = [
+                    col_floor[c] + leftover * wants[c] / wants_total for c in range(num_cols)
+                ]
+            else:
+                col_widths = [col_floor[c] + leftover / num_cols for c in range(num_cols)]
+        else:
+            # Even the widest words cannot all fit; scale the floors to the page
+            # width (a single word wider than its fair share may still wrap).
+            scale = available / total_floor
+            col_widths = [width * scale for width in col_floor]
+
+    # Take manual control of page breaks so a wrapped row never overprints the
+    # footer, and remember state to restore once the table is rendered.
+    auto_page_break = pdf.auto_page_break
+    bottom_margin = pdf.b_margin
+    bottom_limit = pdf.h - bottom_margin
+    pdf.set_auto_page_break(False)
+    pdf.set_draw_color(200, 200, 200)
+    try:
+        for row_index, row in enumerate(rows):
+            is_header = row_index == 0
+            pdf.set_font("Helvetica", "B" if is_header else "", BODY_FONT_SIZE)
+            pdf.set_text_color(*BODY_COLOR)
+
+            # Row height is the tallest cell: wrapped-line count x line height.
+            line_counts = []
+            for col in range(num_cols):
+                wrapped = pdf.multi_cell(
+                    col_widths[col],
+                    line_height,
+                    safe_text(row[col]),
+                    align="L",
+                    dry_run=True,
+                    output="LINES",
+                )
+                line_counts.append(max(1, len(wrapped)))
+            row_height = max(line_counts) * line_height
+
+            # Move a whole row to a new page rather than splitting it or
+            # overprinting the footer (Requirement 4.4 spirit for tables).
+            if pdf.get_y() + row_height > bottom_limit:
+                pdf.add_page()
+
+            row_top = pdf.get_y()
+            cell_x = pdf.l_margin
+            for col in range(num_cols):
+                pdf.rect(cell_x, row_top, col_widths[col], row_height)
+                pdf.set_xy(cell_x, row_top)
+                pdf.multi_cell(
+                    col_widths[col],
+                    line_height,
+                    safe_text(row[col]),
+                    border=0,
+                    align="L",
+                    new_x="RIGHT",
+                    new_y="TOP",
+                    max_line_height=line_height,
+                )
+                cell_x += col_widths[col]
+            pdf.set_xy(pdf.l_margin, row_top + row_height)
+    finally:
+        pdf.set_auto_page_break(auto_page_break, bottom_margin)
+        pdf.set_draw_color(0, 0, 0)
+        pdf.set_font("Helvetica", "", BODY_FONT_SIZE)
+        pdf.set_text_color(*BODY_COLOR)
+        pdf.set_x(pdf.l_margin)
+    pdf.ln(2)
+
+
+def _is_pipe_table(lines: list[str]) -> bool:
+    """Return ``True`` when ``lines`` form a Markdown pipe table.
+
+    A pipe table's first line is a header row carrying at least one ``|`` cell
+    delimiter, and its second line is an alignment/separator row composed solely
+    of pipes, whitespace, colons, and dashes (matching :data:`_TABLE_SEPARATOR_RE`)
+    that contains at least one dash. Requiring the dash keeps a whitespace-only or
+    pipe-only second line from being mistaken for a separator. A block failing
+    either condition — a lone header row, a paragraph that merely contains a
+    pipe, or a separator row without dashes — is not a table and falls through to
+    prose rendering (Requirement 6.4; Tolerant_Parser principle: no crash).
+
+    Args:
+        lines: The lines of a candidate block, in document order.
+
+    Returns:
+        ``True`` if the block is a pipe table, otherwise ``False``.
+    """
+    if len(lines) < 2:
+        return False
+    if "|" not in lines[0]:
+        return False
+    separator = lines[1].strip()
+    return "-" in separator and bool(_TABLE_SEPARATOR_RE.match(separator))
+
+
 def render_markdown_body(pdf: "FPDF", body_text: str) -> None:  # noqa: F821
     """Render arbitrary Markdown body text as PDF blocks (canonical renderer).
 
@@ -503,6 +820,13 @@ def render_markdown_body(pdf: "FPDF", body_text: str) -> None:  # noqa: F821
                 render_indented_list_items(pdf, items)
                 continue
 
+        # Pipe table — the first line carries a '|' delimiter and the second is
+        # an alignment/separator row. A malformed pipe table fails this check and
+        # falls through to the prose fallback below (no crash).
+        if _is_pipe_table(lines):
+            render_table(pdf, block)
+            continue
+
         # Prose paragraph.
         render_generic_blocks(pdf, [block])
 
@@ -515,11 +839,13 @@ def render_markdown_pdf(
 ) -> None:
     """Render raw recap Markdown to a PDF file (Inline_Generator convenience).
 
-    Lazily imports ``fpdf`` (never at module top level), creates the document,
-    emits a single bold cover line, renders the body via
-    :func:`render_markdown_body`, and writes the PDF to ``output_path``. This is
-    the only function in the module that imports ``fpdf``, so an absent
-    ``fpdf2`` surfaces as an ``ImportError`` the caller already handles.
+    Builds a :class:`RecapPDF` document via :func:`_build_recap_pdf_class` (which
+    imports ``fpdf`` lazily, never at module top level), emits a single bold
+    cover line, renders the body via :func:`render_markdown_body`, and writes the
+    PDF to ``output_path``. The ``RecapPDF`` subclass applies the professional
+    margins and auto page break in its ``__init__``, so no manual margin setup is
+    needed here. An absent ``fpdf2`` surfaces as an ``ImportError`` (raised while
+    building the subclass) that the caller already handles.
 
     Args:
         body_text: Raw recap Markdown body.
@@ -530,10 +856,9 @@ def render_markdown_pdf(
         ImportError: If ``fpdf2`` is not installed.
         OSError: If the PDF cannot be written to ``output_path``.
     """
-    from fpdf import FPDF  # noqa: PLC0415
+    recap_pdf_cls = _build_recap_pdf_class()
 
-    pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=20)
+    pdf = recap_pdf_cls()
     pdf.add_page()
 
     # Cover line.

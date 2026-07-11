@@ -10,14 +10,21 @@ added in subsequent tasks.
 from __future__ import annotations
 
 import contextlib
+import importlib.util
 import io
 import re
 import sys
 import tempfile
 from pathlib import Path
 
+import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
+
+# ``fpdf2`` is an optional dependency. The professional-layout ``RecapPDF``
+# subclass is defined on ``fpdf.FPDF`` and is resolved lazily, so tests that
+# construct it must skip (not error) when fpdf2 is absent.
+_FPDF_AVAILABLE = importlib.util.find_spec("fpdf") is not None
 
 # Make scripts importable
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
@@ -1899,6 +1906,12 @@ class _RecordingPDF:
     via ``multi_cell``; list items and Q/A pairs use ``write``; empty-state and
     single-value fields use ``cell``. The stub records text from each so a test
     can assert on the rendered headings and body separately.
+
+    For the professional-layout heading tests it additionally records every
+    ``set_font`` size and ``set_text_color`` call — both as dedicated lists and
+    interleaved in a single ordered ``events`` log — so a test can assert the
+    font size and accent color applied to a heading and the order of those calls
+    relative to the rendered heading text.
     """
 
     def __init__(self) -> None:
@@ -1906,11 +1919,28 @@ class _RecordingPDF:
         self.epw = 190  # effective page width (mm); mirrors fpdf2 A4 default
         self.headings: list[str] = []  # text rendered via multi_cell (headings)
         self.body: list[str] = []  # text rendered via cell/write
+        self.font_sizes: list[object] = []  # size arg of every set_font call
+        self.text_colors: list[tuple[object, ...]] = []  # every set_text_color call
+        # Ordered log of ("font", size) / ("color", rgb) / ("text", text) events
+        # so tests can assert the size/color active when a heading is drawn and
+        # that the accent color is applied before (and body color after) it.
+        self.events: list[tuple[str, object]] = []
 
     def add_page(self, *args: object, **kwargs: object) -> None:
         return None
 
     def set_font(self, *args: object, **kwargs: object) -> None:
+        size = kwargs.get("size")
+        if size is None and len(args) >= 3:
+            size = args[2]
+        self.font_sizes.append(size)
+        self.events.append(("font", size))
+        return None
+
+    def set_text_color(self, *args: object, **kwargs: object) -> None:
+        color = tuple(args)
+        self.text_colors.append(color)
+        self.events.append(("color", color))
         return None
 
     def ln(self, *args: object, **kwargs: object) -> None:
@@ -1921,12 +1951,15 @@ class _RecordingPDF:
 
     def multi_cell(self, w: object, h: object, text: str = "", *args: object, **kwargs: object) -> None:  # noqa: E501
         self.headings.append(text)
+        self.events.append(("text", text))
 
     def cell(self, w: object, h: object, text: str = "", *args: object, **kwargs: object) -> None:  # noqa: E501
         self.body.append(text)
+        self.events.append(("text", text))
 
     def write(self, h: object, text: str = "", *args: object, **kwargs: object) -> None:
         self.body.append(text)
+        self.events.append(("text", text))
 
 
 def _render_section_headings_and_body(section: RecapSection) -> tuple[list[str], str]:
@@ -2447,3 +2480,1613 @@ class TestMergedSectionPairingAndNoDrop:
             f"Expected {missing_questions} question placeholder(s), got "
             f"{lines.count(_Q_PLACEHOLDER)}: {lines!r}"
         )
+
+
+# ---------------------------------------------------------------------------
+# RecapPDF professional layout: margins and page footer (Task 1.2)
+# ---------------------------------------------------------------------------
+#
+# Feature: recap-pdf-professional-design
+#
+# These unit tests cover the RecapPDF subclass added in task 1.1: generous
+# all-sides margins (Req 4.1) and a page-number footer that renders on every
+# Content_Page but is suppressed on the Cover_Page (Req 4.3). They follow the
+# project test pattern (Req 12.6): class-based, sys.path import, and — because
+# RecapPDF is built on fpdf.FPDF — they skip gracefully when fpdf2 is absent
+# rather than erroring at collection time.
+
+
+def _make_footer_recording_pdf(page_number: int):
+    """Build a RecapPDF instance whose ``footer`` renders are recorded.
+
+    ``RecapPDF.footer`` calls ``is_cover_page()`` (which reads ``page_no()``)
+    and, on a Content_Page, ``set_y``/``set_font``/``set_text_color``/``cell``.
+    The returned instance is a dynamically built ``RecapPDF`` subclass that
+    overrides those fpdf2 primitives so the real ``footer`` logic can be
+    exercised with a fixed page number and no real page geometry — isolating the
+    Cover_Page suppression rule from fpdf2's automatic footer invocation.
+
+    Args:
+        page_number: The value ``page_no()`` should report while ``footer`` runs.
+
+    Returns:
+        A RecapPDF instance with a ``footer_cells`` list capturing the text of
+        every ``cell`` call made by ``footer``.
+    """
+    from recap_pdf_render import RecapPDF
+
+    class _Recorder(RecapPDF):  # type: ignore[misc, valid-type]
+        def __init__(self, fake_page_no: int) -> None:
+            super().__init__()
+            self._fake_page_no = fake_page_no
+            self.footer_cells: list[str] = []
+
+        def page_no(self) -> int:  # type: ignore[override]
+            return self._fake_page_no
+
+        def set_y(self, *args: object, **kwargs: object) -> None:  # type: ignore[override]  # noqa: E501
+            return None
+
+        def set_font(self, *args: object, **kwargs: object) -> None:  # type: ignore[override]  # noqa: E501
+            return None
+
+        def set_text_color(self, *args: object, **kwargs: object) -> None:  # type: ignore[override]  # noqa: E501
+            return None
+
+        def cell(  # type: ignore[override]
+            self, w: object, h: object, text: str = "", *args: object, **kwargs: object
+        ) -> None:
+            self.footer_cells.append(text)
+
+    return _Recorder(page_number)
+
+
+@pytest.mark.skipif(not _FPDF_AVAILABLE, reason="fpdf2 (optional dependency) not installed")
+class TestRecapPDFLayout:
+    """RecapPDF sets professional margins and renders a Content_Page footer.
+
+    **Validates: Requirements 4.1, 4.3, 12.6**
+
+    Margins are at least 15 mm on all sides (Req 4.1); the ``Page N`` footer
+    renders on Content_Pages and is suppressed on the Cover_Page (Req 4.3).
+    """
+
+    def test_margins_at_least_15mm(self) -> None:
+        """RecapPDF configures top/bottom/left/right margins of >= 15 mm.
+
+        The left, top, and right margins come from ``set_margins`` and the
+        bottom margin from ``set_auto_page_break``; all four must clear the
+        15 mm floor Req 4.1 requires.
+
+        **Validates: Requirements 4.1**
+        """
+        from recap_pdf_render import MARGINS_MM, RecapPDF
+
+        pdf = RecapPDF()
+
+        assert pdf.l_margin >= 15, f"left margin {pdf.l_margin} mm < 15 mm"
+        assert pdf.t_margin >= 15, f"top margin {pdf.t_margin} mm < 15 mm"
+        assert pdf.r_margin >= 15, f"right margin {pdf.r_margin} mm < 15 mm"
+        assert pdf.b_margin >= 15, f"bottom margin {pdf.b_margin} mm < 15 mm"
+
+        # All four sides use the single MARGINS_MM source of truth.
+        assert pdf.l_margin == MARGINS_MM
+        assert pdf.t_margin == MARGINS_MM
+        assert pdf.r_margin == MARGINS_MM
+        assert pdf.b_margin == MARGINS_MM
+
+    def test_footer_suppressed_on_cover_page(self) -> None:
+        """``footer`` renders nothing on the Cover_Page (page 1).
+
+        ``is_cover_page()`` is True on page 1, so ``footer`` returns before
+        emitting any cell — the cover carries no page number.
+
+        **Validates: Requirements 4.3**
+        """
+        pdf = _make_footer_recording_pdf(page_number=1)
+
+        assert pdf.is_cover_page() is True
+        pdf.footer()
+
+        assert pdf.footer_cells == [], (
+            f"footer should render nothing on the cover page, got: {pdf.footer_cells!r}"
+        )
+
+    def test_footer_renders_page_number_on_content_pages(self) -> None:
+        """``footer`` renders a ``Page N`` marker on a Content_Page (page 2+).
+
+        For a page beyond the cover, ``footer`` emits exactly one cell whose
+        text is the ``Page N`` page-number marker.
+
+        **Validates: Requirements 4.3**
+        """
+        pdf = _make_footer_recording_pdf(page_number=2)
+
+        assert pdf.is_cover_page() is False
+        pdf.footer()
+
+        assert pdf.footer_cells == ["Page 2"], (
+            f"footer should render 'Page 2' on a content page, got: {pdf.footer_cells!r}"
+        )
+
+    def test_footer_page_number_tracks_current_page(self) -> None:
+        """The rendered footer text reflects the current page number.
+
+        Confirms the footer is not a fixed string: a later Content_Page renders
+        its own ``Page N`` value.
+
+        **Validates: Requirements 4.3**
+        """
+        pdf = _make_footer_recording_pdf(page_number=5)
+
+        pdf.footer()
+
+        assert pdf.footer_cells == ["Page 5"], (
+            f"footer should render 'Page 5' on page 5, got: {pdf.footer_cells!r}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Heading hierarchy and accent color (Task 2.2)
+# ---------------------------------------------------------------------------
+#
+# Feature: recap-pdf-professional-design
+#
+# These unit tests cover the professional-layout update to ``render_heading``
+# from ``recap_pdf_render.py`` (task 2.1): module headings render larger than
+# subsection headings, which render larger than body text (Req 3.1, 3.2), and
+# every heading is drawn in ACCENT_COLOR before its text then reset to
+# BODY_COLOR afterward (Req 5.1, 5.3). They drive the real ``render_heading``
+# path through the recording stub, so they need neither fpdf2 nor binary PDF
+# parsing and follow the project test pattern (Req 12.6).
+
+
+def _capture_heading_render(text: str, level: int) -> _RecordingPDF:
+    """Render one heading via the real ``render_heading`` and return the stub.
+
+    Args:
+        text: Heading text to render.
+        level: Heading level (2 = module heading, 3 = subsection heading).
+
+    Returns:
+        The ``_RecordingPDF`` stub with its ``events`` log populated.
+    """
+    from recap_pdf_render import render_heading
+
+    pdf = _RecordingPDF()
+    render_heading(pdf, text, level)
+    return pdf
+
+
+def _first_text_index(pdf: _RecordingPDF) -> int:
+    """Return the index of the first rendered-text event in ``pdf.events``."""
+    for index, event in enumerate(pdf.events):
+        if event[0] == "text":
+            return index
+    raise AssertionError(f"no rendered text recorded in events: {pdf.events!r}")
+
+
+def _rendered_font_size(pdf: _RecordingPDF) -> object:
+    """Return the font size active when the first text was drawn."""
+    idx = _first_text_index(pdf)
+    sizes = [event[1] for event in pdf.events[:idx] if event[0] == "font"]
+    assert sizes, f"no set_font call before rendered text: {pdf.events!r}"
+    return sizes[-1]
+
+
+def _color_before_first_text(pdf: _RecordingPDF) -> object:
+    """Return the text color set immediately before the first text was drawn."""
+    idx = _first_text_index(pdf)
+    colors = [event[1] for event in pdf.events[:idx] if event[0] == "color"]
+    assert colors, f"no set_text_color before rendered text: {pdf.events!r}"
+    return colors[-1]
+
+
+def _color_after_first_text(pdf: _RecordingPDF) -> object | None:
+    """Return the first text color set after the first text was drawn, if any."""
+    idx = _first_text_index(pdf)
+    colors = [event[1] for event in pdf.events[idx + 1:] if event[0] == "color"]
+    return colors[0] if colors else None
+
+
+class TestHeadingHierarchyAndAccentColor:
+    """render_heading applies the professional font hierarchy and accent color.
+
+    **Validates: Requirements 3.1, 3.2, 5.1, 5.3, 12.6**
+
+    Uses the recording stub to exercise the real ``render_heading`` path: module
+    headings render at a strictly larger font size than subsection headings,
+    which render strictly larger than body text (Req 3.1, 3.2); every heading is
+    drawn in ACCENT_COLOR before its text and reset to a distinct BODY_COLOR
+    afterward (Req 5.1, 5.3).
+    """
+
+    def test_module_heading_larger_than_subsection_larger_than_body(self) -> None:
+        """Module heading size > subsection heading size > body text size.
+
+        Font sizes are captured from the real render paths — ``render_heading``
+        for the two heading levels and ``render_generic_blocks`` for body prose
+        — rather than from the declared constants alone.
+
+        **Validates: Requirements 3.1, 3.2**
+        """
+        from recap_pdf_render import BODY_FONT_SIZE, render_generic_blocks
+
+        module_pdf = _capture_heading_render("Module 1: Introduction", level=2)
+        subsection_pdf = _capture_heading_render("Information Shared", level=3)
+
+        body_pdf = _RecordingPDF()
+        render_generic_blocks(body_pdf, ["A prose body paragraph."])
+
+        module_size = _rendered_font_size(module_pdf)
+        subsection_size = _rendered_font_size(subsection_pdf)
+        body_size = _rendered_font_size(body_pdf)
+
+        assert module_size > subsection_size > body_size, (
+            f"Expected module ({module_size}) > subsection ({subsection_size}) "
+            f"> body ({body_size}) font sizes"
+        )
+        assert body_size == BODY_FONT_SIZE, (
+            f"Body text should render at BODY_FONT_SIZE ({BODY_FONT_SIZE}), "
+            f"got {body_size}"
+        )
+
+    def test_heading_sizes_match_declared_constants(self) -> None:
+        """Rendered heading sizes equal the declared module/subsection sizes.
+
+        **Validates: Requirements 3.1, 3.2**
+        """
+        from recap_pdf_render import (
+            MODULE_HEADING_FONT_SIZE,
+            SUBSECTION_HEADING_FONT_SIZE,
+        )
+
+        module_pdf = _capture_heading_render("Module 2: Data Sources", level=2)
+        subsection_pdf = _capture_heading_render("Actions Taken", level=3)
+
+        assert _rendered_font_size(module_pdf) == MODULE_HEADING_FONT_SIZE
+        assert _rendered_font_size(subsection_pdf) == SUBSECTION_HEADING_FONT_SIZE
+
+    def test_accent_color_applied_before_module_heading(self) -> None:
+        """A module heading is drawn in ACCENT_COLOR (set before its text).
+
+        **Validates: Requirements 5.1**
+        """
+        from recap_pdf_render import ACCENT_COLOR
+
+        pdf = _capture_heading_render("Module 3: Loading Records", level=2)
+
+        assert _color_before_first_text(pdf) == ACCENT_COLOR, (
+            f"Expected ACCENT_COLOR {ACCENT_COLOR} before the module heading, "
+            f"got events: {pdf.events!r}"
+        )
+
+    def test_accent_color_applied_before_subsection_heading(self) -> None:
+        """A subsection heading is drawn in ACCENT_COLOR (set before its text).
+
+        **Validates: Requirements 5.1**
+        """
+        from recap_pdf_render import ACCENT_COLOR
+
+        pdf = _capture_heading_render("Questions and responses", level=3)
+
+        assert _color_before_first_text(pdf) == ACCENT_COLOR, (
+            f"Expected ACCENT_COLOR {ACCENT_COLOR} before the subsection "
+            f"heading, got events: {pdf.events!r}"
+        )
+
+    def test_body_color_reset_after_heading_and_distinct_from_accent(self) -> None:
+        """Body color is reset after a heading and differs from the accent.
+
+        Req 5.2/5.3: body text renders in a color distinct from the accent, and
+        ``render_heading`` restores BODY_COLOR after drawing the heading so the
+        following body text is not left in the accent color.
+
+        **Validates: Requirements 5.1, 5.3**
+        """
+        from recap_pdf_render import ACCENT_COLOR, BODY_COLOR
+
+        assert BODY_COLOR != ACCENT_COLOR, (
+            "BODY_COLOR must be distinct from ACCENT_COLOR"
+        )
+
+        pdf = _capture_heading_render("Module 4: Querying", level=2)
+
+        assert _color_after_first_text(pdf) == BODY_COLOR, (
+            f"Expected BODY_COLOR {BODY_COLOR} reset after the heading, "
+            f"got events: {pdf.events!r}"
+        )
+
+    def test_same_level_headings_share_size_and_accent_color(self) -> None:
+        """All headings of a level share one font size and the same accent color.
+
+        Renders several module headings and several subsection headings and
+        confirms each level uses a single font size and the identical
+        ACCENT_COLOR RGB triple across every heading of that level.
+
+        **Validates: Requirements 3.1, 5.3**
+        """
+        from recap_pdf_render import ACCENT_COLOR
+
+        module_names = [
+            "Module 1: Business Problem",
+            "Module 2: First Demo",
+            "Module 3: Data Mapping",
+        ]
+        module_sizes = set()
+        module_colors = set()
+        for name in module_names:
+            pdf = _capture_heading_render(name, level=2)
+            module_sizes.add(_rendered_font_size(pdf))
+            module_colors.add(_color_before_first_text(pdf))
+
+        assert len(module_sizes) == 1, (
+            f"Module headings must share one font size, got: {module_sizes!r}"
+        )
+        assert module_colors == {ACCENT_COLOR}, (
+            f"Every module heading must use ACCENT_COLOR, got: {module_colors!r}"
+        )
+
+        subsection_names = [
+            "Information Shared",
+            "Questions and responses",
+            "Actions Taken",
+        ]
+        subsection_sizes = set()
+        subsection_colors = set()
+        for name in subsection_names:
+            pdf = _capture_heading_render(name, level=3)
+            subsection_sizes.add(_rendered_font_size(pdf))
+            subsection_colors.add(_color_before_first_text(pdf))
+
+        assert len(subsection_sizes) == 1, (
+            f"Subsection headings must share one font size, got: "
+            f"{subsection_sizes!r}"
+        )
+        assert subsection_colors == {ACCENT_COLOR}, (
+            f"Every subsection heading must use ACCENT_COLOR, got: "
+            f"{subsection_colors!r}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Table rendering: pipe-table cell preservation (Task 3.3)
+# ---------------------------------------------------------------------------
+#
+# Feature: recap-pdf-professional-design
+#
+# These unit tests cover ``render_table`` / ``render_markdown_body`` from
+# ``recap_pdf_render.py`` (tasks 3.1, 3.2): a Markdown pipe table renders every
+# cell's text so no cell is omitted (Req 6.4). They render a real ``RecapPDF``
+# to bytes and round-trip the text via ``extract_pdf_text``, following the
+# project test pattern (Req 12.6). Because ``RecapPDF`` is built on
+# ``fpdf.FPDF`` they skip gracefully when fpdf2 is absent rather than erroring
+# at collection time.
+
+
+@pytest.mark.skipif(not _FPDF_AVAILABLE, reason="fpdf2 (optional dependency) not installed")
+class TestTableRendering:
+    """render_table renders every pipe-table cell's text (no cell omitted).
+
+    **Validates: Requirements 6.4, 12.6**
+
+    A fixed Markdown pipe table with a distinctive single-word token per cell is
+    rendered into a real ``RecapPDF``; round-tripping the written PDF text via
+    ``extract_pdf_text`` shows every header and data cell token survived,
+    confirming no cell is dropped during table rendering (Req 6.4).
+    """
+
+    # A fixed pipe table whose every cell carries a distinctive single-word
+    # token (no interior whitespace, so greedy word-wrap can never split it and
+    # each token survives intact into the extracted PDF text). Header tokens and
+    # data-cell tokens are all unique so each assertion pinpoints one cell.
+    _HEADER_TOKENS = ["ColAlpha", "ColBravo", "ColCharlie"]
+    _DATA_TOKENS = [
+        ["CellDelta", "CellEcho", "CellFoxtrot"],
+        ["CellGolf", "CellHotel", "CellIndia"],
+    ]
+    _TABLE_MD = (
+        "| ColAlpha | ColBravo | ColCharlie |\n"
+        "| --- | --- | --- |\n"
+        "| CellDelta | CellEcho | CellFoxtrot |\n"
+        "| CellGolf | CellHotel | CellIndia |\n"
+    )
+
+    def _all_cell_tokens(self) -> list[str]:
+        """Return every distinctive cell token (header row plus data rows)."""
+        tokens = list(self._HEADER_TOKENS)
+        for row in self._DATA_TOKENS:
+            tokens.extend(row)
+        return tokens
+
+    def test_render_table_preserves_all_cell_text(self) -> None:
+        """render_table emits every header and data cell token into the PDF.
+
+        Renders the fixed pipe table directly through ``render_table`` into a
+        real ``RecapPDF``, writes the document to bytes, and asserts every cell's
+        distinctive token round-trips through ``extract_pdf_text`` — so no cell
+        is omitted (Req 6.4).
+
+        **Validates: Requirements 6.4**
+        """
+        from recap_pdf_render import RecapPDF, extract_pdf_text, render_table
+
+        pdf = RecapPDF()
+        pdf.add_page()
+        render_table(pdf, self._TABLE_MD.strip())
+
+        text = extract_pdf_text(bytes(pdf.output()))
+
+        for token in self._all_cell_tokens():
+            assert token in text, (
+                f"cell token {token!r} missing from rendered table text; "
+                f"render_table omitted a cell (extracted: {text!r})"
+            )
+
+    def test_pipe_table_via_markdown_body_preserves_all_cell_text(self) -> None:
+        """render_markdown_body detects the pipe table and preserves every cell.
+
+        Exercises the detection branch wired in task 3.2 (``_is_pipe_table`` →
+        ``render_table``) end to end, confirming the table path — not the prose
+        fallback — renders every cell token into the written PDF (Req 6.4).
+
+        **Validates: Requirements 6.4**
+        """
+        from recap_pdf_render import (
+            RecapPDF,
+            extract_pdf_text,
+            render_markdown_body,
+        )
+
+        pdf = RecapPDF()
+        pdf.add_page()
+        render_markdown_body(pdf, self._TABLE_MD)
+
+        text = extract_pdf_text(bytes(pdf.output()))
+
+        for token in self._all_cell_tokens():
+            assert token in text, (
+                f"cell token {token!r} missing after render_markdown_body; the "
+                f"pipe table was not rendered cell-complete (extracted: {text!r})"
+            )
+
+# ---------------------------------------------------------------------------
+# Cover page: title, subtitle, name, and Headline_Stats (Task 4.2)
+# ---------------------------------------------------------------------------
+#
+# Feature: recap-pdf-professional-design
+#
+# These unit tests cover the professional-layout update to ``_render_cover_page``
+# from ``generate_recap_pdf.py`` (task 4.1): the Cover_Page carries the document
+# title, a completion-recap subtitle, the bootcamper name, and a Headline_Stats
+# line showing the module-section count (Req 2.1, 2.2, 2.4, 2.7, 12.4). The
+# optional Started / Total Duration fields render only when present and are
+# skipped without aborting the Cover_Page when empty or missing (Req 2.7, 2.8).
+# They render a real ``RecapPDF`` to bytes and round-trip the visible text via
+# ``extract_pdf_text``, following the project test pattern (Req 12.6). Because
+# ``RecapPDF`` is built on ``fpdf.FPDF`` they skip gracefully when fpdf2 is
+# absent rather than erroring at collection time.
+
+
+def _render_cover_text(doc: RecapDocument) -> str:
+    """Render only the Cover_Page of ``doc`` and return its extracted text.
+
+    Builds a real ``RecapPDF``, renders the cover via ``_render_cover_page``
+    (which adds the page itself), writes the document to bytes, and round-trips
+    the visible text through ``extract_pdf_text``.
+
+    Args:
+        doc: The recap document whose Cover_Page is rendered.
+
+    Returns:
+        The visible text extracted from the rendered Cover_Page.
+    """
+    from generate_recap_pdf import _render_cover_page
+    from recap_pdf_render import RecapPDF, extract_pdf_text
+
+    pdf = RecapPDF()
+    _render_cover_page(pdf, doc)
+    return extract_pdf_text(bytes(pdf.output()))
+
+
+@pytest.mark.skipif(not _FPDF_AVAILABLE, reason="fpdf2 (optional dependency) not installed")
+class TestCoverPage:
+    """The Cover_Page renders the title, subtitle, name, and Headline_Stats.
+
+    **Validates: Requirements 2.1, 2.2, 2.4, 2.7, 12.4**
+
+    A representative recap is rendered through ``_render_cover_page`` into a real
+    ``RecapPDF``; round-tripping the written PDF text via ``extract_pdf_text``
+    shows the document title (Req 2.2), the completion-recap subtitle (Req 2.3),
+    the bootcamper name (Req 2.4), and the ``Modules completed: N`` Headline_Stats
+    line (Req 2.7). A second case confirms that an empty Started / Total Duration
+    header does not abort the Cover_Page (Req 2.8): the title, name, and stats
+    still render and the skipped field labels are absent.
+    """
+
+    def test_cover_page_contains_title_subtitle_name_and_stats(self) -> None:
+        """A populated recap renders title, subtitle, name, and module count.
+
+        The Headline_Stats module count equals ``len(doc.sections)``; the three
+        sections here yield ``Modules completed: 3``. The Started and Total
+        Duration values are present in the header, so they also survive onto the
+        Cover_Page.
+
+        **Validates: Requirements 2.1, 2.2, 2.4, 2.7, 12.4**
+        """
+        header = RecapHeader(
+            bootcamper="Alex Rivera",
+            started="2025-01-01T09:00:00+00:00",
+            total_duration="8h 15m",
+        )
+        sections = [
+            RecapSection(
+                module_number=1,
+                module_name="Business Problem",
+                timestamp="2025-01-01T10:00:00+00:00",
+                duration="1h 0m",
+            ),
+            RecapSection(
+                module_number=2,
+                module_name="First Demo",
+                timestamp="2025-01-01T12:00:00+00:00",
+                duration="2h 0m",
+            ),
+            RecapSection(
+                module_number=3,
+                module_name="Data Mapping",
+                timestamp="2025-01-01T15:00:00+00:00",
+                duration="1h 30m",
+            ),
+        ]
+        doc = RecapDocument(header=header, sections=sections)
+
+        text = _render_cover_text(doc)
+
+        # Req 2.1/2.2: the document title identifies the recap.
+        assert "Senzing Bootcamp Recap" in text, (
+            f"Cover_Page missing the document title, got: {text!r}"
+        )
+        # Req 2.3: the subtitle identifies the document as a completion recap.
+        assert "Bootcamp Completion Recap" in text, (
+            f"Cover_Page missing the completion-recap subtitle, got: {text!r}"
+        )
+        # Req 2.4: the bootcamper name from the header renders on the cover.
+        assert "Alex Rivera" in text, (
+            f"Cover_Page missing the bootcamper name, got: {text!r}"
+        )
+        # Req 2.7/12.4: Headline_Stats shows the module-section count.
+        assert "Modules completed: 3" in text, (
+            f"Cover_Page missing the Headline_Stats module count, got: {text!r}"
+        )
+        # Req 2.5/2.6: present Started / Total Duration fields render too.
+        assert "Started: 2025-01-01T09:00:00+00:00" in text, (
+            f"Cover_Page missing the Started field, got: {text!r}"
+        )
+        assert "Total Duration: 8h 15m" in text, (
+            f"Cover_Page missing the Total Duration field, got: {text!r}"
+        )
+
+    def test_missing_start_date_and_duration_do_not_abort_rendering(self) -> None:
+        """Empty Started / Total Duration fields are skipped, not fatal.
+
+        A header with empty ``started`` and ``total_duration`` still renders a
+        complete Cover_Page: the title, bootcamper name, and Headline_Stats are
+        present, and the skipped field labels do not appear (Req 2.8).
+
+        **Validates: Requirements 2.1, 2.2, 2.4, 2.7, 12.4**
+        """
+        header = RecapHeader(
+            bootcamper="Jordan Lee",
+            started="",
+            total_duration="",
+        )
+        sections = [
+            RecapSection(
+                module_number=1,
+                module_name="Introduction",
+                timestamp="2025-02-01T10:00:00+00:00",
+                duration="0h 30m",
+            ),
+        ]
+        doc = RecapDocument(header=header, sections=sections)
+
+        # Rendering must not raise when the optional fields are absent.
+        text = _render_cover_text(doc)
+
+        # The title, name, and Headline_Stats still render.
+        assert "Senzing Bootcamp Recap" in text, (
+            f"Cover_Page missing the document title, got: {text!r}"
+        )
+        assert "Jordan Lee" in text, (
+            f"Cover_Page missing the bootcamper name, got: {text!r}"
+        )
+        assert "Modules completed: 1" in text, (
+            f"Cover_Page missing the Headline_Stats module count, got: {text!r}"
+        )
+        # The empty fields are skipped, so their labels never render.
+        assert "Started:" not in text, (
+            f"Empty Started field should be skipped, got: {text!r}"
+        )
+        assert "Total Duration:" not in text, (
+            f"Empty Total Duration field should be skipped, got: {text!r}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Property 1: Cover page contains Headline_Stats (Task 8.1)
+# ---------------------------------------------------------------------------
+#
+# Feature: recap-pdf-professional-design, Property 1: Cover page contains Headline_Stats
+#
+# For any valid RecapDocument (non-empty bootcamper name, 1-5 module sections),
+# the rendered Recap_PDF's extracted text contains the document title
+# "Senzing Bootcamp Recap", the bootcamper name (Latin-1 safe), and the module
+# section count. This drives the full render path (cover page + module pages)
+# through a real ``RecapPDF`` written to a temp file, then round-trips the text
+# via ``extract_pdf_text``. Because rendering requires the optional ``fpdf2``
+# dependency, the class skips gracefully when it is absent (project test
+# pattern, Req 12.6) rather than erroring at collection time.
+
+
+@pytest.mark.skipif(not _FPDF_AVAILABLE, reason="fpdf2 (optional dependency) not installed")
+class TestPropertyCoverPageHeadlineStats:
+    """Property 1: the Cover_Page carries the title, name, and Headline_Stats.
+
+    **Validates: Requirements 2.1, 2.2, 2.4, 2.7, 12.4**
+
+    For any RecapDocument produced by ``st_recap_document`` (non-empty bootcamper
+    name, 1-5 module sections), rendering the full Recap_PDF to a temp file and
+    round-tripping its text via ``extract_pdf_text`` shows the document title
+    "Senzing Bootcamp Recap" on the Cover_Page (Req 2.1, 2.2), the bootcamper
+    name compared Latin-1-safe since fpdf core fonts are Latin-1 (Req 2.4), and
+    the ``Modules completed: N`` Headline_Stats line whose count equals
+    ``len(doc.sections)`` (Req 2.7, 12.4).
+    """
+
+    @given(doc=st_recap_document())
+    def test_cover_page_contains_title_name_and_module_count(
+        self, doc: RecapDocument
+    ) -> None:
+        """A rendered recap's Cover_Page text contains the title, the Latin-1
+        safe bootcamper name, and the module-section count.
+
+        # Feature: recap-pdf-professional-design, Property 1: Cover page contains Headline_Stats
+
+        **Validates: Requirements 2.1, 2.2, 2.4, 2.7, 12.4**
+        """
+        from generate_recap_pdf import render_pdf
+        from recap_pdf_render import extract_pdf_text, safe_text
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output_path = Path(tmp) / "recap.pdf"
+            render_pdf(doc, str(output_path))
+            text = extract_pdf_text(output_path.read_bytes())
+
+        # Req 2.1/2.2: the document title identifies the recap on the Cover_Page.
+        assert "Senzing Bootcamp Recap" in text, (
+            f"Cover_Page missing the document title, got: {text!r}"
+        )
+
+        # Req 2.4: the bootcamper name renders on the Cover_Page. fpdf core
+        # fonts are Latin-1, so the renderer emits ``safe_text(name)`` — compare
+        # against that same Latin-1-safe form rather than the raw name.
+        safe_name = safe_text(doc.header.bootcamper)
+        assert safe_name in text, (
+            f"Cover_Page missing the bootcamper name "
+            f"{doc.header.bootcamper!r} (Latin-1 safe: {safe_name!r}), "
+            f"got: {text!r}"
+        )
+
+        # Req 2.7/12.4: Headline_Stats shows the count of module sections, which
+        # equals ``len(doc.sections)`` for a document rendered with sections.
+        expected_stats = f"Modules completed: {len(doc.sections)}"
+        assert expected_stats in text, (
+            f"Cover_Page missing the Headline_Stats line {expected_stats!r}, "
+            f"got: {text!r}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Property 2: Content round-trip completeness (Task 8.2)
+# ---------------------------------------------------------------------------
+#
+# Feature: recap-pdf-professional-design, Property 2: Content round-trip completeness
+#
+# For any RecapDocument with N module sections whose Required_Detail_Sections
+# (Information Shared, Questions & Responses, Actions Taken) contain a total of
+# M items, the rendered Recap_PDF's extracted text contains the distinctive
+# token of at least ``min(M, MIN_BODY_LINES)`` of those items — so the
+# professional-layout rendering never condenses, summarizes, or drops
+# Required_Detail_Section content (Req 8.1, 8.2, 8.3, 8.5, 9.1, 12.1, 12.2). The
+# full render path runs through a real ``RecapPDF`` written to a temp file and
+# the text is round-tripped via ``extract_pdf_text``. Because rendering needs
+# the optional ``fpdf2`` dependency the class skips gracefully when it is absent
+# (project test pattern, Req 12.6) rather than erroring at collection time.
+
+# The renderer emits an inline code span (`` `...` ``) as a separate font run,
+# so a token whose content is wrapped in backticks is written without them and
+# split away from its neighbors. The distinctive marker is therefore chosen over
+# the code-span-split pieces of an item so it is a whitespace-delimited word that
+# survives intact into the extracted PDF text whenever the item's content is
+# rendered.
+_INLINE_CODE_SPAN_RE = re.compile(r"`([^`]+)`")
+
+
+def _distinctive_survivable_token(item: str) -> str | None:
+    """Return the longest render-survivable token of an item, or ``None``.
+
+    Mirrors the wrap-robust "longest token" concept of
+    :func:`recap_pdf_render._distinctive_token` — the longest whitespace-
+    delimited token survives fpdf word-wrapping intact — and additionally
+    accounts for the renderer emitting inline code spans (`` `...` ``) as
+    separate font runs: the item is split on code spans, then each piece on
+    whitespace, and the longest resulting word (length >= 2, Latin-1-safe to
+    mirror what the renderer emits) is the distinctive marker. Returns ``None``
+    when the item has no such word (for example a lone one-character item),
+    which simply cannot be asserted.
+
+    Args:
+        item: A Required_Detail_Section item text.
+
+    Returns:
+        The longest render-survivable token of length >= 2, or ``None``.
+    """
+    from recap_pdf_render import safe_text
+
+    words: list[str] = []
+    for piece in _INLINE_CODE_SPAN_RE.split(safe_text(item)):
+        words.extend(word for word in piece.split() if len(word) >= 2)
+    if not words:
+        return None
+    return max(words, key=len)
+
+
+def _required_detail_items(section: RecapSection) -> list[str]:
+    """Return a module section's Required_Detail_Section item texts, in order.
+
+    Gathers the three Required_Detail_Sections' items: Information Shared, the
+    Questions & Responses content (the Paired_Schema ``qr_pairs`` question and
+    response texts, or the legacy split ``questions_asked`` / ``answers_given``
+    lists, depending on the section's schema), and Actions Taken. Duration and
+    Generic_Content are excluded — they are not Required_Detail_Sections.
+
+    Args:
+        section: The parsed module section.
+
+    Returns:
+        The Required_Detail_Section item strings in render order.
+    """
+    items: list[str] = list(section.information_shared)
+    if section.schema == "paired":
+        for pair in section.qr_pairs:
+            items.append(pair.question)
+            items.append(pair.response)
+    else:
+        items.extend(section.questions_asked)
+        items.extend(section.answers_given)
+    items.extend(section.actions_taken)
+    return items
+
+
+@pytest.mark.skipif(not _FPDF_AVAILABLE, reason="fpdf2 (optional dependency) not installed")
+class TestPropertyContentRoundTripCompleteness:
+    """Property 2: Required_Detail_Section content survives PDF rendering.
+
+    **Validates: Requirements 8.1, 8.2, 8.3, 8.5, 9.1, 12.1, 12.2**
+
+    For any RecapDocument from ``st_recap_document`` (1-5 module sections), let M
+    be the number of Required_Detail_Section items — Information Shared,
+    Questions & Responses, and Actions Taken across every section — that carry a
+    distinctive token. Rendering the full Recap_PDF to a temp file and round-
+    tripping its text via ``extract_pdf_text`` shows at least
+    ``min(M, MIN_BODY_LINES)`` of those distinctive tokens survive, so no
+    Required_Detail_Section content is condensed, summarized, or dropped during
+    professional-layout rendering. The ``min(M, MIN_BODY_LINES)`` floor mirrors
+    the production Content_Verification (``verify_rendered_pdf``) the generator
+    gates publication on (Req 9.1, 12.1, 12.2).
+    """
+
+    @given(doc=st_recap_document())
+    def test_required_detail_content_survives_rendering(
+        self, doc: RecapDocument
+    ) -> None:
+        """A rendered recap preserves the distinctive tokens of its
+        Required_Detail_Section items down to the ``min(M, MIN_BODY_LINES)`` floor.
+
+        # Feature: recap-pdf-professional-design, Property 2: Content round-trip completeness
+
+        **Validates: Requirements 8.1, 8.2, 8.3, 8.5, 9.1, 12.1, 12.2**
+        """
+        from generate_recap_pdf import render_pdf
+        from recap_pdf_render import MIN_BODY_LINES, extract_pdf_text
+
+        # M = the Required_Detail_Section items (across all sections) that carry
+        # a distinctive, render-survivable token; items without one (e.g. a lone
+        # single character) cannot be asserted and are excluded.
+        candidate_tokens = [
+            token
+            for section in doc.sections
+            for item in _required_detail_items(section)
+            if (token := _distinctive_survivable_token(item)) is not None
+        ]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output_path = Path(tmp) / "recap.pdf"
+            render_pdf(doc, str(output_path))
+            text = extract_pdf_text(output_path.read_bytes())
+
+        # A token survives when it appears as a whitespace-delimited token in the
+        # extracted PDF text (mirrors verify_rendered_pdf's token membership).
+        text_tokens = set(text.split())
+        present = sum(1 for token in candidate_tokens if token in text_tokens)
+
+        required = min(len(candidate_tokens), MIN_BODY_LINES)
+        assert present >= required, (
+            f"only {present} of {len(candidate_tokens)} Required_Detail_Section "
+            f"distinctive token(s) survived into the rendered PDF; require at "
+            f"least {required} = min(M, MIN_BODY_LINES={MIN_BODY_LINES}). "
+            f"Required_Detail_Section content was condensed or dropped."
+        )
+
+
+# ---------------------------------------------------------------------------
+# Property 3: Page footer presence on content pages (Task 8.3)
+# ---------------------------------------------------------------------------
+#
+# Feature: recap-pdf-professional-design, Property 3: Page footer presence on content pages
+#
+# For any RecapDocument that renders to more than one page, the extracted text
+# of the Recap_PDF contains at least one page-number token matching the pattern
+# ``Page N`` (N > 0), confirming the Page_Footer renders on Content_Pages (it is
+# suppressed on the Cover_Page). ``_render_module_page`` calls ``add_page()`` for
+# every section, so a document with >= 3 module sections is guaranteed to span
+# multiple Content_Pages beyond the Cover_Page. ``st_multipage_recap_document``
+# builds such a document locally (reusing the shared header/section strategies)
+# so the shared ``st_recap_document`` — which draws 1-5 sections and cannot
+# guarantee a multi-page render — is left untouched. The full render path runs
+# through a real ``RecapPDF`` written to a temp file and the text is round-tripped
+# via ``extract_pdf_text``. Because rendering needs the optional ``fpdf2``
+# dependency the class skips gracefully when it is absent (project test pattern,
+# Req 12.6) rather than erroring at collection time.
+
+
+@st.composite
+def st_multipage_recap_document(draw: st.DrawFn) -> RecapDocument:
+    """Generate a RecapDocument guaranteed to render onto multiple pages.
+
+    Reuses the shared ``st_recap_header`` and ``st_recap_section`` strategies but
+    forces at least three module sections. Because ``_render_module_page`` starts
+    each section with ``add_page()``, three or more sections always produce
+    Content_Pages beyond the Cover_Page — so the ``Page N`` footer is guaranteed
+    to render at least once. Kept local (rather than adding a ``min_size`` param
+    to the shared ``st_recap_document``) so no existing test's generation changes.
+
+    Returns:
+        A RecapDocument with a valid header and 3-6 module sections.
+    """
+    header = draw(st_recap_header())
+    sections = draw(st.lists(st_recap_section(), min_size=3, max_size=6))
+    return RecapDocument(header=header, sections=sections)
+
+
+@pytest.mark.skipif(not _FPDF_AVAILABLE, reason="fpdf2 (optional dependency) not installed")
+class TestPropertyPageFooterPresence:
+    """Property 3: the Page_Footer renders a page number on Content_Pages.
+
+    **Validates: Requirements 4.3**
+
+    For any multi-page RecapDocument from ``st_multipage_recap_document`` (3+
+    module sections, each rendered on its own page via ``_render_module_page``),
+    rendering the full Recap_PDF to a temp file and round-tripping its text via
+    ``extract_pdf_text`` shows at least one page-number token matching ``Page N``
+    with N > 0 — confirming the Page_Footer renders on Content_Pages (it is
+    suppressed on the Cover_Page).
+    """
+
+    @given(doc=st_multipage_recap_document())
+    def test_content_pages_carry_page_number_footer(
+        self, doc: RecapDocument
+    ) -> None:
+        """A rendered multi-page recap's text contains a ``Page N`` footer token
+        with N > 0.
+
+        # Feature: recap-pdf-professional-design, Property 3: Page footer presence on content pages
+
+        **Validates: Requirements 4.3**
+        """
+        from generate_recap_pdf import render_pdf
+        from recap_pdf_render import extract_pdf_text
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output_path = Path(tmp) / "recap.pdf"
+            render_pdf(doc, str(output_path))
+            text = extract_pdf_text(output_path.read_bytes())
+
+        # The footer renders ``Page {page_no}`` as a single cell on every
+        # Content_Page; extract_pdf_text preserves the intra-cell space, so a
+        # ``Page N`` token with N > 0 must appear at least once.
+        page_numbers = [int(n) for n in re.findall(r"Page\s+(\d+)", text)]
+        positive = [n for n in page_numbers if n > 0]
+        assert positive, (
+            f"expected at least one 'Page N' footer token with N > 0 in the "
+            f"rendered multi-page recap ({len(doc.sections)} sections), got "
+            f"page numbers {page_numbers!r} (extracted text: {text!r})"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Property 4: Table cell text preservation (Task 8.4)
+# ---------------------------------------------------------------------------
+#
+# Feature: recap-pdf-professional-design, Property 4: Table cell text preservation
+#
+# For any Recap_Markdown pipe table with C cells of text, the rendered
+# Recap_PDF's extracted text contains the distinctive token of every cell — so
+# no cell is omitted during table rendering (Req 6.4). ``st_pipe_table`` builds
+# a valid Markdown pipe table with a random number of columns and rows in which
+# every cell (header cells included) carries a distinctive single-word token,
+# drawn unique across the whole table so each cell can be located in the output.
+# Tokens are ASCII letters/digits only — no interior whitespace, so greedy
+# word-wrap can never split one, and no ``|`` or backtick, so none breaks
+# pipe-table parsing. The column/row/length bounds keep the grid within the page
+# width so a token is never broken mid-word. The full render path runs through a
+# real ``RecapPDF`` written to bytes and the text is round-tripped via
+# ``extract_pdf_text``. Because rendering needs the optional ``fpdf2`` dependency
+# the class skips gracefully when it is absent (project test pattern, Req 12.6)
+# rather than erroring at collection time.
+
+
+@st.composite
+def st_pipe_table(draw: st.DrawFn) -> tuple[str, list[str]]:
+    """Generate a Markdown pipe table with a distinctive token in every cell.
+
+    Draws a random column count (2-4) and data-row count (1-4). Every cell —
+    the header cells and every data cell — carries a distinctive single-word
+    token drawn unique across the whole table so each cell can be pinpointed in
+    the rendered output. Tokens are ASCII letter/digit words with no interior
+    whitespace (greedy word-wrap can never split one) and never contain ``|`` or
+    a backtick (so none breaks pipe-table parsing). The chosen column, row, and
+    length bounds keep the grid within the page width, so ``render_table`` gives
+    each column at least its widest-word width and no token is broken mid-word.
+
+    Returns:
+        A ``(table_markdown, cell_tokens)`` tuple: the pipe-table Markdown
+        string and the list of every cell's distinctive token in row-major
+        order (the header row first, then each data row).
+    """
+    num_cols = draw(st.integers(min_value=2, max_value=4))
+    num_data_rows = draw(st.integers(min_value=1, max_value=4))
+    total_cells = num_cols * (num_data_rows + 1)  # + 1 for the header row
+
+    token_strategy = st.text(
+        alphabet=(
+            "abcdefghijklmnopqrstuvwxyz"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "0123456789"
+        ),
+        min_size=5,
+        max_size=9,
+    )
+    tokens = draw(
+        st.lists(
+            token_strategy,
+            min_size=total_cells,
+            max_size=total_cells,
+            unique=True,
+        )
+    )
+
+    # Slice the flat, unique token list into a header row plus the data rows.
+    rows = [
+        tokens[i * num_cols : (i + 1) * num_cols]
+        for i in range(num_data_rows + 1)
+    ]
+
+    lines = ["| " + " | ".join(rows[0]) + " |"]
+    lines.append("| " + " | ".join(["---"] * num_cols) + " |")
+    for data_row in rows[1:]:
+        lines.append("| " + " | ".join(data_row) + " |")
+
+    return "\n".join(lines), tokens
+
+
+@pytest.mark.skipif(not _FPDF_AVAILABLE, reason="fpdf2 (optional dependency) not installed")
+class TestPropertyTableCellPreservation:
+    """Property 4: every pipe-table cell's text survives PDF rendering.
+
+    **Validates: Requirements 6.4**
+
+    For any pipe table from ``st_pipe_table`` (2-4 columns, 1-4 data rows, a
+    distinctive single-word token in every cell), rendering the table into a
+    real ``RecapPDF`` and round-tripping its text via ``extract_pdf_text`` shows
+    every cell's distinctive token survives — header cells and data cells alike
+    — confirming ``render_table`` omits no cell (Req 6.4). Tokens are matched as
+    whole whitespace-delimited words (mirroring ``verify_rendered_pdf``'s token
+    membership) so a token can never be found merely as a fragment of another.
+    """
+
+    @given(table=st_pipe_table())
+    def test_every_table_cell_token_survives_rendering(
+        self, table: tuple[str, list[str]]
+    ) -> None:
+        """A rendered pipe table's text contains every cell's distinctive token.
+
+        # Feature: recap-pdf-professional-design, Property 4: Table cell text preservation
+
+        **Validates: Requirements 6.4**
+        """
+        from recap_pdf_render import RecapPDF, extract_pdf_text, render_table
+
+        table_md, cell_tokens = table
+
+        pdf = RecapPDF()
+        pdf.add_page()
+        render_table(pdf, table_md)
+        text = extract_pdf_text(bytes(pdf.output()))
+
+        # Each cell holds a single token, so it renders as an isolated text run
+        # and appears as its own whitespace-delimited word in the extracted text.
+        text_tokens = set(text.split())
+        missing = [token for token in cell_tokens if token not in text_tokens]
+        assert not missing, (
+            f"pipe-table cell token(s) {missing} missing from the rendered "
+            f"table text; render_table omitted a cell (extracted: {text!r})"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Property 5: Accent color consistency (Task 8.5)
+# ---------------------------------------------------------------------------
+#
+# Feature: recap-pdf-professional-design, Property 5: Accent color consistency
+#
+# For any RecapDocument with multiple module sections, every set_text_color call
+# made immediately before a module-level heading uses the same RGB triple, and
+# every call made immediately before a subsection-level heading uses the same RGB
+# triple (the two may be equal, but each level is internally consistent). This
+# drives the real ``_render_module_page`` render path for every section through
+# the pure ``_RecordingPDF`` stub — which records an ordered ``events`` log of
+# ("font", size) / ("color", rgb) / ("text", text) tuples — so it needs neither
+# fpdf2 nor binary PDF parsing and requires no ``_FPDF_AVAILABLE`` skip guard.
+#
+# Within ``_render_module_page`` only ``render_heading`` calls ``set_text_color``:
+# it sets ACCENT_COLOR immediately before drawing the heading text (via
+# ``multi_cell``) then resets to BODY_COLOR immediately after. Body rendering
+# never sets a color, so a ("color", rgb) event immediately followed by a
+# ("text", text) event in the events log uniquely marks a heading render and the
+# color applied to it; the trailing BODY_COLOR reset is always followed by a font
+# event (never a text event), so it is never mistaken for a heading.
+
+# A module-level heading is drawn as "Module N: <name>"; every other heading
+# ``render_heading`` emits — Information Shared, Questions and responses /
+# Questions & Responses, Actions Taken, Duration, Additional Notes — is a
+# subsection-level heading, so "starts with 'Module N:'" cleanly classifies the
+# level (the "Module N: " prefix is ASCII, so it survives ``safe_text``).
+_MODULE_LEVEL_HEADING_RE = re.compile(r"^Module \d+:")
+
+
+def _heading_accent_events(pdf: _RecordingPDF) -> list[tuple[object, str]]:
+    """Return the (color, heading_text) pair for every heading rendered into ``pdf``.
+
+    A heading render is detected as a ("color", rgb) event immediately followed
+    by a ("text", text) event in the ordered events log — the ACCENT_COLOR
+    set-then-draw pattern that only ``render_heading`` produces within
+    ``_render_module_page``. The color captured is the one applied immediately
+    before the heading text.
+
+    Args:
+        pdf: A ``_RecordingPDF`` the section(s) were rendered into.
+
+    Returns:
+        The (color, heading_text) pairs in render order.
+    """
+    pairs: list[tuple[object, str]] = []
+    events = pdf.events
+    for index in range(len(events) - 1):
+        kind, value = events[index]
+        next_kind, next_value = events[index + 1]
+        if kind == "color" and next_kind == "text":
+            pairs.append((value, str(next_value)))
+    return pairs
+
+
+class TestPropertyAccentColorConsistency:
+    """Property 5: headings of the same level share one accent color.
+
+    **Validates: Requirements 5.1, 5.3**
+
+    For any RecapDocument from ``st_recap_document`` (1-5 module sections),
+    rendering every section through the real ``_render_module_page`` into a
+    shared ``_RecordingPDF`` and reading the color applied immediately before each
+    heading shows every module-level heading uses one identical RGB triple and
+    every subsection-level heading uses one identical RGB triple across all
+    sections (Req 5.3) — and both levels use ACCENT_COLOR (Req 5.1).
+    """
+
+    @given(doc=st_recap_document())
+    def test_headings_of_each_level_share_one_accent_color(
+        self, doc: RecapDocument
+    ) -> None:
+        """Every module heading shares one color and every subsection heading
+        shares one color, both equal to ACCENT_COLOR.
+
+        # Feature: recap-pdf-professional-design, Property 5: Accent color consistency
+
+        **Validates: Requirements 5.1, 5.3**
+        """
+        from recap_pdf_render import ACCENT_COLOR
+
+        # One shared stub across the whole document so the "same color across all
+        # Content_Pages" invariant (Req 5.3) is exercised over every section.
+        pdf = _RecordingPDF()
+        for section in doc.sections:
+            _render_module_page(pdf, section)
+
+        module_colors: set[object] = set()
+        subsection_colors: set[object] = set()
+        for color, heading_text in _heading_accent_events(pdf):
+            if _MODULE_LEVEL_HEADING_RE.match(heading_text):
+                module_colors.add(color)
+            else:
+                subsection_colors.add(color)
+
+        # Every document has >= 1 module section, so both levels are exercised:
+        # one module heading and four subsection headings per section.
+        assert module_colors, (
+            f"no module-level heading was rendered; events: {pdf.events!r}"
+        )
+        assert subsection_colors, (
+            f"no subsection-level heading was rendered; events: {pdf.events!r}"
+        )
+
+        # Req 5.3: every heading of a level uses one identical RGB triple.
+        assert len(module_colors) == 1, (
+            f"module-level headings used inconsistent colors: {module_colors!r}"
+        )
+        assert len(subsection_colors) == 1, (
+            f"subsection-level headings used inconsistent colors: "
+            f"{subsection_colors!r}"
+        )
+
+        # Req 5.1: headings render in the accent color.
+        assert module_colors == {ACCENT_COLOR}, (
+            f"module headings must use ACCENT_COLOR {ACCENT_COLOR}, got "
+            f"{module_colors!r}"
+        )
+        assert subsection_colors == {ACCENT_COLOR}, (
+            f"subsection headings must use ACCENT_COLOR {ACCENT_COLOR}, got "
+            f"{subsection_colors!r}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Full-content preservation and Content_Verification rejection (Task 9.1)
+# ---------------------------------------------------------------------------
+#
+# Feature: recap-pdf-professional-design
+#
+# These example-based unit tests (NOT property-based) cover the two full-content
+# guarantees the professional redesign must keep:
+#
+#   1. Full-content preservation (Req 12.1): a representative multi-module
+#      Recap_Markdown renders a PDF that still contains every module's
+#      Information Shared, Questions & Responses, and Actions Taken content —
+#      the professional layout wraps around the detail, never condensing it.
+#   2. Content_Verification rejection (Req 9.2, 9.3, 12.3): when the rendered
+#      candidate PDF omits a Required_Detail_Section, main() rejects it — exit
+#      code 1, no ``PDF generated:`` line on stdout, and no published PDF at the
+#      output path — leaving any pre-existing output unchanged (Req 9.4).
+#
+# They drive the real ``main`` / ``render_pdf`` path and round-trip the written
+# PDF via ``extract_pdf_text``, following the project test pattern (Req 12.6).
+# Because rendering needs the optional ``fpdf2`` dependency the class skips
+# gracefully when it is absent rather than erroring at collection time.
+
+
+def _run_main_capturing_output(argv: list[str]) -> tuple[int, str, str]:
+    """Run ``main`` with ``argv``, capturing both stdout and stderr.
+
+    Args:
+        argv: Command-line arguments passed to ``main``.
+
+    Returns:
+        Tuple of (exit_code, captured_stdout_text, captured_stderr_text).
+    """
+    out = io.StringIO()
+    err = io.StringIO()
+    with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+        rc = main(argv)
+    return rc, out.getvalue(), err.getvalue()
+
+
+def _render_cover_only(
+    doc: RecapDocument, output_path: str, body_text: str = ""
+) -> None:
+    """Render only the Cover_Page, dropping every module's content.
+
+    A drop-in stand-in for ``generate_recap_pdf.render_pdf`` that writes a
+    structurally valid PDF carrying only the cover — it makes no
+    ``_render_module_page`` calls — so the written candidate omits every module's
+    Required_Detail_Sections. Round-trip Content_Verification then finds no
+    ``Module N`` section and rejects the candidate, exercising the
+    rejection / exit-1 / no-publish path without corrupting the PDF bytes
+    (preferred over writing malformed bytes, per the task guidance).
+
+    Args:
+        doc: Parsed recap document whose Cover_Page is rendered.
+        output_path: File path for the (module-less) PDF.
+        body_text: Ignored; present only to match ``render_pdf``'s signature.
+    """
+    from generate_recap_pdf import _render_cover_page
+    from recap_pdf_render import RecapPDF
+
+    pdf = RecapPDF()
+    _render_cover_page(pdf, doc)
+    pdf.output(output_path)
+
+
+@pytest.mark.skipif(not _FPDF_AVAILABLE, reason="fpdf2 (optional dependency) not installed")
+class TestFullContentPreservationAndVerification:
+    """Full-content preservation and Content_Verification rejection.
+
+    **Validates: Requirements 9.2, 9.3, 12.1, 12.3**
+
+    A representative three-module recap is rendered end to end through ``main``;
+    round-tripping the written PDF via ``extract_pdf_text`` shows every module's
+    Information Shared, Questions & Responses, and Actions Taken content survived
+    (Req 12.1). When ``render_pdf`` is replaced with a cover-only stand-in so the
+    candidate omits every module's Required_Detail_Sections, Content_Verification
+    rejects it: ``main`` returns exit code 1, prints no ``PDF generated:`` line,
+    and publishes no PDF — leaving any pre-existing output unchanged (Req 9.2,
+    9.3, 9.4, 12.3).
+    """
+
+    def _representative_document(self) -> tuple[RecapDocument, list[str]]:
+        """Build a representative multi-module recap and its distinctive tokens.
+
+        Three modules, each with a non-empty Information Shared, Questions &
+        Responses (authored via the split ``questions_asked`` / ``answers_given``
+        lists), and Actions Taken section. Every detail item embeds a distinctive
+        single-word token (no interior whitespace, Latin-1 safe) so greedy
+        word-wrap can never split it and each token survives intact into the
+        extracted PDF text.
+
+        Returns:
+            A ``(document, expected_tokens)`` tuple: the recap document and the
+            distinctive detail-section tokens that must survive rendering.
+        """
+        modules = [
+            ("Business Problem", "InfoAlphaWibble", "QuestionAlphaWibble",
+             "AnswerAlphaWibble", "ActionAlphaWibble"),
+            ("First Demo", "InfoBravoWibble", "QuestionBravoWibble",
+             "AnswerBravoWibble", "ActionBravoWibble"),
+            ("Data Mapping", "InfoCharlieWibble", "QuestionCharlieWibble",
+             "AnswerCharlieWibble", "ActionCharlieWibble"),
+        ]
+        sections: list[RecapSection] = []
+        expected_tokens: list[str] = []
+        for i, (name, info, question, answer, action) in enumerate(modules, 1):
+            sections.append(
+                RecapSection(
+                    module_number=i,
+                    module_name=name,
+                    timestamp=f"2025-01-0{i}T10:00:00+00:00",
+                    information_shared=[f"Studied {info} concepts in depth"],
+                    questions_asked=[f"What is {question} about?"],
+                    answers_given=[f"It involves {answer} resolution"],
+                    actions_taken=[f"Created {action} artifact"],
+                    duration=f"{i}h 0m",
+                )
+            )
+            expected_tokens.extend([info, question, answer, action])
+        header = RecapHeader(
+            bootcamper="Dana Prescott",
+            started="2025-01-01T09:00:00+00:00",
+            total_duration="6h 0m",
+        )
+        return RecapDocument(header=header, sections=sections), expected_tokens
+
+    def test_multi_module_pdf_contains_every_detail_section(self) -> None:
+        """A representative recap renders a PDF containing every module's
+        Information Shared, Questions & Responses, and Actions Taken content.
+
+        Writes the recap to a temp input file, runs ``main`` to render the PDF,
+        asserts a clean success (exit 0 with the ``PDF generated:`` line and a
+        written file), then round-trips the PDF text and asserts every module's
+        distinctive detail-section token survived — so no Required_Detail_Section
+        content was condensed or dropped.
+
+        **Validates: Requirements 12.1**
+        """
+        from recap_pdf_render import extract_pdf_text
+
+        doc, expected_tokens = self._representative_document()
+        markdown = format_recap_document(doc)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = Path(tmp) / "recap.md"
+            output_path = Path(tmp) / "recap.pdf"
+            input_path.write_text(markdown, encoding="utf-8")
+
+            rc, stdout, stderr = _run_main_capturing_output(
+                ["--input", str(input_path), "--output", str(output_path)]
+            )
+
+            assert rc == 0, (
+                f"expected exit 0 for a valid recap, got {rc} (stderr: {stderr!r})"
+            )
+            assert f"PDF generated: {output_path}" in stdout, (
+                f"expected the 'PDF generated:' line for {output_path}, "
+                f"got stdout: {stdout!r}"
+            )
+            assert output_path.exists(), (
+                "main reported success but wrote no PDF to the output path"
+            )
+
+            text = extract_pdf_text(output_path.read_bytes())
+
+            # Each detail token is a whitespace-delimited word in the extracted
+            # text (mirrors verify_rendered_pdf's token membership), so a token
+            # can never be found merely as a fragment of another.
+            text_tokens = set(text.split())
+            missing = [tok for tok in expected_tokens if tok not in text_tokens]
+            assert not missing, (
+                f"rendered PDF dropped Required_Detail_Section content: tokens "
+                f"{missing} from Information Shared / Questions & Responses / "
+                f"Actions Taken are absent from the PDF (extracted: {text!r})"
+            )
+
+    def test_verification_rejects_pdf_missing_module_section(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Content_Verification rejects a candidate PDF missing a module section.
+
+        Replaces ``render_pdf`` with a cover-only stand-in so the written
+        candidate omits every module's Required_Detail_Sections, then runs
+        ``main``. Content_Verification finds no ``Module N`` section and rejects
+        the candidate: ``main`` returns exit code 1, prints no ``PDF generated:``
+        line, publishes no PDF at the output path, and surfaces an error naming
+        the omitted per-module content.
+
+        **Validates: Requirements 9.2, 9.3, 12.3**
+        """
+        import generate_recap_pdf
+
+        doc, _tokens = self._representative_document()
+        markdown = format_recap_document(doc)
+        monkeypatch.setattr(generate_recap_pdf, "render_pdf", _render_cover_only)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = Path(tmp) / "recap.md"
+            output_path = Path(tmp) / "recap.pdf"
+            input_path.write_text(markdown, encoding="utf-8")
+
+            rc, stdout, stderr = _run_main_capturing_output(
+                ["--input", str(input_path), "--output", str(output_path)]
+            )
+
+            # Req 9.2: a candidate that omits a per-module section is not
+            # published and main returns exit code 1.
+            assert rc == 1, f"expected exit 1 on verification failure, got {rc}"
+            # Req 9.5 / 12.3: no 'PDF generated:' line is printed for a rejected
+            # PDF.
+            assert "PDF generated:" not in stdout, (
+                f"a rejected candidate must not print 'PDF generated:', got "
+                f"stdout: {stdout!r}"
+            )
+            # Req 9.2 / 12.3: no PDF is published at the output path.
+            assert not output_path.exists(), (
+                "a rejected candidate must not be published to the output path"
+            )
+            # Req 9.3: the error identifies that verification found omitted
+            # content.
+            assert "verification failed" in stderr.lower(), (
+                f"expected a Content_Verification failure error on stderr, got: "
+                f"{stderr!r}"
+            )
+
+    def test_verification_leaves_existing_pdf_unchanged(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """A rejected candidate leaves any previously published PDF unchanged.
+
+        Seeds the output path with sentinel bytes, replaces ``render_pdf`` with
+        the cover-only stand-in, and runs ``main``. Because the atomic publish
+        renders and verifies into a temp file and only moves it into place on
+        success, the verification failure leaves the pre-existing PDF at the
+        output path byte-for-byte unchanged (Req 9.4).
+
+        **Validates: Requirements 9.2, 9.3, 12.3**
+        """
+        import generate_recap_pdf
+
+        doc, _tokens = self._representative_document()
+        markdown = format_recap_document(doc)
+        monkeypatch.setattr(generate_recap_pdf, "render_pdf", _render_cover_only)
+
+        sentinel = b"%PDF-1.4 pre-existing recap sentinel bytes"
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = Path(tmp) / "recap.md"
+            output_path = Path(tmp) / "recap.pdf"
+            input_path.write_text(markdown, encoding="utf-8")
+            output_path.write_bytes(sentinel)
+
+            rc, stdout, _stderr = _run_main_capturing_output(
+                ["--input", str(input_path), "--output", str(output_path)]
+            )
+
+            assert rc == 1, f"expected exit 1 on verification failure, got {rc}"
+            assert "PDF generated:" not in stdout, (
+                f"a rejected candidate must not print 'PDF generated:', got "
+                f"stdout: {stdout!r}"
+            )
+            # Req 9.4: the previously existing PDF at the output path is
+            # unchanged.
+            assert output_path.read_bytes() == sentinel, (
+                "a rejected candidate must leave any pre-existing PDF unchanged"
+            )
+
+
+# ---------------------------------------------------------------------------
+# Graceful degradation when fpdf2 is absent (Task 9.2)
+# ---------------------------------------------------------------------------
+#
+# Feature: recap-pdf-professional-design
+#
+# This example-based unit test (NOT property-based) covers the graceful-
+# degradation guarantee (Req 11.2, 12.5): when the optional fpdf2 dependency is
+# absent, the renderer must not crash with a traceback. The lazy
+# ``from fpdf import FPDF`` inside ``render_pdf`` (via
+# ``recap_pdf_render._build_recap_pdf_class``) raises ImportError, which
+# ``main`` catches and translates into a clean, user-facing ``pip install fpdf2``
+# hint on stderr, returning exit code 1 and leaving the Markdown recap intact
+# (no PDF is written to the output path).
+#
+# It is intentionally distinct from the existing property test
+# ``TestPreservationGracefulDegradation::test_fpdf_absent_prints_hint_and_exits_1``:
+# that property asserts only the exit code and the install hint over generated
+# documents, whereas this test additionally pins down the *graceful* part of
+# Req 11.2 — that no Python traceback or raw ImportError dump reaches stderr —
+# and that degradation writes no PDF. It uses a fixed, representative recap so
+# the behavior is deterministic, and it simulates fpdf2 absence via
+# ``_fpdf_import_absent`` (which forces the lazy import to raise regardless of
+# whether fpdf2 is installed), so it runs in all environments and carries no
+# ``_FPDF_AVAILABLE`` skip guard.
+
+
+class TestGracefulDegradationNoFpdf2:
+    """When fpdf2 is absent the renderer degrades gracefully with an install hint.
+
+    **Validates: Requirements 11.2, 12.5**
+
+    A fixed, representative multi-module recap is rendered through ``main`` with
+    the lazy ``from fpdf import FPDF`` forced to raise ImportError via
+    ``_fpdf_import_absent``. The ImportError is caught and translated into a
+    clean, user-facing message: stderr surfaces the ``pip install fpdf2`` hint
+    and carries no Python traceback or raw ImportError dump (Req 11.2), ``main``
+    returns exit code 1, and no PDF is published to the output path — the
+    Markdown recap is left intact (Req 11.2, 12.5).
+    """
+
+    # A fixed, representative strict-schema recap (two modules with all detail
+    # sections). Deterministic — not Hypothesis-generated — so the degradation
+    # behavior is reproducible regardless of environment.
+    _RECAP_MARKDOWN = (
+        "# Senzing Bootcamp Recap\n"
+        "\n"
+        "**Bootcamper:** Robin Avery\n"
+        "**Started:** 2025-01-01T09:00:00+00:00\n"
+        "**Total Duration:** 3h 0m\n"
+        "\n"
+        "---\n"
+        "\n"
+        "## Module 1: Business Problem \u2014 2025-01-01T10:00:00+00:00\n"
+        "\n"
+        "### Information Shared\n"
+        "- Senzing resolves entities across disparate data sources\n"
+        "\n"
+        "### Questions Asked\n"
+        "1. What is entity resolution?\n"
+        "\n"
+        "### Answers Given\n"
+        "1. Matching records that refer to the same real-world entity\n"
+        "\n"
+        "### Actions Taken\n"
+        "- Ran the first Senzing demo\n"
+        "\n"
+        "### Duration\n"
+        "1h 0m\n"
+        "\n"
+        "---\n"
+        "\n"
+        "## Module 2: First Demo \u2014 2025-01-01T12:00:00+00:00\n"
+        "\n"
+        "### Information Shared\n"
+        "- The demo loads sample records and resolves them into entities\n"
+        "\n"
+        "### Questions Asked\n"
+        "1. How many records were loaded?\n"
+        "\n"
+        "### Answers Given\n"
+        "1. Several thousand sample records\n"
+        "\n"
+        "### Actions Taken\n"
+        "- Reviewed the resolved entities\n"
+        "\n"
+        "### Duration\n"
+        "2h 0m\n"
+        "\n"
+        "---\n"
+    )
+
+    def test_fpdf2_absent_prints_clean_install_hint_without_traceback(self) -> None:
+        """A missing fpdf2 yields the install hint and no traceback, exit 1.
+
+        Runs ``main`` on a fixed recap with ``fpdf`` forced to raise ImportError.
+        The renderer degrades gracefully: stderr carries the ``pip install
+        fpdf2`` hint (Req 11.2) with no ``Traceback (most recent call last)``
+        banner and no raw ``ImportError`` dump — the ImportError is caught and
+        translated into a clean user-facing message — and ``main`` returns exit
+        code 1.
+
+        **Validates: Requirements 11.2, 12.5**
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = Path(tmp) / "recap.md"
+            output_path = Path(tmp) / "recap.pdf"
+            input_path.write_text(self._RECAP_MARKDOWN, encoding="utf-8")
+
+            with _fpdf_import_absent():
+                rc, stderr = _run_main_capturing_stderr(
+                    ["--input", str(input_path), "--output", str(output_path)]
+                )
+
+        # Req 11.2: exit code 1 when fpdf2 is absent.
+        assert rc == 1, f"expected exit code 1 when fpdf2 absent, got {rc}"
+
+        # Req 11.2 / 12.5: the actionable install hint is surfaced on stderr.
+        assert "pip install fpdf2" in stderr, (
+            f"expected the 'pip install fpdf2' hint on stderr, got: {stderr!r}"
+        )
+
+        # Req 11.2: graceful degradation — the caught ImportError is translated
+        # into a clean message, so no Python traceback or raw ImportError dump
+        # reaches stderr.
+        assert "Traceback (most recent call last)" not in stderr, (
+            f"a traceback leaked to stderr instead of a clean hint: {stderr!r}"
+        )
+        assert "ImportError" not in stderr, (
+            f"a raw ImportError dump leaked to stderr instead of a clean hint: "
+            f"{stderr!r}"
+        )
+
+    def test_fpdf2_absent_writes_no_pdf_and_keeps_markdown(self) -> None:
+        """Degradation writes no PDF to the output path (Markdown kept intact).
+
+        With fpdf2 absent, ``main`` returns exit code 1 before any PDF is
+        published, so the output path is never created — the bootcamper keeps
+        the source Markdown recap and loses no record to the missing optional
+        dependency.
+
+        **Validates: Requirements 11.2, 12.5**
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = Path(tmp) / "recap.md"
+            output_path = Path(tmp) / "recap.pdf"
+            input_path.write_text(self._RECAP_MARKDOWN, encoding="utf-8")
+
+            with _fpdf_import_absent():
+                rc, _stderr = _run_main_capturing_stderr(
+                    ["--input", str(input_path), "--output", str(output_path)]
+                )
+
+            # Req 11.2: no PDF is published when the optional dependency is absent.
+            assert rc == 1, f"expected exit code 1 when fpdf2 absent, got {rc}"
+            assert not output_path.exists(), (
+                "no PDF should be written to the output path when fpdf2 is absent"
+            )
+            # Req 11.2 / 12.5: the source Markdown recap is left intact.
+            assert input_path.read_text(encoding="utf-8") == self._RECAP_MARKDOWN, (
+                "the source Markdown recap must remain intact after degradation"
+            )

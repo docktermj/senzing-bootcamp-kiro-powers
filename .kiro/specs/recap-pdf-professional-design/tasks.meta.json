@@ -1,0 +1,439 @@
+{
+  "pbtResults": {
+    "8.1 Write property test for Property 1: Cover page contains Headline_Stats": {
+      "status": "passed",
+      "lastRunTimestamp": 1783806179110
+    },
+    "8.2 Write property test for Property 2: Content round-trip completeness": {
+      "status": "passed",
+      "lastRunTimestamp": 1783807067550
+    },
+    "8.3 Write property test for Property 3: Page footer presence on content pages": {
+      "status": "passed",
+      "lastRunTimestamp": 1783807850798
+    },
+    "8.4 Write property test for Property 4: Table cell text preservation": {
+      "status": "passed",
+      "lastRunTimestamp": 1783808999317
+    },
+    "8.5 Write property test for Property 5: Accent color consistency": {
+      "status": "passed",
+      "lastRunTimestamp": 1783809307307
+    }
+  },
+  "executionHistory": {
+    "1.1 Add professional layout constants and the RecapPDF subclass to `senzing-bootcamp/scripts/recap_pdf_render.py`": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779565215
+      },
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779573619
+      },
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783784813039
+      }
+    ],
+    "1.2 Write unit tests for RecapPDF margins and footer": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779565456
+      },
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783784826151
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783802211315
+      }
+    ],
+    "2.1 Update `render_heading` in `senzing-bootcamp/scripts/recap_pdf_render.py`": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779565525
+      },
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783784826567
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783802213353
+      }
+    ],
+    "2.2 Write unit tests for heading hierarchy and accent color": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779565581
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783802218642
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803482002
+      }
+    ],
+    "3.1 Implement `render_table` in `senzing-bootcamp/scripts/recap_pdf_render.py`": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779565639
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783800095873
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783802213404
+      }
+    ],
+    "3.2 Add pipe-table detection to `render_markdown_body` in `senzing-bootcamp/scripts/recap_pdf_render.py`": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779565681
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783802220702
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803483887
+      }
+    ],
+    "3.3 Write unit test for table rendering": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779565725
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803502821
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803878760
+      }
+    ],
+    "4.1 Update `_render_cover_page` in `senzing-bootcamp/scripts/generate_recap_pdf.py`": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779565774
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783802221266
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803484404
+      }
+    ],
+    "4.2 Write unit tests for cover page": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779565824
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803882760
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783804247210
+      }
+    ],
+    "5.1 Update `render_pdf` in `senzing-bootcamp/scripts/generate_recap_pdf.py` to use `RecapPDF` instead of bare `FPDF`": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779565874
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803500983
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803876627
+      }
+    ],
+    "5.2 Update `render_markdown_pdf` in `senzing-bootcamp/scripts/recap_pdf_render.py` to use `RecapPDF`": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779565955
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803501924
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803878714
+      }
+    ],
+    "6. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779566014
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783804273582
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783805828353
+      }
+    ],
+    "7.1 Add visual review loop section to `senzing-bootcamp/steering/graduation.md` Step 0b": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779566060
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783804274035
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783805829426
+      }
+    ],
+    "8.1 Write property test for Property 1: Cover page contains Headline_Stats": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779566112
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783805847160
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783806196955
+      }
+    ],
+    "8.2 Write property test for Property 2: Content round-trip completeness": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779566174
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783806196998
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783807094101
+      }
+    ],
+    "8.3 Write property test for Property 3: Page footer presence on content pages": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779566223
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783807093513
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783807875502
+      }
+    ],
+    "8.4 Write property test for Property 4: Table cell text preservation": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779566269
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783807874918
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783809038660
+      }
+    ],
+    "8.5 Write property test for Property 5: Accent color consistency": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779566318
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783809038175
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783809345295
+      }
+    ],
+    "9.1 Write unit tests for full-content preservation and verification rejection": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779566360
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783809351147
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783809858869
+      }
+    ],
+    "9.2 Write unit test for graceful degradation when fpdf2 is absent": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779566407
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783809858298
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783810234340
+      }
+    ],
+    "10. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "5905ca19-f2c4-46fd-909c-c2519694b80e",
+        "chatSessionId": "sess_c0d3fe2c-dcdb-46da-9219-dce310bcc05b",
+        "timestamp": 1783779566460
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783810239771
+      },
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783810633053
+      }
+    ],
+    "1. Add RecapPDF subclass and professional layout constants": [
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783802211373
+      }
+    ],
+    "2. Update render_heading with accent color and new font sizes": [
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803482068
+      }
+    ],
+    "5. Wire generate_recap_pdf.py to use RecapPDF": [
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803878795
+      }
+    ],
+    "3. Add render_table for pipe tables": [
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783803878863
+      }
+    ],
+    "4. Update _render_cover_page with professional layout": [
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783804247286
+      }
+    ],
+    "7. Add visual review loop to graduation steering": [
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783805829479
+      }
+    ],
+    "8. Add property-based tests for correctness properties": [
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783809345360
+      }
+    ],
+    "9. Add unit tests for professional layout": [
+      {
+        "executionId": "f0057de5-c340-4dbd-b0a0-b7dfa5f06e44",
+        "chatSessionId": "sess_61ee5d6c-06c3-420a-b33e-9bf36c210f98",
+        "timestamp": 1783810234418
+      }
+    ]
+  }
+}

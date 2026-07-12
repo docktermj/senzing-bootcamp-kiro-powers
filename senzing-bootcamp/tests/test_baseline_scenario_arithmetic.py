@@ -101,7 +101,16 @@ AUTO_FILES: tuple[str, ...] = (
 # DOCUMENTED_PRE_EXISTING_ALWAYS stays 6,690.
 DOCUMENTED_FINALIZED_BASELINE = 13_544   # finalized always-set (Decision_Record baseline, Req 2.5)
 DOCUMENTED_PRE_EXISTING_ALWAYS = 6_690   # three pre-existing `always` files
-DOCUMENTED_LOADS_ALWAYS = 25_261         # loads-always footprint (Audit_Finding note, Req 1.5)
+# Re-pinned once more (25_261 -> 25_623) for the session-handoff spec: task 5.1
+# added the "### Session Handoff Offer" hook-in to agent-context-management.md
+# (one of the eleven Auto_Files), growing its measured count 1326 -> 1616 (+290),
+# which moved the loads-always footprint past the 1% tolerance band. The finalized
+# always-set is unchanged (agent-context-management.md is manual-inclusion, not in
+# the finalized `always` set), so DOCUMENTED_FINALIZED_BASELINE stays 13_544 and
+# DOCUMENTED_PRE_EXISTING_ALWAYS stays 6_690 (the three pre-existing `always`
+# files were untouched). The new session-handoff.md steering file is
+# manual-inclusion and is in neither set.
+DOCUMENTED_LOADS_ALWAYS = 25_623         # loads-always footprint (Audit_Finding note, Req 1.5)
 
 # "≈" tolerance for the loads-always note: 1% of the stated figure. The two
 # Task 4/7.1 frontmatter edits move the true sum by only a handful of tokens,

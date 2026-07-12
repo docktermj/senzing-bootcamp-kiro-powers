@@ -319,7 +319,7 @@ file_metadata:
     token_count: 970
     size_category: medium
   agent-context-management.md:
-    token_count: 1326
+    token_count: 1616
     size_category: medium
   agent-instructions.md:
     token_count: 4504
@@ -609,6 +609,9 @@ file_metadata:
   security-privacy.md:
     token_count: 278
     size_category: small
+  session-handoff.md:
+    token_count: 4148
+    size_category: large
   session-resume-phase2-mapping.md:
     token_count: 656
     size_category: medium
@@ -659,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 213990
+  total_tokens: 218428
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

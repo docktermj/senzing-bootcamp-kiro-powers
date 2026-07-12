@@ -481,7 +481,15 @@ _BASELINE_HASHES: dict[str, str] = {
     # block changed (solely the total_tokens line);
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "8b655b2c4e5a6e4793327bb736a645ce34133daf98b07248deabb58d8c300c95",
+    # Re-baselined once more (213990 -> 218428) for the session-handoff spec:
+    # task 6.1 registered the new session-handoff.md steering file in file_metadata
+    # (token_count 4148, size_category large) and task 5.1's hook-in grew
+    # agent-context-management.md (1326 -> 1616), which measure_steering.py
+    # recomputed into file_metadata and the budget total (218428 = sum of
+    # file_metadata counts). Only the budget block changed (solely the total_tokens
+    # line); keywords/languages/deployment/root_step_range are byte-identical
+    # (verified: their baseline hashes still match the live index).
+    "budget": "e93f9512f8891e70c1aacf1ef95421e691c1b941ffb08a8a91354f5aeaad5c6b",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -925,7 +933,7 @@ class TestNonPhaseBlocksBytePreserved:
         # section and resynced the steering token index), so the hash cannot
         # silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 213990" in budget_block
+        assert "total_tokens: 218428" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

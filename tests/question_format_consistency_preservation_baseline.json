@@ -2,7 +2,7 @@
   "algorithm": "sha256",
   "description": "Frozen SHA-256 baseline of every non-target steering file for the question-format-consistency bugfix. Captured on pre-fix code; the fix edits only the four target files, so every file listed here must remain byte-identical.",
   "files": {
-    "agent-context-management.md": "0fdcf29094b48206bf5130d45b131dab375a7862b52a1cf70e0952627fa420eb",
+    "agent-context-management.md": "107e2a61943382178938983e08929880576caae97bf531b89f5d9f9bdf117784",
     "agent-instructions.md": "ba6d1d68defd772a1d8324f07fa6500150499507ad7f92b4e2ce14d6d14469be",
     "cloud-provider-setup.md": "8231b67aee68c6b50a500f2f8986c3399a002513a86ff540159cb9f61d0053af",
     "common-pitfalls.md": "b32af2368df06740c85ec798d284201f73c823393b37eadc318dd176678de7b3",
@@ -97,6 +97,7 @@
     "qa-transcript.md": "2f0aa023e6c2b8a62b180ae3d1aee33c344abd0c897f7c4c3c340fc448b28913",
     "recovery-from-mistakes.md": "90265df7ff63634f8fef286f15541134eca56a10b42937dee7443b7a06530c37",
     "security-privacy.md": "8e286ee46c0d38e0c7fcaa7d546ed4ba0e1f1ab11bc1552640464c301fbcd125",
+    "session-handoff.md": "dc28fd89b2abc56d04d827201c0a77f8efcdaa25ac76560a1825922b9f488950",
     "session-resume-phase2-mapping.md": "4b65ee076c0c59bc641b8198b4eec6fe7344e36b2ce28842ab3cc8843081c05a",
     "session-resume-phase2-setup-recovery.md": "d4b743beb36ddaa042704ca025353e3c6d4d6af9c55089ab3f0ca33107c1aeed",
     "session-resume.md": "94025feae52cef6e670c6527ed9c9bb4b1a5baa5d5b04526be701ae7c284266c",

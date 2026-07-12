@@ -1,0 +1,397 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Scaffold the validator module and data models": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870372263
+      },
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870381342
+      },
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870872026
+      }
+    ],
+    "1.2 Implement section presence, order, and empty-section checks": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870372445
+      },
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870885106
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783877807042
+      }
+    ],
+    "1.3 Implement absolute-path, forbidden-phrase, emoji, and quoted-continuation checks": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870372539
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783877810324
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783880758279
+      }
+    ],
+    "1.4 Implement the argparse CLI entry point": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870372607
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783880760921
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783881227804
+      }
+    ],
+    "2.1 Build Hypothesis strategies and test scaffolding": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870372662
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783881237888
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885038854
+      }
+    ],
+    "2.2 Write property test for structure stability": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870372707
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885062235
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885552047
+      }
+    ],
+    "2.3 Write property test for the absolute-path invariant": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870372744
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885577854
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885731294
+      }
+    ],
+    "2.4 Write property test for forbidden temporal-phrase exclusion": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870372796
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885731551
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885921683
+      }
+    ],
+    "2.5 Write property test for no-emoji discipline": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870372841
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885921768
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783886164334
+      }
+    ],
+    "2.6 Write property test for the quoted continuation phrase": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870372892
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783886164285
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783886332891
+      }
+    ],
+    "2.7 Write example/smoke tests for the fixed verification block and never-raise robustness": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870372939
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783886332493
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783886684011
+      }
+    ],
+    "3. Checkpoint - Ensure validator and its tests pass": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870373006
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783892917809
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783895111287
+      }
+    ],
+    "4.1 Create the steering file with frontmatter and invocation/synthesis sections": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870373061
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783881239588
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885039589
+      }
+    ],
+    "4.2 Add the fixed output template, precision, verification, and continuation sections": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870373106
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885063237
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885553605
+      }
+    ],
+    "4.3 Add coordination, tone/discipline, and output-destination sections": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870373154
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783886339591
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783886684774
+      }
+    ],
+    "4.4 Write packaging and security conformance tests for the steering file": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870373193
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783886713885
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783890064259
+      }
+    ],
+    "5.1 Edit `agent-context-management.md` to add the handoff-offer hook-in": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870373239
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783881239680
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885040265
+      }
+    ],
+    "5.2 Write coordination regression tests": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870373277
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885063315
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885553673
+      }
+    ],
+    "6.1 Add `session-handoff.md` to `file_metadata` in `steering-index.yaml`": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870373342
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783886715534
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783890064662
+      }
+    ],
+    "6.2 Write a registration test": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870373399
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783890079790
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783892911578
+      }
+    ],
+    "7. Final checkpoint - Run the CI pipeline and confirm conformance": [
+      {
+        "executionId": "d28cb181-7bff-46d8-bbb0-d77a86f74351",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783870373457
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783895114545
+      },
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783896980553
+      }
+    ],
+    "1. Implement the structural validator `validate_handoff_summary.py`": [
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783881227864
+      }
+    ],
+    "5. Wire the handoff offer into the context-reset flow": [
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783885553748
+      }
+    ],
+    "2. Write property-based and example tests for the validator": [
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783886684079
+      }
+    ],
+    "4. Author the primary steering file `session-handoff.md`": [
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783890064329
+      }
+    ],
+    "6. Register the steering file in the steering index": [
+      {
+        "executionId": "b74013bb-962b-46a1-b516-6aa2aa3849f9",
+        "chatSessionId": "sess_2facde2c-74b9-400a-b0da-6147dc42dfd3",
+        "timestamp": 1783892911682
+      }
+    ]
+  }
+}

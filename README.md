@@ -8,6 +8,7 @@ The goal of this bootcamp is that you can say to yourself,
 ## Prerequisites
 
 1. [Install Kiro](docs/install-kiro.md)
+    - Make sure you are using Kiro 1.0.0 or greater. (`Help` > `About`)
 
 ## Start Kiro in a Senzing Bootcamp directory
 
@@ -54,7 +55,7 @@ Kiro's agentic chat will guide you through the Bootcamp.
    *you* would have to do the work.
    Your job is to steer the AI to create what you want.
    Let the AI do the work.
-1. During "Administrative setup", simply hitting the "Run" button is all that's needed.
+1. During "Administrative setup", simply hitting the "Accept" button is all that's needed.
 1. Each major task is called a "module". There are "tracks" which are ordered sets of modules.
 1. Questions posed to the Bootcamper are usually prefaced with "👉"
 
@@ -62,13 +63,8 @@ Kiro's agentic chat will guide you through the Bootcamp.
 
 - The "Roomba effect".
   The AI-driven bootcamp may head directly into an error, recover, and head in a new direction.
-- There are two ways to "Run" something:
-  1. Click the "Run" button.
-  1. In a "Background process" box, click the "Accept command" icon.
-- "Cancel", "Trust", and "Run" buttons.
-  ...
 - Most likely your main Agentic Chat will be in a tabbed panel named "Start the Bootcamp".
-  Often, additional "New Session" tabbed panels will pop up.
+  Occasionally, additional "New Session" tabbed panels will pop up.
   They are for sub-agents.
   They do a small task and exit.
   When you see something like:
@@ -76,36 +72,13 @@ Kiro's agentic chat will guide you through the Bootcamp.
   > Est. Credits Used: 0.42 Elapsed time: 9s
 
   You'll know the sub-agent has completed.
-
-- If it says "Open task list to view and manage queued tasks",
-  you may have to click the "Open task list" link,
-  click on the current task, and respond to the prompt.
-  The task is complete when you see something like:
-
-  > Est. Credits Used: 0.42 Elapsed time: 9s
-
 - Numerous "Ask Kiro Hook" boxes will appear.
   These boxes and the text following are mostly noise.
   Unfortunately, there's no way to turn off those boxes.
-- Numerous "Read power steering" boxes will appear.
-  These boxes are noise.
-- Often, you'll see
-  > Rejected creation of ...
-  Followed by
-  > Accepted creation of ...
-  For a given file.
-  This is not an issue.
-  It is related to Kiro's internal processing.
 - If Kiro seems to be stuck, ask
 
   ```console
   What are you working on?
-  ```
-
-- If you see the following, click "Yes":
-
-  ```console
-  I see you're working on a task that's optimized for spec sessions. Would you like to start a dedicated spec session for the best experience?
   ```
 
 ## Helpful prompts
@@ -207,3 +180,10 @@ All artifacts created by the Senzing Bootcamp are in the Kiro project directory.
    1. In Kiro's left-hand icon bar, click on the **Powers** icon.
    1. In the **Powers** panel, under **Installed**, find "Senzing Bootcamp".
    1. In the **Power: Senzing Bootcamp** panel, click the **Uninstall** button.
+
+## Related project: Claude Code plugin
+
+A Claude Code counterpart to this Kiro Power lives at
+[`docktermj/senzing-bootcamp-claude-plugin`](https://github.com/docktermj/senzing-bootcamp-claude-plugin).
+The two are kept in sync: changes to the bootcamp content here should be migrated to the
+Claude plugin. See that repo's `MIGRATION.md` and `scripts/sync-check.sh`.

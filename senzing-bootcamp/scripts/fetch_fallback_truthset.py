@@ -39,7 +39,6 @@ import csv
 import io
 import json
 import socket
-import sys
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field

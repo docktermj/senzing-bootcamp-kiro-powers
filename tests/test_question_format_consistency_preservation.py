@@ -431,7 +431,8 @@ class TestTargetFileNonTargetSectionsPreserved:
             "## Path Completion Celebration",
             "Would you like to export a shareable report of your bootcamp results?",
             "Graduation offer (after the certificate generation, before the feedback reminder):",
-            "Feedback Submission Reminder (after the graduation offer sequence, before the retrospective):",
+            "Feedback Submission Reminder (after the graduation offer sequence, "
+            "before the retrospective):",
             "Load `lessons-learned.md` and offer the retrospective.",
         ):
             assert anchor in content, (

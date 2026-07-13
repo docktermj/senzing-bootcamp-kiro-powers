@@ -85,7 +85,8 @@ class TestManagedSectionProperties:
 
     @given(st_index_existence())
     def test_managed_section_lists_exactly_existing_indexes(self, existence):
-        # Feature: graduation-enrichment, Property 8: Managed section lists exactly the existing per-directory indexes
+        # Feature: graduation-enrichment, Property 8:
+        # Managed section lists exactly the existing per-directory indexes
         tmp = Path(tempfile.mkdtemp())
         try:
             project_root = tmp / "project"
@@ -201,7 +202,8 @@ class TestScopedWriteProperties:
 
     @given(st_readme_content(), st_index_existence())
     def test_content_outside_markers_is_preserved(self, readme_content, existence):
-        # Feature: graduation-enrichment, Property 9: Content outside markers is preserved (scoped-write)
+        # Feature: graduation-enrichment, Property 9:
+        # Content outside markers is preserved (scoped-write)
         tmp = Path(tempfile.mkdtemp())
         try:
             project_root = tmp / "project"

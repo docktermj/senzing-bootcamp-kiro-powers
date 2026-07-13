@@ -42,8 +42,8 @@ if _TESTS_DIR not in sys.path:
 
 from fetch_fallback_truthset import (  # noqa: E402
     ExpectedResultsError,
-    FetchError,
     FetchedContent,
+    FetchError,
     SourceConfig,
     derive_expected_results,
     fetch_file,

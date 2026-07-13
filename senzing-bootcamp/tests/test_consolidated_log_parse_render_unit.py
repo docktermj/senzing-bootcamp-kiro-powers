@@ -131,7 +131,9 @@ class TestParseRecapSections:
 
     def test_missing_duration_yields_none(self) -> None:
         """An absent ``### Duration`` subsection leaves duration None."""
-        sections = parse_recap_sections(f"## Module 3: Load {EM_DASH} t\n\n### Actions Taken\n- y\n")
+        sections = parse_recap_sections(
+            f"## Module 3: Load {EM_DASH} t\n\n### Actions Taken\n- y\n"
+        )
         assert sections[0].duration is None
 
     def test_empty_questions_responses_yields_no_pairs(self) -> None:

@@ -192,7 +192,9 @@ def session_resume_has_rerender_instruction() -> bool:
         the ``.question_pending`` source AND uses the canonical 👉 + bold template.
     """
     section = pending_rerender_section()
-    has_subsection = re.search(r"pending question re-?rendering", section, re.IGNORECASE) is not None
+    has_subsection = (
+        re.search(r"pending question re-?rendering", section, re.IGNORECASE) is not None
+    )
     mentions_rerender = re.search(r"re-?render", section, re.IGNORECASE) is not None
     references_pending_file = ".question_pending" in section
     has_pointer_bold_template = POINTER_BOLD_RE.search(section) is not None

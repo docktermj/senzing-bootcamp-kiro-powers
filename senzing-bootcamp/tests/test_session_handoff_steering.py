@@ -32,7 +32,7 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent.parent / "scripts")
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from validate_handoff_summary import BODY_SECTIONS, _EMOJI_RANGES  # noqa: E402
+from validate_handoff_summary import _EMOJI_RANGES, BODY_SECTIONS  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Steering file under test (resolved relative to this file so the suite is

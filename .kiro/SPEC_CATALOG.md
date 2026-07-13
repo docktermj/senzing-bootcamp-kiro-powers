@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 270
+- implemented: 275
 - superseded: 2
 - abandoned: 0
 - unknown: 0
@@ -1123,6 +1123,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/module4-record-count-license-backfill/](.kiro/specs/module4-record-count-license-backfill/)
 
+### module4-sqlite-load-time-warning
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/module4-sqlite-load-time-warning/](.kiro/specs/module4-sqlite-load-time-warning/)
+
 ### module5-mapping-workflow-guidance
 
 - Status: implemented
@@ -1312,6 +1319,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/query-requirements-context/](.kiro/specs/query-requirements-context/)
 
+### question-format-consistency
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/question-format-consistency/](.kiro/specs/question-format-consistency/)
+
 ### question-visibility
 
 - Status: implemented
@@ -1332,6 +1346,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/recap-pdf-content-loss-fix/](.kiro/specs/recap-pdf-content-loss-fix/)
+
+### recap-pdf-professional-design
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/recap-pdf-professional-design/](.kiro/specs/recap-pdf-professional-design/)
 
 ### recap-qa-pair-merge
 
@@ -1483,6 +1504,13 @@
 - Type: unknown
 - Workflow: unknown
 - Directory: [.kiro/specs/senzing-bootcamp-power/](.kiro/specs/senzing-bootcamp-power/)
+
+### session-handoff
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/session-handoff/](.kiro/specs/session-handoff/)
 
 ### session-log-hook-performance
 
@@ -1910,6 +1938,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/write-gate-momentum-preservation/](.kiro/specs/write-gate-momentum-preservation/)
+
+### write-gate-noise-cleanup
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/write-gate-noise-cleanup/](.kiro/specs/write-gate-noise-cleanup/)
 
 ### write-policy-gate-ux
 

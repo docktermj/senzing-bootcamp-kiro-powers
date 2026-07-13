@@ -32,8 +32,8 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from fetch_fallback_truthset import (
-    FetchError,
     FetchedContent,
+    FetchError,
     ValidationError,
     derive_expected_results,
     fetch_file,
@@ -737,7 +737,6 @@ from truthset_fallback_model import (  # noqa: E402
     classify_availability,
 )
 
-
 # ---------------------------------------------------------------------------
 # Property 1 strategies: get_sample_data-style responses + expected label
 # ---------------------------------------------------------------------------
@@ -979,7 +978,6 @@ from truthset_fallback_model import (  # noqa: E402
     select_acquisition,
 )
 
-
 # ---------------------------------------------------------------------------
 # Property 2 strategies: acquisition scenarios + expected provenance/source
 # ---------------------------------------------------------------------------
@@ -1112,7 +1110,6 @@ from truthset_fallback_model import (  # noqa: E402
     derive_module_status,
 )
 
-
 # ---------------------------------------------------------------------------
 # Property 8 strategies: Deterministic_Verification check states
 # ---------------------------------------------------------------------------
@@ -1226,7 +1223,6 @@ from truthset_fallback_url_governance import (  # noqa: E402
     find_raw_url_violations,
     registry_url_fragments,
 )
-
 
 # ---------------------------------------------------------------------------
 # Property 7 strategies: synthetic power trees with seeded URL leaks
@@ -1425,7 +1421,6 @@ from truthset_fallback_model import (  # noqa: E402
     AcquisitionDecision,
     build_progress_and_report,
 )
-
 
 # ---------------------------------------------------------------------------
 # Property 9 strategies: completed acquisitions (non-None provenance)

@@ -30,6 +30,7 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from validate_handoff_summary import (  # noqa: E402
+    _EMOJI_RANGES,
     BODY_SECTIONS,
     EMOJI,
     EMPTY_SECTION_NOT_NONE,
@@ -42,7 +43,6 @@ from validate_handoff_summary import (  # noqa: E402
     UNQUOTED_CONTINUATION,
     HandoffFinding,
     HandoffValidation,
-    _EMOJI_RANGES,
     main,
     validate_handoff_summary,
 )
@@ -282,7 +282,9 @@ def st_database_entry(draw) -> str:
     if draw(st.booleans()):
         return draw(st_absolute_path())
     host = draw(st.text(alphabet="abcdefghijklmnopqrstuvwxyz0123456789", min_size=1, max_size=8))
-    database = draw(st.text(alphabet="abcdefghijklmnopqrstuvwxyz0123456789_", min_size=1, max_size=8))
+    database = draw(
+        st.text(alphabet="abcdefghijklmnopqrstuvwxyz0123456789_", min_size=1, max_size=8)
+    )
     return f"postgresql://{host}/{database}"
 
 

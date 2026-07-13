@@ -190,7 +190,8 @@ class TestEnumerationProperties:
 
     @given(tree=st_target_tree())
     def test_enumeration_matches_eligible_top_level_entries(self, tree):
-        # Feature: graduation-enrichment, Property 1: Enumeration matches the eligible top-level entries
+        # Feature: graduation-enrichment, Property 1:
+        # Enumeration matches the eligible top-level entries
         tmp = Path(tempfile.mkdtemp())
         try:
             target_root = tmp / "src"
@@ -241,7 +242,8 @@ class TestExclusionProperties:
 
     @given(tree=st_target_tree())
     def test_index_file_and_dot_entries_are_excluded(self, tree):
-        # Feature: graduation-enrichment, Property 2: The index file and dot-prefixed entries are always excluded
+        # Feature: graduation-enrichment, Property 2:
+        # The index file and dot-prefixed entries are always excluded
         tmp = Path(tempfile.mkdtemp())
         try:
             target_root = tmp / "src"
@@ -277,7 +279,8 @@ class TestOrderingProperties:
 
     @given(st_target_tree())
     def test_entry_order_is_deterministic_and_case_insensitive(self, tree):
-        # Feature: graduation-enrichment, Property 3: Entry order is deterministic and case-insensitive
+        # Feature: graduation-enrichment, Property 3:
+        # Entry order is deterministic and case-insensitive
         tmp = Path(tempfile.mkdtemp())
         tmp2 = Path(tempfile.mkdtemp())
         try:
@@ -329,7 +332,8 @@ class TestRegenerationProperties:
 
     @given(st_target_tree(), st.text())
     def test_regeneration_replaces_prior_content_and_is_idempotent(self, tree, stale):
-        # Feature: graduation-enrichment, Property 4: Regeneration fully replaces prior content and is idempotent
+        # Feature: graduation-enrichment, Property 4:
+        # Regeneration fully replaces prior content and is idempotent
         tmp = Path(tempfile.mkdtemp())
         try:
             target_root = tmp / "src"
@@ -381,7 +385,8 @@ class TestRoundTripProperties:
 
     @given(st_target_tree())
     def test_rendered_index_round_trips_as_valid_toc(self, tree):
-        # Feature: graduation-enrichment, Property 5: Rendered index round-trips as a valid Markdown table of contents
+        # Feature: graduation-enrichment, Property 5:
+        # Rendered index round-trips as a valid Markdown table of contents
         tmp = Path(tempfile.mkdtemp())
         try:
             target_root = tmp / "src"
@@ -445,7 +450,8 @@ class TestDescriptionProperties:
 
     @given(st_target_tree())
     def test_every_entry_has_exactly_one_well_formed_description(self, tree):
-        # Feature: graduation-enrichment, Property 6: Every entry has exactly one well-formed description
+        # Feature: graduation-enrichment, Property 6:
+        # Every entry has exactly one well-formed description
         tmp = Path(tempfile.mkdtemp())
         try:
             target_root = tmp / "src"
@@ -514,7 +520,8 @@ class TestIndicatorProperties:
 
     @given(st_target_tree())
     def test_subdirectories_carry_indicator_files_never_do(self, tree):
-        # Feature: graduation-enrichment, Property 7: Subdirectories carry a visual indicator that files never carry
+        # Feature: graduation-enrichment, Property 7:
+        # Subdirectories carry a visual indicator that files never carry
         tmp = Path(tempfile.mkdtemp())
         try:
             target_root = tmp / "src"

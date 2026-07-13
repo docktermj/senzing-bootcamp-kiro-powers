@@ -7,11 +7,11 @@
 
 ## Status Summary
 
-- in-progress: 0
-- implemented: 275
+- in-progress: 1
+- implemented: 276
 - superseded: 2
 - abandoned: 0
-- unknown: 0
+- unknown: 1
 
 ## Specs
 
@@ -161,6 +161,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/capture-hook-completion-safeguard/](.kiro/specs/capture-hook-completion-safeguard/)
+
+### capture-hook-safeguard-stale-check
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/capture-hook-safeguard-stale-check/](.kiro/specs/capture-hook-safeguard-stale-check/)
 
 ### ci-python-linting
 
@@ -1207,6 +1214,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/onboarding-flow-restructuring/](.kiro/specs/onboarding-flow-restructuring/)
 
+### onboarding-gate-language-handoff
+
+- Status: unknown
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/onboarding-gate-language-handoff/](.kiro/specs/onboarding-gate-language-handoff/)
+
 ### onboarding-license-request-option
 
 - Status: implemented
@@ -1290,6 +1304,13 @@
 - Type: feature
 - Workflow: fast-task
 - Directory: [.kiro/specs/proceed-on-confirmation/](.kiro/specs/proceed-on-confirmation/)
+
+### professional-recap-pdf
+
+- Status: in-progress
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/professional-recap-pdf/](.kiro/specs/professional-recap-pdf/)
 
 ### progress-file-schema-validation
 

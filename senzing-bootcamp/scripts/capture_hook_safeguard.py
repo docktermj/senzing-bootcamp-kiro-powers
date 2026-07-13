@@ -134,24 +134,29 @@ class ReminderPlan:
 def detect_missing_capture_hooks(hooks_dir: Path) -> list[str]:
     """Return the sorted capture-critical ids whose hook file is absent.
 
-    Inspects ``hooks_dir`` (the bootcamper's ``.kiro/hooks`` directory) for an
-    ``<id>.kiro.hook`` file for each id in ``CAPTURE_CRITICAL``. Detection keys
-    only on the three ``<id>.kiro.hook`` filenames, so unrelated ``*.kiro.hook``
-    files never affect the result. A missing or unreadable directory yields all
-    three ids as missing. This function never raises.
+    Inspects ``hooks_dir`` (the bootcamper's ``.kiro/hooks`` directory) for a
+    hook file for each id in ``CAPTURE_CRITICAL``, accepting either the v1
+    format ``<id>.json`` or the legacy format ``<id>.kiro.hook``. A hook is
+    considered present when *either* filename exists, and missing only when
+    *neither* exists. Detection keys only on those two per-id filenames, so
+    unrelated ``*.json`` or ``*.kiro.hook`` files never affect the result. A
+    missing or unreadable directory yields all ids as missing. This function
+    never raises.
 
     Args:
         hooks_dir: Path to the bootcamper's ``.kiro/hooks`` directory.
 
     Returns:
-        The sorted list of capture-critical ids whose ``<id>.kiro.hook`` file is
-        absent (empty when all three are present).
+        The sorted list of capture-critical ids for which neither the v1
+        ``<id>.json`` nor the legacy ``<id>.kiro.hook`` file exists (empty when
+        every capture-critical hook is present in at least one format).
     """
     try:
         missing = [
             hook_id
             for hook_id in CAPTURE_CRITICAL
-            if not (hooks_dir / f"{hook_id}.kiro.hook").is_file()
+            if not (hooks_dir / f"{hook_id}.json").is_file()
+            and not (hooks_dir / f"{hook_id}.kiro.hook").is_file()
         ]
     except OSError:
         # Missing or unreadable directory — treat every hook as absent.

@@ -159,7 +159,9 @@ FIRST — Check for no-op: If ALL Phase 1 conditions pass AND the most recent as
 
 NOTE: If files were edited (even by a hook-triggered action), that IS substantive work. Provide a closing question unless a 👉 question is already present.
 
-SECOND — Recap and closing question: If ALL Phase 1 conditions pass AND work was accomplished: You may provide a brief recap of what was accomplished and which files created or modified, then end with a contextual 👉 question (a closing question for the bootcamper). Keep it to 2-3 sentences maximum.
+SECOND — Recap and closing question: GATE-AWARENESS CHECK (evaluate this FIRST, before composing any closing question): Determine whether a mandatory gate is currently active. A mandatory gate is active when the most recent assistant message contains "⛔ **MANDATORY GATE**" AND that same assistant message contains "🛑 **STOP" — this indicates the gate was just presented and is awaiting the bootcamper's input. When a mandatory gate is detected as active, your closing question MUST NOT name, preview, or reference specific content from any step beyond the current gate. Use generic forward-looking language only, such as 'we'll continue when you're ready' or 'we'll move on to the next setup step.' Do NOT mention programming language selection, track selection, or any other specific upcoming topic. This gate-awareness constraint applies ONLY when a mandatory gate is active; when no mandatory gate is detected, Phase 1 proceeds exactly as before with full session awareness and may reference upcoming content naturally.
+
+If ALL Phase 1 conditions pass AND work was accomplished: You may provide a brief recap of what was accomplished and which files created or modified, then end with a contextual 👉 question (a closing question for the bootcamper). Keep it to 2-3 sentences maximum.
 
 THIRD — Compound-question validation: Before outputting the closing question, verify it does not contain prose-joined alternatives. If it does, reformat as a numbered list. Detect these patterns:
 - "[action A], or [action B]" (alternatives joined by comma-or)

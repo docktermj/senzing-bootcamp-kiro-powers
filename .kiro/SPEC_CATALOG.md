@@ -8,10 +8,10 @@
 ## Status Summary
 
 - in-progress: 1
-- implemented: 276
+- implemented: 277
 - superseded: 2
 - abandoned: 0
-- unknown: 1
+- unknown: 0
 
 ## Specs
 
@@ -1216,7 +1216,7 @@
 
 ### onboarding-gate-language-handoff
 
-- Status: unknown
+- Status: implemented
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/onboarding-gate-language-handoff/](.kiro/specs/onboarding-gate-language-handoff/)

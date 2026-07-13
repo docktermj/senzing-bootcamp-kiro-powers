@@ -13,6 +13,18 @@ inclusion: manual
      The agent MUST NOT proceed past this step until the bootcamper signals
      readiness to continue. -->
 
+### Gate Clearance — Advancing to Step 4
+
+**When the bootcamper signals readiness to proceed at the entity-resolution-intro mandatory gate, immediately proceed to Step 4 below.** Do NOT re-present the entity-resolution-intro content or the gate question — the readiness signal clears the gate.
+
+Recognize any of these readiness signals as gate-clearance that advances the flow directly to Step 4:
+
+- **Acknowledgments:** "ready," "got it," "let's go," "continue," "next," "move on"
+- **Affirmatives:** "yes," "sure," "yep"
+- **Forward-looking statements:** "what's next," "let's keep going"
+
+**Contrast — follow-up questions are NOT readiness signals.** If the bootcamper's message contains "?", asks for an explanation, or requests clarification about an entity resolution concept, do NOT treat it as a readiness signal and do NOT advance to Step 4. Instead, follow the answer-then-re-present-gate flow defined in `entity-resolution-intro.md`: answer the question using `search_docs`, then re-present the gate. Only a genuine readiness signal — not a follow-up question — routes directly to Step 4.
+
 ## 4. Programming Language Selection
 
 Detect the user's platform (`platform.system()`), then call `get_capabilities` or `sdk_guide` on the Senzing MCP server for the supported languages on that platform. The hard gate in Step 0b guarantees MCP is available — call the tool directly and present the returned programming language list to the bootcamper.

@@ -52,8 +52,10 @@ PER_LEVEL_INDENT_MM = 6.0
 # near-black. Margins and font sizes are centralized here so the RecapPDF
 # subclass and the shared rendering primitives share one source of truth.
 ACCENT_COLOR = (0, 90, 156)          # Senzing blue — headings
+PRIMARY_BLUE = (31, 78, 121)         # Primary blue — Cover_Page banner (Req 2.1)
 BODY_COLOR = (40, 40, 40)            # Near-black — body text
 MARGINS_MM = 20.0                    # All-sides page margin
+COVER_BANNER_HEIGHT_MM = 45.0        # Cover_Page banner band height (Req 2.1)
 TITLE_FONT_SIZE = 32                 # Cover page title
 SUBTITLE_FONT_SIZE = 16              # Cover page subtitle
 BOOTCAMPER_FONT_SIZE = 20            # Cover page bootcamper name

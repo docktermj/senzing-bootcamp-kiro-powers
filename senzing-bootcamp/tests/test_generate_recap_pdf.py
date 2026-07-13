@@ -37,6 +37,7 @@ from generate_recap_pdf import (
     RecapSection,
     _build_qa_lines,
     _render_module_page,
+    find_placeholder_stub,
     format_recap_document,
     format_recap_section,
     main,
@@ -508,16 +509,30 @@ class TestStructuralCompleteness:
         """
         markdown = format_recap_section(section)
 
-        # Verify all required subsections are present
-        for subsection_name in _REQUIRED_SUBSECTIONS:
-            assert f"### {subsection_name}" in markdown, (
+        # Locate each required subsection as a whole heading line. Anchoring to
+        # line starts (``^### <name>$`` with re.MULTILINE) ensures an in-content
+        # occurrence of "### <name>" inside a list item -- e.g. a generated item
+        # whose text is literally "### Actions Taken", rendered as
+        # "- ### Actions Taken" -- is never mistaken for the real heading, which
+        # is always emitted on its own line by ``format_recap_section``.
+        heading_matches = {
+            name: re.search(
+                rf"^### {re.escape(name)}$", markdown, re.MULTILINE
+            )
+            for name in _REQUIRED_SUBSECTIONS
+        }
+
+        # Verify all required subsections are present as their own heading line
+        for subsection_name, match in heading_matches.items():
+            assert match is not None, (
                 f"Missing required subsection '### {subsection_name}' "
                 f"in formatted section"
             )
 
-        # Verify subsections appear in the correct order
+        # Verify subsections appear in the correct order using each heading's
+        # line-anchored position (immune to "### <name>" text inside list items)
         positions = [
-            markdown.index(f"### {name}") for name in _REQUIRED_SUBSECTIONS
+            heading_matches[name].start() for name in _REQUIRED_SUBSECTIONS
         ]
         assert positions == sorted(positions), (
             f"Subsections are not in the required order. "
@@ -4089,4 +4104,500 @@ class TestGracefulDegradationNoFpdf2:
             # Req 11.2 / 12.5: the source Markdown recap is left intact.
             assert input_path.read_text(encoding="utf-8") == self._RECAP_MARKDOWN, (
                 "the source Markdown recap must remain intact after degradation"
+            )
+
+
+# ---------------------------------------------------------------------------
+# Cover_Page colored banner (Task 1.2)
+# ---------------------------------------------------------------------------
+#
+# Feature: professional-recap-pdf
+#
+# These unit tests cover the colored-banner addition to ``_render_cover_page``
+# from ``generate_recap_pdf.py`` (task 1.1): before emitting the title, the
+# Cover_Page draws a full-width primary-blue (31,78,121) banner band via
+# ``set_fill_color`` + ``rect`` (Req 2.1). They drive the real
+# ``_render_cover_page`` path through a pure recording stub — mirroring the
+# heading recording-stub tests above — so they need neither fpdf2 nor binary
+# PDF parsing and follow the project test pattern.
+
+
+class _BannerRecordingPDF:
+    """Minimal FPDF stand-in that records banner + title render calls in order.
+
+    Exercises the real ``_render_cover_page`` render path without requiring
+    fpdf2 or parsing binary PDF output. It records every ``set_fill_color`` and
+    ``rect`` call and every text-emitting ``cell`` call into a single ordered
+    ``events`` log so a test can assert the Cover_Page banner (``set_fill_color``
+    + ``rect``) is drawn before the title text is emitted (Req 2.1). The ``w``
+    attribute stands in for fpdf2's page width, which ``_render_cover_page``
+    passes to ``rect`` to span the banner edge-to-edge.
+    """
+
+    def __init__(self, page_width: float = 210.0) -> None:
+        # Page width (mm); _render_cover_page passes this to rect() as the
+        # banner's full-page-width span.
+        self.w = page_width
+        # Ordered log of ("fill_color", rgb) / ("rect", (x, y, w, h)) /
+        # ("text", text) events so a test can assert the banner is drawn before
+        # the title text.
+        self.events: list[tuple[str, object]] = []
+
+    def add_page(self, *args: object, **kwargs: object) -> None:
+        return None
+
+    def set_fill_color(self, *args: object, **kwargs: object) -> None:
+        self.events.append(("fill_color", tuple(args)))
+
+    def rect(
+        self,
+        x: float,
+        y: float,
+        w: float,
+        h: float,
+        *args: object,
+        **kwargs: object,
+    ) -> None:
+        self.events.append(("rect", (x, y, w, h)))
+
+    def set_y(self, *args: object, **kwargs: object) -> None:
+        return None
+
+    def set_font(self, *args: object, **kwargs: object) -> None:
+        return None
+
+    def set_text_color(self, *args: object, **kwargs: object) -> None:
+        return None
+
+    def ln(self, *args: object, **kwargs: object) -> None:
+        return None
+
+    def cell(self, w: object, h: object, text: str = "", *args: object, **kwargs: object) -> None:  # noqa: E501
+        self.events.append(("text", text))
+
+
+def _render_cover_banner_events(
+    doc: RecapDocument, page_width: float = 210.0
+) -> list[tuple[str, object]]:
+    """Render a Cover_Page via the real ``_render_cover_page`` and return events.
+
+    Args:
+        doc: The recap document whose Cover_Page is rendered.
+        page_width: The stub page width passed through to the banner ``rect``.
+
+    Returns:
+        The ordered ``events`` log recorded by the ``_BannerRecordingPDF`` stub.
+    """
+    from generate_recap_pdf import _render_cover_page
+
+    pdf = _BannerRecordingPDF(page_width=page_width)
+    _render_cover_page(pdf, doc)
+    return pdf.events
+
+
+# The Cover_Page title text emitted before which the banner must be drawn. It is
+# ASCII, so ``safe_text`` leaves it unchanged.
+_COVER_TITLE_TEXT = "Senzing Bootcamp Recap"
+
+
+def _first_index(events: list[tuple[str, object]], kind: str) -> int:
+    """Return the index of the first event of ``kind`` in ``events``."""
+    for index, (event_kind, _value) in enumerate(events):
+        if event_kind == kind:
+            return index
+    raise AssertionError(f"no {kind!r} event recorded: {events!r}")
+
+
+def _title_index(events: list[tuple[str, object]]) -> int:
+    """Return the index of the Cover_Page title text event in ``events``."""
+    for index, (event_kind, value) in enumerate(events):
+        if event_kind == "text" and value == _COVER_TITLE_TEXT:
+            return index
+    raise AssertionError(
+        f"Cover_Page title text {_COVER_TITLE_TEXT!r} never emitted: {events!r}"
+    )
+
+
+class TestCoverPageBanner:
+    """The Cover_Page draws a full-width primary-blue banner before the title.
+
+    **Validates: Requirements 2.1**
+
+    Drives the real ``_render_cover_page`` through the ``_BannerRecordingPDF``
+    stub and reads the ordered ``events`` log: the banner is filled with primary
+    blue (31,78,121) via ``set_fill_color`` and drawn as a full-page-width
+    ``rect`` anchored at the top edge, and both calls precede the title text so
+    the banner reads as the Cover_Page's top visual anchor (Req 2.1).
+    """
+
+    def _representative_document(self) -> RecapDocument:
+        """Build a representative populated recap document for the Cover_Page."""
+        header = RecapHeader(
+            bootcamper="Alex Rivera",
+            started="2025-01-01T09:00:00+00:00",
+            total_duration="8h 15m",
+        )
+        sections = [
+            RecapSection(
+                module_number=1,
+                module_name="Business Problem",
+                timestamp="2025-01-01T10:00:00+00:00",
+                duration="1h 0m",
+            ),
+            RecapSection(
+                module_number=2,
+                module_name="First Demo",
+                timestamp="2025-01-01T12:00:00+00:00",
+                duration="2h 0m",
+            ),
+        ]
+        return RecapDocument(header=header, sections=sections)
+
+    def test_banner_filled_with_primary_blue(self) -> None:
+        """The banner fill color is primary blue (31,78,121).
+
+        **Validates: Requirements 2.1**
+        """
+        from recap_pdf_render import PRIMARY_BLUE
+
+        events = _render_cover_banner_events(self._representative_document())
+
+        fill_colors = [value for kind, value in events if kind == "fill_color"]
+        assert PRIMARY_BLUE in fill_colors, (
+            f"expected a set_fill_color({PRIMARY_BLUE}) banner fill, got fill "
+            f"colors: {fill_colors!r}"
+        )
+        # The literal RGB triple Req 2.1 mandates.
+        assert (31, 78, 121) in fill_colors, (
+            f"expected the primary-blue (31, 78, 121) banner fill, got: "
+            f"{fill_colors!r}"
+        )
+
+    def test_banner_rect_spans_full_page_width(self) -> None:
+        """The banner rect is anchored at the top edge and spans the full width.
+
+        **Validates: Requirements 2.1**
+        """
+        from recap_pdf_render import COVER_BANNER_HEIGHT_MM
+
+        page_width = 210.0
+        events = _render_cover_banner_events(
+            self._representative_document(), page_width=page_width
+        )
+
+        rects = [value for kind, value in events if kind == "rect"]
+        assert rects, f"no banner rect was drawn: {events!r}"
+
+        x, y, w, h = rects[0]
+        # Anchored at the top-left corner (edge-to-edge banner).
+        assert (x, y) == (0, 0), f"banner rect not anchored at the top edge: {rects[0]!r}"
+        # Spans the full page width.
+        assert w == page_width, (
+            f"banner rect width {w!r} does not span the full page width "
+            f"{page_width!r}"
+        )
+        # Uses the declared banner band height.
+        assert h == COVER_BANNER_HEIGHT_MM, (
+            f"banner rect height {h!r} != COVER_BANNER_HEIGHT_MM "
+            f"{COVER_BANNER_HEIGHT_MM!r}"
+        )
+
+    def test_banner_drawn_before_title(self) -> None:
+        """Both ``set_fill_color`` and ``rect`` are called before the title text.
+
+        **Validates: Requirements 2.1**
+        """
+        events = _render_cover_banner_events(self._representative_document())
+
+        fill_index = _first_index(events, "fill_color")
+        rect_index = _first_index(events, "rect")
+        title_index = _title_index(events)
+
+        assert fill_index < title_index, (
+            f"banner set_fill_color (index {fill_index}) must precede the title "
+            f"text (index {title_index}): {events!r}"
+        )
+        assert rect_index < title_index, (
+            f"banner rect (index {rect_index}) must precede the title text "
+            f"(index {title_index}): {events!r}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Placeholder-stub / legacy-heading verification (Task 7.2)
+# ---------------------------------------------------------------------------
+#
+# Feature: professional-recap-pdf
+#
+# These example-based unit tests (NOT property-based) cover the placeholder-stub
+# and legacy-heading guard added to the Generator in task 7.1: the module-level
+# ``find_placeholder_stub(pdf_text, doc)`` function and its wiring into ``main``
+# (raising ``PdfVerificationError`` after ``verify_rendered_pdf`` passes but
+# before the atomic publish). Requirement 4.5 forbids "N/A" and "backfilled at
+# track completion" stubs in a module's Required_Subsections; Requirement 5.6
+# forbids the legacy "Questions Asked" / "Answers Given" split-schema headings
+# from surviving into the rendered PDF.
+#
+# ``find_placeholder_stub`` is deliberately fpdf2-independent (it takes the
+# already-extracted PDF text plus the parsed document), so the four required
+# cases are unit-tested directly for precise, fast coverage. Two end-to-end
+# ``main`` tests additionally confirm the wiring rejects a stubbed recap (exit 1,
+# no published PDF) and publishes a clean one (exit 0); they need the optional
+# ``fpdf2`` dependency and skip gracefully when it is absent (project test
+# pattern).
+
+
+def _substantive_section(
+    module_number: int, name: str, tag: str
+) -> RecapSection:
+    """Build a module section whose Required_Subsections carry only real content.
+
+    Every Information Shared, Questions & Responses, and Actions Taken item is
+    substantive prose embedding a distinctive ``tag`` token, and none contains
+    the "N/A" stub, so the section never trips the placeholder guard on its own.
+
+    Args:
+        module_number: The module number for the section heading.
+        name: The module name.
+        tag: A distinctive token embedded in each detail item so rendered text
+            carries survivable content.
+
+    Returns:
+        A RecapSection with populated, placeholder-free Required_Subsections.
+    """
+    return RecapSection(
+        module_number=module_number,
+        module_name=name,
+        timestamp=f"2025-01-0{module_number}T10:00:00+00:00",
+        information_shared=[f"Studied {tag} entity resolution concepts"],
+        questions_asked=[f"How does {tag} matching work?"],
+        answers_given=[f"By comparing {tag} record features"],
+        actions_taken=[f"Ran the {tag} resolver demo"],
+        duration=f"{module_number}h 0m",
+    )
+
+
+def _substantive_document() -> RecapDocument:
+    """Build a two-module recap whose Required_Subsections are placeholder-free."""
+    header = RecapHeader(
+        bootcamper="Alex Rivera",
+        started="2025-01-01T09:00:00+00:00",
+        total_duration="3h 0m",
+    )
+    return RecapDocument(
+        header=header,
+        sections=[
+            _substantive_section(1, "Business Problem", "Alpha"),
+            _substantive_section(2, "First Demo", "Bravo"),
+        ],
+    )
+
+
+class TestPlaceholderStubDetection:
+    """find_placeholder_stub flags stubs / legacy headings and passes clean recaps.
+
+    **Validates: Requirements 4.5, 5.5, 5.6**
+
+    Directly unit-tests the fpdf2-independent ``find_placeholder_stub`` over the
+    four required cases: an "N/A" stub in a Required_Subsection (Req 4.5, scanned
+    against the source document), the "backfilled at track completion" stub and
+    the legacy "Questions Asked" heading present in the extracted PDF text
+    (Req 4.5, 5.5, 5.6), and a fully substantive recap that passes cleanly.
+    """
+
+    def test_na_in_information_shared_is_flagged(self) -> None:
+        """An "N/A" stub in a module's Information Shared is flagged.
+
+        The "N/A" stub is scanned against the source Required_Subsection content,
+        so a clean rendered ``pdf_text`` still yields a non-None description that
+        names the offending module and subsection.
+
+        **Validates: Requirements 4.5, 5.5**
+        """
+        doc = RecapDocument(
+            header=RecapHeader(
+                bootcamper="Alex Rivera",
+                started="2025-01-01T09:00:00+00:00",
+                total_duration="1h 0m",
+            ),
+            sections=[
+                RecapSection(
+                    module_number=3,
+                    module_name="Data Sources",
+                    timestamp="2025-01-03T10:00:00+00:00",
+                    information_shared=["N/A"],
+                    actions_taken=["Reviewed the data sources"],
+                    duration="0h 45m",
+                )
+            ],
+        )
+
+        # A clean rendered-text stand-in with none of the forbidden PDF strings.
+        result = find_placeholder_stub(
+            "Module 3 Data Sources Information Shared Actions Taken", doc
+        )
+
+        assert result is not None, (
+            "an 'N/A' stub in Information Shared must be flagged"
+        )
+        assert "N/A" in result, f"description should name the stub, got: {result!r}"
+        assert "Information Shared" in result, (
+            f"description should name the offending subsection, got: {result!r}"
+        )
+
+    def test_backfilled_phrase_in_pdf_text_is_flagged(self) -> None:
+        """The "backfilled at track completion" stub in the PDF text is flagged.
+
+        **Validates: Requirements 4.5, 5.5**
+        """
+        doc = _substantive_document()
+
+        pdf_text = (
+            "Module 1 Business Problem Information Shared "
+            "content backfilled at track completion Actions Taken"
+        )
+        result = find_placeholder_stub(pdf_text, doc)
+
+        assert result is not None, (
+            "the 'backfilled at track completion' stub must be flagged"
+        )
+        assert "backfilled at track completion" in result, (
+            f"description should name the stub, got: {result!r}"
+        )
+
+    def test_questions_asked_heading_in_pdf_text_is_flagged(self) -> None:
+        """The legacy "Questions Asked" heading in the PDF text is flagged.
+
+        **Validates: Requirements 5.6**
+        """
+        doc = _substantive_document()
+
+        pdf_text = (
+            "Module 1 Business Problem Questions Asked "
+            "What is entity resolution Actions Taken"
+        )
+        result = find_placeholder_stub(pdf_text, doc)
+
+        assert result is not None, (
+            "the legacy 'Questions Asked' heading must be flagged"
+        )
+        assert "Questions Asked" in result, (
+            f"description should name the legacy heading, got: {result!r}"
+        )
+
+    def test_substantive_recap_passes_clean(self) -> None:
+        """A substantive recap with no stubs or legacy headings passes cleanly.
+
+        Neither the extracted PDF text nor the source Required_Subsections carry
+        a forbidden string, so ``find_placeholder_stub`` returns ``None``.
+
+        **Validates: Requirements 4.5, 5.5, 5.6**
+        """
+        doc = _substantive_document()
+
+        pdf_text = (
+            "Senzing Bootcamp Recap Module 1 Business Problem "
+            "Information Shared Studied Alpha entity resolution concepts "
+            "Questions and responses How does Alpha matching work "
+            "By comparing Alpha record features Actions Taken "
+            "Ran the Alpha resolver demo Duration 1h 0m "
+            "Module 2 First Demo Studied Bravo entity resolution concepts"
+        )
+        result = find_placeholder_stub(pdf_text, doc)
+
+        assert result is None, (
+            f"a substantive recap must pass verification cleanly, got: {result!r}"
+        )
+
+
+@pytest.mark.skipif(
+    not _FPDF_AVAILABLE, reason="fpdf2 (optional dependency) not installed"
+)
+class TestPlaceholderVerificationEndToEnd:
+    """main() rejects a stubbed recap and publishes a clean one.
+
+    **Validates: Requirements 4.5, 5.5, 5.6**
+
+    Exercises the placeholder guard wired into ``main`` after
+    ``verify_rendered_pdf`` passes: a recap carrying an "N/A" stub in a
+    Required_Subsection is rejected (exit 1, no published PDF), while a fully
+    substantive recap is published (exit 0, PDF written).
+    """
+
+    def test_na_stub_recap_is_rejected_and_not_published(self) -> None:
+        """A recap with "N/A" in Information Shared fails, publishing no PDF.
+
+        **Validates: Requirements 4.5, 5.5**
+        """
+        header = RecapHeader(
+            bootcamper="Dana Prescott",
+            started="2025-01-01T09:00:00+00:00",
+            total_duration="1h 30m",
+        )
+        # A section with enough substantive content to clear Content_Verification
+        # (>= 3 surviving body tokens) plus a single "N/A" stub in a
+        # Required_Subsection that the placeholder guard must reject.
+        section = RecapSection(
+            module_number=1,
+            module_name="Business Problem",
+            timestamp="2025-01-01T10:00:00+00:00",
+            information_shared=[
+                "Studied entity resolution fundamentals",
+                "Reviewed the sample data sources",
+                "N/A",
+            ],
+            questions_asked=["What is entity resolution?"],
+            answers_given=["Matching records to real-world entities"],
+            actions_taken=["Ran the first demo"],
+            duration="1h 30m",
+        )
+        doc = RecapDocument(header=header, sections=[section])
+        markdown = format_recap_document(doc)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = Path(tmp) / "recap.md"
+            output_path = Path(tmp) / "recap.pdf"
+            input_path.write_text(markdown, encoding="utf-8")
+
+            rc, stdout, stderr = _run_main_capturing_output(
+                ["--input", str(input_path), "--output", str(output_path)]
+            )
+
+            assert rc == 1, f"expected exit 1 for an 'N/A' stub recap, got {rc}"
+            assert "PDF generated:" not in stdout, (
+                f"a rejected recap must not print 'PDF generated:', got: {stdout!r}"
+            )
+            assert not output_path.exists(), (
+                "a recap with a placeholder stub must not be published"
+            )
+            assert "verification failed" in stderr.lower(), (
+                f"expected a verification-failure error on stderr, got: {stderr!r}"
+            )
+
+    def test_substantive_recap_is_published(self) -> None:
+        """A fully substantive recap passes the placeholder guard and publishes.
+
+        **Validates: Requirements 4.5, 5.5, 5.6**
+        """
+        doc = _substantive_document()
+        markdown = format_recap_document(doc)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = Path(tmp) / "recap.md"
+            output_path = Path(tmp) / "recap.pdf"
+            input_path.write_text(markdown, encoding="utf-8")
+
+            rc, stdout, stderr = _run_main_capturing_output(
+                ["--input", str(input_path), "--output", str(output_path)]
+            )
+
+            assert rc == 0, (
+                f"expected exit 0 for a substantive recap, got {rc} "
+                f"(stderr: {stderr!r})"
+            )
+            assert f"PDF generated: {output_path}" in stdout, (
+                f"expected the 'PDF generated:' line, got stdout: {stdout!r}"
+            )
+            assert output_path.exists() and output_path.stat().st_size > 0, (
+                "a clean recap must be published as a non-empty PDF"
             )

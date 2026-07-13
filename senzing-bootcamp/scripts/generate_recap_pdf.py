@@ -610,12 +610,25 @@ def _render_cover_page(pdf: "FPDF", doc: RecapDocument) -> None:  # noqa: F821
         ACCENT_COLOR,
         BODY_COLOR,
         BOOTCAMPER_FONT_SIZE,
+        COVER_BANNER_HEIGHT_MM,
+        PRIMARY_BLUE,
         SUBTITLE_FONT_SIZE,
         TITLE_FONT_SIZE,
     )
 
     pdf.add_page()
-    pdf.ln(40)
+
+    # Colored banner — a full-width primary-blue band anchored at the top edge
+    # of the Cover_Page, drawn before the title so it reads as a professional
+    # visual anchor with the title and metadata rendered below it (Req 2.1). The
+    # banner spans the full page width edge-to-edge (x=0 to pdf.w, y=0) and uses
+    # primary blue (31,78,121), which is intentionally distinct from the accent
+    # color (0,90,156) used for the title and headings.
+    pdf.set_fill_color(*PRIMARY_BLUE)
+    pdf.rect(0, 0, pdf.w, COVER_BANNER_HEIGHT_MM, style="F")
+
+    # Position the title below the banner (previously a fixed ln(40) offset).
+    pdf.set_y(COVER_BANNER_HEIGHT_MM + 15)
 
     # Title — large, bold, accent color, centered.
     pdf.set_font("Helvetica", "B", TITLE_FONT_SIZE)
@@ -1017,6 +1030,100 @@ def identify_unrendered_content(pdf_path: str, doc: RecapDocument) -> str | None
 
 
 # ---------------------------------------------------------------------------
+# Placeholder-stub / legacy-heading verification (Requirements 4.5, 5.5, 5.6)
+# ---------------------------------------------------------------------------
+
+# Unambiguous forbidden strings that must never survive into a published recap
+# PDF. "backfilled at track completion" is a Backfill_Stub (Req 4.5, 5.5), and
+# "Questions Asked" / "Answers Given" are the legacy split-schema subsection
+# headings the Generator must never surface — it renders only the merged
+# "Questions & Responses" / "Questions and responses" heading (Req 5.6). Each is
+# scanned for as a contiguous substring of the extracted PDF text: empirically
+# fpdf2 emits each list item and heading as its own text-show operator, so these
+# short phrases survive round-trip extraction intact.
+_FORBIDDEN_PDF_STRINGS = (
+    "backfilled at track completion",
+    "Questions Asked",
+    "Answers Given",
+)
+
+# The "N/A" stub (Req 4.5) is checked separately from the strings above: it is
+# scanned against the SOURCE Required_Subsection content, NOT the rendered PDF
+# text. The Generator legitimately renders a bare "N/A" as the empty-Duration
+# fallback (`safe_text(section.duration) or "N/A"` in `_render_module_page`),
+# and Duration is not one of the three Required_Subsections (Information Shared,
+# Questions & Responses, Actions Taken), so scanning the rendered text for "N/A"
+# would false-positive on that legitimate output. Scanning the source subsection
+# content instead flags only an "N/A" a bootcamper — or a lossy backfill —
+# actually placed in a Required_Subsection, exactly what Requirement 4.5 forbids.
+_NA_STUB = "N/A"
+
+
+def _required_subsection_items(
+    section: RecapSection,
+) -> list[tuple[str, str]]:
+    """Return a section's Required_Subsection items as ``(subsection, text)``.
+
+    Gathers only the three Required_Subsections (Requirement 4.5 glossary):
+    Information Shared, Questions & Responses (the Paired_Schema QR_Pair question
+    and response texts, or the legacy Split_List_Schema questions/answers),
+    and Actions Taken. Duration and Generic_Content are deliberately excluded —
+    they are not Required_Subsections, so the empty-Duration "N/A" fallback and
+    free-form notes never contribute to the stub scan.
+
+    Args:
+        section: The parsed module section to collect items from.
+
+    Returns:
+        ``(subsection_name, item_text)`` pairs in render order.
+    """
+    items: list[tuple[str, str]] = [
+        ("Information Shared", text) for text in section.information_shared
+    ]
+    if section.schema == "paired":
+        for pair in section.qr_pairs:
+            items.append(("Questions & Responses", pair.question))
+            items.append(("Questions & Responses", pair.response))
+    else:
+        items.extend(("Questions & Responses", q) for q in section.questions_asked)
+        items.extend(("Questions & Responses", a) for a in section.answers_given)
+    items.extend(("Actions Taken", text) for text in section.actions_taken)
+    return items
+
+
+def find_placeholder_stub(pdf_text: str, doc: RecapDocument) -> str | None:
+    """Return a description of the first placeholder stub / legacy heading found.
+
+    Enforces Requirements 4.5, 5.5, and 5.6: a recap PDF must never be published
+    while it still carries placeholder-stub or legacy-heading content. The three
+    unambiguous strings in :data:`_FORBIDDEN_PDF_STRINGS` are scanned for in the
+    extracted PDF text; the ``"N/A"`` stub is scanned for in the source
+    Required_Subsection content (see :data:`_NA_STUB`) so the Generator's
+    legitimate empty-Duration ``"N/A"`` fallback never trips verification.
+
+    Args:
+        pdf_text: Text extracted from the rendered PDF via ``extract_pdf_text``.
+        doc: The parsed recap document that was rendered.
+
+    Returns:
+        A human-readable description of the first forbidden occurrence, or
+        ``None`` when the PDF is free of placeholder stubs and legacy headings.
+    """
+    for forbidden in _FORBIDDEN_PDF_STRINGS:
+        if forbidden in pdf_text:
+            return f"legacy/placeholder text {forbidden!r} present in rendered PDF"
+
+    for section in doc.sections:
+        for subsection_name, text in _required_subsection_items(section):
+            if _NA_STUB in text:
+                return (
+                    f"Module {section.module_number} {subsection_name!r} "
+                    f"contains the {_NA_STUB!r} stub: {text!r}"
+                )
+    return None
+
+
+# ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
@@ -1102,6 +1209,20 @@ def main(argv: list[str] | None = None) -> int:
         os.close(fd)
         render_pdf(doc, tmp_path, body_text=content)
         verify_rendered_pdf(tmp_path, module_numbers, expected_body_lines)
+        # Placeholder-stub / legacy-heading guard (Req 4.5, 5.5, 5.6): after the
+        # round-trip content verification passes but BEFORE the os.replace
+        # publish, re-extract the rendered text and reject any recap PDF that
+        # still carries a placeholder stub or a legacy split-schema heading.
+        # Raising PdfVerificationError here routes through the same except/
+        # finally handling below, so the temp file is removed and any existing
+        # output is left untouched — preserving the atomic guarantee (Req 8.3).
+        stub = find_placeholder_stub(
+            extract_pdf_text(Path(tmp_path).read_bytes()), doc
+        )
+        if stub is not None:
+            raise PdfVerificationError(
+                f"rendered PDF contains placeholder/legacy content: {stub}"
+            )
         os.replace(tmp_path, str(output_path))
         tmp_path = None  # Published — nothing left to clean up.
     except ImportError:

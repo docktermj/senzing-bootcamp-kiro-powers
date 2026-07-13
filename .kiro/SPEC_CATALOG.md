@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 1
-- implemented: 277
+- in-progress: 0
+- implemented: 278
 - superseded: 2
 - abandoned: 0
 - unknown: 0
@@ -1307,7 +1307,7 @@
 
 ### professional-recap-pdf
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/professional-recap-pdf/](.kiro/specs/professional-recap-pdf/)

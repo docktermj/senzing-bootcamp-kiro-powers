@@ -1,6 +1,9 @@
 {
   "algorithm": "sha256",
   "description": "Frozen SHA-256 baseline of every non-target steering file for the question-format-consistency bugfix. Captured on pre-fix code; the fix edits only the four target files, so every file listed here must remain byte-identical.",
+  "rebaseline_notes": {
+    "onboarding-flow.md": "Re-frozen for the write-gate-noise-cleanup bugfix, which intentionally removed onboarding section 0a. Only this file's baseline was updated; all other non-target baselines are unchanged."
+  },
   "files": {
     "agent-context-management.md": "107e2a61943382178938983e08929880576caae97bf531b89f5d9f9bdf117784",
     "agent-instructions.md": "ba6d1d68defd772a1d8324f07fa6500150499507ad7f92b4e2ce14d6d14469be",
@@ -89,7 +92,7 @@
     "module-completion.md": "b7b00733da2a9c7f53a200316610d3a7bec61d1bb5aa712b824853d9118fab6f",
     "module-prerequisites.md": "7b699eb0a77dade0adde6eae157daa21064a9c9bf63b590c5ef2a7b3f64a2eb7",
     "module-transitions.md": "89d71088e0fc1145e140ca2f1711d631b81dd82ed634b335aedfa91f7fb092c2",
-    "onboarding-flow.md": "ad39b0425db4659072450c2423077c3a10fe96345500e5174c4acea4b5b4a3dd",
+    "onboarding-flow.md": "fe8e76e5119e24c8fc0b1ca5440050d36bf6c254771799dd03da02360d38db2c",
     "onboarding-phase1b-intro-language.md": "6264ad20563d51ecf63e17f142217255d2fea204175f8552e14f1210a9bb0732",
     "onboarding-phase2-track-setup.md": "704d158b77e74d689e6405963116ae7d425a9e83b88dcfe74c16fc710d57d360",
     "phase-loading-guide.md": "75b05f6a5ac36c4ecce30b4603ede6aacec614c4956dd3062fbe5fb873a29ea9",

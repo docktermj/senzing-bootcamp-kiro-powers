@@ -1,6 +1,6 @@
 ---
 inclusion: always
-description: "Four agent behavior rules: honor continuation requests, acknowledge responses, eliminate ambiguous questions, consistent pointer indicator"
+description: "Five agent behavior rules: honor continuation requests, acknowledge responses, eliminate ambiguous questions, consistent pointer indicator, silent internal-file pass-through re-invoke"
 ---
 
 # Agent Behavior Rules
@@ -54,3 +54,13 @@ A `write-policy-gate` intercept/retry cycle does not relieve you of this obligat
 **Session-Recreation Re-Rendering.** When re-presenting a pending question stored in `config/.question_pending` after a session boundary (new session creation), re-render the stored question text with the 👉 prefix and bold formatting. Do not echo raw stored text without presentational formatting.
 
 **Track-Completion / Graduation Terminal Turn.** The track-completion and graduation-final turns are subject to the same 👉 + bold formatting convention as all other yielding turns. The terminal question closing the bootcamp carries the 👉 prefix regardless of any celebratory emoji present.
+
+## Rule 5: Silent Internal-File Pass-Through Re-Invoke
+
+When the `write-policy-gate` hook applies its INTERNAL-FILE PASS-THROUGH to a routine power-managed internal file (e.g., `config/bootcamp_progress.json`, `config/bootcamp_preferences.yaml`) and you re-issue the write, produce ZERO visible tokens — no narration, no acknowledgment, no explanation.
+
+- Do NOT emit any line describing the pass-through or the re-invoke, such as "Internal progress file — re-invoking silently.", "Updating preferences silently.", or any equivalent bookkeeping note.
+- Re-issue the write silently: the write operation proceeds, but the bootcamper sees nothing about it.
+- This reinforces the `write-policy-gate` hook's own "ZERO tokens" mandate at the steering level — an INTERNAL-FILE PASS-THROUGH is a routine internal operation, not something the bootcamper needs to know about.
+- Emitting even a single visible token on an internal-file pass-through re-invoke is a violation — leaking internal bookkeeping contradicts the documented silence behavior.
+- This rule applies only to the silent INTERNAL-FILE PASS-THROUGH. When the `write-policy-gate` legitimately blocks a write (Senzing SQL, compound questions, feedback-file guards, external paths, root-blocked placements), continue to present its documented visible corrective output as normal.

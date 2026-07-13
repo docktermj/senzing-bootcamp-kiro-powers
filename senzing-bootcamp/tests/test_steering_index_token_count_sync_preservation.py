@@ -489,7 +489,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # file_metadata counts). Only the budget block changed (solely the total_tokens
     # line); keywords/languages/deployment/root_step_range are byte-identical
     # (verified: their baseline hashes still match the live index).
-    "budget": "e93f9512f8891e70c1aacf1ef95421e691c1b941ffb08a8a91354f5aeaad5c6b",
+    # Re-baselined once more (218428 -> 218526) for the write-gate-noise-cleanup
+    # bugfix: Rule 5 was added to agent-behavior-rules.md (an `inclusion: always`
+    # file), growing its measured token_count 970 -> 1315 (+345), which
+    # measure_steering.py recomputed into file_metadata and the budget total
+    # (218526 = sum of file_metadata counts). Only the budget block changed (solely
+    # the total_tokens line); keywords/languages/deployment/root_step_range are
+    # byte-identical (verified: their baseline hashes still match the live index).
+    "budget": "2b626f5ae0e7068d21df4d4e2929e12ed51fda6734856465decf6f7de77b4c2d",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -908,11 +915,11 @@ class TestNonPhaseBlocksBytePreserved:
         ``module-03-phase3-report-close.md`` (1752 -> 2066, the
         TruthSet_Source_Provenance report addition), all recomputed by
         ``measure_steering.py`` into ``file_metadata`` and the budget total.
-        Most recently, the recap-pdf-professional-design spec re-baselines again
-        (213421 -> 213990): Task 7.1 grew ``graduation.md`` (10562 -> 11131) with
-        the non-blocking Visual Review Loop section in its Step 0b, resynced by
-        ``measure_steering.py`` into ``file_metadata`` and the budget total.
-        Pinning the hash alone could
+        Most recently, the write-gate-noise-cleanup bugfix re-baselines again
+        (218428 -> 218526): Rule 5 was added to ``agent-behavior-rules.md`` (an
+        ``inclusion: always`` file), growing its token_count 970 -> 1315 (+345),
+        resynced by ``measure_steering.py`` into ``file_metadata`` and the budget
+        total. Pinning the hash alone could
         silently lock in a future regression, so this asserts the budget block's
         actual contents (the corrected aggregate plus every other budget
         sub-key) line by line. The two assertions together guarantee the
@@ -928,12 +935,12 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (213990 after the recap-pdf-professional-design spec Task 7.1 grew
-        # graduation.md 10562 -> 11131 with the non-blocking Visual Review Loop
-        # section and resynced the steering token index), so the hash cannot
-        # silently re-pin a stale value.
+        # (218526 after the write-gate-noise-cleanup bugfix added Rule 5 to
+        # agent-behavior-rules.md, growing its token_count 970 -> 1315 (+345) and
+        # resynced the steering token index), so the hash cannot silently re-pin a
+        # stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 218428" in budget_block
+        assert "total_tokens: 218526" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

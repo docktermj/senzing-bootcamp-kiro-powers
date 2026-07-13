@@ -1,0 +1,184 @@
+{
+  "pbtResults": {
+    "1. Write bug condition exploration test": {
+      "status": "passed",
+      "failingExample": "Exploration test PASSED on unfixed code (the inverted SUCCESS case for this spec), confirming both defects exist:\n\nDefect 1 (staleOnboardingNote / Req 1.1): Section heading `## 0a. Why You May See \"Rejected\"/\"Accepted\" Messages` FOUND at line 21 of senzing-bootcamp/steering/onboarding-flow.md, with obsolete \"Rejected creation of ...\" -> \"Accepted edits to ...\" intercept-then-retry reassurance body (lines 21-33). note_present = TRUE.\n\nDefect 2 (narratedSilentReinvoke / Req 1.2): agent-behavior-rules.md contains only Rules 1-4 (Honor Continuation, Acknowledge Responses, Eliminate Ambiguous Questions, Consistent Pointer Indicator). NO rule references an internal-file \"pass-through\" combined with a zero-token/silent/no-narration mandate. Rule 4 mentions an \"intercept/retry cycle\" but only for the leading-question guarantee, not a narration prohibition. Steering gap confirmed -> agent may emit narration (emitted_tokens != EMPTY) on internal-file pass-through re-invoke.\n\n5 passed in 0.08s (TestBugConditionExploration).",
+      "lastRunTimestamp": 1783898083736
+    },
+    "2. Write preservation property tests (BEFORE implementing fix)": {
+      "status": "passed",
+      "lastRunTimestamp": 1783898480052
+    },
+    "3.5 Verify bug condition exploration test now fails (confirming fix works)": {
+      "status": "passed",
+      "failingExample": "Inverted-convention exploration test: all 5 TestBugConditionExploration assertions FAILED on fixed code, which is the SUCCESS signal confirming the fix. Details:\n\n- test_defect_1_stale_onboarding_note_present: FAILED — heading '## 0a. Why You May See \"Rejected\"/\"Accepted\" Messages' not found in senzing-bootcamp/steering/onboarding-flow.md (section 0a removed).\n- test_defect_1_stale_note_describes_rejected_accepted_cycle: FAILED — 'Rejected'/'Accepted' reassurance content no longer present in onboarding-flow.md.\n- test_defect_2_no_passthrough_narration_rule: FAILED — an anti-narration pass-through rule now exists in senzing-bootcamp/steering/agent-behavior-rules.md (Rule 5 added).\n- test_property_onboarding_events_are_bug_condition: FAILED — Falsifying example: WriteGateOutputEvent(kind='onboarding_preamble', note_present=False, is_passthrough=False, target_path='', not_guards_hold=False, emitted_tokens='') — note_present is now False.\n- test_property_passthrough_events_are_bug_condition: FAILED — Falsifying example: WriteGateOutputEvent(kind='write_gate_passthrough', note_present=False, is_passthrough=True, target_path='config/bootcamp_progress.json', not_guards_hold=True, emitted_tokens='') — emitted_tokens is now empty.",
+      "lastRunTimestamp": 1783899338226
+    },
+    "3.6 Verify preservation tests still pass": {
+      "status": "passed",
+      "lastRunTimestamp": 1783899393089
+    }
+  },
+  "executionHistory": {
+    "1. Write bug condition exploration test": [
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783897861165
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783897867530
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783898104889
+      }
+    ],
+    "2. Write preservation property tests (BEFORE implementing fix)": [
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783897861349
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783898111596
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783898506695
+      }
+    ],
+    "3.1 Remove stale onboarding section from `senzing-bootcamp/steering/onboarding-flow.md`": [
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783897861429
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783898514906
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783898583892
+      }
+    ],
+    "3.2 Add Rule 5 to `senzing-bootcamp/steering/agent-behavior-rules.md`": [
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783897861481
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783898586908
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783898794192
+      }
+    ],
+    "3.3 Remove stale test methods from `tests/test_write_policy_gate_integration.py`": [
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783897861530
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783898798262
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783899002951
+      }
+    ],
+    "3.4 Update `_EXPECTED_HEADINGS` in `senzing-bootcamp/tests/test_onboarding_question_ownership.py`": [
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783897861577
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783899006282
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783899280659
+      }
+    ],
+    "3.5 Verify bug condition exploration test now fails (confirming fix works)": [
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783897861626
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783899283716
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783899353267
+      }
+    ],
+    "3.6 Verify preservation tests still pass": [
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783897861665
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783899356359
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783899405963
+      }
+    ],
+    "4. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783897861737
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783899409443
+      },
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783902216848
+      }
+    ],
+    "3. Fix for write-gate noise cleanup (steering edits + test updates)": [
+      {
+        "executionId": "a650648b-b538-4da3-8128-cfe3a24371fa",
+        "chatSessionId": "sess_d3200231-7c80-4435-a9ae-ba89367fbe07",
+        "timestamp": 1783899406035
+      }
+    ]
+  }
+}

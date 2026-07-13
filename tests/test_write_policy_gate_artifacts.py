@@ -13,8 +13,8 @@ bugfix (design Changes A and B):
   ``PASS_SILENT`` in the decision model, while ``config/.question_pending`` does
   NOT (the exclusion must not shadow a governed file).
 - The onboarding documentation
-  (``senzing-bootcamp/steering/onboarding-flow.md``) explains the intercept-retry
-  cycle (Property 3).
+  (``senzing-bootcamp/steering/onboarding-flow.md``) names the write-policy-gate
+  hook.
 
 Unlike the Property 1/2 property-based suites, these are concrete example-based
 unit tests asserting the integrity of the shipped artifacts after the fix.
@@ -283,7 +283,7 @@ class TestQuestionPendingNotExcluded:
 # ===========================================================================
 
 class TestOnboardingDocumentation:
-    """Onboarding explains the intercept-retry cycle is expected and harmless.
+    """Onboarding names the write-policy-gate hook.
 
     **Validates: Requirements 2.3**
     """
@@ -297,29 +297,10 @@ class TestOnboardingDocumentation:
         with open(ONBOARDING_DOC, encoding="utf-8") as f:
             return f.read()
 
-    def test_onboarding_explains_rejected_accepted_cycle(self) -> None:
-        """The onboarding doc references both "Rejected" and "Accepted edits".
-
-        **Validates: Requirements 2.3**
-        """
-        doc = self._load_doc()
-        assert "Rejected" in doc
-        assert "Accepted edits" in doc
-
     def test_onboarding_names_the_write_policy_gate(self) -> None:
-        """The explanation attributes the cycle to the write-policy-gate check.
+        """The onboarding doc names the write-policy-gate hook.
 
         **Validates: Requirements 2.3**
         """
         doc = self._load_doc()
         assert "write-policy-gate" in doc
-
-    def test_onboarding_reassures_no_data_loss_on_retry(self) -> None:
-        """The explanation states writes succeed on retry and no data is lost.
-
-        **Validates: Requirements 2.3**
-        """
-        lowered = self._load_doc().lower()
-        assert "succeed on retry" in lowered
-        assert "no data is lost" in lowered
-        assert "expected and harmless" in lowered

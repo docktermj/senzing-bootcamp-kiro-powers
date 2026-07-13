@@ -7,11 +7,11 @@ reasons about against the token counts measured from the real, shipped
 
 * the finalized projected always-set baseline (Decision_Record, Req 2.5) — the
   three pre-existing ``inclusion: always`` files plus the three Auto_Files
-  promoted to ``always`` — which must sum to exactly 13,544 tokens and equal
+  promoted to ``always`` — which must sum to exactly 13,889 tokens and equal
   ``measure_steering``'s computed Baseline_Footprint for the real corpus; and
 * the hypothetical ``loads-always`` scenario (Audit_Finding informational note,
   Req 1.5) — the three pre-existing ``always`` files plus all eleven Auto_Files
-  counted as always-loaded — stated as ≈25,261 tokens.
+  counted as always-loaded — stated as ≈25,968 tokens.
 
 Token counts are read from the index via ``measure_steering`` helpers (the same
 parsing the shipped tooling uses) rather than hardcoded, and cross-checked
@@ -20,8 +20,8 @@ shifts. Later specs have since grown a few always-loaded files — most notably
 file-placement.md (+219 tokens, small -> medium, from the
 file-placement-conventions Canonical Contract) plus small within-tolerance edits
 to a pre-existing ``always`` file — so the baselines below were re-pinned to the
-current measured reality: the finalized always-set is 13,544 tokens and the
-``loads-always`` figure is asserted against ≈25,261 within a small tolerance
+current measured reality: the finalized always-set is 13,889 tokens and the
+``loads-always`` figure is asserted against ≈25,968 within a small tolerance
 while the exact current sum is pinned via the arithmetic identity
 (sum of parts == whole).
 
@@ -99,7 +99,14 @@ AUTO_FILES: tuple[str, ...] = (
 # always-set baseline (+148) and the loads-always footprint (+148) moved by the
 # same amount. The three pre-existing `always` files were untouched, so
 # DOCUMENTED_PRE_EXISTING_ALWAYS stays 6,690.
-DOCUMENTED_FINALIZED_BASELINE = 13_544   # finalized always-set (Decision_Record baseline, Req 2.5)
+# Re-pinned once more (13,544 -> 13,889 / 25,623 -> 25,968) for the
+# write-gate-noise-cleanup bugfix: agent-behavior-rules.md — one of the six
+# finalized `always` files AND one of the eleven Auto_Files — grew 970 -> 1315
+# tokens (+345) when Rule 5 was added to it (an `inclusion: always` file), so
+# both the finalized always-set baseline (+345) and the loads-always footprint
+# (+345) moved by the same amount. The three pre-existing `always` files were
+# untouched, so DOCUMENTED_PRE_EXISTING_ALWAYS stays 6,690.
+DOCUMENTED_FINALIZED_BASELINE = 13_889   # finalized always-set (Decision_Record baseline, Req 2.5)
 DOCUMENTED_PRE_EXISTING_ALWAYS = 6_690   # three pre-existing `always` files
 # Re-pinned once more (25_261 -> 25_623) for the session-handoff spec: task 5.1
 # added the "### Session Handoff Offer" hook-in to agent-context-management.md
@@ -110,7 +117,14 @@ DOCUMENTED_PRE_EXISTING_ALWAYS = 6_690   # three pre-existing `always` files
 # DOCUMENTED_PRE_EXISTING_ALWAYS stays 6_690 (the three pre-existing `always`
 # files were untouched). The new session-handoff.md steering file is
 # manual-inclusion and is in neither set.
-DOCUMENTED_LOADS_ALWAYS = 25_623         # loads-always footprint (Audit_Finding note, Req 1.5)
+# Re-pinned once more (25_623 -> 25_968) for the write-gate-noise-cleanup
+# bugfix: agent-behavior-rules.md (one of the eleven Auto_Files) grew
+# 970 -> 1315 (+345) when Rule 5 was added, moving the loads-always footprint by
+# the same +345. This file is ALSO in the finalized `always` set, so
+# DOCUMENTED_FINALIZED_BASELINE moved by the same amount (13_544 -> 13_889);
+# DOCUMENTED_PRE_EXISTING_ALWAYS stays 6_690 (the three pre-existing `always`
+# files were untouched).
+DOCUMENTED_LOADS_ALWAYS = 25_968         # loads-always footprint (Audit_Finding note, Req 1.5)
 
 # "≈" tolerance for the loads-always note: 1% of the stated figure. The two
 # Task 4/7.1 frontmatter edits move the true sum by only a handful of tokens,
@@ -146,16 +160,16 @@ class TestBaselineScenarioArithmetic:
     """Baseline scenario arithmetic over the real corpus (Req 1.5, Req 2.5)."""
 
     def test_finalized_always_baseline_equals_measured_sum(self):
-        """Finalized always-set sums to 13,544 across the index and the corpus.
+        """Finalized always-set sums to 13,889 across the index and the corpus.
 
         Validates: Requirements 2.5, 1.5
 
         Reads the per-file ``token_count`` from the shipped ``steering-index.yaml``
         ``file_metadata`` and asserts the six finalized ``always`` files sum to
-        exactly the current baseline of 13,544 tokens; confirms the same
+        exactly the current baseline of 13,889 tokens; confirms the same
         figure equals ``measure_steering``'s computed Baseline_Footprint for the
         real corpus (the ``inclusion: always`` set); and pins the composition
-        identity 6,690 (pre-existing) + 6,854 (newly promoted) == 13,544.
+        identity 6,690 (pre-existing) + 7,199 (newly promoted) == 13,889.
         """
         stored = measure_steering._parse_stored_metadata(
             measure_steering.load_yaml_content(_INDEX_PATH)
@@ -191,7 +205,7 @@ class TestBaselineScenarioArithmetic:
         pre-existing ``always`` files plus all eleven Auto_Files counted as
         always-loaded — satisfies the arithmetic identity (pre-existing sum +
         Auto_Files sum == combined sum) and lands within tolerance of the
-        re-pinned baseline of ≈25,261 tokens. The exact current measured sum is
+        re-pinned baseline of ≈25,968 tokens. The exact current measured sum is
         pinned via the identity rather than a brittle literal, and cross-checked
         against the on-disk measurement.
         """
@@ -212,9 +226,9 @@ class TestBaselineScenarioArithmetic:
         assert pre_existing_sum + auto_files_sum == loads_always_sum
         assert pre_existing_sum == DOCUMENTED_PRE_EXISTING_ALWAYS
 
-        # The measured loads-always footprint matches the re-pinned ≈25,113
-        # within a 1% tolerance (file-placement.md's +219 growth moved it up from
-        # the original ≈24,830 documented figure).
+        # The measured loads-always footprint matches the re-pinned ≈25,968
+        # within a 1% tolerance (agent-behavior-rules.md's Rule 5 +345 growth
+        # moved it up from the prior ≈25,623 documented figure).
         assert abs(loads_always_sum - DOCUMENTED_LOADS_ALWAYS) <= LOADS_ALWAYS_TOLERANCE, (
             f"loads-always measured sum {loads_always_sum} is farther than "
             f"{LOADS_ALWAYS_TOLERANCE} tokens from the documented "

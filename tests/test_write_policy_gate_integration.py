@@ -1,10 +1,9 @@
 """Integration tests for the write-policy-gate UX bugfix.
 
-These tests exercise end-to-end *flows* over the live (fixed) gate prompt and
-onboarding artifacts, rather than single-write decisions. They tie together
-design Change A (the INTERNAL-FILE PASS-THROUGH clause) and design Change B
-(the onboarding intercept-retry explanation) the way a bootcamper actually
-encounters them:
+These tests exercise end-to-end *flows* over the live (fixed) gate prompt,
+rather than single-write decisions. They exercise design Change A (the
+INTERNAL-FILE PASS-THROUGH clause) the way a bootcamper actually encounters
+it:
 
 1. A **step-checkpoint flow** that writes ``config/bootcamp_progress.json``
    repeatedly across a simulated module run — asserting NO corrective output
@@ -14,19 +13,14 @@ encounters them:
    compound ``config/.question_pending`` write, and a feedback overwrite) —
    asserting internal writes pass silently while EVERY governed write is still
    intercepted with the correct corrective category.
-3. The **onboarding flow placement** of the intercept-retry explanation —
-   asserting it renders early (before the later onboarding sections) where a
-   bootcamper would encounter it, not merely that the text exists.
 
 The decision model reads the live hook prompt on every call, so these tests
 validate the actually-shipped fixed artifacts.
 
-**Validates: Requirements 2.1, 2.2, 2.3, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6**
+**Validates: Requirements 2.1, 2.2, 3.1, 3.2, 3.3, 3.6**
 """
 
 from __future__ import annotations
-
-from pathlib import Path
 
 from gate_decision_model import (
     FEEDBACK_FILE,
@@ -39,12 +33,6 @@ from gate_decision_model import (
     load_gate_prompt,
     produces_rejected_message,
 )
-
-# ---------------------------------------------------------------------------
-# Artifact paths
-# ---------------------------------------------------------------------------
-
-ONBOARDING_DOC: Path = Path("senzing-bootcamp/steering/onboarding-flow.md")
 
 
 def _run_flow(ops: list[WriteOperation]) -> list[GateDecision]:
@@ -343,118 +331,3 @@ class TestMixedSessionFlow:
         assert all(lbl.startswith("governed") for lbl in intercepted), (
             f"internal write was intercepted: {intercepted}"
         )
-
-
-# ===========================================================================
-# Flow 3 — onboarding renders the intercept-retry explanation early
-# ===========================================================================
-
-class TestOnboardingExplanationPlacement:
-    """The intercept-retry explanation renders early in the onboarding flow.
-
-    Verifies not just presence but *placement/ordering*: a bootcamper meets the
-    explanation near the start of onboarding (right after the setup preamble)
-    and before the later onboarding sections (MCP health check, directory
-    setup, prerequisites, language selection).
-
-    **Validates: Requirements 2.3**
-    """
-
-    def _load_doc(self) -> str:
-        """Load the onboarding documentation text.
-
-        Returns:
-            The onboarding-flow.md file contents.
-        """
-        with open(ONBOARDING_DOC, encoding="utf-8") as f:
-            return f.read()
-
-    def test_explanation_section_exists(self) -> None:
-        """An explicit "Rejected"/"Accepted" explanation section is present.
-
-        **Validates: Requirements 2.3**
-        """
-        doc = self._load_doc()
-        idx = doc.find('Why You May See "Rejected"/"Accepted" Messages')
-        assert idx != -1, (
-            "onboarding-flow.md is missing the intercept-retry explanation "
-            "section"
-        )
-
-    def test_explanation_appears_before_later_sections(self) -> None:
-        """The explanation precedes MCP health check, directory setup, and
-        prerequisites.
-
-        **Validates: Requirements 2.3**
-        """
-        doc = self._load_doc()
-        explanation_idx = doc.find(
-            'Why You May See "Rejected"/"Accepted" Messages'
-        )
-        assert explanation_idx != -1, "explanation section not found"
-
-        for later_marker in (
-            "## 0b. MCP Health Check",
-            "## 1. Directory Structure",
-            "## 2. Prerequisite Check",
-        ):
-            later_idx = doc.find(later_marker)
-            assert later_idx != -1, (
-                f"expected onboarding section missing: {later_marker}"
-            )
-            assert explanation_idx < later_idx, (
-                f"intercept-retry explanation must appear before "
-                f"'{later_marker}' (explanation@{explanation_idx}, "
-                f"section@{later_idx})"
-            )
-
-    def test_explanation_is_near_the_start(self) -> None:
-        """The explanation sits in the first portion of the onboarding flow.
-
-        A bootcamper encounters it early — within the opening setup phase,
-        before the bulk of the onboarding content.
-
-        **Validates: Requirements 2.3**
-        """
-        doc = self._load_doc()
-        explanation_idx = doc.find(
-            'Why You May See "Rejected"/"Accepted" Messages'
-        )
-        assert explanation_idx != -1, "explanation section not found"
-        # It appears within the first third of the document — i.e., during the
-        # opening setup phase rather than buried among later steps.
-        assert explanation_idx < len(doc) // 3, (
-            f"intercept-retry explanation is not early enough "
-            f"(at char {explanation_idx} of {len(doc)})"
-        )
-
-    def test_explanation_follows_setup_preamble(self) -> None:
-        """The explanation comes right after the setup preamble (Section 0).
-
-        **Validates: Requirements 2.3**
-        """
-        doc = self._load_doc()
-        preamble_idx = doc.find("## 0. Setup Preamble")
-        explanation_idx = doc.find(
-            'Why You May See "Rejected"/"Accepted" Messages'
-        )
-        assert preamble_idx != -1, "setup preamble section not found"
-        assert explanation_idx != -1, "explanation section not found"
-        assert preamble_idx < explanation_idx, (
-            "intercept-retry explanation should follow the setup preamble"
-        )
-
-    def test_explanation_content_reassures_bootcamper(self) -> None:
-        """The early explanation conveys the cycle is expected and harmless.
-
-        **Validates: Requirements 2.3**
-        """
-        doc = self._load_doc()
-        # Scope the assertions to the explanation section body.
-        start = doc.find('Why You May See "Rejected"/"Accepted" Messages')
-        end = doc.find("## 0b. MCP Health Check", start)
-        section = doc[start:end].lower()
-        assert "write-policy-gate" in section
-        assert "succeed on retry" in section
-        assert "no data is lost" in section
-        assert "expected and harmless" in section

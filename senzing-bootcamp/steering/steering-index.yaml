@@ -316,7 +316,7 @@ split_allowlist:
 
 file_metadata:
   agent-behavior-rules.md:
-    token_count: 970
+    token_count: 1315
     size_category: medium
   agent-context-management.md:
     token_count: 1616
@@ -586,7 +586,7 @@ file_metadata:
     token_count: 1908
     size_category: medium
   onboarding-flow.md:
-    token_count: 4230
+    token_count: 3983
     size_category: large
   onboarding-phase1b-intro-language.md:
     token_count: 2176
@@ -662,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 218428
+  total_tokens: 218526
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

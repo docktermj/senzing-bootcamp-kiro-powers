@@ -55,7 +55,7 @@ Kiro's agentic chat will guide you through the Bootcamp.
    *you* would have to do the work.
    Your job is to steer the AI to create what you want.
    Let the AI do the work.
-1. During "Administrative setup", simply hitting the "Accept" button is all that's needed.
+1. During "Administrative setup", simply hitting the "Allow" button is all that's needed.
 1. Each major task is called a "module". There are "tracks" which are ordered sets of modules.
 1. Questions posed to the Bootcamper are usually prefaced with "👉"
 
@@ -71,7 +71,7 @@ Kiro's agentic chat will guide you through the Bootcamp.
 
   > Est. Credits Used: 0.42 Elapsed time: 9s
 
-  You'll know the sub-agent has completed.
+  You'll know the sub-agent has completed and the tabbed panel may be closed.
 - Numerous "Ask Kiro Hook" boxes will appear.
   These boxes and the text following are mostly noise.
   Unfortunately, there's no way to turn off those boxes.

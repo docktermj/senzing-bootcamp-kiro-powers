@@ -10,9 +10,9 @@ Steps 1–9 of Module 1. Discovery and gap-filling — continues into Phase 2 (d
 
 Use this workflow when starting the bootcamp or when a user wants to explore how Senzing can solve their specific challenge.
 
-**Prerequisites**: None (or Module 3 complete if they did the demo)
+**Prerequisites:** None (or Module 3 complete if they did the demo)
 
-**Before/After**: You may have seen the demo, but you don't yet have a defined problem or plan. After this module, you'll have a documented business problem, identified data sources, and clear success criteria — the roadmap for everything that follows.
+**Before/After:** You may have seen the demo, but you don't yet have a defined problem or plan. After this module, you'll have a documented business problem, identified data sources, and clear success criteria — the roadmap for everything that follows.
 
 1. **Initialize version control** (if not already done):
 

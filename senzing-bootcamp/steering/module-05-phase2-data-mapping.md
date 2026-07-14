@@ -24,13 +24,13 @@ inclusion: manual
 >
 > - **If `mapping_verbosity` is `null` or absent:** Present the following question:
 >
->   👉 **"Before we start mapping, would you like *verbose mode* (I'll show each mapping step in detail — field detection, attribute selection rationale, transformation preview) or *concise mode* (I'll map quickly and show only the final mapped record and any warnings)?"**
+>   👉 **"Before we start mapping, would you like *verbose mode (recommended)* (I'll show each mapping step in detail — field detection, attribute selection rationale, transformation preview) or *concise mode* (I'll map quickly and show only the final mapped record and any warnings)?"**
 >
->   🛑 STOP — Wait for the bootcamper's answer. Persist their choice (`verbose` or `concise`) to `mapping_verbosity` in `config/bootcamp_preferences.yaml`.
+>   🛑 STOP — Wait for the bootcamper's Real_Answer, then persist their choice (`verbose` or `concise`) to `mapping_verbosity` in `config/bootcamp_preferences.yaml`. This 👉 question is governed by the Answer_Required_Rule (see `conversation-protocol.md`): it requires a Real_Answer before mapping proceeds.
 >
->   If the bootcamper skips or doesn't answer directly: default to `verbose`, persist it, and say: "Defaulting to verbose mode — say 'switch to concise' anytime if you want less detail."
+>   "*verbose mode (recommended)*" is an Explicit_Default_Choice — the bootcamper can select it in one keystroke, and an explicit "use the default" / "skip" is itself a Real_Answer you record as `verbose`. Do NOT apply `verbose` (or any mode) as a silent default when the bootcamper says nothing, and do NOT proceed as if answered — treating silence as a choice is an Assumed_Answer and is forbidden.
 >
-> - **If `mapping_verbosity` is already set to `verbose` or `concise`:** Say "Using your [verbose/concise] mapping preference from last time — say 'switch to [other]' if you'd prefer [less detail/more detail]" and proceed without waiting.
+> - **If `mapping_verbosity` is already set to `verbose` or `concise`:** This is a stored-preference branch (a value already saved from a prior turn), not an unanswered 👉 question — no question is presented. Say "Using your [verbose/concise] mapping preference from last time — say 'switch to [other]' if you'd prefer [less detail/more detail]" and proceed.
 
 ### Mid-Mapping Verbosity Switch
 

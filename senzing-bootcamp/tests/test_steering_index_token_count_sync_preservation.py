@@ -516,7 +516,32 @@ _BASELINE_HASHES: dict[str, str] = {
     # (solely the total_tokens line); keywords/languages/deployment/root_step_range
     # are byte-identical (verified: their baseline hashes still match the live
     # index).
-    "budget": "554e9bb9b0cac8753bfe0b071e921aa6ce98b78a9a507ab94dd932a51abe967c",
+    # Re-baselined once more (220727 -> 222488) for the mandatory-question-answers
+    # spec (Tasks 1-4.2): the normative Answer_Required_Rule was added to
+    # conversation-protocol.md (5179 -> 5759, +580) and referenced from
+    # agent-behavior-rules.md (1537 -> 1749, +212) and agent-instructions.md
+    # (4650 -> 4825, +175); the verbosity silent default was removed and reworded
+    # across onboarding-phase1b-intro-language.md (2522 -> 2786),
+    # verbosity-control.md (2048 -> 2240), and module-05-phase2-data-mapping.md
+    # (5781 -> 5906); and Task 4.2 brought the Advanced Track Knowledge Check
+    # (Step 5c) under the Answer_Required_Rule in onboarding-phase2-track-setup.md
+    # (1506 -> 1719). measure_steering.py recomputed all of these into
+    # file_metadata and the budget total (222488 = sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (222488 -> 223281) for the mandatory-question-answers
+    # spec (Task 5.3 / 6.2): Task 5.3 re-synced the generated
+    # hook-registry-critical.md mirror to embed the write-policy-gate CHECK 5
+    # (ANSWER-REQUIRED) text, growing it 11455 -> 12248 (+793), but the
+    # steering-index.yaml was not re-run through measure_steering afterward — the
+    # stored count stayed within the 10% --check tolerance yet was no longer the
+    # exact value. Task 6.2 re-ran measure_steering.py (update mode) to reconcile
+    # file_metadata and the budget total to the live consistent value
+    # (223281 = sum of file_metadata counts). hook-registry-critical.md is the
+    # ONLY file that moved; keywords/languages/deployment/root_step_range are
+    # byte-identical (verified: their baseline hashes still match the live index).
+    "budget": "fcb4962592d0292f84090d93b96d29970ab9548aed6053b31c86081b34fa89f3",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -955,13 +980,19 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (220727 after the guaranteed-recap-pdf spec's Task 5.2 steering edits
-        # grew graduation.md +295 and module-completion-track.md +159 when the
-        # "degrades to HTML/Markdown" language was replaced with the guaranteed-
-        # PDF tiered behavior, resynced by measure_steering.py into file_metadata
-        # and the budget total), so the hash cannot silently re-pin a stale value.
+        # (223281 after the mandatory-question-answers spec: Tasks 1-4.2 added the
+        # normative Answer_Required_Rule to conversation-protocol.md +580 and
+        # referenced it from agent-behavior-rules.md +212 and agent-instructions.md
+        # +175, removed/reworded the verbosity silent default across
+        # onboarding-phase1b-intro-language.md +264, verbosity-control.md +192, and
+        # module-05-phase2-data-mapping.md +125, and Task 4.2 brought the Advanced
+        # Track Knowledge Check under the rule in onboarding-phase2-track-setup.md
+        # +213; then Task 5.3 re-synced hook-registry-critical.md to embed the
+        # write-policy-gate CHECK 5 mirror +793, all resynced by measure_steering.py
+        # into file_metadata and the budget total), so the hash cannot silently
+        # re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 220727" in budget_block
+        assert "total_tokens: 223281" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 3
-- implemented: 280
+- in-progress: 2
+- implemented: 281
 - superseded: 2
 - abandoned: 0
 - unknown: 0
@@ -829,7 +829,7 @@
 
 ### mandatory-question-answers
 
-- Status: in-progress
+- Status: implemented
 - Type: unknown
 - Workflow: unknown
 - Directory: [.kiro/specs/mandatory-question-answers/](.kiro/specs/mandatory-question-answers/)

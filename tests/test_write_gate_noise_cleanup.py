@@ -199,8 +199,18 @@ _FROZEN_RULE_SHA256: dict[str, str] = {
     ),
 }
 
+# Re-baselined for the mandatory-question-answers spec (Task 5.1 / 6.2): that
+# spec legitimately extended the write-policy-gate prompt with CHECK 5
+# (ANSWER-REQUIRED — no silent completion of a question-owning step) and a
+# matching NOT-guard in the INTERNAL-FILE PASS-THROUGH, and re-titled the header
+# "Four checks" -> "Five checks in one pass". The gate file's bytes therefore
+# changed by design, so the frozen whole-file digest is re-pinned to the new
+# measured reality:
+#   271a6fbe...364a4b -> 9caa3745...184372
+# This is a mechanical re-baseline of a pinned derived snapshot, not a logic
+# change: the test still guards the gate against any UNINTENDED future edit.
 _FROZEN_HOOK_SHA256: str = (
-    "271a6fbe6ad48666fa5967fe14b0555d9ebe2305f0a54200ca0990cb21364a4b"
+    "9caa3745ad6071190624a6922d59ded9301bb4e8c5cb59dbbdb455f7cb184372"
 )
 
 

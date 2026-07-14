@@ -145,7 +145,14 @@ PRETOOLUSE_HOOKS: dict[str, dict[str, object]] = {
         "fragments": ("\u26d4 BLOCKED", "Module 3 cannot be marked complete"),
     },
     "write-policy-gate": {
-        "sha256": "271a6fbe6ad48666fa5967fe14b0555d9ebe2305f0a54200ca0990cb21364a4b",
+        # Re-baselined for the mandatory-question-answers spec (Task 5.1 / 6.2):
+        # the write-policy-gate prompt legitimately gained CHECK 5
+        # (ANSWER-REQUIRED — no silent completion of a question-owning step),
+        # so the gate file's bytes changed by design. This preservation pin is
+        # re-frozen to the new digest (271a6fbe...364a4b -> 9caa3745...184372);
+        # the stop-hook-ux fix itself still does not touch this gate, and the
+        # SENZING SQL / write-momentum protections remain enforced.
+        "sha256": "9caa3745ad6071190624a6922d59ded9301bb4e8c5cb59dbbdb455f7cb184372",
         "fragments": ("WRITE POLICY GATE", "SENZING SQL BLOCKING"),
     },
 }

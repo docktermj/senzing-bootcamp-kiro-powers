@@ -27,9 +27,14 @@ HOOK_PATH: Path = Path("senzing-bootcamp/hooks/write-policy-gate.json")
 
 # The major prompt blocks are separated by a blank-line-delimited horizontal
 # rule. Splitting on it yields, in order: the header + INTERNAL-FILE
-# PASS-THROUGH block, the FAST PATH GATE, CHECK 1-4, then OUTPUT FORMAT.
+# PASS-THROUGH block, the FAST PATH GATE, CHECK 1-4, CHECK 5, then OUTPUT FORMAT.
+# Re-baselined 7 -> 8 for the mandatory-question-answers spec (Task 5.1 / 6.2):
+# CHECK 5 (ANSWER-REQUIRED) was inserted as a new rule-delimited section between
+# CHECK 4 (index 5) and OUTPUT FORMAT (now index 7). The FAST PATH GATE and
+# CHECK 1-4 baseline sections stay at their original indices 1-5, so only the
+# section count moved; the byte-for-byte baseline assertions below are unchanged.
 _SECTION_SEPARATOR = "\n\n---\n\n"
-_EXPECTED_SECTION_COUNT = 7
+_EXPECTED_SECTION_COUNT = 8
 
 
 def _load_prompt() -> str:

@@ -425,7 +425,7 @@ Prompt:
 ````text
 ⚠️ SILENCE RULE: When all checks pass, produce ZERO tokens. No output. No acknowledgment. Re-invoke the tool silently.
 
-WRITE POLICY GATE — Four checks in one pass.
+WRITE POLICY GATE — Five checks in one pass.
 
 INTERNAL-FILE PASS-THROUGH (evaluate FIRST, before the FAST PATH GATE): If the target path is a routine power-managed internal file, produce ZERO tokens and re-invoke the tool silently — the exact same silent outcome as the FAST PATH GATE. Introduce NO new output strings.
 
@@ -443,8 +443,9 @@ This pass-through applies ONLY when ALL of these NOT-guards hold:
 - the path is NOT the feedback file 'docs/feedback/SENZING_BOOTCAMP_POWER_FEEDBACK.md'
 - the path is NOT a root-blocked placement (a blocked file type in the project root that is not on the ROOT WHITELIST)
 - the content contains NO Senzing SQL (no SQL pattern targeting a Senzing database indicator)
+- the write does NOT complete a question-owning onboarding step (see CHECK 5): it does not set or finalize a question-owning field ('verbosity', a comprehension-check completion marker, 'track', or 'mapping_verbosity') in config/bootcamp_progress.json, config/bootcamp_preferences.yaml, or the member-scoped config/progress_{id}.json / config/preferences_{id}.yaml
 
-If ANY NOT-guard fails, do NOT pass through — fall through to the four checks below. Zero tokens means zero tokens.
+If ANY NOT-guard fails, do NOT pass through — fall through to the checks below. Zero tokens means zero tokens.
 
 ---
 
@@ -626,6 +627,39 @@ Correct location based on content:
 Rewrite the path and retry.
 
 Any other extension not listed above: Do not acknowledge. Do not explain. Do not print anything. Proceed silently. (Only the listed extensions are blocked.)
+
+---
+
+CHECK 5: ANSWER-REQUIRED - NO SILENT COMPLETION OF A QUESTION-OWNING STEP
+
+This check applies ONLY to writes that complete a question-owning onboarding step by setting or finalizing a question-owning field in one of these progress/preferences files:
+- config/bootcamp_progress.json
+- config/bootcamp_preferences.yaml
+- config/progress_{id}.json (member-scoped, colocated team mode)
+- config/preferences_{id}.yaml (member-scoped, colocated team mode)
+
+QUESTION-OWNING FIELDS - each is owned by a 👉 question the bootcamper must answer:
+- 'verbosity' (Detail_Level_Step)
+- a comprehension-check completion marker (Any_Questions_Step - e.g. a field or flag recording the comprehension check as done/acknowledged)
+- 'track' (track selection)
+- 'mapping_verbosity'
+
+If the target path is NOT one of the four progress/preferences files above, OR the write does NOT set/finalize any question-owning field (it is a routine bookkeeping update - step counters, timestamps, module progress, completed-module lists, etc.): this check does not apply. Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
+
+If the write DOES set or finalize a question-owning field, confirm a Real_Answer for that step exists in the CURRENT turn:
+- A Real_Answer is a response the bootcamper actually gave this turn - including an explicit 'use the default / skip / no preference' (an Explicit_Default_Choice). A Question_Ledger 'mark-answered' signal for that step, if present, also counts as a recorded Real_Answer.
+- The value being written must be the one the bootcamper selected, NOT a value the agent chose or silently defaulted on the bootcamper's behalf.
+
+If a recorded Real_Answer (or Explicit_Default_Choice) for that step IS present in the turn: Do not acknowledge. Do not explain. Do not print anything. Proceed silently.
+
+If there is NO recorded Real_Answer for that step (the agent would be completing the step with a value it chose or silently defaulted):
+
+STOP. Do not proceed with the write. Output:
+⚠️ ANSWER REQUIRED - QUESTION-OWNING STEP NOT ANSWERED
+Violation: This write completes a question-owning step (name it: verbosity / comprehension check / track / mapping_verbosity), but the bootcamper has not provided a Real_Answer for it this turn - the value would be an agent-chosen or silent default.
+Fix: Do not write an agent-supplied value. Present the step's 👉 question (offer the Explicit_Default_Choice, e.g. 'standard (recommended)' for verbosity), wait for the bootcamper's Real_Answer, and persist ONLY the value the bootcamper actually selects. An explicit 'use the default' from the bootcamper is itself a valid Real_Answer - record it and proceed.
+
+Do NOT allow the write to proceed until the bootcamper has supplied a Real_Answer (or explicitly chosen the default) for the step.
 
 ---
 

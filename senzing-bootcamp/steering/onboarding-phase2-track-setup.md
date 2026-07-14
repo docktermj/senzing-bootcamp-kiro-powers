@@ -39,11 +39,15 @@ Output format: your output MUST begin with 👉 followed by the one comprehensio
 
 If you paraphrase or reformulate the question, keep it to a single question and keep the 👉 prefix — it is still mandatory.
 
+🛑 STOP — Wait for the bootcamper's Real_Answer before proceeding to Module 1. This 👉 question is governed by the Answer_Required_Rule (see `conversation-protocol.md`): it requires a Real_Answer, and you must never answer it for the bootcamper. End your turn on the question; do not assume a response, do not supply a Re_Explanation the bootcamper did not prompt, and do not proceed as if answered when they said nothing.
+
 **Correct / understanding answer:** If the bootcamper answers correctly or clearly shows they understand that ER decides whether records point at the same real-world entity, affirm briefly and proceed to Module 1.
 
 **Incorrect / unsure answer:** If the bootcamper answers incorrectly or signals they are unsure ("not sure," "I don't know"), offer a brief, plain-language Re_Explanation of the concept, then proceed to Module 1. Apply the bootcamper's current verbosity settings from the preferences file when giving the Re_Explanation.
 
-**Note:** This step is NOT a gate — it is not mandatory, and it never prevents the bootcamper from continuing regardless of their answer. The `ask-bootcamper` hook handles the closing question on the `Stop` trigger, so do not include inline closing questions here.
+**Explicit skip / decline:** If the bootcamper explicitly declines or asks to move on ("skip", "let's just start", "no comment"), that is a Real_Answer — record it and proceed to Module 1 without a Re_Explanation. An explicit skip is a choice the bootcamper makes; silence is not.
+
+**Note:** Correctness never gates *progress* — the bootcamper continues to Module 1 whether their answer is right, wrong, or an explicit skip — but a Real_Answer is still required before advancing: never treat silence as an answer, and never supply one yourself (Answer_Required_Rule). The `ask-bootcamper` hook handles the closing question on the `Stop` trigger, so do not include inline closing questions here.
 
 ## Switching Tracks
 

@@ -102,6 +102,8 @@ Track switch triggers (*switch track*, *change track*, …): load `track-switchi
 
 Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question — do not answer, do not assume a response, do not proceed to the next step.
 
+**Answer_Required_Rule.** Every 👉 question requires a Real_Answer (a response the bootcamper actually gives, including an explicit decline/skip) before the flow advances past it. Never supply an Assumed_Answer — no fabricated choice, no silent default, no proceeding as if answered — under any circumstance (context-budget pressure, token limits, session resume, perceived time savings). The only exits are a Real_Answer or the question staying outstanding via `config/.question_pending`; express optionality as an Explicit_Default_Choice the bootcamper picks, never as license to advance unanswered. This is the single normative rule defined in `conversation-protocol.md` (The Answer_Required_Rule).
+
 The boundary is internal and is signaled by ending the turn after the 👉 question, not by printing a marker. You MUST NOT emit `🛑 STOP` or `⛔ MANDATORY GATE` text to the bootcamper — these are internal control directives. The behavioral requirement is unchanged: STOP and wait for the bootcamper's real input at every 👉 question and ⛔ gate, and never skip a ⛔ gate.
 
 ### Question_Pending File Format

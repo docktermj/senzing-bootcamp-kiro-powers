@@ -116,11 +116,9 @@ After the bootcamper selects a preset, confirm the choice and tell them:
 
 "You can change your verbosity level at any time by saying 'change verbosity' or by fine-tuning specific categories like 'I want more code walkthroughs'."
 
-If the bootcamper skips without answering, apply the `standard` preset as the default and inform them: "I've set your verbosity to **standard** (balanced detail). You can change this anytime."
-
-This is NOT a mandatory gate (⛔) — the bootcamper can skip it.
-
-> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not continue to the next step. Wait for the bootcamper's real input.
+> **Internal directive — not shown to the bootcamper.** Treat verbosity selection as a ⛔ gate step governed by the Answer_Required_Rule (see `conversation-protocol.md`): it requires the bootcamper's Real_Answer. Do NOT assume or fabricate a verbosity preference, and do NOT apply the `standard` preset (or any preset) as a silent default when the bootcamper says nothing. "**standard** *(recommended)*" is an Explicit_Default_Choice — the bootcamper can pick it in one keystroke, and only then do you persist `standard` to `config/bootcamp_preferences.yaml` and proceed. Selecting the default is a Real_Answer; assuming it is an Assumed_Answer.
+>
+> This is a MANDATORY GATE — you MUST stop and wait for the bootcamper's real input (🛑 STOP — end your response here). End your turn on the question above; do not answer it, do not assume a response, and do not continue to the next step until the bootcamper responds.
 
 ### 5b. Comprehension Check
 
@@ -134,13 +132,13 @@ Output format: your output MUST begin with 👉 followed by the comprehension ch
 
 If you paraphrase or reformulate the question, keep it a single question and the 👉 prefix is still mandatory.
 
-🛑 STOP — Wait for bootcamper response.
+🛑 STOP — Wait for the bootcamper's Real_Answer before proceeding to track selection.
 
-**Acknowledgment handling:** If the bootcamper responds with an acknowledgment — phrases like "looks good," "makes sense," "no questions," "let's go," "ready," "all clear," or "got it" — proceed directly to track selection (load `onboarding-phase2-track-setup.md`). Do not ask follow-up questions about the overview.
+**Acknowledgment handling:** If the bootcamper responds with an acknowledgment — phrases like "looks good," "makes sense," "no questions," "let's go," "ready," "all clear," or "got it" — that acknowledgment is a Real_Answer, so proceed directly to track selection (load `onboarding-phase2-track-setup.md`). Do not ask follow-up questions about the overview.
 
-**Clarification handling:** If the bootcamper asks a clarification question, answer it using the bootcamper's current verbosity settings from the preferences file. After answering, check whether the bootcamper has any more questions before proceeding to track selection. Repeat this cycle — answer, then check for additional questions — until the bootcamper signals they are ready to move on.
+**Clarification handling:** If the bootcamper asks a clarification question, that too is a Real_Answer: answer it using the bootcamper's current verbosity settings from the preferences file, then re-present this comprehension check. Repeat this cycle — answer, then re-present the check-in and check for additional questions — until the bootcamper signals they are ready to move on.
 
-**Note:** This step is NOT a gate — it is not mandatory, and the bootcamper can skip it or acknowledge quickly. The `ask-bootcamper` hook handles the closing question on `Stop`, so do not include inline closing questions here.
+> **Internal directive — not shown to the bootcamper.** This comprehension check is governed by the Answer_Required_Rule (see `conversation-protocol.md`): it requires the bootcamper's Real_Answer before you proceed to track selection. A Real_Answer is either a readiness acknowledgment ("makes sense," "no questions," "ready," etc.) or a clarification question — answer the latter, then re-present this check-in, looping until the bootcamper signals readiness. Do NOT proceed as if the bootcamper acknowledged when they said nothing; treating silence as readiness is an Assumed_Answer and is forbidden. The `ask-bootcamper` hook owns the closing question on `Stop`, so do not include inline closing questions here.
 
 ---
 

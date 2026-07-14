@@ -391,11 +391,52 @@ class TestExistingStepPreservation:
         section = _extract_section(text, r"5a\.\s+Verbosity Preference")
         assert "bootcamp_preferences.yaml" in section
 
-    def test_step_4b_not_mandatory_gate(self) -> None:
-        """Verbosity Preference (now phase1b Step 5a) explicitly states it is NOT a gate."""
+    def test_step_4b_is_mandatory_gate(self) -> None:
+        """Verbosity Preference (now phase1b Step 5a) is now a mandatory gate.
+
+        Per the mandatory-question-answers spec (Req 2.1, 2.2, 2.3, 2.5), the
+        verbosity step no longer silently defaults to ``standard`` when the
+        bootcamper says nothing. It is now a ⛔ mandatory gate governed by the
+        Answer_Required_Rule that stops (🛑 STOP) and waits for a Real_Answer,
+        while keeping "standard *(recommended)*" as an Explicit_Default_Choice.
+        The old "NOT a mandatory gate" phrasing and the silent-default
+        instruction were removed.
+        """
         text = _read_phase1b()
         section = _extract_section(text, r"5a\.\s+Verbosity Preference")
-        assert "NOT a mandatory gate" in section
+        section_lower = section.lower()
+
+        # Now marked as a mandatory gate (Req 2.5).
+        assert "⛔" in section, "Step 5a missing mandatory gate marker ⛔"
+        assert "mandatory gate" in section_lower, (
+            "Step 5a missing 'MANDATORY GATE' language"
+        )
+        # Retains the hard-stop wait directive.
+        assert "🛑 STOP" in section, "Step 5a missing 🛑 STOP wait directive"
+
+        # Keeps the Explicit_Default_Choice one keystroke away (Req 2.3).
+        assert "Explicit_Default_Choice" in section, (
+            "Step 5a must name 'standard (recommended)' as an "
+            "Explicit_Default_Choice"
+        )
+        assert "standard" in section_lower and "recommended" in section_lower, (
+            "Step 5a must keep 'standard (recommended)' as the "
+            "Explicit_Default_Choice"
+        )
+
+        # The silent-default instruction was removed (Req 2.2).
+        assert "skips without answering" not in section_lower, (
+            "Step 5a still contains the removed 'skips without answering' "
+            "silent-default instruction"
+        )
+        assert "apply the `standard` preset as the default" not in section_lower, (
+            "Step 5a still contains the removed 'apply the standard preset as "
+            "the default' silent-default instruction"
+        )
+        # The old "NOT a mandatory gate" self-description must be gone.
+        assert "not a mandatory gate" not in section_lower, (
+            "Step 5a still describes itself as 'NOT a mandatory gate'"
+        )
 
     # -- Step 5: Track Selection (mandatory gate) --
 
@@ -545,19 +586,49 @@ class TestStep4cContentMarkers:
             "for answering clarifications"
         )
 
-    def test_not_mandatory_gate_note(self) -> None:
-        """Step 4c notes it is NOT a mandatory gate."""
+    def test_requires_real_answer(self) -> None:
+        """Step 5b (Comprehension Check) now requires a Real_Answer.
+
+        Per the mandatory-question-answers spec (Req 3.1, 3.3, 3.4), the
+        comprehension check no longer authorizes advancing with no answer. It
+        requires the bootcamper's Real_Answer (a readiness acknowledgment or a
+        clarification question), retains the clarification→answer→re-present
+        loop, and forbids treating silence as readiness. The old "not a gate /
+        not mandatory / can skip it" phrasing was removed.
+        """
         text = _read_phase1b()
         section = _extract_section(text, r"5b\.\s+Comprehension Check")
         section_lower = section.lower()
-        # Accept either the exact phrase "NOT a mandatory gate" or the
-        # split phrasing "NOT a gate" + "not mandatory" which avoids the
-        # literal substring "mandatory gate" (forbidden by the non-gate
-        # contract test).
-        has_combined = "not a mandatory gate" in section_lower
-        has_split = "not a gate" in section_lower and "not mandatory" in section_lower
-        assert has_combined or has_split, (
-            "Step 4c missing note about not being a mandatory gate"
+
+        # Requires a Real_Answer (Req 3.1).
+        assert "real_answer" in section_lower, (
+            "Step 5b must state it requires a Real_Answer"
+        )
+
+        # Silence must not be treated as an answer (Req 3.4).
+        assert "assumed_answer" in section_lower or "silence" in section_lower, (
+            "Step 5b must forbid treating silence as a Real_Answer"
+        )
+
+        # The old skip-authorizing phrasing was removed (Req 3.1).
+        assert "not a gate" not in section_lower, (
+            "Step 5b still contains the removed 'not a gate' skip-authorizing "
+            "phrasing"
+        )
+        assert "not mandatory" not in section_lower, (
+            "Step 5b still contains the removed 'not mandatory' "
+            "skip-authorizing phrasing"
+        )
+        assert "not a mandatory gate" not in section_lower, (
+            "Step 5b still contains the removed 'not a mandatory gate' phrasing"
+        )
+
+        # The clarification → answer → re-present loop is retained (Req 3.3).
+        assert "clarif" in section_lower, (
+            "Step 5b must retain clarification handling"
+        )
+        assert "re-present" in section_lower, (
+            "Step 5b must retain the re-present loop for clarification questions"
         )
 
     def test_hook_handles_closing_question_note(self) -> None:

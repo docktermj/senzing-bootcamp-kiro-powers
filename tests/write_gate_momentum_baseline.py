@@ -42,9 +42,15 @@ HOOK_PATH: Path = Path("senzing-bootcamp/hooks/write-policy-gate.json")
 #   3: CHECK 2
 #   4: CHECK 3
 #   5: CHECK 4
-#   6: OUTPUT FORMAT
+#   6: CHECK 5  (ANSWER-REQUIRED — added by the mandatory-question-answers spec)
+#   7: OUTPUT FORMAT
+# Re-baselined 7 -> 8 for the mandatory-question-answers spec (Task 5.1 / 6.2):
+# CHECK 5 was inserted before OUTPUT FORMAT. The FAST PATH GATE and CHECK 1-4
+# baseline snapshots keep their original indices 1-5 (OUTPUT FORMAT moved 6 -> 7,
+# and it is addressed by callers as the last section), so the BASELINE_* section
+# text below is unchanged.
 SECTION_SEPARATOR: str = "\n\n---\n\n"
-EXPECTED_SECTION_COUNT: int = 7
+EXPECTED_SECTION_COUNT: int = 8
 
 # Index of the header + INTERNAL-FILE PASS-THROUGH block within the split prompt.
 PASSTHROUGH_SECTION_INDEX: int = 0

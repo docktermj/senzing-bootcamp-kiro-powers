@@ -5,6 +5,18 @@ description: "Turn-taking, question handling, and module transition protocols fo
 
 # Conversation Protocol
 
+## The Answer_Required_Rule
+
+**Every 👉 question requires a Real_Answer before the flow advances past it.** This is the single normative rule governing every Question in the bootcamp. A *Question* is a 👉-prefixed prompt directed at the bootcamper that yields the turn. A *Real_Answer* is a response the bootcamper actually gives — including an explicit decline or skip ("use the default", "skip this", "no preference"). An *Assumed_Answer* is any answer you supply on the bootcamper's behalf: a fabricated choice, a silent default, or proceeding as if a response was given when none was.
+
+- **Wait for a Real_Answer.** When you present a 👉 question, stop and wait. Do not proceed past it until the bootcamper supplies a Real_Answer. An explicit decline/skip IS a Real_Answer — record it and proceed accordingly.
+- **Never supply an Assumed_Answer.** You SHALL NOT fabricate a choice, apply a silent default, or proceed as if answered when the bootcamper said nothing — under **any** circumstance, including context-budget pressure, token limits, session resume, or perceived time savings. No agent-internal reasoning justifies answering a 👉 question for the bootcamper.
+- **Only two exits.** A 👉 question has exactly two exits: (1) a Real_Answer, or (2) the question stays outstanding. There is no third exit in which the agent supplies the answer. If you cannot obtain a Real_Answer (for example, the session ends), the Question SHALL remain outstanding via the `config/.question_pending` marker so a later turn re-presents it — it is never resolved by an Assumed_Answer.
+- **Applies everywhere.** This rule holds in all contexts — onboarding, module steps, module transitions, feedback, and session resume.
+- **Optionality is an Explicit_Default_Choice.** When a step is genuinely optional, express the optionality as an Explicit_Default_Choice the bootcamper actively selects (e.g., "standard *(recommended)*"), never as license to advance with no answer. Selecting the default is a Real_Answer; assuming it is an Assumed_Answer.
+
+This rule generalizes the existing no-self-answering stance (see the Self-Answering examples below and the `self-answering-prevention` rules): it forbids not only fabricated answers but also silent defaults. It is referenced from `agent-behavior-rules.md` and `agent-instructions.md`.
+
 ## Answer Processing Priority
 
 Processing a bootcamper's answer to a 👉 question is the **highest-priority action** in any turn. No other work — content generation, context management, hook evaluation, or status updates — may proceed until the pending answer has been fully processed.

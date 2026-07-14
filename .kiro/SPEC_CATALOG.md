@@ -7,9 +7,9 @@
 
 ## Status Summary
 
-- in-progress: 0
-- implemented: 283
-- superseded: 2
+- in-progress: 6
+- implemented: 282
+- superseded: 3
 - abandoned: 0
 - unknown: 0
 
@@ -108,10 +108,11 @@
 
 ### bootcamp-qa-transcript
 
-- Status: implemented
+- Status: superseded
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/bootcamp-qa-transcript/](.kiro/specs/bootcamp-qa-transcript/)
+- Superseded by: guaranteed-qa-capture
 
 ### bootcamp-record-export
 
@@ -267,6 +268,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/conversational-hook-names/](.kiro/specs/conversational-hook-names/)
 
+### conversational-self-audit-hook
+
+- Status: in-progress
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/conversational-self-audit-hook/](.kiro/specs/conversational-self-audit-hook/)
+
 ### cord-data-freshness
 
 - Status: implemented
@@ -393,6 +401,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/documentation-guides/](.kiro/specs/documentation-guides/)
 
+### early-fpdf2-hint
+
+- Status: in-progress
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/early-fpdf2-hint/](.kiro/specs/early-fpdf2-hint/)
+
 ### end-to-end-bootcamp-flow-test
 
 - Status: implemented
@@ -470,6 +485,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/er-baseline-status-summary/](.kiro/specs/er-baseline-status-summary/)
 
+### er-intro-interactive-illustration
+
+- Status: in-progress
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/er-intro-interactive-illustration/](.kiro/specs/er-intro-interactive-illustration/)
+
 ### er-quality-evaluation-loop
 
 - Status: implemented
@@ -490,6 +512,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/expand-language-steering/](.kiro/specs/expand-language-steering/)
+
+### experience-audit-remediation
+
+- Status: in-progress
+- Type: unknown
+- Workflow: unknown
+- Directory: [.kiro/specs/experience-audit-remediation/](.kiro/specs/experience-audit-remediation/)
 
 ### export-results
 
@@ -637,6 +666,14 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/guaranteed-graduation-artifacts/](.kiro/specs/guaranteed-graduation-artifacts/)
+
+### guaranteed-qa-capture
+
+- Status: in-progress
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/guaranteed-qa-capture/](.kiro/specs/guaranteed-qa-capture/)
+- Supersedes: bootcamp-qa-transcript
 
 ### guaranteed-recap-pdf
 
@@ -1588,6 +1625,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/session-resume-behavioral-rules/](.kiro/specs/session-resume-behavioral-rules/)
+
+### setup-summary-persistence
+
+- Status: in-progress
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/setup-summary-persistence/](.kiro/specs/setup-summary-persistence/)
 
 ### shared-markdown-renderer-refactor
 

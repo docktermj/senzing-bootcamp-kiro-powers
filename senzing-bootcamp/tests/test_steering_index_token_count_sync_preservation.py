@@ -572,7 +572,18 @@ _BASELINE_HASHES: dict[str, str] = {
     # Only the budget block changed (solely the total_tokens line);
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "2c9a5221ed69e27124b5a2ed373c1fb324edfbd824e692dabb5e4526b81fa95f",
+    # Re-baselined once more (226469 -> 226863) across two specs that touched
+    # always-loaded files and regenerated always-loaded metadata:
+    # experience-audit-remediation added the onboarding admin-setup summary
+    # (onboarding-phase1b-intro-language.md 1734 -> 1986, +252), and
+    # guaranteed-qa-capture folded hook-enforced Q&A capture into the two critical
+    # hooks (regenerating hook-registry-critical.md 12859 -> 13182, +323) and
+    # rewrote qa-transcript.md (1284 -> 1103, -181). measure_steering.py recomputed
+    # file_metadata and the budget total (226863 = sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    "budget": "93f95ce3c25229f58a5b090369cd5c86be678390bf4e92ebbba0ea7ac06487f5",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -1026,7 +1037,7 @@ class TestNonPhaseBlocksBytePreserved:
         # token-band remediation (entity-resolution-intro.md trimmed 2043 -> 1933
         # by condensing two agent-only HTML comments).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 226469" in budget_block
+        assert "total_tokens: 226863" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

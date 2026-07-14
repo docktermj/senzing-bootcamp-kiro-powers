@@ -165,7 +165,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `file-placement.md` | 515 | medium |
 | `graduation.md` | 11664 | large |
 | `hook-architecture.md` | 2418 | large |
-| `hook-registry-critical.md` | 12859 | large |
+| `hook-registry-critical.md` | 13182 | large |
 | `hook-registry-module-01.md` | 434 | small |
 | `hook-registry-module-02.md` | 269 | small |
 | `hook-registry-module-03.md` | 2124 | large |
@@ -233,11 +233,11 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-prerequisites.md` | 1395 | medium |
 | `module-transitions.md` | 2106 | large |
 | `onboarding-flow.md` | 4138 | large |
-| `onboarding-phase1b-intro-language.md` | 1734 | medium |
+| `onboarding-phase1b-intro-language.md` | 1986 | medium |
 | `onboarding-phase2-track-setup.md` | 2979 | large |
 | `phase-loading-guide.md` | 890 | medium |
 | `project-structure.md` | 789 | medium |
-| `qa-transcript.md` | 1284 | medium |
+| `qa-transcript.md` | 1103 | medium |
 | `recovery-from-mistakes.md` | 1227 | medium |
 | `security-privacy.md` | 278 | small |
 | `session-handoff.md` | 4148 | large |
@@ -258,7 +258,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 226469 tokens
+**Total budget:** 226863 tokens
 
 <!-- END GENERATED: steering-files -->
 

@@ -32,6 +32,15 @@ Recognize any of these readiness signals as gate-clearance that advances the flo
 
 Immediately before displaying the welcome banner, state that administrative setup is complete and the bootcamp is now starting — for example: "Administrative setup is complete. The bootcamp is starting."
 
+### 4.0 Administrative Setup Summary
+
+After the "setup complete" statement and before the welcome banner, present a brief, scannable recap of what setup actually did — closing the loop opened by the Step 0 preamble ("You'll see me working for a moment…").
+
+- Report **only what actually ran** in Steps 0b–2 (never a hardcoded list): MCP reachability, power version, project directories created, hooks installed (with the verified count), foundational steering generated, and the preflight verdict.
+- Honor the verbosity preset (see `verbosity-control.md`): at `concise`, one line ("Set up your project, installed N background quality-check hooks, and verified your environment."); at `standard`/`detailed`, short bullets.
+- State any failed or deferred item plainly (e.g., a hook that failed, a declined runtime install, or a WARN preflight) and where it is revisited (usually Module 2).
+- Orientation only — do **not** ask a question or wait here; the first onboarding question is the detail-level step (4a).
+
 **Display the welcome banner — make it impossible to miss.**
 
 **Standard (single-user) banner:**

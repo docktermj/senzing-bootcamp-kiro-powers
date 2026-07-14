@@ -26,6 +26,9 @@ supersessions:
     superseded: self-answering-questions-fix
   - supersedes: self-answering-reinforcement
     superseded: self-answering-prevention-v2
+  # Q&A capture moved from voluntary agent emission to hook-enforced capture.
+  - supersedes: guaranteed-qa-capture
+    superseded: bootcamp-qa-transcript
 
 # The module recap document and its follow-up fix are mutually related.
 related:

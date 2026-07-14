@@ -139,7 +139,14 @@ AUTO_FILES: tuple[str, ...] = (
 #   * three pre-existing `always` files             =  7_739 (security-privacy.md
 #     untouched; agent-instructions.md + module-transitions.md grew)
 #   * loads-always (3 pre-existing + 11 Auto_Files)  = 29_510
-DOCUMENTED_FINALIZED_BASELINE = 17_116   # finalized always-set (Decision_Record baseline, Req 2.5)
+# Re-pinned once more (17_116 -> 16_935) for the guaranteed-qa-capture spec:
+# qa-transcript.md (one of the six finalized `always` files AND one of the eleven
+# Auto_Files) was rewritten from voluntary emission to hook-enforced capture,
+# shrinking 1284 -> 1103 (-181), so both the finalized always-set baseline (-181)
+# and the loads-always footprint (-181, still within the 1% band, so
+# DOCUMENTED_LOADS_ALWAYS is left at 29_510) moved down. The three pre-existing
+# `always` files were untouched, so DOCUMENTED_PRE_EXISTING_ALWAYS stays 7_739.
+DOCUMENTED_FINALIZED_BASELINE = 16_935   # finalized always-set (Decision_Record baseline, Req 2.5)
 DOCUMENTED_PRE_EXISTING_ALWAYS = 7_739   # three pre-existing `always` files
 # Re-pinned once more (25_261 -> 25_623) for the session-handoff spec: task 5.1
 # added the "### Session Handoff Offer" hook-in to agent-context-management.md

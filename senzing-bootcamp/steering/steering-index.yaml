@@ -174,7 +174,7 @@ onboarding:
       step_range: [0, 2]
     phase1b-intro-language:
       file: onboarding-phase1b-intro-language.md
-      token_count: 1734
+      token_count: 1986
       size_category: medium
       step_range: [3, "5b"]
     phase2-track-setup:
@@ -385,7 +385,7 @@ file_metadata:
     token_count: 2418
     size_category: large
   hook-registry-critical.md:
-    token_count: 12859
+    token_count: 13182
     size_category: large
   hook-registry-module-01.md:
     token_count: 434
@@ -589,7 +589,7 @@ file_metadata:
     token_count: 4138
     size_category: large
   onboarding-phase1b-intro-language.md:
-    token_count: 1734
+    token_count: 1986
     size_category: medium
   onboarding-phase2-track-setup.md:
     token_count: 2979
@@ -601,7 +601,7 @@ file_metadata:
     token_count: 789
     size_category: medium
   qa-transcript.md:
-    token_count: 1284
+    token_count: 1103
     size_category: medium
   recovery-from-mistakes.md:
     token_count: 1227
@@ -662,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 226469
+  total_tokens: 226863
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

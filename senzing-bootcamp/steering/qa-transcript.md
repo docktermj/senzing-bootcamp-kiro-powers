@@ -1,92 +1,79 @@
 ---
 inclusion: always
-description: "Emit question/answer completion events for the replayable Q&A transcript
- when the agent asks a 👉 leading question and the bootcamper answers it"
+description: "How the question/answer exchange is captured for the replayable Q&A transcript — hook-enforced on the Q&A cadence, still decoupled from file writes"
 ---
 
-# Q&A Transcript Emission
+# Q&A Transcript Capture
 
-This steering governs how the agent records the question→answer exchange so it can be
-rendered into an ordered, replayable transcript. It reuses the existing event schema in
-`scripts/session_logger.py` — it does **not** define a new format.
+This steering governs how the question→answer exchange is recorded so it can be
+rendered into an ordered, replayable transcript (`docs/bootcamp_transcript.md`)
+and reconciled into the graduation recap. Capture is **hook-enforced** and reuses
+the existing event schema in `scripts/session_logger.py` — it does **not** define
+a new format.
 
-The two event types come straight from `session_logger.py`:
+## Hook-enforced capture (guaranteed on the Q&A cadence)
 
-- `question` — emitted when the agent presents a 👉 leading question.
-- `answer` — emitted when the bootcamper replies to that question.
+Capture is performed by the two critical hooks via the helper
+`scripts/log_qa_event.py`, which appends `question` / `answer` completion events
+to `config/session_log.jsonl`. Both fire on the **Q&A cadence** — once per
+question, once per answer — never on file writes:
 
-Both are built with `build_completion_entry(...)` and appended with
-`append_completion_entry("config/session_log.jsonl", entry)`. Question IDs come from
-`generate_question_id()`. Never hand-craft these structures or invent your own fields.
+- **Question — `ask-bootcamper` (Stop hook).** When a turn ends with a 👉 leading
+  question, `config/.question_pending` holds that question's text. The Stop hook
+  runs `log_qa_event.py record-question`, which logs the question idempotently (a
+  re-presented question is not double-logged) and records its `question_id` in a
+  small sidecar (`config/.qa_capture.json`).
+- **Answer — `review-bootcamper-input` (UserPromptSubmit hook).** When the
+  bootcamper answers (i.e. `config/.question_pending` exists), the hook runs
+  `log_qa_event.py record-answer`, passing the bootcamper's verbatim message on
+  stdin. The helper pairs the answer to the pending question's `question_id` and
+  self-heals by logging the question first if it was not already recorded — so an
+  answer is never orphaned from its question.
 
-## Emit a `question` event when you present a 👉 leading question
+Because both capture points are driven by critical hooks (installed and verified
+during onboarding, reminded by the capture-hook safeguard), Q&A capture is
+guaranteed in the same sense as every other hook-enforced bootcamp behavior —
+given the hooks are present. It no longer depends on the agent remembering to emit
+events. The module-completion recap (`ask-bootcamper` Phase 0), the stopping-point
+reconciliation (`reconcile_transcript.py`), and the graduation enforcement
+(`enforce-critical-artifacts` → `ensure_graduation_artifacts.py`) remain as
+defense-in-depth layers.
 
-A **leading question** is the single 👉-prefixed, bootcamper-facing decision point that ends a
-yielding turn. When you present one:
+## The event schema is fixed — never fabricate
 
-1. Generate an id: `qid = generate_question_id()`.
-2. Build the entry with the **same text you show the bootcamper** (verbatim, not a summary):
-   `build_completion_entry("question", <current_module>, {"text": <question text>, "question_id": qid})`.
-3. Append it: `append_completion_entry("config/session_log.jsonl", entry)`.
-4. Hold `qid` as the **current question id** for the turn so the matching answer can reference it
-   (it pairs naturally with the existing `config/.question_pending` marker).
-
-`<current_module>` is the active module number (from `config/bootcamp_progress.json`,
-`current_module`); use `0` only during onboarding before a module is set.
-
-**Do not emit a `question` event for:**
-
-- Internal, rhetorical, or narrative text that is not an actual decision point.
-- Clarifying prose, recaps, or status lines that do not stop and wait for a reply.
-
-The logged `text` must match the displayed prompt exactly so the transcript is faithful.
-
-## Emit an `answer` event when the bootcamper replies
-
-When the bootcamper answers the most recent unanswered leading question:
-
-1. Reuse that question's `question_id` — the **current question id** you held from the
-   `question` event. Do not generate a new one.
-2. Record the bootcamper's **actual response text**, not a paraphrase or your interpretation of it:
-   `build_completion_entry("answer", <current_module>, {"text": <bootcamper reply>, "question_id": qid})`.
-3. Append it: `append_completion_entry("config/session_log.jsonl", entry)`.
-4. Clear the current question id once the answer is logged.
-
-This keeps the `answer` keyed to its originating `question`, so the pairing is recoverable by id.
-
-## Skip rules — never fabricate
-
-- If a bootcamper message does **not** correspond to any pending unanswered question (no current
-  question id is held), do **not** invent or guess a `question_id` and do **not** emit an `answer`
-  event for that message. Just skip it.
-- Never emit a `question`/`answer` pair for text the bootcamper never actually saw or sent.
+`log_qa_event.py` builds entries with `session_logger.build_completion_entry(...)`
+and appends them with `append_completion_entry(...)`; question IDs come from
+`generate_question_id()`. The two event types are `question` and `answer`. Never
+hand-craft these structures, invent fields, or log a `question`/`answer` pair for
+text the bootcamper never actually saw or sent. The helper already no-ops when
+there is no pending question, so it never orphan-logs an answer.
 
 ## Event-driven only — never coupled to file writes
 
-Q&A logging is **event-driven**: it fires **only** when a leading question is asked or when the
-bootcamper answers one. It is never triggered by a file-write tool call. Treat the following as
-hard constraints when emitting events or editing this feature:
+Q&A logging is **event-driven:** it fires **only** on the Q&A cadence — a question
+asked (Stop) or an answer given (UserPromptSubmit). It is never triggered by a
+file-write tool call.
+Treat the following as hard constraints when editing this feature:
 
-- **Triggered only by Q&A moves.** Emit a `question` event when you present a 👉 leading question
-  and an `answer` event when the bootcamper replies — nothing else. A `fs_write`, `fs_append`, or
-  `str_replace` call is **not** a trigger for Q&A logging.
-- **Do not touch write-tool hooks.** Do **not** add or modify any `PostToolUse` hook on the write
-  tools (`fs_write`, `fs_append`, `str_replace`) to perform Q&A logging.
-- **Do not change `session-log-events`.** Leave the `session-log-events` hook exactly as the
-  `session-log-hook-performance` spec established it (the shell `command` per-write append). Q&A
-  logging is separate and must not alter or piggy-back on that hook.
-- **Zero cost on write-only turns.** A turn that performs many file writes but asks no question and
-  receives no answer adds **zero** additional Q&A log entries.
+- **Triggered only by Q&A moves.** A `fs_write`, `fs_append`, or `str_replace`
+  call is **not** a trigger for Q&A logging.
+- **Do not touch write-tool hooks.** Do **not** add or modify any `PostToolUse`
+  hook on the write tools to perform Q&A logging.
+- **Do not change `session-log-events`.** Leave it exactly as the
+  `session-log-hook-performance` spec established it (the shell `command`
+  per-write append). Q&A logging is separate and must not alter or piggy-back on
+  that hook.
+- **Zero cost on write-only turns.** A turn that performs many file writes but
+  asks no question and receives no answer adds **zero** Q&A log entries.
 
-This constraint is stated here so future edits keep Q&A logging decoupled from file writes and never
-reintroduce the per-write round-trip that `session-log-hook-performance` removed.
+This keeps Q&A capture decoupled from file writes and never reintroduces the
+per-write round-trip that `session-log-hook-performance` removed. Capture is folded
+into the two existing critical hooks — no new hooks, and no per-write hook.
 
-## Cross-reference — guaranteed transcript, still decoupled from writes
+## Cross-reference — guaranteed transcript
 
-The rendered transcript (`docs/bootcamp_transcript.md`) is now **guaranteed** at track-completion
-and graduation stopping points by the `enforce-critical-artifacts` hook via
-`ensure_graduation_artifacts.py`, which reconstructs the transcript from always-present sources
-(the session log, and the recap's `### Questions & Responses` pairs) when needed. This guarantee is
-a stopping-point reconstruction only — it does **not** change anything above: it adds no per-write
-hook or per-write process spawn, and Q&A event emission stays event-driven and decoupled from file
-writes exactly as described here.
+The rendered transcript (`docs/bootcamp_transcript.md`) is guaranteed at
+track-completion and graduation stopping points by the `enforce-critical-artifacts`
+hook via `ensure_graduation_artifacts.py`, which reconstructs it from always-present
+sources (the session log, and the recap's `### Questions & Responses` pairs). That
+stopping-point reconstruction is unchanged and adds no per-write hook.

@@ -191,7 +191,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `mcp-usage-reference.md` | 905 | medium |
 | `module-01-business-problem.md` | 500 | medium |
 | `module-01-phase1-discovery.md` | 6973 | large |
-| `module-01-phase2-document-confirm.md` | 2534 | large |
+| `module-01-phase2-document-confirm.md` | 3222 | large |
 | `module-02-sdk-setup.md` | 8690 | large |
 | `module-03-phase1-verification.md` | 4928 | large |
 | `module-03-phase2-visualization.md` | 5342 | large |
@@ -258,7 +258,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 227993 tokens
+**Total budget:** 228681 tokens
 
 <!-- END GENERATED: steering-files -->
 

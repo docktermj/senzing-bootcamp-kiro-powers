@@ -1,0 +1,73 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Add the Module 1 early-hint step": [
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784060737187
+      },
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784060746838
+      },
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784061831321
+      }
+    ],
+    "2. Make it one-time (no nagging)": [
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784060737505
+      },
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784061835389
+      },
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784062584916
+      }
+    ],
+    "3. Non-blocking / optional / lazy-import guarantees": [
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784060737892
+      },
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784062588006
+      },
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784062907323
+      }
+    ],
+    "4*. (Optional) Tests": [
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784060738077
+      },
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784062911953
+      },
+      {
+        "executionId": "cd7dc905-f575-4cb7-aaa6-6daa2ddc00a3",
+        "chatSessionId": "sess_2322a1b8-4985-463e-9919-c18ea878e895",
+        "timestamp": 1784063199928
+      }
+    ]
+  }
+}

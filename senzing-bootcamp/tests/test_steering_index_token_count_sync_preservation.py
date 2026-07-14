@@ -583,7 +583,34 @@ _BASELINE_HASHES: dict[str, str] = {
     # Only the budget block changed (solely the total_tokens line);
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "93f95ce3c25229f58a5b090369cd5c86be678390bf4e92ebbba0ea7ac06487f5",
+    # Re-baselined once more (226863 -> 228261) for the early-fpdf2-hint spec
+    # (Task 1). NOTE: this baseline was ALSO stale on the branch before this task
+    # — an intervening spec had already moved the live budget total to 227993
+    # without updating this constant (it still pinned 226863). This task adds the
+    # Module 1 early fpdf2 hint step (17a) to module-01-phase2-document-confirm.md
+    # (2534 -> 2802, +268), which measure_steering.py recomputed into file_metadata
+    # and the budget total, bringing the live consistent value to 228261 (= sum of
+    # file_metadata counts). Only the budget block changed (solely the total_tokens
+    # line); keywords/languages/deployment/root_step_range are byte-identical
+    # (verified: their baseline hashes still match the live index).
+    # Re-baselined once more (228261 -> 228481) for the early-fpdf2-hint spec
+    # (Task 2, make it one-time): step 17a in module-01-phase2-document-confirm.md
+    # gained the `fpdf2_hint_shown` guard (read the flag first, skip if already
+    # set; set it after surfacing the hint), which measure_steering.py recomputed
+    # into file_metadata and the budget total (= sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (228481 -> 228681) for the early-fpdf2-hint spec
+    # (Task 3, non-blocking / optional / lazy-import guarantees): step 17a in
+    # module-01-phase2-document-confirm.md gained the explicit preflight-failure
+    # silent no-op clause and the no-auto-install / lazy-import framing
+    # (3022 -> 3222, +200), which measure_steering.py recomputed into file_metadata
+    # and the budget total (= sum of file_metadata counts). Only the budget block
+    # changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    "budget": "908073b30956c4eec1755dec402f4e5654b3747a7f1eecff6192e9c813e3f925",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -1037,7 +1064,7 @@ class TestNonPhaseBlocksBytePreserved:
         # token-band remediation (entity-resolution-intro.md trimmed 2043 -> 1933
         # by condensing two agent-only HTML comments).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 226863" in budget_block
+        assert "total_tokens: 228681" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

@@ -42,6 +42,7 @@ KNOWN_TOP_LEVEL_KEYS: set[str] = {
     "hardware_target",
     "production_specs",
     "sqlite_volume_prompt",
+    "fpdf2_hint_shown",
 }
 
 CONVERSATION_STYLE_KEYS: set[str] = {
@@ -135,6 +136,7 @@ class PreferencesSchema:
     hardware_target: str | None = None
     production_specs: dict | None = None
     sqlite_volume_prompt: dict | None = None
+    fpdf2_hint_shown: bool | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -858,6 +860,7 @@ _BOOL_OR_NONE_KEYS: set[str] = {
     "skip_graduation",
     "scoop_installed_during_onboarding",
     "prerequisite_installation_deferred",
+    "fpdf2_hint_shown",
 }
 
 # Enum constraints for conversation_style sub-keys

@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 5
-- implemented: 283
+- in-progress: 4
+- implemented: 284
 - superseded: 3
 - abandoned: 0
 - unknown: 0
@@ -403,7 +403,7 @@
 
 ### early-fpdf2-hint
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/early-fpdf2-hint/](.kiro/specs/early-fpdf2-hint/)

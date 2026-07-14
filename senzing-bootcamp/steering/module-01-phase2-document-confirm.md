@@ -149,6 +149,26 @@ Steps 10–18 of Module 1. Continues from Phase 1 (discovery and gap-filling).
 
     **Checkpoint:** Write step 17 to `config/bootcamp_progress.json`.
 
+17a. **fpdf2 early hint** (module-completion recap — a natural, non-interrupting point):
+
+    At Module 1 completion, surface the optional-`fpdf2` upgrade hint *early* — with ample time to act before graduation — but **at most once per project**, so it never nags across session resumes or module revisits.
+
+    **Guard first (skip if already shown).** Read `config/bootcamp_preferences.yaml` and check the `fpdf2_hint_shown` flag (e.g., via `preferences_utils.load_preferences`). **If `fpdf2_hint_shown` is already `true`, do nothing** — surface no hint and do not run the preflight — and continue to Step 18.
+
+    Otherwise, run the preflight helper to learn whether installing the optional `fpdf2` dependency will upgrade the final recap PDF:
+
+    ```bash
+    python3 senzing-bootcamp/scripts/fpdf2_preflight.py
+    ```
+
+    - **If it prints a line** (`fpdf2` is absent): surface it as a single orientation-only line — installing `fpdf2` (`pip install fpdf2`) upgrades the end-of-bootcamp recap PDF to the professionally designed version, and a valid recap PDF is produced either way, so it is an upgrade and never a requirement. **After surfacing the hint**, record that it has been shown by setting `fpdf2_hint_shown: true` in `config/bootcamp_preferences.yaml` via `preferences_utils.write_preference("fpdf2_hint_shown", True)` so it is never repeated in later modules.
+    - **If it prints nothing** (`fpdf2` is present): stay silent — surface nothing and write **no** flag (there is nothing to show; if `fpdf2` is later removed, the graduation-time preflight remains the backstop).
+    - **If the preflight cannot run** (the script is missing, or running it errors): proceed silently — surface nothing, write **no** flag, and do not block or retry. The hint may surface at the next natural opportunity (the flag stays unset), and the graduation-time preflight (`module-completion-track.md` and graduation Step 0b.0) remains the backstop, so nothing is lost.
+
+    This hint is **non-blocking and orientation-only**: it never adds a 👉 question, never gates progress, requires no action, and **does not auto-install `fpdf2`** — it only informs. `fpdf2` stays an optional, lazily-imported dependency: the preflight helper merely *detects* availability (it does not import `fpdf` at module top level), and the best-effort auto-install remains solely in the graduation-time tiered render path (`generate_recap_pdf.py` and friends), unchanged. It mirrors how `module-completion-track.md` and graduation Step 0b.0 invoke the same helper — the only new things are surfacing it this early and bounding it to once per project via the `fpdf2_hint_shown` flag. Continue to Step 18.
+
+    **Checkpoint:** Write step 17a to `config/bootcamp_progress.json`.
+
 18. **Transition to Module 4**: "Module 1 complete. Ready to collect your data sources?"
 
     **Checkpoint:** Write step 18 to `config/bootcamp_progress.json`.

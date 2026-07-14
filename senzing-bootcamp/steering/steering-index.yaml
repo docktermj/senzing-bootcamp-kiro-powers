@@ -10,8 +10,8 @@ modules:
         step_range: [1, 9]
       phase2-document-confirm:
         file: module-01-phase2-document-confirm.md
-        token_count: 2528
-        size_category: medium
+        token_count: 3222
+        size_category: large
         step_range: [10, 18]
   2:
     root: module-02-sdk-setup.md
@@ -463,7 +463,7 @@ file_metadata:
     token_count: 6973
     size_category: large
   module-01-phase2-document-confirm.md:
-    token_count: 2534
+    token_count: 3222
     size_category: large
   module-02-sdk-setup.md:
     token_count: 8690
@@ -662,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 227993
+  total_tokens: 228681
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

@@ -163,6 +163,27 @@ GENERATED_FILES: frozenset[str] = frozenset(
 # read as a whole — mirroring the sibling module-01-phase1-discovery.md and
 # module-02-sdk-setup.md in-flow-option exemptions — this single unit is exempted
 # with this justification. It remains indexed in file_metadata.
+#
+# conversation-protocol.md (clean-question-presentation bugfix): this is the
+# single cohesive, always-loaded turn-taking / question-protocol GOVERNING
+# document — the One Question Rule, the Question Stop Protocol, Question
+# Disambiguation, the Pre-Output Validation Checklist, the Self-Check, and the
+# Violation Examples all live here and must load together as one unit, because
+# the agent applies these interdependent turn-taking rules on every yielding
+# turn. The clean-question-presentation bugfix made the 🛑 STOP / ⛔ MANDATORY
+# GATE markers internal-only directives and added the internal-only-directive
+# rule, the compose-clean-first and no-duplicate-re-display rules, Pre-Output
+# Validation Checklist items 8/9, and Self-Check items 7/8, growing the file
+# 4600 -> 5179 tokens — just past the 5000 split_threshold. It is not divisible
+# into independently-loadable units without harming agent comprehension of the
+# interdependent turn-taking rules (splitting the question-protocol governing
+# rules across files would let the agent load one half without the other), and
+# it would also re-churn the always-loaded token baselines re-pinned this
+# checkpoint. The always-loaded budget remains well within threshold
+# (measure_steering --check passes at ~12.4% of the warn level), so rather than
+# fragment a governing document that must be read as a whole this single unit is
+# exempted with this justification. It remains indexed in file_metadata (so
+# test_exemptions_exist_in_index passes).
 EXEMPTIONS: frozenset[str] = frozenset(
     {
         "module-completion.md",
@@ -172,6 +193,7 @@ EXEMPTIONS: frozenset[str] = frozenset(
         "module-03-phase2-visualization.md",
         "module-02-sdk-setup.md",
         "module-04-data-collection.md",
+        "conversation-protocol.md",
     }
 )
 

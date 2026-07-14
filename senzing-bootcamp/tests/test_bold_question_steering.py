@@ -10,15 +10,25 @@ convention introduced by the ``question-visibility`` feature:
   Validation Checklist item about bold, and a Self-Check item about bold.
 - ``conversation-examples.md`` renders CORRECT examples in bold and contains a
   Missing-Bold WRONG/CORRECT pair that differs only by the presence of ``**``.
-- ``conversation-protocol.md`` and ``conversation-examples.md`` render the
-  ``🛑 STOP`` marker in plain text (no bold on the STOP marker).
+- ``conversation-protocol.md`` and ``conversation-examples.md`` treat
+  ``🛑 STOP`` / ``⛔ MANDATORY GATE`` as internal-only directives: every CORRECT
+  question example ends on the 👉 question and renders no ``🛑 STOP`` / ``⛔``
+  marker beside it.
 
 All tests are deterministic: they read fixed on-disk steering content, use no
 randomness, no wall-clock time, and no external state.
 
 Feature: question-visibility
 
-Validates: Requirements R4.1, R4.2, R4.3, R4.4, R4.5, R5.1, R5.3, R5.4, R7.5
+Note: The bold-rule and STOP-marker assertions were reconciled with the
+``clean-question-presentation`` bugfix. That fix makes ``🛑 STOP`` /
+``⛔ MANDATORY GATE`` internal-only directives that are NEVER rendered beside a
+question, so the old "a rendered 🛑 STOP line exists and stays plain"
+assertions (which encoded the buggy oracle) are replaced by "CORRECT examples
+end on the 👉 question and render no marker."
+
+Validates: Requirements R4.1, R4.2, R4.3, R4.4, R4.5, R5.1, R5.3, R5.4, R7.5;
+clean-question-presentation Requirements 2.1, 2.3
 """
 
 from __future__ import annotations
@@ -54,7 +64,17 @@ _CONVERSATION_EXAMPLES: Path = _STEERING_DIR / "conversation-examples.md"
 
 _POINTER = "\U0001f449"  # 👉
 _STOP = "\U0001f6d1"  # 🛑
+_GATE = "\u26d4"  # ⛔
 _STOP_MARKER = f"{_STOP} STOP"
+
+# Single-question CORRECT Violation-Example sections that previously rendered a
+# trailing ``🛑 STOP`` line. After the clean-question-presentation fix each ends
+# on its 👉 question (no rendered marker follows it).
+_END_ON_QUESTION_EXAMPLES = (
+    "Multi-Question (CORRECT)",
+    "Not-Waiting (CORRECT)",
+    "Self-Answering (CORRECT)",
+)
 
 
 # ---------------------------------------------------------------------------
@@ -135,6 +155,65 @@ def _non_empty_lines(section_text: str) -> list[str]:
     return [ln.rstrip() for ln in section_text.splitlines() if ln.strip()]
 
 
+def _correct_example_blocks(content: str) -> list[tuple[str, list[str]]]:
+    """Return ``(heading, body_lines)`` for every ``(CORRECT)`` example section.
+
+    A block starts at a heading line (any level, ``#``..``######``) whose text
+    contains the literal ``(CORRECT)`` token and runs up to the next heading of
+    any level. This works for both ``conversation-examples.md`` (level-2
+    ``## ... (CORRECT)`` headings) and ``conversation-protocol.md`` (level-3
+    ``### ... (CORRECT)`` headings inside Violation Examples).
+
+    Args:
+        content: The full Markdown text to scan.
+
+    Returns:
+        A list of ``(heading_line, body_lines)`` pairs, one per CORRECT example.
+    """
+    lines = content.splitlines()
+    blocks: list[tuple[str, list[str]]] = []
+    current_heading: str | None = None
+    body: list[str] = []
+    for line in lines:
+        if re.match(r"^#{1,6}\s", line):
+            if current_heading is not None:
+                blocks.append((current_heading, body))
+                current_heading = None
+                body = []
+            if "(CORRECT)" in line:
+                current_heading = line.strip()
+                body = []
+            continue
+        if current_heading is not None:
+            body.append(line)
+    if current_heading is not None:
+        blocks.append((current_heading, body))
+    return blocks
+
+
+def _blockquote_lines(body: list[str]) -> list[str]:
+    """Return the rendered (blockquote) lines of an example body, de-quoted.
+
+    Only ``>``-prefixed lines are part of the rendered agent turn shown to the
+    bootcamper. Non-blockquote annotations (e.g. an italic ``*Internal: ...*``
+    note describing the example) are meta-commentary, not rendered content, and
+    are excluded. Empty blockquote separator lines (a bare ``>``) are dropped.
+
+    Args:
+        body: The body lines of a CORRECT example block.
+
+    Returns:
+        The de-quoted, non-empty rendered lines in document order.
+    """
+    out: list[str] = []
+    for line in body:
+        if line.lstrip().startswith(">"):
+            stripped = _strip_quote(line)
+            if stripped:
+                out.append(stripped)
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
@@ -189,11 +268,18 @@ class TestBoldQuestionSteering:
         """conversation-protocol.md has a distinct '## Bold Question Text' rule.
 
         The rule states bold is additive (not a replacement), that choice
-        questions bold only the lead, that bold is presentational and does not
-        change the One Question Rule (count driven by 👉), and that 🛑 STOP stays
-        plain.
+        questions bold only the lead, and that bold is presentational and does
+        not change the One Question Rule (count driven by 👉). It also carries
+        the internal-only-directive rule introduced by the
+        clean-question-presentation fix: ``🛑 STOP`` / ``⛔ MANDATORY GATE`` are
+        internal directives that are NEVER rendered beside a question — the
+        rendered boundary is the single 👉 question as the final message.
 
-        Validates: Requirements R4.3, R7.1, R7.3, R7.5
+        This replaces the previous "🛑 STOP marker stays plain" assertion, which
+        encoded the buggy expectation that the marker is emitted as content.
+
+        Validates: Requirements R4.3, R7.1, R7.3;
+            clean-question-presentation Requirements 2.1, 2.3
         """
         content = _read(_CONVERSATION_PROTOCOL)
         assert re.search(r"^## Bold Question Text\s*$", content, re.MULTILINE), (
@@ -218,8 +304,17 @@ class TestBoldQuestionSteering:
             "Bold rule must state the question count is driven by 👉 and unaffected "
             "by bold markers"
         )
-        assert _STOP_MARKER in rule and "stays plain" in lower, (
-            "Bold rule must state the 🛑 STOP marker stays plain"
+        # Internal-only directive rule (replaces the old "stays plain" clause).
+        assert "internal-only directive" in lower, (
+            "Bold rule must state 🛑 STOP / ⛔ MANDATORY GATE are internal-only "
+            "directives"
+        )
+        assert "never rendered" in lower, (
+            "Bold rule must state the markers are never rendered to the bootcamper"
+        )
+        assert _STOP_MARKER in rule and "⛔" in rule, (
+            "Bold rule must name both the 🛑 STOP and ⛔ markers as the "
+            "internal-only directives it governs"
         )
 
     def test_protocol_preoutput_checklist_has_bold_item(self) -> None:
@@ -343,49 +438,85 @@ class TestBoldQuestionSteering:
             "Missing-Bold pair must differ ONLY in the presence of bold markers"
         )
 
-    # -- 🛑 STOP marker stays plain (R7.5) -------------------------------------
+    # -- CORRECT examples end on the 👉 question, no rendered marker (2.1, 2.3) -
 
-    def test_protocol_stop_marker_is_plain(self) -> None:
-        """conversation-protocol.md renders the 🛑 STOP marker without bold.
+    def test_protocol_correct_examples_end_on_question(self) -> None:
+        """conversation-protocol.md CORRECT examples render no 🛑 STOP / ⛔ marker.
 
-        Validates: Requirement R7.5
+        The clean-question-presentation fix makes ``🛑 STOP`` / ``⛔ MANDATORY
+        GATE`` internal-only directives, so no CORRECT question example renders a
+        marker beside the question, and the single-question Violation-Example
+        CORRECT sections end on their 👉 question. This replaces the old
+        ``test_protocol_stop_marker_is_plain`` assertion, which required a
+        rendered (plain) 🛑 STOP line — the buggy oracle.
+
+        Validates: clean-question-presentation Requirements 2.1, 2.3
         """
-        self._assert_stop_marker_plain(_CONVERSATION_PROTOCOL)
+        self._assert_correct_examples_clean(_CONVERSATION_PROTOCOL)
 
-    def test_examples_stop_marker_is_plain(self) -> None:
-        """conversation-examples.md renders the 🛑 STOP marker without bold.
+    def test_examples_correct_examples_end_on_question(self) -> None:
+        """conversation-examples.md CORRECT examples render no 🛑 STOP / ⛔ marker.
 
-        Validates: Requirement R7.5
+        Replaces the old ``test_examples_stop_marker_is_plain`` assertion, which
+        required a rendered (plain) 🛑 STOP line — the buggy oracle.
+
+        Validates: clean-question-presentation Requirements 2.1, 2.3
         """
-        self._assert_stop_marker_plain(_CONVERSATION_EXAMPLES)
+        self._assert_correct_examples_clean(_CONVERSATION_EXAMPLES)
 
     @staticmethod
-    def _assert_stop_marker_plain(path: Path) -> None:
-        """Assert every 🛑 STOP marker line in ``path`` carries no bold markers.
+    def _assert_correct_examples_clean(path: Path) -> None:
+        """Assert CORRECT examples end on the 👉 question with no rendered marker.
 
-        A STOP marker line is a line whose content (after stripping blockquote
-        markers) begins with ``🛑 STOP``. Prose that merely mentions the marker
-        (e.g. a bolded label) does not begin with the marker and is not checked.
+        Two guarantees are checked:
+
+        1. No line in ``path`` renders a ``🛑 STOP`` marker line (a line whose
+           de-quoted content begins with ``🛑 STOP``). The marker is now an
+           internal-only directive, so it is never emitted as content. Inline
+           prose that merely names the marker (in backticks) is not a marker
+           line and is allowed.
+        2. Every ``(CORRECT)`` example that presents a 👉 question renders no
+           ``🛑`` / ``⛔`` glyph beside the question, and the named
+           single-question examples end on the 👉 question line.
 
         Args:
             path: The steering file to inspect.
         """
         content = _read(path)
-        assert _STOP_MARKER in content, f"{path.name} must contain a 🛑 STOP marker"
-        assert f"**{_STOP_MARKER}**" not in content, (
-            f"{path.name} must not wrap the 🛑 STOP marker in bold"
-        )
 
+        # (1) No rendered 🛑 STOP marker line survives anywhere in the file.
         marker_lines = [
             line
             for line in content.splitlines()
             if _strip_quote(line).startswith(_STOP_MARKER)
         ]
-        assert marker_lines, f"{path.name} must render a 🛑 STOP marker line"
-        for line in marker_lines:
-            assert "**" not in line, (
-                f"{path.name} 🛑 STOP marker line must be plain (no bold): {line!r}"
-            )
+        assert not marker_lines, (
+            f"{path.name} must not render any 🛑 STOP marker line — the marker is "
+            f"an internal-only directive, not emitted content: {marker_lines!r}"
+        )
+
+        # (2) Every CORRECT example that presents a 👉 question is marker-free.
+        checked_any = False
+        for heading, body in _correct_example_blocks(content):
+            rendered = _blockquote_lines(body)
+            if not any(ln.startswith(_POINTER) for ln in rendered):
+                continue
+            checked_any = True
+            for ln in rendered:
+                assert _STOP not in ln and _GATE not in ln, (
+                    f"{path.name} {heading}: CORRECT example must not render a "
+                    f"🛑 / ⛔ marker beside the question: {ln!r}"
+                )
+            if any(heading.endswith(name) for name in _END_ON_QUESTION_EXAMPLES):
+                assert rendered[-1].startswith(_POINTER), (
+                    f"{path.name} {heading}: CORRECT example must end on the 👉 "
+                    f"question line (no content after it), got: {rendered[-1]!r}"
+                )
+
+        assert checked_any, (
+            f"{path.name} must contain at least one (CORRECT) example that "
+            f"presents a 👉 question"
+        )
 
 
 class TestBoldQuestionSteeringIntegration:

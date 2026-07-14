@@ -35,7 +35,7 @@ The agent MUST use the phrase "programming language" (not just "language") when 
 
 👉 **Present the MCP-returned programming language list. If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly and suggest alternatives. For example: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"**
 
-🛑 STOP — Wait for the bootcamper's programming language choice before proceeding.
+*Internal directive (not shown to the bootcamper): end your turn on the question above and wait for the bootcamper's programming language choice before proceeding.*
 
 > **Note:** All listed languages produce working code via the MCP server's
 > `generate_scaffold` tool. However, the depth of supplementary examples
@@ -48,9 +48,9 @@ Persist the selection to `config/bootcamp_preferences.yaml`.
 
 Load language steering file immediately after confirmation (`lang-python.md`, `lang-java.md`, etc.).
 
-> ⛔ **MANDATORY GATE** — Programming language selection requires the bootcamper's actual choice. Do NOT assume or fabricate a programming language preference. MUST stop and wait for real input.
+> **Internal directive — not shown to the bootcamper.** Treat programming language selection as a ⛔ gate step: it requires the bootcamper's actual choice. Do NOT assume or fabricate a programming language preference, and do NOT say "I'll go with X."
 >
-> **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not say "I'll go with X." Do not proceed to the next step. Wait for the bootcamper's real input.
+> This is a MANDATORY GATE — you MUST stop and wait for the bootcamper's real input (🛑 STOP — end your response here). End your turn on the question above; do not answer it and do not proceed to the next step until the bootcamper responds.
 
 ## 5. Bootcamp Introduction
 
@@ -126,13 +126,13 @@ This is NOT a mandatory gate (⛔) — the bootcamper can skip it.
 
 Before moving on to track selection, give the bootcamper a moment to absorb everything from the overview. Present a warm, conversational check-in — this is an invitation, not a quiz.
 
-Output format: your output MUST begin with 👉 followed by the comprehension check question. Example:
+Output format: your output MUST begin with 👉 followed by the comprehension check question. Compose it as a single, non-compound question on the first attempt. Example:
 
 ```text
 👉 That was a lot of ground to cover — does everything so far make sense?
 ```
 
-If you paraphrase or reformulate the question, the 👉 prefix is still mandatory.
+If you paraphrase or reformulate the question, keep it a single question and the 👉 prefix is still mandatory.
 
 🛑 STOP — Wait for bootcamper response.
 

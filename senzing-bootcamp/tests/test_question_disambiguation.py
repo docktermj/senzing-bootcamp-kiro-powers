@@ -38,6 +38,38 @@ _WRONG_HEADER_RE = re.compile(r"^#{1,6}\s+.*\bWRONG\b", re.IGNORECASE)
 # CORRECT header pattern (ends a WRONG section)
 _CORRECT_HEADER_RE = re.compile(r"^#{1,6}\s+.*\bCORRECT\b", re.IGNORECASE)
 
+# Leading list marker (`- `, `* `, or `N. `) that may precede a real question.
+_LIST_MARKER_RE = re.compile(r"^(?:[-*]\s+|\d+\.\s+)?")
+
+
+def _is_question_start(line: str) -> bool:
+    """Return True if the line begins an actual 👉 question (not prose).
+
+    A real 👉 question has the pointer as the *leading content* of the line,
+    after optional blockquote (``>``) and list (``-``, ``*``, ``N.``) markers.
+    Prose that merely references the 👉 glyph mid-sentence — for example a rule
+    that quotes a documented compound anti-pattern inline (the "Compose-clean-
+    first" guidance) — is documentation, not a question directed at the
+    bootcamper, and must NOT start a scanned question block. Only actual
+    questions are subject to the compound-question check.
+
+    Args:
+        line: A single line of Markdown from a steering file.
+
+    Returns:
+        True if the pointer prefixes the line's question content.
+    """
+    stripped = line.strip()
+    if _QUESTION_PREFIX not in stripped:
+        return False
+    if stripped.startswith("```"):
+        return False
+    # Strip leading blockquote markers, then a single list marker.
+    while stripped.startswith(">"):
+        stripped = stripped[1:].lstrip()
+    stripped = _LIST_MARKER_RE.sub("", stripped, count=1)
+    return stripped.startswith(_QUESTION_PREFIX)
+
 
 class TestQuestionDisambiguation:
     """Feature: disambiguate-compound-questions
@@ -56,6 +88,11 @@ class TestQuestionDisambiguation:
         - Content inside fenced code blocks (``` or ~~~)
         - Lines inside "WRONG" violation example sections (they intentionally
           show bad patterns)
+        - Prose that references the 👉 glyph mid-sentence rather than beginning
+          an actual question. Only lines where the pointer is the leading
+          content (see :func:`_is_question_start`) begin a scanned question
+          block, so a rule that quotes a documented compound anti-pattern inline
+          (e.g. the "Compose-clean-first" guidance) is not false-flagged.
 
         Returns:
             List of (filename, line_number, offending_text) tuples.
@@ -99,8 +136,9 @@ class TestQuestionDisambiguation:
                     else:
                         continue
 
-                # Detect start of a 👉 question block
-                if _QUESTION_PREFIX in line:
+                # Detect start of a 👉 question block (an actual question, not
+                # prose that references the glyph mid-sentence).
+                if _is_question_start(line):
                     # If we were already in a question block, check the previous one
                     if in_question_block and question_text.count("?") >= 2:
                         if _COMPOUND_PATTERN.search(question_text):

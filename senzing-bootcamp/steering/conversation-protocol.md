@@ -137,7 +137,7 @@ The question text of every 👉 leading question is wrapped in **bold** (CommonM
 - **Context stays plain.** Explanatory sentences that precede the question text are rendered in plain text — only the question text itself is bold.
 - **Choice questions: bold the lead only.** In a choice question, only the neutral lead question is wrapped in bold; the numbered option lines stay in plain text.
 - **Bold is presentational.** It does not alter the One Question Rule. The number of 👉 leading questions in a turn is counted solely from the 👉 occurrences and is unaffected by the presence or absence of bold markers.
-- **The 🛑 STOP marker stays plain** — never wrap 🛑 STOP in bold.
+- **`🛑 STOP` and `⛔ MANDATORY GATE` are internal-only directives.** They govern end-of-turn and gate behavior but are NEVER rendered to the bootcamper. Do not emit a marker line beside or below a question — the rendered boundary is the single 👉 question as the final message, ended immediately after it.
 
 ### Bold Question (CORRECT)
 
@@ -179,6 +179,10 @@ Every 👉 question must have exactly one unambiguous meaning for each possible 
 
 Never append "or should we adjust anything?" or "Anything I missed?" to a confirmation question. Never combine "Would you like X?" with "Or would you prefer Y?" in prose — use a numbered choice list instead.
 
+**Compose-clean-first.** Compose every 👉 question as a single, non-compound question on the FIRST attempt. Do not draft a compound "or" question and rely on a later rewrite to clean it up — for example, compose a comprehension check as `👉 **Does the overview make sense before we choose a track?**`, never as a prose "Does everything make sense so far, or is there anything you'd like me to clarify?" that then has to be regenerated. The compound-rewrite protocol (Rule 3 / the Rewrite Protocol below) remains in force only as the safety net for a genuine compound question.
+
+**No-duplicate re-display.** An internal correction or regeneration pass MUST NOT re-emit a 👉 question that was already shown to the bootcamper. The corrected question replaces the draft before it is shown, never in addition to it. Re-display a question only when the bootcamper explicitly asks to see it again (genuine corrective content that has not yet been surfaced still follows the existing hook-output rules).
+
 ## Violation Examples
 
 ### Multi-Question (WRONG)
@@ -188,9 +192,8 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 ### Multi-Question (CORRECT)
 
 > 👉 **What language do you want?**
-> 🛑 STOP
-> [wait for response, then in next turn:]
-> 👉 **Which track interests you?**
+
+*Internal: end the turn on this question and wait. Ask "Which track interests you?" only in a separate later turn — never in this one. The stop-and-wait boundary is a directive to you, not shown to the bootcamper.*
 
 ### Not-Waiting (WRONG)
 
@@ -200,7 +203,8 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 ### Not-Waiting (CORRECT)
 
 > 👉 **Are you ready to continue?**
-> 🛑 STOP
+
+*Internal: end the turn on this question and wait for the bootcamper's reply before doing anything else. The boundary is a directive to you, not shown to the bootcamper.*
 
 ### Dead-End (WRONG)
 
@@ -226,7 +230,8 @@ Never append "or should we adjust anything?" or "Anything I missed?" to a confir
 ### Self-Answering (CORRECT)
 
 > 👉 **Who will be working on this project?**
-> 🛑 STOP
+
+*Internal: end the turn on this question and wait — never answer it yourself. The boundary is a directive to you, not shown to the bootcamper.*
 
 ### Compound Confirmation (WRONG)
 
@@ -262,6 +267,8 @@ Execute this checklist **before every turn** that contains a pointing-hand quest
 5. Verify you are not answering your own question. If self-answering → delete the self-answer.
 6. Verify no closing question offers to skip or bypass an upcoming mandatory gate step. If it does → remove the skip option.
 7. **Bold-question check:** Verify the closing 👉 question's text is wrapped in bold (`**...**`) before output. If the question text is not bold → wrap it in bold, keeping 👉 outside the span (for a choice question, bold only the lead question line).
+8. **No-leaked-marker check:** Verify no `🛑 STOP` or `⛔ MANDATORY GATE` text appears in the rendered turn. If a marker is present → delete it and simply end the turn after the 👉 question (the boundary is internal, not rendered).
+9. **No-duplicate check:** Verify this 👉 question was not already shown to the bootcamper — in a prior turn or an earlier draft in this same turn. If it was already surfaced → do not re-emit it, unless the bootcamper explicitly asked to see it again.
 
 ### Rewrite Protocol
 
@@ -342,8 +349,10 @@ Before ending any turn, verify:
 4. Am I answering my own question?
 5. Does any 👉 question offer to skip or bypass an upcoming ⛔ mandatory gate step?
 6. Does the closing 👉 question's text lack bold emphasis (`**...**`)?
+7. Does the turn render a `🛑 STOP` or `⛔ MANDATORY GATE` marker beside the question?
+8. Was this 👉 question already shown to the bootcamper (and not explicitly re-requested)?
 
-If any answer is yes (across all 6 checks), revise the turn before sending.
+If any answer is yes (across all 8 checks), revise the turn before sending.
 
 ## Mandatory question_pending
 

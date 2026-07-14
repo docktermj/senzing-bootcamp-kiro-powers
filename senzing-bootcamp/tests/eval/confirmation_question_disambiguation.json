@@ -9,12 +9,13 @@
     },
     {
       "role": "agent",
-      "content": "Here is what I captured: you keep customer records in two separate systems, and your goal is to resolve them into a single deduplicated master list. I will use that as the basis for the mapping work in the next step.\n\n👉 Does that capture your situation accurately?\n\n🛑 STOP — End your response here and wait for the bootcamper's real input.",
+      "content": "Here is what I captured: you keep customer records in two separate systems, and your goal is to resolve them into a single deduplicated master list. I will use that as the basis for the mapping work in the next step.\n\n👉 Does that capture your situation accurately?",
       "assertions": [
         {"type": "exactly_one_pointer"},
         {"type": "no_compound_question"},
         {"type": "no_self_answer"},
-        {"type": "ends_with_question_then_stop"}
+        {"type": "ends_with_question_then_stop"},
+        {"type": "absent_marker", "marker": "🛑"}
       ]
     }
   ]

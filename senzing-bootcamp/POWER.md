@@ -142,15 +142,15 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 
 | Steering File | Tokens | Size |
 |---|---|---|
-| `agent-behavior-rules.md` | 1315 | medium |
+| `agent-behavior-rules.md` | 1537 | medium |
 | `agent-context-management.md` | 1616 | medium |
-| `agent-instructions.md` | 4504 | large |
+| `agent-instructions.md` | 4650 | large |
 | `cloud-provider-setup.md` | 784 | medium |
 | `common-pitfalls.md` | 4612 | large |
 | `completion-summary-offer.md` | 1867 | medium |
 | `complexity-estimator.md` | 606 | medium |
-| `conversation-examples.md` | 580 | medium |
-| `conversation-protocol.md` | 4600 | large |
+| `conversation-examples.md` | 687 | medium |
+| `conversation-protocol.md` | 5179 | large |
 | `data-lineage.md` | 603 | medium |
 | `data-processing-reference.md` | 1174 | medium |
 | `deployment-aws.md` | 1324 | medium |
@@ -161,11 +161,11 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `design-patterns.md` | 810 | medium |
 | `entity-resolution-intro.md` | 1864 | medium |
 | `environment-setup.md` | 658 | medium |
-| `feedback-workflow.md` | 1245 | medium |
+| `feedback-workflow.md` | 1274 | medium |
 | `file-placement.md` | 515 | medium |
 | `graduation.md` | 11131 | large |
 | `hook-architecture.md` | 2418 | large |
-| `hook-registry-critical.md` | 11208 | large |
+| `hook-registry-critical.md` | 11455 | large |
 | `hook-registry-module-01.md` | 434 | small |
 | `hook-registry-module-02.md` | 269 | small |
 | `hook-registry-module-03.md` | 2124 | large |
@@ -233,7 +233,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-prerequisites.md` | 1395 | medium |
 | `module-transitions.md` | 1908 | medium |
 | `onboarding-flow.md` | 3983 | large |
-| `onboarding-phase1b-intro-language.md` | 2176 | large |
+| `onboarding-phase1b-intro-language.md` | 2522 | large |
 | `onboarding-phase2-track-setup.md` | 1506 | medium |
 | `phase-loading-guide.md` | 890 | medium |
 | `project-structure.md` | 789 | medium |
@@ -249,7 +249,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `slash-backup-project.md` | 157 | small |
 | `slash-commonmark-validation.md` | 444 | small |
 | `slash-git-commit.md` | 187 | small |
-| `track-switching.md` | 769 | medium |
+| `track-switching.md` | 840 | medium |
 | `troubleshooting-commands.md` | 672 | medium |
 | `troubleshooting-decision-tree.md` | 1606 | medium |
 | `uat-framework.md` | 576 | medium |
@@ -258,7 +258,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 218526 tokens
+**Total budget:** 220273 tokens
 
 <!-- END GENERATED: steering-files -->
 

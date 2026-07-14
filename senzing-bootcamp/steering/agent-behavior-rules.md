@@ -34,7 +34,8 @@ Every question must have exactly one unambiguous meaning for "yes" and one for "
 
 - Never join alternatives with "or", "alternatively", "or would you rather", "or should we", or "or would you prefer" in a single question.
 - Format 2+ alternatives as a numbered choice list with a neutral lead question.
-- Rewrite any compound question before presenting it.
+- Compose-clean-first: the FIRST composed question must already be single and non-compound — do not draft a compound question and lean on an after-the-fact rewrite to clean it up.
+- Rewrite any compound question before presenting it. The compound-rewrite protocol stays in force only as the safety net for a genuine compound question; a question already shown is never re-emitted (see the no-duplicate re-display rule in `conversation-protocol.md`).
 - Ask confirmation alone in one turn; handle corrections in the next turn if needed.
 
 ## Rule 4: Consistent Pointer Indicator
@@ -48,6 +49,8 @@ Prefix every input-requiring prompt with 👉 at the start of the line.
 - Wrap the question text of every leading question in bold (`**...**`) in addition to the 👉 pointer, never as a replacement for it. The 👉 stays at the start of the line and outside the bold span; the bold span covers the question text that follows.
 
 **Leading-question guarantee.** Every yielding turn ends with exactly one 👉 leading question. This closing question is YOUR responsibility — do not depend on a hook to provide it. Per the One Question Rule, exactly one 👉 question per yielding turn: ending a yielding turn with zero 👉 questions, or with two or more, is a violation.
+
+**Internal-only control directives.** `🛑 STOP` and `⛔ MANDATORY GATE` are internal control directives, never user-facing content. `🛑 STOP` defines the end-of-turn boundary; `⛔ MANDATORY GATE` defines gate semantics (execute unconditionally, never skip). They govern your behavior only and are NEVER rendered to the bootcamper. The rendered boundary is simply this: the single 👉 leading question is the final message; end immediately after it, with no marker line beside or below the question.
 
 A `write-policy-gate` intercept/retry cycle does not relieve you of this obligation. A re-issued write following an intercept is work completed in the turn and still requires exactly one closing 👉 leading question before yielding (see Intercept-Recovery Continuity in `conversation-protocol.md`).
 

@@ -174,7 +174,7 @@ onboarding:
       step_range: [0, 2]
     phase1b-intro-language:
       file: onboarding-phase1b-intro-language.md
-      token_count: 2176
+      token_count: 2522
       size_category: large
       step_range: [3, "5b"]
     phase2-track-setup:
@@ -316,13 +316,13 @@ split_allowlist:
 
 file_metadata:
   agent-behavior-rules.md:
-    token_count: 1315
+    token_count: 1537
     size_category: medium
   agent-context-management.md:
     token_count: 1616
     size_category: medium
   agent-instructions.md:
-    token_count: 4504
+    token_count: 4650
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -337,10 +337,10 @@ file_metadata:
     token_count: 606
     size_category: medium
   conversation-examples.md:
-    token_count: 580
+    token_count: 687
     size_category: medium
   conversation-protocol.md:
-    token_count: 4600
+    token_count: 5179
     size_category: large
   data-lineage.md:
     token_count: 603
@@ -373,7 +373,7 @@ file_metadata:
     token_count: 658
     size_category: medium
   feedback-workflow.md:
-    token_count: 1245
+    token_count: 1274
     size_category: medium
   file-placement.md:
     token_count: 515
@@ -385,7 +385,7 @@ file_metadata:
     token_count: 2418
     size_category: large
   hook-registry-critical.md:
-    token_count: 11208
+    token_count: 11455
     size_category: large
   hook-registry-module-01.md:
     token_count: 434
@@ -589,7 +589,7 @@ file_metadata:
     token_count: 3983
     size_category: large
   onboarding-phase1b-intro-language.md:
-    token_count: 2176
+    token_count: 2522
     size_category: large
   onboarding-phase2-track-setup.md:
     token_count: 1506
@@ -637,7 +637,7 @@ file_metadata:
     token_count: 187
     size_category: small
   track-switching.md:
-    token_count: 769
+    token_count: 840
     size_category: medium
   troubleshooting-commands.md:
     token_count: 672
@@ -662,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 218526
+  total_tokens: 220273
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

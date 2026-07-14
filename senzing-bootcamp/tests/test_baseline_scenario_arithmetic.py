@@ -106,8 +106,18 @@ AUTO_FILES: tuple[str, ...] = (
 # both the finalized always-set baseline (+345) and the loads-always footprint
 # (+345) moved by the same amount. The three pre-existing `always` files were
 # untouched, so DOCUMENTED_PRE_EXISTING_ALWAYS stays 6,690.
-DOCUMENTED_FINALIZED_BASELINE = 13_889   # finalized always-set (Decision_Record baseline, Req 2.5)
-DOCUMENTED_PRE_EXISTING_ALWAYS = 6_690   # three pre-existing `always` files
+# Re-pinned once more (13_889 -> 14_836 / 6_690 -> 6_836 / 25_968 -> 26_915) for
+# the clean-question-presentation bugfix: three always-loaded files grew when the
+# stop/gate markers were made internal-only directives and the compose-clean-first
+# / no-duplicate-re-display rules were added — agent-instructions.md (a
+# pre-existing `always` file) grew +146 (so DOCUMENTED_PRE_EXISTING_ALWAYS moves
+# 6_690 -> 6_836), agent-behavior-rules.md (finalized `always` AND an Auto_File)
+# 1315 -> 1537 (+222), and conversation-protocol.md (finalized `always` AND an
+# Auto_File) 4600 -> 5179 (+579). The finalized always-set moved by the combined
+# +947 (13_889 -> 14_836) and the loads-always footprint by the same +947
+# (25_968 -> 26_915); qa-transcript.md was untouched.
+DOCUMENTED_FINALIZED_BASELINE = 14_836   # finalized always-set (Decision_Record baseline, Req 2.5)
+DOCUMENTED_PRE_EXISTING_ALWAYS = 6_836   # three pre-existing `always` files
 # Re-pinned once more (25_261 -> 25_623) for the session-handoff spec: task 5.1
 # added the "### Session Handoff Offer" hook-in to agent-context-management.md
 # (one of the eleven Auto_Files), growing its measured count 1326 -> 1616 (+290),
@@ -124,7 +134,7 @@ DOCUMENTED_PRE_EXISTING_ALWAYS = 6_690   # three pre-existing `always` files
 # DOCUMENTED_FINALIZED_BASELINE moved by the same amount (13_544 -> 13_889);
 # DOCUMENTED_PRE_EXISTING_ALWAYS stays 6_690 (the three pre-existing `always`
 # files were untouched).
-DOCUMENTED_LOADS_ALWAYS = 25_968         # loads-always footprint (Audit_Finding note, Req 1.5)
+DOCUMENTED_LOADS_ALWAYS = 26_915         # loads-always footprint (Audit_Finding note, Req 1.5)
 
 # "≈" tolerance for the loads-always note: 1% of the stated figure. The two
 # Task 4/7.1 frontmatter edits move the true sum by only a handful of tokens,
@@ -166,10 +176,10 @@ class TestBaselineScenarioArithmetic:
 
         Reads the per-file ``token_count`` from the shipped ``steering-index.yaml``
         ``file_metadata`` and asserts the six finalized ``always`` files sum to
-        exactly the current baseline of 13,889 tokens; confirms the same
+        exactly the current baseline of 14,836 tokens; confirms the same
         figure equals ``measure_steering``'s computed Baseline_Footprint for the
         real corpus (the ``inclusion: always`` set); and pins the composition
-        identity 6,690 (pre-existing) + 7,199 (newly promoted) == 13,889.
+        identity 6,836 (pre-existing) + 8,000 (newly promoted) == 14,836.
         """
         stored = measure_steering._parse_stored_metadata(
             measure_steering.load_yaml_content(_INDEX_PATH)
@@ -205,7 +215,7 @@ class TestBaselineScenarioArithmetic:
         pre-existing ``always`` files plus all eleven Auto_Files counted as
         always-loaded — satisfies the arithmetic identity (pre-existing sum +
         Auto_Files sum == combined sum) and lands within tolerance of the
-        re-pinned baseline of ≈25,968 tokens. The exact current measured sum is
+        re-pinned baseline of ≈26,915 tokens. The exact current measured sum is
         pinned via the identity rather than a brittle literal, and cross-checked
         against the on-disk measurement.
         """
@@ -226,9 +236,11 @@ class TestBaselineScenarioArithmetic:
         assert pre_existing_sum + auto_files_sum == loads_always_sum
         assert pre_existing_sum == DOCUMENTED_PRE_EXISTING_ALWAYS
 
-        # The measured loads-always footprint matches the re-pinned ≈25,968
-        # within a 1% tolerance (agent-behavior-rules.md's Rule 5 +345 growth
-        # moved it up from the prior ≈25,623 documented figure).
+        # The measured loads-always footprint matches the re-pinned ≈26,915
+        # within a 1% tolerance (the clean-question-presentation internal-only
+        # marker + compose-clean-first edits grew agent-instructions.md +146,
+        # agent-behavior-rules.md +222, and conversation-protocol.md +579,
+        # moving it up from the prior ≈25,968 documented figure).
         assert abs(loads_always_sum - DOCUMENTED_LOADS_ALWAYS) <= LOADS_ALWAYS_TOLERANCE, (
             f"loads-always measured sum {loads_always_sum} is farther than "
             f"{LOADS_ALWAYS_TOLERANCE} tokens from the documented "

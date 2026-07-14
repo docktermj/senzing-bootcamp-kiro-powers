@@ -259,13 +259,31 @@ bootcamper-directed questions
 
 
 class TestProperty2StopMarkerBetweenQuestions:
-    """Feature: conversation-ux-rules, Property 2: STOP marker follows every 👉 \
-question before next question
+    """Feature: conversation-ux-rules, Property 2: consecutive 👉 questions are \
+separated by a turn boundary
 
-    For any steering file with multiple 👉 questions, there SHALL be a 🛑
-    STOP marker (or EOF) between each pair.
+    For any steering file with multiple 👉 questions, consecutive questions
+    SHALL be separated by a turn boundary so they never run together inside a
+    single rendered turn.
 
-    **Validates: Requirements 1.3, 2.3, 7.3**
+    Reconciled with the ``clean-question-presentation`` bugfix: ``🛑 STOP`` /
+    ``⛔ MANDATORY GATE`` are now internal-only directives that are NOT rendered
+    between questions, so a rendered marker is no longer *required* as the
+    separator. A valid turn boundary is any of:
+
+    - the questions are enumerated as a numbered "ask one at a time" menu (each
+      question a separate numbered list item, governed by an internal
+      end-the-turn directive) — the fixed multi-question pattern;
+    - a section/step heading between them; or
+    - a rendered ``🛑 STOP`` / ``⛔`` marker (legacy files not yet reconciled
+      still carry one, and that remains a valid boundary — the harness engine
+      still accepts a boundary line when present).
+
+    What is prohibited is two 👉 questions running together with no boundary of
+    any kind.
+
+    **Validates: Requirements 1.3, 2.3, 7.3;
+    clean-question-presentation Requirements 2.1, 2.3**
     """
 
     @given(file_path=st_spec_modified_file())
@@ -276,7 +294,13 @@ question before next question
     def test_stop_marker_between_pointing_questions(
         self, file_path: Path
     ) -> None:
-        """🛑 STOP marker (or EOF) exists between each pair of 👉 questions.
+        """A non-marker turn boundary separates each pair of 👉 questions.
+
+        The boundary need not be a rendered ``🛑 STOP`` line: ending the turn on
+        the 👉 question (a numbered "ask one at a time" menu item) or a section
+        heading are both valid. A rendered ``🛑 STOP`` / ``⛔`` marker between
+        the questions is also accepted for files not yet reconciled to the
+        internal-only-directive convention.
 
         Args:
             file_path: Path to a steering file drawn from the strategy.
@@ -290,35 +314,42 @@ question before next question
             return
 
         violations: list[str] = []
-        re_stop = re.compile(r"🛑")
-        re_section_heading = re.compile(r"^##\s+")
+        re_marker = re.compile(r"🛑|⛔")
+        re_section_heading = re.compile(r"^#{1,6}\s+")
+        re_numbered_question = re.compile(r"^\s*\d+\.\s+👉")
 
         for i in range(len(pointing_questions) - 1):
             current_line_num = pointing_questions[i][0]
             next_line_num = pointing_questions[i + 1][0]
 
-            # Check for 🛑 STOP marker or section heading between questions.
-            # Section headings (## ...) serve as natural turn boundaries in
-            # files that use hook-based stopping instead of explicit markers.
             found_separator = False
-            for scan_idx in range(current_line_num + 1, next_line_num):
-                scan_line = lines[scan_idx]
-                if re_stop.search(scan_line):
-                    found_separator = True
-                    break
-                if re_section_heading.match(scan_line):
-                    found_separator = True
-                    break
+
+            # (a) The next question is a separate numbered menu item — the
+            # enclosing step asks these one at a time and ends the turn on each
+            # 👉 question (the fixed, marker-free multi-question pattern).
+            if re_numbered_question.match(lines[next_line_num]):
+                found_separator = True
+
+            # (b) A section heading or a (possibly internal) 🛑/⛔ marker
+            # between the two questions is also a valid turn boundary.
+            if not found_separator:
+                for scan_idx in range(current_line_num + 1, next_line_num):
+                    scan_line = lines[scan_idx]
+                    if re_section_heading.match(scan_line) or re_marker.search(
+                        scan_line
+                    ):
+                        found_separator = True
+                        break
 
             if not found_separator:
                 violations.append(
-                    f"{file_path.name}: no 🛑 STOP between "
+                    f"{file_path.name}: no turn boundary between "
                     f"line {current_line_num + 1} and "
                     f"line {next_line_num + 1}"
                 )
 
         assert violations == [], (
-            "Missing 🛑 STOP markers between 👉 questions:\n"
+            "Consecutive 👉 questions with no turn boundary between them:\n"
             + "\n".join(violations)
         )
 

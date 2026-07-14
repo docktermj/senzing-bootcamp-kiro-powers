@@ -166,6 +166,24 @@ _FROZEN_ONBOARDING_SHA256: dict[str, str] = {
     ),
 }
 
+# Re-pinned for the clean-question-presentation bugfix: that spec legitimately
+# amended two of these four rule sections (design.md mandates editing
+# agent-behavior-rules.md Rule 3 and Rule 4), so their body-scoped,
+# rstrip-normalized SHA-256 baselines were re-frozen to the current measured
+# reality:
+#   * Rule 3 (Eliminate Ambiguous Yes/No Questions) — the compose-clean-first
+#     clause was added (the FIRST composed question must already be single and
+#     non-compound, not merely rewritten after the fact):
+#       b794e9f3...608e2d4 -> 6cf4054e...d207ab4
+#   * Rule 4 (Consistent Pointer Indicator) — the internal-only control-directive
+#     clause was added (🛑 STOP / ⛔ MANDATORY GATE govern end-of-turn / gate
+#     semantics but are NEVER rendered to the bootcamper; the rendered boundary
+#     is the trailing 👉 question):
+#       e1c60143...c9ea35af -> 8281cfde...c549b3db
+# Rules 1 and 2 were NOT touched by this spec and remain byte-identical to their
+# original frozen baselines (verified unchanged during the re-pin), so only the
+# Rule 3 and Rule 4 literals moved. The test logic and _PRESERVED_RULE_HEADINGS
+# are unchanged — this is a frozen-baseline re-pin, not a logic change.
 _FROZEN_RULE_SHA256: dict[str, str] = {
     "## Rule 1: Honor Explicit Continuation Requests": (
         "36356379c3ccccfefbbcbd3a6de878dc0818ed8cc606ab685ee158d9af6485b1"
@@ -174,10 +192,10 @@ _FROZEN_RULE_SHA256: dict[str, str] = {
         "dbe37ffcc977be613215093d119ed8e755a9ed22dcd16f9897f58430592f42e5"
     ),
     "## Rule 3: Eliminate Ambiguous Yes/No Questions": (
-        "b794e9f36d40ab14285a65dccc8dd61a649c7c602a105aefe3dafc937608e2d4"
+        "6cf4054ea7296cb88dc63831bd8412140686c3745c4f72d4f2c1d976dd207ab4"
     ),
     "## Rule 4: Consistent Pointer Indicator": (
-        "e1c6014348618872dc7356b0bc0029acc232acebbae7656f09ffb0bcc9ea35af"
+        "8281cfde5e46f4896c5b841166eab3e7cc680032db5c637b67e20113c549b3db"
     ),
 }
 

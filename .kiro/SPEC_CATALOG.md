@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 278
+- implemented: 279
 - superseded: 2
 - abandoned: 0
 - unknown: 0
@@ -182,6 +182,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/ci-workflow-restructure/](.kiro/specs/ci-workflow-restructure/)
+
+### clean-question-presentation
+
+- Status: implemented
+- Type: bugfix
+- Workflow: requirements-first
+- Directory: [.kiro/specs/clean-question-presentation/](.kiro/specs/clean-question-presentation/)
 
 ### completion-summary
 

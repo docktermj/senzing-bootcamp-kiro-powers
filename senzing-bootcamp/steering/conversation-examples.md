@@ -13,9 +13,8 @@ Reference examples for correct vs incorrect question patterns. Load when the `wr
 ## Multi-Question (CORRECT)
 
 > 👉 **What language do you want?**
-> 🛑 STOP
-> [wait for response, then in next turn:]
-> 👉 **Which track interests you?**
+
+_Internal: end the turn on this question and wait. Ask "Which track interests you?" only in a separate later turn — never in this one. The stop-and-wait boundary is a directive to you, not shown to the bootcamper._
 
 ## Not-Waiting (WRONG)
 
@@ -25,7 +24,8 @@ Reference examples for correct vs incorrect question patterns. Load when the `wr
 ## Not-Waiting (CORRECT)
 
 > 👉 **Are you ready to continue?**
-> 🛑 STOP
+
+_Internal: end the turn on this question and wait for the bootcamper's reply before doing anything else. The boundary is a directive to you, not shown to the bootcamper._
 
 ## Dead-End (WRONG)
 
@@ -59,7 +59,8 @@ Reference examples for correct vs incorrect question patterns. Load when the `wr
 ## Self-Answering (CORRECT)
 
 > 👉 **Who will be working on this project?**
-> 🛑 STOP
+
+_Internal: end the turn on this question and wait — never answer it yourself. The boundary is a directive to you, not shown to the bootcamper._
 
 ## Compound Confirmation (WRONG)
 

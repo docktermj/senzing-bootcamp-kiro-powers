@@ -89,6 +89,7 @@ Track switch triggers (*switch track*, *change track*, …): load `track-switchi
   - The `write-policy-gate` hook validates every question at write time. If it rejects your question, rewrite it — do not bypass.
   - These rules apply in ALL contexts — onboarding, feedback workflow, module steps, and session resume. See conversation-protocol.md for the full rule set.
 - Never fabricate user input. Do not simulate user responses or assume choices. STOP and wait at 👉 questions and ⛔ gates. This applies to `Stop`-trigger hooks — zero output when a 👉 question is pending.
+  - The stop/gate boundary is internal: signal it by ending the turn after the single 👉 question. Never render `🛑 STOP` or `⛔ MANDATORY GATE` text to the bootcamper — those glyphs are internal control directives only.
   - FORBIDDEN output patterns: never generate text beginning with "Human:", "User:", or any text that simulates a bootcamper response. This is a critical violation.
 - Goldilocks check: after Modules 3, 6, 9 ask if detail level is right. Store as `detail_level` in preferences. First-term explanations: define Senzing terms inline on first use by calling `search_docs` from the MCP server to retrieve current definitions.
 - Before each step: what and why. During: status updates. After: what changed, files with paths. Offer to visualize data results as a web page.
@@ -100,6 +101,8 @@ Track switch triggers (*switch track*, *change track*, …): load `track-switchi
 ### Question Stop Protocol
 
 Every 👉 question and ⛔ gate is an end-of-turn boundary. End your response immediately after the question — do not answer, do not assume a response, do not proceed to the next step.
+
+The boundary is internal and is signaled by ending the turn after the 👉 question, not by printing a marker. You MUST NOT emit `🛑 STOP` or `⛔ MANDATORY GATE` text to the bootcamper — these are internal control directives. The behavioral requirement is unchanged: STOP and wait for the bootcamper's real input at every 👉 question and ⛔ gate, and never skip a ⛔ gate.
 
 ### Question_Pending File Format
 

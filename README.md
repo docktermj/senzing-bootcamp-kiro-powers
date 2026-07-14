@@ -56,7 +56,6 @@ Kiro's agentic chat will guide you through the Bootcamp.
    Your job is to steer the AI to create what you want.
    Let the AI do the work.
 1. During "Administrative setup", simply hitting the "Allow" button is all that's needed.
-1. Each major task is called a "module". There are "tracks" which are ordered sets of modules.
 1. Questions posed to the Bootcamper are usually prefaced with "👉"
 
 ## Peccadillos
@@ -126,27 +125,6 @@ Example:
 Bootcamp Feedback: You asked me to recommend a restaurant. That shouldn't be asked in the bootcamp.
 ```
 
-## Save Bootcamp artifacts
-
-After completing the bootcamp, save any artifacts of interest.
-All artifacts created by the Senzing Bootcamp are in the Kiro project directory.
-
-1. To save bootcamp artifacts into a single compressed file, prompt:
-
-   ```console
-   Backup the bootcamp to a single compressed file
-   ```
-
-   Move the file to a location outside of the project directory.
-
-1. To save all of your prompts:
-
-   ```console
-   Export all prompts and their effects into a markdown file
-   ```
-
-   Move the file to a location outside of the project directory.
-
 ## Clean up the Bootcamp
 
 1. Move any files you'd like to keep out of the project directory.
@@ -180,10 +158,3 @@ All artifacts created by the Senzing Bootcamp are in the Kiro project directory.
    1. In Kiro's left-hand icon bar, click on the **Powers** icon.
    1. In the **Powers** panel, under **Installed**, find "Senzing Bootcamp".
    1. In the **Power: Senzing Bootcamp** panel, click the **Uninstall** button.
-
-## Related project: Claude Code plugin
-
-A Claude Code counterpart to this Kiro Power lives at
-[`docktermj/senzing-bootcamp-claude-plugin`](https://github.com/docktermj/senzing-bootcamp-claude-plugin).
-The two are kept in sync: changes to the bootcamp content here should be migrated to the
-Claude plugin. See that repo's `MIGRATION.md` and `scripts/sync-check.sh`.

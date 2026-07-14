@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 2
-- implemented: 286
+- in-progress: 1
+- implemented: 287
 - superseded: 1
 - abandoned: 0
 - unknown: 0
@@ -669,7 +669,7 @@
 
 ### guaranteed-qa-capture
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/guaranteed-qa-capture/](.kiro/specs/guaranteed-qa-capture/)

@@ -225,11 +225,11 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-11-deployment.md` | 479 | small |
 | `module-11-phase1-packaging.md` | 2940 | large |
 | `module-11-phase2-deploy.md` | 850 | medium |
-| `module-completion-artifacts.md` | 3448 | large |
+| `module-completion-artifacts.md` | 3551 | large |
 | `module-completion-error-handling.md` | 637 | medium |
 | `module-completion-next-steps.md` | 705 | medium |
 | `module-completion-track.md` | 4090 | large |
-| `module-completion.md` | 2256 | large |
+| `module-completion.md` | 2432 | large |
 | `module-prerequisites.md` | 1395 | medium |
 | `module-transitions.md` | 2106 | large |
 | `onboarding-flow.md` | 4138 | large |
@@ -237,7 +237,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `onboarding-phase2-track-setup.md` | 2979 | large |
 | `phase-loading-guide.md` | 890 | medium |
 | `project-structure.md` | 789 | medium |
-| `qa-transcript.md` | 1103 | medium |
+| `qa-transcript.md` | 1204 | medium |
 | `recovery-from-mistakes.md` | 1227 | medium |
 | `security-privacy.md` | 278 | small |
 | `session-handoff.md` | 4148 | large |
@@ -258,7 +258,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 228725 tokens
+**Total budget:** 229105 tokens
 
 <!-- END GENERATED: steering-files -->
 

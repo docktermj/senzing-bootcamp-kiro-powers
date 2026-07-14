@@ -7,9 +7,9 @@
 
 ## Status Summary
 
-- in-progress: 3
-- implemented: 285
-- superseded: 3
+- in-progress: 2
+- implemented: 286
+- superseded: 1
 - abandoned: 0
 - unknown: 0
 
@@ -515,9 +515,9 @@
 
 ### experience-audit-remediation
 
-- Status: in-progress
-- Type: unknown
-- Workflow: unknown
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
 - Directory: [.kiro/specs/experience-audit-remediation/](.kiro/specs/experience-audit-remediation/)
 
 ### export-results
@@ -1559,30 +1559,12 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/sdk-verify-hook-dead-end-path/](.kiro/specs/sdk-verify-hook-dead-end-path/)
 
-### self-answering-prevention-v2
-
-- Status: superseded
-- Type: bugfix
-- Workflow: requirements-first
-- Directory: [.kiro/specs/self-answering-prevention-v2/](.kiro/specs/self-answering-prevention-v2/)
-- Supersedes: self-answering-questions-fix
-- Superseded by: self-answering-reinforcement
-
-### self-answering-questions-fix
-
-- Status: superseded
-- Type: bugfix
-- Workflow: requirements-first
-- Directory: [.kiro/specs/self-answering-questions-fix/](.kiro/specs/self-answering-questions-fix/)
-- Superseded by: self-answering-prevention-v2
-
 ### self-answering-reinforcement
 
 - Status: implemented
 - Type: unknown
 - Workflow: unknown
 - Directory: [.kiro/specs/self-answering-reinforcement/](.kiro/specs/self-answering-reinforcement/)
-- Supersedes: self-answering-prevention-v2
 
 ### senzing-bootcamp-power
 

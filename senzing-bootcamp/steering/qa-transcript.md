@@ -77,3 +77,10 @@ track-completion and graduation stopping points by the `enforce-critical-artifac
 hook via `ensure_graduation_artifacts.py`, which reconstructs it from always-present
 sources (the session log, and the recap's `### Questions & Responses` pairs). That
 stopping-point reconstruction is unchanged and adds no per-write hook.
+
+In short, the capture guarantee boundary is this: Q&A capture is best-effort and
+event-driven mid-module (hook-enforced on the Q&A cadence, only as strong as the
+installed hooks, and never triggered by a file write), reconciled at every
+stopping point via `reconcile_transcript.py`, and hard-guaranteed at track
+completion / graduation via `enforce-critical-artifacts` →
+`ensure_graduation_artifacts.py`.

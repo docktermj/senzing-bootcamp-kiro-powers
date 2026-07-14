@@ -1,0 +1,90 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. (Disposition: keep-as-superseded / remove) Confirm retirement of the superseded self-answering specs": [
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784068284897
+      },
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784068309652
+      },
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784068360550
+      }
+    ],
+    "1.1* (Disposition: remove — only if maintainer opts in) Physically delete the superseded specs": [
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784068285046
+      },
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784068740574
+      },
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784068864502
+      }
+    ],
+    "2. (Disposition: modify) Document the Q&A \"logged for the recap\" guarantee boundary": [
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784068285090
+      },
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784068867570
+      },
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784068990790
+      }
+    ],
+    "2.1* (Disposition: implement — optional stronger capture) Reconcile the transcript at the module-completion boundary": [
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784068285143
+      },
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784069000279
+      },
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784069123880
+      }
+    ],
+    "4. Regenerate the spec catalog after any change in tasks 1–2": [
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784068285177
+      },
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784069128246
+      },
+      {
+        "executionId": "99e24c61-601c-4961-b8a6-de6a7eb86971",
+        "chatSessionId": "sess_b9d720ab-e3cb-4984-b9a8-cc54021b5682",
+        "timestamp": 1784069515577
+      }
+    ]
+  }
+}

@@ -53,6 +53,8 @@ The recap append is a **synchronous, verified step of the module-completion work
 
 When a module is marked complete in `config/bootcamp_progress.json`, gather session content and append a **consolidated** Recap_Section to `docs/bootcamp_recap.md`, then verify and (if needed) backfill before reporting success. A single consolidated append now carries both the structured recap content and the narrative `### Journal` subsection that was formerly written to the retired `docs/bootcamp_journal.md` — there is no separate journal step.
 
+**Q&A capture guarantee boundary (recap-facing):** The `### Questions & Responses` pairs that land in this recap are captured best-effort and event-driven mid-module (hook-enforced on the Q&A cadence per `qa-transcript.md`, never on a file write), reconciled at every stopping point, and hard-guaranteed only at track completion / graduation via `enforce-critical-artifacts` → `ensure_graduation_artifacts.py`.
+
 ### What is gathered
 
 - **Information Shared:** Key concepts, explanations, and reference material presented during the module

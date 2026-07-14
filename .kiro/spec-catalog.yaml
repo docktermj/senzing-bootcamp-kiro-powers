@@ -17,15 +17,10 @@
 #   status_overrides:
 #     some-abandoned-spec: abandoned
 
-# Directional supersession chain for the self-answering line of work:
-#   self-answering-questions-fix
-#     -> self-answering-prevention-v2
-#       -> self-answering-reinforcement
+# The self-answering line of work retired its two older specs
+# (self-answering-questions-fix, self-answering-prevention-v2) by physical
+# removal; only self-answering-reinforcement remains, with no back-reference.
 supersessions:
-  - supersedes: self-answering-prevention-v2
-    superseded: self-answering-questions-fix
-  - supersedes: self-answering-reinforcement
-    superseded: self-answering-prevention-v2
   # Q&A capture moved from voluntary agent emission to hook-enforced capture.
   - supersedes: guaranteed-qa-capture
     superseded: bootcamp-qa-transcript

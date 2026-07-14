@@ -565,7 +565,7 @@ file_metadata:
     token_count: 850
     size_category: medium
   module-completion-artifacts.md:
-    token_count: 3448
+    token_count: 3551
     size_category: large
   module-completion-error-handling.md:
     token_count: 637
@@ -577,7 +577,7 @@ file_metadata:
     token_count: 4090
     size_category: large
   module-completion.md:
-    token_count: 2256
+    token_count: 2432
     size_category: large
   module-prerequisites.md:
     token_count: 1395
@@ -601,7 +601,7 @@ file_metadata:
     token_count: 789
     size_category: medium
   qa-transcript.md:
-    token_count: 1103
+    token_count: 1204
     size_category: medium
   recovery-from-mistakes.md:
     token_count: 1227
@@ -662,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 228725
+  total_tokens: 229105
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

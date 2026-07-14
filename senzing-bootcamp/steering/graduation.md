@@ -21,6 +21,30 @@ A graduation report (`GRADUATION_REPORT.md`) is always generated at the end, eve
 
 Each step requires bootcamper confirmation before proceeding. Do not skip ahead.
 
+## Graduation Banner
+
+<!-- AGENT INSTRUCTION — not shown to the bootcamper.
+Display the GRADUATION banner below VERBATIM as the FIRST output of the
+graduation celebration, before the Pre-checks and before Step 0. It bookends
+the bootcamp: the welcome banner signposts the start, this banner signposts
+the finish.
+
+Show the banner exactly ONCE per track completion. If the track-completion
+celebration (module-completion-track.md) already displayed the GRADUATION
+banner for this completion, do NOT display it again here — present it at most
+once per track completion.
+
+This banner is display-only: it introduces no new question or gate, and it
+does NOT change the graduation artifact guarantees, the recap/transcript
+rendering order, or the mandatory closing question defined later in this file.
+-->
+
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎓🎓🎓  GRADUATION  🎓🎓🎓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 ## Pre-checks
 
 Before starting any steps, gather the bootcamper's context:

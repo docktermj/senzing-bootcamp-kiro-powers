@@ -17,6 +17,35 @@ After each module, check if the user finished their track's last module:
 
 > **Note:** The completion-summary document (`docs/completion_summary.md`) is always created at track completion; the completion-summary offer in its existing position (between the celebration and the export option) governs only the shareable PDF/share, not the document's creation.
 
+### Graduation Banner
+
+<!-- AGENT INSTRUCTION — not shown to the bootcamper.
+Display the GRADUATION banner below VERBATIM as the FIRST output of the
+track-completion celebration, before the reconciliation passes, the shareable
+deliverable renders, and the "🎉 You've completed…" summary below. It bookends
+the bootcamp: the welcome banner signposts the start, this banner signposts
+the finish.
+
+Show the banner exactly ONCE per track completion. The track-completion
+celebration ALWAYS runs at track completion — before the graduation offer — so
+every bootcamper who completes a track sees the banner here, INCLUDING one who
+later declines graduation or has `skip_graduation` set. When the bootcamper
+ACCEPTS graduation, the graduation workflow (graduation.md) coordinates with
+this note: because the celebration already displayed the banner for this
+completion, graduation.md does NOT display it again, keeping it to at most once
+per track completion.
+
+This banner is display-only: it introduces no new question or gate, and it
+does NOT change the artifact guarantees, the recap/transcript rendering order,
+or the mandatory closing question defined later in this file.
+-->
+
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎓🎓🎓  GRADUATION  🎓🎓🎓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
 ### Recap Reconciliation & Backfill (Path A final safety net)
 
 Before presenting the celebration, reconcile the recap deliverable against the recorded progress so the final per-module recap is complete. Each module's section is appended-and-verified synchronously at module completion (see `module-completion-artifacts.md`); this pass is the **final safety net** that catches any section still missing at track completion — a write lost across a session boundary or a final-module hook miss.

@@ -1,8 +1,11 @@
-"""Content tests for the Step 5 Bootcamp Introduction licensing language.
+"""Content tests for the Step 4 Bootcamp Introduction licensing language.
 
 These tests validate the licensing-related content within the
-"## 5. Bootcamp Introduction" overview of
-`senzing-bootcamp/steering/onboarding-phase1b-intro-language.md`.
+"## 4. Bootcamp Introduction" overview of
+`senzing-bootcamp/steering/onboarding-phase1b-intro-language.md`. After the
+preface reorder (track before language), the Bootcamp Introduction is Step 4
+(programming language selection moved to phase 2) and the verbosity sub-step
+is Step 4a.
 
 Requirements validated:
 - Property 1 / Req 4.1: the overview offers requesting an evaluation license
@@ -55,34 +58,34 @@ def _read_steering_text() -> str:
 
 
 def _extract_step5_overview(text: str) -> str:
-    """Extract the Step 5 Bootcamp Introduction overview region.
+    """Extract the Step 4 Bootcamp Introduction overview region.
 
-    The region starts at the "## 5. Bootcamp Introduction" heading and ends at
-    the next level-2 heading or the "### 5a" subsection, which is where the
+    The region starts at the "## 4. Bootcamp Introduction" heading and ends at
+    the next level-2 heading or the "### 4a" subsection, which is where the
     overview bullet list concludes.
 
     Args:
         text: Full steering file text.
 
     Returns:
-        The text of the Step 5 overview region.
+        The text of the Step 4 overview region.
 
     Raises:
-        ValueError: If the Step 5 section heading is not found.
+        ValueError: If the Step 4 section heading is not found.
     """
     lines = text.splitlines()
     start: int | None = None
     for i, line in enumerate(lines):
-        if line.strip().startswith("## 5.") and "Bootcamp Introduction" in line:
+        if line.strip().startswith("## 4.") and "Bootcamp Introduction" in line:
             start = i
             break
     if start is None:
-        raise ValueError("Could not find '## 5. Bootcamp Introduction' section")
+        raise ValueError("Could not find '## 4. Bootcamp Introduction' section")
 
     end = len(lines)
     for j in range(start + 1, len(lines)):
         stripped = lines[j]
-        if stripped.startswith("## ") or stripped.startswith("### 5a"):
+        if stripped.startswith("## ") or stripped.startswith("### 4a"):
             end = j
             break
     return "\n".join(lines[start:end])

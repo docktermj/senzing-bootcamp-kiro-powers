@@ -6,15 +6,22 @@ inclusion: manual
 
 Loaded via `#[[file:]]` from `onboarding-flow.md` during Step 3.
 
-<!-- AGENT INSTRUCTION — not shown to the bootcamper.
-Before presenting this section, call `search_docs` from the Senzing MCP server:
-1. search_docs("Senzing principle-based entity resolution approach")
-2. search_docs("entity resolution relationships disclosed discovered")
-3. search_docs("entity resolution ambiguous match possible match")
-4. search_docs("Senzing differentiators real-time explainability attribution")
-5. search_docs("entity resolution pipeline standardization blocking scoring clustering")
-Use retrieved content to fill in Senzing-specific claims dynamically.
--->
+<!-- AGENT INSTRUCTION (not shown to bootcamper): Display the banner below
+VERBATIM as the FIRST output of this step, before any prose (Req 1.1). Show it
+exactly ONCE per Preface run; do NOT re-display it when re-presenting the
+"Explore Further" gate after a follow-up question (Req 1.4). -->
+
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🧩🧩🧩  ENTITY RESOLUTION CONCEPTS  🧩🧩🧩
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+<!-- AGENT INSTRUCTION (not shown to bootcamper): Before the prose below, call
+`search_docs` (Senzing MCP) for: principle-based ER approach; disclosed vs
+discovered relationships; ambiguous/possible matches; Senzing differentiators
+(real-time, explainability, attribution); ER pipeline (standardization, blocking,
+scoring, clustering). Fill Senzing-specific claims from results, not training data. -->
 
 ## What entity resolution is
 

@@ -212,14 +212,15 @@ _UNFIXED_PHASE2_STEPS: dict[int, str] = {
     for n in _PHASE2_NON_QUESTION_STEPS
 }
 
-# Onboarding non-question steps: 0, 1, 1b, 2, 5
-# (post-restructuring numbering: prerequisite check is now Step 2 in
-# onboarding-flow.md, and bootcamp introduction is now Step 5 in
-# onboarding-phase1b-intro-language.md)
+# Onboarding non-question steps: 0, 1, 1b, 2, 4
+# (post-reorder numbering: prerequisite check is Step 2 in onboarding-flow.md,
+# and the bootcamp introduction is Step 4 in onboarding-phase1b-intro-language.md.
+# Step 5 is now Track Selection — a mandatory gate with a 🛑 STOP — so it is NOT
+# a non-question step and must not be used here.)
 _UNFIXED_ONBOARDING = _read_file(_ONBOARDING)
 _UNFIXED_ONBOARDING_PHASE1B = _read_file(_ONBOARDING_PHASE1B)
 _UNFIXED_ONBOARDING_PHASE2 = _read_file(_ONBOARDING_PHASE2)
-_ONBOARDING_NON_QUESTION_STEP_IDS = ["0", "1", "1b", "2", "5"]
+_ONBOARDING_NON_QUESTION_STEP_IDS = ["0", "1", "1b", "2", "4"]
 _UNFIXED_ONBOARDING_STEPS: dict[str, str] = {
     sid: _extract_onboarding_step_both_files(sid)
     for sid in _ONBOARDING_NON_QUESTION_STEP_IDS
@@ -448,16 +449,17 @@ class TestPhase2NonQuestionStepsPreserved:
 
 
 class TestOnboardingNonQuestionStepsPreserved:
-    """Onboarding non-question steps (0, 1, 1b, 2, 5) unchanged.
+    """Onboarding non-question steps (0, 1, 1b, 2, 4) unchanged.
 
     **Validates: Requirements 3.1, 3.2, 3.4**
 
     These steps contain setup, prerequisite, and informational
     content that must not gain stop-and-wait directives.
 
-    Note: after the onboarding restructuring, the prerequisite check
-    is Step 2 (onboarding-flow.md) and the bootcamp introduction is
-    Step 5 (onboarding-phase1b-intro-language.md).
+    Note: after the preface reorder, the prerequisite check is Step 2
+    (onboarding-flow.md) and the bootcamp introduction is Step 4
+    (onboarding-phase1b-intro-language.md). Step 5 is now Track Selection,
+    a mandatory gate, so it is excluded from the non-question steps.
     """
 
     def test_step0_content_unchanged(self) -> None:
@@ -504,18 +506,19 @@ class TestOnboardingNonQuestionStepsPreserved:
             f"Got: {current[:300]}"
         )
 
-    def test_step5_content_unchanged(self) -> None:
-        """Step 5 (bootcamp introduction) is unchanged."""
-        current = _extract_onboarding_step_both_files("5")
-        baseline = _UNFIXED_ONBOARDING_STEPS["5"]
-        assert baseline, "Baseline for Step 5 is empty"
+    def test_step4_content_unchanged(self) -> None:
+        """Step 4 (bootcamp introduction) is unchanged."""
+        current = _extract_onboarding_step_both_files("4")
+        baseline = _UNFIXED_ONBOARDING_STEPS["4"]
+        assert baseline, "Baseline for Step 4 is empty"
         assert current == baseline, (
-            f"Step 5 content changed.\n"
+            f"Step 4 content changed.\n"
             f"Expected: {baseline[:300]}\n"
             f"Got: {current[:300]}"
         )
 
-    # Step 4c removed from non-question steps — it now has a 👉 question with 🛑 STOP
+    # Track Selection (Step 5) and the comprehension check (Step 5b) are gates
+    # with 👉 questions and 🛑 STOP directives, so they are excluded here.
 
 
 # ---------------------------------------------------------------------------

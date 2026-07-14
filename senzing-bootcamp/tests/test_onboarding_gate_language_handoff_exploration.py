@@ -134,13 +134,16 @@ def _extract_step3_to_step4_region(steering_text: str) -> str:
 
     This is exactly where the fix inserts the readiness-signal transition
     directive. Returns the text from ``## 3. Entity Resolution Introduction``
-    up to (but not including) ``## 4. Programming Language Selection``.
+    up to (but not including) ``## 4. Bootcamp Introduction``. After the preface
+    reorder (track before language), Step 4 in phase 1b is the Bootcamp
+    Introduction (programming language selection moved to phase 2); the Step 3 ->
+    Step 4 gate-clearance transition directive is unchanged and still lives here.
     """
     start = re.search(
         r"^##\s+3\.\s+Entity Resolution Introduction", steering_text, re.MULTILINE
     )
     end = re.search(
-        r"^##\s+4\.\s+Programming Language Selection", steering_text, re.MULTILINE
+        r"^##\s+4\.\s+Bootcamp Introduction", steering_text, re.MULTILINE
     )
     if not start or not end:
         return ""

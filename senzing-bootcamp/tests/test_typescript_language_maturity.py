@@ -265,26 +265,26 @@ class TestOnboardingDisclaimerPresence:
 
     The disclaimer must appear within the Programming Language Selection
     section and acknowledge that `find_examples` depth varies across languages
-    while `generate_scaffold` produces working code for all. This step was
-    moved out of onboarding-flow.md into onboarding-phase1b-intro-language.md
-    (shipped Step 4).
+    while `generate_scaffold` produces working code for all. After the preface
+    reorder (track before language), this step lives in
+    onboarding-phase2-track-setup.md as Step 5a (after Track Selection).
 
     **Validates: Requirements 6**
     """
 
     def _get_step2_content(self) -> str:
-        """Extract the Programming Language Selection (Step 4) section content."""
-        file_path = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
+        """Extract the Programming Language Selection (Step 5a) section content."""
+        file_path = _STEERING_DIR / "onboarding-phase2-track-setup.md"
         content = file_path.read_text(encoding="utf-8")
 
         step2_match = re.search(
-            r"## 4\. Programming Language Selection\s*\n(.*?)(?=\n## \d|\Z)",
+            r"## 5a\. Programming Language Selection\s*\n(.*?)(?=\n## \d|\Z)",
             content,
             re.DOTALL,
         )
         assert step2_match is not None, (
-            "onboarding-phase1b-intro-language.md is missing "
-            "'## 4. Programming Language Selection' section"
+            "onboarding-phase2-track-setup.md is missing "
+            "'## 5a. Programming Language Selection' section"
         )
         return step2_match.group(1)
 

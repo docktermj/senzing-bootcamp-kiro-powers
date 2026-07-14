@@ -33,9 +33,11 @@ _ONBOARDING_PHASE2 = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 
 # After the onboarding split (same-branch refactor), the Bootcamp Introduction
 # (welcome banner + module overview) moved out of onboarding-flow.md into
-# onboarding-phase1b-intro-language.md, where it is now Step 5 (was Step 4).
-# The "Module overview table (1-11)" bullet moved unchanged — only its owning
-# file and step number changed.
+# onboarding-phase1b-intro-language.md. The later preface reorder (track before
+# language) moved programming language selection out of phase 1b into phase 2,
+# leaving Bootcamp Introduction as Step 4 (immediately after the Step 3
+# entity-resolution intro). The "Module overview table (1-11)" bullet moved
+# unchanged — only its owning file and step number changed.
 _ONBOARDING_PHASE1B = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
 
 # The introductory sentence that precedes the duplicate table in Step 5
@@ -228,22 +230,24 @@ class TestPreservationStep4:
         """Bootcamp Introduction should contain 'Module overview table (1-11)'.
 
         After the onboarding split, the Bootcamp Introduction (with the module
-        overview bullet) moved from onboarding-flow.md Step 4 into
-        onboarding-phase1b-intro-language.md as Step 5. The bullet text is
-        unchanged — only its owning file/step number moved.
+        overview bullet) moved from onboarding-flow.md into
+        onboarding-phase1b-intro-language.md. The preface reorder (track before
+        language) then left it as Step 4 (programming language selection moved
+        to phase 2). The bullet text is unchanged — only its owning file/step
+        number moved.
 
         **Validates: Requirements 3.1**"""
         content = _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
-        step5 = _extract_section(content, "## 5. Bootcamp Introduction")
-        assert "Module overview table (1-11)" in step5, (
-            "Bootcamp Introduction (phase1b Step 5) is missing the module "
+        step4 = _extract_section(content, "## 4. Bootcamp Introduction")
+        assert "Module overview table (1-11)" in step4, (
+            "Bootcamp Introduction (phase1b Step 4) is missing the module "
             "overview instruction.\n"
-            f"Step 5 content:\n{step5[:500]}..."
+            f"Step 4 content:\n{step4[:500]}..."
         )
         # Independent content assertion: the welcome banner moved together with
-        # the overview into the same Step 5 section (relocation, not change).
-        assert "WELCOME TO THE SENZING BOOTCAMP" in step5, (
-            "Bootcamp Introduction (phase1b Step 5) must still contain the "
+        # the overview into the same Step 4 section (relocation, not change).
+        assert "WELCOME TO THE SENZING BOOTCAMP" in step4, (
+            "Bootcamp Introduction (phase1b Step 4) must still contain the "
             "welcome banner alongside the module overview"
         )
 

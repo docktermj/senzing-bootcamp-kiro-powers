@@ -368,8 +368,9 @@ class TestCordDataPriorityExamples:
         """Bootcamp Introduction step mentions CORD with description, before synthesized data.
 
         The Bootcamp Introduction (which carries the CORD overview bullet) was
-        moved out of onboarding-flow.md into onboarding-phase1b-intro-language.md
-        (shipped Step 5).
+        moved out of onboarding-flow.md into onboarding-phase1b-intro-language.md.
+        After the preface reorder (track before language), it is Step 4
+        (programming language selection moved to phase 2).
 
         Validates: Requirements 2.1, 2.2, 2.4
         """
@@ -377,7 +378,7 @@ class TestCordDataPriorityExamples:
         content = path.read_text(encoding="utf-8")
 
         # Requirement 2.1: CORD is mentioned in the Bootcamp Introduction section
-        step4_marker = content.find("## 5. Bootcamp Introduction")
+        step4_marker = content.find("## 4. Bootcamp Introduction")
         assert step4_marker != -1, (
             "Bootcamp Introduction section not found in "
             "onboarding-phase1b-intro-language.md"

@@ -281,10 +281,11 @@ class TestOnboardingHardStopBlocks:
     Mandatory gates and question points need 🛑 STOP blocks with 'end your
     response' and prohibited behavior language.
 
-    Re-baselined for the onboarding split: the language-selection prompt moved
-    from onboarding-flow.md (old Step 2) into onboarding-phase1b-intro-language.md
-    as Step 4, and the verbosity prompt moved from old Step 4b into Step 5a of the
-    same phase file. Track selection (Step 5) lives in onboarding-phase2-track-setup.md.
+    Re-baselined for the preface reorder (track before language): the
+    programming-language-selection prompt now lives in
+    onboarding-phase2-track-setup.md as Step 5a (after Track Selection), and the
+    verbosity prompt is Step 4a of onboarding-phase1b-intro-language.md. Track
+    selection (Step 5) lives in onboarding-phase2-track-setup.md.
     """
 
     @pytest.fixture()
@@ -292,68 +293,68 @@ class TestOnboardingHardStopBlocks:
         return _read_file(_ONBOARDING)
 
     def test_step2_has_hard_stop_block(self, onboarding_content: str) -> None:
-        phase1b = _read_file(_ONBOARDING_PHASE1B)
-        step = _extract_onboarding_step(phase1b, "4")
+        phase2 = _read_file(_ONBOARDING_PHASE2)
+        step = _extract_onboarding_step(phase2, "5a")
         assert step, (
-            "Step 4 (Programming Language Selection) not found in "
-            "onboarding-phase1b-intro-language.md"
+            "Step 5a (Programming Language Selection) not found in "
+            "onboarding-phase2-track-setup.md"
         )
         # Independent content assertion: confirm the moved content is the
         # language-selection prompt and uses the phrase "programming language".
         assert "programming language" in step.lower(), (
-            "Step 4 in onboarding-phase1b-intro-language.md does not appear to be "
+            "Step 5a in onboarding-phase2-track-setup.md does not appear to be "
             "the programming language selection step (missing 'programming language')."
         )
         assert _has_hard_stop_block(step), (
-            "Step 4 (Programming Language Selection) in "
-            "onboarding-phase1b-intro-language.md lacks a 🛑 STOP hard-stop block. "
+            "Step 5a (Programming Language Selection) in "
+            "onboarding-phase2-track-setup.md lacks a 🛑 STOP hard-stop block. "
             "The ⛔ mandatory gate exists but without the upgraded structural pattern."
         )
 
     def test_step2_has_end_response_language(
         self, onboarding_content: str
     ) -> None:
-        phase1b = _read_file(_ONBOARDING_PHASE1B)
-        step = _extract_onboarding_step(phase1b, "4")
+        phase2 = _read_file(_ONBOARDING_PHASE2)
+        step = _extract_onboarding_step(phase2, "5a")
         assert step, (
-            "Step 4 (Programming Language Selection) not found in "
-            "onboarding-phase1b-intro-language.md"
+            "Step 5a (Programming Language Selection) not found in "
+            "onboarding-phase2-track-setup.md"
         )
         assert _has_end_response_language(step), (
-            "Step 4 (Programming Language Selection) in "
-            "onboarding-phase1b-intro-language.md lacks explicit "
+            "Step 5a (Programming Language Selection) in "
+            "onboarding-phase2-track-setup.md lacks explicit "
             "'end your response' language."
         )
 
     def test_step2_has_prohibited_behavior(
         self, onboarding_content: str
     ) -> None:
-        phase1b = _read_file(_ONBOARDING_PHASE1B)
-        step = _extract_onboarding_step(phase1b, "4")
+        phase2 = _read_file(_ONBOARDING_PHASE2)
+        step = _extract_onboarding_step(phase2, "5a")
         assert step, (
-            "Step 4 (Programming Language Selection) not found in "
-            "onboarding-phase1b-intro-language.md"
+            "Step 5a (Programming Language Selection) not found in "
+            "onboarding-phase2-track-setup.md"
         )
         assert _has_prohibited_behavior(step), (
-            "Step 4 (Programming Language Selection) in "
-            "onboarding-phase1b-intro-language.md lacks prohibited behavior "
+            "Step 5a (Programming Language Selection) in "
+            "onboarding-phase2-track-setup.md lacks prohibited behavior "
             "language (e.g., 'do not answer', 'do not assume')."
         )
 
     def test_step4b_has_hard_stop_block(self, onboarding_content: str) -> None:
         phase1b = _read_file(_ONBOARDING_PHASE1B)
-        step = _extract_onboarding_step(phase1b, "5a")
+        step = _extract_onboarding_step(phase1b, "4a")
         assert step, (
-            "Step 5a (Verbosity Preference) not found in "
+            "Step 4a (Verbosity Preference) not found in "
             "onboarding-phase1b-intro-language.md"
         )
         # Independent content assertion: confirm this is the verbosity step.
         assert "verbosity" in step.lower(), (
-            "Step 5a in onboarding-phase1b-intro-language.md does not appear to be "
+            "Step 4a in onboarding-phase1b-intro-language.md does not appear to be "
             "the verbosity preference step (missing 'verbosity')."
         )
         assert _has_hard_stop_block(step), (
-            "Step 5a (Verbosity Preference) in "
+            "Step 4a (Verbosity Preference) in "
             "onboarding-phase1b-intro-language.md lacks a 🛑 STOP hard-stop block "
             "after the verbosity question."
         )
@@ -362,13 +363,13 @@ class TestOnboardingHardStopBlocks:
         self, onboarding_content: str
     ) -> None:
         phase1b = _read_file(_ONBOARDING_PHASE1B)
-        step = _extract_onboarding_step(phase1b, "5a")
+        step = _extract_onboarding_step(phase1b, "4a")
         assert step, (
-            "Step 5a (Verbosity Preference) not found in "
+            "Step 4a (Verbosity Preference) not found in "
             "onboarding-phase1b-intro-language.md"
         )
         assert _has_end_response_language(step), (
-            "Step 5a (Verbosity Preference) in "
+            "Step 4a (Verbosity Preference) in "
             "onboarding-phase1b-intro-language.md lacks explicit "
             "'end your response' language."
         )
@@ -611,10 +612,10 @@ _ALL_QUESTION_POINTS: list[tuple[str, str, str]] = [
     # Module 01 Phase 2 steps
     ("module-01-phase2-document-confirm.md", "Module 01 Phase 2", "step_16"),
     ("module-01-phase2-document-confirm.md", "Module 01 Phase 2", "step_17"),
-    # Onboarding steps (post-split: language → phase1b Step 4, verbosity →
-    # phase1b Step 5a, track selection → phase2 Step 5)
-    ("onboarding-phase1b-intro-language.md", "Onboarding", "step_4"),
-    ("onboarding-phase1b-intro-language.md", "Onboarding", "step_5a"),
+    # Onboarding steps (post-reorder: verbosity → phase1b Step 4a, language →
+    # phase2 Step 5a, track selection → phase2 Step 5)
+    ("onboarding-phase1b-intro-language.md", "Onboarding", "step_4a"),
+    ("onboarding-phase2-track-setup.md", "Onboarding", "step_5a"),
     ("onboarding-phase2-track-setup.md", "Onboarding", "step_5"),
     # agent-instructions.md
     ("agent-instructions.md", "Agent Instructions", "communication_section"),

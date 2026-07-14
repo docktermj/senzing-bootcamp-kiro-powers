@@ -43,10 +43,10 @@ If the preferences file is missing or contains invalid YAML (the `LoadResult.err
 
 1. Inform the bootcamper that preferences could not be loaded
 2. Do NOT assume default values silently
-3. Prompt for each required preference **one at a time** in this order:
-   - Language
-   - Track
+3. Prompt for each required preference **one at a time** in this order (matching the reordered preface capture order — detail level first, then track before language):
    - Verbosity
+   - Track
+   - Language
 4. After each answer, persist the value immediately via `write_preference()` before the next response
 
 ### Partial Preferences (Missing Fields)
@@ -54,7 +54,7 @@ If the preferences file is missing or contains invalid YAML (the `LoadResult.err
 If the preferences file is valid but some required fields are missing (`LoadResult.missing_required` is non-empty while `preferences` is not None):
 
 1. Preserve all successfully loaded values — do not re-ask for fields that are already present
-2. Prompt only for each missing field individually, in order: language, track, verbosity (skipping any that are already loaded)
+2. Prompt only for each missing field individually, in order: verbosity, track, language (matching the reordered preface capture order — track before language — and skipping any that are already loaded)
 3. After each answer, persist the value immediately via `write_preference()` before the next response
 
 ### Persistence Before Next Response

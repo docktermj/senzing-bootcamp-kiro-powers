@@ -541,7 +541,25 @@ _BASELINE_HASHES: dict[str, str] = {
     # (223281 = sum of file_metadata counts). hook-registry-critical.md is the
     # ONLY file that moved; keywords/languages/deployment/root_step_range are
     # byte-identical (verified: their baseline hashes still match the live index).
-    "budget": "fcb4962592d0292f84090d93b96d29970ab9548aed6053b31c86081b34fa89f3",
+    # Re-baselined once more (223281 -> 224434) for the preface-flow-and-banners
+    # spec: the preface reorder (track before language) relocated content between
+    # onboarding-phase1b-intro-language.md (2786 -> 1734) and
+    # onboarding-phase2-track-setup.md (1719 -> 2979), and the new banners grew
+    # entity-resolution-intro.md (1864 -> 2043), graduation.md (11426 -> 11664),
+    # module-completion-track.md (3760 -> 4090), onboarding-flow.md (3983 -> 4138),
+    # and session-resume.md (3463 -> 3506), all recomputed by measure_steering.py
+    # into file_metadata and the budget total (224434 = sum of file_metadata
+    # counts). Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    # Re-baselined once more (224434 -> 224324) for the preface-flow-and-banners
+    # token-band remediation: entity-resolution-intro.md was trimmed (2043 ->
+    # 1933) by condensing two agent-only HTML comments so it re-enters the
+    # medium band (< 2000), which measure_steering.py recomputed into
+    # file_metadata and the budget total. Only the budget block changed (solely
+    # the total_tokens line); keywords/languages/deployment/root_step_range are
+    # byte-identical (verified: their baseline hashes still match the live index).
+    "budget": "3d3811a364e9cc209833a229f9ee9cb871114433ca68e5d8eea11ff212bc368e",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -991,8 +1009,11 @@ class TestNonPhaseBlocksBytePreserved:
         # write-policy-gate CHECK 5 mirror +793, all resynced by measure_steering.py
         # into file_metadata and the budget total), so the hash cannot silently
         # re-pin a stale value.
+        # Aggregate re-synced 224434 -> 224324 for the preface-flow-and-banners
+        # token-band remediation (entity-resolution-intro.md trimmed 2043 -> 1933
+        # by condensing two agent-only HTML comments).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 223281" in budget_block
+        assert "total_tokens: 224324" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

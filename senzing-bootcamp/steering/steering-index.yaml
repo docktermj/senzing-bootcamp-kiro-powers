@@ -174,13 +174,13 @@ onboarding:
       step_range: [0, 2]
     phase1b-intro-language:
       file: onboarding-phase1b-intro-language.md
-      token_count: 2522
-      size_category: large
+      token_count: 1734
+      size_category: medium
       step_range: [3, "5b"]
     phase2-track-setup:
       file: onboarding-phase2-track-setup.md
-      token_count: 1719
-      size_category: medium
+      token_count: 2979
+      size_category: large
       step_range: [5, "5c"]
 
 session-resume:
@@ -367,7 +367,7 @@ file_metadata:
     token_count: 810
     size_category: medium
   entity-resolution-intro.md:
-    token_count: 1864
+    token_count: 1933
     size_category: medium
   environment-setup.md:
     token_count: 658
@@ -379,7 +379,7 @@ file_metadata:
     token_count: 515
     size_category: medium
   graduation.md:
-    token_count: 11426
+    token_count: 11664
     size_category: large
   hook-architecture.md:
     token_count: 2418
@@ -574,7 +574,7 @@ file_metadata:
     token_count: 705
     size_category: medium
   module-completion-track.md:
-    token_count: 3760
+    token_count: 4090
     size_category: large
   module-completion.md:
     token_count: 2256
@@ -586,14 +586,14 @@ file_metadata:
     token_count: 1908
     size_category: medium
   onboarding-flow.md:
-    token_count: 3983
+    token_count: 4138
     size_category: large
   onboarding-phase1b-intro-language.md:
-    token_count: 2786
-    size_category: large
-  onboarding-phase2-track-setup.md:
-    token_count: 1719
+    token_count: 1734
     size_category: medium
+  onboarding-phase2-track-setup.md:
+    token_count: 2979
+    size_category: large
   phase-loading-guide.md:
     token_count: 890
     size_category: medium
@@ -622,7 +622,7 @@ file_metadata:
     token_count: 793
     size_category: medium
   session-resume.md:
-    token_count: 3463
+    token_count: 3506
     size_category: large
   skip-step-protocol.md:
     token_count: 799
@@ -662,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 223281
+  total_tokens: 224324
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

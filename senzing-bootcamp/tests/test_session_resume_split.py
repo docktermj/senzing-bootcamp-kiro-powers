@@ -884,30 +884,34 @@ class TestUnitTokenBudgets:
         Requirement 4.x — the convention must be stated inline / self-contained
         so it survives context compaction (Req 4.3), so it is not trimmed —
         growing the file 3386 -> 3463 tokens, re-measured by measure_steering.py
-        and re-synced into steering-index.yaml. The threshold moves to 3,463 to
-        match that intentional shipped value (3,463 tokens); the per-file ±10%
-        budget enforcement in measure_steering.py is unchanged. Paired with an
-        independent content assertion below so the ceiling can never mask
-        unbounded growth.
+        and re-synced into steering-index.yaml. Most recently, the
+        preface-flow-and-banners spec updated session-resume.md's missing-field
+        prompt-ordering note to the new capture order (track, language, verbosity)
+        to match the reordered preface, growing it 3463 -> 3506 tokens, re-measured
+        by measure_steering.py and re-synced into steering-index.yaml. The
+        threshold moves to 3,506 to match that intentional shipped value (3,506
+        tokens); the per-file ±10% budget enforcement in measure_steering.py is
+        unchanged. Paired with an independent content assertion below so the
+        ceiling can never mask unbounded growth.
         """
         token_count = _calculate_token_count(_PHASE1_FILE)
-        assert token_count <= 3463, (
-            f"Phase-1 file has {token_count} tokens, exceeds budget of 3,463"
+        assert token_count <= 3506, (
+            f"Phase-1 file has {token_count} tokens, exceeds budget of 3,506"
         )
 
         # Independent content assertion: the shipped steering-index.yaml declares
-        # the same token_count for session-resume.md, confirming 3,463 is the
-        # intentional shipped value (the onboarding-session-ux Rule 6 bold-question
-        # convention added inline to Step 2b, re-measured and re-synced), not drift.
+        # the same token_count for session-resume.md, confirming 3,506 is the
+        # intentional shipped value (the preface-reorder missing-field ordering
+        # note update, re-measured and re-synced), not drift.
         index = _read_steering_index()
         assert "session-resume.md:" in index, (
             "steering-index.yaml must contain a session-resume.md entry"
         )
         idx_pos = index.find("session-resume.md:")
         entry = index[idx_pos:idx_pos + 200]
-        assert "token_count: 3463" in entry, (
-            "steering-index.yaml must record session-resume.md token_count: 3463 "
-            "(the shipped post-Rule-6 bold-question-convention value)"
+        assert "token_count: 3506" in entry, (
+            "steering-index.yaml must record session-resume.md token_count: 3506 "
+            "(the shipped post-preface-reorder value)"
         )
 
     def test_phase2_mapping_token_budget(self) -> None:

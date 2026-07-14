@@ -1,6 +1,9 @@
 ---
 inclusion: manual
 ---
+
+> **Note on file name (historical):** This file keeps `intro-language` in its name for stability, but `Language_Selection` has moved to phase 2 (`onboarding-phase2-track-setup.md`). This file now covers the entity resolution intro handoff, the welcome banner / bootcamp introduction, and the detail-level (verbosity) step.
+
 ## 3. Entity Resolution Introduction
 
 <!-- This step introduces entity resolution concepts before the bootcamper
@@ -25,34 +28,7 @@ Recognize any of these readiness signals as gate-clearance that advances the flo
 
 **Contrast — follow-up questions are NOT readiness signals.** If the bootcamper's message contains "?", asks for an explanation, or requests clarification about an entity resolution concept, do NOT treat it as a readiness signal and do NOT advance to Step 4. Instead, follow the answer-then-re-present-gate flow defined in `entity-resolution-intro.md`: answer the question using `search_docs`, then re-present the gate. Only a genuine readiness signal — not a follow-up question — routes directly to Step 4.
 
-## 4. Programming Language Selection
-
-Detect the user's platform (`platform.system()`), then call `get_capabilities` or `sdk_guide` on the Senzing MCP server for the supported languages on that platform. The hard gate in Step 0b guarantees MCP is available — call the tool directly and present the returned programming language list to the bootcamper.
-
-When presenting this question, always use the phrase "programming language" — never the bare word "language" alone — to avoid ambiguity with natural/spoken languages.
-
-The agent MUST use the phrase "programming language" (not just "language") when presenting the selection question to the bootcamper.
-
-👉 **Present the MCP-returned programming language list. If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly and suggest alternatives. For example: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"**
-
-*Internal directive (not shown to the bootcamper): end your turn on the question above and wait for the bootcamper's programming language choice before proceeding.*
-
-> **Note:** All listed languages produce working code via the MCP server's
-> `generate_scaffold` tool. However, the depth of supplementary examples
-> (via `find_examples`) may vary — Python and Java currently have the most
-> extensive example coverage. This does not affect the bootcamp workflow.
-
-> Tip: If you plan to use these bootcamp artifacts in production, consider choosing the language your team already uses — the code we generate here is designed to be your starting point for real-world use.
-
-Persist the selection to `config/bootcamp_preferences.yaml`.
-
-Load language steering file immediately after confirmation (`lang-python.md`, `lang-java.md`, etc.).
-
-> **Internal directive — not shown to the bootcamper.** Treat programming language selection as a ⛔ gate step: it requires the bootcamper's actual choice. Do NOT assume or fabricate a programming language preference, and do NOT say "I'll go with X."
->
-> This is a MANDATORY GATE — you MUST stop and wait for the bootcamper's real input (🛑 STOP — end your response here). End your turn on the question above; do not answer it and do not proceed to the next step until the bootcamper responds.
-
-## 5. Bootcamp Introduction
+## 4. Bootcamp Introduction
 
 Immediately before displaying the welcome banner, state that administrative setup is complete and the bootcamp is now starting — for example: "Administrative setup is complete. The bootcamp is starting."
 
@@ -89,7 +65,7 @@ Present the overview before track selection. Cover all points naturally:
 - If you encounter unfamiliar terms (like Senzing Entity Specification, DATA_SOURCE, entity resolution), just ask me to explain — I'll look up the current definition from the Senzing documentation on demand
 - If you noticed hook files (like `.json` files) appearing in your editor panel during setup — those are automated quality checks that run in the background. They do not require your review. You can safely close them, but please do not delete them — they help maintain code quality throughout the bootcamp.
 
-### 5a. Verbosity Preference
+### 4a. Verbosity Preference
 
 👉 **After presenting the overview, ask the bootcamper how much detail they want in the bootcamp output. Present the three presets:**
 
@@ -120,26 +96,6 @@ After the bootcamper selects a preset, confirm the choice and tell them:
 >
 > This is a MANDATORY GATE — you MUST stop and wait for the bootcamper's real input (🛑 STOP — end your response here). End your turn on the question above; do not answer it, do not assume a response, and do not continue to the next step until the bootcamper responds.
 
-### 5b. Comprehension Check
-
-Before moving on to track selection, give the bootcamper a moment to absorb everything from the overview. Present a warm, conversational check-in — this is an invitation, not a quiz.
-
-Output format: your output MUST begin with 👉 followed by the comprehension check question. Compose it as a single, non-compound question on the first attempt. Example:
-
-```text
-👉 That was a lot of ground to cover — does everything so far make sense?
-```
-
-If you paraphrase or reformulate the question, keep it a single question and the 👉 prefix is still mandatory.
-
-🛑 STOP — Wait for the bootcamper's Real_Answer before proceeding to track selection.
-
-**Acknowledgment handling:** If the bootcamper responds with an acknowledgment — phrases like "looks good," "makes sense," "no questions," "let's go," "ready," "all clear," or "got it" — that acknowledgment is a Real_Answer, so proceed directly to track selection (load `onboarding-phase2-track-setup.md`). Do not ask follow-up questions about the overview.
-
-**Clarification handling:** If the bootcamper asks a clarification question, that too is a Real_Answer: answer it using the bootcamper's current verbosity settings from the preferences file, then re-present this comprehension check. Repeat this cycle — answer, then re-present the check-in and check for additional questions — until the bootcamper signals they are ready to move on.
-
-> **Internal directive — not shown to the bootcamper.** This comprehension check is governed by the Answer_Required_Rule (see `conversation-protocol.md`): it requires the bootcamper's Real_Answer before you proceed to track selection. A Real_Answer is either a readiness acknowledgment ("makes sense," "no questions," "ready," etc.) or a clarification question — answer the latter, then re-present this check-in, looping until the bootcamper signals readiness. Do NOT proceed as if the bootcamper acknowledged when they said nothing; treating silence as readiness is an Assumed_Answer and is forbidden. The `ask-bootcamper` hook owns the closing question on `Stop`, so do not include inline closing questions here.
-
 ---
 
-After Step 5b, load `onboarding-phase2-track-setup.md` for track selection.
+After Step 4a, load `onboarding-phase2-track-setup.md` for track selection.

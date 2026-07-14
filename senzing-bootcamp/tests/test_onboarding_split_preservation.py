@@ -35,6 +35,7 @@ from hypothesis import strategies as st
 _STEERING_DIR = Path(__file__).resolve().parent.parent / "steering"
 _ONBOARDING_FLOW = _STEERING_DIR / "onboarding-flow.md"
 _PHASE_FILE = _STEERING_DIR / "onboarding-phase1b-intro-language.md"
+_PHASE2_FILE = _STEERING_DIR / "onboarding-phase2-track-setup.md"
 
 # Structural markers that replace two whole-file SHA-256 snapshots
 # (_HASH_ONBOARDING_FLOW, _HASH_PHASE_FILE). Those snapshots pinned
@@ -67,19 +68,38 @@ _CROSS_REFERENCE = (
     "After Step 2d, load `onboarding-phase1b-intro-language.md`"
 )
 
-# Moved-content markers that now live VERBATIM in the phase file (Requirement 3.1).
-# Each was observed in onboarding-phase1b-intro-language.md on the UNFIXED tree.
-_MOVED_CONTENT_MARKERS: tuple[str, ...] = (
-    # Welcome banner (Step 5 — Bootcamp Introduction)
+# Moved-content markers, grouped by the file that owns them AFTER the preface
+# reorder (Requirement 3.1). The onboarding split first moved this content out
+# of onboarding-flow.md into the phase files; the preface reorder (track before
+# language) then relocated programming language selection and the comprehension
+# check from phase 1b into phase 2 (track-setup), and renumbered phase 1b so the
+# welcome banner is Step 4 and verbosity is Step 4a.
+
+# Markers that remain VERBATIM in phase 1b: the entity-resolution intro handoff,
+# the welcome banner / Bootcamp Introduction (Step 4), and the verbosity /
+# Detail_Level step (Step 4a).
+_MOVED_CONTENT_MARKERS_PHASE1B: tuple[str, ...] = (
+    # Welcome banner (Step 4 — Bootcamp Introduction)
     "🎓🎓🎓  WELCOME TO THE SENZING BOOTCAMP!  🎓🎓🎓",
-    # Programming language prompt (Step 4) — the disambiguation phrasing
-    'always use the phrase "programming language"',
-    # Comprehension-check / step headings (Steps 3, 4, 5, 5a, 5b)
+    # Step headings that stayed in phase 1b (Steps 3, 4, 4a)
     "## 3. Entity Resolution Introduction",
-    "## 4. Programming Language Selection",
-    "## 5. Bootcamp Introduction",
-    "### 5a. Verbosity Preference",
+    "## 4. Bootcamp Introduction",
+    "### 4a. Verbosity Preference",
+)
+
+# Markers that the preface reorder moved into phase 2 (track-setup): programming
+# language selection (Step 5a, after Track Selection) and the comprehension
+# check (Step 5b, after Language_Selection).
+_MOVED_CONTENT_MARKERS_PHASE2: tuple[str, ...] = (
+    # Programming language prompt — the disambiguation phrasing (Step 5a)
+    'always use the phrase "programming language"',
+    "## 5a. Programming Language Selection",
     "### 5b. Comprehension Check",
+)
+
+# Combined set (both post-reorder homes) for property-style sampling.
+_MOVED_CONTENT_MARKERS: tuple[str, ...] = (
+    _MOVED_CONTENT_MARKERS_PHASE1B + _MOVED_CONTENT_MARKERS_PHASE2
 )
 
 # Whole-suite passing baseline observed on the UNFIXED tree (Task 1 / Task 4).
@@ -147,17 +167,32 @@ class TestOnboardingFilesStructurePreserved:
             f"Expected to find: {_CROSS_REFERENCE!r}"
         )
 
-    @pytest.mark.parametrize("marker", _MOVED_CONTENT_MARKERS)
-    def test_phase_file_retains_moved_content(self, marker: str) -> None:
+    @pytest.mark.parametrize("marker", _MOVED_CONTENT_MARKERS_PHASE1B)
+    def test_phase1b_retains_moved_content(self, marker: str) -> None:
         """**Validates: Requirements 3.1, 3.3, 5.1, 6.6**
 
         onboarding-phase1b-intro-language.md retains each moved-content marker
-        the snapshot was protecting — a fix that deletes or relocates that
-        content out of the phase file would drop one and fail here."""
+        that stays in phase 1b after the preface reorder (ER intro, welcome
+        banner, verbosity) — a fix that deletes or relocates that content out of
+        the phase file would drop one and fail here."""
         content = _read(_PHASE_FILE)
         assert marker in content, (
             "onboarding-phase1b-intro-language.md lost a moved-content marker "
-            f"{marker!r} — the post-split content must remain in its new home."
+            f"{marker!r} — the post-reorder content must remain in its new home."
+        )
+
+    @pytest.mark.parametrize("marker", _MOVED_CONTENT_MARKERS_PHASE2)
+    def test_phase2_retains_moved_content(self, marker: str) -> None:
+        """**Validates: Requirements 3.1, 3.3, 5.1, 6.6**
+
+        onboarding-phase2-track-setup.md retains each marker the preface reorder
+        moved into phase 2 — programming language selection and the comprehension
+        check now follow track selection here, not in phase 1b. A regression that
+        deletes or relocates that content would drop one and fail here."""
+        content = _read(_PHASE2_FILE)
+        assert marker in content, (
+            "onboarding-phase2-track-setup.md lost a moved-content marker "
+            f"{marker!r} — the reorder moved this into phase 2 (track-setup)."
         )
 
 
@@ -188,32 +223,64 @@ class TestCrossReferenceIntact:
 
 
 class TestMovedContentInPhaseFile:
-    """Every moved-content marker lives in the phase file, not the old flow."""
+    """Every moved-content marker lives in its post-reorder home phase file,
+    not the old flow.
 
-    @pytest.mark.parametrize("marker", _MOVED_CONTENT_MARKERS)
-    def test_marker_present_in_phase_file(self, marker: str) -> None:
+    The preface reorder split the moved content across two homes: ER intro,
+    welcome banner, and verbosity stay in phase 1b, while programming language
+    selection and the comprehension check moved into phase 2 (track-setup)."""
+
+    @pytest.mark.parametrize("marker", _MOVED_CONTENT_MARKERS_PHASE1B)
+    def test_phase1b_marker_present(self, marker: str) -> None:
         """**Validates: Requirements 3.1, 3.3**
 
-        Each moved-content marker is present verbatim in the phase file."""
+        Each phase-1b marker is present verbatim in the phase 1b file."""
         content = _read(_PHASE_FILE)
         assert marker in content, (
             "Moved-content marker missing from "
-            "onboarding-phase1b-intro-language.md (post-split home):\n"
+            "onboarding-phase1b-intro-language.md (post-reorder home):\n"
             f"  {marker!r}"
         )
 
-    @given(marker=st.sampled_from(_MOVED_CONTENT_MARKERS))
+    @pytest.mark.parametrize("marker", _MOVED_CONTENT_MARKERS_PHASE2)
+    def test_phase2_marker_present(self, marker: str) -> None:
+        """**Validates: Requirements 3.1, 3.3**
+
+        Each phase-2 marker (moved by the reorder) is present verbatim in the
+        track-setup file."""
+        content = _read(_PHASE2_FILE)
+        assert marker in content, (
+            "Moved-content marker missing from "
+            "onboarding-phase2-track-setup.md (post-reorder home):\n"
+            f"  {marker!r}"
+        )
+
+    @given(marker=st.sampled_from(_MOVED_CONTENT_MARKERS_PHASE1B))
     @settings(max_examples=20)
-    def test_all_moved_markers_present_in_phase_file(self, marker: str) -> None:
+    def test_all_phase1b_markers_present(self, marker: str) -> None:
         """**Validates: Requirements 3.1, 3.6**
 
-        Property: for all moved-content markers, the marker is present in the
-        phase file (post-split location). This is the preservation companion to
-        Property 1 — it pins WHERE the moved content lives so a regression that
-        deletes or relocates it is caught."""
+        Property: for all phase-1b moved-content markers, the marker is present
+        in the phase 1b file. This is the preservation companion to Property 1 —
+        it pins WHERE the moved content lives so a regression that deletes or
+        relocates it is caught."""
         content = _read(_PHASE_FILE)
         assert marker in content, (
-            f"Moved-content marker not found in phase file: {marker!r}"
+            f"Moved-content marker not found in phase 1b file: {marker!r}"
+        )
+
+    @given(marker=st.sampled_from(_MOVED_CONTENT_MARKERS_PHASE2))
+    @settings(max_examples=20)
+    def test_all_phase2_markers_present(self, marker: str) -> None:
+        """**Validates: Requirements 3.1, 3.6**
+
+        Property: for all phase-2 moved-content markers (relocated by the preface
+        reorder), the marker is present in the track-setup file — pinning that
+        programming language selection and the comprehension check now live in
+        phase 2, after track selection."""
+        content = _read(_PHASE2_FILE)
+        assert marker in content, (
+            f"Moved-content marker not found in phase 2 file: {marker!r}"
         )
 
 

@@ -5,8 +5,11 @@ order after the reorder: Tracks → License → Test data, with the
 guided-discovery preamble first and glossary reference last.
 
 After the onboarding split, the overview moved from onboarding-flow.md into
-onboarding-phase1b-intro-language.md under "## 5. Bootcamp Introduction"
-(the next heading after the bullets is now "### 5a. Verbosity Preference").
+onboarding-phase1b-intro-language.md under "## 4. Bootcamp Introduction"
+(the next heading after the bullets is now "### 4a. Verbosity Preference").
+The preface reorder (track before language) renumbered these: programming
+language selection moved to phase 2, so Bootcamp Introduction is Step 4 and
+verbosity is Step 4a.
 
 Feature: bootcamp-ux-feedback
 """
@@ -41,7 +44,7 @@ def _get_overview_bullets() -> list[str]:
     """Extract the bullet list from the Bootcamp Introduction overview section.
 
     Returns the bullet lines between the 'Present the overview' instruction
-    and the next heading (### 5a) in onboarding-phase1b-intro-language.md.
+    and the next heading (### 4a) in onboarding-phase1b-intro-language.md.
     """
     content = _ONBOARDING_INTRO.read_text(encoding="utf-8")
     lines = content.splitlines()
@@ -53,7 +56,7 @@ def _get_overview_bullets() -> list[str]:
     for idx, line in enumerate(lines):
         if "Present the overview" in line and "Cover all points" in line:
             bullet_start = idx + 1
-        elif bullet_start is not None and re.match(r"^###\s+5a", line):
+        elif bullet_start is not None and re.match(r"^###\s+4a", line):
             bullet_end = idx
             break
 
@@ -61,7 +64,7 @@ def _get_overview_bullets() -> list[str]:
         "Could not find 'Present the overview' instruction in Bootcamp Introduction"
     )
     assert bullet_end is not None, (
-        "Could not find '### 5a' heading after the overview bullets"
+        "Could not find '### 4a' heading after the overview bullets"
     )
 
     # Extract only lines that start with '- ' (bullet points)

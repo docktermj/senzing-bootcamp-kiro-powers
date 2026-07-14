@@ -4,7 +4,9 @@ inclusion: manual
 
 # Onboarding Phase 2 — Track Setup
 
-Loaded after Step 4c (Comprehension Check) completes. Covers track selection, switching, language changes, validation gates, and the hook registry.
+Loaded after the Detail Level step (Step 4a, verbosity) in phase 1b. Covers track selection, programming language selection, the comprehension check, the advanced track knowledge check, switching tracks, language changes, validation gates, and the hook registry.
+
+> **Note on file name (historical):** The name `track-setup` is retained for stability, but this file now also owns programming language selection and the comprehension check (both moved here from phase 1b).
 
 ## 5. Track Selection
 
@@ -23,9 +25,56 @@ Interpreting responses: "core"/"core_bootcamp"→start at Module 1, "advanced"/"
 >
 > **🛑 STOP — End your response here.** Do not answer this question. Do not assume a response. Do not say "I'll go with X." Do not proceed to the next step. Wait for the bootcamper's real input.
 
+## 5a. Programming Language Selection
+
+Detect the user's platform (`platform.system()`), then call `get_capabilities` or `sdk_guide` on the Senzing MCP server for the supported languages on that platform. The hard gate in Step 0b guarantees MCP is available — call the tool directly and present the returned programming language list to the bootcamper.
+
+When presenting this question, always use the phrase "programming language" — never the bare word "language" alone — to avoid ambiguity with natural/spoken languages.
+
+The agent MUST use the phrase "programming language" (not just "language") when presenting the selection question to the bootcamper.
+
+👉 **Present the MCP-returned programming language list. If the MCP server flags any language as discouraged, unsupported, or limited on the user's platform (e.g., Python on macOS), relay that warning clearly and suggest alternatives. For example: "The Senzing MCP server indicates Python is not recommended on macOS — [reason from MCP]. I'd suggest Java, C#, Rust, or TypeScript instead. Would you like to pick one of those?"**
+
+*Internal directive (not shown to the bootcamper): end your turn on the question above and wait for the bootcamper's programming language choice before proceeding.*
+
+> **Note:** All listed languages produce working code via the MCP server's
+> `generate_scaffold` tool. However, the depth of supplementary examples
+> (via `find_examples`) may vary — Python and Java currently have the most
+> extensive example coverage. This does not affect the bootcamp workflow.
+
+> Tip: If you plan to use these bootcamp artifacts in production, consider choosing the language your team already uses — the code we generate here is designed to be your starting point for real-world use.
+
+Persist the selection to `config/bootcamp_preferences.yaml`.
+
+Load language steering file immediately after confirmation (`lang-python.md`, `lang-java.md`, etc.).
+
+> **Internal directive — not shown to the bootcamper.** Treat programming language selection as a ⛔ gate step: it requires the bootcamper's actual choice. Do NOT assume or fabricate a programming language preference, and do NOT say "I'll go with X."
+>
+> This is a MANDATORY GATE — you MUST stop and wait for the bootcamper's real input (🛑 STOP — end your response here). End your turn on the question above; do not answer it and do not proceed to the next step until the bootcamper responds.
+
+### 5b. Comprehension Check
+
+Before moving on, give the bootcamper a moment to absorb everything from the overview and their track and programming language selections. Present a warm, conversational check-in — this is an invitation, not a quiz.
+
+Output format: your output MUST begin with 👉 followed by the comprehension check question. Compose it as a single, non-compound question on the first attempt. Example:
+
+```text
+👉 That was a lot of ground to cover — does everything so far make sense?
+```
+
+If you paraphrase or reformulate the question, keep it a single question and the 👉 prefix is still mandatory.
+
+🛑 STOP — Wait for the bootcamper's Real_Answer before proceeding to Module 1 (or, on the Advanced track, to the Advanced Track Knowledge Check).
+
+**Acknowledgment handling:** If the bootcamper responds with an acknowledgment — phrases like "looks good," "makes sense," "no questions," "let's go," "ready," "all clear," or "got it" — that acknowledgment is a Real_Answer, so proceed directly to Module 1 (or, on the Advanced track, to the Advanced Track Knowledge Check). Do not ask follow-up questions about the overview.
+
+**Clarification handling:** If the bootcamper asks a clarification question, that too is a Real_Answer: answer it using the bootcamper's current verbosity settings from the preferences file, then re-present this comprehension check. Repeat this cycle — answer, then re-present the check-in and check for additional questions — until the bootcamper signals they are ready to move on.
+
+> **Internal directive — not shown to the bootcamper.** This comprehension check is governed by the Answer_Required_Rule (see `conversation-protocol.md`): it requires the bootcamper's Real_Answer before you proceed to Module 1 (or, on the Advanced track, to the Advanced Track Knowledge Check). A Real_Answer is either a readiness acknowledgment ("makes sense," "no questions," "ready," etc.) or a clarification question — answer the latter, then re-present this check-in, looping until the bootcamper signals readiness. Do NOT proceed as if the bootcamper acknowledged when they said nothing; treating silence as readiness is an Assumed_Answer and is forbidden. The `ask-bootcamper` hook owns the closing question on `Stop`, so do not include inline closing questions here.
+
 ## 5c. Advanced Track Knowledge Check
 
-This step comes right after track selection and just before Module 1 begins. It gives Advanced-track bootcampers a light gut-check that the core entity-resolution idea landed before the deeper modules build on it.
+This step comes right after the comprehension check and just before Module 1 begins. It gives Advanced-track bootcampers a light gut-check that the core entity-resolution idea landed before the deeper modules build on it.
 
 **Advanced-only guard.** Run this step only when the persisted `track` in the preferences file is the Advanced track (`advanced_topics`). Skip it entirely for the Core track (`core_bootcamp`) and for any missing or unknown `track` value — those cases proceed straight to Module 1, and Core onboarding is unchanged. Do not present the question to anyone who is not on the Advanced track.
 

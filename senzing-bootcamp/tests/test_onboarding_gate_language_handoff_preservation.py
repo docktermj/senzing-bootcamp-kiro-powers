@@ -29,8 +29,11 @@ Everything else must stay exactly as it is today. These properties pin that
     exists (condition 1 of Phase 1).
 
   Property 2D — Non-Gate Transition Preservation (Requirement 3.4)
-    The existing Step 4 -> Step 5 -> track-selection routing in the steering
-    file is unchanged.
+    The downstream routing in phase 1b is unchanged: Step 3 (ER intro) -> Step 4
+    (Bootcamp Introduction) -> Step 4a (Verbosity) -> handoff to
+    onboarding-phase2-track-setup.md for track selection. (After the preface
+    reorder, programming language selection and the comprehension check live in
+    phase 2, not phase 1b.)
 
 Feature: onboarding-gate-language-handoff
 
@@ -586,56 +589,53 @@ class TestQuestionPendingSuppressionPreservation:
 # Property 2D — Non-Gate Transition Preservation
 # ---------------------------------------------------------------------------
 
-# Literal routing anchors the fix must leave untouched (Step 4 -> 5 -> tracks).
+# Literal routing anchors the fix must leave untouched. After the preface
+# reorder, phase 1b's downstream routing is Step 3 -> Step 4 (Bootcamp
+# Introduction) -> Step 4a (Verbosity) -> handoff to the track-setup phase file.
 _ROUTING_ANCHORS = [
-    "## 4. Programming Language Selection",
-    "## 5. Bootcamp Introduction",
-    "### 5a. Verbosity Preference",
-    "### 5b. Comprehension Check",
-    "After Step 5b, load `onboarding-phase2-track-setup.md` for track selection.",
-    "proceed directly to track selection (load `onboarding-phase2-track-setup.md`)",
+    "## 3. Entity Resolution Introduction",
+    "## 4. Bootcamp Introduction",
+    "### 4a. Verbosity Preference",
+    "After Step 4a, load `onboarding-phase2-track-setup.md` for track selection.",
 ]
 
 
 class TestNonGateTransitionPreservation:
-    """Property 2D — Existing Step 4 -> Step 5 -> track routing is preserved.
+    """Property 2D — Existing Step 3 -> Step 4 -> Step 4a -> track routing is preserved.
 
     The fix inserts a transition directive *between* Step 3 and Step 4, so the
-    downstream routing (Step 4 language selection, Step 5 intro, Step 5b to
-    track selection) must remain byte-for-byte present and in order.
+    downstream routing (Step 4 Bootcamp Introduction, Step 4a Verbosity, then the
+    handoff to the track-setup phase file for track selection) must remain
+    present and in order. After the preface reorder, programming language
+    selection and the comprehension check live in phase 2, not phase 1b.
 
     **Validates: Requirement 3.4**
     """
 
     def test_step_headings_present_and_ordered(self) -> None:
-        """Steps 4, 5, 5a, 5b headings still appear in document order."""
+        """Steps 3, 4, 4a headings still appear in document order."""
         steering = _read_steering()
         positions = []
         for heading in (
-            "## 4. Programming Language Selection",
-            "## 5. Bootcamp Introduction",
-            "### 5a. Verbosity Preference",
-            "### 5b. Comprehension Check",
+            "## 3. Entity Resolution Introduction",
+            "## 4. Bootcamp Introduction",
+            "### 4a. Verbosity Preference",
         ):
             idx = steering.find(heading)
             assert idx != -1, f"Missing routing heading: {heading!r}"
             positions.append(idx)
         assert positions == sorted(positions), (
-            "Step 4/5/5a/5b headings are out of order — routing flow changed "
+            "Step 3/4/4a headings are out of order — routing flow changed "
             "(Requirement 3.4)."
         )
 
     def test_track_selection_routing_preserved(self) -> None:
-        """The Step 5b -> track-selection routing lines are unchanged."""
+        """The Step 4a -> track-setup routing line is unchanged."""
         steering = _read_steering()
         assert (
-            "After Step 5b, load `onboarding-phase2-track-setup.md` for track selection."
+            "After Step 4a, load `onboarding-phase2-track-setup.md` for track selection."
             in steering
-        ), "Missing the Step 5b -> track-selection routing directive (Req 3.4)."
-        assert (
-            "proceed directly to track selection (load `onboarding-phase2-track-setup.md`)"
-            in steering
-        ), "Missing the acknowledgment -> track-selection routing (Req 3.4)."
+        ), "Missing the Step 4a -> track-setup routing directive (Req 3.4)."
 
     @given(anchor=st.sampled_from(_ROUTING_ANCHORS))
     def test_routing_anchor_preserved(self, anchor: str) -> None:

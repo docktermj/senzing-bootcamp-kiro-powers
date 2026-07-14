@@ -161,8 +161,16 @@ _FROZEN_ONBOARDING_SHA256: dict[str, str] = {
     "## 1b. Team Detection": (
         "3cbb0af39796296aefc3393fb090cc33d3826e4565abb48365dd73c72d819682"
     ),
+    # Re-baselined for the preface-flow-and-banners spec (reorder): the trailing
+    # hand-off paragraph in the "## 2. Prerequisite Check" section (which the
+    # body-scoped extractor includes, since it runs to EOF) was updated to note
+    # that programming language selection now happens later, in phase 2
+    # (onboarding-phase2-track-setup.md), after track selection. That reorder edit
+    # is unrelated to the write-gate-noise-cleanup fix this suite guards, so the
+    # baseline is moved observation-first to the current section contents. Sections
+    # 0/0b/0c/1/1b were verified byte-identical during the re-pin.
     "## 2. Prerequisite Check (Mandatory Gate)": (
-        "99e5de49bea96c3f1fc241486637d859cdbe3c9e9aefdf1554970232a77f2978"
+        "e5cca88db42eb5fa81d9443d535c0206fe6af6d40d798911793b65f145ec3d2b"
     ),
 }
 

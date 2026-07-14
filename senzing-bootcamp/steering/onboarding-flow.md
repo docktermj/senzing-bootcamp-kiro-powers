@@ -4,13 +4,14 @@ inclusion: manual
 
 # Onboarding Flow
 
-Load when starting a fresh bootcamp. Sequence: directory creation → prerequisites → entity resolution → language selection → introduction → track selection.
+Load when starting a fresh bootcamp. Sequence: directory creation → prerequisites → entity resolution → introduction (welcome banner) → overview → detail level → track selection → language selection → any questions → (advanced knowledge check).
 
 **Note:** The `ask-bootcamper` hook fires on every `Stop` trigger (the 1.0 agent-stop event) and generates a contextual 👉 closing question. Do NOT include inline closing questions or WAIT instructions at the end of steps — present the information and stop. **Exception — Mandatory gates:** Steps marked with ⛔ are mandatory gates where the agent MUST stop and MUST NOT proceed without real user input. These are the only steps where an explicit stop instruction overrides the general rule.
 
 ## Phase Sub-Files
 
-- **Phase 1b — Entity Resolution Intro & Language Selection** (steps 3–5b): `onboarding-phase1b-intro-language.md`
+- **Phase 1b — Entity Resolution Intro & Bootcamp Introduction** (steps 3–4a): `onboarding-phase1b-intro-language.md` — entity resolution intro (with the exploration gate), the welcome banner / bootcamp introduction and overview, and the detail-level (verbosity) step.
+- **Phase 2 — Track Setup & Language Selection** (steps 5–5c): `onboarding-phase2-track-setup.md` — track selection, programming language selection, the comprehension check (any questions), and the Advanced-track knowledge check.
 
 ## 0. Setup Preamble
 
@@ -261,4 +262,4 @@ prerequisite_installation_deferred: true
 
 ---
 
-After Step 2d, load `onboarding-phase1b-intro-language.md` to continue with the entity resolution introduction and programming language selection.
+After Step 2d, load `onboarding-phase1b-intro-language.md` to continue with the entity resolution introduction and the bootcamp introduction (welcome banner) / detail level. Programming language selection now happens later, in phase 2 (`onboarding-phase2-track-setup.md`), after track selection.

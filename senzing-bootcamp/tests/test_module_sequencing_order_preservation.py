@@ -112,7 +112,14 @@ _BASELINE_COMPLETION_TRACK_SHA256: str = (
     # preserving the reconcile-then-render ordering and the non-blocking posture.
     # That edit is unrelated to the module-sequencing-order fix this suite guards,
     # so the baseline is moved observation-first to the current file contents.
-    "506532ead89458fa94727ad42f9b32062133420b9927f42398b5a84120dbc83e"
+    #
+    # Re-baselined again observation-first for the preface-flow-and-banners spec
+    # (Task 3.2): module-completion-track.md gained the Graduation_Banner
+    # (🎓🎓🎓  GRADUATION  🎓🎓🎓 in a fenced text block) at the start of the Path
+    # Completion Celebration, so a bootcamper who declines graduation still sees
+    # it. That edit is unrelated to the module-sequencing-order fix this suite
+    # guards, so the baseline is moved observation-first to the current contents.
+    "fe9eb07a4548f253c0dff6e5c3ac8f90a6911e519a6f4d3e2c9a3c951982d17c"
 )
 
 

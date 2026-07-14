@@ -23,24 +23,26 @@ from hypothesis import strategies as st
 # ---------------------------------------------------------------------------
 
 _BOOTCAMP_DIR = Path(__file__).resolve().parent.parent
-# The Programming Language Selection step was moved out of onboarding-flow.md
-# (pre-split Step 2) into onboarding-phase1b-intro-language.md (Step 4). The
-# assertions below now target the shipped post-split location.
-_ONBOARDING_PHASE1B = _BOOTCAMP_DIR / "steering" / "onboarding-phase1b-intro-language.md"
+# The Programming Language Selection step moved out of onboarding-flow.md
+# (pre-split Step 2) into the phase files. The preface reorder (track before
+# language) then relocated it into onboarding-phase2-track-setup.md as Step 5a
+# (immediately after Track Selection). The assertions below target that shipped
+# location.
+_ONBOARDING_PHASE2 = _BOOTCAMP_DIR / "steering" / "onboarding-phase2-track-setup.md"
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
-# Programming Language Selection is Step 4 in the phase file; the next top-level
-# step is Step 5 (Bootcamp Introduction).
+# Programming Language Selection is Step 5a in the phase 2 file; the next
+# heading is the comprehension check (### 5b), which bounds the section.
 _STEP2_HEADING_PATTERN = re.compile(
-    r"^##\s+4\.\s+(.+)$",
+    r"^##\s+5a\.\s+(.+)$",
     re.MULTILINE,
 )
 
 _NEXT_STEP_HEADING_PATTERN = re.compile(
-    r"^##\s+5\.\s+",
+    r"^###\s+5b\.\s+",
     re.MULTILINE,
 )
 
@@ -66,8 +68,11 @@ _WORDING_DIRECTIVE_PATTERN = re.compile(
 
 
 def _read_onboarding_flow() -> str:
-    """Read the full content of the phase file owning language selection."""
-    return _ONBOARDING_PHASE1B.read_text(encoding="utf-8")
+    """Read the full content of the phase file owning language selection.
+
+    After the preface reorder this is onboarding-phase2-track-setup.md, where
+    programming language selection lives as Step 5a (after Track Selection)."""
+    return _ONBOARDING_PHASE2.read_text(encoding="utf-8")
 
 
 def _extract_step2_section(markdown: str) -> str:

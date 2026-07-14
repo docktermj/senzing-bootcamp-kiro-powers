@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Generate a PDF from the bootcamp recap markdown document.
 
-Converts docs/bootcamp_recap.md into a formatted PDF suitable for sharing
-at bootcamp graduation. Uses stdlib for markdown parsing and fpdf2 for
-PDF rendering.
+Converts docs/bootcamp_recap.md into a formatted PDF suitable for sharing at
+bootcamp graduation. Markdown parsing uses only the standard library; the PDF is
+produced through the guaranteed three-tier strategy
+(``pdf_render_strategy.ensure_recap_pdf``) so a valid PDF is ALWAYS written:
+Tier 1 renders with the professional fpdf2 renderer (``render_pdf``) when fpdf2
+is importable, Tier 2 attempts a best-effort autoinstall, and Tier 3 falls back
+to the stdlib-only writer. fpdf2 remains an optional, lazily imported dependency
+— it is never imported at module top level.
 
 Usage:
     python senzing-bootcamp/scripts/generate_recap_pdf.py
@@ -1150,11 +1155,39 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default="docs/bootcamp_recap.pdf",
         help="Path for output PDF (default: docs/bootcamp_recap.pdf)",
     )
+    parser.add_argument(
+        "--no-autoinstall",
+        action="store_true",
+        help=(
+            "Disable the best-effort 'pip install fpdf2' and go straight to the "
+            "stdlib writer when fpdf2 is absent (overrides env/preferences)."
+        ),
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=None,
+        help=(
+            "Bounded timeout in seconds for the guarded fpdf2 autoinstall "
+            "(default: the tier strategy's built-in bounded timeout)."
+        ),
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Entry point for recap PDF generation.
+    """Entry point for recap PDF generation via the guaranteed tier strategy.
+
+    Produces the recap PDF through :func:`pdf_render_strategy.ensure_recap_pdf`
+    so a valid PDF is ALWAYS produced: Tier 1 uses the professional fpdf2
+    ``render_pdf`` when fpdf2 is importable (or after a best-effort autoinstall),
+    and Tier 3 falls back to the stdlib-only writer otherwise (Requirements 1.1,
+    2.1, 2.5, 6.1). fpdf2 stays optional and lazily imported — it is never a
+    top-level import here (Requirement 5.1). The render still happens into a
+    temporary file that is round-trip verified and guarded against
+    placeholder/legacy content before an atomic ``os.replace`` publish; on any
+    verification or write failure the temp file is removed and no existing
+    output is overwritten.
 
     Args:
         argv: Command-line arguments. Defaults to sys.argv[1:].
@@ -1187,14 +1220,34 @@ def main(argv: list[str] | None = None) -> int:
     detected_headings = len(_MODULE_HEADING_LOOSE_RE.findall(content))
     parsed_sections = len(doc.sections)
 
+    # The tier strategy is imported lazily (inside main, never at module top
+    # level) to avoid a circular import: pdf_render_strategy imports names from
+    # this module at its top level, so importing it here — after this module has
+    # finished loading — resolves cleanly. It is stdlib-safe to import (fpdf is
+    # imported lazily inside the render functions), so this never makes fpdf2 a
+    # hard dependency (Requirement 5.1).
+    from pdf_render_strategy import (  # noqa: PLC0415
+        DEFAULT_AUTOINSTALL_TIMEOUT_S,
+        ensure_recap_pdf,
+        resolve_allow_autoinstall,
+    )
+
+    # --no-autoinstall forces the opt-out; otherwise resolve from env/preferences
+    # (Requirement 3.3). Timeout falls back to the strategy's bounded default.
+    allow_autoinstall = False if args.no_autoinstall else resolve_allow_autoinstall()
+    timeout_s = (
+        args.timeout if args.timeout is not None else DEFAULT_AUTOINSTALL_TIMEOUT_S
+    )
+
     # Render + verify + publish atomically. Render into a temporary file in the
     # same directory as the output, run round-trip verification against that
     # temp file, and only move it into place on success (os.replace is atomic on
     # the same filesystem). On verification failure the temp file is removed so
     # NO recap PDF is written or overwritten, an error identifying the offending
     # QR_Pair / numbered item is printed to stderr, and we return 1
-    # (Requirements 4.1, 4.2, 5.1, 5.2). Degrade gracefully when fpdf2 is absent
-    # (leave the Markdown intact) and report genuine write/move failures.
+    # (Requirements 4.1, 4.2, 5.1, 5.2). The tier strategy guarantees a PDF is
+    # always produced (rich fpdf2 or stdlib fallback), so a missing fpdf2 is no
+    # longer an error path here; only genuine write/verification failures are.
     module_numbers, expected_body_lines = collect_verification_targets(doc, content)
     output_path = Path(args.output)
     directory = output_path.parent if str(output_path.parent) else Path(".")
@@ -1207,15 +1260,27 @@ def main(argv: list[str] | None = None) -> int:
             dir=str(directory), prefix=f"{output_path.name}.", suffix=".tmp"
         )
         os.close(fd)
-        render_pdf(doc, tmp_path, body_text=content)
+        # Produce the PDF via the tier strategy so a valid PDF is always written
+        # to the temp file (Tier 1 rich fpdf2 when available, else autoinstall,
+        # else the stdlib writer). The strategy reports the chosen tier to
+        # stderr (Requirement 2.4).
+        ensure_recap_pdf(
+            doc,
+            tmp_path,
+            allow_autoinstall=allow_autoinstall,
+            timeout_s=timeout_s,
+            body_text=content,
+        )
         verify_rendered_pdf(tmp_path, module_numbers, expected_body_lines)
         # Placeholder-stub / legacy-heading guard (Req 4.5, 5.5, 5.6): after the
         # round-trip content verification passes but BEFORE the os.replace
         # publish, re-extract the rendered text and reject any recap PDF that
-        # still carries a placeholder stub or a legacy split-schema heading.
-        # Raising PdfVerificationError here routes through the same except/
-        # finally handling below, so the temp file is removed and any existing
-        # output is left untouched — preserving the atomic guarantee (Req 8.3).
+        # still carries a placeholder stub or a legacy split-schema heading. Both
+        # tiers render from the same parsed model, so this guard stays valid
+        # regardless of which tier produced the PDF. Raising PdfVerificationError
+        # here routes through the same except/finally handling below, so the temp
+        # file is removed and any existing output is left untouched — preserving
+        # the atomic guarantee (Req 8.3).
         stub = find_placeholder_stub(
             extract_pdf_text(Path(tmp_path).read_bytes()), doc
         )
@@ -1225,12 +1290,6 @@ def main(argv: list[str] | None = None) -> int:
             )
         os.replace(tmp_path, str(output_path))
         tmp_path = None  # Published — nothing left to clean up.
-    except ImportError:
-        print(
-            "fpdf2 is required. Install with: pip install fpdf2",
-            file=sys.stderr,
-        )
-        return 1
     except PdfVerificationError as exc:
         offending = (
             identify_unrendered_content(tmp_path, doc) if tmp_path else None

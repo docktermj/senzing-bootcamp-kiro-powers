@@ -444,20 +444,25 @@ class TestOnboardingScriptsDirectoryCheckExploration:
 
 
 class TestMissingGeneratorsNoFpdfExploration:
-    """With generators absent and fpdf2 absent, Step 0b degrades gracefully.
+    """With generators absent and fpdf2 absent, Step 0b still guarantees a PDF.
 
-    **Validates: Requirements 2.4**
+    **Validates: Requirements 2.4** (updated for guaranteed-recap-pdf 1.1/1.3/2.3)
 
-    When ``fpdf2`` cannot be imported and the bundled generators are absent,
-    Step 0b must retain the Markdown recap, surface a ``pip install fpdf2`` hint,
-    and raise no unhandled error (no traceback) — producing no PDF.
+    When ``fpdf2`` cannot be imported and autoinstall is disabled, the onboarded
+    Step 0b routes through the guaranteed-recap-pdf tiered strategy and produces
+    a valid PDF via the stdlib-only writer (Tier 3): it retains the Markdown
+    recap, raises no unhandled error (no traceback), and writes a valid PDF —
+    superseding the pre-strategy "surface a pip install hint, produce no PDF"
+    behavior.
 
     AUTHORED TO FAIL on unfixed code (script absent → file-not-found error
-    instead of the graceful ``pip install fpdf2`` hint).
+    instead of the guaranteed stdlib PDF via the self-repaired scripts).
     """
 
-    def test_step_0b_degrades_gracefully_without_fpdf(self, tmp_path: Path) -> None:
-        """A blocked fpdf2 yields a hint, retains the Markdown, and writes no PDF."""
+    def test_step_0b_still_writes_guaranteed_pdf_without_fpdf(
+        self, tmp_path: Path
+    ) -> None:
+        """A blocked fpdf2 (autoinstall off) still yields a guaranteed stdlib PDF."""
         workspace = _new_workspace()
         _write_recap(
             workspace,
@@ -475,7 +480,10 @@ class TestMissingGeneratorsNoFpdfExploration:
             encoding="utf-8",
         )
         env = {
-            "PYTHONPATH": str(shim_dir) + os.pathsep + os.environ.get("PYTHONPATH", "")
+            "PYTHONPATH": str(shim_dir) + os.pathsep + os.environ.get("PYTHONPATH", ""),
+            # Disable the best-effort autoinstall so the stdlib tier is used
+            # deterministically and no real network install is attempted.
+            "SENZING_BOOTCAMP_PDF_AUTOINSTALL": "0",
         }
 
         file_not_found, output = _run_step_0b(workspace, env=env)
@@ -487,11 +495,9 @@ class TestMissingGeneratorsNoFpdfExploration:
         assert "Traceback (most recent call last)" not in output, (
             f"Step 0b must not raise an unhandled error; output={output!r}"
         )
-        assert any(marker in output for marker in _FPDF_HINT_MARKERS), (
-            "Step 0b must surface a 'pip install fpdf2' hint when fpdf2 is "
-            f"absent; output={output!r}"
-        )
         assert (workspace / _RECAP_MD).exists(), "the Markdown recap must be retained"
-        assert not (workspace / _RECAP_PDF).exists(), (
-            "no PDF should be produced when fpdf2 is absent"
+        pdf_path = workspace / _RECAP_PDF
+        assert pdf_path.exists() and pdf_path.read_bytes().startswith(b"%PDF"), (
+            "Step 0b must produce a guaranteed PDF via the stdlib tier when "
+            f"fpdf2 is absent; output={output!r}"
         )

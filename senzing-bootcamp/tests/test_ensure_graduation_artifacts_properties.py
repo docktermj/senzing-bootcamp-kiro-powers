@@ -14,15 +14,25 @@ Property -> requirement map (see design "Correctness Properties"):
     P2 Idempotence / no-op on valid  2.5, 2.6
     P3 Regenerate only when needed   2.2, 2.3
     P4 ``--check`` side-effect free  2.1
-    P5 Rendered-recap selection      4.2, 4.3, 4.8, 2.7
+    P5 Rendered recap is always PDF  guaranteed-recap-pdf 7.2, 7.4
     P6 Failure isolation             1.9, 3.3, 6.3
     P7 Enforcement completeness      2.1, 2.3
     P8 Self-containment              6.1, 4.5
 
+The guaranteed-recap-pdf feature (task 4.2) supersedes the former two-tier
+"PDF when fpdf2 present, HTML fallback otherwise" selection: the rendered recap
+is now ALWAYS ``docs/bootcamp_recap.pdf`` via the three-tier strategy (rich
+fpdf2 renderer -> guarded autoinstall -> stdlib writer). P5 and the rendered
+branch of the failure-isolation property are therefore realigned to the
+guaranteed-PDF behavior, and a new guarantee class (``TestGuaranteedPdfWithoutFpdf2``)
+covers Requirements 7.2 and 7.4: with fpdf2 simulated absent and autoinstall
+disabled the orchestrator still yields a valid PDF, ``--check`` is satisfied only
+when the PDF exists (never for HTML alone), and a valid fresh PDF is idempotent.
+
 Example counts come from the active Hypothesis profile (fast=5 locally,
 thorough=100 in CI); no test hand-sets ``@settings(max_examples=...)``.
 
-Validates: Requirements 1.1, 2.5, 2.6, 2.7, 4.2, 4.3, 4.8
+Validates: Requirements 1.1, 2.5, 2.6, 2.7, 7.2, 7.4
 """
 
 from __future__ import annotations
@@ -225,6 +235,37 @@ def _patched(obj: object, name: str, value: object):
             setattr(obj, name, original)
 
 
+@contextlib.contextmanager
+def _simulate_fpdf2_absent_no_autoinstall():
+    """Simulate fpdf2 being unavailable with autoinstall disabled.
+
+    Forces the render strategy down its stdlib-only tier (guaranteed-recap-pdf
+    Tier 3): the availability probe returns False, the opt-out resolver returns
+    False so no install is attempted (no subprocess, no real network), and the
+    guarded installer is neutralised as a defensive backstop. Every patched
+    attribute on the shared ``pdf_render_strategy`` module is restored on exit.
+    """
+    with contextlib.ExitStack() as stack:
+        stack.enter_context(
+            _patched(ega.pdf_render_strategy, "fpdf2_available", lambda: False)
+        )
+        stack.enter_context(
+            _patched(
+                ega.pdf_render_strategy,
+                "resolve_allow_autoinstall",
+                lambda *args, **kwargs: False,
+            )
+        )
+        stack.enter_context(
+            _patched(
+                ega.pdf_render_strategy,
+                "attempt_autoinstall",
+                lambda *args, **kwargs: False,
+            )
+        )
+        yield
+
+
 # ---------------------------------------------------------------------------
 # Strategies (st_ prefix per python-conventions)
 # ---------------------------------------------------------------------------
@@ -243,11 +284,6 @@ def st_module_lists() -> st.SearchStrategy[list[int]]:
 def st_recap_scenarios() -> st.SearchStrategy[str]:
     """Draw a pre-existing recap state for the regeneration property."""
     return st.sampled_from(["absent", "empty", "stale", "valid"])
-
-
-def st_render_branches() -> st.SearchStrategy[str]:
-    """Draw a rendered-recap selection branch to exercise."""
-    return st.sampled_from(["pdf_ok", "pdf_fail", "no_fpdf"])
 
 
 def st_fail_targets() -> st.SearchStrategy[str]:
@@ -456,69 +492,66 @@ class TestCheckIsSideEffectFree:
 
 
 # ===========================================================================
-# Property 5: Rendered-recap selection
+# Property 5: Rendered recap is always a PDF (guaranteed-recap-pdf)
 # ===========================================================================
 
 
-class TestRenderedRecapSelection:
-    """fpdf2 available -> PDF; unavailable or PDF-failure -> non-empty HTML.
+class TestRenderedRecapIsAlwaysPdf:
+    """The rendered recap is ALWAYS the PDF; HTML never substitutes for it.
 
-    Validates: Requirements 4.2, 4.3, 4.8, 2.7
+    Supersedes the former two-tier "PDF when fpdf2 present, HTML fallback
+    otherwise" selection. The guaranteed rendered-recap artifact is always
+    ``docs/bootcamp_recap.pdf``, produced by the three-tier strategy: the rich
+    fpdf2 renderer when fpdf2 is importable, and the stdlib-only writer when it
+    is absent and autoinstall is disabled. Whichever tier runs, the artifact is
+    a structurally valid PDF at the canonical ``.pdf`` path whose text
+    round-trips every module, and no HTML file is ever the artifact that
+    satisfies the guarantee.
+
+    Validates: Requirements 7.2, 7.4
     """
 
-    @given(modules=st_module_lists(), branch=st_render_branches())
-    def test_selection_follows_fpdf_availability_and_pdf_outcome(
-        self, modules: list[int], branch: str
+    @given(modules=st_module_lists(), fpdf2_present=st.booleans())
+    def test_rendered_recap_is_a_pdf_regardless_of_fpdf2(
+        self, modules: list[int], fpdf2_present: bool
     ) -> None:
         with _workspace() as (root, paths):
             Path(paths.recap).write_text(_recap_text(modules), encoding="utf-8")
 
-            stdout = io.StringIO()
-            if branch == "no_fpdf":
-                patches = [
-                    _patched(ega, "_fpdf_available", lambda: False),
-                ]
-            elif branch == "pdf_fail":
-                patches = [
-                    _patched(ega, "_fpdf_available", lambda: True),
-                    _patched(ega, "_render_recap_pdf", lambda *a, **k: False),
-                ]
-            else:  # pdf_ok: fpdf available and the PDF chain succeeds
-                patches = [
-                    _patched(ega, "_fpdf_available", lambda: True),
-                    _patched(ega, "_render_recap_pdf", lambda *a, **k: True),
-                ]
-
             with contextlib.ExitStack() as stack:
-                for patch in patches:
-                    stack.enter_context(patch)
-                with contextlib.redirect_stdout(stdout):
+                if fpdf2_present:
+                    # fpdf2 importable -> Tier 1 rich renderer is selected.
+                    stack.enter_context(
+                        _patched(
+                            ega.pdf_render_strategy,
+                            "fpdf2_available",
+                            lambda: True,
+                        )
+                    )
+                else:
+                    # fpdf2 absent + autoinstall off -> Tier 3 stdlib writer.
+                    stack.enter_context(_simulate_fpdf2_absent_no_autoinstall())
+                with contextlib.redirect_stdout(io.StringIO()):
                     status = ega.ensure_rendered_recap(
                         paths.recap, paths.pdf, paths.html
                     )
 
-            out = stdout.getvalue()
-            if branch == "pdf_ok":
-                # PDF selected: reported path is the PDF and it is satisfied.
-                assert status.path == paths.pdf
-                assert status.exists is True
-                assert status.non_empty is True
-                assert status.regenerated is True
-                assert status.error is None
-            else:
-                # HTML fallback: a non-empty HTML rendered recap satisfying the
-                # rendered-recap invariant, with the appropriate stdout guidance.
-                assert status.path == paths.html
-                assert status.exists is True
-                assert status.non_empty is True
-                assert status.error is None
-                assert Path(paths.html).is_file()
-                assert ega.is_non_empty(Path(paths.html)) is True
-                assert not Path(paths.pdf).exists()
-                if branch == "no_fpdf":
-                    assert "pip install fpdf2" in out
-                else:  # pdf_fail
-                    assert "PDF rendering failed" in out
+            # The guaranteed rendered-recap artifact is always the PDF.
+            assert status.path == paths.pdf
+            assert status.exists is True
+            assert status.non_empty is True
+            assert status.regenerated is True
+            assert status.error is None
+
+            # A structurally valid PDF whose text round-trips every module.
+            pdf_bytes = Path(paths.pdf).read_bytes()
+            assert pdf_bytes.startswith(b"%PDF-")
+            text = ega.recap_pdf_render.extract_pdf_text(pdf_bytes)
+            for module in modules:
+                assert f"Module {module}" in text
+
+            # HTML never substitutes for the PDF guarantee.
+            assert not Path(paths.html).exists()
 
 
 # ===========================================================================
@@ -555,15 +588,19 @@ class TestFailureIsolation:
                         _boom,
                     ),
                 ]
-            else:  # rendered: force the HTML branch, then make it raise
+            else:  # rendered: force the guaranteed PDF render to fail
+                # The rendered recap is always produced through the three-tier
+                # strategy, so failure is injected at the strategy entry point
+                # (referenced by the orchestrator as the module attribute
+                # ``pdf_render_strategy.ensure_recap_pdf``). No PDF is published
+                # because the render targets a temp file cleaned up on failure.
                 Path(paths.recap).write_text(
                     _recap_text(modules), encoding="utf-8"
                 )
                 original = None
                 patches = [
-                    _patched(ega, "_fpdf_available", lambda: False),
                     _patched(
-                        ega.recap_html_render, "render_markdown_html", _boom
+                        ega.pdf_render_strategy, "ensure_recap_pdf", _boom
                     ),
                 ]
 
@@ -589,9 +626,151 @@ class TestFailureIsolation:
                 # Rendered recap failed, yet recap and transcript succeed.
                 assert by_key["rendered_recap"].error is not None
                 assert by_key["rendered_recap"].non_empty is False
+                # A failed render publishes no PDF (temp file is cleaned up).
+                assert not Path(paths.pdf).exists()
                 assert by_key["recap_md"].non_empty is True
                 assert by_key["transcript"].exists is True
                 assert by_key["transcript"].non_empty is True
+
+
+# ===========================================================================
+# Guaranteed PDF even without fpdf2 (guaranteed-recap-pdf, task 4.2)
+# ===========================================================================
+
+
+class TestGuaranteedPdfWithoutFpdf2:
+    """A valid ``docs/bootcamp_recap.pdf`` is guaranteed even without fpdf2.
+
+    With fpdf2 simulated unavailable AND autoinstall disabled (the stdlib Tier 3
+    path, no real install), the orchestrator still yields a structurally valid
+    PDF whose text round-trips the recap's module content; ``--check`` is
+    unsatisfied for the rendered recap when only an HTML file exists and
+    satisfied once the valid PDF exists; and a valid, fresh PDF is left
+    byte-for-byte unchanged on a re-run (idempotent no-op).
+
+    Validates: Requirements 7.2, 7.4
+    """
+
+    @given(modules=st_module_lists())
+    def test_orchestrator_yields_valid_pdf_when_fpdf2_absent(
+        self, modules: list[int]
+    ) -> None:
+        """fpdf2 absent + autoinstall off -> ``ensure_all`` still writes a PDF."""
+        with _workspace() as (root, paths):
+            _seed_progress(paths, modules)
+            Path(paths.recap).write_text(_recap_text(modules), encoding="utf-8")
+
+            stderr = io.StringIO()
+            with contextlib.ExitStack() as stack:
+                stack.enter_context(_simulate_fpdf2_absent_no_autoinstall())
+                with contextlib.redirect_stdout(io.StringIO()):
+                    with contextlib.redirect_stderr(stderr):
+                        report = ega.ensure_all(paths)
+
+            assert report.all_satisfied, f"missing: {report.missing}"
+            rendered = next(
+                s for s in report.artifacts if s.key == "rendered_recap"
+            )
+            # The guaranteed artifact is the PDF, produced by the stdlib tier.
+            assert rendered.path == paths.pdf
+            assert rendered.exists is True
+            assert rendered.non_empty is True
+            assert rendered.error is None
+            assert "tier: stdlib" in stderr.getvalue()
+
+            # Structurally valid PDF whose text round-trips every module.
+            pdf_bytes = Path(paths.pdf).read_bytes()
+            assert pdf_bytes.startswith(b"%PDF-")
+            text = ega.recap_pdf_render.extract_pdf_text(pdf_bytes)
+            for module in modules:
+                assert f"Module {module}" in text
+
+            # HTML is never the artifact that satisfies the guarantee.
+            assert not Path(paths.html).exists()
+
+    @given(modules=st_module_lists())
+    def test_check_unsatisfied_with_only_html_and_satisfied_with_pdf(
+        self, modules: list[int]
+    ) -> None:
+        """``--check`` sees rendered recap satisfied only when the PDF exists."""
+        with _workspace() as (root, paths):
+            _seed_progress(paths, modules)
+            Path(paths.recap).write_text(_recap_text(modules), encoding="utf-8")
+            # Satisfy the other two artifacts so the rendered recap is isolated.
+            with contextlib.redirect_stdout(io.StringIO()):
+                ega.ensure_transcript(paths.log, paths.recap, paths.transcript)
+
+            # Only an HTML file exists (no PDF) -> rendered recap UNSATISFIED.
+            Path(paths.html).write_text(
+                "<html><body>recap</body></html>\n", encoding="utf-8"
+            )
+            assert not Path(paths.pdf).exists()
+
+            html_only = ega.check_all(paths)
+            html_by_key = {s.key: s for s in html_only.artifacts}
+            assert html_by_key["rendered_recap"].exists is False
+            assert html_by_key["rendered_recap"].non_empty is False
+            assert "rendered_recap" in html_only.missing
+            assert html_only.all_satisfied is False
+            # main --check exits non-zero while the PDF is absent.
+            with contextlib.redirect_stdout(io.StringIO()):
+                assert ega.main(_argv(paths, "--check")) == 1
+
+            # Produce a valid PDF via the stdlib tier -> rendered recap SATISFIED.
+            with contextlib.ExitStack() as stack:
+                stack.enter_context(_simulate_fpdf2_absent_no_autoinstall())
+                with contextlib.redirect_stdout(io.StringIO()):
+                    with contextlib.redirect_stderr(io.StringIO()):
+                        ega.ensure_rendered_recap(
+                            paths.recap, paths.pdf, paths.html
+                        )
+
+            with_pdf = ega.check_all(paths)
+            pdf_by_key = {s.key: s for s in with_pdf.artifacts}
+            assert pdf_by_key["rendered_recap"].exists is True
+            assert pdf_by_key["rendered_recap"].non_empty is True
+            assert "rendered_recap" not in with_pdf.missing
+            assert with_pdf.all_satisfied is True
+            # main --check now succeeds (exit 0) and made no writes.
+            before = _snapshot_dir(root)
+            with contextlib.redirect_stdout(io.StringIO()):
+                assert ega.main(_argv(paths, "--check")) == 0
+            assert _snapshot_dir(root) == before
+
+    @given(modules=st_module_lists())
+    def test_valid_fresh_stdlib_pdf_is_idempotent(
+        self, modules: list[int]
+    ) -> None:
+        """A valid, fresh stdlib PDF is left byte-for-byte unchanged on re-run."""
+        with _workspace() as (root, paths):
+            _seed_progress(paths, modules)
+            Path(paths.recap).write_text(_recap_text(modules), encoding="utf-8")
+
+            with contextlib.ExitStack() as stack:
+                stack.enter_context(_simulate_fpdf2_absent_no_autoinstall())
+                with contextlib.redirect_stdout(io.StringIO()):
+                    with contextlib.redirect_stderr(io.StringIO()):
+                        first = ega.ensure_rendered_recap(
+                            paths.recap, paths.pdf, paths.html
+                        )
+            assert first.regenerated is True
+            assert Path(paths.pdf).exists()
+            before = Path(paths.pdf).read_bytes()
+
+            # A second run over the valid, fresh PDF regenerates nothing.
+            with contextlib.ExitStack() as stack:
+                stack.enter_context(_simulate_fpdf2_absent_no_autoinstall())
+                with contextlib.redirect_stdout(io.StringIO()):
+                    with contextlib.redirect_stderr(io.StringIO()):
+                        second = ega.ensure_rendered_recap(
+                            paths.recap, paths.pdf, paths.html
+                        )
+
+            assert second.regenerated is False
+            assert second.error is None
+            assert second.exists is True
+            assert second.non_empty is True
+            assert Path(paths.pdf).read_bytes() == before
 
 
 # ===========================================================================

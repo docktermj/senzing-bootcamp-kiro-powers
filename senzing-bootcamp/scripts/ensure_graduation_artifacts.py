@@ -6,8 +6,15 @@ crown-jewel deliverables are present and non-empty at any stopping point:
 
 - the Q&A transcript (``docs/bootcamp_transcript.md``),
 - the recap Markdown (``docs/bootcamp_recap.md``), and
-- a rendered recap document (``docs/bootcamp_recap.pdf`` or its HTML fallback
-  ``docs/bootcamp_recap.html``).
+- a rendered recap PDF (``docs/bootcamp_recap.pdf``).
+
+The rendered recap is ALWAYS a real PDF, produced through the guaranteed
+three-tier strategy (``pdf_render_strategy.ensure_recap_pdf``): the professional
+fpdf2 renderer when fpdf2 is importable, a best-effort guarded autoinstall
+otherwise, and a stdlib-only PDF writer as the final fallback. Because the
+stdlib tier needs no third-party packages, a valid PDF is guaranteed whether or
+not fpdf2 is installed and even offline. Any HTML output is supplementary and is
+never the artifact that satisfies the rendered-recap guarantee.
 
 It reconstructs each artifact from always-present sources by reusing the
 existing reconcile/backfill/render helpers, and only regenerates when an
@@ -36,10 +43,11 @@ This task (3.1) provides the core data model and the ``is_non_empty`` /
 from __future__ import annotations
 
 import argparse
-import importlib.util
 import json
+import os
 import re
 import sys
+import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -53,9 +61,8 @@ if _SCRIPTS_DIR not in sys.path:
 
 import completion_artifacts  # noqa: E402  (path manipulated above)
 import generate_recap_pdf  # noqa: E402  (path manipulated above)
-import generate_recap_pdf_inline  # noqa: E402  (path manipulated above)
 import generate_transcript  # noqa: E402  (path manipulated above)
-import recap_html_render  # noqa: E402  (path manipulated above)
+import pdf_render_strategy  # noqa: E402  (path manipulated above)
 import recap_pdf_render  # noqa: E402  (path manipulated above)
 import reconcile_transcript  # noqa: E402  (path manipulated above)
 
@@ -67,21 +74,6 @@ GUARANTEED_ARTIFACTS = ("transcript", "recap_md", "rendered_recap")
 # recap is only considered non-empty for ``min_body`` purposes when at least one
 # such section is present.
 _MODULE_SECTION_RE = re.compile(r"^##\s+Module\s+\d+\b", re.MULTILINE)
-
-# Emitted to stdout when the rendered recap falls back to HTML because the
-# optional fpdf2 dependency is unavailable (Req 4.4). It states the exact
-# command required to install fpdf2 so the bootcamper can enable PDF rendering.
-_FPDF_INSTALL_HINT = (
-    "fpdf2 is not installed; rendered the recap as HTML instead. "
-    "To enable PDF rendering, install it with: pip install fpdf2"
-)
-
-# Emitted to stdout when fpdf2 is available but PDF rendering failed and the
-# HTML rendered recap was produced instead (Req 4.8).
-_PDF_FAILED_HINT = (
-    "PDF rendering failed; produced the HTML rendered recap "
-    "(docs/bootcamp_recap.html) instead."
-)
 
 
 # ---------------------------------------------------------------------------
@@ -107,8 +99,11 @@ class ArtifactPaths:
             to the recap path (`docs/bootcamp_recap.md`) since journal content is
             now part of the consolidated recap.
         progress_dir: Per-module artifacts directory (`docs/progress`).
-        pdf: Rendered PDF output (`docs/bootcamp_recap.pdf`).
-        html: Rendered HTML fallback output (`docs/bootcamp_recap.html`).
+        pdf: Rendered recap PDF output (`docs/bootcamp_recap.pdf`) — the
+            guaranteed rendered-recap artifact.
+        html: Supplementary HTML output path (`docs/bootcamp_recap.html`),
+            retained for signature/CLI compatibility. HTML is no longer the
+            artifact that satisfies the rendered-recap guarantee (the PDF is).
     """
 
     log: str = "config/session_log.jsonl"
@@ -127,8 +122,8 @@ class ArtifactStatus:
 
     Attributes:
         key: The artifact identity (one of :data:`GUARANTEED_ARTIFACTS`).
-        path: The resolved output path (`rendered_recap` is the `.pdf` or
-            `.html` actually produced).
+        path: The resolved output path (`rendered_recap` is always the
+            guaranteed `.pdf`).
         exists: Whether the artifact exists on disk.
         non_empty: Whether the artifact satisfies the non-empty invariant.
         regenerated: Whether this run (re)generated the artifact.
@@ -533,104 +528,60 @@ def ensure_recap_md(
     )
 
 
-def _fpdf_available() -> bool:
-    """Return whether the optional ``fpdf2`` package is importable.
+def ensure_rendered_recap(
+    recap: str, pdf_out: str, html_out: str = ""
+) -> ArtifactStatus:
+    """Guarantee a valid rendered recap PDF exists and is non-empty (Req 1).
 
-    Uses :func:`importlib.util.find_spec` so availability is probed without
-    importing ``fpdf`` at this module's top level (Req 4.5, 6.1). The actual
-    import stays lazy inside the sibling render modules.
+    The guaranteed rendered-recap artifact is ALWAYS ``docs/bootcamp_recap.pdf``,
+    regardless of whether the optional ``fpdf2`` dependency is installed
+    (Req 1.1, 1.3, 1.5). A rendered recap is only produced when the recap
+    Markdown source (``docs/bootcamp_recap.md``) is non-empty; when the source is
+    absent or empty no PDF is produced and a source-unavailable error is emitted
+    to stdout, and the returned status carries that error and the canonical PDF
+    path (Req 5.4 source guard).
 
-    Returns:
-        ``True`` when a spec for the ``fpdf`` module can be located, else
-        ``False``.
-    """
-    try:
-        return importlib.util.find_spec("fpdf") is not None
-    except (ImportError, ValueError):
-        return False
+    When the source is non-empty the PDF is produced through the guaranteed
+    three-tier strategy (:func:`pdf_render_strategy.ensure_recap_pdf`): the
+    professional fpdf2 renderer when fpdf2 is importable, a best-effort guarded
+    autoinstall otherwise, and the stdlib-only writer as the final fallback. The
+    stdlib tier needs no third-party packages, so a valid PDF is guaranteed even
+    when fpdf2 is unavailable and no install is possible (Req 1.4, 2.3).
 
+    The render targets a temporary file that is round-trip verified with
+    :func:`recap_pdf_render.verify_rendered_pdf` (reusing
+    :func:`recap_pdf_render.extract_pdf_text`) and only then published atomically,
+    so a verification or write failure never overwrites an existing valid PDF and
+    never crashes graduation (Req 5.2). An already-present PDF that is non-empty
+    (the round-trip body check, ``min_body=True``) and not stale relative to the
+    recap source is left byte-for-byte unchanged, so repeated stopping points are
+    an idempotent no-op (Req 2.5, 5.3).
 
-def _render_recap_pdf(recap: str, pdf_out: str) -> bool:
-    """Attempt to render the recap PDF via the existing generator chain.
-
-    Tries the bundled ``generate_recap_pdf`` entry point first, then the
-    self-contained ``generate_recap_pdf_inline`` fallback, mirroring the
-    graduation flow's PDF chain. A PDF is considered produced only when a
-    generator returns exit code 0 *and* the written file passes the stricter
-    round-trip body check (:func:`is_non_empty` with ``min_body=True``), so an
-    outline-only or dropped-content PDF is treated as a failure. Any exception
-    raised by a generator is swallowed and treated as that generator failing, so
-    a missing dependency or render error never escapes as a traceback.
-
-    Args:
-        recap: Path to the recap Markdown source.
-        pdf_out: Path for the rendered PDF output.
-
-    Returns:
-        ``True`` when a valid, non-empty PDF was written to ``pdf_out``, else
-        ``False``.
-    """
-    pdf_path = Path(pdf_out)
-    for renderer in (generate_recap_pdf, generate_recap_pdf_inline):
-        try:
-            rc = renderer.main(["--input", recap, "--output", pdf_out])
-        except Exception:  # noqa: BLE001 - a failed renderer must not escape; try the next
-            rc = 1
-        if rc == 0 and is_non_empty(pdf_path, min_body=True):
-            return True
-    return False
-
-
-def ensure_rendered_recap(recap: str, pdf_out: str, html_out: str) -> ArtifactStatus:
-    """Guarantee a rendered recap document exists and is non-empty (Req 4).
-
-    A rendered recap is only produced when the recap Markdown source
-    (``docs/bootcamp_recap.md``) is non-empty. When the source is absent or
-    empty, no rendered recap is produced and a source-unavailable error is
-    emitted to stdout (Req 4.7); the returned status carries that error and no
-    artifact.
-
-    When the source is non-empty, the renderer selects the output form by the
-    availability of the optional ``fpdf2`` dependency:
-
-    - **``fpdf2`` available** -> attempt the existing PDF chain
-      (``generate_recap_pdf`` then ``generate_recap_pdf_inline``). On success the
-      rendered recap is ``docs/bootcamp_recap.pdf``, verified with the stricter
-      round-trip body check (Req 4.1, 4.2). An already-present PDF that is
-      non-empty and not stale relative to the recap source is left byte-for-byte
-      unchanged (Req 2.5, 2.6).
-    - **``fpdf2`` unavailable** -> skip the PDF chain and render
-      ``docs/bootcamp_recap.html`` via
-      :func:`recap_html_render.render_markdown_html`, emitting the exact
-      ``pip install fpdf2`` hint to stdout (Req 4.3, 4.4). A fresh, non-empty
-      HTML fallback is likewise left unchanged.
-    - **``fpdf2`` available but PDF rendering fails** -> fall back to the HTML
-      rendered recap and emit a note that PDF rendering failed and HTML was
-      produced instead (Req 4.8).
-
-    ``fpdf`` is never imported at this module's top level; availability is probed
-    with :func:`importlib.util.find_spec` and the actual import stays lazy inside
-    the sibling render modules (Req 4.5, 6.1).
+    HTML is no longer produced here: it is supplementary, never the substitute
+    that satisfies the guarantee (Req 2.5). ``fpdf`` is never imported at this
+    module's top level; the strategy imports it lazily inside its render paths,
+    so importing the strategy keeps this orchestrator stdlib-only (Req 5.1).
 
     Args:
         recap: Path to the recap Markdown source.
-        pdf_out: Path for the rendered PDF output.
-        html_out: Path for the HTML fallback output.
+        pdf_out: Path for the guaranteed rendered PDF output.
+        html_out: Deprecated no-op retained for signature/CLI compatibility; the
+            guaranteed rendered-recap artifact is the PDF and this value is
+            unused.
 
     Returns:
         An :class:`ArtifactStatus` with ``key="rendered_recap"`` whose ``path``
-        is the ``.pdf`` or ``.html`` actually selected, describing whether the
-        rendered recap exists, is non-empty, was regenerated this run, and any
-        error encountered.
+        is always the ``.pdf``, describing whether the rendered recap exists, is
+        non-empty, was regenerated this run, and any error encountered.
     """
+    del html_out  # supplementary only; the guarantee is the PDF (Req 1.5, 2.5)
+
     recap_path = Path(recap)
     pdf_path = Path(pdf_out)
-    html_path = Path(html_out)
     sources = [recap_path]
 
-    # Source guard (Req 4.7): produce nothing when the recap Markdown source is
-    # absent or empty, and surface the source-unavailable error on stdout. The
-    # reported path is the canonical PDF path since no rendered form was chosen.
+    # Source guard (Req 5.4): produce nothing when the recap Markdown source is
+    # absent or empty, and surface the source-unavailable error on stdout.
     if not is_non_empty(recap_path):
         error = (
             f"recap source unavailable: '{recap}' is absent or empty; "
@@ -646,72 +597,73 @@ def ensure_rendered_recap(recap: str, pdf_out: str, html_out: str) -> ArtifactSt
             error=error,
         )
 
-    fpdf_available = _fpdf_available()
+    # Idempotent no-op: a valid (round-trip body check), fresh PDF is left
+    # byte-for-byte unchanged across repeated runs (Req 2.5, 5.3). This is the
+    # same validity check ``--check`` applies, so ensure and check agree.
+    if is_non_empty(pdf_path, min_body=True) and not is_stale(pdf_path, sources):
+        return ArtifactStatus(
+            key="rendered_recap",
+            path=str(pdf_path),
+            exists=True,
+            non_empty=True,
+            regenerated=False,
+            error=None,
+        )
 
-    # No-op when a valid, fresh rendered recap in the preferred form already
-    # exists, preserving byte-for-byte idempotence across repeated runs
-    # (Req 2.5, 2.6). The preferred form follows fpdf2 availability (Property 5):
-    # PDF when fpdf2 is present, otherwise the HTML fallback.
-    if fpdf_available:
-        if is_non_empty(pdf_path, min_body=True) and not is_stale(
-            pdf_path, sources
-        ):
-            return ArtifactStatus(
-                key="rendered_recap",
-                path=str(pdf_path),
-                exists=True,
-                non_empty=True,
-                regenerated=False,
-                error=None,
-            )
-    else:
-        if is_non_empty(html_path) and not is_stale(html_path, sources):
-            return ArtifactStatus(
-                key="rendered_recap",
-                path=str(html_path),
-                exists=True,
-                non_empty=True,
-                regenerated=False,
-                error=None,
-            )
-
-    # Attempt the PDF chain only when fpdf2 could satisfy it. A successful,
-    # verified PDF is the rendered recap (Req 4.2).
-    pdf_failed = False
-    if fpdf_available:
-        if _render_recap_pdf(recap, pdf_out):
-            return ArtifactStatus(
-                key="rendered_recap",
-                path=str(pdf_path),
-                exists=True,
-                non_empty=True,
-                regenerated=True,
-                error=None,
-            )
-        pdf_failed = True
-
-    # HTML fallback (Req 4.3): reached when fpdf2 is unavailable or the PDF chain
-    # failed. Render the recap Markdown to a self-contained HTML document.
+    # Regenerate the guaranteed PDF via the three-tier strategy. fpdf stays
+    # lazily imported inside the strategy's render paths (Req 5.1), and the
+    # strategy always produces a valid PDF, so a missing/uninstallable fpdf2 is
+    # no longer a failure path. Any failure is recorded, never raised (Req 5.2),
+    # and leaves an existing PDF untouched because the render goes to a temp file
+    # that is only published on successful verification.
     error: str | None = None
     try:
         content = recap_path.read_text(encoding="utf-8")
-        recap_html_render.render_markdown_html(content, html_out)
-    except Exception as exc:  # noqa: BLE001 - record failure instead of raising (Req 4.3)
-        error = f"HTML rendered recap failed: {exc}"
+        doc = generate_recap_pdf.parse_recap_markdown(content)
+        module_numbers, expected_body_lines = (
+            generate_recap_pdf.collect_verification_targets(doc, content)
+        )
+        allow_autoinstall = pdf_render_strategy.resolve_allow_autoinstall()
+        timeout_s = pdf_render_strategy.DEFAULT_AUTOINSTALL_TIMEOUT_S
 
-    # Emit the appropriate stdout guidance: the exact install hint when fpdf2 is
-    # absent (Req 4.4), or the PDF-failed note when fpdf2 was present but the PDF
-    # chain failed (Req 4.8).
-    if not fpdf_available:
-        print(_FPDF_INSTALL_HINT)
-    elif pdf_failed:
-        print(_PDF_FAILED_HINT)
+        directory = pdf_path.parent if str(pdf_path.parent) else Path(".")
+        tmp_path: str | None = None
+        try:
+            fd, tmp_path = tempfile.mkstemp(
+                dir=str(directory), prefix=f"{pdf_path.name}.", suffix=".tmp"
+            )
+            os.close(fd)
+            # The strategy guarantees a valid PDF at tmp_path (rich fpdf2 when
+            # available, else autoinstall, else the stdlib writer) and reports
+            # the chosen tier to stderr (Req 2.4).
+            pdf_render_strategy.ensure_recap_pdf(
+                doc,
+                tmp_path,
+                allow_autoinstall=allow_autoinstall,
+                timeout_s=timeout_s,
+                body_text=content,
+            )
+            # Round-trip verification before publishing: confirm each module
+            # section and enough body content survived into the PDF (Req 1.2).
+            recap_pdf_render.verify_rendered_pdf(
+                tmp_path, module_numbers, expected_body_lines
+            )
+            os.replace(tmp_path, str(pdf_path))
+            tmp_path = None  # Published — nothing left to clean up.
+        finally:
+            if tmp_path is not None:
+                try:
+                    os.unlink(tmp_path)
+                except OSError:
+                    pass
+    except Exception as exc:  # noqa: BLE001 - non-blocking guarantee (Req 5.2)
+        error = f"rendered recap PDF failed: {exc}"
 
-    exists = html_path.is_file()
-    non_empty = is_non_empty(html_path)
+    exists = pdf_path.is_file()
+    non_empty = is_non_empty(pdf_path, min_body=True)
     return ArtifactStatus(
         key="rendered_recap",
-        path=str(html_path),
+        path=str(pdf_path),
         exists=exists,
         non_empty=non_empty,
         regenerated=error is None and exists and non_empty,
@@ -819,10 +771,13 @@ def check_all(paths: ArtifactPaths) -> GuaranteeReport:
     file. It is what the ``--check`` CLI path uses to confirm the completion
     invariant holds.
 
-    The rendered-recap form is selected the same way
-    :func:`ensure_rendered_recap` selects it: the ``.pdf`` is checked when
-    ``fpdf2`` is available, otherwise the ``.html`` fallback, so ``--check``
-    agrees with what a real run would produce (Property 5).
+    The rendered-recap artifact is ALWAYS the guaranteed ``docs/bootcamp_recap.pdf``
+    (Req 1.5): it is reported satisfied only when a valid PDF exists — the
+    round-trip body check (``min_body=True``, reusing
+    :func:`recap_pdf_render.verify_rendered_pdf` / ``extract_pdf_text``) — so a
+    workspace carrying only an HTML file is reported UNSATISFIED. The ``.pdf``
+    path is checked regardless of ``fpdf2`` availability, matching what a real
+    ensure run guarantees.
 
     Args:
         paths: The resolved, overridable canonical artifact paths.
@@ -833,7 +788,7 @@ def check_all(paths: ArtifactPaths) -> GuaranteeReport:
     """
     transcript_path = Path(paths.transcript)
     recap_path = Path(paths.recap)
-    rendered_path = Path(paths.pdf) if _fpdf_available() else Path(paths.html)
+    rendered_path = Path(paths.pdf)
 
     transcript_status = ArtifactStatus(
         key="transcript",
@@ -855,9 +810,7 @@ def check_all(paths: ArtifactPaths) -> GuaranteeReport:
         key="rendered_recap",
         path=str(rendered_path),
         exists=rendered_path.is_file(),
-        non_empty=is_non_empty(
-            rendered_path, min_body=rendered_path.suffix.lower() == ".pdf"
-        ),
+        non_empty=is_non_empty(rendered_path, min_body=True),
         regenerated=False,
         error=None,
     )
@@ -986,9 +939,18 @@ def _build_parser() -> argparse.ArgumentParser:
         default=defaults.progress_dir,
         help="per-module artifacts directory",
     )
-    parser.add_argument("--pdf", default=defaults.pdf, help="rendered PDF output")
     parser.add_argument(
-        "--html", default=defaults.html, help="rendered HTML fallback output"
+        "--pdf",
+        default=defaults.pdf,
+        help="guaranteed rendered recap PDF output",
+    )
+    parser.add_argument(
+        "--html",
+        default=defaults.html,
+        help=(
+            "supplementary HTML output path (retained for compatibility; the "
+            "guaranteed rendered-recap artifact is the PDF, not the HTML)"
+        ),
     )
     return parser
 

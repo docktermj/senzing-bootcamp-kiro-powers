@@ -104,7 +104,15 @@ _BASELINE_COMPLETION_TRACK_SHA256: str = (
     # (Task 3.2): module-completion-track.md gained the "Bootcamp-Completion
     # Closing Question" subsection (an unconditional 👉 + bold closing question).
     # That edit is unrelated to the module-sequencing-order fix this suite guards.
-    "0502c5f46cd68ed7294991a5aefdeb4d8ddce1ffbbba93969aa3fcf6cff8a74d"
+    #
+    # Re-baselined again observation-first for the guaranteed-recap-pdf spec
+    # (Task 5.2): module-completion-track.md was updated to replace the "degrades
+    # to HTML/Markdown when fpdf2 absent" language with the guaranteed-PDF tiered
+    # behavior (rich fpdf2 -> guarded autoinstall -> stdlib-only writer), while
+    # preserving the reconcile-then-render ordering and the non-blocking posture.
+    # That edit is unrelated to the module-sequencing-order fix this suite guards,
+    # so the baseline is moved observation-first to the current file contents.
+    "506532ead89458fa94727ad42f9b32062133420b9927f42398b5a84120dbc83e"
 )
 
 

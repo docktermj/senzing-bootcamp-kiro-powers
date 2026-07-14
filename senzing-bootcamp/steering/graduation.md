@@ -92,13 +92,13 @@ Generate a PDF version of the bootcamper's recap document for sharing. This step
 
 ### Step 0b.0: fpdf2 Preflight Note
 
-Before attempting the recap PDF, run the preflight helper so the bootcamper learns up front whether a PDF will be produced:
+Before attempting the recap PDF, run the preflight helper so the bootcamper learns up front which recap PDF they'll get — the professionally designed one when `fpdf2` is available, or a plainer but still valid PDF otherwise (a PDF is produced either way):
 
 ```bash
 python3 senzing-bootcamp/scripts/fpdf2_preflight.py
 ```
 
-If it prints a line, surface that line to the bootcamper; if it prints nothing, continue silently. This step is **non-blocking regardless of exit code** — the recap PDF render (Step 0b.1 onward) always runs afterward whether or not a note was shown, and the PDF scripts' own graceful degradation remains the final fallback.
+If it prints a line, surface that line to the bootcamper; if it prints nothing, continue silently. This step is **non-blocking regardless of exit code** — the recap PDF render (Step 0b.1 onward) always runs afterward whether or not a note was shown. The note only distinguishes the rich vs. plainer PDF; the render below produces a valid PDF regardless via its tiered strategy.
 
 ### Step 0b.1: Recap Document Recovery
 
@@ -142,15 +142,15 @@ Before generating the PDF, validate that the recap document contains content mat
 
 ### Step 0b.3: PDF Generation
 
-Generate `docs/bootcamp_recap.pdf` from `docs/bootcamp_recap.md` using a helper-first, inline-fallback decision. The bundled helper lives in the installed power's directory and may not resolve at a workspace-relative path, so never assume it ran — confirm a PDF was actually written before claiming success. This step pairs with the `recap-pdf-content-loss-fix` (tolerant parser + raw-Markdown fallback), `graduation-markdown-normalization` (Step 0 normalization), and `missing-bundled-scripts` (graceful degradation + file-independent inline render) work.
+Generate `docs/bootcamp_recap.pdf` from `docs/bootcamp_recap.md` using a helper-first, inline-fallback decision. The concern here is **locating a runnable generator** — the bundled helper lives in the installed power's directory and may not resolve at a workspace-relative path, so never assume it ran — confirm a PDF was actually written before claiming success. A valid PDF itself is guaranteed regardless of `fpdf2`: each generator routes through the tiered strategy (rich `fpdf2` renderer → best-effort `fpdf2` auto-install → stdlib-only PDF writer). This step pairs with the `recap-pdf-content-loss-fix` (tolerant parser + raw-Markdown fallback), `graduation-markdown-normalization` (Step 0 normalization), `missing-bundled-scripts` (graceful degradation + file-independent inline render), and `guaranteed-recap-pdf` (tiered rendering so a valid PDF is always produced) work.
 
 A PDF was written only when the script prints a `PDF generated:` line to stdout and exits 0; any other outcome (exit 1, no `PDF generated:` line) means no PDF exists.
 
-**Preference order (most → least structured), each non-blocking:**
+**Preference order for locating a runnable generator (most → least structured), each non-blocking:**
 
-1. **Bundled `generate_recap_pdf.py`** — full structured render (cover page + per-module pages). Preferred first; used whenever it can run and write a PDF.
-2. **`generate_recap_pdf_inline.py`** — self-contained inline generator. It reuses the shared `generate_recap_pdf` parser/renderer when that module is importable, otherwise it falls through to the file-independent path below. Used when the bundled helper does not write a PDF for a reason other than missing `fpdf2`.
-3. **File-independent inline render** — `recap_pdf_render.render_markdown_pdf`, reached from inside the inline generator when no bundled generator file is importable. It renders the raw recap Markdown straight to PDF with **no dependency on any bundled generator file**, so a recap PDF is still produced when both bundled generators are absent (as long as `fpdf2` is installed). `fpdf` is imported lazily inside this render path only; when `fpdf2` is absent the path degrades gracefully (Markdown recap retained, `pip install fpdf2` hint printed) and never hard-fails.
+1. **Bundled `generate_recap_pdf.py`** — full structured render (cover page + per-module pages when `fpdf2` is available). Preferred first; used whenever it can run and write a PDF.
+2. **`generate_recap_pdf_inline.py`** — self-contained inline generator. It reuses the shared `generate_recap_pdf` parser/renderer when that module is importable, otherwise it falls through to the file-independent path below. Used when the bundled helper cannot be located or run.
+3. **File-independent inline render** — `recap_pdf_render.render_markdown_pdf`, reached from inside the inline generator when no bundled generator file is importable. It renders the raw recap Markdown straight to PDF with **no dependency on any bundled generator file**, so a recap PDF is still produced when both bundled generators are absent. Every generator routes through the tiered PDF strategy — the rich `fpdf2` renderer, a best-effort `fpdf2` auto-install, then a stdlib-only PDF writer — so a valid PDF is produced whether or not `fpdf2` is installed; `fpdf` is only ever imported lazily inside the render path, never at module top level.
 
 1. **Prefer the bundled helper.** Attempt:
 
@@ -158,27 +158,25 @@ A PDF was written only when the script prints a `PDF generated:` line to stdout 
    python scripts/generate_recap_pdf.py
    ```
 
-   This converts `docs/bootcamp_recap.md` into `docs/bootcamp_recap.pdf`, rendering a cover page (bootcamp title, bootcamper name, completion date, total duration) and per-module pages with formatted headings, lists, and code blocks.
+   This converts `docs/bootcamp_recap.md` into `docs/bootcamp_recap.pdf` via the tiered strategy — rendering the rich cover page (bootcamp title, bootcamper name, completion date, total duration) and per-module pages with formatted headings, lists, and code blocks when `fpdf2` is available, or a plainer but still valid PDF from the same content otherwise.
 
    - If it runs and writes the PDF (exit 0 with a `PDF generated:` line), inform the bootcamper: "📄 Recap PDF generated at `docs/bootcamp_recap.pdf`." Proceed to Step 0b.4.
    - If the bundled script cannot be located or run — the path does not resolve, the file is missing, or it errors before writing a PDF — do not stop and do not report success. Fall back inline (step 2).
-   - If it reports `fpdf2` is not installed, go to graceful degradation (step 3).
 
-2. **Fall back to the inline generator.** When the bundled helper is unavailable or did not write a PDF (for a reason other than missing `fpdf2`), run the self-contained inline fallback against the existing recap Markdown:
+2. **Fall back to the inline generator.** When the bundled helper is unavailable or did not write a PDF, run the self-contained inline fallback against the existing recap Markdown:
 
    ```bash
    python scripts/generate_recap_pdf_inline.py --input docs/bootcamp_recap.md --output docs/bootcamp_recap.pdf
    ```
 
-   This path does not depend on the bundled `generate_recap_pdf.py` being importable from the workspace; it reads `docs/bootcamp_recap.md` and renders the same recap content (reusing the shared renderer when available, otherwise the file-independent `recap_pdf_render.render_markdown_pdf` raw-Markdown render path so no content is dropped and no bundled generator file is required). Its success signal is the same: a `PDF generated:` line on stdout and exit 0.
+   This path does not depend on the bundled `generate_recap_pdf.py` being importable from the workspace; it reads `docs/bootcamp_recap.md` and renders the same recap content through the same tiered strategy (reusing the shared renderer when available, otherwise the file-independent `recap_pdf_render.render_markdown_pdf` raw-Markdown render path so no content is dropped and no bundled generator file is required). Its success signal is the same: a `PDF generated:` line on stdout and exit 0.
 
    - On success, state plainly that an inline generation path was used: "📄 Recap PDF generated at `docs/bootcamp_recap.pdf` (generated via the inline fallback path)." Do not imply the bundled script ran. Proceed to Step 0b.4.
-   - If the inline generator reports `fpdf2` is not installed, go to graceful degradation (step 3).
-   - If it fails for any other reason (exit 1, no `PDF generated:` line), follow the skip/failure messaging (step 4).
+   - If it fails for any other reason (exit 1, no `PDF generated:` line), follow the last-resort messaging (step 4).
 
-3. **Graceful degradation when `fpdf2` is absent.** If either path reports that `fpdf2` is not installed, PDF generation is skipped — this is expected and never blocks graduation. Inform the bootcamper that the PDF was not generated because the optional `fpdf2` dependency is missing, and suggest `pip install fpdf2` to enable it. Then follow the skip/failure messaging (step 4).
+3. **Missing `fpdf2` is not a skip.** A recap PDF is guaranteed regardless of `fpdf2`: when it is absent the generators attempt a best-effort `fpdf2` auto-install and otherwise fall back to a stdlib-only PDF writer, producing a valid (plainer) PDF from the same recap content. Do **not** treat a missing `fpdf2` as a reason to skip the PDF or to jump to the last-resort messaging — the tiered strategy still writes `docs/bootcamp_recap.pdf`. Installing `fpdf2` (`pip install fpdf2`) simply upgrades the result to the professionally designed PDF.
 
-4. **Skip/failure messaging — always point to the Markdown recap.** In every case where no PDF was written (bundled helper and inline fallback both unavailable, `fpdf2` absent, or any other error), tell the bootcamper:
+4. **Last-resort messaging — point to the Markdown recap.** Only when no PDF was written for a genuine, unexpected reason (both the bundled helper and the inline fallback unavailable, or an unexpected render error) — never merely because `fpdf2` is absent — tell the bootcamper:
    - that the PDF was not generated, and the reason, and
    - that their recap content already exists at `docs/bootcamp_recap.md`.
 
@@ -432,7 +430,7 @@ This is the **final, mandatory closing step** of graduation. It runs **exactly o
    python scripts/ensure_graduation_artifacts.py
    ```
 
-   This guarantees `docs/bootcamp_recap.md`, the rendered recap (`docs/bootcamp_recap.pdf` when `fpdf2` is available, otherwise `docs/bootcamp_recap.html`), and the Q&A transcript. It regenerates only what is absent, empty, or stale (idempotent otherwise) and reconstructs each from always-present sources without depending on any bundled generation script.
+   This guarantees `docs/bootcamp_recap.md`, the rendered recap PDF `docs/bootcamp_recap.pdf` (produced via the tiered strategy — the rich `fpdf2` renderer when available, a best-effort `fpdf2` auto-install otherwise, and a stdlib-only PDF writer as the final tier — so a valid PDF exists whether or not `fpdf2` is installed; any `docs/bootcamp_recap.html` is only supplementary, and `--check` is satisfied only by the PDF), and the Q&A transcript. It regenerates only what is absent, empty, or stale (idempotent otherwise) and reconstructs each from always-present sources without depending on any bundled generation script.
 
 2. **Withhold the announcement until artifacts are confirmed.** Confirm each artifact exists at its stated path (use `--check` to verify with no side effects):
 
@@ -445,13 +443,13 @@ This is the **final, mandatory closing step** of graduation. It runs **exactly o
 3. **Emit the announcement exactly once.** Once artifacts are confirmed, emit a single closing announcement to the bootcamper that:
    - states the recap **exists**,
    - names the recap path `docs/bootcamp_recap.md`, identifying it as the single per-module recap that **also** carries the narrative journal content (as a `### Journal` subsection), rather than referencing a separate `docs/bootcamp_journal.md` file,
-   - names the rendered-recap path — `docs/bootcamp_recap.pdf` when `fpdf2` is available, otherwise `docs/bootcamp_recap.html`,
+   - names the rendered-recap PDF path `docs/bootcamp_recap.pdf` (always a valid PDF via the tiered strategy — the professionally designed one when `fpdf2` is available, a plainer stdlib-rendered one otherwise; any `docs/bootcamp_recap.html` is only a supplementary extra, never the rendered recap that satisfies the guarantee),
    - names the per-directory and top-level project indexes — `docs/README.md`, `src/README.md`, `data/README.md`, and the top-level `README.md` — confirming each exists at its stated path before naming it, and
    - states that, for every completed module, the recap contains the three labeled sections **Information Shared**, **Questions & Responses**, and **Actions Taken**.
 
    Report only those artifacts confirmed to exist at their stated paths, and omit from the announcement any artifact — recap, rendered recap, or index — not confirmed to exist. This is an extension of the single closing announcement, not a second one: do not add a separate or competing closing announcement, and do not repeat it — it is emitted once per graduation.
 
-Example announcement (adapt the rendered-recap path to the confirmed format, and list only the indexes confirmed to exist):
+Example announcement (list only the indexes confirmed to exist):
 
 > 📗 **Your recap is ready.** It exists at `docs/bootcamp_recap.md` — your single per-module recap, which also carries your narrative journal as a `### Journal` subsection — with a shareable rendered copy at `docs/bootcamp_recap.pdf`. For every completed module it captures **Information Shared**, **Questions & Responses**, and **Actions Taken**. Navigate your project from its indexes: `docs/README.md`, `src/README.md`, `data/README.md`, and the top-level `README.md`.
 

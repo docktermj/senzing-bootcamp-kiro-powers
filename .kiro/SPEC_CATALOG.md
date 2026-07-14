@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 0
-- implemented: 279
+- in-progress: 3
+- implemented: 280
 - superseded: 2
 - abandoned: 0
 - unknown: 0
@@ -638,6 +638,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/guaranteed-graduation-artifacts/](.kiro/specs/guaranteed-graduation-artifacts/)
 
+### guaranteed-recap-pdf
+
+- Status: implemented
+- Type: unknown
+- Workflow: unknown
+- Directory: [.kiro/specs/guaranteed-recap-pdf/](.kiro/specs/guaranteed-recap-pdf/)
+
 ### guided-rollback-preview
 
 - Status: implemented
@@ -819,6 +826,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/mandatory-gate-enforcement/](.kiro/specs/mandatory-gate-enforcement/)
+
+### mandatory-question-answers
+
+- Status: in-progress
+- Type: unknown
+- Workflow: unknown
+- Directory: [.kiro/specs/mandatory-question-answers/](.kiro/specs/mandatory-question-answers/)
 
 ### mandatory-visualization-gate
 
@@ -1291,6 +1305,13 @@
 - Workflow: requirements-first
 - Directory: [.kiro/specs/power-version-display/](.kiro/specs/power-version-display/)
 
+### preface-flow-and-banners
+
+- Status: in-progress
+- Type: unknown
+- Workflow: unknown
+- Directory: [.kiro/specs/preface-flow-and-banners/](.kiro/specs/preface-flow-and-banners/)
+
 ### preferences-schema-validation
 
 - Status: implemented
@@ -1588,6 +1609,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/silent-hook-processing/](.kiro/specs/silent-hook-processing/)
+
+### single-ask-question-guarantee
+
+- Status: in-progress
+- Type: unknown
+- Workflow: unknown
+- Directory: [.kiro/specs/single-ask-question-guarantee/](.kiro/specs/single-ask-question-guarantee/)
 
 ### single-question-format
 

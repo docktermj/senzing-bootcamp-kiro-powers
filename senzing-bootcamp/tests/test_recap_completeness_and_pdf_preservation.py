@@ -23,9 +23,11 @@ For ``isBugCondition(input) == FALSE`` inputs the system must be unaffected:
              consistent recap returns the same empty plan and makes no changes.
     Req 3.3  A recap whose body fits within the available width renders every
              heading and body line (no dropped content).
-    Req 3.4  With ``fpdf2`` absent, both generators degrade gracefully: they
-             print the ``pip install fpdf2`` hint, write no PDF, preserve the
-             Markdown input, and never raise.
+    Req 3.4  With ``fpdf2`` absent (and autoinstall disabled), both generators
+             still guarantee a PDF via the stdlib-only writer (Tier 3): they
+             exit 0, write a valid PDF, preserve the Markdown input, and never
+             raise. (Updated for the guaranteed-recap-pdf tiered strategy, which
+             supersedes the old "no PDF / pip install hint / exit 1" behavior.)
     Req 3.5  Unrelated completion hooks (celebration, etc.) behave exactly as
              before — this fix does not alter their trigger, action, or
              constraints.
@@ -607,13 +609,16 @@ def _run_with_fpdf_absent(func) -> object:
 
 
 class TestFpdfAbsentDegradation:
-    """Req 3.4 — both generators degrade gracefully when ``fpdf2`` is absent.
+    """Req 3.4 — both generators still guarantee a PDF when ``fpdf2`` is absent.
 
-    Observation (unfixed code): with ``import fpdf`` failing, each generator
-    prints the ``pip install fpdf2`` hint to stderr, returns exit code 1, writes
-    no PDF, leaves the Markdown input intact, and never raises.
+    Behavior under the guaranteed-recap-pdf tiered strategy: with ``import fpdf``
+    failing and autoinstall disabled (``--no-autoinstall``), each generator falls
+    through to the stdlib-only writer (Tier 3), producing a valid PDF and exiting
+    0 while leaving the Markdown input intact and never raising. This supersedes
+    the pre-strategy "print the pip install hint, write no PDF, exit 1" behavior:
+    a missing fpdf2 no longer means "no PDF".
 
-    Validates: Requirements 3.4
+    Validates: Requirements 3.4 (updated for guaranteed-recap-pdf 1.1/1.3/2.3)
     """
 
     _RECAP = (
@@ -628,7 +633,7 @@ class TestFpdfAbsentDegradation:
     )
 
     def test_bundled_generator_degrades_gracefully(self, tmp_path: Path) -> None:
-        """``generate_recap_pdf`` prints the hint, writes no PDF, keeps Markdown."""
+        """``generate_recap_pdf`` writes a guaranteed stdlib PDF, keeps Markdown."""
         recap_path = tmp_path / "recap.md"
         recap_path.write_text(self._RECAP, encoding="utf-8")
         output = tmp_path / "out.pdf"
@@ -637,19 +642,32 @@ class TestFpdfAbsentDegradation:
 
         def _invoke() -> int:
             with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
-                return grp.main(["--input", str(recap_path), "--output", str(output)])
+                return grp.main(
+                    [
+                        "--input", str(recap_path),
+                        "--output", str(output),
+                        "--no-autoinstall",
+                    ]
+                )
 
         exit_code = _run_with_fpdf_absent(_invoke)
 
-        assert exit_code == 1, "absent fpdf2 must yield a non-zero exit"
-        assert "pip install fpdf2" in err.getvalue(), "the install hint must be printed"
-        assert not output.exists(), "no PDF should be written when fpdf2 is absent"
+        assert exit_code == 0, (
+            "absent fpdf2 must still yield a guaranteed stdlib PDF (exit 0); "
+            f"stderr={err.getvalue()!r}"
+        )
+        assert "Traceback (most recent call last)" not in err.getvalue(), (
+            "the flow must stay clean (no traceback)"
+        )
+        assert output.exists() and output.read_bytes().startswith(b"%PDF"), (
+            "a valid PDF must be produced via the stdlib tier when fpdf2 is absent"
+        )
         assert recap_path.read_text(encoding="utf-8") == self._RECAP, (
             "the Markdown input must be preserved"
         )
 
     def test_inline_generator_degrades_gracefully(self, tmp_path: Path) -> None:
-        """``generate_recap_pdf_inline`` prints the hint, writes no PDF, keeps Markdown."""
+        """``generate_recap_pdf_inline`` writes a guaranteed stdlib PDF, keeps Markdown."""
         recap_path = tmp_path / "recap.md"
         recap_path.write_text(self._RECAP, encoding="utf-8")
         output = tmp_path / "out.pdf"
@@ -658,13 +676,26 @@ class TestFpdfAbsentDegradation:
 
         def _invoke() -> int:
             with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
-                return grpi.main(["--input", str(recap_path), "--output", str(output)])
+                return grpi.main(
+                    [
+                        "--input", str(recap_path),
+                        "--output", str(output),
+                        "--no-autoinstall",
+                    ]
+                )
 
         exit_code = _run_with_fpdf_absent(_invoke)
 
-        assert exit_code == 1, "absent fpdf2 must yield a non-zero exit"
-        assert "pip install fpdf2" in err.getvalue(), "the install hint must be printed"
-        assert not output.exists(), "no PDF should be written when fpdf2 is absent"
+        assert exit_code == 0, (
+            "absent fpdf2 must still yield a guaranteed stdlib PDF (exit 0); "
+            f"stderr={err.getvalue()!r}"
+        )
+        assert "Traceback (most recent call last)" not in err.getvalue(), (
+            "the flow must stay clean (no traceback)"
+        )
+        assert output.exists() and output.read_bytes().startswith(b"%PDF"), (
+            "a valid PDF must be produced via the stdlib tier when fpdf2 is absent"
+        )
         assert recap_path.read_text(encoding="utf-8") == self._RECAP, (
             "the Markdown input must be preserved"
         )

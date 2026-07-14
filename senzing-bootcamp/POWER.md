@@ -163,7 +163,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `environment-setup.md` | 658 | medium |
 | `feedback-workflow.md` | 1274 | medium |
 | `file-placement.md` | 515 | medium |
-| `graduation.md` | 11131 | large |
+| `graduation.md` | 11426 | large |
 | `hook-architecture.md` | 2418 | large |
 | `hook-registry-critical.md` | 11455 | large |
 | `hook-registry-module-01.md` | 434 | small |
@@ -228,7 +228,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-completion-artifacts.md` | 3448 | large |
 | `module-completion-error-handling.md` | 637 | medium |
 | `module-completion-next-steps.md` | 705 | medium |
-| `module-completion-track.md` | 3601 | large |
+| `module-completion-track.md` | 3760 | large |
 | `module-completion.md` | 2256 | large |
 | `module-prerequisites.md` | 1395 | medium |
 | `module-transitions.md` | 1908 | medium |
@@ -258,7 +258,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 220273 tokens
+**Total budget:** 220727 tokens
 
 <!-- END GENERATED: steering-files -->
 

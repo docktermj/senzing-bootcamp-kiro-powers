@@ -18,9 +18,11 @@ Covered preservation properties (from design Preservation Requirements):
   order is unchanged.
 - Present generic step preservation (Req 3.2): a present bundled step script
   executes its own behavior (exit code / output), never a file-not-found error.
-- Markdown-only degradation preservation (Req 3.4): with a present generator but
-  ``fpdf2`` absent, the system degrades gracefully — retains the Markdown recap,
-  prints a ``pip install fpdf2`` hint, raises no unhandled error, writes no PDF.
+- Guaranteed-PDF degradation preservation (Req 3.4): with a present generator but
+  ``fpdf2`` absent (and autoinstall disabled), the guaranteed-recap-pdf tiered
+  strategy retains the Markdown recap, raises no unhandled error, and still
+  produces a valid PDF via the stdlib-only writer (exit 0). This supersedes the
+  pre-strategy no-PDF ``pip install fpdf2`` degradation.
 - No-overwrite preservation (Req 3.5): onboarding verification/materialization
   (``preflight.py --fix``) leaves already-present valid bundled scripts
   byte-for-byte unchanged (idempotent, no clobber).
@@ -73,6 +75,26 @@ _GENERIC_STEP_NAME: str = "generate_docs_index.py"
 _RECAP_GENERATOR: str = f"{_WORKSPACE_SCRIPTS}/{_RECAP_GENERATOR_NAME}"
 _RECAP_GENERATOR_INLINE: str = f"{_WORKSPACE_SCRIPTS}/{_RECAP_GENERATOR_INLINE_NAME}"
 _GENERIC_STEP_SCRIPT: str = f"{_WORKSPACE_SCRIPTS}/{_GENERIC_STEP_NAME}"
+
+# New render-time dependencies pulled in by the guaranteed-recap-pdf tier
+# strategy: generate_recap_pdf.main() imports pdf_render_strategy, which in turn
+# imports recap_pdf_minimal (the stdlib Tier 3 writer) and preferences_utils
+# (the autoinstall opt-out loader). A workspace copy of the generators must
+# therefore also carry these modules or the generator crashes with a
+# ModuleNotFoundError before rendering.
+_PDF_STRATEGY_NAME: str = "pdf_render_strategy.py"
+_RECAP_MINIMAL_NAME: str = "recap_pdf_minimal.py"
+_PREFERENCES_UTILS_NAME: str = "preferences_utils.py"
+
+# The full set of modules the recap generators need at render time.
+_RECAP_RENDER_DEPS: tuple[str, ...] = (
+    _RECAP_GENERATOR_NAME,
+    _RECAP_GENERATOR_INLINE_NAME,
+    _RECAP_RENDER_NAME,
+    _PDF_STRATEGY_NAME,
+    _RECAP_MINIMAL_NAME,
+    _PREFERENCES_UTILS_NAME,
+)
 
 # Required bundled scripts whose byte-for-byte stability the no-overwrite
 # preservation property guards.
@@ -340,14 +362,7 @@ class TestBundledRecapGeneratorPreservation:
     ) -> None:
         """For all recap bodies, the present bundled generator renders a PDF."""
         workspace = _new_workspace()
-        _materialize_scripts(
-            workspace,
-            (
-                _RECAP_GENERATOR_NAME,
-                _RECAP_GENERATOR_INLINE_NAME,
-                _RECAP_RENDER_NAME,
-            ),
-        )
+        _materialize_scripts(workspace, _RECAP_RENDER_DEPS)
         pdf_path = workspace / _RECAP_PDF
         _write_recap(workspace, body)
 
@@ -370,14 +385,7 @@ class TestBundledRecapGeneratorPreservation:
     def test_step_0b_prefers_bundled_generator_first(self) -> None:
         """Step 0b uses generate_recap_pdf.py first; the inline fallback is unused."""
         workspace = _new_workspace()
-        _materialize_scripts(
-            workspace,
-            (
-                _RECAP_GENERATOR_NAME,
-                _RECAP_GENERATOR_INLINE_NAME,
-                _RECAP_RENDER_NAME,
-            ),
-        )
+        _materialize_scripts(workspace, _RECAP_RENDER_DEPS)
         _write_recap(
             workspace,
             "# Senzing Bootcamp Recap\n\n## Module 1: Business Problem\n\n"
@@ -459,34 +467,35 @@ class TestPresentGenericStepPreservation:
 
 
 class TestMarkdownOnlyDegradationPreservation:
-    """Preservation — present generator degrades gracefully without fpdf2.
+    """Preservation — present generator still guarantees a PDF without fpdf2.
 
-    **Validates: Requirements 3.4**
+    **Validates: Requirements 3.4** (updated for guaranteed-recap-pdf 1.1/1.3/2.3)
 
     When the bundled ``generate_recap_pdf.py`` is present (not the bug
-    condition) but ``fpdf2`` cannot be imported, the system retains the Markdown
-    recap, surfaces a ``pip install fpdf2`` hint, raises no unhandled error, and
-    produces no PDF. This graceful no-PDF degradation must remain unchanged.
+    condition) but ``fpdf2`` cannot be imported and autoinstall is disabled, the
+    guaranteed-recap-pdf tiered strategy falls through to the stdlib-only writer
+    (Tier 3): it retains the Markdown recap, raises no unhandled error, exits 0,
+    and produces a valid PDF. This supersedes the pre-strategy "no PDF / pip
+    install hint / exit 1" degradation.
     """
 
     @given(body=st_recap_markdown())
     def test_present_generator_degrades_gracefully_without_fpdf(
         self, body: str, tmp_path_factory: pytest.TempPathFactory
     ) -> None:
-        """For all recap bodies, a blocked fpdf2 yields a hint and no PDF."""
+        """For all recap bodies, a blocked fpdf2 still yields a guaranteed PDF."""
         workspace = _new_workspace()
-        _materialize_scripts(
-            workspace,
-            (
-                _RECAP_GENERATOR_NAME,
-                _RECAP_GENERATOR_INLINE_NAME,
-                _RECAP_RENDER_NAME,
-            ),
-        )
+        _materialize_scripts(workspace, _RECAP_RENDER_DEPS)
         _write_recap(workspace, body)
         env = _fpdf_absent_env(tmp_path_factory.mktemp("fpdf_absent"))
 
-        result = _run(workspace, [sys.executable, _RECAP_GENERATOR], env=env)
+        # --no-autoinstall keeps the stdlib tier deterministic and performs no
+        # real network install when fpdf2 is absent.
+        result = _run(
+            workspace,
+            [sys.executable, _RECAP_GENERATOR, "--no-autoinstall"],
+            env=env,
+        )
 
         blob = f"{result.stdout}\n{result.stderr}"
         assert not any(m in blob for m in _FILE_NOT_FOUND_MARKERS), (
@@ -495,17 +504,15 @@ class TestMarkdownOnlyDegradationPreservation:
         assert "Traceback (most recent call last)" not in blob, (
             f"present generator must not raise an unhandled error; blob={blob!r}"
         )
-        assert any(marker in blob for marker in _FPDF_HINT_MARKERS), (
-            "present generator must surface a 'pip install fpdf2' hint when fpdf2 "
-            f"is absent; blob={blob!r}"
-        )
-        assert result.returncode == 1, (
-            "present generator must report the no-PDF outcome (exit 1) when fpdf2 "
-            f"is absent, got returncode={result.returncode}"
+        assert result.returncode == 0, (
+            "present generator must still guarantee a PDF (exit 0) via the stdlib "
+            f"tier when fpdf2 is absent, got returncode={result.returncode}; "
+            f"blob={blob!r}"
         )
         assert (workspace / _RECAP_MD).exists(), "the Markdown recap must be retained"
-        assert not (workspace / _RECAP_PDF).exists(), (
-            "no PDF should be produced when fpdf2 is absent"
+        pdf_path = workspace / _RECAP_PDF
+        assert pdf_path.exists() and pdf_path.read_bytes().startswith(b"%PDF"), (
+            "a valid PDF must be produced via the stdlib tier when fpdf2 is absent"
         )
 
 

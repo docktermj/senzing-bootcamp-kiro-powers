@@ -2,16 +2,21 @@
 """Senzing Bootcamp - fpdf2 Preflight Note.
 
 Surfaces a single, non-blocking informational note at Track_Completion, *before*
-any PDF render is attempted, telling a bootcamper that installing the optional
-``fpdf2`` dependency will produce a PDF (and that the Markdown output is produced
-regardless), including the exact command ``pip install fpdf2``.
+any PDF render is attempted. A valid ``docs/bootcamp_recap.pdf`` is now
+**guaranteed** at graduation regardless of ``fpdf2`` via a tiered strategy: when
+``fpdf2`` is present the professionally designed PDF is rendered; when it is
+absent the bootcamp may best-effort auto-install ``fpdf2`` and otherwise falls
+back to a stdlib-only PDF writer (see the guaranteed-recap-pdf design). The note
+therefore reassures the bootcamper that a PDF will still be produced without
+``fpdf2`` and that installing it (``pip install fpdf2``) yields the nicer,
+professionally designed PDF.
 
 The note appears **only** when ``fpdf2`` is not importable and is suppressed
 entirely when it is present, so there is no noise in the common case where the
-PDF will succeed. Availability is detected exactly as the PDF scripts do — a
-guarded ``import fpdf`` treating ``ImportError`` as "absent" — and ``fpdf`` is
-never imported at module top level, keeping it an optional, lazily-imported
-dependency (see python-conventions.md and tech.md).
+rich (Tier 1) renderer will run. Availability is detected exactly as the PDF
+scripts do — a guarded ``import fpdf`` treating ``ImportError`` as "absent" — and
+``fpdf`` is never imported at module top level, keeping it an optional,
+lazily-imported dependency (see python-conventions.md and tech.md).
 
 Usage:
     python senzing-bootcamp/scripts/fpdf2_preflight.py
@@ -29,12 +34,16 @@ import argparse
 # ---------------------------------------------------------------------------
 
 # Single source of truth for the Preflight_Note text, shared by preflight_note()
-# and the tests. Single line (no embedded newline): states that installing fpdf2
-# enables the PDF, that the Markdown output is produced regardless, and contains
-# the exact substring "pip install fpdf2" (Requirements 1.1, 1.2).
+# and the tests. Single line (no embedded newline): reassures that a valid PDF is
+# guaranteed at graduation even without fpdf2 (the bootcamp may auto-install
+# fpdf2, otherwise a stdlib-only PDF writer is used), and that installing fpdf2
+# yields the nicer, professionally designed PDF. Contains the exact substring
+# "pip install fpdf2" (guaranteed-recap-pdf Requirement 5.5).
 PREFLIGHT_NOTE = (
-    "Note: install fpdf2 (pip install fpdf2) to also produce a PDF at "
-    "track completion; the Markdown output is produced regardless."
+    "Note: a valid PDF is guaranteed at graduation even without fpdf2 (the "
+    "bootcamp may auto-install fpdf2, otherwise it falls back to a stdlib-only "
+    "PDF writer); install fpdf2 (pip install fpdf2) for the nicer, "
+    "professionally designed PDF."
 )
 
 
@@ -73,11 +82,13 @@ def preflight_note() -> str | None:
     """Return the one-line Preflight_Note, or None when no note is needed.
 
     Pure function of :func:`fpdf2_available`. Returns ``None`` when ``fpdf2``
-    is available (Requirement 1.3 — no noise when the PDF will succeed). When
+    is available — no noise when the rich (Tier 1) renderer will run. When
     ``fpdf2`` is absent, returns the single-line :data:`PREFLIGHT_NOTE`
-    constant, which states that installing ``fpdf2`` enables the PDF, that the
-    Markdown output is produced regardless, and contains the exact command
-    ``pip install fpdf2`` (Requirements 1.1, 1.2).
+    constant, which reassures that a valid PDF is still guaranteed at graduation
+    (the bootcamp may auto-install ``fpdf2``, otherwise a stdlib-only PDF writer
+    is used) and that installing ``fpdf2`` yields the nicer, professionally
+    designed PDF, including the exact command ``pip install fpdf2``
+    (guaranteed-recap-pdf Requirement 5.5).
 
     Returns:
         ``None`` when ``fpdf2`` is available; otherwise the one-line

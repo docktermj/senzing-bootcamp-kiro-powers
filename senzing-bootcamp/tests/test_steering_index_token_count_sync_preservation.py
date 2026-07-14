@@ -506,7 +506,17 @@ _BASELINE_HASHES: dict[str, str] = {
     # changed (solely the total_tokens line);
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "f98e77f54fae778fef4986e641646617d6a8a515c297a46930aa78a475ecd351",
+    # Re-baselined once more (220273 -> 220727) for the guaranteed-recap-pdf spec
+    # (Task 5.2): the graduation.md and module-completion-track.md steering edits
+    # replaced the "degrades to HTML/Markdown when fpdf2 absent" language with the
+    # guaranteed-PDF tiered behavior, growing graduation.md (11131 -> 11426, +295)
+    # and module-completion-track.md (3601 -> 3760, +159), which
+    # measure_steering.py recomputed into file_metadata and the budget total
+    # (220727 = sum of file_metadata counts). Only the budget block changed
+    # (solely the total_tokens line); keywords/languages/deployment/root_step_range
+    # are byte-identical (verified: their baseline hashes still match the live
+    # index).
+    "budget": "554e9bb9b0cac8753bfe0b071e921aa6ce98b78a9a507ab94dd932a51abe967c",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -945,13 +955,13 @@ class TestNonPhaseBlocksBytePreserved:
 
         # Content side: the corrected aggregate and the unchanged sub-keys. The
         # aggregate equals the live sum of file_metadata token_count entries
-        # (220273 after the clean-question-presentation bugfix made the stop/gate
-        # markers internal-only and added the compose-clean-first / no-duplicate
-        # rules, growing agent-behavior-rules.md +222, conversation-protocol.md
-        # +579, and agent-instructions.md +146, and resynced the steering token
-        # index), so the hash cannot silently re-pin a stale value.
+        # (220727 after the guaranteed-recap-pdf spec's Task 5.2 steering edits
+        # grew graduation.md +295 and module-completion-track.md +159 when the
+        # "degrades to HTML/Markdown" language was replaced with the guaranteed-
+        # PDF tiered behavior, resynced by measure_steering.py into file_metadata
+        # and the budget total), so the hash cannot silently re-pin a stale value.
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 220273" in budget_block
+        assert "total_tokens: 220727" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

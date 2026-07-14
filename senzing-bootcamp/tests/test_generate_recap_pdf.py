@@ -1825,28 +1825,36 @@ class TestPreservationStrictSchema:
 
 
 class TestPreservationGracefulDegradation:
-    """CLI degradation paths behave exactly as before the fix.
+    """CLI paths behave as the guaranteed-recap-pdf tiered strategy prescribes.
 
-    **Validates: Requirements 3.3, 3.4**
+    **Validates: Requirements 3.3, 3.4** (module-recap-document) and
+    guaranteed-recap-pdf Requirements 1.1, 1.3, 2.3.
 
-    For all environments without fpdf2 and for all missing/empty inputs, the
-    generator keeps its existing behavior: it prints the install hint or the
-    existing error message and exits with code 1 (no traceback).
+    For missing/empty inputs the generator keeps its existing error behavior
+    (error message, exit 1). For a valid recap with fpdf2 absent, the guarantee
+    now holds: with autoinstall disabled the stdlib-only writer (Tier 3) still
+    produces a valid PDF, so ``main`` exits 0 — a missing fpdf2 no longer aborts
+    with a "no PDF / pip install" path.
     """
 
     @given(doc=st_recap_document())
     @settings(max_examples=25, deadline=None)
-    def test_fpdf_absent_prints_hint_and_exits_1(
+    def test_fpdf_absent_still_writes_guaranteed_pdf(
         self, doc: RecapDocument
     ) -> None:
-        """With fpdf2 absent, a valid recap still exits 1 with the install hint.
+        """With fpdf2 absent and autoinstall off, a guaranteed stdlib PDF is written.
 
         Writes a valid strict-schema recap, forces the ``fpdf`` import to raise
-        ImportError, and asserts ``main`` reports the ``pip install fpdf2`` hint
-        and returns exit code 1 (graceful degradation, no traceback).
+        ImportError, and runs ``main`` with ``--no-autoinstall``. Under the
+        guaranteed-recap-pdf tiered strategy the missing fpdf2 no longer aborts:
+        the stdlib-only writer (Tier 3) produces a valid PDF, so ``main`` exits
+        0, prints ``PDF generated:``, and writes a ``%PDF-`` file whose extracted
+        text round-trips the module content.
 
-        **Validates: Requirements 3.3**
+        **Validates: guaranteed-recap-pdf Requirements 1.1, 1.3, 2.3**
         """
+        from recap_pdf_render import extract_pdf_text
+
         markdown = format_recap_document(doc)
 
         with tempfile.TemporaryDirectory() as tmp:
@@ -1855,14 +1863,32 @@ class TestPreservationGracefulDegradation:
             input_path.write_text(markdown, encoding="utf-8")
 
             with _fpdf_import_absent():
-                rc, stderr = _run_main_capturing_stderr(
-                    ["--input", str(input_path), "--output", str(output_path)]
+                rc, stdout, stderr = _run_main_capturing_output(
+                    [
+                        "--input", str(input_path),
+                        "--output", str(output_path),
+                        "--no-autoinstall",
+                    ]
                 )
 
-        assert rc == 1, f"Expected exit code 1 when fpdf2 absent, got {rc}"
-        assert "pip install fpdf2" in stderr, (
-            f"Expected 'pip install fpdf2' hint on stderr, got: {stderr!r}"
-        )
+            assert rc == 0, (
+                f"Expected exit 0 (guaranteed stdlib PDF) when fpdf2 absent, got "
+                f"{rc} (stderr: {stderr!r})"
+            )
+            assert "PDF generated:" in stdout, (
+                f"Expected the 'PDF generated:' line on stdout, got: {stdout!r}"
+            )
+            assert output_path.exists(), "the guaranteed PDF must be written"
+            data = output_path.read_bytes()
+            assert data.startswith(b"%PDF"), (
+                "the guaranteed output must be a valid PDF"
+            )
+
+            # Round-trip: the stdlib PDF carries the recap's module content.
+            text = extract_pdf_text(data)
+            assert f"Module {doc.sections[0].module_number}" in text, (
+                f"guaranteed PDF must round-trip module content, got: {text!r}"
+            )
 
     @given(name=_st_token)
     @settings(max_examples=25, deadline=None)
@@ -3750,11 +3776,12 @@ class TestFullContentPreservationAndVerification:
     A representative three-module recap is rendered end to end through ``main``;
     round-tripping the written PDF via ``extract_pdf_text`` shows every module's
     Information Shared, Questions & Responses, and Actions Taken content survived
-    (Req 12.1). When ``render_pdf`` is replaced with a cover-only stand-in so the
-    candidate omits every module's Required_Detail_Sections, Content_Verification
-    rejects it: ``main`` returns exit code 1, prints no ``PDF generated:`` line,
-    and publishes no PDF — leaving any pre-existing output unchanged (Req 9.2,
-    9.3, 9.4, 12.3).
+    (Req 12.1). When the strategy's Tier 1 renderer
+    (``pdf_render_strategy.render_pdf``, the path ``main`` now uses) is replaced
+    with a cover-only stand-in so the candidate omits every module's
+    Required_Detail_Sections, Content_Verification rejects it: ``main`` returns
+    exit code 1, prints no ``PDF generated:`` line, and publishes no PDF —
+    leaving any pre-existing output unchanged (Req 9.2, 9.3, 9.4, 12.3).
     """
 
     def _representative_document(self) -> tuple[RecapDocument, list[str]]:
@@ -3866,11 +3893,17 @@ class TestFullContentPreservationAndVerification:
 
         **Validates: Requirements 9.2, 9.3, 12.3**
         """
-        import generate_recap_pdf
+        import pdf_render_strategy
 
         doc, _tokens = self._representative_document()
         markdown = format_recap_document(doc)
-        monkeypatch.setattr(generate_recap_pdf, "render_pdf", _render_cover_only)
+        # main() now renders through pdf_render_strategy.ensure_recap_pdf, which
+        # (with fpdf2 present) selects Tier 1 and calls the strategy's own
+        # ``render_pdf`` reference — so the fault must be injected there, not on
+        # generate_recap_pdf.render_pdf. The cover-only stand-in still writes a
+        # valid but module-less PDF into the temp file, so the round-trip
+        # verify_rendered_pdf inside main rejects it.
+        monkeypatch.setattr(pdf_render_strategy, "render_pdf", _render_cover_only)
 
         with tempfile.TemporaryDirectory() as tmp:
             input_path = Path(tmp) / "recap.md"
@@ -3914,11 +3947,14 @@ class TestFullContentPreservationAndVerification:
 
         **Validates: Requirements 9.2, 9.3, 12.3**
         """
-        import generate_recap_pdf
+        import pdf_render_strategy
 
         doc, _tokens = self._representative_document()
         markdown = format_recap_document(doc)
-        monkeypatch.setattr(generate_recap_pdf, "render_pdf", _render_cover_only)
+        # Inject the cover-only fault on the strategy's renderer (the path main()
+        # actually uses), so the rejected candidate is produced into the temp
+        # file and the atomic publish never overwrites the pre-existing output.
+        monkeypatch.setattr(pdf_render_strategy, "render_pdf", _render_cover_only)
 
         sentinel = b"%PDF-1.4 pre-existing recap sentinel bytes"
         with tempfile.TemporaryDirectory() as tmp:
@@ -3947,41 +3983,41 @@ class TestFullContentPreservationAndVerification:
 # Graceful degradation when fpdf2 is absent (Task 9.2)
 # ---------------------------------------------------------------------------
 #
-# Feature: recap-pdf-professional-design
+# Feature: recap-pdf-professional-design (updated for guaranteed-recap-pdf)
 #
-# This example-based unit test (NOT property-based) covers the graceful-
-# degradation guarantee (Req 11.2, 12.5): when the optional fpdf2 dependency is
-# absent, the renderer must not crash with a traceback. The lazy
-# ``from fpdf import FPDF`` inside ``render_pdf`` (via
-# ``recap_pdf_render._build_recap_pdf_class``) raises ImportError, which
-# ``main`` catches and translates into a clean, user-facing ``pip install fpdf2``
-# hint on stderr, returning exit code 1 and leaving the Markdown recap intact
-# (no PDF is written to the output path).
+# These example-based unit tests (NOT property-based) cover the guaranteed-PDF
+# behavior when the optional fpdf2 dependency is absent: the renderer must not
+# crash with a traceback, and — under the tiered strategy — a valid PDF is still
+# produced by the stdlib-only writer (Tier 3) rather than degrading to "no PDF".
+# The lazy ``from fpdf import FPDF`` inside the rich renderer raises ImportError,
+# the strategy falls through to the stdlib writer, and ``main`` returns exit code
+# 0 with a published ``%PDF-`` file while leaving the source Markdown intact.
 #
-# It is intentionally distinct from the existing property test
-# ``TestPreservationGracefulDegradation::test_fpdf_absent_prints_hint_and_exits_1``:
-# that property asserts only the exit code and the install hint over generated
-# documents, whereas this test additionally pins down the *graceful* part of
-# Req 11.2 — that no Python traceback or raw ImportError dump reaches stderr —
-# and that degradation writes no PDF. It uses a fixed, representative recap so
-# the behavior is deterministic, and it simulates fpdf2 absence via
+# They are intentionally distinct from the property test
+# ``TestPreservationGracefulDegradation::test_fpdf_absent_still_writes_guaranteed_pdf``:
+# that property asserts the guaranteed-PDF exit code and round-trip over
+# generated documents, whereas these pin down the *clean* part of the guarantee
+# — that no Python traceback or raw ImportError dump reaches stderr — over a
+# fixed, representative recap. Autoinstall is disabled via ``--no-autoinstall``
+# so no real install is attempted, and fpdf2 absence is simulated via
 # ``_fpdf_import_absent`` (which forces the lazy import to raise regardless of
-# whether fpdf2 is installed), so it runs in all environments and carries no
+# whether fpdf2 is installed), so they run in all environments and carry no
 # ``_FPDF_AVAILABLE`` skip guard.
 
 
 class TestGracefulDegradationNoFpdf2:
-    """When fpdf2 is absent the renderer degrades gracefully with an install hint.
+    """When fpdf2 is absent the guaranteed stdlib PDF is produced (no crash).
 
-    **Validates: Requirements 11.2, 12.5**
+    **Validates: guaranteed-recap-pdf Requirements 1.1, 1.3, 2.3, 5.2**
 
     A fixed, representative multi-module recap is rendered through ``main`` with
     the lazy ``from fpdf import FPDF`` forced to raise ImportError via
-    ``_fpdf_import_absent``. The ImportError is caught and translated into a
-    clean, user-facing message: stderr surfaces the ``pip install fpdf2`` hint
-    and carries no Python traceback or raw ImportError dump (Req 11.2), ``main``
-    returns exit code 1, and no PDF is published to the output path — the
-    Markdown recap is left intact (Req 11.2, 12.5).
+    ``_fpdf_import_absent`` and autoinstall disabled (``--no-autoinstall``).
+    Under the tiered strategy the missing fpdf2 no longer aborts: the
+    stdlib-only writer (Tier 3) produces a valid PDF, so ``main`` exits 0 and
+    publishes a ``%PDF-`` file. The flow stays clean and non-blocking — no
+    Python traceback or raw ImportError dump reaches stderr — and the source
+    Markdown recap is left intact.
     """
 
     # A fixed, representative strict-schema recap (two modules with all detail
@@ -4035,17 +4071,16 @@ class TestGracefulDegradationNoFpdf2:
         "---\n"
     )
 
-    def test_fpdf2_absent_prints_clean_install_hint_without_traceback(self) -> None:
-        """A missing fpdf2 yields the install hint and no traceback, exit 1.
+    def test_fpdf2_absent_writes_guaranteed_pdf_without_traceback(self) -> None:
+        """A missing fpdf2 yields a guaranteed stdlib PDF and no traceback, exit 0.
 
-        Runs ``main`` on a fixed recap with ``fpdf`` forced to raise ImportError.
-        The renderer degrades gracefully: stderr carries the ``pip install
-        fpdf2`` hint (Req 11.2) with no ``Traceback (most recent call last)``
-        banner and no raw ``ImportError`` dump — the ImportError is caught and
-        translated into a clean user-facing message — and ``main`` returns exit
-        code 1.
+        Runs ``main`` on a fixed recap with ``fpdf`` forced to raise ImportError
+        and autoinstall disabled. The tiered strategy falls through to the
+        stdlib-only writer: ``main`` returns exit code 0, publishes a valid
+        ``%PDF-`` file, and the flow stays clean — no ``Traceback (most recent
+        call last)`` banner and no raw ``ImportError`` dump reaches stderr.
 
-        **Validates: Requirements 11.2, 12.5**
+        **Validates: guaranteed-recap-pdf Requirements 1.1, 1.3, 2.3, 5.2**
         """
         with tempfile.TemporaryDirectory() as tmp:
             input_path = Path(tmp) / "recap.md"
@@ -4053,57 +4088,72 @@ class TestGracefulDegradationNoFpdf2:
             input_path.write_text(self._RECAP_MARKDOWN, encoding="utf-8")
 
             with _fpdf_import_absent():
-                rc, stderr = _run_main_capturing_stderr(
-                    ["--input", str(input_path), "--output", str(output_path)]
+                rc, stdout, stderr = _run_main_capturing_output(
+                    [
+                        "--input", str(input_path),
+                        "--output", str(output_path),
+                        "--no-autoinstall",
+                    ]
                 )
 
-        # Req 11.2: exit code 1 when fpdf2 is absent.
-        assert rc == 1, f"expected exit code 1 when fpdf2 absent, got {rc}"
-
-        # Req 11.2 / 12.5: the actionable install hint is surfaced on stderr.
-        assert "pip install fpdf2" in stderr, (
-            f"expected the 'pip install fpdf2' hint on stderr, got: {stderr!r}"
-        )
-
-        # Req 11.2: graceful degradation — the caught ImportError is translated
-        # into a clean message, so no Python traceback or raw ImportError dump
-        # reaches stderr.
-        assert "Traceback (most recent call last)" not in stderr, (
-            f"a traceback leaked to stderr instead of a clean hint: {stderr!r}"
-        )
-        assert "ImportError" not in stderr, (
-            f"a raw ImportError dump leaked to stderr instead of a clean hint: "
-            f"{stderr!r}"
-        )
-
-    def test_fpdf2_absent_writes_no_pdf_and_keeps_markdown(self) -> None:
-        """Degradation writes no PDF to the output path (Markdown kept intact).
-
-        With fpdf2 absent, ``main`` returns exit code 1 before any PDF is
-        published, so the output path is never created — the bootcamper keeps
-        the source Markdown recap and loses no record to the missing optional
-        dependency.
-
-        **Validates: Requirements 11.2, 12.5**
-        """
-        with tempfile.TemporaryDirectory() as tmp:
-            input_path = Path(tmp) / "recap.md"
-            output_path = Path(tmp) / "recap.pdf"
-            input_path.write_text(self._RECAP_MARKDOWN, encoding="utf-8")
-
-            with _fpdf_import_absent():
-                rc, _stderr = _run_main_capturing_stderr(
-                    ["--input", str(input_path), "--output", str(output_path)]
-                )
-
-            # Req 11.2: no PDF is published when the optional dependency is absent.
-            assert rc == 1, f"expected exit code 1 when fpdf2 absent, got {rc}"
-            assert not output_path.exists(), (
-                "no PDF should be written to the output path when fpdf2 is absent"
+            # Guaranteed PDF: exit 0 and the success line even without fpdf2.
+            assert rc == 0, (
+                f"expected exit 0 (guaranteed stdlib PDF) when fpdf2 absent, got "
+                f"{rc} (stderr: {stderr!r})"
             )
-            # Req 11.2 / 12.5: the source Markdown recap is left intact.
+            assert "PDF generated:" in stdout, (
+                f"expected the 'PDF generated:' line on stdout, got: {stdout!r}"
+            )
+            assert output_path.exists(), "the guaranteed PDF must be published"
+            assert output_path.read_bytes().startswith(b"%PDF"), (
+                "the guaranteed output must be a valid PDF"
+            )
+
+            # Non-blocking, clean flow: no traceback or raw ImportError dump leaks.
+            assert "Traceback (most recent call last)" not in stderr, (
+                f"a traceback leaked to stderr: {stderr!r}"
+            )
+            assert "ImportError" not in stderr, (
+                f"a raw ImportError dump leaked to stderr: {stderr!r}"
+            )
+
+    def test_fpdf2_absent_writes_guaranteed_pdf_and_keeps_markdown(self) -> None:
+        """The guaranteed PDF is published and the source Markdown is kept intact.
+
+        With fpdf2 absent and autoinstall disabled, ``main`` produces a valid PDF
+        via the stdlib tier (exit 0) and leaves the source Markdown recap
+        byte-for-byte unchanged — the bootcamper gets both a PDF and the Markdown.
+
+        **Validates: guaranteed-recap-pdf Requirements 1.1, 1.3, 2.3, 2.5**
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            input_path = Path(tmp) / "recap.md"
+            output_path = Path(tmp) / "recap.pdf"
+            input_path.write_text(self._RECAP_MARKDOWN, encoding="utf-8")
+
+            with _fpdf_import_absent():
+                rc, _stdout, stderr = _run_main_capturing_output(
+                    [
+                        "--input", str(input_path),
+                        "--output", str(output_path),
+                        "--no-autoinstall",
+                    ]
+                )
+
+            # Guaranteed PDF: a valid PDF is published even without fpdf2.
+            assert rc == 0, (
+                f"expected exit 0 (guaranteed stdlib PDF) when fpdf2 absent, got "
+                f"{rc} (stderr: {stderr!r})"
+            )
+            assert output_path.exists(), (
+                "the guaranteed PDF must be written to the output path"
+            )
+            assert output_path.read_bytes().startswith(b"%PDF"), (
+                "the guaranteed output must be a valid PDF"
+            )
+            # The source Markdown recap is left intact.
             assert input_path.read_text(encoding="utf-8") == self._RECAP_MARKDOWN, (
-                "the source Markdown recap must remain intact after degradation"
+                "the source Markdown recap must remain intact"
             )
 
 

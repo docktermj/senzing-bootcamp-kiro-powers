@@ -20,8 +20,9 @@ or removed in the ``finally`` block on failure.
 
 The success path constructs the real ``RecapPDF`` (built on ``fpdf.FPDF``), so it
 is skipped — not errored — when the optional ``fpdf2`` dependency is absent. The
-failure path monkeypatches ``render_pdf`` to raise ``OSError`` before any fpdf
-import happens, so it runs regardless of whether ``fpdf2`` is installed.
+failure path monkeypatches the tier strategy's ``ensure_recap_pdf`` (the render
+entry point ``main`` now uses) to raise ``OSError`` before any fpdf import
+happens, so it runs regardless of whether ``fpdf2`` is installed.
 """
 
 from __future__ import annotations
@@ -48,6 +49,7 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 import generate_recap_pdf  # noqa: E402
+import pdf_render_strategy  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Strategies (st_ prefix per python-conventions)
@@ -298,11 +300,14 @@ class TestPropertyAtomicOutputSafety:
 
         **Validates: Requirements 8.3**
 
-        With ``render_pdf`` monkeypatched to raise ``OSError`` (simulating a
-        write/render failure), ``main`` returns ``1``, the pre-existing output
-        file's bytes are untouched (``os.replace`` is never reached), and the
-        temp file is removed so no ``*.tmp`` scratch file lingers. This path
-        needs no fpdf2 because rendering is patched out before any fpdf import.
+        ``main`` now produces the PDF through the guaranteed tier strategy
+        (``pdf_render_strategy.ensure_recap_pdf``), so the write/render failure
+        is injected there (a rich-render failure alone would merely fall through
+        to the stdlib tier). With ``ensure_recap_pdf`` monkeypatched to raise
+        ``OSError``, ``main`` returns ``1``, the pre-existing output file's bytes
+        are untouched (``os.replace`` is never reached), and the temp file is
+        removed so no ``*.tmp`` scratch file lingers. This path needs no fpdf2
+        because the render entry point is patched out entirely.
         """
         sentinel = b"%PDF-1.4 pre-existing recap, must not be overwritten\n"
         with tempfile.TemporaryDirectory() as tmp:
@@ -313,8 +318,8 @@ class TestPropertyAtomicOutputSafety:
             output_path.write_bytes(sentinel)
 
             with patch.object(
-                generate_recap_pdf,
-                "render_pdf",
+                pdf_render_strategy,
+                "ensure_recap_pdf",
                 side_effect=OSError("simulated render failure"),
             ):
                 exit_code = generate_recap_pdf.main(

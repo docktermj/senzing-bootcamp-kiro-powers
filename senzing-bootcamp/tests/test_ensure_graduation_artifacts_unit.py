@@ -27,7 +27,13 @@ files in ``tmp_path``:
 All fixtures use synthetic, PII-free content; no secret-looking strings appear
 in the generated data.
 
-Validates: Requirements 2.1, 2.2, 2.3, 3.3, 4.7, 6.2, 6.3, 11.1
+The guaranteed-recap-pdf feature (task 4.2) adds example-based coverage that,
+with fpdf2 simulated absent and autoinstall disabled (the stdlib Tier 3 path, no
+real install), the orchestrator still yields a valid ``docs/bootcamp_recap.pdf``,
+that ``--check`` reflects PDF presence (never HTML alone), and that a valid fresh
+PDF is an idempotent no-op (Requirements 7.2, 7.4).
+
+Validates: Requirements 2.1, 2.2, 2.3, 3.3, 4.7, 6.2, 6.3, 7.2, 7.4, 11.1
 """
 
 from __future__ import annotations
@@ -788,3 +794,126 @@ class TestConsolidatedRecapSingleSource:
         assert recap_status.path == paths.recap
         assert recap_status.exists and recap_status.non_empty
         assert recap_status.regenerated is False
+
+
+# ===========================================================================
+# Guaranteed PDF even without fpdf2 (guaranteed-recap-pdf, task 4.2)
+# ===========================================================================
+
+
+def _disable_fpdf2(monkeypatch) -> None:
+    """Simulate fpdf2 absent with autoinstall disabled (stdlib Tier 3, no install).
+
+    Patches the shared ``pdf_render_strategy`` module so the availability probe
+    returns False, the opt-out resolver returns False (so no ``pip install`` is
+    attempted and no subprocess/network is touched), and the guarded installer is
+    neutralised as a defensive backstop. The ``monkeypatch`` fixture restores
+    every attribute at test teardown.
+
+    Args:
+        monkeypatch: The pytest ``monkeypatch`` fixture.
+    """
+    monkeypatch.setattr(ega.pdf_render_strategy, "fpdf2_available", lambda: False)
+    monkeypatch.setattr(
+        ega.pdf_render_strategy,
+        "resolve_allow_autoinstall",
+        lambda *args, **kwargs: False,
+    )
+    monkeypatch.setattr(
+        ega.pdf_render_strategy,
+        "attempt_autoinstall",
+        lambda *args, **kwargs: False,
+    )
+
+
+class TestGuaranteedPdfWithoutFpdf2:
+    """The rendered recap is a guaranteed valid PDF even without fpdf2.
+
+    With fpdf2 simulated absent and autoinstall disabled (the stdlib Tier 3 path,
+    no real install), the orchestrator still produces a valid
+    ``docs/bootcamp_recap.pdf``; ``--check`` reports the rendered recap satisfied
+    only when the PDF exists (never for an HTML file alone); and a valid, fresh
+    PDF is left byte-for-byte unchanged on a re-run (idempotent no-op).
+
+    Validates: Requirements 7.2, 7.4
+    """
+
+    def test_ensure_all_yields_valid_pdf_when_fpdf2_absent(
+        self, tmp_path: Path, monkeypatch
+    ) -> None:
+        """fpdf2 absent + autoinstall off -> ``ensure_all`` still writes a PDF."""
+        paths = _paths(tmp_path)
+        _seed_sources(paths, [1, 2, 3])
+        Path(paths.recap).write_text(_recap_text([1, 2, 3]), encoding="utf-8")
+        _disable_fpdf2(monkeypatch)
+
+        report = ega.ensure_all(paths)
+
+        assert report.all_satisfied, f"missing: {report.missing}"
+        rendered = next(s for s in report.artifacts if s.key == "rendered_recap")
+        # The guaranteed rendered-recap artifact is the PDF, produced by stdlib.
+        assert rendered.path == paths.pdf
+        assert rendered.exists and rendered.non_empty
+        assert rendered.error is None
+
+        pdf_bytes = Path(paths.pdf).read_bytes()
+        assert pdf_bytes.startswith(b"%PDF-")
+        text = ega.recap_pdf_render.extract_pdf_text(pdf_bytes)
+        for module in (1, 2, 3):
+            assert f"Module {module}" in text
+        # HTML is never the artifact that satisfies the guarantee.
+        assert not Path(paths.html).exists()
+
+    def test_check_reflects_pdf_presence_not_html(
+        self, tmp_path: Path, monkeypatch
+    ) -> None:
+        """``--check`` is unsatisfied with only HTML and satisfied with a PDF."""
+        paths = _paths(tmp_path)
+        _seed_sources(paths, [1, 2, 3])
+        Path(paths.recap).write_text(_recap_text([1, 2, 3]), encoding="utf-8")
+        # Satisfy the other two artifacts so the rendered recap is isolated.
+        ega.ensure_transcript(paths.log, paths.recap, paths.transcript)
+
+        # Only an HTML file exists (no PDF) -> rendered recap UNSATISFIED.
+        Path(paths.html).write_text("<html><body>recap</body></html>\n", encoding="utf-8")
+        assert not Path(paths.pdf).exists()
+
+        report_html = ega.check_all(paths)
+        html_by_key = {s.key: s for s in report_html.artifacts}
+        assert html_by_key["rendered_recap"].exists is False
+        assert html_by_key["rendered_recap"].non_empty is False
+        assert "rendered_recap" in report_html.missing
+        assert ega.main(_argv(paths, "--check")) == 1
+
+        # Produce a valid PDF via the stdlib tier -> rendered recap SATISFIED.
+        _disable_fpdf2(monkeypatch)
+        ega.ensure_rendered_recap(paths.recap, paths.pdf, paths.html)
+
+        report_pdf = ega.check_all(paths)
+        pdf_by_key = {s.key: s for s in report_pdf.artifacts}
+        assert pdf_by_key["rendered_recap"].exists is True
+        assert pdf_by_key["rendered_recap"].non_empty is True
+        assert "rendered_recap" not in report_pdf.missing
+        assert ega.main(_argv(paths, "--check")) == 0
+
+    def test_valid_fresh_stdlib_pdf_left_unchanged(
+        self, tmp_path: Path, monkeypatch
+    ) -> None:
+        """A valid, fresh stdlib PDF is a byte-for-byte idempotent no-op."""
+        paths = _paths(tmp_path)
+        _seed_sources(paths, [1, 2, 3])
+        Path(paths.recap).write_text(_recap_text([1, 2, 3]), encoding="utf-8")
+        _disable_fpdf2(monkeypatch)
+
+        first = ega.ensure_rendered_recap(paths.recap, paths.pdf, paths.html)
+        assert first.regenerated is True
+        assert Path(paths.pdf).exists()
+        before = Path(paths.pdf).read_bytes()
+
+        # A second run over the valid, fresh PDF regenerates nothing.
+        second = ega.ensure_rendered_recap(paths.recap, paths.pdf, paths.html)
+
+        assert second.regenerated is False
+        assert second.error is None
+        assert second.exists and second.non_empty
+        assert Path(paths.pdf).read_bytes() == before

@@ -20,11 +20,12 @@ to stderr (with an ``Offending content: ...`` suffix from
 ``identify_unrendered_content`` when pinpointable), and returns exit code 1.
 
 The tests drive that error path deterministically WITHOUT requiring the optional
-``fpdf2`` dependency: ``render_pdf`` is monkeypatched to write a tiny stand-in PDF
-whose extractable text contains only the ``Module N`` heading marker (so the
-per-module check passes) but none of the QR_Pair / numbered-item body tokens (so
-the real ``verify_rendered_pdf`` raises ``PdfVerificationError`` and the real
-``identify_unrendered_content`` can name the offending content).
+``fpdf2`` dependency: the tier strategy's ``pdf_render_strategy.ensure_recap_pdf``
+(the render entry point ``main`` now uses) is monkeypatched to write a tiny
+stand-in PDF whose extractable text contains only the ``Module N`` heading marker
+(so the per-module check passes) but none of the QR_Pair / numbered-item body
+tokens (so the real ``verify_rendered_pdf`` raises ``PdfVerificationError`` and
+the real ``identify_unrendered_content`` can name the offending content).
 """
 
 from __future__ import annotations
@@ -38,6 +39,7 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 import generate_recap_pdf
+import pdf_render_strategy
 
 # A minimal PDF whose only extractable text literal is "Module 1". This makes
 # verify_rendered_pdf's per-module check pass (it looks for "Module N") while the
@@ -116,6 +118,39 @@ def _write_standin_pdf(_doc, output_path: str, body_text: str = "") -> None:
     Path(output_path).write_bytes(_STANDIN_PDF_BYTES)
 
 
+def _standin_ensure_recap_pdf(
+    _doc,
+    out_path: str,
+    *,
+    allow_autoinstall: bool = True,
+    timeout_s: int = 0,
+    body_text: str = "",
+) -> str:
+    """Stand-in for ``pdf_render_strategy.ensure_recap_pdf``: write a stub PDF.
+
+    ``main`` now produces the PDF through the guaranteed tier strategy
+    (``pdf_render_strategy.ensure_recap_pdf``) rather than calling ``render_pdf``
+    directly, so the fault must be injected on the strategy entry point. This
+    stand-in writes the same content-less PDF as :func:`_write_standin_pdf` into
+    the temp file main asked it to render, so the per-module verification passes
+    while the body-content round-trip verification fails — exercising the
+    unrenderable-content error path with no ``fpdf2`` dependency and no tier
+    probe / autoinstall.
+
+    Args:
+        _doc: The parsed recap document (unused; signature mirrors the strategy).
+        out_path: Temp file path main() asked the strategy to write.
+        allow_autoinstall: Ignored; present to mirror the strategy signature.
+        timeout_s: Ignored; present to mirror the strategy signature.
+        body_text: Raw recap Markdown (unused).
+
+    Returns:
+        The tier label ``"stdlib"`` (unused by ``main``; mirrors the contract).
+    """
+    Path(out_path).write_bytes(_STANDIN_PDF_BYTES)
+    return "stdlib"
+
+
 class TestRecapRenderFailure:
     """Unrenderable content leaves no PDF, exits non-zero, names the offender.
 
@@ -136,7 +171,9 @@ class TestRecapRenderFailure:
         input_md.write_text(_PAIRED_RECAP, encoding="utf-8")
         out_pdf = tmp_path / "recap.pdf"
 
-        monkeypatch.setattr(generate_recap_pdf, "render_pdf", _write_standin_pdf)
+        monkeypatch.setattr(
+            pdf_render_strategy, "ensure_recap_pdf", _standin_ensure_recap_pdf
+        )
 
         exit_code = generate_recap_pdf.main(
             ["--input", str(input_md), "--output", str(out_pdf)]
@@ -168,7 +205,9 @@ class TestRecapRenderFailure:
         input_md.write_text(_SPLIT_RECAP, encoding="utf-8")
         out_pdf = tmp_path / "recap.pdf"
 
-        monkeypatch.setattr(generate_recap_pdf, "render_pdf", _write_standin_pdf)
+        monkeypatch.setattr(
+            pdf_render_strategy, "ensure_recap_pdf", _standin_ensure_recap_pdf
+        )
 
         exit_code = generate_recap_pdf.main(
             ["--input", str(input_md), "--output", str(out_pdf)]
@@ -197,7 +236,9 @@ class TestRecapRenderFailure:
         sentinel = b"%PDF-1.4 pre-existing recap, must not be overwritten\n"
         out_pdf.write_bytes(sentinel)
 
-        monkeypatch.setattr(generate_recap_pdf, "render_pdf", _write_standin_pdf)
+        monkeypatch.setattr(
+            pdf_render_strategy, "ensure_recap_pdf", _standin_ensure_recap_pdf
+        )
 
         exit_code = generate_recap_pdf.main(
             ["--input", str(input_md), "--output", str(out_pdf)]

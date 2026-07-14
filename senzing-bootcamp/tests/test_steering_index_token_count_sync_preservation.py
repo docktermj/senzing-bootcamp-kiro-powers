@@ -610,7 +610,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # changed (solely the total_tokens line);
     # keywords/languages/deployment/root_step_range are byte-identical (verified:
     # their baseline hashes still match the live index).
-    "budget": "908073b30956c4eec1755dec402f4e5654b3747a7f1eecff6192e9c813e3f925",
+    # Re-baselined once more (228681 -> 228725) for the
+    # er-intro-interactive-illustration spec: entity-resolution-intro.md grew when
+    # the ER_Illustration offer + content block were added, then Task 4 trimmed the
+    # agent-only HTML comments to keep it in the medium band (2792 -> 1977 tokens),
+    # which measure_steering.py recomputed into file_metadata and the budget total.
+    # Only the budget block changed; keywords/languages/deployment/root_step_range
+    # are byte-identical.
+    "budget": "1a34c8ca76c2db62fa953b49c3e9468210a66993ffe7e66991128eee4218ea32",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -1063,8 +1070,12 @@ class TestNonPhaseBlocksBytePreserved:
         # Aggregate re-synced 224434 -> 224324 for the preface-flow-and-banners
         # token-band remediation (entity-resolution-intro.md trimmed 2043 -> 1933
         # by condensing two agent-only HTML comments).
+        # Aggregate re-synced 228681 -> 228725 for the
+        # er-intro-interactive-illustration spec (Task 4): entity-resolution-intro.md
+        # gained the ER_Illustration offer + content, then its agent-only HTML
+        # comments were trimmed to keep it in the medium band (1933 -> 1977).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 228681" in budget_block
+        assert "total_tokens: 228725" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

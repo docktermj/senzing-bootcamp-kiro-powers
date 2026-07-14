@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 4
-- implemented: 284
+- in-progress: 3
+- implemented: 285
 - superseded: 3
 - abandoned: 0
 - unknown: 0
@@ -487,7 +487,7 @@
 
 ### er-intro-interactive-illustration
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/er-intro-interactive-illustration/](.kiro/specs/er-intro-interactive-illustration/)

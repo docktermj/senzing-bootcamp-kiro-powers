@@ -159,7 +159,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `deployment-kubernetes.md` | 1398 | medium |
 | `deployment-onpremises.md` | 953 | medium |
 | `design-patterns.md` | 810 | medium |
-| `entity-resolution-intro.md` | 1933 | medium |
+| `entity-resolution-intro.md` | 1977 | medium |
 | `environment-setup.md` | 658 | medium |
 | `feedback-workflow.md` | 1274 | medium |
 | `file-placement.md` | 515 | medium |
@@ -258,7 +258,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 228681 tokens
+**Total budget:** 228725 tokens
 
 <!-- END GENERATED: steering-files -->
 

@@ -559,7 +559,20 @@ _BASELINE_HASHES: dict[str, str] = {
     # file_metadata and the budget total. Only the budget block changed (solely
     # the total_tokens line); keywords/languages/deployment/root_step_range are
     # byte-identical (verified: their baseline hashes still match the live index).
-    "budget": "3d3811a364e9cc209833a229f9ee9cb871114433ca68e5d8eea11ff212bc368e",
+    # Re-baselined once more (224324 -> 226469) for the
+    # single-ask-question-guarantee spec: the normative Ask-Once Guarantee was
+    # added to conversation-protocol.md (5759 -> 6344), the Question_Ledger
+    # operations to agent-instructions.md (an `inclusion: always` file), the
+    # checkpoint-boundary note to module-transitions.md, and one-line
+    # cross-references to session-resume.md, module-09-phaseA-assessment.md and
+    # module-11-phase1-packaging.md; the review-bootcamper-input Repeat_Request
+    # phrases and the ask-bootcamper ledger-consult step also regenerated
+    # hook-registry-critical.md. All recomputed by measure_steering.py into
+    # file_metadata and the budget total (226469 = sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical (verified:
+    # their baseline hashes still match the live index).
+    "budget": "2c9a5221ed69e27124b5a2ed373c1fb324edfbd824e692dabb5e4526b81fa95f",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -1013,7 +1026,7 @@ class TestNonPhaseBlocksBytePreserved:
         # token-band remediation (entity-resolution-intro.md trimmed 2043 -> 1933
         # by condensing two agent-only HTML comments).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 224324" in budget_block
+        assert "total_tokens: 226469" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

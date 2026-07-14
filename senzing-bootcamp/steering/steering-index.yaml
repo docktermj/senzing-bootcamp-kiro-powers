@@ -129,7 +129,7 @@ modules:
     phases:
       phase1-assessment:
         file: module-09-phaseA-assessment.md
-        token_count: 1221
+        token_count: 1294
         size_category: medium
         step_range: [1, 4]
       phase2-hardening:
@@ -155,7 +155,7 @@ modules:
     phases:
       phase1-packaging:
         file: module-11-phase1-packaging.md
-        token_count: 2870
+        token_count: 2940
         size_category: large
         step_range: [1, 12]
       phase2-deploy:
@@ -188,7 +188,7 @@ session-resume:
   phases:
     phase1-fast-path:
       file: session-resume.md
-      token_count: 3463
+      token_count: 3586
       size_category: large
     phase2-mapping:
       file: session-resume-phase2-mapping.md
@@ -322,7 +322,7 @@ file_metadata:
     token_count: 1616
     size_category: medium
   agent-instructions.md:
-    token_count: 4825
+    token_count: 5355
     size_category: large
   cloud-provider-setup.md:
     token_count: 784
@@ -340,7 +340,7 @@ file_metadata:
     token_count: 687
     size_category: medium
   conversation-protocol.md:
-    token_count: 5759
+    token_count: 6344
     size_category: large
   data-lineage.md:
     token_count: 603
@@ -385,7 +385,7 @@ file_metadata:
     token_count: 2418
     size_category: large
   hook-registry-critical.md:
-    token_count: 12248
+    token_count: 12859
     size_category: large
   hook-registry-module-01.md:
     token_count: 434
@@ -538,7 +538,7 @@ file_metadata:
     token_count: 746
     size_category: medium
   module-09-phaseA-assessment.md:
-    token_count: 1223
+    token_count: 1294
     size_category: medium
   module-09-phaseB-hardening.md:
     token_count: 928
@@ -559,7 +559,7 @@ file_metadata:
     token_count: 479
     size_category: small
   module-11-phase1-packaging.md:
-    token_count: 2870
+    token_count: 2940
     size_category: large
   module-11-phase2-deploy.md:
     token_count: 850
@@ -583,8 +583,8 @@ file_metadata:
     token_count: 1395
     size_category: medium
   module-transitions.md:
-    token_count: 1908
-    size_category: medium
+    token_count: 2106
+    size_category: large
   onboarding-flow.md:
     token_count: 4138
     size_category: large
@@ -622,7 +622,7 @@ file_metadata:
     token_count: 793
     size_category: medium
   session-resume.md:
-    token_count: 3506
+    token_count: 3586
     size_category: large
   skip-step-protocol.md:
     token_count: 799
@@ -662,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 224324
+  total_tokens: 226469
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

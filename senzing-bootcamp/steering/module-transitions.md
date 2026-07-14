@@ -66,6 +66,8 @@ Every step within a module, communicate three things:
 
 **Checkpoint emission:** After completing each numbered step or sub-step, write a checkpoint to `config/bootcamp_progress.json` updating `current_step` and `step_history`. Sub-step checkpoints follow the same emission pattern as whole-step checkpoints — set `current_step` to the sub-step identifier string and update `step_history` accordingly.
 
+**Question_Ledger at the same boundary:** The ask-once ledger is written at the same question boundaries as the checkpoint, enforcing the Ask-Once Guarantee (see `conversation-protocol.md` → The Ask-Once Guarantee; operations detailed in `agent-instructions.md` → State & Progress → Question_Ledger). A module step's Question_Key mirrors `current_step`: `module.<N>.<step>` (e.g., `module.5.7a`) — same module/step identity, not a parallel one. When a step's 👉 question is presented, record its key as `asked` (`question_ledger.py record-asked --key module.<N>.<step>`) as `config/.question_pending` is written; when the bootcamper's answer is processed, mark that key `answered` (`question_ledger.py mark-answered --key module.<N>.<step>`) alongside the `current_step`/`step_history` write.
+
 ## Module Completion
 
 Provide a clear summary: what was accomplished, all files produced with paths, why it matters for the next module.

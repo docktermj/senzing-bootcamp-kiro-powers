@@ -23,7 +23,7 @@ If the condition is true, read `hardware_target` from `config/bootcamp_preferenc
 - **If `hardware_target` is "different_server":** Use `production_specs` from `config/bootcamp_preferences.yaml` for all hardware-dependent deployment recommendations (resource allocation, scaling configuration, infrastructure sizing). Note: "Benchmarks were run on your dev machine; recommendations target your production hardware."
 - **If `hardware_target` is "current_machine":** Use the current machine's specs for deployment recommendations.
 
-Do NOT re-ask the hardware question — it was already answered in Module 8.
+Do NOT re-ask the hardware question — it was already answered in Module 8. This is a specific instance of the **Ask-Once Guarantee** (see `conversation-protocol.md` → The Ask-Once Guarantee): the hardware question's Question_Key is `global.hardware_target`; when it is already recorded as answered, reuse the stored answer and proceed rather than re-asking.
 
 If `deployment_target` is NOT "on_premises", skip this section entirely.
 

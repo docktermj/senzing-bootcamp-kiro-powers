@@ -144,13 +144,13 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 |---|---|---|
 | `agent-behavior-rules.md` | 1749 | medium |
 | `agent-context-management.md` | 1616 | medium |
-| `agent-instructions.md` | 4825 | large |
+| `agent-instructions.md` | 5355 | large |
 | `cloud-provider-setup.md` | 784 | medium |
 | `common-pitfalls.md` | 4612 | large |
 | `completion-summary-offer.md` | 1867 | medium |
 | `complexity-estimator.md` | 606 | medium |
 | `conversation-examples.md` | 687 | medium |
-| `conversation-protocol.md` | 5759 | large |
+| `conversation-protocol.md` | 6344 | large |
 | `data-lineage.md` | 603 | medium |
 | `data-processing-reference.md` | 1174 | medium |
 | `deployment-aws.md` | 1324 | medium |
@@ -165,7 +165,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `file-placement.md` | 515 | medium |
 | `graduation.md` | 11664 | large |
 | `hook-architecture.md` | 2418 | large |
-| `hook-registry-critical.md` | 12248 | large |
+| `hook-registry-critical.md` | 12859 | large |
 | `hook-registry-module-01.md` | 434 | small |
 | `hook-registry-module-02.md` | 269 | small |
 | `hook-registry-module-03.md` | 2124 | large |
@@ -216,14 +216,14 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-08-phaseA-requirements.md` | 2171 | large |
 | `module-08-phaseB-benchmarking.md` | 753 | medium |
 | `module-08-phaseC-optimization.md` | 746 | medium |
-| `module-09-phaseA-assessment.md` | 1223 | medium |
+| `module-09-phaseA-assessment.md` | 1294 | medium |
 | `module-09-phaseB-hardening.md` | 928 | medium |
 | `module-09-security.md` | 571 | medium |
 | `module-10-monitoring.md` | 568 | medium |
 | `module-10-phaseA-setup.md` | 808 | medium |
 | `module-10-phaseB-operations.md` | 451 | small |
 | `module-11-deployment.md` | 479 | small |
-| `module-11-phase1-packaging.md` | 2870 | large |
+| `module-11-phase1-packaging.md` | 2940 | large |
 | `module-11-phase2-deploy.md` | 850 | medium |
 | `module-completion-artifacts.md` | 3448 | large |
 | `module-completion-error-handling.md` | 637 | medium |
@@ -231,7 +231,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-completion-track.md` | 4090 | large |
 | `module-completion.md` | 2256 | large |
 | `module-prerequisites.md` | 1395 | medium |
-| `module-transitions.md` | 1908 | medium |
+| `module-transitions.md` | 2106 | large |
 | `onboarding-flow.md` | 4138 | large |
 | `onboarding-phase1b-intro-language.md` | 1734 | medium |
 | `onboarding-phase2-track-setup.md` | 2979 | large |
@@ -244,7 +244,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `session-resume-phase2-mapping.md` | 656 | medium |
 | `session-resume-phase2-setup-recovery.md` | 1034 | medium |
 | `session-resume-phase2-state-repair.md` | 793 | medium |
-| `session-resume.md` | 3506 | large |
+| `session-resume.md` | 3586 | large |
 | `skip-step-protocol.md` | 799 | medium |
 | `slash-backup-project.md` | 157 | small |
 | `slash-commonmark-validation.md` | 444 | small |
@@ -258,7 +258,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 224324 tokens
+**Total budget:** 226469 tokens
 
 <!-- END GENERATED: steering-files -->
 

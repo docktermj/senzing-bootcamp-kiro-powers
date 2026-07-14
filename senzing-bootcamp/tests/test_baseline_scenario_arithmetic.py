@@ -126,8 +126,21 @@ AUTO_FILES: tuple[str, ...] = (
 # agent-instructions.md +175 (6_836 -> 7_011), and the loads-always footprint by
 # the same +967 (26_915 -> 27_882); module-transitions.md, security-privacy.md,
 # and qa-transcript.md were untouched.
-DOCUMENTED_FINALIZED_BASELINE = 15_803   # finalized always-set (Decision_Record baseline, Req 2.5)
-DOCUMENTED_PRE_EXISTING_ALWAYS = 7_011   # three pre-existing `always` files
+# Re-pinned once more (15_803 -> 17_116 / 7_011 -> 7_739 / 27_882 -> 29_510) for
+# the single-ask-question-guarantee spec. That spec added the normative Ask-Once
+# Guarantee section to conversation-protocol.md (finalized `always` AND an
+# Auto_File) and the Question_Ledger operational guidance to agent-instructions.md
+# and the checkpoint-boundary note to module-transitions.md (both pre-existing
+# `always` files), plus a one-line cross-reference to session-resume.md (an
+# Auto_File). measure_steering.py recomputed all of these into file_metadata and
+# the budget total; the figures below are the resulting measured sums (verified
+# against the live index via the arithmetic identities the tests assert):
+#   * finalized always-set (the six `always` files) = 17_116
+#   * three pre-existing `always` files             =  7_739 (security-privacy.md
+#     untouched; agent-instructions.md + module-transitions.md grew)
+#   * loads-always (3 pre-existing + 11 Auto_Files)  = 29_510
+DOCUMENTED_FINALIZED_BASELINE = 17_116   # finalized always-set (Decision_Record baseline, Req 2.5)
+DOCUMENTED_PRE_EXISTING_ALWAYS = 7_739   # three pre-existing `always` files
 # Re-pinned once more (25_261 -> 25_623) for the session-handoff spec: task 5.1
 # added the "### Session Handoff Offer" hook-in to agent-context-management.md
 # (one of the eleven Auto_Files), growing its measured count 1326 -> 1616 (+290),
@@ -144,7 +157,7 @@ DOCUMENTED_PRE_EXISTING_ALWAYS = 7_011   # three pre-existing `always` files
 # DOCUMENTED_FINALIZED_BASELINE moved by the same amount (13_544 -> 13_889);
 # DOCUMENTED_PRE_EXISTING_ALWAYS stays 6_690 (the three pre-existing `always`
 # files were untouched).
-DOCUMENTED_LOADS_ALWAYS = 27_882         # loads-always footprint (Audit_Finding note, Req 1.5)
+DOCUMENTED_LOADS_ALWAYS = 29_510         # loads-always footprint (Audit_Finding note, Req 1.5)
 
 # "≈" tolerance for the loads-always note: 1% of the stated figure. The two
 # Task 4/7.1 frontmatter edits move the true sum by only a handful of tokens,
@@ -180,16 +193,16 @@ class TestBaselineScenarioArithmetic:
     """Baseline scenario arithmetic over the real corpus (Req 1.5, Req 2.5)."""
 
     def test_finalized_always_baseline_equals_measured_sum(self):
-        """Finalized always-set sums to 15,803 across the index and the corpus.
+        """Finalized always-set sums to 17,116 across the index and the corpus.
 
         Validates: Requirements 2.5, 1.5
 
         Reads the per-file ``token_count`` from the shipped ``steering-index.yaml``
         ``file_metadata`` and asserts the six finalized ``always`` files sum to
-        exactly the current baseline of 15,803 tokens; confirms the same
+        exactly the current baseline of 17,116 tokens; confirms the same
         figure equals ``measure_steering``'s computed Baseline_Footprint for the
         real corpus (the ``inclusion: always`` set); and pins the composition
-        identity 7,011 (pre-existing) + 8,792 (newly promoted) == 15,803.
+        identity 7,739 (pre-existing) + 9,377 (newly promoted) == 17,116.
         """
         stored = measure_steering._parse_stored_metadata(
             measure_steering.load_yaml_content(_INDEX_PATH)

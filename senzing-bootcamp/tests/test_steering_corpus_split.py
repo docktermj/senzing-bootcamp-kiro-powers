@@ -184,6 +184,28 @@ GENERATED_FILES: frozenset[str] = frozenset(
 # fragment a governing document that must be read as a whole this single unit is
 # exempted with this justification. It remains indexed in file_metadata (so
 # test_exemptions_exist_in_index passes).
+#
+# agent-instructions.md (single-ask-question-guarantee spec): this is the single
+# cohesive, always-loaded root instruction document — session-start/resume
+# routing, the Answer Processing Priority / Delete-and-process rule, the State &
+# Progress model (current_step/step_history checkpointing and now the
+# Question_Ledger operations), and the Question_Pending file format all live here
+# and must load together as one unit on every turn. The
+# single-ask-question-guarantee spec added the Question_Ledger operational
+# guidance (the Question_Key scheme — onboarding.<step> / module.<N>.<step> /
+# global.<name> — plus the record-asked / mark-answered / is-answered operations
+# and the degrade-safely fallback) required by design task 2.2 and asserted by
+# tests/test_ask_once_guarantee_content.py and tests/test_ask_once_degrade_safely.py,
+# growing the file just past the 5000 split_threshold (to ~5355 tokens). That
+# content is required by the spec's own passing content tests and cannot be
+# trimmed or relocated without breaking them, and this file — like
+# conversation-protocol.md above — is a governing always-loaded document that is
+# not divisible into independently-loadable units without harming agent
+# comprehension of the interdependent instructions. The always-loaded budget
+# remains well within threshold (measure_steering --check passes at ~14.3% of the
+# warn level), so rather than fragment the root instruction document this single
+# unit is exempted with this justification. It remains indexed in file_metadata
+# (so test_exemptions_exist_in_index passes).
 EXEMPTIONS: frozenset[str] = frozenset(
     {
         "module-completion.md",
@@ -194,6 +216,7 @@ EXEMPTIONS: frozenset[str] = frozenset(
         "module-02-sdk-setup.md",
         "module-04-data-collection.md",
         "conversation-protocol.md",
+        "agent-instructions.md",
     }
 )
 

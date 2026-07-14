@@ -17,6 +17,18 @@ description: "Turn-taking, question handling, and module transition protocols fo
 
 This rule generalizes the existing no-self-answering stance (see the Self-Answering examples below and the `self-answering-prevention` rules): it forbids not only fabricated answers but also silent defaults. It is referenced from `agent-behavior-rules.md` and `agent-instructions.md`.
 
+## The Ask-Once Guarantee
+
+**Every 👉 question is asked at most once — never re-ask a question the bootcamper has already answered, unless they explicitly request a repeat.** This is the single normative rule governing question *repetition*. It complements the Answer_Required_Rule (which governs *whether* an answer is required) by governing *how many times* the same question may be asked.
+
+- **Every 👉 question has a stable Question_Key.** The Question_Key is derived from the owning step (e.g., `onboarding.language_selection`, `module.5.7a`, `global.hardware_target`), so the same logical question always maps to the same key.
+- **Consult the ledger before asking.** Before presenting a 👉 question, consult the Question_Ledger (`config/question_ledger.jsonl`, managed by `scripts/question_ledger.py`). Never re-ask a question whose Question_Key is already recorded as answered — reuse the stored answer and proceed. A key recorded as `asked` but not `answered` MAY be re-presented, because it was never answered.
+- **The ledger — not conversational memory — is authoritative.** The ledger is the source of truth for what has been asked and answered, so the guarantee holds across context compaction and session resume: a resumed or compacted session consults the ledger and skips already-answered questions.
+- **Re-present only on an explicit Repeat_Request.** Re-present a question only when the bootcamper explicitly asks to see it again (a Repeat_Request, e.g., "repeat that", "ask me again"). A Repeat_Request re-presents the current pending question verbatim, creates no new ledger entry, and does not change its answered status.
+- **Degrade safely — but never as license to re-ask.** If a Question_Ledger read or write fails, degrade safely: fall back to the existing checkpoint/preference state and never block the bootcamper. An unknown or unavailable ledger state is never license to re-ask a question whose answer is already present in `config/bootcamp_preferences.yaml` — the ledger is the primary mechanism, preferences are the safety net.
+
+This section is the single home of the ask-once guarantee: the narrow "do not re-ask" notes elsewhere (e.g., the Module 8 hardware question, session-resume preference fields) are specific instances of it. It is referenced from `agent-behavior-rules.md` and `agent-instructions.md`.
+
 ## Answer Processing Priority
 
 Processing a bootcamper's answer to a 👉 question is the **highest-priority action** in any turn. No other work — content generation, context management, hook evaluation, or status updates — may proceed until the pending answer has been fully processed.

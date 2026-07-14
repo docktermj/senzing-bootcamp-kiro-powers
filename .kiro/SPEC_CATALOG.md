@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 1
-- implemented: 282
+- in-progress: 0
+- implemented: 283
 - superseded: 2
 - abandoned: 0
 - unknown: 0
@@ -1612,7 +1612,7 @@
 
 ### single-ask-question-guarantee
 
-- Status: in-progress
+- Status: implemented
 - Type: unknown
 - Workflow: unknown
 - Directory: [.kiro/specs/single-ask-question-guarantee/](.kiro/specs/single-ask-question-guarantee/)

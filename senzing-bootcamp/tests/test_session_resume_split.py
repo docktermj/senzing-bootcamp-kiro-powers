@@ -894,9 +894,13 @@ class TestUnitTokenBudgets:
         unchanged. Paired with an independent content assertion below so the
         ceiling can never mask unbounded growth.
         """
+        # Re-pinned 3506 -> 3586 for the single-ask-question-guarantee spec: a
+        # one-line Ask-Once Guarantee cross-reference was added to the existing
+        # "do not re-ask loaded preference fields" note in Step 4, re-measured by
+        # measure_steering.py and re-synced into steering-index.yaml.
         token_count = _calculate_token_count(_PHASE1_FILE)
-        assert token_count <= 3506, (
-            f"Phase-1 file has {token_count} tokens, exceeds budget of 3,506"
+        assert token_count <= 3586, (
+            f"Phase-1 file has {token_count} tokens, exceeds budget of 3,586"
         )
 
         # Independent content assertion: the shipped steering-index.yaml declares
@@ -909,9 +913,9 @@ class TestUnitTokenBudgets:
         )
         idx_pos = index.find("session-resume.md:")
         entry = index[idx_pos:idx_pos + 200]
-        assert "token_count: 3506" in entry, (
-            "steering-index.yaml must record session-resume.md token_count: 3506 "
-            "(the shipped post-preface-reorder value)"
+        assert "token_count: 3586" in entry, (
+            "steering-index.yaml must record session-resume.md token_count: 3586 "
+            "(the shipped post-single-ask value)"
         )
 
     def test_phase2_mapping_token_budget(self) -> None:

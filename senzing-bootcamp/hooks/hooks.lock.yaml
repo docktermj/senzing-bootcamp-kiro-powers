@@ -1,6 +1,6 @@
 # AUTO-GENERATED — do not edit manually.
 # Run: python3 senzing-bootcamp/scripts/sync_hook_registry.py --write
-generated_at: "2026-07-13T17:29:41Z"
+generated_at: "2026-07-14T17:04:12Z"
 hooks:
   - id: analyze-after-mapping
     version: "v1"

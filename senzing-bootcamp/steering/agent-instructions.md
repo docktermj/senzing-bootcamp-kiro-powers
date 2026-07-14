@@ -10,7 +10,7 @@ On session start: check `config/bootcamp_progress.json`. If exists, load `sessio
 
 Processing a bootcamper's answer to a pending 👉 question takes **absolute precedence** over all other agent actions — including hook evaluation, context management, and content generation. No other work may begin until the pending answer is fully processed.
 
-**Delete-and-process rule:** WHEN `config/.question_pending` exists and the bootcamper has provided a response, the agent SHALL delete `config/.question_pending` and process the bootcamper's answer as the **first action** of the turn before any other work.
+**Delete-and-process rule:** WHEN `config/.question_pending` exists and the bootcamper has provided a response, the agent SHALL delete `config/.question_pending` and process the bootcamper's answer as the **first action** of the turn before any other work. As part of that first action, mark the pending question's Question_Key `answered` in the Question_Ledger (`question_ledger.py mark-answered --key <KEY>`; see State & Progress → Question_Ledger).
 
 **Protocol violation:** IF the agent produces Minimal_Output (dot, empty, whitespace-only, <50 chars, or single-word acknowledgment) after a bootcamper responds to a pending 👉 question, the agent has committed a critical protocol violation equivalent to a ⛔ mandatory gate violation. This is never acceptable regardless of context budget, token limits, or any other agent-internal reasoning.
 
@@ -77,6 +77,13 @@ Track switch triggers (*switch track*, *change track*, …): load `track-switchi
 - Progress: `config/bootcamp_progress.json`. Preferences: `config/bootcamp_preferences.yaml`. Corrupted? Run `python3 senzing-bootcamp/scripts/validate_module.py`.
 - Conversation style persistence: after onboarding completes and the first module interaction establishes a baseline style, write a `conversation_style` profile to `config/bootcamp_preferences.yaml`. Schema — `verbosity_preset` (string: concise | standard | detailed | custom), `question_framing` (string: minimal | moderate | full), `tone` (string: concise | conversational | detailed), `pacing` (string: one_concept_per_turn | grouped_concepts).
 - Step-level checkpointing: after each numbered step or sub-step, update `config/bootcamp_progress.json` — set `current_step` (integer for whole steps, string like `"5.3"` or `"7a"` for sub-steps), set `step_history["<module_number>"]` to `{ "last_completed_step": <step>, "updated_at": "<ISO 8601>" }`. On module completion, set `current_step` to `null`.
+- Question_Ledger (ask-once tracking): at each question boundary, maintain the Question_Ledger alongside the `current_step`/`step_history` checkpoint so the **Ask-Once Guarantee** (defined in `conversation-protocol.md` → The Ask-Once Guarantee) survives context compaction and session resume. Every 👉 question has a stable **Question_Key**, named by the step that owns it:
+  - Onboarding steps → `onboarding.<step>` (e.g., `onboarding.language_selection`, `onboarding.track_selection`, `onboarding.verbosity`).
+  - Module steps/sub-steps → `module.<N>.<step>` (e.g., `module.5.7a`) — mirrors `current_step` (module number + step/sub-step id); it is not a parallel identity.
+  - Cross-module singletons → `global.<name>` (e.g., `global.hardware_target`).
+  - Presenting a 👉 question: record its key as `asked` via `python3 senzing-bootcamp/scripts/question_ledger.py record-asked --key <KEY>`, at the same moment you write `config/.question_pending` (idempotent — safe to run again on re-present).
+  - Processing the bootcamper's Real_Answer: mark the key `answered` via `python3 senzing-bootcamp/scripts/question_ledger.py mark-answered --key <KEY>`, alongside deleting `config/.question_pending` and writing the step checkpoint.
+  - Before presenting a question: consult `is-answered --key <KEY>` and skip it — reuse the stored answer and proceed — when already answered. Add `--member <ID>` in team mode. A ledger read/write failure degrades safely: fall back to checkpoint/preference state and never block the bootcamper — but an unknown or unavailable ledger state is never license to re-ask a question whose answer is already present in `config/bootcamp_preferences.yaml` (the ledger is the primary mechanism; preferences are the safety net).
 - Recovery from mistakes: load `recovery-from-mistakes.md` when a bootcamper needs to undo or redo a step.
 - Skip steps: `skip-step-protocol.md` handles "I'm stuck" / "skip this" requests with consequence tracking. Load it via `#skip-step-protocol` or when keyword routing triggers.
 
@@ -108,7 +115,7 @@ The boundary is internal and is signaled by ending the turn after the 👉 quest
 
 ### Question_Pending File Format
 
-When writing `config/.question_pending`, use the structured format (question type on line 1 — one of `track_selection`, `module_transition`, `step_question`, `confirmation`, `choice`; full question text on subsequent lines; default to `step_question`). Full format spec with example: see `conversation-protocol.md`.
+When writing `config/.question_pending`, use the structured format (question type on line 1 — one of `track_selection`, `module_transition`, `step_question`, `confirmation`, `choice`; full question text on subsequent lines; default to `step_question`). Full format spec with example: see `conversation-protocol.md`. At the same time, record the question's Question_Key as `asked` in the Question_Ledger (`question_ledger.py record-asked --key <KEY>`; see State & Progress → Question_Ledger).
 
 ## Module Transition Execution
 

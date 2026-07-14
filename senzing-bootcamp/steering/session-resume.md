@@ -53,7 +53,7 @@ If the preferences file is missing or contains invalid YAML (the `LoadResult.err
 
 If the preferences file is valid but some required fields are missing (`LoadResult.missing_required` is non-empty while `preferences` is not None):
 
-1. Preserve all successfully loaded values — do not re-ask for fields that are already present
+1. Preserve all successfully loaded values — do not re-ask for fields that are already present. This is a specific instance of the **Ask-Once Guarantee** (see `conversation-protocol.md` → The Ask-Once Guarantee): an already-loaded preference corresponds to an answered Question_Key (`onboarding.verbosity`, `onboarding.track_selection`, `onboarding.language_selection`) — reuse the stored value rather than re-asking.
 2. Prompt only for each missing field individually, in order: verbosity, track, language (matching the reordered preface capture order — track before language — and skipping any that are already loaded)
 3. After each answer, persist the value immediately via `write_preference()` before the next response
 

@@ -27,3 +27,15 @@ hooks_installed: []
 
 # Pacing adjustments (updated mid-session)
 pacing_overrides: null
+
+# Leading-Question Count Audit cadence (optional, off the write path)
+# Controls how often the Stop-boundary self-audit (ask-bootcamper Phase 1.5)
+# spot-checks the exactly-one-👉 invariant. The audit is cheap (a scan of the
+# last message), so the default cadence is every Yielding_Turn.
+# Values:
+#   null (or 1.0) -> audit every Yielding_Turn (default)
+#   0.0 < value < 1.0 -> sample that fraction of Stop events to stay lightweight
+# Sampling only changes HOW OFTEN the audit runs; it never changes the
+# self-correction behavior when the audit does run, and it never couples the
+# audit to any file-write / PostToolUse event.
+sampling_rate: null

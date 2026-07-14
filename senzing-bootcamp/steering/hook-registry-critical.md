@@ -29,7 +29,7 @@ The ONLY acceptable no-output response is the literal single character: .
 
 CRITICAL: NEVER generate text beginning with 'Human:' or any text that represents what the bootcamper might say. If you detect yourself about to fabricate a user response, output only: .
 
-Q&A CAPTURE (silent side effect — this does NOT count as visible output and does NOT change the DEFAULT OUTPUT period rule): Before evaluating the phases below, if the file config/.question_pending exists, run the command `python3 senzing-bootcamp/scripts/log_qa_event.py record-question` to durably record the outstanding 👉 question for the graduation recap and Q&A transcript. It is idempotent (a re-presented question is never double-logged) and non-blocking, and it prints nothing to the bootcamper. Running it never changes your visible output — if all phases below produce no output, your response is still a single period. This hook has five phases (Phase 0 through Phase 4). Phase 0 (Module Recap Append) runs first: it captures a structured recap to docs/bootcamp_recap.md when a module was just completed, and defers to a pending 👉 question. Phase 2 contains three sub-phases (2A: Sequential Step Enforcement, 2B: Answer Processing Retry, 2C: Not-Waiting Detection). Evaluate each phase in order. If Phase 2 or Phase 3 detects a violation, that takes priority over Phase 1's closing question. Phase 4 operates on the output that would be shown to the bootcamper, so it runs last.
+Q&A CAPTURE (silent side effect — this does NOT count as visible output and does NOT change the DEFAULT OUTPUT period rule): Before evaluating the phases below, if the file config/.question_pending exists, run the command `python3 senzing-bootcamp/scripts/log_qa_event.py record-question` to durably record the outstanding 👉 question for the graduation recap and Q&A transcript. It is idempotent (a re-presented question is never double-logged) and non-blocking, and it prints nothing to the bootcamper. Running it never changes your visible output — if all phases below produce no output, your response is still a single period. This hook has six phases: Phase 0, Phase 1, Phase 1.5, Phase 2, Phase 3, and Phase 4. Phase 0 (Module Recap Append) runs first: it captures a structured recap to docs/bootcamp_recap.md when a module was just completed, and defers to a pending 👉 question. Phase 1.5 (Leading-Question Count Audit) runs right after Phase 1: it is an advisory, non-blocking spot check of the exactly-one-👉 invariant, and it produces no output for non-yielding turns, silent internal-file pass-throughs, the DEFAULT-OUTPUT single period, or when a higher-precedence phase is already emitting a self-correction. Phase 2 contains three sub-phases (2A: Sequential Step Enforcement, 2B: Answer Processing Retry, 2C: Not-Waiting Detection). Evaluate each phase in order. If Phase 2 or Phase 3 detects a violation, that takes priority over Phase 1's closing question. Phase 4 operates on the output that would be shown to the bootcamper, so it runs last.
 
 ════════════════════════════════════════════════════════════════════════════════
 PHASE 0: MODULE RECAP APPEND (Module_Recap_Phase)
@@ -190,6 +190,32 @@ If ALL three feedback reminder conditions pass, append:
 - Copy the file path and attach it to your preferred channel
 
 Do not automatically send email or create GitHub issues — wait for explicit bootcamper confirmation. If the bootcamper declines (no, skip, not now), accept without re-prompting about feedback sharing again.
+
+════════════════════════════════════════════════════════════════════════════════
+PHASE 1.5: LEADING-QUESTION COUNT AUDIT (Leading_Question_Count_Audit_Phase)
+════════════════════════════════════════════════════════════════════════════════
+
+This phase is an advisory, non-blocking spot check that runs AFTER Phase 1 has had its chance to add a closing 👉 question. It verifies the One-Question Invariant: a genuine Yielding_Turn ends with EXACTLY ONE 👉 leading question — never zero, never two-plus. It is a Soft_Block at most; it NEVER becomes a ⛔ mandatory gate and NEVER permanently blocks progress. If it cannot be evaluated for any reason, it degrades to a silent no-op (produce no output).
+
+FIRST — SKIP CONDITIONS (if ANY is true, this phase produces no output at all):
+1. The most recent turn is NOT a genuine Yielding_Turn — it is a silent internal-file pass-through (per agent-behavior-rules.md Rule 5), a non-yielding continuation, or the DEFAULT-OUTPUT single-period response.
+2. Phase 2 (Step Sequencing) or Phase 3 (MCP-First) is emitting a violation or self-correction this turn, or a mandatory gate is active — the visible output is a self-correction or gate rather than a bootcamper-facing closing question.
+3. config/.question_pending indicates the turn is a wait or pass-through while a question already stands and no fresh bootcamper-facing content was produced.
+4. CADENCE (optional sampling): the audit runs ONLY at this Stop boundary and the default cadence is every Yielding_Turn. If config/bootcamp_preferences.yaml sets `sampling_rate` to a value greater than 0.0 and less than 1.0, this Stop event MAY be sampled out (skipped) to stay lightweight; when `sampling_rate` is absent, null, or 1.0 (the default), NEVER skip on cadence grounds. Sampling only affects how often the audit runs — it never changes the self-correction behavior when the audit does run, and it never couples the audit to a file-write or PostToolUse event.
+
+SECOND — COUNT the 👉 leading questions in the rendered turn using the precise, deterministic counting rule (authoritative source: senzing-bootcamp/scripts/count_leading_questions.py). A 👉 leading-question line is a line whose FIRST non-whitespace, non-blockquote, non-bold content begins with 👉. EXCLUDE: 👉 inside fenced code blocks (``` or ~~~) or inline code spans (backticks); 👉 on blockquoted (>) lines that quote a prior-turn example; and the internal control markers 🛑 (STOP) and ⛔ (mandatory gate), which are never 👉. Strip a single leading bold marker (**) so a bolded 👉 line still counts.
+
+CROSS-CHECK: a well-formed Yielding_Turn records exactly one pending question in config/.question_pending. If the rendered 👉 count disagrees with that pending state (zero 👉 while a question is pending, or two-plus 👉 for a single pending question), treat it as the matching violation below.
+
+THIRD — CLASSIFY and act on the 👉 count:
+- EXACTLY ONE 👉: the invariant holds. Produce NO output (silent pass).
+- ZERO 👉 on a Yielding_Turn that performed substantive work: missing-leading-question self-correction. Silently re-render the turn so it ends with exactly one 👉 question the bootcamper can answer; do not show the original dead-end version.
+- TWO OR MORE 👉: multiple-leading-questions self-correction. The turn must end with EXACTLY ONE 👉. Silently re-render it down to a single lead 👉 question; when the extras are alternatives, fold them into one lead 👉 question followed by a numbered list of the options (reuse the compound-question rewrite / numbered-list pattern from Phase 1 and Phase 4). Preserve all non-question content; only collapse the stacked questions into one.
+
+OUTPUT CONSTRAINTS (the Self_Audit must never worsen the turn):
+- The re-rendered turn MUST contain AT MOST ONE 👉 and MUST NOT be a compound question; present any alternatives as a numbered list rather than joining them with prose.
+- Do NOT explain the audit, name this phase, or narrate the count (no 'this turn has N leading questions', no 'Phase 1.5 detected a violation'). Output ONLY the corrected turn.
+- If evaluation is uncertain or an error occurs, produce no output (silent no-op) — never block the turn.
 
 ════════════════════════════════════════════════════════════════════════════════
 PHASE 2: STEP SEQUENCING (Step_Sequencing_Phase)

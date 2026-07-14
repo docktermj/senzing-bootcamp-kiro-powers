@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 6
-- implemented: 282
+- in-progress: 5
+- implemented: 283
 - superseded: 3
 - abandoned: 0
 - unknown: 0
@@ -270,7 +270,7 @@
 
 ### conversational-self-audit-hook
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/conversational-self-audit-hook/](.kiro/specs/conversational-self-audit-hook/)

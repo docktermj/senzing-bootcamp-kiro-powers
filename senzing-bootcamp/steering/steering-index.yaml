@@ -385,7 +385,7 @@ file_metadata:
     token_count: 2418
     size_category: large
   hook-registry-critical.md:
-    token_count: 13182
+    token_count: 14312
     size_category: large
   hook-registry-module-01.md:
     token_count: 434
@@ -662,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 226863
+  total_tokens: 227993
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

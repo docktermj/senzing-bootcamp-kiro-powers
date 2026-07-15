@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.2.0] - 2026-07-07
+## [0.2.0] - 2026-07-15
 
 Kiro 1.0 hook & permissions migration. The Power now targets the Kiro 1.0 `v1`
 hook and permissions model and **requires Kiro 1.0 or later** — legacy

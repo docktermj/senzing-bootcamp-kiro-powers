@@ -29,45 +29,6 @@ This power works best with Claude Opus 4.8 or similar.
 - Added a permissions guide covering the write, shell, and Senzing MCP capabilities the bootcamp requests, and populated `mcp.json` `autoApprove` with the read-only Senzing MCP tools
 - Removed the legacy `*.kiro.hook` files so only v1 definitions ship
 
-## What's New in 0.1.3
-
-- Module 1 **Business Case Offer** — bootcampers with no case to share (or one they can't share) can have the bootcamp generate a realistic, multi-source, mapping-complexity-rich scenario to work through, backed by CORD data or synthetic data (`scripts/business_case_offer.py`)
-- Module 3 **first-visualization** improvements — a standalone TruthSet-backed force-directed graph demo is offered even when Module 3 is opted out, so every bootcamper gets a first visualization (`scripts/generate_standalone_demo.py`); entity-graph edge-key mapping corrected so rendered graphs show nodes
-- Module 4 **record-count license back-fill** — after data collection, the bootcamp infers the real record total and surfaces the existing Module 1 license guidance when the volume exceeds the built-in evaluation limit (`scripts/record_count_backfill.py`)
-- **ER baseline status summary** — a read-only report of which data sources have an accepted entity-resolution baseline (`scripts/baseline_status.py`)
-- **Capture-critical hook safeguard** — module completion now detects any absent capture-critical hook (`session-log-events`, `ask-bootcamper`) and surfaces an overridable reminder rather than silently losing session capture (`scripts/capture_hook_safeguard.py`)
-- **Graduation recap/transcript resilience** — a shared Markdown→PDF renderer, an inline PDF fallback, an `fpdf2` preflight note, and a Q&A transcript reconciliation pass so the recap and transcript render completely with or without the optional `fpdf2` dependency (`scripts/recap_pdf_render.py`, `scripts/generate_recap_pdf_inline.py`, `scripts/fpdf2_preflight.py`, `scripts/reconcile_transcript.py`)
-- **Missing-bundled-script resilience** — a guarded runner so a bundled script that isn't materialized in the workspace degrades gracefully instead of erroring (`scripts/run_bundled_script.py`)
-- Advanced-track knowledge check, always-loaded steering budget check, Module 2 license-acquisition guidance, Module 6 SQLite volume prompt, and TypeScript build-failure recovery guidance
-- Recommended model updated to Claude Opus 4.8; CI workflow restructured with Hypothesis profiles centralized and the test suite parallelized; the full CI validation suite and test suite are green
-
-See the CHANGELOG for the full release history.
-
-## What's New in 1.0.0
-
-> **Note:** The `1.0.0` tag was premature and later withdrawn; the Power's public versioning re-based onto the `0.x` line, and the current version is `0.2.0`. This section is retained for historical context — see the CHANGELOG's versioning note.
-
-- First production release. The full CI validation suite is green across every gate — power integrity, steering token budget, CommonMark, module and MCP-tool inventory, hook registry/prompt sync, prerequisites, governance, external links, ruff, and the conversational eval harness — with pytest at 5,708 passed / 0 failed / 88 skipped
-- Added two inventory CI gates: `check_mcp_tool_inventory()` pins POWER.md / ARCHITECTURE.md to the canonical 13-tool list in `scripts/mcp_tool_inventory.py`, and `check_module_inventory()` cross-checks the POWER.md module table and every script module-name map against `config/module-dependencies.yaml` — CI now fails on any MCP-tool or module-number drift
-- Corrected module numbering/naming drift across docs, diagrams, and scripts to the canonical ascending roster (1 → 2 → … → 11); HTML dashboards now compute completion against the live roster instead of a phantom 12th module
-- MCP tool inventory re-confirmed live against the Senzing MCP server (`sz-mcp-coworker` v1.26.8): 13 tools, names matching the pinned inventory
-- Normalized the `analyze_record` call signature to `analyze_record(file_paths=[...], workspace_dir="<dir>", version="current")` across steering and module docs
-
-## What's New in 0.12.1
-
-- "Lint Python (ruff)" CI gate brought from 438 violations to 0 — the full CI suite is now green, with pytest at 4,830 passed / 0 failed
-- Fixed 3 correctness defects the ruff gate surfaced: two duplicate test functions that silently shadowed earlier definitions, and a duplicate dict key that dropped a fixture entry
-- Style-only ruff remediation (long-line reflow, import-order suppression for the documented `sys.path` pattern, unused-variable/whitespace cleanup, ambiguous-name renames) with no runtime behavior change to any script
-- External-link checking (`validate_links.py`) wired into the CI gate sequence
-
-## What's New in 0.12.0
-
-- Production-readiness pass: CI validation steps green (`validate_power`, `measure_steering --check`, `validate_commonmark`, `validate_dependencies`, `sync_hook_registry --verify`, `validate_prerequisites`, `validate_progress_ci`); pytest at 4,830 passed / 0 failed / 0 errors
-- CommonMark compliance across all shipped markdown files — `.markdownlint.json` tuned for Kiro `#[[file:...]]` include syntax; `sync_hook_registry.py` now wraps hook prompts in four-backtick `text` fences so nested code blocks render cleanly
-- Consolidated visualization steering: merged visualization-protocol and visualization-reference into `visualization-guide.md` (saves ~3,000 tokens of context budget)
-- User-state config files (`bootcamp_progress.json`, `bootcamp_preferences.yaml`, `er_baseline_vendors.json`) no longer tracked in git — `.example` templates provided instead
-- Hook count reconciled to 29 (consolidated `enforce-file-path-policies`, `enforce-single-question`, and `block-direct-sql` into `write-policy-gate`; added `enforce-mandatory-gate`, `enforce-gate-on-stop`, and `session-log-events` to documentation)
-
 See the CHANGELOG for the full release history.
 
 ## What This Bootcamp Does

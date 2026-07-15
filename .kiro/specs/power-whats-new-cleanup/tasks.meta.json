@@ -1,0 +1,145 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Edit `senzing-bootcamp/POWER.md` What's New sections": [
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125679372
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125686559
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125811528
+      }
+    ],
+    "2.1 Create `senzing-bootcamp/tests/test_whats_new_sections.py` with helpers and example-based guard assertions": [
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125679506
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125814781
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125989336
+      }
+    ],
+    "2.2 Write Property 1 test (What's New version detection round-trips)": [
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125679560
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125992566
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784126163172
+      }
+    ],
+    "2.3 Write Property 2 test (only the current version has a What's New section)": [
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125679604
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784126166390
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784126247172
+      }
+    ],
+    "2.4 Write Property 3 test (no release information is lost)": [
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125679636
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784126250425
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784126380486
+      }
+    ],
+    "3.1 Run the CI validation suite gate sequence": [
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125679667
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784126386473
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784126684455
+      }
+    ],
+    "3.2 Review the git diff for byte-for-byte preservation": [
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125679692
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784126386501
+      },
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784126684723
+      }
+    ],
+    "1. Prune the What's New run in POWER.md": [
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784125811560
+      }
+    ],
+    "2. Add the optional regression-guard test": [
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784126380519
+      }
+    ],
+    "3. Verify documentation-only, valid, and CI-green": [
+      {
+        "executionId": "f23c3e3b-06ce-49d4-962b-9e3aaa692229",
+        "chatSessionId": "sess_776775dd-fdc1-4593-8f6b-5d0b3bcd8523",
+        "timestamp": 1784126684758
+      }
+    ]
+  }
+}

@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 289
+- implemented: 290
 - superseded: 1
 - abandoned: 0
 - unknown: 0
@@ -1348,6 +1348,13 @@
 - Type: bugfix
 - Workflow: requirements-first
 - Directory: [.kiro/specs/power-version-display/](.kiro/specs/power-version-display/)
+
+### power-whats-new-cleanup
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/power-whats-new-cleanup/](.kiro/specs/power-whats-new-cleanup/)
 
 ### preface-flow-and-banners
 

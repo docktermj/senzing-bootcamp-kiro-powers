@@ -51,11 +51,24 @@ class TestOnboardingStopMarkers:
         return (_STEERING_DIR / "onboarding-phase2-track-setup.md").read_text(encoding="utf-8")
 
     def test_stop_after_verbosity_question(self, onboarding: str) -> None:
-        """🛑 STOP exists after the verbosity preference 👉 question."""
+        """A stop-and-wait directive follows the verbosity preference 👉 question.
+
+        After the clean-question-presentation fix the 🛑/⛔ glyph is an
+        internal-only directive that need not render beside the question, so a
+        textual stop-and-wait directive ("end your turn" / "wait for the
+        bootcamper") is an equally valid boundary — the same reconciliation
+        TestStopMarkerProperty applies.
+        """
         idx = onboarding.find("how much detail they want")
         assert idx != -1
-        after = onboarding[idx:idx + 500]
-        assert "🛑" in after
+        after = onboarding[idx:idx + 900]
+        lowered = after.lower()
+        assert (
+            "🛑" in after
+            or "⛔" in after
+            or "end your turn" in lowered
+            or "wait for the bootcamper" in lowered
+        )
 
     def test_stop_after_comprehension_check(self, onboarding_phase2: str) -> None:
         """🛑 STOP exists after the comprehension check 👉 question.

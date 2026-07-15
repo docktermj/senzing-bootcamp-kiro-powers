@@ -23,7 +23,7 @@ This power works best with Claude Opus 4.8 or similar.
 
 ## What's New in 0.2.0
 
-- **Kiro 1.0 hook & permissions migration** — the Power now targets the Kiro 1.0 `v1` hook model and **requires Kiro 1.0 or later**. The 27 non-manual hooks were converted from legacy `*.kiro.hook` files to `v1` JSON (`{"version":"v1","hooks":[...]}`) with renamed triggers, restructured actions, and a single regex `matcher`
+- **Kiro 1.0 hook & permissions migration** — the Power now targets the Kiro 1.0 `v1` hook model and **requires Kiro 1.0 or later**. The 26 non-manual hooks were converted from legacy `*.kiro.hook` files to `v1` JSON (`{"version":"v1","hooks":[...]}`) with renamed triggers, restructured actions, and a single regex `matcher`
 - The 3 manual hooks (`backup-project-on-request`, `git-commit-reminder`, `commonmark-validation`) became slash-command steering files
 - Hook tooling updated to v1 — validator, registry sync + lockfile, prompt composer, and installer all read and emit the `v1` schema
 - Added a permissions guide covering the write, shell, and Senzing MCP capabilities the bootcamp requests, and populated `mcp.json` `autoApprove` with the read-only Senzing MCP tools
@@ -233,7 +233,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-prerequisites.md` | 1395 | medium |
 | `module-transitions.md` | 2106 | large |
 | `onboarding-flow.md` | 4138 | large |
-| `onboarding-phase1b-intro-language.md` | 2490 | large |
+| `onboarding-phase1b-intro-language.md` | 2546 | large |
 | `onboarding-phase2-track-setup.md` | 2979 | large |
 | `phase-loading-guide.md` | 890 | medium |
 | `project-structure.md` | 789 | medium |
@@ -258,7 +258,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 230220 tokens
+**Total budget:** 230276 tokens
 
 <!-- END GENERATED: steering-files -->
 

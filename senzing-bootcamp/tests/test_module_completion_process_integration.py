@@ -462,13 +462,16 @@ class TestValidationScriptCLI:
 
 
 class TestConsolidatedStepOrdering:
-    """The module-completion workflow documents the consolidated 5-step order.
+    """The module-completion workflow documents the consolidated six-step order.
 
     After the journal-recap consolidation the former separate ``recap_append``
     and ``journal_entry`` steps are replaced by a single ``consolidated_append``
     step (structured recap subsections plus the ``### Journal`` narrative
-    subsection in one write), and ``capture_hook_safeguard`` runs between the
-    completion certificate and next-step options.
+    subsection in one write). The transcript-reconciliation spec then inserted a
+    ``transcript_reconciliation`` step right after ``consolidated_append`` (it
+    self-heals the Q&A transcript from the recap section just appended), and
+    ``capture_hook_safeguard`` runs between the completion certificate and
+    next-step options.
 
     Requirements: 3.1, 3.2, 11.2
     """
@@ -476,15 +479,22 @@ class TestConsolidatedStepOrdering:
     STEP_ORDER: list[str] = [
         "progress_update",
         "consolidated_append",
+        "transcript_reconciliation",
         "completion_certificate",
         "capture_hook_safeguard",
         "next_step_options",
     ]
 
-    def test_five_steps_present_in_fixed_order(self) -> None:
-        """All five consolidated steps appear in module-completion.md, in order."""
+    def test_steps_present_in_fixed_order(self) -> None:
+        """All consolidated steps appear in module-completion.md, in order.
+
+        The step labels are matched as the bold headings (``**step**``) so a
+        step's name appearing in another step's prose (e.g.
+        ``transcript_reconciliation`` referencing ``capture_hook_safeguard``)
+        cannot perturb the first-occurrence ordering.
+        """
         content = _MODULE_COMPLETION_FILE.read_text(encoding="utf-8")
-        positions = [content.find(step) for step in self.STEP_ORDER]
+        positions = [content.find(f"**{step}**") for step in self.STEP_ORDER]
         for step, pos in zip(self.STEP_ORDER, positions):
             assert pos != -1, f"Completion step {step!r} missing from module-completion.md."
         assert positions == sorted(positions), (

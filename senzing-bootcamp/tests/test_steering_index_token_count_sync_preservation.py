@@ -635,7 +635,15 @@ _BASELINE_HASHES: dict[str, str] = {
     # file_metadata counts). Only the budget block changed (solely the
     # total_tokens line); keywords/languages/deployment/root_step_range are
     # byte-identical.
-    "budget": "1dc57a579cb8a22afa614a51020e23cda79ed6a328aef854097b12fe812da434",
+    # Re-baselined once more (230220 -> 230276) for the clean-question-presentation
+    # follow-through: the residual emitted "🛑 STOP — Wait ..." line in
+    # onboarding-phase1b-intro-language.md Step 4a was converted to an internal-only
+    # stop-and-wait directive (the marker glyph no longer renders beside the 👉
+    # question), growing that file +56 tokens, which measure_steering.py recomputed
+    # into file_metadata and the budget total (230276 = sum of file_metadata
+    # counts). Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    "budget": "4d488f9fe36ad8c2d677ddf54234686ee25029c1ac117fec5450b741355ae7fc",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -1103,8 +1111,13 @@ class TestNonPhaseBlocksBytePreserved:
         # Replay" section (3586 -> 4197, +611) so resume replays the persisted
         # setup_summary, recomputed by measure_steering.py into file_metadata and
         # the budget total (230220 = live sum of file_metadata counts).
+        # Aggregate re-synced 230220 -> 230276 for the clean-question-presentation
+        # follow-through: onboarding-phase1b-intro-language.md Step 4a's residual
+        # emitted "🛑 STOP" line became an internal-only stop-and-wait directive
+        # (+56), recomputed by measure_steering.py into file_metadata and the
+        # budget total (230276 = live sum of file_metadata counts).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 230220" in budget_block
+        assert "total_tokens: 230276" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

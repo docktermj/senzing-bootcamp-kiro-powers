@@ -43,7 +43,7 @@ hook and permissions model and **requires Kiro 1.0 or later** — legacy
 
 ### Changed
 
-- Converted the 27 non-manual hooks from legacy `*.kiro.hook` to the Kiro 1.0
+- Converted the 26 non-manual hooks from legacy `*.kiro.hook` to the Kiro 1.0
   `v1` JSON schema with renamed triggers (`fileEdited`→`PostFileSave`,
   `agentStop`→`Stop`, `preToolUse`→`PreToolUse`, …), restructured actions
   (`askAgent`/`prompt`→`{type:agent,prompt}`, `runCommand`/`command`→
@@ -53,7 +53,7 @@ hook and permissions model and **requires Kiro 1.0 or later** — legacy
   `trigger: PreToolUse` with the fixed `fs_write|str_replace|fs_append` matcher
 - Updated the hook tooling to v1: validator (`validate_power.py` `check_hooks`
   and `test_hooks.py`), registry sync (`sync_hook_registry.py` +
-  `hooks/hooks.lock.yaml`, 27 entries), prompt composer
+  `hooks/hooks.lock.yaml`, 26 entries), prompt composer
   (`compose_hook_prompts.py`), and installer (`install_hooks.py`) now discover,
   read, and emit `*.json` v1 definitions
 - Re-expressed the onboarding hook-creation path, steering files, and

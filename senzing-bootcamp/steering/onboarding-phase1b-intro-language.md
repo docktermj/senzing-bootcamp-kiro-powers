@@ -90,7 +90,7 @@ Present the overview before track selection. Cover all points naturally:
 - **standard** *(recommended)* — Balanced "what and why" explanations, block-level code summaries, before/after framing. Good for most learners.
 - **detailed** — Full explanations with workflow connections, line-by-line code walkthroughs, SDK internals. Best for deep learners.
 
-🛑 STOP — Wait for bootcamper response before persisting the selection.
+> **Internal directive — not shown to the bootcamper.** End your turn on the verbosity question above and wait for the bootcamper's response before persisting the selection (🛑 STOP — do not answer it, do not assume a preset, and do not continue to the next step until the bootcamper responds).
 
 Persist the selection to the `verbosity` key in the preferences file (`config/bootcamp_preferences.yaml`, or `config/preferences_{member_id}.yaml` in team mode) using this format:
 

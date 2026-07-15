@@ -83,11 +83,14 @@ _MODULE_COMPLETION_FILE: Path = _STEERING_DIR / "module-completion.md"
 # After the journal-recap consolidation, the former separate ``recap_append``
 # and ``journal_entry`` steps are folded into a single ``consolidated_append``
 # (structured recap subsections plus the ``### Journal`` narrative subsection in
-# one write), and ``capture_hook_safeguard`` runs between the completion
-# certificate and next-step options.
+# one write). The transcript-reconciliation spec then inserted a
+# ``transcript_reconciliation`` step immediately after ``consolidated_append``,
+# and ``capture_hook_safeguard`` runs between the completion certificate and
+# next-step options.
 STEP_ORDER: list[str] = [
     "progress_update",
     "consolidated_append",
+    "transcript_reconciliation",
     "completion_certificate",
     "capture_hook_safeguard",
     "next_step_options",
@@ -519,11 +522,15 @@ class TestNonBlockingErrorsAndStepOrder:
     """
 
     def test_steering_preserves_fixed_step_order(self) -> None:
-        """`module-completion.md` documents the fixed five-step order in sequence."""
+        """`module-completion.md` documents the fixed six-step order in sequence.
+
+        Steps are matched as bold headings (``**step**``) so a step name that
+        appears in another step's prose does not perturb the ordering.
+        """
         content = _read(_MODULE_COMPLETION_FILE)
         last = -1
         for step in STEP_ORDER:
-            idx = content.find(step)
+            idx = content.find(f"**{step}**")
             assert idx != -1, f"Step '{step}' must be documented in module-completion.md"
             assert idx > last, f"Step '{step}' is out of the fixed order"
             last = idx

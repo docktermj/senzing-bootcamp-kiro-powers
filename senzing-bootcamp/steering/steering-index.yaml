@@ -589,7 +589,7 @@ file_metadata:
     token_count: 4138
     size_category: large
   onboarding-phase1b-intro-language.md:
-    token_count: 2490
+    token_count: 2546
     size_category: large
   onboarding-phase2-track-setup.md:
     token_count: 2979
@@ -662,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 230220
+  total_tokens: 230276
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

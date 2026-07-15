@@ -1,0 +1,90 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Define and document the `setup_summary` schema": [
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784071280253
+      },
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784071290874
+      },
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784071595678
+      }
+    ],
+    "2. Write `setup_summary` at onboarding §4.0": [
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784071281087
+      },
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784071601383
+      },
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784074862406
+      }
+    ],
+    "3. Replay on resume in `session-resume.md`": [
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784071281372
+      },
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784074867905
+      },
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784075624104
+      }
+    ],
+    "4. Extend schema validation": [
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784071281834
+      },
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784075630728
+      },
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784076041739
+      }
+    ],
+    "5*. (Optional) Tests": [
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784071282519
+      },
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784076049485
+      },
+      {
+        "executionId": "fdf7808e-9d4d-41d1-b45e-0fd967203116",
+        "chatSessionId": "sess_231f6326-5abd-4115-bbe1-96d783a910fe",
+        "timestamp": 1784076491587
+      }
+    ]
+  }
+}

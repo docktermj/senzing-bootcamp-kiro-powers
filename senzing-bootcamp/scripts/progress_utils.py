@@ -26,6 +26,28 @@ STEP_HISTORY_KEY_RANGE = range(1, 13)  # 1–12 inclusive
 # Valid values for first_visualization.status (journey-level guarantee marker).
 VALID_FIRST_VISUALIZATION_STATUSES = ("owed", "satisfied")
 
+# Valid values for setup_summary.preflight_verdict (Step 2 preflight outcome).
+VALID_PREFLIGHT_VERDICTS = ("PASS", "WARN", "FAIL")
+
+# Substrings that mark a setup_summary key as secret-like and therefore
+# forbidden. The block records only names, counts, versions, and verdicts — it
+# SHALL NOT contain secrets, credentials, tokens, or connection strings.
+_SECRET_LIKE_KEY_SUBSTRINGS = (
+    "secret",
+    "credential",
+    "token",
+    "password",
+    "passwd",
+    "connection",
+    "conn_str",
+    "connstr",
+    "api_key",
+    "apikey",
+    "access_key",
+    "private_key",
+    "dsn",
+)
+
 
 # ---------------------------------------------------------------------------
 # Schema dataclass
@@ -235,6 +257,18 @@ def _is_valid_iso8601(value: str) -> bool:
         return False
 
 
+def _looks_like_secret_key(key: str) -> bool:
+    """Return True if *key* looks like a secret/credential/token/connection field.
+
+    Used to enforce the secret-free contract on the ``setup_summary`` block: the
+    block records only names, counts, versions, and verdicts, so any key whose
+    name suggests a secret, credential, token, password, or connection string is
+    flagged as a validation error.
+    """
+    lowered = key.lower()
+    return any(substring in lowered for substring in _SECRET_LIKE_KEY_SUBSTRINGS)
+
+
 def _is_valid_sub_step_identifier(value: str) -> bool:
     """Return True if *value* matches a recognized sub-step format.
 
@@ -296,6 +330,17 @@ def validate_progress_schema(data: dict) -> list[str]:
       yet (callers fall back to the evaluation capacity); ``0`` means the
       license imposes no record cap (unlimited); a positive integer is the
       record cap. Negative integers and non-int, non-null types are rejected.
+    - ``setup_summary`` (if present): must be a dict. Validation is light —
+      only fields that are present are checked: ``captured_at``,
+      ``power_version``, ``preflight_verdict`` must be strings (and
+      ``preflight_verdict`` must be one of VALID_PREFLIGHT_VERDICTS);
+      ``mcp_reachable`` / ``directories_created`` must be booleans;
+      ``steering_generated`` / ``preflight_warnings`` / ``deferrals`` must be
+      arrays of strings; ``hooks_installed`` must be a dict with an int
+      ``count`` (booleans rejected) and a ``names`` array of strings. The block
+      is secret-free by contract — any key that looks like a secret,
+      credential, token, or connection string is rejected. Absence of the whole
+      block is valid (backward compatible).
 
     All fields are optional — legacy files that lack fields pass validation
     (backward compatible). The validator never short-circuits; all fields are
@@ -579,5 +624,114 @@ def validate_progress_schema(data: dict) -> list[str]:
                 f"license_record_limit value {lrl} is out of range "
                 "(must be 0 for unlimited or a positive record cap)"
             )
+
+    # --- setup_summary ---
+    # Optional, backward-compatible resume-facing snapshot of what the
+    # administrative setup phase (onboarding Steps 0b-2) did. An absent block is
+    # valid (older project / skipped or failed write). Validation is "light":
+    # only fields that are present are checked. The block records only
+    # names/counts/versions/verdicts — never secrets, tokens, or connection
+    # strings.
+    if "setup_summary" in data:
+        ss = data["setup_summary"]
+        if not isinstance(ss, dict):
+            errors.append(
+                f"setup_summary must be a dict, got {type(ss).__name__}"
+            )
+        else:
+            # String fields (checked only when present).
+            for str_field in ("captured_at", "power_version", "preflight_verdict"):
+                if str_field in ss and not isinstance(ss[str_field], str):
+                    errors.append(
+                        f"setup_summary.{str_field} must be a string, got "
+                        f"{type(ss[str_field]).__name__}"
+                    )
+
+            # preflight_verdict enum (only when it is a string — a type error is
+            # already reported above for non-strings).
+            if "preflight_verdict" in ss and isinstance(ss["preflight_verdict"], str):
+                pv = ss["preflight_verdict"]
+                if pv not in VALID_PREFLIGHT_VERDICTS:
+                    errors.append(
+                        f"setup_summary.preflight_verdict must be one of "
+                        f"{VALID_PREFLIGHT_VERDICTS}, got {pv!r}"
+                    )
+
+            # Boolean fields (checked only when present). bool is a distinct type
+            # here — an int (0/1) is not accepted where a boolean is expected.
+            for bool_field in ("mcp_reachable", "directories_created"):
+                if bool_field in ss and not isinstance(ss[bool_field], bool):
+                    errors.append(
+                        f"setup_summary.{bool_field} must be a boolean, got "
+                        f"{type(ss[bool_field]).__name__}"
+                    )
+
+            # Array-of-strings fields (checked only when present).
+            for list_field in ("steering_generated", "preflight_warnings", "deferrals"):
+                if list_field in ss:
+                    lst = ss[list_field]
+                    if not isinstance(lst, list):
+                        errors.append(
+                            f"setup_summary.{list_field} must be a list, got "
+                            f"{type(lst).__name__}"
+                        )
+                    else:
+                        for i, elem in enumerate(lst):
+                            if not isinstance(elem, str):
+                                errors.append(
+                                    f"setup_summary.{list_field} contains non-string "
+                                    f"element at index {i}: got {type(elem).__name__}"
+                                )
+
+            # hooks_installed — object with an int count and array-of-strings names.
+            if "hooks_installed" in ss:
+                hi = ss["hooks_installed"]
+                if not isinstance(hi, dict):
+                    errors.append(
+                        f"setup_summary.hooks_installed must be a dict, got "
+                        f"{type(hi).__name__}"
+                    )
+                else:
+                    if "count" in hi:
+                        count = hi["count"]
+                        # bool is a subclass of int — reject booleans as counts
+                        # (mirrors the license_record_limit convention above).
+                        if isinstance(count, bool) or not isinstance(count, int):
+                            errors.append(
+                                "setup_summary.hooks_installed.count must be an int, "
+                                f"got {type(count).__name__}"
+                            )
+                        elif count < 0:
+                            errors.append(
+                                "setup_summary.hooks_installed.count must be "
+                                f"non-negative, got {count}"
+                            )
+                    if "names" in hi:
+                        names = hi["names"]
+                        if not isinstance(names, list):
+                            errors.append(
+                                "setup_summary.hooks_installed.names must be a list, "
+                                f"got {type(names).__name__}"
+                            )
+                        else:
+                            for i, elem in enumerate(names):
+                                if not isinstance(elem, str):
+                                    errors.append(
+                                        "setup_summary.hooks_installed.names contains "
+                                        f"non-string element at index {i}: got "
+                                        f"{type(elem).__name__}"
+                                    )
+
+            # Secret-free by contract: flag any key that looks like a secret,
+            # credential, token, or connection string so a leaked value is
+            # surfaced rather than silently persisted/replayed.
+            for key in ss:
+                if isinstance(key, str) and _looks_like_secret_key(key):
+                    errors.append(
+                        f"setup_summary contains a secret-like field {key!r}; the "
+                        "block must contain only names, counts, versions, and "
+                        "verdicts (no secrets, credentials, tokens, or connection "
+                        "strings)"
+                    )
 
     return errors

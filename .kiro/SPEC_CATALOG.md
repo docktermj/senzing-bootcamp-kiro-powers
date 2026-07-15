@@ -7,8 +7,8 @@
 
 ## Status Summary
 
-- in-progress: 1
-- implemented: 287
+- in-progress: 0
+- implemented: 288
 - superseded: 1
 - abandoned: 0
 - unknown: 0
@@ -1610,7 +1610,7 @@
 
 ### setup-summary-persistence
 
-- Status: in-progress
+- Status: implemented
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/setup-summary-persistence/](.kiro/specs/setup-summary-persistence/)

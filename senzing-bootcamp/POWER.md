@@ -233,7 +233,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `module-prerequisites.md` | 1395 | medium |
 | `module-transitions.md` | 2106 | large |
 | `onboarding-flow.md` | 4138 | large |
-| `onboarding-phase1b-intro-language.md` | 1986 | medium |
+| `onboarding-phase1b-intro-language.md` | 2490 | large |
 | `onboarding-phase2-track-setup.md` | 2979 | large |
 | `phase-loading-guide.md` | 890 | medium |
 | `project-structure.md` | 789 | medium |
@@ -244,7 +244,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `session-resume-phase2-mapping.md` | 656 | medium |
 | `session-resume-phase2-setup-recovery.md` | 1034 | medium |
 | `session-resume-phase2-state-repair.md` | 793 | medium |
-| `session-resume.md` | 3586 | large |
+| `session-resume.md` | 4197 | large |
 | `skip-step-protocol.md` | 799 | medium |
 | `slash-backup-project.md` | 157 | small |
 | `slash-commonmark-validation.md` | 444 | small |
@@ -258,7 +258,7 @@ See `steering/steering-index.yaml` for the complete machine-readable index of al
 | `visualization-web-service.md` | 2197 | large |
 | `whats-new.md` | 602 | medium |
 
-**Total budget:** 229105 tokens
+**Total budget:** 230220 tokens
 
 <!-- END GENERATED: steering-files -->
 

@@ -41,6 +41,14 @@ After the "setup complete" statement and before the welcome banner, present a br
 - State any failed or deferred item plainly (e.g., a hook that failed, a declined runtime install, or a WARN preflight) and where it is revisited (usually Module 2).
 - Orientation only — do **not** ask a question or wait here; the first onboarding question is the detail-level step (4a).
 
+**Persist the summary — internal directive (not shown to the bootcamper).** After presenting the recap above, write it to the Progress_File so `session-resume.md` can replay it on a future session. This is a silent background write — do **not** narrate it, ask about it, or block on it.
+
+1. **Assemble `setup_summary` from the real Step 0b–2 outcomes** (never hardcoded): `mcp_reachable` (Step 0b health check), `power_version` (the version resolved in Step 0c), `directories_created` (Step 1), `hooks_installed` as `{count, names}`, `steering_generated` (the Step 1 foundational steering, e.g. `product.md`/`tech.md`/`structure.md`), `preflight_verdict` plus any `preflight_warnings` (Step 2), `deferrals` (items the bootcamper declined in Steps 2a–2d, e.g. a declined runtime install — note where each is revisited, usually Module 2), and a `captured_at` ISO-8601 timestamp. Record only names, counts, versions, and verdicts — **no** secrets, tokens, or connection strings. Schema: `docs/guides/PROGRESS_FILE_SCHEMA.md`.
+2. **Mirror `hooks_installed`, do not duplicate it.** Read the verified count and names back from the authoritative `hooks_installed` record Step 1 wrote to `config/bootcamp_preferences.yaml` and copy them into `setup_summary` — never re-count or build a divergent list (single source of truth preserved).
+3. **Merge, don't overwrite.** Use a read-modify-write (the same discipline the progress checkpoints use via `progress_utils.py`): read the current Progress_File, add or replace only the `setup_summary` key, then write it back — preserving `modules_completed`, `current_step`, `step_history`, the Question_Ledger, and every other key.
+4. **Team mode:** write to the member-specific progress file (`config/progress_{member_id}.json`) selected in Step 1b; otherwise write to `config/bootcamp_progress.json`.
+5. **Non-blocking:** if the write fails for any reason, log a warning and continue — the summary was already presented this session, so a failed persist never blocks onboarding.
+
 **Display the welcome banner — make it impossible to miss.**
 
 **Standard (single-user) banner:**

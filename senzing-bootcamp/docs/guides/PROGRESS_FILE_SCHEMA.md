@@ -4,7 +4,7 @@ The file `config/bootcamp_progress.json` is the bootcamp's session state. It tra
 
 ## Field Definitions
 
-The progress file contains eight top-level fields:
+The progress file contains nine top-level fields:
 
 | Field | JSON Type | Required / Optional | Valid Values | Description |
 |-------|-----------|---------------------|--------------|-------------|
@@ -16,6 +16,7 @@ The progress file contains eight top-level fields:
 | `database_type` | string | Required | `"sqlite"` or `"postgresql"` | The database engine chosen during onboarding |
 | `language` | string | Required | `"python"`, `"java"`, `"csharp"`, `"rust"`, `"typescript"` | The programming language chosen during onboarding |
 | `license_record_limit` | integer or null | Optional | `null`, `0`, or any positive integer | The active Senzing license's record cap, detected in Module 2 and reused by the capacity/sampling decisions in Modules 1, 4, 6, and 8. See [License Record Limit](#license-record-limit) |
+| `setup_summary` | object | Optional | See [Setup Summary](#setup-summary) | A snapshot of what the administrative setup phase (onboarding Steps 0b–2) actually did — MCP reachability, power version, directories, hooks, steering, and the preflight verdict — persisted so session resume can replay it. Secret-free. |
 
 ## Step History Structure
 
@@ -44,9 +45,61 @@ The field has three meaningful states:
 - **`0`** — the license imposes no record cap (unlimited). No sampling is recommended for license reasons regardless of dataset size.
 - **positive integer** — the license caps loading at that many records. Sampling is recommended only when the dataset total genuinely exceeds this value.
 
+## Setup Summary
+
+The optional `setup_summary` object is a durable, structured snapshot of what the quiet administrative setup phase actually did during onboarding (Steps 0b–2, presented once at the end of the preface in the Administrative Setup Summary). Persisting it lets `session-resume.md` replay a concise "your environment already has…" recap on resume instead of re-narrating or re-checking work that was already done.
+
+Every value is derived from the **real** outcomes of onboarding Steps 0b–2 — never hardcoded. The `hooks_installed` record mirrors the authoritative `hooks_installed` key already written to `config/bootcamp_preferences.yaml` (single source of truth preserved; `setup_summary` is the resume-facing snapshot, not a divergent duplicate). In team mode, `setup_summary` is written to the member-specific progress file, consistent with the rest of progress tracking.
+
+The object contains the following fields:
+
+| Field | JSON Type | Required / Optional | Valid Values | Description |
+|-------|-----------|---------------------|--------------|-------------|
+| `captured_at` | string | Required | ISO 8601 timestamp (e.g. `"2026-07-14T13:49:00-05:00"`) | When the summary was captured and written |
+| `power_version` | string | Required | A version string, e.g. `"1.4.0"` | The senzing-bootcamp power version detected during onboarding (Step 0c) |
+| `mcp_reachable` | boolean | Required | `true` or `false` | Whether the Senzing MCP server health check succeeded (Step 0b) |
+| `directories_created` | boolean | Required | `true` or `false` | Whether the Senzing project directories were created (Step 1) |
+| `hooks_installed` | object | Required | See below | The background quality-check hooks installed (Step 1); mirrors `bootcamp_preferences.yaml` |
+| `steering_generated` | array of strings | Required | Foundational steering filenames, e.g. `["product.md", "tech.md", "structure.md"]` | The foundational steering files generated during setup (Step 1) |
+| `preflight_verdict` | string | Required | `"PASS"`, `"WARN"`, or `"FAIL"` | The overall verdict of the Step 2 preflight environment check |
+| `preflight_warnings` | array of strings | Optional | Human-readable warning messages | Any non-fatal preflight findings (empty or absent when there are none) |
+| `deferrals` | array of strings | Optional | Human-readable deferral notes | Items the bootcamper deferred during setup (e.g. a declined runtime install), noting where they are revisited |
+
+The nested `hooks_installed` object has two fields:
+
+| Field | JSON Type | Description |
+|-------|-----------|-------------|
+| `count` | integer | The verified number of hooks installed |
+| `names` | array of strings | The installed hook IDs (e.g. `["ask-bootcamper", "review-bootcamper-input", "code-style-check"]`) |
+
+**Secret-free by contract:** `setup_summary` records only names, counts, versions, and verdicts. It SHALL NOT contain secrets, credentials, tokens, or connection strings. This keeps the block safe to persist in the workspace and to replay on resume.
+
+**Backward compatible:** the entire `setup_summary` block is optional. Older projects (and sessions where the write was skipped or failed) simply have no block; its absence is valid and is never an error. Resume proceeds unchanged when it is missing.
+
+### Setup Summary Example
+
+```json
+{
+  "setup_summary": {
+    "captured_at": "2026-07-14T13:49:00-05:00",
+    "power_version": "1.4.0",
+    "mcp_reachable": true,
+    "directories_created": true,
+    "hooks_installed": {
+      "count": 3,
+      "names": ["ask-bootcamper", "review-bootcamper-input", "code-style-check"]
+    },
+    "steering_generated": ["product.md", "tech.md", "structure.md"],
+    "preflight_verdict": "WARN",
+    "preflight_warnings": ["Senzing SDK not installed — Module 2 will cover it"],
+    "deferrals": ["runtime install declined (revisit in Module 2)"]
+  }
+}
+```
+
 ## Validation Rules
 
-The function `progress_utils.validate_progress_schema` enforces the following rules. Legacy files that lack `current_step`, `step_history`, or `license_record_limit` pass validation (backward compatible).
+The function `progress_utils.validate_progress_schema` enforces the following rules. Legacy files that lack `current_step`, `step_history`, `license_record_limit`, or `setup_summary` pass validation (backward compatible).
 
 **`license_record_limit`** (if present):
 
@@ -67,6 +120,15 @@ The function `progress_utils.validate_progress_schema` enforces the following ru
   - `last_completed_step` — must be an `int`.
   - `updated_at` — must be a string that parses as a valid ISO 8601 datetime.
 - Missing either required field, or providing the wrong type for either field, produces a validation error.
+
+**`setup_summary`** (if present):
+
+- Must be a `dict` (JSON object). An absent block is valid (backward compatible).
+- `captured_at`, `power_version`, and `preflight_verdict` — must be strings when present; `preflight_verdict` must be one of `"PASS"`, `"WARN"`, or `"FAIL"`.
+- `mcp_reachable` and `directories_created` — must be booleans when present.
+- `steering_generated`, `preflight_warnings`, and `deferrals` — must be arrays of strings when present.
+- `hooks_installed` — must be an object with an integer `count` and a `names` array of strings when present.
+- No secret-like fields are permitted: the block must contain only names, counts, versions, and verdicts — never secrets, credentials, tokens, or connection strings.
 
 ## Complete Example
 

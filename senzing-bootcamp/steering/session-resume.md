@@ -71,7 +71,7 @@ Before running the full state reconstruction, check if a fast resume is possible
 4. `current_step` is present in the progress file (we know exactly where to resume)
 5. `hooks_installed` is present in preferences (no hook setup needed)
 
-**If ALL conditions are met:** Skip Steps 1–2 entirely. Jump directly to Step 2b, then Step 2c, then Step 3 using the data already read from the progress and preferences files.
+**If ALL conditions are met:** Skip Steps 1–2 entirely. Jump directly to Step 2b, then Step 2c, then Step 2f, then Step 3 using the data already read from the progress and preferences files.
 
 **If ANY condition fails:** Fall through to the Routing Logic evaluation, then the full Step 1–2 sequence below.
 
@@ -218,6 +218,33 @@ See `session-resume-phase2-setup-recovery.md` for the full MCP health check proc
 ## Step 2e: What's New Check
 
 If `show_whats_new` is not `false` in preferences AND `config/session_log.jsonl` exists, display a brief "What's New" summary of any power updates since the last session. Then set `show_whats_new: false` in preferences.
+
+## Step 2f: Setup Summary Replay
+
+After the progress reconstruction above, replay the one-time administrative setup summary so the bootcamper is reminded what their environment already has — without re-narrating or re-checking work onboarding already completed. This runs on every resume, including the fast path; present it once, just before the Step 3 welcome-back summary.
+
+Read the `setup_summary` block from the Progress_File already loaded in Step 1 (the member-specific progress file in team mode). It was written once during onboarding (§4.0) and records what the quiet setup phase actually did. Its shape is documented in `docs/guides/PROGRESS_FILE_SCHEMA.md`.
+
+### When `setup_summary` is present
+
+Present a concise, **verbosity-aware** "your environment already has…" recap drawn only from the recorded block, honoring the active `verbosity_preset` restored in Step 2c (see `verbosity-control.md`):
+
+- **concise** — one line, e.g. "Your environment already has your Senzing project directories, N background quality-check hooks, foundational steering, and a PASS preflight (power vX.Y.Z)."
+- **standard / detailed** — the same recap as short bullets: project directories (`directories_created`), `hooks_installed.count` background quality-check hooks, foundational steering (`steering_generated`), and the `preflight_verdict` preflight for `power_version`. At detailed you may also name the entries in `hooks_installed.names`.
+
+Draw every value from the recorded block — never re-derive, re-count, or re-probe anything.
+
+### Marking failed or deferred items
+
+If `preflight_verdict` is `WARN` or `FAIL`, or `preflight_warnings` / `deferrals` are non-empty, state each one plainly and note where it is revisited (usually Module 2) — e.g. "Senzing SDK not yet installed — revisited in Module 2." This keeps a deferred or failed setup item visible instead of silently forgotten.
+
+### When `setup_summary` is absent
+
+Proceed unchanged with no error and no recap. Older projects — and sessions where the onboarding write was skipped or failed — simply have no block; its absence is normal and never blocks resume.
+
+### Orientation only
+
+This replay reports recorded state only. Do **not** ask a question, present a gate, or re-run any setup step (directory creation, hook install, steering generation, preflight) — re-running setup on resume is a non-goal. Add no question of your own; the single Step 3 question follows.
 
 ## Step 3: Summarize and Confirm
 

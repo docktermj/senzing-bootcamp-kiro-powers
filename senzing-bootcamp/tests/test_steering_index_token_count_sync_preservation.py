@@ -617,7 +617,25 @@ _BASELINE_HASHES: dict[str, str] = {
     # which measure_steering.py recomputed into file_metadata and the budget total.
     # Only the budget block changed; keywords/languages/deployment/root_step_range
     # are byte-identical.
-    "budget": "1a34c8ca76c2db62fa953b49c3e9468210a66993ffe7e66991128eee4218ea32",
+    # Re-baselined once more for the setup-summary-persistence spec (Task 2).
+    # NOTE: this baseline was ALSO stale before this task — an intervening spec
+    # moved the live budget total to 229105 without updating this constant (it
+    # still pinned 228725). This task adds the `setup_summary` persistence
+    # directive to onboarding-phase1b-intro-language.md §4.0 (1986 -> 2490, +504),
+    # which measure_steering.py recomputed into file_metadata and the budget total,
+    # bringing the live consistent value to 229609 (= sum of file_metadata counts).
+    # Only the budget block changed (solely the total_tokens line);
+    # keywords/languages/deployment/root_step_range are byte-identical.
+    # Re-baselined once more (229609 -> 230220) for the setup-summary-persistence
+    # spec (Task 3): the new "## Step 2f: Setup Summary Replay" section (plus a
+    # one-word fast-path jump addition) was added to session-resume.md so resume
+    # replays the persisted setup_summary as a verbosity-aware "your environment
+    # already has…" recap (3586 -> 4197, +611), which measure_steering.py
+    # recomputed into file_metadata and the budget total (230220 = sum of
+    # file_metadata counts). Only the budget block changed (solely the
+    # total_tokens line); keywords/languages/deployment/root_step_range are
+    # byte-identical.
+    "budget": "1dc57a579cb8a22afa614a51020e23cda79ed6a328aef854097b12fe812da434",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -1074,8 +1092,19 @@ class TestNonPhaseBlocksBytePreserved:
         # er-intro-interactive-illustration spec (Task 4): entity-resolution-intro.md
         # gained the ER_Illustration offer + content, then its agent-only HTML
         # comments were trimmed to keep it in the medium band (1933 -> 1977).
+        # Aggregate re-synced 228725 -> 229609 for the setup-summary-persistence
+        # spec (Task 2): onboarding-phase1b-intro-language.md gained the
+        # `setup_summary` persistence directive in §4.0 (1986 -> 2490). NOTE: an
+        # intervening spec had already moved the live total to 229105 without
+        # re-syncing this assertion; this re-baseline corrects that drift too
+        # (229105 + 504 = 229609 = live sum of file_metadata counts).
+        # Aggregate re-synced 229609 -> 230220 for the setup-summary-persistence
+        # spec (Task 3): session-resume.md gained the "## Step 2f: Setup Summary
+        # Replay" section (3586 -> 4197, +611) so resume replays the persisted
+        # setup_summary, recomputed by measure_steering.py into file_metadata and
+        # the budget total (230220 = live sum of file_metadata counts).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 228725" in budget_block
+        assert "total_tokens: 230220" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

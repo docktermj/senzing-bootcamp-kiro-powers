@@ -866,7 +866,7 @@ class TestUnitTokenBudgets:
     """
 
     def test_phase1_token_budget(self) -> None:
-        """Phase-1 file token count ≤ 3,463.
+        """Phase-1 file token count ≤ 4,197.
 
         The session-resume split + the added "Preference Loading on Session
         Start" content grew the phase-1 file (session-resume.md) past the
@@ -894,28 +894,34 @@ class TestUnitTokenBudgets:
         unchanged. Paired with an independent content assertion below so the
         ceiling can never mask unbounded growth.
         """
+        # Re-pinned 3586 -> 4197 for the setup-summary-persistence spec: a new
+        # "Step 2f: Setup Summary Replay" section (plus a one-word fast-path
+        # jump addition) was added to session-resume.md so resume replays the
+        # persisted setup_summary as a verbosity-aware "your environment already
+        # has…" recap, re-measured by measure_steering.py and re-synced into
+        # steering-index.yaml (still well under the 5,000-token split threshold).
         # Re-pinned 3506 -> 3586 for the single-ask-question-guarantee spec: a
         # one-line Ask-Once Guarantee cross-reference was added to the existing
         # "do not re-ask loaded preference fields" note in Step 4, re-measured by
         # measure_steering.py and re-synced into steering-index.yaml.
         token_count = _calculate_token_count(_PHASE1_FILE)
-        assert token_count <= 3586, (
-            f"Phase-1 file has {token_count} tokens, exceeds budget of 3,586"
+        assert token_count <= 4197, (
+            f"Phase-1 file has {token_count} tokens, exceeds budget of 4,197"
         )
 
         # Independent content assertion: the shipped steering-index.yaml declares
-        # the same token_count for session-resume.md, confirming 3,506 is the
-        # intentional shipped value (the preface-reorder missing-field ordering
-        # note update, re-measured and re-synced), not drift.
+        # the same token_count for session-resume.md, confirming 4,197 is the
+        # intentional shipped value (the setup-summary-persistence replay section
+        # added to session-resume.md, re-measured and re-synced), not drift.
         index = _read_steering_index()
         assert "session-resume.md:" in index, (
             "steering-index.yaml must contain a session-resume.md entry"
         )
         idx_pos = index.find("session-resume.md:")
         entry = index[idx_pos:idx_pos + 200]
-        assert "token_count: 3586" in entry, (
-            "steering-index.yaml must record session-resume.md token_count: 3586 "
-            "(the shipped post-single-ask value)"
+        assert "token_count: 4197" in entry, (
+            "steering-index.yaml must record session-resume.md token_count: 4197 "
+            "(the shipped post-setup-summary-replay value)"
         )
 
     def test_phase2_mapping_token_budget(self) -> None:

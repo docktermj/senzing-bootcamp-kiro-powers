@@ -1,0 +1,339 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Change the rendered closing 👉 to the Open_Questions_Prompt": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122155967
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122164611
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122200919
+      }
+    ],
+    "1.2 Add the new OPEN_QUESTIONS_PROMPT AGENT INSTRUCTION directive": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156077
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122204092
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122254695
+      }
+    ],
+    "1.3 Rework the ILLUSTRATION_OFFER directive to fire as Phase B": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156106
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122258135
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122311456
+      }
+    ],
+    "1.4 Verify preserved directives (ER_CONCEPTS_BANNER, ER_ILLUSTRATION, wait/answer)": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156141
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122314989
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122434487
+      }
+    ],
+    "2.1 Re-measure and update the token_count in steering-index.yaml": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156185
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122438391
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122492219
+      }
+    ],
+    "2.2 Validate CommonMark and power integrity": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156208
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122439240
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122492876
+      }
+    ],
+    "3. Checkpoint - Ensure steering edit and CI checks pass": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156234
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122516090
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122518982
+      }
+    ],
+    "4.1 Re-point test_exactly_one_leading_question to the Open_Questions_Prompt": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156265
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122522919
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122596727
+      }
+    ],
+    "4.2 Move offer/stop-marker assertions to the directive and open prompt": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156288
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122607029
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122955712
+      }
+    ],
+    "5.1 Set up module scaffolding and shared fixture": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156310
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122523566
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122596984
+      }
+    ],
+    "5.2 Write example-based assertion for Property 1": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156333
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122607961
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122956647
+      }
+    ],
+    "5.3 Write example-based assertion for Property 2": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156355
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122609772
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122958462
+      }
+    ],
+    "5.4 Write example-based assertion for Property 3": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156390
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122609837
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122962483
+      }
+    ],
+    "5.5 Write example-based assertion for Property 4": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156415
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122613809
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122963418
+      }
+    ],
+    "5.6 Write example-based assertion for Property 5": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156436
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122614886
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122964163
+      }
+    ],
+    "5.7 Write example-based assertion for Property 6": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156458
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122616810
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122968117
+      }
+    ],
+    "5.8 Write example-based assertion for Property 7": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156485
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122616845
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122968882
+      }
+    ],
+    "6. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122156507
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784123033605
+      },
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784123966554
+      }
+    ],
+    "1. Rework the Exploration_Gate closing calls-to-action in the steering file": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122434513
+      }
+    ],
+    "2. Update repo/CI bookkeeping for the edited steering file": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122492896
+      }
+    ],
+    "4. Update existing test assertions that assume the old ordering": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122955743
+      }
+    ],
+    "5. Add new property-verification test module": [
+      {
+        "executionId": "4f8f581a-89aa-475a-b462-f0a0aabfca2a",
+        "chatSessionId": "sess_3cbae2e6-1f89-437f-b20c-a30da27610fd",
+        "timestamp": 1784122968907
+      }
+    ]
+  }
+}

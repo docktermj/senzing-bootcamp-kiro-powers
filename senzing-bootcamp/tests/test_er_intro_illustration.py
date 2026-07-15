@@ -159,17 +159,27 @@ class TestIllustrationOffer:
     """
 
     def test_exactly_one_leading_question(self) -> None:
-        """Exactly one 👉 leading question exists in the file (Req 2.3, P6).
+        """Exactly one 👉 leading question exists, and it is the Open_Questions_Prompt.
 
         Reuses the deterministic counting rule, which excludes the 👉 that
         appear mid-line inside the agent-instruction comments — only the
-        rendered Illustration_Offer line counts.
+        rendered closing 👉 counts. Per the onboarding-er-questions-prompt
+        reordering, that single rendered 👉 is now the Open_Questions_Prompt
+        ("Do you have any questions about Entity Resolution?"), not the
+        Illustration_Offer (Req 1.1, 1.2, 1.3).
         """
-        count = count_leading_questions(_load())
+        text = _load()
+        count = count_leading_questions(text)
         assert count == 1, (
-            f"Expected exactly one 👉 leading question (the Illustration_Offer) "
-            f"in {TARGET_FILE.name} per the One Question Rule (Req 2.3, P6); "
+            f"Expected exactly one 👉 leading question (the Open_Questions_Prompt) "
+            f"in {TARGET_FILE.name} per the One Question Rule (Req 1.1, 1.3); "
             f"found {count}."
+        )
+        offer = _norm(_pointer_line(text))
+        assert "do you have any questions about entity resolution?" in offer, (
+            "Expected the single rendered 👉 to be the Open_Questions_Prompt "
+            "('Do you have any questions about Entity Resolution?') in "
+            f"{TARGET_FILE.name} (Req 1.1, 1.2); got: {offer!r}"
         )
 
     def test_offer_is_non_compound(self) -> None:
@@ -187,15 +197,31 @@ class TestIllustrationOffer:
         )
 
     def test_offer_is_about_two_record_match_and_non_match(self) -> None:
-        """The offer proposes viewing a two-record match / non-match example (Req 1.1).
+        """The ILLUSTRATION_OFFER directive proposes a two-record match / non-match example (Req 3.1).
 
-        The 👉 line frames the ER_Illustration as an optional preview of a
-        concrete two-record match and non-match pair.
+        Per the onboarding-er-questions-prompt reordering, the two-record
+        match / non-match wording no longer lives on the rendered closing 👉
+        (that is now the Open_Questions_Prompt). It now lives inside the
+        ``ILLUSTRATION_OFFER`` AGENT INSTRUCTION directive block (Phase B), which
+        frames the ER_Illustration as an optional preview of a concrete
+        two-record match and non-match pair.
         """
-        offer = _norm(_pointer_line(_load()))
-        assert "two-record example of a match and a non-match" in offer, (
-            "Expected the Illustration_Offer to offer a two-record match / "
-            f"non-match example in {TARGET_FILE.name} (Req 1.1); got: {offer!r}"
+        text = _load()
+        start = text.find("ILLUSTRATION_OFFER (Req")
+        assert start != -1, (
+            f"Expected the ILLUSTRATION_OFFER (Phase B) agent-instruction block in "
+            f"{TARGET_FILE.name} (Req 3.1); none found."
+        )
+        end = text.find("-->", start)
+        assert end != -1, (
+            "Expected the ILLUSTRATION_OFFER block to be a closed HTML comment "
+            f"(missing '-->') in {TARGET_FILE.name}."
+        )
+        block = _norm(text[start:end])
+        assert "two-record example of a match and a non-match" in block, (
+            "Expected the ILLUSTRATION_OFFER directive to offer a two-record "
+            f"match / non-match example in {TARGET_FILE.name} (Req 3.1); "
+            f"got block: {block!r}"
         )
 
     def test_offer_instruction_marks_it_single_and_non_compound(self) -> None:
@@ -413,20 +439,27 @@ class TestGatePreservation:
         )
 
     def test_stop_marker_follows_the_offer(self) -> None:
-        """A 🛑 STOP marker still terminates the gate turn after the offer (Req 2.2).
+        """A 🛑 STOP marker terminates the gate turn after the Open_Questions_Prompt (Req 2.1).
 
-        The offer ends the gate turn; the 🛑 STOP line must come after the 👉 so
-        the agent still waits for real input rather than proceeding.
+        Per the onboarding-er-questions-prompt reordering, the rendered closing
+        line of the gate turn is now the Open_Questions_Prompt ("Do you have any
+        questions about Entity Resolution?"), not the Illustration_Offer. The
+        🛑 STOP line must come after that 👉 so the agent still waits for real
+        input rather than proceeding past the gate.
         """
         text = _load()
-        offer_index = text.find(POINTER_INDICATOR + " **Want to see")
-        assert offer_index != -1, (
-            f"Expected the Illustration_Offer 👉 line in {TARGET_FILE.name}."
+        prompt_index = text.find(
+            POINTER_INDICATOR + " **Do you have any questions about Entity Resolution?**"
         )
-        stop_index = text.find(f"{STOP_MARKER} **STOP", offer_index)
+        assert prompt_index != -1, (
+            "Expected the Open_Questions_Prompt 👉 line ('Do you have any "
+            f"questions about Entity Resolution?') in {TARGET_FILE.name} "
+            "(Req 3.1)."
+        )
+        stop_index = text.find(f"{STOP_MARKER} **STOP", prompt_index)
         assert stop_index != -1, (
-            "Expected a 🛑 STOP marker after the Illustration_Offer in "
-            f"{TARGET_FILE.name} (Req 2.2, P2); the gate must still wait for "
+            "Expected a 🛑 STOP marker after the Open_Questions_Prompt in "
+            f"{TARGET_FILE.name} (Req 2.1); the gate must still wait for "
             "input."
         )
 

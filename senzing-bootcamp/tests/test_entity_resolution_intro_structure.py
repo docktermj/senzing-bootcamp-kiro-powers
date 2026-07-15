@@ -9,8 +9,13 @@ entry:
 
 - Property 1: the ``#[[file:]]`` loader in ``onboarding-flow.md`` resolves
   to a file whose frontmatter declares ``inclusion: manual``.
-- Property 2: the steering index records ``size_category: medium`` and a
-  ``token_count`` strictly less than 2000 for the Target_File.
+- Property 2: the steering index records ``size_category: large`` and a
+  ``token_count`` above the medium-band ceiling but strictly below the
+  ``split_threshold_tokens`` for the Target_File. The band shifted from
+  medium to large when the onboarding-er-questions-prompt spec reordered
+  and expanded this file's directives (new OPEN_QUESTIONS_PROMPT, reworked
+  ILLUSTRATION_OFFER, strengthened ER_ILLUSTRATION), growing it past the
+  2000-token medium ceiling while remaining well under the split threshold.
 - Property 3: the Target_File cites both the Senzing public guide and the
   MCP ``search_docs`` tool in a ``## Sources`` footer.
 - Property 4: the Target_File's ``##`` headings cover the six conceptual
@@ -137,19 +142,36 @@ class TestEntityResolutionIntroStructure:
             f"{frontmatter}"
         )
 
-    def test_token_count_in_medium_band(self) -> None:
+    def test_token_count_in_large_band(self) -> None:
         """Validates: Requirements 1.6, 10.3, 11.3 (Property 2).
 
         Property 2 — Token Budget Invariant: Steering_Index Consistency.
         Parses ``steering-index.yaml`` with a small regex (stdlib only,
         no PyYAML per the repo convention) and asserts the
         ``file_metadata.entity-resolution-intro.md`` entry declares
-        ``size_category: medium`` and a ``token_count`` strictly less
-        than 2000 (the medium-band ceiling enforced by Req 10.3 and
-        exercised by ``measure_steering.py --check`` per Req 11.3).
-        A defensive lower bound (> 0) guards against a zero-byte
-        Target_File regression.
+        ``size_category: large`` — the value ``measure_steering.classify_size``
+        now assigns — and a ``token_count`` within the large band: strictly
+        below the ``split_threshold_tokens`` (the point at which a file must
+        be split) yet still above zero.
+
+        The band moved from medium to large because the
+        onboarding-er-questions-prompt spec reordered and expanded this
+        file's directives (new OPEN_QUESTIONS_PROMPT, reworked
+        ILLUSTRATION_OFFER, strengthened ER_ILLUSTRATION), pushing the count
+        past the 2000-token medium ceiling (Req 10.3) while staying well
+        under the split threshold that ``measure_steering.py --check``
+        enforces (Req 11.3).
+
+        The upper bound is read from the index's own
+        ``budget.split_threshold_tokens`` (falling back to the tool's
+        documented 5000) rather than a hard-coded literal, so the test
+        tracks the tool/config instead of a magic number. The band label is
+        cross-checked against ``measure_steering.classify_size`` so the test
+        cannot drift from the classifier. A defensive lower bound (> 0)
+        guards against a zero-byte Target_File regression.
         """
+        import measure_steering  # noqa: PLC0415 — imported lazily after sys.path shim
+
         index_text = STEERING_INDEX.read_text(encoding="utf-8")
         entry_pattern = re.compile(
             r"entity-resolution-intro\.md:\s*\n"
@@ -166,17 +188,34 @@ class TestEntityResolutionIntroStructure:
         token_count = int(match.group(1))
         size_category = match.group(2)
 
-        assert size_category == "medium", (
-            "Expected size_category 'medium' for entity-resolution-intro.md "
+        # Upper bound: the file must remain below the split threshold. Read the
+        # value from the index's budget section so the test stays aligned with
+        # the configured tool budget; fall back to the tool's documented 5000.
+        threshold_match = re.search(
+            r"split_threshold_tokens:\s*(\d+)", index_text
+        )
+        split_threshold = int(threshold_match.group(1)) if threshold_match else 5000
+
+        assert size_category == "large", (
+            "Expected size_category 'large' for entity-resolution-intro.md "
             f"in {STEERING_INDEX.relative_to(REPO_ROOT)}; got {size_category!r}."
+        )
+        # Cross-check the recorded band against the classifier so the stored
+        # value and the tool that produces it cannot silently diverge.
+        assert measure_steering.classify_size(token_count) == "large", (
+            "Expected measure_steering.classify_size to classify "
+            f"{token_count} tokens as 'large'; got "
+            f"{measure_steering.classify_size(token_count)!r}. The stored "
+            "size_category and the classifier have diverged."
         )
         assert token_count > 0, (
             "Expected a positive token_count for entity-resolution-intro.md "
             f"in {STEERING_INDEX.relative_to(REPO_ROOT)}; got {token_count}."
         )
-        assert token_count < 2000, (
-            "Expected token_count strictly less than 2000 (medium-band "
-            "ceiling per Req 10.3) for entity-resolution-intro.md in "
+        assert token_count < split_threshold, (
+            "Expected token_count strictly less than the split threshold "
+            f"({split_threshold}, the large-band upper bound before a file "
+            "must be split, per Req 11.3) for entity-resolution-intro.md in "
             f"{STEERING_INDEX.relative_to(REPO_ROOT)}; got {token_count}."
         )
 

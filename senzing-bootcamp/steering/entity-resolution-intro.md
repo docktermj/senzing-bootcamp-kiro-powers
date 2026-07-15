@@ -91,13 +91,38 @@ signal. Rules:
 -->
 
 <!-- AGENT INSTRUCTION — not shown to the bootcamper.
-ILLUSTRATION_OFFER (Req 1.1, 2.2, 2.3). End this gate turn with the single 👉
-below — an OPTIONAL, non-compound, verbosity-aware offer to view the
-ER_Illustration (a tiny match + non-match teaser). One 👉 only; never changes
-the gate's wait semantics:
-- Accept: render the illustration inline, then re-present the gate.
-- Decline or a readiness signal: proceed, no penalty; do not re-offer once
-  answered (Ask-Once), and never re-display the banner.
+OPEN_QUESTIONS_PROMPT (Req 1.2, 1.5, 1.6, 2.3-2.6). End this gate turn with the
+single 👉 Open_Questions_Prompt ("Do you have any questions about Entity
+Resolution?") — non-compound (exactly one 👉, one ?), verbosity-aware. Do NOT
+present the ILLUSTRATION_OFFER in the same turn as this prompt.
+- Follow-ups, ambiguity, and search_docs failures: defer to the gate wait/answer
+  directive above (answer MCP-first via search_docs, then re-present the gate;
+  never re-display the banner).
+- Any question the bootcamper asks is ANSWERED before the ILLUSTRATION_OFFER is
+  presented.
+- Once this open prompt is handled — a readiness signal or "no questions" — the
+  agent presents the ILLUSTRATION_OFFER (below) as the single 👉 of the NEXT turn.
+-->
+
+<!-- AGENT INSTRUCTION — not shown to the bootcamper.
+ILLUSTRATION_OFFER (Req 3.1-3.7) — PHASE B. Do NOT present this in the same turn
+as the Open_Questions_Prompt. Present it only AFTER the Open_Questions_Prompt has
+been handled — i.e. the bootcamper signaled readiness / "no questions" and any
+asked question has already been ANSWERED (Req 3.1). When that condition is met,
+open its own later turn with this as the SINGLE 👉 call-to-action — an OPTIONAL,
+non-compound (one 👉, one ?), verbosity-aware offer to view the ER_Illustration
+(a tiny match + non-match teaser), e.g. "Want to see a quick two-record example
+of a match and a non-match before we move on?" (Req 3.2, 3.3). One 👉 only; never
+changes the gate's wait semantics:
+- Accept: render the ER_Illustration inline, then re-present the gate (Req 3.6);
+  never re-display the banner.
+- Decline or a readiness signal: proceed past the gate, no penalty (Req 3.4).
+- Ask-Once: once the offer has been answered (accept / decline / readiness), do
+  NOT offer it again (Req 3.5).
+- Unrecognized response (not an accept, decline, or readiness signal): re-present
+  this offer ONCE as the single 👉, indicating an accept-or-decline response is
+  expected, and do NOT proceed past the gate until a recognized response is
+  received (Req 3.7).
 -->
 
 ⛔ **MANDATORY GATE** — Entity Resolution Exploration
@@ -112,16 +137,20 @@ Here are some questions other bootcampers have found useful:
 
 You can ask any question about entity resolution — not just these examples. When you're ready to move on, just say so.
 
-👉 **Want to see a quick two-record example of a match and a non-match before we move on?**
+👉 **Do you have any questions about Entity Resolution?**
 
 🛑 **STOP — End your response here.** Do not proceed. Do not assume a response. Wait for the bootcamper's real input.
 
 <!-- AGENT INSTRUCTION — not shown to the bootcamper.
-ER_ILLUSTRATION (Req 1.2-1.4, 2.4, 3.1, 3.2). Render INLINE only on ACCEPT, then
-re-present the gate (banner once-only). Conceptual teaser ONLY — no SDK, data,
-code, server, or graph; do NOT reproduce the Module 3 "wow" visualization. End
-with a PREVIEW line pointing to that hands-on Module 3 visualization on their own
-data. Sourcing (MCP-first, Req 1.4): prefer records + reasoning via find_examples
+ER_ILLUSTRATION (Req 1.2-1.4, 2.4, 3.1, 3.2, 4.1-4.4). Render INLINE only on
+ACCEPT, then re-present the gate (banner once-only). Conceptual teaser ONLY —
+static, text-based, NO MORE THAN 25 lines (Req 4.1); no SDK, data, code, server,
+or graph; do NOT reproduce the Module 3 "wow" visualization. End with a PREVIEW
+line pointing to that hands-on Module 3 visualization on their own data. If the
+bootcamper requests the interactive entity graph or full visualization while the
+illustration is displayed: DECLINE to render it, leave the conceptual preview
+unchanged, and DIRECT them to the Module 3 hands-on visualization (Req 4.4).
+Sourcing (MCP-first, Req 1.4): prefer records + reasoning via find_examples
 / search_docs; else a GENERIC FALLBACK (label "illustrative, not Senzing data"):
 - MATCH: "Robert Smith, 12 Oak St" vs "Bob Smith, 48 Elm Ave (prior)" — name
   variation + prior address; same entity; missing it = FALSE NEGATIVE.

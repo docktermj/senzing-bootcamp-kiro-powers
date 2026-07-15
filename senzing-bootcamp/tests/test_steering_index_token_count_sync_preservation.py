@@ -643,7 +643,14 @@ _BASELINE_HASHES: dict[str, str] = {
     # into file_metadata and the budget total (230276 = sum of file_metadata
     # counts). Only the budget block changed (solely the total_tokens line);
     # keywords/languages/deployment/root_step_range are byte-identical.
-    "budget": "4d488f9fe36ad8c2d677ddf54234686ee25029c1ac117fec5450b741355ae7fc",
+    # Re-baselined once more (230276 -> 230741) for the onboarding-er-questions-prompt
+    # spec: entity-resolution-intro.md grew (1977 -> 2442 tokens, now in the large
+    # band) when the onboarding ER-questions prompt content was added, which
+    # measure_steering.py recomputed into file_metadata and the budget total
+    # (230741 = sum of file_metadata counts). Only the budget block changed (solely
+    # the total_tokens line); keywords/languages/deployment/root_step_range are
+    # byte-identical.
+    "budget": "74326216a0d06db1bd6b02c3cdac961ea0fffd39b4ec72aea5ff6badcf607fdb",
     "keywords": "a51b11ee3dfedc9f7da37640d24203b6ac40033e61ad11151dc27e4a67278a63",
     "languages": "ec5e570667ffcc01b044e4b41b0aec278efa05e2b280b53be1bee9e64153287c",
     "deployment": "f5547a687244fa65837874d87ef92e720a69f4b259ff785ead693b1a71781cf2",
@@ -1116,8 +1123,13 @@ class TestNonPhaseBlocksBytePreserved:
         # emitted "🛑 STOP" line became an internal-only stop-and-wait directive
         # (+56), recomputed by measure_steering.py into file_metadata and the
         # budget total (230276 = live sum of file_metadata counts).
+        # Aggregate re-synced 230276 -> 230741 for the onboarding-er-questions-prompt
+        # spec: entity-resolution-intro.md grew (1977 -> 2442) when the onboarding
+        # ER-questions prompt content was added, recomputed by measure_steering.py
+        # into file_metadata and the budget total (230741 = live sum of
+        # file_metadata counts).
         assert _parse_total_tokens(budget_block) == _sum_file_metadata(content)
-        assert "total_tokens: 230276" in budget_block
+        assert "total_tokens: 230741" in budget_block
         assert "reference_window: 200000" in budget_block
         assert "warn_threshold_pct: 60" in budget_block
         assert "critical_threshold_pct: 80" in budget_block

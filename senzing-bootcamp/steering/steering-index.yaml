@@ -367,8 +367,8 @@ file_metadata:
     token_count: 810
     size_category: medium
   entity-resolution-intro.md:
-    token_count: 1977
-    size_category: medium
+    token_count: 2442
+    size_category: large
   environment-setup.md:
     token_count: 658
     size_category: medium
@@ -662,7 +662,7 @@ file_metadata:
     size_category: medium
 
 budget:
-  total_tokens: 230276
+  total_tokens: 230741
   reference_window: 200000
   warn_threshold_pct: 60
   critical_threshold_pct: 80

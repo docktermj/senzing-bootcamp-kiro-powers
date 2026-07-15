@@ -8,7 +8,7 @@
 ## Status Summary
 
 - in-progress: 0
-- implemented: 288
+- implemented: 289
 - superseded: 1
 - abandoned: 0
 - unknown: 0
@@ -1257,6 +1257,13 @@
 - Type: feature
 - Workflow: requirements-first
 - Directory: [.kiro/specs/onboarding-comprehension-check/](.kiro/specs/onboarding-comprehension-check/)
+
+### onboarding-er-questions-prompt
+
+- Status: implemented
+- Type: feature
+- Workflow: requirements-first
+- Directory: [.kiro/specs/onboarding-er-questions-prompt/](.kiro/specs/onboarding-er-questions-prompt/)
 
 ### onboarding-flow
 

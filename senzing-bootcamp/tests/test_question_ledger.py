@@ -29,7 +29,6 @@ if _SCRIPTS_DIR not in sys.path:
 
 import question_ledger as ql  # noqa: E402  (import after sys.path manipulation)
 
-
 # ---------------------------------------------------------------------------
 # Strategies (st_ prefix per python-conventions)
 # ---------------------------------------------------------------------------

@@ -85,14 +85,14 @@ def _import_tier_strategy() -> (
     if scripts_dir not in sys.path:
         sys.path.insert(0, scripts_dir)
     try:
+        from generate_recap_pdf import (  # noqa: PLC0415
+            collect_verification_targets,
+            parse_recap_markdown,
+        )
         from pdf_render_strategy import (  # noqa: PLC0415
             DEFAULT_AUTOINSTALL_TIMEOUT_S,
             ensure_recap_pdf,
             resolve_allow_autoinstall,
-        )
-        from generate_recap_pdf import (  # noqa: PLC0415
-            collect_verification_targets,
-            parse_recap_markdown,
         )
     except ImportError:
         return None

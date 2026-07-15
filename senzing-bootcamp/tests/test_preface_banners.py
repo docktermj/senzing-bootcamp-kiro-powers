@@ -62,7 +62,10 @@ BORDER: str = "\u2501" * 56
 
 #: The ER_Concepts_Banner title line (Req 4.3): three puzzle emoji, two spaces,
 #: ``ENTITY RESOLUTION CONCEPTS``, two spaces, three puzzle emoji.
-ER_TITLE: str = "\U0001f9e9\U0001f9e9\U0001f9e9  ENTITY RESOLUTION CONCEPTS  \U0001f9e9\U0001f9e9\U0001f9e9"
+ER_TITLE: str = (
+    "\U0001f9e9\U0001f9e9\U0001f9e9  ENTITY RESOLUTION CONCEPTS  "
+    "\U0001f9e9\U0001f9e9\U0001f9e9"
+)
 
 #: The Graduation_Banner title line (Req 4.3): three graduation-cap emoji, two
 #: spaces, ``GRADUATION``, two spaces, three graduation-cap emoji.

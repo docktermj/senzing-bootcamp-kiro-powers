@@ -344,7 +344,10 @@ class TestMarkerLeakSteeringEnumeration:
         ``**🛑 STOP — End your response here.** ...``).
         """
         section = _extract_section(_read(_LANGUAGE_STEP_FILE), "## 4.")
-        assert section, f"Step 4 (Programming Language Selection) not found in {_LANGUAGE_STEP_FILE.name}"
+        assert section, (
+            "Step 4 (Programming Language Selection) not found in "
+            f"{_LANGUAGE_STEP_FILE.name}"
+        )
         offenders = [ln.strip() for ln in section.splitlines() if _is_rendered_marker_line(ln)]
         assert not offenders, (
             "language-selection step renders internal directives beside the 👉 "
